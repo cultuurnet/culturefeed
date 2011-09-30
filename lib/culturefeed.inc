@@ -6,6 +6,434 @@ require_once(realpath(dirname(__FILE__)) . '/OAuth.php');
  * @file
  * Classes to work with CultuurNet's Culture Feed API.
  */
+ 
+/**
+ * Class to represent a basic HTTP request.
+ */
+class CultureFeedHTTPRequest {
+
+  /**
+   * Proxy server URI.
+   *
+   * @var string
+   */
+  protected $proxy_server;
+
+  /**
+   * Proxy server port.
+   *
+   * @var integer
+   */
+  protected $proxy_port;
+
+  /**
+   * Proxy server username.
+   *
+   * @var string
+   */
+  protected $proxy_username;
+
+  /**
+   * Proxy server password.
+   *
+   * @var string
+   */
+  protected $proxy_password;
+
+  /**
+   * Connection timeout (defaults to 15 seconds).
+   *
+   * @var integer
+   */
+  protected $timeout = 15;
+
+  /**
+   * Set the proxy server URI.
+   *
+   * @param string $proxy_server
+   */
+  public function setProxyServer($proxy_server) {
+    $this->proxy_server = $proxy_server;
+  }
+
+  /**
+   * Set the proxy server port.
+   *
+   * @param integer $proxy_port
+   */
+  public function setProxyPort($proxy_port) {
+    $this->proxy_port = $proxy_port;
+  }
+
+  /**
+   * Set the proxy server username.
+   *
+   * @param string $proxy_username
+   */
+  public function setProxyUsername($proxy_username) {
+    $this->proxy_username = $proxy_username;
+  }
+
+  /**
+   * Set the proxy server password
+   *
+   * @param string $proxy_password
+   */
+  public function setProxyPassword($proxy_password) {
+    $this->proxy_password = $proxy_password;
+  }
+
+  /**
+   * Set the connection timeout.
+   *
+   * @param integer $timeout
+   */
+  public function setTimeout($timeout) {
+    $this->timeout = $timeout;
+  }
+
+  /**
+   * Make an HTTP request
+   *
+   * @param string $url
+   *   The URL for the request.
+   * @param array $http_headers
+   *   HTTP headers to set on the request.
+   *   Represented as an array of header strings.
+   * @param string $method
+   *   The HTTP method.
+   * @param string $post_data
+   *   In case of a POST request, specify the post data a string.
+   * @return string
+   *   The response body.
+   *
+   * @throws CultureFeedException
+   *   If an error message and code could be parsed from the response.
+   * @throws CultureFeedHTTPException
+   *   If no error message and code could be parsed from the response.
+   */
+  public function httpRequest($url, $http_headers = array(), $method = 'GET', $post_data = '') {
+    // Initialising some general CURL options (url, timeout, ...).
+    $curl_options = array(
+      CURLOPT_URL => $url,
+      CURLOPT_TIMEOUT => $this->timeout,
+      CURLOPT_RETURNTRANSFER => TRUE,
+      CURLOPT_HEADER => FALSE,
+    );
+
+    // If a proxy server is set, configure CURL to use it.
+    if (!empty($this->proxy_server)) {
+      $curl_options[CURLOPT_PROXY] = $this->proxy_server;
+      $curl_options[CURLOPT_PROXYPORT] = $this->proxy_port;
+      if ($this->proxy_username) {
+        $curl_options[CURLOPT_PROXYUSERPWD] = sprintf('%s:%s', $this->proxy_username, $this->proxy_password);
+      }
+    }
+
+    // Set HTTP headers.
+    if (!empty($http_headers)) {
+      $curl_options[CURLOPT_HTTPHEADER] = $http_headers;
+    }
+
+    // If the method is POST, configure CURL for it and set the post data.
+    if ($method == 'POST') {
+      $curl_options[CURLOPT_POST] = TRUE;
+      $curl_options[CURLOPT_POSTFIELDS] = $post_data;
+    }
+
+    // Do the CURL request.
+    $ch = curl_init();
+    curl_setopt_array($ch, $curl_options);
+
+    $response  = curl_exec($ch);
+    $curl_info = curl_getinfo($ch);
+    $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    // In case the HTTP response status is not 200, we consider this an error.
+    // In case we can parse a code and message from the response, we throw a CultureFeedException.
+    // In case we can't parse a code and message, we throw a CultureFeedHTTPException.
+    if ($curl_code != 200) {
+      try {
+        $xml = new CultureFeedSimpleXMLElement($response);
+      }
+      catch (Exception $e) {
+        throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+      }
+
+      if ($code = $xml->xpath_str('/response/code')) {
+        $message = $xml->xpath_str('/response/message');
+        throw new CultureFeedException($code, $message);
+      }
+
+      throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+    }
+
+    // In case the HTTP response status is 200, we return the response.
+    return $response;
+  }
+
+}
+
+/**
+ * Class to represent a OAuth request.
+ */
+class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
+
+  /**
+   * Endpoint (full url) where the CultureFeed API resides.
+   *
+   * @var string
+   */
+  protected $endpoint = 'http://test.uitid.be/culturefeed/rest/';
+
+  /**
+   * Signature method for signing OAuth requests.
+   *
+   * @var OAuthSignatureMethod
+   */
+  protected $signature_method;
+
+  /**
+   * OAuth consumer token.
+   *
+   * @var OAuthConsumer
+   */
+  protected $consumer;
+
+  /**
+   * OAuth token (request, access, ...).
+   *
+   * @var OAuthConsumer
+   */
+  protected $token;
+
+  /**
+   * Constructor for a new CultureFeedOAuthRequest instance.
+   *
+   * @param string $consumer_key
+   *   Consumer key.
+   * @param string $consumer_secret
+   *   Consumer secret.
+   * @param string $oauth_token
+   *   (optional) Token.
+   * @param string $oauth_token_secret
+   *   (optional) Token secret.
+   */
+  public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
+    $this->signature_method = new OAuthSignatureMethod_HMAC_SHA1();
+    $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
+    if (!empty($oauth_token) && !empty($oauth_token_secret)) {
+      $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
+    }
+  }
+
+  /**
+   * Set the endpoint.
+   *
+   * @param string $endpoint
+   */
+  public function setEndpoint($endpoint) {
+    $this->endpoint = $endpoint;
+  }
+
+  /**
+   * Do a GET request with only a consumer token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerGet($path, $params = array(), $format = '') {
+    return $this->request($path, $params, 'GET', FALSE, $format);
+  }
+
+  /**
+   * Do a GET request with only a consumer token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerGetAsXml($path, $params = array()) {
+    return $this->consumerGet($path, $params, 'xml');
+  }
+
+  /**
+   * Do a GET request with only a consumer token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerGetAsJson($path, $params = array()) {
+    return $this->consumerGet($path, $params, 'json');
+  }
+
+  /**
+   * Do a POST request with only a consumer token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerPost($path, $params = array(), $raw_post = TRUE, $format = '') {
+    return $this->request($path, $params, 'POST', FALSE, $format, $raw_post);
+  }
+
+  /**
+   * Do a POST request with only a consumer token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerPostAsXml($path, $params = array(), $raw_post = TRUE) {
+    return $this->consumerPost($path, $params, $raw_post, 'xml');
+  }
+
+  /**
+   * Do a POST request with only a consumer token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function consumerPostAsJson($path, $params = array(), $raw_post = TRUE) {
+    return $this->consumerPost($path, $params, $raw_post, 'json');
+  }
+
+  /**
+   * Do a GET request with a consumer token and user token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedGet($path, $params = array(), $format = '') {
+    return $this->request($path, $params, 'GET', TRUE, $format);
+  }
+
+  /**
+   * Do a GET request with a consumer token and user token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedGetAsXml($path, $params = array()) {
+    return $this->authenticatedGet($path, $params, 'xml');
+  }
+
+  /**
+   * Do a GET request with a consumer token and user token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedGetAsJson($path, $params = array()) {
+    return $this->authenticatedGet($path, $params, 'json');
+  }
+
+  /**
+   * Do a POST request with a consumer token and user token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedPost($path, $params = array(), $raw_post = TRUE, $format = '') {
+    return $this->request($path, $params, 'POST', TRUE, $format, $raw_post);
+  }
+
+  /**
+   * Do a POST request with a consumer token and user token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE) {
+    return $this->authenticatedPost($path, $params, $raw_post, 'xml');
+  }
+
+  /**
+   * Do a POST request with a consumer token and user token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE) {
+    return $this->authenticatedPost($path, $params, $raw_post, 'json');
+  }
+
+  /**
+   * Do a OAuth signed request.
+   *
+   * @param string $path
+   *   The path for the request relative to the endpoint.
+   * @param string $params
+   *   @todo document this
+   * @param string $method
+   *   HTTP method.
+   * @param string $use_auth
+   *   Should the request be signed with the user token and token secret or just the consumer token and secret?
+   *   If $use_auth is TRUE, sign with user token, secret as well as consumer token and secret.
+   *   If $use_auth is FALSE, sign only with consumer token and secret.
+   * @param string $format
+   *   The response format.
+   *   Possible values are 'xml', 'json' and '' for default response (depending on request).
+   * @param string $raw_post
+   *   @todo document this
+   * @return string
+   *   The response body.
+   */
+  public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE) {
+    // Getting full URL.
+    $url = $this->getUrl($path);
+
+    // Getting the request token for the request based on $use_auth.
+    $request_token = $use_auth ? $this->token : NULL;
+
+    // Constructing the request...
+    $request = OAuthRequest::from_consumer_and_token($this->consumer, $request_token, $method, $url, $params);
+
+    // ... and signing it.
+    $request->sign_request($this->signature_method, $this->consumer, $request_token);
+
+    // Getting the URL for the request.
+    $url = $request->to_url();
+
+    if ($method == 'POST') {
+      $url = $request->get_normalized_http_url();
+    }
+
+    $http_headers = array();
+
+    // Setting the OAuth headers.
+    $http_headers[] = $request->to_header();
+
+    // Setting the 'Accept' header.
+    switch ($format) {
+      case 'json':
+        $http_headers[] = 'Accept: application/json';
+        break;
+      case 'xml':
+        $http_headers[] = 'Accept: application/xml';
+        break;
+    }
+
+    // Calculating post data.
+    $post_data = http_build_query($params, '', '&');
+
+    // Necessary to support token setup calls.
+    if (!$raw_post) {
+      $post_data = $request->to_postdata();
+    }
+
+    return $this->httpRequest($url, $http_headers, $method, $post_data);
+  }
+
+  /**
+   * Getting the full URL based on a path and query.
+   *
+   * @param string $path
+   *   The path relative to the endpoint.
+   * @param array $query
+   *   (optional) The query string represented as an array.
+   * @return string
+   *   The full URL.
+   */
+  protected function getUrl($path, $query = array()) {
+    $url =  rtrim($this->endpoint, '/') . '/' . trim($path, '/');
+
+    if (!empty($query)) {
+      $url .= '?' . http_build_query($query, '', '&');
+    }
+
+    return $url;
+  }
+
+}
 
 /**
  * The main class to communicate with the Culture Feed API.
@@ -739,434 +1167,6 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
 
     return $this->getUrl('auth/logout', $query);
-  }
-
-}
-
-/**
- * Class to represent a basic HTTP request.
- */
-class CultureFeedHTTPRequest {
-
-  /**
-   * Proxy server URI.
-   *
-   * @var string
-   */
-  protected $proxy_server;
-
-  /**
-   * Proxy server port.
-   *
-   * @var integer
-   */
-  protected $proxy_port;
-
-  /**
-   * Proxy server username.
-   *
-   * @var string
-   */
-  protected $proxy_username;
-
-  /**
-   * Proxy server password.
-   *
-   * @var string
-   */
-  protected $proxy_password;
-
-  /**
-   * Connection timeout (defaults to 15 seconds).
-   *
-   * @var integer
-   */
-  protected $timeout = 15;
-
-  /**
-   * Set the proxy server URI.
-   *
-   * @param string $proxy_server
-   */
-  public function setProxyServer($proxy_server) {
-    $this->proxy_server = $proxy_server;
-  }
-
-  /**
-   * Set the proxy server port.
-   *
-   * @param integer $proxy_port
-   */
-  public function setProxyPort($proxy_port) {
-    $this->proxy_port = $proxy_port;
-  }
-
-  /**
-   * Set the proxy server username.
-   *
-   * @param string $proxy_username
-   */
-  public function setProxyUsername($proxy_username) {
-    $this->proxy_username = $proxy_username;
-  }
-
-  /**
-   * Set the proxy server password
-   *
-   * @param string $proxy_password
-   */
-  public function setProxyPassword($proxy_password) {
-    $this->proxy_password = $proxy_password;
-  }
-
-  /**
-   * Set the connection timeout.
-   *
-   * @param integer $timeout
-   */
-  public function setTimeout($timeout) {
-    $this->timeout = $timeout;
-  }
-
-  /**
-   * Make an HTTP request
-   *
-   * @param string $url
-   *   The URL for the request.
-   * @param array $http_headers
-   *   HTTP headers to set on the request.
-   *   Represented as an array of header strings.
-   * @param string $method
-   *   The HTTP method.
-   * @param string $post_data
-   *   In case of a POST request, specify the post data a string.
-   * @return string
-   *   The response body.
-   *
-   * @throws CultureFeedException
-   *   If an error message and code could be parsed from the response.
-   * @throws CultureFeedHTTPException
-   *   If no error message and code could be parsed from the response.
-   */
-  public function httpRequest($url, $http_headers = array(), $method = 'GET', $post_data = '') {
-    // Initialising some general CURL options (url, timeout, ...).
-    $curl_options = array(
-      CURLOPT_URL => $url,
-      CURLOPT_TIMEOUT => $this->timeout,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      CURLOPT_HEADER => FALSE,
-    );
-
-    // If a proxy server is set, configure CURL to use it.
-    if (!empty($this->proxy_server)) {
-      $curl_options[CURLOPT_PROXY] = $this->proxy_server;
-      $curl_options[CURLOPT_PROXYPORT] = $this->proxy_port;
-      if ($this->proxy_username) {
-        $curl_options[CURLOPT_PROXYUSERPWD] = sprintf('%s:%s', $this->proxy_username, $this->proxy_password);
-      }
-    }
-
-    // Set HTTP headers.
-    if (!empty($http_headers)) {
-      $curl_options[CURLOPT_HTTPHEADER] = $http_headers;
-    }
-
-    // If the method is POST, configure CURL for it and set the post data.
-    if ($method == 'POST') {
-      $curl_options[CURLOPT_POST] = TRUE;
-      $curl_options[CURLOPT_POSTFIELDS] = $post_data;
-    }
-
-    // Do the CURL request.
-    $ch = curl_init();
-    curl_setopt_array($ch, $curl_options);
-
-    $response  = curl_exec($ch);
-    $curl_info = curl_getinfo($ch);
-    $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    curl_close($ch);
-
-    // In case the HTTP response status is not 200, we consider this an error.
-    // In case we can parse a code and message from the response, we throw a CultureFeedException.
-    // In case we can't parse a code and message, we throw a CultureFeedHTTPException.
-    if ($curl_code != 200) {
-      try {
-        $xml = new CultureFeedSimpleXMLElement($response);
-      }
-      catch (Exception $e) {
-        throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
-      }
-
-      if ($code = $xml->xpath_str('/response/code')) {
-        $message = $xml->xpath_str('/response/message');
-        throw new CultureFeedException($code, $message);
-      }
-
-      throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
-    }
-
-    // In case the HTTP response status is 200, we return the response.
-    return $response;
-  }
-
-}
-
-/**
- * Class to represent a OAuth request.
- */
-class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
-
-  /**
-   * Endpoint (full url) where the CultureFeed API resides.
-   *
-   * @var string
-   */
-  protected $endpoint = 'http://test.uitid.be/culturefeed/rest/';
-
-  /**
-   * Signature method for signing OAuth requests.
-   *
-   * @var OAuthSignatureMethod
-   */
-  protected $signature_method;
-
-  /**
-   * OAuth consumer token.
-   *
-   * @var OAuthConsumer
-   */
-  protected $consumer;
-
-  /**
-   * OAuth token (request, access, ...).
-   *
-   * @var OAuthConsumer
-   */
-  protected $token;
-
-  /**
-   * Constructor for a new CultureFeedOAuthRequest instance.
-   *
-   * @param string $consumer_key
-   *   Consumer key.
-   * @param string $consumer_secret
-   *   Consumer secret.
-   * @param string $oauth_token
-   *   (optional) Token.
-   * @param string $oauth_token_secret
-   *   (optional) Token secret.
-   */
-  public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->signature_method = new OAuthSignatureMethod_HMAC_SHA1();
-    $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
-    if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-      $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
-    }
-  }
-
-  /**
-   * Set the endpoint.
-   *
-   * @param string $endpoint
-   */
-  public function setEndpoint($endpoint) {
-    $this->endpoint = $endpoint;
-  }
-
-  /**
-   * Do a GET request with only a consumer token.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerGet($path, $params = array(), $format = '') {
-    return $this->request($path, $params, 'GET', FALSE, $format);
-  }
-
-  /**
-   * Do a GET request with only a consumer token and return the response as XML.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerGetAsXml($path, $params = array()) {
-    return $this->consumerGet($path, $params, 'xml');
-  }
-
-  /**
-   * Do a GET request with only a consumer token and return the response as JSON.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerGetAsJson($path, $params = array()) {
-    return $this->consumerGet($path, $params, 'json');
-  }
-
-  /**
-   * Do a POST request with only a consumer token.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerPost($path, $params = array(), $raw_post = TRUE, $format = '') {
-    return $this->request($path, $params, 'POST', FALSE, $format, $raw_post);
-  }
-
-  /**
-   * Do a POST request with only a consumer token and return the response as XML.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerPostAsXml($path, $params = array(), $raw_post = TRUE) {
-    return $this->consumerPost($path, $params, $raw_post, 'xml');
-  }
-
-  /**
-   * Do a POST request with only a consumer token and return the response as JSON.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function consumerPostAsJson($path, $params = array(), $raw_post = TRUE) {
-    return $this->consumerPost($path, $params, $raw_post, 'json');
-  }
-
-  /**
-   * Do a GET request with a consumer token and user token.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedGet($path, $params = array(), $format = '') {
-    return $this->request($path, $params, 'GET', TRUE, $format);
-  }
-
-  /**
-   * Do a GET request with a consumer token and user token and return the response as XML.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedGetAsXml($path, $params = array()) {
-    return $this->authenticatedGet($path, $params, 'xml');
-  }
-
-  /**
-   * Do a GET request with a consumer token and user token and return the response as JSON.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedGetAsJson($path, $params = array()) {
-    return $this->authenticatedGet($path, $params, 'json');
-  }
-
-  /**
-   * Do a POST request with a consumer token and user token.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedPost($path, $params = array(), $raw_post = TRUE, $format = '') {
-    return $this->request($path, $params, 'POST', TRUE, $format, $raw_post);
-  }
-
-  /**
-   * Do a POST request with a consumer token and user token and return the response as XML.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE) {
-    return $this->authenticatedPost($path, $params, $raw_post, 'xml');
-  }
-
-  /**
-   * Do a POST request with a consumer token and user token and return the response as JSON.
-   *
-   * Wrapper function around request. @see request for documentation of remaining parameters.
-   */
-  public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE) {
-    return $this->authenticatedPost($path, $params, $raw_post, 'json');
-  }
-
-  /**
-   * Do a OAuth signed request.
-   *
-   * @param string $path
-   *   The path for the request relative to the endpoint.
-   * @param string $params
-   *   @todo document this
-   * @param string $method
-   *   HTTP method.
-   * @param string $use_auth
-   *   Should the request be signed with the user token and token secret or just the consumer token and secret?
-   *   If $use_auth is TRUE, sign with user token, secret as well as consumer token and secret.
-   *   If $use_auth is FALSE, sign only with consumer token and secret.
-   * @param string $format
-   *   The response format.
-   *   Possible values are 'xml', 'json' and '' for default response (depending on request).
-   * @param string $raw_post
-   *   @todo document this
-   * @return string
-   *   The response body.
-   */
-  public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE) {
-    // Getting full URL.
-    $url = $this->getUrl($path);
-
-    // Getting the request token for the request based on $use_auth.
-    $request_token = $use_auth ? $this->token : NULL;
-
-    // Constructing the request...
-    $request = OAuthRequest::from_consumer_and_token($this->consumer, $request_token, $method, $url, $params);
-
-    // ... and signing it.
-    $request->sign_request($this->signature_method, $this->consumer, $request_token);
-
-    // Getting the URL for the request.
-    $url = $request->to_url();
-
-    if ($method == 'POST') {
-      $url = $request->get_normalized_http_url();
-    }
-
-    $http_headers = array();
-
-    // Setting the OAuth headers.
-    $http_headers[] = $request->to_header();
-
-    // Setting the 'Accept' header.
-    switch ($format) {
-      case 'json':
-        $http_headers[] = 'Accept: application/json';
-        break;
-      case 'xml':
-        $http_headers[] = 'Accept: application/xml';
-        break;
-    }
-
-    // Calculating post data.
-    $post_data = http_build_query($params, '', '&');
-
-    // Necessary to support token setup calls.
-    if (!$raw_post) {
-      $post_data = $request->to_postdata();
-    }
-
-    return $this->httpRequest($url, $http_headers, $method, $post_data);
-  }
-
-  /**
-   * Getting the full URL based on a path and query.
-   *
-   * @param string $path
-   *   The path relative to the endpoint.
-   * @param array $query
-   *   (optional) The query string represented as an array.
-   * @return string
-   *   The full URL.
-   */
-  protected function getUrl($path, $query = array()) {
-    $url =  rtrim($this->endpoint, '/') . '/' . trim($path, '/');
-
-    if (!empty($query)) {
-      $url .= '?' . http_build_query($query, '', '&');
-    }
-
-    return $url;
   }
 
 }
