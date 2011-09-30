@@ -278,6 +278,17 @@ class CultureFeed extends CultureFeedOAuthRequest {
     return $xml->parseUsers($xml);
   }
 
+  /**
+   * Get a list of users similar to a given user.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the user to fetch similar users for.
+   * @return array or FALSE
+   *   In case of success an array of CultureFeedUser objects.
+   *   In case of failure FALSE.
+   */
   public function getSimilarUsers($id) {
     try {
       $result = $this->consumerGetAsXml('user/' . $id . '/similar', array());
