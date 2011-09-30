@@ -56,7 +56,7 @@ function culturefeed_form_user_profile_form_alter(&$form, $form_state) {
   $form['#validate'] = array_flip($validators);
 }
 
-function culturefeed_createUser($userid, $token, $secret) {
+function culturefeed_user_create($userid, $token, $secret) {
   // Create a user for syncing "anonymous" nodes.
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
@@ -126,12 +126,12 @@ function culturefeed_user_delete($account) {
     ->execute();
 }
 
-function culturefeed_getUser($userid, $token, $secret) {
+function culturefeed_user_get($userid, $token, $secret) {
   $account = NULL;
 
   $user_info = db_query("SELECT * FROM {culturefeed_user} WHERE userid = :userid", array(':userid' => $userid))->fetchObject();;
   if (!$user_info) {
-    $account = culturefeed_createUser($userid, $token, $secret);
+    $account = culturefeed_user_create($userid, $token, $secret);
   }
   else {
     $account = user_load($user_info->uid);

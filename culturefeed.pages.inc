@@ -21,7 +21,7 @@ function culturefeed_oauth_authorize() {
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
     $token = DrupalCultureFeed::getInstance($_GET['oauth_token'], $_GET['token_secret'])->getAccessToken($_GET['oauth_verifier']);
 
-    $account = culturefeed_getUser($token['userId'], $token['oauth_token'], $token['oauth_token_secret']);
+    $account = culturefeed_user_get($token['userId'], $token['oauth_token'], $token['oauth_token_secret']);
 
     if ($account) {
       $account->culturefeed_userid = $token['userId'];
