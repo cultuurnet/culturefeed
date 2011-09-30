@@ -491,6 +491,17 @@ class CultureFeed extends CultureFeedOAuthRequest {
     return FALSE;
   }
 
+  /**
+   * Update an existing user.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the activity to update.
+   * @return bool
+   *   In case of success TRUE.
+   *   In case of failure FALSE.
+   */
   public function updateActivity($id, $private) {
     $data = array('private' => $private ? 'true' : 'false');
 
@@ -504,6 +515,17 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
   }
 
+  /**
+   * Delete an activity.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the activity that is deleted.
+   * @return bool
+   *   In case of success TRUE.
+   *   In case of failure FALSE.
+   */
   public function deleteActivity($id) {
     try {
       $this->authenticatedGetAsXml('activity/' . $id . '/delete');
