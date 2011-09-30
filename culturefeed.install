@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function culturefeed_schema() {
+  $schema['culturefeed_user'] = array(
+    'description' => t('Tokens and secrets from users.'),
+    'fields' => array(
+      'uid' => array(
+        'description' => t('User ID from {user}.uid.'),
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+        'not null'    => TRUE
+      ),
+      'userid' => array(
+        'description' => t('CultureFeed ID.'),
+        'type'        => 'varchar',
+        'length'      => 64,
+        'not null'    => TRUE
+      ),
+      'token' => array(
+        'description' => t('CultureFeed OAuth token.'),
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE
+      ),
+      'secret' => array(
+        'description' => t('CultureFeed OAuth secret.'),
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE
+      ),
+    ),
+    'primary key' => array('uid'),
+    'unique keys' => array(
+      'uid' => array('uid'),
+      'userid' => array('userid'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function culturefeed_requirements($phase) {
+  $requirements = array();
+
+  $t = get_t();
+
+  // Verify curl is installed
+  $has_curl = function_exists('curl_init');
+  $requirements['curl'] = array(
+    'title' => $t('cURL'),
+    'value' => $has_curl ? $t('Enabled') : $t('Not found'),
+  );
+  if (!$has_curl) {
+    $requirements['curl']['severity'] = REQUIREMENT_ERROR;
+    $requirements['curl']['description'] = $t('CultureFeed could not be installed because the PHP <a href="@curl_url">cURL</a> library is not available.', array('@curl_url' => 'http://php.net/manual/en/curl.setup.php'));
+  }
+
+  if ($phase == 'runtime') {
+    // Raise warning if CultureFeed key has not been set yet.
+    $requirements['culturefeed_api_application_key']['title'] = $t('CultureFeed Application Key');
+    if (trim(variable_get('culturefeed_api_application_key', '')) == '') {
+      $requirements['culturefeed_api_application_key']['description'] = $t('Your CultureFeed Application key has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_application_key']['severity'] = REQUIREMENT_ERROR;
+      $requirements['culturefeed_api_application_key']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['culturefeed_api_application_key']['value'] = variable_get('culturefeed_api_application_key', '');
+    }
+
+    // Raise warning if CultureFeed shared secret has not been set yet.
+    $requirements['culturefeed_api_shared_secret']['title'] = $t('CultureFeed Shared Secret');
+    if (trim(variable_get('culturefeed_api_shared_secret', '')) == '') {
+      $requirements['culturefeed_api_shared_secret']['description'] = $t('Your CultureFeed Shared Secret has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_shared_secret']['severity'] = REQUIREMENT_ERROR;
+      $requirements['culturefeed_api_shared_secret']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['culturefeed_api_shared_secret']['value'] = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    // Raise warning if CultureFeed location has not been set yet.
+    $requirements['culturefeed_api_location']['title'] = $t('CultureFeed location');
+    if (trim(variable_get('culturefeed_api_location', CNAPI_API_LOCATION)) == '') {
+      $requirements['culturefeed_api_location']['description'] = $t('The location of the CultureFeed has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_location']['severity'] = REQUIREMENT_ERROR;
+      $requirements['culturefeed_api_location']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['culturefeed_api_location']['value'] = variable_get('culturefeed_api_location', CNAPI_API_LOCATION);
+    }
+  }
+
+  return $requirements;
+}

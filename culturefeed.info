@@ -1,0 +1,8 @@
+name = CultureFeed
+description = CultureFeed
+package = CultureFeed
+version = VERSION
+core = 7.x
+files[] = lib/culturefeed.inc
+files[] = culturefeed.module
+configure = admin/config/services/culturefeed

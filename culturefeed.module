@@ -1,0 +1,187 @@
+<?php
+
+define('CULTUREFEED_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_menu() {
+  $items['admin/config/services/culturefeed'] = array(
+    'title' => 'Culture Feed',
+    'description' => 'Change Culture Feed API setting like API Appliction key, location, ...',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'culturefeed.admin.inc',
+  );
+  $items['culturefeed/oauth/connect'] = array(
+    'title' => 'Connect',
+    'page callback' => 'culturefeed_oauth_connect',
+    'access callback' => 'user_is_anonymous',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed.pages.inc',
+  );
+  $items['culturefeed/oauth/authorize'] = array(
+    'title' => 'Connect',
+    'page callback' => 'culturefeed_oauth_authorize',
+    'access callback' => 'user_is_anonymous',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function culturefeed_menu_alter(&$callbacks) {
+  $callbacks['user/login']['access callback'] = FALSE;
+  unset($callbacks['user/login']['access arguments']);
+
+  $callbacks['user/register']['access callback'] = FALSE;
+  unset($callbacks['user/register']['access arguments']);
+
+  $callbacks['user/password']['access callback'] = FALSE;
+  unset($callbacks['user/password']['access arguments']);
+}
+
+function culturefeed_form_user_profile_form_alter(&$form, $form_state) {
+  unset($form['account']['pass']);
+  unset($form['account']['current_pass_required_values']);
+  unset($form['account']['current_pass']);
+  $validators = $form['#validate'];
+  $validators = array_flip($validators);
+  unset($validators['user_validate_current_pass']);
+  $form['#validate'] = array_flip($validators);
+}
+
+function culturefeed_createUser($userid, $token, $secret) {
+  // Create a user for syncing "anonymous" nodes.
+  $url = parse_url($GLOBALS['base_url']);
+  $account = user_save(
+    drupal_anonymous_user(),
+    array(
+      'name' => $userid,
+      'pass' => user_password(),
+      'mail' => $userid . '@uitid.be',
+      'roles' => array(),
+      'status' => 1,
+      'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
+    )
+  );
+
+  $account->culturefeed_userid = $userid;
+  $account->culturefeed_oauth_token = $token;
+  $account->culturefeed_oauth_secret = $secret;
+  user_save($account);
+
+  return $account;
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function culturefeed_user_insert(&$edit, $account, $category) {
+  if (isset($account->culturefeed_oauth_token) && !empty($account->culturefeed_oauth_token)) {
+    db_insert('culturefeed_user')
+      ->fields(array(
+        'uid' => $account->uid,
+        'userid' => $account->culturefeed_userid,
+        'token' => $account->culturefeed_oauth_token,
+        'secret' => $account->culturefeed_oauth_secret,
+        ))
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function culturefeed_user_update(&$edit, $account, $category) {
+  db_delete('culturefeed_user')
+    ->condition('uid', $account->uid)
+    ->execute();
+  culturefeed_user_insert($edit, $account, $category);
+}
+
+/**
+ * Implements hook_user_load().
+ */
+function culturefeed_user_load($users) {
+  $result = db_query('SELECT * FROM {culturefeed_user} cfu WHERE uid IN (:uids)', array(':uids' => array_keys($users)));
+  foreach ($result as $record) {
+    $users[$record->uid]->culturefeed_userid = $record->userid;
+    $users[$record->uid]->culturefeed_oauth_token = $record->token;
+    $users[$record->uid]->culturefeed_oauth_secret = $record->secret;
+  }
+}
+
+/**
+ * Implements hook_user_delete().
+ */
+function culturefeed_user_delete($account) {
+  db_delete('culturefeed_user')
+    ->condition('uid', $account->uid)
+    ->execute();
+}
+
+function culturefeed_getUser($userid, $token, $secret) {
+  $account = NULL;
+
+  $user_info = db_query("SELECT * FROM {culturefeed_user} WHERE userid = :userid", array(':userid' => $userid))->fetchObject();;
+  if (!$user_info) {
+    $account = culturefeed_createUser($userid, $token, $secret);
+  }
+  else {
+    $account = user_load($user_info->uid);
+  }
+
+  return $account;
+}
+
+class DrupalCultureFeed extends CultureFeed {
+
+  protected static $consumer_instance;
+
+  protected static $user_instance;
+
+  public static function getLoggedInUserInstance() {
+    if (isset(self::$user_instance)) {
+      return self::$user_instance;
+    }
+
+    global $user;
+
+    if (!isset($user->culturefeed_oauth_token) || !isset($user->culturefeed_oauth_secret)) {
+      return;
+    }
+
+    self::$user_instance = self::getInstance($user->culturefeed_oauth_token, $user->culturefeed_oauth_secret);
+
+    return self::$user_instance;
+  }
+
+  public static function getConsumerInstance() {
+    if (isset(self::$consumer_instance)) {
+      return self::$consumer_instance;
+    }
+
+    self::$consumer_instance = self::getInstance(NULL, NULL);
+
+    return self::$consumer_instance;
+  }
+
+  public static function getInstance($token, $secret) {
+    $result = new CultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+
+    if (variable_get('culturefeed_proxy_enabled', FALSE)) {
+      $result->proxy_server = variable_get('culturefeed_proxy_server', '');
+      $result->proxy_port = variable_get('culturefeed_proxy_port', '');
+      $result->proxy_username = variable_get('culturefeed_proxy_username', '');
+      $result->proxy_password = variable_get('culturefeed_proxy_password', '');
+    }
+
+    return $result;
+  }
+}
