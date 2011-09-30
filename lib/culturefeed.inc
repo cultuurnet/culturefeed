@@ -1461,7 +1461,7 @@ class CultureFeedOnlineAccount {
   /**
    * Type of the online service.
    */
-  public $accountType; // @todo make consts
+  public $accountType;
 
   /**
    * Homepage of the online service.
@@ -1686,28 +1686,28 @@ class CultureFeedRecommendationItem {
   public $description_short;
 
   /**
-   * @todo Start date of the recommendation item (event) as a UNIX timestamp.
+   * Start date of the recommendation item (event) as a UNIX timestamp.
    *
    * @var integer
    */
   public $from;
 
   /**
-   * @todo End dat of the recommendation item (event) as a UNIX timestamp.
+   * End dat of the recommendation item (event) as a UNIX timestamp.
    *
    * @var integer
    */
   public $to;
 
   /**
-   * @todo Address of the recommendation item (event).
+   * Address of the recommendation item (event).
    *
    * @var string
    */
   public $location_simple;
 
   /**
-   * @todo Coordinates of the recommendation item (event).
+   * Coordinates of the recommendation item (event).
    *
    * @var string // @todo shouldn't this be coordinates?
    */
