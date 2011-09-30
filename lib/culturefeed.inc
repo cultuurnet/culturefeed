@@ -398,10 +398,30 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
   }
 
+  /**
+   * Update a user's online account settings.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the user whose online account settings will be updated.
+   * @param CultureFeedOnlineAccount $account
+   *   The account settings to update.
+   * @return bool
+   *   In case of success TRUE.
+   *   In case of failure FALSE.
+   */
   public function updateUserOnlineAccount($id, $account) {
-    $account = array_filter(get_object_vars($account));
-    // @todo implement this
-    return $this->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $account);
+    $data = $account->toPostData();
+
+    try {
+      $this->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
+
+      return TRUE;
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
   }
 
   /**
@@ -1484,6 +1504,29 @@ class CultureFeedOnlineAccount {
         $this->{$property} = $value;
       }
     }
+  }
+
+  /**
+   * Convert a CultureFeedOnlineAccount object to an array that can be used as data in POST requests that expect online account info.
+   *
+   * @return array
+   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+
+    // Represent private as a string (true/false);
+    if (isset($data['private'])) {
+      $data['private'] = $data['private'] ? 'true' : 'false';
+    }
+
+    // Represent publishActivities as a string (true/false);
+    if (isset($data['publishActivities'])) {
+      $data['publishActivities'] = $data['publishActivities'] ? 'true' : 'false';
+    }
+
+    return $data;
   }
 
 }
