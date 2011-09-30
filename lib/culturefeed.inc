@@ -1171,8 +1171,15 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
 
 }
 
+/**
+ * Class that extends SimpleXMLElement to add some parsing helpers.
+ */
 class CultureFeedSimpleXMLElement extends SimpleXMLElement {
 
+  /**
+   * Runs XPath query on XML data and casts it to a string or an array of string values.
+   * @see xpath_cast for more documentation on the arguments.
+   */
   public function xpath_str($path, $multiple = FALSE, $trim = TRUE) {
     $tmp = $this->xpath_cast('strval', $path, $multiple);
     if ($tmp && !$multiple && $trim) {
@@ -1181,14 +1188,26 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return $tmp;
   }
 
+  /**
+   * Runs XPath query on XML data and casts it to an integer or an array of integer values.
+   * @see xpath_cast for more documentation on the arguments.
+   */
   public function xpath_int($path, $multiple = FALSE) {
     return $this->xpath_cast('intval', $path, $multiple);
   }
 
+  /**
+   * Runs XPath query on XML data and casts it to a float or an array of float values.
+   * @see xpath_cast for more documentation on the arguments.
+   */
   public function xpath_float($path, $multiple = FALSE) {
     return $this->xpath_cast('floatval', $path, $multiple);
   }
 
+  /**
+   * Runs XPath query on XML data and casts it to a UNIX timestamp or an array of timestamps.
+   * @see xpath_cast for more documentation on the arguments.
+   */
   public function xpath_time($path, $multiple = FALSE) {
     $val = $this->xpath_cast('strval', $path, $multiple);
     if (!$val) {
@@ -1204,6 +1223,10 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return strtotime($val);
   }
 
+  /**
+   * Runs XPath query on XML data and casts it to a bool or an array of bool values.
+   * @see xpath_cast for more documentation on the arguments.
+   */
   public function xpath_bool($path, $multiple = FALSE) {
     $val = $this->xpath_cast('strval', $path, $multiple);
     if (!$val) {
@@ -1219,6 +1242,19 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return strtolower($val) == 'true' ? TRUE : FALSE;
   }
 
+  /**
+   * Runs XPath query on XML data and casts it using a type casting function.
+   *
+   * @param string $cast_function 
+   * @param string $path 
+   *   The XPath query.
+   * @param string $multiple 
+   *   Does the query direct to a path where multiple values are possible?
+   * @return array or undefined
+   *   In case $multiple is TRUE, an array is returned with the type casted elements.
+   *   In case $multiple is FALSE, the result of the XPath query is casted using the $cast_function and type depends on type of that function.
+   *   In case no nodes were found with the query, NULL is returned.
+   */
   private function xpath_cast($cast_function, $path, $multiple = FALSE) {
     $objects = $this->xpath($path);
 
@@ -1236,6 +1272,11 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     }
   }
 
+  /**
+   * Parse the SimpleXML element as a CultureFeedUser.
+   *
+   * @return CultureFeedUser
+   */
   public function parseUser() {
     $user['id']           = $this->xpath_str('/foaf:person/rdf:id');
     $user['nick']         = $this->xpath_str('/foaf:person/foaf:nick');
@@ -1291,6 +1332,12 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return new CultureFeedUser($user);
   }
 
+  /**
+   * Parse the SimpleXML element as a CultureFeedResultSet.
+   *
+   * @return CultureFeedResultSet
+   *   CultureFeedResultSet where the objects are of the CultureFeedUser type.
+   */
   public function parseUsers() {
     $total = $this->xpath_int('/response/total');
 
@@ -1311,6 +1358,12 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return new CultureFeedResultSet($total, $users);
   }
 
+  /**
+   * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
+   *
+   * @return array
+   *   Array of CultureFeedServiceConsumer objcts.
+   */
   public function parseServiceConsumers() {
     $consumers = array();
 
@@ -1331,6 +1384,12 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return $consumers;
   }
 
+  /**
+   * Parse the SimpleXML element as a CultureFeedResultSet.
+   *
+   * @return CultureFeedResultSet
+   *   CultureFeedResultSet where the objects are of the CultureFeedActivity type.
+   */
   public function parseActivities() {
     $total = $this->xpath_int('/response/total');
 
@@ -1359,6 +1418,12 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     return new CultureFeedResultSet($total, $activities);
   }
 
+  /**
+   * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
+   *
+   * @return array
+   *   Array of CultureFeedRecommendation objcts.
+   */
   public function parseRecommendations() {
     $recommendations = array();
 
