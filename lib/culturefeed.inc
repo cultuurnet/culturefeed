@@ -537,6 +537,19 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
   }
 
+  /**
+   * Search for activities.
+   *
+   * In case the query contains 'private=true', the object should be initialized with the consumer token and user access token of the user who is acted upon.
+   * Else the object should be initialized with the consumer token.
+   *
+   * @param array $query
+   *   An associative array representing the query.
+   *   The array is indexed by the query key.
+   * @return array or FALSE
+   *   In case of success an array of CultureFeedActivity objects.
+   *   In case of failure FALSE.
+   */
   public function searchActivities($query = array()) { // @todo make $query an object
     $use_auth = FALSE;
 
@@ -852,7 +865,7 @@ class CultureFeedHTTPRequest {
         $curl_options[CURLOPT_PROXYUSERPWD] = sprintf('%s:%s', $this->proxy_username, $this->proxy_password);
       }
     }
-print $post_data;
+
     // Set HTTP headers.
     if (!empty($http_headers)) {
       $curl_options[CURLOPT_HTTPHEADER] = $http_headers;
@@ -1328,7 +1341,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     foreach ($objects as $object) {
       $activity = array();
 
-      $activity['nodeId']       = $object->xpath_str('nodeId');
+      $activity['nodeId']       = $object->xpath_str('nodeID');
       $activity['private']      = $object->xpath_str('private');
       $activity['createdVia']   = $object->xpath_str('createdVia');
       $activity['points']       = $object->xpath_str('points');
