@@ -161,7 +161,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
   /**
    * Update an existing user.
    *
-   * The object should be initialized with the consumer token and the user access token of the user who is acted upon.
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
    *
    * @param CultureFeedUser $user
    *   The user to update. The user is identified by ID. Only fields that are set will be updated.
@@ -327,7 +327,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
   /**
    * Update a user's field privacy settings.
    *
-   * The object should be initialized with the consumer token and the user access token of the user who is acted upon.
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
    *
    * @param string $id
    *   ID of the user whose privacy settings to update.
@@ -455,11 +455,25 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
   }
 
+  /**
+   * Create a new activity.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param CultureFeedActivity $activity
+   *   The activity to create.
+   * @return string or FALSE
+   *   In case of success a string representing the user id of the newly created user.
+   *   In case of failure FALSE.
+   *
+   * @throws CultureFeedException
+   *   If an application error occurred.
+   */
   public function createActivity($activity) {
-    $activity = array_filter(get_object_vars($activity));
+    $data = $activity->toPostData();
 
     try {
-      $result = $this->authenticatedPostAsXml('activity', $activity);
+      $result = $this->authenticatedPostAsXml('activity', $data);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -470,8 +484,8 @@ class CultureFeed extends CultureFeedOAuthRequest {
       return FALSE;
     }
 
-    if ($uid = $xml->xpath_str('/response/activityID')) {
-      return $uid;
+    if ($id = $xml->xpath_str('/response/activityId')) {
+      return $id;
     }
 
     return FALSE;
@@ -480,7 +494,14 @@ class CultureFeed extends CultureFeedOAuthRequest {
   public function updateActivity($id, $private) {
     $data = array('private' => $private ? 'true' : 'false');
 
-    return $this->authenticatedPostAsXml('activity/' . $id, $data);
+    try {
+      $this->authenticatedPostAsXml('activity/' . $id, $data);
+
+      return TRUE;
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
   }
 
   public function deleteActivity($id) {
@@ -809,7 +830,7 @@ class CultureFeedHTTPRequest {
         $curl_options[CURLOPT_PROXYUSERPWD] = sprintf('%s:%s', $this->proxy_username, $this->proxy_password);
       }
     }
-
+print $post_data;
     // Set HTTP headers.
     if (!empty($http_headers)) {
       $curl_options[CURLOPT_HTTPHEADER] = $http_headers;
@@ -1285,14 +1306,14 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     foreach ($objects as $object) {
       $activity = array();
 
-      $activity['nodeID']       = $object->xpath_str('nodeID');
+      $activity['nodeId']       = $object->xpath_str('nodeId');
       $activity['private']      = $object->xpath_str('private');
       $activity['createdVia']   = $object->xpath_str('createdVia');
       $activity['points']       = $object->xpath_str('points');
       $activity['contentType']  = $object->xpath_str('contentType');
       $activity['type']         = $object->xpath_str('type');
       $activity['value']        = $object->xpath_str('value');
-      $activity['userid']       = $object->xpath_str('userid');
+      $activity['userId']       = $object->xpath_str('userId');
       $activity['depiction']    = $object->xpath_str('depiction');
       $activity['nick']         = $object->xpath_str('nick');
       $activity['creationDate'] = $object->xpath_time('creationDate');
@@ -1959,44 +1980,49 @@ class CultureFeedActivity {
   /**
    * Consumer type that indicates the action "Viewed".
    */
-  const TYPE_VIEW = 'view';
+  const TYPE_VIEW = 1;
 
   /**
    * Consumer type that indicates the action "Detail viewed".
    */
-  const TYPE_DETAIL = 'detail';
+  const TYPE_DETAIL = 2;
 
   /**
    * Consumer type that indicates the action "I like this".
    */
-  const TYPE_LIKE = 'like';
+  const TYPE_LIKE = 3;
 
   /**
    * Consumer type that indicates the action "I forwarded this via mail".
    */
-  const TYPE_MAIL = 'mail';
+  const TYPE_MAIL = 4;
 
   /**
    * Consumer type that indicates the action "Printed".
    */
-  const TYPE_PINT = 'print';
+  const TYPE_PRINT = 5;
+
+  /**
+   * Consumer type that indicates the action "Shared on Facebook".
+   */
+  const TYPE_FACEBOOK = 6;
 
   /**
    * Consumer type that indicates the action "Shared on Twitter".
    */
-  const TYPE_TWITTER = 'twitter';
+  const TYPE_TWITTER = 7;
 
   /**
    * Consumer type that indicates the action "I went to this event".
    */
-  const TYPE_IK_GA = 'ik ga';
+  const TYPE_IK_GA = 8;
 
   /**
-   * NodeID of the activity object.
+   * NodeId of the activity object.
    *
    * @var string
    */
-  public $nodeID;
+  public $nodeId;
 
   /**
    * Privacy status of the activity.
@@ -2047,7 +2073,7 @@ class CultureFeedActivity {
    *
    * @var string
    */
-  public $userid;
+  public $userId;
 
   /**
    * Depiction of the user who generated this activity.
@@ -2083,6 +2109,29 @@ class CultureFeedActivity {
         $this->{$property} = $value;
       }
     }
+  }
+  
+  /**
+   * Convert a CultureFeedActivity object to an array that can be used as data in POST requests that expect user info.
+   *
+   * @return array
+   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+
+    // Represent private as a string (true/false);
+    if (isset($data['private'])) {
+      $data['private'] = $data['private'] ? 'true' : 'false';
+    }
+
+    // Represent creationDate as a W3C date.
+    if (isset($data['creationDate'])) {
+      $data['creationDate'] = date('c', $data['creationDate']);
+    }
+
+    return $data;
   }
 
 }
