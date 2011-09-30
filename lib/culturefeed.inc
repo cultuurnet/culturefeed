@@ -14,6 +14,16 @@ require_once(realpath(dirname(__FILE__)) . '/OAuth.php');
  * Provides calls to fetch objects (users, activities, ...) from the API.
  */
 class CultureFeed extends CultureFeedOAuthRequest {
+ 
+  /**
+   * Privacy status 'public'.
+   */
+  const PRIVACY_PUBLIC = 'public';
+
+  /**
+   * Privacy status 'private'.
+   */  
+  const PRIVACY_PRIVATE = 'private';
 
   /**
    * Recommendation evaluation 'unspecified'.
@@ -243,6 +253,18 @@ class CultureFeed extends CultureFeedOAuthRequest {
     return $xml->parseUser($xml);
   }
 
+  /**
+   * Search for users.
+   *
+   * The object should be initialized with the consumer token.
+   *
+   * @param array $query
+   *   An associative array representing the query.
+   *   The array is indexed by the query key.
+   * @return array or FALSE
+   *   In case of success an array of CultureFeedUser objects.
+   *   In case of failure FALSE.
+   */
   public function searchUsers($query = array()) { // @todo make $query an object
     try {
       $result = $this->consumerGetAsXml('user/search', $query);
@@ -291,7 +313,22 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
   }
 
-  public function updateUserPrivacy($id, $privacy) { // @todo make $privacy a class
+  /**
+   * Update a user's field privacy settings.
+   *
+   * The object should be initialized with the consumer token and the user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the user whose privacy settings to update.
+   * @param array $privacy_config
+   *   An associative array representing the privacy status for each field.
+   *   The array is indexed by the field name. Values are the privacy status.
+   *   Possible values for the privacy status are represented in the PRIVACY_* constants.
+   * @return bool
+   *   In case of success TRUE.
+   *   In case of failure FALSE.
+   */
+  public function updateUserPrivacy($id, $privacy_config) { // @todo make $privacy a class
     try {
       $this->authenticatedPostAsXml('user/' . $id . '/privacy', $privacy);
 
