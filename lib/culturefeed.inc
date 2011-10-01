@@ -974,26 +974,27 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * In case the query contains 'private=true', the object should be initialized with the consumer token and user access token of the user who is acted upon.
    * Else the object should be initialized with the consumer token.
    *
-   * @param array $query
-   *   An associative array representing the query.
-   *   The array is indexed by the query key.
+   * @param CultureFeedSearchActivitiesQuery $query
+   *   The query.
    * @return array or FALSE
    *   In case of success an array of CultureFeedActivity objects.
    *   In case of failure FALSE.
    */
-  public function searchActivities($query = array()) { // @todo make $query an object
+  public function searchActivities($query) {
     $use_auth = FALSE;
 
-    if (isset($query['private']) && $query['private'] == 'true') {
+    if ($query->private) {
       $use_auth = TRUE;
     }
+    
+    $data = $query->toPostData();
 
     try {
       if ($use_auth) {
-        $result = $this->authenticatedGetAsXml('activity', $query);
+        $result = $this->authenticatedGetAsXml('activity', $data);
       }
       else {
-        $result = $this->consumerGetAsXml('activity', $query);
+        $result = $this->consumerGetAsXml('activity', $data);
       }
 
       $xml = new CultureFeedSimpleXMLElement($result);
@@ -2786,6 +2787,161 @@ class CultureFeedUserPrivacyConfig {
 
   /**
    * Convert a CultureFeedUserPrivacyConfig object to an array that can be used as data in POST requests that expect search user query info.
+   *
+   * @return array
+   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+    
+    return $data;
+  }
+  
+}
+
+/**
+ * Class to represent an activities search query.
+ */
+class CultureFeedSearchActivitiesQuery {
+
+  /**
+   * Content type 'page'.
+   */
+  const CONTENT_TYPE_PAGE = 'page';
+
+  /**
+   * Content type 'event'.
+   */
+  const CONTENT_TYPE_EVENT = 'event';
+
+  /**
+   * Content type 'actor'.
+   */
+  const CONTENT_TYPE_ACTOR = 'actor';
+
+  /**
+   * Consumer type that indicates the action "Viewed".
+   */
+  const TYPE_VIEW = 1;
+
+  /**
+   * Consumer type that indicates the action "Detail viewed".
+   */
+  const TYPE_DETAIL = 2;
+
+  /**
+   * Consumer type that indicates the action "I like this".
+   */
+  const TYPE_LIKE = 3;
+
+  /**
+   * Consumer type that indicates the action "I forwarded this via mail".
+   */
+  const TYPE_MAIL = 4;
+
+  /**
+   * Consumer type that indicates the action "Printed".
+   */
+  const TYPE_PRINT = 5;
+
+  /**
+   * Consumer type that indicates the action "Shared on Facebook".
+   */
+  const TYPE_FACEBOOK = 6;
+
+  /**
+   * Consumer type that indicates the action "Shared on Twitter".
+   */
+  const TYPE_TWITTER = 7;
+
+  /**
+   * Consumer type that indicates the action "I went to this event".
+   */
+  const TYPE_IK_GA = 8;
+  
+  /**
+   * The type of content the activity handles.
+   * Possible values are represented in the CONTENT_TYPE_* constants.
+   *
+   * @var string
+   */
+  public $contentType;
+
+  /**
+   * The consumption type of the activity.
+   * Possible values are represented in the TYPE_* constants.
+   *
+   * @var integer
+   */
+  public $type;
+
+  /**
+   * NodeId.
+   *
+   * @var string
+   */
+  public $nodeId;
+
+  /**
+   * UserId.
+   *
+   * @var string
+   */
+  public $userId;
+
+  /**
+   * Consumer.
+   *
+   * @var string
+   */
+  public $consumer;
+
+  /**
+   * ActivityId.
+   *
+   * @var string
+   */
+  public $activityId;
+
+  /**
+   * Include private activities?
+   *
+   * @var bool
+   */
+  public $private;
+
+  /**
+   * Start position.
+   *
+   * @var integer
+   */
+  public $start;
+
+  /**
+   * Maximum number of results to return.
+   *
+   * @var integer
+   */
+  public $max;
+
+  /**
+   * Constructor for a new CultureFeedSearchActivitiesQuery instance.
+   *
+   * @param array $values
+   *   Associative array holding the values for each property.
+   *   The array is indexed with the property name.
+   */
+  public function __construct($values = array()) {
+    foreach ($values as $property => $value) {
+      if (property_exists('CultureFeedSearchActivitiesQuery', $property)) {
+        $this->{$property} = $value;
+      }
+    }
+  }
+
+  /**
+   * Convert a CultureFeedSearchActivitiesQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
    *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
