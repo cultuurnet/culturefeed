@@ -686,16 +686,17 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * The object should be initialized with the consumer token.
    *
-   * @param array $query
-   *   An associative array representing the query.
-   *   The array is indexed by the query key.
+   * @param CultureFeedSearchUsersQuery $query
+   *   The search query.
    * @return array or FALSE
    *   In case of success an array of CultureFeedUser objects.
    *   In case of failure FALSE.
    */
-  public function searchUsers($query = array()) { // @todo make $query an object
+  public function searchUsers($query) {
+    $data = $query->toPostData();
+    
     try {
-      $result = $this->consumerGetAsXml('user/search', $query);
+      $result = $this->consumerGetAsXml('user/search', $data);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -1553,7 +1554,7 @@ class CultureFeedSearchUser {
   /**
    * Soft value.
    *
-   * @var string
+   * @var integer
    */
   public $sortValue;
 
@@ -2055,6 +2056,7 @@ class CultureFeedUser {
 
     return $data;
   }
+  
 }
 
 /**
@@ -2276,6 +2278,388 @@ class CultureFeedLocation {
    */
   public function __toString() {
     return sprintf('%f;%f', $this->lat, $this->lng);
+  }
+
+}
+
+/**
+ * Class to represent a user search query.
+ */
+class CultureFeedSearchUsersQuery {
+
+  /**
+   * Gender 'male'.
+   */
+  const GENDER_MALE = 'male';
+
+  /**
+   * Gender 'female'.
+   */
+  const GENDER_FEMALE = 'female';
+
+  /**
+   * User status 'public'.
+   */
+  const STATUS_PUBLIC = 'public';
+
+  /**
+   * User status 'private'.
+   */
+  const STATUS_PRIVATE = 'private';
+
+  /**
+   * User status 'blocked'.
+   */
+  const STATUS_BLOCKED = 'blocked';
+
+  /**
+   * User status 'deleted'.
+   */
+  const STATUS_DELETED = 'deleted';
+  
+  /**
+   * Sort option 'creationDate'.
+   */
+  const SORT_CREATIONDATE = 'creationDate';
+
+  /**
+   * Sort option 'userId'.
+   */
+  const SORT_USERID = 'userId';
+
+  /**
+   * Sort option 'firstName'.
+   */
+  const SORT_FIRSTNAME = 'firstName';
+
+  /**
+   * Sort option 'lastName'.
+   */
+  const SORT_LASTNAME = 'lastName';
+
+  /**
+   * Sort option 'lastLoginDate'.
+   */
+  const SORT_LASTLOGINDATE = 'lastLoginDate';
+
+  /**
+   * Sort option 'lastActivityDate'.
+   */
+  const SORT_LASTACTIVITYDATE = 'lastActivityDate';
+
+  /**
+   * Sort option 'numberOfActivities'.
+   */
+  const SORT_NUMBEROFACTIVITIES = 'numberOfActivities';
+
+  /**
+   * Sort option 'numberOfLikes'.
+   */
+  const SORT_NUMBEROFLIKES = 'numberOfLikes';
+
+  /**
+   * Sort option 'numberOfSharesFacebook'.
+   */
+  const SORT_NUMBEROFSHARESFACEBOOK = 'numberOfSharesFacebook';
+
+  /**
+   * Sort option 'numberOfSharesTwitter'.
+   */
+  const SORT_NUMBEROFSHARESTWITTER = 'numberOfSharesTwitter';
+
+  /**
+   * Sort option 'numberOfAttends'.
+   */
+  const SORT_NUMBEROFATTENDS = 'numberOfAttends';
+
+  /**
+   * Sort option 'numberOfActiveActivities'.
+   */
+  const SORT_NUMBEROFACTIVEACTIVITIES = 'numberOfActiveActivities';
+
+  /**
+   * Sort option 'numberOfActiveActivities'.
+   */
+  const SORT_ORDER_ASCENDING= 'ascending';
+
+  /**
+   * Sort option 'descending'.
+   */
+  const SORT_ORDER_DESCENDING = 'descending';
+
+  /**
+   * ID of the user.
+   *
+   * @var string
+   */
+  public $userId;
+
+  /**
+   * Nick of the user.
+   *
+   * @var string
+   */
+  public $nick;
+
+  /**
+   * First name (givenName), last name and/or nick.
+   *
+   * @var string
+   */
+  public $name;
+
+  /**
+   * E-mail address.
+   *
+   * @var string
+   */
+  public $mbox;
+
+  /**
+   * Gender.
+   * Possible values are represented in the GENDER_* constants.
+   *
+   * @var string
+   */
+  public $gender;
+
+  /**
+   * Date of birth represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $dob;
+
+  /**
+   * Minimum date of birth represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $dobMin;
+
+  /**
+   * Maximum date of birth represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $dobMax;
+
+  /**
+   * Street of the home address.
+   *
+   * @var string
+   */
+  public $homeStreet;
+
+  /**
+   * ZIP of the home address.
+   *
+   * @var string
+   */
+  public $homeZip;
+
+  /**
+   * City of the home address.
+   *
+   * @var string
+   */
+  public $homeCity;
+
+  /**
+   * Country of the home address.
+   *
+   * @var string
+   */
+  public $homeCountry;
+
+  /**
+   * Coordinates of the home address.
+   *
+   * @var CultureFeedLocation
+   */
+  public $homeLocation;
+
+  /**
+   * Coordinates of the current location.
+   *
+   * @var CultureFeedLocation
+   */
+  public $currentLocation;
+
+  /**
+   * User status.
+   * Possible values are represented in the STATUS_* constants.
+   *
+   * @var string
+   */
+  public $status;
+
+  /**
+   * User points.
+   *
+   * @var integer
+   */
+  public $points;
+
+  /**
+   * Minimum user points.
+   *
+   * @var integer
+   */
+  public $pointsMin;
+
+  /**
+   * Maximum user points.
+   *
+   * @var integer
+   */
+  public $pointsMax;
+
+  /**
+   * User likes.
+   *
+   * @var integer
+   */
+  public $likes;
+
+  /**
+   * Minimum user likes.
+   *
+   * @var integer
+   */
+  public $likesMin;
+
+  /**
+   * Maximum user likes.
+   *
+   * @var integer
+   */
+  public $likesMax;
+
+  /**
+   * The service consumer id of the consumer where the activity was generated.
+   *
+   * @var string
+   */
+  public $createdBy;
+
+  /**
+   * Last login time represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $lastLogin;
+
+  /**
+   * Minimum last login time represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $lastLoginMin;
+
+  /**
+   * Maximum last login time represented as a UNIX timestamp.
+   *
+   * @var integer
+   */
+  public $lastLoginMax;
+
+  /**
+   * Start position.
+   *
+   * @var integer
+   */
+  public $start;
+
+  /**
+   * Maximum number of items to return.
+   *
+   * @var integer
+   */
+  public $max;
+
+  /**
+   * Sort field.
+   * Possible values are represented in the SORT_* constants.
+   *
+   * @var string
+   */
+  public $sort;
+
+  /**
+   * Sort order.
+   * Possible values are represented in the SORT_ORDER_* constants.
+   *
+   * @var string
+   */
+  public $order;
+
+  /**
+   * Constructor for a new CultureFeedSearchUsersQuery instance.
+   *
+   * @param array $values
+   *   Associative array holding the values for each property.
+   *   The array is indexed with the property name.
+   */
+  public function __construct($values = array()) {
+    foreach ($values as $property => $value) {
+      if (property_exists('CultureFeedSearchUsersQuery', $property)) {
+        $this->{$property} = $value;
+      }
+    }
+  }
+
+  /**
+   * Convert a CultureFeedSearchUsersQuery object to an array that can be used as data in POST requests that expect search user query info.
+   *
+   * @return array
+   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+
+    // Represent homeLocation as a string.
+    if (isset($data['homeLocation'])) {
+      $data['homeLocation'] = (string)$data['homeLocation'];
+    }
+
+    // Represent currentLocation as a string.
+    if (isset($data['currentLocation'])) {
+      $data['currentLocation'] = (string)$data['currentLocation'];
+    }
+
+    // Represent dob as a W3C date.
+    if (isset($data['dob'])) {
+      $data['dob'] = date('c', $data['dob']);
+    }
+
+    // Represent dobMin as a W3C date.
+    if (isset($data['dobMin'])) {
+      $data['dobMin'] = date('c', $data['dobMin']);
+    }
+
+    // Represent dobMax as a W3C date.
+    if (isset($data['dobMax'])) {
+      $data['dobMax'] = date('c', $data['dobMax']);
+    }
+
+    // Represent lastLogin as a W3C date.
+    if (isset($data['lastLogin'])) {
+      $data['lastLogin'] = date('c', $data['lastLogin']);
+    }
+
+    // Represent lastLoginMin as a W3C date.
+    if (isset($data['lastLoginMin'])) {
+      $data['lastLoginMin'] = date('c', $data['lastLoginMin']);
+    }
+
+    // Represent lastLoginMax as a W3C date.
+    if (isset($data['lastLoginMax'])) {
+      $data['lastLoginMax'] = date('c', $data['lastLoginMax']);
+    }
+    
+    return $data;
   }
 
 }
