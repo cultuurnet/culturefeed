@@ -760,7 +760,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $id
    *   ID of the user whose privacy settings to update.
-   * @param array $privacy_config
+   * @param CultureFeedUserPrivacyConfig $privacy_config
    *   An associative array representing the privacy status for each field.
    *   The array is indexed by the field name. Values are the privacy status.
    *   Possible values for the privacy status are represented in the PRIVACY_* constants.
@@ -768,9 +768,11 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   In case of success TRUE.
    *   In case of failure FALSE.
    */
-  public function updateUserPrivacy($id, $privacy_config) { // @todo make $privacy a class
+  public function updateUserPrivacy($id, $privacy_config) {
+    $data = $privacy_config->toPostData();
+    
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/privacy', $privacy);
+      $this->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
 
       return TRUE;
     }
@@ -2662,4 +2664,137 @@ class CultureFeedSearchUsersQuery {
     return $data;
   }
 
+}
+
+/**
+ * Class to represent a user privacy config.
+ */
+class CultureFeedUserPrivacyConfig {
+ 
+  /**
+   * Privacy status 'public'.
+   */
+  const PRIVACY_PUBLIC = 'public';
+
+  /**
+   * Privacy status 'private'.
+   */  
+  const PRIVACY_PRIVATE = 'private';
+  
+  /**
+   * Privacy status of the user's nick.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $nick;
+
+  /**
+   * Privacy status of the user's givenName.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $givenName;
+
+  /**
+   * Privacy status of the user's familyName.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $familyName;
+
+  /**
+   * Privacy status of the user's mbox.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $mbox;
+
+  /**
+   * gender.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $gender;
+
+  /**
+   * Privacy status of the user's dob.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $dob;
+
+  /**
+   * Privacy status of the user's depiction.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $depiction;
+
+  /**
+   * Privacy status of the user's bio.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $bio;
+
+  /**
+   * Privacy status of the user's homeAddress.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $homeAddress;
+
+  /**
+   * Privacy status of the user's homeLocation.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $homeLocation;
+
+  /**
+   * Privacy status of the user's openId.
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $openId;
+
+  /**
+   * Constructor for a new CultureFeedUserPrivacyConfig instance.
+   *
+   * @param array $values
+   *   Associative array holding the values for each property.
+   *   The array is indexed with the property name.
+   */
+  public function __construct($values = array()) {
+    foreach ($values as $property => $value) {
+      if (property_exists('CultureFeedUserPrivacyConfig', $property)) {
+        $this->{$property} = $value;
+      }
+    }
+  }
+
+  /**
+   * Convert a CultureFeedUserPrivacyConfig object to an array that can be used as data in POST requests that expect search user query info.
+   *
+   * @return array
+   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+    
+    return $data;
+  }
+  
 }
