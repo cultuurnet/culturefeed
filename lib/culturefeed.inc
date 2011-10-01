@@ -6,7 +6,7 @@ require_once(realpath(dirname(__FILE__)) . '/OAuth.php');
  * @file
  * Classes to work with CultuurNet's Culture Feed API.
  */
- 
+
 /**
  * Class to represent a basic HTTP request.
  */
@@ -363,7 +363,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *   The response format.
    *   Possible values are 'xml', 'json' and '' for default response (depending on request).
    * @param string $raw_post
-   *   Should the post data (passed via $params) be passed as is ($raw_post TRUE) or should the OAuth params be added? 
+   *   Should the post data (passed via $params) be passed as is ($raw_post TRUE) or should the OAuth params be added?
    * @return string
    *   The response body.
    */
@@ -442,7 +442,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
  * Provides calls to fetch objects (users, activities, ...) from the API.
  */
 class CultureFeed extends CultureFeedOAuthRequest {
- 
+
   /**
    * Privacy status 'public'.
    */
@@ -450,7 +450,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
 
   /**
    * Privacy status 'private'.
-   */  
+   */
   const PRIVACY_PRIVATE = 'private';
 
   /**
@@ -694,7 +694,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function searchUsers($query) {
     $data = $query->toPostData();
-    
+
     try {
       $result = $this->consumerGetAsXml('user/search', $data);
 
@@ -770,7 +770,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function updateUserPrivacy($id, $privacy_config) {
     $data = $privacy_config->toPostData();
-    
+
     try {
       $this->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
 
@@ -986,7 +986,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     if ($query->private) {
       $use_auth = TRUE;
     }
-    
+
     $data = $query->toPostData();
 
     try {
@@ -1249,10 +1249,10 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
   /**
    * Runs XPath query on XML data and casts it using a type casting function.
    *
-   * @param string $cast_function 
-   * @param string $path 
+   * @param string $cast_function
+   * @param string $path
    *   The XPath query.
-   * @param string $multiple 
+   * @param string $multiple
    *   Does the query direct to a path where multiple values are possible?
    * @return array or undefined
    *   In case $multiple is TRUE, an array is returned with the type casted elements.
@@ -2059,7 +2059,7 @@ class CultureFeedUser {
 
     return $data;
   }
-  
+
 }
 
 /**
@@ -2215,7 +2215,7 @@ class CultureFeedActivity {
       }
     }
   }
-  
+
   /**
    * Convert a CultureFeedActivity object to an array that can be used as data in POST requests that expect user info.
    *
@@ -2289,7 +2289,7 @@ class CultureFeedLocation {
  * Class to represent a user search query.
  */
 class CultureFeedSearchUsersQuery {
-  
+
   /**
    * Sort option 'creationDate'.
    */
@@ -2631,7 +2631,7 @@ class CultureFeedSearchUsersQuery {
     if (isset($data['lastLoginMax'])) {
       $data['lastLoginMax'] = date('c', $data['lastLoginMax']);
     }
-    
+
     return $data;
   }
 
@@ -2641,7 +2641,7 @@ class CultureFeedSearchUsersQuery {
  * Class to represent a user privacy config.
  */
 class CultureFeedUserPrivacyConfig {
- 
+
   /**
    * Privacy status 'public'.
    */
@@ -2649,9 +2649,9 @@ class CultureFeedUserPrivacyConfig {
 
   /**
    * Privacy status 'private'.
-   */  
+   */
   const PRIVACY_PRIVATE = 'private';
-  
+
   /**
    * Privacy status of the user's nick.
    * Possible values are represented in the PUBLIC_* constants.
@@ -2764,17 +2764,17 @@ class CultureFeedUserPrivacyConfig {
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
     $data = array_filter(get_object_vars($this));
-    
+
     return $data;
   }
-  
+
 }
 
 /**
  * Class to represent an activities search query.
  */
 class CultureFeedSearchActivitiesQuery {
-  
+
   /**
    * The type of content the activity handles.
    * Possible values are represented in the CultureFeedActivity::CONTENT_TYPE_* constants.
@@ -2864,8 +2864,8 @@ class CultureFeedSearchActivitiesQuery {
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
     $data = array_filter(get_object_vars($this));
-    
+
     return $data;
   }
-  
+
 }
