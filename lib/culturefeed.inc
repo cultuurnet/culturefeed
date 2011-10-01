@@ -733,7 +733,20 @@ class CultureFeed extends CultureFeedOAuthRequest {
 
     return $xml->parseUsers($xml);
   }
-  
+
+  /**
+   * Update a depiction for a user.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the user to upload depiction for.
+   * @param string $file_data
+   *   Binary data of the file to upload.
+   * @return array or FALSE
+   *   In case of success TRUE.
+   *   In case of failure FALSE.
+   */  
   public function uploadUserDepiction($id, $file_data) {
     try {
       $this->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
