@@ -352,7 +352,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    * @param string $path
    *   The path for the request relative to the endpoint.
    * @param string $params
-   *   @todo document this
+   *   Post data for a POST request, query string for a GET request.
    * @param string $method
    *   HTTP method.
    * @param string $use_auth
@@ -363,7 +363,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *   The response format.
    *   Possible values are 'xml', 'json' and '' for default response (depending on request).
    * @param string $raw_post
-   *   @todo document this
+   *   Should the post data (passed via $params) be passed as is ($raw_post TRUE) or should the OAuth params be added? 
    * @return string
    *   The response body.
    */
@@ -1834,7 +1834,7 @@ class CultureFeedRecommendationItem {
   /**
    * Coordinates of the recommendation item (event).
    *
-   * @var string // @todo shouldn't this be coordinates?
+   * @var CultureFeedLocation
    */
   public $location_latlong;
 
