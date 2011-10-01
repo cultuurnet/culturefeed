@@ -270,8 +270,8 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPost($path, $params = array(), $raw_post = TRUE, $format = '') {
-    return $this->request($path, $params, 'POST', FALSE, $format, $raw_post);
+  public function consumerPost($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
+    return $this->request($path, $params, 'POST', FALSE, $format, $raw_post, $has_file_upload = FALSE);
   }
 
   /**
@@ -279,8 +279,8 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPostAsXml($path, $params = array(), $raw_post = TRUE) {
-    return $this->consumerPost($path, $params, $raw_post, 'xml');
+  public function consumerPostAsXml($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+    return $this->consumerPost($path, $params, $raw_post, $has_file_upload, 'xml');
   }
 
   /**
@@ -288,8 +288,8 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPostAsJson($path, $params = array(), $raw_post = TRUE) {
-    return $this->consumerPost($path, $params, $raw_post, 'json');
+  public function consumerPostAsJson($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+    return $this->consumerPost($path, $params, $raw_post, $has_file_upload, 'json');
   }
 
   /**
@@ -324,8 +324,8 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPost($path, $params = array(), $raw_post = TRUE, $format = '') {
-    return $this->request($path, $params, 'POST', TRUE, $format, $raw_post);
+  public function authenticatedPost($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
+    return $this->request($path, $params, 'POST', TRUE, $format, $raw_post, $has_file_upload);
   }
 
   /**
@@ -333,7 +333,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE) {
+  public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->authenticatedPost($path, $params, $raw_post, 'xml');
   }
 
@@ -342,7 +342,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE) {
+  public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->authenticatedPost($path, $params, $raw_post, 'json');
   }
 
@@ -367,15 +367,18 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    * @return string
    *   The response body.
    */
-  public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE) {
+  public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE, $has_file_upload = FALSE) {
     // Getting full URL.
     $url = $this->getUrl($path);
 
     // Getting the request token for the request based on $use_auth.
     $request_token = $use_auth ? $this->token : NULL;
+    
+    // Since the OAuth library doesn't support multipart, we don't encode params that have a file.
+    $params_to_encode = $has_file_upload ? array() : $params;
 
     // Constructing the request...
-    $request = OAuthRequest::from_consumer_and_token($this->consumer, $request_token, $method, $url, $params);
+    $request = OAuthRequest::from_consumer_and_token($this->consumer, $request_token, $method, $url, $params_to_encode);
 
     // ... and signing it.
     $request->sign_request($this->signature_method, $this->consumer, $request_token);
@@ -402,8 +405,8 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
         break;
     }
 
-    // Calculating post data.
-    $post_data = http_build_query($params, '', '&');
+    // If we have a file upload, we pass $params as an array to trigger CURL multipart.
+    $post_data = $has_file_upload ? $params : http_build_query($params, '', '&');
 
     // Necessary to support token setup calls.
     if (!$raw_post) {
@@ -729,6 +732,17 @@ class CultureFeed extends CultureFeedOAuthRequest {
     }
 
     return $xml->parseUsers($xml);
+  }
+  
+  public function uploadUserDepiction($id, $file_data) {
+    try {
+      $this->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
+      
+      return TRUE;
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
   }
 
   /**
