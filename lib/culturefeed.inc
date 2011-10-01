@@ -1588,21 +1588,6 @@ class CultureFeedSearchUser {
    */
   public $sortValue;
 
-  /**
-   * Constructor for a new CultureFeedSearchUser instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedSearchUser', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
-
 }
 
 /**
@@ -1642,21 +1627,6 @@ class CultureFeedOnlineAccount {
    * @var bool
    */
   public $publishActivities;
-
-  /**
-   * Constructor for a new CultureFeedOnlineAccount instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedOnlineAccount', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
   /**
    * Convert a CultureFeedOnlineAccount object to an array that can be used as data in POST requests that expect online account info.
@@ -1723,21 +1693,6 @@ class CultureFeedConsumer {
    */
   public $organization;
 
-  /**
-   * Constructor for a new CultureFeedConsumer instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedConsumer', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
-
 }
 
 /**
@@ -1786,21 +1741,6 @@ class CultureFeedRecommendation {
    * @var integer
    */
   public $creationDate;
-
-  /**
-   * Constructor for a new CultureFeedRecommendation instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedRecommendation', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
 }
 
@@ -1864,21 +1804,6 @@ class CultureFeedRecommendationItem {
    * @var CultureFeedLocation
    */
   public $location_latlong;
-
-  /**
-   * Constructor for a new CultureFeedRecommendationItem instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedRecommendationItem', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
 }
 
@@ -2038,21 +1963,6 @@ class CultureFeedUser {
    * @var array
    */
   public $holdsAccount;
-
-  /**
-   * Constructor for a new CultureFeedUser instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedUser', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
   /**
    * Convert a CultureFeedUser object to an array that can be used as data in POST requests that expect user info.
@@ -2227,21 +2137,6 @@ class CultureFeedActivity {
    * @var integer
    */
   public $creationDate;
-
-  /**
-   * Constructor for a new CultureFeedActivity instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedActivity', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
   /**
    * Convert a CultureFeedActivity object to an array that can be used as data in POST requests that expect user info.
@@ -2595,21 +2490,6 @@ class CultureFeedSearchUsersQuery {
   public $order;
 
   /**
-   * Constructor for a new CultureFeedSearchUsersQuery instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedSearchUsersQuery', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
-
-  /**
    * Convert a CultureFeedSearchUsersQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
@@ -2768,21 +2648,6 @@ class CultureFeedUserPrivacyConfig {
   public $openId;
 
   /**
-   * Constructor for a new CultureFeedUserPrivacyConfig instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedUserPrivacyConfig', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
-
-  /**
    * Convert a CultureFeedUserPrivacyConfig object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
@@ -2866,21 +2731,6 @@ class CultureFeedSearchActivitiesQuery {
    * @var integer
    */
   public $max;
-
-  /**
-   * Constructor for a new CultureFeedSearchActivitiesQuery instance.
-   *
-   * @param array $values
-   *   Associative array holding the values for each property.
-   *   The array is indexed with the property name.
-   */
-  public function __construct($values = array()) {
-    foreach ($values as $property => $value) {
-      if (property_exists('CultureFeedSearchActivitiesQuery', $property)) {
-        $this->{$property} = $value;
-      }
-    }
-  }
 
   /**
    * Convert a CultureFeedSearchActivitiesQuery object to an array that can be used as data in POST requests that expect search user query info.
