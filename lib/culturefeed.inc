@@ -1046,7 +1046,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   In case of success an array of event CDBIDs (string).
    *   In case of failure FALSE.
    */
-  public function getTopEvents($type) {
+  public function getTopEvents($type) { // @todo make type a const
     try {
       $result = $this->consumerGetAsXml('activity/topevents/' . $type);
 
