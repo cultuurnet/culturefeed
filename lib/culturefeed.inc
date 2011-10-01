@@ -476,7 +476,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * The object should be initialized with the consumer token.
    *
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
    *   In case of failure FALSE.
@@ -529,7 +529,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $oauth_verifier
    *   The 'oauth_verifier' that was sent back in the callback URL after the authorization step.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
    *   In case of failure FALSE.
@@ -691,7 +691,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param CultureFeedSearchUsersQuery $query
    *   The search query.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedUser objects.
    *   In case of failure FALSE.
    */
@@ -717,7 +717,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $id
    *   ID of the user to fetch similar users for.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedUser objects.
    *   In case of failure FALSE.
    */
@@ -743,7 +743,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   ID of the user to upload depiction for.
    * @param string $file_data
    *   Binary data of the file to upload.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success TRUE.
    *   In case of failure FALSE.
    */  
@@ -815,7 +815,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $id
    *   ID of the user to fetch service consumers for.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedConsumer objects.
    *   In case of failure FALSE.
    */
@@ -1003,7 +1003,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param CultureFeedSearchActivitiesQuery $query
    *   The query.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedActivity objects.
    *   In case of failure FALSE.
    */
@@ -1042,7 +1042,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   The type of activity that is used to measure 'most activity'.
    *   Possible values are 'like', 'facebook', 'twitter', 'attend' and 'active'.
    *   The type 'active' is the aggregate of all other activities.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of event CDBIDs (string).
    *   In case of failure FALSE.
    */
@@ -1069,7 +1069,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
@@ -1096,7 +1096,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return array or FALSE
+   * @return array|bool
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
