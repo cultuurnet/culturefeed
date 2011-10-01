@@ -2289,36 +2289,6 @@ class CultureFeedLocation {
  * Class to represent a user search query.
  */
 class CultureFeedSearchUsersQuery {
-
-  /**
-   * Gender 'male'.
-   */
-  const GENDER_MALE = 'male';
-
-  /**
-   * Gender 'female'.
-   */
-  const GENDER_FEMALE = 'female';
-
-  /**
-   * User status 'public'.
-   */
-  const STATUS_PUBLIC = 'public';
-
-  /**
-   * User status 'private'.
-   */
-  const STATUS_PRIVATE = 'private';
-
-  /**
-   * User status 'blocked'.
-   */
-  const STATUS_BLOCKED = 'blocked';
-
-  /**
-   * User status 'deleted'.
-   */
-  const STATUS_DELETED = 'deleted';
   
   /**
    * Sort option 'creationDate'.
@@ -2420,7 +2390,7 @@ class CultureFeedSearchUsersQuery {
 
   /**
    * Gender.
-   * Possible values are represented in the GENDER_* constants.
+   * Possible values are represented in the CultureFeedUser::GENDER_* constants.
    *
    * @var string
    */
@@ -2491,7 +2461,7 @@ class CultureFeedSearchUsersQuery {
 
   /**
    * User status.
-   * Possible values are represented in the STATUS_* constants.
+   * Possible values are represented in the CultureFeedUser::STATUS_* constants.
    *
    * @var string
    */
@@ -2804,65 +2774,10 @@ class CultureFeedUserPrivacyConfig {
  * Class to represent an activities search query.
  */
 class CultureFeedSearchActivitiesQuery {
-
-  /**
-   * Content type 'page'.
-   */
-  const CONTENT_TYPE_PAGE = 'page';
-
-  /**
-   * Content type 'event'.
-   */
-  const CONTENT_TYPE_EVENT = 'event';
-
-  /**
-   * Content type 'actor'.
-   */
-  const CONTENT_TYPE_ACTOR = 'actor';
-
-  /**
-   * Consumer type that indicates the action "Viewed".
-   */
-  const TYPE_VIEW = 1;
-
-  /**
-   * Consumer type that indicates the action "Detail viewed".
-   */
-  const TYPE_DETAIL = 2;
-
-  /**
-   * Consumer type that indicates the action "I like this".
-   */
-  const TYPE_LIKE = 3;
-
-  /**
-   * Consumer type that indicates the action "I forwarded this via mail".
-   */
-  const TYPE_MAIL = 4;
-
-  /**
-   * Consumer type that indicates the action "Printed".
-   */
-  const TYPE_PRINT = 5;
-
-  /**
-   * Consumer type that indicates the action "Shared on Facebook".
-   */
-  const TYPE_FACEBOOK = 6;
-
-  /**
-   * Consumer type that indicates the action "Shared on Twitter".
-   */
-  const TYPE_TWITTER = 7;
-
-  /**
-   * Consumer type that indicates the action "I went to this event".
-   */
-  const TYPE_IK_GA = 8;
   
   /**
    * The type of content the activity handles.
-   * Possible values are represented in the CONTENT_TYPE_* constants.
+   * Possible values are represented in the CultureFeedActivity::CONTENT_TYPE_* constants.
    *
    * @var string
    */
@@ -2870,7 +2785,7 @@ class CultureFeedSearchActivitiesQuery {
 
   /**
    * The consumption type of the activity.
-   * Possible values are represented in the TYPE_* constants.
+   * Possible values are represented in the CultureFeedActivity::TYPE_* constants.
    *
    * @var integer
    */
