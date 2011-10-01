@@ -1309,35 +1309,37 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
    * @return CultureFeedUser
    */
   public function parseUser() {
-    $user['id']           = $this->xpath_str('/foaf:person/rdf:id');
-    $user['nick']         = $this->xpath_str('/foaf:person/foaf:nick');
-    $user['givenName']    = $this->xpath_str('/foaf:person/foaf:givenName');
-    $user['familyName']   = $this->xpath_str('/foaf:person/foaf:familyName');
-    $user['mbox']         = $this->xpath_str('/foaf:person/mbox');
-    $user['mboxVerified'] = $this->xpath_bool('/foaf:person/mboxVerified');
-    $user['gender']       = $this->xpath_str('/foaf:person/foaf:gender');
-    $user['dob']          = $this->xpath_time('/foaf:person/foaf:dob');
-    $user['depiction']    = $this->xpath_str('/foaf:person/foaf:depiction');
-    $user['bio']          = $this->xpath_str('/foaf:person/bio');
-    $user['homeAddress']  = $this->xpath_str('/foaf:person/foaf:homeAddress');
-    $user['status']       = $this->xpath_str('/foaf:person/status');
-    if ($user['status']) {
-      $user['status'] = strtolower($user['status']);
+    $user = new CultureFeedUser();
+    
+    $user->id           = $this->xpath_str('/foaf:person/rdf:id');
+    $user->nick         = $this->xpath_str('/foaf:person/foaf:nick');
+    $user->givenName    = $this->xpath_str('/foaf:person/foaf:givenName');
+    $user->familyName   = $this->xpath_str('/foaf:person/foaf:familyName');
+    $user->mbox         = $this->xpath_str('/foaf:person/mbox');
+    $user->mboxVerified = $this->xpath_bool('/foaf:person/mboxVerified');
+    $user->gender       = $this->xpath_str('/foaf:person/foaf:gender');
+    $user->dob          = $this->xpath_time('/foaf:person/foaf:dob');
+    $user->depiction    = $this->xpath_str('/foaf:person/foaf:depiction');
+    $user->bio          = $this->xpath_str('/foaf:person/bio');
+    $user->homeAddress  = $this->xpath_str('/foaf:person/foaf:homeAddress');
+    $user->status       = $this->xpath_str('/foaf:person/status');
+    if ($user->status) {
+      $user->status = strtolower($user->status);
     }
-    $user['openid']       = $this->xpath_str('/foaf:person/foaf:openid');
+    $user->openid       = $this->xpath_str('/foaf:person/foaf:openid');
 
     $lat = $this->xpath_float('/foaf:person/homeLocation/geo:lat');
     $lng = $this->xpath_float('/foaf:person/homeLocation/geo:long');
 
     if ($lat && $lng) {
-      $user['homeLocation'] = new CultureFeedLocation($lat, $lng);
+      $user->homeLocation = new CultureFeedLocation($lat, $lng);
     }
 
     $lat = $this->xpath_float('/foaf:person/currentLocation/geo:lat');
     $lng = $this->xpath_float('/foaf:person/currentLocation/geo:long');
 
     if ($lat && $lng) {
-      $user['currentLocation'] = new CultureFeedLocation($lat, $lng);
+      $user->currentLocation = new CultureFeedLocation($lat, $lng);
     }
 
     $accounts = array();
@@ -1345,22 +1347,22 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     $objects = $this->xpath('/foaf:person/foaf:holdsAccount/foaf:onlineAccount');
 
     foreach ($objects as $object) {
-      $account = array();
+      $account = new CultureFeedOnlineAccount();
 
-      $account['accountType']            = $object->xpath_str('accountType');
-      $account['accountServiceHomepage'] = $object->xpath_str('foaf:accountServiceHomepage');
-      $account['accountName']            = $object->xpath_str('foaf:accountName');
-      $account['private']                = $object->xpath_bool('private');
-      $account['publishActivities']      = $object->xpath_bool('publishActivities');
+      $account->accountType            = $object->xpath_str('accountType');
+      $account->accountServiceHomepage = $object->xpath_str('foaf:accountServiceHomepage');
+      $account->accountName            = $object->xpath_str('foaf:accountName');
+      $account->private                = $object->xpath_bool('private');
+      $account->publishActivities      = $object->xpath_bool('publishActivities');
 
-      $accounts[] = new CultureFeedOnlineAccount($account);
+      $accounts[] = $account;
     }
 
     if (!empty($accounts)) {
-      $user['holdsAccount'] = $accounts;
+      $user->holdsAccount = $accounts;
     }
 
-    return new CultureFeedUser($user);
+    return $user;
   }
 
   /**
@@ -1377,13 +1379,13 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     $objects = $this->xpath('/response/users/user');
 
     foreach ($objects as $object) {
-      $user = array();
+      $user = new CultureFeedSearchUser();
 
-      $user['id']        = $object->xpath_str('rdf:id');
-      $user['nick']      = $object->xpath_str('foaf:nick');
-      $user['depiction'] = $object->xpath_str('foaf:depiction');
+      $user->id        = $object->xpath_str('rdf:id');
+      $user->nick      = $object->xpath_str('foaf:nick');
+      $user->depiction = $object->xpath_str('foaf:depiction');
 
-      $users[] = new CultureFeedSearchUser($user);
+      $users[] = $user;
     }
 
     return new CultureFeedResultSet($total, $users);
@@ -1401,15 +1403,15 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     $objects = $this->xpath('/response/serviceconsumers/serviceconsumer');
 
     foreach ($objects as $object) {
-      $consumer = array();
+      $consumer = new CultureFeedConsumer();
 
-      $consumer['consumerKey']  = $object->xpath_str('consumerKey');
-      $consumer['creationDate'] = $object->xpath_time('creationDate');
-      $consumer['id']           = $object->xpath_int('id');
-      $consumer['name']         = $object->xpath_str('name');
-      $consumer['organization'] = $object->xpath_str('organization');
+      $consumer->consumerKey  = $object->xpath_str('consumerKey');
+      $consumer->creationDate = $object->xpath_time('creationDate');
+      $consumer->id           = $object->xpath_int('id');
+      $consumer->name         = $object->xpath_str('name');
+      $consumer->organization = $object->xpath_str('organization');
 
-      $consumers[] = new CultureFeedConsumer($consumer);
+      $consumers[] = $consumer;
     }
 
     return $consumers;
@@ -1429,21 +1431,21 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     $objects = $this->xpath('/response/activities/activity');
 
     foreach ($objects as $object) {
-      $activity = array();
+      $activity = new CultureFeedActivity();
 
-      $activity['nodeId']       = $object->xpath_str('nodeID');
-      $activity['private']      = $object->xpath_str('private');
-      $activity['createdVia']   = $object->xpath_str('createdVia');
-      $activity['points']       = $object->xpath_str('points');
-      $activity['contentType']  = $object->xpath_str('contentType');
-      $activity['type']         = $object->xpath_str('type');
-      $activity['value']        = $object->xpath_str('value');
-      $activity['userId']       = $object->xpath_str('userId');
-      $activity['depiction']    = $object->xpath_str('depiction');
-      $activity['nick']         = $object->xpath_str('nick');
-      $activity['creationDate'] = $object->xpath_time('creationDate');
+      $activity->nodeId       = $object->xpath_str('nodeID');
+      $activity->private      = $object->xpath_str('private');
+      $activity->createdVia   = $object->xpath_str('createdVia');
+      $activity->points       = $object->xpath_str('points');
+      $activity->contentType  = $object->xpath_str('contentType');
+      $activity->type         = $object->xpath_str('type');
+      $activity->value        = $object->xpath_str('value');
+      $activity->userId       = $object->xpath_str('userId');
+      $activity->depiction    = $object->xpath_str('depiction');
+      $activity->nick         = $object->xpath_str('nick');
+      $activity->creationDate = $object->xpath_time('creationDate');
 
-      $activities[] = new CultureFeedActivity($activity);
+      $activities[] = $activity;
     }
 
     return new CultureFeedResultSet($total, $activities);
@@ -1461,31 +1463,33 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
     $objects = $this->xpath('/response/recommendations/recommendation');
 
     foreach ($objects as $object) {
-      $recommendation = array();
+      $recommendation = new CultureFeedRecommendation();
 
-      $recommendation['id']           = $object->xpath_str('id');
-      $recommendation['itemid']       = $object->xpath_str('itemid');
-      $recommendation['score']        = $object->xpath_float('score');
-      $recommendation['algorithm']    = $object->xpath_str('algorithm');
-      $recommendation['creationDate'] = $object->xpath_time('creationDate');
+      $recommendation->id           = $object->xpath_str('id');
+      $recommendation->itemid       = $object->xpath_str('itemid');
+      $recommendation->score        = $object->xpath_float('score');
+      $recommendation->algorithm    = $object->xpath_str('algorithm');
+      $recommendation->creationDate = $object->xpath_time('creationDate');
+      
+      $recommendation_item = new CultureFeedRecommendationItem();
 
-      $recommendation_item['id']                = $object->xpath_str('item/id');
-      $recommendation_item['permalink']         = $object->xpath_str('item/permalink');
-      $recommendation_item['title']             = $object->xpath_str('item/title');
-      $recommendation_item['description_short'] = $object->xpath_str('item/description_short');
-      $recommendation_item['from']              = $object->xpath_time('item/from');
-      $recommendation_item['to']                = $object->xpath_time('item/to');
-      $recommendation_item['location_simple']   = $object->xpath_str('item/location_simple');
+      $recommendation_item->id                = $object->xpath_str('item/id');
+      $recommendation_item->permalink         = $object->xpath_str('item/permalink');
+      $recommendation_item->title             = $object->xpath_str('item/title');
+      $recommendation_item->description_short = $object->xpath_str('item/description_short');
+      $recommendation_item->from              = $object->xpath_time('item/from');
+      $recommendation_item->to                = $object->xpath_time('item/to');
+      $recommendation_item->location_simple   = $object->xpath_str('item/location_simple');
 
       $coord = $object->xpath_str('item/location_latlong');
       if ($coord) {
         list($lat, $lng) = explode(',', $coord);
-        $recommendation_item['location_latlong'] = new CultureFeedLocation((float)$lat, (float)$lng);
+        $recommendation_item->location_latlong = new CultureFeedLocation((float)$lat, (float)$lng);
       }
 
-      $recommendation['recommendationItem'] = new CultureFeedRecommendationItem($recommendation_item);
+      $recommendation->recommendationItem = $recommendation_item;
 
-      $recommendations[] = new CultureFeedRecommendation($recommendation);
+      $recommendations[] = $recommendation;
     }
 
     return $recommendations;
