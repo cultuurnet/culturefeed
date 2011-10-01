@@ -1073,7 +1073,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
-  public function getRecommendationsForUser($id, $query = array()) {
+  public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
     try {
       $result = $this->authenticatedGetAsXml('recommendation/user/' . $id, $query);
 
@@ -1100,7 +1100,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
-  public function getRecommendationsForEvent($id, $query = array()) {
+  public function getRecommendationsForEvent($id, $query = array()) { // @todo make $query a class
     $query['eventId'] = $id;
 
     try {
