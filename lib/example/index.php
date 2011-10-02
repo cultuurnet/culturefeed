@@ -9,19 +9,32 @@ if (!isset($_COOKIE['key'])) {
 
 ?>
 
-<?php if (!isset($_COOKIE['oauth_token'])) { ?>
+<?php if (!isset($_COOKIE['oauth_token'])) : ?>
   
   <p><a href="setup.php">Setup</a></p>
   <p><a href="connect.php">Connect</a></p>
   
   <?php exit(); ?>
 
-<?php } else { ?>
+<?php endif; ?>
 
-  <p><a href="setup.php">Setup</a></p>
-  <p><a href="logout.php">Log out on client</a></p>
+<?php
 
-<?php } ?>
+$base_url = 'http://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/';
+
+$cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']);
+
+$uid = $_COOKIE['oauth_user'];
+
+?>
+
+<p><a href="setup.php">Setup</a></p>
+<p><a href="logout.php">Log out on client</a></p>
+<p><a href="<?php print $cf->getUrlLogout($base_url) ?>">Log out on server</a></p>
+<p><a href="<?php print $cf->getUrlChangePassword($uid, $base_url) ?>">Change password</a></p>
+<p><a href="<?php print $cf->getUrlAddSocialNetwork('twitter', $base_url) ?>">Connect with Twitter</a></p>
+<p><a href="<?php print $cf->getUrlAddSocialNetwork('facebook', $base_url) ?>">Connect with Facebook</a></p>
+<p><a href="<?php print $cf->getUrlAddSocialNetwork('google', $base_url) ?>">Connect with Google</a></p>
 
 <?php
 
@@ -40,9 +53,6 @@ $actions['revokeUserServiceConsumer']     = 'revokeUserServiceConsumer';
 $actions['getTopEvents']                  = 'getTopEvents';
 $actions['getRecommendationsForUser']     = 'getRecommendationsForUser';
 $actions['getRecommendationsForEvent']    = 'getRecommendationsForEvent';
-$actions['getUrlAddSocialNetwork']        = 'getUrlAddSocialNetwork';
-$actions['getUrlChangePassword']          = 'getUrlChangePassword';
-$actions['getUrlLogout']                  = 'getUrlLogout';
 
 ?>
 

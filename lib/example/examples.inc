@@ -8,10 +8,6 @@ if (!isset($_GET['action'])) {
   return;
 }
 
-$cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']);
-
-$uid = $_COOKIE['oauth_user'];
-
 /*
  * Creating a new user.
  */
@@ -228,42 +224,6 @@ elseif ($_GET['action'] == 'getRecommendationsForEvent') {
 }
 
 //   @todo evaluate recommendation
-
-/*
- * Get add network url.
- */
-
-elseif ($_GET['action'] == 'getUrlAddSocialNetwork') {
-  
-  $result = $cf->getUrlAddSocialNetwork('twitter');
-  
-  var_dump($result);
-  
-}
-
-/*
- * Get change password url.
- */
-
-elseif ($_GET['action'] == 'getUrlChangePassword') {
-  
-  $result = $cf->getUrlChangePassword($uid, 'http://localhost/callback');
-  
-  var_dump($result);
-  
-}
-
-/*
- * Get logout url.
- */
-
-elseif ($_GET['action'] == 'getUrlLogout') {
-  
-  $result = $cf->getUrlLogout('http://localhost/callback');
-  
-  var_dump($result);
-  
-}
 
 ?>
 
