@@ -7,6 +7,7 @@ require 'common.inc';
 
 <?php if (!isset($_COOKIE['oauth_token'])) { ?>
   <p><a href="connect.php">Connect</a></p>
+  <?php exit; ?>
 <?php } else { ?>
   <p><a href="logout.php">Log out</a></p>
 <?php } ?>
