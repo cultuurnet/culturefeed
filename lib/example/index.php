@@ -1,15 +1,26 @@
 <?php
 
-require 'common.inc';
+require '../culturefeed.inc';
 
+if (!isset($_COOKIE['key'])) {
+  header('Location: setup.php');
+  exit();
+}
 
 ?>
 
 <?php if (!isset($_COOKIE['oauth_token'])) { ?>
+  
+  <p><a href="setup.php">Setup</a></p>
   <p><a href="connect.php">Connect</a></p>
-  <?php exit; ?>
+  
+  <?php exit(); ?>
+
 <?php } else { ?>
-  <p><a href="logout.php">Log out</a></p>
+
+  <p><a href="setup.php">Setup</a></p>
+  <p><a href="logout.php">Log out on client</a></p>
+
 <?php } ?>
 
 <?php
@@ -38,7 +49,7 @@ $actions['getUrlLogout']                  = 'getUrlLogout';
 <form action="" method="get">
   <select name="action" id="action">
     <?php foreach ($actions as $action => $title) : ?>
-      <option value="<?php print $action ?>" <?php if ($_GET['action'] == $action) : ?>selected<?php endif ?>><?php print $title ?></option>
+      <option value="<?php print $action ?>" <?php if (isset($_GET['action']) && $_GET['action'] == $action) : ?>selected<?php endif ?>><?php print $title ?></option>
     <?php endforeach ?>
   </select>
   <input type="submit" name="submit" value="Submit" />

@@ -1,9 +1,9 @@
 <?php
 
-require 'common.inc';
+require '../culturefeed.inc';
 
 if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
-  $cf = new CultureFeed(CULTUREFEED_API_APPLICATION_KEY, CULTUREFEED_API_SHARED_SECRET, $_GET['oauth_token'], $_COOKIE['oauth_token_secret']);
+  $cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_GET['oauth_token'], $_COOKIE['oauth_token_secret']);
   
   $token = $cf->getAccessToken($_GET['oauth_verifier']);
 
@@ -11,6 +11,6 @@ if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
   setcookie('oauth_token', $token['oauth_token']);
   setcookie('oauth_token_secret', $token['oauth_token_secret']);
 
-  header('Location:' . CULTUREFEED_API_SERVER . 'index.php');
+  header('Location: index.php');
   exit();
 }

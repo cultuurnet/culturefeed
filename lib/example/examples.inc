@@ -1,3 +1,5 @@
+<?php define('SOME_EVENT', 'e12d585f-0c4c-4491-8b61-87c993588487'); ?>
+
 <pre>
 
 <?php
@@ -6,7 +8,7 @@ if (!isset($_GET['action'])) {
   return;
 }
 
-$cf = new CultureFeed(CULTUREFEED_API_APPLICATION_KEY, CULTUREFEED_API_SHARED_SECRET, $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']);
+$cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']);
 
 $uid = $_COOKIE['oauth_user'];
 
