@@ -68,6 +68,6 @@ $actions['getRecommendationsForEvent']    = 'getRecommendationsForEvent';
 
 <?php
 
-require 'examples.inc';
+require 'examples.inc.php';
 
 ?>
