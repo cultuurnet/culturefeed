@@ -1154,12 +1154,14 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getUrlAddSocialNetwork($network, $destination = '') {
     $query = array();
+    
+    $query['network'] = $network;
 
     if (!empty($destination)) {
-      $query = array('destination' => $destination);
+      $query['destination'] = $destination;
     }
 
-    return $this->getUrl('auth/network/extra', array('network' => $network, $query));
+    return $this->getUrl('auth/network/extra', $query);
   }
 
   /**
@@ -1176,7 +1178,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $query = array();
 
     if (!empty($destination)) {
-      $query = array('destination' => $destination);
+      $query['destination'] = $destination;
     }
 
     return $this->getUrl('auth/changepassword/' . $id, $query);
@@ -1194,7 +1196,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $query = array();
 
     if (!empty($destination)) {
-      $query = array('destination' => $destination);
+      $query['destination'] = $destination;
     }
 
     return $this->getUrl('auth/logout', $query);
