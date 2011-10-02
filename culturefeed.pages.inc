@@ -41,7 +41,6 @@ function culturefeed_oauth_authorize() {
       user_login_finalize();
 
       drupal_goto('');
-      exit();
     }
   }
 }
