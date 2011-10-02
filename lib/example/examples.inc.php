@@ -1,7 +1,5 @@
 <?php define('SOME_EVENT', 'e12d585f-0c4c-4491-8b61-87c993588487'); ?>
 
-<pre>
-
 <?php
 
 if (!isset($_GET['action'])) {
@@ -33,7 +31,7 @@ if ($_GET['action'] == 'createUser') {
     // handle exception
   }
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -51,7 +49,7 @@ elseif ($_GET['action'] == 'updateUser') {
   
   $result = $cf->updateUser($user);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -63,7 +61,7 @@ elseif ($_GET['action'] == 'deleteUser') {
   
   $result = $cf->deleteUser($uid);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -75,7 +73,7 @@ elseif ($_GET['action'] == 'getUser') {
   
   $result = $cf->getUser($uid, TRUE, TRUE);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -91,7 +89,7 @@ elseif ($_GET['action'] == 'searchUsers') {
   
   $result = $cf->searchUsers($query);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -103,7 +101,7 @@ elseif ($_GET['action'] == 'getSimilarUsers') {
   
   $result = $cf->getSimilarUsers($uid);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
 
 }
 
@@ -117,7 +115,7 @@ elseif ($_GET['action'] == 'uploadUserDepiction') {
   $file_data = file_get_contents($filepath);
   $result = $cf->uploadUserDepiction($uid, $file_data);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -129,7 +127,7 @@ elseif ($_GET['action'] == 'resendMboxConfirmationForUser') {
   
   $result = $cf->resendMboxConfirmationForUser($uid);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
 
 }
 
@@ -146,7 +144,7 @@ elseif ($_GET['action'] == 'updateUserPrivacy') {
   
   $result = $cf->updateUserPrivacy($uid, $privacy_config);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -158,7 +156,7 @@ elseif ($_GET['action'] == 'getUserServiceConsumers') {
   
   $result = $cf->getUserServiceConsumers($uid);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -171,7 +169,7 @@ elseif ($_GET['action'] == 'revokeUserServiceConsumer') {
   $consumer_id = 'PUT CONSUMER ID HERE';
   $result = $cf->revokeUserServiceConsumer($uid, $consumer_id);
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -195,7 +193,7 @@ elseif ($_GET['action'] == 'getTopEvents') {
   
   $result = $cf->getTopEvents('active'); // @todo make type a const
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -207,7 +205,7 @@ elseif ($_GET['action'] == 'getRecommendationsForUser') {
   
   $result = $cf->getRecommendationsForUser($uid, array('max' => 10)); // @todo make query a class
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
@@ -219,15 +217,13 @@ elseif ($_GET['action'] == 'getRecommendationsForEvent') {
   
   $result = $cf->getRecommendationsForEvent(SOME_EVENT, array('max' => 10)); // @todo make query a class
   
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
   
 }
 
 //   @todo evaluate recommendation
 
 ?>
-
-</pre>
 
 <?php
 
@@ -242,7 +238,7 @@ elseif ($_GET['action'] == 'getRecommendationsForEvent') {
 
 try {
   $result = $cf->createActivity(new CultureFeedActivity($activity));
-  var_dump($result);
+  print "<pre>".print_r($result, TRUE)."</pre>";
 }
 catch (Exception $e) {
   var_dump($e);
