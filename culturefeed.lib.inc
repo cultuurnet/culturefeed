@@ -33,7 +33,7 @@ class DrupalCultureFeed extends CultureFeed {
   }
 
   public static function getInstance($token, $secret) {
-    $result = new CultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+    $result = new DrupalCultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
 
     if (variable_get('culturefeed_proxy_enabled', FALSE)) {
       $result->proxy_server = variable_get('culturefeed_proxy_server', '');
