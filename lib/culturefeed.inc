@@ -334,7 +334,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
   public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
-    return $this->authenticatedPost($path, $params, $raw_post, 'xml');
+    return $this->authenticatedPost($path, $params, $raw_post, $has_file_upload, 'xml');
   }
 
   /**
@@ -343,7 +343,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
   public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
-    return $this->authenticatedPost($path, $params, $raw_post, 'json');
+    return $this->authenticatedPost($path, $params, $raw_post, $has_file_upload, 'json');
   }
 
   /**
@@ -612,7 +612,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
 
     try {
       $this->authenticatedPostAsXml('user/' . $id, $data);
-
+      
       return TRUE;
     }
     catch (CultureFeedException $e) {
