@@ -6,22 +6,36 @@ class DrupalCultureFeed extends CultureFeed {
 
   protected static $user_instance;
 
+  /**
+   * @todo document this
+   *
+   * @return DrupalCultureFeed
+   *   @todo document this
+   */
   public static function getLoggedInUserInstance() {
     if (isset(self::$user_instance)) {
       return self::$user_instance;
     }
 
     global $user;
+    
+    $account = user_load($user->uid);
 
-    if (!isset($user->culturefeed_oauth_token) || !isset($user->culturefeed_oauth_secret)) {
+    if (!isset($account->culturefeed_oauth_token) || !isset($account->culturefeed_oauth_secret)) {
       return;
     }
 
-    self::$user_instance = self::getInstance($user->culturefeed_oauth_token, $user->culturefeed_oauth_secret);
+    self::$user_instance = self::getInstance($account->culturefeed_oauth_token, $account->culturefeed_oauth_secret);
 
     return self::$user_instance;
   }
 
+  /**
+   * @todo document this
+   *
+   * @return DrupalCultureFeed
+   *   @todo document this
+   */
   public static function getConsumerInstance() {
     if (isset(self::$consumer_instance)) {
       return self::$consumer_instance;
@@ -32,6 +46,12 @@ class DrupalCultureFeed extends CultureFeed {
     return self::$consumer_instance;
   }
 
+  /**
+   * @todo document this
+   *
+   * @return DrupalCultureFeed
+   *   @todo document this
+   */
   public static function getInstance($token, $secret) {
     $result = new DrupalCultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
 
