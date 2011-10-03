@@ -691,8 +691,8 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param CultureFeedSearchUsersQuery $query
    *   The search query.
-   * @return array|bool
-   *   In case of success an array of CultureFeedUser objects.
+   * @return CultureFeedResultSet|bool
+   *   In case of success a CultureFeedResultSet.
    *   In case of failure FALSE.
    */
   public function searchUsers($query) {
@@ -717,8 +717,8 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $id
    *   ID of the user to fetch similar users for.
-   * @return array|bool
-   *   In case of success an array of CultureFeedUser objects.
+   * @return CultureFeedResultSet|bool
+   *   In case of success a CultureFeedResultSet.
    *   In case of failure FALSE.
    */
   public function getSimilarUsers($id) {
@@ -743,7 +743,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   ID of the user to upload depiction for.
    * @param string $file_data
    *   Binary data of the file to upload.
-   * @return array|bool
+   * @return bool
    *   In case of success TRUE.
    *   In case of failure FALSE.
    */  
@@ -815,7 +815,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $id
    *   ID of the user to fetch service consumers for.
-   * @return array|bool
+   * @return CultureFeedConsumer[]|bool
    *   In case of success an array of CultureFeedConsumer objects.
    *   In case of failure FALSE.
    */
@@ -1003,7 +1003,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param CultureFeedSearchActivitiesQuery $query
    *   The query.
-   * @return array|bool
+   * @return CultureFeedActivity[]|bool
    *   In case of success an array of CultureFeedActivity objects.
    *   In case of failure FALSE.
    */
@@ -1042,7 +1042,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   The type of activity that is used to measure 'most activity'.
    *   Possible values are 'like', 'facebook', 'twitter', 'attend' and 'active'.
    *   The type 'active' is the aggregate of all other activities.
-   * @return array|bool
+   * @return string[]|bool
    *   In case of success an array of event CDBIDs (string).
    *   In case of failure FALSE.
    */
@@ -1069,7 +1069,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return array|bool
+   * @return CultureFeedRecommendation[]|bool
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
@@ -1096,7 +1096,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return array|bool
+   * @return CultureFeedRecommendation[]|bool
    *   In case of success an array of CultureFeedRecommendation objects.
    *   In case of failure FALSE.
    */
@@ -1283,7 +1283,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
    *   The XPath query.
    * @param string $multiple
    *   Does the query direct to a path where multiple values are possible?
-   * @return array or undefined
+   * @return array|undefined
    *   In case $multiple is TRUE, an array is returned with the type casted elements.
    *   In case $multiple is FALSE, the result of the XPath query is casted using the $cast_function and type depends on type of that function.
    *   In case no nodes were found with the query, NULL is returned.
@@ -1396,7 +1396,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
   /**
    * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
    *
-   * @return array
+   * @return CultureFeedConsumer[]
    *   Array of CultureFeedServiceConsumer objcts.
    */
   public function parseServiceConsumers() {
@@ -1456,7 +1456,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
   /**
    * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
    *
-   * @return array
+   * @return CultureFeedRecommendation[]
    *   Array of CultureFeedRecommendation objcts.
    */
   public function parseRecommendations() {
