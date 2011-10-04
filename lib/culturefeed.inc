@@ -495,6 +495,21 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * Top events sort option 'by aggregate of all other options'.
    */
   const TOP_EVENTS_SORT_ACTIVE = 'active';
+  
+  /**
+   * Authorization screen option 'regular'.
+   */
+  const AUTHORIZE_TYPE_REGULAR = 'regular';
+  
+  /**
+   * Authorization screen option 'register'.
+   */
+  const AUTHORIZE_TYPE_REGISTER = 'register';
+  
+  /**
+   * Authorization screen option 'force login'.
+   */
+  const AUTHORIZE_TYPE_FORCELOGIN = 'forcelogin';
 
   /**
    * Fetch a request token. Sets the token for this object with the fetched token.
@@ -534,14 +549,21 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *   A request token fetched with getRequestToken.
    * @param string $callback
    *   (optional) The URL of the page to redirect the user back to after authorization has been handled on provider.
+   * @param string $type
+   *   (optional) Type of CultureFeed screen: regular, register or force login (even when user was logged in.
+   *   Possible values for the privacy status are represented in the AUTHORIZE_TYPE_* constants.
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '') {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
       $query['oauth_callback'] = $callback;
+    }
+    
+    if (!empty($type)) {
+      $query['type'] = $type;
     }
 
     return $this->getUrl('auth/authorize', $query);
