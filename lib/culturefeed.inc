@@ -470,6 +470,31 @@ class CultureFeed extends CultureFeedOAuthRequest {
    * Recommendation evaluation 'negative'.
    */
   const RECOMMENDATION_EVALUATION_NEGATIVE = 2;
+  
+  /**
+   * Top events sort option 'by number of likes'.
+   */
+  const TOP_EVENTS_SORT_LIKE = 'like';
+  
+  /**
+   * Top events sort option 'by number of Facebook shares'.
+   */
+  const TOP_EVENTS_SORT_FACEBOOK = 'facebook';
+  
+  /**
+   * Top events sort option 'by number of Twitter shares (tweets)'.
+   */
+  const TOP_EVENTS_SORT_TWITTER = 'twitter';
+  
+  /**
+   * Top events sort option 'by number of attends'.
+   */
+  const TOP_EVENTS_SORT_ATTEND = 'attend';
+  
+  /**
+   * Top events sort option 'by aggregate of all other options'.
+   */
+  const TOP_EVENTS_SORT_ACTIVE = 'active';
 
   /**
    * Fetch a request token. Sets the token for this object with the fetched token.
@@ -1040,13 +1065,12 @@ class CultureFeed extends CultureFeedOAuthRequest {
    *
    * @param string $type
    *   The type of activity that is used to measure 'most activity'.
-   *   Possible values are 'like', 'facebook', 'twitter', 'attend' and 'active'.
-   *   The type 'active' is the aggregate of all other activities.
+   *   Possible values are represented in the TOP_EVENTS_SORT_* constants.
    * @return string[]|bool
    *   In case of success an array of event CDBIDs (string).
    *   In case of failure FALSE.
    */
-  public function getTopEvents($type) { // @todo make type a const
+  public function getTopEvents($type) {
     try {
       $result = $this->consumerGetAsXml('activity/topevents/' . $type);
 
