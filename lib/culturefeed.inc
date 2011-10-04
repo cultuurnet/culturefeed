@@ -1419,10 +1419,10 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
   }
 
   /**
-   * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
+   * Parse the SimpleXML element as an array of CultureFeedConsumer objects.
    *
    * @return CultureFeedConsumer[]
-   *   Array of CultureFeedServiceConsumer objcts.
+   *   Array of CultureFeedConsumer objcts.
    */
   public function parseServiceConsumers() {
     $consumers = array();
@@ -1481,7 +1481,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
   }
 
   /**
-   * Parse the SimpleXML element as an array of CultureFeedServiceConsumer objects.
+   * Parse the SimpleXML element as an array of CultureFeedConsumer objects.
    *
    * @return CultureFeedRecommendation[]
    *   Array of CultureFeedRecommendation objcts.
