@@ -148,7 +148,7 @@ class CultureFeedHTTPRequest {
     $response  = curl_exec($ch);
     $curl_info = curl_getinfo($ch);
     $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
+    
     curl_close($ch);
 
     // In case the HTTP response status is not 200, we consider this an error.
@@ -1410,6 +1410,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
       $user->id        = $object->xpath_str('rdf:id');
       $user->nick      = $object->xpath_str('foaf:nick');
       $user->depiction = $object->xpath_str('foaf:depiction');
+      $user->sortValue = $object->xpath_int('sortValue');
 
       $users[] = $user;
     }
