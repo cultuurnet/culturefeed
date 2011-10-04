@@ -1438,6 +1438,7 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
       $consumer->name         = $object->xpath_str('name');
       $consumer->organization = $object->xpath_str('organization');
       $consumer->description  = $object->xpath_str('description');
+      $consumer->logo         = $object->xpath_str('logo');
 
       $consumers[] = $consumer;
     }
@@ -1731,6 +1732,13 @@ class CultureFeedConsumer {
    * @var string
    */
   public $description;
+
+  /**
+   * Logo of the the consumer.
+   *
+   * @var string
+   */
+  public $logo;
 
 }
 
