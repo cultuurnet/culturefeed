@@ -77,7 +77,7 @@ class DrupalCultureFeed {
   /**
    * @todo document this
    *
-   * @return DrupalCultureFeed
+   * @return CultureFeed
    *   @todo document this
    */
   public static function getConsumerInstance() {
