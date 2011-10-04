@@ -42,6 +42,25 @@ function culturefeed_schema() {
 }
 
 /**
+ * Implements hook_uninstall().
+ */
+function culturefeed_uninstall() {
+  $variables = array(
+    'culturefeed_api_location',
+    'culturefeed_api_application_key',
+    'culturefeed_api_shared_secret',
+    'culturefeed_proxy_enabled',
+    'culturefeed_proxy_server',
+    'culturefeed_proxy_port',
+    'culturefeed_proxy_username',
+    'culturefeed_proxy_password',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}
+
+/**
  * Implements hook_requirements().
  */
 function culturefeed_requirements($phase) {
