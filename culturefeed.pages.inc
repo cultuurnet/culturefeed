@@ -1,6 +1,6 @@
 <?php
 
-function culturefeed_oauth_connect() {
+function culturefeed_oauth_connect($type) {
   $cf = DrupalCultureFeed::getConsumerInstance();
 
   $token = $cf->getRequestToken();
@@ -13,8 +13,15 @@ function culturefeed_oauth_connect() {
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
   $callback_url = url('culturefeed/oauth/authorize', array('absolute' => TRUE));
+  
+  if ($type == 'register') {
+    $type = CultureFeed::AUTHORIZE_TYPE_REGISTER;
+  }
+  else {
+    $type = CultureFeed::AUTHORIZE_TYPE_REGULAR;
+  }
 
-  $auth_url = $cf->getUrlAuthorize($token, $callback_url);
+  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type);
 
   drupal_goto($auth_url);
 }

@@ -21,6 +21,14 @@ function culturefeed_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
   );
+  $items['culturefeed/oauth/connect/register'] = array(
+    'title' => 'Connect',
+    'page callback' => 'culturefeed_oauth_connect',
+    'page arguments' => array('register'),
+    'access callback' => 'user_is_anonymous',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed.pages.inc',
+  );
   $items['culturefeed/oauth/authorize'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_authorize',
