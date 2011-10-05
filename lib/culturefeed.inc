@@ -605,6 +605,9 @@ class CultureFeed {
    * @return array
    *   An associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getRequestToken() {
     $response = $this->oauth_request->consumerPost('requestToken', array(), FALSE);
@@ -612,7 +615,7 @@ class CultureFeed {
     $token = OAuthUtil::parse_parameters($response);
 
     if (!isset($token['oauth_token']) || !isset($token['oauth_token'])) {
-      return FALSE;
+      throw new CultureFeedParseException($response, 'token');
     }
 
     $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
@@ -659,6 +662,9 @@ class CultureFeed {
    * @return array
    *   An associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getAccessToken($oauth_verifier) {
     $response = $this->oauth_request->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
@@ -666,7 +672,7 @@ class CultureFeed {
     $token = OAuthUtil::parse_parameters($response);
 
     if (!isset($token['oauth_token']) || !isset($token['oauth_token'])) {
-      return FALSE;
+      throw new CultureFeedParseException($response, 'token');
     }
 
     $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
@@ -1517,11 +1523,11 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
 }
 
 class CultureFeedParseException extends Exception {
-  public $xml;
+  public $text;
   
-  function __construct($xml) {
-    parent::__construct('Could not parse XML.', 0);
-    $this->xml = $xml;
+  function __construct($text, $format = 'xml') {
+    parent::__construct('Could not parse text. Expected ' . $format, 0);
+    $this->text = $text;
   }
 }
 
