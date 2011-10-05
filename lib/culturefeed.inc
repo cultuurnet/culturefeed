@@ -1127,13 +1127,17 @@ class CultureFeed {
    * @param string $type
    *   The type of activity that is used to measure 'most activity'.
    *   Possible values are represented in the TOP_EVENTS_SORT_* constants.
+   * @param integer $max
+   *   Maximum number of events to return.
    * @return string[]|bool
    *   In case of success an array of event CDBIDs (string).
    *   In case of failure FALSE.
    */
-  public function getTopEvents($type) {
+  public function getTopEvents($type, $max = 5) {
+    $query = array('max' => $max);
+    
     try {
-      $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type);
+      $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type, $query);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
