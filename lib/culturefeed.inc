@@ -1,6 +1,6 @@
 <?php
 
-require_once(realpath(dirname(__FILE__)) . '/OAuth.php');
+require_once(realpath(dirname(__FILE__)) . '/OAuth/OAuth.php');
 
 /**
  * @file
