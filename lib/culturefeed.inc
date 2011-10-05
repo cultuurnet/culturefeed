@@ -572,7 +572,18 @@ class CultureFeed {
    */
   protected $oauth_request;
   
-  // @todo document this
+  /**
+   * Constructor for a new CultureFeed instance.
+   *
+   * @param string $consumer_key
+   *   Consumer key.
+   * @param string $consumer_secret
+   *   Consumer secret.
+   * @param string $oauth_token
+   *   (optional) Token.
+   * @param string $oauth_token_secret
+   *   (optional) Token secret.
+   */
   public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
     $this->oauth_request = new CultureFeedOAuthRequest($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
   }
