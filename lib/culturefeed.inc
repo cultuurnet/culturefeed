@@ -8,6 +8,40 @@ require_once(realpath(dirname(__FILE__)) . '/OAuth/OAuth.php');
  */
 
 /**
+ * Class to represent a basic HTTP request response.
+ */
+class CultureFeedHTTPRespone {
+
+  /**
+   * HTTP response status code.
+   *
+   * @var integer
+   */
+  public $code;
+
+  /**
+   * HTTP response body.
+   *
+   * @var string
+   */
+  public $response;
+
+  /**
+   * Constructor for a new CultureFeedOAuthResponse instance.
+   *
+   * @param integer $code
+   *   HTTP response status code.
+   * @param string $response
+   *   HTTP response body.
+   */
+  public function __construct($code, $response) {
+    $this->code = $code;
+    $this->response = $response;
+  }
+  
+}
+
+/**
  * Class to represent a basic HTTP request.
  */
 class CultureFeedHTTPRequest {
@@ -104,13 +138,8 @@ class CultureFeedHTTPRequest {
    *   The HTTP method.
    * @param string $post_data
    *   In case of a POST request, specify the post data a string.
-   * @return string
-   *   The response body.
-   *
-   * @throws CultureFeedException
-   *   If an error message and code could be parsed from the response.
-   * @throws CultureFeedHTTPException
-   *   If no error message and code could be parsed from the response.
+   * @return CultureFeedHTTPResponse
+   *   The response.
    */
   public function request($url, $http_headers = array(), $method = 'GET', $post_data = '') {
     // Initialising some general CURL options (url, timeout, ...).
@@ -150,28 +179,8 @@ class CultureFeedHTTPRequest {
     $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
     curl_close($ch);
-
-    // In case the HTTP response status is not 200, we consider this an error.
-    // In case we can parse a code and message from the response, we throw a CultureFeedException.
-    // In case we can't parse a code and message, we throw a CultureFeedHTTPException.
-    if ($curl_code != 200) {
-      try {
-        $xml = new CultureFeedSimpleXMLElement($response);
-      }
-      catch (Exception $e) {
-        throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
-      }
-
-      if ($code = $xml->xpath_str('/response/code')) {
-        $message = $xml->xpath_str('/response/message');
-        throw new CultureFeedException($code, $message);
-      }
-
-      throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
-    }
-
-    // In case the HTTP response status is 200, we return the response.
-    return $response;
+    
+    return new CultureFeedHTTPRespone($curl_code, $response);
   }
 
 }
@@ -382,8 +391,13 @@ class CultureFeedOAuthRequest {
    *   Possible values are 'xml', 'json' and '' for default response (depending on request).
    * @param string $raw_post
    *   Should the post data (passed via $params) be passed as is ($raw_post TRUE) or should the OAuth params be added?
-   * @return string
-   *   The response body.
+   * @return CultureFeedHTTPResponse
+   *   The response.
+   *
+   * @throws CultureFeedException
+   *   If an error message and code could be parsed from the response.
+   * @throws CultureFeedHTTPException
+   *   If no error message and code could be parsed from the response.
    */
   public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE, $has_file_upload = FALSE) {
     // Getting full URL.
@@ -431,7 +445,29 @@ class CultureFeedOAuthRequest {
       $post_data = $request->to_postdata();
     }
 
-    return $this->http_request->request($url, $http_headers, $method, $post_data);
+    $response = $this->http_request->request($url, $http_headers, $method, $post_data);
+    
+    // In case the HTTP response status is not 200, we consider this an error.
+    // In case we can parse a code and message from the response, we throw a CultureFeedException.
+    // In case we can't parse a code and message, we throw a CultureFeedHTTPException.
+    if ($response->code != 200) {
+      try {
+        $xml = new CultureFeedSimpleXMLElement($response);
+      }
+      catch (Exception $e) {
+        throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+      }
+
+      if ($code = $xml->xpath_str('/response/code')) {
+        $message = $xml->xpath_str('/response/message');
+        throw new CultureFeedException($code, $message);
+      }
+
+      throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+    }
+
+    // In case the HTTP response status is 200, we return the response.
+    return $response->response;
   }
 
   /**
