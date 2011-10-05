@@ -112,7 +112,7 @@ class CultureFeedHTTPRequest {
    * @throws CultureFeedHTTPException
    *   If no error message and code could be parsed from the response.
    */
-  public function httpRequest($url, $http_headers = array(), $method = 'GET', $post_data = '') {
+  public function request($url, $http_headers = array(), $method = 'GET', $post_data = '') {
     // Initialising some general CURL options (url, timeout, ...).
     $curl_options = array(
       CURLOPT_URL => $url,
@@ -179,7 +179,14 @@ class CultureFeedHTTPRequest {
 /**
  * Class to represent a OAuth request.
  */
-class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
+class CultureFeedOAuthRequest {
+
+  /**
+   * HTTP Request object to make the requests.
+   *
+   * @var CultureFeedHTTPRequest
+   */
+  protected $http_request;
 
   /**
    * Endpoint (full url) where the CultureFeed API resides.
@@ -222,11 +229,22 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    *   (optional) Token secret.
    */
   public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
+    $this->http_request = new CultureFeedHTTPRequest();
+    
     $this->signature_method = new OAuthSignatureMethod_HMAC_SHA1();
     $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
       $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
     }
+  }
+
+  /**
+   * Set the HTTP request object.
+   *
+   * @param CultureFeedHTTPRequest $http_request
+   */
+  public function setHttpRequest($http_request) {
+    $this->http_request = $http_request;
   }
 
   /**
@@ -413,7 +431,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
       $post_data = $request->to_postdata();
     }
 
-    return $this->httpRequest($url, $http_headers, $method, $post_data);
+    return $this->http_request->request($url, $http_headers, $method, $post_data);
   }
 
   /**
@@ -426,7 +444,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
    * @return string
    *   The full URL.
    */
-  protected function getUrl($path, $query = array()) {
+  public function getUrl($path, $query = array()) {
     $url =  rtrim($this->endpoint, '/') . '/' . trim($path, '/');
 
     if (!empty($query)) {
@@ -444,7 +462,7 @@ class CultureFeedOAuthRequest extends CultureFeedHTTPRequest {
  * Provides calls and helper functions to set up OAuth authorization.
  * Provides calls to fetch objects (users, activities, ...) from the API.
  */
-class CultureFeed extends CultureFeedOAuthRequest {
+class CultureFeed {
 
   /**
    * Privacy status 'public'.
@@ -512,6 +530,27 @@ class CultureFeed extends CultureFeedOAuthRequest {
   const AUTHORIZE_TYPE_FORCELOGIN = 'forcelogin';
 
   /**
+   * OAuth request object to do the request.
+   *
+   * @var CultureFeedOAuthRequest
+   */
+  protected $oauth_request;
+  
+  // @todo document this
+  public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
+    $this->oauth_request = new CultureFeedOAuthRequest($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+  }
+
+  /**
+   * Set the OAuth request object.
+   *
+   * @param CultureFeedOAuthRequest $http_request
+   */
+  public function setOAuthRequest($oauth_request) {
+    $this->oauth_request = $oauth_request;
+  }
+
+  /**
    * Fetch a request token. Sets the token for this object with the fetched token.
    *
    * The object should be initialized with the consumer token.
@@ -523,7 +562,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getRequestToken() {
     try {
-      $response = $this->consumerPost('requestToken', array(), FALSE);
+      $response = $this->oauth_request->consumerPost('requestToken', array(), FALSE);
     }
     catch (Exception $e) {
       return FALSE;
@@ -566,7 +605,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
       $query['type'] = $type;
     }
 
-    return $this->getUrl('auth/authorize', $query);
+    return $this->oauth_request->getUrl('auth/authorize', $query);
   }
 
   /**
@@ -583,7 +622,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getAccessToken($oauth_verifier) {
     try {
-      $response = $this->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
+      $response = $this->oauth_request->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
     }
     catch (Exception $e) {
       return FALSE;
@@ -618,7 +657,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = $user->toPostData();
 
     try {
-      $result = $this->consumerPostAsXml('user', $data);
+      $result = $this->oauth_request->consumerPostAsXml('user', $data);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -658,7 +697,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     unset($data['id']);
 
     try {
-      $this->authenticatedPostAsXml('user/' . $id, $data);
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id, $data);
       
       return TRUE;
     }
@@ -683,7 +722,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function deleteUser($id) {
     try {
-      $this->authenticatedGetAsXml('user/' . $id . '/delete');
+      $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/delete');
 
       return TRUE;
     }
@@ -716,10 +755,10 @@ class CultureFeed extends CultureFeedOAuthRequest {
 
     try {
       if ($use_auth) {
-        $result = $this->authenticatedGetAsXml('user/' . $id, $query);
+        $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id, $query);
       }
       else {
-        $result = $this->consumerGetAsXml('user/' . $id, $query);
+        $result = $this->oauth_request->consumerGetAsXml('user/' . $id, $query);
       }
 
       $xml = new CultureFeedSimpleXMLElement($result);
@@ -746,7 +785,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = $query->toPostData();
 
     try {
-      $result = $this->consumerGetAsXml('user/search', $data);
+      $result = $this->oauth_request->consumerGetAsXml('user/search', $data);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -770,7 +809,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getSimilarUsers($id) {
     try {
-      $result = $this->consumerGetAsXml('user/' . $id . '/similar', array());
+      $result = $this->oauth_request->consumerGetAsXml('user/' . $id . '/similar', array());
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -796,7 +835,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */  
   public function uploadUserDepiction($id, $file_data) {
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
       
       return TRUE;
     }
@@ -818,7 +857,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function resendMboxConfirmationForUser($id) {
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
 
       return TRUE;
     }
@@ -846,7 +885,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = $privacy_config->toPostData();
 
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
 
       return TRUE;
     }
@@ -868,7 +907,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getUserServiceConsumers($id) {
     try {
-      $result = $this->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
+      $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -894,7 +933,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function revokeUserServiceConsumer($user_id, $consumer_id) {
     try {
-      $this->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
+      $this->oauth_request->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
 
       return TRUE;
     }
@@ -920,7 +959,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = $account->toPostData();
 
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
 
       return TRUE;
     }
@@ -951,7 +990,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     );
 
     try {
-      $this->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
+      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
 
       return TRUE;
     }
@@ -978,7 +1017,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = $activity->toPostData();
 
     try {
-      $result = $this->authenticatedPostAsXml('activity', $data);
+      $result = $this->oauth_request->authenticatedPostAsXml('activity', $data);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -1011,7 +1050,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = array('private' => $private ? 'true' : 'false');
 
     try {
-      $this->authenticatedPostAsXml('activity/' . $id, $data);
+      $this->oauth_request->authenticatedPostAsXml('activity/' . $id, $data);
 
       return TRUE;
     }
@@ -1033,7 +1072,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function deleteActivity($id) {
     try {
-      $this->authenticatedGetAsXml('activity/' . $id . '/delete');
+      $this->oauth_request->authenticatedGetAsXml('activity/' . $id . '/delete');
 
       return TRUE;
     }
@@ -1065,10 +1104,10 @@ class CultureFeed extends CultureFeedOAuthRequest {
 
     try {
       if ($use_auth) {
-        $result = $this->authenticatedGetAsXml('activity', $data);
+        $result = $this->oauth_request->authenticatedGetAsXml('activity', $data);
       }
       else {
-        $result = $this->consumerGetAsXml('activity', $data);
+        $result = $this->oauth_request->consumerGetAsXml('activity', $data);
       }
 
       $xml = new CultureFeedSimpleXMLElement($result);
@@ -1094,7 +1133,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getTopEvents($type) {
     try {
-      $result = $this->consumerGetAsXml('activity/topevents/' . $type);
+      $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -1121,7 +1160,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
    */
   public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
     try {
-      $result = $this->authenticatedGetAsXml('recommendation/user/' . $id, $query);
+      $result = $this->oauth_request->authenticatedGetAsXml('recommendation/user/' . $id, $query);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -1150,7 +1189,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $query['eventId'] = $id;
 
     try {
-      $result = $this->authenticatedGetAsXml('recommendation/event', $query);
+      $result = $this->oauth_request->authenticatedGetAsXml('recommendation/event', $query);
 
       $xml = new CultureFeedSimpleXMLElement($result);
     }
@@ -1179,7 +1218,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
     $data = array('evaluation' => $evaluation);
 
     try {
-      $this->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
+      $this->oauth_request->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
 
       return TRUE;
     }
@@ -1207,7 +1246,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
       $query['destination'] = $destination;
     }
 
-    return $this->getUrl('auth/network/extra', $query);
+    return $this->oauth_request->getUrl('auth/network/extra', $query);
   }
 
   /**
@@ -1227,7 +1266,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
       $query['destination'] = $destination;
     }
 
-    return $this->getUrl('auth/changepassword/' . $id, $query);
+    return $this->oauth_request->getUrl('auth/changepassword/' . $id, $query);
   }
 
   /**
@@ -1245,7 +1284,7 @@ class CultureFeed extends CultureFeedOAuthRequest {
       $query['destination'] = $destination;
     }
 
-    return $this->getUrl('auth/logout', $query);
+    return $this->oauth_request->getUrl('auth/logout', $query);
   }
 
 }
