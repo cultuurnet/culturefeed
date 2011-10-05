@@ -24,7 +24,7 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/connect/register'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_connect',
-    'page arguments' => array('register'),
+    'page arguments' => array(CultureFeed::AUTHORIZE_TYPE_REGISTER),
     'access callback' => 'user_is_anonymous',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
@@ -146,4 +146,28 @@ function culturefeed_user_get($userid, $token, $secret) {
   }
 
   return $account;
+}
+
+function culturefeed_get_events_for_activities($activities) {
+  $events = array();
+  
+  foreach ($activities as $activity) {
+    if ($activity->contentType = CultureFeedActivity::CONTENT_TYPE_EVENT) {
+      $events[$activity->nodeId] = NULL;
+    }
+  }
+  
+  $cdbids = array_unique(array_keys($events));
+  
+  return culturefeed_get_events_for_cdbids($cdbids);
+}
+
+function culturefeed_get_events_for_cdbids($cdbids) {
+  $results = cnapi_get_events(array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids)));
+  
+  foreach ($results['data'] as $result) {
+    $events[$result['cdbid']] = $result;
+  }
+  
+  return $events;
 }
