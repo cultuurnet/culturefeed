@@ -14,14 +14,14 @@ if ($_GET['action'] == 'createUser') {
   
   $nick = 'someguy+'. time();
   
-  $user = new CultureFeedUser();
+  $user = new CultureFeed_User();
   
   $user->nick = $nick;
   $user->password = md5($nick);
-  $user->gender = CultureFeedUser::GENDER_MALE;
+  $user->gender = CultureFeed_User::GENDER_MALE;
   $user->mbox = $nick . '@somedomain.be';
-  $user->status = CultureFeedUser::STATUS_PUBLIC;
-  $user->homeLocation = new CultureFeedLocation(12.0, 13.0);
+  $user->status = CultureFeed_User::STATUS_PUBLIC;
+  $user->homeLocation = new CultureFeed_Location(12.0, 13.0);
   $user->dob = mktime(0, 0, 0, 2, 20, 1981);
   
   try {
@@ -41,7 +41,7 @@ if ($_GET['action'] == 'createUser') {
 
 elseif ($_GET['action'] == 'updateUser') {
   
-  $user = new CultureFeedUser();
+  $user = new CultureFeed_User();
   
   $user->id = $uid;
   $user->homeAddress = 'Some other address';
@@ -83,9 +83,9 @@ elseif ($_GET['action'] == 'getUser') {
  
 elseif ($_GET['action'] == 'searchUsers') {
   
-  $query = new CultureFeedSearchUsersQuery();
+  $query = new CultureFeed_SearchUsersQuery();
   $query->max = 10;
-  $query->sort = CultureFeedSearchUsersQuery::SORT_FIRSTNAME;
+  $query->sort = CultureFeed_SearchUsersQuery::SORT_FIRSTNAME;
   
   $result = $cf->searchUsers($query);
   
@@ -137,10 +137,10 @@ elseif ($_GET['action'] == 'resendMboxConfirmationForUser') {
 
 elseif ($_GET['action'] == 'updateUserPrivacy') {
   
-  $privacy_config = new CultureFeedUserPrivacyConfig();
-  $privacy_config->bio = CultureFeedUserPrivacyConfig::PRIVACY_PRIVATE;
-  $privacy_config->depiction = CultureFeedUserPrivacyConfig::PRIVACY_PRIVATE;
-  $privacy_config->mbox = CultureFeedUserPrivacyConfig::PRIVACY_PRIVATE;
+  $privacy_config = new CultureFeed_UserPrivacyConfig();
+  $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  $privacy_config->depiction = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  $privacy_config->mbox = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
   
   $result = $cf->updateUserPrivacy($uid, $privacy_config);
   
@@ -237,7 +237,7 @@ elseif ($_GET['action'] == 'getRecommendationsForEvent') {
 );
 
 try {
-  $result = $cf->createActivity(new CultureFeedActivity($activity));
+  $result = $cf->createActivity(new CultureFeed_Activity($activity));
   print "<pre>".print_r($result, TRUE)."</pre>";
 }
 catch (Exception $e) {
@@ -253,4 +253,4 @@ $account = array(
   'publishActivities' => 'false',
 );
 
-print $cf->deleteUserOnlineAccount($uid, new CultureFeedOnlineAccount($account));*/
+print $cf->deleteUserOnlineAccount($uid, new CultureFeed_OnlineAccount($account));*/

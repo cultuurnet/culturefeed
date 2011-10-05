@@ -1,6 +1,6 @@
 <?php
 
-require '../culturefeed.inc';
+require 'common.php';
 
 $cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret']);
 

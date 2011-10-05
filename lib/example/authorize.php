@@ -1,6 +1,6 @@
 <?php
 
-require '../culturefeed.inc';
+require 'common.php';
 
 if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
   $cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_GET['oauth_token'], $_COOKIE['oauth_token_secret']);

@@ -1,6 +1,6 @@
 <?php
 
-require '../culturefeed.inc';
+require 'common.php';
 
 if (!isset($_COOKIE['key'])) {
   header('Location: setup.php');

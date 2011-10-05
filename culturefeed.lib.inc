@@ -29,7 +29,7 @@ class DrupalCultureFeed {
   /**
    * @todo document this
    *
-   * @return CultureFeedUser
+   * @return CultureFeed_User
    *   @todo document this
    */
   public static function getLoggedInUser() {
@@ -100,14 +100,14 @@ class DrupalCultureFeed {
     $cf = new CultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
 
     if (variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $http_request = new CultureFeedHTTPRequest();
+      $http_request = new CultureFeed_HTTPRequest();
     
       $http_request->proxy_server = variable_get('culturefeed_proxy_server', '');
       $http_request->proxy_port = variable_get('culturefeed_proxy_port', '');
       $http_request->proxy_username = variable_get('culturefeed_proxy_username', '');
       $http_request->proxy_password = variable_get('culturefeed_proxy_password', '');
       
-      $oauth_request = new CultureFeedOAuthRequest(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      $oauth_request = new CultureFeed_OAuthRequest(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
       
       $oauth_request->setHttpRequest = $http_request;
       
