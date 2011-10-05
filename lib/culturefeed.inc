@@ -455,15 +455,15 @@ class CultureFeedOAuthRequest {
         $xml = new CultureFeedSimpleXMLElement($response);
       }
       catch (Exception $e) {
-        throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+        throw new CultureFeedHTTPException($response->response, $response->code);
       }
 
       if ($code = $xml->xpath_str('/response/code')) {
         $message = $xml->xpath_str('/response/message');
-        throw new CultureFeedException($code, $message);
+        throw new CultureFeedException($message, $code);
       }
 
-      throw new CultureFeedHTTPException($curl_code, $response, $curl_info);
+      throw new CultureFeedHTTPException($response->response, $response->code);
     }
 
     // In case the HTTP response status is 200, we return the response.
@@ -591,18 +591,12 @@ class CultureFeed {
    *
    * The object should be initialized with the consumer token.
    *
-   * @return array|bool
-   *   In case of success an associative array containing the token, secret and callback confirmed status.
+   * @return array
+   *   An associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
-   *   In case of failure FALSE.
    */
   public function getRequestToken() {
-    try {
-      $response = $this->oauth_request->consumerPost('requestToken', array(), FALSE);
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $response = $this->oauth_request->consumerPost('requestToken', array(), FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
 
@@ -651,18 +645,12 @@ class CultureFeed {
    *
    * @param string $oauth_verifier
    *   The 'oauth_verifier' that was sent back in the callback URL after the authorization step.
-   * @return array|bool
-   *   In case of success an associative array containing the token, secret and callback confirmed status.
+   * @return array
+   *   An associative array containing the token, secret and callback confirmed status.
    *   Array keys are 'oauth_callback_confirmed', 'oauth_token' and 'oauth_token_secret'.
-   *   In case of failure FALSE.
    */
   public function getAccessToken($oauth_verifier) {
-    try {
-      $response = $this->oauth_request->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $response = $this->oauth_request->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
 
     $token = OAuthUtil::parse_parameters($response);
 
@@ -682,33 +670,29 @@ class CultureFeed {
    *
    * @param CultureFeedUser $user
    *   The user to create.
-   * @return string or FALSE
-   *   In case of success a string representing the user id of the newly created user.
-   *   In case of failure FALSE.
+   * @return string
+   *   The id of the newly created user.
    *
-   * @throws CultureFeedException
-   *   If an application error occurred.
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function createUser($user) {
     $data = $user->toPostData();
 
+    $result = $this->oauth_request->consumerPostAsXml('user', $data);
+    
     try {
-      $result = $this->oauth_request->consumerPostAsXml('user', $data);
-
       $xml = new CultureFeedSimpleXMLElement($result);
     }
-    catch (CultureFeedException $e) {
-      throw $e;
-    }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     if ($uid = $xml->xpath_str('/response/uid')) {
       return $uid;
     }
 
-    return FALSE;
+    throw new CultureFeedParseException($result);
   }
 
   /**
@@ -718,12 +702,6 @@ class CultureFeed {
    *
    * @param CultureFeedUser $user
    *   The user to update. The user is identified by ID. Only fields that are set will be updated.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
-   *
-   * @throws CultureFeedException
-   *   If an application error occurred.
    */
   public function updateUser($user) {
     $data = $user->toPostData();
@@ -732,17 +710,7 @@ class CultureFeed {
 
     unset($data['id']);
 
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id, $data);
-      
-      return TRUE;
-    }
-    catch (CultureFeedException $e) {
-      throw $e;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id, $data);
   }
 
   /**
@@ -752,19 +720,9 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user who is deleted.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function deleteUser($id) {
-    try {
-      $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/delete');
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/delete');
   }
 
   /**
@@ -782,25 +740,27 @@ class CultureFeed {
    *   Boolean indicating wether the request should be done on behalf of a certain user.
    *   In case $use_auth is TRUE, the object should be initialized with an access token.
    *   Defaults to TRUE.
-   * @return CultureFeedUser or FALSE
-   *   In case of success a CultureFeedUser object representing the requested user.
-   *   In case of failure FALSE.
+   * @return CultureFeedUser
+   *   The requested user.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getUser($id, $private = FALSE, $use_auth = TRUE) {
     $query = array('private' => $private ? 'true' : 'false');
+      
+    if ($use_auth) {
+      $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id, $query);
+    }
+    else {
+      $result = $this->oauth_request->consumerGetAsXml('user/' . $id, $query);
+    }
 
     try {
-      if ($use_auth) {
-        $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id, $query);
-      }
-      else {
-        $result = $this->oauth_request->consumerGetAsXml('user/' . $id, $query);
-      }
-
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseUser($xml);
@@ -813,20 +773,22 @@ class CultureFeed {
    *
    * @param CultureFeedSearchUsersQuery $query
    *   The search query.
-   * @return CultureFeedResultSet|bool
-   *   In case of success a CultureFeedResultSet.
-   *   In case of failure FALSE.
+   * @return CultureFeedResultSet
+   *   The users.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function searchUsers($query) {
     $data = $query->toPostData();
 
-    try {
-      $result = $this->oauth_request->consumerGetAsXml('user/search', $data);
+    $result = $this->oauth_request->consumerGetAsXml('user/search', $data);
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseUsers($xml);
@@ -839,18 +801,20 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user to fetch similar users for.
-   * @return CultureFeedResultSet|bool
-   *   In case of success a CultureFeedResultSet.
-   *   In case of failure FALSE.
+   * @return CultureFeedResultSet
+   *   The users.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getSimilarUsers($id) {
-    try {
-      $result = $this->oauth_request->consumerGetAsXml('user/' . $id . '/similar', array());
+    $result = $this->oauth_request->consumerGetAsXml('user/' . $id . '/similar', array());
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseUsers($xml);
@@ -865,19 +829,9 @@ class CultureFeed {
    *   ID of the user to upload depiction for.
    * @param string $file_data
    *   Binary data of the file to upload.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */  
   public function uploadUserDepiction($id, $file_data) {
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
-      
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
   }
 
   /**
@@ -887,19 +841,9 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user who requests the confirmation e-mail to be resent.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function resendMboxConfirmationForUser($id) {
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
   }
 
   /**
@@ -913,21 +857,11 @@ class CultureFeed {
    *   An associative array representing the privacy status for each field.
    *   The array is indexed by the field name. Values are the privacy status.
    *   Possible values for the privacy status are represented in the PRIVACY_* constants.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function updateUserPrivacy($id, $privacy_config) {
     $data = $privacy_config->toPostData();
 
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
   }
 
   /**
@@ -937,18 +871,20 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user to fetch service consumers for.
-   * @return CultureFeedConsumer[]|bool
-   *   In case of success an array of CultureFeedConsumer objects.
-   *   In case of failure FALSE.
+   * @return CultureFeedConsumer[]
+   *   The service consumers
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getUserServiceConsumers($id) {
-    try {
-      $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
+    $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseServiceConsumers($xml);
@@ -963,19 +899,9 @@ class CultureFeed {
    *   ID of the user who requests the revoke.
    * @param integer id
    *   ID of the service consumer that needs to be revoked.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function revokeUserServiceConsumer($user_id, $consumer_id) {
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
   }
 
   /**
@@ -987,21 +913,11 @@ class CultureFeed {
    *   ID of the user whose online account settings will be updated.
    * @param CultureFeedOnlineAccount $account
    *   The account settings to update.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function updateUserOnlineAccount($id, $account) {
     $data = $account->toPostData();
-
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
   }
 
   /**
@@ -1015,9 +931,6 @@ class CultureFeed {
    *   Type of online account to delete.
    * @param string $account_name
    *   Account name of the account to delete.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function deleteUserOnlineAccount($id, $account_type, $account_name) {
     $data = array(
@@ -1025,14 +938,7 @@ class CultureFeed {
       'accountType' => $account_type,
     );
 
-    try {
-      $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
   }
 
   /**
@@ -1042,33 +948,27 @@ class CultureFeed {
    *
    * @param CultureFeedActivity $activity
    *   The activity to create.
-   * @return string or FALSE
-   *   In case of success a string representing the user id of the newly created user.
-   *   In case of failure FALSE.
    *
-   * @throws CultureFeedException
-   *   If an application error occurred.
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function createActivity($activity) {
     $data = $activity->toPostData();
 
-    try {
-      $result = $this->oauth_request->authenticatedPostAsXml('activity', $data);
+    $result = $this->oauth_request->authenticatedPostAsXml('activity', $data);
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
-    catch (CultureFeedException $e) {
-      throw $e;
-    }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     if ($id = $xml->xpath_str('/response/activityId')) {
       return $id;
     }
 
-    return FALSE;
+    throw new CultureFeedParseException($result);
   }
 
   /**
@@ -1078,21 +978,11 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the activity to update.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function updateActivity($id, $private) {
     $data = array('private' => $private ? 'true' : 'false');
 
-    try {
-      $this->oauth_request->authenticatedPostAsXml('activity/' . $id, $data);
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('activity/' . $id, $data);
   }
 
   /**
@@ -1102,19 +992,9 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the activity that is deleted.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function deleteActivity($id) {
-    try {
-      $this->oauth_request->authenticatedGetAsXml('activity/' . $id . '/delete');
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedGetAsXml('activity/' . $id . '/delete');
   }
 
   /**
@@ -1125,9 +1005,11 @@ class CultureFeed {
    *
    * @param CultureFeedSearchActivitiesQuery $query
    *   The query.
-   * @return CultureFeedActivity[]|bool
-   *   In case of success an array of CultureFeedActivity objects.
-   *   In case of failure FALSE.
+   * @return CultureFeedActivity[]
+   *   The activities.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function searchActivities($query) {
     $use_auth = FALSE;
@@ -1138,18 +1020,18 @@ class CultureFeed {
 
     $data = $query->toPostData();
 
-    try {
-      if ($use_auth) {
-        $result = $this->oauth_request->authenticatedGetAsXml('activity', $data);
-      }
-      else {
-        $result = $this->oauth_request->consumerGetAsXml('activity', $data);
-      }
+    if ($use_auth) {
+      $result = $this->oauth_request->authenticatedGetAsXml('activity', $data);
+    }
+    else {
+      $result = $this->oauth_request->consumerGetAsXml('activity', $data);
+    }
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseActivities($xml);
@@ -1165,20 +1047,22 @@ class CultureFeed {
    *   Possible values are represented in the TOP_EVENTS_SORT_* constants.
    * @param integer $max
    *   Maximum number of events to return.
-   * @return string[]|bool
-   *   In case of success an array of event CDBIDs (string).
-   *   In case of failure FALSE.
+   * @return string[]
+   *   The events.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getTopEvents($type, $max = 5) {
     $query = array('max' => $max);
     
-    try {
-      $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type, $query);
+    $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type, $query);
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->xpath_str('/response/events/event/cdbid', TRUE);
@@ -1194,18 +1078,20 @@ class CultureFeed {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return CultureFeedRecommendation[]|bool
-   *   In case of success an array of CultureFeedRecommendation objects.
-   *   In case of failure FALSE.
+   * @return CultureFeedRecommendation[]
+   *   The recommendations.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
-    try {
-      $result = $this->oauth_request->authenticatedGetAsXml('recommendation/user/' . $id, $query);
+    $result = $this->oauth_request->authenticatedGetAsXml('recommendation/user/' . $id, $query);
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseRecommendations($xml);
@@ -1221,20 +1107,22 @@ class CultureFeed {
    * @param array $query
    *   An associative array representing the query to refine the recommendations.
    *   The array is indexed by the query key.
-   * @return CultureFeedRecommendation[]|bool
-   *   In case of success an array of CultureFeedRecommendation objects.
-   *   In case of failure FALSE.
+   * @return CultureFeedRecommendation[]
+   *   The recommendations.
+   *
+   * @throws CultureFeedParseException
+   *   If the result could not be parsed.
    */
   public function getRecommendationsForEvent($id, $query = array()) { // @todo make $query a class
     $query['eventId'] = $id;
 
-    try {
-      $result = $this->oauth_request->authenticatedGetAsXml('recommendation/event', $query);
+    $result = $this->oauth_request->authenticatedGetAsXml('recommendation/event', $query);
 
+    try {
       $xml = new CultureFeedSimpleXMLElement($result);
     }
     catch (Exception $e) {
-      return FALSE;
+      throw new CultureFeedParseException($result);
     }
 
     return $xml->parseRecommendations($xml);
@@ -1250,21 +1138,11 @@ class CultureFeed {
    * @param integer $evaluation
    *   Evaluation for the recommendation.
    *   Possible values are represented in the RECOMMENDATION_EVALUATION_* constants.
-   * @return bool
-   *   In case of success TRUE.
-   *   In case of failure FALSE.
    */
   public function evaluateRecommendation($id, $evaluation) {
     $data = array('evaluation' => $evaluation);
 
-    try {
-      $this->oauth_request->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
-
-      return TRUE;
-    }
-    catch (Exception $e) {
-      return FALSE;
-    }
+    $this->oauth_request->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
   }
 
   /**
@@ -1627,30 +1505,31 @@ class CultureFeedSimpleXMLElement extends SimpleXMLElement {
 
 }
 
-class CultureFeedHTTPException extends Exception {
-
-  public $code;
-
-  public $message;
-
-  public function __construct($code, $message) {
-    $this->code = $code;
-    $this->message = $message;
+class CultureFeedParseException extends Exception {
+  public $xml;
+  
+  function __construct($xml) {
+    parent::__construct('Could not parse XML.', 0);
+    $this->xml = $xml;
   }
+}
 
+class CultureFeedHTTPException extends Exception {
+  public $body;
+  
+  function __construct($body, $code) {
+    parent::__construct('The reponse for the HTTP request was not 200.', $code);
+    $this->body = $body;
+  }
 }
 
 class CultureFeedException extends Exception {
-
-  public $code;
-
-  public $message;
-
-  public function __construct($code, $message) {
-    $this->code = $code;
-    $this->message = $message;
+  public $error_code;
+  
+  function __construct($message, $error_code) {
+    parent::__construct($message, 0);
+    $this->error_code = $error_code;
   }
-
 }
 
 /**
