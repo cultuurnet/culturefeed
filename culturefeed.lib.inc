@@ -114,6 +114,8 @@ class DrupalCultureFeed {
       $oauth_client->setHttpClient($http_client);
     }
 
+    $oauth_client->setEndpoint(variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION));
+    
     return new CultureFeed($oauth_client);
   }
 }
