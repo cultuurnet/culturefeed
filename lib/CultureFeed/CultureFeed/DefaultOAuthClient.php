@@ -260,7 +260,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // If no HTTP client was set, create one.
     if (!isset($this->http_client)) {
-      $this->http_client = new CultureFeed_HTTPClient();
+      $this->http_client = new CultureFeed_DefaultHTTPClient();
     }
 
     // Do the request.
