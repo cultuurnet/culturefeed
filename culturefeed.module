@@ -40,30 +40,6 @@ function culturefeed_menu() {
   return $items;
 }
 
-/**
- * Implements hook_menu_alter().
- */
-function culturefeed_menu_alter(&$callbacks) {
-  $callbacks['user/login']['access callback'] = FALSE;
-  unset($callbacks['user/login']['access arguments']);
-
-  $callbacks['user/register']['access callback'] = FALSE;
-  unset($callbacks['user/register']['access arguments']);
-
-  $callbacks['user/password']['access callback'] = FALSE;
-  unset($callbacks['user/password']['access arguments']);
-}
-
-function culturefeed_form_user_profile_form_alter(&$form, $form_state) {
-  unset($form['account']['pass']);
-  unset($form['account']['current_pass_required_values']);
-  unset($form['account']['current_pass']);
-  $validators = $form['#validate'];
-  $validators = array_flip($validators);
-  unset($validators['user_validate_current_pass']);
-  $form['#validate'] = array_flip($validators);
-}
-
 function culturefeed_user_create($userid, $token, $secret) {
   // Create a user for syncing "anonymous" nodes.
   $url = parse_url($GLOBALS['base_url']);
