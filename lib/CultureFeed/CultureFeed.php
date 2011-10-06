@@ -91,7 +91,7 @@ class CultureFeed {
    * @param CultureFeed_OAuthClient $oauth_client
    *   A OAuth client to make requests.
    */
-  public function __construct($oauth_client) {
+  public function __construct(CultureFeed_OAuthClient $oauth_client) {
     $this->oauth_client = $oauth_client;
   }
 
@@ -191,7 +191,7 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function createUser($user) {
+  public function createUser(CultureFeed_User $user) {
     $data = $user->toPostData();
 
     $result = $this->oauth_client->consumerPostAsXml('user', $data);
@@ -218,7 +218,7 @@ class CultureFeed {
    * @param CultureFeed_User $user
    *   The user to update. The user is identified by ID. Only fields that are set will be updated.
    */
-  public function updateUser($user) {
+  public function updateUser(CultureFeed_User $user) {
     $data = $user->toPostData();
 
     $id = $data['id'];
@@ -294,7 +294,7 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function searchUsers($query) {
+  public function searchUsers(CultureFeed_SearchUsersQuery $query) {
     $data = $query->toPostData();
 
     $result = $this->oauth_client->consumerGetAsXml('user/search', $data);
@@ -373,7 +373,7 @@ class CultureFeed {
    *   The array is indexed by the field name. Values are the privacy status.
    *   Possible values for the privacy status are represented in the PRIVACY_* constants.
    */
-  public function updateUserPrivacy($id, $privacy_config) {
+  public function updateUserPrivacy($id, CultureFeed_UserPrivacyConfig $privacy_config) {
     $data = $privacy_config->toPostData();
 
     $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
@@ -429,7 +429,7 @@ class CultureFeed {
    * @param CultureFeed_OnlineAccount $account
    *   The account settings to update.
    */
-  public function updateUserOnlineAccount($id, $account) {
+  public function updateUserOnlineAccount($id, CultureFeed_OnlineAccount $account) {
     $data = $account->toPostData();
     
     $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
@@ -467,7 +467,7 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function createActivity($activity) {
+  public function createActivity(CultureFeed_Activity $activity) {
     $data = $activity->toPostData();
 
     $result = $this->oauth_client->authenticatedPostAsXml('activity', $data);
@@ -526,7 +526,7 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function searchActivities($query) {
+  public function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
     $use_auth = FALSE;
 
     if ($query->private) {
@@ -628,7 +628,7 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRecommendationsForEvent($id, $query = array()) { // @todo make $query a class
+  public function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class
     $query['eventId'] = $id;
 
     $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $query);

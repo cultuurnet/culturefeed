@@ -65,7 +65,7 @@ class CultureFeed_OAuthClient {
    *
    * @param CultureFeed_HTTPClient $http_client
    */
-  public function setHttpClient($http_client) {
+  public function setHttpClient(CultureFeed_HTTPClient $http_client) {
     $this->http_client = $http_client;
   }
 
@@ -83,7 +83,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerGet($path, $params = array(), $format = '') {
+  public function consumerGet($path, array $params = array(), $format = '') {
     return $this->request($path, $params, 'GET', FALSE, $format);
   }
 
@@ -92,7 +92,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerGetAsXml($path, $params = array()) {
+  public function consumerGetAsXml($path, array $params = array()) {
     return $this->consumerGet($path, $params, 'xml');
   }
 
@@ -101,7 +101,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerGetAsJson($path, $params = array()) {
+  public function consumerGetAsJson($path, array $params = array()) {
     return $this->consumerGet($path, $params, 'json');
   }
 
@@ -110,7 +110,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPost($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
+  public function consumerPost($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
     return $this->request($path, $params, 'POST', FALSE, $format, $raw_post, $has_file_upload = FALSE);
   }
 
@@ -119,7 +119,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPostAsXml($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+  public function consumerPostAsXml($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->consumerPost($path, $params, $raw_post, $has_file_upload, 'xml');
   }
 
@@ -128,7 +128,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function consumerPostAsJson($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+  public function consumerPostAsJson($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->consumerPost($path, $params, $raw_post, $has_file_upload, 'json');
   }
 
@@ -137,7 +137,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedGet($path, $params = array(), $format = '') {
+  public function authenticatedGet($path, array $params = array(), $format = '') {
     return $this->request($path, $params, 'GET', TRUE, $format);
   }
 
@@ -146,7 +146,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedGetAsXml($path, $params = array()) {
+  public function authenticatedGetAsXml($path, array $params = array()) {
     return $this->authenticatedGet($path, $params, 'xml');
   }
 
@@ -155,7 +155,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedGetAsJson($path, $params = array()) {
+  public function authenticatedGetAsJson($path, array $params = array()) {
     return $this->authenticatedGet($path, $params, 'json');
   }
 
@@ -164,7 +164,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPost($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
+  public function authenticatedPost($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE, $format = '') {
     return $this->request($path, $params, 'POST', TRUE, $format, $raw_post, $has_file_upload);
   }
 
@@ -173,7 +173,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPostAsXml($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+  public function authenticatedPostAsXml($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->authenticatedPost($path, $params, $raw_post, $has_file_upload, 'xml');
   }
 
@@ -182,7 +182,7 @@ class CultureFeed_OAuthClient {
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
    */
-  public function authenticatedPostAsJson($path, $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
+  public function authenticatedPostAsJson($path, array $params = array(), $raw_post = TRUE, $has_file_upload = FALSE) {
     return $this->authenticatedPost($path, $params, $raw_post, $has_file_upload, 'json');
   }
 
@@ -212,7 +212,7 @@ class CultureFeed_OAuthClient {
    * @throws CultureFeed_HTTPException
    *   If no error message and code could be parsed from the response.
    */
-  public function request($path, $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE, $has_file_upload = FALSE) {
+  public function request($path, array $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE, $has_file_upload = FALSE) {
     // Getting full URL.
     $url = $this->getUrl($path);
 
@@ -299,7 +299,7 @@ class CultureFeed_OAuthClient {
    * @return string
    *   The full URL.
    */
-  public function getUrl($path, $query = array()) {
+  public function getUrl($path, array $query = array()) {
     $url =  rtrim($this->endpoint, '/') . '/' . trim($path, '/');
 
     if (!empty($query)) {
