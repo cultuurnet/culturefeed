@@ -113,7 +113,7 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
     $user->nick         = $this->xpath_str('/foaf:person/foaf:nick');
     $user->givenName    = $this->xpath_str('/foaf:person/foaf:givenName');
     $user->familyName   = $this->xpath_str('/foaf:person/foaf:familyName');
-    $user->mbox         = $this->xpath_str('/foaf:person/mbox');
+    $user->mbox         = $this->xpath_str('/foaf:person/foaf:mbox');
     $user->mboxVerified = $this->xpath_bool('/foaf:person/mboxVerified');
     $user->gender       = $this->xpath_str('/foaf:person/foaf:gender');
     $user->dob          = $this->xpath_time('/foaf:person/foaf:dob');
