@@ -156,13 +156,13 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
       $accounts[] = $account;
     }
     
-    if ($object->xpath_str('/foaf:person/privateNick') !== NULL) {
+    if ($this->xpath_str('/foaf:person/privateNick') !== NULL) {
       $privacy_config = new CultureFeed_UserPrivacyConfig();
       
       $vars = array('nick', 'givenName', 'familyName', 'mbox', 'gender', 'dob', 'depiction', 'bio', 'homeAddress', 'homeLocation', 'currentLocation', 'openId');
 
       foreach ($vars as $var) {
-        $privacy = $object->xpath_bool('/foaf:person/private' . ucfirst($var));
+        $privacy = $this->xpath_bool('/foaf:person/private' . ucfirst($var));
 
         if (is_bool($privacy)) {
           $privacy_config->{$var} = $privacy ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
