@@ -102,7 +102,7 @@ class DrupalCultureFeed {
 
     }
     else {
-      $http_client = new CultureFeed_DefaultHTTPClient();
+      $http_client = new CultureFeed_DefaultHttpClient();
 
       $http_client->proxy_server = variable_get('culturefeed_proxy_server', '');
       $http_client->proxy_port = variable_get('culturefeed_proxy_port', '');

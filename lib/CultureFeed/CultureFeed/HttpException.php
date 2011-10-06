@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_HTTPException extends Exception {
+class CultureFeed_HttpException extends Exception {
   public $body;
 
   function __construct($body, $code) {

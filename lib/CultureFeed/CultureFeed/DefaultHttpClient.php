@@ -3,7 +3,7 @@
 /**
  * Class to represent a basic HTTP request.
  */
-class CultureFeed_DefaultHTTPClient implements CultureFeed_HTTPClient {
+class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
 
   /**
    * Proxy server URI.
@@ -139,7 +139,7 @@ class CultureFeed_DefaultHTTPClient implements CultureFeed_HTTPClient {
 
     curl_close($ch);
 
-    return new CultureFeed_HTTPResponse($curl_code, $response);
+    return new CultureFeed_HttpResponse($curl_code, $response);
   }
 
 }

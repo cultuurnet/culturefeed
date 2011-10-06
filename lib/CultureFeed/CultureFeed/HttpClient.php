@@ -3,7 +3,7 @@
 /**
  * Interface to represent a basic HTTP request.
  */
-interface CultureFeed_HTTPClient {
+interface CultureFeed_HttpClient {
 
   /**
    * Make an HTTP request

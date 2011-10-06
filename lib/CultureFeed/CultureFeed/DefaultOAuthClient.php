@@ -8,7 +8,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
   /**
    * HTTP Request object to make the requests.
    *
-   * @var CultureFeed_HTTPClient
+   * @var CultureFeed_HttpClient
    */
   protected $http_client;
 
@@ -63,9 +63,9 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
   /**
    * Set the HTTP request object.
    *
-   * @param CultureFeed_HTTPClient $http_client
+   * @param CultureFeed_HttpClient $http_client
    */
-  public function setHttpClient(CultureFeed_HTTPClient $http_client) {
+  public function setHttpClient(CultureFeed_HttpClient $http_client) {
     $this->http_client = $http_client;
   }
 
@@ -260,7 +260,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // If no HTTP client was set, create one.
     if (!isset($this->http_client)) {
-      $this->http_client = new CultureFeed_DefaultHTTPClient();
+      $this->http_client = new CultureFeed_DefaultHttpClient();
     }
 
     // Do the request.
@@ -274,7 +274,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $xml = new CultureFeed_SimpleXMLElement($response);
       }
       catch (Exception $e) {
-        throw new CultureFeed_HTTPException($response->response, $response->code);
+        throw new CultureFeed_HttpException($response->response, $response->code);
       }
 
       if ($code = $xml->xpath_str('/response/code')) {
@@ -282,7 +282,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         throw new CultureFeed_Exception($message, $code);
       }
 
-      throw new CultureFeed_HTTPException($response->response, $response->code);
+      throw new CultureFeed_HttpException($response->response, $response->code);
     }
 
     // In case the HTTP response status is 200, we return the response.

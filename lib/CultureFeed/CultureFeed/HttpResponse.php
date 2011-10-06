@@ -3,7 +3,7 @@
 /**
  * Class to represent a basic HTTP request response.
  */
-class CultureFeed_HTTPResponse {
+class CultureFeed_HttpResponse {
 
   /**
    * HTTP response status code.
