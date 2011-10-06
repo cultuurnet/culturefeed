@@ -98,7 +98,7 @@ class DrupalCultureFeed {
    */
   public static function getInstance($token, $secret) {
     if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $oauth_client = new CultureFeed_OAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      $oauth_client = new CultureFeed_DefaultOAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
       
     }
     else {
@@ -109,7 +109,7 @@ class DrupalCultureFeed {
       $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
       $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
       
-      $oauth_client = new CultureFeed_OAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      $oauth_client = new CultureFeed_DefaultOAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
 
       $oauth_client->setHttpClient($http_client);
     }

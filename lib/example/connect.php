@@ -2,7 +2,7 @@
 
 require 'common.php';
 
-$cf = new CultureFeed(new CultureFeed_OAuthClient($_COOKIE['key'], $_COOKIE['secret']));
+$cf = new CultureFeed(new CultureFeed_DefaultOAuthClient($_COOKIE['key'], $_COOKIE['secret']));
 
 $token = $cf->getRequestToken();
 
