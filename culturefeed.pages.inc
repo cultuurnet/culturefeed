@@ -8,7 +8,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
   if (!$token) {
     return;
   }
-  
+
   $_SESSION['oauth_token'] = $token['oauth_token'];
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
@@ -22,7 +22,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
 function culturefeed_oauth_authorize() {
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
     $token = DrupalCultureFeed::getInstance($_GET['oauth_token'], $_SESSION['oauth_token_secret'])->getAccessToken($_GET['oauth_verifier']);
-    
+
     unset($_SESSION['oauth_token']);
     unset($_SESSION['oauth_token_secret']);
 

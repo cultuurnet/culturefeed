@@ -10,10 +10,10 @@ if (!isset($_COOKIE['key'])) {
 ?>
 
 <?php if (!isset($_COOKIE['oauth_token'])) : ?>
-  
+
   <p><a href="setup.php">Setup</a></p>
   <p><a href="connect.php">Connect</a></p>
-  
+
   <?php exit(); ?>
 
 <?php endif; ?>

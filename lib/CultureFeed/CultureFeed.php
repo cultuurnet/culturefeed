@@ -37,42 +37,42 @@ class CultureFeed {
    * Recommendation evaluation 'negative'.
    */
   const RECOMMENDATION_EVALUATION_NEGATIVE = 2;
-  
+
   /**
    * Top events sort option 'by number of likes'.
    */
   const TOP_EVENTS_SORT_LIKE = 'like';
-  
+
   /**
    * Top events sort option 'by number of Facebook shares'.
    */
   const TOP_EVENTS_SORT_FACEBOOK = 'facebook';
-  
+
   /**
    * Top events sort option 'by number of Twitter shares (tweets)'.
    */
   const TOP_EVENTS_SORT_TWITTER = 'twitter';
-  
+
   /**
    * Top events sort option 'by number of attends'.
    */
   const TOP_EVENTS_SORT_ATTEND = 'attend';
-  
+
   /**
    * Top events sort option 'by aggregate of all other options'.
    */
   const TOP_EVENTS_SORT_ACTIVE = 'active';
-  
+
   /**
    * Authorization screen option 'regular'.
    */
   const AUTHORIZE_TYPE_REGULAR = 'regular';
-  
+
   /**
    * Authorization screen option 'register'.
    */
   const AUTHORIZE_TYPE_REGISTER = 'register';
-  
+
   /**
    * Authorization screen option 'force login'.
    */
@@ -84,7 +84,7 @@ class CultureFeed {
    * @var CultureFeed_OAuthClient
    */
   protected $oauth_client;
-  
+
   /**
    * Constructor for a new CultureFeed instance.
    *
@@ -142,7 +142,7 @@ class CultureFeed {
     if (!empty($callback)) {
       $query['oauth_callback'] = $callback;
     }
-    
+
     if (!empty($type)) {
       $query['type'] = $type;
     }
@@ -195,7 +195,7 @@ class CultureFeed {
     $data = $user->toPostData();
 
     $result = $this->oauth_client->consumerPostAsXml('user', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -263,7 +263,7 @@ class CultureFeed {
    */
   public function getUser($id, $private = FALSE, $use_auth = TRUE) {
     $query = array('private' => $private ? 'true' : 'false');
-      
+
     if ($use_auth) {
       $result = $this->oauth_client->authenticatedGetAsXml('user/' . $id, $query);
     }
@@ -344,7 +344,7 @@ class CultureFeed {
    *   ID of the user to upload depiction for.
    * @param string $file_data
    *   Binary data of the file to upload.
-   */  
+   */
   public function uploadUserDepiction($id, $file_data) {
     $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
   }
@@ -431,7 +431,7 @@ class CultureFeed {
    */
   public function updateUserOnlineAccount($id, CultureFeed_OnlineAccount $account) {
     $data = $account->toPostData();
-    
+
     $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
   }
 
@@ -570,7 +570,7 @@ class CultureFeed {
    */
   public function getTopEvents($type, $max = 5) {
     $query = array('max' => $max);
-    
+
     $result = $this->oauth_client->consumerGetAsXml('activity/topevents/' . $type, $query);
 
     try {
@@ -672,7 +672,7 @@ class CultureFeed {
    */
   public function getUrlAddSocialNetwork($network, $destination = '') {
     $query = array();
-    
+
     $query['network'] = $network;
 
     if (!empty($destination)) {

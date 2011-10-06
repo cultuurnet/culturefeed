@@ -136,9 +136,9 @@ class CultureFeed_HTTPClient {
     $response  = curl_exec($ch);
     $curl_info = curl_getinfo($ch);
     $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
+
     curl_close($ch);
-    
+
     return new CultureFeed_HTTPResponse($curl_code, $response);
   }
 

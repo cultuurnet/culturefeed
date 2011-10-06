@@ -218,7 +218,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // Getting the request token for the request based on $use_auth.
     $request_token = $use_auth ? $this->token : NULL;
-    
+
     // Since the OAuth library doesn't support multipart, we don't encode params that have a file.
     $params_to_encode = $has_file_upload ? array() : $params;
 
@@ -257,7 +257,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     if (!$raw_post) {
       $post_data = $request->to_postdata();
     }
-    
+
     // If no HTTP client was set, create one.
     if (!isset($this->http_client)) {
       $this->http_client = new CultureFeed_HTTPClient();
@@ -265,7 +265,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // Do the request.
     $response = $this->http_client->request($url, $http_headers, $method, $post_data);
-    
+
     // In case the HTTP response status is not 200, we consider this an error.
     // In case we can parse a code and message from the response, we throw a CultureFeed_Exception.
     // In case we can't parse a code and message, we throw a CultureFeed_HTTPException.

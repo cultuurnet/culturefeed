@@ -108,7 +108,7 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
    */
   public function parseUser() {
     $user = new CultureFeed_User();
-    
+
     $user->id           = $this->xpath_str('/foaf:person/rdf:id');
     $user->nick         = $this->xpath_str('/foaf:person/foaf:nick');
     $user->givenName    = $this->xpath_str('/foaf:person/foaf:givenName');
@@ -271,7 +271,7 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
       $recommendation->score        = $object->xpath_float('score');
       $recommendation->algorithm    = $object->xpath_str('algorithm');
       $recommendation->creationDate = $object->xpath_time('creationDate');
-      
+
       $recommendation_item = new CultureFeed_RecommendationItem();
 
       $recommendation_item->id                = $object->xpath_str('item/id');

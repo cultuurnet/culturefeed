@@ -31,5 +31,5 @@ class CultureFeed_HTTPResponse {
     $this->code = $code;
     $this->response = $response;
   }
-  
+
 }
