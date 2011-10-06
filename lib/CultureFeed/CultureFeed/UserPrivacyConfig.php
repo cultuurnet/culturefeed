@@ -96,6 +96,14 @@ class CultureFeed_UserPrivacyConfig {
   public $homeLocation;
 
   /**
+   * Privacy status of the user's currentLocation..
+   * Possible values are represented in the PUBLIC_* constants.
+   *
+   * @var string
+   */
+  public $currentLocation;
+
+  /**
    * Privacy status of the user's openId.
    * Possible values are represented in the PUBLIC_* constants.
    *

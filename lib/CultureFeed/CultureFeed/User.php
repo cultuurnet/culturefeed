@@ -156,6 +156,15 @@ class CultureFeed_User {
    * @var array
    */
   public $holdsAccount;
+  
+  
+
+  /**
+   * Field privacy status.
+   *
+   * @var CultureFeed_UserPrivacyConfig
+   */
+  public $privacyConfig;
 
   /**
    * Convert a CultureFeed_User object to an array that can be used as data in POST requests that expect user info.
