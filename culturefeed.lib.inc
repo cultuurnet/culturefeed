@@ -97,23 +97,23 @@ class DrupalCultureFeed {
    *   @todo document this
    */
   public static function getInstance($token, $secret) {
-    $cf = new CultureFeed(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
-
-    if (variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $http_request = new CultureFeed_HTTPRequest();
+    if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
+      $oauth_client = new CultureFeed_OAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      
+    }
+    else {
+      $http_client = new CultureFeed_HTTPClient();
     
-      $http_request->proxy_server = variable_get('culturefeed_proxy_server', '');
-      $http_request->proxy_port = variable_get('culturefeed_proxy_port', '');
-      $http_request->proxy_username = variable_get('culturefeed_proxy_username', '');
-      $http_request->proxy_password = variable_get('culturefeed_proxy_password', '');
+      $http_client->proxy_server = variable_get('culturefeed_proxy_server', '');
+      $http_client->proxy_port = variable_get('culturefeed_proxy_port', '');
+      $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
+      $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
       
-      $oauth_request = new CultureFeed_OAuthRequest(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
-      
-      $oauth_request->setHttpRequest = $http_request;
-      
-      $cf->setOAuthRequest($oauth_request);
+      $oauth_client = new CultureFeed_OAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+
+      $oauth_client->setHttpClient($http_client);
     }
 
-    return $cf;
+    return new CultureFeed($oauth_client);
   }
 }

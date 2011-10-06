@@ -81,33 +81,18 @@ class CultureFeed {
   /**
    * OAuth request object to do the request.
    *
-   * @var CultureFeed_OAuthRequest
+   * @var CultureFeed_OAuthClient
    */
-  protected $oauth_request;
+  protected $oauth_client;
   
   /**
    * Constructor for a new CultureFeed instance.
    *
-   * @param string $consumer_key
-   *   Consumer key.
-   * @param string $consumer_secret
-   *   Consumer secret.
-   * @param string $oauth_token
-   *   (optional) Token.
-   * @param string $oauth_token_secret
-   *   (optional) Token secret.
+   * @param CultureFeed_OAuthClient $oauth_client
+   *   A OAuth client to make requests.
    */
-  public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->oauth_request = new CultureFeed_OAuthRequest($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-  }
-
-  /**
-   * Set the OAuth request object.
-   *
-   * @param CultureFeed_OAuthRequest $http_request
-   */
-  public function setOAuthRequest($oauth_request) {
-    $this->oauth_request = $oauth_request;
+  public function __construct($oauth_client) {
+    $this->oauth_client = $oauth_client;
   }
 
   /**
@@ -123,7 +108,7 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getRequestToken() {
-    $response = $this->oauth_request->consumerPost('requestToken', array(), FALSE);
+    $response = $this->oauth_client->consumerPost('requestToken', array(), FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
 
@@ -162,7 +147,7 @@ class CultureFeed {
       $query['type'] = $type;
     }
 
-    return $this->oauth_request->getUrl('auth/authorize', $query);
+    return $this->oauth_client->getUrl('auth/authorize', $query);
   }
 
   /**
@@ -180,7 +165,7 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getAccessToken($oauth_verifier) {
-    $response = $this->oauth_request->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
+    $response = $this->oauth_client->authenticatedPost('accessToken', array('oauth_verifier' => $oauth_verifier));
 
     $token = OAuthUtil::parse_parameters($response);
 
@@ -209,7 +194,7 @@ class CultureFeed {
   public function createUser($user) {
     $data = $user->toPostData();
 
-    $result = $this->oauth_request->consumerPostAsXml('user', $data);
+    $result = $this->oauth_client->consumerPostAsXml('user', $data);
     
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -240,7 +225,7 @@ class CultureFeed {
 
     unset($data['id']);
 
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id, $data);
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id, $data);
   }
 
   /**
@@ -252,7 +237,7 @@ class CultureFeed {
    *   ID of the user who is deleted.
    */
   public function deleteUser($id) {
-    $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/delete');
+    $this->oauth_client->authenticatedGetAsXml('user/' . $id . '/delete');
   }
 
   /**
@@ -280,10 +265,10 @@ class CultureFeed {
     $query = array('private' => $private ? 'true' : 'false');
       
     if ($use_auth) {
-      $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id, $query);
+      $result = $this->oauth_client->authenticatedGetAsXml('user/' . $id, $query);
     }
     else {
-      $result = $this->oauth_request->consumerGetAsXml('user/' . $id, $query);
+      $result = $this->oauth_client->consumerGetAsXml('user/' . $id, $query);
     }
 
     try {
@@ -312,7 +297,7 @@ class CultureFeed {
   public function searchUsers($query) {
     $data = $query->toPostData();
 
-    $result = $this->oauth_request->consumerGetAsXml('user/search', $data);
+    $result = $this->oauth_client->consumerGetAsXml('user/search', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -338,7 +323,7 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getSimilarUsers($id) {
-    $result = $this->oauth_request->consumerGetAsXml('user/' . $id . '/similar', array());
+    $result = $this->oauth_client->consumerGetAsXml('user/' . $id . '/similar', array());
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -361,7 +346,7 @@ class CultureFeed {
    *   Binary data of the file to upload.
    */  
   public function uploadUserDepiction($id, $file_data) {
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/upload_depiction', array('depiction' => $file_data), TRUE, TRUE);
   }
 
   /**
@@ -373,7 +358,7 @@ class CultureFeed {
    *   ID of the user who requests the confirmation e-mail to be resent.
    */
   public function resendMboxConfirmationForUser($id) {
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/resend_mbox_confirmation');
   }
 
   /**
@@ -391,7 +376,7 @@ class CultureFeed {
   public function updateUserPrivacy($id, $privacy_config) {
     $data = $privacy_config->toPostData();
 
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/privacy', $data);
   }
 
   /**
@@ -408,7 +393,7 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getUserServiceConsumers($id) {
-    $result = $this->oauth_request->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
+    $result = $this->oauth_client->authenticatedGetAsXml('user/' . $id . '/serviceconsumers');
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -431,7 +416,7 @@ class CultureFeed {
    *   ID of the service consumer that needs to be revoked.
    */
   public function revokeUserServiceConsumer($user_id, $consumer_id) {
-    $this->oauth_request->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
+    $this->oauth_client->authenticatedPostAsXml('user/' . $user_id . '/serviceconsumers/' . $consumer_id . '/revoke');
   }
 
   /**
@@ -447,7 +432,7 @@ class CultureFeed {
   public function updateUserOnlineAccount($id, $account) {
     $data = $account->toPostData();
     
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/update', $data);
   }
 
   /**
@@ -468,7 +453,7 @@ class CultureFeed {
       'accountType' => $account_type,
     );
 
-    $this->oauth_request->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
   }
 
   /**
@@ -485,7 +470,7 @@ class CultureFeed {
   public function createActivity($activity) {
     $data = $activity->toPostData();
 
-    $result = $this->oauth_request->authenticatedPostAsXml('activity', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('activity', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -512,7 +497,7 @@ class CultureFeed {
   public function updateActivity($id, $private) {
     $data = array('private' => $private ? 'true' : 'false');
 
-    $this->oauth_request->authenticatedPostAsXml('activity/' . $id, $data);
+    $this->oauth_client->authenticatedPostAsXml('activity/' . $id, $data);
   }
 
   /**
@@ -524,7 +509,7 @@ class CultureFeed {
    *   ID of the activity that is deleted.
    */
   public function deleteActivity($id) {
-    $this->oauth_request->authenticatedGetAsXml('activity/' . $id . '/delete');
+    $this->oauth_client->authenticatedGetAsXml('activity/' . $id . '/delete');
   }
 
   /**
@@ -551,10 +536,10 @@ class CultureFeed {
     $data = $query->toPostData();
 
     if ($use_auth) {
-      $result = $this->oauth_request->authenticatedGetAsXml('activity', $data);
+      $result = $this->oauth_client->authenticatedGetAsXml('activity', $data);
     }
     else {
-      $result = $this->oauth_request->consumerGetAsXml('activity', $data);
+      $result = $this->oauth_client->consumerGetAsXml('activity', $data);
     }
 
     try {
@@ -586,7 +571,7 @@ class CultureFeed {
   public function getTopEvents($type, $max = 5) {
     $query = array('max' => $max);
     
-    $result = $this->oauth_request->consumerGetAsXml('activity/topevents/' . $type, $query);
+    $result = $this->oauth_client->consumerGetAsXml('activity/topevents/' . $type, $query);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -615,7 +600,7 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
-    $result = $this->oauth_request->authenticatedGetAsXml('recommendation/user/' . $id, $query);
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $query);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -646,7 +631,7 @@ class CultureFeed {
   public function getRecommendationsForEvent($id, $query = array()) { // @todo make $query a class
     $query['eventId'] = $id;
 
-    $result = $this->oauth_request->authenticatedGetAsXml('recommendation/event', $query);
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $query);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -672,7 +657,7 @@ class CultureFeed {
   public function evaluateRecommendation($id, $evaluation) {
     $data = array('evaluation' => $evaluation);
 
-    $this->oauth_request->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
+    $this->oauth_client->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
   }
 
   /**
@@ -694,7 +679,7 @@ class CultureFeed {
       $query['destination'] = $destination;
     }
 
-    return $this->oauth_request->getUrl('auth/network/extra', $query);
+    return $this->oauth_client->getUrl('auth/network/extra', $query);
   }
 
   /**
@@ -714,7 +699,7 @@ class CultureFeed {
       $query['destination'] = $destination;
     }
 
-    return $this->oauth_request->getUrl('auth/changepassword/' . $id, $query);
+    return $this->oauth_client->getUrl('auth/changepassword/' . $id, $query);
   }
 
   /**
@@ -732,7 +717,7 @@ class CultureFeed {
       $query['destination'] = $destination;
     }
 
-    return $this->oauth_request->getUrl('auth/logout', $query);
+    return $this->oauth_client->getUrl('auth/logout', $query);
   }
 
 }

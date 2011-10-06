@@ -3,14 +3,14 @@
 /**
  * Class to represent a OAuth request.
  */
-class CultureFeed_OAuthRequest {
+class CultureFeed_OAuthClient {
 
   /**
    * HTTP Request object to make the requests.
    *
-   * @var CultureFeed_HTTPRequest
+   * @var CultureFeed_HTTPClient
    */
-  protected $http_request;
+  protected $http_client;
 
   /**
    * Endpoint (full url) where the CultureFeed API resides.
@@ -41,7 +41,7 @@ class CultureFeed_OAuthRequest {
   protected $token;
 
   /**
-   * Constructor for a new CultureFeed_OAuthRequest instance.
+   * Constructor for a new CultureFeed_OAuthClient instance.
    *
    * @param string $consumer_key
    *   Consumer key.
@@ -53,8 +53,6 @@ class CultureFeed_OAuthRequest {
    *   (optional) Token secret.
    */
   public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->http_request = new CultureFeed_HTTPRequest();
-    
     $this->signature_method = new OAuthSignatureMethod_HMAC_SHA1();
     $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
@@ -65,10 +63,10 @@ class CultureFeed_OAuthRequest {
   /**
    * Set the HTTP request object.
    *
-   * @param CultureFeed_HTTPRequest $http_request
+   * @param CultureFeed_HTTPClient $http_client
    */
-  public function setHttpRequest($http_request) {
-    $this->http_request = $http_request;
+  public function setHttpClient($http_client) {
+    $this->http_client = $http_client;
   }
 
   /**
@@ -259,8 +257,14 @@ class CultureFeed_OAuthRequest {
     if (!$raw_post) {
       $post_data = $request->to_postdata();
     }
+    
+    // If no HTTP client was set, create one.
+    if (!isset($this->http_client)) {
+      $this->http_client = new CultureFeed_HTTPClient();
+    }
 
-    $response = $this->http_request->request($url, $http_headers, $method, $post_data);
+    // Do the request.
+    $response = $this->http_client->request($url, $http_headers, $method, $post_data);
     
     // In case the HTTP response status is not 200, we consider this an error.
     // In case we can parse a code and message from the response, we throw a CultureFeed_Exception.

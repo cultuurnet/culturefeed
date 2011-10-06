@@ -22,7 +22,7 @@ if (!isset($_COOKIE['key'])) {
 
 $base_url = 'http://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/';
 
-$cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']);
+$cf = new CultureFeed(new CultureFeed_OAuthClient($_COOKIE['key'], $_COOKIE['secret'], $_COOKIE['oauth_token'], $_COOKIE['oauth_token_secret']));
 
 $uid = $_COOKIE['oauth_user'];
 

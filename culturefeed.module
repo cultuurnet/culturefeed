@@ -171,3 +171,7 @@ function culturefeed_get_events_for_cdbids($cdbids) {
   
   return $events;
 }
+
+function culturefeed_log($type, $exception) {
+  watchdog($type, '[%error]: !message in %file on line %line.', array('%error' => $exception->getCode(), '!message' => $exception->getMessage(), '%file' => $exception->getFile(), '%line' => $exception->getLine()), WATCHDOG_ERROR);
+}

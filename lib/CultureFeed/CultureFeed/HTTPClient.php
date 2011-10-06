@@ -3,7 +3,7 @@
 /**
  * Class to represent a basic HTTP request.
  */
-class CultureFeed_HTTPRequest {
+class CultureFeed_HTTPClient {
 
   /**
    * Proxy server URI.

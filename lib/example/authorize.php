@@ -3,7 +3,7 @@
 require 'common.php';
 
 if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
-  $cf = new CultureFeed($_COOKIE['key'], $_COOKIE['secret'], $_GET['oauth_token'], $_COOKIE['oauth_token_secret']);
+  $cf = new CultureFeed(new CultureFeed_OAuthClient($_COOKIE['key'], $_COOKIE['secret'], $_GET['oauth_token'], $_COOKIE['oauth_token_secret']));
   
   $token = $cf->getAccessToken($_GET['oauth_verifier']);
 
