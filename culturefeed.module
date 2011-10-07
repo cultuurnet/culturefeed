@@ -47,7 +47,7 @@ function culturefeed_menu() {
   return $items;
 }
 
-function culturefeed_user_create($userid, $token, $secret) {
+function culturefeed_user_create($userid) {
   // Create a user for syncing "anonymous" nodes.
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
@@ -62,49 +62,21 @@ function culturefeed_user_create($userid, $token, $secret) {
     )
   );
 
-  $account->culturefeed_userid = $userid;
-  $account->culturefeed_oauth_token = $token;
-  $account->culturefeed_oauth_secret = $secret;
-  user_save($account);
-
   return $account;
-}
-
-/**
- * Implements hook_user_insert().
- */
-function culturefeed_user_insert(&$edit, $account, $category) {
-  if (isset($account->culturefeed_oauth_token) && !empty($account->culturefeed_oauth_token)) {
-    db_insert('culturefeed_user')
-      ->fields(array(
-        'uid' => $account->uid,
-        'userid' => $account->culturefeed_userid,
-        'token' => $account->culturefeed_oauth_token,
-        'secret' => $account->culturefeed_oauth_secret,
-        ))
-      ->execute();
-  }
-}
-
-/**
- * Implements hook_user_insert().
- */
-function culturefeed_user_update(&$edit, $account, $category) {
-  db_delete('culturefeed_user')
-    ->condition('uid', $account->uid)
-    ->execute();
-  culturefeed_user_insert($edit, $account, $category);
 }
 
 /**
  * Implements hook_user_load().
  */
 function culturefeed_user_load($users) {
-  $result = db_query('SELECT * FROM {culturefeed_user} cfu WHERE uid IN (:uids)', array(':uids' => array_keys($users)));
+  $result = db_query('SELECT * FROM {culturefeed_user} cfu INNER JOIN {culturefeed_token} cft ON cft.userid = cfu.userid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
   foreach ($result as $record) {
     $users[$record->uid]->culturefeed_userid = $record->userid;
-    $users[$record->uid]->culturefeed_oauth_token = $record->token;
-    $users[$record->uid]->culturefeed_oauth_secret = $record->secret;
+    if (!isset($users[$record->uid]->tokens)) {
+      $users[$record->uid]->tokens = array();
+    }
+    $users[$record->uid]->tokens[$record->application_key]->culturefeed_oauth_token = $record->token;
+    $users[$record->uid]->tokens[$record->application_key]->culturefeed_oauth_secret = $record->secret;
   }
 }
 
@@ -112,20 +84,54 @@ function culturefeed_user_load($users) {
  * Implements hook_user_delete().
  */
 function culturefeed_user_delete($account) {
+  $culturefeed_userid = db_query("SELECT userid FROM {culturefeed_user} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
+  
   db_delete('culturefeed_user')
     ->condition('uid', $account->uid)
     ->execute();
+  db_delete('culturefeed_token')
+    ->condition('userid', $culturefeed_userid)
+    ->execute();
 }
 
-function culturefeed_user_get($userid, $token, $secret) {
+function culturefeed_user_get($userid, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
+  
+  if (!$application_key) {
+    $application_key = variable_get('culturefeed_api_application_key', '');
+  }
 
-  $user_info = db_query("SELECT * FROM {culturefeed_user} WHERE userid = :userid", array(':userid' => $userid))->fetchObject();;
-  if (!$user_info) {
-    $account = culturefeed_user_create($userid, $token, $secret);
+  $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.userid = :userid", array(':userid' => $userid))->fetchObject();
+  
+  if (!$user_exists) {
+    $account = culturefeed_user_create($userid);
+    db_insert('culturefeed_user')
+      ->fields(array(
+        'uid' => $account->uid,
+        'userid' => $userid,
+        ))
+      ->execute();
   }
   else {
-    $account = user_load($user_info->uid);
+    $account = user_load($user_exists->uid);
+  }
+  
+  if ($token) {
+    $token_exists = db_query("SELECT * FROM {culturefeed_token} cft WHERE cft.userid = :userid AND cft.application_key = :application_key", array(':userid' => $userid, ':application_key' => $application_key))->fetchObject();
+    
+    db_delete('culturefeed_token')
+      ->condition('userid', $userid)
+      ->condition('application_key', $application_key)
+      ->execute();
+    
+    db_insert('culturefeed_token')
+      ->fields(array(
+        'userid' => $userid,
+        'token' => $token,
+        'secret' => $secret,
+        'application_key' => $application_key,
+        ))
+      ->execute();
   }
 
   return $account;

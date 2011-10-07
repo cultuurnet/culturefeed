@@ -19,6 +19,28 @@ function culturefeed_schema() {
         'length'      => 64,
         'not null'    => TRUE
       ),
+    ),
+    'primary key' => array('uid'),
+    'unique keys' => array(
+      'uid' => array('uid'),
+      'userid' => array('userid'),
+    ),
+  );
+  $schema['culturefeed_token'] = array(
+    'description' => t('Tokens and secrets from users.'),
+    'fields' => array(
+      'userid' => array(
+        'description' => t('CultureFeed ID.'),
+        'type'        => 'varchar',
+        'length'      => 64,
+        'not null'    => TRUE
+      ),
+      'application_key' => array(
+        'description' => t('Application key.'),
+        'type'        => 'varchar',
+        'length'      => 64,
+        'not null'    => TRUE
+      ),
       'token' => array(
         'description' => t('CultureFeed OAuth token.'),
         'type'        => 'varchar',
@@ -32,10 +54,16 @@ function culturefeed_schema() {
         'not null'    => TRUE
       ),
     ),
-    'primary key' => array('uid'),
-    'unique keys' => array(
-      'uid' => array('uid'),
+    'primary key' => array('userid', 'application_key'),
+    'indexes' => array(
       'userid' => array('userid'),
+      'application_key' => array('application_key'),
+    ),
+    'foreign keys' => array(
+      'culturefeed_user' => array(
+        'table' => 'culturefeed_user',
+        'columns' => array('userid' => 'userid'),
+      ),
     ),
   );
   return $schema;

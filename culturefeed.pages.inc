@@ -14,8 +14,8 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
 
   $options = array('absolute' => TRUE);
   
-  if ($destination = drupal_get_destination()) {
-    $options['query'] = $destination;
+  if (isset($_GET['destination'])) {
+    $options['query']['destination'] = $_GET['destination'];
     unset($_GET['destination']);
   }
   
@@ -40,12 +40,6 @@ function culturefeed_oauth_authorize() {
     $account = culturefeed_user_get($token['userId'], $token['oauth_token'], $token['oauth_token_secret']);
 
     if ($account) {
-      $account->culturefeed_userid = $token['userId'];
-      $account->culturefeed_oauth_token = $token['oauth_token'];
-      $account->culturefeed_oauth_secret = $token['oauth_token_secret'];
-
-      user_save($account);
-
       global $user;
       $user = $account;
 

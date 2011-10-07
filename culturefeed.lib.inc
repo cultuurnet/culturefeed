@@ -43,9 +43,14 @@ class DrupalCultureFeed {
    * @return CultureFeed_User
    *   @todo document this
    */
-  public static function getLoggedInUser() {
-    if (isset(self::$logged_in_user)) {
-      return self::$logged_in_user;
+  public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+    
+    if (isset(self::$logged_in_user[$application_key])) {
+      return self::$logged_in_user[$application_key];
     }
 
     if (!self::isCultureFeedUser()) {
@@ -54,9 +59,9 @@ class DrupalCultureFeed {
 
     $account = self::getLoggedInAccount();
 
-    self::$logged_in_user = self::getLoggedInUserInstance()->getUser(self::$logged_in_account->culturefeed_userid, TRUE, TRUE);
+    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser($account->culturefeed_userid, TRUE, TRUE);
 
-    return self::$logged_in_user;
+    return self::$logged_in_user[$application_key];
   }
 
   /**
@@ -65,20 +70,25 @@ class DrupalCultureFeed {
    * @return CultureFeed
    *   @todo document this
    */
-  public static function getLoggedInUserInstance() {
-    if (isset(self::$user_instance)) {
-      return self::$user_instance;
+  public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+    
+    if (isset(self::$user_instance[$application_key])) {
+      return self::$user_instance[$application_key];
     }
 
     $account = self::getLoggedInAccount();
 
-    if (!isset($account->culturefeed_oauth_token) || !isset($account->culturefeed_oauth_secret)) {
+    if (!isset($account->tokens[$application_key]->culturefeed_oauth_token) || !isset($account->tokens[$application_key]->culturefeed_oauth_secret)) {
       return;
     }
 
-    self::$user_instance = self::getInstance($account->culturefeed_oauth_token, $account->culturefeed_oauth_secret);
+    self::$user_instance[$application_key] = self::getInstance($account->tokens[$application_key]->culturefeed_oauth_token, $account->tokens[$application_key]->culturefeed_oauth_secret);
 
-    return self::$user_instance;
+    return self::$user_instance[$application_key];
   }
 
   /**
@@ -87,14 +97,19 @@ class DrupalCultureFeed {
    * @return CultureFeed
    *   @todo document this
    */
-  public static function getConsumerInstance() {
-    if (isset(self::$consumer_instance)) {
-      return self::$consumer_instance;
+  public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+    
+    if (isset(self::$consumer_instance[$application_key])) {
+      return self::$consumer_instance[$application_key];
     }
 
-    self::$consumer_instance = self::getInstance(NULL, NULL);
+    self::$consumer_instance[$application_key] = self::getInstance(NULL, NULL, $application_key, $shared_secret);
 
-    return self::$consumer_instance;
+    return self::$consumer_instance[$application_key];
   }
 
   /**
@@ -103,9 +118,14 @@ class DrupalCultureFeed {
    * @return CultureFeed
    *   @todo document this
    */
-  public static function getInstance($token, $secret) {
+  public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+    
     if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $oauth_client = new CultureFeed_DefaultOAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
 
     }
     else {
@@ -116,7 +136,7 @@ class DrupalCultureFeed {
       $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
       $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
 
-      $oauth_client = new CultureFeed_DefaultOAuthClient(variable_get('culturefeed_api_application_key', ''), variable_get('culturefeed_api_shared_secret', ''), $token, $secret);
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
 
       $oauth_client->setHttpClient($http_client);
     }
