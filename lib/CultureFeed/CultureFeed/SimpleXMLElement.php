@@ -241,6 +241,17 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
   public function parseActivities() {
+    $type_mapping = array(
+      'VIEW'     => CultureFeed_Activity::TYPE_VIEW,
+      'DETAIL'   => CultureFeed_Activity::TYPE_DETAIL,
+      'LIKE'     => CultureFeed_Activity::TYPE_LIKE,
+      'MAIL'     => CultureFeed_Activity::TYPE_MAIL,
+      'PRINT'    => CultureFeed_Activity::TYPE_PRINT,
+      'FACEBOOK' => CultureFeed_Activity::TYPE_FACEBOOK,
+      'TWITTER'  => CultureFeed_Activity::TYPE_TWITTER,
+      'IK_GA'    => CultureFeed_Activity::TYPE_IK_GA,
+    );
+      
     $total = $this->xpath_int('/response/total');
 
     $activities = array();
@@ -255,7 +266,7 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
       $activity->createdVia   = $object->xpath_str('createdVia');
       $activity->points       = $object->xpath_str('points');
       $activity->contentType  = $object->xpath_str('contentType');
-      $activity->type         = $object->xpath_str('type');
+      $activity->type         = isset($type_mapping[$object->xpath_str('type')]) ? $type_mapping[$object->xpath_str('type')] : $object->xpath_str('type');
       $activity->value        = $object->xpath_str('value');
       $activity->userId       = $object->xpath_str('userId');
       $activity->depiction    = $object->xpath_str('depiction');
