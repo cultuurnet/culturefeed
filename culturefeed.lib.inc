@@ -9,6 +9,17 @@ class DrupalCultureFeed {
   protected static $logged_in_account;
 
   protected static $logged_in_user;
+  
+  public static function isCultureFeedUser($uid = NULL) {
+    if (!$uid) {
+      $account = self::getLoggedInAccount();
+    }
+    else {
+      $account = user_load($uid);
+    }
+
+    return isset($account->culturefeed_userid) && !empty($account->culturefeed_userid);
+  }
 
   public static function getLoggedInAccount() {
     if (isset(self::$logged_in_account)) {
@@ -37,15 +48,11 @@ class DrupalCultureFeed {
       return self::$logged_in_user;
     }
 
-    if (user_is_anonymous()) {
+    if (!self::isCultureFeedUser()) {
       return NULL;
     }
 
     $account = self::getLoggedInAccount();
-
-    if (!isset($account->culturefeed_userid)) {
-      return NULL;
-    }
 
     self::$logged_in_user = self::getLoggedInUserInstance()->getUser(self::$logged_in_account->culturefeed_userid, TRUE, TRUE);
 

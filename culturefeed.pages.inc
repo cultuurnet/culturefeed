@@ -12,7 +12,13 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
   $_SESSION['oauth_token'] = $token['oauth_token'];
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-  $callback_url = url('culturefeed/oauth/authorize', array('absolute' => TRUE));
+  $options = array('absolute' => TRUE);
+  
+  if (isset($_GET['popup'])) {
+    $options['query']['popup'] = 'true'; // @todo add destination
+  }
+
+  $callback_url = url('culturefeed/oauth/authorize', $options);
 
   $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type);
 
@@ -39,8 +45,15 @@ function culturefeed_oauth_authorize() {
       $user = $account;
 
       user_login_finalize();
-
-      drupal_goto('');
+      
+      if (isset($_GET['popup'])) {
+        drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
+      }
+      else {
+        drupal_goto('');
+      }
     }
   }
+  
+  return '';
 }
