@@ -68,7 +68,7 @@ function culturefeed_user_create($userid) {
  * Implements hook_user_load().
  */
 function culturefeed_user_load($users) {
-  $result = db_query('SELECT * FROM {culturefeed_user} cfu LEFT JOIN {culturefeed_token} cft ON cft.userid = cfu.userid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
+  $result = db_query('SELECT cfu.uid, cfu.userid, cft.application_key, cft.token, cft.secret FROM {culturefeed_user} cfu LEFT JOIN {culturefeed_token} cft ON cft.userid = cfu.userid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
   foreach ($result as $record) {
     $users[$record->uid]->culturefeed_userid = $record->userid;
     if (!isset($users[$record->uid]->tokens)) {
