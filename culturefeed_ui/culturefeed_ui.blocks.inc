@@ -64,7 +64,7 @@ function culturefeed_ui_block_view_most_active_user() {
   $query->sort = $sort;
 
   try {
-    $account = DrupalCultureFeed::getConsumerInstance()->searchUsers($query)->objects[0];
+    $account = DrupalCultureFeed::searchUsers($query)->objects[0];
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -87,7 +87,7 @@ function culturefeed_ui_block_view_top_events() {
   $sort = variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE);
 
   try {
-    $events = DrupalCultureFeed::getConsumerInstance()->getTopEvents($sort, 5); // @todo make max configurable
+    $events = DrupalCultureFeed::getTopEvents($sort, 5); // @todo make max configurable
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -131,7 +131,7 @@ function culturefeed_ui_block_view_similar_users() {
   try {
     $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_userid);
 
-    $users = DrupalCultureFeed::getConsumerInstance()->getSimilarUsers($cf_account->id);
+    $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -204,7 +204,7 @@ function culturefeed_ui_block_view_profile_menu() {
   $items = array();
 
   $title = 'Mijn UiTid';
-  $url = 'user/' . culturefeed_user_get(DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid)->uid;
+  $url = 'user/' . culturefeed_user_get(DrupalCultureFeed::getLoggedInUserId())->uid;
   $description = 'Zo zien anderen jouw profiel.';
   
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
@@ -249,15 +249,12 @@ function culturefeed_ui_block_view_user_activities() {
     CultureFeed_Activity::TYPE_IK_GA
   );
   $query->userId = $account->culturefeed_userid;
+  if ($user->uid == $account->uid) {
+    $query->private = TRUE;
+  }
 
   try {
-    if ($user->uid == $account->uid) {
-      $query->private = TRUE;
-      $activities = DrupalCultureFeed::getLoggedInUserInstance()->searchActivities($query);
-    }
-    else {
-      $activities = DrupalCultureFeed::getConsumerInstance()->searchActivities($query);
-    }
+    $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -287,7 +284,7 @@ function culturefeed_ui_block_view_user_activities() {
 
 function culturefeed_ui_block_view_recent_activities() {
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 5;
+  $query->max = 5; // @todo make this configurable
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
@@ -297,7 +294,7 @@ function culturefeed_ui_block_view_recent_activities() {
   );
 
   try {
-    $activities = DrupalCultureFeed::getConsumerInstance()->searchActivities($query);
+    $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -340,7 +337,7 @@ function culturefeed_ui_block_view_event_like() {
   $query->nodeId = $request['event'];
 
   try {
-    $activities = DrupalCultureFeed::getConsumerInstance()->searchActivities($query);
+    $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);

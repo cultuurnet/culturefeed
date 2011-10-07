@@ -75,8 +75,8 @@ function culturefeed_user_load($users) {
       $users[$record->uid]->tokens = array();
     }
     if ($record->token) {
-      $users[$record->uid]->tokens[$record->application_key]->culturefeed_oauth_token = $record->token;
-      $users[$record->uid]->tokens[$record->application_key]->culturefeed_oauth_secret = $record->secret;
+      $users[$record->uid]->tokens[$record->application_key]->token = $record->token;
+      $users[$record->uid]->tokens[$record->application_key]->secret = $record->secret;
     }
   }
 }

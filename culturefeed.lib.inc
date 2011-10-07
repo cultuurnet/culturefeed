@@ -20,6 +20,10 @@ class DrupalCultureFeed {
 
     return isset($account->culturefeed_userid) && !empty($account->culturefeed_userid);
   }
+  
+  public static function getLoggedInUserId() {
+    return self::getLoggedInAccount()->culturefeed_userid;
+  }
 
   public static function getLoggedInAccount() {
     if (isset(self::$logged_in_account)) {
@@ -81,12 +85,14 @@ class DrupalCultureFeed {
     }
 
     $account = self::getLoggedInAccount();
+    
+    $token = $account->tokens[$application_key];
 
-    if (!isset($account->tokens[$application_key]->culturefeed_oauth_token) || !isset($account->tokens[$application_key]->culturefeed_oauth_secret)) {
+    if (!isset($token->token) || !isset($token->secret)) {
       return;
     }
 
-    self::$user_instance[$application_key] = self::getInstance($account->tokens[$application_key]->culturefeed_oauth_token, $account->tokens[$application_key]->culturefeed_oauth_secret);
+    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret);
 
     return self::$user_instance[$application_key];
   }
@@ -131,8 +137,8 @@ class DrupalCultureFeed {
     else {
       $http_client = new CultureFeed_DefaultHttpClient();
 
-      $http_client->proxy_server = variable_get('culturefeed_proxy_server', '');
-      $http_client->proxy_port = variable_get('culturefeed_proxy_port', '');
+      $http_client->proxy_server   = variable_get('culturefeed_proxy_server', '');
+      $http_client->proxy_port     = variable_get('culturefeed_proxy_port', '');
       $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
       $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
 
@@ -145,4 +151,106 @@ class DrupalCultureFeed {
     
     return new CultureFeed($oauth_client);
   }
+  
+  public static function createUser(CultureFeed_User $user) {
+    self::getLoggedInUserInstance()->createUser($user);
+  }
+
+  public static function updateUser(CultureFeed_User $user) {
+    self::getLoggedInUserInstance()->updateUser($user);
+  }
+  
+  public static function deleteUser($id) {
+    self::getLoggedInUserInstance()->deleteUser($id);
+  }
+  
+  public static function getUser($id, $private = FALSE, $use_auth = TRUE) {
+    return self::getConsumerInstance()->getUser($id, $private, $use_auth);
+  }
+  
+  public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
+    return self::getConsumerInstance()->searchUsers($query);
+  }
+  
+  public static function getSimilarUsers($id) {
+    return self::getConsumerInstance()->getSimilarUsers($id);
+  }
+  
+  public static function uploadUserDepiction($id, $file_data) {
+    self::getLoggedInUserInstance()->uploadUserDepiction($id, $file_data);
+  }
+  
+  public static function resendMboxConfirmationForUser($id) {
+    self::getLoggedInUserInstance()->resendMboxConfirmationForUser($id);
+  }
+  
+  public static function updateUserPrivacy($id, CultureFeed_UserPrivacyConfig $privacy_config) {
+    self::getLoggedInUserInstance()->updateUserPrivacy($id, $privacy_config);
+  }
+  
+  public static function getUserServiceConsumers($id) {
+    return self::getLoggedInUserInstance()->getUserServiceConsumers($id);
+  }
+  
+  public static function revokeUserServiceConsumer($user_id, $consumer_id) {
+    self::getLoggedInUserInstance()->revokeUserServiceConsumer($user_id, $consumer_id);
+  }
+  
+  public static function updateUserOnlineAccount($id, CultureFeed_OnlineAccount $account) {
+    self::getLoggedInUserInstance()->updateUserOnlineAccount($id, $account);
+  }
+  
+  public static function deleteUserOnlineAccount($id, $account_type, $account_name) {
+    self::getLoggedInUserInstance()->deleteUserOnlineAccount($id, $account_type, $account_name);
+  }
+  
+  public static function createActivity(CultureFeed_Activity $activity) {
+    self::getLoggedInUserInstance()->createActivity($activity);
+  }
+  
+  public static function updateActivity($id, $private) {
+    self::getLoggedInUserInstance()->updateActivity($id, $private);
+  }
+  
+  public static function deleteActivity($id) {
+    self::getLoggedInUserInstance()->deleteActivity($id);
+  }
+  
+  public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
+    if ($query->private) {
+      return self::getConsumerInstance()->searchActivities($query);
+    }
+    else {
+      return self::getConsumerInstance()->searchActivities($query);
+    }
+  }
+  
+  public static function getTopEvents($type, $max = 5) {
+    return self::getConsumerInstance()->getTopEvents($type, $max);
+  }
+  
+  public static function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class {
+    return self::getConsumerInstance()->getRecommendationsForUser($id, $query); // @todo make $query a class
+  }
+  
+  public static function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class {
+    return self::getConsumerInstance()->getRecommendationsForEvent($id, $query); // @todo make $query a class
+  }
+  
+  public static function evaluateRecommendation($id, $evaluation) {
+    return self::getConsumerInstance()->evaluateRecommendation($id, $evaluation);
+  }
+  
+  public static function getUrlAddSocialNetwork($network, $destination = '') {
+    return self::getConsumerInstance()->getUrlAddSocialNetwork($network, $destination);
+  }
+  
+  public static function getUrlChangePassword($id, $destination = '') {
+    return self::getConsumerInstance()->getUrlChangePassword($id, $destination);
+  }
+  
+  public static function getUrlLogout($destination = '') {
+    return self::getConsumerInstance()->getUrlLogout($destination);
+  }
+  
 }

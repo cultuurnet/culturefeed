@@ -16,7 +16,7 @@ function culturefeed_ui_page_recent_activities() {
     CultureFeed_Activity::TYPE_IK_GA
   );
 
-  $activities = DrupalCultureFeed::getConsumerInstance()->searchActivities($query);
+  $activities = DrupalCultureFeed::searchActivities($query);
 
   pager_default_initialize($activities->total, $pagelength);
 
@@ -66,7 +66,7 @@ function culturefeed_ui_search_users_results($name = '') {
     $query->name = $name;
   }
 
-  $users = DrupalCultureFeed::getConsumerInstance()->searchUsers($query);
+  $users = DrupalCultureFeed::searchUsers($query);
 
   pager_default_initialize($users->total, $pagelength);
 
@@ -168,7 +168,7 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
 
   $user_update = new CultureFeed_User();
 
-  $user_update->id         = DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid;
+  $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
   $user_update->givenName  = $values['givenName'];
   $user_update->familyName = $values['familyName'];
   $user_update->gender     = $values['gender'];
@@ -183,10 +183,8 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     $user_update->dob = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
   }
 
-  $cf = DrupalCultureFeed::getLoggedInUserInstance();
-
   try {
-    $cf->updateUser($user_update);
+    DrupalCultureFeed::updateUser($user_update);
   }
   catch (Exception $e) {
     drupal_set_message(t('Some error occurred'), 'error');
@@ -203,7 +201,7 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     $picture = file_get_contents($picture_path);
 
     try {
-      $result = DrupalCultureFeed::getLoggedInUserInstance()->uploadUserDepiction($account->culturefeed_userid, $picture);
+      $result = DrupalCultureFeed::uploadUserDepiction($account->culturefeed_userid, $picture);
     }
     catch (Exception $e) {
       drupal_set_message(t('Some error occurred while uploading picture'), 'error');
@@ -277,7 +275,7 @@ function culturefeed_ui_account_edit_form() {
 
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
-    '#markup' => l(t('Change password'), DrupalCultureFeed::getLoggedInUserInstance()->getUrlChangePassword(DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid, $destination)),
+    '#markup' => l(t('Change password'), DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination)),
     '#suffix' => '</div>',
   );
 
@@ -295,29 +293,25 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
 
   $mbox = $values['mbox'];
 
-  $cf = DrupalCultureFeed::getLoggedInUserInstance();
-
   $cf_account = new CultureFeed_User();
 
-  $cf_account->id          = DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid;
+  $cf_account->id          = DrupalCultureFeed::getLoggedInUserId();
   $cf_account->mbox        = $mbox;
   $cf_account->homeAddress = 'hello';
 
-  $cf->updateUser($cf_account);
+  DrupalCultureFeed::updateUser($cf_account);
 
   drupal_set_message(t('Updates saved.'));
 }
 
 
 function culturefeed_ui_page_most_active_users() {
-  $cf = DrupalCultureFeed::getConsumerInstance();
-
   $query = new CultureFeed_SearchUsersQuery();
   $query->max = 10;
   $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
   $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
-  $users = $cf->searchUsers($query)->objects;
+  $users = DrupalCultureFeed::searchUsers($query)->objects;
 
   $items = array();
 
@@ -333,13 +327,13 @@ function culturefeed_ui_page_most_active_users() {
 }
 
 function culturefeed_ui_page_serviceconsumers_revoke($id) {
-  $userid = DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid;
-  DrupalCultureFeed::getLoggedInUserInstance()->revokeUserServiceConsumer($userid, $id);
+  $userid = DrupalCultureFeed::getLoggedInUserId();
+  DrupalCultureFeed::revokeUserServiceConsumer($userid, $id);
   drupal_goto('culturefeed/serviceconsumers');
 }
 
 function culturefeed_ui_page_serviceconsumers() {
-  $consumers = DrupalCultureFeed::getLoggedInUserInstance()->getUserServiceConsumers(DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid);
+  $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
 
   $items = array();
 
