@@ -1,55 +1,5 @@
 <?php
 
-function culturefeed_ui_page_most_active_users() {
-  $cf = DrupalCultureFeed::getConsumerInstance();
-
-  $query = new CultureFeed_SearchUsersQuery();
-  $query->max = 10;
-  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
-  $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
-
-  $users = $cf->searchUsers($query)->objects;
-
-  $items = array();
-
-  foreach ($users as $user) {
-    $items[] = theme('image', array('path' => $user->depiction)) . '<br />' . $user->nick . '<br />' . $user->sortValue;
-  }
-
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#type' => 'ol',
-  );
-}
-
-function culturefeed_ui_page_serviceconsumers_revoke($id) {
-  $userid = DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid;
-  DrupalCultureFeed::getLoggedInUserInstance()->revokeUserServiceConsumer($userid, $id);
-  drupal_goto('culturefeed/serviceconsumers');
-}
-
-function culturefeed_ui_page_serviceconsumers() {
-  $consumers = DrupalCultureFeed::getLoggedInUserInstance()->getUserServiceConsumers(DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid);
-
-  $items = array();
-
-  foreach ($consumers as $consumer) {
-    $output = '';
-    $output .= ($consumer->logo ? theme('image' , array('path' => $consumer->logo)) : '') . '<br />';
-    $output .= $consumer->name . '<br />';
-    $output .= $consumer->description . '<br />';
-    $output .= format_date($consumer->creationDate) . '<br />';
-    $output .= l(t('Revoke'), 'culturefeed/serviceconsumers/revoke/' . $consumer->id);
-    $items[] = $output;
-  }
-
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-  );
-}
-
 function culturefeed_ui_page_recent_activities() {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -356,4 +306,55 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
   $cf->updateUser($cf_account);
 
   drupal_set_message(t('Updates saved.'));
+}
+
+
+function culturefeed_ui_page_most_active_users() {
+  $cf = DrupalCultureFeed::getConsumerInstance();
+
+  $query = new CultureFeed_SearchUsersQuery();
+  $query->max = 10;
+  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
+  $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
+
+  $users = $cf->searchUsers($query)->objects;
+
+  $items = array();
+
+  foreach ($users as $user) {
+    $items[] = theme('image', array('path' => $user->depiction)) . '<br />' . $user->nick . '<br />' . $user->sortValue;
+  }
+
+  return array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+    '#type' => 'ol',
+  );
+}
+
+function culturefeed_ui_page_serviceconsumers_revoke($id) {
+  $userid = DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid;
+  DrupalCultureFeed::getLoggedInUserInstance()->revokeUserServiceConsumer($userid, $id);
+  drupal_goto('culturefeed/serviceconsumers');
+}
+
+function culturefeed_ui_page_serviceconsumers() {
+  $consumers = DrupalCultureFeed::getLoggedInUserInstance()->getUserServiceConsumers(DrupalCultureFeed::getLoggedInAccount()->culturefeed_userid);
+
+  $items = array();
+
+  foreach ($consumers as $consumer) {
+    $output = '';
+    $output .= ($consumer->logo ? theme('image' , array('path' => $consumer->logo)) : '') . '<br />';
+    $output .= $consumer->name . '<br />';
+    $output .= $consumer->description . '<br />';
+    $output .= format_date($consumer->creationDate) . '<br />';
+    $output .= l(t('Revoke'), 'culturefeed/serviceconsumers/revoke/' . $consumer->id);
+    $items[] = $output;
+  }
+
+  return array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
 }

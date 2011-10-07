@@ -1,5 +1,12 @@
 <?php
 
+function culturefeed_ui_block_view_search_users() {
+  $block['subject'] = t('Search users');
+  $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
+
+  return $block;
+}
+
 function culturefeed_ui_block_view_profile_box() {
   if (!user_is_anonymous() && !DrupalCultureFeed::isCultureFeedUser()) {
     return;
@@ -360,13 +367,6 @@ function culturefeed_ui_block_view_event_like() {
     '#theme' => 'item_list',
     '#items' => $items,
   );
-
-  return $block;
-}
-
-function culturefeed_ui_block_view_search_users() {
-  $block['subject'] = t('Search users');
-  $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
 
   return $block;
 }
