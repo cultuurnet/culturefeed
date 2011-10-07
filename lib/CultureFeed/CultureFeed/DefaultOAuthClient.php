@@ -207,12 +207,18 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
    * @return CultureFeed_HTTPResponse
    *   The response.
    *
+   * @throws Exception
+   *   If an $use_auth is TRUE and no token was set.
    * @throws CultureFeed_Exception
    *   If an error message and code could be parsed from the response.
    * @throws CultureFeed_HTTPException
    *   If no error message and code could be parsed from the response.
    */
   public function request($path, array $params = array(), $method = 'GET', $use_auth = TRUE, $format = 'xml', $raw_post = TRUE, $has_file_upload = FALSE) {
+    if ($use_auth && !isset($this->token->key)) {
+      throw new Exception('Trying to do an authorized request without an access token set.');
+    }
+    
     // Getting full URL.
     $url = $this->getUrl($path);
 
