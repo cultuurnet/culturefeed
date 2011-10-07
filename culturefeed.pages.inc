@@ -14,6 +14,11 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
 
   $options = array('absolute' => TRUE);
   
+  if ($destination = drupal_get_destination()) {
+    $options['query'] = $destination;
+    unset($_GET['destination']);
+  }
+  
   if (isset($_GET['popup'])) {
     $options['query']['popup'] = 'true'; // @todo add destination
   }
@@ -50,6 +55,7 @@ function culturefeed_oauth_authorize() {
         drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
       }
       else {
+        if ($destination = drupal_get_destination())
         drupal_goto('');
       }
     }
