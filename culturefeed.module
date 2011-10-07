@@ -48,7 +48,6 @@ function culturefeed_menu() {
 }
 
 function culturefeed_user_create($userid) {
-  // Create a user for syncing "anonymous" nodes.
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
     drupal_anonymous_user(),

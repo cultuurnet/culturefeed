@@ -20,7 +20,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
   }
   
   if (isset($_GET['popup'])) {
-    $options['query']['popup'] = 'true'; // @todo add destination
+    $options['query']['popup'] = 'true';
   }
 
   $callback_url = url('culturefeed/oauth/authorize', $options);
