@@ -1,5 +1,27 @@
 <?php
 
+/**
+ * Fetch an unique username for the given Culture Feed user id.
+ */
+function culturefeed_unique_username($cf_uid, $nick) {
+  // if previously registered, reuse local account
+  $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
+
+  if ($name) {
+    return $name;
+  }
+  
+  $name = $nick;
+    
+  $count = 0;
+  while ($name_exists = db_query("SELECT name FROM {users} WHERE LOWER(name) = :name", array(':name' => strtolower($nick)))->fetchField()) {
+    $count++;
+    $name = $name . '_' . $count;
+  }
+
+  return $name;
+}
+
 function culturefeed_user_create($cf_uid, $nick) {
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
@@ -30,7 +52,10 @@ function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NU
     if (!$nick) {
       return FALSE;
     }
-    $account = culturefeed_user_create($cf_uid, $nick);
+    
+    $unique_nick = culturefeed_unique_username($cf_uid, $nick);
+    
+    $account = culturefeed_user_create($cf_uid, $unique_nick);
     db_insert('culturefeed_user')
       ->fields(array(
         'uid' => $account->uid,
