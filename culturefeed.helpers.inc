@@ -1,13 +1,13 @@
 <?php
 
-function culturefeed_user_create($cf_uid) {
+function culturefeed_user_create($cf_uid, $nick) {
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
     drupal_anonymous_user(),
     array(
-      'name' => $cf_uid,
+      'name' => $nick,
       'pass' => user_password(),
-      'mail' => $cf_uid . '@uitid.be',
+      'mail' => $nick . '@uitid.be',
       'roles' => array(),
       'status' => 1,
       'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
@@ -17,7 +17,7 @@ function culturefeed_user_create($cf_uid) {
   return $account;
 }
 
-function culturefeed_user_get($cf_uid, $token = NULL, $secret = NULL, $application_key = NULL) {
+function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
   
   if (!$application_key) {
@@ -27,7 +27,10 @@ function culturefeed_user_get($cf_uid, $token = NULL, $secret = NULL, $applicati
   $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchObject();
   
   if (!$user_exists) {
-    $account = culturefeed_user_create($cf_uid);
+    if (!$nick) {
+      return FALSE;
+    }
+    $account = culturefeed_user_create($cf_uid, $nick);
     db_insert('culturefeed_user')
       ->fields(array(
         'uid' => $account->uid,

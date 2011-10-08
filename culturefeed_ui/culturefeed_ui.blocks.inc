@@ -27,7 +27,7 @@ function culturefeed_ui_block_view_profile_box() {
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
       $picture = $cf_account->depiction;
-      $url_profile = 'user/' . culturefeed_user_get($cf_account->id)->uid;
+      $url_profile = 'user/' . culturefeed_user_get($cf_account->id, $cf_account->nick)->uid;
     }
   }
 
