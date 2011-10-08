@@ -120,7 +120,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account = $variables['account'];
   $account instanceof CultureFeed_User;
 
-  $url = 'user/' . culturefeed_user_get($account->id, $account->nick)->uid;
+  $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
   $picture = theme('image', array('path' => $account->depiction));
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));

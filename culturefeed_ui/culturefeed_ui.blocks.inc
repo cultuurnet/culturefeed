@@ -27,7 +27,7 @@ function culturefeed_ui_block_view_profile_box() {
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
       $picture = $cf_account->depiction;
-      $url_profile = 'user/' . culturefeed_user_get($cf_account->id, $cf_account->nick)->uid;
+      $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
 
@@ -144,10 +144,14 @@ function culturefeed_ui_block_view_similar_users() {
 
   $items = array();
   
-  $accounts = culturefeed_get_mini_user_for_users($users->objects);
+  $accounts = culturefeed_get_uids_for_users($users->objects);
 
   foreach ($users->objects as $user) {
-    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]->uid));
+    if (!isset($accounts[$user->id])) {
+      continue;
+    }
+    
+    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
   }
 
   $block['subject'] = t('Users similar to !name', array('!name' => $cf_account->nick));
@@ -206,7 +210,7 @@ function culturefeed_ui_block_view_profile_menu() {
   $items = array();
 
   $title = 'Mijn UiTid';
-  $url = 'user/' . culturefeed_user_get(DrupalCultureFeed::getLoggedInUserId())->uid;
+  $url = 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid;
   $description = 'Zo zien anderen jouw profiel.';
 
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
@@ -267,12 +271,14 @@ function culturefeed_ui_block_view_user_activities() {
 
   $events = culturefeed_get_nodes_for_activities($activities->objects);
   
-  $accounts = culturefeed_get_mini_user_for_activities($activities->objects);
+  $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
-    $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
+    if (!isset($accounts[$activity->userId]) || !isset($events[$activity->nodeId])) {
+      continue;
+    }
 
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]->uid));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $events[$activity->nodeId], 'uid' => $accounts[$activity->userId]));
   }
 
   $block['subject'] = t('User activities');
@@ -309,12 +315,14 @@ function culturefeed_ui_block_view_recent_activities() {
 
   $events = culturefeed_get_nodes_for_activities($activities->objects);
   
-  $accounts = culturefeed_get_mini_user_for_activities($activities->objects);
+  $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
-    $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
+    if (!isset($accounts[$activity->userId]) || !isset($events[$activity->nodeId])) {
+      continue;
+    }
 
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]->uid));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $events[$activity->nodeId], 'uid' => $accounts[$activity->userId]));
   }
 
   $block['subject'] = t('Recent activities');

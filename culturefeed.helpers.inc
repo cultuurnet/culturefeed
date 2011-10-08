@@ -4,7 +4,6 @@
  * Fetch an unique username for the given Culture Feed user id.
  */
 function culturefeed_unique_username($cf_uid, $nick) {
-  // if previously registered, reuse local account
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
   if ($name) {
@@ -14,7 +13,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
   $name = $nick;
 
   $count = 0;
-  while ($name_exists = db_query("SELECT name FROM {users} WHERE LOWER(name) = :name", array(':name' => strtolower($nick)))->fetchField()) {
+  while ($name_exists = db_query("SELECT name FROM {users} WHERE LOWER(name) = :name", array(':name' => strtolower($name)))->fetchField()) {
     $count++;
     $name = $name . '_' . $count;
   }
@@ -22,7 +21,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
   return $name;
 }
 
-function culturefeed_user_create($cf_uid, $nick) {
+function culturefeed_create_user($cf_uid, $nick) {
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
     drupal_anonymous_user(),
@@ -40,45 +39,85 @@ function culturefeed_user_create($cf_uid, $nick) {
   return $account;
 }
 
-function culturefeed_users_get($cf_uids) {
-  $ids = array();
+function culturefeed_get_uid_for_cf_uid($cf_uid, $nick) {
+  $user = new stdClass();
+  $user->cf_uid = $cf_uid;
+  $user->nick = $nick;
   
-  $result = db_query('SELECT cfu.cf_uid, u.uid, u.name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid IN (:cf_uids)', array(':cf_uids' => array_keys($cf_uids)));
+  return reset(culturefeed_get_uids_for_cf_uids(array($user)));
+}
+
+function culturefeed_get_uids_for_cf_uids($users) {
+  $uids = array();
   
-  foreach ($result as $record) {
-    $ids[$record->cf_uid] = $record;
+  if (empty($users)) {
+    return array();
   }
   
-  foreach ($cf_uids as $cf_uid => $info) {
-    if (!isset($ids[$cf_uid])) {
-      $user = culturefeed_user_get($cf_uid, $info->nick);
-      $ids[$cf_uid] = new stdClass();
-      $ids[$cf_uid]->cf_uid = $cf_uid;
-      $ids[$cf_uid]->name = $user->name;
-      $ids[$cf_uid]->uid = $user->uid;
+  $result = db_query('SELECT cfu.cf_uid, u.uid FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid IN (:cf_uids)', array(':cf_uids' => array_keys($users)));
+  
+  foreach ($result as $record) {
+    $uids[$record->cf_uid] = $record->uid;
+  }
+  
+  foreach ($users as $cf_uid => $user) {
+    if (!isset($uids[$cf_uid])) {
+      $account = culturefeed_get_or_create_user($cf_uid, $user->nick);
+      
+      $uids[$cf_uid] = $account->uid;
     }
   }
   
-  return $ids;
+  return $uids;
 }
 
-function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
+/**
+ * Try to get load a user account for a certain Culture Feed User ID. If it doesn't exist, create it and return it.
+ * 
+ * @param integer $cf_uid
+ *   To CultureFeed User ID of the user to load.
+ * @param string $nick
+ *   (optional) The nick of the user on CultureFeed.
+ *   If this is not passed and the user can not be found, a new account will not be created and FALSE will be returned.
+ * @param string $token
+ *   (optional) If a token is known at the moment of creation, pass it to save it.
+ *   This can be used for users that log in for the first time.
+ * @param string $secret
+ *   (optional) If a token is known at the moment of creation, pass the secret for the token to save it.
+ *   This can be used for users that log in for the first time.
+ * @param string $application_key
+ *   (optional) If a token is known at the moment of creation, pass the wanted application key the token is for to save it.
+ *   If token and secret are passed, but no application key, than the default application key will be used.
+ *   This can be used for users that log in for the first time.
+ * @return stdClass|boll
+ *   The Drupal user account will be returned in case of success.
+ *   In case of failure FALSE will be returned.
+ */
+function culturefeed_get_or_create_user($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
 
+  // If no applicatio key is passed, use the default one.
   if (!$application_key) {
     $application_key = variable_get('culturefeed_api_application_key', '');
   }
 
-  $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchObject();
+  // Check if the user is already known in our system.
+  $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
-  if (!$user_exists) {
+  // If the user is not know, create it.
+  if (!$uid) {
+    // If no nick was passed, we can't create the user.
     if (!$nick) {
       return FALSE;
     }
 
+    // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
     $unique_nick = culturefeed_unique_username($cf_uid, $nick);
 
-    $account = culturefeed_user_create($cf_uid, $unique_nick);
+    // Create the user account.
+    $account = culturefeed_create_user($cf_uid, $unique_nick);
+    
+    // Save the mapping between Culture Feed User ID and Drupal user id.
     db_insert('culturefeed_user')
       ->fields(array(
         'uid' => $account->uid,
@@ -86,16 +125,16 @@ function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NU
         ))
       ->execute();
 
+    // Save the fact that this is an external account for culturefeed.
     user_set_authmaps($account, array('authname_culturefeed' => $account->name));
-
   }
   else {
-    $account = user_load($user_exists->uid);
+    // In case the user exists, load its account.
+    $account = user_load($uid);
   }
 
+  // If a token was passed, save it after deleting a possible previous entry.
   if ($token) {
-    $token_exists = db_query("SELECT * FROM {culturefeed_token} cft WHERE cft.cf_uid = :cf_uid AND cft.application_key = :application_key", array(':cf_uid' => $cf_uid, ':application_key' => $application_key))->fetchObject();
-
     db_delete('culturefeed_token')
       ->condition('cf_uid', $cf_uid)
       ->condition('application_key', $application_key)
@@ -134,28 +173,29 @@ function culturefeed_get_nodes_for_activities($activities) {
   }
   
   foreach ($nodes as $type => $type_nodes) {
+    if (empty($type_nodes)) {
+      continue;
+    }
+    
     $cdbids = array_unique(array_keys($type_nodes));
 
-    if (!empty($cdbids)) {
-      $tmp = culturefeed_get_nodes_for_cdbids($type, $cdbids);
+    $tmp = culturefeed_get_nodes_for_cdbids($type, $cdbids);
 
-      $result = array_merge($tmp, $result);
-
-    }
+    $result = array_merge($tmp, $result);
   }
 
   return $result;
 }
 
 function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
+  $nodes = array();
+  
   $query = array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids));
   $request = array('action' => 'list_summary', 'type' => $type, 'query' => $query);
   
   $results = cnapi_get($request);
-  
-  $nodes = array();
 
-  if (!empty($results['data'])) {
+  if (isset($results['data']) && !empty($results['data'])) {
     foreach ($results['data'] as $result) {
       $nodes[$result['cdbid']] = $result;
     }
@@ -164,7 +204,7 @@ function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   return $nodes;
 }
 
-function culturefeed_get_mini_user_for_activities($activities) {
+function culturefeed_get_uids_for_activities($activities) {
   $ids = array();
   
   foreach ($activities as $activity) {
@@ -173,10 +213,10 @@ function culturefeed_get_mini_user_for_activities($activities) {
     $ids[$activity->userId]->cf_uid = $activity->userId;
   }
   
-  return culturefeed_users_get($ids);
+  return culturefeed_get_uids_for_cf_uids($ids);
 }
 
-function culturefeed_get_mini_user_for_users($users) {
+function culturefeed_get_uids_for_users($users) {
   $ids = array();
   
   foreach ($users as $user) {
@@ -185,7 +225,7 @@ function culturefeed_get_mini_user_for_users($users) {
     $ids[$user->id]->cf_uid = $user->id;
   }
   
-  return culturefeed_users_get($ids);
+  return culturefeed_get_uids_for_cf_uids($ids);
 }
 
 function culturefeed_log($type, $exception) {

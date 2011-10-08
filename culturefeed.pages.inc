@@ -39,7 +39,7 @@ function culturefeed_oauth_authorize() {
 
     $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'])->getUser($token['userId']);
 
-    $account = culturefeed_user_get($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret']);
+    $account = culturefeed_get_or_create_user($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret']);
 
     if ($account) {
       global $user;
