@@ -96,7 +96,7 @@ function culturefeed_ui_block_view_top_events() {
 
   $items = array();
 
-  $events_info = culturefeed_get_events_for_cdbids($events);
+  $events_info = culturefeed_get_nodes_for_cdbids('event', $events);
 
   foreach ($events as $cdbid) {
     if (!isset($events_info[$cdbid]) || !is_array($events_info[$cdbid])) {
@@ -263,7 +263,7 @@ function culturefeed_ui_block_view_user_activities() {
 
   $items = array();
 
-  $events = culturefeed_get_events_for_activities($activities->objects);
+  $events = culturefeed_get_nodes_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
     $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
@@ -303,7 +303,7 @@ function culturefeed_ui_block_view_recent_activities() {
 
   $items = array();
 
-  $events = culturefeed_get_events_for_activities($activities->objects);
+  $events = culturefeed_get_nodes_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
     $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;

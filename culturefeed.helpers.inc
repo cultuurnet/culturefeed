@@ -92,28 +92,54 @@ function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NU
   return $account;
 }
 
-function culturefeed_get_events_for_activities($activities) {
-  $events = array();
+function culturefeed_get_nodes_for_activities($activities) {
+  $result = array();
+  
+  $nodes = array();
 
   foreach ($activities as $activity) {
-    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_EVENT) {
-      $events[$activity->nodeId] = NULL;
+    switch ($activity->contentType) {
+      case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
+        $nodes['actor'][$activity->nodeId] = NULL;
+        break;
+      case CultureFeed_Activity::CONTENT_TYPE_EVENT:
+        $nodes['event'][$activity->nodeId] = NULL;
+        break;
+      case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
+        $nodes['production'][$activity->nodeId] = NULL;
+        break;
+    }
+  }
+  
+  foreach ($nodes as $type => $type_nodes) {
+    $cdbids = array_unique(array_keys($type_nodes));
+
+    if (!empty($cdbids)) {
+      $tmp = culturefeed_get_nodes_for_cdbids($type, $cdbids);
+
+      $result = array_merge($tmp, $result);
+
     }
   }
 
-  $cdbids = array_unique(array_keys($events));
-
-  return culturefeed_get_events_for_cdbids($cdbids);
+  return $result;
 }
 
-function culturefeed_get_events_for_cdbids($cdbids) {
-  $results = cnapi_get_events(array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids)));
+function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
+  $query = array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids));
+  $request = array('action' => 'list_summary', 'type' => $type, 'query' => $query);
+  
+  $results = cnapi_get($request);
+  
+  $nodes = array();
 
-  foreach ($results['data'] as $result) {
-    $events[$result['cdbid']] = $result;
+  if (!empty($results['data'])) {
+    foreach ($results['data'] as $result) {
+      $nodes[$result['cdbid']] = $result;
+    }
   }
 
-  return $events;
+  return $nodes;
 }
 
 function culturefeed_log($type, $exception) {
