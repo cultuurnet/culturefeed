@@ -47,14 +47,14 @@ function culturefeed_menu() {
   return $items;
 }
 
-function culturefeed_user_create($userid) {
+function culturefeed_user_create($cf_uid) {
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
     drupal_anonymous_user(),
     array(
-      'name' => $userid,
+      'name' => $cf_uid,
       'pass' => user_password(),
-      'mail' => $userid . '@uitid.be',
+      'mail' => $cf_uid . '@uitid.be',
       'roles' => array(),
       'status' => 1,
       'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
@@ -68,9 +68,9 @@ function culturefeed_user_create($userid) {
  * Implements hook_user_load().
  */
 function culturefeed_user_load($users) {
-  $result = db_query('SELECT cfu.uid, cfu.userid, cft.application_key, cft.token, cft.secret FROM {culturefeed_user} cfu LEFT JOIN {culturefeed_token} cft ON cft.userid = cfu.userid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
+  $result = db_query('SELECT cfu.uid, cfu.cf_uid, cft.application_key, cft.token, cft.secret FROM {culturefeed_user} cfu LEFT JOIN {culturefeed_token} cft ON cft.cf_uid = cfu.cf_uid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
   foreach ($result as $record) {
-    $users[$record->uid]->culturefeed_userid = $record->userid;
+    $users[$record->uid]->culturefeed_uid = $record->cf_uid;
     if (!isset($users[$record->uid]->tokens)) {
       $users[$record->uid]->tokens = array();
     }
@@ -85,31 +85,31 @@ function culturefeed_user_load($users) {
  * Implements hook_user_delete().
  */
 function culturefeed_user_delete($account) {
-  $culturefeed_userid = db_query("SELECT userid FROM {culturefeed_user} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
+  $culturefeed_uid = db_query("SELECT cf_uid FROM {culturefeed_user} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
   
   db_delete('culturefeed_user')
     ->condition('uid', $account->uid)
     ->execute();
   db_delete('culturefeed_token')
-    ->condition('userid', $culturefeed_userid)
+    ->condition('cf_uid', $culturefeed_uid)
     ->execute();
 }
 
-function culturefeed_user_get($userid, $token = NULL, $secret = NULL, $application_key = NULL) {
+function culturefeed_user_get($cf_uid, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
   
   if (!$application_key) {
     $application_key = variable_get('culturefeed_api_application_key', '');
   }
 
-  $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.userid = :userid", array(':userid' => $userid))->fetchObject();
+  $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchObject();
   
   if (!$user_exists) {
-    $account = culturefeed_user_create($userid);
+    $account = culturefeed_user_create($cf_uid);
     db_insert('culturefeed_user')
       ->fields(array(
         'uid' => $account->uid,
-        'userid' => $userid,
+        'cf_uid' => $cf_uid,
         ))
       ->execute();
   }
@@ -118,16 +118,16 @@ function culturefeed_user_get($userid, $token = NULL, $secret = NULL, $applicati
   }
   
   if ($token) {
-    $token_exists = db_query("SELECT * FROM {culturefeed_token} cft WHERE cft.userid = :userid AND cft.application_key = :application_key", array(':userid' => $userid, ':application_key' => $application_key))->fetchObject();
+    $token_exists = db_query("SELECT * FROM {culturefeed_token} cft WHERE cft.cf_uid = :cf_uid AND cft.application_key = :application_key", array(':cf_uid' => $cf_uid, ':application_key' => $application_key))->fetchObject();
     
     db_delete('culturefeed_token')
-      ->condition('userid', $userid)
+      ->condition('cf_uid', $cf_uid)
       ->condition('application_key', $application_key)
       ->execute();
     
     db_insert('culturefeed_token')
       ->fields(array(
-        'userid' => $userid,
+        'cf_uid' => $cf_uid,
         'token' => $token,
         'secret' => $secret,
         'application_key' => $application_key,

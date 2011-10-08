@@ -201,7 +201,7 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     $picture = file_get_contents($picture_path);
 
     try {
-      $result = DrupalCultureFeed::uploadUserDepiction($account->culturefeed_userid, $picture);
+      $result = DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
     }
     catch (Exception $e) {
       drupal_set_message(t('Some error occurred while uploading picture'), 'error');
@@ -327,8 +327,8 @@ function culturefeed_ui_page_most_active_users() {
 }
 
 function culturefeed_ui_page_serviceconsumers_revoke($id) {
-  $userid = DrupalCultureFeed::getLoggedInUserId();
-  DrupalCultureFeed::revokeUserServiceConsumer($userid, $id);
+  $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+  DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $id);
   drupal_goto('culturefeed/serviceconsumers');
 }
 

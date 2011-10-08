@@ -129,7 +129,7 @@ function culturefeed_ui_block_view_similar_users() {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_userid);
+    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
 
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
@@ -171,7 +171,7 @@ function culturefeed_ui_block_view_user_picture() {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_userid);
+      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
     }
   }
   catch (Exception $e) {
@@ -234,7 +234,7 @@ function culturefeed_ui_block_view_user_activities() {
   global $user;
   
   $account = menu_get_object('user');
-  
+
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -248,7 +248,7 @@ function culturefeed_ui_block_view_user_activities() {
     CultureFeed_Activity::TYPE_TWITTER,
     CultureFeed_Activity::TYPE_IK_GA
   );
-  $query->userId = $account->culturefeed_userid;
+  $query->userId = $account->culturefeed_uid;
   if ($user->uid == $account->uid) {
     $query->private = TRUE;
   }
@@ -355,7 +355,7 @@ function culturefeed_ui_block_view_event_like() {
   $activity->contentType = 'event';
   $activity->type = CultureFeed_Activity::TYPE_LIKE;
   $activity->nodeId = $request['event'];
-  $activity->userId = $account->culturefeed_userid;
+  $activity->userId = $account->culturefeed_uid;
 
   $cf->createActivity($activity);*/
 

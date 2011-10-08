@@ -18,11 +18,11 @@ class DrupalCultureFeed {
       $account = user_load($uid);
     }
 
-    return isset($account->culturefeed_userid) && !empty($account->culturefeed_userid);
+    return isset($account->culturefeed_uid) && !empty($account->culturefeed_uid);
   }
   
   public static function getLoggedInUserId() {
-    return self::getLoggedInAccount()->culturefeed_userid;
+    return self::getLoggedInAccount()->culturefeed_uid;
   }
 
   public static function getLoggedInAccount() {
@@ -63,7 +63,7 @@ class DrupalCultureFeed {
 
     $account = self::getLoggedInAccount();
 
-    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser($account->culturefeed_userid, TRUE, TRUE);
+    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser($account->culturefeed_uid, TRUE, TRUE);
 
     return self::$logged_in_user[$application_key];
   }
@@ -89,7 +89,7 @@ class DrupalCultureFeed {
     $token = $account->tokens[$application_key];
 
     if (!isset($token->token) || !isset($token->secret)) {
-      return;
+      return NULL;
     }
 
     self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret);
@@ -218,7 +218,7 @@ class DrupalCultureFeed {
   
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
     if ($query->private) {
-      return self::getConsumerInstance()->searchActivities($query);
+      return self::getLoggedInUserInstance()->searchActivities($query);
     }
     else {
       return self::getConsumerInstance()->searchActivities($query);

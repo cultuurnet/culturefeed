@@ -13,7 +13,7 @@ function culturefeed_schema() {
         'unsigned'    => TRUE,
         'not null'    => TRUE
       ),
-      'userid' => array(
+      'cf_uid' => array(
         'description' => t('CultureFeed ID.'),
         'type'        => 'varchar',
         'length'      => 64,
@@ -23,13 +23,13 @@ function culturefeed_schema() {
     'primary key' => array('uid'),
     'unique keys' => array(
       'uid' => array('uid'),
-      'userid' => array('userid'),
+      'cf_uid' => array('cf_uid'),
     ),
   );
   $schema['culturefeed_token'] = array(
     'description' => t('Tokens and secrets from users.'),
     'fields' => array(
-      'userid' => array(
+      'cf_uid' => array(
         'description' => t('CultureFeed ID.'),
         'type'        => 'varchar',
         'length'      => 64,
@@ -54,15 +54,15 @@ function culturefeed_schema() {
         'not null'    => TRUE
       ),
     ),
-    'primary key' => array('userid', 'application_key'),
+    'primary key' => array('cf_uid', 'application_key'),
     'indexes' => array(
-      'userid' => array('userid'),
+      'cf_uid' => array('cf_uid'),
       'application_key' => array('application_key'),
     ),
     'foreign keys' => array(
       'culturefeed_user' => array(
         'table' => 'culturefeed_user',
-        'columns' => array('userid' => 'userid'),
+        'columns' => array('cf_uid' => 'cf_uid'),
       ),
     ),
   );

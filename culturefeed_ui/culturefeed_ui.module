@@ -189,12 +189,16 @@ function culturefeed_ui_block_save($delta = '', $edit = array()) {
 function culturefeed_ui_user_view($account) {
   global $user;
   
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+
   try {
-    if (DrupalCultureFeed::isCultureFeedUser($account->uid) && $account->uid == $user->uid) {
+    if ($account->uid == $user->uid) {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_userid);
+      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
     }
   }
   catch (Exception $e) {
