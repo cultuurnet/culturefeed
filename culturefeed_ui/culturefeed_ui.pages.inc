@@ -265,7 +265,7 @@ function culturefeed_ui_account_edit_form() {
   );
   
   $destination = drupal_get_destination();
-  $destination = url($destination['destination'], array('absolute' => TRUE));
+  $destination = url($destination['destination'], array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
   
   $url = DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination);
 
