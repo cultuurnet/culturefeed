@@ -64,7 +64,7 @@ function culturefeed_ui_block_view_most_active_user() {
   $query->sort = $sort;
 
   try {
-    $account = DrupalCultureFeed::searchUsers($query)->objects[0];
+    $account = reset(DrupalCultureFeed::searchUsers($query)->objects);
   }
   catch (Exception $e) {
     culturefeed_log('culturefeed_ui', $e);
@@ -99,7 +99,7 @@ function culturefeed_ui_block_view_top_events() {
   $events_info = culturefeed_get_nodes_for_cdbids('event', $events);
 
   foreach ($events as $cdbid) {
-    if (!isset($events_info[$cdbid]) || !is_array($events_info[$cdbid])) {
+    if (!isset($events_info[$cdbid])) {
       continue;
     }
 
@@ -142,16 +142,10 @@ function culturefeed_ui_block_view_similar_users() {
     return;
   }
 
-  $items = array();
+  $items = culturefeed_ui_users_list($users);
   
-  $accounts = culturefeed_get_uids_for_users($users->objects);
-
-  foreach ($users->objects as $user) {
-    if (!isset($accounts[$user->id])) {
-      continue;
-    }
-    
-    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
+  if (empty($items)) {
+    return;
   }
 
   $block['subject'] = t('Users similar to !name', array('!name' => $cf_account->nick));
@@ -267,18 +261,10 @@ function culturefeed_ui_block_view_user_activities() {
     return;
   }
 
-  $items = array();
-
-  $events = culturefeed_get_nodes_for_activities($activities->objects);
+  $items = culturefeed_ui_activities_list($activities);
   
-  $accounts = culturefeed_get_uids_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    if (!isset($accounts[$activity->userId]) || !isset($events[$activity->nodeId])) {
-      continue;
-    }
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $events[$activity->nodeId], 'uid' => $accounts[$activity->userId]));
+  if (empty($items)) {
+    return;
   }
 
   $block['subject'] = t('User activities');
@@ -311,18 +297,10 @@ function culturefeed_ui_block_view_recent_activities() {
     return;
   }
 
-  $items = array();
-
-  $events = culturefeed_get_nodes_for_activities($activities->objects);
+  $items = culturefeed_ui_activities_list($activities);
   
-  $accounts = culturefeed_get_uids_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    if (!isset($accounts[$activity->userId]) || !isset($events[$activity->nodeId])) {
-      continue;
-    }
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $events[$activity->nodeId], 'uid' => $accounts[$activity->userId]));
+  if (empty($items)) {
+    return;
   }
 
   $block['subject'] = t('Recent activities');

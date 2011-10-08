@@ -1,5 +1,6 @@
 <?php
 
+require_once('culturefeed_ui.helpers.inc');
 require_once('culturefeed_ui.preprocess.inc');
 
 /**
