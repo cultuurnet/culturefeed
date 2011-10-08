@@ -40,6 +40,28 @@ function culturefeed_user_create($cf_uid, $nick) {
   return $account;
 }
 
+function culturefeed_users_get($cf_uids) {
+  $ids = array();
+  
+  $result = db_query('SELECT cfu.cf_uid, u.uid, u.name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid IN (:cf_uids)', array(':cf_uids' => array_keys($cf_uids)));
+  
+  foreach ($result as $record) {
+    $ids[$record->cf_uid] = $record;
+  }
+  
+  foreach ($cf_uids as $cf_uid => $info) {
+    if (!isset($ids[$cf_uid])) {
+      $user = culturefeed_user_get($cf_uid, $info->nick);
+      $ids[$cf_uid] = new stdClass();
+      $ids[$cf_uid]->cf_uid = $cf_uid;
+      $ids[$cf_uid]->name = $user->name;
+      $ids[$cf_uid]->uid = $user->uid;
+    }
+  }
+  
+  return $ids;
+}
+
 function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
 
@@ -140,6 +162,30 @@ function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   }
 
   return $nodes;
+}
+
+function culturefeed_get_mini_user_for_activities($activities) {
+  $ids = array();
+  
+  foreach ($activities as $activity) {
+    $ids[$activity->userId] = new stdClass();
+    $ids[$activity->userId]->nick = $activity->nick;
+    $ids[$activity->userId]->cf_uid = $activity->userId;
+  }
+  
+  return culturefeed_users_get($ids);
+}
+
+function culturefeed_get_mini_user_for_users($users) {
+  $ids = array();
+  
+  foreach ($users as $user) {
+    $ids[$user->id] = new stdClass();
+    $ids[$user->id]->nick = $user->nick;
+    $ids[$user->id]->cf_uid = $user->id;
+  }
+  
+  return culturefeed_users_get($ids);
 }
 
 function culturefeed_log($type, $exception) {

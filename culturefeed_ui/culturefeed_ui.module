@@ -96,11 +96,11 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-connect',
     ),
     'culturefeed_ui_user_summary' => array(
-      'variables' => array('user' => NULL),
+      'variables' => array('user' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-user-summary',
     ),
     'culturefeed_ui_activity_summary' => array(
-      'variables' => array('activity' => NULL, 'node' => NULL),
+      'variables' => array('activity' => NULL, 'node' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-activity-summary',
     ),
     'culturefeed_ui_profile_menu_item' => array(

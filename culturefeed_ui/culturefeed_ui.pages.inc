@@ -22,12 +22,14 @@ function culturefeed_ui_page_recent_activities() {
 
   $items = array();
 
-  $events = culturefeed_get_events_for_activities($activities->objects);
+  $events = culturefeed_get_nodes_for_activities($activities->objects);
+  
+  $accounts = culturefeed_get_mini_user_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
     $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
 
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]->uid));
   }
 
   $data = array();
@@ -71,9 +73,11 @@ function culturefeed_ui_search_users_results($name = '') {
   pager_default_initialize($users->total, $pagelength);
 
   $items = array();
+  
+  $accounts = culturefeed_get_mini_user_for_users($users->objects);
 
   foreach ($users->objects as $user) {
-    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user));
+    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]->uid));
   }
 
   return array(

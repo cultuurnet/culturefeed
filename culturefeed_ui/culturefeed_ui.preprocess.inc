@@ -19,7 +19,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $activity instanceof CultureFeed_Activity;
 
   $picture = theme('image', array('path' => $activity->depiction));
-  $url = 'user/' . culturefeed_user_get($activity->userId, $activity->nick)->uid;
+  $url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
@@ -87,7 +87,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user instanceof CultureFeed_User;
 
   $picture = theme('image', array('path' => $user->depiction));
-  $url = 'user/' . culturefeed_user_get($user->id, $user->nick)->uid;
+  $url = 'user/' . $variables['uid'];
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['nick'] = l($user->nick, $url);
 }
