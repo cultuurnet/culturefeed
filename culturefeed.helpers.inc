@@ -10,9 +10,9 @@ function culturefeed_unique_username($cf_uid, $nick) {
   if ($name) {
     return $name;
   }
-  
+
   $name = $nick;
-    
+
   $count = 0;
   while ($name_exists = db_query("SELECT name FROM {users} WHERE LOWER(name) = :name", array(':name' => strtolower($nick)))->fetchField()) {
     $count++;
@@ -42,20 +42,20 @@ function culturefeed_user_create($cf_uid, $nick) {
 
 function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
-  
+
   if (!$application_key) {
     $application_key = variable_get('culturefeed_api_application_key', '');
   }
 
   $user_exists = db_query("SELECT * FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchObject();
-  
+
   if (!$user_exists) {
     if (!$nick) {
       return FALSE;
     }
-    
+
     $unique_nick = culturefeed_unique_username($cf_uid, $nick);
-    
+
     $account = culturefeed_user_create($cf_uid, $unique_nick);
     db_insert('culturefeed_user')
       ->fields(array(
@@ -63,22 +63,22 @@ function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NU
         'cf_uid' => $cf_uid,
         ))
       ->execute();
-      
+
     user_set_authmaps($account, array('authname_culturefeed' => $account->name));
-    
+
   }
   else {
     $account = user_load($user_exists->uid);
   }
-  
+
   if ($token) {
     $token_exists = db_query("SELECT * FROM {culturefeed_token} cft WHERE cft.cf_uid = :cf_uid AND cft.application_key = :application_key", array(':cf_uid' => $cf_uid, ':application_key' => $application_key))->fetchObject();
-    
+
     db_delete('culturefeed_token')
       ->condition('cf_uid', $cf_uid)
       ->condition('application_key', $application_key)
       ->execute();
-    
+
     db_insert('culturefeed_token')
       ->fields(array(
         'cf_uid' => $cf_uid,

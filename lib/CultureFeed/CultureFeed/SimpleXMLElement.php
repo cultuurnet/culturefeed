@@ -155,10 +155,10 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
 
       $accounts[] = $account;
     }
-    
+
     if ($this->xpath_str('/foaf:person/privateNick') !== NULL) {
       $privacy_config = new CultureFeed_UserPrivacyConfig();
-      
+
       $vars = array('nick', 'givenName', 'familyName', 'mbox', 'gender', 'dob', 'depiction', 'bio', 'homeAddress', 'homeLocation', 'currentLocation', 'openId');
 
       foreach ($vars as $var) {
@@ -168,10 +168,10 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
           $privacy_config->{$var} = $privacy ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
         }
       }
-    
+
       $user->privacyConfig = $privacy_config;
     }
-    
+
     if (!empty($accounts)) {
       $user->holdsAccount = $accounts;
     }
@@ -251,7 +251,7 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
       'TWITTER'  => CultureFeed_Activity::TYPE_TWITTER,
       'IK_GA'    => CultureFeed_Activity::TYPE_IK_GA,
     );
-      
+
     $total = $this->xpath_int('/response/total');
 
     $activities = array();

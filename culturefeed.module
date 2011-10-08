@@ -71,7 +71,7 @@ function culturefeed_user_load($users) {
  */
 function culturefeed_user_delete($account) {
   $culturefeed_uid = db_query("SELECT cf_uid FROM {culturefeed_user} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
-  
+
   db_delete('culturefeed_user')
     ->condition('uid', $account->uid)
     ->execute();

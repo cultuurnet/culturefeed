@@ -108,7 +108,7 @@ function culturefeed_ui_profile_edit_form() {
   );
 
   $form['#attributes']['enctype'] = 'multipart/form-data';
-  
+
   $form['current_picture'] = array(
     '#theme' => 'image',
     '#path' => $cf_account->depiction,
@@ -118,7 +118,7 @@ function culturefeed_ui_profile_edit_form() {
     '#type' => 'file',
     '#title' => t('Picture')
   );
-  
+
   $form['gender'] = array(
     '#type' => 'radios',
     '#title' => t('Gender'),
@@ -190,10 +190,10 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     drupal_set_message(t('Some error occurred'), 'error');
     return;
   }
-  
+
   if ($_FILES['files']['tmp_name']['picture']) {
     global $user;
-    
+
     $account = user_load($user->uid);
 
     $picture_path = $_FILES['files']['tmp_name']['picture'];

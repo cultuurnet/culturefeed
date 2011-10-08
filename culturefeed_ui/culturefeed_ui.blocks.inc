@@ -11,7 +11,7 @@ function culturefeed_ui_block_view_profile_box() {
   if (!user_is_anonymous() && !DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
-  
+
   $nick = '';
   $picture = '';
   $url_profile = '';
@@ -23,7 +23,7 @@ function culturefeed_ui_block_view_profile_box() {
     catch (Exception $e) {
       culturefeed_log('culturefeed_ui', $e);
     }
-    
+
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
       $picture = $cf_account->depiction;
@@ -34,7 +34,7 @@ function culturefeed_ui_block_view_profile_box() {
   $block['subject'] = '';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_profile_box',
-    '#nick' => $nick, 
+    '#nick' => $nick,
     '#picture' => $picture,
     '#url_profile' => $url_profile,
   );
@@ -123,7 +123,7 @@ function culturefeed_ui_block_view_top_events() {
 
 function culturefeed_ui_block_view_similar_users() {
   $account = menu_get_object('user');
-  
+
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -137,7 +137,7 @@ function culturefeed_ui_block_view_similar_users() {
     culturefeed_log('culturefeed_ui', $e);
     return;
   }
-  
+
   if (empty($users->objects)) {
     return;
   }
@@ -159,9 +159,9 @@ function culturefeed_ui_block_view_similar_users() {
 
 function culturefeed_ui_block_view_user_picture() {
   global $user;
-  
+
   $account = menu_get_object('user');
-  
+
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -206,19 +206,19 @@ function culturefeed_ui_block_view_profile_menu() {
   $title = 'Mijn UiTid';
   $url = 'user/' . culturefeed_user_get(DrupalCultureFeed::getLoggedInUserId())->uid;
   $description = 'Zo zien anderen jouw profiel.';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $title = 'Profiel bewerken';
   $url = 'culturefeed/profile/edit';
   $description = 'Wijzig naam, adres, favoriet categoriëen, ...';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $title = 'Account bewerken';
   $url = 'culturefeed/account/edit';
   $description = 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $block['subject'] = t('Profile');
@@ -232,13 +232,13 @@ function culturefeed_ui_block_view_profile_menu() {
 
 function culturefeed_ui_block_view_user_activities() {
   global $user;
-  
+
   $account = menu_get_object('user');
 
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
-  
+
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = 200;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
