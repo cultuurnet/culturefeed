@@ -48,14 +48,26 @@ function culturefeed_oauth_authorize() {
       user_login_finalize();
       
       if (isset($_GET['popup'])) {
-        drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
+        // We don't want to render all blocks, so we return minimal html.
+        print '<html>';
+        print '<head>';
+        print '<title>You should not see this</title>';
+        print '<script type="text/javascript">window.opener.location.reload(); window.close();</script>';  
+        print '</head>';
+        print '<body>';
+        print '</body>';
+        print '</html>';
       }
       else {
-        if ($destination = drupal_get_destination())
-        drupal_goto('');
+        if (isset($_GET['destination'])) {
+          drupal_goto($_GET['destination']);
+        }
+        else {
+          drupal_goto('');
+        }
       }
     }
   }
   
-  return '';
+  exit();
 }
