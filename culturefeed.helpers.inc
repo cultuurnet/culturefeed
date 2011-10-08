@@ -29,7 +29,7 @@ function culturefeed_user_create($cf_uid, $nick) {
     array(
       'name' => $nick,
       'pass' => user_password(),
-      'init' => $name,
+      'init' => $nick,
       'roles' => array(),
       'status' => 1,
       'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
