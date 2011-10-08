@@ -80,6 +80,11 @@ class CultureFeed_SearchActivitiesQuery {
     // For most properties we can rely on get_object_vars.
     $data = array_filter(get_object_vars($this));
 
+    // Represent private as a string (true/false);
+    if (isset($data['private'])) {
+      $data['private'] = $data['private'] ? 'true' : 'false';
+    }
+
     return $data;
   }
 
