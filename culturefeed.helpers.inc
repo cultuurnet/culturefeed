@@ -71,6 +71,30 @@ function culturefeed_get_uids_for_cf_uids($users) {
   return $uids;
 }
 
+function culturefeed_get_uids_for_activities($activities) {
+  $ids = array();
+  
+  foreach ($activities as $activity) {
+    $ids[$activity->userId] = new stdClass();
+    $ids[$activity->userId]->nick = $activity->nick;
+    $ids[$activity->userId]->cf_uid = $activity->userId;
+  }
+  
+  return culturefeed_get_uids_for_cf_uids($ids);
+}
+
+function culturefeed_get_uids_for_users($users) {
+  $ids = array();
+  
+  foreach ($users as $user) {
+    $ids[$user->id] = new stdClass();
+    $ids[$user->id]->nick = $user->nick;
+    $ids[$user->id]->cf_uid = $user->id;
+  }
+  
+  return culturefeed_get_uids_for_cf_uids($ids);
+}
+
 /**
  * Try to get load a user account for a certain Culture Feed User ID. If it doesn't exist, create it and return it.
  * 
@@ -202,30 +226,6 @@ function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   }
 
   return $nodes;
-}
-
-function culturefeed_get_uids_for_activities($activities) {
-  $ids = array();
-  
-  foreach ($activities as $activity) {
-    $ids[$activity->userId] = new stdClass();
-    $ids[$activity->userId]->nick = $activity->nick;
-    $ids[$activity->userId]->cf_uid = $activity->userId;
-  }
-  
-  return culturefeed_get_uids_for_cf_uids($ids);
-}
-
-function culturefeed_get_uids_for_users($users) {
-  $ids = array();
-  
-  foreach ($users as $user) {
-    $ids[$user->id] = new stdClass();
-    $ids[$user->id]->nick = $user->nick;
-    $ids[$user->id]->cf_uid = $user->id;
-  }
-  
-  return culturefeed_get_uids_for_cf_uids($ids);
 }
 
 function culturefeed_log($type, $exception) {
