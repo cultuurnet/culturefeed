@@ -224,33 +224,3 @@ elseif ($_GET['action'] == 'getRecommendationsForEvent') {
 //   @todo evaluate recommendation
 
 ?>
-
-<?php
-
-/*$activity = array(
-  'userid' => $uid,
-  'nodeId' => 'e12d585f-0c4c-4491-8b61-87c993588487',
-  'contentType' => 'event',
-  'type' => 1,
-  'value' => 'ok',
-  'private' => 'false',
-);
-
-try {
-  $result = $cf->createActivity(new CultureFeed_Activity($activity));
-  print "<pre>".print_r($result, TRUE)."</pre>";
-}
-catch (Exception $e) {
-  var_dump($e);
-}
-
-exit();
-
-$account = array(
-  'accountType' => 'twitter',
-  'accountName' => '23918389',
-  'private' => TRUE,
-  'publishActivities' => 'false',
-);
-
-print $cf->deleteUserOnlineAccount($uid, new CultureFeed_OnlineAccount($account));*/
