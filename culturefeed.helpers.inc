@@ -29,10 +29,11 @@ function culturefeed_user_create($cf_uid, $nick) {
     array(
       'name' => $nick,
       'pass' => user_password(),
-      'mail' => $nick . '@uitid.be',
+      'init' => $name,
       'roles' => array(),
       'status' => 1,
       'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
+      'access' => REQUEST_TIME,
     )
   );
 
@@ -62,6 +63,9 @@ function culturefeed_user_get($cf_uid, $nick = NULL, $token = NULL, $secret = NU
         'cf_uid' => $cf_uid,
         ))
       ->execute();
+      
+    user_set_authmaps($account, array('authname_culturefeed' => $account->name));
+    
   }
   else {
     $account = user_load($user_exists->uid);
