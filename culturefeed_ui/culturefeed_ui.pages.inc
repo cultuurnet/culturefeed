@@ -45,7 +45,7 @@ function culturefeed_ui_page_search_users($name = '') {
 }
 
 function culturefeed_ui_search_users_results($name = '') {
-  $pagelength = 20; // @todo make this a const
+  $pagelength = 10; // @todo make this a const
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchUsersQuery();
@@ -263,12 +263,17 @@ function culturefeed_ui_account_edit_form() {
     '#type' => 'submit',
     '#value' => t('Save'),
   );
+  
+  $destination = drupal_get_destination();
+  $destination = url($destination['destination'], array('absolute' => TRUE));
+  
+  $url = DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination);
 
-  $destination = '';
+  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
 
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
-    '#markup' => l(t('Change password'), DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination)),
+    '#markup' => l(t('Change password'), $url, $options),
     '#suffix' => '</div>',
   );
 
