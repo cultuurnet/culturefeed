@@ -21,7 +21,7 @@ function culturefeed_ui_block_view_profile_box() {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     catch (Exception $e) {
-      culturefeed_log('culturefeed_ui', $e);
+      watchdog_exception('culturefeed_ui', $e);
     }
 
     if (isset($cf_account)) {
@@ -67,7 +67,7 @@ function culturefeed_ui_block_view_most_active_user() {
     $account = reset(DrupalCultureFeed::searchUsers($query)->objects);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -90,7 +90,7 @@ function culturefeed_ui_block_view_top_events() {
     $events = DrupalCultureFeed::getTopEvents($sort, 5); // @todo make max configurable
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -134,7 +134,7 @@ function culturefeed_ui_block_view_similar_users() {
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -175,7 +175,7 @@ function culturefeed_ui_block_view_user_picture() {
     }
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -257,7 +257,7 @@ function culturefeed_ui_block_view_user_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -293,7 +293,7 @@ function culturefeed_ui_block_view_recent_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -332,7 +332,7 @@ function culturefeed_ui_block_view_event_like() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 

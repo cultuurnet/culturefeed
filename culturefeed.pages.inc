@@ -69,5 +69,7 @@ function culturefeed_oauth_authorize() {
     }
   }
 
+  drupal_page_footer();
+  
   exit();
 }
