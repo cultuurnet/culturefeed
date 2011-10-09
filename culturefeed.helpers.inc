@@ -43,13 +43,13 @@ function culturefeed_get_uid_for_cf_uid($cf_uid, $nick) {
   $user = new stdClass();
   $user->cf_uid = $cf_uid;
   $user->nick = $nick;
-  
-  return reset(culturefeed_get_uids_for_cf_uids(array($user)));
+
+  return reset(culturefeed_get_uids_for_cf_uids(array($cf_uid => $user)));
 }
 
 function culturefeed_get_uids_for_cf_uids($users) {
   $uids = array();
-  
+
   if (empty($users)) {
     return array();
   }
@@ -67,7 +67,7 @@ function culturefeed_get_uids_for_cf_uids($users) {
       $uids[$cf_uid] = $account->uid;
     }
   }
-  
+
   return $uids;
 }
 
@@ -85,7 +85,7 @@ function culturefeed_get_uids_for_activities($activities) {
 
 function culturefeed_get_uids_for_users($users) {
   $ids = array();
-  
+
   foreach ($users as $user) {
     $ids[$user->id] = new stdClass();
     $ids[$user->id]->nick = $user->nick;
