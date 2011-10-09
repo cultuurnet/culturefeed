@@ -27,7 +27,7 @@ function culturefeed_create_user($cf_uid, $nick) {
     drupal_anonymous_user(),
     array(
       'name' => $nick,
-      'pass' => '',
+      'pass' => '', // We save an empty password (don't generate a random one) because this is much more performant.
       'init' => $nick,
       'roles' => array(),
       'status' => 1,
