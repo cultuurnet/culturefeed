@@ -1,6 +1,17 @@
 <?php
 
 /**
+ * Preprocess variables for cnapi-ui-connect.tpl.php.
+ *
+ * @see culturefeed-ui-connect.tpl.php
+ */
+function template_preprocess_culturefeed_ui_connect(&$variables) {
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+}
+
+/**
  * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php
