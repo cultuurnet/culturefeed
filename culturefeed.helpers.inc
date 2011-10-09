@@ -57,7 +57,7 @@ function culturefeed_create_user($name) {
  *   (optional) If a token is known at the moment of creation, pass the wanted application key the token is for to save it.
  *   If token and secret are passed, but no application key, than the default application key will be used.
  *   This can be used for users that log in for the first time.
- * @return stdClass|boll
+ * @return stdClass|bool
  *   The Drupal user account will be returned in case of success.
  *   In case of failure FALSE will be returned.
  */
