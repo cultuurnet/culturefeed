@@ -822,43 +822,43 @@ class CultureFeed {
   /*
    * Parse the SimpleXML element as a CultureFeed_User.
    *
-   * @param CultureFeed_SimpleXMLElement $xml
+   * @param CultureFeed_SimpleXMLElement $element
    *   XML to parse.
    * @return CultureFeed_User
    */
-  protected static function parseUser($xml) {
+  protected static function parseUser(CultureFeed_SimpleXMLElement $element) {
     $user = new CultureFeed_User();
 
-    $user->id           = $xml->xpath_str('/foaf:person/rdf:id');
-    $user->nick         = $xml->xpath_str('/foaf:person/foaf:nick');
-    $user->givenName    = $xml->xpath_str('/foaf:person/foaf:givenName');
-    $user->familyName   = $xml->xpath_str('/foaf:person/foaf:familyName');
-    $user->mbox         = $xml->xpath_str('/foaf:person/foaf:mbox');
-    $user->mboxVerified = $xml->xpath_bool('/foaf:person/mboxVerified');
-    $user->gender       = $xml->xpath_str('/foaf:person/foaf:gender');
-    $user->dob          = $xml->xpath_time('/foaf:person/foaf:dob');
-    $user->depiction    = $xml->xpath_str('/foaf:person/foaf:depiction');
-    $user->bio          = $xml->xpath_str('/foaf:person/bio');
-    $user->homeAddress  = $xml->xpath_str('/foaf:person/foaf:homeAddress');
-    $user->street       = $xml->xpath_str('/foaf:person/street');
-    $user->zip          = $xml->xpath_str('/foaf:person/zip');
-    $user->city         = $xml->xpath_str('/foaf:person/city');
-    $user->country      = $xml->xpath_str('/foaf:person/country');
-    $user->status       = $xml->xpath_str('/foaf:person/status');
+    $user->id           = $element->xpath_str('/foaf:person/rdf:id');
+    $user->nick         = $element->xpath_str('/foaf:person/foaf:nick');
+    $user->givenName    = $element->xpath_str('/foaf:person/foaf:givenName');
+    $user->familyName   = $element->xpath_str('/foaf:person/foaf:familyName');
+    $user->mbox         = $element->xpath_str('/foaf:person/foaf:mbox');
+    $user->mboxVerified = $element->xpath_bool('/foaf:person/mboxVerified');
+    $user->gender       = $element->xpath_str('/foaf:person/foaf:gender');
+    $user->dob          = $element->xpath_time('/foaf:person/foaf:dob');
+    $user->depiction    = $element->xpath_str('/foaf:person/foaf:depiction');
+    $user->bio          = $element->xpath_str('/foaf:person/bio');
+    $user->homeAddress  = $element->xpath_str('/foaf:person/foaf:homeAddress');
+    $user->street       = $element->xpath_str('/foaf:person/street');
+    $user->zip          = $element->xpath_str('/foaf:person/zip');
+    $user->city         = $element->xpath_str('/foaf:person/city');
+    $user->country      = $element->xpath_str('/foaf:person/country');
+    $user->status       = $element->xpath_str('/foaf:person/status');
     if ($user->status) {
       $user->status = strtolower($user->status);
     }
-    $user->openid       = $xml->xpath_str('/foaf:person/foaf:openid');
+    $user->openid       = $element->xpath_str('/foaf:person/foaf:openid');
 
-    $lat = $xml->xpath_float('/foaf:person/homeLocation/geo:lat');
-    $lng = $xml->xpath_float('/foaf:person/homeLocation/geo:long');
+    $lat = $element->xpath_float('/foaf:person/homeLocation/geo:lat');
+    $lng = $element->xpath_float('/foaf:person/homeLocation/geo:long');
 
     if ($lat && $lng) {
       $user->homeLocation = new CultureFeed_Location($lat, $lng);
     }
 
-    $lat = $xml->xpath_float('/foaf:person/currentLocation/geo:lat');
-    $lng = $xml->xpath_float('/foaf:person/currentLocation/geo:long');
+    $lat = $element->xpath_float('/foaf:person/currentLocation/geo:lat');
+    $lng = $element->xpath_float('/foaf:person/currentLocation/geo:long');
 
     if ($lat && $lng) {
       $user->currentLocation = new CultureFeed_Location($lat, $lng);
@@ -866,7 +866,7 @@ class CultureFeed {
 
     $accounts = array();
 
-    $objects = $xml->xpath('/foaf:person/foaf:holdsAccount/foaf:onlineAccount');
+    $objects = $element->xpath('/foaf:person/foaf:holdsAccount/foaf:onlineAccount');
 
     foreach ($objects as $object) {
       $account = new CultureFeed_OnlineAccount();
@@ -880,13 +880,13 @@ class CultureFeed {
       $accounts[] = $account;
     }
 
-    if ($xml->xpath_str('/foaf:person/privateNick') !== NULL) {
+    if ($element->xpath_str('/foaf:person/privateNick') !== NULL) {
       $privacy_config = new CultureFeed_UserPrivacyConfig();
 
       $vars = array('nick', 'givenName', 'familyName', 'mbox', 'gender', 'dob', 'depiction', 'bio', 'homeAddress', 'homeLocation', 'currentLocation', 'openId');
 
       foreach ($vars as $var) {
-        $privacy = $xml->xpath_bool('/foaf:person/private' . ucfirst($var));
+        $privacy = $element->xpath_bool('/foaf:person/private' . ucfirst($var));
 
         if (is_bool($privacy)) {
           $privacy_config->{$var} = $privacy ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
@@ -906,17 +906,17 @@ class CultureFeed {
   /**
    * Parse the SimpleXML element as a CultureFeed_ResultSet.
    *
-   * @param CultureFeed_SimpleXMLElement $xml
+   * @param CultureFeed_SimpleXMLElement $element
    *   XML to parse.
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_User type.
    */
-  protected static function parseUsers($xml) {
-    $total = $xml->xpath_int('/response/total');
+  protected static function parseUsers(CultureFeed_SimpleXMLElement $element) {
+    $total = $element->xpath_int('/response/total');
 
     $users = array();
 
-    $objects = $xml->xpath('/response/users/user');
+    $objects = $element->xpath('/response/users/user');
 
     foreach ($objects as $object) {
       $user = new CultureFeed_SearchUser();
@@ -935,15 +935,15 @@ class CultureFeed {
   /**
    * Parse the SimpleXML element as an array of CultureFeed_Consumer objects.
    *
-   * @param CultureFeed_SimpleXMLElement $xml
+   * @param CultureFeed_SimpleXMLElement $element
    *   XML to parse.
    * @return CultureFeed_Consumer[]
    *   Array of CultureFeed_Consumer objcts.
    */
-  protected static function parseServiceConsumers($xml) {
+  protected static function parseServiceConsumers(CultureFeed_SimpleXMLElement $element) {
     $consumers = array();
 
-    $objects = $xml->xpath('/response/serviceconsumers/serviceconsumer');
+    $objects = $element->xpath('/response/serviceconsumers/serviceconsumer');
 
     foreach ($objects as $object) {
       $consumer = new CultureFeed_Consumer();
@@ -965,12 +965,12 @@ class CultureFeed {
   /**
    * Parse the SimpleXML element as a CultureFeed_ResultSet.
    *
-   * @param CultureFeed_SimpleXMLElement $xml
+   * @param CultureFeed_SimpleXMLElement $element
    *   XML to parse.
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  protected static function parseActivities($xml) {
+  protected static function parseActivities(CultureFeed_SimpleXMLElement $element) {
     $type_mapping = array(
       'VIEW'     => CultureFeed_Activity::TYPE_VIEW,
       'DETAIL'   => CultureFeed_Activity::TYPE_DETAIL,
@@ -982,11 +982,11 @@ class CultureFeed {
       'IK_GA'    => CultureFeed_Activity::TYPE_IK_GA,
     );
 
-    $total = $xml->xpath_int('/response/total');
+    $total = $element->xpath_int('/response/total');
 
     $activities = array();
 
-    $objects = $xml->xpath('/response/activities/activity');
+    $objects = $element->xpath('/response/activities/activity');
 
     foreach ($objects as $object) {
       $activity = new CultureFeed_Activity();
@@ -1012,15 +1012,15 @@ class CultureFeed {
   /**
    * Parse the SimpleXML element as an array of CultureFeed_Consumer objects.
    *
-   * @param CultureFeed_SimpleXMLElement $xml
+   * @param CultureFeed_SimpleXMLElement $element
    *   XML to parse.
    * @return CultureFeed_Recommendation[]
    *   Array of CultureFeed_Recommendation objcts.
    */
-  protected static function parseRecommendations($xml) {
+  protected static function parseRecommendations(CultureFeed_SimpleXMLElement $element) {
     $recommendations = array();
 
-    $objects = $xml->xpath('/response/recommendations/recommendation');
+    $objects = $element->xpath('/response/recommendations/recommendation');
 
     foreach ($objects as $object) {
       $recommendation = new CultureFeed_Recommendation();
