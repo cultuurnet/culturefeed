@@ -199,12 +199,7 @@ function culturefeed_ui_user_view($account) {
   }
 
   try {
-    if ($account->uid == $user->uid) {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-    }
-    else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
-    }
+    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
