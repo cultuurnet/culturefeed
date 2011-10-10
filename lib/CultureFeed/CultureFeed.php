@@ -741,6 +741,10 @@ class CultureFeed {
     $user->depiction    = $xml->xpath_str('/foaf:person/foaf:depiction');
     $user->bio          = $xml->xpath_str('/foaf:person/bio');
     $user->homeAddress  = $xml->xpath_str('/foaf:person/foaf:homeAddress');
+    $user->street       = $xml->xpath_str('/foaf:person/street');
+    $user->zip          = $xml->xpath_str('/foaf:person/zip');
+    $user->city         = $xml->xpath_str('/foaf:person/city');
+    $user->country      = $xml->xpath_str('/foaf:person/country');
     $user->status       = $xml->xpath_str('/foaf:person/status');
     if ($user->status) {
       $user->status = strtolower($user->status);

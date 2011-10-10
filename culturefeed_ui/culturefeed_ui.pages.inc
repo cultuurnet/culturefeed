@@ -130,7 +130,7 @@ function culturefeed_ui_profile_edit_form() {
   $form['gender'] = array(
     '#type' => 'radios',
     '#title' => 'Geslacht',
-    '#options' => array('male' => t('Male'), 'female' => t('Female')),
+    '#options' => array('male' => 'Man', 'female' => 'Vrouw'),
     '#default_value' => $cf_account->gender,
   );
   $form['genderPrivacy'] = array(
@@ -140,25 +140,25 @@ function culturefeed_ui_profile_edit_form() {
   );
   
   // Address
-  $form['homeAddressAddress'] = array(
+  $form['street'] = array(
     '#type' => 'textfield',
     '#title' => 'Straatnaam en nummer',
-    '#default_value' => '',
+    '#default_value' => $cf_account->street,
   );
-  $form['homeAddressZip'] = array(
+  $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => 'Postcode',
-    '#default_value' => '',
+    '#default_value' => $cf_account->zip,
   );
-  $form['homeAddressCity'] = array(
+  $form['city'] = array(
     '#type' => 'textfield',
     '#title' => 'Woonplaats',
-    '#default_value' => '',
+    '#default_value' => $cf_account->city,
   );
-  $form['homeAddressCountry'] = array(
+  $form['country'] = array(
     '#type' => 'textfield',
     '#title' => 'Land',
-    '#default_value' => '',
+    '#default_value' => $cf_account->country,
   );
   $form['homeAddressPrivacy'] = array(
     '#type' => 'checkbox',
@@ -216,6 +216,10 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   $user_update->familyName = $values['familyName'];
   $user_update->gender     = $values['gender'];
   $user_update->bio        = $values['bio'];
+  $user_update->street     = $values['street'];
+  $user_update->zip        = $values['zip'];
+  $user_update->city       = $values['city'];
+  $user_update->country    = $values['country'];
 
   $dob_parts = explode('/', $values['dob']);
 

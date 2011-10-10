@@ -121,6 +121,34 @@ class CultureFeed_User {
   public $homeAddress;
 
   /**
+   * Street of the home address of the user.
+   *
+   * @var string
+   */
+  public $street;
+
+  /**
+   * Zip of the home address of the user.
+   *
+   * @var string
+   */
+  public $zip;
+
+  /**
+   * City of the home address of the user.
+   *
+   * @var string
+   */
+  public $city;
+
+  /**
+   * Country of the home address of the user.
+   *
+   * @var string
+   */
+  public $country;
+
+  /**
    * Coordinates of the user's home address.
    *
    * @var CultureFeed_Location
@@ -181,9 +209,28 @@ class CultureFeed_User {
       $data['mboxVerified'] = $data['mboxVerified'] ? 'true' : 'false';
     }
 
-    // Represent homeLocation as a string.
-    if (isset($data['homeLocation'])) {
-      $data['homeLocation'] = (string)$data['homeLocation'];
+    // Put street in the right field.
+    if (isset($data['street'])) {
+      $data['homeStreet'] = (string)$data['street'];
+      unset($data['street']);
+    }
+
+    // Put zip in the right field.
+    if (isset($data['zip'])) {
+      $data['homeZip'] = (string)$data['zip'];
+      unset($data['zip']);
+    }
+
+    // Put city in the right field.
+    if (isset($data['city'])) {
+      $data['homeCity'] = (string)$data['city'];
+      unset($data['city']);
+    }
+
+    // Put country in the right field.
+    if (isset($data['country'])) {
+      $data['homeCountry'] = (string)$data['country'];
+      unset($data['country']);
     }
 
     // Represent currentLocation as a string.
