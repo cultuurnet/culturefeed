@@ -89,51 +89,107 @@ function culturefeed_ui_profile_edit_form() {
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
 
+  // Firstname.
   $form['givenName'] = array(
     '#type' => 'textfield',
-    '#title' => t('First name'),
+    '#title' => 'Voornaam',
     '#default_value' => $cf_account->givenName,
   );
+  $form['givenNamePrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'voornaam\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
+  
+  // Name.
   $form['familyName'] = array(
     '#type' => 'textfield',
-    '#title' => t('Last name'),
+    '#title' => 'Naam',
     '#default_value' => $cf_account->familyName,
   );
+  $form['familyNamePrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'naam\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
 
+  // Picture.
   $form['#attributes']['enctype'] = 'multipart/form-data';
+
+  $form['picture'] = array(
+    '#type' => 'file',
+    '#title' => 'Kies een foto',
+  );
 
   $form['current_picture'] = array(
     '#theme' => 'image',
     '#path' => $cf_account->depiction,
   );
 
-  $form['picture'] = array(
-    '#type' => 'file',
-    '#title' => t('Picture')
-  );
-
+  // Gender.
   $form['gender'] = array(
     '#type' => 'radios',
-    '#title' => t('Gender'),
+    '#title' => 'Geslacht',
     '#options' => array('male' => t('Male'), 'female' => t('Female')),
     '#default_value' => $cf_account->gender,
   );
-  $form['homeAddress'] = array(
+  $form['genderPrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'geslacht\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
+  
+  // Address
+  $form['homeAddressAddress'] = array(
     '#type' => 'textfield',
-    '#title' => t('Street and nr'),
-    '#default_value' => $cf_account->homeAddress,
+    '#title' => 'Straatnaam en nummer',
+    '#default_value' => '',
   );
-  $form['bio'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Bio'),
-    '#default_value' => $cf_account->bio,
+  $form['homeAddressZip'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Postcode',
+    '#default_value' => '',
   );
+  $form['homeAddressCity'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Woonplaats',
+    '#default_value' => '',
+  );
+  $form['homeAddressCountry'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Land',
+    '#default_value' => '',
+  );
+  $form['homeAddressPrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'woonplaats\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
+  
+  // Date of birth.
   $form['dob'] = array(
-    '#title' => t('Date of birth'),
+    '#title' => 'Geboortedatum',
     '#type' => 'textfield',
     '#default_value' => '',
     '#description' => t('Format is dd/mm/yyyy'),
     '#size' => 10,
+  );
+  $form['dobPrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'geboortedatum\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
+  
+  // Bio
+  $form['bio'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Beschrijf jezelf',
+    '#default_value' => $cf_account->bio,
+  );
+  $form['bioPrivacy'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Verberg \'bio\' in openbaar profiel',
+    '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   if (module_exists('cnapi_browse')) {
@@ -141,13 +197,7 @@ function culturefeed_ui_profile_edit_form() {
 
     $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   }
-
-  /*$form['country'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Country'),
-    '#default_value' => $cf_account->country,
-  );*/
-
+  
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -166,7 +216,6 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   $user_update->familyName = $values['familyName'];
   $user_update->gender     = $values['gender'];
   $user_update->bio        = $values['bio'];
-  // $user_update->country    = $values['country'];
 
   $dob_parts = explode('/', $values['dob']);
 
@@ -181,6 +230,7 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     drupal_set_message(t('Some error occurred'), 'error');
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -194,12 +244,31 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     $picture = file_get_contents($picture_path);
 
     try {
-      $result = DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
+      DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
     }
     catch (Exception $e) {
       drupal_set_message(t('Some error occurred while uploading picture'), 'error');
+      watchdog_exception('culturefeed_ui', $e);
       return;
     }
+  }
+
+  $privacy_config = new CultureFeed_UserPrivacyConfig();
+
+  $privacy_config->givenName   = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->familyName  = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->gender      = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->homeAddress = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->dob         = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->bio         = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+
+  try {
+    DrupalCultureFeed::updateUserPrivacy(DrupalCultureFeed::getLoggedInUserId(), $privacy_config);
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('Some error occurred while trying to update your privacy settings.'), 'error');
+    watchdog_exception('culturefeed_ui', $e);
+    return;
   }
 
   drupal_set_message(t('Updates saved.'));
@@ -295,7 +364,6 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
 
   $cf_account->id          = DrupalCultureFeed::getLoggedInUserId();
   $cf_account->mbox        = $mbox;
-  $cf_account->homeAddress = 'hello';
 
   DrupalCultureFeed::updateUser($cf_account);
 
