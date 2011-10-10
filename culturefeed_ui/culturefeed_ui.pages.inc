@@ -170,7 +170,7 @@ function culturefeed_ui_profile_edit_form() {
   $form['dob'] = array(
     '#title' => 'Geboortedatum',
     '#type' => 'textfield',
-    '#default_value' => '',
+    '#default_value' => $cf_account->dob ? date('d/m/Y', $cf_account->dob) : '',
     '#description' => t('Format is dd/mm/yyyy'),
     '#size' => 10,
   );
