@@ -721,7 +721,6 @@ class CultureFeed {
   }
 
   /**
-<<<<<<< HEAD
    * @todo clarify if $start and $max are obligatory or optional
    *
    * Enter description here ...
@@ -820,6 +819,7 @@ class CultureFeed {
     return $consumer;
   }
 
+  /*
    * Parse the SimpleXML element as a CultureFeed_User.
    *
    * @param CultureFeed_SimpleXMLElement $xml
