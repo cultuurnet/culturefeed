@@ -11,7 +11,7 @@ function culturefeed_ui_block_view_profile_box() {
   if (!user_is_anonymous() && !DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
-  
+
   $nick = '';
   $picture = '';
   $url_profile = '';
@@ -21,20 +21,20 @@ function culturefeed_ui_block_view_profile_box() {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     catch (Exception $e) {
-      culturefeed_log('culturefeed_ui', $e);
+      watchdog_exception('culturefeed_ui', $e);
     }
-    
+
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
       $picture = $cf_account->depiction;
-      $url_profile = 'user/' . culturefeed_user_get($cf_account->id)->uid;
+      $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
 
   $block['subject'] = '';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_profile_box',
-    '#nick' => $nick, 
+    '#nick' => $nick,
     '#picture' => $picture,
     '#url_profile' => $url_profile,
   );
@@ -64,10 +64,10 @@ function culturefeed_ui_block_view_most_active_user() {
   $query->sort = $sort;
 
   try {
-    $account = DrupalCultureFeed::searchUsers($query)->objects[0];
+    $account = reset(DrupalCultureFeed::searchUsers($query)->objects);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -90,16 +90,16 @@ function culturefeed_ui_block_view_top_events() {
     $events = DrupalCultureFeed::getTopEvents($sort, 5); // @todo make max configurable
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
   $items = array();
 
-  $events_info = culturefeed_get_events_for_cdbids($events);
+  $events_info = culturefeed_get_nodes_for_cdbids('event', $events);
 
   foreach ($events as $cdbid) {
-    if (!isset($events_info[$cdbid]) || !is_array($events_info[$cdbid])) {
+    if (!isset($events_info[$cdbid])) {
       continue;
     }
 
@@ -123,7 +123,7 @@ function culturefeed_ui_block_view_top_events() {
 
 function culturefeed_ui_block_view_similar_users() {
   $account = menu_get_object('user');
-  
+
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -134,19 +134,19 @@ function culturefeed_ui_block_view_similar_users() {
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
-  
+
   if (empty($users->objects)) {
     return;
   }
 
-  foreach ($users->objects as $user) {
-    $items[] = theme('culturefeed_ui_user_summary', array('user' => $user));
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
   }
-
-  $items = array();
 
   $block['subject'] = t('Users similar to !name', array('!name' => $cf_account->nick));
   $block['content'] = array(
@@ -159,9 +159,9 @@ function culturefeed_ui_block_view_similar_users() {
 
 function culturefeed_ui_block_view_user_picture() {
   global $user;
-  
+
   $account = menu_get_object('user');
-  
+
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -175,7 +175,7 @@ function culturefeed_ui_block_view_user_picture() {
     }
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
@@ -204,21 +204,21 @@ function culturefeed_ui_block_view_profile_menu() {
   $items = array();
 
   $title = 'Mijn UiTid';
-  $url = 'user/' . culturefeed_user_get(DrupalCultureFeed::getLoggedInUserId())->uid;
+  $url = 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid;
   $description = 'Zo zien anderen jouw profiel.';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $title = 'Profiel bewerken';
   $url = 'culturefeed/profile/edit';
   $description = 'Wijzig naam, adres, favoriet categoriëen, ...';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $title = 'Account bewerken';
   $url = 'culturefeed/account/edit';
   $description = 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...';
-  
+
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
   $block['subject'] = t('Profile');
@@ -232,13 +232,13 @@ function culturefeed_ui_block_view_profile_menu() {
 
 function culturefeed_ui_block_view_user_activities() {
   global $user;
-  
+
   $account = menu_get_object('user');
 
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
-  
+
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = 200;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
@@ -257,18 +257,14 @@ function culturefeed_ui_block_view_user_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
-  $items = array();
-
-  $events = culturefeed_get_events_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node));
+  $items = culturefeed_ui_activities_list($activities);
+  
+  if (empty($items)) {
+    return;
   }
 
   $block['subject'] = t('User activities');
@@ -297,18 +293,14 @@ function culturefeed_ui_block_view_recent_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
-  $items = array();
-
-  $events = culturefeed_get_events_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    $node = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node));
+  $items = culturefeed_ui_activities_list($activities);
+  
+  if (empty($items)) {
+    return;
   }
 
   $block['subject'] = t('Recent activities');
@@ -340,7 +332,7 @@ function culturefeed_ui_block_view_event_like() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    culturefeed_log('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
 

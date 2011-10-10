@@ -3,9 +3,9 @@
 <p>Meld je direct aan via:</p>
 
 <ul>
-  <li><?php print l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination())) ?></li>
-  <li><?php print l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination())) ?></li>
-  <li><?php print l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination())) ?></li>
+  <li><?php print $link_facebook ?></li>
+  <li><?php print $link_twitter ?></li>
+  <li><?php print $link_google ?></li>
 </ul>
 
 <h3>Geen Facebook, Twitter of Google-gebruiker?</h3>

@@ -156,8 +156,8 @@ class CultureFeed_User {
    * @var array
    */
   public $holdsAccount;
-  
-  
+
+
 
   /**
    * Field privacy status.

@@ -218,7 +218,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     if ($use_auth && !isset($this->token->key)) {
       throw new Exception('Trying to do an authorized request without an access token set.');
     }
-    
+
     // Getting full URL.
     $url = $this->getUrl($path);
 

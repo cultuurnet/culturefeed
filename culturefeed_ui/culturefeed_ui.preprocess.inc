@@ -1,6 +1,53 @@
 <?php
 
 /**
+ * Preprocess variables for cnapi-ui-profile.tpl.php.
+ *
+ * @see culturefeed-ui-profile.tpl.php
+ */
+function template_preprocess_culturefeed_ui_profile(&$variables) {
+  $user = $variables['user'];
+  $user instanceof CultureFeed_User;
+  
+  // nick
+  $variables['nick'] = $user->nick;
+  
+  // name
+  $name = array();
+  if (isset($user->givenName)) {
+    $name[] = $user->givenName;
+  }
+  if (isset($user->familyName)) {
+    $name[] = $user->familyName;
+  }
+  
+  $variables['name'] = implode(' ', $name);
+  
+  // gender
+  $variables['gender'] = '';
+  if (isset($user->gender)) {
+    $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  }
+  
+  // dob
+  $variables['dob'] = isset($user->dob) ? format_date($user->dob) : '';
+  
+  // bio
+  $variables['bio'] = isset($user->bio) ? $user->bio : '';
+}
+
+/**
+ * Preprocess variables for cnapi-ui-connect.tpl.php.
+ *
+ * @see culturefeed-ui-connect.tpl.php
+ */
+function template_preprocess_culturefeed_ui_connect(&$variables) {
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+}
+
+/**
  * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php
@@ -17,21 +64,21 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
 function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $activity = $variables['activity'];
   $activity instanceof CultureFeed_Activity;
-  
+
   $picture = theme('image', array('path' => $activity->depiction));
-  $url = 'user/' . culturefeed_user_get($activity->userId)->uid;
-  
+  $url = 'user/' . $variables['uid'];
+
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
-  
+
   $node = '';
   if ($variables['node']) {
     $node = cnapi_url_dp2dul($variables['node']['title'], array($activity->contentType => $variables['node']['cdbid'], 'title' => $variables['node']['title']));
   }
-  
+
   $type_prefix = '';
   $type_suffix = '';
-  
+
   switch ($activity->type) {
     case CultureFeed_Activity::TYPE_VIEW:
       $type_prefix = 'heeft';
@@ -66,14 +113,14 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
       $type_suffix = '';
       break;
   }
-  
+
   $replace = array(
     '!nick' => l($activity->nick, $url),
     '!type_prefix' => $type_prefix,
     '!type_suffix' => $type_suffix,
     '!node' => $node,
   );
-  
+
   $variables['text'] = strtr('!nick !type_prefix !node !type_suffix.', $replace);
 }
 
@@ -85,9 +132,9 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
 function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
-  
+
   $picture = theme('image', array('path' => $user->depiction));
-  $url = 'user/' . culturefeed_user_get($user->id)->uid;
+  $url = 'user/' . $variables['uid'];
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['nick'] = l($user->nick, $url);
 }
@@ -99,13 +146,13 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
  */
 function template_preprocess_culturefeed_ui_profile_box(&$variables) {
   $variables['is_logged_in'] = !user_is_anonymous();
-  
+
   if (!user_is_anonymous()) {
     $variables['picture'] = theme('image', array('path' => $variables['picture']));
     $variables['nick'] = l($variables['nick'], $variables['url_profile']);
     $variables['link_profile'] = l('Mijn UiTid', $variables['url_profile']);
   }
-  
+
   $variables['link_logout'] = l('Uitloggen', 'user/logout');
   $variables['link_login'] = l('Inloggen', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_register'] = l('Registereren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
@@ -119,10 +166,10 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
 function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account = $variables['account'];
   $account instanceof CultureFeed_User;
-  
-  $url = 'user/' . culturefeed_user_get($account->id)->uid;
+
+  $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
   $picture = theme('image', array('path' => $account->depiction));
-  
+
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
 
   switch ($variables['sort']) {
@@ -145,13 +192,13 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
       $type_text = 'gedaan';
       break;
   }
-  
+
   $replace = array(
     '!nick' => l($account->nick, $url),
     '!sort_value' => $variables['sort_value'],
     '!type' => $type_text,
     '!uitslover' => l('UiTslover', 'culturefeed/users/mostactive'),
   );
-  
+
   $variables['text'] = strtr('!nick heeft vorige week !sort_value activiteiten !type en is de !uitslover van de week. Proficiat !nick', $replace);
 }

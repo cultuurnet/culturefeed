@@ -13,12 +13,12 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
   $options = array('absolute' => TRUE);
-  
+
   if (isset($_GET['destination'])) {
     $options['query']['destination'] = $_GET['destination'];
     unset($_GET['destination']);
   }
-  
+
   if (isset($_GET['popup'])) {
     $options['query']['popup'] = 'true';
   }
@@ -37,23 +37,39 @@ function culturefeed_oauth_authorize() {
     unset($_SESSION['oauth_token']);
     unset($_SESSION['oauth_token_secret']);
 
-    $account = culturefeed_user_get($token['userId'], $token['oauth_token'], $token['oauth_token_secret']);
+    $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'])->getUser($token['userId']);
+
+    $account = culturefeed_get_or_create_user($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret']);
 
     if ($account) {
       global $user;
       $user = $account;
 
       user_login_finalize();
-      
+
       if (isset($_GET['popup'])) {
-        drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
+        // We don't want to render all blocks, so we return minimal html.
+        print '<html>';
+        print '<head>';
+        print '<title>You should not see this</title>';
+        print '<script type="text/javascript">window.opener.location.reload(); window.close();</script>';
+        print '</head>';
+        print '<body>';
+        print '</body>';
+        print '</html>';
       }
       else {
-        if ($destination = drupal_get_destination())
-        drupal_goto('');
+        if (isset($_GET['destination'])) {
+          drupal_goto($_GET['destination']);
+        }
+        else {
+          drupal_goto('');
+        }
       }
     }
   }
+
+  drupal_page_footer();
   
-  return '';
+  exit();
 }
