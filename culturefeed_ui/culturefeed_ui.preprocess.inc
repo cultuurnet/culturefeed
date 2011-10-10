@@ -1,6 +1,42 @@
 <?php
 
 /**
+ * Preprocess variables for cnapi-ui-profile.tpl.php.
+ *
+ * @see culturefeed-ui-profile.tpl.php
+ */
+function template_preprocess_culturefeed_ui_profile(&$variables) {
+  $user = $variables['user'];
+  $user instanceof CultureFeed_User;
+  
+  // nick
+  $variables['nick'] = $user->nick;
+  
+  // name
+  $name = array();
+  if (isset($user->givenName)) {
+    $name[] = $user->givenName;
+  }
+  if (isset($user->familyName)) {
+    $name[] = $user->familyName;
+  }
+  
+  $variables['name'] = implode(' ', $name);
+  
+  // gender
+  $variables['gender'] = '';
+  if (isset($user->gender)) {
+    $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  }
+  
+  // dob
+  $variables['dob'] = isset($user->dob) ? format_date($user->dob) : '';
+  
+  // bio
+  $variables['bio'] = isset($user->bio) ? $user->bio : '';
+}
+
+/**
  * Preprocess variables for cnapi-ui-connect.tpl.php.
  *
  * @see culturefeed-ui-connect.tpl.php

@@ -84,6 +84,10 @@ function culturefeed_ui_menu() {
  */
 function culturefeed_ui_theme() {
   return array(
+    'culturefeed_ui_profile' => array(
+      'variables' => array('user' => NULL),
+      'template' => 'culturefeed-ui-profile',
+    ),
     'culturefeed_ui_profile_box' => array(
       'variables' => array('nick' => '', 'picture' => '', 'url_profile' => ''),
       'template' => 'culturefeed-ui-profile-box',
@@ -207,7 +211,10 @@ function culturefeed_ui_user_view($account) {
     return;
   }
 
-  $account->content['culturefeed'] = array('#markup' => $cf_account->nick);
+  $account->content['culturefeed'] = array(
+    '#theme' => 'culturefeed_ui_profile',
+    '#user' => $cf_account,
+  );
 }
 
 function culturefeed_ui_search_users_form() {
