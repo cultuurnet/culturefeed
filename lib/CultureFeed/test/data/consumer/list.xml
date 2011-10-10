@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<consumers xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+    <consumer>
+        <callback></callback>
+        <consumerKey>ay1dgdxusn52hgzlnmqlebmaejytpm5l</consumerKey>
+        <consumerSecret>una4equafq25xcg8r0po0z8lvh8d1bbi</consumerSecret>
+        <description>Example Corp. CultureFeed consumer</description>
+        <creationDate>2011-09-22T14:31Z</creationDate>
+        <id>17</id>
+        <name>Example Corp.</name>
+        <status>ACTIVE</status>
+        <destinationAfterEmailVerification></destinationAfterEmailVerification>
+        <domain>example.com</domain>
+    </consumer>
+    <consumer>
+        <callback>https://clone.example.com/callback</callback>
+        <consumerKey>wad324omxeegtejdp7ycqgiak6z78scm</consumerKey>
+        <consumerSecret>8r6b2o5zy1irnnt5ltds7kio6ozmh6nh</consumerSecret>
+        <creationDate>2011-10-08T08:30Z</creationDate>
+        <id>18</id>
+        <name>Clone of Example Corp.</name>
+        <status>BLOCKED</status>
+        <destinationAfterEmailVerification>https://clone.example.com/after/verification/email</destinationAfterEmailVerification>
+        <domain>clone.example.com</domain>
+    </consumer>
+</consumers>

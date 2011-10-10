@@ -721,6 +721,105 @@ class CultureFeed {
   }
 
   /**
+   * @todo clarify if $start and $max are obligatory or optional
+   *
+   * Enter description here ...
+   * @param unknown_type $start
+   */
+  public function getServiceConsumers($start = 0, $max = NULL) {
+    $query = array('start' => $start);
+
+    if ($max) {
+      $query['max'] = $max;
+    }
+
+    $result = $this->oauth_client->consumerGetAsXML('serviceconsumer/list', $query);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $consumers = array();
+    $elements = $xml->xpath('/consumers/consumer');
+
+    foreach ($elements as $element) {
+      $consumers[] = $this->parseServiceConsumer($element);
+    }
+
+    return $consumers;
+  }
+
+  /**
+   * Creates a new service consumer.
+   *
+   * @param CultureFeed_Consumer $consumer service consumer with the properties we want to initialize it with
+   * @return CultureFeed_Consumer the new, fully initialized service consumer created by the CultureFeed server
+   */
+  public function createServiceConsumer(CultureFeed_Consumer $consumer) {
+    $data = $consumer->toPostData();
+
+    unset($data['id']);
+    unset($data['creationDate']);
+    unset($data['status']);
+
+    $result = $this->oauth_client->consumerPostAsXML('serviceconsumer', $data);
+
+    try {
+      $element = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return $this->parseServiceConsumer($element);
+  }
+
+  /**
+   * Updates an existing service consumer.
+   *
+   * @param CultureFeed_Consumer $consumer
+   * @return null
+   * @todo check if we can update the status of the consumer
+   */
+  public function updateServiceConsumer(CultureFeed_Consumer $consumer) {
+    $data = $consumer->toPostData();
+
+    unset($data['id']);
+    unset($data['creationDate']);
+    unset($data['status']);
+
+    $result = $this->oauth_client->consumerPostAsXML('serviceconsumer/' . $consumer->consumerKey, $data);
+  }
+
+  /**
+   * Initializes a CultureFeed_Consumer object from its XML representation.
+   *
+   * @param CultureFeed_SimpleXMLElement $element
+   * @return CultureFeed_Consumer
+   */
+  protected function parseServiceConsumer(CultureFeed_SimpleXMLElement $element) {
+    $consumer = new CultureFeed_Consumer();
+
+    $consumer->callback                           = $element->xpath_str('callback');
+    $consumer->consumerKey                        = $element->xpath_str('consumerKey');
+    $consumer->consumerSecret                     = $element->xpath_str('consumerSecret');
+    $consumer->creationDate                       = $element->xpath_time('creationDate');
+    $consumer->description                        = $element->xpath_str('description');
+    $consumer->destinationAfterEmailVerification  = $element->xpath_str('destinationAfterEmailVerification');
+    $consumer->domain                             = $element->xpath_str('domain');
+    $consumer->id                                 = $element->xpath_int('id');
+    $consumer->logo                               = $element->xpath_str('logo');
+    $consumer->name                               = $element->xpath_str('name');
+    $consumer->organization                       = $element->xpath_str('organization');
+    $consumer->status                             = $element->xpath_str('status');
+
+    return $consumer;
+  }
+
+  /*
    * Parse the SimpleXML element as a CultureFeed_User.
    *
    * @param CultureFeed_SimpleXMLElement $xml
@@ -955,5 +1054,4 @@ class CultureFeed {
 
     return $recommendations;
   }
-
 }

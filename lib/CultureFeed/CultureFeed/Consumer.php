@@ -13,6 +13,13 @@ class CultureFeed_Consumer {
   public $consumerKey;
 
   /**
+   * Shared secret of the consumer.
+   *
+   * @var string
+   */
+  public $consumerSecret;
+
+  /**
    * Creation date of this consumer represented as a UNIX timestamp.
    *
    * @var integer
@@ -41,18 +48,62 @@ class CultureFeed_Consumer {
   public $organization;
 
   /**
-   * Description of the the consumer.
+   * Description of the consumer.
    *
    * @var string
    */
   public $description;
 
   /**
-   * Logo of the the consumer.
+   * URL of the logo of the consumer.
    *
    * @var string
    */
   public $logo;
 
-}
+  /**
+   * Status of the consumer.
+   *
+   * @var string
+   */
+  public $status;
 
+  /**
+   * Domain of the consumer.
+   *
+   * @var string
+   */
+  public $domain;
+
+  /**
+   * Default callback URL of the consumer.
+   *
+   * @var string
+   */
+  public $callback;
+
+  /**
+   * Redirect URL after verification of an e-mail address.
+   *
+   * @var string
+   */
+  public $destinationAfterEmailVerification;
+
+   /**
+   * Extract an array useable as data in POST requests that expect consumer info.
+   *
+   * @return array
+   *   Associative array representing the consumer object. For documentation of the structure, check the Culture Feed API documentation.
+   */
+  public function toPostData() {
+    // For most properties we can rely on get_object_vars.
+    $data = array_filter(get_object_vars($this));
+
+    // Represent creationDate as a W3C date.
+    if (isset($data['creatioNDate'])) {
+      $data['creationDate'] = date('c', $data['creationDate']);
+    }
+
+    return $data;
+  }
+}
