@@ -21,25 +21,38 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $consumers = $cf->getServiceConsumers();
 
     $this->assertInternalType('array', $consumers);
-    $this->assertEquals(7, count($consumers));
+    $this->assertEquals(2, count($consumers));
     $this->assertContainsOnly('CultureFeed_Consumer', $consumers);
 
     $this->assertEquals('ay1dgdxusn52hgzlnmqlebmaejytpm5l', $consumers[0]->consumerKey);
     $this->assertEquals('una4equafq25xcg8r0po0z8lvh8d1bbi', $consumers[0]->consumerSecret);
     $this->assertEquals('', $consumers[0]->callback);
     $this->assertInternalType('integer', $consumers[0]->creationDate);
-    $this->assertEquals(1318062600, $consumers[0]->creationDate);
+    $this->assertEquals(1316701860, $consumers[0]->creationDate);
     $this->assertInternalType('integer', $consumers[0]->id);
     $this->assertEquals(17, $consumers[0]->id);
-    $this->assertEquals('UiT Widgets dev', $consumers[0]->name);
+    $this->assertEquals('Example Corp.', $consumers[0]->name);
     $this->assertEquals('', $consumers[0]->organization);
-    $this->assertEquals('CultureFeed integratie in UiT Widgets', $consumers[0]->description);
+    $this->assertEquals('Example Corp. CultureFeed consumer', $consumers[0]->description);
     $this->assertEquals('', $consumers[0]->logo);
     $this->assertEquals('ACTIVE', $consumers[0]->status);
-    $this->assertEquals('uitwidgets.statiklabs.be', $consumers[0]->domain);
+    $this->assertEquals('example.com', $consumers[0]->domain);
     $this->assertEquals('', $consumers[0]->destinationAfterEmailVerification);
 
-    // @todo test the values of other consumers
+    $this->assertEquals('wad324omxeegtejdp7ycqgiak6z78scm', $consumers[1]->consumerKey);
+    $this->assertEquals('8r6b2o5zy1irnnt5ltds7kio6ozmh6nh', $consumers[1]->consumerSecret);
+    $this->assertEquals('https://clone.example.com/callback', $consumers[1]->callback);
+    $this->assertInternalType('integer', $consumers[1]->creationDate);
+    $this->assertEquals(1318062600, $consumers[1]->creationDate);
+    $this->assertInternalType('integer', $consumers[1]->id);
+    $this->assertEquals(18, $consumers[1]->id);
+    $this->assertEquals('Clone of Example Corp.', $consumers[1]->name);
+    $this->assertEquals('', $consumers[1]->organization);
+    $this->assertEquals('', $consumers[1]->description);
+    $this->assertEquals('', $consumers[1]->logo);
+    $this->assertEquals('BLOCKED', $consumers[1]->status);
+    $this->assertEquals('clone.example.com', $consumers[1]->domain);
+    $this->assertEquals('https://clone.example.com/after/verification/email', $consumers[1]->destinationAfterEmailVerification);
   }
 
   public function testCreateServiceConsumer() {
