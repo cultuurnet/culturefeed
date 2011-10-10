@@ -755,8 +755,10 @@ class CultureFeed {
   /**
    * Creates a new service consumer.
    *
-   * @param CultureFeed_Consumer $consumer service consumer with the properties we want to initialize it with
-   * @return CultureFeed_Consumer the new, fully initialized service consumer created by the CultureFeed server
+   * @param CultureFeed_Consumer $consumer 
+   *   Service consumer with the properties we want to initialize it with.
+   * @return CultureFeed_Consumer 
+   *   The new, fully initialized service consumer created by the CultureFeed server.
    */
   public function createServiceConsumer(CultureFeed_Consumer $consumer) {
     $data = $consumer->toPostData();
@@ -781,7 +783,6 @@ class CultureFeed {
    * Updates an existing service consumer.
    *
    * @param CultureFeed_Consumer $consumer
-   * @return null
    * @todo check if we can update the status of the consumer
    */
   public function updateServiceConsumer(CultureFeed_Consumer $consumer) {
@@ -791,7 +792,7 @@ class CultureFeed {
     unset($data['creationDate']);
     unset($data['status']);
 
-    $result = $this->oauth_client->consumerPostAsXML('serviceconsumer/' . $consumer->consumerKey, $data);
+    $this->oauth_client->consumerPostAsXML('serviceconsumer/' . $consumer->consumerKey, $data);
   }
 
   /**
