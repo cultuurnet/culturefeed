@@ -814,7 +814,6 @@ class CultureFeed {
     $consumer->id                                 = $element->xpath_int('id');
     $consumer->logo                               = $element->xpath_str('logo');
     $consumer->name                               = $element->xpath_str('name');
-    $consumer->organization                       = $element->xpath_str('organization');
     $consumer->status                             = $element->xpath_str('status');
 
     return $consumer;
@@ -953,7 +952,6 @@ class CultureFeed {
       $consumer->creationDate = $object->xpath_time('creationDate');
       $consumer->id           = $object->xpath_int('id');
       $consumer->name         = $object->xpath_str('name');
-      $consumer->organization = $object->xpath_str('organization');
       $consumer->description  = $object->xpath_str('description');
       $consumer->logo         = $object->xpath_str('logo');
 

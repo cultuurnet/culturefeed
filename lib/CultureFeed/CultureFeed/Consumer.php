@@ -41,13 +41,6 @@ class CultureFeed_Consumer {
   public $name;
 
   /**
-   * Organization that owns the consumer.
-   *
-   * @var string
-   */
-  public $organization;
-
-  /**
    * Description of the consumer.
    *
    * @var string
