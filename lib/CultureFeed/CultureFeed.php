@@ -648,17 +648,22 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user recommendations should be based on.
-   * @param array $query
-   *   An associative array representing the query to refine the recommendations.
-   *   The array is indexed by the query key.
+   * @param CultureFeed_RecommendationsQuery $query
+   *   The query.
    * @return CultureFeed_Recommendation[]
    *   The recommendations.
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $query);
+  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    $data = array();
+    
+    if ($query) {
+      $data = $query->toPostData();
+    }
+    
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -677,19 +682,24 @@ class CultureFeed {
    *
    * @param string $id
    *   CDBID of the event recommendations should be based on.
-   * @param array $query
-   *   An associative array representing the query to refine the recommendations.
-   *   The array is indexed by the query key.
+   * @param CultureFeed_RecommendationsQuery $query
+   *   The query.
    * @return CultureFeed_Recommendation[]
    *   The recommendations.
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class
-    $query['eventId'] = $id;
+  public function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    $data = array();
+    
+    if ($query) {
+      $data = $query->toPostData();
+    }
+    
+    $data['eventId'] = $id;
 
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $query);
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
