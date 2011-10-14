@@ -329,17 +329,15 @@ function culturefeed_ui_block_view_event_like() {
   $query->nodeId = $request['event'];
 
   try {
-    $activities = DrupalCultureFeed::searchActivities($query);
+    $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, 0, 10);
   }
   catch (Exception $e) {
+    dsm($e);
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
-  $items = array();
-  foreach ($activities->objects as $activity) {
-    $items[] = $activity->nick . theme('image', array('path' => $activity->depiction));
-  }
+  $items = culturefeed_ui_users_list($users);
 
   /*$cf = DrupalCultureFeed::getLoggedInUserInstance();
 

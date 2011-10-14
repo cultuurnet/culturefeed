@@ -215,6 +215,10 @@ class DrupalCultureFeed {
   public static function deleteActivity($id) {
     self::getLoggedInUserInstance()->deleteActivity($id);
   }
+  
+  public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
+    return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
+  }
 
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
     if ($query->private) {
