@@ -152,6 +152,9 @@ function culturefeed_ui_block_info() {
   $block['user_picture']['info'] = t('User picture');
   $block['user_picture']['cache'] = DRUPAL_NO_CACHE;
 
+  $block['related_events']['info'] = t('Related events');
+  $block['related_events']['cache'] = DRUPAL_CACHE_PER_PAGE;
+
   return $block;
 }
 

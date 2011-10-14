@@ -353,3 +353,48 @@ function culturefeed_ui_block_view_likes() {
 
   return $block;
 }
+
+function culturefeed_ui_block_view_related_events() {
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $is_event = array_search('event', array_keys($request)) !== FALSE;
+
+  if (!$is_event) {
+    return;
+  }
+  
+  try {
+    $events = DrupalCultureFeed::getRecommendationsForEvent($request['event']);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  $cdbid = array();
+  
+  foreach ($events as $event) {
+    $cdbids[] = $event->itemid;
+  }
+  
+  $full_events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
+  
+  $items = array();
+  
+  foreach ($full_events as $event) {
+    $items[] = theme('cnapi_ui_event_summary', array('event' => $event));
+  }
+
+  $block['subject'] = t('Related events');
+  $block['content'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+
+  return $block;
+}

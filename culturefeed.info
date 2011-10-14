@@ -18,6 +18,7 @@ files[] = lib/CultureFeed/CultureFeed/HttpResponse.php
 files[] = lib/CultureFeed/CultureFeed/Location.php
 files[] = lib/CultureFeed/CultureFeed/OnlineAccount.php
 files[] = lib/CultureFeed/CultureFeed/ParseException.php
+files[] = lib/CultureFeed/CultureFeed/Recommendation.php
 files[] = lib/CultureFeed/CultureFeed/RecommendationItem.php
 files[] = lib/CultureFeed/CultureFeed/ResultSet.php
 files[] = lib/CultureFeed/CultureFeed/SearchActivitiesQuery.php

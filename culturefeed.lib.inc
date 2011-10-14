@@ -238,7 +238,7 @@ class DrupalCultureFeed {
   }
 
   public static function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class {
-    return self::getConsumerInstance()->getRecommendationsForEvent($id, $query); // @todo make $query a class
+    return self::getLoggedInUserInstance()->getRecommendationsForEvent($id, $query); // @todo make $query a class
   }
 
   public static function evaluateRecommendation($id, $evaluation) {
