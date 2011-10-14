@@ -240,7 +240,7 @@ function culturefeed_ui_block_view_user_activities() {
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 20;
+  $query->max = 50;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
