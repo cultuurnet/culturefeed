@@ -122,8 +122,8 @@ function culturefeed_ui_block_info() {
   $block['connect']['info'] = t('CultureFeed Connect');
   $block['connect']['cache'] = DRUPAL_CACHE_GLOBAL;
 
-  $block['event_like']['info'] = t('Event like');
-  $block['event_like']['cache'] = DRUPAL_NO_CACHE;
+  $block['likes']['info'] = t('Likes');
+  $block['likes']['cache'] = DRUPAL_NO_CACHE;
 
   $block['most_active_user']['info'] = t('Most active user');
   $block['most_active_user']['cache'] = DRUPAL_CACHE_GLOBAL;

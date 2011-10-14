@@ -317,16 +317,23 @@ function culturefeed_ui_block_view_recent_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_view_event_like() {
+function culturefeed_ui_block_view_likes() {
   $request = cnapi_ui_get_active_request();
 
-  if (!isset($request['event'])) {
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+
+  if (!$type) {
     return;
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
-  $query->nodeId = $request['event'];
+  $query->nodeId = $request[$type];
 
   try {
     $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, 0, 10);
