@@ -368,6 +368,22 @@ function culturefeed_ui_block_view_related_events() {
     return;
   }
   
+  $event = cnapi_get_event($request['event']);
+  
+  $headings = cnapi_get_headings();
+  
+  $zip = $event['location']['address']['zipcode'];
+  $event_headings = $event['headings'];
+  
+  $valid_headings = array();
+  
+  foreach ($event_headings as $heading) {
+    $heading = $headings[$heading];
+    if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
+      $valid_headings[] = $heading;
+    }
+  }
+  
   $query = new CultureFeed_RecommendationsQuery();
   $query->max = 4;
   
@@ -386,24 +402,13 @@ function culturefeed_ui_block_view_related_events() {
   }
   
   $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
-  
-  $items = array();
-  
-  $i = 0;
-  foreach ($events as $event) {
-    $theme = 'cnapi_ui_event_mini_summary';
-    
-    if ($i++ == 0) {
-      $theme = 'cnapi_ui_event_summary';
-    }
-    
-    $items[] = theme($theme, array('event' => $event, 'heading_level' => 3));
-  }
 
   $block['subject'] = t('Related events');
   $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
+    '#theme' => 'culturefeed_ui_related_events', 
+    '#events' => $events,
+    '#zip' => $zip,
+    '#headings' => $valid_headings, 
   );
 
   return $block;

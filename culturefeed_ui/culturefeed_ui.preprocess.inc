@@ -202,3 +202,41 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 
   $variables['text'] = strtr('!nick heeft vorige week !sort_value activiteiten !type en is de !uitslover van de week. Proficiat !nick', $replace);
 }
+
+/**
+ * Preprocess variables for cnapi-ui-related-events.tpl.php.
+ *
+ * @see culturefeed-ui-related-events.tpl.php
+ */
+function template_preprocess_culturefeed_ui_related_events(&$variables) {
+  // events
+  $items = array();
+  
+  $i = 0;
+  foreach ($variables['events'] as $event_info) {
+    $theme = 'cnapi_ui_event_mini_summary';
+    
+    if ($i++ == 0) {
+      $theme = 'cnapi_ui_event_summary';
+    }
+    
+    $items[] = theme($theme, array('event' => $event_info, 'heading_level' => 3));
+  }
+  
+  $variables['event_list'] = theme('item_list', array('items' => $items));
+  
+  // links
+  $links = array();
+  
+  // links : headings
+  foreach ($variables['headings'] as $heading) {
+    $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+    $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
+  }
+  
+  // links : zip
+  $request = array('context' => 'event', 'query' => array('zip' => $variables['zip']));
+  $links[] = cnapi_url_dp2dul('Meer in postcode ' . $variables['zip'], $request);
+  
+  $variables['link_list'] = theme('item_list', array('items' => $links));
+}

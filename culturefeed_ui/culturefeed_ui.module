@@ -112,6 +112,10 @@ function culturefeed_ui_theme() {
       'variables' => array('title' => '', 'url' => '', 'description' => ''),
       'template' => 'culturefeed-ui-profile-menu-item',
     ),
+    'culturefeed_ui_related_events' => array(
+      'variables' => array('events' => array(), 'zip' => NULL, 'headings' => array()),
+      'template' => 'culturefeed-ui-related-events',
+    ),
   );
 }
 
