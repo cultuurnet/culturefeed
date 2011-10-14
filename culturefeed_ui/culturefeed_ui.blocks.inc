@@ -1,4 +1,4 @@
-<?php
+l<?php
 
 function culturefeed_ui_block_view_search_users() {
   $block['subject'] = t('Search users');
@@ -240,7 +240,7 @@ function culturefeed_ui_block_view_user_activities() {
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 200;
+  $query->max = 20;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
@@ -345,16 +345,6 @@ function culturefeed_ui_block_view_likes() {
   }
 
   $items = culturefeed_ui_users_list($users);
-
-  /*$cf = DrupalCultureFeed::getLoggedInUserInstance();
-
-  $activity = new CultureFeed_Activity();
-  $activity->contentType = 'event';
-  $activity->type = CultureFeed_Activity::TYPE_LIKE;
-  $activity->nodeId = $request['event'];
-  $activity->userId = $account->culturefeed_uid;
-
-  $cf->createActivity($activity);*/
 
   $block['subject'] = t('Likes');
   $block['content'] = array(
