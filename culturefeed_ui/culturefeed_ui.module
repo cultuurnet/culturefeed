@@ -75,6 +75,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/users/like/%/%'] = array(
+    'title' => 'Users who like event',
+    'description' => 'Uses who like vent',
+    'page callback' => 'culturefeed_ui_page_users_like',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }

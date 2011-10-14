@@ -347,8 +347,13 @@ function culturefeed_ui_block_view_likes() {
 
   $block['subject'] = t('Likes');
   $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#markup' => l('Bekijk iederen', 'culturefeed/users/like/event/' . $request[$type]),
+    )
   );
 
   return $block;

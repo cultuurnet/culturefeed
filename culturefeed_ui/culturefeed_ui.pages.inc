@@ -1,5 +1,47 @@
 <?php
 
+function culturefeed_ui_page_users_like($type, $cdbid) {
+  if (!in_array($type, array('actor', 'event', 'production'))) {
+    drupal_not_found();
+  }
+  
+  $pagelength = 20;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+  
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $object = cnapi_get($request);
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_LIKE;
+  $query->nodeId = $cdbid;
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  pager_default_initialize($users->total, $pagelength);
+
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
+
+  return array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
+  );
+}
+
 function culturefeed_ui_page_recent_activities() {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
