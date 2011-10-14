@@ -1,4 +1,4 @@
-l<?php
+<?php
 
 function culturefeed_ui_block_view_search_users() {
   $block['subject'] = t('Search users');
@@ -339,7 +339,6 @@ function culturefeed_ui_block_view_likes() {
     $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
   }
   catch (Exception $e) {
-    dsm($e);
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
