@@ -336,7 +336,7 @@ function culturefeed_ui_block_view_likes() {
   $query->nodeId = $request[$type];
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, 0, 10);
+    $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
   }
   catch (Exception $e) {
     dsm($e);
