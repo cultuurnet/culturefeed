@@ -233,12 +233,12 @@ class DrupalCultureFeed {
     return self::getConsumerInstance()->getTopEvents($type, $max);
   }
 
-  public static function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class {
-    return self::getConsumerInstance()->getRecommendationsForUser($id, $query); // @todo make $query a class
+  public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    return self::getConsumerInstance()->getRecommendationsForUser($id, $query);
   }
 
-  public static function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class {
-    return self::getLoggedInUserInstance()->getRecommendationsForEvent($id, $query); // @todo make $query a class
+  public static function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    return self::getLoggedInUserInstance()->getRecommendationsForEvent($id, $query);
   }
 
   public static function evaluateRecommendation($id, $evaluation) {

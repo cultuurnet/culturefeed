@@ -20,6 +20,7 @@ files[] = lib/CultureFeed/CultureFeed/OnlineAccount.php
 files[] = lib/CultureFeed/CultureFeed/ParseException.php
 files[] = lib/CultureFeed/CultureFeed/Recommendation.php
 files[] = lib/CultureFeed/CultureFeed/RecommendationItem.php
+files[] = lib/CultureFeed/CultureFeed/RecommendationsQuery.php
 files[] = lib/CultureFeed/CultureFeed/ResultSet.php
 files[] = lib/CultureFeed/CultureFeed/SearchActivitiesQuery.php
 files[] = lib/CultureFeed/CultureFeed/SearchUser.php
