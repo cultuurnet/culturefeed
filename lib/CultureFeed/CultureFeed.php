@@ -551,36 +551,36 @@ class CultureFeed {
 
     return self::parseActivities($xml);
   }
-  
+
   /**
    * Search for users that have generated an activity.
    *
    * The object should be initialized with the consumer token.
    *
-   * @param string $nodeId 
-   * @param string $type 
-   * @param string $contentType 
-   * @param string $start 
-   * @param string $max 
+   * @param string $nodeId
+   * @param string $type
+   * @param string $contentType
+   * @param string $start
+   * @param string $max
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
-   */  
-   
+   */
+
   /**
    * Search for users that have generated an activity.
    *
    * The object should be initialized with the consumer token.
    *
-   * @param string $nodeId 
+   * @param string $nodeId
    *   Node ID the activity is generated on.
-   * @param string $type 
+   * @param string $type
    *   Possible values are represented in the CultureFeed_Activity::TYPE_* constants.
    * @param string $contentType
-   *   Possible values are represented in the CultureFeed_Activity::CONTENT_TYPE_* constants. 
+   *   Possible values are represented in the CultureFeed_Activity::CONTENT_TYPE_* constants.
    * @param string $start
-   *   Start position. 
-   * @param string $max 
+   *   Start position.
+   * @param string $max
    *   Maximum number of results to return.
    * @return CultureFeed_ResultSet
    *   The users.
@@ -590,14 +590,14 @@ class CultureFeed {
    */
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     $data = array();
-    
+
     $data['nodeId'] = $nodeId;
     $data['type'] = $type;
     $data['contentType'] = $contentType;
     if ($start) {
       $data['start'] = $start;
     }
-    
+
     $result = $this->oauth_client->consumerGetAsXml('activity/users', $data);
 
     try {
@@ -813,9 +813,9 @@ class CultureFeed {
   /**
    * Creates a new service consumer.
    *
-   * @param CultureFeed_Consumer $consumer 
+   * @param CultureFeed_Consumer $consumer
    *   Service consumer with the properties we want to initialize it with.
-   * @return CultureFeed_Consumer 
+   * @return CultureFeed_Consumer
    *   The new, fully initialized service consumer created by the CultureFeed server.
    */
   public function createServiceConsumer(CultureFeed_Consumer $consumer) {
