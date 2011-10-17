@@ -129,7 +129,7 @@ function culturefeed_ui_block_view_similar_users() {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
+    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
 
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
