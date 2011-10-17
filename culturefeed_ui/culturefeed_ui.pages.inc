@@ -1,5 +1,33 @@
 <?php
 
+function culturefeed_ui_page_mboxverify_resend() {
+  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+  
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($cf_account->mboxVerified) {
+    return;
+  }
+  
+  try {
+    DrupalCultureFeed::resendMboxConfirmationForUser($cf_account->id);
+    drupal_set_message('De bevestigingsmail werd met succes verzonden.');
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('De bevestigingsmail kon niet verstuur worden.', 'error');
+  }
+  
+  drupal_goto('<front>');
+}
+
 function culturefeed_ui_page_users_like($type, $cdbid) {
   if (!in_array($type, array('actor', 'event', 'production'))) {
     drupal_not_found();

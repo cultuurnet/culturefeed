@@ -1,5 +1,27 @@
 <?php
 
+function culturefeed_ui_block_view_mbox_confirmation_reminder() {
+  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+  
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($cf_account->mboxVerified) {
+    return;
+  }
+  
+  $block['subject'] = t('Confirm your mail address');
+  $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
+
+  return $block;
+}
+
 function culturefeed_ui_block_view_search_users() {
   $block['subject'] = t('Search users');
   $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');

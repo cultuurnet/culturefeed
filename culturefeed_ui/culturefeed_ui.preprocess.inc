@@ -48,6 +48,19 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
 }
 
 /**
+ * Preprocess variables for culturefeed-ui-mbox-confirmation-reminder.tpl.php.
+ *
+ * @see culturefeed-ui-mbox-confirmation-reminder.tpl.php
+ */
+function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variables) {
+  $variables['mbox'] = $variables['account']->mbox;
+  
+  $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend');
+  $variables['update_link'] = l('E-mail adres aanpassen', 'culturefeed/account/edit');
+  $variables['info_link'] = l('Meer info over UiTid', '<front>');
+}
+
+/**
  * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php

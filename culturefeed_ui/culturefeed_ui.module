@@ -32,6 +32,14 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/mboxverify/resend'] = array(
+    'title' => 'Resend e-mail confirmation link',
+    'description' => 'Resend e-mail confirmation link',
+    'page callback' => 'culturefeed_ui_page_mboxverify_resend',
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/users/search'] = array(
     'title' => 'Search users',
     'description' => 'Search users',
@@ -109,6 +117,10 @@ function culturefeed_ui_theme() {
       'variables' => array(),
       'template' => 'culturefeed-ui-connect',
     ),
+    'culturefeed_ui_mbox_confirmation_reminder' => array(
+      'variables' => array('account' => NULL),
+      'template' => 'culturefeed-ui-mbox-confirmation-reminder',
+    ),
     'culturefeed_ui_user_summary' => array(
       'variables' => array('user' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-user-summary',
@@ -150,6 +162,9 @@ function culturefeed_ui_block_info() {
 
   $block['profile_menu']['info'] = t('CultureFeed Profile menu');
   $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_USER;
+
+  $block['mbox_confirmation_reminder']['info'] = t('CultureFeed E-mail confirmation reminder');
+  $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
 
   $block['recent_activities']['info'] = t('Recent activities');
   $block['recent_activities']['cache'] = DRUPAL_NO_CACHE;
