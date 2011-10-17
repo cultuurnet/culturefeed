@@ -32,6 +32,14 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/mboxverify/resend'] = array(
+    'title' => 'Resend e-mail confirmation link',
+    'description' => 'Resend e-mail confirmation link',
+    'page callback' => 'culturefeed_ui_page_mboxverify_resend',
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/users/search'] = array(
     'title' => 'Search users',
     'description' => 'Search users',
@@ -75,6 +83,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/users/like/%/%'] = array(
+    'title' => 'Users who like event',
+    'description' => 'Uses who like vent',
+    'page callback' => 'culturefeed_ui_page_users_like',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }
@@ -100,9 +117,17 @@ function culturefeed_ui_theme() {
       'variables' => array(),
       'template' => 'culturefeed-ui-connect',
     ),
+    'culturefeed_ui_mbox_confirmation_reminder' => array(
+      'variables' => array('account' => NULL),
+      'template' => 'culturefeed-ui-mbox-confirmation-reminder',
+    ),
     'culturefeed_ui_user_summary' => array(
       'variables' => array('user' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-user-summary',
+    ),
+    'culturefeed_ui_ranked_user_summary' => array(
+      'variables' => array('user' => NULL, 'uid' => NULL),
+      'template' => 'culturefeed-ui-ranked-user-summary',
     ),
     'culturefeed_ui_activity_summary' => array(
       'variables' => array('activity' => NULL, 'node' => NULL, 'uid' => NULL),
@@ -112,6 +137,10 @@ function culturefeed_ui_theme() {
       'variables' => array('title' => '', 'url' => '', 'description' => ''),
       'template' => 'culturefeed-ui-profile-menu-item',
     ),
+    'culturefeed_ui_related_events' => array(
+      'variables' => array('events' => array(), 'zip' => NULL, 'headings' => array()),
+      'template' => 'culturefeed-ui-related-events',
+    ),
   );
 }
 
@@ -120,10 +149,10 @@ function culturefeed_ui_theme() {
  */
 function culturefeed_ui_block_info() {
   $block['connect']['info'] = t('CultureFeed Connect');
-  $block['connect']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['connect']['cache'] = DRUPAL_NO_CACHE;
 
-  $block['event_like']['info'] = t('Event like');
-  $block['event_like']['cache'] = DRUPAL_NO_CACHE;
+  $block['likes']['info'] = t('Likes');
+  $block['likes']['cache'] = DRUPAL_NO_CACHE;
 
   $block['most_active_user']['info'] = t('Most active user');
   $block['most_active_user']['cache'] = DRUPAL_CACHE_GLOBAL;
@@ -133,6 +162,9 @@ function culturefeed_ui_block_info() {
 
   $block['profile_menu']['info'] = t('CultureFeed Profile menu');
   $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_USER;
+
+  $block['mbox_confirmation_reminder']['info'] = t('CultureFeed E-mail confirmation reminder');
+  $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
 
   $block['recent_activities']['info'] = t('Recent activities');
   $block['recent_activities']['cache'] = DRUPAL_NO_CACHE;
@@ -151,6 +183,9 @@ function culturefeed_ui_block_info() {
 
   $block['user_picture']['info'] = t('User picture');
   $block['user_picture']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['related_events']['info'] = t('Related events');
+  $block['related_events']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   return $block;
 }
@@ -199,12 +234,7 @@ function culturefeed_ui_user_view($account) {
   }
 
   try {
-    if ($account->uid == $user->uid) {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-    }
-    else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
-    }
+    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);

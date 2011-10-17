@@ -553,6 +553,64 @@ class CultureFeed {
   }
 
   /**
+   * Search for users that have generated an activity.
+   *
+   * The object should be initialized with the consumer token.
+   *
+   * @param string $nodeId
+   * @param string $type
+   * @param string $contentType
+   * @param string $start
+   * @param string $max
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+
+  /**
+   * Search for users that have generated an activity.
+   *
+   * The object should be initialized with the consumer token.
+   *
+   * @param string $nodeId
+   *   Node ID the activity is generated on.
+   * @param string $type
+   *   Possible values are represented in the CultureFeed_Activity::TYPE_* constants.
+   * @param string $contentType
+   *   Possible values are represented in the CultureFeed_Activity::CONTENT_TYPE_* constants.
+   * @param string $start
+   *   Start position.
+   * @param string $max
+   *   Maximum number of results to return.
+   * @return CultureFeed_ResultSet
+   *   The users.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
+    $data = array();
+
+    $data['nodeId'] = $nodeId;
+    $data['type'] = $type;
+    $data['contentType'] = $contentType;
+    if ($start) {
+      $data['start'] = $start;
+    }
+
+    $result = $this->oauth_client->consumerGetAsXml('activity/users', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseUsers($xml);
+  }
+
+  /**
    * Fetch a list of events that have the most activity.
    *
    * The object should be initialized with the consumer token and user access token of the user who is acted upon.
@@ -590,17 +648,22 @@ class CultureFeed {
    *
    * @param string $id
    *   ID of the user recommendations should be based on.
-   * @param array $query
-   *   An associative array representing the query to refine the recommendations.
-   *   The array is indexed by the query key.
+   * @param CultureFeed_RecommendationsQuery $query
+   *   The query.
    * @return CultureFeed_Recommendation[]
    *   The recommendations.
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRecommendationsForUser($id, $query = array()) { // @todo make $query a class
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $query);
+  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    $data = array();
+    
+    if ($query) {
+      $data = $query->toPostData();
+    }
+    
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -619,19 +682,24 @@ class CultureFeed {
    *
    * @param string $id
    *   CDBID of the event recommendations should be based on.
-   * @param array $query
-   *   An associative array representing the query to refine the recommendations.
-   *   The array is indexed by the query key.
+   * @param CultureFeed_RecommendationsQuery $query
+   *   The query.
    * @return CultureFeed_Recommendation[]
    *   The recommendations.
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRecommendationsForEvent($id, array $query = array()) { // @todo make $query a class
-    $query['eventId'] = $id;
+  public function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
+    $data = array();
+    
+    if ($query) {
+      $data = $query->toPostData();
+    }
+    
+    $data['eventId'] = $id;
 
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $query);
+    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -757,9 +825,9 @@ class CultureFeed {
   /**
    * Creates a new service consumer.
    *
-   * @param CultureFeed_Consumer $consumer 
+   * @param CultureFeed_Consumer $consumer
    *   Service consumer with the properties we want to initialize it with.
-   * @return CultureFeed_Consumer 
+   * @return CultureFeed_Consumer
    *   The new, fully initialized service consumer created by the CultureFeed server.
    */
   public function createServiceConsumer(CultureFeed_Consumer $consumer) {
@@ -816,7 +884,6 @@ class CultureFeed {
     $consumer->id                                 = $element->xpath_int('id');
     $consumer->logo                               = $element->xpath_str('logo');
     $consumer->name                               = $element->xpath_str('name');
-    $consumer->organization                       = $element->xpath_str('organization');
     $consumer->status                             = $element->xpath_str('status');
 
     return $consumer;
@@ -955,7 +1022,6 @@ class CultureFeed {
       $consumer->creationDate = $object->xpath_time('creationDate');
       $consumer->id           = $object->xpath_int('id');
       $consumer->name         = $object->xpath_str('name');
-      $consumer->organization = $object->xpath_str('organization');
       $consumer->description  = $object->xpath_str('description');
       $consumer->logo         = $object->xpath_str('logo');
 
@@ -974,17 +1040,6 @@ class CultureFeed {
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
   protected static function parseActivities(CultureFeed_SimpleXMLElement $element) {
-    $type_mapping = array(
-      'VIEW'     => CultureFeed_Activity::TYPE_VIEW,
-      'DETAIL'   => CultureFeed_Activity::TYPE_DETAIL,
-      'LIKE'     => CultureFeed_Activity::TYPE_LIKE,
-      'MAIL'     => CultureFeed_Activity::TYPE_MAIL,
-      'PRINT'    => CultureFeed_Activity::TYPE_PRINT,
-      'FACEBOOK' => CultureFeed_Activity::TYPE_FACEBOOK,
-      'TWITTER'  => CultureFeed_Activity::TYPE_TWITTER,
-      'IK_GA'    => CultureFeed_Activity::TYPE_IK_GA,
-    );
-
     $total = $element->xpath_int('/response/total');
 
     $activities = array();
@@ -999,7 +1054,7 @@ class CultureFeed {
       $activity->createdVia   = $object->xpath_str('createdVia');
       $activity->points       = $object->xpath_str('points');
       $activity->contentType  = $object->xpath_str('contentType');
-      $activity->type         = isset($type_mapping[$object->xpath_str('type')]) ? $type_mapping[$object->xpath_str('type')] : $object->xpath_str('type');
+      $activity->type         = $object->xpath_int('type');
       $activity->value        = $object->xpath_str('value');
       $activity->userId       = $object->xpath_str('userId');
       $activity->depiction    = $object->xpath_str('depiction');

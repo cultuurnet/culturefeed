@@ -1,5 +1,75 @@
 <?php
 
+function culturefeed_ui_page_mboxverify_resend() {
+  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+  
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($cf_account->mboxVerified) {
+    return;
+  }
+  
+  try {
+    DrupalCultureFeed::resendMboxConfirmationForUser($cf_account->id);
+    drupal_set_message('De bevestigingsmail werd met succes verzonden.');
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('De bevestigingsmail kon niet verstuur worden.', 'error');
+  }
+  
+  drupal_goto('<front>');
+}
+
+function culturefeed_ui_page_users_like($type, $cdbid) {
+  if (!in_array($type, array('actor', 'event', 'production'))) {
+    drupal_not_found();
+  }
+  
+  $pagelength = 20;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+  
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $object = cnapi_get($request);
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_LIKE;
+  $query->nodeId = $cdbid;
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  pager_default_initialize($users->total, $pagelength);
+
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
+
+  return array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
+  );
+}
+
 function culturefeed_ui_page_recent_activities() {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -123,7 +193,7 @@ function culturefeed_ui_profile_edit_form() {
 
   $form['current_picture'] = array(
     '#theme' => 'image',
-    '#path' => $cf_account->depiction,
+    '#path' => $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto',
   );
 
   // Gender.
@@ -179,6 +249,12 @@ function culturefeed_ui_profile_edit_form() {
     '#title' => 'Verberg \'geboortedatum\' in openbaar profiel',
     '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
+
+  if (module_exists('cnapi_browse')) {
+    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').attr('disabled', 'disabled').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
+
+    $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
+  }
   
   // Bio
   $form['bio'] = array(
@@ -191,12 +267,6 @@ function culturefeed_ui_profile_edit_form() {
     '#title' => 'Verberg \'bio\' in openbaar profiel',
     '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
-
-  if (module_exists('cnapi_browse')) {
-    drupal_add_js("(function ($) { $(document).ready(function() { $('#edit-dob').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
-
-    $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
-  }
   
   $form['submit'] = array(
     '#type' => 'submit',
@@ -381,12 +451,22 @@ function culturefeed_ui_page_most_active_users() {
   $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
   $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
-  $users = DrupalCultureFeed::searchUsers($query)->objects;
-
+  $users = DrupalCultureFeed::searchUsers($query);
+  
   $items = array();
+  
+  $accounts = culturefeed_get_uids_for_users($users->objects);
 
-  foreach ($users as $user) {
-    $items[] = theme('image', array('path' => $user->depiction)) . '<br />' . $user->nick . '<br />' . $user->sortValue;
+  foreach ($users->objects as $user) {
+    if (!isset($accounts[$user->id])) {
+      continue;
+    }
+    
+    $items[] = theme('culturefeed_ui_ranked_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
+  }
+  
+  if (empty($items)) {
+    return;
   }
 
   return array(

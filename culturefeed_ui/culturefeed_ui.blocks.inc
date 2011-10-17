@@ -1,5 +1,27 @@
 <?php
 
+function culturefeed_ui_block_view_mbox_confirmation_reminder() {
+  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+  
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($cf_account->mboxVerified) {
+    return;
+  }
+  
+  $block['subject'] = t('Confirm your mail address');
+  $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
+
+  return $block;
+}
+
 function culturefeed_ui_block_view_search_users() {
   $block['subject'] = t('Search users');
   $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
@@ -26,7 +48,7 @@ function culturefeed_ui_block_view_profile_box() {
 
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
-      $picture = $cf_account->depiction;
+      $picture = $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto';
       $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
@@ -129,7 +151,7 @@ function culturefeed_ui_block_view_similar_users() {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
+    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
 
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
@@ -179,7 +201,7 @@ function culturefeed_ui_block_view_user_picture() {
     return;
   }
 
-  $path = $cf_account->depiction;
+  $path = $cf_account->depiction . '?maxwidth=200';
 
   $block['subject'] = '';
   $block['content'] = array(
@@ -240,7 +262,7 @@ function culturefeed_ui_block_view_user_activities() {
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 200;
+  $query->max = 50;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
@@ -317,44 +339,103 @@ function culturefeed_ui_block_view_recent_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_view_event_like() {
+function culturefeed_ui_block_view_likes() {
   $request = cnapi_ui_get_active_request();
 
-  if (!isset($request['event'])) {
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+
+  if (!$type) {
     return;
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
-  $query->nodeId = $request['event'];
+  $query->nodeId = $request[$type];
 
   try {
-    $activities = DrupalCultureFeed::searchActivities($query);
+    $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
-  $items = array();
-  foreach ($activities->objects as $activity) {
-    $items[] = $activity->nick . theme('image', array('path' => $activity->depiction));
-  }
-
-  /*$cf = DrupalCultureFeed::getLoggedInUserInstance();
-
-  $activity = new CultureFeed_Activity();
-  $activity->contentType = 'event';
-  $activity->type = CultureFeed_Activity::TYPE_LIKE;
-  $activity->nodeId = $request['event'];
-  $activity->userId = $account->culturefeed_uid;
-
-  $cf->createActivity($activity);*/
+  $items = culturefeed_ui_users_list($users);
 
   $block['subject'] = t('Likes');
   $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#markup' => l('Bekijk iederen', 'culturefeed/users/like/event/' . $request[$type]),
+    )
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_view_related_events() {
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $is_event = array_search('event', array_keys($request)) !== FALSE;
+
+  if (!$is_event) {
+    return;
+  }
+  
+  $event = cnapi_get_event($request['event']);
+  
+  $headings = cnapi_get_headings();
+  
+  $zip = $event['location']['address']['zipcode'];
+  $event_headings = $event['headings'];
+  
+  $valid_headings = array();
+  
+  foreach ($event_headings as $heading) {
+    $heading = $headings[$heading];
+    if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
+      $valid_headings[] = $heading;
+    }
+  }
+  
+  $query = new CultureFeed_RecommendationsQuery();
+  $query->max = 4;
+  
+  try {
+    $recommendations = DrupalCultureFeed::getRecommendationsForEvent($request['event'], $query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  $cdbid = array();
+  
+  foreach ($recommendations as $recommendation) {
+    $cdbids[] = $recommendation->itemid;
+  }
+  
+  $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
+
+  $block['subject'] = t('Related events');
+  $block['content'] = array(
+    '#theme' => 'culturefeed_ui_related_events', 
+    '#events' => $events,
+    '#zip' => $zip,
+    '#headings' => $valid_headings, 
   );
 
   return $block;

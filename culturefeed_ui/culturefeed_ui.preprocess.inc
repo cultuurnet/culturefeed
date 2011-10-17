@@ -48,6 +48,19 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
 }
 
 /**
+ * Preprocess variables for culturefeed-ui-mbox-confirmation-reminder.tpl.php.
+ *
+ * @see culturefeed-ui-mbox-confirmation-reminder.tpl.php
+ */
+function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variables) {
+  $variables['mbox'] = $variables['account']->mbox;
+  
+  $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
+  $variables['update_link'] = l('E-mail adres aanpassen', 'culturefeed/account/edit');
+  $variables['info_link'] = l('Meer info over UiTid', '<front>');
+}
+
+/**
  * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php
@@ -65,7 +78,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $activity = $variables['activity'];
   $activity instanceof CultureFeed_Activity;
 
-  $picture = theme('image', array('path' => $activity->depiction));
+  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
   $url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
@@ -125,7 +138,20 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-user-summarys.tpl.php.
+ * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
+ *
+ * @see culturefeed-ui-ranked-user-summary.tpl.php
+ */
+function template_preprocess_culturefeed_ui_ranked_user_summary(&$variables) {
+  $user = $variables['user'];
+  $user instanceof CultureFeed_User;
+
+  template_preprocess_culturefeed_ui_user_summary($variables);
+  $variables['sortValue'] = $user->sortValue;
+}
+
+/**
+ * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
  *
  * @see culturefeed-ui-user-summary.tpl.php
  */
@@ -133,7 +159,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
 
-  $picture = theme('image', array('path' => $user->depiction));
+  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto'));
   $url = 'user/' . $variables['uid'];
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['nick'] = l($user->nick, $url);
@@ -168,7 +194,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account instanceof CultureFeed_User;
 
   $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
-  $picture = theme('image', array('path' => $account->depiction));
+  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
 
@@ -201,4 +227,42 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   );
 
   $variables['text'] = strtr('!nick heeft vorige week !sort_value activiteiten !type en is de !uitslover van de week. Proficiat !nick', $replace);
+}
+
+/**
+ * Preprocess variables for cnapi-ui-related-events.tpl.php.
+ *
+ * @see culturefeed-ui-related-events.tpl.php
+ */
+function template_preprocess_culturefeed_ui_related_events(&$variables) {
+  // events
+  $items = array();
+  
+  $i = 0;
+  foreach ($variables['events'] as $event_info) {
+    $theme = 'cnapi_ui_event_mini_summary';
+    
+    if ($i++ == 0) {
+      $theme = 'cnapi_ui_event_summary';
+    }
+    
+    $items[] = theme($theme, array('event' => $event_info, 'heading_level' => 3));
+  }
+  
+  $variables['event_list'] = theme('item_list', array('items' => $items));
+  
+  // links
+  $links = array();
+  
+  // links : headings
+  foreach ($variables['headings'] as $heading) {
+    $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+    $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
+  }
+  
+  // links : zip
+  $request = array('context' => 'event', 'query' => array('zip' => $variables['zip']));
+  $links[] = cnapi_url_dp2dul('Meer in postcode ' . $variables['zip'], $request);
+  
+  $variables['link_list'] = theme('item_list', array('items' => $links));
 }

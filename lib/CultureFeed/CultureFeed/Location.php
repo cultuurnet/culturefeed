@@ -20,16 +20,26 @@ class CultureFeed_Location {
   public $lng;
 
   /**
+   * Radius
+   *
+   * @var integer
+   */
+  public $radius;
+
+  /**
    * Constructor for a new CultureFeed_Location instance.
    *
    * @param float $lat
    *   Latitude.
    * @param float $lng
    *   Longitude.
+   * @param integer $radius
+   *   (optional) Radius.
    */
-  public function __construct($lat, $lng) {
+  public function __construct($lat, $lng, $radius = NULL) {
     $this->lat = $lat;
     $this->lng = $lng;
+    $this->radius = $radius;
   }
 
   /**
@@ -39,7 +49,12 @@ class CultureFeed_Location {
    *   The string representation of the location in lat;lng format.
    */
   public function __toString() {
-    return sprintf('%f;%f', $this->lat, $this->lng);
+    if (!$this->radius) {
+      return sprintf('%f;%f', $this->lat, $this->lng);
+    }
+    else {
+      return sprintf('%f;%f!%d', $this->lat, $this->lng, $this->radius);
+    }
   }
 
 }
