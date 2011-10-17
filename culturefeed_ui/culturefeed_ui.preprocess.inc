@@ -65,7 +65,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $activity = $variables['activity'];
   $activity instanceof CultureFeed_Activity;
 
-  $picture = theme('image', array('path' => $activity->depiction . '?width=50&height=50&crop=auto'));
+  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
   $url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
@@ -133,7 +133,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
 
-  $picture = theme('image', array('path' => $user->depiction . '?width=100&height=100&crop=auto'));
+  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto'));
   $url = 'user/' . $variables['uid'];
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['nick'] = l($user->nick, $url);
@@ -168,7 +168,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account instanceof CultureFeed_User;
 
   $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
-  $picture = theme('image', array('path' => $account->depiction . '?width=50&height=50&crop=auto'));
+  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
 

@@ -26,7 +26,7 @@ function culturefeed_ui_block_view_profile_box() {
 
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
-      $picture = $cf_account->depiction . '?width=100&height=100&crop=auto';
+      $picture = $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto';
       $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
@@ -179,7 +179,7 @@ function culturefeed_ui_block_view_user_picture() {
     return;
   }
 
-  $path = $cf_account->depiction . '?width=200';
+  $path = $cf_account->depiction . '?maxwidth=200';
 
   $block['subject'] = '';
   $block['content'] = array(
