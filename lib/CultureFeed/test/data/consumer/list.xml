@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <consumers xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+    <total>2</total>
     <consumer>
         <callback></callback>
         <consumerKey>ay1dgdxusn52hgzlnmqlebmaejytpm5l</consumerKey>
