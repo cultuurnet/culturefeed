@@ -125,7 +125,20 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-user-summarys.tpl.php.
+ * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
+ *
+ * @see culturefeed-ui-ranked-user-summary.tpl.php
+ */
+function template_preprocess_culturefeed_ui_ranked_user_summary(&$variables) {
+  $user = $variables['user'];
+  $user instanceof CultureFeed_User;
+
+  template_preprocess_culturefeed_ui_user_summary($variables);
+  $variables['sortValue'] = $user->sortValue;
+}
+
+/**
+ * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
  *
  * @see culturefeed-ui-user-summary.tpl.php
  */

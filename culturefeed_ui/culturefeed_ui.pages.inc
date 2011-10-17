@@ -423,12 +423,22 @@ function culturefeed_ui_page_most_active_users() {
   $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
   $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
-  $users = DrupalCultureFeed::searchUsers($query)->objects;
-
+  $users = DrupalCultureFeed::searchUsers($query);
+  
   $items = array();
+  
+  $accounts = culturefeed_get_uids_for_users($users->objects);
 
-  foreach ($users as $user) {
-    $items[] = theme('image', array('path' => $user->depiction)) . '<br />' . $user->nick . '<br />' . $user->sortValue;
+  foreach ($users->objects as $user) {
+    if (!isset($accounts[$user->id])) {
+      continue;
+    }
+    
+    $items[] = theme('culturefeed_ui_ranked_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
+  }
+  
+  if (empty($items)) {
+    return;
   }
 
   return array(
