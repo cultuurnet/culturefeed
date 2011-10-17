@@ -1,16 +1,24 @@
 <?php if ($is_logged_in) : ?>
 
-  <?php print $picture ?>
+  <div class="image">
+    <?php print $picture ?>
+  </div>
 
-  <p>
-    <strong><?php print $nick ?></strong><br />
-    <?php print $link_profile ?><br />
-    <?php print $link_logout ?>
-  </p>
+  <div class="options">
+    <ul>
+      <li><strong><?php print $nick ?></strong></li>
+      <li><?php print $link_profile ?></li>
+      <li><?php print $link_logout ?></li>
+    </ul>
+  </div>
 
 <?php else : ?>
 
-  <?php print $link_login ?><br />
-  <?php print $link_register ?>
+  <div class="options">
+    <ul>
+      <li><?php print $link_login ?></li>
+      <li><?php print $link_register ?></li>
+    </ul>
+  </div>
 
 <?php endif; ?>
