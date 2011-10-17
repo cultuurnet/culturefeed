@@ -221,6 +221,12 @@ function culturefeed_ui_profile_edit_form() {
     '#title' => 'Verberg \'geboortedatum\' in openbaar profiel',
     '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
+
+  if (module_exists('cnapi_browse')) {
+    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').attr('disabled', 'disabled').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
+
+    $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
+  }
   
   // Bio
   $form['bio'] = array(
@@ -233,12 +239,6 @@ function culturefeed_ui_profile_edit_form() {
     '#title' => 'Verberg \'bio\' in openbaar profiel',
     '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
-
-  if (module_exists('cnapi_browse')) {
-    drupal_add_js("(function ($) { $(document).ready(function() { $('#edit-dob').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
-
-    $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
-  }
   
   $form['submit'] = array(
     '#type' => 'submit',
