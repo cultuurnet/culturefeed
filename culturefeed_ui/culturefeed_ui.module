@@ -133,7 +133,7 @@ function culturefeed_ui_theme() {
  */
 function culturefeed_ui_block_info() {
   $block['connect']['info'] = t('CultureFeed Connect');
-  $block['connect']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['connect']['cache'] = DRUPAL_NO_CACHE;
 
   $block['likes']['info'] = t('Likes');
   $block['likes']['cache'] = DRUPAL_NO_CACHE;
