@@ -18,7 +18,11 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $consumers = $cf->getServiceConsumers();
+    $result = $cf->getServiceConsumers();
+
+    $this->assertEquals(2, $result->total);
+
+    $consumers = $result->objects;
 
     $this->assertInternalType('array', $consumers);
     $this->assertEquals(2, count($consumers));
@@ -32,7 +36,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $this->assertInternalType('integer', $consumers[0]->id);
     $this->assertEquals(17, $consumers[0]->id);
     $this->assertEquals('Example Corp.', $consumers[0]->name);
-    $this->assertEquals('', $consumers[0]->organization);
     $this->assertEquals('Example Corp. CultureFeed consumer', $consumers[0]->description);
     $this->assertEquals('', $consumers[0]->logo);
     $this->assertEquals('ACTIVE', $consumers[0]->status);
@@ -47,7 +50,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $this->assertInternalType('integer', $consumers[1]->id);
     $this->assertEquals(18, $consumers[1]->id);
     $this->assertEquals('Clone of Example Corp.', $consumers[1]->name);
-    $this->assertEquals('', $consumers[1]->organization);
     $this->assertEquals('', $consumers[1]->description);
     $this->assertEquals('', $consumers[1]->logo);
     $this->assertEquals('BLOCKED', $consumers[1]->status);
@@ -62,7 +64,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $consumerKey = 'y1j72kx0btua10otvftd25cf6mws39pg';
     $consumerSecret = 'o86hyiffn254i3v26o0pqiononc4yw0v';
     $callback = 'http://example.com/callback';
-    $organization = 'Example Corp.';
     $description = 'Consumer for Example Corp.';
     $logo = 'http://example.com/logo.png';
     $domain = 'example.com';
@@ -76,7 +77,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $element->addChild('consumerSecret', $consumerSecret);
     $element->addChild('callback', $callback);
     $element->addChild('domain', $domain);
-    $element->addChild('organization', $organization);
     $element->addChild('description', $description);
     $element->addChild('logo', $logo);
     $element->addChild('name', $name);
@@ -96,7 +96,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
                           'consumerSecret' => $consumerSecret,
                           'callback' => $callback,
                           'domain' => $domain,
-                          'organization' => $organization,
                           'description' => $description,
                           'logo' => $logo,
                           'name' => $name,
@@ -113,7 +112,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $consumer->domain = $domain;
     $consumer->name = $name;
     $consumer->callback = $callback;
-    $consumer->organization = $organization;
     $consumer->description = $description;
     $consumer->logo = $logo;
     $consumer->destinationAfterEmailVerification = "http://example.com/after/verification/email";
@@ -137,7 +135,6 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($consumer->callback, $new_consumer->callback);
     $this->assertEquals($consumer->consumerKey, $new_consumer->consumerKey);
     $this->assertEquals($consumer->domain, $new_consumer->domain);
-    $this->assertEquals($consumer->organization, $new_consumer->organization);
     $this->assertEquals($consumer->description, $new_consumer->description);
     $this->assertEquals($consumer->logo, $new_consumer->logo);
     $this->assertEquals($consumer->destinationAfterEmailVerification, $new_consumer->destinationAfterEmailVerification);
