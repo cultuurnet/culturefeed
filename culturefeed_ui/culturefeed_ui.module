@@ -68,8 +68,8 @@ function culturefeed_ui_menu() {
   $items['culturefeed/serviceconsumers/revoke/%'] = array(
     'title' => 'Revoke service consumer',
     'description' => 'Revoke service consumer',
-    'page callback' => 'culturefeed_ui_page_serviceconsumers_revoke',
-    'page arguments' => array(3),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_ui_page_serviceconsumers_revoke_form', 3),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
@@ -140,6 +140,10 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_related_events' => array(
       'variables' => array('events' => array(), 'zip' => NULL, 'headings' => array()),
       'template' => 'culturefeed-ui-related-events',
+    ),
+    'culturefeed_ui_service_consumer_summary' => array(
+      'variables' => array('consumer' => NULL),
+      'template' => 'culturefeed-ui-service-consumer-summary',
     ),
   );
 }
