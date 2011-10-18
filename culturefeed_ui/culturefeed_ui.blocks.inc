@@ -243,6 +243,12 @@ function culturefeed_ui_block_view_profile_menu() {
 
   $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
 
+  $title = 'Aanbevelingen';
+  $url = 'culturefeed/recommendations';
+  $description = 'Ontdek activiteiten op jouw maat.';
+
+  $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
+
   $block['subject'] = t('Profile');
   $block['content'] = array(
     '#theme' => 'item_list',

@@ -101,6 +101,23 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/recommendations'] = array(
+    'title' => 'Recommendations',
+    'description' => 'Recommendations',
+    'page callback' => 'culturefeed_ui_page_recommendations',
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/recommendations/%/%/%'] = array(
+    'title' => 'Delete recommendation',
+    'description' => 'Delete recommendation',
+    'page callback' => 'culturefeed_ui_recommendations_delete',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }
