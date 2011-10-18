@@ -817,7 +817,9 @@ class CultureFeed {
       $consumers[] = $this->parseServiceConsumer($element);
     }
 
-    return $consumers;
+    $total = $xml->xpath_int('/consumers/total');
+
+    return new CultureFeed_ResultSet($total, $consumers);
   }
 
   /**
