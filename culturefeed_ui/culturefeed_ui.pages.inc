@@ -476,29 +476,80 @@ function culturefeed_ui_page_most_active_users() {
   );
 }
 
-function culturefeed_ui_page_serviceconsumers_revoke($id) {
-  $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-  DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $id);
-  drupal_goto('culturefeed/serviceconsumers');
-}
-
 function culturefeed_ui_page_serviceconsumers() {
-  $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
+  try {
+    $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
 
   $items = array();
 
   foreach ($consumers as $consumer) {
-    $output = '';
-    $output .= ($consumer->logo ? theme('image' , array('path' => $consumer->logo)) : '') . '<br />';
-    $output .= $consumer->name . '<br />';
-    $output .= $consumer->description . '<br />';
-    $output .= format_date($consumer->creationDate) . '<br />';
-    $output .= l(t('Revoke'), 'culturefeed/serviceconsumers/revoke/' . $consumer->id);
-    $items[] = $output;
+    $items[] = theme('culturefeed_ui_service_consumer_summary', array('consumer' => $consumer));
+  }
+  
+  if (empty($items)) {
+    return;
   }
 
   return array(
     '#theme' => 'item_list',
     '#items' => $items,
   );
+}
+
+function culturefeed_ui_page_serviceconsumers_revoke_form($form, $form_state, $id) {
+  try {
+    $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('Error occured.'), 'error');
+    return;
+  }
+  
+  $consumer = NULL;
+  
+  foreach ($consumers as $tmp_consumer) {
+    if ($tmp_consumer->id == $id) {
+      $consumer = $tmp_consumer;
+      break;
+    }
+  }
+  
+  if (!$consumer) {
+    drupal_set_message(t('Unknown conumser.'), 'error');
+    return;
+  }
+  
+  return confirm_form(
+    array(
+      'consumer' => array(
+        '#type' => 'value',
+        '#value' => $id,
+      ),
+    ),
+    t('Are you sure you want to consumer %consumer?', array('%consumer' => $consumer->name)),
+    'culturefeed/serviceconsumers',
+    t('This action cannot be undone.'),
+    t('Remove consumer'),
+    t('Cancel')
+  );
+}
+
+function culturefeed_ui_page_serviceconsumers_revoke_form_submit($form, &$form_state) {
+  $id = $form_state['values']['consumer'];
+  
+  try {
+    $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+    DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $id);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  $form_state['redirect'] = 'culturefeed/serviceconsumers';
 }

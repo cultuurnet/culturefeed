@@ -266,3 +266,19 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }
+
+/**
+ * Preprocess variables for cnapi-ui-related-events.tpl.php.
+ *
+ * @see culturefeed-ui-related-events.tpl.php
+ */
+function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables) {
+  $consumer = $variables['consumer'];
+  $consumer instanceof CultureFeed_Consumer;
+  
+  $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100&crop=auto')) : '';
+  $variables['name'] = isset($consumer->name) ? $consumer->name : '';
+  $variables['description'] = isset($consumer->description) ? $consumer->description : '';
+  $variables['creation_date'] = 'Gekoppeld op ' . format_date($consumer->creationDate, 'custom', 'j F Y');
+  $variables['revoke_link'] = l('Verwijder', 'culturefeed/serviceconsumers/revoke/' . $consumer->id);
+}
