@@ -89,7 +89,7 @@ class DrupalCultureFeed {
     $token = $account->tokens[$application_key];
 
     if (!isset($token->token) || !isset($token->secret)) {
-      return NULL;
+      throw new Exception('Not a valid token set.');
     }
 
     self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret);
