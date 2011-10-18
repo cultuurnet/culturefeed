@@ -242,7 +242,7 @@ class DrupalCultureFeed {
   }
 
   public static function evaluateRecommendation($id, $evaluation) {
-    return self::getConsumerInstance()->evaluateRecommendation($id, $evaluation);
+    return self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
   }
 
   public static function getUrlAddSocialNetwork($network, $destination = '') {
