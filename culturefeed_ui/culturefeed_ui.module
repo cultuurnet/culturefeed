@@ -74,6 +74,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/onlineaccounts/delete/%/%'] = array(
+    'title' => 'Delete online account',
+    'description' => 'Delete online account',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_ui_page_online_account_delete_form', 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/users/mostactive'] = array(
     'title' => 'Most active users',
     'description' => 'Most active users',
@@ -144,6 +153,14 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_service_consumer_summary' => array(
       'variables' => array('consumer' => NULL),
       'template' => 'culturefeed-ui-service-consumer-summary',
+    ),
+    'culturefeed_ui_online_accounts_form' => array(
+      'render element' => 'form',
+      'file' => 'culturefeed_ui.pages.inc',
+    ),
+    'culturefeed_ui_online_account' => array(
+      'variables' => array('type' => '', 'name' => '', 'privacy_checkbox' => '', 'connect_link' => ''),
+      'template' => 'culturefeed-ui-online-account',
     ),
   );
 }

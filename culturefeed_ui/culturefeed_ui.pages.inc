@@ -349,10 +349,21 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
 }
 
 function culturefeed_ui_page_account_edit() {
-  return drupal_render(drupal_get_form('culturefeed_ui_account_edit_form')) . culturefeed_ui_online_accounts();
+  return array(
+    'account' => drupal_get_form('culturefeed_ui_account_edit_form'),
+    'online_accounts' => drupal_get_form('culturefeed_ui_online_accounts_form'),
+    'consumers' => array(
+      '#prefix' => '<div id="manage-consumers">',
+      '#markup' => l(t('Manage consumers'), 'culturefeed/serviceconsumers'),
+      '#suffix' => '</div>',
+    )
+  );
+  //return drupal_render(drupal_get_form('culturefeed_ui_account_edit_form')) . drupal_render(drupal_get_form('culturefeed_ui_online_accounts_form'));
 }
 
-function culturefeed_ui_online_accounts() {
+function culturefeed_ui_online_accounts_form() {
+  $form = array();
+  
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
@@ -368,14 +379,122 @@ function culturefeed_ui_online_accounts() {
   }
 
   $supported_account_types = array('twitter', 'facebook', 'google');
+  
+  $form['#theme'] = 'culturefeed_ui_online_accounts_form';
+  
+  $form['accounts']['#tree'] = TRUE;
 
   foreach ($supported_account_types as $account_type) {
     if (isset($online_accounts[$account_type])) {
+      $account = $online_accounts[$account_type];
 
+      $form['accounts'][$account_type]['id'] = array(
+        '#type' => 'hidden',
+        '#value' => $account->accountName,
+      );
+      $form['accounts'][$account_type]['name'] = array(
+        '#markup' => $account->accountName,
+      );
+      $form['accounts'][$account_type]['publish'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $account_type . '.',
+        '#default_value' => $account->publishActivities,
+      );
+      $form['accounts'][$account_type]['delete_link'] = array(
+        '#markup' => l('Account verwijderen', 'culturefeed/onlineaccounts/delete/' . $account_type . '/' . $account->accountName),
+      );
+    }
+    else {  
+      $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
+      $form['accounts'][$account_type]['connect_link'] = array(
+        '#markup' => l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect'))),
+      );
     }
   }
 
-  return print_r($online_accounts, TRUE);
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  return $form;
+}
+
+function theme_culturefeed_ui_online_accounts_form($variables) {
+  $form = $variables['form'];
+  
+  $items = array();
+
+  foreach (element_children($form['accounts']) as $account_type) {
+    $vars = array(
+      'type' => $account_type, 
+      'name' => drupal_render($form['accounts'][$account_type]['name']), 
+      'publish_checkbox' => drupal_render($form['accounts'][$account_type]['publish']), 
+      'delete_link' => drupal_render($form['accounts'][$account_type]['delete_link']),
+      'connect_link' => drupal_render($form['accounts'][$account_type]['connect_link']),
+    );
+    
+    $items[] = theme('culturefeed_ui_online_account', $vars);
+  }
+
+  return theme('item_list', array('items' => $items)) . drupal_render_children($form);
+}
+
+function culturefeed_ui_online_accounts_form_submit($form, &$form_state) {
+  $values = $form_state['values'];
+  
+  foreach ($values['accounts'] as $type => $account_info) {
+    try {
+      $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+
+      $account = new CultureFeed_OnlineAccount();
+      $account->publishActivities = $account_info['publish'] ? true : false;
+      $account->accountName = $account_info['id'];
+      $account->accountType = $type;
+
+      DrupalCultureFeed::updateUserOnlineAccount($cf_uid, $account);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      return;
+    }
+  }
+}
+
+function culturefeed_ui_page_online_account_delete_form($form, $form_state, $type, $id) {
+  return confirm_form(
+    array(
+      'type' => array(
+        '#type' => 'value',
+        '#value' => $type,
+      ),
+      'id' => array(
+        '#type' => 'value',
+        '#value' => $id,
+      ),
+    ),
+    t('Are you sure you want to delete %type account?', array('%type' => $type)),
+    'culturefeed/account/edit',
+    t('This action cannot be undone.'),
+    t('Delete account'),
+    t('Cancel')
+  );
+}
+
+function culturefeed_ui_page_online_account_delete_form_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+  $id = $form_state['values']['id'];
+  
+  try {
+    $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+    DrupalCultureFeed::deleteUserOnlineAccount($cf_uid, $type, $id);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  $form_state['redirect'] = 'culturefeed/account/edit';
 }
 
 function culturefeed_ui_account_edit_form() {
@@ -417,12 +536,6 @@ function culturefeed_ui_account_edit_form() {
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
     '#markup' => l(t('Change password'), $url, $options),
-    '#suffix' => '</div>',
-  );
-
-  $form['manage_consumers'] = array(
-    '#prefix' => '<div id="manage-consumers">',
-    '#markup' => l(t('Manage consumers'), 'culturefeed/serviceconsumers'),
     '#suffix' => '</div>',
   );
 
