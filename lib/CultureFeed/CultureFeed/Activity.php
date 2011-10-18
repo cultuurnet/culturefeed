@@ -147,7 +147,7 @@ class CultureFeed_Activity {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent private as a string (true/false);
     if (isset($data['private'])) {
@@ -155,9 +155,11 @@ class CultureFeed_Activity {
     }
 
     // Represent creationDate as a W3C date.
-    if (isset($data['creationDate'])) {
+    if (isset($data['private'])) {
       $data['creationDate'] = date('c', $data['creationDate']);
     }
+    
+    $data = array_filter($data);
 
     return $data;
   }

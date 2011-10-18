@@ -55,12 +55,14 @@ class CultureFeed_RecommendationsQuery {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent location as a string.
     if (isset($data['location'])) {
       $data['location'] = (string)$data['location'];
     }
+    
+    $data = array_filter($data);
 
     return $data;
   }

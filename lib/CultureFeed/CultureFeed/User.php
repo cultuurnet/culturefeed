@@ -202,7 +202,7 @@ class CultureFeed_User {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent mboxVerified as a string (true/false);
     if (isset($data['mboxVerified'])) {
@@ -242,6 +242,8 @@ class CultureFeed_User {
     if (isset($data['dob'])) {
       $data['dob'] = date('c', $data['dob']);
     }
+    
+    $data = array_filter($data);
 
     return $data;
   }

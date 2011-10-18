@@ -290,7 +290,7 @@ class CultureFeed_SearchUsersQuery {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent homeLocation as a string.
     if (isset($data['homeLocation'])) {
@@ -331,6 +331,8 @@ class CultureFeed_SearchUsersQuery {
     if (isset($data['lastLoginMax'])) {
       $data['lastLoginMax'] = date('c', $data['lastLoginMax']);
     }
+    
+    $data = array_filter($data);
 
     return $data;
   }
