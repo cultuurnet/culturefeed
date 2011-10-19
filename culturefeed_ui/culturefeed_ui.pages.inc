@@ -38,7 +38,7 @@ function culturefeed_ui_page_recommendations() {
     watchdog_exception('culturefeed_ui', $e);
   }
   
-  $cdbid = array();
+  $cdbids = array();
   
   foreach ($recommendations as $recommendation) {
     $cdbids[] = $recommendation->itemid;
@@ -47,6 +47,8 @@ function culturefeed_ui_page_recommendations() {
   $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
   
   $header = array('name', array('data' => 'link', 'colspan' => 2));
+  
+  $rows = array();
   
   foreach ($recommendations as $recommendation) {
     $event = isset($events[$recommendation->itemid]) ? $events[$recommendation->itemid] : NULL;
