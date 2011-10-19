@@ -34,11 +34,11 @@ class CultureFeed_RecommendationsQuery {
   public $location_simple;
 
   /**
-   * Zip.
+   * Zip code.
    *
    * @var string
    */
-  public $zip;
+  public $zipcode;
 
   /**
    * Maximum number of results to return.
