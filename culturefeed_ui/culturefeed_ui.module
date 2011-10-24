@@ -92,10 +92,10 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/users/like/%/%'] = array(
+  $items['culturefeed/users/likes/%/%'] = array(
     'title' => 'Users who like event',
-    'description' => 'Uses who like vent',
-    'page callback' => 'culturefeed_ui_page_users_like',
+    'description' => 'Uses who like event',
+    'page callback' => 'culturefeed_ui_page_users_likes',
     'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -189,8 +189,8 @@ function culturefeed_ui_block_info() {
   $block['connect']['info'] = t('CultureFeed Connect');
   $block['connect']['cache'] = DRUPAL_NO_CACHE;
 
-  $block['likes']['info'] = t('Likes');
-  $block['likes']['cache'] = DRUPAL_NO_CACHE;
+  $block['users_likes']['info'] = t('Users who like this');
+  $block['users_likes']['cache'] = DRUPAL_NO_CACHE;
 
   $block['most_active_user']['info'] = t('Most active user');
   $block['most_active_user']['cache'] = DRUPAL_CACHE_GLOBAL;

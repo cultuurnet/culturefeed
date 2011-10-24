@@ -118,7 +118,7 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto('<front>');
 }
 
-function culturefeed_ui_page_users_like($type, $cdbid) {
+function culturefeed_ui_page_users_likes($type, $cdbid) {
   if (!in_array($type, array('actor', 'event', 'production'))) {
     drupal_not_found();
   }

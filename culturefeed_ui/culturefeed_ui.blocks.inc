@@ -345,7 +345,7 @@ function culturefeed_ui_block_view_recent_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_view_likes() {
+function culturefeed_ui_block_view_users_likes() {
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
@@ -380,7 +380,7 @@ function culturefeed_ui_block_view_likes() {
       '#items' => $items,
     ),
     array(
-      '#markup' => l('Bekijk iederen', 'culturefeed/users/like/event/' . $request[$type]),
+      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $request[$type]),
     )
   );
 
