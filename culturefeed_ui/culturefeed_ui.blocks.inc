@@ -222,32 +222,38 @@ function culturefeed_ui_block_view_profile_menu() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
+  
+  $menu = array(
+    array(
+      'title' => 'Mijn UiTid',
+      'url' => 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid,
+      'description' => 'Zo zien anderen jouw profiel.',
+    ),
+    array(
+      'title' => 'Profiel bewerken',
+      'url' => 'culturefeed/profile/edit',
+      'description' => 'Wijzig naam, adres, favoriet categoriëen, ...',
+    ),
+    array(
+      'title' => 'Account bewerken',
+      'url' => 'culturefeed/account/edit',
+      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
+    ),
+    array(
+      'title' => 'Aanbevelingen',
+      'url' => 'culturefeed/recommendations',
+      'description' => 'Ontdek activiteiten op jouw maat.',
+    ),
+  );
 
   $items = array();
-
-  $title = 'Mijn UiTid';
-  $url = 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid;
-  $description = 'Zo zien anderen jouw profiel.';
-
-  $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
-
-  $title = 'Profiel bewerken';
-  $url = 'culturefeed/profile/edit';
-  $description = 'Wijzig naam, adres, favoriet categoriëen, ...';
-
-  $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
-
-  $title = 'Account bewerken';
-  $url = 'culturefeed/account/edit';
-  $description = 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...';
-
-  $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
-
-  $title = 'Aanbevelingen';
-  $url = 'culturefeed/recommendations';
-  $description = 'Ontdek activiteiten op jouw maat.';
-
-  $items[] = theme('culturefeed_ui_profile_menu_item', array('title' => $title, 'url' => $url, 'description' => $description));
+  
+  foreach ($menu as $menu_item) {
+    $items[] = array(
+      'data' => theme('culturefeed_ui_profile_menu_item', array('title' => $menu_item['title'], 'url' => $menu_item['url'], 'description' => $menu_item['description'])),
+      'class' => $_GET['q'] == $menu_item['url'] ? 'active' : '',
+    );    
+  }
 
   $block['subject'] = t('Profile');
   $block['content'] = array(

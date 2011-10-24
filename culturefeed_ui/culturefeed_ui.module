@@ -199,7 +199,7 @@ function culturefeed_ui_block_info() {
   $block['profile_box']['cache'] = DRUPAL_NO_CACHE;
 
   $block['profile_menu']['info'] = t('CultureFeed Profile menu');
-  $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_USER;
+  $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   $block['mbox_confirmation_reminder']['info'] = t('CultureFeed E-mail confirmation reminder');
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
