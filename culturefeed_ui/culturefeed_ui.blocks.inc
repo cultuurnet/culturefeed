@@ -143,12 +143,24 @@ function culturefeed_ui_block_view_top_events() {
   return $block;
 }
 
-function culturefeed_ui_block_view_similar_users() {
+function culturefeed_ui_block_cache_id_similar_users() {
+  $account = menu_get_object('user');
+  
+  return array($account->uid);
+}
+
+function culturefeed_ui_block_is_visible_similar_users() {
   $account = menu_get_object('user');
 
   if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+function culturefeed_ui_block_view_similar_users() {
+  $account = menu_get_object('user');
 
   try {
     $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
@@ -393,19 +405,31 @@ function culturefeed_ui_block_view_users_likes() {
   return $block;
 }
 
-function culturefeed_ui_block_view_related_events() {
+function culturefeed_ui_block_cache_id_related_events() {
+  $request = cnapi_ui_get_active_request();
+  
+  return array($request['event']);
+}
+
+function culturefeed_ui_block_is_visible_related_events() {
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
   if (!$request) {
-    return;
+    return FALSE;
   }
 
   $is_event = array_search('event', array_keys($request)) !== FALSE;
 
   if (!$is_event) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+function culturefeed_ui_block_view_related_events() {
+  $request = cnapi_ui_get_active_request();
   
   $event = cnapi_get_event($request['event']);
   
