@@ -90,12 +90,14 @@ class CultureFeed_Consumer {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent creationDate as a W3C date.
-    if (isset($data['creatioNDate'])) {
+    if (isset($data['creationDate'])) {
       $data['creationDate'] = date('c', $data['creationDate']);
     }
+    
+    $data = array_filter($data);
 
     return $data;
   }

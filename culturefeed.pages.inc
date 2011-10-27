@@ -3,7 +3,15 @@
 function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
   $cf = DrupalCultureFeed::getConsumerInstance();
 
-  $token = $cf->getRequestToken();
+  try {
+    $token = $cf->getRequestToken();
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    watchdog_exception('culturefeed', $e);
+    
+    drupal_goto('<front>');
+  }
 
   if (!$token) {
     return;
@@ -32,12 +40,20 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
 
 function culturefeed_oauth_authorize() {
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
-    $token = DrupalCultureFeed::getInstance($_GET['oauth_token'], $_SESSION['oauth_token_secret'])->getAccessToken($_GET['oauth_verifier']);
-
-    unset($_SESSION['oauth_token']);
-    unset($_SESSION['oauth_token_secret']);
-
-    $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'])->getUser($token['userId']);
+    try {
+      $token = DrupalCultureFeed::getInstance($_GET['oauth_token'], $_SESSION['oauth_token_secret'])->getAccessToken($_GET['oauth_verifier']);
+      
+      unset($_SESSION['oauth_token']);
+      unset($_SESSION['oauth_token_secret']);
+      
+      $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'])->getUser($token['userId']);
+    }
+    catch (Exception $e) {
+      drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+      watchdog_exception('culturefeed', $e);
+      
+      drupal_goto('<front>');
+    }
 
     $account = culturefeed_get_or_create_user($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret']);
 

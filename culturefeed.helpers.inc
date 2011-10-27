@@ -214,6 +214,10 @@ function culturefeed_get_nodes_for_activities($activities) {
 function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   $nodes = array();
   
+  if (empty($cdbids)) {
+    return $nodes;
+  }
+  
   $query = array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids));
   $request = array('action' => 'list_summary', 'type' => $type, 'query' => $query);
   

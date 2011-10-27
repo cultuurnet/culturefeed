@@ -74,6 +74,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/onlineaccounts/delete/%/%'] = array(
+    'title' => 'Delete online account',
+    'description' => 'Delete online account',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_ui_page_online_account_delete_form', 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/users/mostactive'] = array(
     'title' => 'Most active users',
     'description' => 'Most active users',
@@ -83,12 +92,29 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/users/like/%/%'] = array(
+  $items['culturefeed/users/likes/%/%'] = array(
     'title' => 'Users who like event',
-    'description' => 'Uses who like vent',
-    'page callback' => 'culturefeed_ui_page_users_like',
+    'description' => 'Uses who like event',
+    'page callback' => 'culturefeed_ui_page_users_likes',
     'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/recommendations'] = array(
+    'title' => 'Recommendations',
+    'description' => 'Recommendations',
+    'page callback' => 'culturefeed_ui_page_recommendations',
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/recommendations/%/%/%'] = array(
+    'title' => 'Delete recommendation',
+    'description' => 'Delete recommendation',
+    'page callback' => 'culturefeed_ui_recommendations_delete',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -145,6 +171,14 @@ function culturefeed_ui_theme() {
       'variables' => array('consumer' => NULL),
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
+    'culturefeed_ui_online_accounts_form' => array(
+      'render element' => 'form',
+      'file' => 'culturefeed_ui.pages.inc',
+    ),
+    'culturefeed_ui_online_account' => array(
+      'variables' => array('type' => '', 'name' => '', 'privacy_checkbox' => '', 'connect_link' => ''),
+      'template' => 'culturefeed-ui-online-account',
+    ),
   );
 }
 
@@ -155,8 +189,8 @@ function culturefeed_ui_block_info() {
   $block['connect']['info'] = t('CultureFeed Connect');
   $block['connect']['cache'] = DRUPAL_NO_CACHE;
 
-  $block['likes']['info'] = t('Likes');
-  $block['likes']['cache'] = DRUPAL_NO_CACHE;
+  $block['users_likes']['info'] = t('Users who like this');
+  $block['users_likes']['cache'] = DRUPAL_NO_CACHE;
 
   $block['most_active_user']['info'] = t('Most active user');
   $block['most_active_user']['cache'] = DRUPAL_CACHE_GLOBAL;
@@ -165,7 +199,7 @@ function culturefeed_ui_block_info() {
   $block['profile_box']['cache'] = DRUPAL_NO_CACHE;
 
   $block['profile_menu']['info'] = t('CultureFeed Profile menu');
-  $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_USER;
+  $block['profile_menu']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   $block['mbox_confirmation_reminder']['info'] = t('CultureFeed E-mail confirmation reminder');
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;

@@ -234,7 +234,7 @@ class DrupalCultureFeed {
   }
 
   public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
-    return self::getConsumerInstance()->getRecommendationsForUser($id, $query);
+    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query);
   }
 
   public static function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
@@ -242,7 +242,7 @@ class DrupalCultureFeed {
   }
 
   public static function evaluateRecommendation($id, $evaluation) {
-    return self::getConsumerInstance()->evaluateRecommendation($id, $evaluation);
+    return self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
   }
 
   public static function getUrlAddSocialNetwork($network, $destination = '') {

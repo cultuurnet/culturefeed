@@ -46,7 +46,7 @@ class CultureFeed_OnlineAccount {
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
-    $data = array_filter(get_object_vars($this));
+    $data = get_object_vars($this);
 
     // Represent private as a string (true/false);
     if (isset($data['private'])) {
@@ -57,6 +57,8 @@ class CultureFeed_OnlineAccount {
     if (isset($data['publishActivities'])) {
       $data['publishActivities'] = $data['publishActivities'] ? 'true' : 'false';
     }
+
+    $data = array_filter($data);
 
     return $data;
   }

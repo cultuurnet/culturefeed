@@ -119,7 +119,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
       break;
     case CultureFeed_Activity::TYPE_TWITTER:
       $type_prefix = 'heeft';
-      $type_suffix = 'via Twitter gedeeeld';
+      $type_suffix = 'via Twitter gedeeld';
       break;
     case CultureFeed_Activity::TYPE_IK_GA:
       $type_prefix = 'gaat naar';
