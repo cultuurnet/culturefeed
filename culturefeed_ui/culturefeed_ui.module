@@ -240,7 +240,7 @@ function culturefeed_ui_block_view($delta = '') {
     }
   }
   
-  if (function_exists('culturefeed_ui_block_cache_id_' . $delta)) {
+  if (function_exists('culturefeed_ui_block_cache_id_' . $delta) && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
     $cid = culturefeed_ui_block_get_cache_id($delta);
     
     if ($cache = cache_get($cid, 'cache_block')) {
