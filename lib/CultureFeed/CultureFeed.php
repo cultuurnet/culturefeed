@@ -107,8 +107,12 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRequestToken() {
-    $response = $this->oauth_client->consumerPost('requestToken', array(), FALSE);
+  public function getRequestToken($callback = '') {
+    if (!empty($callback)) {
+      $params['oauth_callback'] = $callback;
+    }
+    
+    $response = $this->oauth_client->consumerPost('requestToken', $params, FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
 
