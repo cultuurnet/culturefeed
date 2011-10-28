@@ -699,7 +699,7 @@ class CultureFeed {
     
     $data['eventId'] = $id;
 
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $data);
+    $result = $this->oauth_client->consumerGetAsXml('recommendation/event', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
