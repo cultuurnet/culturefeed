@@ -3,8 +3,21 @@
 function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
   $cf = DrupalCultureFeed::getConsumerInstance();
 
+  $options = array('absolute' => TRUE);
+
+  if (isset($_GET['destination'])) {
+    $options['query']['destination'] = $_GET['destination'];
+    unset($_GET['destination']);
+  }
+
+  if (isset($_GET['popup'])) {
+    $options['query']['popup'] = 'true';
+  }
+
+  $callback_url = url('culturefeed/oauth/authorize', $options);
+
   try {
-    $token = $cf->getRequestToken();
+    $token = $cf->getRequestToken($callback_url);
   }
   catch (Exception $e) {
     drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
@@ -20,20 +33,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
   $_SESSION['oauth_token'] = $token['oauth_token'];
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-  $options = array('absolute' => TRUE);
-
-  if (isset($_GET['destination'])) {
-    $options['query']['destination'] = $_GET['destination'];
-    unset($_GET['destination']);
-  }
-
-  if (isset($_GET['popup'])) {
-    $options['query']['popup'] = 'true';
-  }
-
-  $callback_url = url('culturefeed/oauth/authorize', $options);
-
-  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type);
+  $auth_url = $cf->getUrlAuthorize($token, '', $type);
 
   drupal_goto($auth_url);
 }

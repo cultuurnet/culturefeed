@@ -107,8 +107,12 @@ class CultureFeed {
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
-  public function getRequestToken() {
-    $response = $this->oauth_client->consumerPost('requestToken', array(), FALSE);
+  public function getRequestToken($callback = '') {
+    if (!empty($callback)) {
+      $params['oauth_callback'] = $callback;
+    }
+    
+    $response = $this->oauth_client->consumerPost('requestToken', $params, FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
 
@@ -699,7 +703,7 @@ class CultureFeed {
     
     $data['eventId'] = $id;
 
-    $result = $this->oauth_client->authenticatedGetAsXml('recommendation/event', $data);
+    $result = $this->oauth_client->consumerGetAsXml('recommendation/event', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
