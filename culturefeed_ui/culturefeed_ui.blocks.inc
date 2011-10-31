@@ -205,7 +205,7 @@ function culturefeed_ui_block_view_user_picture() {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid);
+      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
     }
   }
   catch (Exception $e) {
@@ -440,10 +440,12 @@ function culturefeed_ui_block_view_related_events() {
   
   $valid_headings = array();
   
-  foreach ($event_headings as $heading) {
-    $heading = $headings[$heading];
-    if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
-      $valid_headings[] = $heading;
+  if (!empty($event_headings)) {
+    foreach ($event_headings as $heading) {
+      $heading = $headings[$heading];
+      if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
+        $valid_headings[] = $heading;
+      }
     }
   }
   
