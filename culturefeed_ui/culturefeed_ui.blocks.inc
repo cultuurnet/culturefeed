@@ -436,7 +436,7 @@ function culturefeed_ui_block_view_related_events() {
   $headings = cnapi_get_headings();
   
   $zip = $event['location']['address']['zipcode'];
-  $event_headings = $event['headings'];
+  $event_headings = isset($event['headings']) ? $event['headings'] : array();
   
   $valid_headings = array();
   
