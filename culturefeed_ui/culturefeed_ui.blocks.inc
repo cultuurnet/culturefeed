@@ -1,5 +1,63 @@
 <?php
 
+function culturefeed_ui_block_view_user_liked_locations() {
+  global $user;
+
+  $account = menu_get_object('user');
+
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return;
+  }
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
+  $query->type = array(
+    CultureFeed_Activity::TYPE_LIKE,
+  );
+  $query->userId = $account->culturefeed_uid;
+  if ($user->uid == $account->uid) {
+    $query->private = TRUE;
+  }
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  $cdbids = array();
+  
+  foreach ($activities->objects as $activity) {
+    $cdbids[] = $activity->nodeId;
+  }
+  
+  $cdbids = array_unique($cdbids);
+
+  $actors = culturefeed_get_nodes_for_cdbids('actor', $cdbids);
+  
+  $items = array();
+  
+  foreach ($actors as $actor) {
+    $items[] = theme('cnapi_ui_actor_summary', array('actor' => $actor));
+  }
+  
+  if (empty($items)) {
+    return;
+  }
+
+  $block['subject'] = 'Favoriete locaties';
+  $block['content'] = array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+  );
+
+  return $block;
+}
+
 function culturefeed_ui_block_view_actions() {
   $request = cnapi_ui_get_active_request();
 

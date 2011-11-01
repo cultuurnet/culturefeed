@@ -240,6 +240,9 @@ function culturefeed_ui_block_info() {
   $block['user_activities']['info'] = t('User activities');
   $block['user_activities']['cache'] = DRUPAL_NO_CACHE;
 
+  $block['user_liked_locations']['info'] = t('User liked locations');
+  $block['user_liked_locations']['cache'] = DRUPAL_NO_CACHE;
+
   $block['top_events']['info'] = t('Top events');
   $block['top_events']['cache'] = DRUPAL_CACHE_GLOBAL;
 
