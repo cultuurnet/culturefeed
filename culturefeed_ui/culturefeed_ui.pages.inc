@@ -189,11 +189,9 @@ function culturefeed_ui_page_users_likes($type, $cdbid) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->nodeId = $cdbid;
-  
-  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -233,11 +231,9 @@ function culturefeed_ui_page_users_attends($type, $cdbid) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_IK_GA;
   $query->nodeId = $cdbid;
-  
-  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA, $activity_content_type);
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
