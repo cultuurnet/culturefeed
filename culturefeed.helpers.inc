@@ -231,3 +231,17 @@ function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
 
   return $nodes;
 }
+
+function culturefeed_activity_content_type_from_cnapi_type($type) {  
+  $mapping = array(
+    'actor' => CultureFeed_Activity::CONTENT_TYPE_ACTOR,
+    'event' => CultureFeed_Activity::CONTENT_TYPE_EVENT,
+    'production' => CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+  );
+  
+  if (isset($mapping[$type])) {
+    return $mapping[$type];
+  }
+  
+  return FALSE;
+}

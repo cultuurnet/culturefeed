@@ -1,5 +1,49 @@
 <?php
 
+function culturefeed_ui_block_view_actions() {
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+
+  if (!$type) {
+    return;
+  }
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = array(
+    CultureFeed_Activity::TYPE_LIKE,
+  );
+  $query->nodeId = $request[$type];
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+  $query->private = TRUE;
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  if (empty($activities->objects)) {
+    $like = l('Like', 'culturefeed/like/' . $type . '/' . $request[$type]);
+  }
+  else {
+    $like = 'you like this ' . l('Unlike', 'culturefeed/unlike/' . $type . '/' . $request[$type]);
+  }
+  
+  $block['subject'] = t('Actions');
+  $block['content'] = $like;
+
+  return $block;
+}
+
 function culturefeed_ui_block_view_mbox_confirmation_reminder() {
   if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
     return;
@@ -287,7 +331,6 @@ function culturefeed_ui_block_view_user_activities() {
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = 50;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
     CultureFeed_Activity::TYPE_FACEBOOK,
@@ -371,7 +414,7 @@ function culturefeed_ui_block_view_users_likes() {
     return;
   }
 
-  $type = reset(array_intersect(array('actor', 'event'), array_keys($request)));
+  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
 
   if (!$type) {
     return;

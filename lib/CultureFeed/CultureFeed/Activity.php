@@ -21,6 +21,11 @@ class CultureFeed_Activity {
   const CONTENT_TYPE_ACTOR = 'actor';
 
   /**
+   * Content type 'production'.
+   */
+  const CONTENT_TYPE_PRODUCTION = 'production';
+
+  /**
    * Consumer type that indicates the action "Viewed".
    */
   const TYPE_VIEW = 1;
@@ -59,6 +64,13 @@ class CultureFeed_Activity {
    * Consumer type that indicates the action "I went to this event".
    */
   const TYPE_IK_GA = 8;
+
+  /**
+   * ID of the activity object.
+   *
+   * @var string
+   */
+  public $id;
 
   /**
    * NodeId of the activity object.

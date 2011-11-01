@@ -1053,6 +1053,7 @@ class CultureFeed {
     foreach ($objects as $object) {
       $activity = new CultureFeed_Activity();
 
+      $activity->id           = $object->xpath_str('id');
       $activity->nodeId       = $object->xpath_str('nodeID');
       $activity->private      = $object->xpath_str('private');
       $activity->createdVia   = $object->xpath_str('createdVia');

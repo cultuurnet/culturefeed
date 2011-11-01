@@ -1,5 +1,62 @@
 <?php
 
+function culturefeed_ui_unlike($type, $cdbid) {
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = array(
+    CultureFeed_Activity::TYPE_LIKE,
+  );
+  $query->nodeId = $cdbid;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+  $query->private = TRUE;
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  $activity = reset($activities->objects);
+
+  try {
+    DrupalCultureFeed::deleteActivity($activity->id);
+  }
+  catch (Exception $e) {
+    var_dump($e);
+  }
+  
+  $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid)));
+
+  $request = array($type => $cdbid, 'title' => $object['detail']['nl']['title']);
+  
+  cnapi_ui_goto($request);
+}
+
+function culturefeed_ui_like($type, $cdbid) {
+  $cf_account = DrupalCultureFeed::getLoggedInAccount();
+
+  $activity = new CultureFeed_Activity();
+  $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
+  $activity->type = CultureFeed_Activity::TYPE_LIKE;
+  $activity->nodeId = $cdbid;
+  $activity->userId = $cf_account->culturefeed_uid;
+
+  try {
+    DrupalCultureFeed::createActivity($activity);
+  }
+  catch (Exception $e) {
+    var_dump($e);
+  }
+  
+  $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid)));
+
+  $request = array($type => $cdbid, 'title' => $object['detail']['nl']['title']);
+  
+  cnapi_ui_goto($request);
+}
+
 function culturefeed_ui_recommendations_delete($evaluation, $id = NULL, $type = 'ajax') {
 
   $evaluation = $evaluation == 'negative' ? CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE : CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
@@ -119,7 +176,7 @@ function culturefeed_ui_page_mboxverify_resend() {
 }
 
 function culturefeed_ui_page_users_likes($type, $cdbid) {
-  if (!in_array($type, array('actor', 'event'))) {
+  if (!in_array($type, array('actor', 'event', 'production'))) {
     drupal_not_found();
   }
   
@@ -133,16 +190,7 @@ function culturefeed_ui_page_users_likes($type, $cdbid) {
   $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->nodeId = $cdbid;
   
-  $activity_content_type = NULL;
-  
-  switch ($type) {
-    case 'actor':
-      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
-      break;
-    case 'event':
-      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-      break;
-  }
+  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
     $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
@@ -186,16 +234,7 @@ function culturefeed_ui_page_users_attends($type, $cdbid) {
   $query->type = CultureFeed_Activity::TYPE_IK_GA;
   $query->nodeId = $cdbid;
   
-  $activity_content_type = NULL;
-  
-  switch ($type) {
-    case 'actor':
-      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
-      break;
-    case 'event':
-      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-      break;
-  }
+  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
     $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA, $activity_content_type);
@@ -230,9 +269,9 @@ function culturefeed_ui_page_recent_activities() {
 
   $query = new CultureFeed_SearchActivitiesQuery();
 
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->max         = $pagelength;
   $query->start       = $page * $pagelength;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type        = array(
     CultureFeed_Activity::TYPE_LIKE,
     CultureFeed_Activity::TYPE_FACEBOOK,
