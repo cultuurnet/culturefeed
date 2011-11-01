@@ -119,7 +119,7 @@ function culturefeed_ui_page_mboxverify_resend() {
 }
 
 function culturefeed_ui_page_users_likes($type, $cdbid) {
-  if (!in_array($type, array('actor', 'event', 'production'))) {
+  if (!in_array($type, array('actor', 'event'))) {
     drupal_not_found();
   }
   
@@ -132,9 +132,73 @@ function culturefeed_ui_page_users_likes($type, $cdbid) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->nodeId = $cdbid;
+  
+  $activity_content_type = NULL;
+  
+  switch ($type) {
+    case 'actor':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
+      break;
+    case 'event':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+      break;
+  }
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  pager_default_initialize($users->total, $pagelength);
+
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
+
+  return array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
+  );
+}
+
+function culturefeed_ui_page_users_attends($type, $cdbid) {
+  if (!in_array($type, array('actor', 'event'))) {
+    drupal_not_found();
+  }
+  
+  $pagelength = 20;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+  
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $object = cnapi_get($request);
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_IK_GA;
+  $query->nodeId = $cdbid;
+  
+  $activity_content_type = NULL;
+  
+  switch ($type) {
+    case 'actor':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
+      break;
+    case 'event':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+      break;
+  }
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);

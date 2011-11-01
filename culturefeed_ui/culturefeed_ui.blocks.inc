@@ -371,7 +371,7 @@ function culturefeed_ui_block_view_users_likes() {
     return;
   }
 
-  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+  $type = reset(array_intersect(array('actor', 'event'), array_keys($request)));
 
   if (!$type) {
     return;
@@ -380,9 +380,20 @@ function culturefeed_ui_block_view_users_likes() {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->nodeId = $request[$type];
+  
+  $activity_content_type = NULL;
+  
+  switch ($type) {
+    case 'actor':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
+      break;
+    case 'event':
+      $activity_content_type = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+      break;
+  }
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($request['event'], CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -390,8 +401,58 @@ function culturefeed_ui_block_view_users_likes() {
   }
 
   $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
 
   $block['subject'] = t('Likes');
+  $block['content'] = array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $request[$type]),
+    )
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_view_users_attends() {
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+
+  if (!$type) {
+    return;
+  }
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_IK_GA;
+  $query->nodeId = $request[$type];
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_IK_GA, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
+
+  $block['subject'] = t('Attends');
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
