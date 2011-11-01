@@ -40,7 +40,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
   $items = array();
   
   foreach ($actors as $actor) {
-    $items[] = theme('cnapi_ui_actor_summary', array('actor' => $actor));
+    $items[] = theme('cnapi_ui_actor_mini_summary', array('actor' => $actor));
   }
   
   if (empty($items)) {
