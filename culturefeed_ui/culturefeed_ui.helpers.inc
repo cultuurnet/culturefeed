@@ -9,11 +9,23 @@ function culturefeed_ui_activities_list($activities) {
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
-    if (!isset($accounts[$activity->userId]) || !isset($events[$activity->nodeId])) {
+    if (!isset($accounts[$activity->userId])) {
       continue;
     }
+    
+    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
+      $node = node_load($activity->nodeId); // @todo use node_load_multiple
+    }
+    else {
+      if (!isset($events[$activity->nodeId])) {
+        continue;
+      }
+      else {
+        $node = $events[$activity->nodeId];
+      }
+    }
 
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $events[$activity->nodeId], 'uid' => $accounts[$activity->userId]));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]));
   }
   
   return $items;

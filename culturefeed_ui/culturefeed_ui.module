@@ -183,7 +183,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-ranked-user-summary',
     ),
     'culturefeed_ui_activity_summary' => array(
-      'variables' => array('activity' => NULL, 'node' => NULL, 'uid' => NULL),
+      'variables' => array('activity' => NULL, 'type' => NULL, 'node' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-activity-summary',
     ),
     'culturefeed_ui_profile_menu_item' => array(

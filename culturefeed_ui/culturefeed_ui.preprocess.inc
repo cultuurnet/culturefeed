@@ -85,7 +85,10 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
 
   $node = '';
-  if ($variables['node']) {
+  if ($variables['node'] && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
+    $node = l($variables['node']->title, 'node/' . $variables['node']->nid);
+  }
+  else {
     $node = cnapi_url_dp2dul($variables['node']['title'], array($activity->contentType => $variables['node']['cdbid'], 'title' => $variables['node']['title']));
   }
 
