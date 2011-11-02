@@ -58,6 +58,14 @@ function culturefeed_ui_block_view_user_liked_locations() {
   return $block;
 }
 
+function culturefeed_ui_block_is_visible_actions() {
+  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+    return FALSE;
+  }
+  
+  return TRUE;
+}
+
 function culturefeed_ui_block_view_actions() {
   $request = cnapi_ui_get_active_request();
 
@@ -478,12 +486,10 @@ function culturefeed_ui_block_view_users_likes() {
     return;
   }
 
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = CultureFeed_Activity::TYPE_LIKE;
-  $query->nodeId = $request[$type];
+  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_LIKE);
+    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -524,12 +530,10 @@ function culturefeed_ui_block_view_users_attends() {
     return;
   }
 
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = CultureFeed_Activity::TYPE_IK_GA;
-  $query->nodeId = $request[$type];
+  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_IK_GA);
+    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_IK_GA, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
