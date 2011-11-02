@@ -6,7 +6,6 @@ function culturefeed_ui_unlike($type, $cdbid) {
     CultureFeed_Activity::TYPE_LIKE,
   );
   $query->nodeId = $cdbid;
-  $query->consumer = variable_get('culturefeed_api_application_key', '');
   $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
   $query->private = TRUE;
 
@@ -18,13 +17,13 @@ function culturefeed_ui_unlike($type, $cdbid) {
     return;
   }
   
-  $activity = reset($activities->objects);
-
-  try {
-    DrupalCultureFeed::deleteActivity($activity->id);
-  }
-  catch (Exception $e) {
-    var_dump($e);
+  foreach ($activities->objects as $activity) {
+    try {
+      DrupalCultureFeed::deleteActivity($activity->id);
+    }
+    catch (Exception $e) {
+      var_dump($e);
+    }
   }
   
   $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid)));

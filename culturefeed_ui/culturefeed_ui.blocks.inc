@@ -85,7 +85,6 @@ function culturefeed_ui_block_view_actions() {
     CultureFeed_Activity::TYPE_LIKE,
   );
   $query->nodeId = $request[$type];
-  $query->consumer = variable_get('culturefeed_api_application_key', '');
   $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
   $query->private = TRUE;
 
