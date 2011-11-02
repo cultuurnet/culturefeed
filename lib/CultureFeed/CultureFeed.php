@@ -948,6 +948,8 @@ class CultureFeed {
       $account->accountType            = $object->xpath_str('accountType');
       $account->accountServiceHomepage = $object->xpath_str('foaf:accountServiceHomepage');
       $account->accountName            = $object->xpath_str('foaf:accountName');
+      $account->accountNick            = $object->xpath_str('accountNick');
+      $account->accountDepiction       = $object->xpath_str('accountDepiction');
       $account->private                = $object->xpath_bool('private');
       $account->publishActivities      = $object->xpath_bool('publishActivities');
 

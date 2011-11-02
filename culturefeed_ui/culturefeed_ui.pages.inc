@@ -603,6 +603,12 @@ function culturefeed_ui_online_accounts_form() {
       $form['accounts'][$account_type]['name'] = array(
         '#markup' => $account->accountName,
       );
+      $form['accounts'][$account_type]['nick'] = array(
+        '#markup' => $account->accountNick,
+      );
+      $form['accounts'][$account_type]['depiction'] = array(
+        '#markup' => $account->accountDepiction,
+      );
       $form['accounts'][$account_type]['publish'] = array(
         '#type' => 'checkbox',
         '#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $account_type . '.',
@@ -637,6 +643,8 @@ function theme_culturefeed_ui_online_accounts_form($variables) {
     $vars = array(
       'type' => $account_type, 
       'name' => drupal_render($form['accounts'][$account_type]['name']), 
+      'nick' => drupal_render($form['accounts'][$account_type]['nick']), 
+      'depiction' => drupal_render($form['accounts'][$account_type]['depiction']), 
       'publish_checkbox' => drupal_render($form['accounts'][$account_type]['publish']), 
       'delete_link' => drupal_render($form['accounts'][$account_type]['delete_link']),
       'connect_link' => drupal_render($form['accounts'][$account_type]['connect_link']),
