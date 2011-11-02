@@ -73,7 +73,7 @@ function culturefeed_ui_block_view_actions() {
     $type = 'page';
   }
   
-  $id = $node ? $node->nid : $request[$type];
+  $id = $request ? $request[$type] : $node->nid;
   
   $user_likes_this = FALSE;
   
@@ -495,7 +495,7 @@ function culturefeed_ui_block_view_users_likes() {
     $type = 'page';
   }
   
-  $id = $node ? $node->nid : $request[$type];
+  $id = $request ? $request[$type] : $node->nid;
 
   $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
