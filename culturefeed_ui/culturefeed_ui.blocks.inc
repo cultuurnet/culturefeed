@@ -265,7 +265,7 @@ function culturefeed_ui_block_view_similar_users() {
   $account = menu_get_object('user');
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
+    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
 
     $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
   }
@@ -307,7 +307,7 @@ function culturefeed_ui_block_view_user_picture() {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     else {
-      $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
+      $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
     }
   }
   catch (Exception $e) {

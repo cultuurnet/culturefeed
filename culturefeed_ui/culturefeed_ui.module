@@ -357,7 +357,7 @@ function culturefeed_ui_user_view($account) {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
+    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);

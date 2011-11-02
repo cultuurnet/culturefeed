@@ -164,8 +164,13 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->deleteUser($id);
   }
 
-  public static function getUser($id, $private = FALSE, $use_auth = TRUE) {
-    return self::getConsumerInstance()->getUser($id, $private, $use_auth);
+  public static function getUser($id, $private = FALSE) {
+    if ($private) {
+      return self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
+    }
+    else {
+      return self::getConsumerInstance()->getUser($id, FALSE, FALSE);
+    }
   }
 
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
