@@ -1,59 +1,79 @@
 <?php
 
-function culturefeed_ui_unlike($type, $cdbid) {
+function culturefeed_ui_unlike($type, $id) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
   );
-  $query->nodeId = $cdbid;
+  $query->nodeId = $id;
   $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
   $query->private = TRUE;
+  
+  $error = FALSE;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
+    $error = TRUE;
     watchdog_exception('culturefeed_ui', $e);
-    return;
   }
   
-  foreach ($activities->objects as $activity) {
-    try {
-      DrupalCultureFeed::deleteActivity($activity->id);
-    }
-    catch (Exception $e) {
-      var_dump($e);
+  if (!empty($activities->objects)) {
+    foreach ($activities->objects as $activity) {
+      try {
+        DrupalCultureFeed::deleteActivity($activity->id);
+      }
+      catch (Exception $e) {
+        $error = TRUE;
+        watchdog_exception('culturefeed_ui', $e);
+      }
     }
   }
   
-  $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid)));
-
-  $request = array($type => $cdbid, 'title' => $object['detail']['nl']['title']);
+  if ($error) {
+    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+  }
   
-  cnapi_ui_goto($request);
+  if ($type == 'page') {
+    drupal_goto('node/' . $id);
+  }
+  else {
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    
+    $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
+    
+    cnapi_ui_goto($request);
+  }
 }
 
-function culturefeed_ui_like($type, $cdbid) {
+function culturefeed_ui_like($type, $id) {
   $cf_account = DrupalCultureFeed::getLoggedInAccount();
 
   $activity = new CultureFeed_Activity();
   $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
   $activity->type = CultureFeed_Activity::TYPE_LIKE;
-  $activity->nodeId = $cdbid;
+  $activity->nodeId = $id;
   $activity->userId = $cf_account->culturefeed_uid;
 
   try {
     DrupalCultureFeed::createActivity($activity);
   }
   catch (Exception $e) {
-    var_dump($e);
+    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
   }
   
-  $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid)));
-
-  $request = array($type => $cdbid, 'title' => $object['detail']['nl']['title']);
-  
-  cnapi_ui_goto($request);
+  if ($type == 'page') {
+    drupal_goto('node/' . $id);
+  }
+  else {
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    
+    $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
+    
+    cnapi_ui_goto($request);
+  }
 }
 
 function culturefeed_ui_recommendations_delete($evaluation, $id = NULL, $type = 'ajax') {
@@ -174,8 +194,8 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto('<front>');
 }
 
-function culturefeed_ui_page_users_likes($type, $cdbid) {
-  if (!in_array($type, array('actor', 'event', 'production'))) {
+function culturefeed_ui_page_users_likes($type, $id) {
+  if (!in_array($type, array('actor', 'event', 'production', 'page'))) {
     drupal_not_found();
   }
   
@@ -187,10 +207,10 @@ function culturefeed_ui_page_users_likes($type, $cdbid) {
   
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
-  $query->nodeId = $cdbid;
+  $query->nodeId = $id;
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE);
+    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);

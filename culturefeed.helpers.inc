@@ -243,5 +243,5 @@ function culturefeed_activity_content_type_from_cnapi_type($type) {
     return $mapping[$type];
   }
   
-  return FALSE;
+  return CultureFeed_Activity::CONTENT_TYPE_PAGE;
 }

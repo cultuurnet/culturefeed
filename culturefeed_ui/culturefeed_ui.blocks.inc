@@ -54,53 +54,62 @@ function culturefeed_ui_block_view_user_liked_locations() {
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_actions() {
-  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
-    return FALSE;
-  }
-  
-  return TRUE;
-}
-
 function culturefeed_ui_block_view_actions() {
+  $node = menu_get_object();
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
-  if (!$request) {
+  if (!$request && !$node) {
     return;
   }
 
-  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
-
-  if (!$type) {
-    return;
-  }
-  
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-  );
-  $query->nodeId = $request[$type];
-  $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
-  $query->private = TRUE;
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  if (empty($activities->objects)) {
-    $like = l('Like', 'culturefeed/like/' . $type . '/' . $request[$type]);
+  if ($request) {
+    $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+    if (!$type) {
+      return;
+    }
   }
   else {
-    $like = 'you like this ' . l('Unlike', 'culturefeed/unlike/' . $type . '/' . $request[$type]);
+    $type = 'page';
   }
   
+  $id = $node ? $node->nid : $request[$type];
+  
+  $user_likes_this = FALSE;
+  
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->type = array(
+      CultureFeed_Activity::TYPE_LIKE,
+    );
+    $query->nodeId = $id;
+    $query->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
+    $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+    $query->private = TRUE;
+    
+    try {
+      $activities = DrupalCultureFeed::searchActivities($query);
+      if (!empty($activities->objects)) {
+        $user_likes_this = TRUE;
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      return;
+    }
+  }
+    
+  if (!$user_likes_this) {
+    $like = l('Vind ik leuk', 'culturefeed/like/' . $type . '/' . $id);
+  }
+  else {
+    $like = l('Vind ik niet meer leuk', 'culturefeed/unlike/' . $type . '/' . $id);
+  }
+  
+  $forward = l('Mail', 'forward', array('query' => array('path' => 'node/' . $node->nid)));
+  
   $block['subject'] = t('Actions');
-  $block['content'] = $like;
+  $block['content'] = $like . $forward;
 
   return $block;
 }
@@ -468,23 +477,30 @@ function culturefeed_ui_block_view_recent_activities() {
 }
 
 function culturefeed_ui_block_view_users_likes() {
+  $node = menu_get_object();
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
-  if (!$request) {
+  if (!$request && !$node) {
     return;
   }
 
-  $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
-
-  if (!$type) {
-    return;
+  if ($request) {
+    $type = reset(array_intersect(array('actor', 'event', 'production'), array_keys($request)));
+    if (!$type) {
+      return;
+    }
   }
+  else {
+    $type = 'page';
+  }
+  
+  $id = $node ? $node->nid : $request[$type];
 
   $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($request[$type], CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
+    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -504,7 +520,7 @@ function culturefeed_ui_block_view_users_likes() {
       '#items' => $items,
     ),
     array(
-      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $request[$type]),
+      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $id),
     )
   );
 
