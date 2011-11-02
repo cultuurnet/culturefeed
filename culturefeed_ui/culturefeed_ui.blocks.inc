@@ -27,15 +27,11 @@ function culturefeed_ui_block_view_user_liked_locations() {
     return;
   }
   
-  $cdbids = array();
-  
-  foreach ($activities->objects as $activity) {
-    $cdbids[] = $activity->nodeId;
+  if (empty($activities->objects)) {
+    return;
   }
-  
-  $cdbids = array_unique($cdbids);
 
-  $actors = culturefeed_get_nodes_for_cdbids('actor', $cdbids);
+  $actors = culturefeed_get_nodes_for_activities($activities->objects);
   
   $items = array();
   
