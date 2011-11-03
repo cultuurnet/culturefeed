@@ -1,58 +1,35 @@
 <?php
 
-function culturefeed_ui_unlike($type, $id) {
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-  );
-  $query->nodeId = $id;
-  $query->userId = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
-  $query->private = TRUE;
+function culturefeed_ui_undo($activity_type, $content_type, $node_id) {
+  $user_id = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+  $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
   
-  $error = FALSE;
-
   try {
-    $activities = DrupalCultureFeed::searchActivities($query);
+    DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
   }
   catch (Exception $e) {
-    $error = TRUE;
+    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
     watchdog_exception('culturefeed_ui', $e);
   }
   
-  if (!empty($activities->objects)) {
-    foreach ($activities->objects as $activity) {
-      try {
-        DrupalCultureFeed::deleteActivity($activity->id);
-      }
-      catch (Exception $e) {
-        $error = TRUE;
-        watchdog_exception('culturefeed_ui', $e);
-      }
-    }
-  }
-  
-  if ($error) {
-    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
-  }
-  
   if ($type == 'page') {
-    drupal_goto('node/' . $id);
+    drupal_goto('node/' . $node_id);
   }
   else {
-    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $node_id)));
     
-    $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
+    $request = array($content_type => $node_id, 'title' => $object['detail']['nl']['title']);
     
     cnapi_ui_goto($request);
   }
 }
 
-function culturefeed_ui_like($type, $id) {
+function culturefeed_ui_do($activity_type, $type, $id) {
   $cf_account = DrupalCultureFeed::getLoggedInAccount();
 
   $activity = new CultureFeed_Activity();
   $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
-  $activity->type = CultureFeed_Activity::TYPE_LIKE;
+  $activity->type = $activity_type;
   $activity->nodeId = $id;
   $activity->userId = $cf_account->culturefeed_uid;
 

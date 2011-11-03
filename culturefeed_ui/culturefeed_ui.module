@@ -127,20 +127,20 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/like/%/%'] = array(
-    'title' => 'Like',
-    'description' => 'Like',
-    'page callback' => 'culturefeed_ui_like',
-    'page arguments' => array(2, 3),
+  $items['culturefeed/do/%/%/%'] = array(
+    'title' => 'Do activity',
+    'description' => 'Do activity',
+    'page callback' => 'culturefeed_ui_do',
+    'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/unlike/%/%'] = array(
+  $items['culturefeed/undo/%/%/%'] = array(
     'title' => 'Unlike',
     'description' => 'Unline',
-    'page callback' => 'culturefeed_ui_unlike',
-    'page arguments' => array(2, 3),
+    'page callback' => 'culturefeed_ui_undo',
+    'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',

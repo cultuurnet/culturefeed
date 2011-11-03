@@ -16,7 +16,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
   );
   $query->userId = $account->culturefeed_uid;
   if ($user->uid == $account->uid) {
-    $query->private = TRUE;
+    $query->private = ($account->uid == DrupalCultureFeed::getLoggedInAccount()->uid);
   }
 
   try {
@@ -76,11 +76,13 @@ function culturefeed_ui_block_view_actions() {
   $id = $request ? $request[$type] : $node->nid;
   
   $user_likes_this = FALSE;
+  $user_goes_to = FALSE;
   
   if (DrupalCultureFeed::isCultureFeedUser()) {
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->type = array(
       CultureFeed_Activity::TYPE_LIKE,
+      CultureFeed_Activity::TYPE_IK_GA,
     );
     $query->nodeId = $id;
     $query->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
@@ -90,7 +92,14 @@ function culturefeed_ui_block_view_actions() {
     try {
       $activities = DrupalCultureFeed::searchActivities($query);
       if (!empty($activities->objects)) {
-        $user_likes_this = TRUE;
+        foreach ($activities->objects as $activity) {
+          if ($activity->type == CultureFeed_Activity::TYPE_LIKE) {
+            $user_likes_this = TRUE;
+          }
+          if ($activity->type == CultureFeed_Activity::TYPE_IK_GA) {
+            $user_goes_to = TRUE;
+          }
+        }
       }
     }
     catch (Exception $e) {
@@ -98,18 +107,30 @@ function culturefeed_ui_block_view_actions() {
       return;
     }
   }
+  
+  $items = array();
     
   if (!$user_likes_this) {
-    $like = l('Vind ik leuk', 'culturefeed/like/' . $type . '/' . $id);
+    $items[] = l('Vind ik leuk', 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . $type . '/' . $id);
   }
   else {
-    $like = l('Vind ik niet meer leuk', 'culturefeed/unlike/' . $type . '/' . $id);
+    $items[] = l('Vind ik niet meer leuk', 'culturefeed/undo/' . CultureFeed_Activity::TYPE_LIKE . '/' . $type . '/' . $id);
+  }
+    
+  if (!$user_goes_to) {
+    $items[] = l('Ik ga hier naartoe', 'culturefeed/do/' . CultureFeed_Activity::TYPE_IK_GA . '/' . $type . '/' . $id);
+  }
+  else {
+    $items[] = l('Ik ga hier niet meer naartoe', 'culturefeed/undo/' . CultureFeed_Activity::TYPE_IK_GA . '/' . $type . '/' . $id);
   }
   
-  $forward = l('Mail', 'forward', array('query' => array('path' => 'node/' . $node->nid)));
+  $items[] = l('Mail', 'forward', array('query' => array('path' => 'node/' . $node->nid)));
   
   $block['subject'] = t('Actions');
-  $block['content'] = $like . $forward;
+  $block['content'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
 
   return $block;
 }
