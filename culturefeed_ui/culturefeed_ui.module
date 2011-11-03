@@ -247,7 +247,7 @@ function culturefeed_ui_block_info() {
   $block['top_events']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['search_users']['info'] = t('Search users');
-  $block['search_users']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['search_users']['cache'] = DRUPAL_NO_CACHE;
 
   $block['similar_users']['info'] = t('Similar users');
   $block['similar_users']['cache'] = DRUPAL_CACHE_CUSTOM;
