@@ -275,7 +275,7 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   
   // links : zip
   $request = array('context' => 'event', 'query' => array('zip' => $variables['zip']));
-  $links[] = cnapi_url_dp2dul('Meer in postcode ' . $variables['zip'], $request);
+  $links[] = cnapi_url_dp2dul('Meer in ' . $variables['zip'] . ' - ' . $variables['city'], $request);
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }

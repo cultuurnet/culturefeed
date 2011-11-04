@@ -623,8 +623,9 @@ function culturefeed_ui_block_view_related_events() {
   $headings = cnapi_get_headings();
   
   $zip = $event['location']['address']['zipcode'];
+  $city = $event['location']['address']['city'];
   $event_headings = isset($event['headings']) ? $event['headings'] : array();
-  
+
   $valid_headings = array();
   
   if (!empty($event_headings)) {
@@ -660,6 +661,7 @@ function culturefeed_ui_block_view_related_events() {
     '#theme' => 'culturefeed_ui_related_events', 
     '#events' => $events,
     '#zip' => $zip,
+    '#city' => $city,
     '#headings' => $valid_headings, 
   );
 
