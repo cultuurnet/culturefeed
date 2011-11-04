@@ -158,7 +158,7 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
 }
 
 function culturefeed_ui_block_view_search_users() {
-  $block['subject'] = t('Search users');
+  $block['subject'] = 'Zoek andere gebruikers';
   $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
 
   return $block;
@@ -268,7 +268,7 @@ function culturefeed_ui_block_view_top_events() {
   }
 
   // @todo make this themeable
-  $block['subject'] = t('Top events');
+  $block['subject'] = 'Top events';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -298,9 +298,7 @@ function culturefeed_ui_block_view_similar_users() {
   $account = menu_get_object('user');
 
   try {
-    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
-
-    $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
+    $users = DrupalCultureFeed::getSimilarUsers($account->culturefeed_uid);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -317,7 +315,7 @@ function culturefeed_ui_block_view_similar_users() {
     return;
   }
 
-  $block['subject'] = t('Users similar to !name', array('!name' => $cf_account->nick));
+  $block['subject'] = 'Gelijkaardige gebruikers';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -359,7 +357,7 @@ function culturefeed_ui_block_view_user_picture() {
   );
 
   if ($user->uid == $account->uid) {
-    $block['content'][] = array('#markup' => l(t('Change picture'), 'culturefeed/profile/edit'));
+    $block['content'][] = array('#markup' => l('Wijzig afbeelding', 'culturefeed/profile/edit'));
   }
 
   return $block;
@@ -402,7 +400,7 @@ function culturefeed_ui_block_view_profile_menu() {
     );    
   }
 
-  $block['subject'] = t('Profile');
+  $block['subject'] = 'Beheer je profiel';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -447,7 +445,7 @@ function culturefeed_ui_block_view_user_activities() {
     return;
   }
 
-  $block['subject'] = t('User activities');
+  $block['subject'] = 'Recente activiteiten';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
