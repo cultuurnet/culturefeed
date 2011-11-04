@@ -1,3 +1,10 @@
+<?php if ($picture) : ?>
+  <div class="profile-picture">
+    <?php print $picture ?>
+    <?php print $picture_change_link ?>
+  </div>
+<?php endif; ?>
+
 <dl>
   
   <?php if ($name) : ?>

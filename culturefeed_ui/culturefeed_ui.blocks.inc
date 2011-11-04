@@ -324,45 +324,6 @@ function culturefeed_ui_block_view_similar_users() {
   return $block;
 }
 
-function culturefeed_ui_block_view_user_picture() {
-  global $user;
-
-  $account = menu_get_object('user');
-
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return;
-  }
-
-  try {
-    if ($user->uid == $account->uid) {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-    }
-    else {
-      $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
-    }
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $path = $cf_account->depiction . '?maxwidth=200';
-
-  $block['subject'] = '';
-  $block['content'] = array(
-    array(
-      '#theme' => 'image',
-      '#path' => $path,
-    ),
-  );
-
-  if ($user->uid == $account->uid) {
-    $block['content'][] = array('#markup' => l('Wijzig afbeelding', 'culturefeed/profile/edit'));
-  }
-
-  return $block;
-}
-
 function culturefeed_ui_block_view_profile_menu() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;

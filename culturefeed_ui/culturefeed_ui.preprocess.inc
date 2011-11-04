@@ -35,6 +35,10 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   
   // bio
   $variables['bio'] = !empty($user->bio) ? $user->bio : '';
+
+	// picture
+	$variables['picture'] = $user->depiction ? theme('image', array('path' => $user->depiction . '?maxwidth=200')) : '';
+	$variables['picture_change_link'] = l('Wijzig afbeelding', 'culturefeed/profile/edit');
 }
 
 /**
