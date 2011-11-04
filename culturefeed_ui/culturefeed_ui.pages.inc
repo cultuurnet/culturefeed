@@ -436,7 +436,7 @@ function culturefeed_ui_profile_edit_form() {
   );
 
   if (module_exists('cnapi_browse')) {
-    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').attr('disabled', 'disabled').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
+    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
 
     $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   }

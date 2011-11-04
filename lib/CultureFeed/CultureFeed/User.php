@@ -114,13 +114,6 @@ class CultureFeed_User {
   public $bio;
 
   /**
-   * Home address of the user.
-   *
-   * @var string
-   */
-  public $homeAddress;
-
-  /**
    * Street of the home address of the user.
    *
    * @var string

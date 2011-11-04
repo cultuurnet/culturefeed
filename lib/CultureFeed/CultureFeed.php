@@ -913,11 +913,10 @@ class CultureFeed {
     $user->dob          = $element->xpath_time('/foaf:person/foaf:dob');
     $user->depiction    = $element->xpath_str('/foaf:person/foaf:depiction');
     $user->bio          = $element->xpath_str('/foaf:person/bio');
-    $user->homeAddress  = $element->xpath_str('/foaf:person/foaf:homeAddress');
-    $user->street       = $element->xpath_str('/foaf:person/street');
-    $user->zip          = $element->xpath_str('/foaf:person/zip');
-    $user->city         = $element->xpath_str('/foaf:person/city');
-    $user->country      = $element->xpath_str('/foaf:person/country');
+    $user->street       = $element->xpath_str('/foaf:person/homeAddress/street');
+    $user->zip          = $element->xpath_str('/foaf:person/homeAddress/zip');
+    $user->city         = $element->xpath_str('/foaf:person/homeAddress/city');
+    $user->country      = $element->xpath_str('/foaf:person/homeAddress/country');
     $user->status       = $element->xpath_str('/foaf:person/status');
     if ($user->status) {
       $user->status = strtolower($user->status);

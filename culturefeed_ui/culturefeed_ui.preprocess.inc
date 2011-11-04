@@ -31,7 +31,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   }
   
   // dob
-  $variables['dob'] = !empty($user->dob) ? format_date($user->dob) : '';
+  $variables['dob'] = !empty($user->dob) ? format_date($user->dob, 'custom', 'j/n/Y') : '';
   
   // bio
   $variables['bio'] = !empty($user->bio) ? $user->bio : '';
