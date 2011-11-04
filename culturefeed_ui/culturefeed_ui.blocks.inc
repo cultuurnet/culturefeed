@@ -16,7 +16,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
   );
   $query->userId = $account->culturefeed_uid;
   if ($user->uid == $account->uid) {
-    $query->private = ($account->uid == DrupalCultureFeed::getLoggedInAccount()->uid);
+    $query->private = ($account->uid == $user->uid);
   }
 
   try {
@@ -325,6 +325,8 @@ function culturefeed_ui_block_view_similar_users() {
 }
 
 function culturefeed_ui_block_view_profile_menu() {
+	global $user;
+	
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
@@ -332,7 +334,7 @@ function culturefeed_ui_block_view_profile_menu() {
   $menu = array(
     array(
       'title' => 'Mijn UiTid',
-      'url' => 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid,
+      'url' => 'user/' . $user->uid,
       'description' => 'Zo zien anderen jouw profiel.',
     ),
     array(

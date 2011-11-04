@@ -282,7 +282,7 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
 	$city = $cities[$variables['cityid']];
 
 	if ($city) {
-  	$request = array('context' => 'event', 'query' => array('zip' => $city['zip']));
+  	$request = array('context' => 'event', 'query' => array('cityid' => $city['cityid']));
   	$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
 	}
   
