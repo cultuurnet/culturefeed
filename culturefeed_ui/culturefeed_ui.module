@@ -191,7 +191,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile-menu-item',
     ),
     'culturefeed_ui_related_events' => array(
-      'variables' => array('events' => array(), 'zip' => NULL, 'city' => NULL, 'headings' => array()),
+      'variables' => array('events' => array(), 'cityid' => NULL, 'headings' => array()),
       'template' => 'culturefeed-ui-related-events',
     ),
     'culturefeed_ui_service_consumer_summary' => array(

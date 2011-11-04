@@ -274,8 +274,11 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   }
   
   // links : zip
-  $request = array('context' => 'event', 'query' => array('zip' => $variables['zip']));
-  $links[] = cnapi_url_dp2dul('Meer in ' . $variables['zip'] . ' - ' . $variables['city'], $request);
+	$cities = cnapi_get_cities();
+	$city = $cities[$variables['cityid']];
+
+  $request = array('context' => 'event', 'query' => array('zip' => $zip));
+  $links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }
