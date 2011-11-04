@@ -1,6 +1,10 @@
 <?php
 
 function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
+  global $conf;
+  
+  $conf['cache'] = FALSE;
+  
   $cf = DrupalCultureFeed::getConsumerInstance();
 
   $options = array('absolute' => TRUE);
@@ -39,6 +43,10 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR) 
 }
 
 function culturefeed_oauth_authorize() {
+  global $conf;
+  
+  $conf['cache'] = FALSE;
+  
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
     try {
       $token = DrupalCultureFeed::getInstance($_GET['oauth_token'], $_SESSION['oauth_token_secret'])->getAccessToken($_GET['oauth_verifier']);

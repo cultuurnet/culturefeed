@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Preprocess variables for cnapi-ui-profile.tpl.php.
+ * Preprocess variables for culturefeed-ui-profile.tpl.php.
  *
  * @see culturefeed-ui-profile.tpl.php
  */
@@ -14,30 +14,31 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   
   // name
   $name = array();
-  if (isset($user->givenName)) {
+
+  if (!empty($user->givenName)) {
     $name[] = $user->givenName;
   }
-  if (isset($user->familyName)) {
+  if (!empty($user->familyName)) {
     $name[] = $user->familyName;
   }
-  
-  $variables['name'] = implode(' ', $name);
+
+  $variables['name'] = !empty($name) ? implode(' ', $name) : '';
   
   // gender
   $variables['gender'] = '';
-  if (isset($user->gender)) {
+  if (!empty($user->gender)) {
     $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
   }
   
   // dob
-  $variables['dob'] = isset($user->dob) ? format_date($user->dob) : '';
+  $variables['dob'] = !empty($user->dob) ? format_date($user->dob, 'custom', 'j/n/Y') : '';
   
   // bio
-  $variables['bio'] = isset($user->bio) ? $user->bio : '';
+  $variables['bio'] = !empty($user->bio) ? $user->bio : '';
 }
 
 /**
- * Preprocess variables for cnapi-ui-connect.tpl.php.
+ * Preprocess variables for culturefeed-ui-connect.tpl.php.
  *
  * @see culturefeed-ui-connect.tpl.php
  */
@@ -61,7 +62,7 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
 }
 
 /**
- * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
+ * Preprocess variables for culturefeed-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php
  */
@@ -70,7 +71,16 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-activity-summary.tpl.php.
+ * Preprocess variables for culturefeed-ui-online-account.tpl.php.
+ *
+ * @see culturefeed-ui-online-account.tpl.php
+ */
+function template_preprocess_culturefeed_ui_online_account(&$variables) {
+  $variables['picture'] = !empty($variables['depiction']) ? theme('image', array('path' => $variables['depiction'] . '?maxwidth=50&maxheight=50&crop=auto')) : '';
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-activity-summary.tpl.php.
  *
  * @see culturefeed-ui-activity-summary.tpl.php
  */
@@ -85,7 +95,10 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
 
   $node = '';
-  if ($variables['node']) {
+  if ($variables['node'] && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
+    $node = l($variables['node']->title, 'node/' . $variables['node']->nid);
+  }
+  else {
     $node = cnapi_url_dp2dul($variables['node']['title'], array($activity->contentType => $variables['node']['cdbid'], 'title' => $variables['node']['title']));
   }
 
@@ -138,7 +151,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
+ * Preprocess variables for culturefeed-ui-ranked-user-summary.tpl.php.
  *
  * @see culturefeed-ui-ranked-user-summary.tpl.php
  */
@@ -151,7 +164,7 @@ function template_preprocess_culturefeed_ui_ranked_user_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-ranked-user-summary.tpl.php.
+ * Preprocess variables for culturefeed-ui-ranked-user-summary.tpl.php.
  *
  * @see culturefeed-ui-user-summary.tpl.php
  */
@@ -166,7 +179,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-profile-box.tpl.php.
+ * Preprocess variables for culturefeed-ui-profile-box.tpl.php.
  *
  * @see culturefeed-ui-profile-box.tpl.php
  */
@@ -185,7 +198,7 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-most-active-user.tpl.php.
+ * Preprocess variables for culturefeed-ui-most-active-user.tpl.php.
  *
  * @see culturefeed-ui-most-active-user.tpl.php
  */
@@ -230,7 +243,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 }
 
 /**
- * Preprocess variables for cnapi-ui-related-events.tpl.php.
+ * Preprocess variables for culturefeed-ui-related-events.tpl.php.
  *
  * @see culturefeed-ui-related-events.tpl.php
  */
@@ -261,14 +274,19 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   }
   
   // links : zip
-  $request = array('context' => 'event', 'query' => array('zip' => $variables['zip']));
-  $links[] = cnapi_url_dp2dul('Meer in postcode ' . $variables['zip'], $request);
+	$cities = cnapi_get_cities();
+	$city = $cities[$variables['cityid']];
+
+	if ($city) {
+  	$request = array('context' => 'event', 'query' => array('zip' => $zip));
+  	$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+	}
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }
 
 /**
- * Preprocess variables for cnapi-ui-related-events.tpl.php.
+ * Preprocess variables for culturefeed-ui-related-events.tpl.php.
  *
  * @see culturefeed-ui-related-events.tpl.php
  */

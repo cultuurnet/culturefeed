@@ -93,9 +93,18 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/users/likes/%/%'] = array(
-    'title' => 'Users who like event',
-    'description' => 'Uses who like event',
+    'title' => 'Users who like this',
+    'description' => 'Uses who like this',
     'page callback' => 'culturefeed_ui_page_users_likes',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/users/attends/%/%'] = array(
+    'title' => 'Users who attend this',
+    'description' => 'Uses who attend this',
+    'page callback' => 'culturefeed_ui_page_users_attends',
     'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -113,6 +122,24 @@ function culturefeed_ui_menu() {
     'title' => 'Delete recommendation',
     'description' => 'Delete recommendation',
     'page callback' => 'culturefeed_ui_recommendations_delete',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/do/%/%/%'] = array(
+    'title' => 'Do activity',
+    'description' => 'Do activity',
+    'page callback' => 'culturefeed_ui_do',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/undo/%/%/%'] = array(
+    'title' => 'Unlike',
+    'description' => 'Unline',
+    'page callback' => 'culturefeed_ui_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -156,7 +183,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-ranked-user-summary',
     ),
     'culturefeed_ui_activity_summary' => array(
-      'variables' => array('activity' => NULL, 'node' => NULL, 'uid' => NULL),
+      'variables' => array('activity' => NULL, 'type' => NULL, 'node' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-activity-summary',
     ),
     'culturefeed_ui_profile_menu_item' => array(
@@ -164,7 +191,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile-menu-item',
     ),
     'culturefeed_ui_related_events' => array(
-      'variables' => array('events' => array(), 'zip' => NULL, 'headings' => array()),
+      'variables' => array('events' => array(), 'cityid' => NULL, 'headings' => array()),
       'template' => 'culturefeed-ui-related-events',
     ),
     'culturefeed_ui_service_consumer_summary' => array(
@@ -192,6 +219,9 @@ function culturefeed_ui_block_info() {
   $block['users_likes']['info'] = t('Users who like this');
   $block['users_likes']['cache'] = DRUPAL_NO_CACHE;
 
+  $block['users_attends']['info'] = t('Users who attend this');
+  $block['users_attends']['cache'] = DRUPAL_NO_CACHE;
+
   $block['most_active_user']['info'] = t('Most active user');
   $block['most_active_user']['cache'] = DRUPAL_CACHE_GLOBAL;
 
@@ -210,11 +240,14 @@ function culturefeed_ui_block_info() {
   $block['user_activities']['info'] = t('User activities');
   $block['user_activities']['cache'] = DRUPAL_NO_CACHE;
 
+  $block['user_liked_locations']['info'] = t('User liked locations');
+  $block['user_liked_locations']['cache'] = DRUPAL_NO_CACHE;
+
   $block['top_events']['info'] = t('Top events');
   $block['top_events']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['search_users']['info'] = t('Search users');
-  $block['search_users']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['search_users']['cache'] = DRUPAL_NO_CACHE;
 
   $block['similar_users']['info'] = t('Similar users');
   $block['similar_users']['cache'] = DRUPAL_CACHE_CUSTOM;
@@ -224,6 +257,9 @@ function culturefeed_ui_block_info() {
 
   $block['related_events']['info'] = t('Related events');
   $block['related_events']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  $block['actions']['info'] = t('Actions');
+  $block['actions']['cache'] = DRUPAL_NO_CACHE;
 
   return $block;
 }
@@ -321,7 +357,7 @@ function culturefeed_ui_user_view($account) {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getConsumerInstance()->getUser($account->culturefeed_uid, FALSE, FALSE);
+    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);

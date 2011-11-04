@@ -25,6 +25,20 @@ class CultureFeed_OnlineAccount {
   public $accountName;
 
   /**
+   * Nick on the service.
+   *
+   * @var string
+   */
+  public $accountNick;
+
+  /**
+   * Depiction on the service.
+   *
+   * @var string
+   */
+  public $accountDepiction;
+
+  /**
    * Privacy status of this account. If FALSE a user's activities on this service are in the public data for this user.
    *
    * @var bool

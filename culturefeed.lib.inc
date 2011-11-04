@@ -164,8 +164,13 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->deleteUser($id);
   }
 
-  public static function getUser($id, $private = FALSE, $use_auth = TRUE) {
-    return self::getConsumerInstance()->getUser($id, $private, $use_auth);
+  public static function getUser($id, $private = FALSE) {
+    if ($private) {
+      return self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
+    }
+    else {
+      return self::getConsumerInstance()->getUser($id, FALSE, FALSE);
+    }
   }
 
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
@@ -215,6 +220,25 @@ class DrupalCultureFeed {
   public static function deleteActivity($id) {
     self::getLoggedInUserInstance()->deleteActivity($id);
   }
+
+  public static function deleteActivities($user_id, $node_id, $content_type, $activity_type) {
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->type = $activity_type;
+    $query->contentType = $content_type;
+    $query->nodeId = $node_id;
+    $query->userId = $user_id;
+    $query->private = TRUE;
+    
+    $activities = self::searchActivities($query);
+    
+    if (empty($activities->objects)) {
+      return;
+    }
+    
+    foreach ($activities->objects as $activity) {
+      self::deleteActivity($activity->id);
+    }
+  } 
   
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);

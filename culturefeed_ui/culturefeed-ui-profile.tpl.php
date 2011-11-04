@@ -1,8 +1,5 @@
 <dl>
   
-  <dt>Nick</dt>
-  <dd><?php print $nick ?></dd>
-  
   <?php if ($name) : ?>
     <dt>Naam</dt>
     <dd><?php print $name ?></dd>

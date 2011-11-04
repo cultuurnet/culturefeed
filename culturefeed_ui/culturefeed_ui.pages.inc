@@ -1,5 +1,58 @@
 <?php
 
+function culturefeed_ui_undo($activity_type, $content_type, $node_id) {
+  $user_id = DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+  $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
+  
+  try {
+    DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'page') {
+    drupal_goto('node/' . $node_id);
+  }
+  else {
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $node_id)));
+    
+    $request = array($content_type => $node_id, 'title' => $object['detail']['nl']['title']);
+    
+    cnapi_ui_goto($request);
+  }
+}
+
+function culturefeed_ui_do($activity_type, $type, $id) {
+  $cf_account = DrupalCultureFeed::getLoggedInAccount();
+
+  $activity = new CultureFeed_Activity();
+  $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
+  $activity->type = $activity_type;
+  $activity->nodeId = $id;
+  $activity->userId = $cf_account->culturefeed_uid;
+
+  try {
+    DrupalCultureFeed::createActivity($activity);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'page') {
+    drupal_goto('node/' . $id);
+  }
+  else {
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    
+    $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
+    
+    cnapi_ui_goto($request);
+  }
+}
+
 function culturefeed_ui_recommendations_delete($evaluation, $id = NULL, $type = 'ajax') {
 
   $evaluation = $evaluation == 'negative' ? CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE : CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
@@ -118,8 +171,8 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto('<front>');
 }
 
-function culturefeed_ui_page_users_likes($type, $cdbid) {
-  if (!in_array($type, array('actor', 'event', 'production'))) {
+function culturefeed_ui_page_users_likes($type, $id) {
+  if (!in_array($type, array('actor', 'event', 'production', 'page'))) {
     drupal_not_found();
   }
   
@@ -131,10 +184,52 @@ function culturefeed_ui_page_users_likes($type, $cdbid) {
   
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
+  $query->nodeId = $id;
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  pager_default_initialize($users->total, $pagelength);
+
+  $items = culturefeed_ui_users_list($users);
+  
+  if (empty($items)) {
+    return;
+  }
+
+  return array(
+    array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
+  );
+}
+
+function culturefeed_ui_page_users_attends($type, $cdbid) {
+  if (!in_array($type, array('actor', 'event'))) {
+    drupal_not_found();
+  }
+  
+  $pagelength = 20;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+  
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $object = cnapi_get($request);
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_IK_GA;
   $query->nodeId = $cdbid;
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -166,9 +261,9 @@ function culturefeed_ui_page_recent_activities() {
 
   $query = new CultureFeed_SearchActivitiesQuery();
 
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->max         = $pagelength;
   $query->start       = $page * $pagelength;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type        = array(
     CultureFeed_Activity::TYPE_LIKE,
     CultureFeed_Activity::TYPE_FACEBOOK,
@@ -341,7 +436,7 @@ function culturefeed_ui_profile_edit_form() {
   );
 
   if (module_exists('cnapi_browse')) {
-    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').attr('disabled', 'disabled').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
+    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
 
     $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   }
@@ -485,6 +580,12 @@ function culturefeed_ui_online_accounts_form() {
       $form['accounts'][$account_type]['name'] = array(
         '#markup' => $account->accountName,
       );
+      $form['accounts'][$account_type]['nick'] = array(
+        '#markup' => $account->accountNick,
+      );
+      $form['accounts'][$account_type]['depiction'] = array(
+        '#markup' => $account->accountDepiction,
+      );
       $form['accounts'][$account_type]['publish'] = array(
         '#type' => 'checkbox',
         '#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $account_type . '.',
@@ -519,6 +620,8 @@ function theme_culturefeed_ui_online_accounts_form($variables) {
     $vars = array(
       'type' => $account_type, 
       'name' => drupal_render($form['accounts'][$account_type]['name']), 
+      'nick' => drupal_render($form['accounts'][$account_type]['nick']), 
+      'depiction' => drupal_render($form['accounts'][$account_type]['depiction']), 
       'publish_checkbox' => drupal_render($form['accounts'][$account_type]['publish']), 
       'delete_link' => drupal_render($form['accounts'][$account_type]['delete_link']),
       'connect_link' => drupal_render($form['accounts'][$account_type]['connect_link']),
