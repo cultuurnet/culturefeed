@@ -14,26 +14,27 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   
   // name
   $name = array();
-  if (isset($user->givenName)) {
+
+  if (!empty($user->givenName)) {
     $name[] = $user->givenName;
   }
-  if (isset($user->familyName)) {
+  if (!empty($user->familyName)) {
     $name[] = $user->familyName;
   }
-  
-  $variables['name'] = implode(' ', $name);
+
+  $variables['name'] = !empty($name) ? implode(' ', $name) : '';
   
   // gender
   $variables['gender'] = '';
-  if (isset($user->gender)) {
+  if (!empty($user->gender)) {
     $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
   }
   
   // dob
-  $variables['dob'] = isset($user->dob) ? format_date($user->dob) : '';
+  $variables['dob'] = !empty($user->dob) ? format_date($user->dob) : '';
   
   // bio
-  $variables['bio'] = isset($user->bio) ? $user->bio : '';
+  $variables['bio'] = !empty($user->bio) ? $user->bio : '';
 }
 
 /**
