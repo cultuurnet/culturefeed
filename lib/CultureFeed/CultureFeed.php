@@ -108,6 +108,8 @@ class CultureFeed {
    *   If the result could not be parsed.
    */
   public function getRequestToken($callback = '') {
+    $params = array();
+    
     if (!empty($callback)) {
       $params['oauth_callback'] = $callback;
     }
