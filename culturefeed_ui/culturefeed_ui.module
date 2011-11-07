@@ -347,9 +347,7 @@ function culturefeed_ui_block_save($delta = '', $edit = array()) {
  * Implements hook_user_view().
  */
 function culturefeed_ui_user_view($account) {
-  global $user;
-
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
+  if (!DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
 

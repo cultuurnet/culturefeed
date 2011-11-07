@@ -6,39 +6,45 @@
  * @see culturefeed-ui-profile.tpl.php
  */
 function template_preprocess_culturefeed_ui_profile(&$variables) {
-  $user = $variables['user'];
-  $user instanceof CultureFeed_User;
+  global $user;
   
+  $account = $variables['user'];
+  $account instanceof CultureFeed_User;
+
   // nick
-  $variables['nick'] = $user->nick;
+  $variables['nick'] = $account->nick;
   
   // name
   $name = array();
 
-  if (!empty($user->givenName)) {
-    $name[] = $user->givenName;
+  if (!empty($account->givenName)) {
+    $name[] = $account->givenName;
   }
-  if (!empty($user->familyName)) {
-    $name[] = $user->familyName;
+  if (!empty($account->familyName)) {
+    $name[] = $account->familyName;
   }
 
   $variables['name'] = !empty($name) ? implode(' ', $name) : '';
   
   // gender
   $variables['gender'] = '';
-  if (!empty($user->gender)) {
-    $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  if (!empty($account->gender)) {
+    $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
   }
   
   // dob
-  $variables['dob'] = !empty($user->dob) ? format_date($user->dob, 'custom', 'j/n/Y') : '';
+  $variables['dob'] = !empty($account->dob) ? format_date($account->dob, 'custom', 'j/n/Y') : '';
   
   // bio
-  $variables['bio'] = !empty($user->bio) ? $user->bio : '';
+  $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 
 	// picture
-	$variables['picture'] = $user->depiction ? theme('image', array('path' => $user->depiction . '?maxwidth=200')) : '';
-	$variables['picture_change_link'] = l('Wijzig afbeelding', 'culturefeed/profile/edit');
+	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=200')) : '';
+	$variables['picture_change_link'] = '';
+
+	if (DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid == $account->id) {
+	  $variables['picture_change_link'] = l('Wijzig afbeelding', 'culturefeed/profile/edit');
+	}
 }
 
 /**
@@ -196,8 +202,8 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
     $variables['link_profile'] = l('Mijn UiTid', $variables['url_profile']);
   }
 
-  $variables['link_logout'] = l('Uitloggen', 'user/logout');
-  $variables['link_login'] = l('Inloggen', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_logout'] = l('Afmelden', 'user/logout');
+  $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_register'] = l('Registereren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
 }
 

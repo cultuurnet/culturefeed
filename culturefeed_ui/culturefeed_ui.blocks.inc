@@ -616,7 +616,7 @@ function culturefeed_ui_block_view_related_events() {
   
   $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
 
-  $block['subject'] = t('Related events');
+  $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_related_events', 
     '#events' => $events,
