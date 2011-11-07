@@ -326,7 +326,7 @@ function culturefeed_ui_block_view_similar_users() {
 
 function culturefeed_ui_block_view_profile_menu() {
 	global $user;
-	
+
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
