@@ -380,7 +380,7 @@ function culturefeed_ui_profile_edit_form() {
 
   $form['current_picture'] = array(
     '#theme' => 'image',
-    '#path' => $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto',
+    '#path' => $cf_account->depiction . '?maxwidth=50&maxheight=50&crop=auto',
   );
 
   // Gender.

@@ -6,8 +6,6 @@
  * @see culturefeed-ui-profile.tpl.php
  */
 function template_preprocess_culturefeed_ui_profile(&$variables) {
-  global $user;
-  
   $account = $variables['user'];
   $account instanceof CultureFeed_User;
 
@@ -39,12 +37,8 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 
 	// picture
-	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=200')) : '';
+	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
 	$variables['picture_change_link'] = '';
-
-	if (DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid == $account->id) {
-	  $variables['picture_change_link'] = l('Wijzig afbeelding', 'culturefeed/profile/edit');
-	}
 }
 
 /**
@@ -182,7 +176,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
 
-  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto', 'alt' => $user->nick));
+  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=50&maxheight=50&crop=auto', 'alt' => $user->nick));
   $url = 'user/' . $variables['uid'];
   $variables['picture'] = l($picture, $url, array('html' => TRUE, 'attributes' => array('title' => $user->nick)));
   $variables['nick'] = l($user->nick, $url);
@@ -217,7 +211,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account instanceof CultureFeed_User;
 
   $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
-  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
+  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=93&maxheight=93&crop=auto'));
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
 

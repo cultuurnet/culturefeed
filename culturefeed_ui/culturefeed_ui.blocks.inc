@@ -183,7 +183,7 @@ function culturefeed_ui_block_view_profile_box() {
 
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
-      $picture = $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto';
+      $picture = $cf_account->depiction . '?maxwidth=20&maxheight=20&crop=auto';
       $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
