@@ -12,6 +12,8 @@ function culturefeed_ui_undo($activity_type, $content_type, $node_id) {
     watchdog_exception('culturefeed_ui', $e);
   }
   
+  cache_clear_all('*', 'cache_page', TRUE);
+  
   if ($type == 'page') {
     drupal_goto('node/' . $node_id);
   }
@@ -40,6 +42,8 @@ function culturefeed_ui_do($activity_type, $type, $id) {
     drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
     watchdog_exception('culturefeed_ui', $e);
   }
+  
+  cache_clear_all('*', 'cache_page', TRUE);
   
   if ($type == 'page') {
     drupal_goto('node/' . $id);
