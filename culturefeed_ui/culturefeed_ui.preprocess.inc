@@ -67,7 +67,7 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
   $variables['mbox'] = $variables['account']->mbox;
   
   $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
-  $variables['update_link'] = l('E-mail adres aanpassen', 'culturefeed/account/edit');
+  $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
   $variables['info_link'] = l('Meer info over UiTid', '<front>');
 }
 
