@@ -179,15 +179,14 @@ function culturefeed_ui_page_users_likes($type, $id) {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
   
-  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
-  $object = cnapi_get($request);
-  
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->nodeId = $id;
 
+	$activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
+
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE);
+    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -221,15 +220,14 @@ function culturefeed_ui_page_users_attends($type, $cdbid) {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
   
-  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
-  $object = cnapi_get($request);
-  
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_IK_GA;
   $query->nodeId = $cdbid;
+	
+	$activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA);
+    $users = DrupalCultureFeed::searchActivityUsers($cdbid, CultureFeed_Activity::TYPE_IK_GA, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
