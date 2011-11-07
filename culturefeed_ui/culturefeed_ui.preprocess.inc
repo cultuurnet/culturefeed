@@ -255,15 +255,8 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   // events
   $items = array();
   
-  $i = 0;
   foreach ($variables['events'] as $event_info) {
-    $theme = 'cnapi_ui_event_mini_summary';
-    
-    if ($i++ == 0) {
-      $theme = 'cnapi_ui_event_summary';
-    }
-    
-    $items[] = theme($theme, array('event' => $event_info, 'heading_level' => 3));
+    $items[] = theme('cnapi_ui_event_mini_summary', array('event' => $event_info, 'heading_level' => 3));
   }
   
   $variables['event_list'] = theme('item_list', array('items' => $items));
