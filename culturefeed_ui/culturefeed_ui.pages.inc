@@ -730,7 +730,7 @@ function culturefeed_ui_account_edit_form() {
 
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
-    '#markup' => l(t('Change password'), $url, $options),
+    '#markup' => l('Paswoord wijzigen', $url, $options),
     '#suffix' => '</div>',
   );
 
