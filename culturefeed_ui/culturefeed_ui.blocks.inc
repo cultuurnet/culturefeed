@@ -126,7 +126,7 @@ function culturefeed_ui_block_view_actions() {
   
   $items[] = l('Mail', 'forward', array('query' => array('path' => 'node/' . $node->nid)));
   
-  $block['subject'] = t('Actions');
+  $block['subject'] = 'Acties';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -151,7 +151,7 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
     return;
   }
   
-  $block['subject'] = t('Confirm your mail address');
+  $block['subject'] = 'Bevestig jouw e-mailadres';
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
@@ -408,7 +408,7 @@ function culturefeed_ui_block_view_user_activities() {
     return;
   }
 
-  $block['subject'] = 'Recente activiteiten';
+  $block['subject'] = 'Recente acties';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
@@ -444,14 +444,14 @@ function culturefeed_ui_block_view_recent_activities() {
     return;
   }
 
-  $block['subject'] = t('Recent activities');
+  $block['subject'] = 'Recente acties';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
     ),
     array(
-      '#markup' => l(t('Older activities'), 'culturefeed/activities/recent'),
+      '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
     ),
   );
 
@@ -495,14 +495,14 @@ function culturefeed_ui_block_view_users_likes() {
     return;
   }
 
-  $block['subject'] = t('Likes');
+  $block['subject'] = 'Vinden dit leuk';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
     ),
     array(
-      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $id),
+      '#markup' => l('Toon iedereen die dit leuk vindt.', 'culturefeed/users/likes/event/' . $id),
     )
   );
 
@@ -539,14 +539,14 @@ function culturefeed_ui_block_view_users_attends() {
     return;
   }
 
-  $block['subject'] = t('Attends');
+  $block['subject'] = 'Gaan hier naartoe';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
     ),
     array(
-      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $request[$type]),
+      '#markup' => l('Toon iedereen die hier naartoe gaat.', 'culturefeed/users/attends/event/' . $request[$type]),
     )
   );
 

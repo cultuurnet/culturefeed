@@ -102,7 +102,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
-  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
+  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
   $node = '';
   if ($variables['node'] && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
@@ -157,7 +157,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
     '!node' => $node,
   );
 
-  $variables['text'] = strtr('!nick !type_prefix !node !type_suffix.', $replace);
+  $variables['text'] = rtrim(strtr('!nick !type_prefix !node !type_suffix', $replace), ' ') . '.';
 }
 
 /**
