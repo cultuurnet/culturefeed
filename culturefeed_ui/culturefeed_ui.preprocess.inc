@@ -182,9 +182,9 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
 
-  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto'));
+  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto', 'alt' => $user->nick));
   $url = 'user/' . $variables['uid'];
-  $variables['picture'] = l($picture, $url, array('html' => TRUE));
+  $variables['picture'] = l($picture, $url, array('html' => TRUE, 'attributes' => array('title' => $user->nick)));
   $variables['nick'] = l($user->nick, $url);
 }
 
