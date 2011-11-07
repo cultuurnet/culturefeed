@@ -272,18 +272,22 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   $links = array();
   
   // links : headings
-  foreach ($variables['headings'] as $heading) {
-    $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
-    $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
-  }
+	if (!empty($variables['headings'])) {
+  	foreach ($variables['headings'] as $heading) {
+  	  $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+  	  $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
+  	}
+	}
   
   // links : zip
-	$cities = cnapi_get_cities();
-	$city = $cities[$variables['cityid']];
-
-	if ($city) {
-  	$request = array('context' => 'event', 'query' => array('cityid' => $city['cityid']));
-  	$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+	if (!empty($variables['cityid'])) {
+		$cities = cnapi_get_cities();
+		$city = $cities[$variables['cityid']];
+  	
+		if ($city) {
+  		$request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
+  		$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+		}
 	}
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
