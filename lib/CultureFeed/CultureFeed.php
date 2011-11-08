@@ -891,6 +891,7 @@ class CultureFeed {
     $consumer->logo                               = $element->xpath_str('logo');
     $consumer->name                               = $element->xpath_str('name');
     $consumer->status                             = $element->xpath_str('status');
+    $consumer->group                              = $element->xpath_int('group', true);
 
     return $consumer;
   }

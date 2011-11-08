@@ -20,6 +20,13 @@ class CultureFeed_Consumer {
   public $consumerSecret;
 
   /**
+   * Group IDs for the consumer.
+   *
+   * @var array
+   */
+  public $group;
+
+  /**
    * Creation date of this consumer represented as a UNIX timestamp.
    *
    * @var integer

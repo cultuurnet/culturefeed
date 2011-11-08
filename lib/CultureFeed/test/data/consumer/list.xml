@@ -12,6 +12,8 @@
         <status>ACTIVE</status>
         <destinationAfterEmailVerification></destinationAfterEmailVerification>
         <domain>example.com</domain>
+        <group>1</group>
+        <group>2</group>
     </consumer>
     <consumer>
         <callback>https://clone.example.com/callback</callback>
@@ -23,5 +25,6 @@
         <status>BLOCKED</status>
         <destinationAfterEmailVerification>https://clone.example.com/after/verification/email</destinationAfterEmailVerification>
         <domain>clone.example.com</domain>
+        <group>3</group>
     </consumer>
 </consumers>

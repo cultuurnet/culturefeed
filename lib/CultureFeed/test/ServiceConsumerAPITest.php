@@ -41,6 +41,7 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('ACTIVE', $consumers[0]->status);
     $this->assertEquals('example.com', $consumers[0]->domain);
     $this->assertEquals('', $consumers[0]->destinationAfterEmailVerification);
+    $this->assertEquals(array(1,2), $consumers[0]->group);
 
     $this->assertEquals('wad324omxeegtejdp7ycqgiak6z78scm', $consumers[1]->consumerKey);
     $this->assertEquals('8r6b2o5zy1irnnt5ltds7kio6ozmh6nh', $consumers[1]->consumerSecret);
@@ -55,6 +56,7 @@ class CultureFeed_ServiceConsumerAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('BLOCKED', $consumers[1]->status);
     $this->assertEquals('clone.example.com', $consumers[1]->domain);
     $this->assertEquals('https://clone.example.com/after/verification/email', $consumers[1]->destinationAfterEmailVerification);
+    $this->assertEquals(array(3), $consumers[1]->group);
   }
 
   public function testCreateServiceConsumer() {
