@@ -5,7 +5,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
 
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return;
   }
 
@@ -16,7 +16,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
   );
   $query->userId = $account->culturefeed_uid;
   if ($user->uid == $account->uid) {
-    $query->private = ($account->uid == DrupalCultureFeed::getLoggedInAccount()->uid);
+    $query->private = ($account->uid == $user->uid);
   }
 
   try {
@@ -126,7 +126,7 @@ function culturefeed_ui_block_view_actions() {
   
   $items[] = l('Mail', 'forward', array('query' => array('path' => 'node/' . $node->nid)));
   
-  $block['subject'] = t('Actions');
+  $block['subject'] = 'Acties';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -151,14 +151,14 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
     return;
   }
   
-  $block['subject'] = t('Confirm your mail address');
+  $block['subject'] = 'Bevestig jouw e-mailadres';
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
 }
 
 function culturefeed_ui_block_view_search_users() {
-  $block['subject'] = t('Search users');
+  $block['subject'] = 'Zoek andere gebruikers';
   $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
 
   return $block;
@@ -183,7 +183,7 @@ function culturefeed_ui_block_view_profile_box() {
 
     if (isset($cf_account)) {
       $nick = $cf_account->nick;
-      $picture = $cf_account->depiction . '?maxwidth=100&maxheight=100&crop=auto';
+      $picture = $cf_account->depiction . '?maxwidth=20&maxheight=20&crop=auto';
       $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
     }
   }
@@ -268,7 +268,7 @@ function culturefeed_ui_block_view_top_events() {
   }
 
   // @todo make this themeable
-  $block['subject'] = t('Top events');
+  $block['subject'] = 'Top events';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -287,7 +287,7 @@ function culturefeed_ui_block_cache_id_similar_users() {
 function culturefeed_ui_block_is_visible_similar_users() {
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return FALSE;
   }
   
@@ -298,9 +298,7 @@ function culturefeed_ui_block_view_similar_users() {
   $account = menu_get_object('user');
 
   try {
-    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
-
-    $users = DrupalCultureFeed::getSimilarUsers($cf_account->id);
+    $users = DrupalCultureFeed::getSimilarUsers($account->culturefeed_uid);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -317,55 +315,19 @@ function culturefeed_ui_block_view_similar_users() {
     return;
   }
 
-  $block['subject'] = t('Users similar to !name', array('!name' => $cf_account->nick));
+  $block['subject'] = 'Gelijkaardige gebruikers';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array('class' => 'user-list'),
   );
-
-  return $block;
-}
-
-function culturefeed_ui_block_view_user_picture() {
-  global $user;
-
-  $account = menu_get_object('user');
-
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return;
-  }
-
-  try {
-    if ($user->uid == $account->uid) {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-    }
-    else {
-      $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
-    }
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $path = $cf_account->depiction . '?maxwidth=200';
-
-  $block['subject'] = '';
-  $block['content'] = array(
-    array(
-      '#theme' => 'image',
-      '#path' => $path,
-    ),
-  );
-
-  if ($user->uid == $account->uid) {
-    $block['content'][] = array('#markup' => l(t('Change picture'), 'culturefeed/profile/edit'));
-  }
 
   return $block;
 }
 
 function culturefeed_ui_block_view_profile_menu() {
+	global $user;
+
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
@@ -373,7 +335,7 @@ function culturefeed_ui_block_view_profile_menu() {
   $menu = array(
     array(
       'title' => 'Mijn UiTid',
-      'url' => 'user/' . culturefeed_get_or_create_user(DrupalCultureFeed::getLoggedInUserId())->uid,
+      'url' => 'user/' . $user->uid,
       'description' => 'Zo zien anderen jouw profiel.',
     ),
     array(
@@ -402,7 +364,7 @@ function culturefeed_ui_block_view_profile_menu() {
     );    
   }
 
-  $block['subject'] = t('Profile');
+  $block['subject'] = 'Beheer je profiel';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -416,7 +378,7 @@ function culturefeed_ui_block_view_user_activities() {
 
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return;
   }
 
@@ -447,11 +409,12 @@ function culturefeed_ui_block_view_user_activities() {
     return;
   }
 
-  $block['subject'] = t('User activities');
+  $block['subject'] = 'Recente acties';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
     ),
   );
 
@@ -483,14 +446,15 @@ function culturefeed_ui_block_view_recent_activities() {
     return;
   }
 
-  $block['subject'] = t('Recent activities');
+  $block['subject'] = 'Recente acties';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
     ),
     array(
-      '#markup' => l(t('Older activities'), 'culturefeed/activities/recent'),
+      '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
     ),
   );
 
@@ -534,14 +498,15 @@ function culturefeed_ui_block_view_users_likes() {
     return;
   }
 
-  $block['subject'] = t('Likes');
+  $block['subject'] = 'Vinden dit leuk';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
-      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $id),
+      '#markup' => l('Toon iedereen die dit leuk vindt.', 'culturefeed/users/likes/event/' . $id),
     )
   );
 
@@ -578,14 +543,15 @@ function culturefeed_ui_block_view_users_attends() {
     return;
   }
 
-  $block['subject'] = t('Attends');
+  $block['subject'] = 'Gaan hier naartoe';
   $block['content'] = array(
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
-      '#markup' => l('Bekijk iedereen', 'culturefeed/users/likes/event/' . $request[$type]),
+      '#markup' => l('Toon iedereen die hier naartoe gaat.', 'culturefeed/users/attends/event/' . $request[$type]),
     )
   );
 
@@ -655,7 +621,7 @@ function culturefeed_ui_block_view_related_events() {
   
   $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
 
-  $block['subject'] = t('Related events');
+  $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_related_events', 
     '#events' => $events,

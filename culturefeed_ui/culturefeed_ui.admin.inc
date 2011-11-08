@@ -24,7 +24,7 @@ function culturefeed_ui_admin_settings() {
 
   $form['culturefeed_ui_block_most_active_user_sort'] = array(
     '#type' => 'select',
-    '#title' => t('Sort by'),
+    '#title' => t('Most active user block : Sort by'),
     '#options' => $sort_options,
     '#default_value' => variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
   );
@@ -39,7 +39,7 @@ function culturefeed_ui_admin_settings() {
 
   $form['culturefeed_ui_block_top_events_sort'] = array(
     '#type' => 'select',
-    '#title' => t('Sort by'),
+    '#title' => t('Top events : sort by'),
     '#options' => $sort_options,
     '#default_value' => variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE),
   );

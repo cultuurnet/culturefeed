@@ -6,35 +6,39 @@
  * @see culturefeed-ui-profile.tpl.php
  */
 function template_preprocess_culturefeed_ui_profile(&$variables) {
-  $user = $variables['user'];
-  $user instanceof CultureFeed_User;
-  
+  $account = $variables['user'];
+  $account instanceof CultureFeed_User;
+
   // nick
-  $variables['nick'] = $user->nick;
+  $variables['nick'] = $account->nick;
   
   // name
   $name = array();
 
-  if (!empty($user->givenName)) {
-    $name[] = $user->givenName;
+  if (!empty($account->givenName)) {
+    $name[] = $account->givenName;
   }
-  if (!empty($user->familyName)) {
-    $name[] = $user->familyName;
+  if (!empty($account->familyName)) {
+    $name[] = $account->familyName;
   }
 
   $variables['name'] = !empty($name) ? implode(' ', $name) : '';
   
   // gender
   $variables['gender'] = '';
-  if (!empty($user->gender)) {
-    $variables['gender'] = $user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  if (!empty($account->gender)) {
+    $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
   }
   
   // dob
-  $variables['dob'] = !empty($user->dob) ? format_date($user->dob, 'custom', 'j/n/Y') : '';
+  $variables['dob'] = !empty($account->dob) ? format_date($account->dob, 'custom', 'j/n/Y') : '';
   
   // bio
-  $variables['bio'] = !empty($user->bio) ? $user->bio : '';
+  $variables['bio'] = !empty($account->bio) ? $account->bio : '';
+
+	// picture
+	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
+	$variables['picture_change_link'] = '';
 }
 
 /**
@@ -57,7 +61,7 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
   $variables['mbox'] = $variables['account']->mbox;
   
   $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
-  $variables['update_link'] = l('E-mail adres aanpassen', 'culturefeed/account/edit');
+  $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
   $variables['info_link'] = l('Meer info over UiTid', '<front>');
 }
 
@@ -92,7 +96,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
-  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate);
+  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
   $node = '';
   if ($variables['node'] && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
@@ -147,7 +151,7 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
     '!node' => $node,
   );
 
-  $variables['text'] = strtr('!nick !type_prefix !node !type_suffix.', $replace);
+  $variables['text'] = rtrim(strtr('!nick !type_prefix !node !type_suffix', $replace), ' ') . '.';
 }
 
 /**
@@ -172,9 +176,9 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
   $user = $variables['user'];
   $user instanceof CultureFeed_User;
 
-  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=100&maxheight=100&crop=auto'));
+  $picture = theme('image', array('path' => $user->depiction . '?maxwidth=50&maxheight=50&crop=auto', 'alt' => $user->nick));
   $url = 'user/' . $variables['uid'];
-  $variables['picture'] = l($picture, $url, array('html' => TRUE));
+  $variables['picture'] = l($picture, $url, array('html' => TRUE, 'attributes' => array('title' => $user->nick)));
   $variables['nick'] = l($user->nick, $url);
 }
 
@@ -192,8 +196,8 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
     $variables['link_profile'] = l('Mijn UiTid', $variables['url_profile']);
   }
 
-  $variables['link_logout'] = l('Uitloggen', 'user/logout');
-  $variables['link_login'] = l('Inloggen', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_logout'] = l('Afmelden', 'user/logout');
+  $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_register'] = l('Registereren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
 }
 
@@ -207,7 +211,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
   $account instanceof CultureFeed_User;
 
   $url = 'user/' . culturefeed_get_uid_for_cf_uid($account->id, $account->nick);
-  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
+  $picture = theme('image', array('path' => $account->depiction . '?maxwidth=93&maxheight=93&crop=auto'));
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
 
@@ -251,35 +255,32 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   // events
   $items = array();
   
-  $i = 0;
   foreach ($variables['events'] as $event_info) {
-    $theme = 'cnapi_ui_event_mini_summary';
-    
-    if ($i++ == 0) {
-      $theme = 'cnapi_ui_event_summary';
-    }
-    
-    $items[] = theme($theme, array('event' => $event_info, 'heading_level' => 3));
+    $items[] = theme('cnapi_ui_event_mini_summary', array('event' => $event_info, 'heading_level' => 3));
   }
   
-  $variables['event_list'] = theme('item_list', array('items' => $items));
+  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-mini-summary-list')));
   
   // links
   $links = array();
   
   // links : headings
-  foreach ($variables['headings'] as $heading) {
-    $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
-    $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
-  }
+	if (!empty($variables['headings'])) {
+  	foreach ($variables['headings'] as $heading) {
+  	  $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+  	  $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
+  	}
+	}
   
   // links : zip
-	$cities = cnapi_get_cities();
-	$city = $cities[$variables['cityid']];
-
-	if ($city) {
-  	$request = array('context' => 'event', 'query' => array('zip' => $zip));
-  	$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+	if (!empty($variables['cityid'])) {
+		$cities = cnapi_get_cities();
+		$city = $cities[$variables['cityid']];
+  	
+		if ($city) {
+  		$request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
+  		$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+		}
 	}
   
   $variables['link_list'] = theme('item_list', array('items' => $links));
