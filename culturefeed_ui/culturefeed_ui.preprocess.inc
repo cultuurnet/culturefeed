@@ -259,7 +259,7 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
     $items[] = theme('cnapi_ui_event_mini_summary', array('event' => $event_info, 'heading_level' => 3));
   }
   
-  $variables['event_list'] = theme('item_list', array('items' => $items));
+  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-mini-summary-list')));
   
   // links
   $links = array();
