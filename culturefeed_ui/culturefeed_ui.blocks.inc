@@ -5,7 +5,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
 
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return;
   }
 
@@ -287,7 +287,7 @@ function culturefeed_ui_block_cache_id_similar_users() {
 function culturefeed_ui_block_is_visible_similar_users() {
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return FALSE;
   }
   
@@ -377,7 +377,7 @@ function culturefeed_ui_block_view_user_activities() {
 
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
     return;
   }
 
