@@ -258,7 +258,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // If we have a file upload, we pass $params as an array to trigger CURL multipart.
     $post_data = $has_file_upload ? $params : self::build_query($params);
-print $post_data;
+
     // Necessary to support token setup calls.
     if (!$raw_post) {
       $post_data = $request->to_postdata();
