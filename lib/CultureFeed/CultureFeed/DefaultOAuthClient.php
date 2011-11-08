@@ -257,8 +257,8 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     }
 
     // If we have a file upload, we pass $params as an array to trigger CURL multipart.
-    $post_data = $has_file_upload ? $params : http_build_query($params, '', '&');
-
+    $post_data = $has_file_upload ? $params : self::build_query($params);
+print $post_data;
     // Necessary to support token setup calls.
     if (!$raw_post) {
       $post_data = $request->to_postdata();
@@ -309,10 +309,35 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     $url =  rtrim($this->endpoint, '/') . '/' . trim($path, '/');
 
     if (!empty($query)) {
-      $url .= '?' . http_build_query($query, '', '&');
+      $url .= '?' . self::build_query($query);
     }
 
     return $url;
+  }
+  
+  /**
+   * Build a querystring.
+   *
+   * @param string $params
+   *   Array representation of the querystring.
+   * @return string
+   *   The querystring.
+   */  
+  private static function build_query($params) {
+    $parts = array();
+
+    foreach ($params as $key => $value) {
+      if (is_array($value)) {
+        foreach ($value as $value_part) {
+          $parts[] = urlencode($key) . '=' . urlencode($value_part);
+        }
+      }
+      else {
+        $parts[] = urlencode($key) . '=' . urlencode($value);
+      }
+    }
+    
+    return implode('&', $parts);
   }
 
 }

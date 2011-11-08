@@ -2,6 +2,13 @@
 
 <?php
 
+
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->type = array(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::TYPE_IK_GA);
+
+$r = $cf->searchActivities($query);
+print "<pre>".print_r($r, TRUE)."</pre>";
+exit();
 if (!isset($_GET['action'])) {
   return;
 }
