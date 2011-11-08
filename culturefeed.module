@@ -13,6 +13,8 @@ function culturefeed_init() {
   if (isset($_GET['closepopup'])) {
     drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
   }
+  
+  drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => TRUE)), 'setting');
 }
 
 /**
