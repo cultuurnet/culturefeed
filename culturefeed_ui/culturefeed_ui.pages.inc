@@ -26,7 +26,7 @@ function culturefeed_ui_undo($activity_type, $content_type, $node_id) {
   }
 }
 
-function culturefeed_ui_do($activity_type, $type, $id) {
+function culturefeed_ui_do($activity_type, $type, $id, $redirect = TRUE) {
   $cf_account = DrupalCultureFeed::getLoggedInAccount();
 
   $activity = new CultureFeed_Activity();
@@ -34,26 +34,51 @@ function culturefeed_ui_do($activity_type, $type, $id) {
   $activity->type = $activity_type;
   $activity->nodeId = $id;
   $activity->userId = $cf_account->culturefeed_uid;
+  
+  if ($type == 'page') {
+    $node = node_load($id);
+    $activity->nodeTitle = $node->title;
+  }
+  else {
+    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    $activity->nodeTitle = $object['detail']['nl']['title'];
+  }
+  
+  $error = FALSE;
 
   try {
     DrupalCultureFeed::createActivity($activity);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    $error = TRUE;
     watchdog_exception('culturefeed_ui', $e);
   }
   
   cache_clear_all('*', 'cache_page', TRUE);
   
-  if ($type == 'page') {
-    drupal_goto('node/' . $id);
+  if ($redirect) {
+    if ($error) {
+      drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    }
+    
+    if ($type == 'page') {
+      drupal_goto('node/' . $id);
+    }
+    else {
+      $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
+      
+      cnapi_ui_goto($request);
+    }
   }
   else {
-    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
+    if ($error) {
+      $status = 'ERROR';
+    }
+    else {
+      $status = 'OK';  
+    }
     
-    $request = array($type => $id, 'title' => $object['detail']['nl']['title']);
-    
-    cnapi_ui_goto($request);
+    drupal_json_output(array('status' => $status));
   }
 }
 

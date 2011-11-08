@@ -136,6 +136,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/do/%/%/%/noredirect'] = array(
+    'title' => 'Do activity',
+    'description' => 'Do activity',
+    'page callback' => 'culturefeed_ui_do',
+    'page arguments' => array(2, 3, 4, FALSE),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/undo/%/%/%'] = array(
     'title' => 'Unlike',
     'description' => 'Unline',
@@ -254,9 +263,6 @@ function culturefeed_ui_block_info() {
 
   $block['related_events']['info'] = t('Related events');
   $block['related_events']['cache'] = DRUPAL_CACHE_CUSTOM;
-
-  $block['actions']['info'] = t('Actions');
-  $block['actions']['cache'] = DRUPAL_NO_CACHE;
 
   return $block;
 }
