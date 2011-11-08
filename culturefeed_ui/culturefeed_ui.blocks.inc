@@ -319,6 +319,7 @@ function culturefeed_ui_block_view_similar_users() {
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array('class' => 'user-list'),
   );
 
   return $block;
@@ -413,6 +414,7 @@ function culturefeed_ui_block_view_user_activities() {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
     ),
   );
 
@@ -449,6 +451,7 @@ function culturefeed_ui_block_view_recent_activities() {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
     ),
     array(
       '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
@@ -500,6 +503,7 @@ function culturefeed_ui_block_view_users_likes() {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
       '#markup' => l('Toon iedereen die dit leuk vindt.', 'culturefeed/users/likes/event/' . $id),
@@ -544,6 +548,7 @@ function culturefeed_ui_block_view_users_attends() {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
       '#markup' => l('Toon iedereen die hier naartoe gaat.', 'culturefeed/users/attends/event/' . $request[$type]),

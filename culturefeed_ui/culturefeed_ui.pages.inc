@@ -209,6 +209,7 @@ function culturefeed_ui_page_users_likes($type, $id) {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
       '#theme' => 'pager',
@@ -250,6 +251,7 @@ function culturefeed_ui_page_users_attends($type, $cdbid) {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
       '#theme' => 'pager',
@@ -287,6 +289,7 @@ function culturefeed_ui_page_recent_activities() {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
     ),
     array(
       '#theme' => 'pager',
@@ -330,6 +333,7 @@ function culturefeed_ui_search_users_results($name = '') {
     array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array('class' => 'user-list'),
     ),
     array(
       '#theme' => 'pager',
