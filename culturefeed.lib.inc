@@ -280,5 +280,39 @@ class DrupalCultureFeed {
   public static function getUrlLogout($destination = '') {
     return self::getConsumerInstance()->getUrlLogout($destination);
   }
+  
+  public static function userDidActivity($type, $nodeId, $contentType, $user = NULL) {
+    $userDidActivity = &drupal_static(__FUNCTION__, array());
+    
+    if (!$user) {
+      $user = self::getLoggedInAccount()->culturefeed_uid;
+    }
 
+    if (isset($userDidActivity[$type][$nodeId][$contentType][$user])) {
+      return $userDidActivity[$type][$nodeId][$contentType][$user];
+    }
+ 
+    $result = FALSE;
+    
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->type = $type;
+    $query->nodeId = $nodeId;
+    $query->contentType = $contentType;
+    $query->userId = self::getLoggedInAccount()->culturefeed_uid;
+    $query->private = TRUE;
+    
+    $activities = self::searchActivities($query);
+    
+    if (!empty($activities->objects)) {
+      foreach ($activities->objects as $activity) {
+        if ($activity->type == $type) {
+          $result = TRUE;
+        }
+      }
+    }
+    
+    $userDidActivity[$type][$nodeId][$contentType][$user] = $result;
+    
+    return $result;
+  }
 }
