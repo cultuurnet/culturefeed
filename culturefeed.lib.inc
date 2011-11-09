@@ -90,7 +90,7 @@ class DrupalCultureFeed {
       throw new Exception('Not a valid token set.');
     }
 
-    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret);
+    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret, $application_key, $shared_secret);
 
     return self::$user_instance[$application_key];
   }
