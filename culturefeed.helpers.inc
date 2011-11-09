@@ -41,7 +41,7 @@ function culturefeed_create_user($name) {
 
 /**
  * Try to get load a user account for a certain Culture Feed User ID. If it doesn't exist, create it and return it.
- * 
+ *
  * @param integer $cf_uid
  *   To CultureFeed User ID of the user to load.
  * @param string $nick
@@ -84,7 +84,7 @@ function culturefeed_get_or_create_user($cf_uid, $nick = NULL, $token = NULL, $s
 
     // Create the user account.
     $account = culturefeed_create_user($unique_nick);
-    
+
     // Save the mapping between Culture Feed User ID and Drupal user id.
     db_insert('culturefeed_user')
       ->fields(array(
@@ -135,17 +135,17 @@ function culturefeed_get_uids_for_cf_uids($users) {
   if (empty($users)) {
     return array();
   }
-  
+
   $result = db_query('SELECT cfu.cf_uid, u.uid FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid IN (:cf_uids)', array(':cf_uids' => array_keys($users)));
-  
+
   foreach ($result as $record) {
     $uids[$record->cf_uid] = $record->uid;
   }
-  
+
   foreach ($users as $cf_uid => $user) {
     if (!isset($uids[$cf_uid])) {
       $account = culturefeed_get_or_create_user($cf_uid, $user->nick);
-      
+
       $uids[$cf_uid] = $account->uid;
     }
   }
@@ -155,13 +155,13 @@ function culturefeed_get_uids_for_cf_uids($users) {
 
 function culturefeed_get_uids_for_activities($activities) {
   $ids = array();
-  
+
   foreach ($activities as $activity) {
     $ids[$activity->userId] = new stdClass();
     $ids[$activity->userId]->nick = $activity->nick;
     $ids[$activity->userId]->cf_uid = $activity->userId;
   }
-  
+
   return culturefeed_get_uids_for_cf_uids($ids);
 }
 
@@ -173,13 +173,13 @@ function culturefeed_get_uids_for_users($users) {
     $ids[$user->id]->nick = $user->nick;
     $ids[$user->id]->cf_uid = $user->id;
   }
-  
+
   return culturefeed_get_uids_for_cf_uids($ids);
 }
 
 function culturefeed_get_nodes_for_activities($activities) {
   $result = array();
-  
+
   $nodes = array();
 
   foreach ($activities as $activity) {
@@ -195,12 +195,12 @@ function culturefeed_get_nodes_for_activities($activities) {
         break;
     }
   }
-  
+
   foreach ($nodes as $type => $type_nodes) {
     if (empty($type_nodes)) {
       continue;
     }
-    
+
     $cdbids = array_unique(array_keys($type_nodes));
 
     $tmp = culturefeed_get_nodes_for_cdbids($type, $cdbids);
@@ -213,14 +213,14 @@ function culturefeed_get_nodes_for_activities($activities) {
 
 function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   $nodes = array();
-  
+
   if (empty($cdbids)) {
     return $nodes;
   }
-  
+
   $query = array('cdbid' => implode(';', $cdbids), 'pagelength' => count($cdbids));
   $request = array('action' => 'list_summary', 'type' => $type, 'query' => $query);
-  
+
   $results = cnapi_get($request);
 
   if (isset($results['data']) && !empty($results['data'])) {
@@ -232,16 +232,46 @@ function culturefeed_get_nodes_for_cdbids($type, $cdbids) {
   return $nodes;
 }
 
-function culturefeed_activity_content_type_from_cnapi_type($type) {  
+function culturefeed_activity_content_type_from_cnapi_type($type) {
   $mapping = array(
     'actor' => CultureFeed_Activity::CONTENT_TYPE_ACTOR,
     'event' => CultureFeed_Activity::CONTENT_TYPE_EVENT,
     'production' => CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
   );
-  
+
   if (isset($mapping[$type])) {
     return $mapping[$type];
   }
-  
+
   return CultureFeed_Activity::CONTENT_TYPE_PAGE;
+}
+
+function culturefeed_get_consumer_shared_secret($application_key) {
+  $hook = 'culturefeed_consumer_shared_secret';
+
+  foreach (module_implements($hook) as $module) {
+    $function = $module . '_' . $hook;
+
+    if (function_exists($function)) {
+      $shared_secret = call_user_func_array($function, array($application_key));
+
+      if (isset($shared_secret)) {
+        return $shared_secret;
+      }
+    }
+  }
+
+  watchdog('culturefeed', 'The shared secret for Application key (@app_key) cannot be found!', array('@app_key' => $application_key), WATCHDOG_ERROR);
+
+  return NULL;
+}
+
+function culturefeed_is_connected($application_key = NULL) {
+  if (!isset($application_key)) {
+    $application_key = variable_get('culturefeed_api_application_key', '');
+  }
+
+  $account = DrupalCultureFeed::getLoggedInAccount();
+
+  return $account && isset($account->tokens) && !empty($account->tokens[$application_key]);
 }

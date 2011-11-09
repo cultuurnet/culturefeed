@@ -9,11 +9,11 @@ define('CULTUREFEED_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/');
  */
 function culturefeed_init() {
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
-  
+
   if (isset($_GET['closepopup'])) {
     drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
   }
-  
+
   drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => TRUE)), 'setting');
 }
 
@@ -32,7 +32,7 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/connect'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_connect',
-    'access callback' => 'user_is_anonymous',
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
   );
@@ -40,14 +40,14 @@ function culturefeed_menu() {
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_connect',
     'page arguments' => array(CultureFeed::AUTHORIZE_TYPE_REGISTER),
-    'access callback' => 'user_is_anonymous',
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
   );
   $items['culturefeed/oauth/authorize'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_authorize',
-    'access callback' => 'user_is_anonymous',
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
   );
