@@ -14,7 +14,7 @@ function culturefeed_ui_undo($activity_type, $content_type, $node_id) {
   
   cache_clear_all('*', 'cache_page', TRUE);
   
-  if ($type == 'page') {
+  if ($content_type == 'page') {
     drupal_goto('node/' . $node_id);
   }
   else {
