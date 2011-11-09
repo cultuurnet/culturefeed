@@ -121,7 +121,7 @@ function culturefeed_ui_menu() {
   $items['culturefeed/do/%/%/%'] = array(
     'title' => 'Do activity',
     'description' => 'Do activity',
-    'page callback' => 'culturefeed_ui_do',
+    'page callback' => 'culturefeed_ui_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -130,7 +130,7 @@ function culturefeed_ui_menu() {
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title' => 'Do activity',
     'description' => 'Do activity',
-    'page callback' => 'culturefeed_ui_do',
+    'page callback' => 'culturefeed_ui_page_do',
     'page arguments' => array(2, 3, 4, FALSE),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -139,7 +139,7 @@ function culturefeed_ui_menu() {
   $items['culturefeed/undo/%/%/%'] = array(
     'title' => 'Unlike',
     'description' => 'Unline',
-    'page callback' => 'culturefeed_ui_undo',
+    'page callback' => 'culturefeed_ui_page_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -159,11 +159,11 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile',
     ),
     'culturefeed_ui_profile_box' => array(
-      'variables' => array('nick' => '', 'picture' => '', 'url_profile' => ''),
+      'variables' => array('account' => NULL),
       'template' => 'culturefeed-ui-profile-box',
     ),
     'culturefeed_ui_most_active_user' => array(
-      'variables' => array('account' => null, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES, 'sort_value' => 0),
+      'variables' => array('account' => null, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
       'template' => 'culturefeed-ui-most-active-user',
     ),
     'culturefeed_ui_connect' => array(

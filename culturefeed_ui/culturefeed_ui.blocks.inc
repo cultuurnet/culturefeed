@@ -1,19 +1,23 @@
 <?php
 
+function culturefeed_ui_block_is_visible_user_liked_locations() {
+  $account = menu_get_object('user');
+  
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return TRUE;
+  }
+  
+  return FALSE;
+}
+
 function culturefeed_ui_block_view_user_liked_locations() {
   global $user;
 
   $account = menu_get_object('user');
 
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
-    return;
-  }
-
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-  );
+  $query->type = CultureFeed_Activity::TYPE_LIKE;
   $query->userId = $account->culturefeed_uid;
   if ($user->uid == $account->uid) {
     $query->private = ($account->uid == $user->uid);
@@ -55,7 +59,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
 }
 
 function culturefeed_ui_block_view_mbox_confirmation_reminder() {
-  if (user_is_anonymous() || !DrupalCultureFeed::isCultureFeedUser()) {
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
   
@@ -64,6 +68,7 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
+    return;
   }
   
   if ($cf_account->mboxVerified) {
@@ -88,31 +93,20 @@ function culturefeed_ui_block_view_profile_box() {
     return;
   }
 
-  $nick = '';
-  $picture = '';
-  $url_profile = '';
-
-  if (!user_is_anonymous()) {
+  if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-    }
-
-    if (isset($cf_account)) {
-      $nick = $cf_account->nick;
-      $picture = $cf_account->depiction . '?maxwidth=20&maxheight=20&crop=auto';
-      $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
+      return;
     }
   }
 
   $block['subject'] = '';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_profile_box',
-    '#nick' => $nick,
-    '#picture' => $picture,
-    '#url_profile' => $url_profile,
+    '#account' => isset($cf_account) ? $cf_account : FALSE,
   );
 
   return $block;
@@ -152,8 +146,6 @@ function culturefeed_ui_block_view_most_active_user() {
     '#theme' => 'culturefeed_ui_most_active_user',
     '#account' => $account,
     '#sort' => $sort,
-    '#sort_value' => $account->sortValue,
-    '#url_view_all' => 'culturefeed/users/mostactive',
   );
 
   return $block;
@@ -186,7 +178,6 @@ function culturefeed_ui_block_view_top_events() {
     $items[] = cnapi_url_dp2dul($event['title'], $request);
   }
 
-  // @todo make this themeable
   $block['subject'] = 'Top events';
   $block['content'] = array(
     '#theme' => 'item_list',
@@ -205,12 +196,12 @@ function culturefeed_ui_block_cache_id_similar_users() {
 
 function culturefeed_ui_block_is_visible_similar_users() {
   $account = menu_get_object('user');
-
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
-    return FALSE;
+  
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return TRUE;
   }
   
-  return TRUE;
+  return FALSE;
 }
 
 function culturefeed_ui_block_view_similar_users() {
@@ -292,14 +283,20 @@ function culturefeed_ui_block_view_profile_menu() {
   return $block;
 }
 
+function culturefeed_ui_block_is_visible_user_activities() {
+  $account = menu_get_object('user');
+  
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return TRUE;
+  }
+  
+  return FALSE;
+}
+
 function culturefeed_ui_block_view_user_activities() {
   global $user;
 
   $account = menu_get_object('user');
-
-  if (!$account || !DrupalCultureFeed::isCultureFeedUser($account->uid) || !(arg(0) == 'user' && is_numeric(arg(1)) && !arg(2))) {
-    return;
-  }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = 50;

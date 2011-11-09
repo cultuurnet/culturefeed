@@ -61,9 +61,7 @@ class DrupalCultureFeed {
       return NULL;
     }
 
-    $account = self::getLoggedInAccount();
-
-    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser($account->culturefeed_uid, TRUE, TRUE);
+    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
 
     return self::$logged_in_user[$application_key];
   }
@@ -285,7 +283,7 @@ class DrupalCultureFeed {
     $userDidActivity = &drupal_static(__FUNCTION__, array());
     
     if (!$user) {
-      $user = self::getLoggedInAccount()->culturefeed_uid;
+      $user = self::getLoggedInUserId();
     }
 
     if (isset($userDidActivity[$type][$nodeId][$contentType][$user])) {
@@ -298,7 +296,7 @@ class DrupalCultureFeed {
     $query->type = $type;
     $query->nodeId = $nodeId;
     $query->contentType = $contentType;
-    $query->userId = self::getLoggedInAccount()->culturefeed_uid;
+    $query->userId = self::getLoggedInUserId();
     $query->private = TRUE;
     
     $activities = self::searchActivities($query);

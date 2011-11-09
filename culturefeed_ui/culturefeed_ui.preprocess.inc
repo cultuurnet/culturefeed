@@ -191,9 +191,14 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
   $variables['is_logged_in'] = !user_is_anonymous();
 
   if (!user_is_anonymous()) {
-    $variables['picture'] = theme('image', array('path' => $variables['picture']));
-    $variables['nick'] = l($variables['nick'], $variables['url_profile']);
-    $variables['link_profile'] = l('Mijn UiTid', $variables['url_profile']);
+    $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+    
+    $picture = $variables['account']->depiction . '?maxwidth=20&maxheight=20&crop=auto';
+    $variables['picture'] = theme('image', array('path' => $picture));
+
+    $variables['nick'] = l($variables['account']->nick, $url_profile);
+    
+    $variables['link_profile'] = l('Mijn UiTid', $url_profile);
   }
 
   $variables['link_logout'] = l('Afmelden', 'user/logout');
@@ -238,7 +243,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 
   $replace = array(
     '!nick' => l($account->nick, $url),
-    '!sort_value' => $variables['sort_value'],
+    '!sort_value' => $account->sortValue,
     '!type' => $type_text,
     '!uitslover' => l('UiTslover', 'culturefeed/users/mostactive'),
   );

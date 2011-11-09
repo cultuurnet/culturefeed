@@ -14,7 +14,7 @@ function culturefeed_init() {
     drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
   }
   
-  drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => TRUE)), 'setting');
+  drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => DrupalCultureFeed::isCultureFeedUser())), 'setting');
 }
 
 /**
