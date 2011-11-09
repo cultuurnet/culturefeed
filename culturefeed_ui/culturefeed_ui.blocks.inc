@@ -452,7 +452,7 @@ function _culturefeed_ui_block_view_users_activity($config) {
   
   if ($users->total > $max) {
     $content['more'] = array(
-      '#markup' => l($config['all_link_title'], 'culturefeed/users/likes/event/' . $id, array('attributes' => array('class' => 'all-link'))),
+      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $config['activity_type'] . '/event/' . $id, array('attributes' => array('class' => 'all-link'))),
     );
   }
   

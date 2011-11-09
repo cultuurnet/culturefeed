@@ -50,10 +50,12 @@ function culturefeed_ui_do($activity_type, $type, $id, $redirect = TRUE) {
     DrupalCultureFeed::createActivity($activity);
   }
   catch (Exception $e) {
-    $error = TRUE;
-    watchdog_exception('culturefeed_ui', $e);
+    if ($e->getCode() != 421) {
+      $error = TRUE;
+      watchdog_exception('culturefeed_ui', $e);
+    }
   }
-  
+
   cache_clear_all('*', 'cache_page', TRUE);
   
   if ($redirect) {
@@ -200,22 +202,49 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto('<front>');
 }
 
-function culturefeed_ui_page_users_likes($type, $id) {
-  if (!in_array($type, array('actor', 'event', 'production', 'page'))) {
+function culturefeed_ui_page_users_activity($type, $content_type, $id) {
+  if (!in_array($content_type, array('actor', 'event', 'production', 'page'))) {
     drupal_not_found();
+  }
+  
+  if ($content_type == 'page') {
+    $node = node_load($id);
+    $page_title = $node->title;
+    $page_link = array('path' => 'node/' . $node->nid);
+  }
+  else {
+    $request = array('action' => 'detail', 'type' => $content_type, 'query' => array('cdbid' => $id));
+    $object = cnapi_get($request);
+
+    $page_title = $object['detail']['nl']['title'];
+    
+    $page_link = cnapi_url_dp2dua(array($content_type => $id, 'title' => $page_title));
+  }
+  
+  switch ($type) {
+    case CultureFeed_Activity::TYPE_LIKE:
+      $title = sprintf('Zijn vonden "%s" tof.', truncate_utf8($page_title, 20, TRUE, TRUE));
+      break;
+    case CultureFeed_Activity::TYPE_IK_GA:
+      $title = sprintf('Zijn gaan naar "%s".', truncate_utf8($page_title, 20, TRUE, TRUE));
+      break;
+  }
+  
+  if ($title) {
+    drupal_set_title($title);
   }
   
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
   
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = CultureFeed_Activity::TYPE_LIKE;
+  $query->type = $type;
   $query->nodeId = $id;
 
-	$activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
+	$activity_content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
 
   try {
-    $users = DrupalCultureFeed::searchActivityUsers($id, CultureFeed_Activity::TYPE_LIKE, $activity_content_type);
+    $users = DrupalCultureFeed::searchActivityUsers($id, $type, $activity_content_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -231,6 +260,9 @@ function culturefeed_ui_page_users_likes($type, $id) {
   }
 
   return array(
+    array(
+      '#markup' => l('Terug naar ' . $page_title, $page_link['path']),
+    ),
     array(
       '#theme' => 'item_list',
       '#items' => $items,
