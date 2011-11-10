@@ -286,31 +286,38 @@ class DrupalCultureFeed {
       $user = self::getLoggedInUserId();
     }
 
-    if (isset($userDidActivity[$type][$nodeId][$contentType][$user])) {
-      return $userDidActivity[$type][$nodeId][$contentType][$user];
+    if (!isset($userDidActivity[$nodeId][$contentType][$user])) {
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->type = array(
+        CultureFeed_Activity::TYPE_VIEW,
+        CultureFeed_Activity::TYPE_DETAIL,
+        CultureFeed_Activity::TYPE_LIKE,
+        CultureFeed_Activity::TYPE_MAIL,
+        CultureFeed_Activity::TYPE_PRINT,
+        CultureFeed_Activity::TYPE_FACEBOOK,
+        CultureFeed_Activity::TYPE_TWITTER,
+        CultureFeed_Activity::TYPE_IK_GA,
+      );
+      $query->nodeId = $nodeId;
+      $query->contentType = $contentType;
+      $query->userId = self::getLoggedInUserId();
+      $query->private = TRUE;
+      
+      $activities = self::searchActivities($query);
+
+      $userDidActivity[$nodeId][$contentType][$user] = $activities;
     }
- 
-    $result = FALSE;
     
-    $query = new CultureFeed_SearchActivitiesQuery();
-    $query->type = $type;
-    $query->nodeId = $nodeId;
-    $query->contentType = $contentType;
-    $query->userId = self::getLoggedInUserId();
-    $query->private = TRUE;
-    
-    $activities = self::searchActivities($query);
+    $activities = $userDidActivity[$nodeId][$contentType][$user];
     
     if (!empty($activities->objects)) {
       foreach ($activities->objects as $activity) {
         if ($activity->type == $type) {
-          $result = TRUE;
+          return TRUE;
         }
       }
     }
     
-    $userDidActivity[$type][$nodeId][$contentType][$user] = $result;
-    
-    return $result;
+    return FALSE;
   }
 }
