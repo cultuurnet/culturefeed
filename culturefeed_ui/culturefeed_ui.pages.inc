@@ -9,6 +9,7 @@ function culturefeed_ui_page_recommendations() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden. Probeer het later opnieuw.', 'error');
   }
   
   $cdbids = array();
