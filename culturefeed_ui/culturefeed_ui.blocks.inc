@@ -492,6 +492,10 @@ function _culturefeed_ui_block_view_users_activity($config) {
   return $block;
 }
 
+function culturefeed_ui_block_cache_expires_related_events() {
+  return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_related_events_block_cache_expires', 86400);
+}
+
 function culturefeed_ui_block_cache_id_related_events() {
   $request = cnapi_ui_get_active_request();
   
