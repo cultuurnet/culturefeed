@@ -88,7 +88,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         print '<html>';
         print '<head>';
         print '<title>You should not see this</title>';
-        print '<script type="text/javascript">window.opener.location.reload(); window.close();</script>';
+        print '<script type="text/javascript">try { window.opener.location.reload(); } catch (err) { } window.close();</script>';
         print '</head>';
         print '<body>';
         print '</body>';
