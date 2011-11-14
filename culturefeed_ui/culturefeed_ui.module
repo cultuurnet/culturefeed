@@ -2,6 +2,7 @@
 
 require_once('culturefeed_ui.helpers.inc');
 require_once('culturefeed_ui.preprocess.inc');
+require_once('culturefeed_ui.forms.inc');
 
 /**
  * Implements hook_menu().
@@ -17,7 +18,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/profile/edit'] = array(
     'title' => 'Edit profile',
-    'description' => 'Change Culture Feed profile',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_profile_edit_form'),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -26,7 +26,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/account/edit'] = array(
     'title' => 'Edit account',
-    'description' => 'Change Culture Feed account',
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -34,7 +33,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/mboxverify/resend'] = array(
     'title' => 'Resend e-mail confirmation link',
-    'description' => 'Resend e-mail confirmation link',
     'page callback' => 'culturefeed_ui_page_mboxverify_resend',
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -42,7 +40,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/search'] = array(
     'title' => 'Search users',
-    'description' => 'Search users',
     'page callback' => 'culturefeed_ui_page_search_users',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -51,7 +48,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/activities/recent'] = array(
     'title' => 'Recent activities',
-    'description' => 'Recent activities',
     'page callback' => 'culturefeed_ui_page_recent_activities',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -59,7 +55,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers'] = array(
     'title' => 'Connected service consumers',
-    'description' => 'Connected service consumers',
     'page callback' => 'culturefeed_ui_page_serviceconsumers',
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -67,7 +62,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers/revoke/%'] = array(
     'title' => 'Revoke service consumer',
-    'description' => 'Revoke service consumer',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_serviceconsumers_revoke_form', 3),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -76,7 +70,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/onlineaccounts/delete/%/%'] = array(
     'title' => 'Delete online account',
-    'description' => 'Delete online account',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_online_account_delete_form', 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -85,7 +78,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/mostactive'] = array(
     'title' => 'Most active users',
-    'description' => 'Most active users',
     'page callback' => 'culturefeed_ui_page_most_active_users',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -94,7 +86,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/activity/%/%/%'] = array(
     'title' => 'Users who did activity',
-    'description' => 'Users who did activity',
     'page callback' => 'culturefeed_ui_page_users_activity',
     'page arguments' => array(3, 4, 5),
     'access arguments' => array('access content'),
@@ -103,7 +94,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/recommendations'] = array(
     'title' => 'Recommendations',
-    'description' => 'Recommendations',
     'page callback' => 'culturefeed_ui_page_recommendations',
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -111,7 +101,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/recommendations/%/%/%/%'] = array(
     'title' => 'Delete recommendation',
-    'description' => 'Delete recommendation',
     'page callback' => 'culturefeed_ui_recommendations_evaluate',
     'page arguments' => array(2, 3, 4, 5),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -120,7 +109,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/do/%/%/%'] = array(
     'title' => 'Do activity',
-    'description' => 'Do activity',
     'page callback' => 'culturefeed_ui_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -129,7 +117,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title' => 'Do activity',
-    'description' => 'Do activity',
     'page callback' => 'culturefeed_ui_page_do',
     'page arguments' => array(2, 3, 4, FALSE),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -138,7 +125,6 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/undo/%/%/%'] = array(
     'title' => 'Unlike',
-    'description' => 'Unline',
     'page callback' => 'culturefeed_ui_page_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -373,33 +359,6 @@ function culturefeed_ui_user_view($account) {
     '#theme' => 'culturefeed_ui_profile',
     '#user' => $cf_account,
   );
-}
-
-function culturefeed_ui_search_users_form() {
-  $form = array();
-
-  $form['name'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Naam',
-    '#size' => 20,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Zoeken',
-  );
-
-  return $form;
-}
-
-function culturefeed_ui_search_users_form_submit($form, &$form_state) {
-  $values = $form_state['values'];
-
-  $form_state['redirect'] = 'culturefeed/users/search' . (!empty($values['name']) ? '/' . trim($values['name']) : '');
-}
-
-function culturefeed_ui_is_culturefeed_user($uid = NULL) {
-  return DrupalCultureFeed::isCultureFeedUser($uid);
 }
 
 /**
