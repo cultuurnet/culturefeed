@@ -112,7 +112,7 @@ function culturefeed_ui_menu() {
   $items['culturefeed/recommendations/%/%/%/%'] = array(
     'title' => 'Delete recommendation',
     'description' => 'Delete recommendation',
-    'page callback' => 'culturefeed_ui_recommendations_delete',
+    'page callback' => 'culturefeed_ui_recommendations_evaluate',
     'page arguments' => array(2, 3, 4, 5),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -258,6 +258,9 @@ function culturefeed_ui_block_info() {
 
   $block['related_events']['info'] = t('Related events');
   $block['related_events']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  $block['recommendations']['info'] = t('Recommendations');
+  $block['recommendations']['cache'] = DRUPAL_NO_CACHE;
 
   return $block;
 }

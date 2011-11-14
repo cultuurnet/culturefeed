@@ -1,5 +1,15 @@
 <?php
 
+function culturefeed_ui_block_view_recommendations() {
+  $block['subject'] = 'Aanbevolen voor jou';
+  $block['content'] = array(
+    'recommendations' => culturefeed_ui_recommendations_list(5),
+    'more' => array('#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations')),
+  );
+
+  return $block;
+}
+
 function culturefeed_ui_block_is_visible_user_liked_locations() {
   $account = menu_get_object('user');
   

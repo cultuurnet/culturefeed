@@ -1,5 +1,65 @@
 <?php
 
+function culturefeed_ui_recommendations_list($total, $zip = NULL) {
+  $query = new CultureFeed_RecommendationsQuery();
+  $query->max = $total;
+  
+  if ($zip) {
+    $query->zip = $zip;
+  }
+  
+  try {
+    $recommendations = DrupalCultureFeed::getRecommendationsForUser(DrupalCultureFeed::getLoggedInUserId(), $query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return FALSE;
+  }
+
+  $items = array();
+  
+  foreach ($recommendations as $recommendation) {   
+    $cdbid = $recommendation->itemid;
+       
+    $positive = array(
+      '#type' => 'link',
+      '#title' => 'Vind ik leuk',
+      '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'recommendation-' . $recommendation->id,
+      ),
+    );
+      
+    $negative = array(
+      '#type' => 'link',
+      '#title' => 'Verwijderen',
+      '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'recommendation-' . $recommendation->id,
+      ),
+    );
+    
+    $item = '';
+    $item .= theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'heading_level' => 3));
+    $item .= drupal_render($negative) . '<br />';
+    $item .= drupal_render($positive) . '<br /><br /><br />';
+
+    $items[] = array(
+      'data' => $item,
+      'id' => 'recommendation-' . $recommendation->id,
+    );
+  }
+  
+  return array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+}
+
 function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
   $user_id = DrupalCultureFeed::getLoggedInUserId();
   $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);

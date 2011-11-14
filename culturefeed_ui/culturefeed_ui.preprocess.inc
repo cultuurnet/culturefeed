@@ -263,6 +263,9 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   $request_detail = array('event' => $item->id, 'title' => $item->title);
   $object_url = cnapi_url_dp2dua($request_detail);
   
+  // id
+  $variables['id'] = $variables['event']->itemid;
+  
   // title
   $variables['title'] = l($item->title, $object_url['path'], $object_url['options']);
   
