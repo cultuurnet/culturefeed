@@ -1,6 +1,10 @@
 <?php
 
 function culturefeed_ui_block_view_recommendations() {
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+  
   $block['subject'] = 'Aanbevolen voor jou';
   $block['content'] = array(
     'recommendations' => culturefeed_ui_recommendations_list(5),
