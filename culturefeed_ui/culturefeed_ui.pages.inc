@@ -1,7 +1,7 @@
 <?php
 
 function culturefeed_ui_page_recommendations($zip) {
-  if (!is_numeric($zip) && strlen($zip) != 4) {
+  if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
     drupal_not_found();
   }
   

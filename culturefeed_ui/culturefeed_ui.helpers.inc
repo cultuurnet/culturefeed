@@ -7,7 +7,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   if ($zip) {
     $query->zip = $zip;
   }
-  
+
   try {
     $recommendations = DrupalCultureFeed::getRecommendationsForUser(DrupalCultureFeed::getLoggedInUserId(), $query);
   }
