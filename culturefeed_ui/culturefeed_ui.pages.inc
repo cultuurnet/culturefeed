@@ -237,7 +237,14 @@ function culturefeed_ui_page_recent_activities() {
     CultureFeed_Activity::TYPE_IK_GA
   );
 
-  $activities = DrupalCultureFeed::searchActivities($query);
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    return;
+  }
+  
 
   pager_default_initialize($activities->total, $pagelength);
 
