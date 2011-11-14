@@ -1,7 +1,12 @@
 <?php
 
 function culturefeed_ui_page_recommendations($zip) {
-  return culturefeed_ui_recommendations_list(100);
+  $recommendations = culturefeed_ui_recommendations_list(100);
+  
+  return array(
+    'filter' => drupal_get_form('culturefeed_ui_recommendations_filter_form'),
+    'recommendations' => $recommendations,
+  );
 }
 
 function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid = NULL, $type = 'ajax') {
