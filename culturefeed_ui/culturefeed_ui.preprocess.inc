@@ -252,6 +252,22 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 }
 
 /**
+ * Preprocess variables for culturefeed-ui-event-recommendation.tpl.php.
+ *
+ * @see culturefeed-ui-event-recommendation.tpl.php
+ */
+function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
+  $item = $variables['event']->recommendationItem;
+  
+  $variables['title'] = !empty($item->title) ? $item->title : '';
+  $variables['date'] = !empty($item->from) ? $item->from : '';
+  if (!empty($item->from) && !empty($item->from)) {
+    $variables['date'] .= ' tot ' . $item->to;
+  }
+  $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
+}
+
+/**
  * Preprocess variables for culturefeed-ui-related-events.tpl.php.
  *
  * @see culturefeed-ui-related-events.tpl.php
@@ -261,10 +277,10 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   $items = array();
   
   foreach ($variables['events'] as $event_info) {
-    $items[] = theme('cnapi_ui_event_mini_summary', array('event' => $event_info, 'heading_level' => 3));
+    $items[] = theme('culturefeed_ui_event_recommendation', array('event' => $event_info, 'heading_level' => 3));
   }
   
-  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-mini-summary-list')));
+  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-recommendation-list')));
   
   // links
   $links = array();

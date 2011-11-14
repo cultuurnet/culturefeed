@@ -550,19 +550,11 @@ function culturefeed_ui_block_view_related_events() {
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
-  
-  $cdbid = array();
-  
-  foreach ($recommendations as $recommendation) {
-    $cdbids[] = $recommendation->itemid;
-  }
-  
-  $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
 
   $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_related_events', 
-    '#events' => $events,
+    '#events' => $recommendations,
     '#cityid' => $cityid,
     '#headings' => $valid_headings, 
   );

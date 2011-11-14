@@ -206,6 +206,10 @@ function culturefeed_ui_theme() {
       'variables' => array('type' => '', 'name' => '', 'privacy_checkbox' => '', 'connect_link' => ''),
       'template' => 'culturefeed-ui-online-account',
     ),
+    'culturefeed_ui_event_recommendation' => array(
+      'variables' => array('event' => '', 'heading_level' => ''),
+      'template' => 'culturefeed-ui-event-recommendation',
+    ),
   );
 }
 
