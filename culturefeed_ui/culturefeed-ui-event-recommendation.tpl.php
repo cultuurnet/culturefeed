@@ -5,5 +5,3 @@
 <p><?php print $location ?></p>
 
 <p><?php print $more ?></p>
-
-<p><?php print $id ?></p>
