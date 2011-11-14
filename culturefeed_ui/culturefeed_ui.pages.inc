@@ -2,7 +2,7 @@
 
 function culturefeed_ui_page_recommendations() {
   $query = new CultureFeed_RecommendationsQuery();
-  $query->max = 20;
+  $query->max = 100;
   
   try {
     $recommendations = DrupalCultureFeed::getRecommendationsForUser(DrupalCultureFeed::getLoggedInUserId(), $query);
@@ -12,77 +12,115 @@ function culturefeed_ui_page_recommendations() {
     drupal_set_message('Er is een fout opgetreden. Probeer het later opnieuw.', 'error');
   }
   
-  $cdbids = array();
+  $items = array();
   
-  foreach ($recommendations as $recommendation) {
-    $cdbids[] = $recommendation->itemid;
-  }
-  
-  $events = culturefeed_get_nodes_for_cdbids('event', $cdbids);
-  
-  $header = array('name', array('data' => 'link', 'colspan' => 2));
-  
-  $rows = array();
-  
-  foreach ($recommendations as $recommendation) {
-    $event = isset($events[$recommendation->itemid]) ? $events[$recommendation->itemid] : NULL;
-      
+  foreach ($recommendations as $recommendation) {   
+    $cdbid = $recommendation->itemid;
+    $title = $recommendation->recommendationItem->title;
+    $from = $recommendation->recommendationItem->from;
+    $to = $recommendation->recommendationItem->to;
+    $location = $recommendation->recommendationItem->location_simple;
+       
     $positive = array(
       '#type' => 'link',
-      '#title' => 'positive',
-      '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/nojs',
+      '#title' => 'Vind ik leuk',
+      '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id),
       '#ajax' => array(
-        'wrapper' => 'recommendations-list',
-        'method' => 'replace',
+        'wrapper' => 'recommendation-' . $recommendation->id,
+        //'method' => 'replace',
       ),
     );
       
     $negative = array(
       '#type' => 'link',
-      '#title' => 'negative',
-      '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/nojs',
+      '#title' => 'Verwijderen',
+      '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id),
       '#ajax' => array(
-        'wrapper' => 'recommendations-list',
-        'method' => 'replace',
+        'wrapper' => 'recommendation-' . $recommendation->id,
+        //'method' => 'replace',
       ),
     );
     
-    $title = 'unknown';
-    if (isset($event)) {
-      $title = $event['title'] . time();
-    }
-    
-    $rows[] = array($title, drupal_render($negative), drupal_render($positive));
+    $item = '';
+    $item .= '<strong>' . $recommendation->id . $title . '</strong><br />';
+    $item .= $from . ' - ' . $to . '<br />';
+    $item .= $location . '<br />';
+    $item .= drupal_render($negative) . '<br />';
+    $item .= drupal_render($positive) . '<br /><br /><br />';
+
+    $items[] = array(
+      'data' => $item,
+      'id' => 'recommendation-' . $recommendation->id,
+    );
   }
   
   return array(
-    '#theme' => 'table',
-    '#header' => $header,
-    '#rows' => $rows,
-    '#prefix' => '<div id="recommendations-list">',
-    '#suffix' => '</div>',
+    '#theme' => 'item_list',
+    '#items' => $items,
   );
 }
 
-function culturefeed_ui_recommendations_delete($evaluation, $id = NULL, $type = 'ajax') {
-
-  $evaluation = $evaluation == 'negative' ? CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE : CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
-
+function culturefeed_ui_recommendations_delete($evaluation, $id = NULL, $cdbid = NULL, $type = 'ajax') {
   if ($type == 'ajax') {
+    if ($evaluation == 'unlike') {
+      _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
+      
+      try {
+        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_ui', $e);
+      }
+      
+        $commands = array();
+        
+        $commands[] = ajax_command_remove('#recommendation-' . $id);
+        $page = array('#type' => 'ajax', '#commands' => $commands);
+        ajax_deliver($page);
+    }
+    if (in_array($evaluation, array('positive', 'negative'))) {
+      $evaluation = $evaluation == 'negative' ? CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE : CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
     
-    try {
-      DrupalCultureFeed::evaluateRecommendation($id, $evaluation);
+      try {
+        DrupalCultureFeed::evaluateRecommendation($id, $evaluation);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_ui', $e);
+      }
+        
+      if ($evaluation == CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE) {
+        //$output = drupal_render(culturefeed_ui_page_recommendations());
+        $commands = array();
+        
+        $commands[] = ajax_command_remove('#recommendation-' . $id);
+        $page = array('#type' => 'ajax', '#commands' => $commands);
+        ajax_deliver($page);
+      }
+      else {
+        _culturefeed_ui_do(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
+        
+        $commands = array();
+        
+        $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
+        
+        $unlike = array(
+          '#type' => 'link',
+          '#title' => 'unlike',
+          '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $cdbid . '/nojs',
+          '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation->id),
+          '#ajax' => array(
+            'wrapper' => 'recommendation-' . $recommendation->id,
+            //'method' => 'replace',
+          ),
+        );
+        
+        $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
+        $page = array('#type' => 'ajax', '#commands' => $commands);
+        ajax_deliver($page);
+      }
     }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-    }
-
-    $output = drupal_render(culturefeed_ui_page_recommendations());
-    $commands = array();
-
-    $commands[] = ajax_command_replace('#recommendations-list', $output);
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
   }
   else {
     $output = t("This is some content delivered via a page load.");
@@ -113,18 +151,11 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
 }
 
 function culturefeed_ui_page_undo($activity_type, $content_type, $node_id) {
-  $user_id = DrupalCultureFeed::getLoggedInUserId();
-  $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
+  _culturefeed_ui_undo($activity_type, $content_type, $node_id);
   
-  try {
-    DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
+  if ($error) {
+    drupal_set_message('Actie kon niet ongedaan gemaakt worden.');
   }
-  catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
-    watchdog_exception('culturefeed_ui', $e);
-  }
-  
-  cache_clear_all('*', 'cache_page', TRUE);
   
   culturefeed_ui_activity_based_goto($content_type, $node_id);
 }

@@ -1,5 +1,24 @@
 <?php
 
+function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
+  $user_id = DrupalCultureFeed::getLoggedInUserId();
+  $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
+  
+  $error = FALSE;
+  
+  try {
+    DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
+  }
+  catch (Exception $e) {
+    $error = TRUE;
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  cache_clear_all('*', 'cache_page', TRUE);
+  
+  return $error;
+}
+
 function _culturefeed_ui_do($activity_type, $type, $id) {
   $activity = new CultureFeed_Activity();
   $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);

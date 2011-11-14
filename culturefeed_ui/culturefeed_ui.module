@@ -109,11 +109,11 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/recommendations/%/%/%'] = array(
+  $items['culturefeed/recommendations/%/%/%/%'] = array(
     'title' => 'Delete recommendation',
     'description' => 'Delete recommendation',
     'page callback' => 'culturefeed_ui_recommendations_delete',
-    'page arguments' => array(2, 3, 4),
+    'page arguments' => array(2, 3, 4, 5),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
