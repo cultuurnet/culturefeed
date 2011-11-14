@@ -1,7 +1,11 @@
 <?php
 
 function culturefeed_ui_page_recommendations($zip) {
-  $recommendations = culturefeed_ui_recommendations_list(100);
+  if (!is_numeric($zip) && strlen($zip) != 4) {
+    drupal_not_found();
+  }
+  
+  $recommendations = culturefeed_ui_recommendations_list(100, $zip);
   
   return array(
     'filter' => drupal_get_form('culturefeed_ui_recommendations_filter_form'),
