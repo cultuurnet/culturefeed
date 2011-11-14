@@ -25,7 +25,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
       '#type' => 'link',
       '#title' => 'Vind ik leuk',
       '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id),
+      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id, 'class' => 'like-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
         'wrapper' => 'recommendation-' . $recommendation->id,
@@ -36,7 +36,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
       '#type' => 'link',
       '#title' => 'Verwijderen',
       '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id),
+      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id, 'class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
         'wrapper' => 'recommendation-' . $recommendation->id,

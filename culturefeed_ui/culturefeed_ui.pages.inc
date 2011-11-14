@@ -69,7 +69,7 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
           '#type' => 'link',
           '#title' => 'Ik vind dit niet meer leuk',
           '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $cdbid . '/nojs',
-          '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation->id),
+          '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation->id, 'class' => 'unlike-link'),
           '#options' => array('query' => drupal_get_destination()),
           '#ajax' => array(
             'wrapper' => 'recommendation-' . $recommendation->id,
