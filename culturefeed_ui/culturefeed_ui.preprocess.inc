@@ -258,13 +258,25 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
  */
 function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   $item = $variables['event']->recommendationItem;
+
+  // object_url
+  $request_detail = array('event' => $item->id, 'title' => $item->title);
+  $object_url = cnapi_url_dp2dua($request_detail);
   
-  $variables['title'] = !empty($item->title) ? $item->title : '';
+  // title
+  $variables['title'] = l($item->title, $object_url['path'], $object_url['options']);
+  
+  // date
   $variables['date'] = !empty($item->from) ? $item->from : '';
   if (!empty($item->from) && !empty($item->from)) {
     $variables['date'] .= ' tot ' . $item->to;
   }
+  
+  // location
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
+  
+  // more
+  $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
 }
 
 /**
