@@ -565,7 +565,7 @@ function culturefeed_ui_online_accounts_form() {
       );
       $form['accounts'][$account_type]['publish'] = array(
         '#type' => 'checkbox',
-        '#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $account_type . '.' . l('Gebruiksvoorwarden', 'node/2512'),
+        '#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $account_type . '. ' . l('Gebruiksvoorwarden', 'node/2512'),
         '#default_value' => $account->publishActivities,
       );
       $form['accounts'][$account_type]['delete_link'] = array(
