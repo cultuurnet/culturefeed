@@ -1,5 +1,65 @@
 <?php
 
+function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
+  $error = FALSE;
+  
+  try {
+    DrupalCultureFeed::updateActivity($id, $privacy == 1);
+  }
+  catch(Exception $e) {
+    $error = TRUE;
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'ajax') {
+    
+    $privacy = array(
+      '#type' => 'link',
+      '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
+      '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
+      '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'activity-' . $id,
+      ),
+    );
+    
+    $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto();
+  }
+}
+
+function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
+  $error = FALSE;
+  
+  try {
+    DrupalCultureFeed::deleteActivity($id);
+  }
+  catch(Exception $e) {
+    $error = TRUE;
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'ajax') {
+    $commands = array();
+    
+    if (!$error) {
+      $commands[] = ajax_command_remove('#activity-' . $id);
+    }
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto();
+  }
+}
+
 function culturefeed_ui_page_activities() {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -27,7 +87,6 @@ function culturefeed_ui_page_activities() {
   $rows = array();
   
   foreach ($activities->objects as $activity) {
-
     $delete = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
@@ -35,16 +94,57 @@ function culturefeed_ui_page_activities() {
       '#attributes' => array('class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'activity-' . $recommendation->id,
+        'wrapper' => 'activity-' . $activity->id,
+      ),
+    );
+
+    $privacy = array(
+      '#type' => 'link',
+      '#title' => $activity->private ? 'Privé' : 'Publiek',
+      '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1')  . '/nojs',
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'activity-' . $activity->id,
       ),
     );
     
+    $type = '';
+    switch ($activity->type) {
+      case CultureFeed_Activity::TYPE_VIEW:
+        $type = 'bekeken';
+        break;
+      case CultureFeed_Activity::TYPE_DETAIL:
+        $type = 'bekeken';
+        break;
+      case CultureFeed_Activity::TYPE_LIKE:
+        $type = 'vind ik leuk';
+        break;
+      case CultureFeed_Activity::TYPE_MAIL:
+        $type = 'gemaild';
+        break;
+      case CultureFeed_Activity::TYPE_PRINT:
+        $type = 'geprint';
+        break;
+      case CultureFeed_Activity::TYPE_FACEBOOK:
+        $type = 'gedeeld op Facebook';
+        break;
+      case CultureFeed_Activity::TYPE_TWITTER:
+        $type = 'gedeeld op Twitter';
+        break;
+      case CultureFeed_Activity::TYPE_IK_GA:
+        $type = 'ga hier naartoe';
+        break;
+    }
+
     $event = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
         isset($event) ? theme('cnapi_ui_event_mini_summary', array('event' => $event)) : $activity->nodeTitle,
-        format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden op ' . $activity->createdVia,
+        $type,
+        format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden <br />op ' . $activity->createdVia,
+        drupal_render($privacy),
         drupal_render($delete),
       ),
     );
@@ -52,7 +152,8 @@ function culturefeed_ui_page_activities() {
   
   $activities = array(
     '#theme' => 'table',
-    '#rows' => $rows
+    '#rows' => $rows,
+    '#empty' => 'Je hebt nog geen acties gedaan.',
   );
   
   return array(
@@ -132,10 +233,10 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
           '#type' => 'link',
           '#title' => 'Ik vind dit niet meer leuk',
           '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $cdbid . '/nojs',
-          '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation->id, 'class' => 'unlike-link'),
+          '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
           '#options' => array('query' => drupal_get_destination()),
           '#ajax' => array(
-            'wrapper' => 'recommendation-' . $recommendation->id,
+            'wrapper' => 'recommendation-' . $id,
           ),
         );
 

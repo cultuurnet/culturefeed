@@ -138,6 +138,22 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/activity/delete/%/%'] = array(
+    'title' => 'Delete activity',
+    'page callback' => 'culturefeed_ui_page_activity_delete',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/activity/privacy/%/%/%'] = array(
+    'title' => 'Activity privacy',
+    'page callback' => 'culturefeed_ui_page_activity_privacy',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }
