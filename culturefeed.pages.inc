@@ -3,16 +3,20 @@
 function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $application_key = NULL) {
   global $conf;
 
+  // We don't want to cache this type of page.
   $conf['cache'] = FALSE;
 
+  // If an application key was passed, fetch the shared secret for it.
   $shared_secret = NULL;
 
   if (isset($application_key)) {
     $shared_secret = culturefeed_get_consumer_shared_secret($application_key);
   }
 
+  // Load the consumer instance.
   $cf = DrupalCultureFeed::getConsumerInstance($application_key, $shared_secret);
 
+  // Construct the callback url.
   $options = array('absolute' => TRUE);
 
   if (isset($_GET['destination'])) {
@@ -26,6 +30,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
 
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
 
+  // Fetch the request token.
   try {
     $token = $cf->getRequestToken($callback_url);
   }
@@ -37,23 +42,29 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   }
 
   if (!$token) {
-    return;
+    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    drupal_goto('<front>');
   }
 
+  // Save the token and secret in the session.
   $_SESSION['oauth_token'] = $token['oauth_token'];
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
+  // Fetch the authorisation url...
   $auth_url = $cf->getUrlAuthorize($token, '', $type);
 
+  // ... and redirect the user to it.
   drupal_goto($auth_url);
 }
 
 function culturefeed_oauth_authorize($application_key = NULL) {
   global $conf;
 
+  // We don't want to cache this type of page.
   $conf['cache'] = FALSE;
 
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
+    // If an application key was passed, fetch the shared secret for it.
     $shared_secret = NULL;
 
     if (isset($application_key)) {

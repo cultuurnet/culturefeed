@@ -29,7 +29,6 @@ function culturefeed_ui_page_activities($type = NULL) {
     return;
   }
 
-
   pager_default_initialize($activities->total, $pagelength);
   
   $events = culturefeed_get_nodes_for_activities($activities->objects);

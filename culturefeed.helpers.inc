@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fetch an unique username for the given Culture Feed user id.
+ * Fetch a unique username for the given Culture Feed user id.
  */
 function culturefeed_unique_username($cf_uid, $nick) {
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
@@ -21,6 +21,14 @@ function culturefeed_unique_username($cf_uid, $nick) {
   return $name;
 }
 
+/**
+ * Create a Drupal user account with a given username.
+ *
+ * @param string $name 
+ *   The username for the account.
+ * @return stdClass
+ *   The user account.
+ */
 function culturefeed_create_user($name) {
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
@@ -40,7 +48,7 @@ function culturefeed_create_user($name) {
 }
 
 /**
- * Try to get load a user account for a certain Culture Feed User ID. If it doesn't exist, create it and return it.
+ * Try to load a user account for a certain Culture Feed User ID. If it doesn't exist, create it and return it.
  *
  * @param integer $cf_uid
  *   To CultureFeed User ID of the user to load.
@@ -129,6 +137,16 @@ function culturefeed_get_uid_for_cf_uid($cf_uid, $nick) {
   return reset(culturefeed_get_uids_for_cf_uids(array($cf_uid => $user)));
 }
 
+/**
+ * Get the Drupal user ids for a list of CultureFeed user ids.
+ *
+ * If a user account does not exist locally for a given user id, a new account is created for it.
+ *
+ * @param array $users
+ * @return array
+ *   An associative array where the keys are the passed CultureFeed user ids.
+ *   The values are the matching Drupal user id for each CultureFeed user id.
+ */
 function culturefeed_get_uids_for_cf_uids($users) {
   $uids = array();
 
