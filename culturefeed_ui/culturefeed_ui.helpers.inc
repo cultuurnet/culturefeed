@@ -43,10 +43,8 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
       ),
     );
 
-    $item = '';
-    $item .= theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'heading_level' => 3));
-    $item .= drupal_render($negative) . '<br />';
-    $item .= drupal_render($positive) . '<br /><br /><br />';
+    $links = array('like' => drupal_render($positive), 'remove' => drupal_render($negative));
+    $item = theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'links' => $links, 'heading_level' => 3));
 
     $items[] = array(
       'data' => $item,

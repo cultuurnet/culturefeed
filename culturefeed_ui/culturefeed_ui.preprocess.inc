@@ -274,6 +274,12 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   if (!empty($item->from) && !empty($item->from)) {
     $variables['date'] .= ' tot ' . $item->to;
   }
+  
+  // like
+  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
+  
+  // remove
+  $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
 
   // location
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';

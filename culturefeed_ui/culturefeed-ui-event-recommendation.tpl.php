@@ -5,3 +5,11 @@
 <p><?php print $location ?></p>
 
 <p><?php print $more ?></p>
+
+<?php if ($like_link) : ?>
+  <p><?php print $like_link ?></p>
+<?php endif; ?>
+
+<?php if ($remove_link) : ?>
+  <p><?php print $remove_link ?></p>
+<?php endif; ?>
