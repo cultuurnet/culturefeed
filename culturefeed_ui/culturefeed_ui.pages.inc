@@ -1,5 +1,68 @@
 <?php
 
+function culturefeed_ui_page_activities() {
+  $pagelength = 20;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+
+  $query->userId      = DrupalCultureFeed::getLoggedInUserId();
+  $query->private     = TRUE;
+  $query->max         = $pagelength;
+  $query->start       = $page * $pagelength;
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    return;
+  }
+
+
+  pager_default_initialize($activities->total, $pagelength);
+  
+  $events = culturefeed_get_nodes_for_activities($activities->objects);
+
+  $rows = array();
+  
+  foreach ($activities->objects as $activity) {
+
+    $delete = array(
+      '#type' => 'link',
+      '#title' => 'Verwijderen',
+      '#href' => 'culturefeed/activity/delete/' . $activity->id . '/nojs',
+      '#attributes' => array('class' => 'remove-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'activity-' . $recommendation->id,
+      ),
+    );
+    
+    $event = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
+    $rows[] = array(
+      'id' => 'activity-' . $activity->id,
+      'data' => array(
+        isset($event) ? theme('cnapi_ui_event_mini_summary', array('event' => $event)) : $activity->nodeTitle,
+        format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden op ' . $activity->createdVia,
+        drupal_render($delete),
+      ),
+    );
+  }
+  
+  $activities = array(
+    '#theme' => 'table',
+    '#rows' => $rows
+  );
+  
+  return array(
+    'activities' => $activities,
+    'pager' => array(
+      '#theme' => 'pager',
+    ),
+  );
+}
+
 function culturefeed_ui_page_recommendations($zip) {
   if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
     drupal_not_found();

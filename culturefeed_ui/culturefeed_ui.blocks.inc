@@ -277,6 +277,11 @@ function culturefeed_ui_block_view_profile_menu() {
       'url' => 'culturefeed/recommendations',
       'description' => 'Ontdek activiteiten op jouw maat.',
     ),
+    array(
+      'title' => 'Acties',
+      'url' => 'culturefeed/activities',
+      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTid-profiel.',
+    ),
   );
 
   $items = array();

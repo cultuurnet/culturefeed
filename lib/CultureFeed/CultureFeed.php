@@ -1059,6 +1059,7 @@ class CultureFeed {
 
       $activity->id           = $object->xpath_str('id');
       $activity->nodeId       = $object->xpath_str('nodeID');
+      $activity->nodeTitle    = $object->xpath_str('nodeTitle');
       $activity->private      = $object->xpath_str('private');
       $activity->createdVia   = $object->xpath_str('createdVia');
       $activity->points       = $object->xpath_str('points');

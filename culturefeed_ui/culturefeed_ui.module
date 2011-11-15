@@ -92,6 +92,13 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/activities'] = array(
+    'title' => 'Activities',
+    'page callback' => 'culturefeed_ui_page_activities',
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/recommendations'] = array(
     'title' => 'Recommendations',
     'page callback' => 'culturefeed_ui_page_recommendations',
