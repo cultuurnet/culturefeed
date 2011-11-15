@@ -167,7 +167,7 @@ class CultureFeed_Activity {
     }
 
     // Represent creationDate as a W3C date.
-    if (isset($data['private'])) {
+    if (isset($data['creationDate'])) {
       $data['creationDate'] = date('c', $data['creationDate']);
     }
 
