@@ -99,11 +99,11 @@ function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
   $node = '';
-  if ($variables['node'] && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
-    $node = l($variables['node']->title, 'node/' . $variables['node']->nid);
+  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
+    $node = l($activity->nodeTitle, 'node/' . $activity->nodeId);
   }
   else {
-    $node = cnapi_url_dp2dul($variables['node']['title'], array($activity->contentType => $variables['node']['cdbid'], 'title' => $variables['node']['title']));
+    $node = cnapi_url_dp2dul($activity->nodeTitle, array($activity->contentType => $activity->nodeId, 'title' => $activity->nodeTitle));
   }
 
   $type_prefix = '';

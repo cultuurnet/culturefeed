@@ -4,12 +4,33 @@ function culturefeed_ui_block_view_recommendations() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
+  
+  $content = array();
+  
+  $recommendations = culturefeed_ui_recommendations_list(5);
+  
+  if ($recommendations == FALSE) {
+    return;
+  }
+  
+  if (empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  else {
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
 
   $block['subject'] = 'Aanbevolen voor jou';
-  $block['content'] = array(
-    'recommendations' => culturefeed_ui_recommendations_list(5),
-    'more' => array('#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations')),
-  );
+  $block['content'] = $content;
 
   return $block;
 }
@@ -25,17 +46,12 @@ function culturefeed_ui_block_is_visible_user_liked_locations() {
 }
 
 function culturefeed_ui_block_view_user_liked_locations() {
-  global $user;
-
   $account = menu_get_object('user');
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
-  $query->type = CultureFeed_Activity::TYPE_LIKE;
-  $query->userId = $account->culturefeed_uid;
-  if ($user->uid == $account->uid) {
-    $query->private = ($account->uid == $user->uid);
-  }
+  $query->type        = CultureFeed_Activity::TYPE_LIKE;
+  $query->userId      = $account->culturefeed_uid;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -46,28 +62,28 @@ function culturefeed_ui_block_view_user_liked_locations() {
   }
 
   if (empty($activities->objects)) {
-    return;
+    $content['locations'] = array(
+      '#markup' => 'Deze gebruiker vond nog geen locaties leuk.',
+    );
   }
-
-  $actors = culturefeed_get_nodes_for_activities($activities->objects);
-
-  $items = array();
-
-  foreach ($actors as $actor) {
-    $items[] = theme('cnapi_ui_actor_mini_summary', array('actor' => $actor));
-  }
-
-  if (empty($items)) {
-    return;
+  else {
+    $actors = culturefeed_get_nodes_for_activities($activities->objects);
+    
+    $items = array();
+    
+    foreach ($actors as $actor) {
+      // @todo fix this : actor can be unavailable : show title then.
+      $items[] = theme('cnapi_ui_actor_mini_summary', array('actor' => $actor));
+    }
+    
+    $content['locations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    );
   }
 
   $block['subject'] = 'Favoriete locaties';
-  $block['content'] = array(
-    array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-    ),
-  );
+  $block['content'] = $content;
 
   return $block;
 }
@@ -102,11 +118,15 @@ function culturefeed_ui_block_view_search_users() {
   return $block;
 }
 
-function culturefeed_ui_block_view_profile_box() {
-  if (!user_is_anonymous() && !DrupalCultureFeed::isCultureFeedUser()) {
-    return;
+function culturefeed_ui_block_is_visible_profile_box() {
+  if (user_is_anonymous() || DrupalCultureFeed::isCultureFeedUser()) {
+    return TRUE;
   }
+  
+  return FALSE;
+}
 
+function culturefeed_ui_block_view_profile_box() {
   if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -126,11 +146,15 @@ function culturefeed_ui_block_view_profile_box() {
   return $block;
 }
 
-function culturefeed_ui_block_view_connect() {
-  if (!user_is_anonymous()) {
-    return;
+function culturefeed_ui_block_is_visible_connect() {
+  if (user_is_anonymous()) {
+    return TRUE;
   }
+  
+  return FALSE;
+}
 
+function culturefeed_ui_block_view_connect() {
   $block['subject'] = 'Maak zelf een UiTid';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
@@ -148,28 +172,40 @@ function culturefeed_ui_block_view_most_active_user() {
   $query->sort = $sort;
 
   try {
-    $account = reset(DrupalCultureFeed::searchUsers($query)->objects);
+    $cf_account = reset(DrupalCultureFeed::searchUsers($query)->objects);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  if (!$cf_account) {
     return;
   }
 
   $block['subject'] = 'UiTslover van de week';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_most_active_user',
-    '#account' => $account,
+    '#account' => $cf_account,
     '#sort' => $sort,
   );
 
   return $block;
 }
 
+function culturefeed_ui_block_cache_id_top_events() {
+  return array();
+}
+
+function culturefeed_ui_block_cache_expires_top_events() {
+  return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_top_events_block_cache_expires', 3600);
+}
+
 function culturefeed_ui_block_view_top_events() {
   $sort = variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE);
 
   try {
-    $events = DrupalCultureFeed::getTopEvents($sort, 5); // @todo make max configurable
+    $events = DrupalCultureFeed::getTopEvents($sort, CULTUREFEED_UI_BLOCK_TOP_EVENTS_COUNT);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -191,6 +227,10 @@ function culturefeed_ui_block_view_top_events() {
 
     $items[] = cnapi_url_dp2dul($event['title'], $request);
   }
+  
+  if (empty($items)) {
+    return;
+  }
 
   $block['subject'] = 'Top events';
   $block['content'] = array(
@@ -206,6 +246,10 @@ function culturefeed_ui_block_cache_id_similar_users() {
   $account = menu_get_object('user');
 
   return array($account->uid);
+}
+
+function culturefeed_ui_block_cache_expires_similar_users() {
+  return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_similar_users_block_cache_expires', 3600);
 }
 
 function culturefeed_ui_block_is_visible_similar_users() {
@@ -249,12 +293,12 @@ function culturefeed_ui_block_view_similar_users() {
   return $block;
 }
 
+function culturefeed_ui_block_is_visible_profile_menu() {
+  return DrupalCultureFeed::isCultureFeedUser();
+}
+
 function culturefeed_ui_block_view_profile_menu() {
 	global $user;
-
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return;
-  }
 
   $menu = array(
     array(
@@ -287,9 +331,19 @@ function culturefeed_ui_block_view_profile_menu() {
   $items = array();
 
   foreach ($menu as $menu_item) {
+    $vars = array(
+      'title' => $menu_item['title'], 
+      'url' => $menu_item['url'], 
+      'description' => $menu_item['description']
+    );
+    
+    $data = theme('culturefeed_ui_profile_menu_item', $vars);
+    
+    $class = $_GET['q'] == $menu_item['url'] ? 'active' : '';
+    
     $items[] = array(
-      'data' => theme('culturefeed_ui_profile_menu_item', array('title' => $menu_item['title'], 'url' => $menu_item['url'], 'description' => $menu_item['description'])),
-      'class' => $_GET['q'] == $menu_item['url'] ? 'active' : '',
+      'data' => $data,
+      'class' => $class,
     );
   }
 
@@ -313,22 +367,17 @@ function culturefeed_ui_block_is_visible_user_activities() {
 }
 
 function culturefeed_ui_block_view_user_activities() {
-  global $user;
-
   $account = menu_get_object('user');
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 50;
+  $query->max = CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
     CultureFeed_Activity::TYPE_FACEBOOK,
     CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA
+    CultureFeed_Activity::TYPE_IK_GA,
   );
   $query->userId = $account->culturefeed_uid;
-  if ($user->uid == $account->uid) {
-    $query->private = TRUE;
-  }
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -338,27 +387,29 @@ function culturefeed_ui_block_view_user_activities() {
     return;
   }
 
-  $items = culturefeed_ui_activities_list($activities);
-
-  if (empty($items)) {
-    return;
+  if (empty($activities->objects)) {
+    $content['activities'] = array(
+      '#markup' => 'Deze gebruiker heeft nog geen activiteiten gedaan.',
+    );
   }
-
-  $block['subject'] = 'Recente acties';
-  $block['content'] = array(
-    array(
+  else {
+    $items = culturefeed_ui_activities_list($activities);
+    $content['activities'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
       '#attributes' => array('class' => 'user-activity-list'),
-    ),
-  );
+    );
+  }
+
+  $block['subject'] = 'Recente acties';
+  $block['content'] = $content;
 
   return $block;
 }
 
 function culturefeed_ui_block_view_recent_activities() {
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = 5; // @todo make this configurable
+  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT; // @todo make this configurable
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
@@ -380,50 +431,55 @@ function culturefeed_ui_block_view_recent_activities() {
   if (empty($items)) {
     return;
   }
+  
+  $content['activities'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+    '#attributes' => array('class' => 'user-activity-list'),
+  );
+  
+  $content['more'] = array(
+    '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
+  );
 
   $block['subject'] = 'Recente acties';
-  $block['content'] = array(
-    array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#attributes' => array('class' => 'user-activity-list'),
-    ),
-    array(
-      '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
-    ),
-  );
+  $block['content'] = $content;
 
   return $block;
 }
 
 function culturefeed_ui_block_view_users_likes() {
-  $config['node_types'] = array_keys(node_type_get_types());
-  $config['cnapi_types'] = array('actor', 'event', 'production');
-  $config['activity_type'] = CultureFeed_Activity::TYPE_LIKE;
-  $config['block_subject'] = 'Vinden dit leuk';
-  $config['undo_link_title'] = 'Vind ik niet meer leuk';
-  $config['do_link_title'] = 'Vind ik leuk';
-  $config['do_first_link_title'] = 'Vind dit als eerste leuk';
-  $config['all_link_title'] = 'Toon iedereen die dit leuk vindt.';
+  $config = array(
+    'node_types'          => array_keys(node_type_get_types()),
+    'cnapi_types'         => array('actor', 'event', 'production'),
+    'activity_type'       => CultureFeed_Activity::TYPE_LIKE,
+    'block_subject'       => 'Vinden dit leuk',
+    'undo_link_title'     => 'Vind ik niet meer leuk',
+    'do_link_title'       => 'Vind ik leuk',
+    'do_first_link_title' => 'Vind dit als eerste leuk',
+    'all_link_title'      => 'Toon iedereen die dit leuk vindt.',
+  );
 
   return _culturefeed_ui_block_view_users_activity($config);
 }
 
 function culturefeed_ui_block_view_users_attends() {
-  $config['node_types'] = array();
-  $config['cnapi_types'] = array('event', 'production');
-  $config['activity_type'] = CultureFeed_Activity::TYPE_IK_GA;
-  $config['block_subject'] = 'Gaan hier naartoe';
-  $config['undo_link_title'] = 'Ik ga hier niet meer naartoe';
-  $config['do_link_title'] = 'Ga ik naartoe';
-  $config['do_first_link_title'] = 'Ga hier als eerste naartoe';
-  $config['all_link_title'] = 'Toon iedereen die hier naartoe gaat.';
+  $config = array(
+    'node_types'          => array(),
+    'cnapi_types'         => array('event', 'production'),
+    'activity_type'       => CultureFeed_Activity::TYPE_IK_GA,
+    'block_subject'       => 'Gaan hier naartoe',
+    'undo_link_title'     => 'Ik ga hier niet meer naartoe',
+    'do_link_title'       => 'Ga ik naartoe',
+    'do_first_link_title' => 'Ga hier als eerste naartoe',
+    'all_link_title'      => 'Toon iedereen die hier naartoe gaat.',
+  );
 
   return _culturefeed_ui_block_view_users_activity($config);
 }
 
 function _culturefeed_ui_block_view_users_activity($config) {
-  $max = 12;
+  $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
 
   $node = menu_get_object();
   $request = cnapi_ui_get_active_request();
@@ -540,8 +596,10 @@ function culturefeed_ui_block_is_visible_related_events() {
 
 function culturefeed_ui_block_view_related_events() {
   $request = cnapi_ui_get_active_request();
+  
+  $cdbid = $request['event'];
 
-  $event = cnapi_get_event($request['event']);
+  $event = cnapi_get_event($cdbid);
 
   $headings = cnapi_get_headings();
 
@@ -560,13 +618,17 @@ function culturefeed_ui_block_view_related_events() {
   }
 
   $query = new CultureFeed_RecommendationsQuery();
-  $query->max = 4;
+  $query->max = CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT;
 
   try {
-    $recommendations = DrupalCultureFeed::getRecommendationsForEvent($request['event'], $query);
+    $recommendations = DrupalCultureFeed::getRecommendationsForEvent($cdbid, $query);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  if (empty($recommendations)) {
     return;
   }
 

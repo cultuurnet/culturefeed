@@ -4,6 +4,12 @@ require_once('culturefeed_ui.helpers.inc');
 require_once('culturefeed_ui.preprocess.inc');
 require_once('culturefeed_ui.forms.inc');
 
+define('CULTUREFEED_UI_BLOCK_TOP_EVENTS_COUNT', 5);
+define('CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT', 20);
+define('CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT', 5);
+define('CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT', 12);
+define('CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT', 5);
+
 /**
  * Implements hook_menu().
  */
@@ -192,7 +198,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-ranked-user-summary',
     ),
     'culturefeed_ui_activity_summary' => array(
-      'variables' => array('activity' => NULL, 'type' => NULL, 'node' => NULL, 'uid' => NULL),
+      'variables' => array('activity' => NULL, 'uid' => NULL),
       'template' => 'culturefeed-ui-activity-summary',
     ),
     'culturefeed_ui_profile_menu_item' => array(
@@ -257,7 +263,7 @@ function culturefeed_ui_block_info() {
   $block['user_liked_locations']['cache'] = DRUPAL_NO_CACHE;
 
   $block['top_events']['info'] = t('Top events');
-  $block['top_events']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['top_events']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   $block['search_users']['info'] = t('Search users');
   $block['search_users']['cache'] = DRUPAL_NO_CACHE;
@@ -406,6 +412,22 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
     '#type' => 'select',
     '#title' => t('Minimum cache lifetime for the related events block'),
     '#default_value' => variable_get('culturefeed_ui_related_events_block_cache_expires', 86400),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
+  );
+
+  $form['culturefeed_ui_cache']['culturefeed_ui_top_events_block_cache_expires'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime for the top events block'),
+    '#default_value' => variable_get('culturefeed_ui_top_events_block_cache_expires', 3600),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
+  );
+
+  $form['culturefeed_ui_cache']['culturefeed_ui_similar_users_block_cache_expires'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime for the similar users block'),
+    '#default_value' => variable_get('culturefeed_ui_similar_users_block_cache_expires', 3600),
     '#options' => $period,
     '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
   );

@@ -19,27 +19,28 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   $items = array();
 
   foreach ($recommendations as $recommendation) {
+    $id = $recommendation->id;
     $cdbid = $recommendation->itemid;
 
     $positive = array(
       '#type' => 'link',
       '#title' => 'Vind ik leuk',
-      '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id, 'class' => 'like-link'),
+      '#href' => 'culturefeed/recommendations/positive/' . $id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-positive-' . $id, 'class' => 'like-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation->id,
+        'wrapper' => 'recommendation-' . $id,
       ),
     );
 
     $negative = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
-      '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id, 'class' => 'remove-link'),
+      '#href' => 'culturefeed/recommendations/negative/' . $id . '/' . $cdbid . '/nojs',
+      '#attributes' => array('id' => 'recommendation-negative-' . $id, 'class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation->id,
+        'wrapper' => 'recommendation-' . $id,
       ),
     );
 
@@ -48,15 +49,11 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
 
     $items[] = array(
       'data' => $item,
-      'id' => 'recommendation-' . $recommendation->id,
+      'id' => 'recommendation-' . $id,
     );
   }
 
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'event-recommendation-list')
-  );
+  return $items;
 }
 
 function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
@@ -127,8 +124,6 @@ function culturefeed_ui_activity_based_goto($content_type, $node_id) {
 function culturefeed_ui_activities_list($activities) {
   $items = array();
 
-  $events = culturefeed_get_nodes_for_activities($activities->objects);
-
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
@@ -136,19 +131,7 @@ function culturefeed_ui_activities_list($activities) {
       continue;
     }
 
-    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
-      $node = node_load($activity->nodeId); // @todo use node_load_multiple
-    }
-    else {
-      if (!isset($events[$activity->nodeId])) {
-        continue;
-      }
-      else {
-        $node = $events[$activity->nodeId];
-      }
-    }
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
   }
 
   return $items;

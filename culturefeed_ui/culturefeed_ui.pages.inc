@@ -180,17 +180,33 @@ function culturefeed_ui_page_recommendations($zip) {
   }
 
   $recommendations = culturefeed_ui_recommendations_list(100, $zip);
-
-  return array(
-    'filter' => drupal_get_form('culturefeed_ui_recommendations_filter_form'),
-    'recommendations' => $recommendations,
-  );
+  
+  if ($recommendations == FALSE || empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  else {
+    $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form');
+    
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
+  
+  return $content;
 }
 
+// @todo cdbid kan ook nodeid zijn (dus nodeid gebruiken)
 function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid = NULL, $type = 'ajax') {
   switch ($evaluation) {
     case 'unlike':
-      _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
+      //_culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
 
       try {
         DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
@@ -204,11 +220,12 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
     case 'negative':
 
       try {
-        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE);
+        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
       }
+      
       break;
 
     case 'positive':
@@ -219,8 +236,6 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
       }
-
-      _culturefeed_ui_do(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
 
       break;
   }
