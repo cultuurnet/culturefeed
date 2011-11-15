@@ -1,29 +1,13 @@
 <?php
 
-function culturefeed_ui_activities_filter_form() {
+function culturefeed_ui_activities_filter_form($form, &$form_state, $type = NULL) {
   $form = array();
-
-  $type = NULL;
-
-  if (arg(0) == 'culturefeed' && arg(1) == 'activities' && arg(2)) {
-    $type = arg(2);
-  }
   
-  $types = array(
-    -1                                  => 'Alle acties',
-    CultureFeed_Activity::TYPE_VIEW     => 'Bekeken',
-    CultureFeed_Activity::TYPE_DETAIL   => 'Bekeken',
-    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
-    CultureFeed_Activity::TYPE_MAIL     => 'Gemaild',
-    CultureFeed_Activity::TYPE_PRINT    => 'Geprint',
-    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
-    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
-    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
-  );
+  $types = array(-1 => 'Alle acties') + culturefeed_ui_activity_types();
 
   $form['type'] = array(
     '#type' => 'select',
-    '#title' => 'Type',
+    '#title' => 'Toon enkel',
     '#default_value' => $type ? $type : -1,
     '#options' => $types,
   );
@@ -47,18 +31,12 @@ function culturefeed_ui_activities_filter_form_submit($form, &$form_state) {
   }
 }
 
-function culturefeed_ui_recommendations_filter_form() {
+function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = NULL) {
   $form = array();
-
-  $zip = NULL;
-
-  if (arg(0) == 'culturefeed' && arg(1) == 'recommendations' && arg(2)) {
-    $zip = arg(2);
-  }
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => 'Toon enkel aanbevelingen voor postcode',
     '#autocomplete_path' => 'cnapi/autocomplete/location/onlyzip',
     '#default_value' => $zip ? $zip : '',
     '#size' => 4,
@@ -100,8 +78,4 @@ function culturefeed_ui_search_users_form_submit($form, &$form_state) {
   $values = $form_state['values'];
 
   $form_state['redirect'] = 'culturefeed/users/search' . (!empty($values['name']) ? '/' . trim($values['name']) : '');
-}
-
-function culturefeed_ui_is_culturefeed_user($uid = NULL) {
-  return DrupalCultureFeed::isCultureFeedUser($uid);
 }

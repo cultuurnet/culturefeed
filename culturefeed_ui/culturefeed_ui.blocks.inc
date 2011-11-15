@@ -409,7 +409,7 @@ function culturefeed_ui_block_view_user_activities() {
 
 function culturefeed_ui_block_view_recent_activities() {
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT; // @todo make this configurable
+  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
@@ -513,7 +513,7 @@ function culturefeed_ui_block_view_related_events() {
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
-  
+
   // If we got no recommendations, we don't bother showing the block at all.
   if (empty($recommendations)) {
     return;

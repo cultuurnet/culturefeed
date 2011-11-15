@@ -1,9 +1,9 @@
 <?php
 
 function culturefeed_ui_page_activities($type = NULL) {
-  $types = array(CultureFeed_Activity::TYPE_VIEW, CultureFeed_Activity::TYPE_DETAIL, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::TYPE_MAIL, CultureFeed_Activity::TYPE_PRINT, CultureFeed_Activity::TYPE_FACEBOOK, CultureFeed_Activity::TYPE_TWITTER, CultureFeed_Activity::TYPE_IK_GA);
+  $types = culturefeed_ui_activity_types();
   
-  if (!empty($type) && !is_numeric($type) && !in_array($type, $types)) {
+  if (!empty($type) && !is_numeric($type) && !in_array($type, array_keys($types))) {
     drupal_not_found();
   }
   
@@ -58,40 +58,14 @@ function culturefeed_ui_page_activities($type = NULL) {
       ),
     );
     
-    $type = '';
-    switch ($activity->type) {
-      case CultureFeed_Activity::TYPE_VIEW:
-        $type = 'bekeken';
-        break;
-      case CultureFeed_Activity::TYPE_DETAIL:
-        $type = 'bekeken';
-        break;
-      case CultureFeed_Activity::TYPE_LIKE:
-        $type = 'vind ik leuk';
-        break;
-      case CultureFeed_Activity::TYPE_MAIL:
-        $type = 'gemaild';
-        break;
-      case CultureFeed_Activity::TYPE_PRINT:
-        $type = 'geprint';
-        break;
-      case CultureFeed_Activity::TYPE_FACEBOOK:
-        $type = 'gedeeld op Facebook';
-        break;
-      case CultureFeed_Activity::TYPE_TWITTER:
-        $type = 'gedeeld op Twitter';
-        break;
-      case CultureFeed_Activity::TYPE_IK_GA:
-        $type = 'ga hier naartoe';
-        break;
-    }
+    $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
 
     $event = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
         isset($event) ? theme('cnapi_ui_event_mini_summary', array('event' => $event)) : $activity->nodeTitle,
-        $type,
+        $type_text,
         format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden <br />op ' . $activity->createdVia,
         drupal_render($privacy),
         drupal_render($delete),
@@ -106,7 +80,7 @@ function culturefeed_ui_page_activities($type = NULL) {
   );
   
   return array(
-    'filter' => drupal_get_form('culturefeed_ui_activities_filter_form'),
+    'filter' => drupal_get_form('culturefeed_ui_activities_filter_form', $type), // don't show filter when there are no results.
     'activities' => $activities,
     'pager' => array(
       '#theme' => 'pager',
@@ -187,7 +161,7 @@ function culturefeed_ui_page_recommendations($zip) {
     );
   }
   else {
-    $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form');
+    $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form', $zip);
     
     $content['recommendations'] = array(
       '#theme' => 'item_list',

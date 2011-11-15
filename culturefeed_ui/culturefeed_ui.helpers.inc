@@ -1,5 +1,14 @@
 <?php
 
+function culturefeed_ui_activity_types() {
+  return array(
+    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
+    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
+    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
+    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
+  );
+}
+
 function culturefeed_ui_activity_context($cnapi_types = array(), $node_types = array()) {
   $node = menu_get_object();
   $request = cnapi_ui_get_active_request();
