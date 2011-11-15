@@ -55,6 +55,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   return array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array('class' => 'event-recommendation-list')
   );
 }
 
