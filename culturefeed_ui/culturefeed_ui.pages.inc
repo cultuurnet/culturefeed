@@ -180,7 +180,7 @@ function culturefeed_ui_page_recommendations($zip) {
 function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid = NULL, $type = 'ajax') {
   switch ($evaluation) {
     case 'unlike':
-      //_culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
+      _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
 
       try {
         DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
