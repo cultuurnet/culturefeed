@@ -448,125 +448,6 @@ function culturefeed_ui_block_view_recent_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_view_users_likes() {
-  $config = array(
-    'node_types'          => array_keys(node_type_get_types()),
-    'cnapi_types'         => array('actor', 'event', 'production'),
-    'activity_type'       => CultureFeed_Activity::TYPE_LIKE,
-    'block_subject'       => 'Vinden dit leuk',
-    'undo_link_title'     => 'Vind ik niet meer leuk',
-    'do_link_title'       => 'Vind ik leuk',
-    'do_first_link_title' => 'Vind dit als eerste leuk',
-    'all_link_title'      => 'Toon iedereen die dit leuk vindt.',
-  );
-
-  return _culturefeed_ui_block_view_users_activity($config);
-}
-
-function culturefeed_ui_block_view_users_attends() {
-  $config = array(
-    'node_types'          => array(),
-    'cnapi_types'         => array('event', 'production'),
-    'activity_type'       => CultureFeed_Activity::TYPE_IK_GA,
-    'block_subject'       => 'Gaan hier naartoe',
-    'undo_link_title'     => 'Ik ga hier niet meer naartoe',
-    'do_link_title'       => 'Ga ik naartoe',
-    'do_first_link_title' => 'Ga hier als eerste naartoe',
-    'all_link_title'      => 'Toon iedereen die hier naartoe gaat.',
-  );
-
-  return _culturefeed_ui_block_view_users_activity($config);
-}
-
-function _culturefeed_ui_block_view_users_activity($config) {
-  $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
-
-  $node = menu_get_object();
-  $request = cnapi_ui_get_active_request();
-
-  if (!$request && !$node) {
-    return;
-  }
-
-  if ($request) {
-    $type = reset(array_intersect($config['cnapi_types'], array_keys($request)));
-    if (!$type) {
-      return;
-    }
-  }
-  else {
-    if (!in_array($node->type, $config['node_types'])) {
-      return;
-    }
-
-    $type = 'page';
-  }
-
-  $id = $request ? $request[$type] : $node->nid;
-
-  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($type);
-
-  try {
-    $users = DrupalCultureFeed::searchActivityUsers($id, $config['activity_type'], $activity_content_type, 0, $max);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = culturefeed_ui_users_list($users);
-
-  $content['users'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'user-list'),
-  );
-
-  if ($users->total > $max) {
-    $content['more'] = array(
-      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $config['activity_type'] . '/event/' . $id, array('attributes' => array('class' => 'all-link'))),
-    );
-  }
-
-  $user_likes_this = FALSE;
-
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-      $user_likes_this = DrupalCultureFeed::userDidActivity($config['activity_type'], $id, $type);
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-    }
-  }
-
-  $items = array();
-
-  if (!$user_likes_this) {
-    $url = 'culturefeed/do/' . $config['activity_type'] . '/' . $type . '/' . $id;
-    if ($users->total == 0) {
-      $title = $config['do_first_link_title'];
-    }
-    else {
-      $title = $config['do_link_title'];
-    }
-    $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'do-link')))
-    );
-  }
-  else {
-    $url = 'culturefeed/undo/' . $config['activity_type'] . '/' . $type . '/' . $id;
-    $title = $config['undo_link_title'];
-    $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'undo-link')))
-    );
-  }
-
-  $block['subject'] = $config['block_subject'];
-  $block['content'] = $content;
-
-  return $block;
-}
-
 function culturefeed_ui_block_cache_expires_related_events() {
   return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_related_events_block_cache_expires', 86400);
 }
@@ -595,15 +476,19 @@ function culturefeed_ui_block_is_visible_related_events() {
 }
 
 function culturefeed_ui_block_view_related_events() {
+  // Get the event and CDBID.
   $request = cnapi_ui_get_active_request();
   
   $cdbid = $request['event'];
 
   $event = cnapi_get_event($cdbid);
+  
+  // Get the cityid for the event.
+  $cityid = $event['location']['address']['cityid'];
 
+  // Get the headings for the event.
   $headings = cnapi_get_headings();
 
-  $cityid = $event['location']['address']['cityid'];
   $event_headings = isset($event['headings']) ? $event['headings'] : array();
 
   $valid_headings = array();
@@ -617,6 +502,7 @@ function culturefeed_ui_block_view_related_events() {
     }
   }
 
+  // Get recommendations based on the event.
   $query = new CultureFeed_RecommendationsQuery();
   $query->max = CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT;
 
@@ -628,6 +514,7 @@ function culturefeed_ui_block_view_related_events() {
     return;
   }
   
+  // If we got no recommendations, we don't bother showing the block at all.
   if (empty($recommendations)) {
     return;
   }
@@ -639,6 +526,136 @@ function culturefeed_ui_block_view_related_events() {
     '#cityid' => $cityid,
     '#headings' => $valid_headings,
   );
+
+  return $block;
+}
+
+function culturefeed_ui_block_config_users_likes() {
+  $config = array(
+    'node_types'          => array_keys(node_type_get_types()),
+    'cnapi_types'         => array('actor', 'event', 'production'),
+    'activity_type'       => CultureFeed_Activity::TYPE_LIKE,
+    'block_subject'       => 'Vinden dit leuk',
+    'undo_link_title'     => 'Vind ik niet meer leuk',
+    'do_link_title'       => 'Vind ik leuk',
+    'do_first_link_title' => 'Vind dit als eerste leuk',
+    'all_link_title'      => 'Toon iedereen die dit leuk vindt.',
+  );
+
+  return $config;
+}
+
+function culturefeed_ui_block_is_visible_users_likes() {
+  $config = culturefeed_ui_block_config_users_likes();
+  
+  return _culturefeed_ui_block_is_visible_users_activity($config);
+}
+
+function culturefeed_ui_block_view_users_likes() {
+  $config = culturefeed_ui_block_config_users_likes();
+
+  return _culturefeed_ui_block_view_users_activity($config);
+}
+
+function culturefeed_ui_block_config_users_attends() {
+  $config = array(
+    'node_types'          => array(),
+    'cnapi_types'         => array('event', 'production'),
+    'activity_type'       => CultureFeed_Activity::TYPE_IK_GA,
+    'block_subject'       => 'Gaan hier naartoe',
+    'undo_link_title'     => 'Ik ga hier niet meer naartoe',
+    'do_link_title'       => 'Ga ik naartoe',
+    'do_first_link_title' => 'Ga hier als eerste naartoe',
+    'all_link_title'      => 'Toon iedereen die hier naartoe gaat.',
+  );
+  
+  return $config;
+}
+
+function culturefeed_ui_block_is_visible_users_attends() {
+  $config = culturefeed_ui_block_config_users_attends();
+  
+  return _culturefeed_ui_block_is_visible_users_activity($config);
+}
+
+function culturefeed_ui_block_view_users_attends() {
+  $config = culturefeed_ui_block_config_users_attends();
+
+  return _culturefeed_ui_block_view_users_activity($config);
+}
+
+function _culturefeed_ui_block_is_visible_users_activity($config) {
+  $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);
+
+  return $context !== FALSE;
+}
+
+// @todo clean up code
+function _culturefeed_ui_block_view_users_activity($config) {
+  $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
+
+  $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);
+  extract($context);
+  
+  $activity_type = $config['activity_type'];
+
+  try {
+    $users = DrupalCultureFeed::searchActivityUsers($node_id, $activity_type, $activity_content_type, 0, $max);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  $items = culturefeed_ui_users_list($users);
+
+  $content['users'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+    '#attributes' => array('class' => 'user-list'),
+  );
+
+  if ($users->total > $max) {
+    $content['more'] = array(
+      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/event/' . $node_id, array('attributes' => array('class' => 'all-link'))),
+    );
+  }
+
+  $user_likes_this = FALSE;
+
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
+      $user_likes_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $type);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+    }
+  }
+
+  $items = array();
+
+  if (!$user_likes_this) {
+    $url = 'culturefeed/do/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
+    if ($users->total == 0) {
+      $title = $config['do_first_link_title'];
+    }
+    else {
+      $title = $config['do_link_title'];
+    }
+    $content['link'] = array(
+      '#markup' => l($title, $url, array('attributes' => array('class' => 'do-link')))
+    );
+  }
+  else {
+    $url = 'culturefeed/undo/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
+    $title = $config['undo_link_title'];
+    $content['link'] = array(
+      '#markup' => l($title, $url, array('attributes' => array('class' => 'undo-link')))
+    );
+  }
+
+  $block['subject'] = $config['block_subject'];
+  $block['content'] = $content;
 
   return $block;
 }

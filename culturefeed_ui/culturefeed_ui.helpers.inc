@@ -1,5 +1,30 @@
 <?php
 
+function culturefeed_ui_activity_context($cnapi_types = array(), $node_types = array()) {
+  $node = menu_get_object();
+  $request = cnapi_ui_get_active_request();
+
+  if ($request) {
+    $type = reset(array_intersect($cnapi_types, array_keys($request)));
+    if ($type) {
+      return array(
+        'node_id' => $request[$type],
+        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($type),
+      );
+    }
+  }
+  elseif ($node) {
+    if (in_array($node->type, $node_types)) {
+      return array(
+        'node_id' => $node->nid,
+        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($node->type),
+      );
+    }
+  }
+  
+  return FALSE;
+}
+
 function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   $query = new CultureFeed_RecommendationsQuery();
   $query->max = $total;
