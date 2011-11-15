@@ -1,66 +1,12 @@
 <?php
 
-function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
-  $error = FALSE;
+function culturefeed_ui_page_activities($type = NULL) {
+  $types = array(CultureFeed_Activity::TYPE_VIEW, CultureFeed_Activity::TYPE_DETAIL, CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::TYPE_MAIL, CultureFeed_Activity::TYPE_PRINT, CultureFeed_Activity::TYPE_FACEBOOK, CultureFeed_Activity::TYPE_TWITTER, CultureFeed_Activity::TYPE_IK_GA);
   
-  try {
-    DrupalCultureFeed::updateActivity($id, $privacy == 1);
-  }
-  catch(Exception $e) {
-    $error = TRUE;
-    watchdog_exception('culturefeed_ui', $e);
+  if (!empty($type) && !is_numeric($type) && !in_array($type, $types)) {
+    drupal_not_found();
   }
   
-  if ($type == 'ajax') {
-    
-    $privacy = array(
-      '#type' => 'link',
-      '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
-      '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
-      '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'activity-' . $id,
-      ),
-    );
-    
-    $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
-
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
-  }
-  else {
-    drupal_goto();
-  }
-}
-
-function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
-  $error = FALSE;
-  
-  try {
-    DrupalCultureFeed::deleteActivity($id);
-  }
-  catch(Exception $e) {
-    $error = TRUE;
-    watchdog_exception('culturefeed_ui', $e);
-  }
-  
-  if ($type == 'ajax') {
-    $commands = array();
-    
-    if (!$error) {
-      $commands[] = ajax_command_remove('#activity-' . $id);
-    }
-
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
-  }
-  else {
-    drupal_goto();
-  }
-}
-
-function culturefeed_ui_page_activities() {
   $pagelength = 20;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
@@ -70,6 +16,10 @@ function culturefeed_ui_page_activities() {
   $query->private     = TRUE;
   $query->max         = $pagelength;
   $query->start       = $page * $pagelength;
+  
+  if (!empty($type)) {
+    $query->type = $type;
+  }
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -157,11 +107,72 @@ function culturefeed_ui_page_activities() {
   );
   
   return array(
+    'filter' => drupal_get_form('culturefeed_ui_activities_filter_form'),
     'activities' => $activities,
     'pager' => array(
       '#theme' => 'pager',
     ),
   );
+}
+
+function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
+  $error = FALSE;
+  
+  try {
+    DrupalCultureFeed::updateActivity($id, $privacy == 1);
+  }
+  catch(Exception $e) {
+    $error = TRUE;
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'ajax') {
+    
+    $privacy = array(
+      '#type' => 'link',
+      '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
+      '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
+      '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(
+        'wrapper' => 'activity-' . $id,
+      ),
+    );
+    
+    $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto();
+  }
+}
+
+function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
+  $error = FALSE;
+  
+  try {
+    DrupalCultureFeed::deleteActivity($id);
+  }
+  catch(Exception $e) {
+    $error = TRUE;
+    watchdog_exception('culturefeed_ui', $e);
+  }
+  
+  if ($type == 'ajax') {
+    $commands = array();
+    
+    if (!$error) {
+      $commands[] = ajax_command_remove('#activity-' . $id);
+    }
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto();
+  }
 }
 
 function culturefeed_ui_page_recommendations($zip) {

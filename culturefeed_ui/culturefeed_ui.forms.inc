@@ -1,5 +1,52 @@
 <?php
 
+function culturefeed_ui_activities_filter_form() {
+  $form = array();
+
+  $type = NULL;
+
+  if (arg(0) == 'culturefeed' && arg(1) == 'activities' && arg(2)) {
+    $type = arg(2);
+  }
+  
+  $types = array(
+    -1                                  => 'Alle acties',
+    CultureFeed_Activity::TYPE_VIEW     => 'Bekeken',
+    CultureFeed_Activity::TYPE_DETAIL   => 'Bekeken',
+    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
+    CultureFeed_Activity::TYPE_MAIL     => 'Gemaild',
+    CultureFeed_Activity::TYPE_PRINT    => 'Geprint',
+    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
+    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
+    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
+  );
+
+  $form['type'] = array(
+    '#type' => 'select',
+    '#title' => 'Type',
+    '#default_value' => $type ? $type : -1,
+    '#options' => $types,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter',
+  );
+
+  return $form;
+}
+
+function culturefeed_ui_activities_filter_form_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+
+  if ($type > -1) {
+    drupal_goto('culturefeed/activities/' . $type);
+  }
+  else {
+    drupal_goto('culturefeed/activities');
+  }
+}
+
 function culturefeed_ui_recommendations_filter_form() {
   $form = array();
 
