@@ -109,11 +109,11 @@ class CultureFeed {
    */
   public function getRequestToken($callback = '') {
     $params = array();
-    
+
     if (!empty($callback)) {
       $params['oauth_callback'] = $callback;
     }
-    
+
     $response = $this->oauth_client->consumerPost('requestToken', $params, FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
@@ -664,11 +664,11 @@ class CultureFeed {
    */
   public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
     $data = array();
-    
+
     if ($query) {
       $data = $query->toPostData();
     }
-    
+
     $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {
@@ -698,11 +698,11 @@ class CultureFeed {
    */
   public function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
     $data = array();
-    
+
     if ($query) {
       $data = $query->toPostData();
     }
-    
+
     $data['eventId'] = $id;
 
     $result = $this->oauth_client->consumerGetAsXml('recommendation/event', $data);

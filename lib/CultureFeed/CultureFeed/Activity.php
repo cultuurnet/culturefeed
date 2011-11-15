@@ -170,7 +170,7 @@ class CultureFeed_Activity {
     if (isset($data['private'])) {
       $data['creationDate'] = date('c', $data['creationDate']);
     }
-    
+
     $data = array_filter($data);
 
     return $data;

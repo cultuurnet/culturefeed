@@ -84,7 +84,7 @@ class CultureFeed_SearchActivitiesQuery {
     if (isset($data['private'])) {
       $data['private'] = $data['private'] ? 'true' : 'false';
     }
-    
+
     $data = array_filter($data);
 
     return $data;

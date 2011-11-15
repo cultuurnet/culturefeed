@@ -11,7 +11,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
 
   // nick
   $variables['nick'] = $account->nick;
-  
+
   // name
   $name = array();
 
@@ -23,16 +23,16 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   }
 
   $variables['name'] = !empty($name) ? implode(' ', $name) : '';
-  
+
   // gender
   $variables['gender'] = '';
   if (!empty($account->gender)) {
     $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
   }
-  
+
   // dob
   $variables['dob'] = !empty($account->dob) ? format_date($account->dob, 'custom', 'j/n/Y') : '';
-  
+
   // bio
   $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 
@@ -59,7 +59,7 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
  */
 function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variables) {
   $variables['mbox'] = $variables['account']->mbox;
-  
+
   $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
   $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
   $variables['info_link'] = l('Meer info over UiTid', '<front>');
@@ -192,12 +192,12 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
 
   if (!user_is_anonymous()) {
     $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
-    
+
     $picture = $variables['account']->depiction . '?maxwidth=20&maxheight=20&crop=auto';
     $variables['picture'] = theme('image', array('path' => $picture));
 
     $variables['nick'] = l($variables['account']->nick, $url_profile);
-    
+
     $variables['link_profile'] = l('Mijn UiTid', $url_profile);
   }
 
@@ -262,22 +262,22 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   // object_url
   $request_detail = array('event' => $item->id, 'title' => $item->title);
   $object_url = cnapi_url_dp2dua($request_detail);
-  
+
   // id
   $variables['id'] = $variables['event']->itemid;
-  
+
   // title
   $variables['title'] = l($item->title, $object_url['path'], $object_url['options']);
-  
+
   // date
   $variables['date'] = !empty($item->from) ? $item->from : '';
   if (!empty($item->from) && !empty($item->from)) {
     $variables['date'] .= ' tot ' . $item->to;
   }
-  
+
   // location
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
-  
+
   // more
   $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
 }
@@ -290,16 +290,16 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 function template_preprocess_culturefeed_ui_related_events(&$variables) {
   // events
   $items = array();
-  
+
   foreach ($variables['events'] as $event_info) {
     $items[] = theme('culturefeed_ui_event_recommendation', array('event' => $event_info, 'heading_level' => 3));
   }
-  
+
   $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-recommendation-list')));
-  
+
   // links
   $links = array();
-  
+
   // links : headings
 	if (!empty($variables['headings'])) {
   	foreach ($variables['headings'] as $heading) {
@@ -307,18 +307,18 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   	  $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
   	}
 	}
-  
+
   // links : zip
 	if (!empty($variables['cityid'])) {
 		$cities = cnapi_get_cities();
 		$city = $cities[$variables['cityid']];
-  	
+
 		if ($city) {
   		$request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
   		$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
 		}
 	}
-  
+
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }
 
@@ -330,7 +330,7 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
 function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables) {
   $consumer = $variables['consumer'];
   $consumer instanceof CultureFeed_Consumer;
-  
+
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100&crop=auto')) : '';
   $variables['name'] = isset($consumer->name) ? $consumer->name : '';
   $variables['description'] = isset($consumer->description) ? $consumer->description : '';

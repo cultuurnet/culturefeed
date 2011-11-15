@@ -235,7 +235,7 @@ class CultureFeed_User {
     if (isset($data['dob'])) {
       $data['dob'] = date('c', $data['dob']);
     }
-    
+
     $data = array_filter($data);
 
     return $data;

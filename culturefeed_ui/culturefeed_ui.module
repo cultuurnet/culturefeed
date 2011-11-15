@@ -256,31 +256,31 @@ function culturefeed_ui_block_info() {
  */
 function culturefeed_ui_block_view($delta = '') {
   module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
-  
+
   if (function_exists('culturefeed_ui_block_is_visible_' . $delta)) {
     if (!call_user_func('culturefeed_ui_block_is_visible_' . $delta)) {
       return FALSE;
     }
   }
-  
+
   if (function_exists('culturefeed_ui_block_cache_id_' . $delta) && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
     $cid = culturefeed_ui_block_get_cache_id($delta);
-    
+
     if ($cache = cache_get($cid, 'cache_block')) {
       return $cache->data;
     }
-    
+
     if (function_exists('culturefeed_ui_block_view_' . $delta)) {
       $block = call_user_func('culturefeed_ui_block_view_' . $delta);
-      
+
       $cache_expires = CACHE_TEMPORARY;
-      
+
       if (function_exists('culturefeed_ui_block_cache_expires_' . $delta)) {
         $cache_expires = call_user_func('culturefeed_ui_block_cache_expires_' . $delta);
       }
-      
+
       cache_set($cid, $block, 'cache_block', $cache_expires);
-      
+
       return $block;
     }
   }
@@ -310,9 +310,9 @@ function culturefeed_ui_block_get_cache_id($delta) {
         $cid_parts[] = $GLOBALS[$language_type]->language;
       }
     }
-  
+
     $cid_parts = array_merge($cid_parts, call_user_func('culturefeed_ui_block_cache_id_' . $delta));
-    
+
     return implode(':', $cid_parts);
   }
 }

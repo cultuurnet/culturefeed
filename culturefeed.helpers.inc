@@ -249,14 +249,14 @@ function culturefeed_activity_content_type_from_cnapi_type($type) {
 function culturefeed_get_consumer_shared_secret($application_key) {
   foreach (module_implements('culturefeed_consumer_shared_secret') as $module) {
     $shared_secret = module_invoke('culturefeed_consumer_shared_secret', $module, $application_key);
-  
+
     if (isset($shared_secret)) {
       return $shared_secret;
     }
   }
-  
+
   watchdog('culturefeed', 'The shared secret for Application key (@app_key) cannot be found!', array('@app_key' => $application_key), WATCHDOG_ERROR);
-  
+
   return NULL;
 }
 

@@ -226,18 +226,18 @@ class DrupalCultureFeed {
     $query->nodeId = $node_id;
     $query->userId = $user_id;
     $query->private = TRUE;
-    
+
     $activities = self::searchActivities($query);
-    
+
     if (empty($activities->objects)) {
       return;
     }
-    
+
     foreach ($activities->objects as $activity) {
       self::deleteActivity($activity->id);
     }
-  } 
-  
+  }
+
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
   }
@@ -278,10 +278,10 @@ class DrupalCultureFeed {
   public static function getUrlLogout($destination = '') {
     return self::getConsumerInstance()->getUrlLogout($destination);
   }
-  
+
   public static function userDidActivity($type, $nodeId, $contentType, $user = NULL) {
     $userDidActivity = &drupal_static(__FUNCTION__, array());
-    
+
     if (!$user) {
       $user = self::getLoggedInUserId();
     }
@@ -302,14 +302,14 @@ class DrupalCultureFeed {
       $query->contentType = $contentType;
       $query->userId = self::getLoggedInUserId();
       $query->private = TRUE;
-      
+
       $activities = self::searchActivities($query);
 
       $userDidActivity[$nodeId][$contentType][$user] = $activities;
     }
-    
+
     $activities = $userDidActivity[$nodeId][$contentType][$user];
-    
+
     if (!empty($activities->objects)) {
       foreach ($activities->objects as $activity) {
         if ($activity->type == $type) {
@@ -317,7 +317,7 @@ class DrupalCultureFeed {
         }
       }
     }
-    
+
     return FALSE;
   }
 }

@@ -2,9 +2,9 @@
 
 function culturefeed_ui_recommendations_filter_form() {
   $form = array();
-  
+
   $zip = NULL;
-  
+
   if (arg(0) == 'culturefeed' && arg(1) == 'recommendations' && arg(2)) {
     $zip = arg(2);
   }
@@ -28,7 +28,7 @@ function culturefeed_ui_recommendations_filter_form() {
 
 function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) {
   $zip = $form_state['values']['zip'];
-  
+
   drupal_goto('culturefeed/recommendations/' . $zip);
 }
 

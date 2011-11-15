@@ -314,7 +314,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     return $url;
   }
-  
+
   /**
    * Build a querystring.
    *
@@ -322,7 +322,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
    *   Array representation of the querystring.
    * @return string
    *   The querystring.
-   */  
+   */
   private static function build_query($params) {
     $parts = array();
 
@@ -336,7 +336,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $parts[] = urlencode($key) . '=' . urlencode($value);
       }
     }
-    
+
     return implode('&', $parts);
   }
 

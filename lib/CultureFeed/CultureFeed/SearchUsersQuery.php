@@ -331,7 +331,7 @@ class CultureFeed_SearchUsersQuery {
     if (isset($data['lastLoginMax'])) {
       $data['lastLoginMax'] = date('c', $data['lastLoginMax']);
     }
-    
+
     $data = array_filter($data);
 
     return $data;
