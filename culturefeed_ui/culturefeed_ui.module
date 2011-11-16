@@ -9,6 +9,10 @@ define('CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT', 20);
 define('CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT', 5);
 define('CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT', 12);
 define('CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT', 5);
+define('CULTUREFEED_UI_PAGE_ACTIVITIES_COUNT', 20);
+define('CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT', 20);
+define('CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT', 10);
+define('CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT', 20);
 
 /**
  * Implements hook_menu().
@@ -66,10 +70,10 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/serviceconsumers/revoke/%'] = array(
+  $items['culturefeed/serviceconsumers/revoke/%/%'] = array(
     'title' => 'Revoke service consumer',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_ui_page_serviceconsumers_revoke_form', 3),
+    'page callback' => 'culturefeed_ui_page_serviceconsumers_revoke',
+    'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
@@ -210,7 +214,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-related-events',
     ),
     'culturefeed_ui_service_consumer_summary' => array(
-      'variables' => array('consumer' => NULL),
+      'variables' => array('consumer' => NULL, 'revoke_link' => ''),
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
     'culturefeed_ui_online_accounts_form' => array(

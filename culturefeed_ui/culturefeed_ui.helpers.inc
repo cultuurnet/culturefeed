@@ -94,19 +94,17 @@ function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
   $user_id = DrupalCultureFeed::getLoggedInUserId();
   $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
 
-  $error = FALSE;
-
   try {
     DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
+    cache_clear_all('*', 'cache_page', TRUE);
+    
+    return TRUE;
   }
   catch (Exception $e) {
-    $error = TRUE;
     watchdog_exception('culturefeed_ui', $e);
+    
+    return FALSE;
   }
-
-  cache_clear_all('*', 'cache_page', TRUE);
-
-  return $error;
 }
 
 function _culturefeed_ui_do($activity_type, $type, $id) {
@@ -125,21 +123,19 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
     $activity->nodeTitle = $object['detail']['nl']['title'];
   }
 
-  $error = FALSE;
-
   try {
     DrupalCultureFeed::createActivity($activity);
+    cache_clear_all('*', 'cache_page', TRUE);
+    
+    return TRUE;
   }
   catch (Exception $e) {
     if ($e->getCode() != 421) {
-      $error = TRUE;
       watchdog_exception('culturefeed_ui', $e);
+      return FALSE;
     }
+    return TRUE;
   }
-
-  cache_clear_all('*', 'cache_page', TRUE);
-
-  return $error;
 }
 
 function culturefeed_ui_activity_based_goto($content_type, $node_id) {

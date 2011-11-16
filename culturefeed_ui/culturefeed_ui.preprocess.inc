@@ -341,5 +341,4 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['name'] = isset($consumer->name) ? $consumer->name : '';
   $variables['description'] = isset($consumer->description) ? $consumer->description : '';
   $variables['creation_date'] = 'Gekoppeld op ' . format_date($consumer->creationDate, 'custom', 'j F Y');
-  $variables['revoke_link'] = l('Verwijder', 'culturefeed/serviceconsumers/revoke/' . $consumer->id);
 }

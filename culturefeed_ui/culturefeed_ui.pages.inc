@@ -1,15 +1,20 @@
 <?php
 
+// @todo clean up code
+// @todo fix case where activity is an event (node, actor, ...)
 function culturefeed_ui_page_activities($type = NULL) {
   $types = culturefeed_ui_activity_types();
   
-  if (!empty($type) && !is_numeric($type) && !in_array($type, array_keys($types))) {
+  // If a type was passed, check if it's valid.
+  if (!empty($type) && !in_array($type, array_keys($types))) {
     drupal_not_found();
   }
   
-  $pagelength = 20;
+  // Set page and pagelength.
+  $pagelength = CULTUREFEED_UI_PAGE_ACTIVITIES_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
+  // Build the query.
   $query = new CultureFeed_SearchActivitiesQuery();
 
   $query->userId      = DrupalCultureFeed::getLoggedInUserId();
@@ -21,16 +26,19 @@ function culturefeed_ui_page_activities($type = NULL) {
     $query->type = $type;
   }
 
+  // Do the query.
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    drupal_set_message('Er is een fout opgetreden.', 'error');
     return;
   }
 
+  // Initialize the pager.
   pager_default_initialize($activities->total, $pagelength);
   
+  // Fetch the event information for all events.
   $events = culturefeed_get_nodes_for_activities($activities->objects);
 
   $rows = array();
@@ -89,30 +97,32 @@ function culturefeed_ui_page_activities($type = NULL) {
 }
 
 function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
-  $error = FALSE;
+  $success = TRUE;
   
   try {
     DrupalCultureFeed::updateActivity($id, $privacy == 1);
   }
   catch(Exception $e) {
-    $error = TRUE;
+    $success = FALSE;
     watchdog_exception('culturefeed_ui', $e);
   }
   
   if ($type == 'ajax') {
-    
-    $privacy = array(
-      '#type' => 'link',
-      '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
-      '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
-      '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'activity-' . $id,
-      ),
-    );
-    
-    $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
+    if ($success) {
+      $commands = array();
+      $privacy = array(
+        '#type' => 'link',
+        '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
+        '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
+        '#options' => array('query' => drupal_get_destination()),
+        '#ajax' => array(
+          'wrapper' => 'activity-' . $id,
+        ),
+      );
+      
+      $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
+    }
 
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
@@ -123,20 +133,20 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
 }
 
 function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
-  $error = FALSE;
+  $success = TRUE;
   
   try {
     DrupalCultureFeed::deleteActivity($id);
   }
   catch(Exception $e) {
-    $error = TRUE;
+    $success = FALSE;
     watchdog_exception('culturefeed_ui', $e);
   }
   
   if ($type == 'ajax') {
     $commands = array();
     
-    if (!$error) {
+    if ($success) {
       $commands[] = ajax_command_remove('#activity-' . $id);
     }
 
@@ -148,7 +158,7 @@ function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
   }
 }
 
-function culturefeed_ui_page_recommendations($zip) {
+function culturefeed_ui_page_recommendations($zip = NULL) {
   if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
     drupal_not_found();
   }
@@ -176,72 +186,59 @@ function culturefeed_ui_page_recommendations($zip) {
   return $content;
 }
 
-// @todo cdbid kan ook nodeid zijn (dus nodeid gebruiken)
-function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid = NULL, $type = 'ajax') {
+function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $node_id = NULL, $type = 'ajax') {
+  $success = TRUE;
+  
   switch ($evaluation) {
     case 'unlike':
-      _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
-
-      try {
-        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_ui', $e);
-      }
-
-      break;
-
     case 'negative':
-
-      try {
-        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_ui', $e);
-      }
-      
+      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE;
       break;
-
     case 'positive':
-
-      try {
-        DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE);
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_ui', $e);
-      }
-
+      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
       break;
   }
-
+      
+  try {
+    DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    $success = FALSE;
+  }
+  
+  if ($success && $evalution == 'unlike') {
+    $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
+  }
 
   if ($type == 'ajax') {
     $commands = array();
-
-    switch ($evaluation) {
-      case 'unlike':
-
-      case 'negative':
-        $commands[] = ajax_command_remove('#recommendation-' . $id);
-        break;
-
-      case 'positive':
-        $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
-
-        $unlike = array(
-          '#type' => 'link',
-          '#title' => 'Ik vind dit niet meer leuk',
-          '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $cdbid . '/nojs',
-          '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
-          '#options' => array('query' => drupal_get_destination()),
-          '#ajax' => array(
-            'wrapper' => 'recommendation-' . $id,
-          ),
-        );
-
-        $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
-
-        break;
+    
+    if ($success) {
+      switch ($evaluation) {
+        case 'unlike':
+        case 'negative':
+          $commands[] = ajax_command_remove('#recommendation-' . $id);
+          break;
+      
+        case 'positive':
+          $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
+      
+          $unlike = array(
+            '#type' => 'link',
+            '#title' => 'Ik vind dit niet meer leuk',
+            '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $node_id . '/nojs',
+            '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
+            '#options' => array('query' => drupal_get_destination()),
+            '#ajax' => array(
+              'wrapper' => 'recommendation-' . $id,
+            ),
+          );
+      
+          $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
+      
+          break;
+      }
     }
 
     $page = array('#type' => 'ajax', '#commands' => $commands);
@@ -253,17 +250,17 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
 }
 
 function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redirect = TRUE) {
-  $error = _culturefeed_ui_do($activity_type, $content_type, $node_id);
+  $success = _culturefeed_ui_do($activity_type, $content_type, $node_id);
 
   if ($redirect) {
-    if ($error) {
+    if ($success) {
       drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
     }
 
     culturefeed_ui_activity_based_goto($content_type, $node_id);
   }
   else {
-    if ($error) {
+    if (!$success) {
       $status = 'ERROR';
     }
     else {
@@ -275,43 +272,16 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
 }
 
 function culturefeed_ui_page_undo($activity_type, $content_type, $node_id) {
-  _culturefeed_ui_undo($activity_type, $content_type, $node_id);
+  $success = _culturefeed_ui_undo($activity_type, $content_type, $node_id);
 
-  if ($error) {
-    drupal_set_message('Actie kon niet ongedaan gemaakt worden.');
+  if (!$success) {
+    drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
   }
 
   culturefeed_ui_activity_based_goto($content_type, $node_id);
 }
 
-function culturefeed_ui_page_mboxverify_resend() {
-  try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
-
-    drupal_goto('<front>');
-  }
-
-  if (!$cf_account->mboxVerified) {
-    try {
-      DrupalCultureFeed::resendMboxConfirmationForUser($cf_account->id);
-      drupal_set_message('De bevestigingsmail werd met succes verzonden.');
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-      drupal_set_message('De bevestigingsmail kon niet verstuur worden.', 'error');
-    }
-  }
-  else {
-    drupal_set_message('Het e-mailadres verbonden aan deze account werd reeds bevestigd.', 'error');
-  }
-
-  drupal_goto('<front>');
-}
-
+// @todo code cleanup
 function culturefeed_ui_page_users_activity($type, $content_type, $id) {
   if (!in_array($content_type, array('actor', 'event', 'production', 'page'))) {
     drupal_not_found();
@@ -385,7 +355,7 @@ function culturefeed_ui_page_users_activity($type, $content_type, $id) {
 }
 
 function culturefeed_ui_page_recent_activities() {
-  $pagelength = 20;
+  $pagelength = CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -404,40 +374,42 @@ function culturefeed_ui_page_recent_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    drupal_set_message('Er is een fout opgetreden.', 'error');
     return;
   }
-
 
   pager_default_initialize($activities->total, $pagelength);
 
   $items = culturefeed_ui_activities_list($activities);
 
   if (empty($items)) {
-    return;
+    $content['activities'] = array(
+      '#markup' => 'Geen activiteiten gevonden.',
+    );
   }
-
-  return array(
-    array(
+  else {
+    $content['activities'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
       '#attributes' => array('class' => 'user-activity-list'),
-    ),
-    array(
+    );
+    $content['pager'] = array(
       '#theme' => 'pager',
-    ),
-  );
+    );
+  }
+  
+  return $content;
 }
 
 function culturefeed_ui_page_search_users($name = '') {
   return array(
-    drupal_get_form('culturefeed_ui_search_users_form'),
-    culturefeed_ui_search_users_results($name)
+    'form' => drupal_get_form('culturefeed_ui_search_users_form'),
+    'results' => culturefeed_ui_search_users_results($name)
   );
 }
 
 function culturefeed_ui_search_users_results($name = '') {
-  $pagelength = 20; // @todo make this a const
+  $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT; // @todo make this a const
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchUsersQuery();
@@ -451,36 +423,76 @@ function culturefeed_ui_search_users_results($name = '') {
     $query->name = $name;
   }
 
-  $users = DrupalCultureFeed::searchUsers($query);
+  try {
+    $users = DrupalCultureFeed::searchUsers($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
 
   pager_default_initialize($users->total, $pagelength);
 
   $items = culturefeed_ui_users_list($users);
 
   if (empty($items)) {
-    return;
+    $content['users'] = array(
+      '#markup' => 'Geen resultaten gevonden.',
+    );
   }
-
-  return array(
-    array(
+  else {
+    $content['users'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
       '#attributes' => array('class' => 'user-list'),
-    ),
-    array(
+    );
+    
+    $content['pager'] = array(
       '#theme' => 'pager',
-    ),
-  );
+    );
+  }
+  
+  return $content;
+}
+
+function culturefeed_ui_page_mboxverify_resend() {
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
+  }
+
+  if (!empty($cf_account) && !$cf_account->mboxVerified) {
+    try {
+      DrupalCultureFeed::resendMboxConfirmationForUser($cf_account->id);
+      drupal_set_message('De bevestigingsmail werd met succes verzonden.');
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
+    }
+  }
+  else {
+    drupal_set_message('Het e-mailadres verbonden aan deze account werd reeds bevestigd.');
+  }
+
+  drupal_goto();
 }
 
 function culturefeed_ui_profile_edit_form() {
   $form = array();
 
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
-
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
 
   // Firstname.
   $form['givenName'] = array(
@@ -628,7 +640,6 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   catch (Exception $e) {
     drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
     watchdog_exception('culturefeed_ui', $e);
-    return;
   }
 
   if ($_FILES['files']['tmp_name']['picture']) {
@@ -640,13 +651,14 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
 
     $picture = file_get_contents($picture_path);
 
-    try {
-      DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
-    }
-    catch (Exception $e) {
-      drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
-      watchdog_exception('culturefeed_ui', $e);
-      return;
+    if ($picture) {
+      try {
+        DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
+      }
+      catch (Exception $e) {
+        drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+        watchdog_exception('culturefeed_ui', $e);
+      }
     }
   }
 
@@ -663,14 +675,14 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     DrupalCultureFeed::updateUserPrivacy(DrupalCultureFeed::getLoggedInUserId(), $privacy_config);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw privacy instellingen.', 'error');
     watchdog_exception('culturefeed_ui', $e);
-    return;
+    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw privacy instellingen.', 'error');
   }
 
   drupal_set_message(t('Updates saved.'));
 }
 
+// @todo code cleanup
 function culturefeed_ui_page_account_edit() {
   return array(
     'account' => drupal_get_form('culturefeed_ui_account_edit_form'),
@@ -686,14 +698,18 @@ function culturefeed_ui_page_account_edit() {
   );
 }
 
+// @todo ajaxify this / translate this
 function culturefeed_ui_online_accounts_form() {
   $form = array();
 
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    watchdog_exception('culturefeed_ui', $e);
     return;
   }
-
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
 
   $online_accounts = array();
 
@@ -758,13 +774,13 @@ function theme_culturefeed_ui_online_accounts_form($variables) {
 
   foreach (element_children($form['accounts']) as $account_type) {
     $vars = array(
-      'type' => $account_type,
-      'name' => drupal_render($form['accounts'][$account_type]['name']),
-      'nick' => drupal_render($form['accounts'][$account_type]['nick']),
-      'depiction' => drupal_render($form['accounts'][$account_type]['depiction']),
+      'type'             => $account_type,
+      'name'             => drupal_render($form['accounts'][$account_type]['name']),
+      'nick'             => drupal_render($form['accounts'][$account_type]['nick']),
+      'depiction'        => drupal_render($form['accounts'][$account_type]['depiction']),
       'publish_checkbox' => drupal_render($form['accounts'][$account_type]['publish']),
-      'delete_link' => drupal_render($form['accounts'][$account_type]['delete_link']),
-      'connect_link' => drupal_render($form['accounts'][$account_type]['connect_link']),
+      'delete_link'      => drupal_render($form['accounts'][$account_type]['delete_link']),
+      'connect_link'     => drupal_render($form['accounts'][$account_type]['connect_link']),
     );
 
     $items[] = theme('culturefeed_ui_online_account', $vars);
@@ -777,19 +793,19 @@ function culturefeed_ui_online_accounts_form_submit($form, &$form_state) {
   $values = $form_state['values'];
 
   foreach ($values['accounts'] as $type => $account_info) {
+    $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+    
+    $account = new CultureFeed_OnlineAccount();
+    $account->publishActivities = $account_info['publish'] ? true : false;
+    $account->accountName = $account_info['id'];
+    $account->accountType = $type;
+      
     try {
-      $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-
-      $account = new CultureFeed_OnlineAccount();
-      $account->publishActivities = $account_info['publish'] ? true : false;
-      $account->accountName = $account_info['id'];
-      $account->accountType = $type;
-
       DrupalCultureFeed::updateUserOnlineAccount($cf_uid, $account);
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-      return;
+      drupal_set_message('Er is een fout opgetreden.', 'error');
     }
   }
 }
@@ -817,14 +833,14 @@ function culturefeed_ui_page_online_account_delete_form($form, $form_state, $typ
 function culturefeed_ui_page_online_account_delete_form_submit($form, &$form_state) {
   $type = $form_state['values']['type'];
   $id = $form_state['values']['id'];
+  $cf_uid = DrupalCultureFeed::getLoggedInUserId();
 
   try {
-    $cf_uid = DrupalCultureFeed::getLoggedInUserId();
     DrupalCultureFeed::deleteUserOnlineAccount($cf_uid, $type, $id);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    return;
+    drupal_set_message('Er is een fout opgetreden.', 'error');
   }
 
   $form_state['redirect'] = 'culturefeed/account/edit';
@@ -838,7 +854,7 @@ function culturefeed_ui_account_edit_form() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het laden van het jouw account. Probeer het later opnieuw.');
+    drupal_set_message('Er is een fout opgetreden bij het laden van jouw account. Probeer het later opnieuw.');
     return;
   }
 
@@ -861,8 +877,8 @@ function culturefeed_ui_account_edit_form() {
     '#value' => 'Opslaan',
   );
 
-  $destination = drupal_get_destination();
-  $destination = url($destination['destination'], array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
+  // @todo fix popup
+  $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
 
   $url = DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination);
 
@@ -884,16 +900,18 @@ function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
 }
 
 function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
-  $values = $form_state['values'];
-
-  $mbox = $values['mbox'];
-
   $cf_account = new CultureFeed_User();
+  $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
+  $cf_account->mbox = $form_state['values']['mbox'];
 
-  $cf_account->id          = DrupalCultureFeed::getLoggedInUserId();
-  $cf_account->mbox        = $mbox;
-
-  DrupalCultureFeed::updateUser($cf_account);
+  try {
+    DrupalCultureFeed::updateUser($cf_account);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
 
   drupal_set_message('Jouw aanpassingen zijn bewaard.');
 }
@@ -901,11 +919,18 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
 
 function culturefeed_ui_page_most_active_users() {
   $query = new CultureFeed_SearchUsersQuery();
-  $query->max = 10;
+  $query->max = CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT;
   $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
   $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
-  $users = DrupalCultureFeed::searchUsers($query);
+  try {
+    $users = DrupalCultureFeed::searchUsers($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
 
   $items = array();
 
@@ -913,48 +938,30 @@ function culturefeed_ui_page_most_active_users() {
 
   foreach ($users->objects as $user) {
     if (!isset($accounts[$user->id])) {
-      continue;
+      drupal_set_message('Er is een fout opgetreden.', 'error');
+      return;
     }
 
     $items[] = theme('culturefeed_ui_ranked_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
   }
 
   if (empty($items)) {
-    return;
+    $content['users'] = array(
+      '#markup' => 'Geen gebruikers gevonden.',
+    );
   }
-
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#type' => 'ol',
-  );
+  else {
+    $content['users'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#type' => 'ol',
+    );
+  }
+  
+  return $content;
 }
 
 function culturefeed_ui_page_serviceconsumers() {
-  try {
-    $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-  }
-
-  $items = array();
-
-  foreach ($consumers as $consumer) {
-    $items[] = theme('culturefeed_ui_service_consumer_summary', array('consumer' => $consumer));
-  }
-
-  if (empty($items)) {
-    return;
-  }
-
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-  );
-}
-
-function culturefeed_ui_page_serviceconsumers_revoke_form($form, $form_state, $id) {
   try {
     $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
   }
@@ -964,46 +971,69 @@ function culturefeed_ui_page_serviceconsumers_revoke_form($form, $form_state, $i
     return;
   }
 
-  $consumer = NULL;
+  $items = array();
 
-  foreach ($consumers as $tmp_consumer) {
-    if ($tmp_consumer->id == $id) {
-      $consumer = $tmp_consumer;
-      break;
+  foreach ($consumers as $consumer) {
+    $revoke_link = '';
+    
+    if ($consumer->consumerKey != variable_get('culturefeed_api_application_key', '')) {
+      $revoke_link = array(
+        '#type' => 'link',
+        '#title' => 'Verwijderen',
+        '#href' => 'culturefeed/serviceconsumers/revoke/' . $consumer->id . '/nojs',
+        '#attributes' => array('class' => 'revoke-link'),
+        '#options' => array('query' => drupal_get_destination()),
+        '#ajax' => array(),
+      );
+      
+      $revoke_link = drupal_render($revoke_link);
     }
+    
+    $items[] = array(
+      'data' => theme('culturefeed_ui_service_consumer_summary', array('consumer' => $consumer, 'revoke_link' => $revoke_link)),
+      'id' => 'consumer-' . $consumer->id,
+    );
   }
 
-  if (!$consumer) {
-    drupal_set_message('Er is een fout opgetreden : ongekend kanaal.', 'error');
-    return;
+  if (empty($items)) {
+    $content['consumers'] = array(
+      '#markup' => 'Geen kanalen gevonden.',
+    );
   }
-
-  return confirm_form(
-    array(
-      'consumer' => array(
-        '#type' => 'value',
-        '#value' => $id,
-      ),
-    ),
-    t('Are you sure you want to consumer %consumer?', array('%consumer' => $consumer->name)),
-    'culturefeed/serviceconsumers',
-    t('This action cannot be undone.'),
-    t('Remove consumer'),
-    t('Cancel')
-  );
+  else {
+    $content['consumers'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    );
+  }
+  
+  return $content;
 }
 
-function culturefeed_ui_page_serviceconsumers_revoke_form_submit($form, &$form_state) {
-  $id = $form_state['values']['consumer'];
-
+function culturefeed_ui_page_serviceconsumers_revoke($consumer_id, $type = 'ajax') {
+  $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+  
+  $success = TRUE;
+  
   try {
-    $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-    DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $id);
+    DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $consumer_id);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    return;
+    $success= FALSE;
   }
 
-  $form_state['redirect'] = 'culturefeed/serviceconsumers';
+  if ($type == 'ajax') {
+    $commands = array();
+    
+    if ($success) {
+      $commands[] = ajax_command_remove('#consumer-' . $consumer_id);
+    }
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto();
+  }
 }
