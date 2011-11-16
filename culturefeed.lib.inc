@@ -47,13 +47,13 @@ class DrupalCultureFeed {
    * @return CultureFeed_User
    *   @todo document this
    */
-  public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL) {
+  public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL, $reset = FALSE) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
     }
 
-    if (isset(self::$logged_in_user[$application_key])) {
+    if (!$reset && isset(self::$logged_in_user[$application_key])) {
       return self::$logged_in_user[$application_key];
     }
 
@@ -201,6 +201,30 @@ class DrupalCultureFeed {
 
   public static function updateUserOnlineAccount($id, CultureFeed_OnlineAccount $account) {
     self::getLoggedInUserInstance()->updateUserOnlineAccount($id, $account);
+  }
+
+  public static function getUserOnlineAccounts() {
+    $cf_account = self::getLoggedInUser();
+    
+    $online_accounts = array();
+    
+    if ($cf_account->holdsAccount) {
+      foreach ($cf_account->holdsAccount as $online_account) {
+        $online_accounts[$online_account->accountType] = $online_account;
+      }
+    }
+    
+    return $online_accounts;
+  }
+
+  public static function getUserOnlineAccount($account_type) {
+    $online_accounts = self::getUserOnlineAccounts();
+    
+    if (isset($online_accounts[$account_type])) {
+      return $online_accounts[$account_type];
+    }
+    
+    return FALSE;
   }
 
   public static function deleteUserOnlineAccount($id, $account_type, $account_name) {

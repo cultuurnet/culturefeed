@@ -13,7 +13,6 @@ define('CULTUREFEED_UI_PAGE_ACTIVITIES_COUNT', 20);
 define('CULTUREFEED_UI_PAGE_USERS_SEARCH_COUNT', 20);
 define('CULTUREFEED_UI_PAGE_USERS_MOST_ACTIVE_COUNT', 10);
 define('CULTUREFEED_UI_PAGE_ACTIVITIES_RECENT_COUNT', 20);
-define('CULTUREFEED_UI_PAGE_ACTIVITIES_RECENT_COUNT', 20);
 define('CULTUREFEED_UI_PAGE_RECOMMENDATIONS_COUNT', 50);
 
 // @todo translate page titles
@@ -82,10 +81,18 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/onlineaccounts/delete/%/%'] = array(
+  $items['culturefeed/onlineaccounts/delete/%/%/%'] = array(
     'title' => 'Delete online account',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_ui_page_online_account_delete_form', 3, 4),
+    'page callback' => 'culturefeed_ui_page_online_account_delete',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/onlineaccounts/privacy/%/%/%/%'] = array(
+    'title' => 'Update online account privacy',
+    'page callback' => 'culturefeed_ui_page_online_account_update_privacy',
+    'page arguments' => array(3, 4, 5, 6),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
@@ -221,12 +228,8 @@ function culturefeed_ui_theme() {
       'variables' => array('consumer' => NULL, 'revoke_link' => ''),
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
-    'culturefeed_ui_online_accounts_form' => array(
-      'render element' => 'form',
-      'file' => 'culturefeed_ui.pages.inc',
-    ),
     'culturefeed_ui_online_account' => array(
-      'variables' => array('type' => '', 'name' => '', 'privacy_checkbox' => '', 'connect_link' => ''),
+      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_link' => '', 'delete_link' => '', 'connect_link' => ''),
       'template' => 'culturefeed-ui-online-account',
     ),
     'culturefeed_ui_event_recommendation' => array(

@@ -309,7 +309,7 @@ function culturefeed_ui_block_view_profile_menu() {
     array(
       'title' => 'Profiel bewerken',
       'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, favoriet categoriëen, ...',
+      'description' => 'Wijzig naam, adres, favoriete locaties, ...',
     ),
     array(
       'title' => 'Account bewerken',

@@ -80,7 +80,15 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
  * @see culturefeed-ui-online-account.tpl.php
  */
 function template_preprocess_culturefeed_ui_online_account(&$variables) {
-  $variables['picture'] = !empty($variables['depiction']) ? theme('image', array('path' => $variables['depiction'] . '?maxwidth=50&maxheight=50&crop=auto')) : '';
+  $account = $variables['account'];
+  
+  $variables['type'] = $variables['account_type'];
+  
+  $variables['name'] = !empty($account->accountName) ? $account->accountName: '';
+  $variables['nick'] = !empty($account->accountNick) ? $account->accountNick : '';
+  $variables['depiction'] = !empty($account->accountDepiction) ? $account->accountDepiction : '';
+  
+  $variables['picture'] = !empty($account->accountDepiction) ? theme('image', array('path' => $account->accountDepiction . '?maxwidth=50&maxheight=50&crop=auto')) : '';
 }
 
 /**
@@ -203,7 +211,7 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
 
   $variables['link_logout'] = l('Afmelden', 'user/logout');
   $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
-  $variables['link_register'] = l('Registereren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_register'] = l('Registreren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
 }
 
 /**

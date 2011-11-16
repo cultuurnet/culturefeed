@@ -1,5 +1,51 @@
 <?php
 
+function culturefeed_ui_online_account($online_account_type, $online_account = NULL) {
+  $delete_link = '';
+  
+  if ($online_account) {
+    $delete_link = array(
+      '#type' => 'link',
+      '#title' => 'Verwijderen',
+      '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
+      '#attributes' => array('class' => 'delete-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(),
+    );
+    
+    $delete_link = drupal_render($delete_link);
+  }
+  
+  $publish_link = '';
+  if ($online_account) {
+    $publish_link = array(
+      '#type' => 'link',
+      '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+      '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1')  . '/nojs',
+      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(),
+    );
+    
+    $publish_link = drupal_render($publish_link);
+  }
+    
+  $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
+  $connect_link = l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+    
+  $vars = array(
+    'account_type'     => $online_account_type,
+    'account'          => $online_account,
+    'publish_link'     => $publish_link,
+    'delete_link'      => $delete_link,
+    'connect_link'     => $connect_link,
+  );
+    
+  //'#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512'),
+  
+  return theme('culturefeed_ui_online_account', $vars);
+}
+
 function culturefeed_ui_activity_types() {
   return array(
     CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
