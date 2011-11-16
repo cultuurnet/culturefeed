@@ -113,7 +113,7 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
 
 function culturefeed_ui_block_view_search_users() {
   $block['subject'] = 'Zoek andere gebruikers';
-  $block['content'] = drupal_get_form('culturefeed_ui_search_users_form');
+  $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
 
   return $block;
 }

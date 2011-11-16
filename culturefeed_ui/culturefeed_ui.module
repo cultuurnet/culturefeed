@@ -14,6 +14,8 @@ define('CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT', 20);
 define('CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT', 10);
 define('CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT', 20);
 
+// @todo translate page titles
+
 /**
  * Implements hook_menu().
  */
@@ -29,7 +31,7 @@ function culturefeed_ui_menu() {
   $items['culturefeed/profile/edit'] = array(
     'title' => 'Edit profile',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_ui_profile_edit_form'),
+    'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
@@ -50,7 +52,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/search'] = array(
     'title' => 'Search users',
-    'page callback' => 'culturefeed_ui_page_search_users',
+    'page callback' => 'culturefeed_ui_page_users_search',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,

@@ -61,7 +61,7 @@ function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) 
   }
 }
 
-function culturefeed_ui_search_users_form() {
+function culturefeed_ui_users_search_form() {
   $form = array();
 
   $form['name'] = array(
@@ -78,7 +78,7 @@ function culturefeed_ui_search_users_form() {
   return $form;
 }
 
-function culturefeed_ui_search_users_form_submit($form, &$form_state) {
+function culturefeed_ui_users_search_form_submit($form, &$form_state) {
   $name = trim($form_state['values']['name']);
 
   if (!empty($name)) {

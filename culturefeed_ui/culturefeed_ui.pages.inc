@@ -382,14 +382,14 @@ function culturefeed_ui_page_recent_activities() {
   return $content;
 }
 
-function culturefeed_ui_page_search_users($name = '') {
+function culturefeed_ui_page_users_search($name = '') {
   return array(
-    'form' => drupal_get_form('culturefeed_ui_search_users_form'),
-    'results' => _culturefeed_ui_page_search_users_results($name)
+    'form' => drupal_get_form('culturefeed_ui_users_search_form'),
+    'results' => _culturefeed_ui_page_users_search_results($name)
   );
 }
 
-function _culturefeed_ui_page_search_users_results($name = NULL) {
+function _culturefeed_ui_page_users_search_results($name = NULL) {
   $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
@@ -408,8 +408,8 @@ function _culturefeed_ui_page_search_users_results($name = NULL) {
     $users = DrupalCultureFeed::searchUsers($query);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
     watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
     return;
   }
 
@@ -463,7 +463,7 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto();
 }
 
-function culturefeed_ui_profile_edit_form() {
+function culturefeed_ui_page_profile_edit_form() {
   $form = array();
 
   try {
@@ -592,7 +592,7 @@ function culturefeed_ui_profile_edit_form() {
   return $form;
 }
 
-function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
+function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   $values = $form_state['values'];
   
   $success = TRUE;
