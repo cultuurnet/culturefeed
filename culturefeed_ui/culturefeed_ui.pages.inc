@@ -234,7 +234,7 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
   $success = _culturefeed_ui_do($activity_type, $content_type, $node_id);
 
   if ($redirect) {
-    if ($success) {
+    if (!$success) {
       drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
     }
 
