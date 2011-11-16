@@ -5,7 +5,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
     drupal_not_found();
   }
 
-  $recommendations = culturefeed_ui_recommendations_list(100, $zip);
+  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_PAGE_RECOMMENDATIONS_COUNT, $zip);
   
   if (empty($recommendations)) {
     $content['recommendations'] = array(
@@ -263,7 +263,7 @@ function culturefeed_ui_page_undo($activity_type, $content_type, $node_id) {
 }
 
 function culturefeed_ui_page_recent_activities() {
-  $pagelength = CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT;
+  $pagelength = CULTUREFEED_UI_PAGE_ACTIVITIES_RECENT_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -390,7 +390,7 @@ function culturefeed_ui_page_users_search($name = '') {
 }
 
 function _culturefeed_ui_page_users_search_results($name = NULL) {
-  $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT;
+  $pagelength = CULTUREFEED_UI_PAGE_USERS_SEARCH_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchUsersQuery();
@@ -439,7 +439,7 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
 
 function culturefeed_ui_page_users_most_active() {
   $query = new CultureFeed_SearchUsersQuery();
-  $query->max = CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT;
+  $query->max = CULTUREFEED_UI_PAGE_USERS_MOST_ACTIVE_COUNT;
   $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
   $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
