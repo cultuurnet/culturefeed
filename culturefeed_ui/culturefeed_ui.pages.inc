@@ -52,11 +52,11 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
       switch ($evaluation) {
         case 'unlike':
         case 'negative':
-          $commands[] = ajax_command_remove('#recommendation-' . $recommendation_id);
+          $commands[] = ajax_command_invoke('#recommendation-' . $recommendation_id, 'fadeOut', array('slow'));
           break;
       
         case 'positive':
-          $commands[] = ajax_command_remove('#recommendation-negative-' . $recommendation_id);
+          $commands[] = ajax_command_invoke('#recommendation-negative-' . $recommendation_id, 'fadeOut', array('slow'));
       
           $unlike = array(
             '#type' => 'link',
@@ -220,7 +220,7 @@ function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
     $commands = array();
     
     if ($success) {
-      $commands[] = ajax_command_remove('#activity-' . $id);
+      $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
@@ -1015,7 +1015,7 @@ function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax'
     $commands = array();
     
     if ($success) {
-      $commands[] = ajax_command_remove('#consumer-' . $consumer_id);
+      $commands[] = ajax_command_invoke('#consumer-' . $consumer_id, 'fadeOut', array('slow'));
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
