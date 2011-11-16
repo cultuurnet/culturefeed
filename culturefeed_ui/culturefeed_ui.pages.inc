@@ -124,8 +124,7 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
       $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
     }
 
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     drupal_goto();
@@ -150,8 +149,7 @@ function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
       $commands[] = ajax_command_remove('#activity-' . $id);
     }
 
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     drupal_goto();
@@ -241,8 +239,7 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $node_
       }
     }
 
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     drupal_goto();
@@ -880,7 +877,7 @@ function culturefeed_ui_account_edit_form() {
   // @todo fix popup
   $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
 
-  $url = DrupalCultureFeed::getUrlChangePassword(DrupalCultureFeed::getLoggedInUserId(), $destination);
+  $url = DrupalCultureFeed::getUrlChangePassword($cf_account->culturefeed_uid, $destination);
 
   $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
 
@@ -906,14 +903,12 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
 
   try {
     DrupalCultureFeed::updateUser($cf_account);
+    drupal_set_message('Jouw aanpassingen zijn bewaard.');
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message('Er is een fout opgetreden.', 'error');
-    return;
   }
-
-  drupal_set_message('Jouw aanpassingen zijn bewaard.');
 }
 
 
@@ -1030,10 +1025,12 @@ function culturefeed_ui_page_serviceconsumers_revoke($consumer_id, $type = 'ajax
       $commands[] = ajax_command_remove('#consumer-' . $consumer_id);
     }
 
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
+    if (!$success) {
+      drupal_set_message('Er is een fout opgetreden.', 'error');
+    }
     drupal_goto();
   }
 }
