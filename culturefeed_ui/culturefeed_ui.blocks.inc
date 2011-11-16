@@ -9,7 +9,7 @@ function culturefeed_ui_block_view_recommendations() {
   
   $recommendations = culturefeed_ui_recommendations_list(5);
   
-  if ($recommendations == FALSE) {
+  if ($recommendations === FALSE) {
     return;
   }
   

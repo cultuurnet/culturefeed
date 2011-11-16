@@ -155,7 +155,7 @@ function culturefeed_ui_page_recommendations($zip) {
 
   $recommendations = culturefeed_ui_recommendations_list(100, $zip);
   
-  if ($recommendations == FALSE || empty($recommendations)) {
+  if ($recommendations === FALSE || empty($recommendations)) {
     $content['recommendations'] = array(
       '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
     );
