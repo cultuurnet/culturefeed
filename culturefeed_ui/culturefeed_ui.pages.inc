@@ -206,7 +206,6 @@ function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $cdbid
 
       try {
         DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE);
-        _culturefeed_ui_do(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $cdbid);
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
