@@ -1,5 +1,95 @@
 <?php
 
+function culturefeed_ui_page_recommendations($zip = NULL) {
+  if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
+    drupal_not_found();
+  }
+
+  $recommendations = culturefeed_ui_recommendations_list(100, $zip);
+  
+  if ($recommendations === FALSE || empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  else {
+    $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form', $zip);
+    
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
+  
+  return $content;
+}
+
+function culturefeed_ui_page_recommendations_evaluate($evaluation, $id = NULL, $node_id = NULL, $type = 'ajax') {
+  $success = TRUE;
+  
+  switch ($evaluation) {
+    case 'unlike':
+    case 'negative':
+      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE;
+      break;
+    case 'positive':
+      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
+      break;
+  }
+      
+  try {
+    DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    $success = FALSE;
+  }
+  
+  if ($success && $evalution == 'unlike') {
+    $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
+  }
+
+  if ($type == 'ajax') {
+    $commands = array();
+    
+    if ($success) {
+      switch ($evaluation) {
+        case 'unlike':
+        case 'negative':
+          $commands[] = ajax_command_remove('#recommendation-' . $id);
+          break;
+      
+        case 'positive':
+          $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
+      
+          $unlike = array(
+            '#type' => 'link',
+            '#title' => 'Ik vind dit niet meer leuk',
+            '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $node_id . '/nojs',
+            '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
+            '#options' => array('query' => drupal_get_destination()),
+            '#ajax' => array(
+              'wrapper' => 'recommendation-' . $id,
+            ),
+          );
+      
+          $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
+      
+          break;
+      }
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_goto();
+  }
+}
+
 // @todo clean up code
 // @todo fix case where activity is an event (node, actor, ...)
 function culturefeed_ui_page_activities($type = NULL) {
@@ -147,96 +237,6 @@ function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
     
     if ($success) {
       $commands[] = ajax_command_remove('#activity-' . $id);
-    }
-
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-  }
-  else {
-    drupal_goto();
-  }
-}
-
-function culturefeed_ui_page_recommendations($zip = NULL) {
-  if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
-    drupal_not_found();
-  }
-
-  $recommendations = culturefeed_ui_recommendations_list(100, $zip);
-  
-  if ($recommendations === FALSE || empty($recommendations)) {
-    $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
-    );
-  }
-  else {
-    $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form', $zip);
-    
-    $content['recommendations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
-    );
-    $content['more'] = array(
-      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
-    );
-  }
-  
-  return $content;
-}
-
-function culturefeed_ui_recommendations_evaluate($evaluation, $id = NULL, $node_id = NULL, $type = 'ajax') {
-  $success = TRUE;
-  
-  switch ($evaluation) {
-    case 'unlike':
-    case 'negative':
-      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE;
-      break;
-    case 'positive':
-      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
-      break;
-  }
-      
-  try {
-    DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    $success = FALSE;
-  }
-  
-  if ($success && $evalution == 'unlike') {
-    $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
-  }
-
-  if ($type == 'ajax') {
-    $commands = array();
-    
-    if ($success) {
-      switch ($evaluation) {
-        case 'unlike':
-        case 'negative':
-          $commands[] = ajax_command_remove('#recommendation-' . $id);
-          break;
-      
-        case 'positive':
-          $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
-      
-          $unlike = array(
-            '#type' => 'link',
-            '#title' => 'Ik vind dit niet meer leuk',
-            '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $node_id . '/nojs',
-            '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
-            '#options' => array('query' => drupal_get_destination()),
-            '#ajax' => array(
-              'wrapper' => 'recommendation-' . $id,
-            ),
-          );
-      
-          $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
-      
-          break;
-      }
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
@@ -401,11 +401,11 @@ function culturefeed_ui_page_recent_activities() {
 function culturefeed_ui_page_search_users($name = '') {
   return array(
     'form' => drupal_get_form('culturefeed_ui_search_users_form'),
-    'results' => culturefeed_ui_search_users_results($name)
+    'results' => _culturefeed_ui_page_search_users_results($name)
   );
 }
 
-function culturefeed_ui_search_users_results($name = NULL) {
+function _culturefeed_ui_page_search_users_results($name = NULL) {
   $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
@@ -685,14 +685,14 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
 
   // Setting status message.
   if ($success) {
-    drupal_set_message('Jouw wijzigingen werden bewaard.')
+    drupal_set_message('Jouw wijzigingen werden bewaard.');
   }
 }
 
 // @todo code cleanup
 function culturefeed_ui_page_account_edit() {
   return array(
-    'account' => drupal_get_form('culturefeed_ui_account_edit_form'),
+    'account' => drupal_get_form('culturefeed_ui_page_account_edit_form'),
     'online_accounts_title' => array(
       '#markup' => '<h2>Gekoppelde accounts</h2>'
     ),
@@ -853,7 +853,7 @@ function culturefeed_ui_page_online_account_delete_form_submit($form, &$form_sta
   $form_state['redirect'] = 'culturefeed/account/edit';
 }
 
-function culturefeed_ui_account_edit_form() {
+function culturefeed_ui_page_account_edit_form() {
   $form = array();
 
   try {
@@ -900,13 +900,13 @@ function culturefeed_ui_account_edit_form() {
   return $form;
 }
 
-function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
+function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['mbox'])) {
     form_set_error('mbox', 'Ongeldig e-mailadres.');
   }
 }
 
-function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
+function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
   $cf_account = new CultureFeed_User();
   $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
   $cf_account->mbox = $form_state['values']['mbox'];

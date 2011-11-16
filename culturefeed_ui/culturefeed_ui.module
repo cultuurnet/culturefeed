@@ -118,7 +118,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/recommendations/%/%/%/%'] = array(
     'title' => 'Delete recommendation',
-    'page callback' => 'culturefeed_ui_recommendations_evaluate',
+    'page callback' => 'culturefeed_ui_page_recommendations_evaluate',
     'page arguments' => array(2, 3, 4, 5),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,

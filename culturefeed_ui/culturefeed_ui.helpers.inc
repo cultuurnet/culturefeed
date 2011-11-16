@@ -39,7 +39,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   $query->max = $total;
 
   if ($zip) {
-    $query->zip = $zip;
+    $query->zipcode = $zip;
   }
 
   try {
