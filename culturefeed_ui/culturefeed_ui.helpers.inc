@@ -16,6 +16,8 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
   
+  $statement = 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
+  
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
@@ -27,7 +29,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
       '#ajax' => array(),
     );
     
-    $publish_link = drupal_render($publish_link);
+    $publish_link = drupal_render($publish_link) . $statement;
   }
     
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
@@ -40,8 +42,6 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     'delete_link'      => $delete_link,
     'connect_link'     => $connect_link,
   );
-    
-  //'#title' => 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512'),
   
   return theme('culturefeed_ui_online_account', $vars);
 }
