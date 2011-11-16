@@ -40,7 +40,6 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
     '#autocomplete_path' => 'cnapi/autocomplete/location/onlyzip',
     '#default_value' => $zip ? $zip : '',
     '#size' => 4,
-    '#required' => TRUE,
   );
 
   $form['submit'] = array(
@@ -53,8 +52,13 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
 
 function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) {
   $zip = $form_state['values']['zip'];
-
-  drupal_goto('culturefeed/recommendations/' . $zip);
+  
+  if (!empty($zip)) {
+    drupal_goto('culturefeed/recommendations/' . $zip);
+  }
+  else {
+    drupal_goto('culturefeed/recommendations');
+  }
 }
 
 function culturefeed_ui_search_users_form() {
@@ -75,7 +79,12 @@ function culturefeed_ui_search_users_form() {
 }
 
 function culturefeed_ui_search_users_form_submit($form, &$form_state) {
-  $values = $form_state['values'];
+  $name = trim($form_state['values']['name']);
 
-  $form_state['redirect'] = 'culturefeed/users/search' . (!empty($values['name']) ? '/' . trim($values['name']) : '');
+  if (!empty($name)) {
+    $form_state['redirect'] = 'culturefeed/users/search/' . $name;
+  }
+  else {
+    $form_state['redirect'] = 'culturefeed/users/search';
+  }
 }

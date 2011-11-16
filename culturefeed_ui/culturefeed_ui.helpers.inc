@@ -53,28 +53,28 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   $items = array();
 
   foreach ($recommendations as $recommendation) {
-    $id = $recommendation->id;
-    $cdbid = $recommendation->itemid;
+    $recommendation_id = $recommendation->id;
+    $node_id = $recommendation->itemid;
 
     $positive = array(
       '#type' => 'link',
       '#title' => 'Vind ik leuk',
-      '#href' => 'culturefeed/recommendations/positive/' . $id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-positive-' . $id, 'class' => 'like-link'),
+      '#href' => 'culturefeed/recommendations/positive/' . $recommendation_id . '/' . $node_id . '/nojs',
+      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation_id, 'class' => 'like-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $id,
+        'wrapper' => 'recommendation-' . $recommendation_id,
       ),
     );
 
     $negative = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
-      '#href' => 'culturefeed/recommendations/negative/' . $id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-negative-' . $id, 'class' => 'remove-link'),
+      '#href' => 'culturefeed/recommendations/negative/' . $recommendation_id . '/' . $node_id . '/nojs',
+      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation_id, 'class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $id,
+        'wrapper' => 'recommendation-' . $recommendation_id,
       ),
     );
 
@@ -83,7 +83,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
 
     $items[] = array(
       'data' => $item,
-      'id' => 'recommendation-' . $id,
+      'id' => 'recommendation-' . $recommendation_id,
     );
   }
 

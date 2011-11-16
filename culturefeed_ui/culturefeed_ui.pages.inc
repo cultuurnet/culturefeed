@@ -7,7 +7,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
 
   $recommendations = culturefeed_ui_recommendations_list(100, $zip);
   
-  if ($recommendations === FALSE || empty($recommendations)) {
+  if (empty($recommendations)) {
     $content['recommendations'] = array(
       '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
     );
@@ -20,36 +20,28 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
       '#items' => $recommendations,
       '#attributes' => array('class' => 'event-recommendation-list')
     );
-    $content['more'] = array(
-      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
-    );
   }
   
   return $content;
 }
 
-function culturefeed_ui_page_recommendations_evaluate($evaluation, $id = NULL, $node_id = NULL, $type = 'ajax') {
+function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendation_id = NULL, $node_id = NULL, $type = 'ajax') {
   $success = TRUE;
   
-  switch ($evaluation) {
-    case 'unlike':
-    case 'negative':
-      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE;
-      break;
-    case 'positive':
-      $real_evaluation = CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE;
-      break;
-  }
+  // If evaluation is negative or unlike, do a negative evaluation. Else a positive one.
+  $cf_evaluation = ($evaluation == 'positive' ? CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE : CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
       
+  // Do the evaluation.
   try {
-    DrupalCultureFeed::evaluateRecommendation($id, CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
+    DrupalCultureFeed::evaluateRecommendation($recommendation_id, $cf_evaluation);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     $success = FALSE;
   }
   
-  if ($success && $evalution == 'unlike') {
+  // If it was an 'unlike', remove the like (which was done by CultureFeed on the positive recommendation).
+  if ($success && $evaluation == 'unlike') {
     $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
   }
 
@@ -60,24 +52,22 @@ function culturefeed_ui_page_recommendations_evaluate($evaluation, $id = NULL, $
       switch ($evaluation) {
         case 'unlike':
         case 'negative':
-          $commands[] = ajax_command_remove('#recommendation-' . $id);
+          $commands[] = ajax_command_remove('#recommendation-' . $recommendation_id);
           break;
       
         case 'positive':
-          $commands[] = ajax_command_remove('#recommendation-negative-' . $id);
+          $commands[] = ajax_command_remove('#recommendation-negative-' . $recommendation_id);
       
           $unlike = array(
             '#type' => 'link',
             '#title' => 'Ik vind dit niet meer leuk',
-            '#href' => 'culturefeed/recommendations/unlike/' . $id . '/' . $node_id . '/nojs',
-            '#attributes' => array('id' => 'recommendation-unlike-' . $id, 'class' => 'unlike-link'),
+            '#href' => 'culturefeed/recommendations/unlike/' . $recommendation_id . '/' . $node_id . '/nojs',
+            '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation_id, 'class' => 'unlike-link'),
             '#options' => array('query' => drupal_get_destination()),
-            '#ajax' => array(
-              'wrapper' => 'recommendation-' . $id,
-            ),
+            '#ajax' => array(),
           );
       
-          $commands[] = ajax_command_replace('#recommendation-positive-' . $id, drupal_render($unlike));
+          $commands[] = ajax_command_replace('#recommendation-positive-' . $recommendation_id, drupal_render($unlike));
       
           break;
       }
@@ -140,9 +130,7 @@ function culturefeed_ui_page_activities($type = NULL) {
       '#href' => 'culturefeed/activity/delete/' . $activity->id . '/nojs',
       '#attributes' => array('class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'activity-' . $activity->id,
-      ),
+      '#ajax' => array(),
     );
 
     $privacy = array(
@@ -151,9 +139,7 @@ function culturefeed_ui_page_activities($type = NULL) {
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1')  . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link'),
       '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'activity-' . $activity->id,
-      ),
+      '#ajax' => array(),
     );
     
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
@@ -206,9 +192,7 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
         '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
         '#options' => array('query' => drupal_get_destination()),
-        '#ajax' => array(
-          'wrapper' => 'activity-' . $id,
-        ),
+        '#ajax' => array(),
       );
       
       $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
