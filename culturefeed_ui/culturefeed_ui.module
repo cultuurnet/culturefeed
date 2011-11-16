@@ -74,7 +74,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers/revoke/%/%'] = array(
     'title' => 'Revoke service consumer',
-    'page callback' => 'culturefeed_ui_page_serviceconsumers_revoke',
+    'page callback' => 'culturefeed_ui_page_serviceconsumer_revoke',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -90,7 +90,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/mostactive'] = array(
     'title' => 'Most active users',
-    'page callback' => 'culturefeed_ui_page_most_active_users',
+    'page callback' => 'culturefeed_ui_page_users_most_active',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -98,7 +98,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/activity/%/%/%'] = array(
     'title' => 'Users who did activity',
-    'page callback' => 'culturefeed_ui_page_users_activity',
+    'page callback' => 'culturefeed_ui_page_users_for_content_activity',
     'page arguments' => array(3, 4, 5),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,

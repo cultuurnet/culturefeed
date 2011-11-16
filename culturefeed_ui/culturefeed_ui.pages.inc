@@ -262,8 +262,55 @@ function culturefeed_ui_page_undo($activity_type, $content_type, $node_id) {
   culturefeed_ui_activity_based_goto($content_type, $node_id);
 }
 
+function culturefeed_ui_page_recent_activities() {
+  $pagelength = CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+  $query->max         = $pagelength;
+  $query->start       = $page * $pagelength;
+  $query->type        = array(
+    CultureFeed_Activity::TYPE_LIKE,
+    CultureFeed_Activity::TYPE_FACEBOOK,
+    CultureFeed_Activity::TYPE_TWITTER,
+    CultureFeed_Activity::TYPE_IK_GA
+  );
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
+
+  pager_default_initialize($activities->total, $pagelength);
+
+  $items = culturefeed_ui_activities_list($activities);
+
+  if (empty($items)) {
+    $content['activities'] = array(
+      '#markup' => 'Geen activiteiten gevonden.',
+    );
+  }
+  else {
+    $content['activities'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#attributes' => array('class' => 'user-activity-list'),
+    );
+    $content['pager'] = array(
+      '#theme' => 'pager',
+    );
+  }
+  
+  return $content;
+}
+
 // @todo code cleanup
-function culturefeed_ui_page_users_activity($type, $content_type, $id) {
+function culturefeed_ui_page_users_for_content_activity($type, $content_type, $id) {
   if (!in_array($content_type, array('actor', 'event', 'production', 'page'))) {
     drupal_not_found();
   }
@@ -335,53 +382,6 @@ function culturefeed_ui_page_users_activity($type, $content_type, $id) {
   );
 }
 
-function culturefeed_ui_page_recent_activities() {
-  $pagelength = CULTUREFEED_UI_PAGE_RECENT_ACTIVITIES_COUNT;
-  $page = isset($_GET['page']) ? $_GET['page'] : 0;
-
-  $query = new CultureFeed_SearchActivitiesQuery();
-
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-  $query->max         = $pagelength;
-  $query->start       = $page * $pagelength;
-  $query->type        = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA
-  );
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
-    return;
-  }
-
-  pager_default_initialize($activities->total, $pagelength);
-
-  $items = culturefeed_ui_activities_list($activities);
-
-  if (empty($items)) {
-    $content['activities'] = array(
-      '#markup' => 'Geen activiteiten gevonden.',
-    );
-  }
-  else {
-    $content['activities'] = array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#attributes' => array('class' => 'user-activity-list'),
-    );
-    $content['pager'] = array(
-      '#theme' => 'pager',
-    );
-  }
-  
-  return $content;
-}
-
 function culturefeed_ui_page_users_search($name = '') {
   return array(
     'form' => drupal_get_form('culturefeed_ui_users_search_form'),
@@ -431,6 +431,50 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
     
     $content['pager'] = array(
       '#theme' => 'pager',
+    );
+  }
+  
+  return $content;
+}
+
+function culturefeed_ui_page_users_most_active() {
+  $query = new CultureFeed_SearchUsersQuery();
+  $query->max = CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT;
+  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
+  $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
+
+  try {
+    $users = DrupalCultureFeed::searchUsers($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
+
+  $items = array();
+
+  $accounts = culturefeed_get_uids_for_users($users->objects);
+
+  foreach ($users->objects as $user) {
+    if (!isset($accounts[$user->id])) {
+      drupal_set_message('Er is een fout opgetreden.', 'error');
+      return;
+    }
+
+    $items[] = theme('culturefeed_ui_ranked_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
+  }
+
+  if (empty($items)) {
+    $content['users'] = array(
+      '#markup' => 'Geen gebruikers gevonden.',
+    );
+  }
+  else {
+    $content['users'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#type' => 'ol',
     );
   }
   
@@ -689,6 +733,74 @@ function culturefeed_ui_page_account_edit() {
   );
 }
 
+function culturefeed_ui_page_account_edit_form() {
+  $form = array();
+
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden bij het laden van jouw account. Probeer het later opnieuw.');
+    return;
+  }
+
+  $form['nick'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Gebruikersnaam',
+    '#disabled' => TRUE,
+    '#value' => $cf_account->nick,
+  );
+
+  $form['mbox'] = array(
+    '#type' => 'textfield',
+    '#title' => 'E-mailadres',
+    '#default_value' => $cf_account->mbox,
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Opslaan',
+  );
+
+  // @todo fix popup
+  $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
+
+  $url = DrupalCultureFeed::getUrlChangePassword($cf_account->culturefeed_uid, $destination);
+
+  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
+
+  $form['change_password'] = array(
+    '#prefix' => '<div id="change-password">',
+    '#markup' => l('Paswoord wijzigen', $url, $options),
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
+  if (!valid_email_address($form_state['values']['mbox'])) {
+    form_set_error('mbox', 'Ongeldig e-mailadres.');
+  }
+}
+
+function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
+  $cf_account = new CultureFeed_User();
+  $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
+  $cf_account->mbox = $form_state['values']['mbox'];
+
+  try {
+    DrupalCultureFeed::updateUser($cf_account);
+    drupal_set_message('Jouw aanpassingen zijn bewaard.');
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+  }
+}
+
 // @todo ajaxify this / translate this
 function culturefeed_ui_online_accounts_form() {
   $form = array();
@@ -837,119 +949,6 @@ function culturefeed_ui_page_online_account_delete_form_submit($form, &$form_sta
   $form_state['redirect'] = 'culturefeed/account/edit';
 }
 
-function culturefeed_ui_page_account_edit_form() {
-  $form = array();
-
-  try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het laden van jouw account. Probeer het later opnieuw.');
-    return;
-  }
-
-  $form['nick'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Gebruikersnaam',
-    '#disabled' => TRUE,
-    '#value' => $cf_account->nick,
-  );
-
-  $form['mbox'] = array(
-    '#type' => 'textfield',
-    '#title' => 'E-mailadres',
-    '#default_value' => $cf_account->mbox,
-    '#required' => TRUE,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Opslaan',
-  );
-
-  // @todo fix popup
-  $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
-
-  $url = DrupalCultureFeed::getUrlChangePassword($cf_account->culturefeed_uid, $destination);
-
-  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
-
-  $form['change_password'] = array(
-    '#prefix' => '<div id="change-password">',
-    '#markup' => l('Paswoord wijzigen', $url, $options),
-    '#suffix' => '</div>',
-  );
-
-  return $form;
-}
-
-function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
-  if (!valid_email_address($form_state['values']['mbox'])) {
-    form_set_error('mbox', 'Ongeldig e-mailadres.');
-  }
-}
-
-function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
-  $cf_account = new CultureFeed_User();
-  $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
-  $cf_account->mbox = $form_state['values']['mbox'];
-
-  try {
-    DrupalCultureFeed::updateUser($cf_account);
-    drupal_set_message('Jouw aanpassingen zijn bewaard.');
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
-  }
-}
-
-
-function culturefeed_ui_page_most_active_users() {
-  $query = new CultureFeed_SearchUsersQuery();
-  $query->max = CULTUREFEED_UI_PAGE_MOST_ACTIVE_USERS_COUNT;
-  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
-  $query->sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
-
-  try {
-    $users = DrupalCultureFeed::searchUsers($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
-    return;
-  }
-
-  $items = array();
-
-  $accounts = culturefeed_get_uids_for_users($users->objects);
-
-  foreach ($users->objects as $user) {
-    if (!isset($accounts[$user->id])) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
-      return;
-    }
-
-    $items[] = theme('culturefeed_ui_ranked_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
-  }
-
-  if (empty($items)) {
-    $content['users'] = array(
-      '#markup' => 'Geen gebruikers gevonden.',
-    );
-  }
-  else {
-    $content['users'] = array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#type' => 'ol',
-    );
-  }
-  
-  return $content;
-}
-
 function culturefeed_ui_page_serviceconsumers() {
   try {
     $consumers = DrupalCultureFeed::getUserServiceConsumers(DrupalCultureFeed::getLoggedInUserId());
@@ -999,7 +998,7 @@ function culturefeed_ui_page_serviceconsumers() {
   return $content;
 }
 
-function culturefeed_ui_page_serviceconsumers_revoke($consumer_id, $type = 'ajax') {
+function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax') {
   $cf_uid = DrupalCultureFeed::getLoggedInUserId();
   
   $success = TRUE;
