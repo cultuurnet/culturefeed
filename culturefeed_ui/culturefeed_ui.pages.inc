@@ -405,8 +405,8 @@ function culturefeed_ui_page_search_users($name = '') {
   );
 }
 
-function culturefeed_ui_search_users_results($name = '') {
-  $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT; // @todo make this a const
+function culturefeed_ui_search_users_results($name = NULL) {
+  $pagelength = CULTUREFEED_UI_PAGE_SEARCH_USERS_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchUsersQuery();
@@ -486,8 +486,8 @@ function culturefeed_ui_profile_edit_form() {
     $cf_account = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
     watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
     return;
   }
 
@@ -610,7 +610,10 @@ function culturefeed_ui_profile_edit_form() {
 
 function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   $values = $form_state['values'];
+  
+  $success = TRUE;
 
+  // Update profile information.
   $user_update = new CultureFeed_User();
 
   $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
@@ -635,30 +638,32 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
     DrupalCultureFeed::updateUser($user_update);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
     watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    
+    $success = FALSE;
   }
 
+  // Upload profile picture.
   if ($_FILES['files']['tmp_name']['picture']) {
-    global $user;
-
-    $account = user_load($user->uid);
-
     $picture_path = $_FILES['files']['tmp_name']['picture'];
 
     $picture = file_get_contents($picture_path);
 
     if ($picture) {
       try {
-        DrupalCultureFeed::uploadUserDepiction($account->culturefeed_uid, $picture);
+        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $picture);
       }
       catch (Exception $e) {
-        drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
         watchdog_exception('culturefeed_ui', $e);
+        drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+        
+        $success = FALSE;
       }
     }
   }
 
+  // Update field privacy status.
   $privacy_config = new CultureFeed_UserPrivacyConfig();
 
   $privacy_config->givenName   = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
@@ -674,9 +679,14 @@ function culturefeed_ui_profile_edit_form_submit($form, &$form_state) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw privacy instellingen.', 'error');
+    
+    $success = FALSE;
   }
 
-  drupal_set_message(t('Updates saved.'));
+  // Setting status message.
+  if ($success) {
+    drupal_set_message('Jouw wijzigingen werden bewaard.')
+  }
 }
 
 // @todo code cleanup
