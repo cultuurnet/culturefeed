@@ -31,7 +31,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/profile/edit'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Profiel beheren'),
+    'title arguments' => array('Profiel bewerken'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
@@ -40,7 +40,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/account/edit'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Account beheren'),
+    'title arguments' => array('Account bewerken'),
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
     'type' => MENU_CALLBACK,
