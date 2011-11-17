@@ -86,6 +86,24 @@ class CultureFeed {
   protected $oauth_client;
 
   /**
+   * Get the consumer.
+   *
+   * @return OAuthConsumer $consumer
+   */
+  public function getConsumer() {
+    return $this->oauth_client->getConsumer();
+  }
+
+  /**
+   * Get the token.
+   *
+   * @return OAuthConsumer $token
+   */
+  public function getToken() {
+    return $this->oauth_client->getToken();
+  }
+
+  /**
    * Constructor for a new CultureFeed instance.
    *
    * @param CultureFeed_OAuthClient $oauth_client
@@ -109,11 +127,11 @@ class CultureFeed {
    */
   public function getRequestToken($callback = '') {
     $params = array();
-    
+
     if (!empty($callback)) {
       $params['oauth_callback'] = $callback;
     }
-    
+
     $response = $this->oauth_client->consumerPost('requestToken', $params, FALSE);
 
     $token = OAuthUtil::parse_parameters($response);
@@ -664,11 +682,11 @@ class CultureFeed {
    */
   public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
     $data = array();
-    
+
     if ($query) {
       $data = $query->toPostData();
     }
-    
+
     $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {
@@ -698,11 +716,11 @@ class CultureFeed {
    */
   public function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
     $data = array();
-    
+
     if ($query) {
       $data = $query->toPostData();
     }
-    
+
     $data['eventId'] = $id;
 
     $result = $this->oauth_client->consumerGetAsXml('recommendation/event', $data);
@@ -1059,7 +1077,8 @@ class CultureFeed {
 
       $activity->id           = $object->xpath_str('id');
       $activity->nodeId       = $object->xpath_str('nodeID');
-      $activity->private      = $object->xpath_str('private');
+      $activity->nodeTitle    = $object->xpath_str('nodeTitle');
+      $activity->private      = $object->xpath_bool('private');
       $activity->createdVia   = $object->xpath_str('createdVia');
       $activity->points       = $object->xpath_str('points');
       $activity->contentType  = $object->xpath_str('contentType');

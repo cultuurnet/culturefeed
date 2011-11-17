@@ -79,6 +79,24 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
   }
 
   /**
+   * Get the consumer.
+   *
+   * @return OAuthConsumer $consumer
+   */
+  public function getConsumer() {
+    return $this->consumer;
+  }
+
+  /**
+   * Get the token.
+   *
+   * @return OAuthConsumer $token
+   */
+  public function getToken() {
+    return $this->token;
+  }
+
+  /**
    * Do a GET request with only a consumer token.
    *
    * Wrapper function around request. @see request for documentation of remaining parameters.
@@ -314,7 +332,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     return $url;
   }
-  
+
   /**
    * Build a querystring.
    *
@@ -322,7 +340,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
    *   Array representation of the querystring.
    * @return string
    *   The querystring.
-   */  
+   */
   private static function build_query($params) {
     $parts = array();
 
@@ -336,7 +354,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $parts[] = urlencode($key) . '=' . urlencode($value);
       }
     }
-    
+
     return implode('&', $parts);
   }
 

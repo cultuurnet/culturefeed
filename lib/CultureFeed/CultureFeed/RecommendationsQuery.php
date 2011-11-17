@@ -61,7 +61,7 @@ class CultureFeed_RecommendationsQuery {
     if (isset($data['location'])) {
       $data['location'] = (string)$data['location'];
     }
-    
+
     $data = array_filter($data);
 
     return $data;

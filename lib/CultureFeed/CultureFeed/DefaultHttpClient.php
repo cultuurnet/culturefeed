@@ -102,6 +102,7 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
    */
   public function request($url, $http_headers = array(), $method = 'GET', $post_data = '') {
     // Initialising some general CURL options (url, timeout, ...).
+
     $curl_options = array(
       CURLOPT_URL => $url,
       CURLOPT_TIMEOUT => $this->timeout,

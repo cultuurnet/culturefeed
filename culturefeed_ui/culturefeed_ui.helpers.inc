@@ -1,11 +1,101 @@
 <?php
 
+function culturefeed_ui_is_culturefeed_profile_page() {
+  $account = menu_get_object('user');
+
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+function culturefeed_ui_online_account($online_account_type, $online_account = NULL) {
+  $delete_link = '';
+  
+  if ($online_account) {
+    $delete_link = array(
+      '#type' => 'link',
+      '#title' => 'Verwijderen',
+      '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
+      '#attributes' => array('class' => 'delete-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(),
+    );
+    
+    $delete_link = drupal_render($delete_link);
+  }
+  
+  $statement = 'Ik geef toestemming aan UiTid om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
+  
+  $publish_link = '';
+  if ($online_account) {
+    $publish_link = array(
+      '#type' => 'link',
+      '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+      '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1')  . '/nojs',
+      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link'),
+      '#options' => array('query' => drupal_get_destination()),
+      '#ajax' => array(),
+    );
+    
+    $publish_link = drupal_render($publish_link) . $statement;
+  }
+    
+  $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
+  $connect_link = l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+    
+  $vars = array(
+    'account_type'     => $online_account_type,
+    'account'          => $online_account,
+    'publish_link'     => $publish_link,
+    'delete_link'      => $delete_link,
+    'connect_link'     => $connect_link,
+  );
+  
+  return theme('culturefeed_ui_online_account', $vars);
+}
+
+function culturefeed_ui_activity_types() {
+  return array(
+    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
+    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
+    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
+    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
+  );
+}
+
+function culturefeed_ui_activity_context($cnapi_types = array(), $node_types = array()) {
+  $node = menu_get_object();
+  $request = cnapi_ui_get_active_request();
+
+  if ($request) {
+    $type = reset(array_intersect($cnapi_types, array_keys($request)));
+    if ($type) {
+      return array(
+        'node_id' => $request[$type],
+        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($type),
+      );
+    }
+  }
+  elseif ($node) {
+    if (in_array($node->type, $node_types)) {
+      return array(
+        'node_id' => $node->nid,
+        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($node->type),
+      );
+    }
+  }
+  
+  return FALSE;
+}
+
 function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   $query = new CultureFeed_RecommendationsQuery();
   $query->max = $total;
-  
+
   if ($zip) {
-    $query->zip = $zip;
+    $query->zipcode = $zip;
   }
 
   try {
@@ -17,66 +107,59 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   }
 
   $items = array();
-  
-  foreach ($recommendations as $recommendation) {   
-    $cdbid = $recommendation->itemid;
-       
+
+  foreach ($recommendations as $recommendation) {
+    $recommendation_id = $recommendation->id;
+    $node_id = $recommendation->itemid;
+
     $positive = array(
       '#type' => 'link',
       '#title' => 'Vind ik leuk',
-      '#href' => 'culturefeed/recommendations/positive/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation->id, 'class' => 'like-link'),
+      '#href' => 'culturefeed/recommendations/positive/' . $recommendation_id . '/' . $node_id . '/nojs',
+      '#attributes' => array('id' => 'recommendation-positive-' . $recommendation_id, 'class' => 'like-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation->id,
+        'wrapper' => 'recommendation-' . $recommendation_id,
       ),
     );
-      
+
     $negative = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
-      '#href' => 'culturefeed/recommendations/negative/' . $recommendation->id . '/' . $cdbid . '/nojs',
-      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation->id, 'class' => 'remove-link'),
+      '#href' => 'culturefeed/recommendations/negative/' . $recommendation_id . '/' . $node_id . '/nojs',
+      '#attributes' => array('id' => 'recommendation-negative-' . $recommendation_id, 'class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation->id,
+        'wrapper' => 'recommendation-' . $recommendation_id,
       ),
     );
-    
-    $item = '';
-    $item .= theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'heading_level' => 3));
-    $item .= drupal_render($negative) . '<br />';
-    $item .= drupal_render($positive) . '<br /><br /><br />';
+
+    $links = array('like' => drupal_render($positive), 'remove' => drupal_render($negative));
+    $item = theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'links' => $links, 'heading_level' => 3));
 
     $items[] = array(
       'data' => $item,
-      'id' => 'recommendation-' . $recommendation->id,
+      'id' => 'recommendation-' . $recommendation_id,
     );
   }
-  
-  return array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-  );
+
+  return $items;
 }
 
 function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
   $user_id = DrupalCultureFeed::getLoggedInUserId();
   $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
-  
-  $error = FALSE;
-  
+
   try {
     DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
+    
+    return TRUE;
   }
   catch (Exception $e) {
-    $error = TRUE;
     watchdog_exception('culturefeed_ui', $e);
+    
+    return FALSE;
   }
-  
-  cache_clear_all('*', 'cache_page', TRUE);
-  
-  return $error;
 }
 
 function _culturefeed_ui_do($activity_type, $type, $id) {
@@ -85,7 +168,7 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
   $activity->type = $activity_type;
   $activity->nodeId = $id;
   $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-  
+
   if ($type == 'page') {
     $node = node_load($id);
     $activity->nodeTitle = $node->title;
@@ -94,22 +177,19 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
     $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
     $activity->nodeTitle = $object['detail']['nl']['title'];
   }
-  
-  $error = FALSE;
 
   try {
     DrupalCultureFeed::createActivity($activity);
+    
+    return TRUE;
   }
   catch (Exception $e) {
     if ($e->getCode() != 421) {
-      $error = TRUE;
       watchdog_exception('culturefeed_ui', $e);
+      return FALSE;
     }
+    return TRUE;
   }
-
-  cache_clear_all('*', 'cache_page', TRUE);
-  
-  return $error;
 }
 
 function culturefeed_ui_activity_based_goto($content_type, $node_id) {
@@ -118,9 +198,9 @@ function culturefeed_ui_activity_based_goto($content_type, $node_id) {
   }
   else {
     $object = cnapi_get(array('action' => 'detail', 'type' => $content_type, 'query' => array('cdbid' => $node_id)));
-    
+
     $request = array($content_type => $node_id, 'title' => $object['detail']['nl']['title']);
-    
+
     cnapi_ui_goto($request);
   }
 }
@@ -128,45 +208,31 @@ function culturefeed_ui_activity_based_goto($content_type, $node_id) {
 function culturefeed_ui_activities_list($activities) {
   $items = array();
 
-  $events = culturefeed_get_nodes_for_activities($activities->objects);
-  
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   foreach ($activities->objects as $activity) {
     if (!isset($accounts[$activity->userId])) {
       continue;
     }
-    
-    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
-      $node = node_load($activity->nodeId); // @todo use node_load_multiple
-    }
-    else {
-      if (!isset($events[$activity->nodeId])) {
-        continue;
-      }
-      else {
-        $node = $events[$activity->nodeId];
-      }
-    }
 
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'node' => $node, 'uid' => $accounts[$activity->userId]));
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
   }
-  
+
   return $items;
 }
 
 function culturefeed_ui_users_list($users) {
   $items = array();
-  
+
   $accounts = culturefeed_get_uids_for_users($users->objects);
 
   foreach ($users->objects as $user) {
     if (!isset($accounts[$user->id])) {
       continue;
     }
-    
+
     $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
   }
-  
+
   return $items;
 }

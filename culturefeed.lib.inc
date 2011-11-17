@@ -9,6 +9,25 @@ class DrupalCultureFeed {
   protected static $logged_in_account;
 
   protected static $logged_in_user;
+  
+  public static function isCacheEnabled() {
+    return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
+  }
+  
+  public static function getCachePrefix($instance) {
+    $consumer = $instance->getConsumer();
+    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+  }
+  
+  public static function getConsumerCachePrefix() {
+    $consumer = self::getConsumerInstance()->getConsumer();
+    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+  }
+  
+  public static function getLoggedInUserCachePrefix() {
+    $consumer = self::getLoggedInUserInstance()->getConsumer();
+    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+  }
 
   public static function isCultureFeedUser($uid = NULL) {
     if (!$uid) {
@@ -47,13 +66,13 @@ class DrupalCultureFeed {
    * @return CultureFeed_User
    *   @todo document this
    */
-  public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL) {
+  public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL, $reset = FALSE) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
     }
 
-    if (isset(self::$logged_in_user[$application_key])) {
+    if (!$reset && isset(self::$logged_in_user[$application_key])) {
       return self::$logged_in_user[$application_key];
     }
 
@@ -203,20 +222,59 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->updateUserOnlineAccount($id, $account);
   }
 
+  public static function getUserOnlineAccounts() {
+    $cf_account = self::getLoggedInUser();
+    
+    $online_accounts = array();
+    
+    if ($cf_account->holdsAccount) {
+      foreach ($cf_account->holdsAccount as $online_account) {
+        $online_accounts[$online_account->accountType] = $online_account;
+      }
+    }
+    
+    return $online_accounts;
+  }
+
+  public static function getUserOnlineAccount($account_type) {
+    $online_accounts = self::getUserOnlineAccounts();
+    
+    if (isset($online_accounts[$account_type])) {
+      return $online_accounts[$account_type];
+    }
+    
+    return FALSE;
+  }
+
   public static function deleteUserOnlineAccount($id, $account_type, $account_name) {
     self::getLoggedInUserInstance()->deleteUserOnlineAccount($id, $account_type, $account_name);
   }
 
   public static function createActivity(CultureFeed_Activity $activity) {
     self::getLoggedInUserInstance()->createActivity($activity);
+    
+    if (self::isCacheEnabled()) {
+      $cid_base = self::getLoggedInUserCachePrefix() . 'activity:';
+      cache_clear_all($cid_base, 'cache_culturefeed', TRUE);
+    }
   }
 
   public static function updateActivity($id, $private) {
     self::getLoggedInUserInstance()->updateActivity($id, $private);
+    
+    if (self::isCacheEnabled()) {
+      $cid_base = self::getLoggedInUserCachePrefix() . 'activity:';
+      cache_clear_all($cid_base, 'cache_culturefeed', TRUE);
+    }
   }
 
   public static function deleteActivity($id) {
     self::getLoggedInUserInstance()->deleteActivity($id);
+    
+    if (self::isCacheEnabled()) {
+      $cid_base = self::getConsumerCachePrefix() . 'activity:';
+      cache_clear_all($cid_base, 'cache_culturefeed', TRUE);
+    }
   }
 
   public static function deleteActivities($user_id, $node_id, $content_type, $activity_type) {
@@ -226,45 +284,121 @@ class DrupalCultureFeed {
     $query->nodeId = $node_id;
     $query->userId = $user_id;
     $query->private = TRUE;
-    
+
     $activities = self::searchActivities($query);
-    
+
     if (empty($activities->objects)) {
       return;
     }
-    
+
     foreach ($activities->objects as $activity) {
       self::deleteActivity($activity->id);
     }
-  } 
-  
-  public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
-    return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
+    
+    if (self::isCacheEnabled()) {
+      cache_clear_all(self::getConsumerCachePrefix() . 'activity:', 'cache_culturefeed', TRUE);
+    }
+  }
+
+  public static function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
+    $cid = sprintf(self::getConsumerCachePrefix() . 'activity:users:%s:%s:%s:%s:%s', $nodeId, $type, $contentType, $start, $max);
+    
+    if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
+      return $cache->data;
+    }
+    
+    $data = self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
+    
+    if (self::isCacheEnabled()) {
+      cache_set($cid, $data, 'cache_culturefeed');
+    }
+    
+    return $data;
   }
 
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
     if ($query->private) {
-      return self::getLoggedInUserInstance()->searchActivities($query);
+      $cid = sprintf(self::getLoggedInUserCachePrefix() . 'activity:activities:%s', md5(serialize($query->toPostData())));
     }
     else {
-      return self::getConsumerInstance()->searchActivities($query);
+      $cid = sprintf(self::getConsumerCachePrefix() . 'activity:activities:%s', md5(serialize($query->toPostData())));
     }
+    
+    if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
+      return $cache->data;
+    }
+    
+    if ($query->private) {
+      $data = self::getLoggedInUserInstance()->searchActivities($query);
+    }
+    else {
+      $data = self::getConsumerInstance()->searchActivities($query);
+    }
+    
+    if (self::isCacheEnabled()) {
+      cache_set($cid, $data, 'cache_culturefeed');
+    }
+    
+    return $data;
   }
 
   public static function getTopEvents($type, $max = 5) {
-    return self::getConsumerInstance()->getTopEvents($type, $max);
+    $cid = sprintf(self::getConsumerCachePrefix() . 'topevents:%s:%s', $type, $max);
+    
+    if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
+      return $cache->data;
+    }
+    
+    $data = self::getConsumerInstance()->getTopEvents($type, $max);
+    
+    if (self::isCacheEnabled()) {
+      cache_set($cid, $data, 'cache_culturefeed');
+    }
+    
+    return $data;
   }
 
   public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
-    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query);
+    $cid = self::getLoggedInUserCachePrefix() . 'recommendation:user:' . $id . ':' . md5(serialize($query->toPostData()));
+    
+    if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
+      return $cache->data;
+    }
+    
+    $data = self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query);
+    
+    if (self::isCacheEnabled()) {
+      cache_set($cid, $data, 'cache_culturefeed');
+    }
+    
+    return $data;
   }
 
   public static function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
-    return self::getConsumerInstance()->getRecommendationsForEvent($id, $query);
+    $cid = self::getConsumerCachePrefix() . 'recommendation:event:' . $id . ':' . md5(serialize($query->toPostData()));
+    
+    if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
+      return $cache->data;
+    }
+    
+    $data = self::getConsumerInstance()->getRecommendationsForEvent($id, $query);
+    
+    if (self::isCacheEnabled()) {
+      cache_set($cid, $data, 'cache_culturefeed');
+    }
+    
+    return $data;
   }
 
   public static function evaluateRecommendation($id, $evaluation) {
-    return self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
+    $result = self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
+    
+    if (self::isCacheEnabled()) {
+      $cid_base = sprintf(self::getLoggedInUserCachePrefix() . 'recommendation:user:%s', self::getLoggedInUserId());
+      cache_clear_all($cid_base, 'cache_culturefeed', TRUE);
+    }
+    
+    return $result;
   }
 
   public static function getUrlAddSocialNetwork($network, $destination = '') {
@@ -278,10 +412,10 @@ class DrupalCultureFeed {
   public static function getUrlLogout($destination = '') {
     return self::getConsumerInstance()->getUrlLogout($destination);
   }
-  
+
   public static function userDidActivity($type, $nodeId, $contentType, $user = NULL) {
     $userDidActivity = &drupal_static(__FUNCTION__, array());
-    
+
     if (!$user) {
       $user = self::getLoggedInUserId();
     }
@@ -302,14 +436,14 @@ class DrupalCultureFeed {
       $query->contentType = $contentType;
       $query->userId = self::getLoggedInUserId();
       $query->private = TRUE;
-      
+
       $activities = self::searchActivities($query);
 
       $userDidActivity[$nodeId][$contentType][$user] = $activities;
     }
-    
+
     $activities = $userDidActivity[$nodeId][$contentType][$user];
-    
+
     if (!empty($activities->objects)) {
       foreach ($activities->objects as $activity) {
         if ($activity->type == $type) {
@@ -317,7 +451,7 @@ class DrupalCultureFeed {
         }
       }
     }
-    
+
     return FALSE;
   }
 }

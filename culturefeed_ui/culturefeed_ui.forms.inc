@@ -1,21 +1,45 @@
 <?php
 
-function culturefeed_ui_recommendations_filter_form() {
+function culturefeed_ui_activities_filter_form($form, &$form_state, $type = NULL) {
   $form = array();
   
-  $zip = NULL;
-  
-  if (arg(0) == 'culturefeed' && arg(1) == 'recommendations' && arg(2)) {
-    $zip = arg(2);
+  $types = array(-1 => 'Alle acties') + culturefeed_ui_activity_types();
+
+  $form['type'] = array(
+    '#type' => 'select',
+    '#title' => 'Toon enkel',
+    '#default_value' => $type ? $type : -1,
+    '#options' => $types,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter',
+  );
+
+  return $form;
+}
+
+function culturefeed_ui_activities_filter_form_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+
+  if ($type > -1) {
+    drupal_goto('culturefeed/activities/' . $type);
   }
+  else {
+    drupal_goto('culturefeed/activities');
+  }
+}
+
+function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = NULL) {
+  $form = array();
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => 'Toon enkel aanbevelingen voor postcode',
     '#autocomplete_path' => 'cnapi/autocomplete/location/onlyzip',
     '#default_value' => $zip ? $zip : '',
     '#size' => 4,
-    '#required' => TRUE,
   );
 
   $form['submit'] = array(
@@ -29,10 +53,15 @@ function culturefeed_ui_recommendations_filter_form() {
 function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) {
   $zip = $form_state['values']['zip'];
   
-  drupal_goto('culturefeed/recommendations/' . $zip);
+  if (!empty($zip)) {
+    drupal_goto('culturefeed/recommendations/' . $zip);
+  }
+  else {
+    drupal_goto('culturefeed/recommendations');
+  }
 }
 
-function culturefeed_ui_search_users_form() {
+function culturefeed_ui_users_search_form() {
   $form = array();
 
   $form['name'] = array(
@@ -49,12 +78,13 @@ function culturefeed_ui_search_users_form() {
   return $form;
 }
 
-function culturefeed_ui_search_users_form_submit($form, &$form_state) {
-  $values = $form_state['values'];
+function culturefeed_ui_users_search_form_submit($form, &$form_state) {
+  $name = trim($form_state['values']['name']);
 
-  $form_state['redirect'] = 'culturefeed/users/search' . (!empty($values['name']) ? '/' . trim($values['name']) : '');
-}
-
-function culturefeed_ui_is_culturefeed_user($uid = NULL) {
-  return DrupalCultureFeed::isCultureFeedUser($uid);
+  if (!empty($name)) {
+    $form_state['redirect'] = 'culturefeed/users/search/' . $name;
+  }
+  else {
+    $form_state['redirect'] = 'culturefeed/users/search';
+  }
 }

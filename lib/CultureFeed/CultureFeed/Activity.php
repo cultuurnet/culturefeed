@@ -80,6 +80,13 @@ class CultureFeed_Activity {
   public $nodeId;
 
   /**
+   * NodeTitle of the activity object.
+   *
+   * @var string
+   */
+  public $nodeTitle;
+
+  /**
    * Privacy status of the activity.
    *
    * @var bool

@@ -103,7 +103,7 @@ class CultureFeed_Consumer {
     if (isset($data['creationDate'])) {
       $data['creationDate'] = date('c', $data['creationDate']);
     }
-    
+
     $data = array_filter($data);
 
     return $data;

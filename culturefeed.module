@@ -2,6 +2,9 @@
 
 require_once('culturefeed.helpers.inc');
 
+define('CULTUREFEED_CACHE_DISABLED', 0);
+define('CULTUREFEED_CACHE_ENABLED', 1);
+
 define('CULTUREFEED_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/');
 
 /**
@@ -13,7 +16,7 @@ function culturefeed_init() {
   if (isset($_GET['closepopup'])) {
     drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
   }
-  
+
   drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => DrupalCultureFeed::isCultureFeedUser())), 'setting');
 }
 
@@ -56,6 +59,13 @@ function culturefeed_menu() {
 }
 
 /**
+ * Implements hook_flush_caches().
+ */
+function culturefeed_flush_caches() {
+  return array('cache_culturefeed');
+}
+
+/**
  * Implements hook_user_load().
  */
 function culturefeed_user_load($users) {
@@ -84,4 +94,27 @@ function culturefeed_user_delete($account) {
   db_delete('culturefeed_token')
     ->condition('cf_uid', $culturefeed_uid)
     ->execute();
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function culturefeed_form_system_performance_settings_alter(&$form, $form_state) {
+  // We want our stuff before the clear cache fieldset and button.
+  $form['buttons']['#weight'] = 3;
+  $form['clear_cache']['#weight'] = 2;
+
+  // Adding API cache settings to the performance settings form.
+
+  $form['culturefeed_cache'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CultureFeed cache'),
+    '#weight' => 1,
+    '#description' => t('Enabling the CultureFeed cache will cache some parsed results of requests to the CultureFeed API. This will reduce the number of requests made directly to the API service.'),
+  );
+  $form['culturefeed_cache']['culturefeed_cache_status'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Cache API requests'),
+    '#default_value' => variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED),
+  );
 }
