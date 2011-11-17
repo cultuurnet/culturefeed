@@ -86,6 +86,24 @@ class CultureFeed {
   protected $oauth_client;
 
   /**
+   * Get the consumer.
+   *
+   * @return OAuthConsumer $consumer
+   */
+  public function getConsumer() {
+    return $this->oauth_client->getConsumer();
+  }
+
+  /**
+   * Get the token.
+   *
+   * @return OAuthConsumer $token
+   */
+  public function getToken() {
+    return $this->oauth_client->getToken();
+  }
+
+  /**
    * Constructor for a new CultureFeed instance.
    *
    * @param CultureFeed_OAuthClient $oauth_client
