@@ -34,11 +34,25 @@ class CultureFeed_RecommendationsQuery {
   public $location_simple;
 
   /**
+   * City of the location of the event.
+   *
+   * @var string
+   */
+  public $location_city;
+
+  /**
    * Zip code.
    *
    * @var string
    */
   public $zipcode;
+
+  /**
+   * Tag(s) of the event.
+   *
+   * @var string|array
+   */
+  public $tag;
 
   /**
    * Maximum number of results to return.

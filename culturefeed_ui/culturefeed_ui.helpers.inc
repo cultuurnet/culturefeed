@@ -99,6 +99,8 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
   }
 
   try {
+    global $conf;
+    $conf['culturefeed_cache_status'] = 0;
     $recommendations = DrupalCultureFeed::getRecommendationsForUser(DrupalCultureFeed::getLoggedInUserId(), $query);
   }
   catch (Exception $e) {
