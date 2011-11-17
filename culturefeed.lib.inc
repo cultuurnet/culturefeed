@@ -11,6 +11,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->realCultureFeed = $realCultureFeed;
   }
   
+  public function getRealCultureFeed() {
+    return $this->realCultureFeed();
+  }
+  
   protected function getCachePrefix() {
     return 'culturefeed:results:';
   }
@@ -40,6 +44,18 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   
   protected function cacheClear($cid = NULL, $wildcard = FALSE) {
     cache_clear_all($cid, 'cache_culturefeed', $wildcard);
+  }
+  
+  protected function cacheClearActivities() {
+    $cid_base = 'activity:';
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
+  }
+  
+  protected function cacheClearRecommendations() {
+    $cid_base = sprintf('recommendation:user:%s', $this->loggedInUserId);
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
   }
 
   public function getConsumer() {
@@ -117,25 +133,19 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   public function createActivity(CultureFeed_Activity $activity) {
     $this->realCultureFeed->createActivity($activity); 
     
-    $cid_base = 'activity:';
-    $cid_base = $this->getCacheCidBase($cid_base);
-    $this->cacheClear($cid_base, TRUE);
+    $this->cacheClearActivities();
   }
 
   public function updateActivity($id, $private) {
     $this->realCultureFeed->updateActivity($id, $private); 
     
-    $cid_base = 'activity:';
-    $cid_base = $this->getCacheCidBase($cid_base);
-    $this->cacheClear($cid_base, TRUE);
+    $this->cacheClearActivities();
   }
 
   public function deleteActivity($id) {
     $this->realCultureFeed->deleteActivity($id); 
     
-    $cid_base = 'activity:';
-    $cid_base = $this->getCacheCidBase($cid_base);
-    $this->cacheClear($cid_base, TRUE);
+    $this->cacheClearActivities();
   }
 
   public function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
@@ -210,14 +220,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   public function evaluateRecommendation($id, $evaluation) {
     $this->realCultureFeed->evaluateRecommendation($id, $evaluation); 
     
-    $cid_base = sprintf('recommendation:user:%s', $this->loggedInUserId);
-    $cid_base = $this->getCacheCidBase($cid_base);
-    $this->cacheClear($cid_base, TRUE);
+    $this->cacheClearRecommendations();
     
     if ($evaluation == CultureFeed_Recommendation::RECOMMENDATION_EVALUATION_POSITIVE) {
-      $cid_base = 'activity:';
-      $cid_base = $this->getCacheCidBase($cid_base);
-      $this->cacheClear($cid_base, TRUE);
+      $this->cacheClearActivities();
     }
   }
 
