@@ -601,7 +601,7 @@ function culturefeed_ui_page_profile_edit_form() {
     '#title' => 'Geboortedatum',
     '#type' => 'textfield',
     '#default_value' => $cf_account->dob ? date('d/m/Y', $cf_account->dob) : '',
-    '#description' => t('Format is dd/mm/yyyy'),
+    '#description' => 'Formaat : dd/mm/yyyy',
     '#size' => 10,
   );
   $form['dobPrivacy'] = array(
