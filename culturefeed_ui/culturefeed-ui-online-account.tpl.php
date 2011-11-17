@@ -16,6 +16,6 @@
 <?php if ($delete_link) : ?>
   <div class="delete"><?php print $delete_link ?></div>
 <?php endif; ?>
-<?php if ($connect_link) : ?>
+<?php if ($connect_link && !$delete_link) : ?>
   <div class="connect"><?php print $connect_link ?></div>
 <?php endif; ?>

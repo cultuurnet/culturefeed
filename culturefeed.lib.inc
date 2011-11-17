@@ -228,15 +228,15 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function getUrlAddSocialNetwork($network, $destination = '') {
-    return $this->realCultureFeed->getUrlAddSocialNetwork($network, $destination = ''); 
+    return $this->realCultureFeed->getUrlAddSocialNetwork($network, $destination); 
   }
 
   public function getUrlChangePassword($id, $destination = '') {
-    return $this->realCultureFeed->getUrlChangePassword($id, $destination = ''); 
+    return $this->realCultureFeed->getUrlChangePassword($id, $destination); 
   }
 
   public function getUrlLogout($destination = '') {
-    return $this->realCultureFeed->getUrlLogout($destination = ''); 
+    return $this->realCultureFeed->getUrlLogout($destination); 
   }
 
   public function getServiceConsumers($start = 0, $max = NULL) {
@@ -297,13 +297,7 @@ class DrupalCultureFeed {
 
     return self::$logged_in_account;
   }
-
-  /**
-   * @todo document this
-   *
-   * @return CultureFeed_User
-   *   @todo document this
-   */
+  
   public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL, $reset = FALSE) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
@@ -322,13 +316,7 @@ class DrupalCultureFeed {
 
     return self::$logged_in_user[$application_key];
   }
-
-  /**
-   * @todo document this
-   *
-   * @return CultureFeed
-   *   @todo document this
-   */
+  
   public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
@@ -351,13 +339,7 @@ class DrupalCultureFeed {
 
     return self::$user_instance[$application_key];
   }
-
-  /**
-   * @todo document this
-   *
-   * @return CultureFeed
-   *   @todo document this
-   */
+  
   public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
@@ -372,13 +354,7 @@ class DrupalCultureFeed {
 
     return self::$consumer_instance[$application_key];
   }
-
-  /**
-   * @todo document this
-   *
-   * @return CultureFeed
-   *   @todo document this
-   */
+  
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');

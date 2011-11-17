@@ -5,15 +5,15 @@ Drupal.behaviors.culturefeedPopupConnect = {
     $('a.culturefeedconnect').click(function() {
       var href = $(this).attr('href');
 
-      var hasPopupQuery = href.search(/popup\=true/i) > -1;
+      var hasPopupQuery = href.search(/closepopup\=true/i) > -1;
       var hasQuestionMark = href.search(/\?/) > -1;
 
       if (!hasPopupQuery) {
         if (hasQuestionMark) {
-          href += '&popup=true';
+          href += '&closepopup=true';
         }
         else {
-          href += '?popup=true';
+          href += '?closepopup=true';
         }
       }
 

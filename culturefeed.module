@@ -16,7 +16,7 @@ function culturefeed_init() {
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
 
   if (isset($_GET['closepopup'])) {
-    drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
+    drupal_add_js('try { window.opener.location.reload(); } catch (err) { }  window.close();', 'inline');
   }
 
   drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => DrupalCultureFeed::isCultureFeedUser())), 'setting');
