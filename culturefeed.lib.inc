@@ -28,9 +28,9 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return self::getCachePrefix() . $cid . self::getCacheSuffix();
   }
   
-  protected function cacheSet($cid, $data) {
+  protected function cacheSet($cid, $data, $expires = CACHE_PERMANENT) {
     $cid = $this->getCacheCid($cid);
-    cache_set($cid, $data, 'cache_culturefeed');
+    cache_set($cid, $data, 'cache_culturefeed', $expires);
   }
   
   protected function cacheGet($cid, $data) {
@@ -147,7 +147,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     $data = $this->realCultureFeed->searchActivities($query);
     
-    $this->cacheSet($cid, $data);
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     
     return $data;
   }
@@ -161,7 +161,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     
     $data = $this->realCultureFeed->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
     
-    $this->cacheSet($cid, $data);
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     
     return $data; 
   }
@@ -175,7 +175,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     
     $data = $this->realCultureFeed->getTopEvents($type, $max);
     
-    $this->cacheSet($cid, $data);
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     
     return $data;
   }
@@ -189,7 +189,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     
     $data = $this->realCultureFeed->getRecommendationsForUser($id, $query);
     
-    $this->cacheSet($cid, $data);
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     
     return $data;  
   }
@@ -203,7 +203,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     
     $data = $this->realCultureFeed->getRecommendationsForEvent($id, $query);
     
-    $this->cacheSet($cid, $data);
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     
     return $data;  }
 
@@ -213,6 +213,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $cid_base = sprintf('recommendation:user:%s', $this->loggedInUserId);
     $cid_base = $this->getCacheCidBase($cid_base);
     $this->cacheClear($cid_base, TRUE);
+    
+    if ($evaluation == CultureFeed_Recommendation::RECOMMENDATION_EVALUATION_POSITIVE) {
+      $cid_base = 'activity:';
+      $cid_base = $this->getCacheCidBase($cid_base);
+      $this->cacheClear($cid_base, TRUE);
+    }
   }
 
   public function getUrlAddSocialNetwork($network, $destination = '') {
