@@ -38,7 +38,12 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
 
 	// picture
 	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
-	$variables['picture_change_link'] = '';
+	
+	// profile
+	$variables['profile_edit_link'] = '';
+	if (DrupalCultureFeed::getLoggedInUserId() == $account->id) {
+	  $variables['profile_edit_link'] = l('Beheer jouw profiel', 'culturefeed/profile/edit');
+	}
 }
 
 /**

@@ -213,6 +213,11 @@ function culturefeed_ui_block_user_activities_view() {
       '#items' => $items,
       '#attributes' => array('class' => 'user-activity-list'),
     );
+    if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
+      $content['edit'] = array(
+        '#markup' => l('Beheer jouw acties', 'culturefeed/activities'),
+      );
+    }
   }
 
   $block['subject'] = 'Recente acties';
