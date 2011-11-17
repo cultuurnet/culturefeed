@@ -17,7 +17,7 @@ Drupal.behaviors.culturefeedPopupConnect = {
         }
       }
 
-      window.open(href, 'UiTid', 'width=720,height=500');
+      window.open(href, 'UiTID', 'width=720,height=500');
 
       return false;
     });

@@ -520,7 +520,7 @@ function culturefeed_ui_block_connect_is_visible() {
 }
 
 function culturefeed_ui_block_connect_view() {
-  $block['subject'] = 'Maak zelf een UiTid';
+  $block['subject'] = 'Maak zelf een UiTID';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
   );
@@ -565,7 +565,7 @@ function culturefeed_ui_block_profile_menu_view() {
 
   $menu = array(
     array(
-      'title' => 'Mijn UiTid',
+      'title' => 'Mijn UiTID',
       'url' => 'user/' . $user->uid,
       'description' => 'Zo zien anderen jouw profiel.',
     ),
@@ -587,7 +587,7 @@ function culturefeed_ui_block_profile_menu_view() {
     array(
       'title' => 'Acties',
       'url' => 'culturefeed/activities',
-      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTid-profiel.',
+      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTID-profiel.',
     ),
   );
 

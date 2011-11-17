@@ -727,7 +727,7 @@ function culturefeed_ui_page_account_edit() {
     'online_accounts' => culturefeed_ui_online_accounts(),
     'consumers' => array(
       '#prefix' => '<div id="manage-consumers"><h2>Gekoppelde toepassingen</h2>',
-      '#markup' => 'Beheer alle ' . l('websites en toepassingen', 'culturefeed/serviceconsumers') . ' die momenteel gebruik maken van je UiTid.',
+      '#markup' => 'Beheer alle ' . l('websites en toepassingen', 'culturefeed/serviceconsumers') . ' die momenteel gebruik maken van je UiTID.',
       '#suffix' => '</div>',
     )
   );
