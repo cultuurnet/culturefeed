@@ -4,6 +4,8 @@
  * Implementation of hook_schema().
  */
 function culturefeed_schema() {
+  $schema['cache_culturefeed'] = drupal_get_schema_unprocessed('system', 'cache');
+  
   $schema['culturefeed_user'] = array(
     'description' => t('Tokens and secrets from users.'),
     'fields' => array(
@@ -143,4 +145,14 @@ function culturefeed_requirements($phase) {
   }
 
   return $requirements;
+}
+
+/**
+ * Install the cache schema.
+ */
+function culturefeed_update_7001() {
+  if (!db_table_exists('cache_culturefeed')) {
+    $schema = culturefeed_schema();
+    db_create_table('cache_culturefeed', $schema['cache_culturefeed']);
+  }
 }
