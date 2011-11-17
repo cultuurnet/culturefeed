@@ -1,5 +1,15 @@
 <?php
 
+function culturefeed_ui_is_culturefeed_profile_page() {
+  $account = menu_get_object('user');
+
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 function culturefeed_ui_online_account($online_account_type, $online_account = NULL) {
   $delete_link = '';
   

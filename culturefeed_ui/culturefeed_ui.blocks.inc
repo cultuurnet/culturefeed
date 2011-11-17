@@ -7,7 +7,7 @@ function culturefeed_ui_block_recommendations_view() {
   
   $content = array();
   
-  $recommendations = culturefeed_ui_recommendations_list(5);
+  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
   
   if ($recommendations === FALSE) {
     return;
@@ -36,13 +36,7 @@ function culturefeed_ui_block_recommendations_view() {
 }
 
 function culturefeed_ui_block_user_liked_locations_is_visible() {
-  $account = menu_get_object('user');
-
-  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return culturefeed_ui_is_culturefeed_profile_page();
 }
 
 function culturefeed_ui_block_user_liked_locations_view() {
@@ -148,13 +142,7 @@ function culturefeed_ui_block_similar_users_cache_expires() {
 }
 
 function culturefeed_ui_block_similar_users_is_visible() {
-  $account = menu_get_object('user');
-
-  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return culturefeed_ui_is_culturefeed_profile_page();
 }
 
 function culturefeed_ui_block_similar_users_view() {
@@ -189,13 +177,7 @@ function culturefeed_ui_block_similar_users_view() {
 }
 
 function culturefeed_ui_block_user_activities_is_visible() {
-  $account = menu_get_object('user');
-
-  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return culturefeed_ui_is_culturefeed_profile_page();
 }
 
 function culturefeed_ui_block_user_activities_view() {
@@ -449,7 +431,7 @@ function _culturefeed_ui_block_users_activity_view($config) {
 
   if ($users->total > $max) {
     $content['more'] = array(
-      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/event/' . $node_id, array('attributes' => array('class' => 'all-link'))),
+      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/' . $activity_content_type . '/' . $node_id, array('attributes' => array('class' => 'all-link'))),
     );
   }
 
