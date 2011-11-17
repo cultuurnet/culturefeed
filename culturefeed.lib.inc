@@ -300,7 +300,7 @@ class DrupalCultureFeed {
     }
   }
 
-  public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
+  public static function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     $cid = sprintf(self::getConsumerCachePrefix() . 'activity:users:%s:%s:%s:%s:%s', $nodeId, $type, $contentType, $start, $max);
     
     if (self::isCacheEnabled() && $cache = cache_get($cid, 'cache_culturefeed')) {
