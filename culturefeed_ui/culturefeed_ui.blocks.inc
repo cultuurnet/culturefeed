@@ -88,111 +88,6 @@ function culturefeed_ui_block_user_liked_locations_view() {
   return $block;
 }
 
-function culturefeed_ui_block_mbox_confirmation_reminder_view() {
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return;
-  }
-
-  try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  if ($cf_account->mboxVerified) {
-    return;
-  }
-
-  $block['subject'] = 'Bevestig jouw e-mailadres';
-  $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
-
-  return $block;
-}
-
-function culturefeed_ui_block_search_users_view() {
-  $block['subject'] = 'Zoek andere gebruikers';
-  $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
-
-  return $block;
-}
-
-function culturefeed_ui_block_profile_box_is_visible() {
-  if (user_is_anonymous() || DrupalCultureFeed::isCultureFeedUser()) {
-    return TRUE;
-  }
-  
-  return FALSE;
-}
-
-function culturefeed_ui_block_profile_box_view() {
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-      return;
-    }
-  }
-
-  $block['subject'] = '';
-  $block['content'] = array(
-    '#theme' => 'culturefeed_ui_profile_box',
-    '#account' => isset($cf_account) ? $cf_account : FALSE,
-  );
-
-  return $block;
-}
-
-function culturefeed_ui_block_connect_is_visible() {
-  if (user_is_anonymous()) {
-    return TRUE;
-  }
-  
-  return FALSE;
-}
-
-function culturefeed_ui_block_connect_view() {
-  $block['subject'] = 'Maak zelf een UiTid';
-  $block['content'] = array(
-    '#theme' => 'culturefeed_ui_connect',
-  );
-
-  return $block;
-}
-
-function culturefeed_ui_block_most_active_user_view() {
-  $sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
-
-  $query = new CultureFeed_SearchUsersQuery();
-  $query->max = 1;
-  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
-  $query->sort = $sort;
-
-  try {
-    $cf_account = reset(DrupalCultureFeed::searchUsers($query)->objects);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-  
-  if (!$cf_account) {
-    return;
-  }
-
-  $block['subject'] = 'UiTslover van de week';
-  $block['content'] = array(
-    '#theme' => 'culturefeed_ui_most_active_user',
-    '#account' => $cf_account,
-    '#sort' => $sort,
-  );
-
-  return $block;
-}
-
 function culturefeed_ui_block_top_events_cache_id() {
   return array();
 }
@@ -288,69 +183,6 @@ function culturefeed_ui_block_similar_users_view() {
     '#theme' => 'item_list',
     '#items' => $items,
     '#attributes' => array('class' => 'user-list'),
-  );
-
-  return $block;
-}
-
-function culturefeed_ui_block_profile_menu_is_visible() {
-  return DrupalCultureFeed::isCultureFeedUser();
-}
-
-function culturefeed_ui_block_profile_menu_view() {
-	global $user;
-
-  $menu = array(
-    array(
-      'title' => 'Mijn UiTid',
-      'url' => 'user/' . $user->uid,
-      'description' => 'Zo zien anderen jouw profiel.',
-    ),
-    array(
-      'title' => 'Profiel bewerken',
-      'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, favoriete locaties, ...',
-    ),
-    array(
-      'title' => 'Account bewerken',
-      'url' => 'culturefeed/account/edit',
-      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
-    ),
-    array(
-      'title' => 'Aanbevelingen',
-      'url' => 'culturefeed/recommendations',
-      'description' => 'Ontdek activiteiten op jouw maat.',
-    ),
-    array(
-      'title' => 'Acties',
-      'url' => 'culturefeed/activities',
-      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTid-profiel.',
-    ),
-  );
-
-  $items = array();
-
-  foreach ($menu as $menu_item) {
-    $vars = array(
-      'title' => $menu_item['title'], 
-      'url' => $menu_item['url'], 
-      'description' => $menu_item['description']
-    );
-    
-    $data = theme('culturefeed_ui_profile_menu_item', $vars);
-    
-    $class = $_GET['q'] == $menu_item['url'] ? 'active' : '';
-    
-    $items[] = array(
-      'data' => $data,
-      'class' => $class,
-    );
-  }
-
-  $block['subject'] = 'Beheer je profiel';
-  $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
   );
 
   return $block;
@@ -656,6 +488,174 @@ function _culturefeed_ui_block_users_activity_view($config) {
 
   $block['subject'] = $config['block_subject'];
   $block['content'] = $content;
+
+  return $block;
+}
+
+function culturefeed_ui_block_most_active_user_view() {
+  $sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
+
+  $query = new CultureFeed_SearchUsersQuery();
+  $query->max = 1;
+  $query->order = CultureFeed_SearchUsersQuery::SORT_ORDER_DESCENDING;
+  $query->sort = $sort;
+
+  try {
+    $cf_account = reset(DrupalCultureFeed::searchUsers($query)->objects);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+  
+  if (!$cf_account) {
+    return;
+  }
+
+  $block['subject'] = 'UiTslover van de week';
+  $block['content'] = array(
+    '#theme' => 'culturefeed_ui_most_active_user',
+    '#account' => $cf_account,
+    '#sort' => $sort,
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_search_users_view() {
+  $block['subject'] = 'Zoek andere gebruikers';
+  $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
+
+  return $block;
+}
+
+function culturefeed_ui_block_connect_is_visible() {
+  if (user_is_anonymous()) {
+    return TRUE;
+  }
+  
+  return FALSE;
+}
+
+function culturefeed_ui_block_connect_view() {
+  $block['subject'] = 'Maak zelf een UiTid';
+  $block['content'] = array(
+    '#theme' => 'culturefeed_ui_connect',
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_profile_box_is_visible() {
+  if (user_is_anonymous() || DrupalCultureFeed::isCultureFeedUser()) {
+    return TRUE;
+  }
+  
+  return FALSE;
+}
+
+function culturefeed_ui_block_profile_box_view() {
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      return;
+    }
+  }
+
+  $block['subject'] = '';
+  $block['content'] = array(
+    '#theme' => 'culturefeed_ui_profile_box',
+    '#account' => isset($cf_account) ? $cf_account : FALSE,
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_profile_menu_is_visible() {
+  return DrupalCultureFeed::isCultureFeedUser();
+}
+
+function culturefeed_ui_block_profile_menu_view() {
+	global $user;
+
+  $menu = array(
+    array(
+      'title' => 'Mijn UiTid',
+      'url' => 'user/' . $user->uid,
+      'description' => 'Zo zien anderen jouw profiel.',
+    ),
+    array(
+      'title' => 'Profiel bewerken',
+      'url' => 'culturefeed/profile/edit',
+      'description' => 'Wijzig naam, adres, favoriete locaties, ...',
+    ),
+    array(
+      'title' => 'Account bewerken',
+      'url' => 'culturefeed/account/edit',
+      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
+    ),
+    array(
+      'title' => 'Aanbevelingen',
+      'url' => 'culturefeed/recommendations',
+      'description' => 'Ontdek activiteiten op jouw maat.',
+    ),
+    array(
+      'title' => 'Acties',
+      'url' => 'culturefeed/activities',
+      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTid-profiel.',
+    ),
+  );
+
+  $items = array();
+
+  foreach ($menu as $menu_item) {
+    $vars = array(
+      'title' => $menu_item['title'], 
+      'url' => $menu_item['url'], 
+      'description' => $menu_item['description']
+    );
+    
+    $data = theme('culturefeed_ui_profile_menu_item', $vars);
+    
+    $class = $_GET['q'] == $menu_item['url'] ? 'active' : '';
+    
+    $items[] = array(
+      'data' => $data,
+      'class' => $class,
+    );
+  }
+
+  $block['subject'] = 'Beheer je profiel';
+  $block['content'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+
+  return $block;
+}
+
+function culturefeed_ui_block_mbox_confirmation_reminder_view() {
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return;
+  }
+
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  if ($cf_account->mboxVerified) {
+    return;
+  }
+
+  $block['subject'] = 'Bevestig jouw e-mailadres';
+  $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
 }
