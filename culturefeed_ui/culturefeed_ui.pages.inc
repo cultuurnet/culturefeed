@@ -1,33 +1,5 @@
 <?php
 
-function culturefeed_ui_page_recommendations_json() {
-  $content = array();
-  
-  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
-  
-  if ($recommendations === FALSE) {
-    return;
-  }
-  
-  if (empty($recommendations)) {
-    $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
-    );
-  }
-  else {
-    $content['recommendations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
-    );
-    $content['more'] = array(
-      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
-    );
-  }
-  
-  drupal_json_output(drupal_render($content));
-}
-
 function culturefeed_ui_page_related_events_json($cdbid) {
   $event = cnapi_get_event($cdbid);
   

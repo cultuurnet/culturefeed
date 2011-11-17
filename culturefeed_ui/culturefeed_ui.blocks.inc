@@ -4,19 +4,35 @@ function culturefeed_ui_block_recommendations_view() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
+
+  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations/' . $request['event'])));
   
-  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations')));
+  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
+  
+  if ($recommendations === FALSE) {
+    return;
+  }
+  
+  if (empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  
+  else {
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+  
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
   
   $block['subject'] = 'Aanbevolen voor jou';
-  $block['content'] = array(
-    '#markup' => '<div id="recommendations">Bezig met laden...</div>',
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
-        array('data' => $setting, 'type' => 'setting'),
-      ),
-    ),
-  );
+  $block['content'] = $content;
   
   return $block;
 }
@@ -277,7 +293,7 @@ function culturefeed_ui_block_related_events_view() {
   
   $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
-    '#markup' => '<div id="related-events">Bezig met laden...</div>',
+    '#markup' => '<div id="related-events"Bezig me></div>',
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
