@@ -5,33 +5,19 @@ function culturefeed_ui_block_recommendations_view() {
     return;
   }
   
-  $content = array();
+  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations/' . $request['event'])));
   
-  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
-  
-  if ($recommendations === FALSE) {
-    return;
-  }
-  
-  if (empty($recommendations)) {
-    $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
-    );
-  }
-  else {
-    $content['recommendations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
-    );
-    $content['more'] = array(
-      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
-    );
-  }
-
   $block['subject'] = 'Aanbevolen voor jou';
-  $block['content'] = $content;
-
+  $block['content'] = array(
+    '#markup' => '<div id="recommendations">Bezig met laden...</div>',
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
+        array('data' => $setting, 'type' => 'setting'),
+      ),
+    ),
+  );
+  
   return $block;
 }
 
@@ -267,16 +253,6 @@ function culturefeed_ui_block_recent_activities_view() {
   return $block;
 }
 
-function culturefeed_ui_block_related_events_cache_expires() {
-  return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_related_events_block_cache_expires', 86400);
-}
-
-function culturefeed_ui_block_related_events_cache_id() {
-  $request = cnapi_ui_get_active_request();
-
-  return array($request['event']);
-}
-
 function culturefeed_ui_block_related_events_is_visible() {
   $request = cnapi_ui_get_active_request();
 
@@ -295,55 +271,19 @@ function culturefeed_ui_block_related_events_is_visible() {
 }
 
 function culturefeed_ui_block_related_events_view() {
-  // Get the event and CDBID.
   $request = cnapi_ui_get_active_request();
   
-  $cdbid = $request['event'];
-
-  $event = cnapi_get_event($cdbid);
+  $setting = array('culturefeed_ui' => array('related_events' => url('culturefeed/relatedevents/' . $request['event'])));
   
-  // Get the cityid for the event.
-  $cityid = $event['location']['address']['cityid'];
-
-  // Get the headings for the event.
-  $headings = cnapi_get_headings();
-
-  $event_headings = isset($event['headings']) ? $event['headings'] : array();
-
-  $valid_headings = array();
-
-  if (!empty($event_headings)) {
-    foreach ($event_headings as $heading) {
-      $heading = $headings[$heading];
-      if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
-        $valid_headings[] = $heading;
-      }
-    }
-  }
-
-  // Get recommendations based on the event.
-  $query = new CultureFeed_RecommendationsQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT;
-
-  try {
-    $recommendations = DrupalCultureFeed::getRecommendationsForEvent($cdbid, $query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  // If we got no recommendations, we don't bother showing the block at all.
-  if (empty($recommendations)) {
-    return;
-  }
-
   $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
-    '#theme' => 'culturefeed_ui_related_events',
-    '#events' => $recommendations,
-    '#cityid' => $cityid,
-    '#headings' => $valid_headings,
+    '#markup' => '<div id="related-events">Bezig met laden...</div>',
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
+        array('data' => $setting, 'type' => 'setting'),
+      ),
+    ),
   );
 
   return $block;

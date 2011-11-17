@@ -1,5 +1,82 @@
 <?php
 
+function culturefeed_ui_page_recommendations_json() {
+  $content = array();
+  
+  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
+  
+  if ($recommendations === FALSE) {
+    return;
+  }
+  
+  if (empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  else {
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
+  
+  drupal_json_output(drupal_render($content));
+}
+
+function culturefeed_ui_page_related_events_json($cdbid) {
+  $event = cnapi_get_event($cdbid);
+  
+  // Get the cityid for the event.
+  $cityid = $event['location']['address']['cityid'];
+
+  // Get the headings for the event.
+  $headings = cnapi_get_headings();
+
+  $event_headings = isset($event['headings']) ? $event['headings'] : array();
+
+  $valid_headings = array();
+
+  if (!empty($event_headings)) {
+    foreach ($event_headings as $heading) {
+      $heading = $headings[$heading];
+      if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading['pid'] != 0)) {
+        $valid_headings[] = $heading;
+      }
+    }
+  }
+
+  // Get recommendations based on the event.
+  $query = new CultureFeed_RecommendationsQuery();
+  $query->max = CULTUREFEED_UI_BLOCK_RELATED_EVENTS_COUNT;
+
+  try {
+    $recommendations = DrupalCultureFeed::getRecommendationsForEvent($cdbid, $query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  // If we got no recommendations, we don't bother showing the block at all.
+  if (empty($recommendations)) {
+    return;
+  }
+
+  $output = array(
+    '#theme' => 'culturefeed_ui_related_events',
+    '#events' => $recommendations,
+    '#cityid' => $cityid,
+    '#headings' => $valid_headings,
+  );
+
+  drupal_json_output(drupal_render($output));
+}
+
 function culturefeed_ui_page_recommendations($zip = NULL) {
   if (!empty($zip) && !is_numeric($zip) && strlen($zip) != 4) {
     drupal_not_found();

@@ -195,6 +195,24 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/relatedevents/%'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Ontdek ook'),
+    'page callback' => 'culturefeed_ui_page_related_events_json',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/recommendations'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Aanbevolen voor jou'),
+    'page callback' => 'culturefeed_ui_page_recommendations_json',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }
@@ -307,10 +325,10 @@ function culturefeed_ui_block_info() {
   $block['similar_users']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   $block['related_events']['info'] = t('Related events');
-  $block['related_events']['cache'] = DRUPAL_CACHE_CUSTOM;
+  $block['related_events']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   $block['recommendations']['info'] = t('Recommendations');
-  $block['recommendations']['cache'] = DRUPAL_NO_CACHE;
+  $block['recommendations']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   return $block;
 }
