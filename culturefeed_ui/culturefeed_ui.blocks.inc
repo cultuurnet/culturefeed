@@ -607,7 +607,7 @@ function culturefeed_ui_block_profile_menu_view() {
     
     $data = theme('culturefeed_ui_profile_menu_item', $vars);
     
-    $class = $_GET['q'] == $menu_item['url'] ? 'active' : '';
+    $class = $_GET['q'] == $menu_item['url'] ? array('active') : array();
     
     $items[] = array(
       'data' => $data,
