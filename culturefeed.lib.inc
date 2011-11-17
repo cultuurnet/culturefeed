@@ -14,27 +14,30 @@ class DrupalCultureFeed {
     return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
   }
   
-  public static function getCachePrefix($instance) {
-    $consumer = $instance->getConsumer();
-    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+  public static function getCachePrefix() {
+    return 'culturefeed:results:';
   }
   
-  public static function getConsumerCachePrefix() {
+  public static function getConsumerCacheSuffix() {
     $consumer = self::getConsumerInstance()->getConsumer();
-    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+    return sprintf(':%s:%s', $consumer->key, $consumer->secret);
   }
   
-  public static function getLoggedInUserCachePrefix() {
+  public static function getLoggedInUserCacheSuffix() {
     $consumer = self::getLoggedInUserInstance()->getConsumer();
-    return sprintf('culturefeed:results:%s:%s:', $consumer->key, $consumer->secret);
+    return sprintf(':%s:%s', $consumer->key, $consumer->secret);
+  }
+  
+  public static function getCacheCidBase($cid_base) {
+    return 'culturefeed:results:' . $cid_base;
   }
   
   public static function getConsumerCacheCid($cid) {
-    return self::getConsumerCachePrefix() . $cid;
+    return self::getCachePrefix() . $cid . self::getConsumerCacheSuffix();
   }
   
   public static function getLoggedInUserCacheCid($cid) {
-    return self::getLoggedInUserCachePrefix() . $cid;
+    return self::getCachePrefix() . $cid . self::getLoggedInUserCacheSuffix();
   }
   
   public static function cacheSet($cid, $data) {
@@ -45,7 +48,7 @@ class DrupalCultureFeed {
   
   public static function cacheGet($cid, $data) {
     if (self::isCacheEnabled()) {
-      return cache_get($cid, $data, 'cache_culturefeed');
+      return cache_get($cid, 'cache_culturefeed');
     }
   }
   
@@ -280,7 +283,7 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->createActivity($activity);
     
     $cid_base = 'activity:';
-    $cid_base = self::getLoggedInUserCacheCid($cid_base);
+    $cid_base = self::getCacheCidBase($cid_base);
     self::cacheClear($cid_base, TRUE);
   }
 
@@ -288,7 +291,7 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->updateActivity($id, $private);
     
     $cid_base = 'activity:';
-    $cid_base = self::getLoggedInUserCacheCid($cid_base);
+    $cid_base = self::getCacheCidBase($cid_base);
     self::cacheClear($cid_base, TRUE);
   }
 
@@ -296,7 +299,7 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->deleteActivity($id);
     
     $cid_base = 'activity:';
-    $cid_base = self::getLoggedInUserCacheCid($cid_base);
+    $cid_base = self::getCacheCidBase($cid_base);
     self::cacheClear($cid_base, TRUE);
   }
 
@@ -323,7 +326,7 @@ class DrupalCultureFeed {
     $cid = sprintf('activity:users:%s:%s:%s:%s:%s', $nodeId, $type, $contentType, $start, $max);
     $cid = self::getConsumerCacheCid($cid);
     
-    if (self::cacheGet($cid)) {
+    if ($cache = self::cacheGet($cid)) {
       return $cache->data;
     }
     
@@ -344,7 +347,7 @@ class DrupalCultureFeed {
       $cid = self::getConsumerCacheCid($cid);
     }
     
-    if (self::cacheGet($cid)) {
+    if ($cache = self::cacheGet($cid)) {
       return $cache->data;
     }
     
@@ -364,7 +367,7 @@ class DrupalCultureFeed {
     $cid = sprintf('topevents:%s:%s', $type, $max);
     $cid = self::getConsumerCacheCid($cid);
     
-    if (self::cacheGet($cid)) {
+    if ($cache = self::cacheGet($cid)) {
       return $cache->data;
     }
     
@@ -379,7 +382,7 @@ class DrupalCultureFeed {
     $cid = 'recommendation:user:' . $id . ':' . md5(serialize($query->toPostData()));
     $cid = self::getLoggedInUserCacheCid($cid);
     
-    if (self::cacheGet($cid)) {
+    if ($cache = self::cacheGet($cid)) {
       return $cache->data;
     }
     
@@ -394,7 +397,7 @@ class DrupalCultureFeed {
     $cid = 'recommendation:event:' . $id . ':' . md5(serialize($query->toPostData()));
     $cid = self::getConsumerCacheCid($cid);
     
-    if (self::cacheGet($cid)) {
+    if ($cache = self::cacheGet($cid)) {
       return $cache->data;
     }
     
@@ -409,7 +412,7 @@ class DrupalCultureFeed {
     $result = self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
     
     $cid_base = sprintf('recommendation:user:%s', self::getLoggedInUserId());
-    $cid_base = self::getLoggedInUserCacheCid($cid_base);
+    $cid_base = self::getCacheCidBase($cid_base);
     self::cacheClear($cid_base, TRUE);
     
     return $result;
