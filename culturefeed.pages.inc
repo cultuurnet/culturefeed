@@ -83,7 +83,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
       watchdog_exception('culturefeed', $e);
 
-      drupal_goto('<front>');
+      drupal_goto();
     }
 
     $account = culturefeed_get_or_create_user($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
@@ -102,7 +102,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           drupal_goto($_GET['destination']);
         }
         else {
-          drupal_goto('');
+          drupal_goto();
         }
       }
     }
