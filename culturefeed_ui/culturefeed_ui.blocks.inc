@@ -5,7 +5,7 @@ function culturefeed_ui_block_recommendations_view() {
     return;
   }
   
-  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations/' . $request['event'])));
+  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations')));
   
   $block['subject'] = 'Aanbevolen voor jou';
   $block['content'] = array(
