@@ -11,7 +11,7 @@
  * Provides calls and helper functions to set up OAuth authorization.
  * Provides calls to fetch objects (users, activities, ...) from the API.
  */
-class CultureFeed {
+class CultureFeed implements ICultureFeed {
 
   /**
    * Privacy status 'public'.
