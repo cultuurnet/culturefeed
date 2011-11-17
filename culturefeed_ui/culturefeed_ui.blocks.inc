@@ -530,7 +530,7 @@ function culturefeed_ui_block_related_events_view() {
   return $block;
 }
 
-function culturefeed_ui_block_config_users_likes() {
+function culturefeed_ui_block_users_likes_config() {
   $config = array(
     'node_types'          => array_keys(node_type_get_types()),
     'cnapi_types'         => array('actor', 'event', 'production'),
@@ -557,7 +557,7 @@ function culturefeed_ui_block_users_likes_view() {
   return _culturefeed_ui_block_users_activity_view($config);
 }
 
-function culturefeed_ui_block_config_users_attends() {
+function culturefeed_ui_block_users_attends_config() {
   $config = array(
     'node_types'          => array(),
     'cnapi_types'         => array('event', 'production'),
@@ -573,13 +573,13 @@ function culturefeed_ui_block_config_users_attends() {
 }
 
 function culturefeed_ui_block_users_attends_is_visible() {
-  $config = culturefeed_ui_block_config_users_attends();
+  $config = culturefeed_ui_block_users_attends_config();
   
   return _culturefeed_ui_block_users_activity_is_visible($config);
 }
 
 function culturefeed_ui_block_users_attends_view() {
-  $config = culturefeed_ui_block_config_users_attends();
+  $config = culturefeed_ui_block_users_attends_config();
 
   return _culturefeed_ui_block_users_activity_view($config);
 }
