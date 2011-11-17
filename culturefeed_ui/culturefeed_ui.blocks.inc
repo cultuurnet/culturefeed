@@ -360,13 +360,13 @@ function culturefeed_ui_block_users_likes_config() {
 }
 
 function culturefeed_ui_block_users_likes_is_visible() {
-  $config = culturefeed_ui_block_config_users_likes();
+  $config = culturefeed_ui_block_users_likes_config();
   
   return _culturefeed_ui_block_users_activity_is_visible($config);
 }
 
 function culturefeed_ui_block_users_likes_view() {
-  $config = culturefeed_ui_block_config_users_likes();
+  $config = culturefeed_ui_block_users_likes_config();
 
   return _culturefeed_ui_block_users_activity_view($config);
 }
