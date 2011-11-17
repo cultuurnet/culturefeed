@@ -67,7 +67,7 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
 
   $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
   $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
-  $variables['info_link'] = l('Meer info over UiTID', '<front>');
+  $variables['info_link'] = l('Meer info over UiTiD', '<front>');
 }
 
 /**
@@ -211,7 +211,7 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
 
     $variables['nick'] = l($variables['account']->nick, $url_profile);
 
-    $variables['link_profile'] = l('Mijn UiTID', $url_profile);
+    $variables['link_profile'] = l('Mijn UiTiD', $url_profile);
   }
 
   $variables['link_logout'] = l('Afmelden', 'user/logout');

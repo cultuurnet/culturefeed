@@ -22,7 +22,7 @@ function culturefeed_admin_settings() {
   $form['settings']['culturefeed_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('API location'),
-    '#description' => t('The URL where the Culture Feed API resides. End with a slash. Example: http://www.uitid.be/culturefeed/rest'),
+    '#description' => t('The URL where the Culture Feed API resides. End with a slash. Example: http://www.UiTiD.be/culturefeed/rest'),
     '#default_value' => variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION),
   );
   $form['settings']['culturefeed_api_application_key'] = array(

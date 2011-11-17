@@ -82,7 +82,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers/revoke/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('UiTID kanaal verwijderen'),
+    'title arguments' => array('UiTiD kanaal verwijderen'),
     'page callback' => 'culturefeed_ui_page_serviceconsumer_revoke',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_ui_is_culturefeed_user',
