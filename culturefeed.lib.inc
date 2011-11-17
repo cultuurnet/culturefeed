@@ -222,7 +222,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     
     $this->cacheClearRecommendations();
     
-    if ($evaluation == CultureFeed_Recommendation::RECOMMENDATION_EVALUATION_POSITIVE) {
+    if ($evaluation == CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE) {
       $this->cacheClearActivities();
     }
   }
