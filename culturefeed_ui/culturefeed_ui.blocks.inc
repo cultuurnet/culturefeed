@@ -1,6 +1,6 @@
 <?php
 
-function culturefeed_ui_block_view_recommendations() {
+function culturefeed_ui_block_recommendations_view() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
@@ -35,7 +35,7 @@ function culturefeed_ui_block_view_recommendations() {
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_user_liked_locations() {
+function culturefeed_ui_block_user_liked_locations_is_visible() {
   $account = menu_get_object('user');
 
   if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
@@ -45,7 +45,7 @@ function culturefeed_ui_block_is_visible_user_liked_locations() {
   return FALSE;
 }
 
-function culturefeed_ui_block_view_user_liked_locations() {
+function culturefeed_ui_block_user_liked_locations_view() {
   $account = menu_get_object('user');
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -88,7 +88,7 @@ function culturefeed_ui_block_view_user_liked_locations() {
   return $block;
 }
 
-function culturefeed_ui_block_view_mbox_confirmation_reminder() {
+function culturefeed_ui_block_mbox_confirmation_reminder_view() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
@@ -111,14 +111,14 @@ function culturefeed_ui_block_view_mbox_confirmation_reminder() {
   return $block;
 }
 
-function culturefeed_ui_block_view_search_users() {
+function culturefeed_ui_block_search_users_view() {
   $block['subject'] = 'Zoek andere gebruikers';
   $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
 
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_profile_box() {
+function culturefeed_ui_block_profile_box_is_visible() {
   if (user_is_anonymous() || DrupalCultureFeed::isCultureFeedUser()) {
     return TRUE;
   }
@@ -126,7 +126,7 @@ function culturefeed_ui_block_is_visible_profile_box() {
   return FALSE;
 }
 
-function culturefeed_ui_block_view_profile_box() {
+function culturefeed_ui_block_profile_box_view() {
   if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -146,7 +146,7 @@ function culturefeed_ui_block_view_profile_box() {
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_connect() {
+function culturefeed_ui_block_connect_is_visible() {
   if (user_is_anonymous()) {
     return TRUE;
   }
@@ -154,7 +154,7 @@ function culturefeed_ui_block_is_visible_connect() {
   return FALSE;
 }
 
-function culturefeed_ui_block_view_connect() {
+function culturefeed_ui_block_connect_view() {
   $block['subject'] = 'Maak zelf een UiTid';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
@@ -163,7 +163,7 @@ function culturefeed_ui_block_view_connect() {
   return $block;
 }
 
-function culturefeed_ui_block_view_most_active_user() {
+function culturefeed_ui_block_most_active_user_view() {
   $sort = variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES);
 
   $query = new CultureFeed_SearchUsersQuery();
@@ -193,15 +193,15 @@ function culturefeed_ui_block_view_most_active_user() {
   return $block;
 }
 
-function culturefeed_ui_block_cache_id_top_events() {
+function culturefeed_ui_block_top_events_cache_id() {
   return array();
 }
 
-function culturefeed_ui_block_cache_expires_top_events() {
+function culturefeed_ui_block_top_events_cache_expires() {
   return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_top_events_block_cache_expires', 3600);
 }
 
-function culturefeed_ui_block_view_top_events() {
+function culturefeed_ui_block_top_events_view() {
   $sort = variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE);
 
   try {
@@ -242,17 +242,17 @@ function culturefeed_ui_block_view_top_events() {
   return $block;
 }
 
-function culturefeed_ui_block_cache_id_similar_users() {
+function culturefeed_ui_block_similar_users_cache_id() {
   $account = menu_get_object('user');
 
   return array($account->uid);
 }
 
-function culturefeed_ui_block_cache_expires_similar_users() {
+function culturefeed_ui_block_similar_users_cache_expires() {
   return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_similar_users_block_cache_expires', 3600);
 }
 
-function culturefeed_ui_block_is_visible_similar_users() {
+function culturefeed_ui_block_similar_users_is_visible() {
   $account = menu_get_object('user');
 
   if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
@@ -262,7 +262,7 @@ function culturefeed_ui_block_is_visible_similar_users() {
   return FALSE;
 }
 
-function culturefeed_ui_block_view_similar_users() {
+function culturefeed_ui_block_similar_users_view() {
   $account = menu_get_object('user');
 
   try {
@@ -293,11 +293,11 @@ function culturefeed_ui_block_view_similar_users() {
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_profile_menu() {
+function culturefeed_ui_block_profile_menu_is_visible() {
   return DrupalCultureFeed::isCultureFeedUser();
 }
 
-function culturefeed_ui_block_view_profile_menu() {
+function culturefeed_ui_block_profile_menu_view() {
 	global $user;
 
   $menu = array(
@@ -356,7 +356,7 @@ function culturefeed_ui_block_view_profile_menu() {
   return $block;
 }
 
-function culturefeed_ui_block_is_visible_user_activities() {
+function culturefeed_ui_block_user_activities_is_visible() {
   $account = menu_get_object('user');
 
   if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2) && DrupalCultureFeed::isCultureFeedUser($account->uid)) {
@@ -366,7 +366,7 @@ function culturefeed_ui_block_is_visible_user_activities() {
   return FALSE;
 }
 
-function culturefeed_ui_block_view_user_activities() {
+function culturefeed_ui_block_user_activities_view() {
   $account = menu_get_object('user');
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -407,7 +407,7 @@ function culturefeed_ui_block_view_user_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_view_recent_activities() {
+function culturefeed_ui_block_recent_activities_view() {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT;
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
@@ -448,17 +448,17 @@ function culturefeed_ui_block_view_recent_activities() {
   return $block;
 }
 
-function culturefeed_ui_block_cache_expires_related_events() {
+function culturefeed_ui_block_related_events_cache_expires() {
   return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_related_events_block_cache_expires', 86400);
 }
 
-function culturefeed_ui_block_cache_id_related_events() {
+function culturefeed_ui_block_related_events_cache_id() {
   $request = cnapi_ui_get_active_request();
 
   return array($request['event']);
 }
 
-function culturefeed_ui_block_is_visible_related_events() {
+function culturefeed_ui_block_related_events_is_visible() {
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
@@ -475,7 +475,7 @@ function culturefeed_ui_block_is_visible_related_events() {
   return TRUE;
 }
 
-function culturefeed_ui_block_view_related_events() {
+function culturefeed_ui_block_related_events_view() {
   // Get the event and CDBID.
   $request = cnapi_ui_get_active_request();
   
@@ -545,16 +545,16 @@ function culturefeed_ui_block_config_users_likes() {
   return $config;
 }
 
-function culturefeed_ui_block_is_visible_users_likes() {
+function culturefeed_ui_block_users_likes_is_visible() {
   $config = culturefeed_ui_block_config_users_likes();
   
-  return _culturefeed_ui_block_is_visible_users_activity($config);
+  return _culturefeed_ui_block_users_activity_is_visible($config);
 }
 
-function culturefeed_ui_block_view_users_likes() {
+function culturefeed_ui_block_users_likes_view() {
   $config = culturefeed_ui_block_config_users_likes();
 
-  return _culturefeed_ui_block_view_users_activity($config);
+  return _culturefeed_ui_block_users_activity_view($config);
 }
 
 function culturefeed_ui_block_config_users_attends() {
@@ -572,26 +572,26 @@ function culturefeed_ui_block_config_users_attends() {
   return $config;
 }
 
-function culturefeed_ui_block_is_visible_users_attends() {
+function culturefeed_ui_block_users_attends_is_visible() {
   $config = culturefeed_ui_block_config_users_attends();
   
-  return _culturefeed_ui_block_is_visible_users_activity($config);
+  return _culturefeed_ui_block_users_activity_is_visible($config);
 }
 
-function culturefeed_ui_block_view_users_attends() {
+function culturefeed_ui_block_users_attends_view() {
   $config = culturefeed_ui_block_config_users_attends();
 
-  return _culturefeed_ui_block_view_users_activity($config);
+  return _culturefeed_ui_block_users_activity_view($config);
 }
 
-function _culturefeed_ui_block_is_visible_users_activity($config) {
+function _culturefeed_ui_block_users_activity_is_visible($config) {
   $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);
 
   return $context !== FALSE;
 }
 
 // @todo clean up code
-function _culturefeed_ui_block_view_users_activity($config) {
+function _culturefeed_ui_block_users_activity_view($config) {
   $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
 
   $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);

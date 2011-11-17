@@ -288,7 +288,7 @@ function culturefeed_ui_block_info() {
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
 
   $block['recent_activities']['info'] = t('Recent activities');
-  $block['recent_activities']['cache'] = DRUPAL_NO_CACHE;
+  $block['recent_activities']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['user_activities']['info'] = t('User activities');
   $block['user_activities']['cache'] = DRUPAL_NO_CACHE;
@@ -320,26 +320,26 @@ function culturefeed_ui_block_info() {
 function culturefeed_ui_block_view($delta = '') {
   module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
 
-  if (function_exists('culturefeed_ui_block_is_visible_' . $delta)) {
-    if (!call_user_func('culturefeed_ui_block_is_visible_' . $delta)) {
+  if (function_exists('culturefeed_ui_block_' . $delta . '_is_visible')) {
+    if (!call_user_func('culturefeed_ui_block_' . $delta . '_is_visible')) {
       return FALSE;
     }
   }
 
-  if (function_exists('culturefeed_ui_block_cache_id_' . $delta) && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
+  if (function_exists('culturefeed_ui_block_' . $delta . '_cache_id') && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
     $cid = culturefeed_ui_block_get_cache_id($delta);
 
     if ($cache = cache_get($cid, 'cache_block')) {
       return $cache->data;
     }
 
-    if (function_exists('culturefeed_ui_block_view_' . $delta)) {
-      $block = call_user_func('culturefeed_ui_block_view_' . $delta);
+    if (function_exists('culturefeed_ui_block_' . $delta . '_view')) {
+      $block = call_user_func('culturefeed_ui_block_' . $delta . '_view');
 
       $cache_expires = CACHE_TEMPORARY;
 
-      if (function_exists('culturefeed_ui_block_cache_expires_' . $delta)) {
-        $cache_expires = call_user_func('culturefeed_ui_block_cache_expires_' . $delta);
+      if (function_exists('culturefeed_ui_block_' . $delta . '_cache_expires')) {
+        $cache_expires = call_user_func('culturefeed_ui_block_' . $delta . '_cache_expires');
       }
 
       cache_set($cid, $block, 'cache_block', $cache_expires);
@@ -348,8 +348,8 @@ function culturefeed_ui_block_view($delta = '') {
     }
   }
   else {
-    if (function_exists('culturefeed_ui_block_view_' . $delta)) {
-      return call_user_func('culturefeed_ui_block_view_' . $delta);
+    if (function_exists('culturefeed_ui_block_' . $delta . '_view')) {
+      return call_user_func('culturefeed_ui_block_' . $delta . '_view');
     }
   }
 }
@@ -386,8 +386,8 @@ function culturefeed_ui_block_get_cache_id($delta) {
 function culturefeed_ui_block_configure($delta = '') {
   module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
 
-  if (function_exists('culturefeed_ui_block_configure_' . $delta)) {
-    return call_user_func('culturefeed_ui_block_configure_' . $delta);
+  if (function_exists('culturefeed_ui_block_' . $delta . '_configure')) {
+    return call_user_func('culturefeed_ui_block_' . $delta . '_configure');
   }
 }
 
@@ -397,8 +397,8 @@ function culturefeed_ui_block_configure($delta = '') {
 function culturefeed_ui_block_save($delta = '', $edit = array()) {
   module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
 
-  if (function_exists('culturefeed_ui_block_save_' . $delta)) {
-    return call_user_func('culturefeed_ui_block_save_' . $delta, $edit);
+  if (function_exists('culturefeed_ui_block_' . $delta . '_save')) {
+    return call_user_func('culturefeed_ui_block_' . $delta . '_save', $edit);
   }
 }
 
