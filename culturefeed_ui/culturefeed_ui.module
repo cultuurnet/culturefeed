@@ -289,7 +289,7 @@ function culturefeed_ui_block_info() {
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
 
   $block['recent_activities']['info'] = t('Recent activities');
-  $block['recent_activities']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['recent_activities']['cache'] = DRUPAL_NO_CACHE;
 
   $block['user_activities']['info'] = t('User activities');
   $block['user_activities']['cache'] = DRUPAL_NO_CACHE;
