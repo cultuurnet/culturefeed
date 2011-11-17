@@ -152,7 +152,6 @@ function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
 
   try {
     DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
-    cache_clear_all('*', 'cache_page', TRUE);
     
     return TRUE;
   }
@@ -181,7 +180,6 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
 
   try {
     DrupalCultureFeed::createActivity($activity);
-    cache_clear_all('*', 'cache_page', TRUE);
     
     return TRUE;
   }
