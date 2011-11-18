@@ -204,6 +204,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/recommendations'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Aanbevolen voor jou'),
+    'page callback' => 'culturefeed_ui_page_recommendations_json',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
 
   return $items;
 }

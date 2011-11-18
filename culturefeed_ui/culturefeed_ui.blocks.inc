@@ -4,36 +4,25 @@ function culturefeed_ui_block_recommendations_view() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
   }
-
-  $setting = array('culturefeed_ui' => array('recommendations' => url('culturefeed/recommendations/' . $request['event'])));
-  
-  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
-  
-  if ($recommendations === FALSE) {
-    return;
-  }
-  
-  if (empty($recommendations)) {
-    $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
-    );
-  }
-  
-  else {
-    $content['recommendations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
-    );
-  
-    $content['more'] = array(
-      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
-    );
-  }
-  
+    
   $block['subject'] = 'Aanbevolen voor jou';
-  $block['content'] = $content;
+  $block['content'] = array(
+    '#markup' => '<div id="recommendations">Bezig met laden...</div>',
+    '#id' => 'recommendations',
+    '#ajax' => array(
+      'event' => 'ajaxload',
+      'path' => 'culturefeed/recommendations',
+    ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
+        array('data' => array(), 'type' => 'setting'),
+      ),
+    ),
+  );
   
+  $block['content'] = ajax_pre_render_element($block['content']);
+
   return $block;
 }
 
@@ -289,18 +278,25 @@ function culturefeed_ui_block_related_events_is_visible() {
 function culturefeed_ui_block_related_events_view() {
   $request = cnapi_ui_get_active_request();
   
-  $setting = array('culturefeed_ui' => array('related_events' => url('culturefeed/relatedevents/' . $request['event'])));
+  $cdbid = $request['event'];
   
   $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
     '#markup' => '<div id="related-events">Bezig met laden...</div>',
+    '#id' => 'related-events',
+    '#ajax' => array(
+      'event' => 'ajaxload',
+      'path' => 'culturefeed/relatedevents/' . $cdbid,
+    ),
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
-        array('data' => $setting, 'type' => 'setting'),
+        array('data' => array(), 'type' => 'setting'),
       ),
     ),
   );
+  
+  $block['content'] = ajax_pre_render_element($block['content']);
 
   return $block;
 }

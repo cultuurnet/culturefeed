@@ -1,5 +1,38 @@
 <?php
 
+function culturefeed_ui_page_recommendations_json() {  
+  $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
+  
+  if ($recommendations === FALSE) {
+    return;
+  }
+  
+  if (empty($recommendations)) {
+    $content['recommendations'] = array(
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+    );
+  }
+  
+  else {
+    $content['recommendations'] = array(
+      '#theme' => 'item_list',
+      '#items' => $recommendations,
+      '#attributes' => array('class' => 'event-recommendation-list')
+    );
+  
+    $content['more'] = array(
+      '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
+    );
+  }
+  
+  $commands = array();
+  
+  $data = drupal_render($content);
+  $commands[] = ajax_command_html('#recommendations', $data);
+
+  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+}
+
 function culturefeed_ui_page_related_events_json($cdbid) {
   $event = cnapi_get_event($cdbid);
   
@@ -46,7 +79,13 @@ function culturefeed_ui_page_related_events_json($cdbid) {
     '#headings' => $valid_headings,
   );
 
-  drupal_json_output(drupal_render($output));
+
+  $commands = array();
+  
+  $data = drupal_render($output);
+  $commands[] = ajax_command_html('#related-events', $data);
+
+  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 }
 
 function culturefeed_ui_page_recommendations($zip = NULL) {
