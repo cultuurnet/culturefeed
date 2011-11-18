@@ -1,5 +1,18 @@
+(function ($) {
+  
+  // Adding support for ajaxload event to core's ajax.inc framework.
+  $(document).ready(function() {
+    for (var base in Drupal.settings.ajax) {
+      if (Drupal.settings.ajax[base].event == 'ajaxload') {
+        $(Drupal.settings.ajax[base].selector).trigger('ajaxload');
+      }
+    }
+  });
+
+})(jQuery);
+
 /**
- * Handler for the form redirection error.
+ * Core override : overriding the form redirection error to not display the alert.
  */
 Drupal.ajax.prototype.error = function (response, uri) {
   // alert(Drupal.ajaxError(response, uri)); // we don't want Drupal's default behavior to show alerts!
@@ -20,15 +33,3 @@ Drupal.ajax.prototype.error = function (response, uri) {
     Drupal.attachBehaviors(this.form, settings);
   }
 };
-
-(function ($) {
-  
-  $(document).ready(function() {
-    for (var base in Drupal.settings.ajax) {
-      if (Drupal.settings.ajax[base].event == 'ajaxload') {
-        $(Drupal.settings.ajax[base].selector).trigger('ajaxload');
-      }
-    }
-  });
-
-})(jQuery);

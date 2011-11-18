@@ -13,25 +13,13 @@ function culturefeed_ui_block_recommendations_cache_id() {
 }
 
 function culturefeed_ui_block_recommendations_view() {
-  $block['subject'] = 'Aanbevolen voor jou';
-  $block['content'] = array(
-    '#markup' => '<div id="recommendations">Bezig met laden...</div>',
-    '#id' => 'recommendations',
-    '#ajax' => array(
-      'event' => 'ajaxload',
-      'path' => 'culturefeed/recommendations/json',
-    ),
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
-        array('data' => array(), 'type' => 'setting'),
-      ),
-    ),
+  $config = array(
+    'title' => 'Aanbevolen voor jou',
+    'id' => 'recommendations',
+    'path' => 'culturefeed/recommendations/json',
   );
   
-  $block['content'] = ajax_pre_render_element($block['content']);
-
-  return $block;
+  return culturefeed_ui_block_ajaxload($config);
 }
 
 function culturefeed_ui_block_user_liked_locations_is_visible() {
@@ -288,25 +276,13 @@ function culturefeed_ui_block_related_events_view() {
   
   $cdbid = $request['event'];
   
-  $block['subject'] = 'Ontdek ook';
-  $block['content'] = array(
-    '#markup' => '<div id="related-events">Bezig met laden...</div>',
-    '#id' => 'related-events',
-    '#ajax' => array(
-      'event' => 'ajaxload',
-      'path' => 'culturefeed/relatedevents/' . $cdbid . '/json',
-    ),
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
-        array('data' => array(), 'type' => 'setting'),
-      ),
-    ),
+  $config = array(
+    'title' => 'Ontdek ook',
+    'id' => 'related-events',
+    'path' => 'culturefeed/relatedevents/' . $cdbid . '/json',
   );
   
-  $block['content'] = ajax_pre_render_element($block['content']);
-
-  return $block;
+  return culturefeed_ui_block_ajaxload($config);
 }
 
 function culturefeed_ui_block_users_likes_config() {
