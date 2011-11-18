@@ -293,7 +293,7 @@ function culturefeed_ui_block_related_events_view() {
   
   $block['subject'] = 'Ontdek ook';
   $block['content'] = array(
-    '#markup' => '<div id="related-events"Bezig me></div>',
+    '#markup' => '<div id="related-events">Bezig met laden...</div>',
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
