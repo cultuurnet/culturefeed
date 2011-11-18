@@ -195,7 +195,7 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/relatedevents/%'] = array(
+  $items['culturefeed/relatedevents/%/json'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Ontdek ook'),
     'page callback' => 'culturefeed_ui_page_related_events_json',
@@ -204,7 +204,7 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/recommendations'] = array(
+  $items['culturefeed/recommendations/json'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Aanbevolen voor jou'),
     'page callback' => 'culturefeed_ui_page_recommendations_json',

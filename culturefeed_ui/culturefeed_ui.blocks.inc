@@ -19,7 +19,7 @@ function culturefeed_ui_block_recommendations_view() {
     '#id' => 'recommendations',
     '#ajax' => array(
       'event' => 'ajaxload',
-      'path' => 'culturefeed/recommendations',
+      'path' => 'culturefeed/recommendations/json',
     ),
     '#attached' => array(
       'js' => array(
@@ -294,7 +294,7 @@ function culturefeed_ui_block_related_events_view() {
     '#id' => 'related-events',
     '#ajax' => array(
       'event' => 'ajaxload',
-      'path' => 'culturefeed/relatedevents/' . $cdbid,
+      'path' => 'culturefeed/relatedevents/' . $cdbid . '/json',
     ),
     '#attached' => array(
       'js' => array(
