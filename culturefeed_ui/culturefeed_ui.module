@@ -328,7 +328,7 @@ function culturefeed_ui_block_info() {
   $block['related_events']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   $block['recommendations']['info'] = t('Recommendations');
-  $block['recommendations']['cache'] = DRUPAL_NO_CACHE;
+  $block['recommendations']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   return $block;
 }
