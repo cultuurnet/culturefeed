@@ -380,7 +380,7 @@ function _culturefeed_ui_block_users_activity_view($config) {
 
   if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
-      $user_likes_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $type);
+      $user_likes_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $activity_content_type);
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);

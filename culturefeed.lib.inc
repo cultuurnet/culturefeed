@@ -544,12 +544,10 @@ class DrupalCultureFeed {
     return self::getConsumerInstance()->getUrlLogout($destination);
   }
 
-  public static function userDidActivity($type, $nodeId, $contentType, $user = NULL) {
+  public static function userDidActivity($type, $nodeId, $contentType) {
     $userDidActivity = &drupal_static(__FUNCTION__, array());
 
-    if (!$user) {
-      $user = self::getLoggedInUserId();
-    }
+    $user = self::getLoggedInUserId();
 
     if (!isset($userDidActivity[$nodeId][$contentType][$user])) {
       $query = new CultureFeed_SearchActivitiesQuery();
@@ -565,7 +563,7 @@ class DrupalCultureFeed {
       );
       $query->nodeId = $nodeId;
       $query->contentType = $contentType;
-      $query->userId = self::getLoggedInUserId();
+      $query->userId = $user;
       $query->private = TRUE;
 
       $activities = self::searchActivities($query);
