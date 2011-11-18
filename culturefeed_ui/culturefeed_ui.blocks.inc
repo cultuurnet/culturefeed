@@ -1,10 +1,18 @@
 <?php
 
-function culturefeed_ui_block_recommendations_view() {
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return;
+function culturefeed_ui_block_recommendations_is_visible() {
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    return TRUE;
   }
-    
+  
+  return FALSE;
+}
+
+function culturefeed_ui_block_recommendations_cache_id() {
+  return array(DrupalCultureFeed::isCultureFeedUser() ? 1 : 0);
+}
+
+function culturefeed_ui_block_recommendations_view() {
   $block['subject'] = 'Aanbevolen voor jou';
   $block['content'] = array(
     '#markup' => '<div id="recommendations">Bezig met laden...</div>',
