@@ -95,7 +95,15 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       user_login_finalize();
 
       if (isset($_GET['closepopup'])) {
-        return '';
+        // We don't want to render all blocks, so we return minimal html.
+        print '<html>';
+        print '<head>';
+        print '<title>You should not see this</title>';
+        print '<script type="text/javascript">try { window.opener.location.reload(); } catch (err) { } window.close();</script>';
+        print '</head>';
+        print '<body>';
+        print '</body>';
+        print '</html>';
       }
       else {
         if (isset($_GET['destination'])) {
@@ -107,4 +115,8 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       }
     }
   }
+
+  drupal_page_footer();
+
+  exit();
 }
