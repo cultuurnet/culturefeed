@@ -1,5 +1,6 @@
 (function ($) {
 
+// Close popup.
 Drupal.behaviors.culturefeedPopupConnect = {
   attach: function (context, settings) {
     $('a.culturefeedconnect').click(function() {
