@@ -38,6 +38,9 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
 
 	// picture
 	$variables['picture'] = $account->depiction ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
+
+	// city
+	$variables['city'] = $account->city ? $account->city : '';
 	
 	// profile
 	$variables['profile_edit_link'] = '';

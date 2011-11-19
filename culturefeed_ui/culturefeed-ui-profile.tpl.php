@@ -13,7 +13,7 @@
   <?php endif; ?>
   
   <div class="profile-fields">
-    <?php if ($name || $gender || $dob || $bio) : ?>    
+    <?php if ($name || $gender || $dob || $bio || $city) : ?>    
       <?php if ($name) : ?>
         <div class="profile-field name"><?php print $name ?></div>
       <?php endif; ?>
@@ -28,6 +28,10 @@
       
       <?php if ($bio) : ?>
         <div class="profile-field bio"><?php print $bio ?></div>
+      <?php endif; ?>
+      
+      <?php if ($city) : ?>
+        <div class="profile-field city"><?php print $city ?></div>
       <?php endif; ?>
     <?php else : ?>
       <div class="no-public-profile-fields">
