@@ -168,8 +168,7 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
   }
 }
 
-// @todo clean up code
-// @todo fix case where activity is an event (node, actor, ...)
+// @todo fix case where activity is not an event or event info is not available (node, actor, ...) and clean up code
 function culturefeed_ui_page_activities($type = NULL) {
   $types = culturefeed_ui_activity_types();
   
@@ -846,7 +845,6 @@ function culturefeed_ui_page_account_edit_form() {
     '#value' => 'Opslaan',
   );
 
-  // @todo fix popup
   $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
 
   $url = DrupalCultureFeed::getUrlChangePassword($cf_account->id, $destination);

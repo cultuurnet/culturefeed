@@ -173,18 +173,6 @@ elseif ($_GET['action'] == 'revokeUserServiceConsumer') {
 
 }
 
-//   @todo updateuseronlineaccount
-
-//   @todo deleteuseronlineaccount
-
-//   @todo create activity
-
-//   @todo update activity
-
-//   @todo delete activity
-
-//   @todo search activities
-
 /*
  * Get top events.
  */
@@ -196,31 +184,5 @@ elseif ($_GET['action'] == 'getTopEvents') {
   print "<pre>".print_r($result, TRUE)."</pre>";
 
 }
-
-/*
- * Get recommendations for a user.
- */
-
-elseif ($_GET['action'] == 'getRecommendationsForUser') {
-
-  $result = $cf->getRecommendationsForUser($uid, array('max' => 10)); // @todo make query a class
-
-  print "<pre>".print_r($result, TRUE)."</pre>";
-
-}
-
-/*
- * Get recommendations for an event.
- */
-
-elseif ($_GET['action'] == 'getRecommendationsForEvent') {
-
-  $result = $cf->getRecommendationsForEvent(SOME_EVENT, array('max' => 10)); // @todo make query a class
-
-  print "<pre>".print_r($result, TRUE)."</pre>";
-
-}
-
-//   @todo evaluate recommendation
 
 ?>

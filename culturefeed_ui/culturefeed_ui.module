@@ -16,8 +16,6 @@ define('CULTUREFEED_UI_PAGE_USERS_MOST_ACTIVE_COUNT', 10);
 define('CULTUREFEED_UI_PAGE_ACTIVITIES_RECENT_COUNT', 20);
 define('CULTUREFEED_UI_PAGE_RECOMMENDATIONS_COUNT', 50);
 
-// @todo translate page titles
-
 /**
  * Implements hook_menu().
  */
