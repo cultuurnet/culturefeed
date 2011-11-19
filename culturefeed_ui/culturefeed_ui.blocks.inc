@@ -214,44 +214,13 @@ function culturefeed_ui_block_user_activities_view() {
 }
 
 function culturefeed_ui_block_recent_activities_view() {
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA
-  );
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = culturefeed_ui_activities_list($activities);
-
-  if (empty($items)) {
-    return;
-  }
-  
-  $content['activities'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'user-activity-list'),
+  $config = array(
+    'title' => 'Recente acties',
+    'id' => 'recent-activities',
+    'path' => 'culturefeed/recentactivities/json',
   );
   
-  $content['more'] = array(
-    '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
-  );
-
-  $block['subject'] = 'Recente acties';
-  $block['content'] = $content;
-
-  return $block;
+  return culturefeed_ui_block_ajaxload($config);
 }
 
 function culturefeed_ui_block_related_events_is_visible() {
