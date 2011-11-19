@@ -698,12 +698,6 @@ function culturefeed_ui_page_profile_edit_form() {
     '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
-  if (module_exists('cnapi_browse')) {
-    drupal_add_js("(function ($) { $(document).ready(function() { $('.form-item-dob .description').hide(); $('#edit-dob').datePicker({startDate:'01/01/1900'}); }); })(jQuery);", 'inline');
-
-    $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
-  }
-
   // Bio
   $form['bio'] = array(
     '#type' => 'textarea',
