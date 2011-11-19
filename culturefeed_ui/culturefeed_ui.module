@@ -211,15 +211,6 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
-  $items['culturefeed/recentactivities/json'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Recente acties'),
-    'page callback' => 'culturefeed_ui_page_recent_activities_json',
-    'page arguments' => array(1),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-    'file' => 'culturefeed_ui.pages.inc',
-  );
 
   return $items;
 }
@@ -314,7 +305,7 @@ function culturefeed_ui_block_info() {
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
 
   $block['recent_activities']['info'] = t('Recent activities');
-  $block['recent_activities']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['recent_activities']['cache'] = DRUPAL_NO_CACHE;
 
   $block['user_activities']['info'] = t('User activities');
   $block['user_activities']['cache'] = DRUPAL_NO_CACHE;

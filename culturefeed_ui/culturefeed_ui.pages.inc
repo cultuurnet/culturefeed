@@ -1,48 +1,5 @@
 <?php
 
-function culturefeed_ui_page_recent_activities_json() {  
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA
-  );
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = culturefeed_ui_activities_list($activities);
-
-  if (empty($items)) {
-    return;
-  }
-  
-  $content['activities'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'user-activity-list'),
-  );
-  
-  $content['more'] = array(
-    '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
-  );
-  
-  $commands = array();
-  
-  $data = drupal_render($content);
-  $commands[] = ajax_command_html('#recent-activities', $data);
-
-  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-}
-
 function culturefeed_ui_page_recommendations_json() {  
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
   
