@@ -391,7 +391,7 @@ function culturefeed_ui_block_get_cache_id($delta) {
       }
     }
 
-    $cid_parts = array_merge($cid_parts, call_user_func('culturefeed_ui_block_cache_id_' . $delta));
+    $cid_parts = array_merge($cid_parts, call_user_func('culturefeed_ui_block_' . $delta . '_cache_id'));
 
     return implode(':', $cid_parts);
   }

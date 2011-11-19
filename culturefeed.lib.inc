@@ -37,7 +37,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     cache_set($cid, $data, 'cache_culturefeed', $expires);
   }
   
-  protected function cacheGet($cid, $data) {
+  protected function cacheGet($cid) {
     $cid = $this->getCacheCid($cid);
     return cache_get($cid, 'cache_culturefeed');
   }
