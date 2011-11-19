@@ -6,9 +6,6 @@
   <?php if ($picture) : ?>
     <div class="profile-picture">
       <?php print $picture ?>
-      <?php if ($picture_change_link) : ?>
-        <?php print $picture_change_link ?>
-      <?php endif; ?>
     </div>
   <?php endif; ?>
   
