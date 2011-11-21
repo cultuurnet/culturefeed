@@ -741,7 +741,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   if (count($dob_parts) == 3) {
     list($day, $month, $year) = $dob_parts;
     
-    if (is_numeric($day) & is_numeric($month) && is_numeric($year))  {
+    if (is_numeric($day) && is_numeric($month) && is_numeric($year))  {
       if ($date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year)) {
         $user_update->dob = $date;
       }
