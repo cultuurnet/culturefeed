@@ -82,8 +82,8 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->realCultureFeed->createUser($user); 
   }
 
-  public function updateUser(CultureFeed_User $user) {
-    $this->realCultureFeed->updateUser($user); 
+  public function updateUser(CultureFeed_User $user, $fields = array()) {
+    $this->realCultureFeed->updateUser($user, $fields); 
   }
 
   public function deleteUser($id) {
@@ -397,8 +397,8 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->createUser($user);
   }
 
-  public static function updateUser(CultureFeed_User $user) {
-    self::getLoggedInUserInstance()->updateUser($user);
+  public static function updateUser(CultureFeed_User $user, $fields = array()) {
+    self::getLoggedInUserInstance()->updateUser($user, $fields);
   }
 
   public static function deleteUser($id) {

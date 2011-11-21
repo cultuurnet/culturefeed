@@ -242,8 +242,8 @@ class CultureFeed implements ICultureFeed {
    * @param CultureFeed_User $user
    *   The user to update. The user is identified by ID. Only fields that are set will be updated.
    */
-  public function updateUser(CultureFeed_User $user) {
-    $data = $user->toPostData();
+  public function updateUser(CultureFeed_User $user, $fields = array()) {
+    $data = $user->toPostData($fields);
 
     $id = $data['id'];
 

@@ -193,7 +193,7 @@ class CultureFeed_User {
    * @return array
    *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
    */
-  public function toPostData() {
+  public function toPostData($fields = array()) {
     // For most properties we can rely on get_object_vars.
     $data = get_object_vars($this);
 
@@ -232,11 +232,19 @@ class CultureFeed_User {
     }
 
     // Represent dob as a W3C date.
-    if (isset($data['dob'])) {
+    if (!empty($data['dob'])) {
       $data['dob'] = date('c', $data['dob']);
     }
 
     $data = array_filter($data);
+    
+    // If a field was unset (value made empty), re-add it.
+    $valid_fields = array_keys(get_object_vars($this));
+    foreach ($fields as $field) {
+      if (!isset($data[$field]) && in_array($field, $valid_fields)) {
+        $data[$field] = '';
+      }
+    }
 
     return $data;
   }

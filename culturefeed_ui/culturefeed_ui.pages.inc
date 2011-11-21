@@ -736,20 +736,27 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   $user_update->city       = $values['city'];
   $user_update->country    = $values['country'];
 
-  $dob_parts = explode('/', $values['dob']);
-
-  if (count($dob_parts) == 3) {
-    list($day, $month, $year) = $dob_parts;
+  if (empty($values['dob'])) {
+    $user_update->dob = '';
+  }
+  else {
+    $dob_parts = explode('/', $values['dob']);
     
-    if (is_numeric($day) && is_numeric($month) && is_numeric($year))  {
-      if ($date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year)) {
-        $user_update->dob = $date;
+    if (count($dob_parts) == 3) {
+      list($day, $month, $year) = $dob_parts;
+      
+      if (is_numeric($day) && is_numeric($month) && is_numeric($year))  {
+        if ($date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year)) {
+          $user_update->dob = $date;
+        }
       }
     }
   }
 
+  $fields = array('id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city', 'country', 'dob');
+
   try {
-    DrupalCultureFeed::updateUser($user_update);
+    DrupalCultureFeed::updateUser($user_update, $fields);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
