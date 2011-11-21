@@ -418,10 +418,10 @@ function culturefeed_ui_page_users_for_content_activity($type, $content_type, $i
 
   switch ($type) {
     case CultureFeed_Activity::TYPE_LIKE:
-      $title = sprintf('Zijn vonden "%s" tof.', truncate_utf8($page_title, 20, TRUE, TRUE));
+      $title = sprintf('Zij vonden "%s" tof.', truncate_utf8($page_title, 20, TRUE, TRUE));
       break;
     case CultureFeed_Activity::TYPE_IK_GA:
-      $title = sprintf('Zijn gaan naar "%s".', truncate_utf8($page_title, 20, TRUE, TRUE));
+      $title = sprintf('Zij gaan naar "%s".', truncate_utf8($page_title, 20, TRUE, TRUE));
       break;
   }
 

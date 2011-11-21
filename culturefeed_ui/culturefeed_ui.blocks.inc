@@ -345,7 +345,6 @@ function _culturefeed_ui_block_users_activity_is_visible($config) {
   return $context !== FALSE;
 }
 
-// @todo clean up code
 function _culturefeed_ui_block_users_activity_view($config) {
   $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
 
@@ -376,11 +375,11 @@ function _culturefeed_ui_block_users_activity_view($config) {
     );
   }
 
-  $user_likes_this = FALSE;
+  $user_did_this = FALSE;
 
   if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
-      $user_likes_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $activity_content_type);
+      $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $activity_content_type);
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
@@ -389,7 +388,7 @@ function _culturefeed_ui_block_users_activity_view($config) {
 
   $items = array();
 
-  if (!$user_likes_this) {
+  if (!$user_did_this) {
     $url = 'culturefeed/do/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
     if ($users->total == 0) {
       $title = $config['do_first_link_title'];
