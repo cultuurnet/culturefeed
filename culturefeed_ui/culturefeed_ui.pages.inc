@@ -798,14 +798,18 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
 }
 
-// @todo code cleanup
 function culturefeed_ui_page_account_edit() {
   return array(
-    'account' => drupal_get_form('culturefeed_ui_page_account_edit_form'),
-    'online_accounts_title' => array(
-      '#markup' => '<h2>Gekoppelde accounts</h2>'
+    'account' => array(
+      '#prefix' => '<div id="account-edit-form">',
+      drupal_get_form('culturefeed_ui_page_account_edit_form'),
+      '#suffix' => '</div>',
     ),
-    'online_accounts' => culturefeed_ui_online_accounts(),
+    'online_accounts' => array(
+      '#prefix' => '<div id="online-accounts"><h2>Gekoppelde accounts</h2>',
+      culturefeed_ui_online_accounts(),
+      '#suffix' => '</div>',
+    ),
     'consumers' => array(
       '#prefix' => '<div id="manage-consumers"><h2>Gekoppelde toepassingen</h2>',
       '#markup' => 'Beheer alle ' . l('websites en toepassingen', 'culturefeed/serviceconsumers') . ' die momenteel gebruik maken van je UiTiD.',
