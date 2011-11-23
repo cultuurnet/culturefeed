@@ -2,7 +2,7 @@
 
 function culturefeed_ui_page_recommendations_json() {  
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
-  
+
   if ($recommendations === FALSE) {
     return;
   }
@@ -64,11 +64,6 @@ function culturefeed_ui_page_related_events_json($cdbid) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  // If we got no recommendations, we don't bother showing the block at all.
-  if (empty($recommendations)) {
     return;
   }
 

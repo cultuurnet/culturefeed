@@ -397,14 +397,14 @@ function _culturefeed_ui_block_users_activity_view($config) {
       $title = $config['do_link_title'];
     }
     $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'do-link')))
+      '#markup' => l($title, $url, array('attributes' => array('class' => 'do-link ' . 'do-' . $config['activity_type'] . '-link')))
     );
   }
   else {
     $url = 'culturefeed/undo/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
     $title = $config['undo_link_title'];
     $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'undo-link')))
+      '#markup' => l($title, $url, array('attributes' => array('class' => 'undo-link ' . 'undo-' . $config['activity_type'] . '-link')))
     );
   }
 
