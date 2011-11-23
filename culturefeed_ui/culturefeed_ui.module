@@ -216,6 +216,13 @@ function culturefeed_ui_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_init().
+ */
+function culturefeed_ui_init() {
+  culturefeed_ui_set_canonical_and_noindex();
+}
+
 function culturefeed_ui_default_title_callback($title = '') {
   return $title;
 }

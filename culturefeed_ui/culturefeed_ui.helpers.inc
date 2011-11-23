@@ -1,5 +1,40 @@
 <?php
 
+/**
+ * Put noindex and canonical metatags for SEO on relevant culturefeed pages.
+ */
+function culturefeed_ui_set_canonical_and_noindex() {
+  $canonical = FALSE;
+  
+  if (arg(0) == 'culturefeed') {
+    if (arg(1) == 'activities' && arg(2) == 'recent') {
+      $noindex = TRUE;
+    }
+    if (arg(1) == 'users' && arg(2) == 'search') {
+      $noindex = TRUE;
+    }
+  }
+
+  // Add the "noindex, follow" meta tag if needed.
+  if ($noindex) {
+    $element = array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'robots',
+        'content' => 'noindex, follow',
+      ),
+    );
+
+    drupal_add_html_head($element, 'nofollow');
+  }
+
+  // Add the rel="canonical" tag if needed.
+  if ($canonical) {
+    $canonical['options']['absolute'] = TRUE;
+    drupal_add_html_head_link(array('rel' => 'canonical', 'href' => url($canonical['path'], $canonical['options'])), TRUE);
+  }
+}
+
 function culturefeed_ui_block_ajaxload($config) {
   $block['subject'] = $config['title'];
   $block['content'] = array(
