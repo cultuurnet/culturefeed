@@ -279,7 +279,7 @@ class DrupalCultureFeed {
   }
 
   public static function getLoggedInUserId() {
-    if (self::getLoggedInAccount()) {
+    if (self::getLoggedInAccount() && self::isCultureFeedUser()) {
       return self::getLoggedInAccount()->culturefeed_uid;
     }
     

@@ -5,6 +5,7 @@
  */
 function culturefeed_ui_set_canonical_and_noindex() {
   $canonical = FALSE;
+  $noindex = FALSE;
   
   if (arg(0) == 'culturefeed') {
     if (arg(1) == 'activities' && arg(2) == 'recent') {
