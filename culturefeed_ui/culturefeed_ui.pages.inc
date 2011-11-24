@@ -163,7 +163,6 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
   }
 }
 
-// @todo fix case where activity is not an event or event info is not available (node, actor, ...) and clean up code
 function culturefeed_ui_page_activities($type = NULL) {
   $types = culturefeed_ui_activity_types();
   
@@ -201,7 +200,7 @@ function culturefeed_ui_page_activities($type = NULL) {
   pager_default_initialize($activities->total, $pagelength);
   
   // Fetch the event information for all events.
-  $events = culturefeed_get_nodes_for_activities($activities->objects);
+  $nodes = culturefeed_get_nodes_for_activities($activities->objects);
 
   $rows = array();
   
@@ -226,11 +225,22 @@ function culturefeed_ui_page_activities($type = NULL) {
     
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
 
-    $event = isset($events[$activity->nodeId]) ? $events[$activity->nodeId] : NULL;
+    $node = isset($nodes[$activity->nodeId]) ? $nodes[$activity->nodeId] : NULL;
+
+    if (in_array($activity->contentType, array('actor', 'event')) && isset($node)) {
+      $data = theme('cnapi_ui_' . $activity->contentType . '_mini_summary', array($activity->contentType => $node));
+    }
+    elseif ($activity->contentType == 'page') {
+      $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
+    }
+    else {
+      $data = $activity->nodeTitle;
+    }
+    
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
-        isset($event) ? theme('cnapi_ui_event_mini_summary', array('event' => $event)) : $activity->nodeTitle,
+        $data,
         $type_text,
         format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden <br />op ' . $activity->createdVia,
         drupal_render($privacy),
