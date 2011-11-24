@@ -53,7 +53,6 @@ function culturefeed_ui_block_user_liked_locations_view() {
     $items = array();
     
     foreach ($actors as $actor) {
-      // @todo fix this : actor can be unavailable : show title then.
       $items[] = theme('cnapi_ui_actor_mini_summary', array('actor' => $actor));
     }
     
