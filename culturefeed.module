@@ -13,30 +13,6 @@ define('CULTUREFEED_API_LOCATION', 'http://test.UiTiD.be/culturefeed/rest/');
  * Implements hook_init().
  */
 function culturefeed_init() {
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-      DrupalCultureFeed::getLoggedInUser();
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed', $e);
-    
-      if ($e->getCode() == 401) {
-        global $user;
-        
-        watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
-        
-        module_invoke_all('user_logout', $user);
-        
-        // Destroy the current session, and reset $user to the anonymous user.
-        session_destroy();
-        
-        drupal_set_message('Er was een probleem met jouw connectie. Gelieve opnieuw in te loggen.', 'error');
-        
-        drupal_goto();
-      }
-    }
-  }
-  
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
 
   if (isset($_GET['closepopup'])) {
