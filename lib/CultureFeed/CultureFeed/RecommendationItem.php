@@ -27,6 +27,13 @@ class CultureFeed_RecommendationItem {
   public $title;
 
   /**
+   * Description of the recommendation item (event).
+   *
+   * @var string
+   */
+  public $description;
+
+  /**
    * Short description of the recommendation item (event).
    *
    * @var string
@@ -55,11 +62,32 @@ class CultureFeed_RecommendationItem {
   public $location_simple;
 
   /**
+   * Segment (zip) of the recommendation item (event).
+   *
+   * @var string
+   */
+  public $segment;
+
+  /**
+   * City of the recommendation item (event).
+   *
+   * @var string
+   */
+  public $location_city;
+
+  /**
    * Coordinates of the recommendation item (event).
    *
    * @var CultureFeed_Location
    */
   public $location_latlong;
+
+  /**
+   * Thumbnail of the recommendation item (event).
+   *
+   * @var string
+   */
+  public $thumbnail;
 
 }
 

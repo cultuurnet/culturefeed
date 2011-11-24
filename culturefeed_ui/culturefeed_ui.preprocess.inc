@@ -297,8 +297,14 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   // remove
   $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
 
+  // thumbnail
+  $variables['thumbnail'] = !empty($item->thumbnail) ? theme('image', array('path' => $item->thumbnail)) : '';
+
   // location
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
+  
+  // address
+  $variables['address'] = !empty($item->location_city) ? $item->segment . ' ' . $item->location_city : '';
 
   // more
   $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);

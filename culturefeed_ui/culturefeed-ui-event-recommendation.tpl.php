@@ -1,6 +1,8 @@
 <h<?php print $heading_level ?><?php print $title_attributes; ?>><?php print $title ?></h<?php print $heading_level ?>>
 
-<div class="where"><?php print $location ?></div>
+<?php print $thumbnail ?>
+
+<div class="where"><?php print $location ?> / <?php print $address ?></div>
 
 <div class="when"><?php print $date ?></div>
 

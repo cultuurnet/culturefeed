@@ -1122,10 +1122,14 @@ class CultureFeed implements ICultureFeed {
       $recommendation_item->id                = $object->xpath_str('item/id');
       $recommendation_item->permalink         = $object->xpath_str('item/permalink');
       $recommendation_item->title             = $object->xpath_str('item/title');
+      $recommendation_item->description       = $object->xpath_str('item/description');
       $recommendation_item->description_short = $object->xpath_str('item/description_short');
       $recommendation_item->from              = $object->xpath_time('item/from');
       $recommendation_item->to                = $object->xpath_time('item/to');
       $recommendation_item->location_simple   = $object->xpath_str('item/location_simple');
+      $recommendation_item->segment           = $object->xpath_str('item/segment');
+      $recommendation_item->location_city     = $object->xpath_str('item/location_city');
+      $recommendation_item->thumbnail         = $object->xpath_str('item/thumbnail');
 
       $coord = $object->xpath_str('item/location_latlong');
       if ($coord) {
