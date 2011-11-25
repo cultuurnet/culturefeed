@@ -1,5 +1,41 @@
 <?php
 
+function culturefeed_ui_page_remove_account_form($form, &$form_state) {
+  return confirm_form($form,
+    'Ben je zeker dat je jouw UiTiD wil verwijderen?',
+    isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/account/edit',
+    'Deze actie kan niet ongedaan gemaakt worden.',
+    'Verwijderen',
+    'Annuleren'
+  );
+}
+
+function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
+  $cf_uid = DrupalCultureFeed::getLoggedInUserId();
+  
+  try {
+    DrupalCultureFeed::deleteUser($cf_uid);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden bij het verwijderen van jouw account.');
+    return;
+  }
+  
+  db_query("DELETE FROM {culturefeed_token} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
+  db_query("DELETE FROM {culturefeed_user} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
+  
+  global $user;
+  
+  $user->status = 0;
+  
+  user_save($user);
+  
+  module_load_include('inc', 'user', 'user.pages');
+  
+  user_logout();
+}
+
 function culturefeed_ui_page_recommendations_json() {  
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
 
@@ -875,6 +911,12 @@ function culturefeed_ui_page_account_edit_form() {
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
     '#markup' => l('Paswoord wijzigen', $url, $options),
+    '#suffix' => '</div>',
+  );
+
+  $form['remove_account'] = array(
+    '#prefix' => '<div id="remove-account">',
+    '#markup' => l('UiTiD verwijderen', 'culturefeed/removeaccount'),
     '#suffix' => '</div>',
   );
 
