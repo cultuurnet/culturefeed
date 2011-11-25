@@ -104,8 +104,8 @@ function culturefeed_ui_page_related_events_json($cdbid) {
   }
 
   $output = array(
-    '#theme' => 'culturefeed_ui_related_events',
-    '#events' => $recommendations,
+    '#theme' => 'uiv_related_events',
+    '#events' => $event,
     '#cityid' => $cityid,
     '#headings' => $valid_headings,
   );
@@ -141,6 +141,10 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
     );
   }
   
+  $content['#attached'] = array(
+    'js' => array(drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js')),
+  );
+  
   return $content;
 }
 
@@ -158,35 +162,18 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
     watchdog_exception('culturefeed_ui', $e);
     $success = FALSE;
   }
-  
-  // If it was an 'unlike', remove the like (which was done by CultureFeed on the positive recommendation).
-  if ($success && $evaluation == 'unlike') {
-    $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
-  }
 
   if ($type == 'ajax') {
     $commands = array();
     
     if ($success) {
       switch ($evaluation) {
-        case 'unlike':
         case 'negative':
-          $commands[] = ajax_command_invoke('#recommendation-' . $recommendation_id, 'fadeOut', array('slow'));
+          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-negative">Dit event wordt verwijderd uit je aanbevelingen.</div>');
           break;
       
         case 'positive':
-          $commands[] = ajax_command_invoke('#recommendation-negative-' . $recommendation_id, 'fadeOut', array('slow'));
-      
-          $unlike = array(
-            '#type' => 'link',
-            '#title' => 'Ik vind dit niet meer leuk',
-            '#href' => 'culturefeed/recommendations/unlike/' . $recommendation_id . '/' . $node_id . '/nojs',
-            '#attributes' => array('id' => 'recommendation-unlike-' . $recommendation_id, 'class' => 'unlike-link'),
-            '#options' => array('query' => drupal_get_destination()),
-            '#ajax' => array(),
-          );
-      
-          $commands[] = ajax_command_replace('#recommendation-positive-' . $recommendation_id, drupal_render($unlike));
+          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-positive">Dit evenement wordt op je profielpagina geplaatst.</div>');
       
           break;
       }

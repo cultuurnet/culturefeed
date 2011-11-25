@@ -10,6 +10,12 @@
       }
     }
   });
+  
+  Drupal.behaviors.cultureFeedEvaluationFader = {
+    attach: function (context, settings) {
+      $('.evaluated-negative, .evaluated-positive').parents('li').fadeOut(5000);
+    }
+  };
 
 })(jQuery);
 
