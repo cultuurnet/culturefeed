@@ -222,9 +222,9 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->updateUserOnlineAccount($id, $account);
   }
 
-  public static function getUserOnlineAccounts() {
-    $cf_account = self::getLoggedInUser();
-    
+  public static function getUserOnlineAccounts($application_key = NULL, $shared_secret = NULL) {
+    $cf_account = self::getLoggedInUser($application_key, $shared_secret);
+
     $online_accounts = array();
     
     if ($cf_account->holdsAccount) {
