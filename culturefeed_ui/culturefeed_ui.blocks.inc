@@ -529,6 +529,8 @@ function culturefeed_ui_block_profile_menu_view() {
       'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTiD-profiel.',
     ),
   );
+  
+  drupal_alter('culturefeed_ui_profile_menu', $menu);
 
   $items = array();
 
