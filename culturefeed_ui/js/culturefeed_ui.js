@@ -13,7 +13,7 @@
   
   Drupal.behaviors.cultureFeedEvaluationFader = {
     attach: function (context, settings) {
-      $('.evaluated-negative, .evaluated-positive').parents('li').fadeOut(5000);
+      $('.evaluated-negative, .evaluated-positive').parents('li').delay(1000).slideUp(600);
     }
   };
 

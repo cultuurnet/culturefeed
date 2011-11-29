@@ -201,7 +201,7 @@ function culturefeed_ui_block_user_activities_view() {
     );
     if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
-        '#markup' => l('Beheer jouw acties', 'culturefeed/activities'),
+        '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
       );
     }
   }
