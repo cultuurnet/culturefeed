@@ -221,9 +221,6 @@ function culturefeed_ui_page_activities($type = NULL) {
 
   // Initialize the pager.
   pager_default_initialize($activities->total, $pagelength);
-  
-  // Fetch the event information for all events.
-  $nodes = culturefeed_get_nodes_for_activities($activities->objects);
 
   $rows = array();
   
@@ -247,21 +244,13 @@ function culturefeed_ui_page_activities($type = NULL) {
     );
     
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
-
-    $node = isset($nodes[$activity->nodeId]) ? $nodes[$activity->nodeId] : NULL;
-
-    if (in_array($activity->contentType, array('actor', 'event')) && isset($node)) {
-      $data = theme('cnapi_ui_' . $activity->contentType . '_mini_summary', array($activity->contentType => $node));
-    }
-    elseif ($activity->contentType == 'page') {
+    
+    if ($activity->contentType == 'page') {
       $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
     }
     elseif (in_array($activity->contentType, array('actor', 'event', 'production'))) {
       $request_dp = array($activity->contentType => $activity->nodeId, 'title' => $activity->nodeTitle);
       $data = cnapi_url_dp2dul($activity->nodeTitle, $request_dp);
-    }
-    else {
-      $data = $activity->nodeTitle;
     }
     
     $rows[] = array(
