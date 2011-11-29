@@ -278,6 +278,7 @@ function culturefeed_ui_page_activities($type = NULL) {
   
   $activities = array(
     '#theme' => 'table',
+    '#header' => array('Pagina', 'Actie', 'Tijdstip en publicatiekanaal', 'Publiek', ''),
     '#rows' => $rows,
     '#empty' => 'Je hebt nog geen acties gedaan.',
   );
