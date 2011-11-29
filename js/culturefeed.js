@@ -3,7 +3,7 @@
 // Close popup.
 Drupal.behaviors.culturefeedPopupConnect = {
   attach: function (context, settings) {
-    $('a.culturefeedconnect').click(function() {
+    $('a.culturefeedconnect', context).click(function() {
       var href = $(this).attr('href');
 
       var hasPopupQuery = href.search(/closepopup\=true/i) > -1;
