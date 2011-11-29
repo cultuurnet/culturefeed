@@ -256,6 +256,10 @@ function culturefeed_ui_page_activities($type = NULL) {
     elseif ($activity->contentType == 'page') {
       $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
     }
+    elseif (in_array($activity->contentType, array('actor', 'event', 'production'))) {
+      $request_dp = array($activity->contentType => $activity->nodeId, 'title' => $activity->nodeTitle);
+      $data = cnapi_url_dp2dul($activity->nodeTitle, $request_dp);
+    }
     else {
       $data = $activity->nodeTitle;
     }
