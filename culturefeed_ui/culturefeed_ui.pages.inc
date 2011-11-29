@@ -50,10 +50,18 @@ function culturefeed_ui_page_recommendations_json() {
   }
   
   else {
+    $content['intro'] = array(
+      '#markup' => '<div id="recommendations-intro">Verbeter deze aanbevelingen door op "Vind ik leuk" te klikken of door de aanbevelingen te verwijderen die je niet interesseren.</div>',
+    );
+    
     $content['recommendations'] = array(
       '#theme' => 'item_list',
       '#items' => $recommendations,
       '#attributes' => array('class' => 'event-recommendation-list')
+    );
+  
+    $content['outro'] = array(
+      '#markup' => '<div id="recommendations-outro">Je bent aan het einde gekomen van deze reeks aanbevelingen. Hoe meer je er verwijdert of leuk vindt, hoe beter ze zullen worden.</div>',
     );
   
     $content['more'] = array(
