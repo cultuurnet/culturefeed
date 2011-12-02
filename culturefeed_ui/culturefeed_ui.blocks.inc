@@ -178,6 +178,7 @@ function culturefeed_ui_block_user_activities_view() {
     CultureFeed_Activity::TYPE_IK_GA,
   );
   $query->userId = $account->culturefeed_uid;
+  $query->private = TRUE;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
