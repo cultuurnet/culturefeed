@@ -2,15 +2,14 @@
   <?php print $profile_edit_link ?>
 <?php endif; ?>
 
-<?php if ($name || $gender || $dob || $bio || $city) : ?> 
+<?php if ($picture || $name || $gender || $dob || $bio || $city) : ?> 
   <?php if ($picture) : ?>
     <div class="profile-picture">
       <?php print $picture ?>
     </div>
   <?php endif; ?>
   
-  <div class="profile-fields">
-    <?php if ($name || $gender || $dob || $bio || $city) : ?>    
+  <div class="profile-fields">   
       <?php if ($name) : ?>
         <div class="profile-field name"><?php print $name ?></div>
       <?php endif; ?>
@@ -30,11 +29,6 @@
       <?php if ($city) : ?>
         <div class="profile-field city"><?php print $city ?></div>
       <?php endif; ?>
-    <?php else : ?>
-      <div class="no-public-profile-fields">
-        Het profiel van <span class="nick"><?php print $nick ?></span> is niet publiek beschikbaar.
-      </div>
-    <?php endif; ?>
   </div>
 <?php else : ?>
 <div class="no-profile"></div> 
