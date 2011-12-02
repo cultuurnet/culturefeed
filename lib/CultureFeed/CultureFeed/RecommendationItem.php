@@ -27,11 +27,13 @@ class CultureFeed_RecommendationItem {
   public $title;
 
   /**
-   * Description of the recommendation item (event).
+   * Full description of the recommendation item (event).
+   *
+   * In practice, this contains the calendarsummary.
    *
    * @var string
    */
-  public $description;
+  public $description_full;
 
   /**
    * Short description of the recommendation item (event).
@@ -39,20 +41,6 @@ class CultureFeed_RecommendationItem {
    * @var string
    */
   public $description_short;
-
-  /**
-   * Start date of the recommendation item (event) as a UNIX timestamp.
-   *
-   * @var integer
-   */
-  public $from;
-
-  /**
-   * End dat of the recommendation item (event) as a UNIX timestamp.
-   *
-   * @var integer
-   */
-  public $to;
 
   /**
    * Address of the recommendation item (event).
