@@ -245,7 +245,7 @@ function culturefeed_ui_block_recent_activities_view() {
   );
   
   $content['more'] = array(
-    '#markup' => l('Oudere acties', 'culturefeed/activities/recent'),
+    '#markup' => l('Meer acties', 'culturefeed/activities/recent'),
   );
 
   $block['subject'] = 'Recente acties';
