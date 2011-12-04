@@ -53,6 +53,8 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
 function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) {
   $zip = $form_state['values']['zip'];
   
+  $zip = reset(explode(' ', $zip));
+  
   if (!empty($zip)) {
     drupal_goto('culturefeed/recommendations/' . $zip);
   }
