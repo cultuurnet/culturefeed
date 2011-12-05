@@ -190,7 +190,7 @@ function culturefeed_ui_block_user_activities_view() {
 
   if (empty($activities->objects)) {
     $content['activities'] = array(
-      '#markup' => 'Deze gebruiker heeft nog geen activiteiten gedaan.',
+      '#markup' => 'Deze gebruiker heeft nog geen acties gedaan.',
     );
   }
   else {
@@ -294,7 +294,7 @@ function culturefeed_ui_block_users_likes_config() {
     'undo_link_title'     => 'Vind ik niet meer leuk',
     'do_link_title'       => 'Vind ik leuk',
     'do_first_link_title' => 'Vind dit als eerste leuk',
-    'all_link_title'      => 'Toon iedereen die dit leuk vindt.',
+    'all_link_title'      => 'Toon iedereen die dit leuk vindt',
   );
 
   return $config;
@@ -319,9 +319,9 @@ function culturefeed_ui_block_users_attends_config() {
     'activity_type'       => CultureFeed_Activity::TYPE_IK_GA,
     'block_subject'       => 'Gaan hier naartoe',
     'undo_link_title'     => 'Ik ga hier niet meer naartoe',
-    'do_link_title'       => 'Ga ik naartoe',
-    'do_first_link_title' => 'Ga hier als eerste naartoe',
-    'all_link_title'      => 'Toon iedereen die hier naartoe gaat.',
+    'do_link_title'       => 'Ik ga hier naartoe',
+    'do_first_link_title' => 'Ik ga hier naartoe',
+    'all_link_title'      => 'Toon iedereen die hier naartoe gaat',
   );
   
   return $config;

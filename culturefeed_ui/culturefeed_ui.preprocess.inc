@@ -238,22 +238,22 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 
   switch ($variables['sort']) {
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVITIES:
-      $type_text = 'gedaan';
+      $type_text = 'acties</strong> gedaan';
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFLIKES:
-      $type_text = 'leuk gevonden';
+      $type_text = 'pagina\'s</strong> leuk gevonden';
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFSHARESFACEBOOK:
-      $type_text = 'op Facebook gedeeld';
+      $type_text = 'pagina\'s</strong> op Facebook gedeeld';
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFSHARESTWITTER:
-      $type_text = 'op Twitter gedeeld';
+      $type_text = 'pagina\'s</strong> op Twitter gedeeld';
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFATTENDS:
-      $type_text = 'bijgewoond';
+      $type_text = 'activiteiten</strong> gemarkeerd bij te zullen wonen';
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES:
-      $type_text = 'gedaan';
+      $type_text = 'acties</strong> gedaan';
       break;
   }
 
@@ -264,7 +264,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
     '!uitslover' => l('UiTslover', 'culturefeed/users/mostactive'),
   );
 
-  $variables['text'] = strtr('!nick heeft vorige week !sort_value activiteiten !type en is de !uitslover van de week. Proficiat !nick', $replace);
+  $variables['text'] = strtr('!nick heeft de afgelopen week <strong>!sort_value !type en is de !uitslover van de week. Proficiat!', $replace);
 }
 
 /**

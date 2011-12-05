@@ -2,4 +2,4 @@
 
 <?php print $nick ?>
 
-<?php print $sortValue ?> keer
+<?php print $sortValue ?> acties

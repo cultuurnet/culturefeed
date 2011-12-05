@@ -45,13 +45,13 @@ function culturefeed_ui_page_recommendations_json() {
   
   if (empty($recommendations)) {
     $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+      '#markup' => 'Er zijn momenteel geen aanbevelingen beschikbaar.'
     );
   }
   
   else {
     $content['intro'] = array(
-      '#markup' => '<div id="recommendations-intro">Verbeter deze aanbevelingen door op "Vind ik leuk" te klikken of door de aanbevelingen te verwijderen die je niet interesseren.</div>',
+      '#markup' => '<div id="recommendations-intro">Deze aanbevelingen worden automatisch gegenereerd op basis van je UiTiD. Verbeter ze door aan te geven of je ze leuk vindt of niet.</div>',
     );
     
     $content['recommendations'] = array(
@@ -61,7 +61,7 @@ function culturefeed_ui_page_recommendations_json() {
     );
   
     $content['outro'] = array(
-      '#markup' => '<div id="recommendations-outro">Je bent aan het einde gekomen van deze reeks aanbevelingen. Hoe meer je er verwijdert of leuk vindt, hoe beter ze zullen worden.</div>',
+      '#markup' => '<div id="recommendations-outro">Je bent aan het einde gekomen van deze reeks aanbevelingen. Hoe meer je laat weten of je ze leuk vindt of niet, hoe beter ze zullen worden.</div>',
     );
   
     $content['more'] = array(
@@ -136,7 +136,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
   
   if (empty($recommendations)) {
     $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar.'
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar voor de gekozen postcode.<br /><br />' . l('Terug naar volledige lijst', 'culturefeed/recommendations')
     );
   }
   else {
@@ -177,11 +177,11 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
     if ($success) {
       switch ($evaluation) {
         case 'negative':
-          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-negative">Dit event wordt verwijderd uit je aanbevelingen.</div>');
+          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-negative">Deze activiteit wordt verwijderd uit je aanbevelingen.</div>');
           break;
       
         case 'positive':
-          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-positive">Dit evenement wordt op je profielpagina geplaatst.</div>');
+          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-positive">Deze activiteit wordt op je profielpagina geplaatst.</div>');
       
           break;
       }
