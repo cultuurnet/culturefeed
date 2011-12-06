@@ -28,6 +28,10 @@ function culturefeed_ui_block_user_liked_locations_is_visible() {
 
 function culturefeed_ui_block_user_liked_locations_view() {
   $account = menu_get_object('user');
+  
+  if (!$account->culturefeed_uid) {
+    return;
+  }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
@@ -168,6 +172,10 @@ function culturefeed_ui_block_user_activities_is_visible() {
 
 function culturefeed_ui_block_user_activities_view() {
   $account = menu_get_object('user');
+  
+  if (!$account->culturefeed_uid) {
+    return;
+  }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT;
