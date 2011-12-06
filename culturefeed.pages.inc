@@ -86,7 +86,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       drupal_goto();
     }
 
-    $account = culturefeed_get_or_create_user($token['userId'], $cf_account->nick, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
+    $account = culturefeed_get_or_create_user($token['userId'], $cf_account, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
 
     if ($account) {
       global $user;

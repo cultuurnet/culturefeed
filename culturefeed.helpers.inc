@@ -53,8 +53,8 @@ function culturefeed_create_user($name) {
  *
  * @param integer $cf_uid
  *   To CultureFeed User ID of the user to load.
- * @param string $nick
- *   (optional) The nick of the user on CultureFeed.
+ * @param CultureFeed_User $cf_account
+ *   (optional) The user on CultureFeed.
  *   If this is not passed and the user can not be found, a new account will not be created and FALSE will be returned.
  * @param string $token
  *   (optional) If a token is known at the moment of creation, pass it to save it.
@@ -70,29 +70,39 @@ function culturefeed_create_user($name) {
  *   The Drupal user account will be returned in case of success.
  *   In case of failure FALSE will be returned.
  */
-function culturefeed_get_or_create_user($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
+function culturefeed_get_or_create_user($cf_uid, CultureFeed_User $cf_account = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
+  global $user;
 
   // If no application key is passed, use the default one.
   if (!$application_key) {
     $application_key = variable_get('culturefeed_api_application_key', '');
   }
 
+  // Use a database transaction, as we need to handle what follows as a unit of work
+  $txn = db_transaction();
+
   // Check if the user is already known in our system.
   $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
   // If the user is not known, create it.
   if (!$uid) {
-    // If no nick was passed, we can't create the user.
-    if (!$nick) {
+    // If no CultureFeed user was passed, we can't create the user.
+    if (!$cf_account) {
       return FALSE;
     }
 
-    // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
-    $unique_nick = culturefeed_unique_username($cf_uid, $nick);
+    // If the current user in Drupal is logged in and is not connected with a CultureFeed user yet, then we connect both
+    if ($user->uid && empty($user->culturefeed_uid)) {
+      $account = $user;
+    }
+    else {
+      // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
+      $unique_nick = culturefeed_unique_username($cf_uid, $cf_account->nick);
 
-    // Create the user account.
-    $account = culturefeed_create_user($unique_nick);
+      // Create the user account.
+      $account = culturefeed_create_user($unique_nick);
+    }
 
     // Save the mapping between Culture Feed User ID and Drupal user id.
     db_insert('culturefeed_user')
@@ -163,7 +173,7 @@ function culturefeed_get_uids_for_cf_uids($users) {
 
   foreach ($users as $cf_uid => $user) {
     if (!isset($uids[$cf_uid])) {
-      $account = culturefeed_get_or_create_user($cf_uid, $user->nick);
+      $account = culturefeed_get_or_create_user($cf_uid, $user);
 
       $uids[$cf_uid] = $account->uid;
     }
