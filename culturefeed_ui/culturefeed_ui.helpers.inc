@@ -185,7 +185,7 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
 
     $negative = array(
       '#type' => 'link',
-      '#title' => 'Verwijderen',
+      '#title' => 'Vind ik niet leuk',
       '#href' => 'culturefeed/recommendations/negative/' . $recommendation_id . '/' . $node_id . '/nojs',
       '#attributes' => array('class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
