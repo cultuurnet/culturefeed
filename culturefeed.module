@@ -78,6 +78,7 @@ function culturefeed_user_load($users) {
       $users[$record->uid]->tokens = array();
     }
     if ($record->token) {
+      $users[$record->uid]->tokens[$record->application_key] = new stdClass();
       $users[$record->uid]->tokens[$record->application_key]->token = $record->token;
       $users[$record->uid]->tokens[$record->application_key]->secret = $record->secret;
     }
