@@ -64,6 +64,7 @@ function culturefeed_create_user($name) {
  * @param string $application_key
  *   (optional) If a token is known at the moment of creation, pass the wanted application key the token is for to save it.
  *   If token and secret are passed, but no application key, than the default application key will be used.
+ *   If token and secret are passed, but no application key, then the default application key will be used.
  *   This can be used for users that log in for the first time.
  * @return stdClass|bool
  *   The Drupal user account will be returned in case of success.
@@ -81,6 +82,7 @@ function culturefeed_get_or_create_user($cf_uid, $nick = NULL, $token = NULL, $s
   $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
   // If the user is not know, create it.
+  // If the user is not known, create it.
   if (!$uid) {
     // If no nick was passed, we can't create the user.
     if (!$nick) {
