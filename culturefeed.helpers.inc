@@ -82,59 +82,65 @@ function culturefeed_get_or_create_user($cf_uid, CultureFeed_User $cf_account = 
   // Use a database transaction, as we need to handle what follows as a unit of work
   $txn = db_transaction();
 
-  // Check if the user is already known in our system.
-  $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
+  try {
+    // Check if the user is already known in our system.
+    $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
-  // If the user is not known, create it.
-  if (!$uid) {
-    // If no CultureFeed user was passed, we can't create the user.
-    if (!$cf_account) {
-      return FALSE;
-    }
+    // If the user is not known, create it.
+    if (!$uid) {
+      // If no CultureFeed user was passed, we can't create the user.
+      if (!$cf_account) {
+        return FALSE;
+      }
 
-    // If the current user in Drupal is logged in and is not connected with a CultureFeed user yet, then we connect both
-    if ($user->uid && empty($user->culturefeed_uid)) {
-      $account = $user;
+      // If the current user in Drupal is logged in and is not connected with a CultureFeed user yet, then we connect both
+      if ($user->uid && empty($user->culturefeed_uid)) {
+        $account = $user;
+      }
+      else {
+        // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
+        $unique_nick = culturefeed_unique_username($cf_uid, $cf_account->nick);
+
+        // Create the user account.
+        $account = culturefeed_create_user($unique_nick);
+      }
+
+      // Save the mapping between Culture Feed User ID and Drupal user id.
+      db_insert('culturefeed_user')
+        ->fields(array(
+          'uid' => $account->uid,
+          'cf_uid' => $cf_uid,
+          ))
+        ->execute();
+
+      // Save the fact that this is an external account for culturefeed.
+      user_set_authmaps($account, array('authname_culturefeed' => $account->name));
     }
     else {
-      // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
-      $unique_nick = culturefeed_unique_username($cf_uid, $cf_account->nick);
-
-      // Create the user account.
-      $account = culturefeed_create_user($unique_nick);
+      // In case the user exists, load its account.
+      $account = user_load($uid);
     }
 
-    // Save the mapping between Culture Feed User ID and Drupal user id.
-    db_insert('culturefeed_user')
-      ->fields(array(
-        'uid' => $account->uid,
-        'cf_uid' => $cf_uid,
-        ))
-      ->execute();
+    // If a token was passed, save it after deleting a possible previous entry.
+    if ($token) {
+      db_delete('culturefeed_token')
+        ->condition('cf_uid', $cf_uid)
+        ->condition('application_key', $application_key)
+        ->execute();
 
-    // Save the fact that this is an external account for culturefeed.
-    user_set_authmaps($account, array('authname_culturefeed' => $account->name));
+      db_insert('culturefeed_token')
+        ->fields(array(
+          'cf_uid' => $cf_uid,
+          'token' => $token,
+          'secret' => $secret,
+          'application_key' => $application_key,
+          ))
+        ->execute();
+    }
   }
-  else {
-    // In case the user exists, load its account.
-    $account = user_load($uid);
-  }
-
-  // If a token was passed, save it after deleting a possible previous entry.
-  if ($token) {
-    db_delete('culturefeed_token')
-      ->condition('cf_uid', $cf_uid)
-      ->condition('application_key', $application_key)
-      ->execute();
-
-    db_insert('culturefeed_token')
-      ->fields(array(
-        'cf_uid' => $cf_uid,
-        'token' => $token,
-        'secret' => $secret,
-        'application_key' => $application_key,
-        ))
-      ->execute();
+  catch (Exception $e) {
+    $txn->rollback();
+    throw $e;
   }
 
   return $account;
