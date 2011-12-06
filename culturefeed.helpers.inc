@@ -41,6 +41,7 @@ function culturefeed_create_user($name) {
       'status' => 1,
       'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
       'access' => REQUEST_TIME,
+      'mail' => '',
     )
   );
 
