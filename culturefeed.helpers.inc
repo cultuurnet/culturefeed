@@ -24,7 +24,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
 /**
  * Create a Drupal user account with a given username.
  *
- * @param string $name 
+ * @param string $name
  *   The username for the account.
  * @return stdClass
  *   The user account.
@@ -72,7 +72,7 @@ function culturefeed_create_user($name) {
 function culturefeed_get_or_create_user($cf_uid, $nick = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
 
-  // If no applicatio key is passed, use the default one.
+  // If no application key is passed, use the default one.
   if (!$application_key) {
     $application_key = variable_get('culturefeed_api_application_key', '');
   }
