@@ -51,7 +51,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
   // Fetch the authorisation url...
-  $auth_url = $cf->getUrlAuthorize($token, '', $type);
+  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type);
 
   // ... and redirect the user to it.
   drupal_goto($auth_url);
