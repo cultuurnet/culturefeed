@@ -135,7 +135,7 @@ class CultureFeed_User {
   public $city;
 
   /**
-   * Country of the home address of the user.
+   * ISO 3166-1 alpha-2 code of the country of the home address of the user.
    *
    * @var string
    */
@@ -237,7 +237,7 @@ class CultureFeed_User {
     }
 
     $data = array_filter($data);
-    
+
     // If a field was unset (value made empty), re-add it.
     $valid_fields = array_keys(get_object_vars($this));
     foreach ($fields as $field) {
