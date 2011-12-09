@@ -704,7 +704,8 @@ function culturefeed_ui_page_profile_edit_form() {
     '#default_value' => $cf_account->city,
   );
   $form['country'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
+    '#options' => country_get_list(),
     '#title' => 'Land',
     '#default_value' => $cf_account->country,
   );
