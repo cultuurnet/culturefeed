@@ -379,7 +379,7 @@ function _culturefeed_ui_block_users_activity_view($config) {
 
   if ($users->total > $max) {
     $content['more'] = array(
-      '#markup' => l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/' . $activity_content_type . '/' . $node_id, array('attributes' => array('class' => 'all-link'))),
+      '#markup' => '<div class="more-link">' . l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/' . $activity_content_type . '/' . $node_id, array('attributes' => array('class' => 'all-link'))) . '</div>',
     );
   }
 
@@ -405,14 +405,14 @@ function _culturefeed_ui_block_users_activity_view($config) {
       $title = $config['do_link_title'];
     }
     $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'do-link ' . 'do-' . $config['activity_type'] . '-link')))
+      '#markup' => '<div class="do-link-wrapper">' . l($title, $url, array('attributes' => array('class' => 'do-link ' . 'do-' . $config['activity_type'] . '-link'))) . '</div>',
     );
   }
   else {
     $url = 'culturefeed/undo/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
     $title = $config['undo_link_title'];
     $content['link'] = array(
-      '#markup' => l($title, $url, array('attributes' => array('class' => 'undo-link ' . 'undo-' . $config['activity_type'] . '-link')))
+      '#markup' => '<div class="undo-link-wrapper">' . l($title, $url, array('attributes' => array('class' => 'undo-link ' . 'undo-' . $config['activity_type'] . '-link'))) . '</div>',
     );
   }
 
