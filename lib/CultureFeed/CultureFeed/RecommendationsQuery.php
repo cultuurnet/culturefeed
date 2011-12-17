@@ -43,7 +43,7 @@ class CultureFeed_RecommendationsQuery {
   /**
    * Zip code.
    *
-   * @var string
+   * @var string|array
    */
   public $zipcode;
 
