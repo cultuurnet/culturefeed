@@ -295,7 +295,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     // In case we can't parse a code and message, we throw a CultureFeed_HTTPException.
     if ($response->code != 200) {
       try {
-        $xml = new CultureFeed_SimpleXMLElement($response);
+        $xml = new CultureFeed_SimpleXMLElement($response->response);
       }
       catch (Exception $e) {
         throw new CultureFeed_HttpException($response->response, $response->code);
