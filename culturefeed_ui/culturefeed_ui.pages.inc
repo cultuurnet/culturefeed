@@ -149,9 +149,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
     );
   }
   
-  $content['#attached'] = array(
-    'js' => array(drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js')),
-  );
+  $content['#attached']['js'][]  = drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js');
   
   return $content;
 }
