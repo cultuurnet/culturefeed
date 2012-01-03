@@ -53,7 +53,7 @@ function culturefeed_create_user($name) {
  *
  * @param integer $cf_uid
  *   To CultureFeed User ID of the user to load.
- * @param CultureFeed_User $cf_account
+ * @param stdClass $cf_account
  *   (optional) The user on CultureFeed.
  *   If this is not passed and the user can not be found, a new account will not be created and FALSE will be returned.
  * @param string $token
@@ -70,7 +70,7 @@ function culturefeed_create_user($name) {
  *   The Drupal user account will be returned in case of success.
  *   In case of failure FALSE will be returned.
  */
-function culturefeed_get_or_create_user($cf_uid, CultureFeed_User $cf_account = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
+function culturefeed_get_or_create_user($cf_uid, $cf_account = NULL, $token = NULL, $secret = NULL, $application_key = NULL) {
   $account = NULL;
   global $user;
 
