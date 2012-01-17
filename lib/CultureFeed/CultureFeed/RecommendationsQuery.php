@@ -6,11 +6,11 @@
 class CultureFeed_RecommendationsQuery {
 
   /**
-   * Type of event.
+   * Category of event.
    *
    * @var string
    */
-  public $type;
+  public $category;
 
   /**
    * Minimum score for the recommendation.
