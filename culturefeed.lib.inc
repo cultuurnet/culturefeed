@@ -1,14 +1,14 @@
 <?php
 
-class DrupalCultureFeed_Cache implements ICultureFeed {
+class DrupalCultureFeed_Cache implements ICore {
 
   protected $loggedInUserId;
 
-  protected $realCultureFeed;
+  protected $realCore;
 
-  public function __construct(CultureFeed $realCultureFeed, $loggedInUserId) {
+  public function __construct(ICore $realCore, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
-    $this->realCultureFeed = $realCultureFeed;
+    $this->realCore = $realCore;
   }
 
   public function getRealCultureFeed() {
@@ -59,91 +59,91 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function getConsumer() {
-    return $this->realCultureFeed->getConsumer();
+    return $this->realCore->getConsumer();
   }
 
   public function getToken() {
-    return $this->realCultureFeed->getToken();
+    return $this->realCore->getToken();
   }
 
   public function getRequestToken($callback = '') {
-    return $this->realCultureFeed->getRequestToken($callback);
+    return $this->realCore->getRequestToken($callback);
   }
 
   public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
-    return $this->realCultureFeed->getUrlAuthorize($token, $callback, $type);
+    return $this->realCore->getUrlAuthorize($token, $callback, $type);
   }
 
   public function getAccessToken($oauth_verifier) {
-    return $this->realCultureFeed->getAccessToken($oauth_verifier);
+    return $this->realCore->getAccessToken($oauth_verifier);
   }
 
   public function createUser(CultureFeed_User $user) {
-    $this->realCultureFeed->createUser($user);
+    $this->realCore->createUser($user);
   }
 
   public function updateUser(CultureFeed_User $user, $fields = array()) {
-    $this->realCultureFeed->updateUser($user, $fields);
+    $this->realCore->updateUser($user, $fields);
   }
 
   public function deleteUser($id) {
-    $this->realCultureFeed->deleteUser($id);
+    $this->realCore->deleteUser($id);
   }
 
   public function getUser($id, $private = FALSE, $use_auth = TRUE) {
-    return $this->realCultureFeed->getUser($id, $private, $use_auth);
+    return $this->realCore->getUser($id, $private, $use_auth);
   }
 
   public function searchUsers(CultureFeed_SearchUsersQuery $query) {
-    return $this->realCultureFeed->searchUsers($query);
+    return $this->realCore->searchUsers($query);
   }
 
   public function getSimilarUsers($id) {
-    return $this->realCultureFeed->getSimilarUsers($id);
+    return $this->realCore->getSimilarUsers($id);
   }
 
   public function uploadUserDepiction($id, $file_data) {
-    $this->realCultureFeed->uploadUserDepiction($id, $file_data);
+    $this->realCore->uploadUserDepiction($id, $file_data);
   }
 
   public function resendMboxConfirmationForUser($id) {
-    $this->realCultureFeed->resendMboxConfirmationForUser($id);
+    $this->realCore->resendMboxConfirmationForUser($id);
   }
 
   public function updateUserPrivacy($id, CultureFeed_UserPrivacyConfig $privacy_config) {
-    $this->realCultureFeed->updateUserPrivacy($id, $privacy_config);
+    $this->realCore->updateUserPrivacy($id, $privacy_config);
   }
 
   public function getUserServiceConsumers($id) {
-    return $this->realCultureFeed->getUserServiceConsumers($id);
+    return $this->realCore->getUserServiceConsumers($id);
   }
 
   public function revokeUserServiceConsumer($user_id, $consumer_id) {
-    $this->realCultureFeed->revokeUserServiceConsumer($user_id, $consumer_id);
+    $this->realCore->revokeUserServiceConsumer($user_id, $consumer_id);
   }
 
   public function updateUserOnlineAccount($id, CultureFeed_OnlineAccount $account) {
-    $this->realCultureFeed->updateUserOnlineAccount($id, $account);
+    $this->realCore->updateUserOnlineAccount($id, $account);
   }
 
   public function deleteUserOnlineAccount($id, $account_type, $account_name) {
-    $this->realCultureFeed->deleteUserOnlineAccount($id, $account_type, $account_name);
+    $this->realCore->deleteUserOnlineAccount($id, $account_type, $account_name);
   }
 
   public function createActivity(CultureFeed_Activity $activity) {
-    $this->realCultureFeed->createActivity($activity);
+    $this->realCore->createActivity($activity);
 
     $this->cacheClearActivities();
   }
 
   public function updateActivity($id, $private) {
-    $this->realCultureFeed->updateActivity($id, $private);
+    $this->realCore->updateActivity($id, $private);
 
     $this->cacheClearActivities();
   }
 
   public function deleteActivity($id) {
-    $this->realCultureFeed->deleteActivity($id);
+    $this->realCore->deleteActivity($id);
 
     $this->cacheClearActivities();
   }
@@ -155,7 +155,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeed->searchActivities($query);
+    $data = $this->realCore->searchActivities($query);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
@@ -169,7 +169,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeed->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
+    $data = $this->realCore->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
@@ -183,7 +183,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeed->getTopEvents($type, $max);
+    $data = $this->realCore->getTopEvents($type, $max);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
@@ -197,7 +197,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeed->getRecommendationsForUser($id, $query);
+    $data = $this->realCore->getRecommendationsForUser($id, $query);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
@@ -211,14 +211,14 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeed->getRecommendationsForEvent($id, $query);
+    $data = $this->realCore->getRecommendationsForEvent($id, $query);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
     return $data;  }
 
   public function evaluateRecommendation($id, $evaluation) {
-    $this->realCultureFeed->evaluateRecommendation($id, $evaluation);
+    $this->realCore->evaluateRecommendation($id, $evaluation);
 
     $this->cacheClearRecommendations();
 
@@ -228,27 +228,27 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function getUrlAddSocialNetwork($network, $destination = '') {
-    return $this->realCultureFeed->getUrlAddSocialNetwork($network, $destination);
+    return $this->realCore->getUrlAddSocialNetwork($network, $destination);
   }
 
   public function getUrlChangePassword($id, $destination = '') {
-    return $this->realCultureFeed->getUrlChangePassword($id, $destination);
+    return $this->realCore->getUrlChangePassword($id, $destination);
   }
 
   public function getUrlLogout($destination = '') {
-    return $this->realCultureFeed->getUrlLogout($destination);
+    return $this->realCore->getUrlLogout($destination);
   }
 
   public function getServiceConsumers($start = 0, $max = NULL) {
-    return $this->realCultureFeed->getServiceConsumers($start, $max);
+    return $this->realCore->getServiceConsumers($start, $max);
   }
 
   public function createServiceConsumer(CultureFeed_Consumer $consumer) {
-    $this->realCultureFeed->createServiceConsumer($consumer);
+    $this->realCore->createServiceConsumer($consumer);
   }
 
   public function updateServiceConsumer(CultureFeed_Consumer $consumer) {
-    $this->realCultureFeed->updateServiceConsumer($consumer);
+    $this->realCore->updateServiceConsumer($consumer);
   }
 
 }
@@ -387,7 +387,7 @@ class DrupalCultureFeed {
 
     $oauth_client->setEndpoint(variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION));
 
-    $cf = new CultureFeed($oauth_client);
+    $cf = new Core($oauth_client);
 
     if (self::isCacheEnabled()) {
       $cf = new DrupalCultureFeed_Cache($cf, self::getLoggedInUserId());
