@@ -16,6 +16,9 @@ class CultureFeed {
 
       case CultureFeed::TYPE_UITPAS:
         return self::createInstance(self::$uitpas, $type);
+
+      default:
+        throw new InvalidArgumentException("Cannot find Culturefeed type $type!");
     }
   }
 
