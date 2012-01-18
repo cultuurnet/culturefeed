@@ -4,24 +4,24 @@ class CultureFeed {
   const TYPE_CORE = 'Core';
   const TYPE_UITPAS = 'UitPas';
 
-  private static $oauth_client;
+  private $oauth_client;
 
-  protected static $core;
-  protected static $uitpas;
+  protected $core;
+  protected $uitpas;
 
   public static function getInstance($type, $token, $secret, $application_key = NULL, $shared_secret = NULL) {
     switch ($type) {
       case CultureFeed::TYPE_CORE:
-        return self::createInstance(self::$core, $type);
+        return self::createInstance($this->core, $type);
 
       case CultureFeed::TYPE_UITPAS:
-        return self::createInstance(self::$uitpas, $type);
+        return self::createInstance($this->uitpas, $type);
     }
   }
 
-  private static function createInstance(&$instance, $type) {
+  private function createInstance(&$instance, $type) {
     if (!isset($instance)) {
-        $instance = new $type(self::$oauth_client);
+        $instance = new $type($this->oauth_client);
       }
 
       return $instance;
