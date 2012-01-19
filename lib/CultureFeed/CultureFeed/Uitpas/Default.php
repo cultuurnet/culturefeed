@@ -29,4 +29,30 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $this->oauth_client = $culturefeed->getClient();
   }
 
+  /**
+   * Get the distribution keys for an organizer.
+   *
+   * @param string $cdbid The CDBID of the organizer
+   */
+  public function getDistributionKeysForOrganizer($cdbid) {
+    $result = $this->oauth_client->consumerGetAsXML('uitpas/distributionkey/organiser/' . $cdbid, array());
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $distribution_keys = array();
+    $objects = $xml->xpath('/response/distributionkeys/distributionKey');
+    $total = count($objects);
+
+    foreach ($objects as $object) {
+      $distribution_keys[] = CultureFeed_Uitpas_DistributionKey::create($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $distribution_keys);
+  }
+
 }
