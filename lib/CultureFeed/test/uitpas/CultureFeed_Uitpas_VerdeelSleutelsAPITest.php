@@ -27,7 +27,8 @@ class CultureFeed_Uitpas_VerdeelSleutelsAPITest extends PHPUnit_Framework_TestCa
     $this->assertEquals(1, $distribution_keys[0]->id);
     $this->assertEquals('Standaard verdeelsleutel', $distribution_keys[0]->name);
 
-    $this->assertEquals(2, $distribution_keys[0]->id);
-    $this->assertEquals('Afwijkende verdeelsleutel', $distribution_keys[0]->name);
+    $this->assertEquals(2, $distribution_keys[1]->id);
+    $this->assertEquals('Afwijkende verdeelsleutel', $distribution_keys[1]->name);
   }
+
 }

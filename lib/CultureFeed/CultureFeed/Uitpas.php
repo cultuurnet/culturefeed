@@ -17,7 +17,7 @@ interface CultureFeed_Uitpas {
    * of distribution keys must be provided.
    *
    * @param string $cdbid The CDBID of the organizer
-   * @param unknown_type $distribution_keys The identification of the distribution key
+   * @param array $distribution_keys The identification of the distribution key
    */
   public function registerDistributionKeysForOrganizer($cdbid, $distribution_keys);
 
