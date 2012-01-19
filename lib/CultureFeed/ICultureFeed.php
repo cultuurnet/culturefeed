@@ -68,7 +68,7 @@ interface ICultureFeed {
 
   public function updateServiceConsumer(CultureFeed_Consumer $consumer);
 
-  public function getUitpas();
+  public function uitpas();
 
   public function getClient();
 

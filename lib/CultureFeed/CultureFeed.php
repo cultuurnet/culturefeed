@@ -118,7 +118,6 @@ class CultureFeed implements ICultureFeed {
    */
   public function __construct(CultureFeed_OAuthClient $oauth_client) {
     $this->oauth_client = $oauth_client;
-    $this->uitpas = new CultureFeed_Uitpas_Default($this);
   }
 
   /**
@@ -904,8 +903,12 @@ class CultureFeed implements ICultureFeed {
    *
    * @return CultureFeed_Uitpas
    */
-  public function getUitpas() {
-    return $this->uitpas;
+  public function uitpas() {
+      if (!isset($this->uitpas)) {
+        $this->uitpas = new CultureFeed_Uitpas_Default($this);
+      }
+
+      return $this->uitpas;
   }
 
   /**

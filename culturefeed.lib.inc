@@ -251,8 +251,8 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->realCultureFeed->updateServiceConsumer($consumer);
   }
 
-  public function getUitpas() {
-    return $this->realCultureFeed->getUitpas();
+  public function uitpas() {
+    return $this->realCultureFeed->uitpas();
   }
 
   public function getClient() {
