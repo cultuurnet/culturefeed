@@ -94,9 +94,9 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uitpas_number The UitPas number
    * @param int $points_promotion_id The identification of the redeem option
-   * @param string $bar The name of the UitPas bar
+   * @param string $counter The name of the UitPas counter
    */
-  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $bar);
+  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $counter);
 
   /**
    * Upload a picture for a given passholder.
@@ -182,18 +182,18 @@ interface CultureFeed_Uitpas {
   public function searchPointOfSales(CultureFeed_Uitpas_SearchPointOfSalesQuery $query);
 
   /**
-   * Add a member to a bar.
+   * Add a member to a counter.
    *
-   * @param int $id The bar ID
+   * @param int $id The counter ID
    * @param string $uid The Culturefeed user ID
    */
-  public function addMemberToBar($id, $uid);
+  public function addMemberToCounter($id, $uid);
 
   /**
-   * Search for bars for a given member
+   * Search for counters for a given member
    *
    * @param string $uid The Culturefeed user ID
    */
-  public function searchBarsForMember($uid);
+  public function searchCountersForMember($uid);
 
 }

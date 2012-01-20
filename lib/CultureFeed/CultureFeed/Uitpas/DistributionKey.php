@@ -16,7 +16,7 @@ class CultureFeed_Uitpas_DistributionKey {
    */
   public $name;
 
-  public static function create(CultureFeed_SimpleXMLElement $object) {
+  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $distribution_key = new CultureFeed_Uitpas_DistributionKey();
     $distribution_key->id = $object->xpath_int('id');
     $distribution_key->name = $object->xpath_str('name');

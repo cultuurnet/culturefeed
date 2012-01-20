@@ -49,7 +49,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $total = count($objects);
 
     foreach ($objects as $object) {
-      $distribution_keys[] = CultureFeed_Uitpas_DistributionKey::create($object);
+      $distribution_keys[] = CultureFeed_Uitpas_DistributionKey::createFromXML($object);
     }
 
     return new CultureFeed_ResultSet($total, $distribution_keys);
@@ -75,12 +75,17 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return $price;
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::createPassholder()
- */
+  /**
+   * Create a new UitPas passholder.
+   *
+   * @param CultureFeed_Uitpas_Passholder $passholder The new passholder
+   * @return Passholder user ID
+   */
   public function createPassholder(CultureFeed_Uitpas_Passholder $passholder) {
-    // TODO Auto-generated method stub
+    $data = $passholder->toPostData();
+    $culturefeed_uid = $this->oauth_client->consumerPostAsXml('uitpas/passholder/register', $data);
 
+    return $culturefeed_uid;
   }
 
 /* (non-PHPdoc)
@@ -142,7 +147,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 /* (non-PHPdoc)
  * @see CultureFeed_Uitpas::cashInPointsPromotion()
  */
-  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $bar) {
+  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $counter) {
     // TODO Auto-generated method stub
 
   }
@@ -236,17 +241,17 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
 /* (non-PHPdoc)
- * @see CultureFeed_Uitpas::addMemberToBar()
+ * @see CultureFeed_Uitpas::addMemberToCounter()
  */
-  public function addMemberToBar($id, $uid) {
+  public function addMemberToCounter($id, $uid) {
     // TODO Auto-generated method stub
 
   }
 
 /* (non-PHPdoc)
- * @see CultureFeed_Uitpas::searchBarsForMember()
+ * @see CultureFeed_Uitpas::searchCountersForMember()
  */
-  public function searchBarsForMember($uid) {
+  public function searchCountersForMember($uid) {
     // TODO Auto-generated method stub
 
   }
