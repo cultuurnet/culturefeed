@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Passholder {
+class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
 
   /**
    * The name of the passholder. (Required)
@@ -135,9 +135,7 @@ class CultureFeed_Uitpas_Passholder {
    */
   public $verified;
 
-  public function toPostData() {
-    $data = get_object_vars($this);
-
+  protected function manipulatePostData($data) {
     if (isset($data['dateOfBirth'])) {
       $data['dateOfBirth'] = date('c', $data['dateOfBirth']);
     }
@@ -145,10 +143,6 @@ class CultureFeed_Uitpas_Passholder {
     if (isset($data['kansenStatuutValidUntil'])) {
       $data['kansenStatuutValidUntil'] = date('c', $data['kansenStatuutValidUntil']);
     }
-
-    $data = array_filter($data);
-
-    return $data;
   }
 
 }

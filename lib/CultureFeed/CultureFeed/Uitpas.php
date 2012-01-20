@@ -40,7 +40,7 @@ interface CultureFeed_Uitpas {
    * @param string $organization The name of the organization
    * @param DateTime $end_date The membership's organization end date
    */
-  public function createMembershipForPassholder($id, $organization, $end_date);
+  public function createMembershipForPassholder(CultureFeed_Uitpas_Membership $membership);
 
   /**
    * Get a passholder based on the UitPas number.
