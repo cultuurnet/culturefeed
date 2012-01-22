@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Membership extends CultureFeed_Uitpas_ValueObject {
+class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueObject {
 
   /**
    * The user ID of the passholder. (Required)

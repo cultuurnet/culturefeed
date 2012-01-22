@@ -70,7 +70,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get the price of the UitPas.
    */
   public function getPrice() {
-    $price = $this->oauth_client->consumerGetAsXML('uitpas/passholder/uitpasPrice', array());
+    $price = $this->oauth_client->consumerGet('uitpas/passholder/uitpasPrice', array());
 
     return $price;
   }
@@ -83,7 +83,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function createPassholder(CultureFeed_Uitpas_Passholder $passholder) {
     $data = $passholder->toPostData();
-    $culturefeed_uid = $this->oauth_client->consumerPostAsXml('uitpas/passholder/register', $data);
+    $culturefeed_uid = $this->oauth_client->consumerPost('uitpas/passholder/register', $data);
 
     return $culturefeed_uid;
   }
@@ -93,17 +93,18 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Membership $membership The membership object of the UitPas passholder
    */
-  public function createMembershipForPassholder(CultureFeed_Uitpas_Membership $membership) {
+  public function createMembershipForPassholder(CultureFeed_Uitpas_Passholder_Membership $membership) {
     $data = $membership->toPostData();
     $this->oauth_client->consumerPostAsXml('uitpas/passholder/createMembership', $data);
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getPassholder()
- */
+  /**
+   * Get a passholder based on the UitPas number.
+   *
+   * @param string $uitpas_number The UitPas number
+   */
   public function getPassholder($uitpas_number) {
-    // TODO Auto-generated method stub
-
+    $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $uitpas_number, array());
   }
 
 /* (non-PHPdoc)
@@ -114,12 +115,30 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getWelcomeAdvantagesForPassholder()
- */
+  /**
+   * Get the welcome advantages for a passholder.
+   *
+   * @param string $uitpas_number The UitPas number
+   */
   public function getWelcomeAdvantagesForPassholder($uitpas_number) {
-    // TODO Auto-generated method stub
+    $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $uitpas_number . '/welcomeadvantages', array());
 
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $advantages = array();
+    $objects = $xml->xpath('/promotions/promotion');
+    $total = count($objects);
+
+    foreach ($objects as $object) {
+      $advantages[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $advantages);
   }
 
 /* (non-PHPdoc)
