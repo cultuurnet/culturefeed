@@ -299,11 +299,28 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * Search for welcome advantages.
    *
-   * @param CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query The query
+   * @param CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query The query
    */
-  public function searchWelcomeAdvantages(CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query) {
-    // TODO Auto-generated method stub
+  public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/promotion/welcomeAdvantages', $data);
 
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotions = array();
+    $objects = $xml->xpath('/welcomeAdvantagesRestResponse/promotions/promotion');
+    $total = $xml->xpath_int('/welcomeAdvantagesRestResponse/total');
+
+    foreach ($objects as $object) {
+      $promotions[] = CultureFeed_Uitpas_Passholder_Promotion::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $promotions);
   }
 
   /**

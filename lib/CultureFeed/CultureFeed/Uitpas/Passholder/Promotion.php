@@ -10,6 +10,13 @@ class CultureFeed_Uitpas_Passholder_Promotion extends CultureFeed_Uitpas_ValueOb
   public $id;
 
   /**
+   * The title of the promotion
+   *
+   * @var string
+   */
+  public $title;
+
+  /**
    * The amount of points required for the promotion
    *
    * @var integer
@@ -75,6 +82,7 @@ class CultureFeed_Uitpas_Passholder_Promotion extends CultureFeed_Uitpas_ValueOb
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $promotion = new CultureFeed_Uitpas_Passholder_Promotion();
     $promotion->id = $object->xpath_int('id');
+    $promotion->title = $object->xpath_str('title');
     $promotion->points = $object->xpath_int('points');
     $promotion->cashedIn = $object->xpath_bool('cashedIn');
     $promotion->creationDate = $object->xpath_time('creationDate');

@@ -125,9 +125,9 @@ interface CultureFeed_Uitpas {
   /**
    * Search for welcome advantages.
    *
-   * @param CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query The query
+   * @param CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query The query
    */
-  public function searchWelcomeAdvantages(CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query);
+  public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query);
 
   /**
    * Get a passholder based on the UitPas chip number.

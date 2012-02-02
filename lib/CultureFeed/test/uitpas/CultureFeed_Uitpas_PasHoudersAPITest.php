@@ -145,6 +145,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     // If the mapping of 1 object is correct, all objects are correctly mapped
     $this->assertEquals(7, $promotions[0]->id);
     $this->assertEquals(5, $promotions[0]->points);
+    $this->assertEquals('Gratis stickers', $promotions[0]->title);
     $this->assertEquals(false, $promotions[0]->cashedIn);
     $this->assertEquals(1323945210, $promotions[0]->creationDate);
     $this->assertEquals(1262304000, $promotions[0]->cashingPeriodBegin);
@@ -193,5 +194,35 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $response = $cf->uitpas()->blockUitpas(self::UITPAS_NUMBER, self::CONSUMER_KEY_COUNTER);
     $this->assertEquals('BLOCK_UITPAS_SUCCESS', $response->code);
     $this->assertEquals('The uitpas has been blocked.', $response->message);
+  }
+
+  public function testSearchWelcomeAdvantages() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $advantages_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/welcome_advantages.xml');
+
+    $oauth_client_stub->expects($this->any())
+             ->method('authenticatedGetAsXML')
+             ->will($this->returnValue($advantages_xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+
+    $query = new CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions();
+    $result = $cf->uitpas()->searchWelcomeAdvantages($query);
+
+    $this->assertEquals(2, $result->total);
+
+    $promotions = $result->objects;
+
+    $this->assertInternalType('array', $promotions);
+    $this->assertEquals(2, count($promotions));
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_Promotion', $promotions);
+
+    $this->assertEquals(8, $promotions[0]->id);
+    $this->assertEquals(0, $promotions[0]->points);
+    $this->assertEquals("Gratis deelname Zumba", $promotions[0]->title);
+    $this->assertEquals(1326180281, $promotions[0]->creationDate);
+    $this->assertEquals(array('Aalst'), $promotions[0]->validCities);
+    $this->assertEquals(0, $promotions[0]->unitsTaken);
   }
 }

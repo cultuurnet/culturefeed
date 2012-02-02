@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<welcomeAdvantagesRestResponse>
+    <promotions>
+            <promotion>
+                <balies/>
+                <cashedIn>false</cashedIn>
+                <id>8</id>
+                <points>0</points>
+                <title>Gratis deelname Zumba</title>
+                <creationDate>2012-01-10T08:24:41.130+01:00</creationDate>
+                <validForCities>
+                        <city>Aalst</city>
+                </validForCities>
+                <unitsTaken>0</unitsTaken>
+            </promotion>
+            <promotion>
+                <balies/>
+                <cashedIn>false</cashedIn>
+                <id>3</id>
+                <points>0</points>
+                <title>Gratis drankje</title>
+                <creationDate>2012-01-10T08:17:57.543+01:00</creationDate>
+                <validForCities>
+                        <city>Aalst</city>
+                        <city>Erpe-Mere</city>
+                </validForCities>
+                <maxAvailableUnits>1000</maxAvailableUnits>
+                <unitsTaken>5</unitsTaken>
+            </promotion>
+    </promotions>
+    <total>2</total>
+</welcomeAdvantagesRestResponse>
