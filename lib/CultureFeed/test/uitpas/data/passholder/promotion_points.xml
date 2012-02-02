@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pointsPromotionsRestResponse>
+    <promotions>
+        <promotion>
+            <balies>
+                <balie>
+                    <name>De Werf</name>
+                    <id>3</id>
+                </balie>
+                <balie>
+                    <name>Scouts Aalst</name>
+                    <id>2</id>
+                </balie>
+            </balies>
+            <cashedIn>false</cashedIn>
+            <id>7</id>
+            <points>5</points>
+            <title>Gratis stickers</title>
+            <creationDate>2011-12-15T11:33:30.977+01:00</creationDate>
+            <cashingPeriodBegin>2010-01-01T01:00:00+01:00</cashingPeriodBegin>
+            <cashingPeriodEnd>2016-01-01T00:59:59.999+01:00</cashingPeriodEnd>
+            <validForCities>
+                <city>Aalst</city>
+                <city>Erpe_Mere</city>
+                <city>Haaltert</city>
+            </validForCities>
+            <maxAvailableUnits>2</maxAvailableUnits>
+            <unitsTaken>2</unitsTaken>
+        </promotion>
+        <promotion>
+            <balies>
+                <balie>
+                    <name>De Groene Munt</name>
+                    <id>6</id>
+                </balie>
+            </balies>
+            <cashedIn>true</cashedIn>
+            <id>22</id>
+            <points>51</points>
+            <title>Gratis broodje</title>
+            <creationDate>2011-12-12T11:33:30.977+01:00</creationDate>
+            <cashingPeriodBegin>2010-01-01T01:00:00+01:00</cashingPeriodBegin>
+            <cashingPeriodEnd>2012-01-01T00:59:59.999+01:00</cashingPeriodEnd>
+            <validForCities>
+                <city>Diest</city>
+                <city>Kaggevinne</city>
+            </validForCities>
+            <maxAvailableUnits>10</maxAvailableUnits>
+            <unitsTaken>8</unitsTaken>
+        </promotion>
+    </promotions>
+    <total>2</total>
+</pointsPromotionsRestResponse>

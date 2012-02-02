@@ -84,9 +84,9 @@ interface CultureFeed_Uitpas {
   /**
    * Get the redeem options
    *
-   * @param CultureFeed_Uitpas_SearchPointsPromotionsOptionsQuery $query The query
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
    */
-  public function getPromotionPoints(CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query);
+  public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query);
 
   /**
    * Cash in promotion points for a UitPas.

@@ -195,11 +195,28 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * Get the redeem options
    *
-   * @param CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query The query
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
    */
-  public function getPromotionPoints(CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query) {
-    // TODO Auto-generated method stub
+  public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/pointsPromotions', $data);
 
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotions = array();
+    $objects = $xml->xpath('/pointsPromotionsRestResponse/promotions/promotion');
+    $total = $xml->xpath_int('/pointsPromotionsRestResponse/total');
+
+    foreach ($objects as $object) {
+      $promotions[] = CultureFeed_Uitpas_Passholder_Promotion::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $promotions);
   }
 
   /**
