@@ -250,10 +250,15 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param string $id The user ID of the passholder
    * @param string $file_data The binary data of the picture
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function uploadPicture($id, $file_data) {
-    // TODO Auto-generated method stub
+  public function uploadPicture($id, $file_data, $consumer_key_counter) {
+    $data = array(
+      'picture' => $file_data,
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
+    $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $id . '/uploadPicture', TRUE, TRUE);
   }
 
   /**
