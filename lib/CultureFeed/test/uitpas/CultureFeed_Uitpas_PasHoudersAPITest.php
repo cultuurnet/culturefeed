@@ -159,4 +159,23 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, $promotions[0]->counters[1]->id);
     $this->assertEquals("Scouts Aalst", $promotions[0]->counters[1]->name);
   }
+
+  public function testCashInPromotionPoints() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $promotion_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/promotion_checkin.xml');
+
+    $oauth_client_stub->expects($this->any())
+             ->method('authenticatedPostAsXml')
+             ->will($this->returnValue($promotion_xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+
+    $promotion = $cf->uitpas()->cashInPromotionPoints(self::UITPAS_NUMBER, self::CONSUMER_KEY_COUNTER, self::WELCOME_ADVANTAGE_ID);
+    $this->assertEquals(3, $promotion->id);
+    $this->assertEquals('Gratis broodje', $promotion->title);
+    $this->assertEquals(0, $promotion->points);
+    $this->assertEquals(true, $promotion->cashedIn);
+    $this->assertEquals("De Werf", $promotion->counters[0]);
+  }
 }

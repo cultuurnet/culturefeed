@@ -95,7 +95,7 @@ interface CultureFeed_Uitpas {
    * @param int $points_promotion_id The identification of the redeem option
    * @param string $counter The name of the UitPas counter
    */
-  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $counter);
+  public function cashInPromotionPoints($uitpas_number, $consumer_key_counter, $points_promotion_id);
 
   /**
    * Upload a picture for a given passholder.

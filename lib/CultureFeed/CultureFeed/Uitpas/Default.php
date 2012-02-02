@@ -224,11 +224,25 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param string $uitpas_number The UitPas number
    * @param int $points_promotion_id The identification of the redeem option
-   * @param string $counter The name of the UitPas counter
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $counter) {
-    // TODO Auto-generated method stub
+  public function cashInPromotionPoints($uitpas_number, $consumer_key_counter, $points_promotion_id) {
+    $data = array(
+       'pointsPromotionId' => $points_promotion_id,
+       'balieConsumerKey' => $consumer_key_counter,
+     );
 
+     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInPointsPromotion', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotion = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml->xpath('/promotion', false));
+    return $promotion;
   }
 
   /**

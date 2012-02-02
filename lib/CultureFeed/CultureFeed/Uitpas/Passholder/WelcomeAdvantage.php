@@ -30,12 +30,20 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
    */
   public $cashedIn;
 
+  /**
+   * The counters of the promotion item
+   *
+   * @var array
+   */
+  public $counters;
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $welcome_advantage = new CultureFeed_Uitpas_Passholder_WelcomeAdvantage();
     $welcome_advantage->id = $object->xpath_int('id');
     $welcome_advantage->title = $object->xpath_str('title');
     $welcome_advantage->points = $object->xpath_int('points');
     $welcome_advantage->cashedIn = $object->xpath_bool('cashedIn');
+    $welcome_advantage->counters = $object->xpath_str('balies/name', true);
 
     return $welcome_advantage;
   }
