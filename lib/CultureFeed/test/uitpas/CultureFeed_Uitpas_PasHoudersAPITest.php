@@ -5,7 +5,8 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
   const PRICE = 15;
   const UID = "94305b2e-e7ff-4dfc-8d96-ef4d43de9038";
   const WELCOME_ADVANTAGE_ID = 1;
-  const UITPAS_NUMBER = "32483743";
+  const UITPAS_NUMBER = "0930011111208";
+  const CHIP_NUMBER = "8473847";
   const CONSUMER_KEY_COUNTER = "94305r2e-e7ff-4dfc-8dd6-ef4d43de9098";
   const POINTS = 2;
 
@@ -224,5 +225,20 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1326180281, $promotions[0]->creationDate);
     $this->assertEquals(array('Aalst'), $promotions[0]->validCities);
     $this->assertEquals(0, $promotions[0]->unitsTaken);
+  }
+
+  public function testGetPassholderForChipNumber() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $chip_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/chip_number.xml');
+
+    $oauth_client_stub->expects($this->any())
+             ->method('authenticatedGetAsXML')
+             ->will($this->returnValue($chip_xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+    $passholder = $cf->uitpas()->getPassholderForChipNumber(self::CHIP_NUMBER, self::CONSUMER_KEY_COUNTER);
+
+    $this->assertEquals(self::UITPAS_NUMBER, $passholder);
   }
 }

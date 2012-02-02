@@ -133,8 +133,9 @@ interface CultureFeed_Uitpas {
    * Get a passholder based on the UitPas chip number.
    *
    * @param string $chip_number The chipnumber of the UitPas
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderForChipNumber($chip_number);
+  public function getPassholderForChipNumber($chip_number, $consumer_key_counter);
 
   /**
    * Get the events for a given passholder.
