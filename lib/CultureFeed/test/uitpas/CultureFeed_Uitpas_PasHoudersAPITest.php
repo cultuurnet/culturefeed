@@ -158,6 +158,5 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("De Werf", $promotions[0]->counters[0]->name);
     $this->assertEquals(2, $promotions[0]->counters[1]->id);
     $this->assertEquals("Scouts Aalst", $promotions[0]->counters[1]->name);
-
   }
 }
