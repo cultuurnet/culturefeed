@@ -107,9 +107,11 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $uitpas_number, array());
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::searchPassholders()
- */
+  /**
+   * Search for passholders.
+   *
+   * @param CultureFeed_Uitpas_SearchPassHoldersQuery $query The query
+   */
   public function searchPassholders(CultureFeed_Uitpas_SearchPassHoldersQuery $query) {
     // TODO Auto-generated method stub
 
@@ -141,73 +143,124 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return new CultureFeed_ResultSet($total, $advantages);
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::checkinPassholder()
- */
-  public function checkinPassholder($cdbid, $uitpas_number, $chip_number) {
+  /**
+   * Check in a passholder.
+   *
+   * Provide either a UitPas number or chip number. You cannot provide both.
+   *
+   * @param CultureFeed_Uitpas_Passholder_Event $event The event data object
+   * @return The total amount of points of the user
+   */
+  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Event $event) {
+    $data = $event->toPostData();
+    $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/checkin', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $points = $xml->xpath_int('/response/points');
+    return $points;
+  }
+
+  /**
+   * Cash in a welcome advantage.
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * @param int $welcome_advantage_id Identification welcome advantage
+   */
+  public function cashInWelcomeAdvantage($uitpas_number, $consumer_key_counter, $welcome_advantage_id) {
+     $data = array(
+       'welcomeAdvantageId' => $welcome_advantage_id,
+       'balieConsumerKey' => $consumer_key_counter,
+     );
+
+     $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInWelcomeAdvantage', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotion = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml->xpath('/promotion', false));
+    return $promotion;
+  }
+
+  /**
+   * Get the redeem options
+   *
+   * @param CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query The query
+   */
+  public function getPromotionPoints(CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::cashInWelcomeAdvantage()
- */
-  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id) {
+  /**
+   * Cash in promotion points for a UitPas.
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param int $points_promotion_id The identification of the redeem option
+   * @param string $counter The name of the UitPas counter
+   */
+  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $counter) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getPointsPromotions()
- */
-  public function getPointsPromotions(CultureFeed_Uitpas_SearchPointsPromotionsOptionsQuery $query) {
-    // TODO Auto-generated method stub
-
-  }
-
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::cashInPointsPromotion()
- */
-  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $counter) {
-    // TODO Auto-generated method stub
-
-  }
-
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::uploadPicture()
- */
+  /**
+   * Upload a picture for a given passholder.
+   *
+   * @param string $id The user ID of the passholder
+   * @param string $file_data The binary data of the picture
+   */
   public function uploadPicture($id, $file_data) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::updatePassholder()
- */
+  /**
+   * Update a passholder.
+   *
+   * @param CultureFeed_Uitpas_Passholder $passholder The passholder to update.
+   * 		The passholder is identified by ID. Only fields that are set will be updated.
+   */
   public function updatePassholder(CultureFeed_Uitpas_Passholder $passholder) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::blockUitpas()
- */
+  /**
+   * Block a UitPas.
+   *
+   * @param string $uitpas_number The UitPas number
+   */
   public function blockUitpas($uitpas_number) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::searchWelcomeAdvantages()
- */
+  /**
+   * Search for welcome advantages.
+   *
+   * @param CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query The query
+   */
   public function searchWelcomeAdvantages(CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getPassholderForChipNumber()
- */
+  /**
+   * Get a passholder based on the UitPas chip number.
+   *
+   * @param string $chip_number The chipnumber of the UitPas
+   */
   public function getPassholderForChipNumber($chip_number) {
     // TODO Auto-generated method stub
 

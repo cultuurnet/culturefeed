@@ -28,7 +28,7 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
    *
    * @var boolean
    */
-  public $cashedId;
+  public $cashedIn;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $welcome_advantage = new CultureFeed_Uitpas_Passholder_WelcomeAdvantage();

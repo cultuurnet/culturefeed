@@ -68,26 +68,25 @@ interface CultureFeed_Uitpas {
    *
    * Provide either a UitPas number or chip number. You cannot provide both.
    *
-   * @param string $cdbid The CDBID of the event
-   * @param string $uitpas_number The UitPas number
-   * @param string $chip_number NFC card chip number
+   * @param CultureFeed_Uitpas_Passholder_Event $event The event data object
    */
-  public function checkinPassholder($cdbid, $uitpas_number, $chip_number);
+  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Event $event);
 
   /**
    * Cash in a welcome advantage.
    *
    * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    * @param int $welcome_advantage_id Identification welcome advantage
    */
-  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id);
+  public function cashInWelcomeAdvantage($uitpas_number, $consumer_key_counter, $welcome_advantage_id);
 
   /**
    * Get the redeem options
    *
    * @param CultureFeed_Uitpas_SearchPointsPromotionsOptionsQuery $query The query
    */
-  public function getPointsPromotions(CultureFeed_Uitpas_SearchPointsPromotionsOptionsQuery $query);
+  public function getPromotionPoints(CultureFeed_Uitpas_SearchPromotionPointsOptionsQuery $query);
 
   /**
    * Cash in promotion points for a UitPas.
@@ -96,7 +95,7 @@ interface CultureFeed_Uitpas {
    * @param int $points_promotion_id The identification of the redeem option
    * @param string $counter The name of the UitPas counter
    */
-  public function cashInPointsPromotion($uitpas_number, $points_promotion_id, $counter);
+  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $counter);
 
   /**
    * Upload a picture for a given passholder.
@@ -123,7 +122,7 @@ interface CultureFeed_Uitpas {
 
   /**
    * Search for welcome advantages.
-
+   *
    * @param CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query The query
    */
   public function searchWelcomeAdvantages(CultureFeed_Uitpas_SearchWelcomeAdvantagesQuery $query);

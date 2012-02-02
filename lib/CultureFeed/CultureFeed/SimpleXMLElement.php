@@ -71,6 +71,16 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
     return strtolower($val) == 'true' ? TRUE : FALSE;
   }
 
+  public function xpath($path, $multiple = true) {
+    $val = parent::xpath($path);
+
+    if (!$multiple && !empty($val)) {
+      $val = $val[0];
+    }
+
+    return $val;
+  }
+
   /**
    * Runs XPath query on XML data and casts it using a type casting function.
    *
