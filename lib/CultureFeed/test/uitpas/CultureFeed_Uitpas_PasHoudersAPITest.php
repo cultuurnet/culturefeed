@@ -178,4 +178,20 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, $promotion->cashedIn);
     $this->assertEquals("De Werf", $promotion->counters[0]);
   }
+
+  public function testBlockUitpas() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $block_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/block.xml');
+
+    $oauth_client_stub->expects($this->any())
+             ->method('authenticatedPostAsXml')
+             ->will($this->returnValue($block_xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+
+    $response = $cf->uitpas()->blockUitpas(self::UITPAS_NUMBER, self::CONSUMER_KEY_COUNTER);
+    $this->assertEquals('BLOCK_UITPAS_SUCCESS', $response->code);
+    $this->assertEquals('The uitpas has been blocked.', $response->message);
+  }
 }

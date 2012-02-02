@@ -228,11 +228,11 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function cashInPromotionPoints($uitpas_number, $consumer_key_counter, $points_promotion_id) {
     $data = array(
-       'pointsPromotionId' => $points_promotion_id,
-       'balieConsumerKey' => $consumer_key_counter,
-     );
+      'pointsPromotionId' => $points_promotion_id,
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
-     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInPointsPromotion', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInPointsPromotion', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -276,10 +276,24 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Block a UitPas.
    *
    * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function blockUitpas($uitpas_number) {
-    // TODO Auto-generated method stub
+  public function blockUitpas($uitpas_number, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/block/' . $uitpas_number, $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/uitpasRestResponse', false));
+    return $response;
   }
 
   /**

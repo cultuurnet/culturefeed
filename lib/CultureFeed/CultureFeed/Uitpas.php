@@ -118,8 +118,9 @@ interface CultureFeed_Uitpas {
    * Block a UitPas.
    *
    * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function blockUitpas($uitpas_number);
+  public function blockUitpas($uitpas_number, $consumer_key_counter);
 
   /**
    * Search for welcome advantages.
