@@ -384,12 +384,19 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return $ticket_sale;
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::cancelTicketSale()
- */
-  public function cancelTicketSale($uitpas_number, $cdbid) {
-    // TODO Auto-generated method stub
+  /**
+   * Cancel a ticket sale for a passholder
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param string $cdbid The event CDBID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
+    $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/cancel/' . $uitpas_number, $data);
   }
 
 /* (non-PHPdoc)

@@ -151,6 +151,7 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uitpas_number The UitPas number
    * @param string $cdbid The event CDBID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
   public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
 
@@ -159,8 +160,9 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uitpas_number The UitPas number
    * @param string $cdbid The event CDBID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cancelTicketSale($uitpas_number, $cdbid);
+  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
 
   /**
    * Get the accumulated points of a passholder.
