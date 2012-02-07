@@ -347,20 +347,41 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return $xml->xpath_str('/uitpasRestResponse/message');
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getEventsForPassholder()
- */
+  /**
+   * Get the events for a given passholder.
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param DateTime $date_from Start date
+   * @param DateTime $date_to End date
+   */
   public function getEventsForPassholder($uitpas_number, $date_from, $date_to) {
     // TODO Auto-generated method stub
 
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::registerTicketSale()
- */
-  public function registerTicketSale($uitpas_number, $cdbid) {
-    // TODO Auto-generated method stub
+  /**
+   * Register a ticket sale for a passholder
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param string $cdbid The event CDBID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/buy/' . $uitpas_number, $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $ticket_sale = CultureFeed_Uitpas_Event_TicketSale::createFromXML($xml->xpath('/ticketSale', false));
+    return $ticket_sale;
   }
 
 /* (non-PHPdoc)

@@ -152,7 +152,7 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $cdbid The event CDBID
    */
-  public function registerTicketSale($uitpas_number, $cdbid);
+  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
 
   /**
    * Cancel a ticket sale for a passholder
