@@ -6,11 +6,11 @@
 interface CultureFeed_Uitpas {
 
   /**
-   * Get the distribution keys for an organizer.
+   * Get the associations.
    *
-   * @param string $cdbid The CDBID of the organizer
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getDistributionKeysForOrganizer($cdbid);
+  public function getAssociations($consumer_key_counter);
 
   /**
    * Register a set of distribution keys for an organizer. The entire set (including existing)
@@ -20,6 +20,13 @@ interface CultureFeed_Uitpas {
    * @param array $distribution_keys The identification of the distribution key
    */
   public function registerDistributionKeysForOrganizer($cdbid, $distribution_keys);
+
+  /**
+   * Get the distribution keys for a given organizer.
+   *
+   * @param string $cdbid The CDBID of the given organizer
+   */
+  public function getDistributionKeysForOrganizer($cdbid);
 
   /**
    * Get the price of the UitPas.
@@ -164,12 +171,12 @@ interface CultureFeed_Uitpas {
    */
   public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
 
-  /**
-   * Get the accumulated points of a passholder.
-   *
-   * @param CultureFeed_Uitpas_AccumulatedPointsQuery $query The query
-   */
-  public function getAccumulatedPoints(CultureFeed_Uitpas_AccumulatedPointsQuery $query);
+//  /**
+//   * Get the accumulated points of a passholder.
+//   *
+//   * @param CultureFeed_Uitpas_AccumulatedPointsQuery $query The query
+//   */
+//  public function getAccumulatedPoints(CultureFeed_Uitpas_AccumulatedPointsQuery $query);
 
   /**
    * Search for Uitpas events

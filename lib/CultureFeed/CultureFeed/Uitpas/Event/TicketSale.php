@@ -30,7 +30,7 @@ class CultureFeed_Uitpas_Event_TicketSale extends CultureFeed_Uitpas_ValueObject
    */
   public $cdbid;
 
-public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $ticket_sale = new CultureFeed_Uitpas_Event_TicketSale();
     $ticket_sale->id = $object->xpath_int('id');
     $ticket_sale->creationDate = $object->xpath_time('creationDate');

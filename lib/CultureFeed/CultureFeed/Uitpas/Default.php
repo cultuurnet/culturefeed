@@ -30,9 +30,39 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the distribution keys for an organizer.
+   * Get the associations.
    *
-   * @param string $cdbid The CDBID of the organizer
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function getAssociations($consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
+
+    $result = $this->oauth_client->consumerGetAsXML('uitpas/association/list', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $associations = array();
+    $objects = $xml->xpath('/response/associations/assocation');
+    $total = count($objects);
+
+    foreach ($objects as $object) {
+      $associations[] = CultureFeed_Uitpas_Association::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $associations);
+  }
+
+  /**
+   * Get the distribution keys for a given organizer.
+   *
+   * @param string $cdbid The CDBID of the given organizer
    */
   public function getDistributionKeysForOrganizer($cdbid) {
     $result = $this->oauth_client->consumerGetAsXML('uitpas/distributionkey/organiser/' . $cdbid, array());
@@ -45,7 +75,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $distribution_keys = array();
-    $objects = $xml->xpath('/response/distributionkeys/distributionKey');
+    $objects = $xml->xpath('/response/distributionkeys/distributionkey');
     $total = count($objects);
 
     foreach ($objects as $object) {
@@ -399,13 +429,13 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/cancel/' . $uitpas_number, $data);
   }
 
-/* (non-PHPdoc)
- * @see CultureFeed_Uitpas::getAccumulatedPoints()
- */
-  public function getAccumulatedPoints(CultureFeed_Uitpas_AccumulatedPointsQuery $query) {
-    // TODO Auto-generated method stub
-
-  }
+///* (non-PHPdoc)
+// * @see CultureFeed_Uitpas::getAccumulatedPoints()
+// */
+//  public function getAccumulatedPoints(CultureFeed_Uitpas_AccumulatedPointsQuery $query) {
+//    // TODO Auto-generated method stub
+//
+//  }
 
 /* (non-PHPdoc)
  * @see CultureFeed_Uitpas::searchEvents()

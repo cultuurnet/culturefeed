@@ -7,7 +7,7 @@ class CultureFeed_Uitpas_VerdeelSleutelsAPITest extends PHPUnit_Framework_TestCa
   public function testGetDistributionKeysForOrganizer() {
     $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
 
-    $distributions_xml = file_get_contents(dirname(__FILE__) . '/data/verdeelsleutels/list.xml');
+    $distributions_xml = file_get_contents(dirname(__FILE__) . '/data/assocations/list.xml');
 
     $oauth_client_stub->expects($this->any())
              ->method('consumerGetAsXML')

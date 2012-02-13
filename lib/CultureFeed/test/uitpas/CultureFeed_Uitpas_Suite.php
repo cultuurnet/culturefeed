@@ -23,6 +23,7 @@ class CultureFeed_Uitpas_Suite extends PHPUnit_Framework_TestSuite {
 
     $suite->addTestSuite('CultureFeed_Uitpas_VerdeelSleutelsAPITest');
     $suite->addTestSuite('CultureFeed_Uitpas_PasHoudersAPITest');
+    $suite->addTestSuite('CultureFeed_Uitpas_EventsAPITest');
 
     return $suite;
   }
