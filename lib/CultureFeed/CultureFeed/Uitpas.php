@@ -50,6 +50,14 @@ interface CultureFeed_Uitpas {
   public function createMembershipForPassholder(CultureFeed_Uitpas_Passholder_Membership $membership);
 
   /**
+   * Resend the activation e-mail for a passholder
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function resendActivationEmail($uitpas_number, $consumer_key_counter);
+
+  /**
    * Get a passholder based on the UitPas number.
    *
    * @param string $uitpas_number The UitPas number

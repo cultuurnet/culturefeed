@@ -39,7 +39,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       'balieConsumerKey' => $consumer_key_counter,
     );
 
-    $result = $this->oauth_client->consumerGetAsXML('uitpas/association/list', $data);
+    $result = $this->oauth_client->authenticatedGetAsXML('uitpas/association/list', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -100,9 +100,24 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get the price of the UitPas.
    */
   public function getPrice() {
-    $price = $this->oauth_client->consumerGet('uitpas/passholder/uitpasPrice', array());
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasPrice', array());
 
-    return $price;
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $prices = array();
+    $objects = $xml->xpath('/response/uitpasPrices/uitpasPrice');
+    $total = count($objects);
+
+    foreach ($objects as $object) {
+      $prices[] = CultureFeed_Uitpas_Passholder_UitpasPrice::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $prices);
   }
 
   /**
@@ -113,9 +128,16 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function createPassholder(CultureFeed_Uitpas_Passholder $passholder) {
     $data = $passholder->toPostData();
-    $culturefeed_uid = $this->oauth_client->consumerPost('uitpas/passholder/register', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/register', $data);
 
-    return $culturefeed_uid;
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return $xml->xpath_str('response/message');
   }
 
   /**
@@ -125,7 +147,41 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function createMembershipForPassholder(CultureFeed_Uitpas_Passholder_Membership $membership) {
     $data = $membership->toPostData();
-    $this->oauth_client->consumerPostAsXml('uitpas/passholder/createMembership', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/createMembership', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
+    return $response;
+  }
+
+  /**
+   * Resend the activation e-mail for a passholder
+   *
+   * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function resendActivationEmail($uitpas_number, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
+
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/resend_activation_mail', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
+    return $response;
   }
 
   /**
