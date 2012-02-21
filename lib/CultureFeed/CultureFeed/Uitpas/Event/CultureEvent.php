@@ -78,12 +78,12 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->locationId = $object->xpath_str('locationId');
     $event->locationName = $object->xpath_str('locationName');
     $event->checkinAllowed = $object->xpath_bool('checkinAllowed');
-    //$event->checkinConstraintReason = $object->xpath_str('locationName');
-    //$event->buyConstraintReason = $object->xpath_str('locationName');
+    $event->checkinConstraintReason = $object->xpath_str('checkinConstraintReason');
+    $event->buyConstraintReason = $object->xpath_str('buyConstraintReason');
     $event->price = $object->xpath_float('price');
     $event->tariff = $object->xpath_float('tariff');
     $event->title = $object->xpath_str('title');
-    //$event->calendar = $object->xpath_str('title');
+    $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('ns6:calendar'));
 
     return $event;
   }
