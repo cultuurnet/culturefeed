@@ -145,13 +145,18 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   public $start;
 
   protected function manipulatePostData(&$data) {
-    if (isset($data['cashingPeriodBegin'])) {
-      $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
+    if (isset($data['dob'])) {
+      $data['dob'] = date('c', $data['dob']);
     }
 
-    if (isset($data['cashingPeriodEnd'])) {
-      $data['cashingPeriodEnd'] = date('c', $data['cashingPeriodEnd']);
+    if (isset($data['dobMin'])) {
+      $data['dobMin'] = date('c', $data['dobMin']);
     }
+
+    if (isset($data['dobMax'])) {
+      $data['dobMax'] = date('c', $data['dobMax']);
+    }
+
   }
 
 }

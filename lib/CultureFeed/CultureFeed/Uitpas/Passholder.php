@@ -189,6 +189,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $points;
 
   protected function manipulatePostData($data) {
+    if (isset($data['dateOfBirth'])) {
+      $data['dateOfBirth'] = date('c', $data['dateOfBirth']);
+    }
+
     if (isset($data['kansenStatuutEndDate'])) {
       $data['kansenStatuutEndDate'] = date('c', $data['kansenStatuutEndDate']);
     }
