@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Passholder_Event extends CultureFeed_Uitpas_ValueObject {
+class CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions extends CultureFeed_Uitpas_ValueObject {
 
   /**
    * The CDBID of the event

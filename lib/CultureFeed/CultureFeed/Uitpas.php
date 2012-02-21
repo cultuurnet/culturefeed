@@ -53,15 +53,25 @@ interface CultureFeed_Uitpas {
    * Get a passholder based on the UitPas number.
    *
    * @param string $uitpas_number The UitPas number
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholder($uitpas_number);
+  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter);
+
+  /**
+   * Get a passholder based on the user ID
+   *
+   * @param string $user_id The user ID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   */
+  public function getPassholderByUser($user_id, $consumer_key_counter);
 
   /**
    * Search for passholders.
    *
-   * @param CultureFeed_Uitpas_SearchPassHoldersQuery $query The query
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function searchPassholders(CultureFeed_Uitpas_SearchPassHoldersQuery $query);
+  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter);
 
   /**
    * Get the welcome advantages for a passholder.
@@ -75,9 +85,9 @@ interface CultureFeed_Uitpas {
    *
    * Provide either a UitPas number or chip number. You cannot provide both.
    *
-   * @param CultureFeed_Uitpas_Passholder_Event $event The event data object
+   * @param CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $event The event data object
    */
-  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Event $event);
+  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $event);
 
   /**
    * Cash in a welcome advantage.
@@ -145,15 +155,6 @@ interface CultureFeed_Uitpas {
   public function getPassholderForChipNumber($chip_number, $consumer_key_counter);
 
   /**
-   * Get the events for a given passholder.
-   *
-   * @param string $uitpas_number The UitPas number
-   * @param DateTime $date_from Start date
-   * @param DateTime $date_to End date
-   */
-  public function getEventsForPassholder($uitpas_number, $date_from, $date_to);
-
-  /**
    * Register a ticket sale for a passholder
    *
    * @param string $uitpas_number The UitPas number
@@ -171,34 +172,34 @@ interface CultureFeed_Uitpas {
    */
   public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
 
-//  /**
-//   * Get the accumulated points of a passholder.
-//   *
-//   * @param CultureFeed_Uitpas_AccumulatedPointsQuery $query The query
-//   */
-//  public function getAccumulatedPoints(CultureFeed_Uitpas_AccumulatedPointsQuery $query);
+  /**
+   * Search for checkins
+   *
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query The query
+   */
+  public function searchCheckins(CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query);
 
   /**
    * Search for Uitpas events
    *
-   * @param CultureFeed_Uitpas_SearchEventsQuery $query The query
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query The query
    */
-  public function searchEvents(CultureFeed_Uitpas_SearchEventsQuery $query);
+  public function searchEvents(CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query);
 
   /**
    * Search for point of sales
    *
-   * @param CultureFeed_Uitpas_SearchPointOfSalesQuery $query The query
+   * @param CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query The query
    */
-  public function searchPointOfSales(CultureFeed_Uitpas_SearchPointOfSalesQuery $query);
+  public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query);
 
   /**
    * Add a member to a counter.
    *
-   * @param int $id The counter ID
    * @param string $uid The Culturefeed user ID
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function addMemberToCounter($id, $uid);
+  public function addMemberToCounter($uid, $consumer_key_counter);
 
   /**
    * Search for counters for a given member

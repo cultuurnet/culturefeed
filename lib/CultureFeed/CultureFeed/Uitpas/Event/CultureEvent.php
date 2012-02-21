@@ -17,6 +17,13 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   public $locationId;
 
   /**
+   * The name of the location of the event
+   *
+   * @var string
+   */
+  public $locationName;
+
+  /**
    * True if a given passholder can checkin on the event
    *
    * @var boolean
@@ -28,14 +35,14 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    *
    * @var CultureFeed_Uitpas_Event_CheckinConstraint
    */
-  public $checkinContraint;
+  public $checkinConstraintReason;
 
   /**
-   * The reason a passholder cannot checkin
+   * The reason the passholder cannot buy tickets for the event
    *
-   * @var ErrorCode
+   * @var CultureFeed_Uitpas_Event_CheckinConstraint
    */
-  public $constraintReason;
+  public $buyConstraintReason;
 
   /**
    * The price of the event
@@ -54,7 +61,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   /**
    * The title of the event
    *
-   * @var float
+   * @var string
    */
   public $title;
 
@@ -66,13 +73,19 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   public $calendar;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-    $ticket_sale = new CultureFeed_Uitpas_Event_TicketSale();
-    $ticket_sale->id = $object->xpath_int('id');
-    $ticket_sale->creationDate = $object->xpath_time('creationDate');
-    $ticket_sale->price = $object->xpath_float('price');
-    $ticket_sale->cdbid = $object->xpath_str('cdbid');
+    $event = new CultureFeed_Uitpas_Event_CultureEvent();
+    $event->cdbid = $object->xpath_str('cdbid');
+    $event->locationId = $object->xpath_str('locationId');
+    $event->locationName = $object->xpath_str('locationName');
+    $event->checkinAllowed = $object->xpath_bool('checkinAllowed');
+    //$event->checkinConstraintReason = $object->xpath_str('locationName');
+    //$event->buyConstraintReason = $object->xpath_str('locationName');
+    $event->price = $object->xpath_float('price');
+    $event->tariff = $object->xpath_float('tariff');
+    $event->title = $object->xpath_str('title');
+    //$event->calendar = $object->xpath_str('title');
 
-    return $ticket_sale;
+    return $event;
   }
 
 }

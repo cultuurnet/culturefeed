@@ -2,6 +2,10 @@
 
 class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
 
+  const EMAIL_NO_MAILS = 'NO_MAILS';
+  const EMAIL_NOTIFICATION_MAILS = 'NOTIFICATION_MAILS';
+  const EMAIL_ALL_MAILS = 'ALL_MAILS';
+
   /**
    * The name of the passholder. (Required)
    *
@@ -24,11 +28,18 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $email;
 
   /**
+   * The e-mail preference
+   *
+   * @var string
+   */
+  public $emailPreference;
+
+  /**
    * The INSZ number of the passholder. (Required)
    *
    * @var string
    */
-  public $inszNumber;
+  public $inszNumberHash;
 
   /**
    * The date of birth of the passholder. (Required)
@@ -126,7 +137,28 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    *
    * @var integer
    */
-  public $kansenStatuutValidUntil;
+  public $kansenStatuutEndDate;
+
+  /**
+   * The user coupled with the passholder
+   *
+   * @var CultureFeed_Uitpas_Passholder_UitIdUser
+   */
+  public $uitIdUser;
+
+  /**
+   * The current card
+   *
+   * @var CultureFeed_Uitpas_Passholder_Card
+   */
+  public $currentCard;
+
+  /**
+   * True if the uitpas has been blocked
+   *
+   * @var boolean
+   */
+  public $blocked;
 
   /**
    * True if the data of the passholder was fetched using eID.
@@ -135,14 +167,63 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    */
   public $verified;
 
-  protected function manipulatePostData($data) {
-    if (isset($data['dateOfBirth'])) {
-      $data['dateOfBirth'] = date('c', $data['dateOfBirth']);
-    }
+  /**
+   * The memberships if the passholder
+   *
+   * @var array
+   */
+  public $memberships;
 
-    if (isset($data['kansenStatuutValidUntil'])) {
-      $data['kansenStatuutValidUntil'] = date('c', $data['kansenStatuutValidUntil']);
+  /**
+   * The consumer key of the counter where the passholder has been registered
+   *
+   * @var string
+   */
+  public $registrationBalieConsumerKey;
+
+  /**
+   * The number of points of the passholder
+   *
+   * @var integer
+   */
+  public $points;
+
+  protected function manipulatePostData($data) {
+    if (isset($data['kansenStatuutEndDate'])) {
+      $data['kansenStatuutEndDate'] = date('c', $data['kansenStatuutEndDate']);
     }
+  }
+
+  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+    $passholder = new CultureFeed_Uitpas_Passholder();
+    $passholder->name = $object->xpath_str('name');
+    $passholder->firstName = $object->xpath_str('firstName');
+    $passholder->email = $object->xpath_str('email');
+    $passholder->emailPreference = $object->xpath_str('emailPreference');
+    $passholder->inszNumberHash = $object->xpath_str('inszNumberHash');
+    $passholder->dateOfBirth = $object->xpath_time('dateOfBirth');
+    $passholder->gender = $object->xpath_str('gender');
+    $passholder->street = $object->xpath_str('street');
+    $passholder->number = $object->xpath_str('number');
+    $passholder->box = $object->xpath_str('box');
+    $passholder->postalCode = $object->xpath_str('postalCode');
+    $passholder->city = $object->xpath_str('city');
+    $passholder->telephone = $object->xpath_str('telephone');
+    $passholder->nationality = $object->xpath_str('nationality');
+    $passholder->placeOfBirth = $object->xpath_str('placeOfBirth');
+    $passholder->uitpasNumber = $object->xpath_str('uitpasNumber');
+    $passholder->price = $object->xpath_float('price');
+    $passholder->kansenStatuut = $object->xpath_bool('kansenStatuut');
+    $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
+    $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser'));
+    $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard'));
+    $passholder->blocked = $object->xpath_bool('blocked');
+    $passholder->verified = $object->xpath_bool('verified');
+    //$passholder->memberships = $object->xpath_bool('memberships');
+    $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
+    $passholder->points = $object->xpath_int('points');
+
+    return $passholder;
   }
 
 }

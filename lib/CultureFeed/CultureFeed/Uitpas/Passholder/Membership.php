@@ -3,18 +3,11 @@
 class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueObject {
 
   /**
-   * The user ID of the passholder. (Required)
+   * The association the passholder is linked
    *
    * @var string
    */
-  public $uid;
-
-  /**
-   * The name of the organization. (Required)
-   *
-   * @var string
-   */
-  public $organizationName;
+  public $association;
 
   /**
    * The membership's organization end date. (Required)

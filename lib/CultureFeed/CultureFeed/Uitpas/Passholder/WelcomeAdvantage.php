@@ -37,6 +37,62 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
    */
   public $counters;
 
+  /**
+   * The creation date of the promotion
+   *
+   * @var integer
+   */
+  public $creationDate;
+
+  /**
+   * The date when the cashing for the promotion will start
+   *
+   * @var integer
+   */
+  public $cashingPeriodBegin;
+
+  /**
+   * The date when the cashing for the promotion will end
+   *
+   * @var integer
+   */
+  public $cashingPeriodEnd;
+
+  /**
+   * Begin date of the granting period
+   *
+   * @var integer
+   */
+  public $grantingPeriodBegin;
+
+  /**
+   * End date of the granting period
+   *
+   * @var integer
+   */
+  public $grantingPeriodEnd;
+
+  /**
+   * The cities for which the promotion applies
+   *
+   * @var array
+   */
+  public $validForCities = array();
+
+  /**
+   * The amount of units available for this promotion
+   *
+   * @var integer
+   */
+  public $maxAvailableUnits;
+
+  /**
+   * The amount of units taken for this promotion
+   *
+   * @var integer
+   */
+  public $unitsTaken;
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $welcome_advantage = new CultureFeed_Uitpas_Passholder_WelcomeAdvantage();
     $welcome_advantage->id = $object->xpath_int('id');
@@ -44,6 +100,15 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->points = $object->xpath_int('points');
     $welcome_advantage->cashedIn = $object->xpath_bool('cashedIn');
     $welcome_advantage->counters = $object->xpath_str('balies/name', true);
+    $welcome_advantage->creationDate = $object->xpath_time('creationDate');
+    $welcome_advantage->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
+    $welcome_advantage->cashingPeriodEnd = $object->xpath_time('cashingPeriodEnd');
+    $welcome_advantage->grantingPeriodBegin = $object->xpath_time('grantingPeriodBegin');
+    $welcome_advantage->grantingPeriodEnd = $object->xpath_time('grantingPeriodEnd');
+    $welcome_advantage->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
+    $welcome_advantage->validForCities = $object->xpath_str('cities', true);
+    $welcome_advantage->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
+    $welcome_advantage->unitsTaken = $object->xpath_int('unitsTaken');
 
     return $welcome_advantage;
   }
