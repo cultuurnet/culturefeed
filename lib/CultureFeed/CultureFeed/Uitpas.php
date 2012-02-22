@@ -5,6 +5,9 @@
  */
 interface CultureFeed_Uitpas {
 
+  const CONSUMER_REQUEST = 'ConsumeRequestr';
+  const USER_ACCESS_TOKEN = 'UserAccessToken';
+
   /**
    * Get the associations.
    *
@@ -78,15 +81,17 @@ interface CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * @param string $method The request method
    */
-  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter);
+  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
    * Get the welcome advantages for a passholder.
    *
+   * @param CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query The query
    * @param string $uitpas_number The UitPas number
    */
-  public function getWelcomeAdvantagesForPassholder($uitpas_number);
+  public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query, $consumer_key_counter);
 
   /**
    * Check in a passholder.

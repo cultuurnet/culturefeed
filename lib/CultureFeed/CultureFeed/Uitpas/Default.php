@@ -239,12 +239,18 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * @param string $method The request method
    */
-  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter) {
+  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
     $data = $query->toPostData();
     $data['balieConsumerKey'] = $consumer_key_counter;
 
-    $result = $this->oauth_client->consumerPostAsXml('uiitpas/passholder/search', $data);
+    if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
+      $result = $this->oauth_client->consumerPostAsXml('uiitpas/passholder/search', $data);
+    }
+    else {
+       $result = $this->oauth_client->authenticatedPostAsXml('uiitpas/passholder/search', $data);
+    }
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -267,10 +273,13 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * Get the welcome advantages for a passholder.
    *
+   * @param CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query The query
    * @param string $uitpas_number The UitPas number
    */
-  public function getWelcomeAdvantagesForPassholder($uitpas_number) {
-    $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $uitpas_number . '/welcomeadvantages', array());
+  public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query, $consumer_key_counter) {
+    $data = $query->toPostData();
+    $data['balieConsumerKey'] = $consumer_key_counter;
+    $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);

@@ -215,7 +215,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->telephone = $object->xpath_str('telephone');
     $passholder->nationality = $object->xpath_str('nationality');
     $passholder->placeOfBirth = $object->xpath_str('placeOfBirth');
-    $passholder->uitpasNumber = $object->xpath_str('uitpasNumber');
+    $passholder->uitpasNumber = $object->xpath_str('uitpasNumber/uitpasNumber');
     $passholder->price = $object->xpath_float('price');
     $passholder->kansenStatuut = $object->xpath_bool('kansenStatuut');
     $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
