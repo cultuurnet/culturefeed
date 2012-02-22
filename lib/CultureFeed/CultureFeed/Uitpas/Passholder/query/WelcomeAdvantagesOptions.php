@@ -14,7 +14,7 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
    *
    * @var string
    */
-  public $consumer_key_counter;
+  public $balieConsumerKey;
 
   /**
    * Begin date of the cashing period

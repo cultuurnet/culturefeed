@@ -238,18 +238,16 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Search for passholders.
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    * @param string $method The request method
    */
-  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
+  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
     $data = $query->toPostData();
-    $data['balieConsumerKey'] = $consumer_key_counter;
 
     if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
-      $result = $this->oauth_client->consumerPostAsXml('uiitpas/passholder/search', $data);
+      $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/search', $data);
     }
     else {
-       $result = $this->oauth_client->authenticatedPostAsXml('uiitpas/passholder/search', $data);
+      $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/search', $data);
     }
 
     try {
@@ -278,7 +276,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query, $consumer_key_counter) {
     $data = $query->toPostData();
-    $data['balieConsumerKey'] = $consumer_key_counter;
     $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
 
     try {
@@ -309,7 +306,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $event) {
     $data = $event->toPostData();
-    $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/checkin', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/checkin', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -326,16 +323,16 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Cash in a welcome advantage.
    *
    * @param string $uitpas_number The UitPas number
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    * @param int $welcome_advantage_id Identification welcome advantage
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInWelcomeAdvantage($uitpas_number, $consumer_key_counter, $welcome_advantage_id) {
+  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter) {
      $data = array(
        'welcomeAdvantageId' => $welcome_advantage_id,
        'balieConsumerKey' => $consumer_key_counter,
      );
 
-     $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInWelcomeAdvantage', $data);
+     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInWelcomeAdvantage', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -493,12 +490,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get a passholder based on the UitPas chip number.
    *
    * @param string $chip_number The chipnumber of the UitPas
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * @param string $service_consumer_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderForChipNumber($chip_number, $consumer_key_counter) {
+  public function getPassholderForChipNumber($chip_number, $service_consumer_counter) {
     $data = array(
       'chipNummer' => $chip_number,
-      'balieServiceConumer' => $consumer_key_counter,
+      'balieServiceConsumer' => $service_consumer_counter,
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasNumber', $data);
@@ -511,6 +508,25 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return $xml->xpath_str('/uitpasRestResponse/message');
+  }
+
+  /**
+   * Register a new Uitpas
+   *
+   * @param CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query The query
+   */
+  public function registerUitpas(CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/newCard', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return $xml->xpath_str('/response/message');
   }
 
   /**
@@ -571,7 +587,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $checkins = array();
     $objects = $xml->xpath('/response/checkinActivities/checkinActivitiy');
-    $total = count($objects);
+    $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
       $checkins[] = CultureFeed_Uitpas_Event_CheckinActivity::createFromXML($object);
@@ -611,10 +627,17 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Search for point of sales
    *
    * @param CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query The query
+   * @param string $method The request method
    */
-  public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query) {
+  public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
     $data = $query->toPostData();
-    $result = $this->oauth_client->consumerGetAsXml('uitpas/balie/pos', $data);
+
+    if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
+      $result = $this->oauth_client->consumerGetAsXml('uitpas/balie/pos', $data);
+    }
+    else {
+      $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/pos', $data);
+    }
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -624,7 +647,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $pos = array();
-    $objects = $xml->xpath('/balieRestResponse/balie');
+    $objects = $xml->xpath('/balieRestResponse/balies/balie');
     $total = $xml->xpath_int('/balieRestResponse/total');
 
     foreach ($objects as $object) {

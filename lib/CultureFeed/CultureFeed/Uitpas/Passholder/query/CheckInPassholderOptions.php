@@ -28,6 +28,6 @@ class CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions extends Cultu
    *
    * @var string
    */
-  public $consumer_key_counter;
+  public $balieConsumerKey;
 
 }

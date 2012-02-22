@@ -144,6 +144,13 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    */
   public $start;
 
+  /**
+   * The consumer key of the counter from where the request originates
+   *
+   * @var string
+   */
+  public $balieConsumerKey;
+
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
       $data['dob'] = date('c', $data['dob']);

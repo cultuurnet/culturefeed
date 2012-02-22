@@ -196,6 +196,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     if (isset($data['kansenStatuutEndDate'])) {
       $data['kansenStatuutEndDate'] = date('c', $data['kansenStatuutEndDate']);
     }
+
+    if (isset($data['inszNumberHash'])) {
+      $data['inszNumber'] = $data['inszNumberHash'];
+    }
   }
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {

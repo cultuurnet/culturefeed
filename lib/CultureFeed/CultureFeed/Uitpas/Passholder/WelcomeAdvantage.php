@@ -106,7 +106,7 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->grantingPeriodBegin = $object->xpath_time('grantingPeriodBegin');
     $welcome_advantage->grantingPeriodEnd = $object->xpath_time('grantingPeriodEnd');
     $welcome_advantage->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
-    $welcome_advantage->validForCities = $object->xpath_str('cities', true);
+    $welcome_advantage->validForCities = $object->xpath_str('validForCities/city', true);
     $welcome_advantage->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $welcome_advantage->unitsTaken = $object->xpath_int('unitsTaken');
 

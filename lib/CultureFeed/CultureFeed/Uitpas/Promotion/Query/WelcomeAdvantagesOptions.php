@@ -17,18 +17,18 @@ class CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions extends Cultur
   public $city;
 
   /**
-   * Search for welcome advantages with a given title
-   *
-   * @var string
-   */
-  public $title;
-
-  /**
    * Consumer key of the counter
    *
    * @var string
    */
   public $balieConsumerKey;
+
+  /**
+   * Search for welcome advantages with a given title
+   *
+   * @var string
+   */
+  public $title;
 
   /**
    * Begin date of the cashing period
@@ -86,7 +86,7 @@ class CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions extends Cultur
    */
   public $start = 0;
 
-protected function manipulatePostData(&$data) {
+  protected function manipulatePostData(&$data) {
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
     }

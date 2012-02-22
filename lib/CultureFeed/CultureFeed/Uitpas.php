@@ -80,10 +80,9 @@ interface CultureFeed_Uitpas {
    * Search for passholders.
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    * @param string $method The request method
    */
-  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $consumer_key_counter, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
+  public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
    * Get the welcome advantages for a passholder.
@@ -106,10 +105,10 @@ interface CultureFeed_Uitpas {
    * Cash in a welcome advantage.
    *
    * @param string $uitpas_number The UitPas number
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    * @param int $welcome_advantage_id Identification welcome advantage
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInWelcomeAdvantage($uitpas_number, $consumer_key_counter, $welcome_advantage_id);
+  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter);
 
   /**
    * Get the redeem options
@@ -163,9 +162,9 @@ interface CultureFeed_Uitpas {
    * Get a passholder based on the UitPas chip number.
    *
    * @param string $chip_number The chipnumber of the UitPas
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * @param string $service_consumer_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderForChipNumber($chip_number, $consumer_key_counter);
+  public function getPassholderForChipNumber($chip_number, $service_consumer_counter);
 
   /**
    * Register a ticket sale for a passholder
@@ -175,6 +174,13 @@ interface CultureFeed_Uitpas {
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
   public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
+
+  /**
+   * Register a new Uitpas
+   *
+   * @param CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query The query
+   */
+  public function registerUitpas(CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query);
 
   /**
    * Cancel a ticket sale for a passholder
@@ -203,8 +209,9 @@ interface CultureFeed_Uitpas {
    * Search for point of sales
    *
    * @param CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query The query
+   * @param string $method The request method
    */
-  public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query);
+  public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
    * Add a member to a counter.

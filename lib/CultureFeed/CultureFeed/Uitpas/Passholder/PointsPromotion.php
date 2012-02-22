@@ -92,12 +92,15 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion->title = $object->xpath_str('title');
     $promotion->points = $object->xpath_int('points');
     $promotion->cashedIn = $object->xpath_bool('cashedIn');
-    $promotion->counters = $object->xpath_str('balies/name', true);
+    $promotion->counters = array();
+    foreach ($object->xpath('balies/balie') as $counter) {
+      $promotions->counters[] = CultureFeed_Uitpas_Passholder_Counter::createFromXML($counter);
+    }
     $promotion->creationDate = $object->xpath_time('creationDate');
     $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
     $promotion->cashingPeriodEnd = $object->xpath_time('cashingPeriodEnd');
     $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
-    $promotion->validForCities = $object->xpath_str('cities', true);
+    $promotion->validForCities = $object->xpath_str('validForCities/city', true);
     $promotion->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $promotion->unitsTaken = $object->xpath_int('unitsTaken');
 

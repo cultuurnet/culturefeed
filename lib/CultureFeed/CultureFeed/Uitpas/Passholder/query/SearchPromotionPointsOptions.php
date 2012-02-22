@@ -85,7 +85,7 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
    *
    * @var string
    */
-  public $uitpasUid;
+  public $uid;
 
   /**
    * Default: false. Indicates if the system must only show the pointspromotions for which the user has sufficient points
