@@ -73,6 +73,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   public $calendar;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+  
     $event = new CultureFeed_Uitpas_Event_CultureEvent();
     $event->cdbid = $object->xpath_str('cdbid');
     $event->locationId = $object->xpath_str('locationId');
@@ -83,7 +84,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->price = $object->xpath_float('price');
     $event->tariff = $object->xpath_float('tariff');
     $event->title = $object->xpath_str('title');
-    $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('ns6:calendar'));
+    $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
 
     return $event;
   }

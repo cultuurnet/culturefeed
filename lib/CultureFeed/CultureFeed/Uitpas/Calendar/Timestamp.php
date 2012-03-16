@@ -4,24 +4,24 @@
 class CultureFeed_Uitpas_Calendar_Timestamp {
 
   /**
-   * The date of the timestamp
+   * The date
    *
    * @var integer
    */
   public $date;
 
   /**
-   * The start time of the timestamp
+   * The start time
    *
    * @var integer
    */
-  public $start;
-
+  public $timestart;
+  
   /**
-   * The end time of the timestamp
+   * The end time
    *
    * @var integer
    */
-  public $end;
+  public $timeend;
 
 }

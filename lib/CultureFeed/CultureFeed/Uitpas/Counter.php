@@ -35,7 +35,7 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
    *
    * @var integer
    */
-  public $numberABV;
+  public $number;
 
   /**
    * The post box of the counter.
@@ -71,19 +71,27 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $contactPerson;
+  
+  /**
+   * The consumer key of the counter
+   *
+   * @var string
+   */
+  public $consumerKey;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $counter = new CultureFeed_Uitpas_Counter();
-    $counter->id = $object->xpath_float('id');
+    $counter->id = $object->xpath_str('id');
     $counter->name = $object->xpath_str('name');
     $counter->type = $object->xpath_str('type');
     $counter->street = $object->xpath_str('street');
-    $counter->numberABV = $object->xpath_int('numberABV');
+    $counter->number = $object->xpath_int('number');
     $counter->box = $object->xpath_str('box');
     $counter->postalCode = $object->xpath_str('postalCode');
     $counter->city = $object->xpath_str('city');
     $counter->telephoneNumber = $object->xpath_str('telephoneNumber');
     $counter->contactPerson = $object->xpath_str('contactPerson');
+    $counter->consumerKey = $object->xpath_str('consumerKey');
 
     return $counter;
   }

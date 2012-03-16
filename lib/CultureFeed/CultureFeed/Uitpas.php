@@ -66,7 +66,7 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter);
+  public function getPassholderByUitpasNumber($uitpas_number);
 
   /**
    * Get a passholder based on the user ID
@@ -203,7 +203,7 @@ interface CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query The query
    */
-  public function searchEvents(CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query);
+  public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query);
 
   /**
    * Search for point of sales

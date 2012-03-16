@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions extends CultureFeed_Uitpas_ValueObject {
+class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uitpas_ValueObject {
 
   const SORT_CREATION_DATE = "CREATION_DATE";
   const SORT_TITLE = "TITLE";
@@ -81,11 +81,25 @@ class CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions extends CultureFee
   public $start = 0;
 
   /**
-   * Displays the rate for the passholder
+   * The Uitpas of the passholder
    *
    * @var string
    */
-  public $uitpas;
+  public $uitpasNumber;
+  
+  /**
+   * A search term
+   *
+   * @var string
+   */
+  public $q;
+  
+  /**
+   * The CDBID of the event
+   * 
+   * @var string
+   */
+  public $cdbid;
 
   protected function manipulatePostData(&$data) {
     if (isset($data['startDate'])) {

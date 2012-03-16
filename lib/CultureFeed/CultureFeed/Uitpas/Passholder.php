@@ -219,12 +219,11 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->telephone = $object->xpath_str('telephone');
     $passholder->nationality = $object->xpath_str('nationality');
     $passholder->placeOfBirth = $object->xpath_str('placeOfBirth');
-    $passholder->uitpasNumber = $object->xpath_str('uitpasNumber/uitpasNumber');
     $passholder->price = $object->xpath_float('price');
     $passholder->kansenStatuut = $object->xpath_bool('kansenStatuut');
     $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
-    $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser'));
-    $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard'));
+    $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
+    $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard', false));
     $passholder->blocked = $object->xpath_bool('blocked');
     $passholder->verified = $object->xpath_bool('verified');
     //$passholder->memberships = $object->xpath_bool('memberships');

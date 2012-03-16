@@ -18,6 +18,11 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @var CultureFeed_OAuthClient
    */
   protected $oauth_client;
+  
+  /**
+   *
+   */
+  protected $consumer_key_counter;
 
   /**
    *
@@ -190,9 +195,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter) {
+  public function getPassholderByUitpasNumber($uitpas_number) {
     $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
+      'balieConsumerKey' => $this->getConsumerKeyCounter(),
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $uitpas_number, $data);
@@ -204,7 +209,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $object = $xml->xpath('/passHolder');
+    $object = $xml->xpath('/passHolder', false);
 
     return CultureFeed_Uitpas_Passholder::createFromXml($object);
   }
@@ -351,6 +356,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query) {
+    $query->balieConsumerKey = $this->getConsumerKeyCounter();
     $data = $query->toPostData();
     $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/pointsPromotions', $data);
 
@@ -362,8 +368,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $promotions = array();
-    $objects = $xml->xpath('/pointsPromotionsRestResponse/promotions/promotion');
-    $total = $xml->xpath_int('/pointsPromotionsRestResponse/total');
+    $objects = $xml->xpath('/response/promotions/promotion');
+    $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
       $promotions[] = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($object);
@@ -601,7 +607,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_SearchEventsQuery $query The query
    */
-  public function searchEvents(CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query) {
+  public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query) {
     $data = $query->toPostData();
     $result = $this->oauth_client->consumerGetAsXml('uitpas/cultureevent/search', $data);
 
@@ -682,7 +688,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       'uid' => $uid,
     );
 
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/pos', $data);
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/list', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -692,15 +698,26 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $counters = array();
-    $objects = $xml->xpath('/employeeBaliesRestResponse/balie');
+    $objects = $xml->xpath('balies/balie');
     $total = count($objects);
 
     foreach ($objects as $object) {
-      $counters[] = CultureFeed_Uitpas_Counter_Employee::createFromXML($object);
+      $counters[] = CultureFeed_Uitpas_Counter::createFromXML($object);
     }
 
     return new CultureFeed_ResultSet($total, $counters);
   }
 
+  protected function getConsumerKeyCounter() {
+    if (!isset($this->consumer_key_counter)) {
+      $user = DrupalCultureFeed::getLoggedInUser();
+      $counters = $this->searchCountersForMember($user->id);
+      $counter = $counters->objects[0];
+    
+      $this->consumer_key_counter = $counter->consumerKey;
+    }
+    
+    return $this->consumer_key_counter;
+  }
 
 }
