@@ -18,11 +18,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @var CultureFeed_OAuthClient
    */
   protected $oauth_client;
-  
-  /**
-   *
-   */
-  protected $consumer_key_counter;
 
   /**
    *
@@ -195,9 +190,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUitpasNumber($uitpas_number) {
+  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter) {
     $data = array(
-      'balieConsumerKey' => $this->getConsumerKeyCounter(),
+      'balieConsumerKey' => $consumer_key_counter,
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $uitpas_number, $data);
@@ -277,11 +272,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get the welcome advantages for a passholder.
    *
    * @param CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query The query
-   * @param string $uitpas_number The UitPas number
    */
-  public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query, $consumer_key_counter) {
+  public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query) {
     $data = $query->toPostData();
-    $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -356,7 +350,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query) {
-    $query->balieConsumerKey = $this->getConsumerKeyCounter();
     $data = $query->toPostData();
     $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/pointsPromotions', $data);
 
@@ -706,18 +699,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return new CultureFeed_ResultSet($total, $counters);
-  }
-
-  protected function getConsumerKeyCounter() {
-    if (!isset($this->consumer_key_counter)) {
-      $user = DrupalCultureFeed::getLoggedInUser();
-      $counters = $this->searchCountersForMember($user->id);
-      $counter = $counters->objects[0];
-    
-      $this->consumer_key_counter = $counter->consumerKey;
-    }
-    
-    return $this->consumer_key_counter;
   }
 
 }
