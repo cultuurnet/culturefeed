@@ -85,6 +85,13 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
    * @var integer
    */
   public $unitsTaken;
+  
+  /*
+   * The cash-in state of the welcome advantage
+   *
+   * @var boolean
+   */
+  public $cashInState;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $promotion = new CultureFeed_Uitpas_Passholder_PointsPromotion();
@@ -103,6 +110,7 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion->validForCities = $object->xpath_str('validForCities/city', true);
     $promotion->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $promotion->unitsTaken = $object->xpath_int('unitsTaken');
+    $promotion->cashInState = $object->xpath_str('cashInState');
 
     return $promotion;
   }

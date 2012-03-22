@@ -109,6 +109,7 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->validForCities = $object->xpath_str('validForCities/city', true);
     $welcome_advantage->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $welcome_advantage->unitsTaken = $object->xpath_int('unitsTaken');
+    
 
     return $welcome_advantage;
   }
