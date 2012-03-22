@@ -14,14 +14,14 @@ class CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions extends Cultu
    *
    * @var string
    */
-  public $uitpas_number;
+  public $uitpasNumber;
 
   /**
    * NFC card chip number
    *
    * @var string
    */
-  public $chip_number;
+  public $chipNumber;
 
   /**
    * The consumer key of the counter from where the request originates

@@ -303,8 +303,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $query The event data object
    * @return The total amount of points of the user
    */
-  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $data) {
-    $data = $event->toPostData();
+  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $query) {
+    $data = $query->toPostData();
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/checkin', $data);
 
     try {
