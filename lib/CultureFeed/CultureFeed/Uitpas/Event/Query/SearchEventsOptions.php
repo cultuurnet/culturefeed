@@ -103,11 +103,11 @@ class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uit
 
   protected function manipulatePostData(&$data) {
     if (isset($data['startDate'])) {
-      $data['startDate'] = date('c', $data['startDate']);
+      $data['startDate'] = date('Y-m-d', $data['startDate']);
     }
 
     if (isset($data['endDate'])) {
-      $data['endDate'] = date('c', $data['endDate']);
+      $data['endDate'] = date('Y-m-d', $data['endDate']);
     }
   }
 

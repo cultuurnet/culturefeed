@@ -10,7 +10,7 @@ abstract class CultureFeed_Uitpas_ValueObject {
     return $data;
   }
 
-  protected function manipulatePostData($data) {
+  protected function manipulatePostData(&$data) {
 
   }
 

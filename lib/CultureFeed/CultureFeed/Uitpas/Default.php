@@ -303,7 +303,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $query The event data object
    * @return The total amount of points of the user
    */
-  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $event) {
+  public function checkinPassholder(CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions $data) {
     $data = $event->toPostData();
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/checkin', $data);
 
@@ -340,7 +340,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotion = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml->xpath('/promotion', false));
+    $promotion = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml->xpath('/promotionTO', false));
     return $promotion;
   }
 
@@ -378,7 +378,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param int $points_promotion_id The identification of the redeem option
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInPromotionPoints($uitpas_number, $consumer_key_counter, $points_promotion_id) {
+  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $consumer_key_counter) {
     $data = array(
       'pointsPromotionId' => $points_promotion_id,
       'balieConsumerKey' => $consumer_key_counter,
@@ -565,7 +565,13 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       'balieConsumerKey' => $consumer_key_counter,
     );
 
-    $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/cancel/' . $uitpas_number, $data);
+	try {
+      $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/cancel/' . $uitpas_number, $data);
+      return true;
+    }
+    catch (Exception $e) {
+      return false;
+    }
   }
 
   /**

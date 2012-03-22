@@ -30,6 +30,8 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    */
   public $checkinAllowed;
 
+  public $checkinConstraint;
+
   /**
    * The checkin constraint of the event
    *
@@ -79,6 +81,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->locationId = $object->xpath_str('locationId');
     $event->locationName = $object->xpath_str('locationName');
     $event->checkinAllowed = $object->xpath_bool('checkinAllowed');
+    $event->checkinConstraint = CultureFeed_Uitpas_Event_CheckinConstraint::createFromXml($object->xpath('checkinConstraint', false));
     $event->checkinConstraintReason = $object->xpath_str('checkinConstraintReason');
     $event->buyConstraintReason = $object->xpath_str('buyConstraintReason');
     $event->price = $object->xpath_float('price');
