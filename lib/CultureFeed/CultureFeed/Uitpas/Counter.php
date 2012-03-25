@@ -78,6 +78,13 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $consumerKey;
+  
+  /**
+   * The role of the counter
+   *
+   * @var string
+   */
+  public $role;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $counter = new CultureFeed_Uitpas_Counter();
@@ -92,6 +99,7 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
     $counter->telephoneNumber = $object->xpath_str('telephoneNumber');
     $counter->contactPerson = $object->xpath_str('contactPerson');
     $counter->consumerKey = $object->xpath_str('consumerKey');
+    $counter->role = $object->xpath_str('role');
 
     return $counter;
   }
