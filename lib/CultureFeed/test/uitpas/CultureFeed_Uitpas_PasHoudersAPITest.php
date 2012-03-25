@@ -90,7 +90,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $event = new CultureFeed_Uitpas_Passholder_Event();
+    $event = new CultureFeed_Uitpas_Passholder_Query_CheckInPassholderOptions();
     $event->uitpas_number = self::UITPAS_NUMBER;
 
     $points = $cf->uitpas()->checkinPassholder($event);
