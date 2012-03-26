@@ -497,8 +497,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function getPassholderForChipNumber($chip_number, $service_consumer_counter) {
     $data = array(
-      'chipNummer' => $chip_number,
-      'balieServiceConsumer' => $service_consumer_counter,
+      'chipNumber' => $chip_number,
+      'balieConsumerKey' => $service_consumer_counter,
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasNumber', $data);
@@ -510,7 +510,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $xml->xpath_str('/uitpasRestResponse/message');
+    return $xml->xpath_str('/response/uitpasNumber');
   }
 
   /**
