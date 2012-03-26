@@ -39,7 +39,7 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
     $price = new CultureFeed_Uitpas_Passholder_UitpasPrice();
     $price->id = $object->xpath_str('id');
     $price->reason = $object->xpath_str('reason');
-    $price->kansenStatuut = $object->xpath_bool('kansenStatuut');
+    $price->kansenStatuut = $object->xpath_bool('kansenstatuut');
     $price->price = $object->xpath_float('price');
 
     return $price;

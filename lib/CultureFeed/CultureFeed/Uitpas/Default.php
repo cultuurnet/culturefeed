@@ -99,8 +99,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * Get the price of the UitPas.
    */
-  public function getPrice() {
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasPrice', array());
+  public function getPrice($consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
+
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasPrice', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -652,8 +656,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $pos = array();
-    $objects = $xml->xpath('/balieRestResponse/balies/balie');
-    $total = $xml->xpath_int('/balieRestResponse/total');
+    $objects = $xml->xpath('/response/balies/balie');
+    $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
       $pos[] = CultureFeed_Uitpas_Counter::createFromXML($object);

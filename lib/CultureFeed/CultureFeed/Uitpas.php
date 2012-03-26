@@ -5,7 +5,7 @@
  */
 interface CultureFeed_Uitpas {
 
-  const CONSUMER_REQUEST = 'ConsumeRequestr';
+  const CONSUMER_REQUEST = 'ConsumerRequest';
   const USER_ACCESS_TOKEN = 'UserAccessToken';
 
   /**
@@ -34,7 +34,7 @@ interface CultureFeed_Uitpas {
   /**
    * Get the price of the UitPas.
    */
-  public function getPrice();
+  public function getPrice($consumer_key_counter);
 
   /**
    * Create a new UitPas passholder.
