@@ -395,7 +395,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotion = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml->xpath('/promotion', false));
+    $promotion = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($xml->xpath('/promotionTO', false));
     return $promotion;
   }
 
