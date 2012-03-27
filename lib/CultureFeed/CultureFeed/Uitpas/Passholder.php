@@ -39,7 +39,8 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    *
    * @var string
    */
-  public $inszNumberHash;
+  //public $inszNumberHash;
+  public $inszNumber;
 
   /**
    * The date of birth of the passholder. (Required)
@@ -96,6 +97,13 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $telephone;
+  
+  /**
+   * The GSM number of the passholder.
+   *
+   * @var string
+   */
+  public $gsm;
 
   /**
    * The nationality of the passholder.
@@ -187,14 +195,16 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var integer
    */
   public $points;
+  
+  public $balieConsumerKey;
 
-  protected function manipulatePostData($data) {
+  protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
-      $data['dateOfBirth'] = date('c', $data['dateOfBirth']);
+      $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
     }
 
     if (isset($data['kansenStatuutEndDate'])) {
-      $data['kansenStatuutEndDate'] = date('c', $data['kansenStatuutEndDate']);
+      $data['kansenStatuutEndDate'] = date('Y-m-d', $data['kansenStatuutEndDate']);
     }
 
     if (isset($data['inszNumberHash'])) {

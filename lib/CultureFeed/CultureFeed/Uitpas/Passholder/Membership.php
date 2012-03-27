@@ -7,7 +7,7 @@ class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueO
    *
    * @var string
    */
-  public $association;
+  public $associationId;
 
   /**
    * The membership's organization end date. (Required)
@@ -15,10 +15,14 @@ class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueO
    * @var integer
    */
   public $endDate;
+  
+  public $uid;
+  
+  public $balieConsumerKey;
 
   protected function manipulatePostData(&$data) {
     if (isset($data['endDate'])) {
-      $data['endDate'] = date('c', $data['endDate']);
+      $data['endDate'] = date('Y-m-d', $data['endDate']);
     }
   }
 
