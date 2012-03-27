@@ -141,7 +141,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $xml->xpath_str('response/message');
+    return $xml->xpath_str('/response/message');
   }
 
   /**
