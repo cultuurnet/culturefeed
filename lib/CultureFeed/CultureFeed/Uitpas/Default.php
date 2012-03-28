@@ -49,7 +49,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $associations = array();
-    $objects = $xml->xpath('/response/associations/assocation');
+    $objects = $xml->xpath('/response/associations/association');
     $total = count($objects);
 
     foreach ($objects as $object) {
