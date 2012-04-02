@@ -117,6 +117,8 @@ interface CultureFeed_Uitpas {
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query);
 
+  public function getCashedInPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions $query);
+
   /**
    * Cash in promotion points for a UitPas.
    *

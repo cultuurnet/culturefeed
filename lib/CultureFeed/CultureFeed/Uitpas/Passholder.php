@@ -180,7 +180,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    *
    * @var array
    */
-  public $memberships;
+  public $memberships = array();
 
   /**
    * The consumer key of the counter where the passholder has been registered
@@ -239,6 +239,11 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     //$passholder->memberships = $object->xpath_bool('memberships');
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
+    $passholder->uitpasNumber = $object->xpath_str('currentCard/uitpasNumber/uitpasNumber');
+    
+    foreach ($object->xpath('memberships') as $membership) {
+      $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
+    } 
 
     return $passholder;
   }

@@ -246,10 +246,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $data = $query->toPostData();
 
     if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
-      $result = $this->oauth_client->consumerPostAsXml('uitpas/passholder/search', $data);
+      $result = $this->oauth_client->consumerGetAsXml('uitpas/passholder/search', $data);
     }
     else {
-      $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/search', $data);
+      $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/search', $data);
     }
 
     try {
@@ -260,8 +260,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $passholders = array();
-    $objects = $xml->xpath('/passholders/passholder');
-    $total = $xml->xpath_int('/passholders/total');
+    $objects = $xml->xpath('/response/passholders/passholder');
+    $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
       $passholders[] = CultureFeed_Uitpas_Passholder::createFromXML($object);
@@ -368,6 +368,28 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     foreach ($objects as $object) {
       $promotions[] = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $promotions);
+  }
+  
+  public function getCashedInPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions $query) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $query->uitpasNumber . '/cashedPointsPromotions', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotions = array();
+    $objects = $xml->xpath('/response/cashedPromotions/cachedPromotion');
+    $total = $xml->xpath_int('/response/total');
+
+    foreach ($objects as $object) {
+      $promotions[] = CultureFeed_Uitpas_Passholder_CashedInPointsPromotion::createFromXML($object);
     }
 
     return new CultureFeed_ResultSet($total, $promotions);
@@ -703,7 +725,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $total = count($objects);
 
     foreach ($objects as $object) {
-      $counters[] = CultureFeed_Uitpas_Counter::createFromXML($object);
+      $counters[] = CultureFeed_Uitpas_Counter_Employee::createFromXML($object);
     }
 
     return new CultureFeed_ResultSet($total, $counters);

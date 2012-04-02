@@ -29,6 +29,13 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
    * @var bool
    */
   public $role;
+  
+  /**
+   * The permissions of the member in the counter
+   *
+   * @var array
+   */
+  public $permissions = array();
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $counter = new CultureFeed_Uitpas_Counter_Employee();
@@ -36,6 +43,10 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
     $counter->consumerKey = $object->xpath_str('consumerKey');
     $counter->name = $object->xpath_str('name');
     $counter->role = $object->xpath_str('role');
+    
+    foreach ($object->xpath('permissions') as $permission) {
+      $counter->permissions[] = $permission->xpath_str('permission');
+    }
 
     return $counter;
   }

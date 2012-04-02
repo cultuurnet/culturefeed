@@ -153,15 +153,15 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
 
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
-      $data['dob'] = date('c', $data['dob']);
+      $data['dob'] = date('Y-m-d', $data['dob']);
     }
 
     if (isset($data['dobMin'])) {
-      $data['dobMin'] = date('c', $data['dobMin']);
+      $data['dobMin'] = date('Y-m-d', $data['dobMin']);
     }
 
     if (isset($data['dobMax'])) {
-      $data['dobMax'] = date('c', $data['dobMax']);
+      $data['dobMax'] = date('Y-m-d', $data['dobMax']);
     }
 
   }

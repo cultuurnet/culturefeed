@@ -7,7 +7,7 @@ class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueO
    *
    * @var string
    */
-  public $associationId;
+  public $association;
 
   /**
    * The membership's organization end date. (Required)
@@ -16,14 +16,12 @@ class CultureFeed_Uitpas_Passholder_Membership extends CultureFeed_Uitpas_ValueO
    */
   public $endDate;
   
-  public $uid;
-  
-  public $balieConsumerKey;
+  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+    $membership = new CultureFeed_Uitpas_Passholder_Membership();
+    $membership->association = $object->xpath_str('association');
+    $membership->endDate = $object->xpath_time('endDate');
 
-  protected function manipulatePostData(&$data) {
-    if (isset($data['endDate'])) {
-      $data['endDate'] = date('Y-m-d', $data['endDate']);
-    }
+    return $membership;
   }
 
 }
