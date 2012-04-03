@@ -434,7 +434,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       'balieConsumerKey' => $consumer_key_counter,
     );
 
-    $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $id . '/uploadPicture', TRUE, TRUE);
+    $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $id . '/uploadPicture', $data, TRUE, TRUE);
   }
 
   /**
@@ -478,7 +478,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/uitpasRestResponse', false));
+    $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
     return $response;
   }
 
@@ -606,7 +606,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   public function searchCheckins(CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query) {
     $data = $query->toPostData();
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchCheckins', $data);
-
+    
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -699,6 +699,42 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     );
 
     $this->oauth_client->authenticatedPost('uitpas/balie/member', $data);
+  }
+  
+  public function removeMemberFromCounter($uid, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+      'uid' => $uid,
+    );
+
+    $this->oauth_client->authenticatedPost('uitpas/balie/removeMember', $data);
+  }
+  
+  public function getMembersForCounter($balieConsumerKey) {
+    $data = array(
+      'balieConsumerKey' => $balieConsumerKey,
+    );
+    
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/listEmployees', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $data = array();
+    
+    foreach ($xml->xpath('/response/admins/admin') as $object) {
+      $data['admins'][] = CultureFeed_Uitpas_Counter_Member::createFromXML($object);
+    }
+    
+    foreach ($xml->xpath('/response/members/member') as $object) {
+      $data['members'][] = CultureFeed_Uitpas_Counter_Member::createFromXML($object);
+    }
+    
+    return $data;
   }
 
   /**

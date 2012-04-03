@@ -222,6 +222,10 @@ interface CultureFeed_Uitpas {
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
   public function addMemberToCounter($uid, $consumer_key_counter);
+  
+  public function removeMemberFromCounter($uid, $consumer_key_counter);
+  
+  public function getMembersForCounter($balieConsumerKey);
 
   /**
    * Search for counters for a given member
