@@ -710,6 +710,31 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $this->oauth_client->authenticatedPost('uitpas/balie/removeMember', $data);
   }
   
+  public function getCardCounters($consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
+
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/countCards', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $counters = array();
+    $objects = $xml->xpath('/response/counters/counter');
+
+    foreach ($objects as $object) {
+      $counters[] = CultureFeed_Uitpas_Counter_CardCounter::createFromXML($object);
+    }
+
+    return $counters;
+ 
+  }
+  
   public function getMembersForCounter($balieConsumerKey) {
     $data = array(
       'balieConsumerKey' => $balieConsumerKey,

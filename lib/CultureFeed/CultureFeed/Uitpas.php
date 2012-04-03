@@ -226,6 +226,8 @@ interface CultureFeed_Uitpas {
   public function removeMemberFromCounter($uid, $consumer_key_counter);
   
   public function getMembersForCounter($balieConsumerKey);
+  
+  public function getCardCounters($consumer_key_counter);
 
   /**
    * Search for counters for a given member
