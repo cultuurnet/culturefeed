@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<promotion>
+<promotionTO>
     <balies>
+      <balie>
+        <id>1</id>
         <name>De Werf</name>
+      </balie>
     </balies>
     <cashedIn>true</cashedIn>
     <id>3</id>
     <points>0</points>
     <title>Gratis broodje</title>
-</promotion>
+</promotionTO>

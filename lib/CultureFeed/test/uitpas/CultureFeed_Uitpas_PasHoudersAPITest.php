@@ -12,24 +12,34 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
   public function testGetPrice() {
     $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+    
+    $prices_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/prices.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('consumerGet')
-             ->will($this->returnValue(self::PRICE));
+             ->method('authenticatedGetAsXml')
+             ->will($this->returnValue($prices_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $price = $cf->uitpas()->getPrice();
+    $prices = $cf->uitpas()->getPrice(self::CONSUMER_KEY_COUNTER);
+    
+    $this->assertEquals(2, count($prices->objects));
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_UitpasPrice', $prices->objects);
 
-    $this->assertEquals(self::PRICE, $price);
+    $this->assertEquals(3, $prices->objects[0]->id);
+    $this->assertEquals("LOSS_THEFT", $prices->objects[0]->reason);
+    $this->assertEquals(FALSE, $prices->objects[0]->kansenStatuut);
+    $this->assertEquals(20.5, $prices->objects[0]->price);
   }
 
   public function testCreatePassholder() {
     $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+    
+    $create_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/create.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('consumerPost')
-             ->will($this->returnValue(self::UID));
+             ->method('authenticatedPostAsXml')
+             ->will($this->returnValue($create_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
 
@@ -53,12 +63,14 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $advantages_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/advantages.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('consumerGetAsXML')
+             ->method('authenticatedGetAsXml')
              ->will($this->returnValue($advantages_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder(self::UITPAS_NUMBER);
+    $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
+    $query->uitpasNumber = self::UITPAS_NUMBER;
+    $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
 
     $this->assertEquals(2, $result->total);
 
@@ -85,7 +97,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $checkin_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/checkin.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('consumerPostAsXml')
+             ->method('authenticatedPostAsXml')
              ->will($this->returnValue($checkin_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
@@ -104,7 +116,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $promotion_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/promotion.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('consumerPostAsXml')
+             ->method('authenticatedPostAsXml')
              ->will($this->returnValue($promotion_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
@@ -141,7 +153,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
     $this->assertInternalType('array', $promotions);
     $this->assertEquals(2, count($promotions));
-    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_Promotion', $promotions);
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_PointsPromotion', $promotions);
 
     // If the mapping of 1 object is correct, all objects are correctly mapped
     $this->assertEquals(7, $promotions[0]->id);
@@ -151,7 +163,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1323945210, $promotions[0]->creationDate);
     $this->assertEquals(1262304000, $promotions[0]->cashingPeriodBegin);
     $this->assertEquals(1451606399, $promotions[0]->cashingPeriodEnd);
-    $this->assertEquals(array('Aalst', 'Erpe_Mere', 'Haaltert'), $promotions[0]->validCities);
+    $this->assertEquals(array('Aalst', 'Erpe_Mere', 'Haaltert'), $promotions[0]->validForCities);
     $this->assertEquals(2, $promotions[0]->maxAvailableUnits);
     $this->assertEquals(2, $promotions[0]->unitsTaken);
 
@@ -173,12 +185,12 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $promotion = $cf->uitpas()->cashInPromotionPoints(self::UITPAS_NUMBER, self::CONSUMER_KEY_COUNTER, self::WELCOME_ADVANTAGE_ID);
+    $promotion = $cf->uitpas()->cashInPromotionPoints(self::UITPAS_NUMBER, self::WELCOME_ADVANTAGE_ID, self::CONSUMER_KEY_COUNTER);
     $this->assertEquals(3, $promotion->id);
     $this->assertEquals('Gratis broodje', $promotion->title);
     $this->assertEquals(0, $promotion->points);
     $this->assertEquals(true, $promotion->cashedIn);
-    $this->assertEquals("De Werf", $promotion->counters[0]);
+    $this->assertEquals("De Werf", $promotion->counters[0]->name);
   }
 
   public function testBlockUitpas() {
@@ -217,13 +229,13 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
     $this->assertInternalType('array', $promotions);
     $this->assertEquals(2, count($promotions));
-    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_Promotion', $promotions);
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_WelcomeAdvantage', $promotions);
 
     $this->assertEquals(8, $promotions[0]->id);
     $this->assertEquals(0, $promotions[0]->points);
     $this->assertEquals("Gratis deelname Zumba", $promotions[0]->title);
     $this->assertEquals(1326180281, $promotions[0]->creationDate);
-    $this->assertEquals(array('Aalst'), $promotions[0]->validCities);
+    $this->assertEquals(array('Aalst'), $promotions[0]->validForCities);
     $this->assertEquals(0, $promotions[0]->unitsTaken);
   }
 

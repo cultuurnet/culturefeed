@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<uitpasRestResponse>
-    <message>0930011111208</message>
-</uitpasRestResponse>
+<response>
+    <uitpasNumber>0930011111208</uitpasNumber>
+</response>
