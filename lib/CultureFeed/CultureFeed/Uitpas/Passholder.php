@@ -227,6 +227,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->postalCode = $object->xpath_str('postalCode');
     $passholder->city = $object->xpath_str('city');
     $passholder->telephone = $object->xpath_str('telephone');
+    $passholder->gsm = $object->xpath_str('gsm');
     $passholder->nationality = $object->xpath_str('nationality');
     $passholder->placeOfBirth = $object->xpath_str('placeOfBirth');
     $passholder->price = $object->xpath_float('price');
