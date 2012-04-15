@@ -57,7 +57,7 @@ class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uit
    *
    * @var string
    */
-  public $sortField = self::SORT_CREATION_DATE;
+  public $sortField;
 
   /**
    * Sort direction

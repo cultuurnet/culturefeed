@@ -215,6 +215,8 @@ interface CultureFeed_Uitpas {
    */
   public function searchPointOfSales(CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
+  public function searchCounters(CultureFeed_Uitpas_Counter_Query_SearchCounterOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
+
   /**
    * Add a member to a counter.
    *

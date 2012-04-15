@@ -651,6 +651,34 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $events);
   }
+  
+  public function searchCounters(CultureFeed_Uitpas_Counter_Query_SearchCounterOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
+    $data = $query->toPostData();
+
+    if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
+      $result = $this->oauth_client->consumerGetAsXml('uitpas/balie/pos', $data);
+    }
+    else {
+      $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/pos', $data);
+    }
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $counters = array();
+    $objects = $xml->xpath('/response/balies/balie');
+    $total = $xml->xpath_int('/response/total');
+
+    foreach ($objects as $object) {
+      $counters[] = CultureFeed_Uitpas_Counter::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $counters);
+  }
 
   /**
    * Search for point of sales
