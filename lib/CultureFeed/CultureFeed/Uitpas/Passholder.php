@@ -201,6 +201,8 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $schoolConsumerKey;
   
   public $balieConsumerKey;
+  
+  public $picture;
 
   protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
@@ -247,6 +249,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->uitpasNumber = $object->xpath_str('currentCard/uitpasNumber/uitpasNumber');
     $passholder->moreInfo = $object->xpath_str('moreInfo');
     $passholder->schoolConsumerKey = $object->xpath_str('schoolConsumerKey');
+    $passholder->picture = $object->xpath_str('picture');
     
     foreach ($object->xpath('memberships') as $membership) {
       $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
