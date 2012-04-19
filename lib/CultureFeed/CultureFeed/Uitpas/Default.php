@@ -656,10 +656,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $data = $query->toPostData();
 
     if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
-      $result = $this->oauth_client->consumerGetAsXml('uitpas/balie/pos', $data);
+      $result = $this->oauth_client->consumerGetAsXml('uitpas/balie/search', $data);
     }
     else {
-      $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/pos', $data);
+      $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/search', $data);
     }
 
     try {

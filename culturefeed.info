@@ -37,6 +37,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Employee.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Member.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/CardCounter.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchPointsOfSaleOptions.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchCounterOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Promotion/Query/WelcomeAdvantagesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder.php

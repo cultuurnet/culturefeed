@@ -196,6 +196,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    */
   public $points;
   
+  public $moreInfo;
+  
+  public $schoolConsumerKey;
+  
   public $balieConsumerKey;
 
   protected function manipulatePostData(&$data) {
@@ -241,6 +245,8 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
     $passholder->uitpasNumber = $object->xpath_str('currentCard/uitpasNumber/uitpasNumber');
+    $passholder->moreInfo = $object->xpath_str('moreInfo');
+    $passholder->schoolConsumerKey = $object->xpath_str('schoolConsumerKey');
     
     foreach ($object->xpath('memberships') as $membership) {
       $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);

@@ -57,5 +57,11 @@ class CultureFeed_Uitpas_Counter_Query_SearchCounterOptions extends CultureFeed_
    * @var integer
    */
   public $max;
+  
+  protected function manipulatePostData(&$data) {
+    if (isset($data['school'])) {
+      $data['school'] = ($data['school'] ? "true" : "false");
+    }
+  }
 
 }
