@@ -237,5 +237,11 @@ interface CultureFeed_Uitpas {
    * @param string $uid The Culturefeed user ID
    */
   public function searchCountersForMember($uid);
+  
+  public function getDevices($consumer_key_counter);
+  
+  public function getEventsForDevice($consumer_key_device, $consumer_key_counter);
+  
+  public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter);
 
 }

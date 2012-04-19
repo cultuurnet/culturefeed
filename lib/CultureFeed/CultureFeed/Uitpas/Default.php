@@ -819,5 +819,64 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $counters);
   }
+  
+  public function getDevices($consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
 
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/list', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $devices = array();
+    $objects = $xml->xpath('/response/cids/cid');
+
+    foreach ($objects as $object) {
+      $devices[] = CultureFeed_Uitpas_Counter_Device::createFromXML($object);
+    }
+
+    return $devices;
+  }
+
+  public function getEventsForDevice($consumer_key_device, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+    );
+
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/' . $consumer_key_device, $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
+  }
+  
+  public function connectDeviceWithEvent($consumer_key_device, $cdbid, $consumer_key_counter) {
+    $data = array(
+      'balieConsumerKey' => $consumer_key_counter,
+      'cdbid' => $cdbid,
+      'cidConsumerKey' => $consumer_key_device,
+    );
+    
+    $result = $this->oauth_client->authenticatedPostAsXml('uitpas/cid/connect', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
+  }
 }
