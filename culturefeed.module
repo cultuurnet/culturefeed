@@ -121,3 +121,21 @@ function culturefeed_form_system_performance_settings_alter(&$form, $form_state)
     '#default_value' => variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED),
   );
 }
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function culturefeed_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_views_api() {
+  return array(
+      'api' => 3,
+  );
+}

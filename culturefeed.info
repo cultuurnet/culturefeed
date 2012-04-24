@@ -68,4 +68,5 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Calendar/Period.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Calendar/Timestamp.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/ValueObject.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
+files[] = views/handlers/culturefeed_handler_argument_cnapi_cityregion.inc
 configure = admin/config/services/culturefeed
