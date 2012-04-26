@@ -242,6 +242,42 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Gets the preferences of a user.
+   *
+   * @param string $uid
+   *
+   * @return CultureFeed_Preferences
+   */
+  public function getUserPreferences($uid) {
+    $path = "user/{$uid}/preferences";
+
+    $result = $this->oauth_client->authenticatedGetAsXml($path);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $preferences = new CultureFeed_Preferences();
+
+    $preferences->uid = $xml->xpath_str('/preferences/uid');
+
+    $objects = $xml->xpath('/preferences/activityPrivacyPreferences/activityPrivacyPreference');
+
+    foreach ($objects as $object) {
+      $privacyPreference = new CultureFeed_ActivityPrivacyPreference();
+      $privacyPreference->activityType = $object->xpath_int('activityType');
+      $privacyPreference->private = $object->xpath_bool('private');
+
+      $preferences->activityPrivacyPreferences[$privacyPreference->activityType] = $privacyPreference;
+    }
+
+    return $preferences;
+  }
+
+  /**
    * Update an existing user.
    *
    * The object should be initialized with the consumer token and user access token of the user who is acted upon.
