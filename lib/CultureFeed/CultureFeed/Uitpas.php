@@ -169,6 +169,14 @@ interface CultureFeed_Uitpas {
   public function getPassholderForChipNumber($chip_number, $service_consumer_counter);
 
   /**
+   * Get the activitation link for a passholder which is not activated online yet.
+   *
+   * @param string $uitpas_number
+   * @param DateTime $date_of_birth
+   */
+  public function getPassholderActivitationLink($uitpas_number, DateTime $date_of_birth);
+
+  /**
    * Register a ticket sale for a passholder
    *
    * @param string $uitpas_number The UitPas number
@@ -224,11 +232,11 @@ interface CultureFeed_Uitpas {
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
   public function addMemberToCounter($uid, $consumer_key_counter);
-  
+
   public function removeMemberFromCounter($uid, $consumer_key_counter);
-  
+
   public function getMembersForCounter($balieConsumerKey);
-  
+
   public function getCardCounters($consumer_key_counter);
 
   /**
@@ -237,11 +245,11 @@ interface CultureFeed_Uitpas {
    * @param string $uid The Culturefeed user ID
    */
   public function searchCountersForMember($uid);
-  
+
   public function getDevices($consumer_key_counter);
-  
+
   public function getEventsForDevice($consumer_key_device, $consumer_key_counter);
-  
+
   public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter);
 
 }
