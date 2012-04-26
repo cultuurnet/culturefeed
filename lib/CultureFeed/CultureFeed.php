@@ -253,6 +253,10 @@ class CultureFeed implements ICultureFeed {
 
     $result = $this->oauth_client->authenticatedGetAsXml($path);
 
+    return $this->parsePreferences($result);
+  }
+
+  protected function parsePreferences($result) {
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -275,6 +279,29 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $preferences;
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see ICultureFeed::setUserPreferences()
+   */
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
+    $path = "user/{$uid}/preferences";
+
+    $params = array();
+
+    $activityPrivacyPreferences = array();
+
+    foreach ($preferences->activityPrivacyPreferences as $preference) {
+      $bool_as_string = $preference->private ? 'true' : 'false';
+      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
+    }
+
+    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
+
+    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
+
+    return $this->parsePreferences($result);
   }
 
   /**

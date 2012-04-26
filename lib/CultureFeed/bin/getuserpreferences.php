@@ -64,6 +64,26 @@ try {
 
   print "You have succesfully logged in with the following account: {$account->nick} [{$account->id}]" . PHP_EOL;
 
+  print "Setting user preferences" . PHP_EOL;
+
+  $preferences = new CultureFeed_Preferences();
+  $preferences->activityPrivacyPreferences[] = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, FALSE);
+
+  $preferences = $new_user_c->setUserPreferences($account->id, $preferences);
+
+  if (count($preferences->activityPrivacyPreferences) == 0) {
+    print "No user preferences found" . PHP_EOL;
+  }
+  else {
+    print "User preferences:" . PHP_EOL;
+    foreach ($preferences->activityPrivacyPreferences as $preference) {
+      $private = $preference->private ? "private" : "public";
+      print "{$preference->activityType}: {$private}" . PHP_EOL;
+    }
+  }
+
+  print "Getting user preferences" . PHP_EOL;
+
   $preferences = $new_user_c->getUserPreferences($account->id);
 
   if (count($preferences->activityPrivacyPreferences) == 0) {
@@ -73,7 +93,7 @@ try {
     print "User preferences:" . PHP_EOL;
     foreach ($preferences->activityPrivacyPreferences as $preference) {
       $private = $preference->private ? "private" : "public";
-      print "{$preference->activityType}: {$private}";
+      print "{$preference->activityType}: {$private}" . PHP_EOL;
     }
   }
 }

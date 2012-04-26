@@ -16,6 +16,8 @@ interface ICultureFeed {
 
   public function getUserPreferences($uid);
 
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences);
+
   public function updateUser(CultureFeed_User $user, $fields = array());
 
   public function deleteUser($id);

@@ -86,6 +86,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getUserPreferences($uid);
   }
 
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
+    return $this->realCultureFeed->setUserPreferences($uid, $preferences);
+  }
+
   public function updateUser(CultureFeed_User $user, $fields = array()) {
     $this->realCultureFeed->updateUser($user, $fields);
   }

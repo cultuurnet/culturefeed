@@ -65,6 +65,14 @@ class CultureFeed_Activity {
    */
   const TYPE_IK_GA = 8;
 
+  const TYPE_TICKET = 9;
+
+  const TYPE_ROUTE = 10;
+
+  const TYPE_MORE_INFO = 11;
+
+  const TYPE_UITPAS = 12;
+
   /**
    * ID of the activity object.
    *
