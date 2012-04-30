@@ -30,11 +30,19 @@ try {
   $consumer_secret = $_SERVER['argv'][3];
   $promotion_id = $_SERVER['argv'][4];
 
+  if ($_SERVER['argv'][5]) {
+    $passholder_param = new CultureFeed_Uitpas_Promotion_PassholderParameter();
+    $passholder_param->uitpasNumber = $_SERVER['argv'][5];
+  }
+  else {
+    $passholder_param = NULL;
+  }
+
   $oc = new CultureFeed_DefaultOAuthClient($consumer_key, $consumer_secret);
   $oc->setEndpoint($endpoint);
   $c = new CultureFeed($oc);
 
-  $promotion = $c->uitpas()->getPointsPromotion($promotion_id);
+  $promotion = $c->uitpas()->getPointsPromotion($promotion_id, $passholder_param);
 
   print_r($promotion);
 }
