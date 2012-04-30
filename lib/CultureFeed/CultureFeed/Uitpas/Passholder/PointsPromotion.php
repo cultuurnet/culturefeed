@@ -107,10 +107,11 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
     $promotion->cashingPeriodEnd = $object->xpath_time('cashingPeriodEnd');
     $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
-    $promotion->validForCities = $object->xpath_str('validForCities/city', true);
+    $promotion->validForCities = $object->xpath_str('validForCities/city', TRUE);
     $promotion->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $promotion->unitsTaken = $object->xpath_int('unitsTaken');
     $promotion->cashInState = $object->xpath_str('cashInState');
+    $promotion->periodConstraint = CultureFeed_Uitpas_Passholder_PeriodConstraint::createFromXml($object->xpath('periodConstraint', FALSE));
 
     return $promotion;
   }
