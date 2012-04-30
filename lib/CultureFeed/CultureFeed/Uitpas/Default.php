@@ -931,4 +931,21 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
   }
+
+  public function getWelcomeAdvantage($id) {
+    $path = 'uitpas/promotion/welcomeAdvantage/' . $id;
+
+    $result = $this->oauth_client->consumerGetAsXml($path);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $advantage = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml);
+
+    return $advantage;
+  }
 }
