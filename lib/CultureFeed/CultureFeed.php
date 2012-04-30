@@ -167,7 +167,7 @@ class CultureFeed implements ICultureFeed {
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE) {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
@@ -176,6 +176,10 @@ class CultureFeed implements ICultureFeed {
 
     if (!empty($type)) {
       $query['type'] = $type;
+    }
+
+    if ($skip_confirmation) {
+      $query['skip_confirmation'] = 'true';
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);

@@ -538,8 +538,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param string $uitpas_number
    * @param DateTime $date_of_birth
+   * @param mixed $destination_callback
    */
-  public function getPassholderActivitationLink($uitpas_number, DateTime $date_of_birth) {
+  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL) {
     $path = "uitpas/passholder/{$uitpas_number}/activation";
 
     $params = array(
@@ -555,7 +556,33 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $xml->xpath_str('/response/activationLink');
+    $link = $xml->xpath_str('/response/activationLink');
+
+    $query = array();
+
+    if ($destination_callback) {
+      $query['destination'] = call_user_func($destination_callback);
+    }
+
+    if (!empty($query)) {
+      $link .= '?' . http_build_query($query);
+    }
+
+    return $link;
+  }
+
+  public function getPassholderActivationLinkChainedWithAuthorization($uitpas_number, DateTime $date_of_birth, $callback_url) {
+    $c = $this->culturefeed;
+
+    $link = $this->getPassholderActivationLink($uitpas_number, $date_of_birth, function () use ($c, $callback_url) {
+      $token = $c->getRequestToken($callback_url);
+
+      $auth_url = $c->getUrlAuthorize($token, $callback_url, CultureFeed::AUTHORIZE_TYPE_REGULAR, TRUE);
+
+      return $auth_url;
+    });
+
+    return $link;
   }
 
   /**

@@ -30,13 +30,17 @@ try {
   $consumer_key = $_SERVER['argv'][2];
   $consumer_secret = $_SERVER['argv'][3];
   $uitpas_number = $_SERVER['argv'][4];
+  $auth_callback_url = 'http://example.com';
+
   $date_of_birth = DateTime::createFromFormat('Y-m-d', $_SERVER['argv'][5]);
 
   $oc = new CultureFeed_DefaultOAuthClient($consumer_key, $consumer_secret);
   $oc->setEndpoint($endpoint);
   $c = new CultureFeed($oc);
 
-  print $c->uitpas()->getPassholderActivitationLink($uitpas_number, $date_of_birth);
+  $link = $c->uitpas()->getPassholderActivationLinkChainedWithAuthorization($uitpas_number, $date_of_birth, $auth_callback_url);
+
+  print $link . PHP_EOL;
 }
 catch (Exception $e) {
   $eol = PHP_EOL;
