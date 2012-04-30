@@ -44,8 +44,8 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
     $counter->name = $object->xpath_str('name');
     $counter->role = $object->xpath_str('role');
     
-    foreach ($object->xpath('permissions') as $permission) {
-      $counter->permissions[] = $permission->xpath_str('permission');
+    foreach ($object->xpath('permissions/permission') as $permission) {
+      $counter->permissions[] = (string) $permission;
     }
 
     return $counter;
