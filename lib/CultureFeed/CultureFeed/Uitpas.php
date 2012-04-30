@@ -264,4 +264,6 @@ interface CultureFeed_Uitpas {
   public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter);
 
   public function getWelcomeAdvantage($id);
+
+  public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL);
 }

@@ -948,4 +948,27 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return $advantage;
   }
+
+  public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL) {
+    $path = 'uitpas/promotion/pointsPromotion/' . $id;
+
+    $params = array();
+
+    if ($passholder) {
+      $params += $passholder->params();
+    }
+
+    $result = $this->oauth_client->consumerGetAsXml($path, $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotion = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($xml);
+
+    return $promotion;
+  }
 }
