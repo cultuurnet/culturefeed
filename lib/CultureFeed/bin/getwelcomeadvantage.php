@@ -3,14 +3,13 @@
 /**
  * @file
  *
- * CLI script to get activation links
+ * CLI script to get a welcome advantage
  *
  * Expected CLI arguments:
  * - endpoint URL
  * - consumer key
  * - consumer secret
- * - uitpas number
- * - date of birth, formatted yyyy-mm-dd
+ * - welcome advantage ID
  */
 
 date_default_timezone_set('Europe/Brussels');
@@ -29,18 +28,15 @@ try {
   $endpoint = $_SERVER['argv'][1];
   $consumer_key = $_SERVER['argv'][2];
   $consumer_secret = $_SERVER['argv'][3];
-  $uitpas_number = $_SERVER['argv'][4];
-  $auth_callback_url = 'http://example.com';
-
-  $date_of_birth = DateTime::createFromFormat('Y-m-d', $_SERVER['argv'][5]);
+  $advantage_id = $_SERVER['argv'][4];
 
   $oc = new CultureFeed_DefaultOAuthClient($consumer_key, $consumer_secret);
   $oc->setEndpoint($endpoint);
   $c = new CultureFeed($oc);
 
-  $link = $c->uitpas()->getPassholderActivationLinkChainedWithAuthorization($uitpas_number, $date_of_birth, $auth_callback_url);
+  $advantage = $c->uitpas()->getWelcomeAdvantage($advantage_id);
 
-  print $link . PHP_EOL;
+  print_r($advantage);
 }
 catch (Exception $e) {
   $eol = PHP_EOL;

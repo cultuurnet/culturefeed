@@ -173,8 +173,19 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uitpas_number
    * @param DateTime $date_of_birth
+   * @param mixed $destination_callback
    */
-  public function getPassholderActivitationLink($uitpas_number, DateTime $date_of_birth);
+  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL);
+
+  /**
+   * Get the activitation link for a passholder which is not activated online yet,
+   * chained with an authorization.
+   *
+   * @param string $uitpas_number
+   * @param DateTime $date_of_birth
+   * @param string $callback_url
+   */
+  public function getPassholderActivationLinkChainedWithAuthorization($uitpas_number, DateTime $date_of_birth, $callback_url);
 
   /**
    * Register a ticket sale for a passholder
@@ -252,4 +263,7 @@ interface CultureFeed_Uitpas {
 
   public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter);
 
+  public function getWelcomeAdvantage($id);
+
+  public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL);
 }

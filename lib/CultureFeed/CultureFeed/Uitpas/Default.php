@@ -538,8 +538,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param string $uitpas_number
    * @param DateTime $date_of_birth
+   * @param mixed $destination_callback
    */
-  public function getPassholderActivitationLink($uitpas_number, DateTime $date_of_birth) {
+  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL) {
     $path = "uitpas/passholder/{$uitpas_number}/activation";
 
     $params = array(
@@ -555,7 +556,33 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $xml->xpath_str('/response/activationLink');
+    $link = $xml->xpath_str('/response/activationLink');
+
+    $query = array();
+
+    if ($destination_callback) {
+      $query['destination'] = call_user_func($destination_callback);
+    }
+
+    if (!empty($query)) {
+      $link .= '?' . http_build_query($query);
+    }
+
+    return $link;
+  }
+
+  public function getPassholderActivationLinkChainedWithAuthorization($uitpas_number, DateTime $date_of_birth, $callback_url) {
+    $c = $this->culturefeed;
+
+    $link = $this->getPassholderActivationLink($uitpas_number, $date_of_birth, function () use ($c, $callback_url) {
+      $token = $c->getRequestToken($callback_url);
+
+      $auth_url = $c->getUrlAuthorize($token, $callback_url, CultureFeed::AUTHORIZE_TYPE_REGULAR, TRUE);
+
+      return $auth_url;
+    });
+
+    return $link;
   }
 
   /**
@@ -903,5 +930,45 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
+  }
+
+  public function getWelcomeAdvantage($id) {
+    $path = 'uitpas/promotion/welcomeAdvantage/' . $id;
+
+    $result = $this->oauth_client->consumerGetAsXml($path);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $advantage = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml);
+
+    return $advantage;
+  }
+
+  public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL) {
+    $path = 'uitpas/promotion/pointsPromotion/' . $id;
+
+    $params = array();
+
+    if ($passholder) {
+      $params += $passholder->params();
+    }
+
+    $result = $this->oauth_client->consumerGetAsXml($path, $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotion = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($xml);
+
+    return $promotion;
   }
 }
