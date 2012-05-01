@@ -239,6 +239,13 @@ class CultureFeed_SearchUsersQuery {
   public $lastLogin;
 
   /**
+   * If the search should include private e-mail adresses or not.
+   *
+   * @var boolean
+   */
+  public $mboxIncludePrivate = false;
+
+  /**
    * Minimum last login time represented as a UNIX timestamp.
    *
    * @var integer
@@ -330,6 +337,10 @@ class CultureFeed_SearchUsersQuery {
     // Represent lastLoginMax as a W3C date.
     if (isset($data['lastLoginMax'])) {
       $data['lastLoginMax'] = date('c', $data['lastLoginMax']);
+    }
+
+    if (isset($data['mboxIncludePrivate'])) {
+      $data['mboxIncludePrivate'] = $data['mboxIncludePrivate'] ? 'true' : 'false';
     }
 
     $data = array_filter($data);

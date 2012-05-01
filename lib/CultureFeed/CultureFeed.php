@@ -167,7 +167,7 @@ class CultureFeed implements ICultureFeed {
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE) {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
@@ -176,6 +176,10 @@ class CultureFeed implements ICultureFeed {
 
     if (!empty($type)) {
       $query['type'] = $type;
+    }
+
+    if ($skip_confirmation) {
+      $query['skip_confirmation'] = 'true';
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);
@@ -239,6 +243,69 @@ class CultureFeed implements ICultureFeed {
     }
 
     throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Gets the preferences of a user.
+   *
+   * @param string $uid
+   *
+   * @return CultureFeed_Preferences
+   */
+  public function getUserPreferences($uid) {
+    $path = "user/{$uid}/preferences";
+
+    $result = $this->oauth_client->authenticatedGetAsXml($path);
+
+    return $this->parsePreferences($result);
+  }
+
+  protected function parsePreferences($result) {
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $preferences = new CultureFeed_Preferences();
+
+    $preferences->uid = $xml->xpath_str('/preferences/uid');
+
+    $objects = $xml->xpath('/preferences/activityPrivacyPreferences/activityPrivacyPreference');
+
+    foreach ($objects as $object) {
+      $privacyPreference = new CultureFeed_ActivityPrivacyPreference();
+      $privacyPreference->activityType = $object->xpath_int('activityType');
+      $privacyPreference->private = $object->xpath_bool('private');
+
+      $preferences->activityPrivacyPreferences[$privacyPreference->activityType] = $privacyPreference;
+    }
+
+    return $preferences;
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see ICultureFeed::setUserPreferences()
+   */
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
+    $path = "user/{$uid}/preferences";
+
+    $params = array();
+
+    $activityPrivacyPreferences = array();
+
+    foreach ($preferences->activityPrivacyPreferences as $preference) {
+      $bool_as_string = $preference->private ? 'true' : 'false';
+      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
+    }
+
+    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
+
+    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
+
+    return $this->parsePreferences($result);
   }
 
   /**

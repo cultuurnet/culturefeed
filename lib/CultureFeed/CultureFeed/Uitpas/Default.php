@@ -372,7 +372,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $promotions);
   }
-  
+
   public function getCashedInPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions $query) {
     $data = $query->toPostData();
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $query->uitpasNumber . '/cashedPointsPromotions', $data);
@@ -534,6 +534,58 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
+   * Get the activitation link for a passholder which is not activated online yet.
+   *
+   * @param string $uitpas_number
+   * @param DateTime $date_of_birth
+   * @param mixed $destination_callback
+   */
+  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL) {
+    $path = "uitpas/passholder/{$uitpas_number}/activation";
+
+    $params = array(
+      'dob' => $date_of_birth->format('Y-m-d'),
+    );
+
+    $result = $this->oauth_client->consumerGetAsXml($path, $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $link = $xml->xpath_str('/response/activationLink');
+
+    $query = array();
+
+    if ($destination_callback) {
+      $query['destination'] = call_user_func($destination_callback);
+    }
+
+    if (!empty($query)) {
+      $link .= '?' . http_build_query($query);
+    }
+
+    return $link;
+  }
+
+  public function getPassholderActivationLinkChainedWithAuthorization($uitpas_number, DateTime $date_of_birth, $callback_url) {
+    $c = $this->culturefeed;
+
+    $link = $this->getPassholderActivationLink($uitpas_number, $date_of_birth, function () use ($c, $callback_url) {
+      $token = $c->getRequestToken($callback_url);
+
+      $auth_url = $c->getUrlAuthorize($token, $callback_url, CultureFeed::AUTHORIZE_TYPE_REGULAR, TRUE);
+
+      return $auth_url;
+    });
+
+    return $link;
+  }
+
+  /**
    * Register a new Uitpas
    *
    * @param CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query The query
@@ -606,7 +658,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   public function searchCheckins(CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query) {
     $data = $query->toPostData();
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchCheckins', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -651,7 +703,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $events);
   }
-  
+
   public function searchCounters(CultureFeed_Uitpas_Counter_Query_SearchCounterOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
     $data = $query->toPostData();
 
@@ -668,7 +720,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $counters = array();
     $objects = $xml->xpath('/response/balies/balie');
     $total = $xml->xpath_int('/response/total');
@@ -728,7 +780,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $this->oauth_client->authenticatedPost('uitpas/balie/member', $data);
   }
-  
+
   public function removeMemberFromCounter($uid, $consumer_key_counter) {
     $data = array(
       'balieConsumerKey' => $consumer_key_counter,
@@ -737,21 +789,21 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $this->oauth_client->authenticatedPost('uitpas/balie/removeMember', $data);
   }
-  
+
   public function getCardCounters($consumer_key_counter) {
     $data = array(
       'balieConsumerKey' => $consumer_key_counter,
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/countCards', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $counters = array();
     $objects = $xml->xpath('/response/counters/counter');
 
@@ -760,33 +812,33 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return $counters;
- 
+
   }
-  
+
   public function getMembersForCounter($balieConsumerKey) {
     $data = array(
       'balieConsumerKey' => $balieConsumerKey,
     );
-    
+
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/listEmployees', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $data = array();
-    
+
     foreach ($xml->xpath('/response/admins/admin') as $object) {
       $data['admins'][] = CultureFeed_Uitpas_Counter_Member::createFromXML($object);
     }
-    
+
     foreach ($xml->xpath('/response/members/member') as $object) {
       $data['members'][] = CultureFeed_Uitpas_Counter_Member::createFromXML($object);
     }
-    
+
     return $data;
   }
 
@@ -819,21 +871,21 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $counters);
   }
-  
+
   public function getDevices($consumer_key_counter) {
     $data = array(
       'balieConsumerKey' => $consumer_key_counter,
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/list', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $devices = array();
     $objects = $xml->xpath('/response/cids/cid');
 
@@ -850,7 +902,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     );
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/' . $consumer_key_device, $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -860,14 +912,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
   }
-  
+
   public function connectDeviceWithEvent($consumer_key_device, $cdbid, $consumer_key_counter) {
     $data = array(
       'balieConsumerKey' => $consumer_key_counter,
       'cdbid' => $cdbid,
       'cidConsumerKey' => $consumer_key_device,
     );
-    
+
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/cid/connect', $data);
 
     try {
@@ -878,5 +930,45 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
+  }
+
+  public function getWelcomeAdvantage($id) {
+    $path = 'uitpas/promotion/welcomeAdvantage/' . $id;
+
+    $result = $this->oauth_client->consumerGetAsXml($path);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $advantage = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($xml);
+
+    return $advantage;
+  }
+
+  public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL) {
+    $path = 'uitpas/promotion/pointsPromotion/' . $id;
+
+    $params = array();
+
+    if ($passholder) {
+      $params += $passholder->params();
+    }
+
+    $result = $this->oauth_client->consumerGetAsXml($path, $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $promotion = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($xml);
+
+    return $promotion;
   }
 }
