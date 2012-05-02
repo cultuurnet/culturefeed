@@ -85,7 +85,7 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
    * @var integer
    */
   public $unitsTaken;
-  
+
   /*
    * The cash-in state of the welcome advantage
    *
@@ -111,7 +111,10 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $promotion->unitsTaken = $object->xpath_int('unitsTaken');
     $promotion->cashInState = $object->xpath_str('cashInState');
-    $promotion->periodConstraint = CultureFeed_Uitpas_Passholder_PeriodConstraint::createFromXml($object->xpath('periodConstraint', FALSE));
+    $periodConstraint = $object->xpath('periodConstraint', FALSE);
+    if (!empty($periodConstraint)) {
+      $promotion->periodConstraint = CultureFeed_Uitpas_Passholder_PeriodConstraint::createFromXml($periodConstraint);
+    }
 
     return $promotion;
   }
