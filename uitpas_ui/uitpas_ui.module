@@ -5,6 +5,24 @@
  */
 function uitpas_ui_theme() {
   return array(
+    'uitpas_ui_advantage' => array(
+      'variables' => array('advantage' => NULL),
+      'template' => 'uitpas-ui-advantage',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotion' => array(
+      'variables' => array('promotion' => NULL),
+      'template' => 'uitpas-ui-promotion',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_recent_actions' => array(
+      'variables' => array('actions' => array()),
+      'template' => 'uitpas-ui-recent-actions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_user_profile' => array(
       'variables' => array(
         'uitpas_user' => NULL, 
@@ -17,27 +35,22 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
-    'uitpas_ui_promotion' => array(
-      'variables' => array('promotion' => NULL),
-      'template' => 'uitpas-ui-promotion',
-      'file' => 'theme.inc',
-      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
-    ),
-    'uitpas_ui_advantage' => array(
-      'variables' => array('advantage' => NULL),
-      'template' => 'uitpas-ui-advantage',
+    'uitpas_ui_user_profile_advantages' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'advantages' => array(), 
+        'promotions' => array(),
+        'cashed_in_advantages' => array(),
+        'cashed_in_promotions' => array(),
+      ),
+      'template' => 'uitpas-ui-user-profile-advantages',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
     'uitpas_ui_user_profile_details' => array(
       'variables' => array('cf_user' => NULL),
       'template' => 'uitpas-ui-user-profile-details',
-      'file' => 'theme.inc',
-      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
-    ),
-    'uitpas_ui_user_profile_advantages' => array(
-      'variables' => array('cf_user' => NULL),
-      'template' => 'uitpas-ui-user-profile-advantages',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),

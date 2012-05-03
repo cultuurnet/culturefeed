@@ -58,7 +58,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
         $query->minPoints = $passholder->points + 1;
         $result = $cf->uitpas()->getPromotionPoints($query);
         if ($result->total) {
-          $$nearby_promotions = $result->objects;
+          $nearby_promotions = $result->objects;
         }
       }
       catch (Exception $e) {
@@ -72,7 +72,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
         'passholder' => $passholder,
         'advantages' => $advantages,
         'promotions' => $promotions,
-        'nearby_promotions' => $promotions,
+        'nearby_promotions' => $nearby_promotions,
       ));
       return $block;
     }
