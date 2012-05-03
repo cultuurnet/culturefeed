@@ -507,10 +507,19 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Search for welcome advantages.
    *
    * @param CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query The query
+   * @param string $method The request method
    */
-  public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query) {
+  public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
+    $path = 'uitpas/promotion/welcomeAdvantages';
+
     $data = $query->toPostData();
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/promotion/welcomeAdvantages', $data);
+
+    if ($method == CultureFeed_Uitpas::CONSUMER_REQUEST) {
+      $result = $this->oauth_client->consumerGetAsXml($path, $data);
+    }
+    else {
+      $result = $this->oauth_client->authenticatedGetAsXml($path, $data);
+    }
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
