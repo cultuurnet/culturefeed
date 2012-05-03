@@ -18,7 +18,7 @@ class CultureFeed_Uitpas_Passholder_Counter extends CultureFeed_Uitpas_ValueObje
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $counter = new CultureFeed_Uitpas_Passholder_Counter();
-    $counter->id = $object->xpath_int('id');
+    $counter->id = $object->xpath_str('id');
     $counter->name = $object->xpath_str('name');
 
     return $counter;
