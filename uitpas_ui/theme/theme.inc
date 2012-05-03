@@ -42,9 +42,9 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $vars['points'] = t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
-    $period = t('From !date', array('!date' => date('j/n/Y', $promotion->cashingPeriodBegin)));
+    $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
     if ($promotion->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/n/Y', $promotion->cashingPeriodEnd)));
+      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
   }
@@ -115,7 +115,35 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_user_advantages() for uitpas-ui-user-profile-advantages.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_user_profile_activities() for uitpas-ui-user-profile-activities.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
+  $activities = $vars['activities'];
+  $vars['title'] = t('My activities');
+  $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
+  $rows = array();
+  foreach ($activities as $activity) {
+    $rows[] = array(
+      date('j/m/Y', $activity->date),
+      $activity->name,
+      $location,
+      t('!points points', array('!points' => $activity->points)),
+    );
+  }
+  $table = array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $vars['activities'] = theme_table($table);
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_user_profile_advantages() for uitpas-ui-user-profile-advantages.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $base_table = array(
@@ -204,4 +232,42 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['cashed_in_promotions_advantages'] = theme_table($table);
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_user_profile_advantages() for uitpas-ui-user-profile-advantages.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
+  $uitpas_user = $vars['uitpas_user'];
+  $passholder = $vars['passholder'];
+  $vars['title'] = t('My data');
+  if (isset($uitpas_user->depiction)) {
+    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
+  }
+  else {
+    $vars['image'] = '';
+  }
+  $vars['active_since'] = '<label>' . t('Active since') . ':</label> ' . '?';
+  $vars['uitpas_number'] = '<label>' . t('UITpas number') . ':</label> ' . $passholder->uitpasNumber;
+  $vars['intro'] = variable_format_value('uitpas_ui_user_profile_details_intro');
+  $vars['national_identification_number'] = '<label>' . t('National identification number') . ':</label> ' . $passholder->inszNumber;
+  $vars['first_name'] = '<label>' . t('First name') . ':</label> ' . $passholder->firstName;
+  $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
+  $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
+  $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
+  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . $passholder->gender;
+  $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
+  $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
+  $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
+  $vars['bus'] = '<label>' . t('Bus') . ':</label> ' . $passholder->box;
+  $vars['zip'] = '<label>' . t('Zip') . ':</label> ' . $passholder->postalCode;
+  $vars['city'] = '<label>' . t('City') . ':</label> ' . $passholder->city;
+  $vars['tel'] = '<label>' . t('Telephone') . ':</label> ' . $passholder->telephone;
+  $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
+  $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
+  $vars['status_title'] = t('Status');
+  $status_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
+  $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
+  //$ocmw_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
+  $vars['ocmw_valid_till'] = '<label>' . t('OCMW status') . ':</label> ' . '?';
 }

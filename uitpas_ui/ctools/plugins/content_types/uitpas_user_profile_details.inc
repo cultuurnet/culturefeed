@@ -18,12 +18,19 @@ function uitpas_ui_uitpas_user_profile_details_content_type_edit_form($form, &$f
 }
 
 function uitpas_ui_uitpas_user_profile_details_content_type_render($subtype, $conf, $args, $context) {
+  $uitpas_user = '';
+  $passholder ='';
   $cf_user = $context->data->user;
-  if ($cf_user) {
+  if ($context->data) {
+    $uitpas_user = $context->data->user;
+    $passholder = $context->data->passholder;
     $cf = DrupalCultureFeed::getConsumerInstance();
     $block = new stdClass();
     $block->title = "";
-    $block->content = theme('uitpas_ui_user_profile_details', array('cf_user' => $cf_user));
+    $block->content = theme('uitpas_ui_user_profile_details', array(
+      'uitpas_user' => $uitpas_user,
+      'passholder' => $passholder,
+    ));
     return $block;
   }
 }

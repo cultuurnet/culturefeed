@@ -35,6 +35,12 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
+    'uitpas_ui_user_profile_activities' => array(
+      'variables' => array('activities' => array()),
+      'template' => 'uitpas-ui-user-profile-activities',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_user_profile_advantages' => array(
       'variables' => array(
         'uitpas_user' => NULL, 

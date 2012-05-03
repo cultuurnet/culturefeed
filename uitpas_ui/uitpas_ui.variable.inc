@@ -42,5 +42,10 @@ function uitpas_ui_variable_info() {
       'type' => 'string',
       'group' => 'uitpas_ui',
     ),
+    'uitpas_ui_user_profile_details_intro' => array(
+      'title' => t('Uitpas UI: user aprofile details intro'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
   );
 }
