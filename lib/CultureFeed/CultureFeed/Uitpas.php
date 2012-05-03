@@ -13,7 +13,7 @@ interface CultureFeed_Uitpas {
    *
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getAssociations($consumer_key_counter);
+  public function getAssociations($consumer_key_counter = NULL);
 
   /**
    * Register a set of distribution keys for an organizer. The entire set (including existing)
@@ -34,7 +34,7 @@ interface CultureFeed_Uitpas {
   /**
    * Get the price of the UitPas.
    */
-  public function getPrice($consumer_key_counter);
+  public function getPrice($consumer_key_counter = NULL);
 
   /**
    * Create a new UitPas passholder.
@@ -58,7 +58,7 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function resendActivationEmail($uitpas_number, $consumer_key_counter);
+  public function resendActivationEmail($uitpas_number, $consumer_key_counter = NULL);
 
   /**
    * Get a passholder based on the UitPas number.
@@ -66,7 +66,7 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter);
+  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter = NULL);
 
   /**
    * Get a passholder based on the user ID
@@ -74,7 +74,7 @@ interface CultureFeed_Uitpas {
    * @param string $user_id The user ID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUser($user_id, $consumer_key_counter);
+  public function getPassholderByUser($user_id, $consumer_key_counter = NULL);
 
   /**
    * Search for passholders.
@@ -108,7 +108,7 @@ interface CultureFeed_Uitpas {
    * @param int $welcome_advantage_id Identification welcome advantage
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter);
+  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter = NULL);
 
   /**
    * Get the redeem options
@@ -126,7 +126,7 @@ interface CultureFeed_Uitpas {
    * @param int $points_promotion_id The identification of the redeem option
    * @param string $counter The name of the UitPas counter
    */
-  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $consumer_key_counter);
+  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $consumer_key_counter = NULL);
 
   /**
    * Upload a picture for a given passholder.
@@ -135,7 +135,7 @@ interface CultureFeed_Uitpas {
    * @param string $file_data The binary data of the picture
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function uploadPicture($id, $file_data, $consumer_key_counter);
+  public function uploadPicture($id, $file_data, $consumer_key_counter = NULL);
 
   /**
    * Update a passholder.
@@ -151,7 +151,7 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function blockUitpas($uitpas_number, $consumer_key_counter);
+  public function blockUitpas($uitpas_number, $consumer_key_counter = NULL);
 
   /**
    * Search for welcome advantages.
@@ -164,9 +164,9 @@ interface CultureFeed_Uitpas {
    * Get a passholder based on the UitPas chip number.
    *
    * @param string $chip_number The chipnumber of the UitPas
-   * @param string $service_consumer_counter The consumer key of the counter from where the request originates
+   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderForChipNumber($chip_number, $service_consumer_counter);
+  public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet.
@@ -194,7 +194,7 @@ interface CultureFeed_Uitpas {
    * @param string $cdbid The event CDBID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
+  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter = NULL);
 
   /**
    * Register a new Uitpas
@@ -210,7 +210,7 @@ interface CultureFeed_Uitpas {
    * @param string $cdbid The event CDBID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter);
+  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter = NULL);
 
   /**
    * Search for checkins
@@ -242,13 +242,13 @@ interface CultureFeed_Uitpas {
    * @param string $uid The Culturefeed user ID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function addMemberToCounter($uid, $consumer_key_counter);
+  public function addMemberToCounter($uid, $consumer_key_counter = NULL);
 
-  public function removeMemberFromCounter($uid, $consumer_key_counter);
+  public function removeMemberFromCounter($uid, $consumer_key_counter = NULL);
 
-  public function getMembersForCounter($balieConsumerKey);
+  public function getMembersForCounter($consumer_key_counter = NULL);
 
-  public function getCardCounters($consumer_key_counter);
+  public function getCardCounters($consumer_key_counter = NULL);
 
   /**
    * Search for counters for a given member
@@ -257,11 +257,11 @@ interface CultureFeed_Uitpas {
    */
   public function searchCountersForMember($uid);
 
-  public function getDevices($consumer_key_counter);
+  public function getDevices($consumer_key_counter = NULL);
 
-  public function getEventsForDevice($consumer_key_device, $consumer_key_counter);
+  public function getEventsForDevice($consumer_key_device, $consumer_key_counter = NULL);
 
-  public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter);
+  public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter = NULL);
 
   public function getWelcomeAdvantage($id);
 

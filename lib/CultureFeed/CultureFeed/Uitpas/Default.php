@@ -34,10 +34,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    *
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getAssociations($consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getAssociations($consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXML('uitpas/association/list', $data);
 
@@ -99,10 +101,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * Get the price of the UitPas.
    */
-  public function getPrice($consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getPrice($consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasPrice', $data);
 
@@ -170,10 +174,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function resendActivationEmail($uitpas_number, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function resendActivationEmail($uitpas_number, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/resend_activation_mail', $data);
 
@@ -194,10 +200,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $uitpas_number, $data);
 
@@ -219,10 +227,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $user_id The user ID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderByUser($user_id, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getPassholderByUser($user_id, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uid/' . $user_id, $data);
 
@@ -327,11 +337,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param int $welcome_advantage_id Identification welcome advantage
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter) {
+  public function cashInWelcomeAdvantage($uitpas_number, $welcome_advantage_id, $consumer_key_counter = NULL) {
      $data = array(
        'welcomeAdvantageId' => $welcome_advantage_id,
-       'balieConsumerKey' => $consumer_key_counter,
      );
+
+     if ($consumer_key_counter) {
+       $data['balieConsumerKey'] = $consumer_key_counter;
+     }
 
      $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInWelcomeAdvantage', $data);
 
@@ -402,11 +415,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param int $points_promotion_id The identification of the redeem option
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $consumer_key_counter) {
+  public function cashInPromotionPoints($uitpas_number, $points_promotion_id, $consumer_key_counter = NULL) {
     $data = array(
       'pointsPromotionId' => $points_promotion_id,
-      'balieConsumerKey' => $consumer_key_counter,
     );
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $uitpas_number . '/cashInPointsPromotion', $data);
 
@@ -428,11 +444,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $file_data The binary data of the picture
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function uploadPicture($id, $file_data, $consumer_key_counter) {
+  public function uploadPicture($id, $file_data, $consumer_key_counter = NULL) {
     $data = array(
       'picture' => $file_data,
-      'balieConsumerKey' => $consumer_key_counter,
     );
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $id . '/uploadPicture', $data, TRUE, TRUE);
   }
@@ -464,10 +483,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function blockUitpas($uitpas_number, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function blockUitpas($uitpas_number, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/block/' . $uitpas_number, $data);
 
@@ -611,10 +632,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $cdbid The event CDBID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function registerTicketSale($uitpas_number, $cdbid, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/buy/' . $uitpas_number, $data);
 
@@ -636,12 +659,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $cdbid The event CDBID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function cancelTicketSale($uitpas_number, $cdbid, $consumer_key_counter = NULL) {
+    $data = array();
 
-	try {
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
+
+    try {
       $this->oauth_client->authenticatedPostAsXml('uitpas/cultureevent/' . $cdbid . '/cancel/' . $uitpas_number, $data);
       return true;
     }
@@ -772,28 +797,36 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $uid The Culturefeed user ID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    */
-  public function addMemberToCounter($uid, $consumer_key_counter) {
+  public function addMemberToCounter($uid, $consumer_key_counter = NULL) {
     $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
       'uid' => $uid,
     );
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $this->oauth_client->authenticatedPost('uitpas/balie/member', $data);
   }
 
-  public function removeMemberFromCounter($uid, $consumer_key_counter) {
+  public function removeMemberFromCounter($uid, $consumer_key_counter = NULL) {
     $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
       'uid' => $uid,
     );
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $this->oauth_client->authenticatedPost('uitpas/balie/removeMember', $data);
   }
 
-  public function getCardCounters($consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getCardCounters($consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/countCards', $data);
 
@@ -815,10 +848,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
   }
 
-  public function getMembersForCounter($balieConsumerKey) {
-    $data = array(
-      'balieConsumerKey' => $balieConsumerKey,
-    );
+  public function getMembersForCounter($consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/balie/listEmployees', $data);
 
@@ -872,10 +907,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return new CultureFeed_ResultSet($total, $counters);
   }
 
-  public function getDevices($consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getDevices($consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/list', $data);
 
@@ -896,10 +933,12 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return $devices;
   }
 
-  public function getEventsForDevice($consumer_key_device, $consumer_key_counter) {
-    $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
-    );
+  public function getEventsForDevice($consumer_key_device, $consumer_key_counter = NULL) {
+    $data = array();
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cid/' . $consumer_key_device, $data);
 
@@ -913,12 +952,15 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
   }
 
-  public function connectDeviceWithEvent($consumer_key_device, $cdbid, $consumer_key_counter) {
+  public function connectDeviceWithEvent($consumer_key_device, $cdbid, $consumer_key_counter = NULL) {
     $data = array(
-      'balieConsumerKey' => $consumer_key_counter,
       'cdbid' => $cdbid,
       'cidConsumerKey' => $consumer_key_device,
     );
+
+    if ($consumer_key_counter) {
+      $data['balieConsumerKey'] = $consumer_key_counter;
+    }
 
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/cid/connect', $data);
 
