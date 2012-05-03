@@ -8,8 +8,8 @@
 /**
  * Implements hook_views_data_alter().
  */
-function culturefeed_views_data_alter(&$data) {
+function uitpas_ui_views_data_alter(&$data) {
   $data['cnapievents']['cityregion']['argument'] = array(
-    'handler' => 'culturefeed_handler_argument_cnapi_cityregion',
+    'handler' => 'uitpas_ui_handler_argument_cnapi_cityregion',
   );
 }

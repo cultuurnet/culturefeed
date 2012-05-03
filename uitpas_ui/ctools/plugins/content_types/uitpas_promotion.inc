@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Plugin to provide a content type for uitpas promotion.
+ */
+
+$plugin = array(
+  'single' => TRUE,
+  'title' => t('Uitpas: promotion'),
+  'description' => t('Uitpas: promotion.'),
+  'category' => t('Uitpas'),
+  'required context' => new ctools_context_required(t('Uitpas promotion'), 'string'),
+);
+
+function uitpas_ui_uitpas_promotion_content_type_edit_form($form, &$form_state) {
+  return $form;
+}
+
+function uitpas_ui_uitpas_promotion_content_type_render($subtype, $conf, $args, $context) {
+  $pid = $context->data;
+  if ($pid) {
+    try {
+      $cf = DrupalCultureFeed::getConsumerInstance();
+      $promotion = $cf->uitpas()->getPointsPromotion($pid);
+      foreach ($promotion->counters as $key => $counter) {
+        //@TODO: this won't work, we need a cbid
+        $actor = cnapi_get_actor($counter->id);
+        if ($actor) {
+          $promotion->counters[$key]->name = l($counter->name, 'actor/' . $counter->id);
+        }
+      }
+      $block = new stdClass();
+      $block->title = "";
+      $block->content = theme('uitpas_ui_promotion', array('promotion' => $promotion));
+      return $block;
+    }
+    catch (Exception $e) {
+      watchdog_exception('uitpas_ui_content_type_promotion', $e);
+    }
+  }
+}

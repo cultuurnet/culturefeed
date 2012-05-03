@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Definition of culturefeed_handler_argument_cnapi_cityregion.
+ * Definition of uitpas_ui_handler_argument_cnapi_cityregion.
  */
 
-class culturefeed_handler_argument_cnapi_cityregion extends views_handler_argument {
+class uitpas_ui_handler_argument_cnapi_cityregion extends views_handler_argument {
 
   function init(&$view, &$options) {
     parent::init($view, $options);

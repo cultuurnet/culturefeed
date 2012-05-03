@@ -8,20 +8,20 @@
 $plugin = array(
   'title' => t('Uitpas: location'),
   'description' => t('Uitpas: location.'),
-  'context' => 'culturefeed_context_uitpas_location',
+  'context' => 'uitpas_ui_context_uitpas_location',
   'context name' => 'uitpas_location',
   'convert list' => array(
     'location' => t('Location'),
     'locations' => t('Locations (with lid)'),
     'views argument' => t('Views argument (lid)'),
   ),
-  'convert' => 'culturefeed_context_uitpas_location_convert',
+  'convert' => 'uitpas_ui_context_uitpas_location_convert',
   'keyword' => 'uitpas_location',
 );
 
-function culturefeed_context_uitpas_location($empty, $data = NULL, $conf = FALSE) {
+function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) {
   //setting our locations
-  $location_options = variable_get_value('culturefeed_uitpas_locations');
+  $location_options = variable_get_value('uitpas_ui_locations');
   $location_options = array_map('trim', explode("\n", $location_options));
   $locations = array();
   foreach($location_options as $option) {
@@ -34,9 +34,17 @@ function culturefeed_context_uitpas_location($empty, $data = NULL, $conf = FALSE
   }
   //getting the active location
   $location = '';
-  /*if ($user) {
-    $location = $user->location;
-  }*/
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_user->city) {
+        $location = $cf_user->city;
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('uitpas_ui_context_uitpas_location', $e);
+    }
+  }
   if (isset($_COOKIE['uitpas_location'])) {
     $location = $_COOKIE['uitpas_location'];
   }
@@ -55,7 +63,7 @@ function culturefeed_context_uitpas_location($empty, $data = NULL, $conf = FALSE
   return $context;
 }
 
-function culturefeed_context_uitpas_location_convert($context, $type) {
+function uitpas_ui_context_uitpas_location_convert($context, $type) {
   switch ($type) {
     case 'locations':
       return $context->data->locations;
