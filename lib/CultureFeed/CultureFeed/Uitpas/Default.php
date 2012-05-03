@@ -545,11 +545,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * @param string $chip_number The chipnumber of the UitPas
    * @param string $service_consumer_counter The consumer key of the counter from where the request originates
    */
-  public function getPassholderForChipNumber($chip_number, $service_consumer_counter) {
+  public function getPassholderForChipNumber($chip_number, $service_consumer_counter = NULL) {
     $data = array(
       'chipNumber' => $chip_number,
-      'balieConsumerKey' => $service_consumer_counter,
     );
+
+    if ($service_consumer_counter) {
+      $data['balieConsumerKey'] = $service_consumer_counter;
+    }
 
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasNumber', $data);
 
