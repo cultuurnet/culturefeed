@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function uitpas_ui_theme() {
+  return array(
+    'uitpas_ui_user_profile' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'advantages' => array(), 
+        'promotions' => array(),
+        'nearby_promotions' => array(),
+      ),
+      'template' => 'uitpas-ui-user-profile',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotion' => array(
+      'variables' => array('promotion' => NULL),
+      'template' => 'uitpas-ui-promotion',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_advantage' => array(
+      'variables' => array('advantage' => NULL),
+      'template' => 'uitpas-ui-advantage',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_details' => array(
+      'variables' => array('cf_user' => NULL),
+      'template' => 'uitpas-ui-user-profile-details',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_advantages' => array(
+      'variables' => array('cf_user' => NULL),
+      'template' => 'uitpas-ui-user-profile-advantages',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function uitpas_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function uitpas_ui_views_api() {
+  return array(
+      'api' => 3,
+  );
+}

@@ -1,0 +1,7 @@
+name = Uitpas User Interface
+description = Frontend components for Uitpas
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed
+files[] = views/handlers/uitpas_ui_handler_argument_cnapi_cityregion.inc
