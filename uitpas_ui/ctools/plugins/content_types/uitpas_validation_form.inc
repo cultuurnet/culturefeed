@@ -59,7 +59,8 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
   
   $cf = DrupalCultureFeed::getConsumerInstance();
   try {
-    $link = $cf->uitpas()->getPassholderActivationLinkChainedWithAuthorization($number, $dob, base_path());
+    $callback_url = url('culturefeed/oauth/connect', array('absolute' => TRUE));
+    $link = $cf->uitpas()->getPassholderActivationLinkChainedWithAuthorization($number, $dob, $callback_url);
     $form_state['values']['link'] = $link;
   }
   catch (Exception $e) {

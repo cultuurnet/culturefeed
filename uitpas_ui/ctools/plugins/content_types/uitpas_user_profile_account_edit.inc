@@ -18,12 +18,66 @@ function uitpas_ui_uitpas_user_profile_account_edit_content_type_edit_form($form
 }
 
 function uitpas_ui_uitpas_user_profile_account_edit_content_type_render($subtype, $conf, $args, $context) {
-  $cf_user = $context->data->user;
-  if ($cf_user) {
-    $cf = DrupalCultureFeed::getConsumerInstance();
+  if ($context->data) {
+    $uitpas_user = $context->data->user;
     $block = new stdClass();
-    $block->title = "";
-    $block->content = theme('uitpas_ui_user_profile_notifications', array('cf_user' => $cf_user));
+    $block->title = t('Edit account');
+    $block->content = drupal_get_form('uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form', $uitpas_user);
     return $block;
+  }
+}
+
+function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form($form, &$form_state, $uitpas_user) {
+  $form['uitpas_user'] = array(
+    '#type' => 'value',
+    '#value' => $uitpas_user,
+  );
+  $form['username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#default_value' => $uitpas_user->nick,
+    '#required' => TRUE,
+  );
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail address'),
+    '#default_value' => $uitpas_user->mbox,
+    '#required' => TRUE,
+  );
+  $form['actions'] = array(
+    'save' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    )
+  );
+  //change password (taken from culturefeed_ui.pages.inc)
+  $destination = url('myprofile/account_edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
+  $url = DrupalCultureFeed::getUrlChangePassword($uitpas_user->id, $destination);
+  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
+  $form['change_password'] = array(
+    '#prefix' => '<div id="change-password">',
+    '#markup' => l('Paswoord wijzigen', $url, $options),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form_validate(&$form, &$form_state) {
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('Invalid e-mail address'));
+  }
+}
+
+function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form_submit(&$form, &$form_state) {
+  $uitpas_user = $form_state['values']['uitpas_user'];
+  $uitpas_user->nick = $form_state['values']['username'];
+  $uitpas_user->mbox = $form_state['values']['email'];
+  try {
+    DrupalCultureFeed::updateUser($uitpas_user);
+    drupal_set_message(t('Your changes have been saved.'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('uitpas_ui_content_type_user_profile_account_edit', $e);
+    drupal_set_message(t('An error occured.'), 'error');
   }
 }
