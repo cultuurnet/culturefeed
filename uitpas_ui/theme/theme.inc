@@ -271,3 +271,30 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   //$ocmw_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
   $vars['ocmw_valid_till'] = '<label>' . t('OCMW status') . ':</label> ' . '?';
 }
+
+/**
+ * Implements hook_preprocess_uitpas_ui_user_profile_uitid() for uitpas-ui-user-profile-uitid.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
+  $uitpas_user = $vars['uitpas_user'];
+  $passholder = $vars['passholder'];
+  $actions = $vars['actions'];
+  if (isset($uitpas_user->depiction)) {
+    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
+  }
+  else {
+    $vars['image'] = '';
+  }
+  $vars['first_name'] = $passholder->firstName;
+  $vars['dob'] = date('j/m/Y', $passholder->dateOfBirth);
+  $vars['pob'] = $passholder->placeOfBirth;
+  $vars['gender'] = $passholder->gender;
+  $vars['more_info'] = $passholder->moreInfo;
+  $list = array('items' => array(), 'title' => t('Recent UITID actions'), 'type' => 'ul', 'attributes' => array());
+  foreach ($actions as $action) {
+    $list['items'][] = $action->name . '<br />' .  date('j/m/Y', $action->date);
+  }
+  $vars['actions'] = theme_item_list($list);
+  $vars['form'] = drupal_render($vars['form']);
+  $vars['info'] = variable_format_value('uitpas_ui_user_profile_uitid_info');
+}

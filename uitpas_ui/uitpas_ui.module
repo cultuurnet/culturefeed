@@ -55,8 +55,22 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
     'uitpas_ui_user_profile_details' => array(
-      'variables' => array('cf_user' => NULL),
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL,
+      ),
       'template' => 'uitpas-ui-user-profile-details',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_uitid' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'actions' => array(), 
+        'form' => NULL,
+      ),
+      'template' => 'uitpas-ui-user-profile-uitid',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),

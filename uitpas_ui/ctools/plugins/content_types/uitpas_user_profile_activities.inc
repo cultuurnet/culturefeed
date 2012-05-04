@@ -31,7 +31,7 @@ function uitpas_ui_uitpas_user_profile_activities_content_type_render($subtype, 
       return $block;
     }
     catch (Exception $e) {
-      watchdog_exception('uitpas_ui_content_type_user_profile_activities', $e);
+      watchdog_exception('uitpas_ui_content_type_user_profile_promotions_cashed_in', $e);
     }
   }
 }
