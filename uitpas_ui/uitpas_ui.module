@@ -103,7 +103,7 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
     'uitpas_ui_user_profile_activities' => array(
-      'variables' => array('activities' => array()),
+      'variables' => array('activities' => array(), 'activites_total' => 0),
       'template' => 'uitpas-ui-user-profile-activities',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',

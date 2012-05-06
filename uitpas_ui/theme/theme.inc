@@ -243,16 +243,23 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
   $activities = $vars['activities'];
-  $vars['title'] = t('My activities');
+  $activities_total = $vars['activities_total'];
   $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
   $rows = array();
-  foreach ($activities as $activity) {
-    $rows[] = array(
-      date('j/m/Y', $activity->date),
-      $activity->name,
-      $location,
-      t('!points points', array('!points' => $activity->points)),
-    );
+  if (count($activities)) {
+    foreach ($activities as $activity) {
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $activity->points));
+      $rows[] = array(
+        date('j/m/Y', $activity->creationDate),
+        $activity->value,
+        $activity->location,
+        format_plural($activity->points, $singular, $plural),
+      );
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
   }
   $table = array(
     'header' => $header,
@@ -263,7 +270,8 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
     'sticky' => '',
     'empty' => '',
   );
-  $vars['activities'] = theme_table($table);
+  $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $activities_total);
+  $vars['activities'] = theme_table($table) . theme_pager($pager);
 }
 
 /**
