@@ -22,8 +22,8 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $cf = $context->data->cf;
-    //$consumer_cf = DrupalCultureFeed::getConsumerInstance();
-    $preferences = $cf->getUserPreferences($uitpas_user->id);
+    $consumer_cf = DrupalCultureFeed::getConsumerInstance();
+    $preferences = $consumer_cf->getUserPreferences($uitpas_user->id);
     dpm($preferences);
     $actions = array();
     try {
