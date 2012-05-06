@@ -11,7 +11,18 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
-    'uitpas_ui_promotion' => array(
+    'uitpas_ui_advantages_promotions' => array(
+      'variables' => array(
+        'advantages' => array(), 
+        'advantages_total' => 0, 
+        'promotions' => array(),
+        'promotions_total' => 0,
+      ),
+      'template' => 'uitpas-ui-advantages-promotions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+      'uitpas_ui_promotion' => array(
       'variables' => array('promotion' => NULL),
       'template' => 'uitpas-ui-promotion',
       'file' => 'theme.inc',

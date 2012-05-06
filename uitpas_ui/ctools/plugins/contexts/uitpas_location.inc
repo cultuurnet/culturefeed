@@ -52,14 +52,37 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
     $location = $data;
   }
   if (!isset($locations[$location])) {
-    $location = '';
+    $location = 'all';
   }
+  setcookie('uitpas_location', $location);
   //creating our context
   $context = new ctools_context('uitpas_location');
   $context->plugin = 'uitpas_location';
   $context->data = new stdClass();
   $context->data->locations = $locations;
   $context->data->location = $location;
+  //views and culturefeed arguments
+  $context->data->views_argument = '';
+  $context->data->cf_query_argument = '';
+  if ($context->data->location == 'all') {
+    $context->data->views_argument = $context->data->location;
+    $context->data->cf_query_argument = '';
+  }
+  //@TODO we should probably define the condition on 'elders' in another way
+  else if ($context->data->location == 'elders') {
+    $args = array();
+    foreach ($context->data->locations as $location) {
+      if ($location['lid']) {
+        $args[] = "!" . $location['lid'];
+      }
+    }
+    $context->data->views_argument = implode('|', $args);
+    $context->data->cf_query_argument = implode(',', $args);
+  }
+  else {
+    $context->data->views_argument = $context->data->locations[$context->data->location]['lid'];
+    $context->data->cf_query_argument = $context->data->locations[$context->data->location]['name'];
+  }
   return $context;
 }
 
@@ -70,18 +93,6 @@ function uitpas_ui_context_uitpas_location_convert($context, $type) {
     case 'location':
       return $context->data->location;
     case 'views argument':
-      //@TODO we should probably define the condition on 'elders' in another way
-      if ($context->data->location == 'elders') {
-        $args = array();
-        foreach ($context->data->locations as $location) {
-          if ($location['lid']) {
-            $args[] = $location['lid'];
-          }
-        }
-        return implode('|', $args);
-      }
-      else if ($context->data->location) {
-        return $context->data->locations[$context->data->location]['lid'];
-      }
+      return $context->data->views_argument;
   }
 }

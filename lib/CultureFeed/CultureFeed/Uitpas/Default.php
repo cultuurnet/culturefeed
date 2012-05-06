@@ -529,8 +529,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $promotions = array();
-    $objects = $xml->xpath('/welcomeAdvantagesRestResponse/promotions/promotion');
-    $total = $xml->xpath_int('/welcomeAdvantagesRestResponse/total');
+    $objects = $xml->xpath('/response/promotions/promotion');
+    $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
       $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($object);

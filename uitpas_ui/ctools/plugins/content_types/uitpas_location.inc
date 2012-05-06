@@ -37,7 +37,6 @@ function uitpas_ui_uitpas_location_content_type_edit_form_submit($form, &$form_s
   $form_state['conf']['label'] = $form_state['values']['label'];
 }
 
-
 function uitpas_ui_uitpas_location_content_type_render($subtype, $conf, $args, $context) {
   $location = $context->data->location;
   $locations = $context->data->locations;
@@ -48,7 +47,11 @@ function uitpas_ui_uitpas_location_content_type_render($subtype, $conf, $args, $
 }
 
 function uitpas_ui_uitpas_location_content_type_render_form($form, $form_state, $conf, $locations, $location) {
-  $options = array();
+  $form['path'] = array(
+    '#type' => 'value',
+    '#value' => $conf['path'],
+  );
+  $options = array('all' => '');
   foreach ($locations as $key => $info) {
     $options[$key] = $info['name'];
   }
@@ -64,16 +67,11 @@ function uitpas_ui_uitpas_location_content_type_render_form($form, $form_state, 
       '#value' => t('search'),
     ),
   );
-  $form['path'] = array(
-    '#type' => 'value',
-    '#value' => $conf['path'],
-  );
   return $form;
 }
 
 function uitpas_ui_uitpas_location_content_type_render_form_submit(&$form, &$form_state) {
-  if ($form_state['values']['location']) {
-    $form_state['redirect'] = $form_state['values']['path'] . '/' . $form_state['values']['location'];
-    setcookie('uitpas_location', $form_state['values']['location']);
-  }
+  $location = $form_state['values']['location'];
+  $path = $form_state['values']['path'];
+  $form_state['redirect'] = $path . '/' . $location;
 }
