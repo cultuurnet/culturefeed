@@ -371,7 +371,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   else {
     $vars['image'] = '';
   }
-  $vars['active_since'] = '<label>' . t('Active since') . ':</label> ' . '?';
   $vars['uitpas_number'] = '<label>' . t('UITpas number') . ':</label> ' . $passholder->uitpasNumber;
   $vars['intro'] = variable_format_value('uitpas_ui_user_profile_details_intro');
   $vars['national_identification_number'] = '<label>' . t('National identification number') . ':</label> ' . $passholder->inszNumber;
@@ -390,10 +389,19 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
   $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
   $vars['status_title'] = t('Status');
-  $status_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
+  $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $passholder->kansenStatuutEndDate)));
   $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
-  //$ocmw_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
-  $vars['ocmw_valid_till'] = '<label>' . t('OCMW status') . ':</label> ' . '?';
+  if (count($passholder->memberships)) {
+    $memberships = array();
+    foreach ($passholder->memberships as $membership) {
+       $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
+       $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+    }
+    $vars['memberships'] = implode('<br />', $memberships);
+  }
+  else {
+    $vars['memberships'] = '';
+  }
 }
 
 /**
