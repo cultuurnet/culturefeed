@@ -20,7 +20,8 @@ function uitpas_ui_link_actors(&$objects) {
   foreach ($objects as $object) {
     if (isset($object->counters)) {
       foreach ($object->counters as $ind => $counter) {
-        $actor = cnapi_get_actor($counter->id);
+        $id = $counter->id;
+        $actor = cnapi_get_actor($id);
         if ($actor) {
           $object->counters[$ind]->name = l($counter->name, 'actor/' . $counter->id);
         }
@@ -30,10 +31,30 @@ function uitpas_ui_link_actors(&$objects) {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function uitpas_ui_menu() {
+  return array(
+    'admin/config/services/uitpas_ui' => array(
+      'title' => 'Uipas UI promotions highlight',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('uitpas_ui_admin_promotions_highlight_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'uitpas_ui.admin.inc',
+    ),
+  );
+}
+
+/**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
   return array(
+    'uitpas_ui_admin_promotions_highlight_form' => array(
+      'render element' => 'form',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_advantage' => array(
       'variables' => array('advantage' => NULL),
       'template' => 'uitpas-ui-advantage',
@@ -51,9 +72,15 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
-      'uitpas_ui_promotion' => array(
+    'uitpas_ui_promotion' => array(
       'variables' => array('promotion' => NULL),
       'template' => 'uitpas-ui-promotion',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotions_highlight' => array(
+      'variables' => array('promotions' => array()),
+      'template' => 'uitpas-ui-promotions-highlight',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
