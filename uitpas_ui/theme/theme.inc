@@ -252,7 +252,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
       $plural = t('!points points', array('!points' => $activity->points));
       $rows[] = array(
         date('j/m/Y', $activity->creationDate),
-        $activity->value,
+        $activity->nodeTitle,
         $activity->location,
         format_plural($activity->points, $singular, $plural),
       );
