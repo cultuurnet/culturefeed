@@ -93,6 +93,8 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => 1, 'quantity' => $promotions_total);
   $vars['promotions'] = theme_table($table) . theme_pager($pager);
+  //info
+  $vars['info'] = variable_format_value('uitpas_ui_advantages_promotions_info');
 }
 
 /**

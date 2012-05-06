@@ -21,6 +21,11 @@ function uitpas_ui_variable_group_info() {
  */
 function uitpas_ui_variable_info() {
   return array(
+    'uitpas_ui_advantages_promotions_info' => array(
+      'title' => t('Uitpas UI: advantages promotions info'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+    ),
     'uitpas_ui_invalid_dob_error_message' => array(
       'title' => t('Uitpas UI: invalid dob error message'),
       'type' => 'string',

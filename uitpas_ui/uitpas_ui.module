@@ -1,4 +1,33 @@
 <?php
+/**
+ * @file
+ * Uitpas UI: provides ctools content types to display culturefeed utipas data
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function uitpas_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Helper function to link cnapi actors if available
+ */
+function uitpas_ui_link_actors(&$objects) {
+  foreach ($objects as $object) {
+    if (isset($object->counters)) {
+      foreach ($object->counters as $ind => $counter) {
+        $actor = cnapi_get_actor($counter->id);
+        if ($actor) {
+          $object->counters[$ind]->name = l($counter->name, 'actor/' . $counter->id);
+        }
+      }
+    }
+  }
+}
 
 /**
  * Implements hook_theme().
@@ -86,15 +115,6 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
   );
-}
-
-/**
- * Implements hook_ctools_plugin_directory().
- */
-function uitpas_ui_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools') {
-    return 'ctools/plugins/' . $plugin;
-  }
 }
 
 /**
