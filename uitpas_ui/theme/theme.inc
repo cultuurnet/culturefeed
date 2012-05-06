@@ -5,7 +5,39 @@
  * Uitpas preprocess functions.
  */
  
- /**
+/**
+ * Returns html for admin promotions highlight form
+ */
+function theme_uitpas_ui_admin_promotions_highlight_form($vars) {
+  $output = '';
+  $form = $vars['form'];
+  drupal_add_tabledrag('uitpas-ui-admin-promotions-highlight-form', 'order', 'sibling', 'weight');
+  $table = array(
+    'header' => array(),
+    'rows' => array(),
+    'attributes' => array('id' => 'uitpas_ui_admin_promotions_highlight_form'),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $class = 'uitpas-ui-admin-promotions-highlight-form-weight';
+  foreach (element_children($form['uitpas_ui_promotions_highlight']) as $element) {
+    $form['uitpas_ui_promotions_highlight'][$element]['weight']['#attributes'] = array('class' => array('weight'));
+    $table['rows'][] = array(
+      'data' => array(
+        drupal_render($form['uitpas_ui_promotions_highlight'][$element]['weight']),
+        drupal_render($form['uitpas_ui_promotions_highlight'][$element]['value']),
+      ),
+      'class' => array('draggable'),
+    );
+  }
+  $output .= theme_table($table);
+  $output .= drupal_render_children($form);
+  return $output;
+}
+
+/**
  * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
@@ -103,7 +135,9 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
   $vars['title'] = $promotion->title;
-  $vars['points'] = t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
+  $singular = t('1 Point needed');
+  $plural =  t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
+  $vars['points'] = format_plural($promotion->points, $singular, $plural);
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
@@ -124,6 +158,32 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     'items' => $promotion->validForCities,
   );
   $vars['available'] = theme_item_list($list);
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_promotions_highlight() for uitpas-ui-user-promotions_highlight.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
+  $promotions = $vars['promotions'];
+  $rows = array();
+  foreach ($promotions as $promotion) {
+    $singular = t('1 point');
+    $plural = t('!points points', array('!points' => $promotion->points));
+    $rows[] = array(
+      format_plural($promotion->points, $singular, $plural),
+      l($promotion->title, 'promotion/' . $promotion->id),
+    );
+  }
+  $table = array(
+    'header' => array(),
+    'rows' => $rows,
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $vars['promotions'] = theme_table($table);
 }
 
 /**
