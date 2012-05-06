@@ -16,7 +16,6 @@ function uitpas_ui_admin_promotions_highlight_form($form, &$form_state) {
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
     $result = $cf->uitpas()->getPromotionPoints($query);
     $uitpas_ui_promotions_highlight = variable_get('uitpas_ui_promotions_highlight', array());
-    dpm($uitpas_ui_promotions_highlight);
     $form['uitpas_ui_promotions_highlight'] = array();
     foreach ($result->objects as $promotion) {
       $default_value = (isset($uitpas_ui_promotions_highlight[$promotion->id]) && $uitpas_ui_promotions_highlight[$promotion->id]) ? 1 : 0;
