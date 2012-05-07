@@ -21,11 +21,11 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
   if ($context->data) {
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
+    $cf = $context->data->cf;
     $advantages = array();
     $promotions = array();
     $cashed_in_promotions = array();
     $cashed_in_advantages = array();
-    $cf = $context->data->cf;
     //welcome advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
@@ -41,6 +41,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
+      $query->uitpas_number = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
@@ -65,6 +66,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //cashed in promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions();
+      $query->uitpas_number = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getCashedInPromotionPoints($query);
       if ($result->total) {
         $cashed_in_promotions = $result->objects;
@@ -75,7 +77,9 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     }
     //ctools block
     $block = new stdClass();
-    $block->title = "";
+    $singular = t('My advantages (1 point saved)');
+    $plural = t('My advantages (!points points saved)', array('!points' => $passholder->points));
+    $block->title = format_plural($passholder->points, $singular, $plural);
     $block->content = theme('uitpas_ui_user_profile_advantages', array(
       'uitpas_user' => $uitpas_user,
       'passholder' => $passholder,

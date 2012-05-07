@@ -284,7 +284,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $promotions = $vars['promotions'];
   $cashed_in_advantages = $vars['cashed_in_advantages'];
   $cashed_in_promotions = $vars['cashed_in_promotions'];
-  $vars['title'] = t('My advantages (!points points saved)', array('!points' => $passholder->points));
   $base_table = array(
     'attributes' => array(),
     'caption' => '',
@@ -362,6 +361,9 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       implode(', ', $location),
       '?',
     );
+  }
+  if (!count($rows)) {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 4));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['cashed_in_promotions_advantages'] = theme_table($table);
