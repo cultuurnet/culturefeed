@@ -31,9 +31,9 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render($subtype, $co
 }
 
 function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form($form, &$form_state, $uitpas_user, $passholder, $cf) {
-  $form['passholder'] = array(
+  $form['uitpasnumber'] = array(
     '#type' => 'value',
-    '#value' => $passholder,
+    '#value' => $passholder->uitpasNumber,
   );
   $form['cf'] = array(
     '#type' => 'value',
@@ -45,7 +45,7 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form($form, &
   $form['email_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via e-mail'),
-    '#default_value' => $passholder->emailPreference,
+    '#default_value' => ($passholder->emailPreference == CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS) ? 1 : 0,
   );
   $form['email'] = array(
     '#type' => 'textfield',
@@ -56,7 +56,7 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form($form, &
   $form['sms_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via sms'),
-    '#default_value' => $passholder->smsPreference,
+    '#default_value' => ($passholder->smsPreference == CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS) ? 1 : 0,
   );
   $form['mobile'] = array(
     '#type' => 'textfield',
@@ -80,11 +80,24 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form_validate
 }
 
 function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form_submit(&$form, &$form_state) {
-  $passholder = $form_state['values']['passholder'];
+  $passholder = new CultureFeed_Uitpas_Passholder();
+  $passholder->uitpasNumber = $form_state['values']['uitpasnumber'];
   $cf = $form_state['values']['cf'];
-  $passholder->emailPreference = $form_state['values']['email_notifications'];
-  $passholder->email = $form_state['values']['email'];
-  $passholder->smsPreference = $form_state['values']['sms_notifications'];
+  if ($form_state['values']['email_notifications']) {
+    $email_preference = CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS;
+  }
+  else {
+    $email_preference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
+  }
+  $passholder->emailPreference = $email_preference;
+  //$passholder->email = $form_state['values']['email'];
+  if ($form_state['values']['sms_notifications']) {
+    $sms_preference = CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS;
+  }
+  else {
+    $sms_preference = CultureFeed_Uitpas_Passholder::SMS_NO_SMS;
+  }
+  $passholder->smsPreference = $sms_preference;
   $passholder->gsm = $form_state['values']['mobile'];
   try {
     $cf->uitpas()->updatePassholder($passholder);
