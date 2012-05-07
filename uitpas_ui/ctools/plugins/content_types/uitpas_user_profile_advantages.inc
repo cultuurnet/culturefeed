@@ -70,7 +70,6 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions();
       $query->uitpasNumber = $passholder->uitpasNumber;
-      dpm($query);
       $result = $cf->uitpas()->getCashedInPromotionPoints($query);
       if ($result->total) {
         $cashed_in_promotions = $result->objects;

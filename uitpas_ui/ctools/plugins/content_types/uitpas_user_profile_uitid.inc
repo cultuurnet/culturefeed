@@ -33,7 +33,7 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
         $actions = $result['objects'];
       }
     }
-    catch (Exception $e) {dpm($e);
+    catch (Exception $e) {
       watchdog_exception('uitpas_ui_content_type_user_profile_uitid', $e);
     }
     $form = drupal_get_form('uitpas_ui_uitpas_user_profile_uitid_content_type_render_form', $uitpas_user, $cf, $preferences);
