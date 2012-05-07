@@ -355,7 +355,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     $rows[] = array(
       format_plural($promotion->points, $singular, $plural),
       l($promotion->title, 'promotion/' . $promotion->id),
-      $promotion->location,
+      $promotion->counters[0]->name,
       date('j/n/Y', $promotion->cashingDate),
     );
   }
@@ -368,7 +368,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     $rows[] = array(
       t('Welcome'),
       l($advantage->title, 'advantage/' . $advantage->id),
-      $advantage->location,
+      $advantage->counters[0]->name,
       date('j/n/Y', $advantage->cashingDate),
     );
   }
