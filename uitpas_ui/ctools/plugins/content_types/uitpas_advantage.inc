@@ -22,17 +22,11 @@ function uitpas_ui_uitpas_advantage_content_type_render($subtype, $conf, $args, 
   if ($aid) {
     try {
       $cf = DrupalCultureFeed::getConsumerInstance();
-      $advantage = $cf->uitpas()->getWelcomeAdvantage($aid);
-      foreach ($advantage->counters as $key => $counter) {
-        //@TODO: this won't work, we need a cbid
-        $actor = cnapi_get_actor($counter->id);
-        if ($actor) {
-          $advantage->counters[$key]->name = l($counter->name, 'actor/' . $counter->id);
-        }
-      }
+      $advantages = array($cf->uitpas()->getWelcomeAdvantage($aid));
+      uitpas_ui_link_actors($advantages);
       $block = new stdClass();
       $block->title = "";
-      $block->content = theme('uitpas_ui_advantage', array('advantage' => $advantage));
+      $block->content = theme('uitpas_ui_advantage', array('advantage' => $advantages[0]));
       return $block;
     }
     catch (Exception $e) {

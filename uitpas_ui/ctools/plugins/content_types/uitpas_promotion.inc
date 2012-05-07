@@ -22,17 +22,11 @@ function uitpas_ui_uitpas_promotion_content_type_render($subtype, $conf, $args, 
   if ($pid) {
     try {
       $cf = DrupalCultureFeed::getConsumerInstance();
-      $promotion = $cf->uitpas()->getPointsPromotion($pid);
-      foreach ($promotion->counters as $key => $counter) {
-        //@TODO: this won't work, we need a cbid
-        $actor = cnapi_get_actor($counter->id);
-        if ($actor) {
-          $promotion->counters[$key]->name = l($counter->name, 'actor/' . $counter->id);
-        }
-      }
+      $promotions = array($cf->uitpas()->getPointsPromotion($pid));
+      uitpas_ui_link_actors($promotions);
       $block = new stdClass();
       $block->title = "";
-      $block->content = theme('uitpas_ui_promotion', array('promotion' => $promotion));
+      $block->content = theme('uitpas_ui_promotion', array('promotion' => $promotions[0]));
       return $block;
     }
     catch (Exception $e) {

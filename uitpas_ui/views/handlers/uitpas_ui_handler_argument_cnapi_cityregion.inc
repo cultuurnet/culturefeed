@@ -16,14 +16,14 @@ class uitpas_ui_handler_argument_cnapi_cityregion extends views_handler_argument
    */
   function query($group_by = FALSE) {
     $this->ensure_my_table();
-    //our condition takes either a lid or a concatenated string of lids which will be negated
+    //our condition takes either a lid or a concatenated string of negated lids
     if (is_numeric($this->argument)) {
       $this->query->add_where(0, "$this->table_alias.$this->real_field", $this->argument, 'regio');
     }
     else {
       $args = explode('|', $this->argument);
       foreach ($args as $arg) {
-        $this->query->add_where(0, "$this->table_alias.$this->real_field", "!" . $arg, 'regio');
+        $this->query->add_where(0, "$this->table_alias.$this->real_field", $arg, 'regio');
       }
     }
   }

@@ -5,7 +5,40 @@
  * Uitpas preprocess functions.
  */
  
- /**
+/**
+ * Returns html for admin promotions highlight form
+ */
+function theme_uitpas_ui_admin_promotions_highlight_form($vars) {
+  $form = $vars['form'];
+  $weight_class = 'uitpas_ui_promotions_highlight_weight';
+  $table_id = 'uitpas_ui_promotions_highlight_weight';
+  $table = array(
+    'header' => array(t('Promotion'), t('Weight')),
+    'rows' => array(),
+    'attributes' => array('id' => $table_id),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $rows = array();
+  foreach (element_children($form['promotions']) as $element) {
+    $form['promotions'][$element]['weight']['#attributes']['class'] = array($weight_class);
+    $table['rows'][] = array(
+      'data' => array(
+        drupal_render($form['promotions'][$element]['value']),
+        drupal_render($form['promotions'][$element]['weight']),
+      ),
+      'class' => array('draggable'),
+    );
+  }
+  $output = theme_table($table);
+  $output .= drupal_render_children($form);
+  drupal_add_tabledrag($table_id, 'order', 'sibling', $weight_class);
+  return $output;
+}
+
+/**
  * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
@@ -33,13 +66,79 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $vars['available'] = theme_item_list($list);
 }
 
+ /**
+ * Implements hook_preprocess_uitpas_ui_advantages_promotions() for uitpas-ui-user-advantages_promotions.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
+  $advantages = $vars['advantages'];
+  $advantages_total = $vars['advantages_total'];
+  $promotions = $vars['promotions'];
+  $promotions_total = $vars['promotions_total'];
+  $base_table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $base_pager = array('tags' => array(), 'parameters' => array());
+  //advantages
+  $header = array(t('Welcome advantages'), t('valid till'), '');
+  $rows = array();
+  if (count($advantages)) {
+    foreach ($advantages as $advantage) {
+      $location = array();
+      foreach ($advantage->counters as $counter) {
+        $location[] = $counter->name;
+      }
+      $rows[] = array(
+        $advantage->title,
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
+        implode(', ', $location)
+      );
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => 0, 'quantity' => $advantages_total);
+  $vars['advantages'] = theme_table($table) . theme_pager($pager);
+  //promotions
+  $header = array(t('Promotions'), t('valid till'), '');
+  $rows = array();
+  if (count($promotions)) {
+    foreach ($promotions as $promotion) {
+      $location = array();
+      foreach ($promotion->counters as $counter) {
+        $location[] = $counter->name;
+      }
+      $rows[] = array(
+        $promotion->title,
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
+        implode(', ', $location)
+      );
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => 1, 'quantity' => $promotions_total);
+  $vars['promotions'] = theme_table($table) . theme_pager($pager);
+  //info
+  $vars['info'] = variable_format_value('uitpas_ui_advantages_promotions_info');
+}
+
 /**
  * Implements hook_preprocess_uitpas_ui_promotion() for uitpas-ui-user-promotion.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
   $vars['title'] = $promotion->title;
-  $vars['points'] = t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
+  $singular = t('1 Point needed');
+  $plural =  t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
+  $vars['points'] = format_plural($promotion->points, $singular, $plural);
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
@@ -60,6 +159,32 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     'items' => $promotion->validForCities,
   );
   $vars['available'] = theme_item_list($list);
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_promotions_highlight() for uitpas-ui-user-promotions_highlight.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
+  $promotions = $vars['promotions'];
+  $rows = array();
+  foreach ($promotions as $promotion) {
+    $singular = t('1 point');
+    $plural = t('!points points', array('!points' => $promotion->points));
+    $rows[] = array(
+      format_plural($promotion->points, $singular, $plural),
+      l($promotion->title, 'promotion/' . $promotion->id),
+    );
+  }
+  $table = array(
+    'header' => array(),
+    'rows' => $rows,
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $vars['promotions'] = theme_table($table);
 }
 
 /**
@@ -119,16 +244,23 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
   $activities = $vars['activities'];
-  $vars['title'] = t('My activities');
+  $activities_total = $vars['activities_total'];
   $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
   $rows = array();
-  foreach ($activities as $activity) {
-    $rows[] = array(
-      date('j/m/Y', $activity->date),
-      $activity->name,
-      $location,
-      t('!points points', array('!points' => $activity->points)),
-    );
+  if (count($activities)) {
+    foreach ($activities as $activity) {
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $activity->points));
+      $rows[] = array(
+        date('j/m/Y', $activity->creationDate),
+        $activity->nodeTitle,
+        $activity->location,
+        format_plural($activity->points, $singular, $plural),
+      );
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
   }
   $table = array(
     'header' => $header,
@@ -139,13 +271,20 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_activities(&$vars) {
     'sticky' => '',
     'empty' => '',
   );
-  $vars['activities'] = theme_table($table);
+  $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $activities_total);
+  $vars['activities'] = theme_table($table) . theme_pager($pager);
 }
 
 /**
  * Implements hook_preprocess_uitpas_ui_user_profile_advantages() for uitpas-ui-user-profile-advantages.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
+  $passholder = $vars['passholder'];
+  $advantages = $vars['advantages'];
+  $promotions = $vars['promotions'];
+  $cashed_in_advantages = $vars['cashed_in_advantages'];
+  $cashed_in_promotions = $vars['cashed_in_promotions'];
+  $vars['title'] = t('My advantages (!points points saved)', array('!points' => $passholder->points));
   $base_table = array(
     'attributes' => array(),
     'caption' => '',
@@ -153,12 +292,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     'sticky' => '',
     'empty' => '',
   );
-  $passholder = $vars['passholder'];
-  $advantages = $vars['advantages'];
-  $promotions = $vars['promotions'];
-  $cashed_in_advantages = $vars['cashed_in_advantages'];
-  $cashed_in_promotions = $vars['cashed_in_promotions'];
-  $vars['title'] = t('My advantages (!points points saved)', array('!points' => $passholder->points));
   //promotions
   $header = array(
     array('data' => t('Trade-in options'), 'colspan' => 2),
@@ -247,7 +380,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   else {
     $vars['image'] = '';
   }
-  $vars['active_since'] = '<label>' . t('Active since') . ':</label> ' . '?';
   $vars['uitpas_number'] = '<label>' . t('UITpas number') . ':</label> ' . $passholder->uitpasNumber;
   $vars['intro'] = variable_format_value('uitpas_ui_user_profile_details_intro');
   $vars['national_identification_number'] = '<label>' . t('National identification number') . ':</label> ' . $passholder->inszNumber;
@@ -266,10 +398,19 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
   $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
   $vars['status_title'] = t('Status');
-  $status_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
+  $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $passholder->kansenStatuutEndDate)));
   $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
-  //$ocmw_end_date = t('valid till !date', array('j/m/Y' => date('', $passholder->kansenStatuutEndDate)));
-  $vars['ocmw_valid_till'] = '<label>' . t('OCMW status') . ':</label> ' . '?';
+  if (count($passholder->memberships)) {
+    $memberships = array();
+    foreach ($passholder->memberships as $membership) {
+       $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
+       $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+    }
+    $vars['memberships'] = implode('<br />', $memberships);
+  }
+  else {
+    $vars['memberships'] = '';
+  }
 }
 
 /**

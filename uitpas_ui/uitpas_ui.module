@@ -1,19 +1,86 @@
 <?php
+/**
+ * @file
+ * Uitpas UI: provides ctools content types to display culturefeed utipas data
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function uitpas_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Helper function to link cnapi actors if available
+ */
+function uitpas_ui_link_actors(&$objects) {
+  foreach ($objects as $object) {
+    if (isset($object->counters)) {
+      foreach ($object->counters as $ind => $counter) {
+        $id = $counter->id;
+        $actor = cnapi_get_actor($id);
+        if ($actor) {
+          $object->counters[$ind]->name = l($counter->name, 'actor/' . $counter->id);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function uitpas_ui_menu() {
+  return array(
+    'admin/config/services/uitpas_ui' => array(
+      'title' => 'Uipas UI promotions highlight',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('uitpas_ui_admin_promotions_highlight_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'uitpas_ui.admin.inc',
+    ),
+  );
+}
 
 /**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
   return array(
+    'uitpas_ui_admin_promotions_highlight_form' => array(
+      'render element' => 'form',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_advantage' => array(
       'variables' => array('advantage' => NULL),
       'template' => 'uitpas-ui-advantage',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
+    'uitpas_ui_advantages_promotions' => array(
+      'variables' => array(
+        'advantages' => array(), 
+        'advantages_total' => 0, 
+        'promotions' => array(),
+        'promotions_total' => 0,
+      ),
+      'template' => 'uitpas-ui-advantages-promotions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_promotion' => array(
       'variables' => array('promotion' => NULL),
       'template' => 'uitpas-ui-promotion',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotions_highlight' => array(
+      'variables' => array('promotions' => array()),
+      'template' => 'uitpas-ui-promotions-highlight',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
@@ -36,7 +103,7 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
     'uitpas_ui_user_profile_activities' => array(
-      'variables' => array('activities' => array()),
+      'variables' => array('activities' => array(), 'activites_total' => 0),
       'template' => 'uitpas-ui-user-profile-activities',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
@@ -75,15 +142,6 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
   );
-}
-
-/**
- * Implements hook_ctools_plugin_directory().
- */
-function uitpas_ui_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools') {
-    return 'ctools/plugins/' . $plugin;
-  }
 }
 
 /**

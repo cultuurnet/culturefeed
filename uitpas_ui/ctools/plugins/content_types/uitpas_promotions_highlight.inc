@@ -18,20 +18,29 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_edit_form($form, &$f
 }
 
 function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $conf, $args, $context) {
-  $location = $context->data->location;
-  $promotions = array();
+  $location = $context->data->cf_query_argument;
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
+    $highlights = variable_get('uitpas_ui_promotions_highlight', array());
+    $promotions = array();
+    foreach ($highlights as $highlight) {
+      $promotions[] = $cf->uitpas()->getPointsPromotion($highlight);
+    }
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-    $query->sort = SORT_CASHING_PERIOD_END;
-    $query->limit = 10;
+    $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
+    $query->limit = 10 - count($highlights);
     if ($location) {
       $query->city = $location;
     }
     $result = $cf->uitpas()->getPromotionPoints($query);
+    foreach ($result->objects as $object) {
+      if (!in_array($object->id, $highlights)) {
+        $promotions[] = $object;
+      }
+    }
     $block = new stdClass();
-    $block->title = "";
-    $block->content = theme('uitpas_promotions_highlight', array('promotions' => $promotions));
+    $block->title = t("Spotlight promotions");
+    $block->content = theme('uitpas_ui_promotions_highlight', array('promotions' => $promotions));
     return $block;
   }
   catch (Exception $e) {

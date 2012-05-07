@@ -1,7 +1,6 @@
 <div class="uitpas_ui_user_profile_details">
   <h2><?php print $title; ?></h2>
   <div class="uitpas_ui_user_profile_details_uitpas">
-    <div><?php print $active_since; ?></div>
     <div><?php print $uitpas_number; ?></div>
   </div>
   <div class="uitpas_ui_user_profile_details_data">
@@ -27,7 +26,9 @@
     <div class="uitpas_ui_user_profile_details_status">
       <h3><?php print $status_title; ?></h3>
       <div><?php print $status_valid_till; ?></div>
-      <div><?php print $ocmw_valid_till; ?></div>
+      <?php if ($memberships): ?>
+      <div><?php print $memberships; ?></div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
