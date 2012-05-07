@@ -1,5 +1,4 @@
 <div class="uitpas_ui_user_profile_details">
-  <h2><?php print $title; ?></h2>
   <div class="uitpas_ui_user_profile_details_uitpas">
     <div><?php print $uitpas_number; ?></div>
   </div>

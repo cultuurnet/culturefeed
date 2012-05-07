@@ -375,7 +375,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
 function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $uitpas_user = $vars['uitpas_user'];
   $passholder = $vars['passholder'];
-  $vars['title'] = t('My data');
   if (isset($uitpas_user->depiction)) {
     $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
   }

@@ -22,7 +22,7 @@ function uitpas_ui_uitpas_user_profile_details_content_type_render($subtype, $co
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $block = new stdClass();
-    $block->title = "";
+    $block->title = t('My data');
     $block->content = theme('uitpas_ui_user_profile_details', array(
       'uitpas_user' => $uitpas_user,
       'passholder' => $passholder,
