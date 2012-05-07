@@ -191,7 +191,28 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
  * Implements hook_preprocess_uitpas_ui_recent_actions() for uitpas-ui-user-recent-actions.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
-  $vars['available'] = theme_item_list($list);
+  $actions = $vars['actions'];
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => array(),
+  );
+  foreach ($actions as $action) {
+    $args = array(
+      '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
+      '!points' => $action->points,
+      '!location' => $action->createdVia,
+      '!time_ago' => format_interval(time() - $action->creationDate, 1),
+    );
+    $singular = t('!name saved 1 point at !location, !time_ago ago', $args);
+    $plural = t('!name saved !points points at !location, !time_ago ago', $args);
+    $image = ($action->depiction) ? theme_image(array('path' => $action->depiction, 'attributes' => array())) : '';
+    $list['items'][] = $image . format_plural($action->points, $singular, $plural);
+  }
+  
+  $vars['actions'] = theme_item_list($list);
+  $vars['form'] = (count($vars['form'])) ? drupal_render($vars['form']) : '';
 }
 
 /**
