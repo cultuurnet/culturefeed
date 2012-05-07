@@ -10,6 +10,7 @@ $plugin = array(
   'title' => t('Uitpas: validation form'),
   'description' => t('Uitpas: validation form.'),
   'category' => t('Uitpas'),
+  'required context' => new ctools_context_required(t('Uitpas user'), 'uitpas_user'),
 );
 
 function uitpas_ui_uitpas_validation_form_content_type_edit_form($form, &$form_state) {
@@ -17,10 +18,12 @@ function uitpas_ui_uitpas_validation_form_content_type_edit_form($form, &$form_s
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render($subtype, $conf, $args, $context) {
-  $block = new stdClass();
-  $block->title = t('Allready own an Uitpas ?');
-  $block->content = drupal_get_form('uitpas_ui_uitpas_validation_form_content_type_render_form');
-  return $block;
+  if (!$context->data) {
+    $block = new stdClass();
+    $block->title = t('Allready own an Uitpas ?');
+    $block->content = drupal_get_form('uitpas_ui_uitpas_validation_form_content_type_render_form');
+    return $block;
+  }
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_state) {
@@ -95,7 +98,6 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render_form_submit(&$form, &$form_state) {
-  $link = $form_state['values']['link'];
   //we rebuild the form so our form definition can popup a window if required
   $form_state['rebuild'] = TRUE;
 }
