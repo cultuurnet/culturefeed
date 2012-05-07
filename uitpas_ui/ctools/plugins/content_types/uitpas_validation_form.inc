@@ -56,10 +56,14 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
   $number = $form_state['values']['uitpasnumber'];
   $dob = $form_state['values']['dob']['year'] . '-' . $form_state['values']['dob']['month'] . '-' . $form_state['values']['dob']['day'];
   $dob = new DateTime($dob);
-  
+
   $cf = DrupalCultureFeed::getConsumerInstance();
   try {
-    $callback_url = url('culturefeed/oauth/connect', array('absolute' => TRUE));
+    $callback_options = array(
+      'query' => array('closepopup' => 'true'),
+      'absolute' => TRUE,
+    );
+    $callback_url = url('culturefeed/oauth/authorize', $callback_options);
     $link = $cf->uitpas()->getPassholderActivationLinkChainedWithAuthorization($number, $dob, $callback_url);
     $form_state['values']['link'] = $link;
   }

@@ -6,6 +6,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   const EMAIL_NOTIFICATION_MAILS = 'NOTIFICATION_MAILS';
   const EMAIL_ALL_MAILS = 'ALL_MAILS';
 
+  const SMS_NO_SMS = 'NO_SMS';
+  const SMS_ALL_SMS = 'ALL_SMS';
+  const SMS_NOTIFICATION_SMS = 'NOTIFICATION_SMS';
+
   /**
    * The name of the passholder. (Required)
    *
@@ -33,6 +37,13 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $emailPreference;
+
+  /**
+   * The SMS preference
+   *
+   * @var string
+   */
+  public $smsPreference;
 
   /**
    * The INSZ number of the passholder. (Required)
@@ -97,7 +108,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $telephone;
-  
+
   /**
    * The GSM number of the passholder.
    *
@@ -195,18 +206,22 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var integer
    */
   public $points;
-  
+
   public $moreInfo;
-  
+
   public $schoolConsumerKey;
-  
+
   public $balieConsumerKey;
-  
+
   public $picture;
 
   protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
       $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
+    }
+
+    if (isset($data['kansenStatuut'])) {
+      $data['kansenStatuut'] = $data['kansenStatuut'] ? 'true' : 'false';
     }
 
     if (isset($data['kansenStatuutEndDate'])) {
@@ -216,6 +231,12 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     if (isset($data['inszNumberHash'])) {
       $data['inszNumber'] = $data['inszNumberHash'];
     }
+
+    foreach (array('currentCard', 'uitIdUser') as $readOnlyProperty) {
+      if (isset($data[$readOnlyProperty])) {
+        unset($data[$readOnlyProperty]);
+      }
+    }
   }
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
@@ -224,6 +245,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->firstName = $object->xpath_str('firstName');
     $passholder->email = $object->xpath_str('email');
     $passholder->emailPreference = $object->xpath_str('emailPreference');
+    $passholder->smsPreference = $object->xpath_str('smsPreference');
     $passholder->inszNumberHash = $object->xpath_str('inszNumberHash');
     $passholder->dateOfBirth = $object->xpath_time('dateOfBirth');
     $passholder->gender = $object->xpath_str('gender');
@@ -250,10 +272,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->moreInfo = $object->xpath_str('moreInfo');
     $passholder->schoolConsumerKey = $object->xpath_str('schoolConsumerKey');
     $passholder->picture = $object->xpath_str('picture');
-    
+
     foreach ($object->xpath('memberships') as $membership) {
       $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
-    } 
+    }
 
     return $passholder;
   }
