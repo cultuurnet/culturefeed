@@ -22,6 +22,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $cf = $context->data->cf;
+    $consumer_cf = DrupalCultureFeed::getConsumerInstance();
     $advantages = array();
     $promotions = array();
     $cashed_in_promotions = array();
@@ -29,10 +30,11 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //welcome advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $advantages = $result->objects;
+        uitpas_ui_link_actors($advantages);
       }
     } 
     catch (Exception $e) {
@@ -41,10 +43,11 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
+        uitpas_ui_link_actors($promotions);
       }
     }
     catch (Exception $e) {
@@ -53,7 +56,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //cashed in advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $query->cashedIn = TRUE;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
@@ -66,7 +69,8 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //cashed in promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
+      dpm($query);
       $result = $cf->uitpas()->getCashedInPromotionPoints($query);
       if ($result->total) {
         $cashed_in_promotions = $result->objects;
