@@ -191,7 +191,28 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
  * Implements hook_preprocess_uitpas_ui_recent_actions() for uitpas-ui-user-recent-actions.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
-  $vars['available'] = theme_item_list($list);
+  $actions = $vars['actions'];
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => array(),
+  );
+  foreach ($actions as $action) {
+    $args = array(
+      '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
+      '!points' => $action->points,
+      '!location' => $action->createdVia,
+      '!time_ago' => format_interval(time() - $action->creationDate, 1),
+    );
+    $singular = t('!name saved 1 point at !location, !time_ago ago', $args);
+    $plural = t('!name saved !points points at !location, !time_ago ago', $args);
+    $image = ($action->depiction) ? theme_image(array('path' => $action->depiction, 'attributes' => array())) : '';
+    $list['items'][] = $image . format_plural($action->points, $singular, $plural);
+  }
+  
+  $vars['actions'] = theme_item_list($list);
+  $vars['form'] = (count($vars['form'])) ? drupal_render($vars['form']) : '';
 }
 
 /**
@@ -202,15 +223,17 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
   $passholder = $vars['passholder'];
   $advantages = $vars['advantages'];
   $promotions = $vars['promotions'];
-  $nearby_promotions = $vars['nearby_promotions'];
+  $coming_promotions = $vars['coming_promotions'];
   if (isset($uitpas_user->depiction)) {
     $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
   }
   else {
     $vars['image'] = '';
   }
-  $vars['name'] = l($uitpas_user->nick, 'myprofile');
-  $vars['points'] = t('%points points saved', array('%points' => $passholder->points));
+  $vars['name'] = l($uitpas_user->nick, 'myprofile/uitid');
+  $singular = t('1 point saved');
+  $plural = t('%points points saved', array('%points' => $passholder->points));
+  $vars['points'] = format_plural($passholder->points, $singular, $plural);
   //advantages and promotions
   $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   //advantages
@@ -228,15 +251,16 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
     );
   }
   $vars['advantages_promotions'] = theme_links($links);
-  //nearby promotions
+  //coming promotions
   $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
-  foreach ($nearby_promotions as $promotion) {
+  foreach ($coming_promotions as $promotion) {
     $links['links'][] = array(
-      'title' => $promotion->title,
+      'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
       'href' => 'promotion/' . $promotion->id,
     );
   }
-  $vars['nearby_promotions'] = theme_links($links);
+  $vars['coming_promotions'] = (count($coming_promotions)) ? theme_links($links) : '';
+  $vars['all_promotions'] = l(t('Show all promotions'), 'myprofile/advantages');
 }
 
 /**

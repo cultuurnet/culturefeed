@@ -87,14 +87,14 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form_submit(&$f
     $uitpas_user = $form_state['values']['uitpas_user'];
     $cf = $form_state['values']['cf'];
     $preferences = new CultureFeed_Preferences();
-    $privacy = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
+    $private = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
     $set = FALSE;
-    foreach ($form_state['values']['preferences'] as $preference) {
+    foreach ($form_state['values']['preferences']->activityPrivacyPreferences as $preference) {
       if ($preference->activityType == CultureFeed_Activity::TYPE_UITPAS) {
         $preference->private = $private;
         $set = TRUE;
-        continue;
       }
+      $preferences->activityPrivacyPreferences[] = $preference;
     }
     if (!$set) {
       $preferences->activityPrivacyPreferences[] = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, $private);

@@ -24,7 +24,12 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $co
     $highlights = variable_get('uitpas_ui_promotions_highlight', array());
     $promotions = array();
     foreach ($highlights as $highlight) {
-      $promotions[] = $cf->uitpas()->getPointsPromotion($highlight);
+      try {
+        $promotions[] = $cf->uitpas()->getPointsPromotion($highlight);
+      }
+      catch (Exception $e) {
+        watchdog_exception('uitpas_ui_content_type_promotions_highlight', $e);
+      }
     }
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;

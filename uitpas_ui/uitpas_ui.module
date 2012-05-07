@@ -85,7 +85,7 @@ function uitpas_ui_theme() {
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
     'uitpas_ui_recent_actions' => array(
-      'variables' => array('actions' => array()),
+      'variables' => array('actions' => array(), 'form' => array()),
       'template' => 'uitpas-ui-recent-actions',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
@@ -96,7 +96,7 @@ function uitpas_ui_theme() {
         'passholder' => NULL, 
         'advantages' => array(), 
         'promotions' => array(),
-        'nearby_promotions' => array(),
+        'coming_promotions' => array(),
       ),
       'template' => 'uitpas-ui-user-profile',
       'file' => 'theme.inc',

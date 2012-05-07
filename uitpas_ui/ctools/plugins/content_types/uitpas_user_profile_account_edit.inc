@@ -20,17 +20,22 @@ function uitpas_ui_uitpas_user_profile_account_edit_content_type_edit_form($form
 function uitpas_ui_uitpas_user_profile_account_edit_content_type_render($subtype, $conf, $args, $context) {
   if ($context->data) {
     $uitpas_user = $context->data->user;
+    $cf = $context->data->cf;
     $block = new stdClass();
     $block->title = t('Edit account');
-    $block->content = drupal_get_form('uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form', $uitpas_user);
+    $block->content = drupal_get_form('uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form', $uitpas_user, $cf);
     return $block;
   }
 }
 
-function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form($form, &$form_state, $uitpas_user) {
+function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form($form, &$form_state, $uitpas_user, $cf) {
   $form['uitpas_user'] = array(
     '#type' => 'value',
     '#value' => $uitpas_user,
+  );
+  $form['cf'] = array(
+    '#type' => 'value',
+    '#value' => $cf,
   );
   $form['username'] = array(
     '#type' => 'textfield',
@@ -69,11 +74,13 @@ function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form_val
 }
 
 function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form_submit(&$form, &$form_state) {
-  $uitpas_user = $form_state['values']['uitpas_user'];
+  $uitpas_user = new CultureFeed_User();
+  $uitpas_user->id = $form_state['values']['uitpas_user']->id;
   $uitpas_user->nick = $form_state['values']['username'];
   $uitpas_user->mbox = $form_state['values']['email'];
+  $cf = $form_state['values']['cf'];
   try {
-    DrupalCultureFeed::updateUser($uitpas_user);
+    $cf->updateUser($uitpas_user);
     drupal_set_message(t('Your changes have been saved.'));
   }
   catch (Exception $e) {
