@@ -220,12 +220,22 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
     }
 
+    if (isset($data['kansenStatuut'])) {
+      $data['kansenStatuut'] = $data['kansenStatuut'] ? 'true' : 'false';
+    }
+
     if (isset($data['kansenStatuutEndDate'])) {
       $data['kansenStatuutEndDate'] = date('Y-m-d', $data['kansenStatuutEndDate']);
     }
 
     if (isset($data['inszNumberHash'])) {
       $data['inszNumber'] = $data['inszNumberHash'];
+    }
+
+    foreach (array('currentCard', 'uitIdUser') as $readOnlyProperty) {
+      if (isset($data[$readOnlyProperty])) {
+        unset($data[$readOnlyProperty]);
+      }
     }
   }
 
