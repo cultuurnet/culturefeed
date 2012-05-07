@@ -24,11 +24,12 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     $cf = $context->data->cf;
     $advantages = array();
     $promotions = array();
-    $nearby_promotions = array();
+    $coming_promotions = array();
     //welcome advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $passholder->uitpasNumber;
+      $query->max = 2;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $advantages = $result->objects;
@@ -41,6 +42,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->filterOnUserPoints = TRUE;
+      $query->max = 2;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
@@ -49,13 +51,14 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     catch (Exception $e) {
       watchdog_exception('uitpas_ui_content_type_user_profile_promotions', $e);
     }
-    //nearby promotions
+    //coming promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->minPoints = $passholder->points + 1;
+      $query->max = 2;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
-        $nearby_promotions = $result->objects;
+        $coming_promotions = $result->objects;
       }
     }
     catch (Exception $e) {
@@ -69,7 +72,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       'passholder' => $passholder,
       'advantages' => $advantages,
       'promotions' => $promotions,
-      'nearby_promotions' => $nearby_promotions,
+      'coming_promotions' => $coming_promotions,
     ));
     return $block;
   }
