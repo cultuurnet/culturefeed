@@ -53,6 +53,9 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
     if (isset($data['cashingPeriodEnd'])) {
       $data['cashingPeriodEnd'] = date('c', $data['cashingPeriodEnd']);
     }
-  }
 
+    if (isset($data['cashedIn'])) {
+      $data['cashedIn'] = $data['cashedIn'] ? 'true' : 'false';
+    }
+  }
 }
