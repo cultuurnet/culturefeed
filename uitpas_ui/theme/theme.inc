@@ -284,7 +284,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $promotions = $vars['promotions'];
   $cashed_in_advantages = $vars['cashed_in_advantages'];
   $cashed_in_promotions = $vars['cashed_in_promotions'];
-  $vars['title'] = t('My advantages (!points points saved)', array('!points' => $passholder->points));
   $base_table = array(
     'attributes' => array(),
     'caption' => '',
@@ -298,17 +297,24 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     array('data' => t('valid till'), 'colspan' => 2),
   );
   $rows = array();
-  foreach ($promotions as $promotion) {
-    $location = array();
-    foreach ($promotion->counters as $counter) {
-      $location[] = $counter->name;
+  if (count($promotions)) {
+    foreach ($promotions as $promotion) {
+      $location = array();
+      foreach ($promotion->counters as $counter) {
+        $location[] = $counter->name;
+      }
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $promotion->points));
+      $rows[] = array(
+        format_plural($promotion->points, $singular, $plural),
+        l($promotion->title, 'promotion/' . $promotion->id),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
+        implode(', ', $location)
+      );
     }
-    $rows[] = array(
-      t('!points points', array('!points' => $promotion->points)),
-      l($promotion->title, 'promotion/' . $promotion->id),
-      ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
-      implode(', ', $location)
-    );
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['promotions'] = theme_table($table);
@@ -318,16 +324,21 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     array('data' => t('valid till'), 'colspan' => 2),
   );
   $rows = array();
-  foreach ($advantages as $advantage) {
-    $location = array();
-    foreach ($advantage->counters as $counter) {
-      $location[] = $counter->name;
+  if (count($advantages)) {
+    foreach ($advantages as $advantage) {
+      $location = array();
+      foreach ($advantage->counters as $counter) {
+        $location[] = $counter->name;
+      }
+      $rows[] = array(
+        l($advantage->title, 'advantage/' . $advantage->id),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
+        implode(', ', $location)
+      );
     }
-    $rows[] = array(
-      l($advantage->title, 'advantage/' . $advantage->id),
-      ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
-      implode(', ', $location)
-    );
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['advantages'] = theme_table($table);
@@ -339,15 +350,13 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $rows = array();
   //cashed in promotions
   foreach ($cashed_in_promotions as $promotion) {
-    $location = array();
-    foreach ($promotion->counters as $counter) {
-      $location[] = $counter->name;
-    }
+    $singular = t('1 point');
+    $plural = t('!points points', array('!points' => $promotion->points));
     $rows[] = array(
-      t('!points points', array('!points' => $promotion->points)),
+      format_plural($promotion->points, $singular, $plural),
       l($promotion->title, 'promotion/' . $promotion->id),
-      implode(', ', $location),
-      '?',
+      $promotion->counters[0]->name,
+      date('j/n/Y', $promotion->cashingDate),
     );
   }
   //cashed in advantages
@@ -359,9 +368,12 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     $rows[] = array(
       t('Welcome'),
       l($advantage->title, 'advantage/' . $advantage->id),
-      implode(', ', $location),
-      '?',
+      $advantage->counters[0]->name,
+      date('j/n/Y', $advantage->cashingDate),
     );
+  }
+  if (!count($rows)) {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 4));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['cashed_in_promotions_advantages'] = theme_table($table);
@@ -373,7 +385,6 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
 function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $uitpas_user = $vars['uitpas_user'];
   $passholder = $vars['passholder'];
-  $vars['title'] = t('My data');
   if (isset($uitpas_user->depiction)) {
     $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
   }

@@ -35,7 +35,8 @@ class CultureFeed_Uitpas_Passholder_CashedInPointsPromotion extends CultureFeed_
     $promotion->points = $object->xpath_int('promotion/points');
     $promotion->cashingDate = $object->xpath_time('cashingDate');
     $promotion->location = $object->xpath_str('balie/name');
-
+    $promotion->counters = array(CultureFeed_Uitpas_Passholder_Counter::createFromXML($object->balie));
+    
     return $promotion;
   }
 

@@ -21,18 +21,20 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
   if ($context->data) {
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
+    $cf = $context->data->cf;
+    $consumer_cf = DrupalCultureFeed::getConsumerInstance();
     $advantages = array();
     $promotions = array();
     $cashed_in_promotions = array();
     $cashed_in_advantages = array();
-    $cf = $context->data->cf;
     //welcome advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $advantages = $result->objects;
+        uitpas_ui_link_actors($advantages);
       }
     } 
     catch (Exception $e) {
@@ -41,9 +43,11 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
+        uitpas_ui_link_actors($promotions);
       }
     }
     catch (Exception $e) {
@@ -52,11 +56,12 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //cashed in advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $query->cashedIn = TRUE;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $cashed_in_advantages = $result->objects;
+        uitpas_ui_link_actors($cashed_in_advantages);
       }
     } 
     catch (Exception $e) {
@@ -65,9 +70,11 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     //cashed in promotions
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions();
+      $query->uitpasNumber = $passholder->uitpasNumber;
       $result = $cf->uitpas()->getCashedInPromotionPoints($query);
       if ($result->total) {
         $cashed_in_promotions = $result->objects;
+        uitpas_ui_link_actors($cashed_in_promotions);
       }
     }
     catch (Exception $e) {
@@ -75,7 +82,9 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     }
     //ctools block
     $block = new stdClass();
-    $block->title = "";
+    $singular = t('My advantages (1 point saved)');
+    $plural = t('My advantages (!points points saved)', array('!points' => $passholder->points));
+    $block->title = format_plural($passholder->points, $singular, $plural);
     $block->content = theme('uitpas_ui_user_profile_advantages', array(
       'uitpas_user' => $uitpas_user,
       'passholder' => $passholder,
