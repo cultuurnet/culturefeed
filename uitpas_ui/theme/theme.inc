@@ -433,7 +433,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
   $vars['more_info'] = $passholder->moreInfo;
   $list = array('items' => array(), 'title' => t('Recent UITID actions'), 'type' => 'ul', 'attributes' => array());
   foreach ($actions as $action) {
-    $list['items'][] = $action->name . '<br />' .  date('j/m/Y', $action->date);
+    $list['items'][] = $action->nodeTitle . '<br />' .  date('j/m/Y', date('j/m/Y', $action->creationDate));
   }
   $vars['actions'] = theme_item_list($list);
   $vars['form'] = drupal_render($vars['form']);

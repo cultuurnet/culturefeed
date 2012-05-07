@@ -21,10 +21,10 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
   if ($context->data) {
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
+    $cf = $context->data->cf;
     $advantages = array();
     $promotions = array();
     $nearby_promotions = array();
-    $cf = $context->data->cf;
     //welcome advantages
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();

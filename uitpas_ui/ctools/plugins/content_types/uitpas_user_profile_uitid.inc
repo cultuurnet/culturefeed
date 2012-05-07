@@ -22,21 +22,21 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $cf = $context->data->cf;
-    $consumer_cf = DrupalCultureFeed::getConsumerInstance();
-    //$preferences = $consumer_cf->getUserPreferences($uitpas_user->id);
+    $preferences = $cf->getUserPreferences($uitpas_user->id);
     $actions = array();
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions();
+      $query->uid = $uitpas_user->id;
       $query->max = 5;
       $result = $cf->uitpas()->searchCheckins($query);
       if ($result->total) {
         $actions = $result['objects'];
       }
     }
-    catch (Exception $e) {
+    catch (Exception $e) {dpm($e);
       watchdog_exception('uitpas_ui_content_type_user_profile_uitid', $e);
     }
-    $form = drupal_get_form('uitpas_ui_uitpas_user_profile_uitid_content_type_render_form', $passholder, $cf);
+    $form = drupal_get_form('uitpas_ui_uitpas_user_profile_uitid_content_type_render_form', $uitpas_user, $cf, $preferences);
     $block = new stdClass();
     $block->title = t('My UITID profile');
     $block->content = theme('uitpas_ui_user_profile_uitid', array(
@@ -49,19 +49,29 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
   }
 }
 
-function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form($form, &$form_state, $passholder, $cf) {
-  $form['passholder'] = array(
+function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form($form, &$form_state, $uitpas_user, $cf, $preferences) {
+  $form['uitpas_user'] = array(
     '#type' => 'value',
-    '#value' => $passholder,
+    '#value' => $uitpas_user,
   );
   $form['cf'] = array(
     '#type' => 'value',
     '#value' => $cf,
   );
+  $form['preferences'] = array(
+    '#type' => 'value',
+    '#value' => $preferences,
+  );
+  $publish_actions = FALSE;
+  foreach ($preferences->activityPrivacyPreferences as $preference) {
+    if ($preference->activityType == CultureFeed_Activity::TYPE_UITPAS && !$preference->private) {
+      $publish_actions = TRUE;
+    }
+  }
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
     '#title' => t('Publish my UITID actions'),
-    '#default_value' => $passholder->publishActions,
+    '#default_value' => $publish_actions,
   );
   $form['actions'] = array(
     'save' => array(
@@ -73,11 +83,13 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form($form, &$f
 }
 
 function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form_submit(&$form, &$form_state) {
-  $passholder = $form_state['values']['passholder'];
-  $cf = $form_state['values']['cf'];
-  $passholder->publishActions = $form_state['values']['publish_actions'];
   try {
-    $cf->uitpas()->updatePassholder($passholder);
+    $uitpas_user = $form_state['values']['uitpas_user'];
+    $cf = $form_state['values']['cf'];
+    $preferences = new CultureFeed_Preferences();
+    $preference = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
+    $preferences->activityPrivacyPreferences[] = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, $preference);
+    $cf->setUserPreferences($uitpas_user->id, $preferences);
     drupal_set_message(t('Your changes have been saved.'));
   }
   catch (Exception $e) {
