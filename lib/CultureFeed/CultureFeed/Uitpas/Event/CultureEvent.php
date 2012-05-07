@@ -73,6 +73,13 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    * @var Calendar
    */
   public $calendar;
+  
+   /**
+   * The number of points of the event
+   *
+   * @var numberOfPoints
+   */
+  public $numberOfPoints;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
   
@@ -88,7 +95,8 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->tariff = $object->xpath_float('tariff');
     $event->title = $object->xpath_str('title');
     $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
-
+    $event->numberOfPoints = $object->xpath_int('numberOfPoints');
+    
     return $event;
   }
 

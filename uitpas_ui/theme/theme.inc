@@ -41,6 +41,71 @@ function theme_uitpas_ui_admin_promotions_highlight_form($vars) {
 /**
  * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
  */
+function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
+  $activity = $vars['event'] = $vars['activity'];
+  $uitpas_activity = $vars['uitpas_activity'];
+  template_preprocess_cnapi_ui_event($vars);
+  //icons and legend are the same html wise for accessibility reasons
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => array(),
+  );
+  if ($uitpas_activity && $uitpas_activity->numberOfPoints) {
+    $singular = t('Save point');
+    $plural = t('Save !points points', array('!points' => $uitpas_activity->numberOfPoints));
+    $list['items'][] = array(
+      'data' => format_plural($uitpas_activity->numberOfPoints, $singular, $plural),
+      'class' => array('uitpas_activity_has_points'),
+    );
+  }
+  if ($vars['promotions']) {
+    $link = 'actor/' . $activity['location']['actor']['cdbid'];
+    $list['items'][] = array(
+      'data' => l($vars['location']['title'], $link),
+      'class' => array('uitpas_activity_has_promotion'),
+    );
+  }
+  if ($uitpas_activity && $uitpas_activity->tariff < $uitpas_activity->price) {
+    $list['items'][] = array(
+      'data' => t('Reduction for opportunity groups'),
+      'class' => array('uitpas_activity_has_tariff'),
+    );
+    $vars['price'] = "&euro; " . $uitpas_activity->tariff;
+  }
+  $vars['icons'] = theme_item_list($list);
+  //headings
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => $vars['headings'],
+  );
+  $vars['headings'] = theme_item_list($list);
+  //when
+  $vars['when'] = "<label>" . t('When?') . "</label> " . $vars['when'];
+  //where
+  $where = l($vars['location']['title'], 'actor/' . $activity['location']['actor']['cdbid']) . "<br />";
+  $where .= $vars['location']['address'];
+  $vars['where'] = "<label>" . t('Where?') . "</label> " . $where;
+  //price
+  $vars['price'] = "<label>" . t('Price') . "</label> " . $vars['price'];
+  //links
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => $vars['links'],
+  );
+  $vars['links'] = "<label>" . t('Links') . "</label> " . theme_item_list($list);
+  //image
+  $vars['image'] = (isset($vars['images'][0]['image'])) ? $vars['images'][0]['image'] : '';
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
+ */
 function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $advantage = $vars['advantage'];
   $vars['title'] = $advantage->title;

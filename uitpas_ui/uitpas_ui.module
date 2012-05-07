@@ -46,6 +46,15 @@ function uitpas_ui_menu() {
 }
 
 /**
+ * Implements hook_preprocess__cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
+ */
+function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
+  $url = 'activity/' . $vars['event']['cdbid'];
+  $vars['object_url'] = $url;
+  $vars['more_link'] = l(t('More info'), $url);
+}
+
+/**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
@@ -55,7 +64,13 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
-    'uitpas_ui_advantage' => array(
+    'uitpas_ui_activity' => array(
+      'variables' => array('activity' => NULL, 'uitpas_activity' => NULL, 'promotion' => 0),
+      'template' => 'uitpas-ui-activity',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+      'uitpas_ui_advantage' => array(
       'variables' => array('advantage' => NULL),
       'template' => 'uitpas-ui-advantage',
       'file' => 'theme.inc',
