@@ -87,8 +87,18 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render_form_submit(&$f
     $uitpas_user = $form_state['values']['uitpas_user'];
     $cf = $form_state['values']['cf'];
     $preferences = new CultureFeed_Preferences();
-    $preference = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
-    $preferences->activityPrivacyPreferences[] = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, $preference);
+    $privacy = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
+    $set = FALSE;
+    foreach ($form_state['values']['preferences'] as $preference) {
+      if ($preference->activityType == CultureFeed_Activity::TYPE_UITPAS) {
+        $preference->private = $private;
+        $set = TRUE;
+        continue;
+      }
+    }
+    if (!$set) {
+      $preferences->activityPrivacyPreferences[] = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, $private);
+    }
     $cf->setUserPreferences($uitpas_user->id, $preferences);
     drupal_set_message(t('Your changes have been saved.'));
   }
