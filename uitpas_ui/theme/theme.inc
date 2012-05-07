@@ -9,31 +9,32 @@
  * Returns html for admin promotions highlight form
  */
 function theme_uitpas_ui_admin_promotions_highlight_form($vars) {
-  $output = '';
   $form = $vars['form'];
-  drupal_add_tabledrag('uitpas-ui-admin-promotions-highlight-form', 'order', 'sibling', 'weight');
+  $weight_class = 'uitpas_ui_promotions_highlight_weight';
+  $table_id = 'uitpas_ui_promotions_highlight_weight';
   $table = array(
-    'header' => array(),
+    'header' => array(t('Promotion'), t('Weight')),
     'rows' => array(),
-    'attributes' => array('id' => 'uitpas_ui_admin_promotions_highlight_form'),
+    'attributes' => array('id' => $table_id),
     'caption' => '',
     'colgroups' => array(),
     'sticky' => '',
     'empty' => '',
   );
-  $class = 'uitpas-ui-admin-promotions-highlight-form-weight';
-  foreach (element_children($form['uitpas_ui_promotions_highlight']) as $element) {
-    $form['uitpas_ui_promotions_highlight'][$element]['weight']['#attributes'] = array('class' => array('weight'));
+  $rows = array();
+  foreach (element_children($form['promotions']) as $element) {
+    $form['promotions'][$element]['weight']['#attributes']['class'] = array($weight_class);
     $table['rows'][] = array(
       'data' => array(
-        drupal_render($form['uitpas_ui_promotions_highlight'][$element]['weight']),
-        drupal_render($form['uitpas_ui_promotions_highlight'][$element]['value']),
+        drupal_render($form['promotions'][$element]['value']),
+        drupal_render($form['promotions'][$element]['weight']),
       ),
       'class' => array('draggable'),
     );
   }
-  $output .= theme_table($table);
+  $output = theme_table($table);
   $output .= drupal_render_children($form);
+  drupal_add_tabledrag($table_id, 'order', 'sibling', $weight_class);
   return $output;
 }
 

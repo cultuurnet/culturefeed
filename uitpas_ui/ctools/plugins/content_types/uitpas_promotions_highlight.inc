@@ -21,16 +21,26 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $co
   $location = $context->data->cf_query_argument;
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
+    $highlights = variable_get('uitpas_ui_promotions_highlight', array());
+    $promotions = array();
+    foreach ($highlights as $highlight) {
+      $promotions[] = $cf->uitpas()->getPointsPromotion($highlight);
+    }
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
-    $query->limit = 10;
+    $query->limit = 10 - count($highlights);
     if ($location) {
       $query->city = $location;
     }
     $result = $cf->uitpas()->getPromotionPoints($query);
+    foreach ($result->objects as $object) {
+      if (!in_array($object->id, $highlights)) {
+        $promotions[] = $object;
+      }
+    }
     $block = new stdClass();
     $block->title = t("Spotlight promotions");
-    $block->content = theme('uitpas_ui_promotions_highlight', array('promotions' => $result->objects));
+    $block->content = theme('uitpas_ui_promotions_highlight', array('promotions' => $promotions));
     return $block;
   }
   catch (Exception $e) {
