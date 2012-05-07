@@ -64,7 +64,18 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
       'absolute' => TRUE,
     );
     $callback_url = url('culturefeed/oauth/authorize', $callback_options);
-    $link = $cf->uitpas()->getPassholderActivationLinkChainedWithAuthorization($number, $dob, $callback_url);
+
+    $link = $cf->uitpas()->getPassholderActivationLink($number, $dob, function () use ($cf, $callback_url) {
+      $token = $cf->getRequestToken($callback_url);
+
+      $_SESSION['oauth_token'] = $token['oauth_token'];
+      $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
+
+      $auth_url = $cf->getUrlAuthorize($token, $callback_url, CultureFeed::AUTHORIZE_TYPE_REGULAR, TRUE);
+
+      return $auth_url;
+    });
+
     $form_state['values']['link'] = $link;
   }
   catch (Exception $e) {

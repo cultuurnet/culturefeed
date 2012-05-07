@@ -179,7 +179,7 @@ class CultureFeed implements ICultureFeed {
     }
 
     if ($skip_confirmation) {
-      $query['skip_confirmation'] = 'true';
+      $query['skipConfirmation'] = 'true';
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);
