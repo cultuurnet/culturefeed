@@ -111,6 +111,12 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
+    'uitpas_ui_register_where' => array(
+      'variables' => array('pos' => array(), 'actors' => array(), 'total' => 0),
+      'template' => 'uitpas-ui-register-where',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
     'uitpas_ui_user_profile' => array(
       'variables' => array(
         'uitpas_user' => NULL, 

@@ -334,6 +334,52 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_uitpas_ui_register_where() for uitpas-ui-register-where.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
+  $table = array(
+    'header' =>  array(),
+    'rows' =>  array(),
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  foreach ($vars['pos'] as $pos) {
+    $description = "<div class=\"uitpas_pos_name\">" . l($pos->name, 'actor/' . $pos->id) . "</div>";
+    $times = '-';
+    if (isset($vars['actors'][$pos->id])) {
+      $actor = $vars['actors'][$pos->id];
+      $address = $actor['contactinfo']['address'];
+      $description .= "<div class=\"uitpas_pos_address\">";
+      if (isset($address['street'])) {
+        $description .= $address['street'] . ' ' . $address['housenr'] . "<br />";
+      }
+      $description .= $address['zipcode'] . ' ' . $address['city'];
+      $description .= "</div>";
+      if (isset($actor['detail']['nl']['calendarsummary'])) {
+        $times = $actor['detail']['nl']['calendarsummary'];
+      }
+    }
+    else if ($pos->street || $pos->city) {
+      $description .= "<div class=\"uitpas_pos_address\">";
+      if ($pos->street) {
+        $description .= $pos->street . ' ' . $pos->number . "<br />";
+      }
+      $description .= $pos->postalCode . ' ' .  $pos->city;
+      $description .= "</div>";
+    }
+    $more = t('More info and contact information');
+    $description .= "<div class=\"uitpas_pos_more\">" . l($more, 'actor/' . $pos->id) . "</div>";
+    $table['rows'][] = array($description, $times);
+  }
+  $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $vars['total']);
+  $vars['pos'] = theme_table($table) . theme_pager($pager);
+  $vars['info'] = variable_format_value('uitpas_ui_register_where_info');
+}
+
+/**
  * Implements hook_preprocess_uitpas_ui_user_profile() for uitpas-ui-user-profile.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
