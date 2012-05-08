@@ -55,11 +55,16 @@ function uitpas_ui_menu() {
 }
 
 /**
- * Implements hook_preprocess__cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
+ * Implements hook_preprocess_cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
  */
 function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
   $url = 'activity/' . $vars['event']['cdbid'];
-  $vars['object_url'] = $url;
+  $object = $vars['event'];
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
+  $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $vars['title']));
+  $vars['thumbnail'] = l($thumbnail_img, $url, array('html' => TRUE));
+  $vars['object_url'] = url($url);
   $vars['more_link'] = l(t('More info'), $url);
 }
 
