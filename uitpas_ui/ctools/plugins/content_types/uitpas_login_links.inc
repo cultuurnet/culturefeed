@@ -27,16 +27,16 @@ function uitpas_ui_uitpas_login_links_content_type_render($subtype, $conf, $args
       'href' => 'culturefeed/oauth/connect', 
     );
   }
-  if (!$context->data->passholder) {
+  if (!$context->data || $context->data && !$context->data->passholder) {
     $links['links']['uitpas_register'] = $link + array(
       'title' => t('Register'),
-      'href' => 'culturefeed/oauth/authorise',
+      'href' => 'culturefeed/oauth/connect/register',
     );
-    if (count($links['links'])) {
-      $block = new stdClass();
-      $block->title = '';
-      $block->content = theme_links($links);
-      return $block;
-    }
+  }
+  if (count($links['links'])) {
+    $block = new stdClass();
+    $block->title = '';
+    $block->content = theme_links($links);
+    return $block;
   }
 }

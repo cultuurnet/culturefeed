@@ -30,7 +30,7 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
     //uitpas event
     $query = new CultureFeed_Uitpas_Event_Query_SearchEventsOptions();
     $query->cdbid = $cdbid;
-    if ($context[1]->data->passholder) {
+    if ($context[1]->data && $context[1]->data->passholder) {
       $query->uitpasNumber = ($context[1]->data->passholder->uitpasNumber);
     }
     $result = $cf->uitpas()->searchEvents($query);

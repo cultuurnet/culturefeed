@@ -18,7 +18,7 @@ function uitpas_ui_uitpas_user_profile_content_type_edit_form($form, &$form_stat
 }
 
 function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $args, $context) {
-  if ($context->data->passholder) {
+  if ($context->data && $context->data->passholder) {
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $cf = $context->data->cf;
