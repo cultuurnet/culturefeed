@@ -47,6 +47,11 @@ function uitpas_ui_variable_info() {
       'type' => 'string',
       'group' => 'uitpas_ui',
     ),
+    'uitpas_ui_register_uitpas_intro' => array(
+      'title' => t('Uitpas UI: register uitpas intro'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+    ),
     'uitpas_ui_register_where_intro' => array(
       'title' => t('Uitpas UI: register where intro'),
       'type' => 'string',

@@ -51,8 +51,10 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_
       '#value' => t('Continue'),
     ),
   );
-  $args = array('@url' => url('culturefeed/oauth/connect'));
-  $form['#suffix'] = t('Allready registered ?  <a href="@url">Apply here</a>.', $args);
+  if ($_GET['q'] != 'register_uitpas') {
+    $args = array('@url' => url('culturefeed/oauth/connect'));
+    $form['#suffix'] = t('Allready registered ?  <a href="@url">Apply here</a>.', $args);
+  }
   return $form;
 }
 
