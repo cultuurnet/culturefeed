@@ -161,7 +161,6 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $advantage = $vars['advantage'];
-  $vars['title'] = $advantage->title;
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
@@ -253,7 +252,6 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
-  $vars['title'] = $promotion->title;
   $singular = t('1 Point needed');
   $plural =  t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
   $vars['points'] = format_plural($promotion->points, $singular, $plural);

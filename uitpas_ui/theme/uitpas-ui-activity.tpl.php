@@ -16,5 +16,4 @@
   <?php if ($icons): ?>
     <div class="uitpas_ui_activity_details_legend"><?php print $icons; ?></div>
   <?php endif; ?>
-  </div>
 </div>

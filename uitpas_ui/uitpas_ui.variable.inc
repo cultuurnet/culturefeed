@@ -87,5 +87,10 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
+    'uitpas_ui_sidebar_bottom' => array(
+      'title' => t('Uitpas UI: sidebar bottom'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
   );
 }

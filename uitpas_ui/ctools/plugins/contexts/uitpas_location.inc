@@ -48,7 +48,7 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
   if (isset($_COOKIE['uitpas_location'])) {
     $location = $_COOKIE['uitpas_location'];
   }
-  if ($data) {
+  if (!$conf && $data) {
     $location = $data;
   }
   if (!isset($locations[$location])) {

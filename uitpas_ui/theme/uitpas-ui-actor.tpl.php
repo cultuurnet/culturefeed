@@ -14,5 +14,4 @@
   <?php if ($legend): ?>
     <div class="uitpas_ui_actor_details_legend"><?php print $legend; ?></div>
   <?php endif; ?>
-  </div>
 </div>

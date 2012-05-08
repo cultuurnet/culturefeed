@@ -1,5 +1,4 @@
 <div class="uitpas_ui_promotion_details">
-  <h2><?php print $title; ?></h2>
   <div class="uitpas_ui_promotion_points"><?php print $points; ?></div>
   <?php if ($period): ?>
   <div class="uitpas_ui_promotion_period"><?php print $period; ?></div>
