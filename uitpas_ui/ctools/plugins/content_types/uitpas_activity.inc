@@ -24,7 +24,6 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
   $cdbid = $context[0]->data;
   $activity = cnapi_get_event($cdbid);
   $uitpas_activity = '';
-  $passholder = '';
   $promotions = 0;
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
@@ -48,12 +47,12 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
       }
     }
     catch (Exception $e) {
-      watchdog_exception('uitpas_ui_content_type_promotion_' . $activity['location']['actor']['cdbid'], $e);
+      watchdog_exception('uitpas_ui_content_type_activity_actor_' . $activity['location']['actor']['cdbid'], $e);
     }
     
   }
   catch (Exception $e) {
-    watchdog_exception('uitpas_ui_content_type_promotion', $e);
+    watchdog_exception('uitpas_ui_content_type_activity', $e);
   }
   $block = new stdClass();
   $block->title = $activity['detail']['nl']['title'];

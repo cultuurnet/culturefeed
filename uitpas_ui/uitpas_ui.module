@@ -70,7 +70,13 @@ function uitpas_ui_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
-      'uitpas_ui_advantage' => array(
+    'uitpas_ui_actor' => array(
+      'variables' => array('actor' => NULL, 'points' => FALSE, 'promotions' => array()),
+      'template' => 'uitpas-ui-actor',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_advantage' => array(
       'variables' => array('advantage' => NULL),
       'template' => 'uitpas-ui-advantage',
       'file' => 'theme.inc',

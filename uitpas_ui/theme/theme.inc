@@ -39,7 +39,7 @@ function theme_uitpas_ui_admin_promotions_highlight_form($vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_activity() for uitpas-ui-activity.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
   $activity = $vars['event'] = $vars['activity'];
@@ -74,7 +74,7 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
     );
     $vars['price'] = "&euro; " . $uitpas_activity->tariff;
   }
-  $vars['icons'] = theme_item_list($list);
+  $vars['icons'] = (count($list['items'])) ? theme_item_list($list) : '';
   //headings
   $list = array(
     'title' => '',
@@ -104,7 +104,60 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-user-advantage.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_actor() for uitpas-ui-actor.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
+  $actor = $vars['actor'];
+  $promotions = $vars['promotions'];
+  template_preprocess_cnapi_ui_actor($vars);
+  //icons and legend are the same html wise for accessibility reasons
+  $icons_list = $legend_list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => array(),
+  );
+  if ($vars['points']) {
+    $icons_list['items'][] = $legend_list['items'][] = array(
+      'data' => t('Save points'),
+      'class' => array('uitpas_actor_has_points'),
+    );
+  }
+  if (count($promotions)) {
+    $icons_list['items'][] = array(
+      'data' => t('Has promotions'),
+      'class' => array('uitpas_actor_has_promotions'),
+    );
+    foreach ($promotions as $promotion) {
+      $legend_list['items'][] = array(
+        'data' => l($promotion->title, 'promotion/' . $promotion->id),
+        'class' => array('uitpas_actor_has_promotions'),
+      );
+    }
+  }
+  $vars['icons'] = (count($icons_list['items'])) ? theme_item_list($icons_list) : '';
+  $vars['legend'] = (count($legend_list['items'])) ? theme_item_list($legend_list) : '';
+  //address
+  $vars['address'] = "<label>" . t('Address') . "</label> " . $vars['address'];
+  //contact
+  $contact = (isset($vars['contact']['mail'])) ? $vars['contact']['mail'] . "<br />" : '';
+  $contact .= (isset($vars['contact']['phone'])) ? t('telephone') . ': ' . $vars['contact']['phone'] . "<br />" : '';
+  $contact .= (isset($vars['contact']['fax'])) ? t('fax') . ': ' . $vars['contact']['fax'] : '';
+  $vars['contact'] = ($contact) ? "<label>" . t('Contact') . "</label> " . $contact : '';
+  //links
+  $list = array(
+    'title' => '',
+    'attributes' => array(),
+    'type' => 'ul',
+    'items' => $vars['links'],
+  );
+  $vars['links'] = "<label>" . t('Links') . "</label> " . theme_item_list($list);
+  //image
+  $vars['image'] = (isset($vars['images'][0]['image'])) ? $vars['images'][0]['image'] : '';
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_advantage() for uitpas-ui-advantage.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $advantage = $vars['advantage'];
@@ -132,7 +185,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
 }
 
  /**
- * Implements hook_preprocess_uitpas_ui_advantages_promotions() for uitpas-ui-user-advantages_promotions.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_advantages_promotions() for uitpas-ui-advantages_promotions.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
   $advantages = $vars['advantages'];
@@ -196,7 +249,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_promotion() for uitpas-ui-user-promotion.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_promotion() for uitpas-ui-promotion.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
@@ -227,7 +280,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_promotions_highlight() for uitpas-ui-user-promotions_highlight.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_promotions_highlight() for uitpas-ui-promotions_highlight.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
   $promotions = $vars['promotions'];
@@ -253,7 +306,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_recent_actions() for uitpas-ui-user-recent-actions.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_recent_actions() for uitpas-ui-recent-actions.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
   $actions = $vars['actions'];
