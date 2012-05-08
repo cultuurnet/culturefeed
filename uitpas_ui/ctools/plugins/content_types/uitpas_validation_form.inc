@@ -44,6 +44,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_
   $form['dob'] = array(
     '#type' => 'date',
     '#title' => t('Date of birth'),
+    '#after_build' => array('uitpas_ui_uitpas_validation_form_process_year'),
   );
   $form['actions'] = array(
     'submit' => array(
@@ -103,4 +104,11 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
 function uitpas_ui_uitpas_validation_form_content_type_render_form_submit(&$form, &$form_state) {
   //we rebuild the form so our form definition can popup a window if required
   $form_state['rebuild'] = TRUE;
+}
+
+function uitpas_ui_uitpas_validation_form_process_year($element) {
+  $year = date('Y');
+  //1900 is hardcoded in inludes/form.inc
+  $element['year']['#options'] = array_slice($element['year']['#options'], 0 , $year - 1900 + 1, TRUE);
+  return $element;  
 }
