@@ -54,7 +54,7 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
   if (!isset($locations[$location])) {
     $location = 'all';
   }
-  setcookie('uitpas_location', $location);
+  setcookie('uitpas_location', $location, 0, '/');
   //creating our context
   $context = new ctools_context('uitpas_location');
   $context->plugin = 'uitpas_location';

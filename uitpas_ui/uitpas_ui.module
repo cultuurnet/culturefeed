@@ -69,6 +69,16 @@ function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_html() for html.tpl.php.
+ */
+function uitpas_ui_preprocess_html(&$vars) {
+  ctools_include('context');
+  $location = ctools_context_create('uitpas_location');
+  $class = "uitpas_location_" . $location->data->location;
+  $vars['classes_array'][] = $class;
+}
+
+/**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
@@ -199,7 +209,9 @@ function uitpas_ui_views_api() {
  */
 function uitpas_ui_views_pre_render(&$view) {
   if ($view->name == 'culpas_activities') {
-    $args = array('@url' => url('agenda/search'), '!total' => $view->total_rows);
-    $view->attachment_before = t("1 to 10 of <a href=\"@url\">!total results</a>", $args);
+    $total = $view->total_rows;
+    $limit = ($total < 10 ) ? $total : 10;
+    $args = array('@url' => url('agenda/search'), '!limit' => $limit, '!total' => $total);
+    $view->attachment_before = t("1 to !limit of <a href=\"@url\">!total results</a>", $args);
   }
 }
