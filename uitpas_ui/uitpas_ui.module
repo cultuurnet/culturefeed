@@ -193,3 +193,13 @@ function uitpas_ui_views_api() {
       'api' => 3,
   );
 }
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function uitpas_ui_views_pre_render(&$view) {
+  if ($view->name == 'culpas_activities') {
+    $args = array('@url' => url('agenda/search'), '!total' => $view->total_rows);
+    $view->attachment_before = t("1 to 10 of <a href=\"@url\">!total results</a>", $args);
+  }
+}
