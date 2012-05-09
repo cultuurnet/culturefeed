@@ -321,10 +321,10 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
     );
-    $singular = t('!name saved 1 point at !location, !time_ago ago', $args);
-    $plural = t('!name saved !points points at !location, !time_ago ago', $args);
+    $singular = "!name saved 1 point at !location, !time_ago ago";
+    $plural = "!name saved !points points at !location, !time_ago ago";
     $image = ($action->depiction) ? theme_image(array('path' => $action->depiction, 'attributes' => array())) : '';
-    $list['items'][] = $image . format_plural($action->points, $singular, $plural);
+    $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);
   }
   
   $vars['actions'] = theme_item_list($list);
