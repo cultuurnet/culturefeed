@@ -63,15 +63,6 @@ function uitpas_ui_menu_alter(&$items) {
     $items['culturefeed/oauth/authorize']['file'] = 'uitpas_ui.pages.inc';
     $items['culturefeed/oauth/authorize']['module'] = 'uitpas_ui';
   }
-  /*return array(
-    'admin/config/services/uitpas_ui' => array(
-      'title' => 'Uipas UI promotions highlight',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('uitpas_ui_admin_promotions_highlight_form'),
-      'access arguments' => array('administer site configuration'),
-      'file' => 'uitpas_ui.admin.inc',
-    ),
-  );*/
 }
 
 /**
