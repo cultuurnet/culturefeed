@@ -38,13 +38,22 @@ function uitpas_ui_oauth_authorize($application_key = NULL) {
     }
 
     $account = culturefeed_get_or_create_user($token['userId'], $cf_account, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
-
+    
     if ($account) {
       global $user;
       $user = $account;
 
       user_login_finalize();
 
+      //check if we have a passholder to redirect later
+      try {
+        $cf = DrupalCultureFeed::getLoggedInUserInstance();
+        $cf->uitpas()->getPassholderByUser($account->culturefeed_uid);
+      }
+      catch (Exception $e) {
+        $_SESSION['uitpas_ui_passholder_redirect'] = TRUE;
+      }
+      
       if (isset($_GET['closepopup'])) {
         // We don't want to render all blocks, so we return minimal html.
         $location = "location.reload()";

@@ -23,6 +23,19 @@ function uitpas_ui_ctools_plugin_directory($module, $plugin) {
 }
 
 /**
+ * Implement hook_init().
+ */
+
+function uitpas_ui_init() {
+  if (isset($_SESSION)) {
+    if (isset($_SESSION['uitpas_ui_passholder_redirect']) && $_SESSION['uitpas_ui_passholder_redirect']) {
+      $_SESSION['uitpas_ui_passholder_redirect'] = FALSE;
+      drupal_goto('register_uitpas');
+    }
+  }
+}
+
+/**
  * Helper function to link cnapi actors if available
  */
 function uitpas_ui_link_actors(&$objects) {
