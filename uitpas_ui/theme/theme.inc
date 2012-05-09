@@ -284,10 +284,13 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
   $promotions = $vars['promotions'];
   $rows = array();
   foreach ($promotions as $promotion) {
-    $singular = t('1 point');
-    $plural = t('!points points', array('!points' => $promotion->points));
+    $singular = '%points point';
+    $plural = '%points points';
     $rows[] = array(
-      format_plural($promotion->points, $singular, $plural),
+      array(
+        'data' =>format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points)),
+        'class' => array('uitpas_ui_points'),
+      ),
       l($promotion->title, 'promotion/' . $promotion->id),
     );
   }
