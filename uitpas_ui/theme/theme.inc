@@ -257,9 +257,9 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
-  $singular = t('1 Point needed');
-  $plural =  t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
-  $vars['points'] = format_plural($promotion->points, $singular, $plural);
+  $singular = 'Needed points: !points point';
+  $plural = 'Needed points: !points points';
+  $vars['points'] = format_plural($promotion->points, $singular, $plural, array('!points' => $promotion->points));
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
@@ -273,6 +273,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  asort($promotion->validForCities);
   $list = array(
     'title' => t('Valid for inhabitants of'), 
     'attributes' => array(), 

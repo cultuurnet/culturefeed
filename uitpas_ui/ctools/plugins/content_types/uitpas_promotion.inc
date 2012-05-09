@@ -23,9 +23,9 @@ function uitpas_ui_uitpas_promotion_content_type_render($subtype, $conf, $args, 
     try {
       $cf = DrupalCultureFeed::getConsumerInstance();
       $promotions = array($cf->uitpas()->getPointsPromotion($pid));
-      uitpas_ui_link_actors($promotions);
+      uitpas_ui_helpers_process_counters($promotions);
       $block = new stdClass();
-      $block->title = $promotions[0]->title;
+      $block->title = t('Promotion') . ' ' . $promotions[0]->title;
       $block->content = theme('uitpas_ui_promotion', array('promotion' => $promotions[0]));
       return $block;
     }

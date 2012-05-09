@@ -25,7 +25,7 @@ function uitpas_ui_uitpas_advantage_content_type_render($subtype, $conf, $args, 
       $advantages = array($cf->uitpas()->getWelcomeAdvantage($aid));
       uitpas_ui_helpers_process_counters($advantages);
       $block = new stdClass();
-      $block->title = t('Welcome advantage') . ': ' . $advantages[0]->title;
+      $block->title = t('Welcome advantage') . ' ' . $advantages[0]->title;
       $block->content = theme('uitpas_ui_advantage', array('advantage' => $advantages[0]));
       return $block;
     }
