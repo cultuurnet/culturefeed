@@ -55,6 +55,26 @@ function uitpas_ui_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function uitpas_ui_menu_alter(&$items) {
+  if (isset($items['culturefeed/oauth/authorize'])) {
+    $items['culturefeed/oauth/authorize']['page callback'] = 'uitpas_ui_oauth_authorize';
+    $items['culturefeed/oauth/authorize']['file'] = 'uitpas_ui.pages.inc';
+    $items['culturefeed/oauth/authorize']['module'] = 'uitpas_ui';
+  }
+  /*return array(
+    'admin/config/services/uitpas_ui' => array(
+      'title' => 'Uipas UI promotions highlight',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('uitpas_ui_admin_promotions_highlight_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'uitpas_ui.admin.inc',
+    ),
+  );*/
+}
+
+/**
  * Implements hook_preprocess_cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
  */
 function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {

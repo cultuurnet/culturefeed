@@ -67,7 +67,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
   $cf = DrupalCultureFeed::getConsumerInstance();
   try {
     $callback_options = array(
-      'query' => array('closepopup' => 'true'),
+      'query' => array('closepopup' => 'true', 'isnewpassholder' => 'true'),
       'absolute' => TRUE,
     );
     $callback_url = url('culturefeed/oauth/authorize', $callback_options);
