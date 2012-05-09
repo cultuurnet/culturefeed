@@ -23,7 +23,7 @@ function uitpas_ui_variable_info() {
   return array(
     'uitpas_ui_advantages_promotions_info' => array(
       'title' => t('Uitpas UI: advantages promotions info'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_invalid_dob_error_message' => array(
@@ -49,22 +49,22 @@ function uitpas_ui_variable_info() {
     ),
     'uitpas_ui_register_uitpas_intro' => array(
       'title' => t('Uitpas UI: register uitpas intro'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_register_where_intro' => array(
       'title' => t('Uitpas UI: register where intro'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_register_where_info' => array(
       'title' => t('Uitpas UI: register where info'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_registered_intro' => array(
       'title' => t('Uitpas UI: registered intro'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_user_profile_details_intro' => array(
