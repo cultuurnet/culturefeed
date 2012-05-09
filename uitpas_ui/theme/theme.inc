@@ -47,23 +47,24 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
   template_preprocess_cnapi_ui_event($vars);
   //icons and legend are the same html wise for accessibility reasons
   $list = array(
-    'title' => '',
+    'title' => t('UITPAS advantages'),
     'attributes' => array(),
     'type' => 'ul',
     'items' => array(),
   );
   if ($uitpas_activity && $uitpas_activity->numberOfPoints) {
-    $singular = t('Save point');
-    $plural = t('Save !points points', array('!points' => $uitpas_activity->numberOfPoints));
+    $singular = 'Save point';
+    $plural = 'Save !points points';
+    $options = array('!points' => $uitpas_activity->numberOfPoints);
     $list['items'][] = array(
-      'data' => format_plural($uitpas_activity->numberOfPoints, $singular, $plural),
+      'data' => format_plural($uitpas_activity->numberOfPoints, $singular, $plural, $options),
       'class' => array('uitpas_activity_has_points'),
     );
   }
   if ($vars['promotions']) {
     $link = 'actor/' . $activity['location']['actor']['cdbid'];
     $list['items'][] = array(
-      'data' => l($vars['location']['title'], $link),
+      'data' => l(t('Show advantages at this location'), $link),
       'class' => array('uitpas_activity_has_promotion'),
     );
   }
