@@ -113,7 +113,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
   template_preprocess_cnapi_ui_actor($vars);
   //icons and legend are the same html wise for accessibility reasons
   $icons_list = $legend_list = array(
-    'title' => '',
+    'title' => t('UITPAS advantages at this location'),
     'attributes' => array(),
     'type' => 'ul',
     'items' => array(),
@@ -137,7 +137,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
     }
   }
   $vars['icons'] = (count($icons_list['items'])) ? theme_item_list($icons_list) : '';
-  $vars['legend'] = (count($legend_list['items'])) ? theme_item_list($legend_list) : '';
+  $vars['legend'] = theme_item_list($legend_list) . l(t('Show all advantages and promotions'), 'advantages_promotions');
   //address
   $vars['address'] = "<label>" . t('Address') . "</label> " . $vars['address'];
   //contact
