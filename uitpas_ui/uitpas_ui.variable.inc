@@ -26,25 +26,10 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
-    'uitpas_ui_invalid_dob_error_message' => array(
-      'title' => t('Uitpas UI: invalid dob error message'),
-      'type' => 'string',
-      'group' => 'uitpas_ui',
-    ),
     'uitpas_ui_locations' => array(
       'title' => t('Uitpas UI: locations'),
       'description' => t('Put 1 location per line'),
       'type' => 'text',
-      'group' => 'uitpas_ui',
-    ),
-    'uitpas_ui_parse_invalid_uitpasnumber_error_message' => array(
-      'title' => t('Uitpas UI: invalid uitpasnumber error message'),
-      'type' => 'string',
-      'group' => 'uitpas_ui',
-    ),
-    'uitpas_ui_parse_user_already_activated_error_meesage' => array(
-      'title' => t('Uitpas UI: user already activated error message'),
-      'type' => 'string',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_register_uitpas_intro' => array(
@@ -64,6 +49,11 @@ function uitpas_ui_variable_info() {
     ),
     'uitpas_ui_registered_intro' => array(
       'title' => t('Uitpas UI: registered intro'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
+    'uitpas_ui_sidebar_bottom' => array(
+      'title' => t('Uitpas UI: sidebar bottom'),
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
@@ -87,10 +77,23 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
-    'uitpas_ui_sidebar_bottom' => array(
-      'title' => t('Uitpas UI: sidebar bottom'),
-      'type' => 'text_format',
+    'uitpas_ui_validation_invalid_dob_error_message' => array(
+      'title' => t('Uitpas UI: validation invalid dob error message'),
+      'type' => 'string',
       'group' => 'uitpas_ui',
+      'default' => t('Invalid date of birth'),
+    ),
+   'uitpas_ui_validation_parse_invalid_uitpasnumber_error_message' => array(
+      'title' => t('Uitpas UI: validation invalid uitpasnumber error message'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+      'default' => t('Invalid uitpas number'),
+    ),
+    'uitpas_ui_validation_user_already_activated_error_message' => array(
+      'title' => t('Uitpas UI: validation user already activated error message'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+      'default' => t('User already activated'),
     ),
   );
 }
