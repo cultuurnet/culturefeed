@@ -174,6 +174,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  asort($advantage->validForCities);
   $list = array(
     'title' => t('Valid for inhabitants of'),
     'attributes' => array(),
@@ -209,7 +210,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
         $location[] = $counter->name;
       }
       $rows[] = array(
-        $advantage->title,
+        l($advantage->title, 'advantage/' . $advantage->id),
         ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
         implode(', ', $location)
       );
@@ -222,7 +223,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
   $pager = $base_pager + array('element' => 0, 'quantity' => $advantages_total);
   $vars['advantages'] = theme_table($table) . theme_pager($pager);
   //promotions
-  $header = array(t('Promotions'), t('valid till'), '');
+  $header = array(array('data' => t('Promotions'), 'colspan' => 2), t('valid till'), '');
   $rows = array();
   if (count($promotions)) {
     foreach ($promotions as $promotion) {
@@ -230,8 +231,12 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
       foreach ($promotion->counters as $counter) {
         $location[] = $counter->name;
       }
+      $singular = '%points point';
+      $plural = '%points points';
+      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
       $rows[] = array(
-        $promotion->title,
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, 'promotion/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
         implode(', ', $location)
       );

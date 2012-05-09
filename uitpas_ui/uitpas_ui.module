@@ -4,6 +4,8 @@
  * Uitpas UI: provides ctools content types to display culturefeed utipas data
  */
 
+require_once 'uitpas_ui.helpers.inc';
+
 /**
  * Implements hook_cnapi_ui_contexts_alter().
  */
