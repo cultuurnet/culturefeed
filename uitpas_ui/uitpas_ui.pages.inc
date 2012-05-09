@@ -47,8 +47,10 @@ function uitpas_ui_oauth_authorize($application_key = NULL) {
 
       //check if we have a passholder to redirect later
       try {
-        $cf = DrupalCultureFeed::getLoggedInUserInstance();
-        $cf->uitpas()->getPassholderByUser($account->culturefeed_uid);
+        if (isset($account->culturefeed_uid)) {
+          $cf = DrupalCultureFeed::getLoggedInUserInstance();
+          $cf->uitpas()->getPassholderByUser($account->culturefeed_uid);
+        }
       }
       catch (Exception $e) {
         $_SESSION['uitpas_ui_passholder_redirect'] = TRUE;
