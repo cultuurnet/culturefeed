@@ -38,7 +38,7 @@ function uitpas_ui_uitpas_recent_actions_content_type_render($subtype, $conf, $a
       $actions = $result->objects;
     }
     //preferences button
-    if ($context[1]->data) {
+    if ($context[1]->data && $context[1]->data->passholder) {
       $uitpas_user = $context[1]->data->user;
       $passholder = $context[1]->data->passholder;
       $preferences = $context[1]->data->cf->getUserPreferences($uitpas_user->id);

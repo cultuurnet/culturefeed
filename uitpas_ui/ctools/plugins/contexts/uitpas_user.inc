@@ -28,8 +28,13 @@ function uitpas_ui_context_uitpas_user($empty, $data = NULL, $conf = FALSE) {
       $context->data = new stdClass();
       $context->data->user = DrupalCultureFeed::getLoggedInUser();
       $cf = DrupalCultureFeed::getLoggedInUserInstance();
-      $context->data->passholder = $cf->uitpas()->getPassholderByUser($context->data->user->id);
-      $context->data->cf =  $cf;
+      $context->data->cf = $cf;
+      try {
+        $context->data->passholder = $cf->uitpas()->getPassholderByUser($context->data->user->id);
+      }
+      catch (Exception $e) {
+        $context->data->passholder = FALSE;
+      }
     }
   }
   catch (Exception $e) {

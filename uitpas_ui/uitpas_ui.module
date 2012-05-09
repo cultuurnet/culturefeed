@@ -5,6 +5,15 @@
  */
 
 /**
+ * Implements hook_cnapi_ui_contexts_alter().
+ */
+function uitpas_ui_cnapi_ui_contexts_alter(&$context) {
+  if (isset($context['event'])) {
+    $context['event']['query']['k'] = 'uitpas';
+  }
+}
+
+/**
  * Implements hook_ctools_plugin_directory().
  */
 function uitpas_ui_ctools_plugin_directory($module, $plugin) {
@@ -46,12 +55,48 @@ function uitpas_ui_menu() {
 }
 
 /**
+ * Implements hook_preprocess_cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
+ */
+function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
+  $url = 'activity/' . $vars['event']['cdbid'];
+  $object = $vars['event'];
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
+  $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $vars['title']));
+  $vars['thumbnail'] = l($thumbnail_img, $url, array('html' => TRUE));
+  $vars['object_url'] = url($url);
+  $vars['more_link'] = l(t('More info'), $url);
+}
+
+/**
+ * Implements hook_preprocess_html() for html.tpl.php.
+ */
+function uitpas_ui_preprocess_html(&$vars) {
+  ctools_include('context');
+  $location = ctools_context_create('uitpas_location');
+  $class = "uitpas_location_" . $location->data->location;
+  $vars['classes_array'][] = $class;
+}
+
+/**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
   return array(
     'uitpas_ui_admin_promotions_highlight_form' => array(
       'render element' => 'form',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_activity' => array(
+      'variables' => array('activity' => NULL, 'uitpas_activity' => NULL, 'promotion' => 0),
+      'template' => 'uitpas-ui-activity',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_actor' => array(
+      'variables' => array('actor' => NULL, 'points' => FALSE, 'promotions' => array()),
+      'template' => 'uitpas-ui-actor',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
@@ -87,6 +132,12 @@ function uitpas_ui_theme() {
     'uitpas_ui_recent_actions' => array(
       'variables' => array('actions' => array(), 'form' => array()),
       'template' => 'uitpas-ui-recent-actions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_register_where' => array(
+      'variables' => array('pos' => array(), 'actors' => array(), 'total' => 0),
+      'template' => 'uitpas-ui-register-where',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
     ),
@@ -151,4 +202,16 @@ function uitpas_ui_views_api() {
   return array(
       'api' => 3,
   );
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function uitpas_ui_views_pre_render(&$view) {
+  if ($view->name == 'culpas_activities') {
+    $total = $view->total_rows;
+    $limit = ($total < 10 ) ? $total : 10;
+    $args = array('@url' => url('agenda/search'), '!limit' => $limit, '!total' => $total);
+    $view->attachment_before = t("1 to !limit of <a href=\"@url\">!total results</a>", $args);
+  }
 }

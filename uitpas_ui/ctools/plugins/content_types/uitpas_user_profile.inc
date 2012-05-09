@@ -18,7 +18,7 @@ function uitpas_ui_uitpas_user_profile_content_type_edit_form($form, &$form_stat
 }
 
 function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $args, $context) {
-  if ($context->data) {
+  if ($context->data && $context->data->passholder) {
     $uitpas_user = $context->data->user;
     $passholder = $context->data->passholder;
     $cf = $context->data->cf;
@@ -66,7 +66,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     }
     //ctools block
     $block = new stdClass();
-    $block->title = "";
+    $block->title = t('My UITPAS');
     $block->content = theme('uitpas_ui_user_profile', array(
       'uitpas_user' => $uitpas_user,
       'passholder' => $passholder,

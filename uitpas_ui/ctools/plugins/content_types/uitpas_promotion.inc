@@ -25,7 +25,7 @@ function uitpas_ui_uitpas_promotion_content_type_render($subtype, $conf, $args, 
       $promotions = array($cf->uitpas()->getPointsPromotion($pid));
       uitpas_ui_link_actors($promotions);
       $block = new stdClass();
-      $block->title = "";
+      $block->title = $promotions[0]->title;
       $block->content = theme('uitpas_ui_promotion', array('promotion' => $promotions[0]));
       return $block;
     }

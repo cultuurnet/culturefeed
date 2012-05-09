@@ -4,4 +4,5 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 dependencies[] = culturefeed
+dependencies[] = cnapi_ui
 files[] = views/handlers/uitpas_ui_handler_argument_cnapi_cityregion.inc
