@@ -65,6 +65,8 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uitpas_number The UitPas number
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   *
+   * @return CultureFeed_Uitpas_Passholder
    */
   public function getPassholderByUitpasNumber($uitpas_number, $consumer_key_counter = NULL);
 
@@ -73,6 +75,8 @@ interface CultureFeed_Uitpas {
    *
    * @param string $user_id The user ID
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   *
+   * @return CultureFeed_Uitpas_Passholder
    */
   public function getPassholderByUser($user_id, $consumer_key_counter = NULL);
 
@@ -166,6 +170,8 @@ interface CultureFeed_Uitpas {
    *
    * @param string $chip_number The chipnumber of the UitPas
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   *
+   * @return CultureFeed_Uitpas_Passholder
    */
   public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
 
@@ -175,6 +181,8 @@ interface CultureFeed_Uitpas {
    * @param string $uitpas_number
    * @param DateTime $date_of_birth
    * @param mixed $destination_callback
+   *
+   * @return string
    */
   public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL);
 
