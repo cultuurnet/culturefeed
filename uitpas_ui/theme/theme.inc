@@ -356,6 +356,7 @@ function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
   );
   foreach ($vars['pos'] as $pos) {
     $description = "<div class=\"uitpas_pos_name\">" . l($pos->name, 'actor/' . $pos->id) . "</div>";
+    $description .= "<div class=\"uitpas_pos_details\">";
     $times = '-';
     if (isset($vars['actors'][$pos->id])) {
       $actor = $vars['actors'][$pos->id];
@@ -380,6 +381,7 @@ function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
     }
     $more = t('More info and contact information');
     $description .= "<div class=\"uitpas_pos_more\">" . l($more, 'actor/' . $pos->id) . "</div>";
+    $description .= "</div>";
     $table['rows'][] = array($description, $times);
   }
   $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $vars['total']);
