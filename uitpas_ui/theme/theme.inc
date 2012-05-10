@@ -333,8 +333,8 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
     );
-    $singular = "!name saved 1 point at !location, !time_ago ago";
-    $plural = "!name saved !points points at !location, !time_ago ago";
+    $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+    $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
     $default_image = variable_get_value('uitpas_ui_user_default_image');
     $image = ($action->depiction) ? $action->depiction : variable_get_value('uitpas_ui_user_default_image');
     $image = theme_image(array('path' => $image, 'attributes' => array()));
