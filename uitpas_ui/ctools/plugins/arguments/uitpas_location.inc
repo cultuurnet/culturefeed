@@ -16,6 +16,11 @@ function uitpas_ui_uitpas_location_context($arg = NULL, $conf = NULL, $empty = F
   if ($empty) {
     return ctools_context_create_empty('uitpas_location');
   }
-  //we can't check on validity since the argument is optional
-  return ctools_context_create('uitpas_location', strtolower($arg));
+  $context = ctools_context_create('uitpas_location', strtolower($arg));
+  if ($arg && $arg != 'all' && $context->data->location != strtolower($arg)) {
+    //we can't check on validity since the argument is optional
+    drupal_not_found();
+    return FALSE;
+  }
+  return $context;
 }

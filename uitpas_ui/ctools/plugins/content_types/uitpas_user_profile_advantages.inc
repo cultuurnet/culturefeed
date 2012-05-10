@@ -34,7 +34,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $advantages = $result->objects;
-        uitpas_ui_link_actors($advantages);
+        uitpas_ui_helpers_process_counters($advantages);
       }
     } 
     catch (Exception $e) {
@@ -47,7 +47,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
-        uitpas_ui_link_actors($promotions);
+        uitpas_ui_helpers_process_counters($promotions);
       }
     }
     catch (Exception $e) {
@@ -61,7 +61,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $cashed_in_advantages = $result->objects;
-        uitpas_ui_link_actors($cashed_in_advantages);
+        uitpas_ui_helpers_process_counters($cashed_in_advantages);
       }
     } 
     catch (Exception $e) {
@@ -74,7 +74,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       $result = $cf->uitpas()->getCashedInPromotionPoints($query);
       if ($result->total) {
         $cashed_in_promotions = $result->objects;
-        uitpas_ui_link_actors($cashed_in_promotions);
+        uitpas_ui_helpers_process_counters($cashed_in_promotions);
       }
     }
     catch (Exception $e) {

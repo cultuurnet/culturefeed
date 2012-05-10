@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Plugin to provide an argument handler for uitpas promotion.
+ * Plugin to provide an argument handler for uitpas advantage.
  */
 
 $plugin = array(
@@ -14,7 +14,11 @@ $plugin = array(
 
 function uitpas_ui_uitpas_advantage_context($arg = NULL, $conf = NULL, $empty = FALSE) {
   if ($empty) {
-    return ctools_context_create_empty('string');
+    return ctools_context_create_empty('uitpas_advantage');
   }
-  return ctools_context_create('string', $arg);
+  $context = ctools_context_create('uitpas_advantage', $arg);
+  if (!$context->data) {
+    return FALSE;
+  }
+  return $context;
 }

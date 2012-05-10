@@ -11,7 +11,7 @@ $plugin = array(
   'description' => t('Uitpas: activity.'),
   'category' => t('Uitpas'),
   'required context' => array(
-    new ctools_context_required(t('Uitpas activity'), 'string'),
+    new ctools_context_required(t('Uitpas activity'), 'uitpas_activity'),
     new ctools_context_required(t('Uitpas user'), 'uitpas_user'),
   ),
 );
@@ -21,15 +21,14 @@ function uitpas_ui_uitpas_activity_content_type_edit_form($form, &$form_state) {
 }
 
 function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $context) {
-  $cdbid = $context[0]->data;
-  $activity = cnapi_get_event($cdbid);
+  $activity = $context[0]->data;
   $uitpas_activity = '';
   $promotions = 0;
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
     //uitpas event
     $query = new CultureFeed_Uitpas_Event_Query_SearchEventsOptions();
-    $query->cdbid = $cdbid;
+    $query->cdbid = $activity['cdbid'];
     if ($context[1]->data && $context[1]->data->passholder) {
       $query->uitpasNumber = ($context[1]->data->passholder->uitpasNumber);
     }
