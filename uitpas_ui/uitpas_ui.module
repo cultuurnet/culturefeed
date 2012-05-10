@@ -95,16 +95,6 @@ function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_html() for html.tpl.php.
- */
-function uitpas_ui_preprocess_html(&$vars) {
-  ctools_include('context');
-  $location = ctools_context_create('uitpas_location');
-  $class = "uitpas_location_" . $location->data->location;
-  $vars['classes_array'][] = $class;
-}
-
-/**
  * Implements hook_theme().
  */
 function uitpas_ui_theme() {
