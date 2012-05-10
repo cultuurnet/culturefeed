@@ -4,6 +4,8 @@
  * Uitpas UI: provides ctools content types to display culturefeed utipas data
  */
 
+require_once 'uitpas_ui.helpers.inc';
+
 /**
  * Implements hook_cnapi_ui_contexts_alter().
  */
@@ -19,6 +21,19 @@ function uitpas_ui_cnapi_ui_contexts_alter(&$context) {
 function uitpas_ui_ctools_plugin_directory($module, $plugin) {
   if ($module == 'ctools') {
     return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implement hook_init().
+ */
+
+function uitpas_ui_init() {
+  if (isset($_SESSION)) {
+    if (isset($_SESSION['uitpas_ui_passholder_redirect']) && $_SESSION['uitpas_ui_passholder_redirect']) {
+      $_SESSION['uitpas_ui_passholder_redirect'] = FALSE;
+      drupal_goto('register_uitpas');
+    }
   }
 }
 
@@ -55,6 +70,17 @@ function uitpas_ui_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function uitpas_ui_menu_alter(&$items) {
+  if (isset($items['culturefeed/oauth/authorize'])) {
+    $items['culturefeed/oauth/authorize']['page callback'] = 'uitpas_ui_oauth_authorize';
+    $items['culturefeed/oauth/authorize']['file'] = 'uitpas_ui.pages.inc';
+    $items['culturefeed/oauth/authorize']['module'] = 'uitpas_ui';
+  }
+}
+
+/**
  * Implements hook_preprocess_cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
  */
 function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
@@ -66,16 +92,6 @@ function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
   $vars['thumbnail'] = l($thumbnail_img, $url, array('html' => TRUE));
   $vars['object_url'] = url($url);
   $vars['more_link'] = l(t('More info'), $url);
-}
-
-/**
- * Implements hook_preprocess_html() for html.tpl.php.
- */
-function uitpas_ui_preprocess_html(&$vars) {
-  ctools_include('context');
-  $location = ctools_context_create('uitpas_location');
-  $class = "uitpas_location_" . $location->data->location;
-  $vars['classes_array'][] = $class;
 }
 
 /**
@@ -202,16 +218,4 @@ function uitpas_ui_views_api() {
   return array(
       'api' => 3,
   );
-}
-
-/**
- * Implements hook_views_pre_render().
- */
-function uitpas_ui_views_pre_render(&$view) {
-  if ($view->name == 'culpas_activities') {
-    $total = $view->total_rows;
-    $limit = ($total < 10 ) ? $total : 10;
-    $args = array('@url' => url('agenda/search'), '!limit' => $limit, '!total' => $total);
-    $view->attachment_before = t("1 to !limit of <a href=\"@url\">!total results</a>", $args);
-  }
 }

@@ -45,6 +45,10 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $co
     }
     $block = new stdClass();
     $block->title = t("Spotlight promotions");
+    if ($location) {
+      $city = $context->data->locations[$context->data->location]['name'];
+      $block->title = t("Spotlight promotions in !city", array('!city' => $city));
+    }
     $block->content = theme('uitpas_ui_promotions_highlight', array('promotions' => $promotions));
     return $block;
   }

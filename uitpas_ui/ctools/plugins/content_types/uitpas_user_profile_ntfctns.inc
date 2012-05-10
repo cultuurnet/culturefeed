@@ -90,7 +90,7 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form_submit(&
     $email_preference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
   }
   $passholder->emailPreference = $email_preference;
-  //$passholder->email = $form_state['values']['email'];
+  $passholder->email = $form_state['values']['email'];
   if ($form_state['values']['sms_notifications']) {
     $sms_preference = CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS;
   }

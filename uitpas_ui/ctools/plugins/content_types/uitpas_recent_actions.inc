@@ -14,10 +14,24 @@ $plugin = array(
     new ctools_context_required(t('Uitpas loation'), 'uitpas_location'),
     new ctools_context_required(t('Uitpas user'), 'uitpas_user'),
   ),
+  'defaults' => array(
+    'limit' => 3,
+  ),
 );
 
 function uitpas_ui_uitpas_recent_actions_content_type_edit_form($form, &$form_state) {
+  $conf = $form_state['conf'];
+  $form['limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Page limit'),
+    '#required' => TRUE,
+    '#default_value' => $conf['limit'],
+  );
   return $form;
+}
+
+function uitpas_ui_uitpas_recent_actions_content_type_edit_form_submit($form, &$form_state) {
+  $form_state['conf']['limit'] = $form_state['values']['limit'];
 }
 
 function uitpas_ui_uitpas_recent_actions_content_type_render($subtype, $conf, $args, $context) {
@@ -29,7 +43,7 @@ function uitpas_ui_uitpas_recent_actions_content_type_render($subtype, $conf, $a
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->type = CultureFeed_Activity::TYPE_UITPAS;
     $query->private = FALSE;
-    $query->max = 3;
+    $query->max = $conf['limit'];
     if ($location) {
       //$query->city = $location;
     }

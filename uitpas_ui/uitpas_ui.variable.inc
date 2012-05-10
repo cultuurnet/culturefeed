@@ -23,12 +23,7 @@ function uitpas_ui_variable_info() {
   return array(
     'uitpas_ui_advantages_promotions_info' => array(
       'title' => t('Uitpas UI: advantages promotions info'),
-      'type' => 'string',
-      'group' => 'uitpas_ui',
-    ),
-    'uitpas_ui_invalid_dob_error_message' => array(
-      'title' => t('Uitpas UI: invalid dob error message'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_locations' => array(
@@ -37,34 +32,35 @@ function uitpas_ui_variable_info() {
       'type' => 'text',
       'group' => 'uitpas_ui',
     ),
-    'uitpas_ui_parse_invalid_uitpasnumber_error_message' => array(
-      'title' => t('Uitpas UI: invalid uitpasnumber error message'),
-      'type' => 'string',
-      'group' => 'uitpas_ui',
-    ),
-    'uitpas_ui_parse_user_already_activated_error_meesage' => array(
-      'title' => t('Uitpas UI: user already activated error message'),
-      'type' => 'string',
-      'group' => 'uitpas_ui',
-    ),
     'uitpas_ui_register_uitpas_intro' => array(
       'title' => t('Uitpas UI: register uitpas intro'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_register_where_intro' => array(
       'title' => t('Uitpas UI: register where intro'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_register_where_info' => array(
       'title' => t('Uitpas UI: register where info'),
-      'type' => 'string',
+      'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_registered_intro' => array(
       'title' => t('Uitpas UI: registered intro'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
+    'uitpas_ui_sidebar_bottom' => array(
+      'title' => t('Uitpas UI: sidebar bottom'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
+    'uitpas_ui_user_default_image' => array(
+      'title' => t('Uitpas UI: user default image'),
       'type' => 'string',
+      'default' => 'http://media.uitid.be/fis/rest/download/ce126667652776f0e9e55160f12f5478/uiv/default.png',
       'group' => 'uitpas_ui',
     ),
     'uitpas_ui_user_profile_details_intro' => array(
@@ -87,10 +83,23 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
-    'uitpas_ui_sidebar_bottom' => array(
-      'title' => t('Uitpas UI: sidebar bottom'),
-      'type' => 'text_format',
+    'uitpas_ui_validation_invalid_dob_error_message' => array(
+      'title' => t('Uitpas UI: validation invalid dob error message'),
+      'type' => 'string',
       'group' => 'uitpas_ui',
+      'default' => t('Invalid date of birth'),
+    ),
+   'uitpas_ui_validation_parse_invalid_uitpasnumber_error_message' => array(
+      'title' => t('Uitpas UI: validation invalid uitpasnumber error message'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+      'default' => t('Invalid uitpas number'),
+    ),
+    'uitpas_ui_validation_user_already_activated_error_message' => array(
+      'title' => t('Uitpas UI: validation user already activated error message'),
+      'type' => 'string',
+      'group' => 'uitpas_ui',
+      'default' => t('User already activated'),
     ),
   );
 }

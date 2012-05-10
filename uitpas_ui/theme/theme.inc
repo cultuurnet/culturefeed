@@ -47,23 +47,24 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
   template_preprocess_cnapi_ui_event($vars);
   //icons and legend are the same html wise for accessibility reasons
   $list = array(
-    'title' => '',
+    'title' => t('UITPAS advantages'),
     'attributes' => array(),
     'type' => 'ul',
     'items' => array(),
   );
   if ($uitpas_activity && $uitpas_activity->numberOfPoints) {
-    $singular = t('Save point');
-    $plural = t('Save !points points', array('!points' => $uitpas_activity->numberOfPoints));
+    $singular = 'Save point';
+    $plural = 'Save !points points';
+    $options = array('!points' => $uitpas_activity->numberOfPoints);
     $list['items'][] = array(
-      'data' => format_plural($uitpas_activity->numberOfPoints, $singular, $plural),
+      'data' => format_plural($uitpas_activity->numberOfPoints, $singular, $plural, $options),
       'class' => array('uitpas_activity_has_points'),
     );
   }
   if ($vars['promotions']) {
     $link = 'actor/' . $activity['location']['actor']['cdbid'];
     $list['items'][] = array(
-      'data' => l($vars['location']['title'], $link),
+      'data' => l(t('Show advantages at this location'), $link),
       'class' => array('uitpas_activity_has_promotion'),
     );
   }
@@ -112,7 +113,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
   template_preprocess_cnapi_ui_actor($vars);
   //icons and legend are the same html wise for accessibility reasons
   $icons_list = $legend_list = array(
-    'title' => '',
+    'title' => t('UITPAS advantages at this location'),
     'attributes' => array(),
     'type' => 'ul',
     'items' => array(),
@@ -136,7 +137,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
     }
   }
   $vars['icons'] = (count($icons_list['items'])) ? theme_item_list($icons_list) : '';
-  $vars['legend'] = (count($legend_list['items'])) ? theme_item_list($legend_list) : '';
+  $vars['legend'] = theme_item_list($legend_list) . l(t('Show all advantages and promotions'), 'advantages_promotions');
   //address
   $vars['address'] = "<label>" . t('Address') . "</label> " . $vars['address'];
   //contact
@@ -174,6 +175,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  asort($advantage->validForCities);
   $list = array(
     'title' => t('Valid for inhabitants of'),
     'attributes' => array(),
@@ -209,7 +211,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
         $location[] = $counter->name;
       }
       $rows[] = array(
-        $advantage->title,
+        l($advantage->title, 'advantage/' . $advantage->id),
         ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
         implode(', ', $location)
       );
@@ -222,7 +224,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
   $pager = $base_pager + array('element' => 0, 'quantity' => $advantages_total);
   $vars['advantages'] = theme_table($table) . theme_pager($pager);
   //promotions
-  $header = array(t('Promotions'), t('valid till'), '');
+  $header = array(array('data' => t('Promotions'), 'colspan' => 2), t('valid till'), '');
   $rows = array();
   if (count($promotions)) {
     foreach ($promotions as $promotion) {
@@ -230,8 +232,12 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
       foreach ($promotion->counters as $counter) {
         $location[] = $counter->name;
       }
+      $singular = '%points point';
+      $plural = '%points points';
+      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
       $rows[] = array(
-        $promotion->title,
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, 'promotion/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
         implode(', ', $location)
       );
@@ -252,9 +258,9 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
  */
 function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $promotion = $vars['promotion'];
-  $singular = t('1 Point needed');
-  $plural =  t('Points needed') . ':' . t('!points points', array('!points' => $promotion->points));
-  $vars['points'] = format_plural($promotion->points, $singular, $plural);
+  $singular = 'Needed points: !points point';
+  $plural = 'Needed points: !points points';
+  $vars['points'] = format_plural($promotion->points, $singular, $plural, array('!points' => $promotion->points));
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
@@ -268,6 +274,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  asort($promotion->validForCities);
   $list = array(
     'title' => t('Valid for inhabitants of'), 
     'attributes' => array(), 
@@ -284,10 +291,13 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
   $promotions = $vars['promotions'];
   $rows = array();
   foreach ($promotions as $promotion) {
-    $singular = t('1 point');
-    $plural = t('!points points', array('!points' => $promotion->points));
+    $singular = '%points point';
+    $plural = '%points points';
     $rows[] = array(
-      format_plural($promotion->points, $singular, $plural),
+      array(
+        'data' =>format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points)),
+        'class' => array('uitpas_ui_points'),
+      ),
       l($promotion->title, 'promotion/' . $promotion->id),
     );
   }
@@ -321,10 +331,12 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
     );
-    $singular = t('!name saved 1 point at !location, !time_ago ago', $args);
-    $plural = t('!name saved !points points at !location, !time_ago ago', $args);
-    $image = ($action->depiction) ? theme_image(array('path' => $action->depiction, 'attributes' => array())) : '';
-    $list['items'][] = $image . format_plural($action->points, $singular, $plural);
+    $singular = "!name saved 1 point at !location, !time_ago ago";
+    $plural = "!name saved !points points at !location, !time_ago ago";
+    $default_image = variable_get_value('uitpas_ui_user_default_image');
+    $image = ($action->depiction) ? $action->depiction : variable_get_value('uitpas_ui_user_default_image');
+    $image = theme_image(array('path' => $image, 'attributes' => array()));
+    $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);
   }
   
   $vars['actions'] = theme_item_list($list);
@@ -346,6 +358,7 @@ function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
   );
   foreach ($vars['pos'] as $pos) {
     $description = "<div class=\"uitpas_pos_name\">" . l($pos->name, 'actor/' . $pos->id) . "</div>";
+    $description .= "<div class=\"uitpas_pos_details\">";
     $times = '-';
     if (isset($vars['actors'][$pos->id])) {
       $actor = $vars['actors'][$pos->id];
@@ -370,6 +383,7 @@ function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
     }
     $more = t('More info and contact information');
     $description .= "<div class=\"uitpas_pos_more\">" . l($more, 'actor/' . $pos->id) . "</div>";
+    $description .= "</div>";
     $table['rows'][] = array($description, $times);
   }
   $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $vars['total']);
