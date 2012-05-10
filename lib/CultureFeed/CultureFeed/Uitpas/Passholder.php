@@ -232,10 +232,14 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       $data['inszNumber'] = $data['inszNumberHash'];
     }
 
-    foreach (array('currentCard', 'uitIdUser') as $readOnlyProperty) {
+    foreach (array('currentCard', 'uitIdUser', 'uitpasNumber') as $readOnlyProperty) {
       if (isset($data[$readOnlyProperty])) {
         unset($data[$readOnlyProperty]);
       }
+    }
+
+    if (isset($data['verified'])) {
+      $data['verified'] = $data['verified'] ? 'true' : 'false';
     }
   }
 
