@@ -57,6 +57,12 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
+    'uitpas_ui_user_default_image' => array(
+      'title' => t('Uitpas UI: user default image'),
+      'type' => 'string',
+      'default' => 'http://media.uitid.be/fis/rest/download/ce126667652776f0e9e55160f12f5478/uiv/default.png',
+      'group' => 'uitpas_ui',
+    ),
     'uitpas_ui_user_profile_details_intro' => array(
       'title' => t('Uitpas UI: user profile details intro'),
       'type' => 'text_format',
