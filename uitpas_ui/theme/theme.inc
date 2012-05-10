@@ -312,6 +312,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotions_highlight(&$vars) {
     'empty' => '',
   );
   $vars['promotions'] = theme_table($table);
+  $vars['more'] = l(t('Show all promotions'), 'advantages_promotions');
 }
 
 /**
