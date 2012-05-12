@@ -9,16 +9,53 @@
  * Helper function to link culturefeed and cnapi objects
  */
 function uitpas_ui_helpers_link_object($type, $object) {
+  $link = uitpas_ui_helpers_object_info($type, $object, 'link');
+  return ($link) ? $link : '<front>';
+}
+
+/**
+ * Helper function to get properties from culturefeed and cnapi objects
+ */
+function uitpas_ui_helpers_object_info($type, $object, $property = NULL) {
   $types = uitpas_ui_object_types();
   $info = $types[$type];
-  if ($info['type'] == 'culturefeed') {
-    return $info['base_path'] . "/" . cnapi_ui_slug($object->title) . "/" . $object->id;
+  if ($info) {
+    $id = '';
+    $title = '';
+    switch ($info['object']) {
+      case 'culturefeed':
+        $id = $object->id;
+        $title = $object->title;
+        break;
+      case 'cnapi':
+        $id = $object['cdbid'];
+        $title = (isset($object['title'])) ? $object['title'] : $object['detail']['nl']['title'];
+        break;
+    }
+    if ($id && $title) {
+      $properties = array(
+        'id' => $id,
+        'title' => $title,
+        'link' => $info['base_path'] . "/" . cnapi_ui_slug($title) . "/" . $id,
+      );
+      return (!is_null($property) && $properties[$property]) ? $properties[$property] : $properties;
+    }
   }
-  else if ($info['type'] == 'cnapi') {
-    $title = (isset($object['title'])) ? $object['title'] : $object['detail']['nl']['title'];
-    return $info['base_path'] . "/" . cnapi_ui_slug($title) . "/" . $object['cdbid'];
+  return FALSE;
+}
+
+/**
+ * Helper function to get properties from culturefeed and cnapi objects by their corresponding context type
+ */
+function uitpas_ui_helpers_object_info_by_context_type($context_type, $object, $property = NULL) {
+  $types = uitpas_ui_object_types();
+  foreach ($types as $key => $info) {
+    if ($info['context_type'] == $context_type) {
+      return uitpas_ui_helpers_object_info($key, $object, $property);
+      break;
+    }
   }
-  return '<front>';
+  return FALSE;
 }
 
 /**

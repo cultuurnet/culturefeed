@@ -201,24 +201,24 @@ function uitpas_ui_object_types() {
   if (!isset($objects)) {
     $objects = array(
       'activity' => array(
-        'type' => 'cnapi',
         'base_path' => 'activity',
         'context_type' => 'uitpas_activity',
+        'object' => 'cnapi',
       ),
       'actor' => array(
-        'type' => 'cnapi',
         'base_path' => 'actor',
         'context_type' => 'uitpas_actor',
+        'object' => 'cnapi',
       ),
       'advantage' => array(
-        'type' => 'culturefeed',
         'base_path' => 'advantage',
         'context_type' => 'uitpas_advantage',
+        'object' => 'culturefeed',
       ),
       'promotion' => array(
-        'type' => 'culturefeed',
         'base_path' => 'promotion',
         'context_type' => 'uitpas_promotion',
+        'object' => 'culturefeed',
       ),
     );
     drupal_alter('uitpas_ui_object_types', $objects);
