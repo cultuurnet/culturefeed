@@ -176,12 +176,15 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
-  asort($advantage->validForCities);
+  $location_options = variable_get_value('uitpas_ui_locations');
+  $location_options = array_map('trim', explode("\n", $location_options));
+	$valid_for_cities = array_intersect($location_options, $advantage->validForCities);
+  asort($valid_for_cities);
   $list = array(
     'title' => t('Valid for inhabitants of'),
     'attributes' => array(),
     'type' => 'ul',
-    'items' => $advantage->validForCities,
+    'items' => $valid_for_cities,
   );
   $vars['available'] = theme_item_list($list);
 }
@@ -275,12 +278,15 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     $location[] = $counter->name;
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
-  asort($promotion->validForCities);
+  $location_options = variable_get_value('uitpas_ui_locations');
+  $location_options = array_map('trim', explode("\n", $location_options));
+	$valid_for_cities = array_intersect($location_options, $promotion->validForCities);
+  asort($valid_for_cities);
   $list = array(
     'title' => t('Valid for inhabitants of'), 
     'attributes' => array(), 
     'type' => 'ul', 
-    'items' => $promotion->validForCities,
+    'items' => $valid_for_cities,
   );
   $vars['available'] = theme_item_list($list);
 }
