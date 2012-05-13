@@ -18,6 +18,7 @@ $plugin = array(
     )),
     new ctools_context_required(t('Uitpas: slug'), 'string'),
    ),
+  'summary' => 'uitpas_ui_uitpas_slug_access_summary',
 );
 
 function uitpas_ui_uitpas_slug_access_check($conf, $context) {
@@ -33,4 +34,8 @@ function uitpas_ui_uitpas_slug_access_check($conf, $context) {
     }
   }
   return FALSE;
+}
+
+function uitpas_ui_uitpas_slug_access_summary($conf, $context) {
+  return t('Valid uitpas slug');
 }
