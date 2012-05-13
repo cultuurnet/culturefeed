@@ -62,6 +62,11 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
   $context->data = new stdClass();
   $context->data->locations = $locations;
   $context->data->location = $location;
+  //a validation check for our respons code selection rule as optional arguments always validate
+  $context->data->valid_argument = TRUE;
+  if (!$empty && !$conf && $data && $data != $location) {
+    $context->data->valid_argument = FALSE;
+  }
   //views and culturefeed arguments
   $context->data->views_argument = '';
   $context->data->cf_query_argument = '';
