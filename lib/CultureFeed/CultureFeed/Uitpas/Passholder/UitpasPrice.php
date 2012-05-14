@@ -35,6 +35,17 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
    */
   public $price;
 
+  /**
+   * The age range the price is valid for
+   *
+   * @param CultureFeed_Uitpas_Passholder_AgeRange
+   */
+  public $ageRange;
+
+  public function __construct() {
+    $this->ageRange = new CultureFeed_Uitpas_Passholder_AgeRange();
+  }
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $price = new CultureFeed_Uitpas_Passholder_UitpasPrice();
     $price->id = $object->xpath_str('id');
@@ -42,7 +53,20 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
     $price->kansenStatuut = $object->xpath_bool('kansenstatuut');
     $price->price = $object->xpath_float('price');
 
+    $ageRange = $object->xpath('ageRange', FALSE);
+
+    if ($ageRange) {
+      $ageFrom = $ageRange->xpath_int('ageFrom', FALSE);
+      if ($ageFrom) {
+        $price->ageRange->ageFrom = $ageFrom;
+      }
+
+      $ageTo = $ageRange->xpath_int('ageTo', FALSE);
+      if ($ageTo) {
+        $price->ageRange->ageTo = $ageTo;
+      }
+    }
+
     return $price;
   }
-
 }

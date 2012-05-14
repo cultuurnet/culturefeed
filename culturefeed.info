@@ -57,6 +57,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/SearchCashedInProm
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/WelcomeAdvantagesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/RegisterUitpasOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/CheckInPassholderOptions.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/AgeRange.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Card.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/WelcomeAdvantage.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Counter.php
