@@ -83,13 +83,18 @@ function uitpas_ui_variable_info() {
       'type' => 'text_format',
       'group' => 'uitpas_ui',
     ),
+    'uitpas_ui_validation_intro' => array(
+      'title' => t('Uitpas UI: validation intro'),
+      'type' => 'text_format',
+      'group' => 'uitpas_ui',
+    ),
     'uitpas_ui_validation_invalid_dob_error_message' => array(
       'title' => t('Uitpas UI: validation invalid dob error message'),
       'type' => 'string',
       'group' => 'uitpas_ui',
       'default' => t('Invalid date of birth'),
     ),
-   'uitpas_ui_validation_parse_invalid_uitpasnumber_error_message' => array(
+    'uitpas_ui_validation_parse_invalid_uitpasnumber_error_message' => array(
       'title' => t('Uitpas UI: validation invalid uitpasnumber error message'),
       'type' => 'string',
       'group' => 'uitpas_ui',

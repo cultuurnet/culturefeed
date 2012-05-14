@@ -16,6 +16,7 @@ function uitpas_ui_uitpas_location_context($arg = NULL, $conf = NULL, $empty = F
   if ($empty) {
     return ctools_context_create_empty('uitpas_location');
   }
-  //we can't check on validity since the argument is optional
-  return ctools_context_create('uitpas_location', strtolower($arg));
+  //we can't validate an optional argument so we put a http_response code variant in front
+  $context = ctools_context_create('uitpas_location', strtolower($arg));
+  return $context;
 }

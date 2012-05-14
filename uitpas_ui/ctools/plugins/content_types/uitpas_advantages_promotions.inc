@@ -59,7 +59,7 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     $result = $cf->uitpas()->searchWelcomeAdvantages($query);
     $advantages_page = pager_default_initialize($result->total, $advantages_limit, 0);
     $advantages = $result->objects;
-    uitpas_ui_link_actors($advantages);
+    uitpas_ui_helpers_process_counters($advantages);
     $advantages_total = $result->total;
     //promotions
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
@@ -71,7 +71,7 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     $result = $cf->uitpas()->getPromotionPoints($query);
     $promotions_page = pager_default_initialize($result->total, $promotions_limit, 1);
     $promotions = $result->objects;
-    uitpas_ui_link_actors($promotions);
+    uitpas_ui_helpers_process_counters($promotions);
     $promotions_total = $result->total;
   }
   catch (Exception $e) {

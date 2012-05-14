@@ -34,6 +34,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_
     $script = "window.open('" . $link . "', 'UiTiD', '" . $options . "');";
     drupal_add_js($script, 'inline');
   }
+  $form['#prefix'] = variable_format_value('uitpas_ui_validation_intro');
   $form['link'] = array(
     '#type' => 'value',
   );

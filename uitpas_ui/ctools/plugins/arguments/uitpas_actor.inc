@@ -14,7 +14,11 @@ $plugin = array(
 
 function uitpas_ui_uitpas_actor_context($arg = NULL, $conf = NULL, $empty = FALSE) {
   if ($empty) {
-    return ctools_context_create_empty('string');
+    return ctools_context_create_empty('uitpas_actor');
   }
-  return ctools_context_create('string', $arg);
+  $context = ctools_context_create('uitpas_actor', $arg);
+  if (!$context->data) {
+    return FALSE;
+  }
+  return $context;
 }
