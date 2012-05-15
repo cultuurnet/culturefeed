@@ -50,7 +50,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    *
    * @var string
    */
-  //public $inszNumberHash;
   public $inszNumber;
 
   /**
@@ -232,7 +231,12 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       $data['inszNumber'] = $data['inszNumberHash'];
     }
 
-    foreach (array('currentCard', 'uitIdUser', 'uitpasNumber') as $readOnlyProperty) {
+    $readOnlyProperties = array('currentCard', 'uitIdUser');
+    if (isset($this->uitIdUser)) {
+      $readOnlyProperties[] = 'uitpasNumber';
+    }
+
+    foreach ($readOnlyProperties as $readOnlyProperty) {
       if (isset($data[$readOnlyProperty])) {
         unset($data[$readOnlyProperty]);
       }
