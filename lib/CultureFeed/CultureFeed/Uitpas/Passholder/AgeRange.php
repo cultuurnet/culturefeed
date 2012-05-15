@@ -16,20 +16,13 @@ class CultureFeed_Uitpas_Passholder_AgeRange {
   public $ageTo;
 
   /**
-   * Checks if a birthday is in the given age range.
+   * Checks if an age (in years) is in the range.
    *
-   * Source: http://www.phpro.org/examples/Calculate-Age-With-PHP.html
-   *
-   * @param DateTime $birthDate
+   * @param int $age
    */
-  public function inRange(DateTime $dateOfBirth) {
-    $now = new DateTime();
-
-    $age = $now->diff($dateOfBirth);
-    $years = $age->y;
-
-    $lowerApplies = !isset($this->ageFrom) || $years >= $this->ageFrom;
-    $upperApplies = !isset($this->ageTo) || $years <= $this->ageTo;
+  public function inRange($age) {
+    $lowerApplies = !isset($this->ageFrom) || $age >= $this->ageFrom;
+    $upperApplies = !isset($this->ageTo) || $age <= $this->ageTo;
 
     return $lowerApplies && $upperApplies;
   }
