@@ -94,7 +94,7 @@ function culturefeed_get_or_create_user($cf_uid, $cf_account = NULL, $token = NU
       }
 
       // If the current user in Drupal is logged in and is not connected with a CultureFeed user yet, then we connect both
-      if ($user->uid && empty($user->culturefeed_uid)) {
+      if ($user->uid && $fully_loaded_user = user_load($user->uid, TRUE) && empty($fully_loaded_user->culturefeed_uid)) {
         $account = $user;
       }
       else {
