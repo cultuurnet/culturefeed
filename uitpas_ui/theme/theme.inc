@@ -596,7 +596,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_uitpas_ui_user_profile_advantages() for uitpas-ui-user-profile-advantages.tpl.php.
+ * Implements hook_preprocess_uitpas_ui_user_profile_details() for uitpas-ui-user-profile-details.tpl.php.
  */
 function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $uitpas_user = $vars['uitpas_user'];
@@ -638,6 +638,22 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   else {
     $vars['memberships'] = '';
   }
+}
+
+/**
+ * Implements hook_preprocess_uitpas_ui_user_profile_navigation() for uitpas-ui-user-profile-navigation.tpl.php.
+ */
+function uitpas_ui_preprocess_uitpas_ui_user_profile_navigation(&$vars) {
+  $navigation = $vars['navigation'];
+  $output = '';
+  foreach ($vars['navigation'] as $nav) {
+    $title = variable_get_value('uitpas_ui_user_profile_navigation_' . $nav . '_title');
+    $path = variable_get_value('uitpas_ui_user_profile_navigation_' . $nav . '_path');
+    $body = variable_format_value('uitpas_ui_user_profile_navigation_' . $nav . '_body');
+    $output .= "<h3>" . l($title, $path) . "</h3>";
+    $output .= "<div class=\"uitpas_ui_user_profile_navigation_" . $nav . "\">" . $body . "</div>";
+  }
+  $vars['navigation'] = $output;
 }
 
 /**
