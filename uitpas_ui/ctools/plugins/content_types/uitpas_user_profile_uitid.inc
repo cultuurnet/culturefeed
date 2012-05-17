@@ -30,7 +30,7 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
       $query->max = 5;
       $result = $cf->uitpas()->searchCheckins($query);
       if ($result->total) {
-        $actions = $result['objects'];
+        $actions = $result->objects;
       }
     }
     catch (Exception $e) {
