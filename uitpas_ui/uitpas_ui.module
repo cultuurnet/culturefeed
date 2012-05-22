@@ -7,6 +7,26 @@
 require_once 'uitpas_ui.helpers.inc';
 
 /**
+ * Implements hook_block_info().
+ */
+function uitpas_ui_block_info() {
+  return array(
+    'utipas_ui_filters_where' => array(
+      'info' => t('Uipas UI filters (where)'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+  );
+}
+
+/**
+ * Implements uitpas_ui_block_view().
+ */
+function uitpas_ui_block_view($delta = '') {
+  module_load_include('inc', 'uitpas_ui', 'uitpas_ui.blocks');
+  return uitpas_ui_block_view_filters_where();
+}
+
+/**
  * Implements hook_cnapi_ui_contexts_alter().
  */
 function uitpas_ui_cnapi_ui_contexts_alter(&$context) {
