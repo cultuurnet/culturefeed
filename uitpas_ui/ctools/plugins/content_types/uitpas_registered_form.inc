@@ -67,7 +67,7 @@ function uitpas_ui_uitpas_registered_form_content_type_render_form_submit(&$form
     $preferences->activityPrivacyPreferences[] = $preference;
     $cf->setUserPreferences($uitpas_user->id, $preferences);
     //newsletter
-    if (module_exists('addemar_newsletter')) {
+    if ($form_state['values']['newsletter'] && module_exists('addemar_newsletter')) {
       $contact = array(
         'email' => $uitpas_user->mbox,
         'firstname' => $uitpas_user->givenName,
