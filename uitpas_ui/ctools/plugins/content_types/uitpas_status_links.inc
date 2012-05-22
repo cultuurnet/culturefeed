@@ -30,9 +30,9 @@ function uitpas_ui_uitpas_status_links_content_type_render($subtype, $conf, $arg
     $links['links']['uitpas_name'] = $link + array(
      'title' => $context->data->user->nick,
     );
-    $links['links']['uitpas_uitid'] = $link + array(
+    $links['links']['uitpas_details'] = $link + array(
      'title' => t('My UITPAS'),
-     'href' => 'myprofile/uitid', 
+     'href' => 'myprofile/details', 
     );
     $links['links']['uitpas_logout'] = $link + array(
      'title' => t('Logout'),
