@@ -28,7 +28,7 @@ function uitpas_ui_uitpas_status_links_content_type_render($subtype, $conf, $arg
        );
      }
      $links['links']['uitpas_name'] = $link + array(
-      'title' => $context->data->passholder->name,
+      'title' => $context->data->user->nick,
      );
      $links['links']['uitpas_uitid'] = $link + array(
       'title' => t('My UITPAS'),
