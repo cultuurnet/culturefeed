@@ -57,15 +57,27 @@ function uitpas_ui_uitpas_registered_form_content_type_render_form($form, &$form
 }
 
 function uitpas_ui_uitpas_registered_form_content_type_render_form_submit(&$form, &$form_state) {
-  //preferences
   try {
     $uitpas_user = $form_state['values']['uitpas_user'];
     $cf = $form_state['values']['cf'];
+    //preferences
     $preferences = new CultureFeed_Preferences();
     $private = ($form_state['values']['publish_actions']) ? FALSE : TRUE;
     $preference = new CultureFeed_ActivityPrivacyPreference(CultureFeed_Activity::TYPE_UITPAS, $private);
     $preferences->activityPrivacyPreferences[] = $preference;
     $cf->setUserPreferences($uitpas_user->id, $preferences);
+    //newsletter
+    if (module_exists('addemar_newsletter')) {
+      $contact = array(
+        'email' => $uitpas_user->mbox,
+        'firstname' => $uitpas_user->givenName,
+        'lastname' => $uitpas_user->familyName,
+        'addresszip' => $uitpas_user->mbox,
+      );
+      $cid = addemar_newsletter_save_contact($contact);
+      addemar_newsletter_subscribe_contact($cid);
+    }
+    //form
     drupal_set_message(t('Your changes have been saved.'));
     $form_state['redirect'] = '<front>';
   }
