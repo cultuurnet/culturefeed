@@ -19,28 +19,28 @@ function uitpas_ui_uitpas_status_links_content_type_edit_form($form, &$form_stat
 
 function uitpas_ui_uitpas_status_links_content_type_render($subtype, $conf, $args, $context) {
   if ($context->data && $context->data->passholder) {
-     $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
-     $link = array('attributes' => array());
-     if (isset($context->data->user->depiction)) {
-       $links['links']['uitpas_picture'] = $link + array(
+    $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
+    $link = array('attributes' => array());
+    if (isset($context->data->user->depiction)) {
+      $links['links']['uitpas_picture'] = $link + array(
         'title' => theme_image(array('path' => $context->data->user->depiction, 'attributes' => array())),
         'html' => TRUE,
-       );
-     }
-     $links['links']['uitpas_name'] = $link + array(
-      'title' => $context->data->user->nick,
-     );
-     $links['links']['uitpas_uitid'] = $link + array(
-      'title' => t('My UITPAS'),
-      'href' => 'myprofile/uitid', 
-     );
-     $links['links']['uitpas_logout'] = $link + array(
-      'title' => t('Logout'),
-      'href' => 'user/logout', 
-     );
-     $block = new stdClass();
-     $block->title = '';
-     $block->content = theme_links($links);
-     return $block;
+      );
+    }
+    $links['links']['uitpas_name'] = $link + array(
+     'title' => $context->data->user->nick,
+    );
+    $links['links']['uitpas_uitid'] = $link + array(
+     'title' => t('My UITPAS'),
+     'href' => 'myprofile/uitid', 
+    );
+    $links['links']['uitpas_logout'] = $link + array(
+     'title' => t('Logout'),
+     'href' => 'user/logout', 
+    );
+    $block = new stdClass();
+    $block->title = '';
+    $block->content = theme_links($links);
+    return $block;
   }
 }

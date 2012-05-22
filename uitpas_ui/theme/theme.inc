@@ -625,6 +625,8 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_details(&$vars) {
   $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
   $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
   $vars['status_title'] = t('Status');
+  $vars['kansenStatuut'] = $passholder->kansenStatuut;
+  $vars['kansenStatuutValidEndDate'] = (time() < $passholder->kansenStatuutEndDate);
   $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $passholder->kansenStatuutEndDate)));
   $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
   if (count($passholder->memberships)) {
