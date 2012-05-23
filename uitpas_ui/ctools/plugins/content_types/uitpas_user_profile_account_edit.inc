@@ -39,6 +39,7 @@ function uitpas_ui_uitpas_user_profile_account_edit_content_type_render_form($fo
   );
   $form['username'] = array(
     '#type' => 'textfield',
+    '#disabled' => TRUE,
     '#title' => t('Username'),
     '#default_value' => $uitpas_user->nick,
     '#required' => TRUE,
