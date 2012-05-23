@@ -452,7 +452,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
     );
   }
   $vars['coming_promotions'] = (count($coming_promotions)) ? theme_links($links) : '';
-  $vars['all_promotions'] = l(t('Show all promotions'), 'myprofile/advantages');
+  $vars['all_promotions'] = l(t('Show all advantages'), 'myprofile/advantages');
 }
 
 /**
