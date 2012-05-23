@@ -227,7 +227,11 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       $data['kansenStatuutEndDate'] = date('Y-m-d', $data['kansenStatuutEndDate']);
     }
 
-    $readOnlyProperties = array('currentCard', 'uitIdUser', 'inszNumberHash');
+    if (isset($data['inszNumberHash'])) {
+      $data['inszNumber'] = $data['inszNumberHash'];
+    }
+
+    $readOnlyProperties = array('currentCard', 'uitIdUser');
     if (isset($this->uitIdUser)) {
       $readOnlyProperties[] = 'uitpasNumber';
     }
@@ -269,6 +273,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard', false));
     $passholder->blocked = $object->xpath_bool('blocked');
     $passholder->verified = $object->xpath_bool('verified');
+    //$passholder->memberships = $object->xpath_bool('memberships');
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
     $passholder->uitpasNumber = $object->xpath_str('currentCard/uitpasNumber/uitpasNumber');

@@ -25,10 +25,10 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
     $preferences = $cf->getUserPreferences($uitpas_user->id);
     $actions = array();
     try {
-      $query = new CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions();
-      $query->uid = $uitpas_user->id;
-      $query->max = 5;
-      $result = $cf->uitpas()->searchCheckins($query);
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->type = CultureFeed_Activity::TYPE_UITPAS;
+      $query->userId = $uitpas_user->id;
+      $result = $cf->searchActivities($query);
       if ($result->total) {
         $actions = $result->objects;
       }

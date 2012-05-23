@@ -678,7 +678,15 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
   $vars['more_info'] = $passholder->moreInfo;
   $list = array('items' => array(), 'title' => t('Recent UITID actions'), 'type' => 'ul', 'attributes' => array());
   foreach ($actions as $action) {
-    $list['items'][] = $action->nodeTitle . '<br />' .  date('j/m/Y', $action->creationDate);
+    $args = array(
+      '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
+      '!points' => $action->points,
+      '!location' => $action->createdVia,
+      '!time_ago' => format_interval(time() - $action->creationDate, 1),
+    );
+    $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+    $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+    $list['items'][] = format_plural($action->points, $singular, $plural, $args);
   }
   $vars['actions'] = theme_item_list($list);
   $vars['form'] = drupal_render($vars['form']);
