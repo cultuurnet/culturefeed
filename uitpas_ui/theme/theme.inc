@@ -248,7 +248,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
     }
   }
   else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 4));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => 1, 'quantity' => $promotions_total);
