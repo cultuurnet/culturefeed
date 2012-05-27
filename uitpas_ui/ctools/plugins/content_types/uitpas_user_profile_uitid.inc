@@ -26,7 +26,13 @@ function uitpas_ui_uitpas_user_profile_uitid_content_type_render($subtype, $conf
     $actions = array();
     try {
       $query = new CultureFeed_SearchActivitiesQuery();
-      $query->type = CultureFeed_Activity::TYPE_UITPAS;
+      $types = array(
+        CultureFeed_Activity::TYPE_UITPAS, 
+        CultureFeed_Activity::TYPE_IK_GA, 
+        CultureFeed_Activity::TYPE_LIKE,
+      );
+      $query->type = $types;
+      $query->max = 5;
       $query->userId = $uitpas_user->id;
       $result = $cf->searchActivities($query);
       if ($result->total) {

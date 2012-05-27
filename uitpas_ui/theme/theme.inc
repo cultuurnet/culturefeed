@@ -684,6 +684,10 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
     );
+    if (isset($action->nodeId) && isset($action->nodeTitle)) {
+      $url = "http://www.uitinvlaanderen.be/agenda/e/" . cnapi_ui_slug($action->nodeTitle) . "/". $action->nodeTitle;
+      $link = l($url, $action->nodeTitle);
+    }
     $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
     $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
     $list['items'][] = format_plural($action->points, $singular, $plural, $args);
