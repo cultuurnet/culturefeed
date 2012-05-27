@@ -678,19 +678,33 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
   $vars['more_info'] = $passholder->moreInfo;
   $list = array('items' => array(), 'title' => t('Recent UITID actions'), 'type' => 'ul', 'attributes' => array());
   foreach ($actions as $action) {
+    if (isset($action->nodeId) && isset($action->nodeTitle)) {
+      $url = "http://www.uitinvlaanderen.be/agenda/e/" . cnapi_ui_slug($action->nodeTitle) . "/". $action->nodeTitle;
+      $link = l($url, $action->nodeTitle);
+    }
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
       '!points' => $action->points,
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
     );
-    if (isset($action->nodeId) && isset($action->nodeTitle)) {
-      $url = "http://www.uitinvlaanderen.be/agenda/e/" . cnapi_ui_slug($action->nodeTitle) . "/". $action->nodeTitle;
-      $link = l($url, $action->nodeTitle);
-    }
-    $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
-    $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
-    $list['items'][] = format_plural($action->points, $singular, $plural, $args);
+    switch ($action->type) {
+      case CultureFeed_Activity::TYPE_UITPAS:
+        $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $list['items'][] = format_plural($action->points, $singular, $plural, $args);
+        break;
+      case CultureFeed_Activity::TYPE_IK_GA:
+        $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $list['items'][] = format_plural($action->points, $singular, $plural, $args);
+        break;
+      case CultureFeed_Activity::TYPE_LIKE:
+        $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $list['items'][] = format_plural($action->points, $singular, $plural, $args);
+        break;
+    }      
   }
   $vars['actions'] = theme_item_list($list);
   $vars['form'] = drupal_render($vars['form']);
