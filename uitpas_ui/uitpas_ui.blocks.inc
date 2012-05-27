@@ -13,7 +13,7 @@ function uitpas_ui_block_view_filters_where() {
     $lid = db_query($sql, array(':name' => $location))->fetchField();
     if ($lid) {
       $report_query['regio'] = $lid;
-      $report = cnapi_get_report('event', $report_query, TRUE);
+      $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'), TRUE, TRUE);
       if (isset($report['geo']) && count($report['geo'])) {
         $geo_report = array_shift($report['geo']);
         //@TODO result always seems to group items on index 1, not sure if we should hardcode it here
