@@ -46,7 +46,7 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
     }
   }
   //we only want the cookie to kick in on pages with a location argument (selector)
-  if (!is_array($data) && isset($_COOKIE['uitpas_location'])) {
+  if (isset($_COOKIE['uitpas_location'])) {
     $location = $_COOKIE['uitpas_location'];
   }
   if (!$conf && $data) {
