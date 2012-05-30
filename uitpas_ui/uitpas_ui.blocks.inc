@@ -67,3 +67,25 @@ function uitpas_ui_block_view_filters_where_parse_report(&$report_item, $reports
     }
   }
 }
+
+/**
+ * Helper function for uitpas_ui sidebar
+ */
+function uitpas_ui_block_view_sidebar() {
+  $panel_mini = panels_mini_load('uitpas_sidebar');
+  ctools_include('context');
+  //we get our page manager location context with a short version of page_page_manager_page_execute()
+  $item = menu_get_item();
+  $location_context = ctools_context_create('uitpas_location');
+  if ($item['page_callback'] == 'page_manager_page_execute') {
+    $page = page_manager_page_load($item['page_arguments'][0]);
+    if ($page->arguments && isset($page->arguments['uitpas_location'])) {
+      $location_context = ctools_context_create('uitpas_location', arg(1));
+    }
+  }
+  $panel_mini->context = $panel_mini->display->context = ctools_context_load_contexts($panel_mini);
+  $panel_mini->display->context['requiredcontext_uitpas_location_1'] = $location_context;
+  $block['subject'] = '';
+  $block['content'] = panels_render_display($panel_mini->display);
+  return $block;
+}

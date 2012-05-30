@@ -15,6 +15,10 @@ function uitpas_ui_block_info() {
       'info' => t('Uipas UI filters (where)'),
       'cache' => DRUPAL_NO_CACHE,
     ),
+    'utipas_ui_sidebar' => array(
+      'info' => t('Uipas UI sidebar'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
   );
 }
 
@@ -23,7 +27,14 @@ function uitpas_ui_block_info() {
  */
 function uitpas_ui_block_view($delta = '') {
   module_load_include('inc', 'uitpas_ui', 'uitpas_ui.blocks');
-  return uitpas_ui_block_view_filters_where();
+  switch ($delta) {
+    case 'utipas_ui_filters_where':
+      return uitpas_ui_block_view_filters_where();
+      break;
+    case 'utipas_ui_sidebar':
+      return uitpas_ui_block_view_sidebar();
+      break;
+  }
 }
 
 /**
