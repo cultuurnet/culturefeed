@@ -20,7 +20,7 @@ function uitpas_ui_uitpas_login_links_content_type_edit_form($form, &$form_state
 function uitpas_ui_uitpas_login_links_content_type_render($subtype, $conf, $args, $context) {
   
   $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
-  $link = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
+  $link = array('attributes' => array(), 'query' => drupal_get_destination());
   if (!isset($context->data->user)) {
     $links['links']['uitpas_login'] = $link + array(
       'title' => t('Login'),
