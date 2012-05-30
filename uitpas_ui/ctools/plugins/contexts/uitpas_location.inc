@@ -38,15 +38,16 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
     try {
       $cf_user = DrupalCultureFeed::getLoggedInUser();
       if ($cf_user->city) {
-        $location = $cf_user->city;
+        $location = strtolower($cf_user->city);
+      
       }
     }
     catch (Exception $e) {
       watchdog_exception('uitpas_ui_context_uitpas_location', $e);
     }
   }
-  //we only want the cookie to kick in on pages with a location argument (selector)
-  if (isset($_COOKIE['uitpas_location'])) {
+  //cookie is only for anonymous users
+  else if (isset($_COOKIE['uitpas_location'])) {
     $location = $_COOKIE['uitpas_location'];
   }
   if (!$conf && $data) {
