@@ -27,13 +27,6 @@ function uitpas_ui_uitpas_validation_form_content_type_render($subtype, $conf, $
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_state) {
-  if (isset($form_state['values']['link'])) {
-    //as defined in js/culturefeed.js we also reload the page as our page still has the rebuilt form
-    $link = $form_state['values']['link'];
-    $options = 'location=1,status=1,scrollbars=1,resizable=1,width=810,height=635';
-    $script = "window.open('" . $link . "', 'UiTiD', '" . $options . "');";
-    drupal_add_js($script, 'inline');
-  }
   $form['#prefix'] = variable_format_value('uitpas_ui_validation_intro');
   $form['link'] = array(
     '#type' => 'value',
@@ -107,8 +100,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$fo
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render_form_submit(&$form, &$form_state) {
-  //we rebuild the form so our form definition can popup a window if required
-  $form_state['rebuild'] = TRUE;
+  $form_state['redirect'] = $form_state['values']['link'];
 }
 
 function uitpas_ui_uitpas_validation_form_process_year($element) {
