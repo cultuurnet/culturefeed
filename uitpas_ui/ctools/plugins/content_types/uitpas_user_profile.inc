@@ -29,6 +29,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $passholder->uitpasNumber;
+      $query->cashedIn = FALSE;
       $query->max = 2;
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
