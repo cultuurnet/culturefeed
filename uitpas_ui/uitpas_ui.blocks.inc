@@ -1,24 +1,27 @@
 <?php
 
+/**
+ * @file
+ * Block functions for uitpas_ui
+ */
+
+/**
+ * Helper function for uitpas_ui where filters
+ */
 function uitpas_ui_block_view_filters_where() {
   $request = cnapi_ui_get_active_request();
-  $request_p = cnapi_url_dp2p($request);
-  $report_query = $request_p['query'];
-  cnapi_ui_apply_context_query($report_query, $request['context']);
-  unset($report_query['page']);
-  $filter_options = array();
-  $locations = array_map('trim', explode("\n", variable_get_value('uitpas_ui_locations')));
-  foreach ($locations as $location) {
-    $sql = "SELECT lid FROM {cnapi_location} WHERE type = 'region' && name = :name";
-    $lid = db_query($sql, array(':name' => $location))->fetchField();
-    if ($lid) {
-      $report_query['regio'] = $lid;
-      $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'), TRUE, TRUE);
-      if (isset($report['geo']) && count($report['geo'])) {
-        $geo_report = array_shift($report['geo']);
-        //@TODO result always seems to group items on index 1, not sure if we should hardcode it here
-        if (isset($geo_report['children'][1]['children'])) {
-          $report_item = array_shift($geo_report['children'][1]['children']);
+  cnapi_ui_apply_context_query($request['query'], $request['context']);
+  $report = cnapi_get_report('event', $request['query']);
+  if (isset($report['geo'])) {
+    $filter_options = array();
+    $locations = array_map('trim', explode("\n", variable_get_value('uitpas_ui_locations')));
+    foreach ($locations as $location) {
+      $sql = "SELECT lid FROM {cnapi_location} WHERE type = 'region' && name = :name";
+      $lid = db_query($sql, array(':name' => $location))->fetchField();
+      if ($lid) {
+        $report_item = array();
+        uitpas_ui_block_view_filters_where_parse_report($report_item, $report['geo'], $lid);
+        if (count($report_item)) {
           $filter_option = array(
             'id' => $report_item['id'],
             'name' => $report_item['name'],
@@ -37,16 +40,30 @@ function uitpas_ui_block_view_filters_where() {
         }
       }
     }
+    if (count($filter_options)) {
+      $render = array(
+        'filter_options' => array(
+          '#theme' => 'cnapi_browse_filter_options',
+          '#options' => $filter_options,
+        ),
+      );
+      $block['subject'] = t('Where ?');
+      $block['content'] = drupal_render($render);
+      return $block;
+    }
   }
-  if (count($filter_options)) {
-    $render = array(
-      'filter_options' => array(
-        '#theme' => 'cnapi_browse_filter_options',
-        '#options' => $filter_options,
-      ),
-    );
-    $block['subject'] = t('Where ?');
-    $block['content'] = drupal_render($render);
-    return $block;
+}
+
+/**
+ * Helper function for uitpas_ui where filters, recursive search
+ */
+function uitpas_ui_block_view_filters_where_parse_report(&$report_item, $reports, $lid) {
+  foreach ($reports as $key => $report) {
+    if ($key == $lid) {
+      $report_item = $report;
+    }
+    else if (isset($report['children'])) {
+      uitpas_ui_block_view_filters_where_parse_report($report_item, $report['children'], $lid);
+    }
   }
 }
