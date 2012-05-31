@@ -62,7 +62,11 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form($form, &
     '#type' => 'textfield',
     '#title' => t('to mobile number'),
     '#default_value' => $passholder->gsm,
-    '#required' => TRUE,
+    '#states' => array(
+      'required' => array(
+        ':input[name="sms_notifications"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['actions'] = array(
     'save' => array(
@@ -76,6 +80,9 @@ function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form($form, &
 function uitpas_ui_uitpas_user_profile_ntfctns_content_type_render_form_validate(&$form, &$form_state) {
   if (!valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Invalid e-mail address'));
+  }
+  if ($form_state['values']['sms_notifications'] && !$form_state['values']['mobile']) {
+    form_set_error('mobile', t('to mobile number field is required.'));
   }
 }
 
