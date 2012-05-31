@@ -15,8 +15,6 @@
     <div><?php print $gender; ?></div>
     <div><?php print $nationality; ?></div>
     <div><?php print $street; ?></div>
-    <div><?php print $nr; ?></div>
-    <div><?php print $bus; ?></div>
     <div><?php print $zip; ?></div>
     <div><?php print $city; ?></div>
     <div><?php print $tel; ?></div>
