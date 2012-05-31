@@ -38,15 +38,6 @@ function uitpas_ui_block_view($delta = '') {
 }
 
 /**
- * Implements hook_cnapi_ui_contexts_alter().
- */
-function uitpas_ui_cnapi_ui_contexts_alter(&$context) {
-  if (isset($context['event'])) {
-    $context['event']['query']['k'] = 'uitpas';
-  }
-}
-
-/**
  * Implements hook_ctools_plugin_directory().
  */
 function uitpas_ui_ctools_plugin_directory($module, $plugin) {

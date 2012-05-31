@@ -10,8 +10,12 @@
  */
 function uitpas_ui_block_view_filters_where() {
   $request = cnapi_ui_get_active_request();
-  cnapi_ui_apply_context_query($request['query'], $request['context']);
-  $report = cnapi_get_report('event', $request['query']);
+  $query = $request['query'];
+  if (isset($query['regio'])) {
+    unset($query['regio']);
+  }
+  cnapi_ui_apply_context_query($query, $request['context']);
+  $report = cnapi_get_report('event', $query);
   if (isset($report['geo'])) {
     $filter_options = array();
     $locations = array_map('trim', explode("\n", variable_get_value('uitpas_ui_locations')));
