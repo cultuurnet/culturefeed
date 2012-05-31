@@ -422,7 +422,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
   else {
     $vars['image'] = '';
   }
-  $vars['name'] = l($uitpas_user->nick, 'myprofile/uitid');
+  $vars['name'] = l($uitpas_user->nick, 'myprofile/details');
   $singular = t('1 point saved');
   $plural = t('%points points saved', array('%points' => $passholder->points));
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
