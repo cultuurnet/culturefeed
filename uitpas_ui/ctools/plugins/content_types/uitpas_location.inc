@@ -14,6 +14,7 @@ $plugin = array(
   'defaults' => array(
     'path' => '',
     'label' => '',
+    'include_elders' => 1,
   ),
 );
 
@@ -29,12 +30,18 @@ function uitpas_ui_uitpas_location_content_type_edit_form($form, &$form_state) {
     '#title' => t('Label'),
     '#default_value' => $conf['label'],
   );
+  $form['include_elders'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Include 'Elders'"),
+    '#default_value' => $conf['include_elders'],
+  );
   return $form;
 }
 
 function uitpas_ui_uitpas_location_content_type_edit_form_submit($form, &$form_state) {
   $form_state['conf']['path'] = $form_state['values']['path'];
   $form_state['conf']['label'] = $form_state['values']['label'];
+  $form_state['conf']['include_elders'] = $form_state['values']['include_elders'];
 }
 
 function uitpas_ui_uitpas_location_content_type_render($subtype, $conf, $args, $context) {
@@ -53,7 +60,9 @@ function uitpas_ui_uitpas_location_content_type_render_form($form, $form_state, 
   );
   $options = array('all' => '');
   foreach ($locations as $key => $info) {
-    $options[$key] = $info['name'];
+    if ($key != 'elders' || $conf['include_elders']) {
+      $options[$key] = $info['name'];
+    }
   }
   $form['location'] = array(
     '#type' => 'select',

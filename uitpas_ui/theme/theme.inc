@@ -364,43 +364,48 @@ function uitpas_ui_preprocess_uitpas_ui_register_where(&$vars) {
     'sticky' => '',
     'empty' => '',
   );
-  foreach ($vars['pos'] as $pos) {
-    $path = '';
-    $details = "<div class=\"uitpas_pos_details\">";
-    $times = '-';
-    if (isset($vars['actors'][$pos->id])) {
-      $actor = $vars['actors'][$pos->id];
-      $address = $actor['contactinfo']['address'];
-      $details .= "<div class=\"uitpas_pos_address\">";
-      if (isset($address['street'])) {
-        $details .= $address['street'] . ' ' . $address['housenr'] . "<br />";
+  if (count($vars['pos'])) {
+    foreach ($vars['pos'] as $pos) {
+      $path = '';
+      $details = "<div class=\"uitpas_pos_details\">";
+      $times = '-';
+      if (isset($vars['actors'][$pos->id])) {
+        $actor = $vars['actors'][$pos->id];
+        $address = $actor['contactinfo']['address'];
+        $details .= "<div class=\"uitpas_pos_address\">";
+        if (isset($address['street'])) {
+          $details .= $address['street'] . ' ' . $address['housenr'] . "<br />";
+        }
+        $details .= $address['zipcode'] . ' ' . $address['city'];
+        $details .= "</div>";
+        if (isset($actor['detail']['nl']['calendarsummary'])) {
+          $times = $actor['detail']['nl']['calendarsummary'];
+        }
+        $path = uitpas_ui_helpers_link_object('actor', $actor);
       }
-      $details .= $address['zipcode'] . ' ' . $address['city'];
-      $details .= "</div>";
-      if (isset($actor['detail']['nl']['calendarsummary'])) {
-        $times = $actor['detail']['nl']['calendarsummary'];
+      else if ($pos->street || $pos->city) {
+        $details .= "<div class=\"uitpas_pos_address\">";
+        if ($pos->street) {
+          $details .= $pos->street . ' ' . $pos->number . "<br />";
+        }
+        $details .= $pos->postalCode . ' ' .  $pos->city;
+        $details .= "</div>";
       }
-      $path = uitpas_ui_helpers_link_object('actor', $actor);
-    }
-    else if ($pos->street || $pos->city) {
-      $details .= "<div class=\"uitpas_pos_address\">";
-      if ($pos->street) {
-        $details .= $pos->street . ' ' . $pos->number . "<br />";
+      //description
+      $title = ($path) ? l($pos->name, $path) : $pos->name;
+      $description = "<div class=\"uitpas_pos_name\">" . $title . "</div>";
+      $description .= $details;
+      if ($path) {
+        $more = t('More info and contact information');
+        $link = l($more, $path);
+        $description .= "<div class=\"uitpas_pos_more\">" . $link . "</div>";
       }
-      $details .= $pos->postalCode . ' ' .  $pos->city;
-      $details .= "</div>";
+      $description .= "</div>";
+      $table['rows'][] = array($description, $times);
     }
-    //description
-    $title = ($path) ? l($pos->name, $path) : $pos->name;
-    $description = "<div class=\"uitpas_pos_name\">" . $title . "</div>";
-    $description .= $details;
-    if ($path) {
-      $more = t('More info and contact information');
-      $link = l($more, $path);
-      $description .= "<div class=\"uitpas_pos_more\">" . $link . "</div>";
-    }
-    $description .= "</div>";
-    $table['rows'][] = array($description, $times);
+  }
+  else {
+    $table['rows'][] = array(array('data' => t('No results found.'), 'colspan' => 2));
   }
   $pager = array('tags' => array(), 'parameters' => array(), 'element' => 0, 'quantity' => $vars['total']);
   $vars['pos'] = theme_table($table) . theme_pager($pager);
