@@ -548,7 +548,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       }
       $rows[] = array(
         l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
         implode(', ', $location)
       );
     }

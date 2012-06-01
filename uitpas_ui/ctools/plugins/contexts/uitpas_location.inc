@@ -37,8 +37,10 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
   if (DrupalCultureFeed::isCultureFeedUser()) {
     try {
       $cf_user = DrupalCultureFeed::getLoggedInUser();
-      if ($cf_user->city) {
-        $location = strtolower($cf_user->city);
+      $cf = DrupalCultureFeed::getLoggedInUserInstance();
+      $passholder = $cf->uitpas()->getPassholderByUser($cf_user->id);
+      if ($passholder->city) {
+        $location = strtolower($passholder->city);
       
       }
     }
