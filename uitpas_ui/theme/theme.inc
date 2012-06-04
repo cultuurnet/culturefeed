@@ -83,16 +83,16 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
     'type' => 'ul',
     'items' => $vars['headings'],
   );
-  $vars['headings'] = theme_item_list($list);
+  $vars['headings'] = (count($list['items'])) ? theme_item_list($list) : '';
   //when
-  $vars['when'] = "<label>" . t('When?') . "</label> " . $vars['when'];
+  $vars['when'] = $vars['when'];
   //where
   $path = uitpas_ui_helpers_link_object('actor', $activity['location']['actor']);
   $where = l($vars['location']['title'], $path) . "<br />";
   $where .= $vars['location']['address'];
-  $vars['where'] = "<label>" . t('Where?') . "</label> " . $where;
+  $vars['where'] = $where;
   //price
-  $vars['price'] = "<label>" . t('Price') . "</label> " . $vars['price'];
+  $vars['price'] = $vars['price'];
   //links
   $list = array(
     'title' => '',
@@ -100,7 +100,7 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
     'type' => 'ul',
     'items' => $vars['links'],
   );
-  $vars['links'] = "<label>" . t('Links') . "</label> " . theme_item_list($list);
+  $vars['links'] = (count($list['items'])) ? theme_item_list($list) : '';
   //image
   $vars['image'] = (isset($vars['images'][0]['image'])) ? $vars['images'][0]['image'] : '';
 }
@@ -114,7 +114,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
   template_preprocess_cnapi_ui_actor($vars);
   //icons and legend are the same html wise for accessibility reasons
   $icons_list = $legend_list = array(
-    'title' => t('UITPAS advantages at this location'),
+    'title' => t('<span class="icon">UiTPAS</span> advantages at this location'),
     'attributes' => array(),
     'type' => 'ul',
     'items' => array(),
@@ -140,12 +140,12 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
   $vars['icons'] = (count($icons_list['items'])) ? theme_item_list($icons_list) : '';
   $vars['legend'] = theme_item_list($legend_list) . l(t('Show all advantages and promotions'), 'advantages_promotions');
   //address
-  $vars['address'] = "<label>" . t('Address') . "</label> " . $vars['address'];
+  $vars['address'] = $vars['address'];
   //contact
   $contact = (isset($vars['contact']['mail'])) ? $vars['contact']['mail'] . "<br />" : '';
   $contact .= (isset($vars['contact']['phone'])) ? t('telephone') . ': ' . $vars['contact']['phone'] . "<br />" : '';
   $contact .= (isset($vars['contact']['fax'])) ? t('fax') . ': ' . $vars['contact']['fax'] : '';
-  $vars['contact'] = ($contact) ? "<label>" . t('Contact') . "</label> " . $contact : '';
+  $vars['contact'] = ($contact) ? $contact : '';
   //links
   $list = array(
     'title' => '',
@@ -153,7 +153,7 @@ function uitpas_ui_preprocess_uitpas_ui_actor(&$vars) {
     'type' => 'ul',
     'items' => $vars['links'],
   );
-  $vars['links'] = "<label>" . t('Links') . "</label> " . theme_item_list($list);
+  $vars['links'] = (count($list['items'])) ? theme_item_list($list) : '';
   //image
   $vars['image'] = (isset($vars['images'][0]['image'])) ? $vars['images'][0]['image'] : '';
 }

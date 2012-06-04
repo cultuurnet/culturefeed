@@ -56,7 +56,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render_form_validate(&$form, &$form_state) {
-  $number = $form_state['values']['uitpasnumber'];
+  $number = str_replace(' ', '', $form_state['values']['uitpasnumber']);
   $dob = $form_state['values']['dob']['year'] . '-' . $form_state['values']['dob']['month'] . '-' . $form_state['values']['dob']['day'];
   $dob = new DateTime($dob);
 
