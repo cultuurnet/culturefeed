@@ -45,6 +45,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->uitpasNumber = $passholder->uitpasNumber;
+      $query->cashingPeriodBegin = time();
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;

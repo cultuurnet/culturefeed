@@ -43,6 +43,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->filterOnUserPoints = TRUE;
+      $query->cashingPeriodBegin = time();
       $query->max = 2;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
@@ -57,6 +58,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->minPoints = $passholder->points + 1;
       $query->max = 2;
+      $query->cashingPeriodBegin = time();
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $coming_promotions = $result->objects;

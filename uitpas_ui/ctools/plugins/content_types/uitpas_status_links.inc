@@ -18,7 +18,7 @@ function uitpas_ui_uitpas_status_links_content_type_edit_form($form, &$form_stat
 }
 
 function uitpas_ui_uitpas_status_links_content_type_render($subtype, $conf, $args, $context) {
-  if ($context->data && $context->data->passholder) {
+  if ($context->data) {
     $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
     $link = array('attributes' => array());
     if (isset($context->data->user->depiction)) {
@@ -30,10 +30,12 @@ function uitpas_ui_uitpas_status_links_content_type_render($subtype, $conf, $arg
     $links['links']['uitpas_name'] = $link + array(
      'title' => $context->data->user->nick,
     );
-    $links['links']['uitpas_details'] = $link + array(
-     'title' => t('My UITPAS'),
-     'href' => 'myprofile/details', 
-    );
+    if ($context->data->passholder) {
+      $links['links']['uitpas_details'] = $link + array(
+       'title' => t('My UITPAS'),
+       'href' => 'myprofile/details', 
+      );
+    }
     $links['links']['uitpas_logout'] = $link + array(
      'title' => t('Logout'),
      'href' => 'user/logout', 

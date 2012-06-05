@@ -18,7 +18,7 @@ function uitpas_ui_uitpas_validation_form_content_type_edit_form($form, &$form_s
 }
 
 function uitpas_ui_uitpas_validation_form_content_type_render($subtype, $conf, $args, $context) {
-  if (!user_is_logged_in() || ($context->data && !$context->data->passholder && $_GET['q'] == 'register_uitpas')) {
+  if (!user_is_logged_in() || ($context->data && !$context->data->passholder)) {
     $block = new stdClass();
     $block->title = t('Allready own an Uitpas ?');
     $block->content = drupal_get_form('uitpas_ui_uitpas_validation_form_content_type_render_form');
@@ -48,7 +48,7 @@ function uitpas_ui_uitpas_validation_form_content_type_render_form($form, $form_
       '#value' => t('Continue'),
     ),
   );
-  if ($_GET['q'] != 'register_uitpas') {
+  if ($_GET['q'] != 'register_uitpas' && !user_is_logged_in()) {
     $args = array('@url' => url('culturefeed/oauth/connect'));
     $form['#suffix'] = t('Allready registered ?  <a href="@url">Apply here</a>.', $args);
   }
