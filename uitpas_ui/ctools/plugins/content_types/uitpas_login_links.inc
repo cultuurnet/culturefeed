@@ -21,7 +21,7 @@ function uitpas_ui_uitpas_login_links_content_type_render($subtype, $conf, $args
   
   $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   $link = array('attributes' => array(), 'query' => drupal_get_destination());
-  if (!isset($context->data->user)) {
+  if (!user_is_logged_in()) {
     $links['links']['uitpas_login'] = $link + array(
       'title' => t('Login'),
       'href' => 'culturefeed/oauth/connect', 
