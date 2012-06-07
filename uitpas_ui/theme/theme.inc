@@ -73,7 +73,7 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
       'data' => t('Reduction for opportunity groups'),
       'class' => array('uitpas_activity_has_tariff'),
     );
-    $vars['price'] = "&euro; " . $uitpas_activity->tariff;
+    $vars['price'] = '&euro; ' . $uitpas_activity->tariff . ' <span class="small">(standaardprijs: &euro; ' . $uitpas_activity->price . ')</span>';
   }
   $vars['icons'] = (count($list['items'])) ? theme_item_list($list) : '';
   //headings
@@ -333,14 +333,19 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
     'items' => array(),
   );
   foreach ($actions as $action) {
+    //subject
+    $url = 'activity/' . cnapi_ui_slug($action->nodeTitle) . '/'. $action->nodeId;
+    $subject = l($action->nodeTitle, $url);
+    //args
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
       '!points' => $action->points,
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
+      '!subject' => $subject,
     );
-    $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
-    $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+    $singular = "<strong>!name</strong> saved 1 point at !subject, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+    $plural = "<strong>!name</strong> saved !points points at !subject, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
     $default_image = variable_get_value('uitpas_ui_user_default_image');
     $image = ($action->depiction) ? $action->depiction : variable_get_value('uitpas_ui_user_default_image');
     $image = theme_image(array('path' => $image, 'attributes' => array()));
@@ -676,23 +681,29 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
   else {
     $vars['image'] = '';
   }
-  $vars['first_name'] = $passholder->firstName;
-  $vars['dob'] = date('j/m/Y', $passholder->dateOfBirth);
-  $vars['pob'] = $passholder->placeOfBirth;
-  $vars['gender'] = $passholder->gender;
-  $vars['more_info'] = $passholder->moreInfo;
+  $vars['first_name'] = $uitpas_user->givenName;
+  $vars['dob'] = date('j/m/Y', $uitpas_user->dob);
+  $vars['city'] = $uitpas_user->city;
+  $vars['gender'] = $uitpas_user->gender;
+  $vars['gender'] = '';
+  if (!empty($uitpas_user->gender)) {
+    $vars['gender'] = $uitpas_user->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  }
+  $vars['bio'] = $uitpas_user->bio;
   $list = array('items' => array(), 'title' => t('Recent UITID actions'), 'type' => 'ul', 'attributes' => array());
   foreach ($actions as $action) {
     //subject
-    $url = "http://www.uitinvlaanderen.be/agenda/";
-    if ($action->contentType == 'event') {
-      $url .= 'e';
+    if ($action->type == CultureFeed_Activity::TYPE_UITPAS) {
+      $url = 'activity';
+    }
+    else if ($action->contentType == 'event') {
+      $url = 'http://www.uitinvlaanderen.be/agenda/e';
     }
     else if ($action->contentType == 'actor') {
-      $url .= 'a';
+      $url = 'http://www.uitinvlaanderen.be/agenda/a';
     }
     $url .= "/" . cnapi_ui_slug($action->nodeTitle) . "/". $action->nodeId;
-    $subject = l($url, $action->nodeTitle);
+    $subject = l($action->nodeTitle, $url);
     //args
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
@@ -703,8 +714,8 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_uitid(&$vars) {
     );
     switch ($action->type) {
       case CultureFeed_Activity::TYPE_UITPAS:
-        $singular = "!name saved 1 point at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
-        $plural = "!name saved !points points at !location, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $singular = "!name saved 1 point at !subject, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
+        $plural = "!name saved !points points at !subject, <span class=\"uitpas_ui_time_ago\">!time_ago ago</span>";
         $list['items'][] = format_plural($action->points, $singular, $plural, $args);
         break;
       case CultureFeed_Activity::TYPE_IK_GA:
