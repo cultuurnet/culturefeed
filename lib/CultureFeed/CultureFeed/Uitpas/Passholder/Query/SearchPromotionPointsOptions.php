@@ -88,6 +88,13 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
   public $uid;
 
   /**
+   * The number of the uitpas of the passholder
+   *
+   * @var string
+   */
+  public $uitpasNumber;
+
+  /**
    * Default: false. Indicates if the system must only show the pointspromotions for which the user has sufficient points
    *
    * @var boolean
