@@ -12,7 +12,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
   public function testGetPrice() {
     $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
-    
+
     $prices_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/prices.xml');
 
     $oauth_client_stub->expects($this->any())
@@ -22,7 +22,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $cf = new CultureFeed($oauth_client_stub);
 
     $prices = $cf->uitpas()->getPrice(self::CONSUMER_KEY_COUNTER);
-    
+
     $this->assertEquals(2, count($prices->objects));
     $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_UitpasPrice', $prices->objects);
 
@@ -34,7 +34,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
 
   public function testCreatePassholder() {
     $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
-    
+
     $create_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/create.xml');
 
     $oauth_client_stub->expects($this->any())
@@ -215,7 +215,7 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $advantages_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/welcome_advantages.xml');
 
     $oauth_client_stub->expects($this->any())
-             ->method('authenticatedGetAsXML')
+             ->method('consumerGetAsXML')
              ->will($this->returnValue($advantages_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
