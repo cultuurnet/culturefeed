@@ -158,6 +158,14 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $kansenStatuutEndDate;
 
   /**
+   * If the kansenstatuus has expired, but is still
+   * in its grace period.
+   *
+   * @var boolean
+   */
+  public $kansenStatuutInGracePeriod;
+
+  /**
    * The user coupled with the passholder
    *
    * @var CultureFeed_Uitpas_Passholder_UitIdUser
@@ -269,6 +277,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->price = $object->xpath_float('price');
     $passholder->kansenStatuut = $object->xpath_bool('kansenStatuut');
     $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
+    $passholder->kansenStatuutInGracePeriod = $object->xpath_bool('kansenStatuutInGracePeriod');
     $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
     $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard', false));
     $passholder->blocked = $object->xpath_bool('blocked');
