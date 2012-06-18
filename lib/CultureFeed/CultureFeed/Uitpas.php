@@ -280,7 +280,17 @@ interface CultureFeed_Uitpas {
 
   public function connectDeviceWithEvent($device_id, $cdbid, $consumer_key_counter = NULL);
 
-  public function getWelcomeAdvantage($id);
+  /**
+   *
+   * @param integer $id
+   * @param CultureFeed_Uitpas_Promotion_PassholderParameter $passholder
+   */
+  public function getWelcomeAdvantage($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL);
 
+  /**
+   *
+   * @param integer $id
+   * @param CultureFeed_Uitpas_Promotion_PassholderParameter $passholder
+   */
   public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL);
 }

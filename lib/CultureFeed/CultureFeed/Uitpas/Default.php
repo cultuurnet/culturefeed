@@ -1009,10 +1009,20 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     return CultureFeed_Uitpas_Counter_Device::createFromXml($xml->xpath('/response', FALSE));
   }
 
-  public function getWelcomeAdvantage($id) {
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Uitpas::getWelcomeAdvantage()
+   */
+  public function getWelcomeAdvantage($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL) {
     $path = 'uitpas/promotion/welcomeAdvantage/' . $id;
 
-    $result = $this->oauth_client->consumerGetAsXml($path);
+    $params = array();
+
+    if ($passholder) {
+      $params += $passholder->params();
+    }
+
+    $result = $this->oauth_client->consumerGetAsXml($path, $params);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
