@@ -36,13 +36,6 @@ class CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions extends CultureF
   public $balieConsumerKey;
 
   /**
-   * The price of the uitpas
-   *
-   * @var string
-   */
-  public $price;
-
-  /**
    * End date of the cashing period
    *
    * @var integer
