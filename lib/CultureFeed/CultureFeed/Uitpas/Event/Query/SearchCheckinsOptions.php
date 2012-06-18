@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions extends CultureFeed_Uitpas_ValueObject {
+class CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions extends CultureFeed_Uitpas_ValueObject {
 
   /**
    * The uid of the passholder
