@@ -121,6 +121,30 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
    */
   public $userHomeCity;
 
+  /**
+   * The first name of the passholder who checked in.
+   * @var string
+   */
+  public $firstName;
+
+  /**
+   * The last name of the passholder who checked in.
+   * @var string
+   */
+  public $lastName;
+
+  /**
+   * Total amount of points of the passholder who checked in.
+   * @var integer
+   */
+  public $userPoints;
+
+  /**
+   * Instantiates a new checkin activity object based on the passed XML representation.
+   *
+   * @param CultureFeed_SimpleXMLElement $object
+   * @return CultureFeed_Uitpas_Event_CheckinActivity
+   */
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $checkin = new CultureFeed_Uitpas_Event_CheckinActivity();
     $checkin->id = $object->xpath_str('id');
@@ -140,6 +164,9 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
     $checkin->location = $object->xpath_str('location');
     $checkin->organiser = $object->xpath_str('organiser');
     $checkin->userHomeCity = $object->xpath_str('userHomeCity');
+    $checkin->firstName = $object->xpath_str('firstName');
+    $checkin->lastName = $object->xpath_str('lastName');
+    $checkin->userPoints = $object->xpath_int('userPoints');
 
     return $checkin;
   }
