@@ -1,0 +1,7 @@
+name = CultureFeed User Interface
+description = Creates a default user interface for CultureFeed
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed
+dependencies[] = cnapi_ui

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <associations>
+        <association>
+            <id>1</id>
+            <name>CJP</name>
+        </association>
+        <association>
+            <id>2</id>
+            <name>Okra</name>
+        </association>
+    </associations>
+    <total>2</total>
+</response>

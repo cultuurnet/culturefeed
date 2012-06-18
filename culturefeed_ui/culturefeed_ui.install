@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function culturefeed_ui_uninstall() {
+  $variables = array(
+    'culturefeed_ui_block_most_active_user_sort',
+    'culturefeed_ui_block_top_events_sort',
+    'culturefeed_ui_related_events_block_cache_expires',
+    'culturefeed_ui_top_events_block_cache_expires',
+    'culturefeed_ui_similar_users_block_cache_expires',
+  );
+  
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}

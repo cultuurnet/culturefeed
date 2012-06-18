@@ -1,0 +1,264 @@
+<?php
+/**
+ * @file
+ * Uitpas UI: provides ctools content types to display culturefeed utipas data
+ */
+
+require_once 'uitpas_ui.helpers.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function uitpas_ui_block_info() {
+  return array(
+    'utipas_ui_filters_where' => array(
+      'info' => t('Uipas UI filters (where)'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+    'utipas_ui_sidebar' => array(
+      'info' => t('Uipas UI sidebar'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+  );
+}
+
+/**
+ * Implements uitpas_ui_block_view().
+ */
+function uitpas_ui_block_view($delta = '') {
+  module_load_include('inc', 'uitpas_ui', 'uitpas_ui.blocks');
+  switch ($delta) {
+    case 'utipas_ui_filters_where':
+      return uitpas_ui_block_view_filters_where();
+      break;
+    case 'utipas_ui_sidebar':
+      return uitpas_ui_block_view_sidebar();
+      break;
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function uitpas_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'ctools/plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implement hook_init().
+ */
+function uitpas_ui_init() {
+  if (isset($_SESSION)) {
+    if (isset($_SESSION['uitpas_ui_passholder_redirect']) && $_SESSION['uitpas_ui_passholder_redirect']) {
+      $_SESSION['uitpas_ui_passholder_redirect'] = FALSE;
+      drupal_goto('register_uitpas');
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function uitpas_ui_menu() {
+  return array(
+    'admin/config/services/uitpas_ui' => array(
+      'title' => 'Uipas UI promotions highlight',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('uitpas_ui_admin_promotions_highlight_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'uitpas_ui.admin.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function uitpas_ui_menu_alter(&$items) {
+  if (isset($items['culturefeed/oauth/authorize'])) {
+    $items['culturefeed/oauth/authorize']['page callback'] = 'uitpas_ui_oauth_authorize';
+    $items['culturefeed/oauth/authorize']['file'] = 'uitpas_ui.pages.inc';
+    $items['culturefeed/oauth/authorize']['module'] = 'uitpas_ui';
+  }
+}
+
+/**
+ * Implements hook_preprocess_cnapi_ui_event_summary() for cnapi-ui-event-summary.tpl.php.
+ */
+function uitpas_ui_preprocess_cnapi_ui_event_summary(&$vars) {
+  $url = uitpas_ui_helpers_link_object('activity', $vars['event']);
+  $object = $vars['event'];
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
+  $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $vars['title']));
+  $vars['thumbnail'] = l($thumbnail_img, $url, array('html' => TRUE));
+  $vars['object_url'] = url($url);
+  $vars['more_link'] = l(t('More info'), $url);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function uitpas_ui_theme() {
+  return array(
+    'uitpas_ui_admin_promotions_highlight_form' => array(
+      'render element' => 'form',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_activity' => array(
+      'variables' => array('activity' => NULL, 'uitpas_activity' => NULL, 'promotion' => 0),
+      'template' => 'uitpas-ui-activity',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_actor' => array(
+      'variables' => array('actor' => NULL, 'points' => FALSE, 'promotions' => array()),
+      'template' => 'uitpas-ui-actor',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_advantage' => array(
+      'variables' => array('advantage' => NULL),
+      'template' => 'uitpas-ui-advantage',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_advantages_promotions' => array(
+      'variables' => array(
+        'advantages' => array(), 
+        'advantages_total' => 0, 
+        'promotions' => array(),
+        'promotions_total' => 0,
+      ),
+      'template' => 'uitpas-ui-advantages-promotions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotion' => array(
+      'variables' => array('promotion' => NULL),
+      'template' => 'uitpas-ui-promotion',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_promotions_highlight' => array(
+      'variables' => array('promotions' => array()),
+      'template' => 'uitpas-ui-promotions-highlight',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_recent_actions' => array(
+      'variables' => array('actions' => array(), 'form' => array()),
+      'template' => 'uitpas-ui-recent-actions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_register_where' => array(
+      'variables' => array('pos' => array(), 'actors' => array(), 'total' => 0),
+      'template' => 'uitpas-ui-register-where',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'advantages' => array(), 
+        'promotions' => array(),
+        'coming_promotions' => array(),
+      ),
+      'template' => 'uitpas-ui-user-profile',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_activities' => array(
+      'variables' => array('activities' => array(), 'activites_total' => 0),
+      'template' => 'uitpas-ui-user-profile-activities',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_advantages' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'advantages' => array(), 
+        'promotions' => array(),
+        'cashed_in_advantages' => array(),
+        'cashed_in_promotions' => array(),
+      ),
+      'template' => 'uitpas-ui-user-profile-advantages',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_details' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL,
+      ),
+      'template' => 'uitpas-ui-user-profile-details',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_navigation' => array(
+      'variables' => array('navigation' => array()),
+      'template' => 'uitpas-ui-user-profile-navigation',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+    'uitpas_ui_user_profile_uitid' => array(
+      'variables' => array(
+        'uitpas_user' => NULL, 
+        'passholder' => NULL, 
+        'actions' => array(), 
+        'form' => NULL,
+      ),
+      'template' => 'uitpas-ui-user-profile-uitid',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'uitpas_ui') . '/theme',
+    ),
+  );
+}
+
+/**
+ * Define the different object types used by cnapi ui.
+ */
+function uitpas_ui_object_types() {
+  $objects = &drupal_static(__FUNCTION__);
+  if (!isset($objects)) {
+    $objects = array(
+      'activity' => array(
+        'base_path' => 'activity',
+        'context_type' => 'uitpas_activity',
+        'object' => 'cnapi',
+      ),
+      'actor' => array(
+        'base_path' => 'actor',
+        'context_type' => 'uitpas_actor',
+        'object' => 'cnapi',
+      ),
+      'advantage' => array(
+        'base_path' => 'advantage',
+        'context_type' => 'uitpas_advantage',
+        'object' => 'culturefeed',
+      ),
+      'promotion' => array(
+        'base_path' => 'promotion',
+        'context_type' => 'uitpas_promotion',
+        'object' => 'culturefeed',
+      ),
+    );
+    drupal_alter('uitpas_ui_object_types', $objects);
+  }
+  return $objects;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function uitpas_ui_views_api() {
+  return array(
+      'api' => 3,
+  );
+}

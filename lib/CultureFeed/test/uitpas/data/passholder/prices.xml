@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <uitpasPrices>
+    	<uitpasPrice>
+        	<id>3</id>
+        	<kansenstatuut>false</kansenstatuut>
+        	<price>20.5</price>
+        	<reason>LOSS_THEFT</reason>
+    	</uitpasPrice>
+    	<uitpasPrice>
+        	<id>4</id>
+        	<kansenstatuut>true</kansenstatuut>
+        	<price>5.0</price>
+        	<reason>LOSS_THEFT</reason>
+    	</uitpasPrice>
+    </uitpasPrices>
+</response>
