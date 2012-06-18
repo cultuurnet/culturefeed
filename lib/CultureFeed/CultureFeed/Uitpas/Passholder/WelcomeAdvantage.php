@@ -31,6 +31,13 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
   public $cashedIn;
 
   /**
+   * The date the welcome advantage was cashed in.
+   *
+   * @var integer
+   */
+  public $cashingDate;
+
+  /**
    * The counters of the promotion item
    *
    * @var array
@@ -99,6 +106,7 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->title = $object->xpath_str('title');
     $welcome_advantage->points = $object->xpath_int('points');
     $welcome_advantage->cashedIn = $object->xpath_bool('cashedIn');
+    $welcome_advantage->cashingDate = $object->xpath_time('cashingDate');
     foreach ($object->xpath('balies/balie') as $counter) {
       $welcome_advantage->counters[] = CultureFeed_Uitpas_Passholder_Counter::createFromXML($counter);
     }
@@ -111,7 +119,6 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->validForCities = $object->xpath_str('validForCities/city', true);
     $welcome_advantage->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $welcome_advantage->unitsTaken = $object->xpath_int('unitsTaken');
-    
 
     return $welcome_advantage;
   }
