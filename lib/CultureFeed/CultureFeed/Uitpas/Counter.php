@@ -59,6 +59,13 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
   public $city;
 
   /**
+   * The borough of the counter, if applicable and known.
+   *
+   * @var string
+   */
+  public $cityPart;
+
+  /**
    * The telephone number of the counter.
    *
    * @var string
@@ -71,7 +78,7 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
    * @var string
    */
   public $contactPerson;
-  
+
   /**
    * The consumer key of the counter
    *
@@ -89,6 +96,7 @@ class CultureFeed_Uitpas_Counter extends CultureFeed_Uitpas_ValueObject {
     $counter->box = $object->xpath_str('box');
     $counter->postalCode = $object->xpath_str('postalCode');
     $counter->city = $object->xpath_str('city');
+    $counter->cityPart = $object->xpath_str('cityPart');
     $counter->telephoneNumber = $object->xpath_str('telephoneNumber');
     $counter->contactPerson = $object->xpath_str('contactPerson');
     $counter->consumerKey = $object->xpath_str('consumerKey');
