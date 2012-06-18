@@ -122,6 +122,20 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
   public $userHomeCity;
 
   /**
+   * Latitude of the home location of the passholder who checked in.
+   *
+   * @var float
+   */
+  public $userHomeLocationLat;
+
+  /**
+   * Longitude of the home location of the passholder who checked in.
+   *
+   * @var float
+   */
+  public $userHomeLocationLon;
+
+  /**
    * The first name of the passholder who checked in.
    * @var string
    */
@@ -164,6 +178,8 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
     $checkin->location = $object->xpath_str('location');
     $checkin->organiser = $object->xpath_str('organiser');
     $checkin->userHomeCity = $object->xpath_str('userHomeCity');
+    $checkin->userHomeLocationLat = $object->xpath_float('userHomeLocationLat');
+    $checkin->userHomeLocationLon = $object->xpath_float('userHomeLocationLon');
     $checkin->firstName = $object->xpath_str('firstName');
     $checkin->lastName = $object->xpath_str('lastName');
     $checkin->userPoints = $object->xpath_int('userPoints');
