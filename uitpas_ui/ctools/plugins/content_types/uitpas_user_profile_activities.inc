@@ -38,7 +38,7 @@ function uitpas_ui_uitpas_user_profile_activities_content_type_render($subtype, 
     $page = pager_find_page(0);
     $total = 0;
     try {
-      $query = new CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions();
+      $query = new CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions();
       $query->uid = $uitpas_user->id;
       $query->start = $page * $limit;
       $query->max = $limit;
