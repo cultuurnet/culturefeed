@@ -87,8 +87,13 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
   //when
   $vars['when'] = $vars['when'];
   //where
-  $path = uitpas_ui_helpers_link_object('actor', $activity['location']['actor']);
-  $where = l($vars['location']['title'], $path) . "<br />";
+  if (isset($activity['organiser']['asset']) && $activity['organiser']['asset']) {
+    $path = uitpas_ui_helpers_link_object('actor', $activity['location']['actor']);
+    $where = l($vars['location']['title'], $path) . "<br />";
+  }
+  else {
+    $where = $vars['location']['title'] . "<br />";
+  }
   $where .= $vars['location']['address'];
   $vars['where'] = $where;
   //price
