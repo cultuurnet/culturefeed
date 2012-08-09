@@ -77,6 +77,12 @@ function uitpas_ui_menu() {
       'access arguments' => array('administer site configuration'),
       'file' => 'uitpas_ui.admin.inc',
     ),
+    'qr/%' => array(
+      'title' => 'QR code',
+      'page callback' => 'drupal_goto',
+      'page arguments' => array('myprofile/details'),
+      'access callback' => TRUE,
+    ),
   );
 }
 
