@@ -93,3 +93,46 @@ function uitpas_ui_block_view_sidebar() {
   $block['content'] = panels_render_display($panel_mini->display);
   return $block;
 }
+
+
+function uitpas_ui_block_view_search() {
+  $block['subject'] = 'Zoek';
+  $block['content'] = drupal_get_form('uitpas_ui_search_form');
+
+  return $block;
+}
+
+function uitpas_ui_search_form() {
+  $form = array();
+
+  $form['query'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#default_value' => 'Zoek op trefwoord',
+    '#attributes' => array('class' => array('cleardefault')),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Zoek',
+  );
+
+  return $form;
+}
+
+function uitpas_ui_search_form_submit($form, &$form_state) {
+  // The search form relies on control of the redirect destination for its
+  // functionality, so we override any static destination set in the request,
+  // for example by drupal_access_denied() or drupal_not_found()
+  // (see http://drupal.org/node/292565).
+  if (isset($_GET['destination'])) {
+    unset($_GET['destination']);
+  }
+
+  // initialising the request object with the event context
+  $request = array('context' => 'event');
+
+  cnapi_browse_process_form_values($request, $form_state['values']);
+
+  cnapi_ui_goto($request);
+}

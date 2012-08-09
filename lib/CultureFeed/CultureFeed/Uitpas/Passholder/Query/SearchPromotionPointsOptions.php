@@ -53,6 +53,20 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
   public $cashingPeriodEnd;
 
   /**
+   * Begin date of the granting period
+   *
+   * @var integer
+   */
+  public $grantingPeriodBegin;
+
+  /**
+   * End date of the granting period
+   *
+   * @var integer
+   */
+  public $grantingPeriodEnd;
+
+  /**
    * Sort field.
    *
    * @var string
@@ -115,6 +129,14 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
 
     if (isset($data['cashingPeriodEnd'])) {
       $data['cashingPeriodEnd'] = date('c', $data['cashingPeriodEnd']);
+    }
+
+    if (isset($data['grantingPeriodBegin'])) {
+      $data['grantingPeriodBegin'] = date('c', $data['grantingPeriodBegin']);
+    }
+  
+    if (isset($data['grantingPeriodEnd'])) {
+      $data['grantingPeriodEnd'] = date('c', $data['grantingPeriodEnd']);
     }
   }
 

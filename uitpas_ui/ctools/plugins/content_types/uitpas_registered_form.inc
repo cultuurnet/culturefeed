@@ -41,10 +41,12 @@ function uitpas_ui_uitpas_registered_form_content_type_render_form($form, &$form
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
     '#title' => t('Make my UITPAS actions available for others'),
+    '#default_value' => 1,
   );
   $form['newsletter'] = array(
     '#type' => 'checkbox',
     '#title' => t('Register for the monthly UITPAS newsletter'),
+    '#default_value' => 1,
   );
   $form['actions'] = array(
     'submit' => array(

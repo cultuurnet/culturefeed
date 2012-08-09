@@ -33,7 +33,7 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $co
     }
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
-    $query->limit = 10 - count($highlights);
+    $query->max = 4 - count($highlights);
     $query->cashingPeriodBegin = time();
     if ($location) {
       $query->city = $location;

@@ -79,14 +79,19 @@ function uitpas_ui_context_uitpas_location($empty, $data = NULL, $conf = FALSE) 
   }
   //@TODO we should probably define the condition on 'elders' in another way
   else if ($context->data->location == 'elders') {
-    $args = array();
+    $views_args = array();
+    $cf_query_arguments = array();
     foreach ($context->data->locations as $location) {
       if ($location['lid']) {
-        $args[] = "!" . $location['lid'];
+        $views_args[] = "!" . $location['lid'];
+      }
+      //we always have a name attribute
+      if ($location['name'] != 'Elders') {
+        $cf_query_arguments[] = "!" . $location['name'];
       }
     }
-    $context->data->views_argument = implode('|', $args);
-    $context->data->cf_query_argument = implode(',', $args);
+    $context->data->views_argument = implode('|', $views_args);
+    $context->data->cf_query_argument = implode(',', $cf_query_arguments);
   }
   else {
     $context->data->views_argument = $context->data->locations[$context->data->location]['lid'];
