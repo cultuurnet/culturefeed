@@ -79,8 +79,8 @@ function uitpas_ui_menu() {
     ),
     'qr/%' => array(
       'title' => 'QR code',
-      'page callback' => 'drupal_goto',
-      'page arguments' => array('myprofile/details'),
+      'page callback' => 'uitpas_ui_qr_redirect',
+      'page arguments' => array(1),
       'access callback' => TRUE,
     ),
   );
@@ -274,4 +274,18 @@ function uitpas_ui_views_api() {
   return array(
       'api' => 3,
   );
+}
+
+/**
+ * Menu callback: redirect qr code.
+ */
+function uitpas_ui_qr_redirect($uitpas_number) {
+  //FYI: for the moment uitpas number is not used
+  global $user;
+  if ($user->uid) {
+    drupal_goto('user/' . $user->uid);
+  }
+  else {
+    drupal_goto('culturefeed/oauth/connect');
+  }
 }
