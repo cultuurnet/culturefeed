@@ -56,7 +56,7 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     if ($location) {
       $query->city = $location;
     }
-    $query->grantingPeriodBegin = time();
+    $query->cashingPeriodBegin = time();
     $result = $cf->uitpas()->searchWelcomeAdvantages($query);
     $advantages_page = pager_default_initialize($result->total, $advantages_limit, 0);
     $advantages = $result->objects;
