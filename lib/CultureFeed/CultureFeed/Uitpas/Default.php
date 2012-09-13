@@ -77,7 +77,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $distribution_keys = array();
-    $objects = $xml->xpath('/response/distributionkeys/distributionkey');
+    $objects = $xml->xpath('/response/distributionkeys/distributionKey');
     $total = count($objects);
 
     foreach ($objects as $object) {
