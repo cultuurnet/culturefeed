@@ -24,6 +24,27 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   public $locationName;
 
   /**
+   * The organiserId cdbid van de inrichter
+   * 
+   * @var string
+   */
+   public $organiserId;
+   
+   /**
+   * The organiserName van de inrichter
+   * 
+   * @var string
+   */
+   public $organiserName;
+   
+   /**
+   * The city
+   * 
+   * @var string
+   */
+   public $city;
+
+  /**
    * True if a given passholder can checkin on the event
    *
    * @var boolean
@@ -87,6 +108,9 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->cdbid = $object->xpath_str('cdbid');
     $event->locationId = $object->xpath_str('locationId');
     $event->locationName = $object->xpath_str('locationName');
+    $event->organiserId = $object->xpath_str('organiserId');
+    $event->organiserName = $object->xpath_str('organiserName');
+    $event->city = $object->xpath_str('city');
     $event->checkinAllowed = $object->xpath_bool('checkinAllowed');
     $event->checkinConstraint = CultureFeed_Uitpas_Event_CheckinConstraint::createFromXml($object->xpath('checkinConstraint', false));
     $event->checkinConstraintReason = $object->xpath_str('checkinConstraintReason');
