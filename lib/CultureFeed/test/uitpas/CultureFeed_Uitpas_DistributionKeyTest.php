@@ -25,7 +25,7 @@ class CultureFeed_Uitpas_DistributionKeyTest extends PHPUnit_Framework_TestCase 
     $this->assertEquals("1", $data->objects[0]->id);
     $this->assertEquals("2", $data->objects[1]->id);
     
-    
+    $this->assertEquals( "1" , "2" );
     
   }
 }
