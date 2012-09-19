@@ -98,14 +98,14 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   /**
    * W3CDate zoek pashouders die op of na deze dag kansenstatuut hebben
    * 
-   * @var string
+   * @var integer
    */
   public $kansenStatuutBegin;
 
   /**
    * W3CDate zoek pashouders die op of voor deze dag kansenstatuut hebben
    * 
-   * @var string
+   * @var interger
    */
   public $kansenStatuutEnd;
 
@@ -184,7 +184,6 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   
   
 
-
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
       $data['dob'] = date('Y-m-d', $data['dob']);
@@ -196,6 +195,14 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
 
     if (isset($data['dobMax'])) {
       $data['dobMax'] = date('Y-m-d', $data['dobMax']);
+    }
+
+    if(isset($data['kansenStatuutBegin'])){
+      $data['kansenStatuutBegin'] = date('Y-m-d', $data['kansenStatuutBegin']);
+    }
+    
+    if(isset($data['kansenStatuutEnd'])){
+      $data['kansenStatuutEnd'] = date('Y-m-d', $data['kansenStatuutEnd']);
     }
 
   }
