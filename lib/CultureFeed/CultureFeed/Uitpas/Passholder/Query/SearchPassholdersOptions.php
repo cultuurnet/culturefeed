@@ -105,7 +105,7 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   /**
    * W3CDate zoek pashouders die op of voor deze dag kansenstatuut hebben
    * 
-   * @var interger
+   * @var integer
    */
   public $kansenStatuutEnd;
 
