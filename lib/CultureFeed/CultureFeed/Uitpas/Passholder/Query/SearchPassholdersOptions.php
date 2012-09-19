@@ -94,6 +94,22 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    * @var boolean
    */
   public $kansenStatuut;
+  
+  /**
+   * W3CDate zoek pashouders die op of na deze dag kansenstatuut hebben
+   * 
+   * @var string
+   */
+  public $kansenStatuutBegin;
+
+  /**
+   * W3CDate zoek pashouders die op of voor deze dag kansenstatuut hebben
+   * 
+   * @var string
+   */
+  public $kansenStatuutEnd;
+
+
 
   /**
    * The number of checkins
@@ -150,6 +166,24 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    * @var string
    */
   public $balieConsumerKey;
+  
+  
+  /**
+   * The consumerKey van de school van de gezochte pashouders.
+   *
+   * @var string
+   */
+  public $schoolConsumerKey;
+  
+  /**
+   * Inclusief geblokeerde pashouders indien true. default = false.
+   *
+   * @var boolean
+   */
+  public $includeBlocked;
+  
+  
+
 
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
