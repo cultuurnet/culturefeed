@@ -65,6 +65,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get the distribution keys for a given organizer.
    *
    * @param string $cdbid The CDBID of the given organizer
+   * @return CultureFeed_ResultSet The set of distribution keys
    */
   public function getDistributionKeysForOrganizer($cdbid) {
     $result = $this->oauth_client->consumerGetAsXML('uitpas/distributionkey/organiser/' . $cdbid, array());
@@ -167,19 +168,19 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
     return $response;
   }
-  
+
   /**
    * Register an event.
-   * 
+   *
    * @param CultureFeed_Uitpas_Event_CultureEvent $event The event data that needs to be sent over.
    */
    public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event) {
-     
+
      // The api Path.
      $path = "/uitpas/cultureevent/register";
-     
+
      //var_dump( $event );
-     
+
      // Make an event array based API spec.
      // Using toPostData is not good to use
      // Marked with // means that it's not in the XML or the Class.
@@ -187,7 +188,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
      $data['locationId'] = $event->locationId;
      $data['actorId'] = $event->organiserId;
      //$data['distributionKey'] = $event->distributionKey
-     
+
      //$data['volumeConstraint'];
      $data['timeConstraintFrom'] = date( "Y-m-d", $event->calendar->periods[0]->datefrom );
      $data['timeConstraintTo'] = date( "Y-m-d", $event->calendar->periods[0]->dateto );
@@ -198,25 +199,25 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
      $data['checkinPeriodConstraintVolume'] = $event->checkinConstraint->periodVolume;
      $data['price'] = $event->price;
      $data['numberOfPoints'] = $event->numberOfPoints;
-     
+
      foreach( $data as $k => $v ){
        $data[$k] = urlencode($v);
      }
-     
-     
+
+
      $result = $this->oauth_client->consumerPostAsXml( $path, $data );
-     
+
      //echo "THIS IS THE RESULT: ".var_dump($result);
-     
-     /*     
-     try {     
+
+     /*
+     try {
        // Call the path.
        $result = $this->oauth_client->consumerPostAsXml( $path, $data );
      } catch(CultureFeed_Exception $e) {
        throw $e;
      }
      */
-     
+
      /*
      try {
        $xml = new CultureFeed_SimpleXMLElement($result);
@@ -228,9 +229,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
      $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
      return $response;
     */
-    
+
     return $result;
-     
+
    }
 
   /**
