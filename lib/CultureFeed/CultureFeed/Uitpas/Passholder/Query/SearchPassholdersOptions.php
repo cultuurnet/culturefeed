@@ -7,6 +7,7 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   const SORT_FIRST_NAME = "firstName";
   const SORT_NAME = "name";
   const SORT_NUMBER_OF_CHECK_INS = "numberOfCheckins";
+  const SORT_DOB = "dob";
 
   const ORDER_ASC = "ASC";
   const ORDER_DESC = "DESC";
@@ -94,17 +95,17 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    * @var boolean
    */
   public $kansenStatuut;
-  
+
   /**
-   * W3CDate zoek pashouders die op of na deze dag kansenstatuut hebben
-   * 
+   * W3CDate search pass holders that have a "kansenstatuut" after this date.
+   *
    * @var integer
    */
   public $kansenStatuutBegin;
 
   /**
-   * W3CDate zoek pashouders die op of voor deze dag kansenstatuut hebben
-   * 
+   * W3CDate search pass holders that have a "kansenstatuut" before this date.
+   *
    * @var integer
    */
   public $kansenStatuutEnd;
@@ -166,23 +167,23 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    * @var string
    */
   public $balieConsumerKey;
-  
-  
+
+
   /**
    * The consumerKey van de school van de gezochte pashouders.
    *
    * @var string
    */
   public $schoolConsumerKey;
-  
+
   /**
    * Inclusief geblokeerde pashouders indien true. default = false.
    *
    * @var boolean
    */
   public $includeBlocked;
-  
-  
+
+
 
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
@@ -197,11 +198,11 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
       $data['dobMax'] = date('Y-m-d', $data['dobMax']);
     }
 
-    if(isset($data['kansenStatuutBegin'])){
+    if(isset($data['kansenStatuutBegin'])) {
       $data['kansenStatuutBegin'] = date('Y-m-d', $data['kansenStatuutBegin']);
     }
-    
-    if(isset($data['kansenStatuutEnd'])){
+
+    if(isset($data['kansenStatuutEnd'])) {
       $data['kansenStatuutEnd'] = date('Y-m-d', $data['kansenStatuutEnd']);
     }
 
