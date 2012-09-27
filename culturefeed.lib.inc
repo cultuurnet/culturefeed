@@ -279,8 +279,15 @@ class DrupalCultureFeed {
 
   protected static $logged_in_user;
 
+
   public static function isCacheEnabled() {
-    return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
+
+    if (! self::isCultureFeedUser()) {
+      return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
+    } else {
+      return false;
+    }
+
   }
 
   public static function isCultureFeedUser($uid = NULL) {
