@@ -22,6 +22,7 @@ class CultureFeed_Uitpas_DistributionKeyTest extends PHPUnit_Framework_TestCase 
 
     $this->assertContainsOnly( 'CultureFeed_Uitpas_DistributionKey' , $data->objects );
     $this->assertCount(2, $data->objects);
+    $this->assertEquals(2, $data->total);
 
     $this->assertEquals("Standaard verdeelsleutel", $data->objects[0]->name);
     $this->assertEquals("Test verdeelsleutel - TK421", $data->objects[1]->name);

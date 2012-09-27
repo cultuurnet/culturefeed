@@ -176,6 +176,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
    public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event) {
 
+
+     //$data = $event->toPostData();
+     //$event->manipulatePostData( $data );
+
      // The api Path.
      $path = "/uitpas/cultureevent/register";
 
