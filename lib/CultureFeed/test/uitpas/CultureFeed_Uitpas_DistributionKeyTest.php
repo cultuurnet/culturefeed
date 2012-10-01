@@ -18,9 +18,9 @@ class CultureFeed_Uitpas_DistributionKeyTest extends PHPUnit_Framework_TestCase 
     $data = $cf->uitpas()->getDistributionKeysForOrganizer(self::ORGANIZERCDBID);
 
 
-    $this->assertInstanceOf('CultureFeed_ResultSet' , $data);
+    $this->assertInstanceOf('CultureFeed_ResultSet', $data);
 
-    $this->assertContainsOnly('CultureFeed_Uitpas_DistributionKey' , $data->objects);
+    $this->assertContainsOnly('CultureFeed_Uitpas_DistributionKey', $data->objects);
     $this->assertCount(2, $data->objects);
     $this->assertEquals(2, $data->total);
 

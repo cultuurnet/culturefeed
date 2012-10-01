@@ -86,17 +86,17 @@ class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uit
    * @var string
    */
   public $uitpasNumber;
-  
+
   /**
    * A search term
    *
    * @var string
    */
   public $q;
-  
+
   /**
    * The CDBID of the event
-   * 
+   *
    * @var string
    */
   public $cdbid;
@@ -111,4 +111,29 @@ class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uit
     }
   }
 
+  /**
+   * Read the data from a array and set the variables
+   */
+  public function readValues($values) {
+    foreach($values as $k => $v) {
+      $this->$k = $v;
+    }
+
+    if (preg_match( "/^[0-9[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/", $this->startDate)) {
+      $this->startDate = strtotime($this->startDate);
+    }
+
+    if (preg_match("/^[0-9[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/", $this->endDate)) {
+      $this->endDate = strtotime($this->endDate);
+    }
+  }
+
+  /**
+   * Read from a querystring
+   */
+   public function readQueryString( $str ) {
+     $values = array();
+     parse_str(urldecode($str) , $values);
+     $this->readValues( $values );
+   }
 }

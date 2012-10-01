@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cultureEvents xmlns:cdb="http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.1/FINAL">
+    <total>90</total>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-10</cdb:date>
+                    <cdb:timestart>18:30:00</cdb:timestart>
+                    <cdb:timeend>20:30:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>ma 10/09/12 van 18:30 tot 20:30</calendarsummary>
+        <cdbid>3b11284b-b361-44de-8a3e-472e58ec6389</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Denderleeuw</city>
+        <locationId>53848e87-144e-4c7c-8a63-8bbcabdf02c4</locationId>
+        <locationName>Sporthal Denderleeuw A. Ottoy </locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>dba850fa-8098-4a64-8be8-4797ca3c2200</organiserId>
+        <organiserName>Karateclub Dai Nippon</organiserName>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Week van de sportclub</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-05</cdb:date>
+                    <cdb:timestart>18:00:00</cdb:timestart>
+                    <cdb:timeend>19:00:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>woe 05/09/12 van 18:00 tot 19:00</calendarsummary>
+        <cdbid>4b55097b-c51a-408a-b1b9-9c0babb65b5b</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Aalst</city>
+        <locationId>c77eba43-2434-481c-bab7-a8abfa0a45bc</locationId>
+        <locationName>Sportcentrum Beukenhof</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>5C0885E2-ADB2-08CE-5020EA088415756B</organiserId>
+        <organiserName>Korfbalclub AGO Aalst</organiserName>
+        <cdb:performers>
+            <cdb:performer>
+                <cdb:role>Instuif</cdb:role>
+                <cdb:actor cdbid="5C0885E2-ADB2-08CE-5020EA088415756B" availablefrom="2012-05-09T15:42:41" availableto="2012-05-09T15:42:41" createdby="dienstonderwijs" creationdate="2010-01-06T14:02:41" externalid="5C0885E2-ADB2-08CE-5020EA088415756B" lastupdated="2012-05-09T15:42:41" lastupdatedby="mnagels" owner="Invoerders Algemeen ">
+                    <cdb:contactinfo>
+                        <cdb:address>
+                            <cdb:physical>
+<cdb:city>Aalst</cdb:city>
+<cdb:country>BE</cdb:country>
+<cdb:housenr>45</cdb:housenr>
+<cdb:street>Oude Dendermondsestwg</cdb:street>
+<cdb:zipcode>9300</cdb:zipcode>
+<cdb:gis>
+    <cdb:xcoordinate>4.040913</cdb:xcoordinate>
+    <cdb:ycoordinate>50.937793</cdb:ycoordinate>
+</cdb:gis>
+                            </cdb:physical>
+                        </cdb:address>
+                        <cdb:mail>claude.de.smet@skynet.be</cdb:mail>
+                    </cdb:contactinfo>
+                    <cdb:actordetails>
+                        <cdb:actordetail lang="nl">
+                            <cdb:title>Korfbalclub AGO Aalst</cdb:title>
+                            <cdb:media>
+<cdb:file>
+    <cdb:title>Korfbalclub AGO Aalst</cdb:title>
+    <cdb:hlink>http://media.cultuurnet.be/media/DBC7AFF7-0549-2BF0-B435BD15F28B4ED0.jpg</cdb:hlink>
+</cdb:file>
+                            </cdb:media>
+                        </cdb:actordetail>
+                    </cdb:actordetails>
+                </cdb:actor>
+            </cdb:performer>
+        </cdb:performers>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Korfbalinstuif voor meisjes en jongens van 5 tot 9 jaar</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-13</cdb:date>
+                    <cdb:timestart>07:45:00</cdb:timestart>
+                    <cdb:timeend>20:00:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>do 13/09/12 van 07:45 tot 20:00</calendarsummary>
+        <cdbid>8ea1787b-d08c-4fa8-8d3c-20d1e5cc6e6a</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Han-sur-Lesse</city>
+        <locationId>c8a2cef4-ab0a-43a9-bb0a-3c093c5c055f</locationId>
+        <locationName>De grotten van Han</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>6b4654fb-ffc3-4a07-b07a-5b808946a2e3</organiserId>
+        <organiserName>Sociale Zaken </organiserName>
+        <price>27.0</price>
+        <tariff>27.0</tariff>
+        <title>Gemeentereis 55-plussers naar het domein de grotten van Han</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-07</cdb:date>
+                    <cdb:timestart>16:30:00</cdb:timestart>
+                    <cdb:timeend>18:00:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>vrij 07/09/12 van 16:30 tot 18:00</calendarsummary>
+        <cdbid>6ac246ab-fcd6-4857-be41-a98d23360c30</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Aalst</city>
+        <locationId>b95d1bcf-533d-45ac-afcd-e015cfe86c84</locationId>
+        <locationName>Vierdewereldgroep Mensen voor Mensen</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>b95d1bcf-533d-45ac-afcd-e015cfe86c84</organiserId>
+        <organiserName>Vierdewereldgroep Mensen voor Mensen</organiserName>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Maandanimatie speel-o-theek "Het Speelpaleis"</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-16</cdb:date>
+                    <cdb:timestart>10:00:00</cdb:timestart>
+                    <cdb:timeend>20:00:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>zo 16/09/12 van 10:00 tot 20:00</calendarsummary>
+        <cdbid>58e849bd-6057-441c-8758-4272e139e600</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Erpe-Mere</city>
+        <locationId>3d559804-5af6-43f1-a362-f33a854d066c</locationId>
+        <locationName>Route doorheen Erpe-Mere</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>e5c64a57-25a2-4b83-9723-c345bb5e58c2</organiserId>
+        <organiserName>KWC Erpe Sportief</organiserName>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Steenbergcross</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-10</cdb:date>
+                    <cdb:timestart>13:00:00</cdb:timestart>
+                    <cdb:timeend>15:30:00</cdb:timeend>
+                </cdb:timestamp>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-17</cdb:date>
+                    <cdb:timestart>13:00:00</cdb:timestart>
+                    <cdb:timeend>15:30:00</cdb:timeend>
+                </cdb:timestamp>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-24</cdb:date>
+                    <cdb:timestart>13:00:00</cdb:timestart>
+                    <cdb:timeend>15:30:00</cdb:timeend>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>ma 17/09/12, ma 24/09/12 van 13:00 tot 15:30</calendarsummary>
+        <cdbid>af5f3820-daab-45da-975d-d37d40889cec</cdbid>
+        <checkinAllowed>true</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <city>Aalst</city>
+        <locationId>b95d1bcf-533d-45ac-afcd-e015cfe86c84</locationId>
+        <locationName>Vierdewereldgroep Mensen voor Mensen</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>b95d1bcf-533d-45ac-afcd-e015cfe86c84</organiserId>
+        <organiserName>Vierdewereldgroep Mensen voor Mensen</organiserName>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Themagroep Papieren Klasseren</title>
+    </event>
+    <event>
+        <cdb:calendar>
+            <cdb:timestamps>
+                <cdb:timestamp>
+                    <cdb:date>2012-09-09</cdb:date>
+                </cdb:timestamp>
+            </cdb:timestamps>
+        </cdb:calendar>
+        <calendarsummary>zo 09/09/12</calendarsummary>
+        <cdbid>025c28fc-400a-4a7c-9abe-d29859d8588a</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <checkinConstraint>
+            <periodType>WEEK</periodType>
+            <periodVolume>1</periodVolume>
+        </checkinConstraint>
+        <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+        <city>Haaltert</city>
+        <locationId>0f225dd6-827e-4076-822d-2a25a7c197b6</locationId>
+        <locationName>Sint-Gorksplein</locationName>
+        <numberOfPoints>1</numberOfPoints>
+        <organiserId>4c190c37-1cd5-470a-9e3e-26f9afe7b3b8</organiserId>
+        <organiserName>Feestcomité Haaltert</organiserName>
+        <price>0.0</price>
+        <tariff>0.0</tariff>
+        <title>Rommelmarkt en garageverkoop</title>
+    </event>
+</cultureEvents>

@@ -28,6 +28,7 @@ interface CultureFeed_Uitpas {
    * Get the distribution keys for a given organizer.
    *
    * @param string $cdbid The CDBID of the given organizer
+   * @return CultureFeed_ResultSet The set of distribution keys
    */
   public function getDistributionKeysForOrganizer($cdbid);
 
