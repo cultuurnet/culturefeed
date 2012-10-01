@@ -198,11 +198,11 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
       $data['dobMax'] = date('Y-m-d', $data['dobMax']);
     }
 
-    if(isset($data['kansenStatuutBegin'])) {
+    if (isset($data['kansenStatuutBegin'])) {
       $data['kansenStatuutBegin'] = date('Y-m-d', $data['kansenStatuutBegin']);
     }
 
-    if(isset($data['kansenStatuutEnd'])) {
+    if (isset($data['kansenStatuutEnd'])) {
       $data['kansenStatuutEnd'] = date('Y-m-d', $data['kansenStatuutEnd']);
     }
 
