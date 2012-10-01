@@ -25,21 +25,100 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
 
   /**
    * The organiserId cdbid van de inrichter
-   * 
+   *
    * @var string
    */
    public $organiserId;
-   
+
+   /**
+   * The organiserId cdbid van de inrichter
+   * the API has an error and it needs actorId in order to register an event
+   *
+   * @var string
+   */
+   public $actorId;
+
+
+   /**
+   * The distributionId id van een verdeelsleutel
+   *
+   * @var string
+   */
+   public $distributionKey;
+
+   /**
+   * The volume constraint added for registering an event
+   *
+   * @var integer
+   */
+   public $volumeConstraint;
+
+   /**
+   * date format yyyy-mm-dd added for registering an event
+   *
+   * @var string
+   */
+   public $timeConstraintFrom;
+
+   /**
+   * date format yyyy-mm-dd added for registering an event
+   *
+   * @var string
+   */
+   public $timeConstraintTo;
+
+   /**
+   * added for registering an event
+   *
+   * @var string
+   */
+   public $periodConstraintVolume;
+
+
+   /**
+   * added for registering an event
+   *
+   * @var PeriodConstraint.PeriodType DAY, WEEK, MONTH, QUARTER, YEAR
+   */
+   public $periodConstraintType;
+
+   /**
+   * added for registering an event
+   *
+   * From API:
+   * True, indien periodConstraint degressief is.
+   * Dit is enkel mogelijk bij periodConstraintType YEAR.
+   *
+   * @var boolean
+   */
+   public $degressive;
+
+   /**
+   * added for registering an event
+   *
+   * @var PeriodConstraint.PeriodType DAY, WEEK, MONTH, QUARTER, YEAR
+   */
+   public $checkinPeriodConstraintType;
+
+
+   /**
+   * The checkin constraint added for registering an event
+   *
+   * @var integer
+   */
+   public $checkinPeriodConstraintVolume;
+
+
    /**
    * The organiserName van de inrichter
-   * 
+   *
    * @var string
    */
    public $organiserName;
-   
+
    /**
    * The city
-   * 
+   *
    * @var string
    */
    public $city;
@@ -94,7 +173,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    * @var Calendar
    */
   public $calendar;
-  
+
    /**
    * The number of points of the event
    *
@@ -102,8 +181,43 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    */
   public $numberOfPoints;
 
+  /**
+   * Modify an array of data for posting.
+   */
+  protected function manipulatePostData(&$data) {
+    // Set the actor ID.
+    $data['actorId'] = $data['organiserId'];
+
+    // These are allowed params for registering an event.
+    $allowed = array();
+
+    $allowed[] = "cdbid";
+    $allowed[] = "locationId";
+    $allowed[] = "actorId";
+    $allowed[] = "distributionKey";
+    $allowed[] = "volumeConstraint";
+    $allowed[] = "timeConstraintFrom";
+    $allowed[] = "timeConstraintTo";
+    $allowed[] = "periodConstraintVolume";
+    $allowed[] = "periodConstraintType";
+    $allowed[] = "degressive";
+    $allowed[] = "checkinPeriodConstraintType";
+    $allowed[] = "checkinPeriodConstraintVolume";
+    $allowed[] = "price";
+    $allowed[] = "numberOfPoints";
+
+    foreach ($data as $key => $value) {
+        if (!in_array($key, $allowed)) {
+          unset($data[$key]);
+        }
+    }
+  }
+
+
+
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-  
+
     $event = new CultureFeed_Uitpas_Event_CultureEvent();
     $event->cdbid = $object->xpath_str('cdbid');
     $event->locationId = $object->xpath_str('locationId');
@@ -120,7 +234,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->title = $object->xpath_str('title');
     $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
     $event->numberOfPoints = $object->xpath_int('numberOfPoints');
-    
+
     return $event;
   }
 
