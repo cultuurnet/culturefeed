@@ -207,9 +207,9 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $allowed[] = "numberOfPoints";
 
     foreach ($data as $key => $value) {
-        if (!in_array($key, $allowed)) {
-          unset($data[$key]);
-        }
+      if (!in_array($key, $allowed)) {
+        unset($data[$key]);
+      }
     }
   }
 

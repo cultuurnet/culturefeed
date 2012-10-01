@@ -176,39 +176,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
    public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event) {
 
-
-     
-
-     // The api Path.
-     $path = "/uitpas/cultureevent/register";
-
-     //var_dump( $event );
-
-     // Make an event array based API spec.
-     // Using toPostData is not good to use
-     // Marked with // means that it's not in the XML or the Class.
-     $data['cdbid'] = $event->cdbid;
-     $data['locationId'] = $event->locationId;
-     $data['actorId'] = $event->organiserId;
-     //$data['distributionKey'] = $event->distributionKey
-
-     //$data['volumeConstraint'];
-     $data['timeConstraintFrom'] = date( "Y-m-d", $event->calendar->periods[0]->datefrom );
-     $data['timeConstraintTo'] = date( "Y-m-d", $event->calendar->periods[0]->dateto );
-     //$data['periodConstraintVolume']
-     //$data['periodConstraintType'] = $event->
-     //$data['degressive'];
-     $data['checkinPeriodConstraintType'] = $event->checkinConstraint->periodType;
-     $data['checkinPeriodConstraintVolume'] = $event->checkinConstraint->periodVolume;
-     $data['price'] = $event->price;
-     $data['numberOfPoints'] = $event->numberOfPoints;
-
-     foreach( $data as $k => $v ){
-       $data[$k] = urlencode($v);
-     }
-
-
-     $result = $this->oauth_client->consumerPostAsXml( $path, $data );
+     $data = $event->toPostData();
+     $result = $this->oauth_client->consumerPostAsXml($path, $data);
 
      //echo "THIS IS THE RESULT: ".var_dump($result);
 
@@ -233,7 +202,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
      return $response;
     */
 
-    return $result;
+     return $result;
 
    }
 
