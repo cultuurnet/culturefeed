@@ -151,6 +151,17 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
    */
   public $balieConsumerKey;
 
+
+   /**
+    * The consumer key of the counter from where the request originates
+    *
+    * @var boolean
+    */
+   public $includeBlocked;
+
+
+
+
   protected function manipulatePostData(&$data) {
     if (isset($data['dob'])) {
       $data['dob'] = date('Y-m-d', $data['dob']);
@@ -162,6 +173,14 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
 
     if (isset($data['dobMax'])) {
       $data['dobMax'] = date('Y-m-d', $data['dobMax']);
+    }
+    if (isset($data['includeBlocked'])) {
+      if ($data['includeBlocked']) {
+        $data['includeBlocked'] = "true";
+      }
+      else {
+        $data['includeBlocked'] = "false";
+      }
     }
 
   }
