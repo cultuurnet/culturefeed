@@ -177,7 +177,7 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
   public $schoolConsumerKey;
 
   /**
-   * Inclusief geblokeerde pashouders indien true. default = false.
+   * Include blocked users true. default = false.
    *
    * @var boolean
    */
