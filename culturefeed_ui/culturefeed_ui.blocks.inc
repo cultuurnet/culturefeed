@@ -213,6 +213,38 @@ function culturefeed_ui_block_user_activities_view() {
         '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
       );
     }
+
+    $facebook = _culturefeed_ui_facebook_privacy_toggle();
+    if ($facebook) {
+      $item_list = array(
+        '#theme' => 'item_list',
+        '#items' => array(
+          array(
+            'data' => $facebook,
+            'id' => 'onlineaccount-facebook',
+          ),
+        ),
+      );
+      $content['facebook'] = array(
+        '#markup' => drupal_render($item_list),
+      );
+    }
+
+    $facebook = _culturefeed_ui_facebook_privacy_toggle();
+    if ($facebook) {
+      $item_list = array(
+        '#theme' => 'item_list',
+        '#items' => array(
+          array(
+            'data' => $facebook,
+            'id' => 'onlineaccount-facebook',
+          ),
+        ),
+      );
+      $content['facebook'] = array(
+        '#markup' => drupal_render($item_list),
+      );
+    }
   }
 
   $block['subject'] = 'Recente acties';
@@ -463,12 +495,12 @@ function culturefeed_ui_block_connect_is_visible() {
   if (user_is_anonymous()) {
     return TRUE;
   }
-  
+
   return FALSE;
 }
 
 function culturefeed_ui_block_connect_view() {
-  $block['subject'] = 'Maak zelf een UiTiD';
+  $block['subject'] = 'Teveel te doen?';
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
   );
@@ -509,7 +541,7 @@ function culturefeed_ui_block_profile_menu_is_visible() {
 }
 
 function culturefeed_ui_block_profile_menu_view() {
-	global $user;
+  global $user;
 
   $menu = array(
     array(
@@ -538,22 +570,22 @@ function culturefeed_ui_block_profile_menu_view() {
       'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTiD-profiel.',
     ),
   );
-  
+
   drupal_alter('culturefeed_ui_profile_menu', $menu);
 
   $items = array();
 
   foreach ($menu as $menu_item) {
     $vars = array(
-      'title' => $menu_item['title'], 
-      'url' => $menu_item['url'], 
-      'description' => $menu_item['description']
+      'title' => $menu_item['title'],
+      'url' => $menu_item['url'],
+      'description' => $menu_item['description'],
     );
-    
+
     $data = theme('culturefeed_ui_profile_menu_item', $vars);
-    
+
     $class = $_GET['q'] == $menu_item['url'] ? array('active') : array();
-    
+
     $items[] = array(
       'data' => $data,
       'class' => $class,
@@ -590,4 +622,58 @@ function culturefeed_ui_block_mbox_confirmation_reminder_view() {
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
+}
+
+
+function culturefeed_ui_block_my_uitid_view() {
+  try {
+
+    $account = DrupalCultureFeed::getLoggedInUser();
+    if (!$account) {
+      return;
+    }
+
+    // get total likes.
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->userId = $account->id;
+    $query->type = CultureFeed_Activity::TYPE_LIKE;
+    $query->max = 1;
+    $like = DrupalCultureFeed::searchActivities($query)->total;
+
+    // get total gotos.
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->userId = $account->id;
+    $query->type = CultureFeed_Activity::TYPE_IK_GA;
+    $query->max = 1;
+    $goto = DrupalCultureFeed::searchActivities($query)->total;
+
+    $block['subject'] = 'Mijn UiTiD';
+    $block['content'] = theme('culturefeed_ui_my_uitid', array(
+      'account' => $account,
+      'like' => $like,
+      'goto' => $goto,
+    ));
+
+    return $block;
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+}
+
+function culturefeed_ui_block_my_uitid_is_visible() {
+  return DrupalCultureFeed::isCultureFeedUser();
+}
+
+
+function culturefeed_ui_block_something_for_you_view() {
+  $block['subject'] = 'Echt iets voor jou?';
+  $block['content'] = theme('culturefeed_ui_something_for_you');
+  return $block;
+}
+
+function culturefeed_ui_block_something_for_you_is_visible() {
+  return user_is_anonymous();
 }

@@ -12,7 +12,7 @@ function culturefeed_ui_page_remove_account_form($form, &$form_state) {
 
 function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
   $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-  
+
   try {
     DrupalCultureFeed::deleteUser($cf_uid);
   }
@@ -21,56 +21,56 @@ function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
     drupal_set_message('Er is een fout opgetreden bij het verwijderen van jouw account.');
     return;
   }
-  
+
   db_query("DELETE FROM {culturefeed_token} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
   db_query("DELETE FROM {culturefeed_user} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
-  
+
   global $user;
-  
+
   $user->status = 0;
-  
+
   user_save($user);
-  
+
   module_load_include('inc', 'user', 'user.pages');
-  
+
   user_logout();
 }
 
-function culturefeed_ui_page_recommendations_json() {  
+function culturefeed_ui_page_recommendations_json() {
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_BLOCK_RECOMMENDATIONS_COUNT);
 
   if ($recommendations === FALSE) {
     return;
   }
-  
+
   if (empty($recommendations)) {
     $content['recommendations'] = array(
       '#markup' => 'Er zijn momenteel geen aanbevelingen beschikbaar.'
     );
   }
-  
+
   else {
     $content['intro'] = array(
       '#markup' => '<div id="recommendations-intro">Deze aanbevelingen worden automatisch gegenereerd op basis van je UiTiD. Verbeter ze door aan te geven of je ze leuk vindt of niet.</div>',
     );
-    
+
     $content['recommendations'] = array(
       '#theme' => 'item_list',
       '#items' => $recommendations,
       '#attributes' => array('class' => 'event-recommendation-list')
     );
-  
+
     $content['outro'] = array(
       '#markup' => '<div id="recommendations-outro">Je bent aan het einde gekomen van deze reeks aanbevelingen. Hoe meer je laat weten of je ze leuk vindt of niet, hoe beter ze zullen worden.</div>',
     );
-  
+
     $content['more'] = array(
       '#markup' => l('Meer aanbevelingen', 'culturefeed/recommendations'),
     );
   }
-  
+
   $commands = array();
-  
+
   $data = drupal_render($content);
   $commands[] = ajax_command_html('#recommendations', $data);
 
@@ -79,7 +79,7 @@ function culturefeed_ui_page_recommendations_json() {
 
 function culturefeed_ui_page_related_events_json($cdbid) {
   $event = cnapi_get_event($cdbid);
-  
+
   // Get the cityid for the event.
   $cityid = $event['location']['address']['cityid'];
 
@@ -120,7 +120,7 @@ function culturefeed_ui_page_related_events_json($cdbid) {
 
 
   $commands = array();
-  
+
   $data = drupal_render($output);
   $commands[] = ajax_command_html('#related-events', $data);
 
@@ -133,7 +133,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
   }
 
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_PAGE_RECOMMENDATIONS_COUNT, $zip);
-  
+
   if (empty($recommendations)) {
     $content['recommendations'] = array(
       '#markup' => 'Er zijn geen aanbevelingen beschikbaar voor de gekozen postcode.<br /><br />' . l('Terug naar volledige lijst', 'culturefeed/recommendations')
@@ -141,25 +141,25 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
   }
   else {
     $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form', $zip);
-    
+
     $content['recommendations'] = array(
       '#theme' => 'item_list',
       '#items' => $recommendations,
       '#attributes' => array('class' => 'event-recommendation-list')
     );
   }
-  
-  $content['#attached']['js'][]  = drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js');
-  
+
+  $content['#attached']['js'][]  = drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js';
+
   return $content;
 }
 
 function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendation_id = NULL, $node_id = NULL, $type = 'ajax') {
   $success = TRUE;
-  
+
   // If evaluation is negative or unlike, do a negative evaluation. Else a positive one.
   $cf_evaluation = ($evaluation == 'positive' ? CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE : CultureFeed::RECOMMENDATION_EVALUATION_NEGATIVE);
-      
+
   // Do the evaluation.
   try {
     DrupalCultureFeed::evaluateRecommendation($recommendation_id, $cf_evaluation);
@@ -169,19 +169,55 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
     $success = FALSE;
   }
 
+  $type = 'ajax';
   if ($type == 'ajax') {
     $commands = array();
-    
+
     if ($success) {
       switch ($evaluation) {
         case 'negative':
           $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-negative">Deze activiteit wordt verwijderd uit je aanbevelingen.</div>');
-          break;
-      
+        break;
+
         case 'positive':
-          $commands[] = ajax_command_html('#recommendation-' . $recommendation_id, '<div class="evaluated-positive">Deze activiteit wordt op je profielpagina geplaatst.</div>');
-      
-          break;
+
+          // Get event.
+          $event = cnapi_get_event($node_id);
+          $request_detail = array('event' => $event['cdbid'], 'title' => $event['detail']['nl']['title']);
+          $event_url = cnapi_url_dp2dua($request_detail);
+
+          // Check if the user is going or not.
+          $user_did_this = FALSE;
+          if (DrupalCultureFeed::isCultureFeedUser()) {
+            try {
+              $user_did_this = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_IK_GA, $node_id, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+            }
+            catch (Exception $e) {
+              watchdog_exception('culturefeed_ui', $e);
+            }
+          }
+
+          module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
+          $config = culturefeed_ui_block_users_attends_config();
+          $going  = $user_did_this ? $config['undo_link_title'] : $config['do_link_title'];
+
+          $action_event = array(
+            '#type' => 'link',
+            '#title' => $going,
+            '#href' => 'culturefeed/toggle/go/' . $recommendation_id . '/' . $node_id . '/nojs',
+            '#attributes' => array(
+              'id' => $recommendation_id . '-do-link',
+              'class' => array('do-link', 'do-8-link')
+            ),
+            '#options' => array('query' => array('destination' => $event_url['path'])),
+            '#ajax' => array(),
+          );
+
+          $link = drupal_render($action_event);
+
+          $commands[] = ajax_command_append('#recommendation-' . $recommendation_id, '<div id="go-wrapper-' . $recommendation_id . '">' . $link . '</div>');
+
+        break;
       }
     }
 
@@ -192,14 +228,76 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
   }
 }
 
+function culturefeed_ui_toggle_go($go_id = NULL, $node_id = NULL, $type = 'ajax') {
+  $success = TRUE;
+
+  // Get event.
+  $event = cnapi_get_event($node_id);
+
+  // Check if the user is going or not.
+  $user_did_this = FALSE;
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
+      $user_did_this = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_IK_GA, $node_id, CultureFeed_Activity::CONTENT_TYPE_EVENT);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+    }
+  }
+
+  module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
+  $config = culturefeed_ui_block_users_attends_config();
+
+  // Do action.
+  if ($user_did_this) {
+    $going = $config['do_link_title'];
+    $success = _culturefeed_ui_undo(CultureFeed_Activity::TYPE_IK_GA, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
+  }
+  else {
+    $going = $config['undo_link_title'];
+    $success = _culturefeed_ui_do(CultureFeed_Activity::TYPE_IK_GA, CultureFeed_Activity::CONTENT_TYPE_EVENT, $node_id);
+  }
+
+  if ($type == 'ajax') {
+    $commands = array();
+
+    if ($success) {
+
+      $request_detail = array('event' => $event['cdbid'], 'title' => $event['detail']['nl']['title']);
+      $event_url = cnapi_url_dp2dua($request_detail);
+
+      $action_event = array(
+        '#type' => 'link',
+        '#title' => $going,
+        '#href' => 'culturefeed/toggle/go/' . $go_id . '/' . $node_id . '/nojs',
+        '#attributes' => array(
+          'id' => $go_id . '-do-link',
+          'class' => array('do-link', 'do-8-link')
+        ),
+        '#options' => array('query' => array('destination' => $event_url['path'])),
+        '#ajax' => array(),
+      );
+      $link = drupal_render($action_event);
+
+      $commands[] = ajax_command_html('#go-wrapper-' . $go_id, $link);
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_goto();
+  }
+
+}
+
 function culturefeed_ui_page_activities($type = NULL) {
   $types = culturefeed_ui_activity_types();
-  
+
   // If a type was passed, check if it's valid.
   if (!empty($type) && !in_array($type, array_keys($types))) {
     drupal_not_found();
   }
-  
+
   // Set page and pagelength.
   $pagelength = CULTUREFEED_UI_PAGE_ACTIVITIES_COUNT;
   $page = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -211,7 +309,7 @@ function culturefeed_ui_page_activities($type = NULL) {
   $query->private     = TRUE;
   $query->max         = $pagelength;
   $query->start       = $page * $pagelength;
-  
+
   if (!empty($type)) {
     $query->type = $type;
   }
@@ -229,7 +327,7 @@ function culturefeed_ui_page_activities($type = NULL) {
   pager_default_initialize($activities->total, $pagelength);
 
   $rows = array();
-  
+
   foreach ($activities->objects as $activity) {
     $delete = array(
       '#type' => 'link',
@@ -243,14 +341,14 @@ function culturefeed_ui_page_activities($type = NULL) {
     $privacy = array(
       '#type' => 'link',
       '#title' => $activity->private ? 'Privé' : 'Publiek',
-      '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1')  . '/nojs',
+      '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
-    
+
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
-    
+
     if ($activity->contentType == 'page') {
       $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
     }
@@ -258,7 +356,7 @@ function culturefeed_ui_page_activities($type = NULL) {
       $request_dp = array($activity->contentType => $activity->nodeId, 'title' => $activity->nodeTitle);
       $data = cnapi_url_dp2dul($activity->nodeTitle, $request_dp);
     }
-    
+
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
@@ -270,16 +368,34 @@ function culturefeed_ui_page_activities($type = NULL) {
       ),
     );
   }
-  
+
   $activities = array(
     '#theme' => 'table',
     '#header' => array('Pagina', 'Actie', 'Tijdstip en publicatiekanaal', 'Publiek', ''),
     '#rows' => $rows,
     '#empty' => 'Je hebt nog geen acties gedaan.',
   );
-  
+
+  $facebook_privacy_toggle = NULL;
+  $facebook = _culturefeed_ui_facebook_privacy_toggle();
+  if ($facebook) {
+    $item_list = array(
+      '#theme' => 'item_list',
+      '#items' => array(
+        array(
+          'data' => $facebook,
+          'id' => 'onlineaccount-facebook',
+        ),
+      ),
+    );
+    $facebook_privacy_toggle = array(
+      '#markup' => drupal_render($item_list),
+    );
+  }
+
   return array(
     'filter' => drupal_get_form('culturefeed_ui_activities_filter_form', $type), // don't show filter when there are no results.
+    'facebook_privacy_toggle' => $facebook_privacy_toggle,
     'activities' => $activities,
     'pager' => array(
       '#theme' => 'pager',
@@ -289,27 +405,27 @@ function culturefeed_ui_page_activities($type = NULL) {
 
 function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
   $success = TRUE;
-  
+
   try {
     DrupalCultureFeed::updateActivity($id, $privacy == 1);
   }
-  catch(Exception $e) {
+  catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_ui', $e);
   }
-  
+
   if ($type == 'ajax') {
     if ($success) {
       $commands = array();
       $privacy = array(
         '#type' => 'link',
         '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
-        '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1')  . '/nojs',
+        '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
         '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
-      
+
       $commands[] = ajax_command_replace('#activity-privacy-' . $id, drupal_render($privacy));
     }
 
@@ -322,18 +438,18 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
 
 function culturefeed_ui_page_activity_delete($id, $type = 'ajax') {
   $success = TRUE;
-  
+
   try {
     DrupalCultureFeed::deleteActivity($id);
   }
-  catch(Exception $e) {
+  catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_ui', $e);
   }
-  
+
   if ($type == 'ajax') {
     $commands = array();
-    
+
     if ($success) {
       $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
     }
@@ -420,7 +536,7 @@ function culturefeed_ui_page_recent_activities() {
       '#theme' => 'pager',
     );
   }
-  
+
   return $content;
 }
 
@@ -465,7 +581,7 @@ function culturefeed_ui_page_users_for_content_activity($activity_type, $content
   $query->type = $activity_type;
   $query->nodeId = $id;
 
-	$activity_content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
+  $activity_content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
 
   try {
     $users = DrupalCultureFeed::searchActivityUsers($id, $activity_type, $activity_content_type);
@@ -544,12 +660,12 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
       '#items' => $items,
       '#attributes' => array('class' => 'user-list'),
     );
-    
+
     $content['pager'] = array(
       '#theme' => 'pager',
     );
   }
-  
+
   return $content;
 }
 
@@ -593,7 +709,7 @@ function culturefeed_ui_page_users_most_active() {
       '#type' => 'ol',
     );
   }
-  
+
   return $content;
 }
 
@@ -705,7 +821,7 @@ function culturefeed_ui_page_profile_edit_form() {
     '#type' => 'select',
     '#options' => country_get_list(),
     '#title' => 'Land',
-    '#default_value' => $cf_account->country,
+    '#default_value' => !empty($cf_account->country) ? $cf_account->country : 'BE',
   );
   $form['homeAddressPrivacy'] = array(
     '#type' => 'checkbox',
@@ -749,7 +865,7 @@ function culturefeed_ui_page_profile_edit_form() {
 
 function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   $values = $form_state['values'];
-  
+
   $success = TRUE;
 
   // Update profile information.
@@ -770,10 +886,10 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   else {
     $dob_parts = explode('/', $values['dob']);
-    
+
     if (count($dob_parts) == 3) {
       list($day, $month, $year) = $dob_parts;
-      
+
       if (is_numeric($day) && is_numeric($month) && is_numeric($year))  {
         if ($date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year)) {
           $user_update->dob = $date;
@@ -790,7 +906,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
-    
+
     $success = FALSE;
   }
 
@@ -807,7 +923,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
         drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
-        
+
         $success = FALSE;
       }
     }
@@ -829,7 +945,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw privacy instellingen.', 'error');
-    
+
     $success = FALSE;
   }
 
@@ -934,7 +1050,7 @@ function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
 
 function culturefeed_ui_online_accounts() {
   $online_account_types = array('twitter', 'facebook', 'google');
-  
+
   $items = array();
 
   foreach ($online_account_types as $i => $online_account_type) {
@@ -946,7 +1062,7 @@ function culturefeed_ui_online_accounts() {
       drupal_set_message('Er is een fout opgetreden.', 'error');
       return;
     }
-    
+
     $data = culturefeed_ui_online_account($online_account_type, $online_account);
 
     $items[] = array(
@@ -956,8 +1072,8 @@ function culturefeed_ui_online_accounts() {
   }
 
   return array(
-    '#theme' => 'item_list', 
-    '#items' => $items
+    '#theme' => 'item_list',
+    '#items' => $items,
   );
 }
 
@@ -966,9 +1082,9 @@ function culturefeed_ui_page_online_account_update_privacy($online_account_type,
   $account->publishActivities = $publish == '1' ? TRUE : FALSE;
   $account->accountName = $id;
   $account->accountType = $online_account_type;
-  
+
   $success = TRUE;
-    
+
   try {
     DrupalCultureFeed::updateUserOnlineAccount(DrupalCultureFeed::getLoggedInUserId(), $account);
     $online_account = DrupalCultureFeed::getUserOnlineAccount($online_account_type);
@@ -981,7 +1097,7 @@ function culturefeed_ui_page_online_account_update_privacy($online_account_type,
 
   if ($type == 'ajax') {
     $commands = array();
-    
+
     if ($success) {
       $data = culturefeed_ui_online_account($online_account_type, $online_account);
       $commands[] = ajax_command_html('#onlineaccount-' . $online_account_type, $data);
@@ -997,9 +1113,46 @@ function culturefeed_ui_page_online_account_update_privacy($online_account_type,
   }
 }
 
+
+function culturefeed_ui_page_online_account_toggle_facebook_privacy($online_account_type, $id, $publish, $type = 'ajax') {
+  $account = new CultureFeed_OnlineAccount();
+  $account->publishActivities = $publish == '1' ? TRUE : FALSE;
+  $account->accountName = $id;
+  $account->accountType = $online_account_type;
+
+  $success = TRUE;
+
+  try {
+    DrupalCultureFeed::updateUserOnlineAccount(DrupalCultureFeed::getLoggedInUserId(), $account);
+    $online_account = DrupalCultureFeed::getUserOnlineAccount($online_account_type);
+    $online_account->publishActivities = $account->publishActivities;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    $success = FALSE;
+  }
+
+  if ($type == 'ajax') {
+    $commands = array();
+
+    if ($success) {
+      $data = _culturefeed_ui_facebook_privacy_toggle();
+      $commands[] = ajax_command_html('#onlineaccount-' . $online_account_type, $data);
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    if (!$success) {
+      drupal_set_message('Er is een fout opgetreden.', 'error');
+    }
+    drupal_goto();
+  }
+}
+
 function culturefeed_ui_page_online_account_delete($online_account_type, $id, $type = 'ajax') {
   $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-  
+
   $success = TRUE;
 
   try {
@@ -1012,7 +1165,7 @@ function culturefeed_ui_page_online_account_delete($online_account_type, $id, $t
 
   if ($type == 'ajax') {
     $commands = array();
-    
+
     if ($success) {
       $data = culturefeed_ui_online_account($online_account_type);
       $commands[] = ajax_command_html('#onlineaccount-' . $online_account_type, $data);
@@ -1042,7 +1195,7 @@ function culturefeed_ui_page_serviceconsumers() {
 
   foreach ($consumers as $consumer) {
     $revoke_link = '';
-    
+
     if ($consumer->consumerKey != variable_get('culturefeed_api_application_key', '')) {
       $revoke_link = array(
         '#type' => 'link',
@@ -1052,10 +1205,10 @@ function culturefeed_ui_page_serviceconsumers() {
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
-      
+
       $revoke_link = drupal_render($revoke_link);
     }
-    
+
     $items[] = array(
       'data' => theme('culturefeed_ui_service_consumer_summary', array('consumer' => $consumer, 'revoke_link' => $revoke_link)),
       'id' => 'consumer-' . $consumer->id,
@@ -1073,15 +1226,15 @@ function culturefeed_ui_page_serviceconsumers() {
       '#items' => $items,
     );
   }
-  
+
   return $content;
 }
 
 function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax') {
   $cf_uid = DrupalCultureFeed::getLoggedInUserId();
-  
+
   $success = TRUE;
-  
+
   try {
     DrupalCultureFeed::revokeUserServiceConsumer($cf_uid, $consumer_id);
   }
@@ -1092,7 +1245,7 @@ function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax'
 
   if ($type == 'ajax') {
     $commands = array();
-    
+
     if ($success) {
       $commands[] = ajax_command_invoke('#consumer-' . $consumer_id, 'fadeOut', array('slow'));
     }

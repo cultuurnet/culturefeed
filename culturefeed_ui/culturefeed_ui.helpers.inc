@@ -80,29 +80,29 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
-    
+
     $delete_link = drupal_render($delete_link);
   }
-  
-  $statement = 'Ik geef toestemming aan UiTiD om mijn acties op ' . variable_get('site_name', 'Drupal') .  ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
-  
+
+  $statement = 'Ik geef toestemming aan UiTiD om mijn acties op ' . check_plain(variable_get('site_name', 'Drupal')) . ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
+
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
       '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
-      '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1')  . '/nojs',
+      '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link'),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
-    
+
     $publish_link = drupal_render($publish_link) . $statement;
   }
-    
+
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
   $connect_link = l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
-    
+
   $vars = array(
     'account_type'     => $online_account_type,
     'account'          => $online_account,
@@ -154,6 +154,9 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
 
   if ($zip) {
     $query->zipcode = $zip;
+    if (isset($_GET['radius']) && is_numeric($_GET['radius'])) {
+      $query->zipcode .= '!' . $_GET['radius'] . 'km';
+    }
   }
 
   try {
@@ -165,6 +168,15 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
     watchdog_exception('culturefeed_ui', $e);
     return FALSE;
   }
+
+  return culturefeed_ui_recommendation_list_items($recommendations, 'culturefeed_ui_event_recommendation');
+
+}
+
+/**
+ * Build all the list items that are needed for a recommendation list.
+ */
+function culturefeed_ui_recommendation_list_items($recommendations, $theme_function) {
 
   $items = array();
 
@@ -195,7 +207,11 @@ function culturefeed_ui_recommendations_list($total, $zip = NULL) {
     );
 
     $links = array('like' => drupal_render($positive), 'remove' => drupal_render($negative));
-    $item = theme('culturefeed_ui_event_recommendation', array('event' => $recommendation, 'links' => $links, 'heading_level' => 3));
+    $item = theme($theme_function, array(
+      'event' => $recommendation,
+      'links' => $links,
+      'heading_level' => 3,
+     ));
 
     $items[] = array(
       'data' => $item,
@@ -295,4 +311,36 @@ function culturefeed_ui_users_list($users) {
   }
 
   return $items;
+}
+
+
+/**
+ * Helper function to build facebook privacy toggle
+ */
+function _culturefeed_ui_facebook_privacy_toggle() {
+  try {
+    $online_account = DrupalCultureFeed::getUserOnlineAccount('facebook');
+    if ($online_account) {
+      $publish_link = array(
+        '#type' => 'link',
+        '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+        '#href' => 'culturefeed/toggle/privacy/facebook/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
+        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link'),
+        '#options' => array('query' => drupal_get_destination()),
+        '#ajax' => array(),
+      );
+
+      $publish_link = drupal_render($publish_link) . 'Post mijn acties door naar facebook <div class="tooltip">?</div><div class="tooltip-text">Lorem ipsum</div>';
+
+      return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
+    }
+    else {
+      return NULL;
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
 }
