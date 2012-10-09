@@ -151,7 +151,9 @@ function culturefeed_get_uid_for_cf_uid($cf_uid, $nick) {
   $user->cf_uid = $cf_uid;
   $user->nick = $nick;
 
-  return reset(culturefeed_get_uids_for_cf_uids(array($cf_uid => $user)));
+  $uids = culturefeed_get_uids_for_cf_uids(array($cf_uid => $user));
+
+  return reset($uids);
 }
 
 /**

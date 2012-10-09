@@ -36,17 +36,17 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // bio
   $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 
-	// picture
-	$variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
+  // picture
+  $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
 
-	// city
-	$variables['city'] = !empty($account->city) ? $account->city : '';
-	
-	// profile
-	$variables['profile_edit_link'] = '';
-	if (DrupalCultureFeed::getLoggedInUserId() == $account->id) {
-	  $variables['profile_edit_link'] = l('Beheer jouw profiel', 'culturefeed/profile/edit', array('attributes' => array('class' => array('profile-edit-link'))));
-	}
+  // city
+  $variables['city'] = !empty($account->city) ? $account->city : '';
+
+  // profile
+  $variables['profile_edit_link'] = '';
+  if (DrupalCultureFeed::getLoggedInUserId() == $account->id) {
+    $variables['profile_edit_link'] = l('Beheer jouw profiel', 'culturefeed/profile/edit', array('attributes' => array('class' => array('profile-edit-link'))));
+  }
 }
 
 /**
@@ -55,7 +55,9 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
  * @see culturefeed-ui-connect.tpl.php
  */
 function template_preprocess_culturefeed_ui_connect(&$variables) {
-  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $query = drupal_get_destination();
+  $query['via'] = 'facebook';
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
   $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
 }
@@ -89,13 +91,13 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
  */
 function template_preprocess_culturefeed_ui_online_account(&$variables) {
   $account = $variables['account'];
-  
+
   $variables['type'] = $variables['account_type'];
-  
+
   $variables['name'] = !empty($account->accountName) ? $account->accountName: '';
   $variables['nick'] = !empty($account->accountNick) ? $account->accountNick : '';
   $variables['depiction'] = !empty($account->accountDepiction) ? $account->accountDepiction : '';
-  
+
   $variables['picture'] = !empty($account->accountDepiction) ? theme('image', array('path' => $account->accountDepiction . '?maxwidth=50&maxheight=50&crop=auto')) : '';
 }
 
@@ -220,6 +222,9 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
   $variables['link_logout'] = l('Afmelden', 'user/logout');
   $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_register'] = l('Registreren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $query = drupal_get_destination();
+  $query['via'] = 'facebook';
+  $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
 }
 
 /**
@@ -290,10 +295,10 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   if (!empty($item->from) && !empty($item->from)) {
     $variables['date'] .= ' tot ' . $item->to;
   }
-  
+
   // like
   $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
-  
+
   // remove
   $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
 
@@ -302,7 +307,7 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // location
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
-  
+
   // address
   $variables['address'] = !empty($item->location_city) ? $item->segment . ' ' . $item->location_city : '';
 
@@ -329,23 +334,23 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
   $links = array();
 
   // links : headings
-	if (!empty($variables['headings'])) {
-  	foreach ($variables['headings'] as $heading) {
-  	  $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
-  	  $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
-  	}
-	}
+  if (!empty($variables['headings'])) {
+    foreach ($variables['headings'] as $heading) {
+      $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+      $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
+    }
+  }
 
   // links : zip
-	if (!empty($variables['cityid'])) {
-		$cities = cnapi_get_cities();
-		$city = $cities[$variables['cityid']];
+  if (!empty($variables['cityid'])) {
+    $cities = cnapi_get_cities();
+    $city = $cities[$variables['cityid']];
 
-		if ($city) {
-  		$request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
-  		$links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
-		}
-	}
+    if ($city) {
+      $request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
+      $links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
+    }
+  }
 
   $variables['link_list'] = theme('item_list', array('items' => $links));
 }
@@ -363,4 +368,113 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['name'] = isset($consumer->name) ? $consumer->name : '';
   $variables['description'] = isset($consumer->description) ? $consumer->description : '';
   $variables['creation_date'] = 'Gekoppeld op ' . format_date($consumer->creationDate, 'custom', 'j F Y');
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-my-uitid.tpl.php.
+ */
+function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
+  $account = $variables['account'];
+
+  // contextual links
+  $contextual_links = array(
+    l('Bewerk profiel', 'culturefeed/profile/edit'),
+    l('Mijn aanbevelingen', 'culturefeed/recommendations'),
+    l('Beheer mijn acties', 'culturefeed/activities'),
+    l('Bewerk account', 'culturefeed/account/edit'),
+  );
+  $item_list = array(
+    '#theme' => 'item_list',
+    '#items' => $contextual_links,
+  );
+  $variables['contextual_links'] = drupal_render($item_list);
+
+  // nick
+  $variables['nick'] = $account->nick;
+
+  // name
+  $name = array();
+
+  if (!empty($account->givenName)) {
+    $name[] = $account->givenName;
+  }
+  if (!empty($account->familyName)) {
+    $name[] = $account->familyName;
+  }
+
+  $variables['name'] = !empty($name) ? implode(' ', $name) : '';
+
+  // gender
+  $variables['gender'] = '';
+  if (!empty($account->gender)) {
+    $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+  }
+
+  // dob
+  if (!empty($account->dob)) {
+    $year = date('Y', $account->dob);
+    $age = (date("md", date("U", $account->dob)) > date("md") ? ((date("Y") - $year) - 1) : (date("Y") - $year));
+    $variables['age'] = $age;
+  }
+  else {
+    $variables['age'] = '';
+  }
+
+  // picture
+  $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
+
+  // city
+  $variables['city'] = !empty($account->city) ? $account->city : '';
+
+  // profile
+  $variables['profile_edit_link'] = NULL;
+  if (!$account->lifestyleProfile) {
+    $variables['profile_edit_link'] = l('Vervolledig profiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link'))));
+  }
+
+  // recommendations
+  $variables['recommendations_link'] = l('Beoordeel nog enkele tips', 'culturefeed/recommendations', array('attributes' => array('class' => array('recommendations-link'))));
+
+  // facebook toggle
+  $variables['facebook_privacy_toggle'] = NULL;
+  $facebook = _culturefeed_ui_facebook_privacy_toggle();
+  if ($facebook) {
+    $item_list = array(
+      '#theme' => 'item_list',
+      '#items' => array(
+        array(
+          'data' => $facebook,
+          'id' => 'onlineaccount-facebook',
+        ),
+      ),
+    );
+    $facebook_privacy_toggle = array(
+      '#markup' => drupal_render($item_list),
+    );
+    $variables['facebook_privacy_toggle'] = drupal_render($facebook_privacy_toggle);
+  }
+}
+
+
+/**
+ * Preprocess variables for culturefeed-ui-something-for-you.tpl.php.
+ *
+ * @see culturefeed-ui-something-for-you.tpl.php
+ */
+function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
+  $query = drupal_get_destination();
+  $query['via'] = 'facebook';
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
+}
+
+
+/**
+ * Preprocess variables for culturefeed-ui-connect-hover.tpl.php.
+ *
+ * @see culturefeed-ui-connect-hover.tpl.php
+ */
+function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
+  $query = drupal_get_destination();
+  $query['via'] = 'facebook';
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
 }

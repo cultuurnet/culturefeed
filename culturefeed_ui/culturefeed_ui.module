@@ -106,6 +106,24 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/toggle/privacy/facebook/%/%/%'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Social account privacy instellen'),
+    'page callback' => 'culturefeed_ui_page_online_account_toggle_facebook_privacy',
+    'page arguments' => array(3, 4, 5, 6),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/toggle/go/%/%'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Actie doen'),
+    'page callback' => 'culturefeed_ui_toggle_go',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/users/mostactive'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('UiTslover van de week'),
@@ -250,7 +268,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile-box',
     ),
     'culturefeed_ui_most_active_user' => array(
-      'variables' => array('account' => null, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
+      'variables' => array('account' => NULL, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
       'template' => 'culturefeed-ui-most-active-user',
     ),
     'culturefeed_ui_connect' => array(
@@ -292,6 +310,30 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_event_recommendation' => array(
       'variables' => array('event' => '', 'links' => array(), 'heading_level' => ''),
       'template' => 'culturefeed-ui-event-recommendation',
+    ),
+    'culturefeed_ui_my_uitid' => array(
+      'variables' => array('account' => NULL, 'like' => NULL, 'goto' => NULL),
+      'template' => 'culturefeed-ui-my-uitid',
+    ),
+    'culturefeed_ui_something_for_you' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-ui-something-for-you',
+    ),
+    'culturefeed_ui_connect_hover' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-ui-connect-hover',
+    ),
+    'culturefeed_ui_my_uitid' => array(
+      'variables' => array('account' => NULL, 'like' => NULL, 'goto' => NULL),
+      'template' => 'culturefeed-ui-my-uitid',
+    ),
+    'culturefeed_ui_something_for_you' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-ui-something-for-you',
+    ),
+    'culturefeed_ui_connect_hover' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-ui-connect-hover',
     ),
   );
 }
@@ -344,6 +386,18 @@ function culturefeed_ui_block_info() {
 
   $block['recommendations']['info'] = t('Recommendations');
   $block['recommendations']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  $block['my_uitid']['info'] = t('My UitID');
+  $block['my_uitid']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['something_for_you']['info'] = t('Something for you?');
+  $block['something_for_you']['cache'] = DRUPAL_CACHE_GLOBAL;
+
+  $block['my_uitid']['info'] = t('My UitID');
+  $block['my_uitid']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['something_for_you']['info'] = t('Something for you?');
+  $block['something_for_you']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   return $block;
 }
