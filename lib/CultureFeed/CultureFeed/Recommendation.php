@@ -6,6 +6,21 @@
 class CultureFeed_Recommendation {
 
   /**
+   * Default algorithm (selected by redaction).
+   */
+  const RECOMMENDATION_ALGORITHM_DEFAULT = 'defaultRecommender';
+
+  /**
+   * Algorithm based on already liked items.
+   */
+  const RECOMMENDATION_ALGORITHM_POPULAR = 'PopRecommender';
+
+  /**
+   * Algorithm based on profile.
+   */
+  const RECOMMENDATION_ALGORITHM_PROFILE = 'PofileRecommender';
+
+  /**
    * ID of the recommendation.
    *
    * @var string

@@ -52,6 +52,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheClear($cid_base, TRUE);
   }
 
+  protected function cacheClearMailings() {
+    $cid_base = 'mailing:';
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
+  }
+
   protected function cacheClearRecommendations() {
     $cid_base = sprintf('recommendation:user:%s', $this->loggedInUserId);
     $cid_base = $this->getCacheCidBase($cid_base);
@@ -70,8 +76,8 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getRequestToken($callback);
   }
 
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
-    return $this->realCultureFeed->getUrlAuthorize($token, $callback, $type);
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '') {
+    return $this->realCultureFeed->getUrlAuthorize($token, $callback, $type, $skip_confirmation, $skip_authorization, $via);
   }
 
   public function getAccessToken($oauth_verifier) {
@@ -182,6 +188,62 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
     return $data;
+  }
+
+  public function getMailing($id) {
+    return $this->realCultureFeed->getMailing($id);
+  }
+
+  public function createMailing(CultureFeed_Mailing $mailing) {
+    return $this->realCultureFeed->createMailing($mailing);
+
+    $this->cacheClearMailings();
+  }
+
+  public function updateMailing(CultureFeed_Mailing $mailing, $fields = array()) {
+    $this->realCultureFeed->updateMailing($mailing, $fields);
+
+    $this->cacheClearMailings();
+  }
+
+  public function disableMailing($id) {
+    $this->realCultureFeed->disableMailing($id);
+
+    $this->cacheClearMailings();
+  }
+
+  public function deleteMailing($id) {
+    $this->realCultureFeed->deleteMailing($id);
+
+    $this->cacheClearMailings();
+  }
+
+  public function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+    return $this->realCultureFeed->getMailingList($query);
+  }
+
+  public function sendTestMailing($user_id, $mailing_id) {
+    $this->realCultureFeed->sendTestMailing($user_id, $mailing_id);
+  }
+
+  public function sendMailing($id) {
+    $this->realCultureFeed->sendMailing($id);
+  }
+
+  public function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+    $this->realCultureFeed->searchMailings($query);
+  }
+
+  public function subscribeToMailing($user_id, $mailing_id) {
+    return $this->realCultureFeed->subscribeToMailing($user_id, $mailing_id);
+  }
+
+  public function unsubscribeFromMailing($user_id, $mailing_id) {
+    $this->realCultureFeed->unsubscribeFromMailing($user_id, $mailing_id);
+  }
+
+  public function getMailingSubscriptions($user_id) {
+    return $this->realCultureFeed->getMailingSubscriptions($user_id);
   }
 
   public function getTopEvents($type, $max = 5) {
@@ -537,6 +599,54 @@ class DrupalCultureFeed {
     }
 
     return $data;
+  }
+
+  public static function getMailing($id) {
+    return self::getLoggedInUserInstance()->getMailing($id);
+  }
+
+  public static function createMailing(CultureFeed_Mailing $mailing) {
+    return self::getLoggedInUserInstance()->createMailing($mailing);
+  }
+
+  public static function updateMailing(CultureFeed_Mailing $mailing, $fields = array()) {
+    self::getLoggedInUserInstance()->updateMailing($mailing, $fields);
+  }
+
+  public static function disableMailing($id) {
+    self::getLoggedInUserInstance()->disableMailing($id);
+  }
+
+  public static function deleteMailing($id) {
+    self::getLoggedInUserInstance()->deleteMailing($id);
+  }
+
+  public static function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->getMailingList($query);
+  }
+
+  public static function sendTestMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->sendTestMailing($user_id, $mailing_id);
+  }
+
+  public static function sendMailing($id) {
+    self::getLoggedInUserInstance()->sendMailing($id);
+  }
+
+  public static function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->searchMailings($query);
+  }
+
+  public static function subscribeToMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id);
+  }
+
+  public static function unsubscribeFromMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id);
+  }
+
+  public static function getMailingSubscriptions($user_id) {
+    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id);
   }
 
   public static function getTopEvents($type, $max = 5) {
