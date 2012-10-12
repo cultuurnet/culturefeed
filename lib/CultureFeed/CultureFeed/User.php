@@ -38,23 +38,22 @@ class CultureFeed_User {
   /**
    * Lifestyle profile 'ontdekker'.
    */
-  const LIFESTYLE_ONT = 'Ontdekker';
+  const LIFESTYLE_ONTDEKKER = 'ONT';
 
   /**
    * Lifestyle profile 'fijnproever'.
    */
-  const LIFESTYLE_FP = 'Fijnproever';
+  const LIFESTYLE_FIJNPROEVER = 'FP';
 
   /**
    * Lifestyle profile 'actieve ontspanner'.
    */
-  const LIFESTYLE_AO = 'Actieve ontspanner';
+  const LIFESTYLE_ACTIEVE_ONTSPANNER = 'AO';
 
   /**
    * Lifestyle profile 'actiezoeker'.
-   * @var unknown_type
    */
-  const LIFESTYLE_AZ = 'Actiezoeker';
+  const LIFESTYLE_ACTIE_ZOEKER = 'AZ';
 
   /**
    * ID of the user.
