@@ -176,6 +176,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $data;
   }
 
+  public function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
+    $this->realCultureFeed->postToSocial($id, $account_name, $account_type, $message, $image, $link);
+  }
+
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     $cid = sprintf('activity:users:%s:%s:%s:%s:%s', $nodeId, $type, $contentType, $start, $max);
 
@@ -559,6 +563,10 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->createActivity($activity);
   }
 
+  public static function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
+    self::getLoggedInUserInstance()->postToSocial($id, $account_name, $account_type, $message, $image, $link);
+  }
+
   public static function updateActivity($id, $private) {
     self::getLoggedInUserInstance()->updateActivity($id, $private);
   }
@@ -716,4 +724,117 @@ class DrupalCultureFeed {
 
     return FALSE;
   }
+}
+
+class DrupalCultureFeed_EntryApi {
+
+  protected static $user_instance;
+  protected static $consumer_instance;
+
+  public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (isset(self::$consumer_instance[$application_key])) {
+      return self::$consumer_instance[$application_key];
+    }
+
+    self::$consumer_instance[$application_key] = self::getInstance(NULL, NULL, $application_key, $shared_secret);
+
+    return self::$consumer_instance[$application_key];
+  }
+
+  public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (isset(self::$user_instance[$application_key])) {
+      return self::$user_instance[$application_key];
+    }
+
+    $account = DrupalCultureFeed::getLoggedInAccount();
+
+    if (!isset($account->tokens) ||
+        !isset($account->tokens[$application_key]) ||
+        !isset($account->tokens[$application_key]->token) ||
+        !isset($account->tokens[$application_key]->secret)) {
+      throw new Exception('Not a valid token set.');
+    }
+
+    $token = $account->tokens[$application_key];
+
+    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret, $application_key, $shared_secret);
+
+    return self::$user_instance[$application_key];
+  }
+
+  public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+
+    }
+    else {
+      $http_client = new CultureFeed_DefaultHttpClient();
+
+      $http_client->proxy_server   = variable_get('culturefeed_proxy_server', '');
+      $http_client->proxy_port     = variable_get('culturefeed_proxy_port', '');
+      $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
+      $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
+
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+
+      $oauth_client->setHttpClient($http_client);
+    }
+
+    $oauth_client->setEndpoint(variable_get('culturefeed_entry_api_location', CULTUREFEED_API_LOCATION));
+
+    return new CultureFeed_EntryApi($oauth_client);
+
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::getEvent()
+   */
+  public static function getEvent($id) {
+    return self::getLoggedInUserInstance()->getEvent($id);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::createEvent()
+   */
+  public static function createEvent(CultureFeed_Cdb_Event $event) {
+    return self::getLoggedInUserInstance()->createEvent($event);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::updateEvent()
+   */
+  public static function updateEvent(CultureFeed_Cdb_Event $event) {
+    self::getLoggedInUserInstance()->updateEvent($event);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::addTagToEvent()
+   */
+  public static function addTagToEvent(CultureFeed_Cdb_Event $event, $keywords) {
+    self::getLoggedInUserInstance()->addTagToEvent($event, $keywords);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::removeTagFromEvent()
+   */
+  public static function removeTagFromEvent(CultureFeed_Cdb_Event $event, $keyword) {
+    self::getLoggedInUserInstance()->removeTagFromEvent($event, $keyword);
+  }
+
 }

@@ -1,0 +1,129 @@
+<?php
+
+function entry_api_ui_menu() {
+
+  $items = array();
+  $items['entryapi'] = array(
+    'title' => 'entryapi',
+    'page callback' => 'entry_api_ui_page',
+    'access callback' => TRUE
+  );
+
+  return $items;
+
+}
+
+function entry_api_ui_page() {
+
+  $event = new CultureFeed_Cdb_Event();
+
+  // Calendar details.
+
+  // Timestamps calendar.
+  $calendar = new CultureFeed_Cdb_Calendar_TimestampList();
+  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2012-10-09', '20:00:00+01:00'));
+  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2009-12-02', '21:00:00+01:00'));
+
+  // Periods calendar.
+  /*$calendar = new CultureFeed_Cdb_Calendar_PeriodList();
+  $period = new CultureFeed_Cdb_Calendar_Period('2012-10-09', '2012-12-09');
+
+  $exceptions = new CultureFeed_Cdb_Calendar_Exceptions();
+  $exception = new CultureFeed_Cdb_Calendar_Timestamp('2012-11-10');
+  $exception->setOpenType(CultureFeed_Cdb_Calendar::OPEN_TYPE_BYAPPOINTMENT);
+  $exceptions->add($exception);
+
+  $exception = new CultureFeed_Cdb_Calendar_Timestamp('2012-11-11');
+  $exception->setOpenType(CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $exceptions->add($exception);
+  $period->setExceptions($exceptions);
+
+  $weekscheme = new CultureFeed_Cdb_Calendar_Weekscheme();
+
+  $monday = new CultureFeed_Cdb_Calendar_SchemeDay('monday', CultureFeed_Cdb_Calendar::OPEN_TYPE_OPEN);
+  $monday->setOpenFrom('20:00:00+01:00');
+  $monday->setOpenTill('22:00:00+01:00');
+  $weekscheme->setDay('monday', $monday);
+
+  $tuesday = new CultureFeed_Cdb_Calendar_SchemeDay('tuesday', CultureFeed_Cdb_Calendar::OPEN_TYPE_BYAPPOINTMENT);
+  $weekscheme->setDay('tuesday', $tuesday);
+
+  $wednesday = new CultureFeed_Cdb_Calendar_SchemeDay('wednesday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $weekscheme->setDay('wednesday', $wednesday);
+
+  $period->setWeekScheme($weekscheme);
+  $calendar->add($period);*/
+
+  $event->setCalendar($calendar);
+
+  // Categories.
+  $categories = new CultureFeed_Cdb_CategorieList();
+  $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_EVENT_TYPE, '0.50.4.0.0', 'Concert'));
+  $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_THEME, '1.8.1.0.0', 'Klassieke muziek'));
+  $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_PUBLICSCOPE, '6.4.0.0.0', 'Internationaal'));
+  $event->setCategories($categories);
+
+  // Contact info.
+  $contact = new CultureFeed_Cdb_ContactInfo();
+
+  // Address.
+  $physical_address = new CultureFeed_Cdb_PhysicalAddress();
+  $physical_address->setCity('Brussel');
+  $physical_address->setCountry('BE');
+  $physical_address->setHouseNumber(110);
+  $physical_address->setStreet('Anspachlaan');
+  $physical_address->setZip(1000);
+  $physical_address->setGeoInformation(new CultureFeed_Cdb_GeoInformation(4.348676, 50.847406));
+  $contact->addAddress(new CultureFeed_Cdb_Address($physical_address));
+
+  // Other contact info.
+  $contact->addMail(new CultureFeed_Cdb_Mail('info@abconcerts.be', FALSE, FALSE));
+  $contact->addPhone(new CultureFeed_Cdb_Phone('02-548.24.84', CultureFeed_Cdb_Phone::PHONE_TYPE_PHONE, FALSE, FALSE));
+  $contact->addPhone(new CultureFeed_Cdb_Phone('02-548.24.24', CultureFeed_Cdb_Phone::PHONE_TYPE_PHONE, FALSE, TRUE));
+  $contact->addUrl(new CultureFeed_Cdb_Url('http://www.abconcerts.be', TRUE, FALSE));
+
+  $event->setContactInfo($contact);
+
+  // Event details.
+  $detail = new Culturefeed_Cdb_EventDetail();
+  $detail->setTitle('title');
+  $detail->setShortDescription('description');
+  $detail->setLanguage('nl');
+
+  $details = new CultureFeed_Cdb_EventDetailList();
+  $details->add($detail);
+  $event->setDetails($details);
+
+  // Location (with same physical address).
+  $address = new CultureFeed_Cdb_Address($physical_address);
+  $location = new CultureFeed_Cdb_Location($address);
+  $location->setLabel('jco_test_api_01_location_label xxxxx');
+  $event->setLocation($location);
+
+  try {
+
+    // Create event.
+    $link = DrupalCultureFeed_EntryApi::createEvent($event);
+    debug($link);
+
+    // Update an event.
+    $event->setExternalId('60f6c395-6931-4c83-8938-b8027e5c8cf1');
+    /*$test = $event->getDetails()->current()->setTitle('another new title');
+    DrupalCultureFeed_EntryApi::updateEvent($event);*/
+
+    // Add tags to the event.
+    //DrupalCultureFeed_EntryApi::addTagToEvent($event, array('tag2', 'tag3'));
+
+    // Remove a tag from the event.
+    //DrupalCultureFeed_EntryApi::removeTagFromEvent($event, 'destoop');
+
+    // Get the event.
+    //DrupalCultureFeed_EntryApi::getEvent('60f6c395-6931-4c83-8938-b8027e5c8cf1');
+  }
+  catch (Exception $e) {
+    return $e->getMessage();
+  }
+
+  return '';
+
+}
