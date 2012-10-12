@@ -1,0 +1,5 @@
+name = Entry API
+description = CultureFeed Entry API
+package = CultureFeed
+version = VERSION
+core = 7.x
