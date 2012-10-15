@@ -44,7 +44,7 @@ class CultureFeed_Cdb_Calendar_Timestamp implements ICultureFeed_Cdb_Element {
     $this->setDate($date);
 
     if ($startTime !== NULL) {
-      $this->setStartTime($starTime);
+      $this->setStartTime($startTime);
     }
 
     if ($endTime !== NULL) {
@@ -127,11 +127,11 @@ class CultureFeed_Cdb_Calendar_Timestamp implements ICultureFeed_Cdb_Element {
     $dom = $element->ownerDocument;
 
     $timestampElement = $dom->createElement('timestamp');
+    if ($this->openType) {
+      $timestampElement->setAttribute('opentype', $this->openType);
+    }
 
     $dateElement = $dom->createElement('date', $this->date);
-    if ($this->openType) {
-      $dateElement->setAttribute('opentype', $this->openType);
-    }
 
     $timestampElement->appendChild($dateElement);
 

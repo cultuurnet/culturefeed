@@ -92,6 +92,7 @@ files[] = lib/CultureFeed/Cdb/Item/Data/Calendar/Period.php
 files[] = lib/CultureFeed/Cdb/Item/Data/Calendar/Exceptions.php
 files[] = lib/CultureFeed/Cdb/Item/Data/Calendar/WeekScheme.php
 files[] = lib/CultureFeed/Cdb/Item/Data/Calendar/SchemeDay.php
+files[] = lib/CultureFeed/Cdb/Item/Data/Calendar/Permanent.php
 files[] = lib/CultureFeed/Cdb/Item/Data/Location.php
 files[] = lib/CultureFeed/Cdb/Item/Data/ContactInfo.php
 files[] = lib/CultureFeed/Cdb/Item/Data/Mail.php

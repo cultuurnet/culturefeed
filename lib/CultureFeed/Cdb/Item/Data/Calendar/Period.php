@@ -25,10 +25,10 @@ class CultureFeed_Cdb_Calendar_Period implements ICultureFeed_Cdb_Element {
   protected $exceptions;
 
   /**
-   * Weekscheme for this period.
+   * Week scheme for this period.
    * @var CultureFeed_Cdb_Calendar_WeekScheme
    */
-  protected $weekscheme;
+  protected $weekScheme;
 
   /**
    * Construct a new period.
@@ -72,9 +72,9 @@ class CultureFeed_Cdb_Calendar_Period implements ICultureFeed_Cdb_Element {
   }
 
   /**
-   * Set the weekscheme for this period.
+   * Set the week scheme for this period.
    * @param CultureFeed_Cdb_Calendar_WeekScheme $scheme
-   *   Weekscheme to set.
+   *   Week scheme to set.
    */
   public function setWeekScheme(CultureFeed_Cdb_Calendar_WeekScheme $scheme) {
     $this->weekScheme = $scheme;

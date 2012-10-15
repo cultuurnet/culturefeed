@@ -1,8 +1,36 @@
 <?php
 
+/**
+ * Implements hook_permission().
+ */
+function entry_api_ui_permission() {
+  return array(
+    'manage object tags' => array(
+      'title' => t('Manage object tags'),
+      'description' => t('Manage all the tags from the objects on culturefeed (events, actors, ...).'),
+    ),
+    'manage lifestyle profile tags' => array(
+      'title' => t('Manage lifestyle profile tags'),
+      'description' => t('Manage the lifestyle profile tags from the objects on culturefeed (events, actors, ...).'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
 function entry_api_ui_menu() {
 
   $items = array();
+
+  $items['node/%node/tags'] = array(
+    'title' => 'Tags',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_edit_tags_form', 1),
+    'access callback' => 'entry_api_ui_manage_tags_access',
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
   $items['entryapi'] = array(
     'title' => 'entryapi',
     'page callback' => 'entry_api_ui_page',
@@ -13,21 +41,18 @@ function entry_api_ui_menu() {
 
 }
 
+/**
+ * Access callback, to check if a user has access to the manage tags screen.
+ */
+function entry_api_ui_manage_tags_access() {
+  return user_access('manage lifestyle profile tags') || user_access('manage object tags');
+}
+
 function entry_api_ui_page() {
 
   $event = new CultureFeed_Cdb_Event();
 
-  // Calendar details.
-
-  // Timestamps calendar.
-  $calendar = new CultureFeed_Cdb_Calendar_TimestampList();
-  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2012-10-09', '20:00:00+01:00'));
-  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2009-12-02', '21:00:00+01:00'));
-
-  // Periods calendar.
-  /*$calendar = new CultureFeed_Cdb_Calendar_PeriodList();
-  $period = new CultureFeed_Cdb_Calendar_Period('2012-10-09', '2012-12-09');
-
+  // Exceptions
   $exceptions = new CultureFeed_Cdb_Calendar_Exceptions();
   $exception = new CultureFeed_Cdb_Calendar_Timestamp('2012-11-10');
   $exception->setOpenType(CultureFeed_Cdb_Calendar::OPEN_TYPE_BYAPPOINTMENT);
@@ -36,8 +61,8 @@ function entry_api_ui_page() {
   $exception = new CultureFeed_Cdb_Calendar_Timestamp('2012-11-11');
   $exception->setOpenType(CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
   $exceptions->add($exception);
-  $period->setExceptions($exceptions);
 
+  // Weekscheme
   $weekscheme = new CultureFeed_Cdb_Calendar_Weekscheme();
 
   $monday = new CultureFeed_Cdb_Calendar_SchemeDay('monday', CultureFeed_Cdb_Calendar::OPEN_TYPE_OPEN);
@@ -51,8 +76,35 @@ function entry_api_ui_page() {
   $wednesday = new CultureFeed_Cdb_Calendar_SchemeDay('wednesday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
   $weekscheme->setDay('wednesday', $wednesday);
 
+  $thursday = new CultureFeed_Cdb_Calendar_SchemeDay('thursday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $weekscheme->setDay('thursday', $thursday);
+
+  $friday = new CultureFeed_Cdb_Calendar_SchemeDay('friday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $weekscheme->setDay('friday', $friday);
+
+  $saturday = new CultureFeed_Cdb_Calendar_SchemeDay('saturday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $weekscheme->setDay('saturday', $saturday);
+
+  $sunday = new CultureFeed_Cdb_Calendar_SchemeDay('sunday', CultureFeed_Cdb_Calendar::OPEN_TYPE_CLOSED);
+  $weekscheme->setDay('sunday', $sunday);
+
+  // Calendar details.
+
+  // Timestamps calendar.
+  /*$calendar = new CultureFeed_Cdb_Calendar_TimestampList();
+  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2012-10-09', '20:00:00+01:00'));
+  $calendar->add(new CultureFeed_Cdb_Calendar_Timestamp('2009-12-02', '21:00:00+01:00'));*/
+
+  // Periods calendar.
+  /*$calendar = new CultureFeed_Cdb_Calendar_PeriodList();
+  $period = new CultureFeed_Cdb_Calendar_Period('2012-10-09', '2012-12-09');
   $period->setWeekScheme($weekscheme);
+  $period->setExceptions($exceptions);
   $calendar->add($period);*/
+
+  // Permanent
+  $calendar = new CultureFeed_Cdb_Calendar_Permanent($weekscheme);
+  $calendar->setExceptions($exceptions);
 
   $event->setCalendar($calendar);
 
@@ -103,11 +155,11 @@ function entry_api_ui_page() {
   try {
 
     // Create event.
-    $link = DrupalCultureFeed_EntryApi::createEvent($event);
-    debug($link);
+    //$link = DrupalCultureFeed_EntryApi::createEvent($event);
+    //debug($link);
 
     // Update an event.
-    $event->setExternalId('60f6c395-6931-4c83-8938-b8027e5c8cf1');
+    $event->setExternalId('cc83f911-2ad7-47c5-8bf3-14de3397099c');
     /*$test = $event->getDetails()->current()->setTitle('another new title');
     DrupalCultureFeed_EntryApi::updateEvent($event);*/
 
@@ -118,7 +170,7 @@ function entry_api_ui_page() {
     //DrupalCultureFeed_EntryApi::removeTagFromEvent($event, 'destoop');
 
     // Get the event.
-    //DrupalCultureFeed_EntryApi::getEvent('60f6c395-6931-4c83-8938-b8027e5c8cf1');
+    DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
   }
   catch (Exception $e) {
     return $e->getMessage();

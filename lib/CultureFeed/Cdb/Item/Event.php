@@ -14,6 +14,19 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
   protected $externalId;
 
   /**
+   * Publication date for the event.
+   *
+   * @var string
+   */
+  protected $publicationDate;
+
+  /**
+   * Minimum age for the event.
+   * @var int
+   */
+  protected $ageFrom;
+
+  /**
    * Calendar information for the event.
    * @var CultureFeed_Cdb_Calendar
    */
@@ -47,10 +60,30 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
   protected $categories;
 
   /**
+   * Keywords from the event
+   * @var array List with keywords.
+   */
+  protected $keywords;
+
+  /**
    * Get the external ID from this event.
    */
   public function getExternalId() {
     return $this->externalId;
+  }
+
+  /**
+   * Get the publication date for this event.
+   */
+  public function getPublicationDate() {
+    return $this->publicationDate;
+  }
+
+  /**
+   * Get the minimum age for this event.
+   */
+  public function getAgeFrom() {
+    return $this->ageFrom;
   }
 
   /**
@@ -82,6 +115,13 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
   }
 
   /**
+   * Get the keywords from this event.
+   */
+  public function getKeywords() {
+    return $this->keywords;
+  }
+
+  /**
    * Set the external id from this event.
    * @param string $id
    *   ID to set.
@@ -91,21 +131,38 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
   }
 
   /**
+   * Set the publication date for this event.
+   * @param string $date
+   */
+  public function setPublicationDate($date) {
+    CultureFeed_Cdb_Calendar::validateDate($date);
+    $this->publicationDate = $date;
+  }
+
+  /**
+   * Set the minimum age for this event.
+   * @param int $age
+   *   Minimum age.
+   *
+   * @throws UnexpectedValueException
+   */
+  public function setAgeFrom($age) {
+
+    if (!is_int($age)) {
+      throw new UnexpectedValueException('Invalid age: ' . $value);
+    }
+
+    $this->ageFrom = $age;
+
+  }
+
+  /**
    * Set the calendar data for the event.
    * @param CultureFeed_Cdb_Calendar $calendar
    *   Calendar data.
    */
   public function setCalendar(CultureFeed_Cdb_Calendar $calendar) {
     $this->calendar = $calendar;
-  }
-
-  /**
-   * Set the categories from this event.
-   * @param CultureFeed_Cdb_CategorieList $categories
-   *   Categories to set.
-   */
-  public function setCategories(CultureFeed_Cdb_CategorieList $categories) {
-    $this->categories = $categories;
   }
 
   /**
@@ -133,6 +190,39 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
    */
   public function setDetails(CultureFeed_Cdb_EventDetailList $details) {
     $this->details = $details;
+  }
+
+  /**
+   * Set the categories from this event.
+   * @param CultureFeed_Cdb_CategorieList $categories
+   *   Categories to set.
+   */
+  public function setCategories(CultureFeed_Cdb_CategorieList $categories) {
+    $this->categories = $categories;
+  }
+
+  /**
+   * Add a keyword to this event.
+   * @param string $keyword
+   *   Add a keyword.
+   */
+  public function addKeyword($keyword) {
+    $this->keywords[$keyword] = $keyword;
+  }
+
+  /**
+   * Delete a keyword from this event.
+   * @param string $keyword
+   *   Keyword to remove.
+   */
+  public function deleteKeyword($keyword) {
+
+    if (!isset($this->keywords[$keyword])) {
+      throw new Exception('Trying to remove a non-existing keyword.');
+    }
+
+    unset($this->keywords[$keyword]);
+
   }
 
   /**
@@ -166,11 +256,6 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
     if ($this->location) {
       $this->location->appendToDOM($eventElement);
     }
-
-    $organiser = $dom->createElement('organiser');
-    $label = $dom->createElement('label', 'jco_test_api_01_organiser_labexxxxx');
-    $organiser->appendChild($label);
-    $eventElement->appendChild($organiser);
 
     $element->appendChild($eventElement);
 

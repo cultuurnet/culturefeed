@@ -47,11 +47,20 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
    *
    * @param string $id
    *   ID of the event to load.
+   * @throws CultureFeed_ParseException
    */
   public function getEvent($id) {
 
     $result = $this->oauth_client->authenticatedGetAsXml('event/' . $id);
-    debug($result);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return $this->parseEvent($xml);
 
   }
 
@@ -70,10 +79,9 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
     $cdb = new CultureFeed_Cdb();
     $cdb->addItem('events', $event);
     $cdb_xml = $cdb->getXml();
-debug($cdb_xml);
-return;
+
     $result = $this->oauth_client->authenticatedPostAsXml('event', array('raw_data' => $cdb_xml), TRUE);
-    $xml = $this->validateResult(self::CODE_ITEM_CREATED);
+    $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
 
     return basename($xml->xpath_str('/rsp/link'));
 
@@ -147,10 +155,43 @@ return;
    * @param string $keyword
    *   Tag to remove.
    */
-  public function removeTag($type, $id, $keyword) {
+  private function removeTag($type, $id, $keyword) {
 
     $result = $this->oauth_client->authenticatedPostAsXml($type . '/' . $id . '/keywords', array('keyword' => $keyword));
     $xml = $this->validateResult(self::CODE_KEYWORD_DELETED);
+
+  }
+
+  /**
+   * Parse an event.
+   *
+   * @param CultureFeed_SimpleXMLElement $element
+   *   XML to parse.
+   * @return CultureFeed_Cdb_Event
+   *
+   * @throws Exception
+   *   If the element does not contain an event..
+   */
+  private function parseEvent(CultureFeed_SimpleXMLElement $element) {
+
+    if (empty($element->events->event)) {
+      throw new Exception('No event was found in the xml');
+    }
+
+    $xml_event = $element->events->event;
+    $event_attributes = $xml_event->attributes();
+    $event = new CultureFeed_Cdb_Event();
+
+    $event->setExternalId((string)$event_attributes['cdbid']);
+
+    if (!empty($xml_event->keywords)) {
+      $keywords = explode(';', $xml_event->keywords);
+      foreach ($keywords as $keyword) {
+        $event->addKeyword($keyword);
+      }
+    }
+
+    return $event;
 
   }
 
@@ -178,7 +219,7 @@ return;
     }
 
     $status_code = $xml->xpath_str('/rsp/code');
-    if ($status_code == self::CODE_ITEM_CREATED) {
+    if ($status_code == $valid_status_code) {
       return $xml;
     }
 
