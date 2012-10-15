@@ -182,8 +182,26 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
     $event_attributes = $xml_event->attributes();
     $event = new CultureFeed_Cdb_Event();
 
+    // Set ID.
     $event->setExternalId((string)$event_attributes['cdbid']);
 
+    // Set event details.
+    $details = $xml_event->eventdetails->eventdetail;
+    $detailList = new CultureFeed_Cdb_EventDetailList();
+    foreach ($details as $xmlDetail) {
+      $attributes = $xmlDetail->attributes();
+      $eventDetail = new Culturefeed_Cdb_EventDetail();
+      $eventDetail->setTitle((string)$xmlDetail->title);
+      $eventDetail->setShortDescription((string)$xmlDetail->shortdescription);
+      $eventDetail->setLanguage($attributes['lang']);
+      $detailList->add($eventDetail);
+    }
+
+    $event->setDetails($detailList);
+
+    // Set calendar information.
+
+    // Set the keywords.
     if (!empty($xml_event->keywords)) {
       $keywords = explode(';', $xml_event->keywords);
       foreach ($keywords as $keyword) {

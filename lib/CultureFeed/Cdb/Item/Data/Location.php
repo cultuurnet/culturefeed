@@ -19,6 +19,11 @@ class CultureFeed_Cdb_Location implements ICultureFeed_Cdb_Element {
   protected $label;
 
   /**
+   * Cdbid from location actor.
+   */
+  protected $cdbid;
+
+  /**
    * Location actor.
    * @var
    */
@@ -41,6 +46,13 @@ class CultureFeed_Cdb_Location implements ICultureFeed_Cdb_Element {
   }
 
   /**
+   * Get the cdbid for this location.
+   */
+  public function getCdbid() {
+    return $this->cdbid;
+  }
+
+  /**
    * Get the label.
    */
   public function getLabel() {
@@ -54,6 +66,14 @@ class CultureFeed_Cdb_Location implements ICultureFeed_Cdb_Element {
    */
   public function setAddress(CultureFeed_Cdb_Address $address) {
     $this->address = $address;
+  }
+
+  /**
+   * Set the cdbid for this location.
+   * @param string $cdbid
+   */
+  public function setCdbid($cdbid) {
+    $this->cdbid = $cdbid;
   }
 
   /**
@@ -79,7 +99,11 @@ class CultureFeed_Cdb_Location implements ICultureFeed_Cdb_Element {
     }
 
     if ($this->label) {
-      $locationElement->appendChild($dom->createElement('label', htmlentities($this->label)));
+      $labelElement = $dom->createElement('label', htmlentities($this->label));
+      if ($this->cdbid) {
+        $labelElement->setAttribute('cdbid', $this->cdbid);
+      }
+      $locationElement->appendChild($labelElement);
     }
 
     $element->appendChild($locationElement);

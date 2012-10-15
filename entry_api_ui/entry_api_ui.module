@@ -13,6 +13,10 @@ function entry_api_ui_permission() {
       'title' => t('Manage lifestyle profile tags'),
       'description' => t('Manage the lifestyle profile tags from the objects on culturefeed (events, actors, ...).'),
     ),
+    'create events' => array(
+      'title' => t('Create events'),
+      'description' => t('Create new events through the entity api.'),
+    ),
   );
 }
 
@@ -31,6 +35,14 @@ function entry_api_ui_menu() {
     'file' => 'includes/entry_api_ui.pages.inc',
   );
 
+  $items['entryapi/event/add'] = array(
+    'title' => 'Add event',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_event_form'),
+    'access arguments' => array('create events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
   $items['entryapi'] = array(
     'title' => 'entryapi',
     'page callback' => 'entry_api_ui_page',
@@ -45,6 +57,7 @@ function entry_api_ui_menu() {
  * Access callback, to check if a user has access to the manage tags screen.
  */
 function entry_api_ui_manage_tags_access() {
+  return true;
   return user_access('manage lifestyle profile tags') || user_access('manage object tags');
 }
 
