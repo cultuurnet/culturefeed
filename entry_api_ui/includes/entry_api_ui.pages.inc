@@ -340,7 +340,7 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
     }
   }
 
-  // Check what tags are removed
+  // Check what tags are removed.
   $removed_tags = array();
   foreach ($form['#old_tags'] as $old_tag) {
     if (!in_array($old_tag, $tags)) {
@@ -359,7 +359,6 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
     // Remove old tags
     if ($removed_tags) {
       foreach ($removed_tags as $removed_tag) {
-        debug('removing' . $removed_tag);
         DrupalCultureFeed_EntryApi::removeTagFromEvent($event, $removed_tag);
       }
     }
@@ -367,6 +366,7 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
     drupal_set_message("De tags werden aangepast. Het duurt echter een half uur eer deze
       aanpassingen op al onze kanalen (inclusief UitinVlaanderen onder de tab 'Weergeven'
       beschikbaar zullen zijn.");
+
   }
   catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
