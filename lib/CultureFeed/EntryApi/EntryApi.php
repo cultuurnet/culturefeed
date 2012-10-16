@@ -157,7 +157,8 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
    */
   private function removeTag($type, $id, $keyword) {
 
-    $result = $this->oauth_client->authenticatedPostAsXml($type . '/' . $id . '/keywords', array('keyword' => $keyword));
+    $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/keywords', array('keyword' => $keyword));
+    debug($result);
     $xml = $this->validateResult(self::CODE_KEYWORD_DELETED);
 
   }

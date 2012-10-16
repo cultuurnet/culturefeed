@@ -57,7 +57,6 @@ function entry_api_ui_menu() {
  * Access callback, to check if a user has access to the manage tags screen.
  */
 function entry_api_ui_manage_tags_access() {
-  return true;
   return user_access('manage lifestyle profile tags') || user_access('manage object tags');
 }
 
@@ -183,7 +182,7 @@ function entry_api_ui_page() {
     //DrupalCultureFeed_EntryApi::removeTagFromEvent($event, 'destoop');
 
     // Get the event.
-    DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
+    //DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
   }
   catch (Exception $e) {
     return $e->getMessage();

@@ -20,10 +20,10 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   $contact_info = array();
-  if ($event) {
-    $contact_info += $event->getContactInfo()->getMails();
-    $contact_info += $event->getContactInfo()->getPhones();
-    $contact_info += $event->getContactInfo()->getUrls();
+  if ($event && ($info = $event->getContactInfo())) {
+    $contact_info += $info->getMails();
+    $contact_info += $info->getPhones();
+    $contact_info += $info->getUrls();
   }
 
   $timestamps = array();
@@ -268,6 +268,7 @@ function entry_api_ui_edit_tags_form($form, $form_state, $node) {
   }
 
   $event_tags = $event->getKeywords();
+  $form['#old_tags'] = $event_tags;
 
   $lifestyle_tags = array();
 
@@ -331,6 +332,7 @@ function entry_api_ui_edit_tags_form_validate($form, &$form_state) {
  */
 function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
 
+  // Merge lifestyle profile tags into all tags.
   $tags = explode(';', $form_state['values']['tags']);
   foreach ($form_state['values']['lifestyle_profile'] as $profile) {
     if ($profile) {
@@ -338,11 +340,29 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
     }
   }
 
+  // Check what tags are removed
+  $removed_tags = array();
+  foreach ($form['#old_tags'] as $old_tag) {
+    if (!in_array($old_tag, $tags)) {
+      $removed_tags[] = $old_tag;
+    }
+  }
+
   $event = new CultureFeed_Cdb_Event();
   $event->setExternalId($form['#object_id']);
 
   try {
+
+    // Add new tags
     DrupalCultureFeed_EntryApi::addTagToEvent($event, $tags);
+
+    // Remove old tags
+    if ($removed_tags) {
+      foreach ($removed_tags as $removed_tag) {
+        debug('removing' . $removed_tag);
+        DrupalCultureFeed_EntryApi::removeTagFromEvent($event, $removed_tag);
+      }
+    }
 
     drupal_set_message("De tags werden aangepast. Het duurt echter een half uur eer deze
       aanpassingen op al onze kanalen (inclusief UitinVlaanderen onder de tab 'Weergeven'

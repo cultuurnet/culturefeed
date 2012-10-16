@@ -205,6 +205,33 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
   }
 
   /**
+   * Do a DELETE request with a consumer token and user token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDelete($path, $params = array(), $format = '') {
+    return $this->request($path, $params, 'DELETE', TRUE, $format);
+  }
+
+  /**
+   * Do a DELETE request with a consumer token and user token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDeleteAsXml($path, array $params = array()) {
+    return $this->authenticatedDelete($path, $params, 'xml');
+  }
+
+  /**
+   * Do a DELETE request with a consumer token and user token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDeleteAsJson($path, array $params = array()) {
+    return $this->authenticatedDelete($path, $params, 'json');
+  }
+
+  /**
    * Do a OAuth signed request.
    *
    * @param string $path
@@ -264,6 +291,9 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     if ($method == 'POST') {
       $url = $request->get_normalized_http_url();
+    }
+    elseif ($method == 'DELETE') {
+      $url = $this->getUrl($path, $params);
     }
 
     $http_headers = array();
