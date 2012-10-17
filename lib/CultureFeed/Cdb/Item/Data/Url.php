@@ -110,4 +110,18 @@ class CultureFeed_Cdb_Url implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Mail
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $attributes = $xmlElement->attributes();
+    $is_main = isset($attributes['main']) && $attributes['main'] == 'true';
+    $for_reservations = isset($attributes['reservation']) && $attributes['reservation'] == 'true';
+
+    return new CultureFeed_Cdb_Url((string)$xmlElement, $is_main, $for_reservations);
+
+  }
+
 }

@@ -160,4 +160,25 @@ class CultureFeed_Cdb_PhysicalAddress implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_PhysicalAddress
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $physicalAddress = new CultureFeed_Cdb_PhysicalAddress();
+    $physicalAddress->setCity((string)$xmlElement->city);
+    $physicalAddress->setCountry((string)$xmlElement->country);
+    $physicalAddress->setHouseNumber((string)$xmlElement->housenr);
+    $physicalAddress->setStreet((string)$xmlElement->street);
+    $physicalAddress->setZip((string)$xmlElement->zipcode);
+
+    if (!empty($physicalAddress->gis)) {
+      $physicalAddress->setGeoInformation(new CultureFeed_Cdb_GeoInformation($xml_physical_address->gis->xcoordinate, $xml_physical_address->gis->ycoordinate));;
+    }
+
+    return $physicalAddress;
+
+  }
+
 }

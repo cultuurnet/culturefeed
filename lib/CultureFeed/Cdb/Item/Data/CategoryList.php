@@ -4,7 +4,7 @@
  * @class
  * Representation of a list of categories in the cdb xml.
  */
-class CultureFeed_Cdb_CategorieList implements ICultureFeed_Cdb_Element, Iterator {
+class CultureFeed_Cdb_CategoryList implements ICultureFeed_Cdb_Element, Iterator {
 
   /**
    * Current position in the list.
@@ -75,6 +75,22 @@ class CultureFeed_Cdb_CategorieList implements ICultureFeed_Cdb_Element, Iterato
     }
 
     $element->appendChild($categoriesElement);
+
+  }
+
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_CategoryList
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $categoryList = new CultureFeed_Cdb_CategoryList();
+
+    foreach ($xmlElement->category as $categoryElement) {
+      $categoryList->add(CultureFeed_Cdb_Category::parseFromCdbXml($categoryElement));
+    }
+
+    return $categoryList;
 
   }
 

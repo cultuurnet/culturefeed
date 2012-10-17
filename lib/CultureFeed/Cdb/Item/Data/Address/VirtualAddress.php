@@ -51,4 +51,12 @@ class CultureFeed_Cdb_VirtualAddress implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_PhysicalAddress
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+  }
+
 }

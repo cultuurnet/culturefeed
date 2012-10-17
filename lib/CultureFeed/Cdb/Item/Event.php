@@ -55,7 +55,7 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
 
   /**
    * Categories from the event.
-   * @var CultureFeed_Cdb_CategorieList
+   * @var CultureFeed_Cdb_CategoryList
    */
   protected $categories;
 
@@ -194,10 +194,10 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
 
   /**
    * Set the categories from this event.
-   * @param CultureFeed_Cdb_CategorieList $categories
+   * @param CultureFeed_Cdb_CategoryList $categories
    *   Categories to set.
    */
-  public function setCategories(CultureFeed_Cdb_CategorieList $categories) {
+  public function setCategories(CultureFeed_Cdb_CategoryList $categories) {
     $this->categories = $categories;
   }
 
@@ -258,6 +258,59 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
     }
 
     $element->appendChild($eventElement);
+
+  }
+
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Event
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    if (empty($xmlElement->events->event)) {
+      throw new Exception('No event was found in the xml');
+    }
+
+    $xmlEvent = $xmlElement->events->event;
+    $event_attributes = $xmlEvent->attributes();
+    $event = new CultureFeed_Cdb_Event();
+
+    // Set ID.
+    $event->setExternalId((string)$event_attributes['cdbid']);
+
+    // Set calendar information.
+    $calendar_type = key($xmlEvent->calendar);
+    if ($calendar_type == 'permanentopeningtimes') {
+      $event->setCalendar(CultureFeed_Cdb_Calendar_Permanent::parseFromCdbXml($xmlEvent->calendar));
+    }
+    elseif ($calendar_type == 'timestamps') {
+      $event->setCalendar(CultureFeed_Cdb_Calendar_TimestampList::parseFromCdbXml($xmlEvent->calendar));
+    }
+    elseif ($calendar_type == 'periods') {
+      $event->setCalendar(CultureFeed_Cdb_Calendar_PeriodList::parseFromCdbXml($xmlEvent->calendar));
+    }
+
+    // Set categories
+    $event->setCategories(CultureFeed_Cdb_CategoryList::parseFromCdbXml($xmlEvent->categories));
+
+    // Set contact information.
+    $event->setContactInfo(CultureFeed_Cdb_ContactInfo::parseFromCdbXml($xmlEvent->contactinfo));
+
+    // Set event details.
+    $event->setDetails(CultureFeed_Cdb_EventDetailList::parseFromCdbXml($xmlEvent->eventdetails));
+
+    // Set location.
+    $event->setLocation(CultureFeed_Cdb_Location::parseFromCdbXml($xmlEvent->location));
+
+    // Set the keywords.
+    if (!empty($xmlEvent->keywords)) {
+      $keywords = explode(';', $xmlEvent->keywords);
+      foreach ($keywords as $keyword) {
+        $event->addKeyword($keyword);
+      }
+    }
+
+    return $event;
 
   }
 

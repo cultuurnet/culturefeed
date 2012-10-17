@@ -82,4 +82,17 @@ class CultureFeed_Cdb_Address implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Address
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $physicalAddress = CultureFeed_Cdb_PhysicalAddress::parseFromCdbXml($xmlElement->physical_address);
+    $address = new CultureFeed_Cdb_Address($physicalAddress);
+
+    return $address;
+
+  }
+
 }

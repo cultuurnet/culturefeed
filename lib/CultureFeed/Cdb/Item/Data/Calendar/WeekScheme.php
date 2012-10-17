@@ -73,4 +73,24 @@ class CultureFeed_Cdb_Calendar_Weekscheme implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Calendar_Weekscheme
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $weekscheme = new CultureFeed_Cdb_Calendar_Weekscheme();
+
+    $weekscheme->setDay('monday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->monday));
+    $weekscheme->setDay('tuesday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->tuesday));
+    $weekscheme->setDay('wednesday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->wednesday));
+    $weekscheme->setDay('thursday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->thursday));
+    $weekscheme->setDay('friday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->friday));
+    $weekscheme->setDay('saturday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->saturday));
+    $weekscheme->setDay('sunday', CultureFeed_Cdb_Calendar_SchemeDay::parseFromCdbXml($xmlElement->sunday));
+
+    return $weekscheme;
+
+  }
+
 }

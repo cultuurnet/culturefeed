@@ -183,4 +183,40 @@ class CultureFeed_Cdb_ContactInfo implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_ContactInfo
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $contactInfo = new CultureFeed_Cdb_ContactInfo();
+
+    // Address from contact information.
+    $contactInfo->addAddress(CultureFeed_Cdb_Address::parseFromCdbXml($xmlElement->address));
+
+    // Mails.
+    if (!empty($xmlElement->mail)) {
+      foreach ($xmlElement->mail as $mailElement) {
+        $contactInfo->addMail(CultureFeed_Cdb_Mail::parseFromCdbXml($mailElement));
+      }
+    }
+
+    // Phone numbers.
+    if (!empty($xmlElement->phone)) {
+      foreach ($xmlElement->phone as $phoneElement) {
+        $contactInfo->addPhone(CultureFeed_Cdb_Phone::parseFromCdbXml($phoneElement));
+      }
+    }
+
+    // Urls.
+    if (!empty($xmlElement->url)) {
+      foreach ($xmlElement->url as $urlElement) {
+        $contactInfo->addUrl(CultureFeed_Cdb_Url::parseFromCdbXml($urlElement));
+      }
+    }
+
+    return $contactInfo;
+
+  }
+
 }

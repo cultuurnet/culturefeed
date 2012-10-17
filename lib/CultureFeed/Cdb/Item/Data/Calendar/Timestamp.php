@@ -150,4 +150,18 @@ class CultureFeed_Cdb_Calendar_Timestamp implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Calendar_Timestamp
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $attributes = $xmlElement->timestamp->attributes();
+    $timestamp = new CultureFeed_Cdb_Calendar_Timestamp((string)$xmlElement->timestamp->date);
+    $timestamp->setOpenType($attributes['opentype']);
+
+    return $timestamp;
+
+  }
+
 }

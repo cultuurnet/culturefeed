@@ -22,4 +22,19 @@ class CultureFeed_Cdb_EventDetailList extends CultureFeed_Cdb_DetailList impleme
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_EventDetailList
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $detailList = new CultureFeed_Cdb_EventDetailList();
+    foreach ($xmlElement->eventdetail as $detailElement) {
+      $detailList->add(CultureFeed_Cdb_EventDetail::parseFromCdbXml($detailElement));
+    }
+
+    return $detailList;
+
+  }
+
 }

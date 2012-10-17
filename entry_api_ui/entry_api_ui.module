@@ -1,5 +1,7 @@
 <?php
 
+module_load_include('inc', 'entry_api_ui', 'includes/entry_api_ui.helpers');
+
 /**
  * Implements hook_permission().
  */
@@ -13,9 +15,17 @@ function entry_api_ui_permission() {
       'title' => t('Manage lifestyle profile tags'),
       'description' => t('Manage the lifestyle profile tags from the objects on culturefeed (events, actors, ...).'),
     ),
-    'create events' => array(
+    'create culturefeed events' => array(
       'title' => t('Create events'),
       'description' => t('Create new events through the entity api.'),
+    ),
+    'edit culturefeed events' => array(
+      'title' => t('Edit events'),
+      'description' => t('Edit events through the entity api.'),
+    ),
+    'delete culturefeed events' => array(
+      'title' => t('Delete events'),
+      'description' => t('Delete events through the entity api.'),
     ),
   );
 }
@@ -27,19 +37,35 @@ function entry_api_ui_menu() {
 
   $items = array();
 
-  $items['node/%node/tags'] = array(
+  $items['entryapi/event/%entry_api_event/tags'] = array(
     'title' => 'Tags',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('entry_api_ui_edit_tags_form', 1),
+    'page arguments' => array('entry_api_ui_edit_tags_form', 2),
     'access callback' => 'entry_api_ui_manage_tags_access',
     'file' => 'includes/entry_api_ui.pages.inc',
   );
 
   $items['entryapi/event/add'] = array(
-    'title' => 'Add event',
+    'title' => 'Event toegevoegen',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('entry_api_ui_event_form'),
-    'access arguments' => array('create events'),
+    'access arguments' => array('create culturefeed events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  $items['entryapi/event/%entry_api_event/edit'] = array(
+    'title' => 'Event aanpassen',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_event_form', 2),
+    'access arguments' => array('edit culturefeed events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  $items['entryapi/event/%entry_api_event/delete'] = array(
+    'title' => 'Event verwijderen',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_delete_event_form', 2),
+    'access arguments' => array('delete culturefeed events'),
     'file' => 'includes/entry_api_ui.pages.inc',
   );
 
@@ -50,6 +76,22 @@ function entry_api_ui_menu() {
   );
 
   return $items;
+
+}
+
+/**
+ * Load an event on the entry api.
+ */
+function entry_api_event_load($id) {
+
+  try {
+    return DrupalCultureFeed_EntryApi::getEvent($id);
+  }
+  catch (Exception $e) {
+    watchdog_exception(WATCHDOG_ERROR, $e);
+  }
+
+  return FALSE;
 
 }
 
@@ -78,8 +120,8 @@ function entry_api_ui_page() {
   $weekscheme = new CultureFeed_Cdb_Calendar_Weekscheme();
 
   $monday = new CultureFeed_Cdb_Calendar_SchemeDay('monday', CultureFeed_Cdb_Calendar::OPEN_TYPE_OPEN);
-  $monday->setOpenFrom('20:00:00+01:00');
-  $monday->setOpenTill('22:00:00+01:00');
+  $monday->setOpenFrom('20:00:00');
+  $monday->setOpenTill('22:00:00');
   $weekscheme->setDay('monday', $monday);
 
   $tuesday = new CultureFeed_Cdb_Calendar_SchemeDay('tuesday', CultureFeed_Cdb_Calendar::OPEN_TYPE_BYAPPOINTMENT);
@@ -115,13 +157,14 @@ function entry_api_ui_page() {
   $calendar->add($period);*/
 
   // Permanent
-  $calendar = new CultureFeed_Cdb_Calendar_Permanent($weekscheme);
+  $calendar = new CultureFeed_Cdb_Calendar_Permanent();
+  $calendar->setWeekScheme($weekscheme);
   $calendar->setExceptions($exceptions);
 
   $event->setCalendar($calendar);
 
   // Categories.
-  $categories = new CultureFeed_Cdb_CategorieList();
+  $categories = new CultureFeed_Cdb_CategoryList();
   $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_EVENT_TYPE, '0.50.4.0.0', 'Concert'));
   $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_THEME, '1.8.1.0.0', 'Klassieke muziek'));
   $categories->add(new Culturefeed_Cdb_Category(Culturefeed_Cdb_Category::CATEGORY_TYPE_PUBLICSCOPE, '6.4.0.0.0', 'Internationaal'));
@@ -171,7 +214,8 @@ function entry_api_ui_page() {
     //debug($link);
 
     // Update an event.
-    $event->setExternalId('cc83f911-2ad7-47c5-8bf3-14de3397099c');
+    //$event->setExternalId('cc83f911-2ad7-47c5-8bf3-14de3397099c');
+
     /*$test = $event->getDetails()->current()->setTitle('another new title');
     DrupalCultureFeed_EntryApi::updateEvent($event);*/
 
@@ -180,6 +224,9 @@ function entry_api_ui_page() {
 
     // Remove a tag from the event.
     //DrupalCultureFeed_EntryApi::removeTagFromEvent($event, 'destoop');
+
+    // Delete an event.
+    //DrupalCultureFeed_EntryApi::deleteEvent($id);
 
     // Get the event.
     //DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');

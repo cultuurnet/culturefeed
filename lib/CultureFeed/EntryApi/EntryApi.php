@@ -20,6 +20,12 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
   const CODE_ITEM_MODIFIED = 'ItemModified';
 
   /**
+   * Status code when an item has bene succesfully deleted.
+   * @var string
+   */
+  const CODE_ITEM_DELETED = 'ItemWithdrawn';
+
+  /**
    * Status code when the keywords are succesfully updated.
    * @var string
    */
@@ -47,6 +53,8 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
    *
    * @param string $id
    *   ID of the event to load.
+   *
+   * @return CultureFeed_Cdb_Event
    * @throws CultureFeed_ParseException
    */
   public function getEvent($id) {
@@ -60,7 +68,7 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $this->parseEvent($xml);
+    return CultureFeed_Cdb_Event::parseFromCdbXml($xml);
 
   }
 
@@ -101,6 +109,19 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
 
     $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getExternalId(), array('raw_data' => $cdb_xml), TRUE);
     $xml = $this->validateResult(self::CODE_ITEM_MODIFIED);
+
+  }
+
+  /**
+   * Delete an event.
+   *
+   * @param string $id
+   *   ID from the event.
+   */
+  public function deleteEvent($id) {
+
+    $result = $this->oauth_client->authenticatedDeleteAsXml('event/' . $id);
+    $xml = $this->validateResult($result, self::CODE_ITEM_DELETED);
 
   }
 
@@ -159,57 +180,6 @@ class CultureFeed_EntryApi implements ICultureFeed_EntryApi {
 
     $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/keywords', array('keyword' => $keyword));
     $xml = $this->validateResult($result, self::CODE_KEYWORD_DELETED);
-
-  }
-
-  /**
-   * Parse an event.
-   *
-   * @param CultureFeed_SimpleXMLElement $element
-   *   XML to parse.
-   * @return CultureFeed_Cdb_Event
-   *
-   * @throws Exception
-   *   If the element does not contain an event..
-   */
-  private function parseEvent(CultureFeed_SimpleXMLElement $element) {
-
-    if (empty($element->events->event)) {
-      throw new Exception('No event was found in the xml');
-    }
-
-    $xml_event = $element->events->event;
-    $event_attributes = $xml_event->attributes();
-    $event = new CultureFeed_Cdb_Event();
-
-    // Set ID.
-    $event->setExternalId((string)$event_attributes['cdbid']);
-
-    // Set event details.
-    $details = $xml_event->eventdetails->eventdetail;
-    $detailList = new CultureFeed_Cdb_EventDetailList();
-    foreach ($details as $xmlDetail) {
-      $attributes = $xmlDetail->attributes();
-      $eventDetail = new Culturefeed_Cdb_EventDetail();
-      $eventDetail->setTitle((string)$xmlDetail->title);
-      $eventDetail->setShortDescription((string)$xmlDetail->shortdescription);
-      $eventDetail->setLanguage($attributes['lang']);
-      $detailList->add($eventDetail);
-    }
-
-    $event->setDetails($detailList);
-
-    // Set calendar information.
-
-    // Set the keywords.
-    if (!empty($xml_event->keywords)) {
-      $keywords = explode(';', $xml_event->keywords);
-      foreach ($keywords as $keyword) {
-        $event->addKeyword($keyword);
-      }
-    }
-
-    return $event;
 
   }
 

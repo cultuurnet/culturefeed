@@ -77,4 +77,12 @@ class CultureFeed_Cdb_GeoInformation implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_GeoInformation
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+  }
+
 }

@@ -135,4 +135,27 @@ class CultureFeed_Cdb_Calendar_SchemeDay implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Calendar_SchemeDay
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $attributes = $xmlElement->attributes();
+    $day = new CultureFeed_Cdb_Calendar_SchemeDay(key($xmlElement), $attributes['opentype']);
+
+    if ($xmlElement->openingtime) {
+      $attributes = $xmlElement->openingtime->attributes();
+      if (isset($attributes['from'])) {
+        $day->setOpenFrom($attributes['from']);
+      }
+      if (isset($attributes['to'])) {
+        $day->setOpenTill($attributes['to']);
+      }
+    }
+
+    return $day;
+
+  }
+
 }

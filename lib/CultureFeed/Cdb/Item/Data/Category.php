@@ -117,4 +117,16 @@ class CultureFeed_Cdb_Category implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Category
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $attributes = $xmlElement->attributes();
+
+    return new CultureFeed_Cdb_Category($attributes['type'], $attributes['id'], (string)$xmlElement);
+
+  }
+
 }

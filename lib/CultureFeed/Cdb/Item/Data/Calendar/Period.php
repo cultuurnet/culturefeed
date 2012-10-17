@@ -103,4 +103,24 @@ class CultureFeed_Cdb_Calendar_Period implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Period
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $period = new CultureFeed_Cdb_Calendar_Period((string)$xmlElement->datefrom, (string)$xmlElement->dateto);
+
+    if (!empty($xmlElement->weekscheme)) {
+      $period->setWeekScheme(CultureFeed_Cdb_Calendar_Weekscheme::parseFromCdbXml($xmlElement->weekscheme));
+    }
+
+    if (!empty($xmlElement->exceptions)) {
+      $period->setExceptions(CultureFeed_Cdb_Calendar_Exceptions::parseFromCdbXml($xmlElement->exceptions));
+    }
+
+    return $period;
+
+  }
+
 }

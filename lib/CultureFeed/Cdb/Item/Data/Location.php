@@ -110,4 +110,25 @@ class CultureFeed_Cdb_Location implements ICultureFeed_Cdb_Element {
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Location
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $address = CultureFeed_Cdb_Address::parseFromCdbXml($xmlElement->address);
+    $location = new CultureFeed_Cdb_Location($address);
+
+    if (!empty($xmlElement->label)) {
+      $attributes = $xmlElement->label->attributes();
+      $location->setLabel((string)$xmlElement->label);
+      if (isset($attributes['cdbid'])) {
+        $location->setCdbid($attributes['cdbid']);
+      }
+    }
+
+    return $location;
+
+  }
+
 }

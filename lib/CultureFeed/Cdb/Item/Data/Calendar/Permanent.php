@@ -19,16 +19,6 @@ class CultureFeed_Cdb_Calendar_Permanent extends CultureFeed_Cdb_Calendar implem
   protected $weekScheme;
 
   /**
-   * Construct a new permanent opening time.
-   *
-   * @param CultureFeed_Cdb_Calendar_WeekScheme $weekScheme
-   *   Week scheme for the opening times.
-   */
-  public function __construct($weekScheme) {
-    $this->weekScheme = $weekScheme;
-  }
-
-  /**
    * Set the exceptions for the opening times.
    * @param CultureFeed_Cdb_Calendar_Exceptions $exceptions
    *   Exceptions to set.
@@ -44,6 +34,20 @@ class CultureFeed_Cdb_Calendar_Permanent extends CultureFeed_Cdb_Calendar implem
    */
   public function setWeekScheme(CultureFeed_Cdb_Calendar_WeekScheme $scheme) {
     $this->weekScheme = $scheme;
+  }
+
+  /**
+   * Get the weekscheme from the permanent calendar.
+   */
+  public function getWeekScheme() {
+    return $this->weekScheme;
+  }
+
+  /**
+   * Get the exceptions from the permanent calendar.
+   */
+  public function getExceptions() {
+    return $this->exceptions;
   }
 
   /**
@@ -68,6 +72,27 @@ class CultureFeed_Cdb_Calendar_Permanent extends CultureFeed_Cdb_Calendar implem
     $openingTimesElement->appendChild($permanentElement);
     $calendarElement->appendChild($openingTimesElement);
     $element->appendChild($calendarElement);
+
+  }
+
+    /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_Calendar_Permanent
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $permanentXml = $xmlElement->permanentopeningtimes->permanent;
+    $calendar = new CultureFeed_Cdb_Calendar_Permanent();
+
+    if (!empty($permanentXml->weekscheme)) {
+      $calendar->setWeekScheme(CultureFeed_Cdb_Calendar_Weekscheme::parseFromCdbXml($permanentXml->weekscheme));
+    }
+
+    if (!empty($permanentXml->exceptions)) {
+      $calendar->setExceptions(CultureFeed_Cdb_Calendar_Exceptions::parseFromCdbXml($permanentXml->exceptions));
+    }
+
+    return $calendar;
 
   }
 

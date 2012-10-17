@@ -12,4 +12,12 @@ interface ICultureFeed_Cdb_Element {
    *   The DOM tree to append to.
    */
   public function appendToDOM(DOMElement $element);
+
+  /**
+   * Parse a new object from a given cdbxml element.
+   * @param CultureFeed_SimpleXMLElement $xmlElement
+   *   XML to parse.
+   */
+  public static function parseFromCdbXml($xmlElement);
+
 }

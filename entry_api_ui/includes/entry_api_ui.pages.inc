@@ -10,23 +10,13 @@
 function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
-  try {
-    $event = DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
-  }
-  catch (Excpeption $e) {
-    watchdog_exception(WATCHDOG_ERROR, $e);
-    drupal_set_message('Fout bij het laden van dit event', 'error');
-    return $form;
-  }
 
   $contact_info = array();
   if ($event && ($info = $event->getContactInfo())) {
-    $contact_info += $info->getMails();
-    $contact_info += $info->getPhones();
-    $contact_info += $info->getUrls();
+    $contact_info = $info->getMails();
+    $contact_info = array_merge($contact_info, $info->getPhones());
+    $contact_info += array_merge($contact_info, $info->getUrls());
   }
-
-  $timestamps = array();
 
   $form['title'] = array(
     '#type' => 'textfield',
@@ -42,6 +32,41 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => TRUE,
   );
 
+  $form['what'] = array('#type' => 'container');
+  $form['what']['kijken_en_luisteren'] = array(
+    '#type' => 'checkboxes',
+    '#options' => entry_api_ui_get_category_options('Kijken en luisteren'),
+    '#title' => 'Kijken en luisteren'
+  );
+
+  $form['what']['doen'] = array(
+    '#type' => 'checkboxes',
+    '#options' => entry_api_ui_get_category_options('Doen'),
+    '#title' => 'Doen'
+  );
+
+  $form['what']['bezoeken'] = array(
+    '#type' => 'checkboxes',
+    '#options' => entry_api_ui_get_category_options('Bezoeken'),
+    '#title' => 'Bezoeken'
+  );
+
+  $timestamps = array();
+  $when = 'one_day';
+  $calendar_class = '';
+  if ($event) {
+    $calendar_class = get_class($event->getCalendar());
+    if ($calendar_class == 'CultureFeed_Cdb_Calendar_PeriodList') {
+      $when = 'period';
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Calendar_Permanent') {
+      $when = 'permanent';
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Calendar_TimestampList') {
+      $when = count($event->getCalendar() > 1) ? 'multiple_days' : 'one_day';
+    }
+  }
+
   $form['when'] = array(
     '#type' => 'radios',
     '#title' => 'Wanneer',
@@ -49,19 +74,25 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       'one_day' => 'Eén dag',
       'multiple_days' => 'Meerdere dagen',
       'period' => 'Lange periode',
-      'no_end' => 'Eindigt nooit',
+      'permanent' => 'Eindigt nooit',
     ),
+    '#default_value' => $when,
   );
 
+  // Timestamp elements. Used for: one day or multiple days.
   $form['timestamps'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
-    /*'#states' => array(
+    '#states' => array(
       'visible' => array(
-        ':input[name=when]' => array('value' => 'one_day'),
+        ':input[name=when]' => array(
+          array('value' => 'one_day'),
+          array('value' => 'multiple_days'),
+        ),
       ),
-    ),*/
+    ),
   );
+
   if ($timestamps) {
     foreach ($timestamps as $timestamp) {
       entry_api_ui_add_timestamp_elements($form, $i, $timestamp);
@@ -71,7 +102,60 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     entry_api_ui_add_timestamp_elements($form, 0);
   }
 
-  $form['contacts'] = array('#tree' => TRUE);
+  // Period / permanent elements
+  $form['period_or_permanent'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name=when]' => array(
+          array('value' => 'period'),
+          array('value' => 'permanent'),
+        ),
+      ),
+    ),
+  );
+
+  $default_start = '';
+  $default_end = '';
+  $all_day = FALSE;
+  if ($calendar_class == 'CultureFeed_Cdb_Calendar_PeriodList') {
+    $period = $event->getCalendar()->current();
+    $default_start = $period->getDateFrom();
+    $default_end = $period->getDateTill();
+    $all_day = $period->getWeekScheme() != NULL;
+  }
+  elseif ($calendar_class == 'CultureFeed_Cdb_Calendar_Permanent') {
+    $calendar = $event->getCalendar();
+    $all_day = $calendar->getWeekScheme() != NULL;
+  }
+
+  $form['period_or_permanent']['start_date'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Startdatum',
+    '#states' => array(
+      'visible' => array(':input[name=when]' => array('value' => 'period')),
+    ),
+    '#default_value' => $default_start,
+  );
+
+  $form['period_or_permanent']['end_date'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Einddatum',
+    '#states' => array(
+      'visible' => array(':input[name=when]' => array('value' => 'period')),
+    ),
+    '#default_value' => $default_end,
+  );
+
+  $form['period_or_permanent']['all_day'] = array(
+    '#type' => 'radios',
+    '#title' => 'Alle dagen open / toegankelijk?',
+    '#options' => array(1 => 'Ja', 0 => 'Nee'),
+    '#default_value' => $all_day,
+  );
+
+  $form['contacts'] = array('#tree' => TRUE, '#type' => 'container',);
   // Add contact type selections.
   if ($contact_info) {
     foreach ($contact_info as $i => $info) {
@@ -117,21 +201,21 @@ function entry_api_ui_add_contact_info_elements(&$form, $i, $info = NULL) {
     switch (get_class($info)) {
 
       case 'CultureFeed_Cdb_Mail':
-        $text = $info->getMail();
+        $text = $info->getMailAddress();
         $type = 'email';
-        $reservation = $info->getReservation();
+        $reservation = $info->isForReservations();
       break;
 
       case 'CultureFeed_Cdb_Phone':
-        $text = $info->getPhone();
+        $text = $info->getNumber();
         $type = 'phone';
-        $reservation = $info->getReservation();
+        $reservation = $info->isForReservations();
       break;
 
       case 'CultureFeed_Cdb_Url':
         $text = $info->getUrl();
         $type = 'url';
-        $reservation = $info->getReservation();
+        $reservation = $info->isForReservations();
       break;
 
     }
@@ -249,6 +333,40 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
   $contact = new CultureFeed_Cdb_ContactInfo();
   $contact->addAddress(new CultureFeed_Cdb_Address($physical_address));
   $event->setContactInfo($contact);
+
+}
+
+/**
+ * Form callback: delete an event.
+ */
+function entry_api_ui_delete_event_form($form, $form_state, $event) {
+
+  $form['id'] = array('#type' => 'value', '#value' => $event->getExternalId());
+
+  return confirm_form($form,
+    'Bent u zeker dat u dit event wil verwijderen?',
+    '',
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
+
+}
+
+/**
+ * Submit the delete form.
+ */
+function entry_api_ui_delete_event_form_submit($form, &$form_state) {
+
+  try {
+    DrupalCultureFeed_EntryApi::deleteEvent($form_state['values']['id']);
+    drupal_set_message('Het event is succesvol verwijderd');
+    $form_state['redirect'] = '<front>';
+  }
+  catch (Exception $e) {
+    watchdog_exception(WATCHDOG_ERROR, $e);
+    drupal_set_message('Er ging iets fout bij het verwijderen van dit event.', 'error');
+  }
 
 }
 

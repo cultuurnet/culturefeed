@@ -87,7 +87,7 @@ abstract class CultureFeed_Cdb_Calendar implements Iterator {
    * @throws Exception
    */
   public static function validateTime($value) {
-    if (!preg_match('/^([0-9]{2}):([0-9]{2}):([0-9]{2})(Z|([+-][0-9]{2}:[0-9]{2}))$/', $value)) {
+    if (!preg_match('/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/', $value)) {
       throw new UnexpectedValueException('Invalid time: ' . $value);
     }
   }

@@ -34,5 +34,20 @@ class CultureFeed_Cdb_Calendar_TimestampList extends CultureFeed_Cdb_Calendar im
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_PeriodList
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $timestampList = new CultureFeed_Cdb_TimestampList();
+    foreach ($xmlElement->timestamp as $timestampElement) {
+      $timestampList->add(CultureFeed_Cdb_Calendar_Timestamp::parseFromCdbXml($timestampElement));
+    }
+
+    return $timestampList;
+
+  }
+
 }
 

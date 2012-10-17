@@ -22,4 +22,20 @@ class CultureFeed_Cdb_EventDetail extends CultureFeed_Cdb_Detail implements ICul
 
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_EventDetailList
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $attributes = $xmlElement->attributes();
+    $eventDetail = new Culturefeed_Cdb_EventDetail();
+    $eventDetail->setTitle((string)$xmlElement->title);
+    $eventDetail->setShortDescription((string)$xmlElement->shortdescription);
+    $eventDetail->setLanguage($attributes['lang']);
+
+    return $eventDetail;
+
+  }
+
 }

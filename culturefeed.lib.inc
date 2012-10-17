@@ -824,6 +824,13 @@ class DrupalCultureFeed_EntryApi {
   }
 
   /**
+   * @see CultureFeed_EntryApi::deleteEvent()
+   */
+  public static function deleteEvent($id) {
+    self::getLoggedInUserInstance()->deleteEvent($id);
+  }
+
+  /**
    * @see CultureFeed_EntryApi::addTagToEvent()
    */
   public static function addTagToEvent(CultureFeed_Cdb_Event $event, $keywords) {

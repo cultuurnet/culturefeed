@@ -32,5 +32,20 @@ class CultureFeed_Cdb_Calendar_PeriodList extends CultureFeed_Cdb_Calendar imple
     }
   }
 
+  /**
+   * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
+   * @return CultureFeed_Cdb_PeriodList
+   */
+  public static function parseFromCdbXml($xmlElement) {
+
+    $periodList = new CultureFeed_Cdb_PeriodList();
+    foreach ($xmlElement->period as $periodElement) {
+      $periodList->add(CultureFeed_Cdb_Calendar_Period::parseFromCdbXml($periodElement));
+    }
+
+    return $periodList;
+
+  }
+
 }
 
