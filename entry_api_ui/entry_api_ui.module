@@ -84,12 +84,12 @@ function entry_api_ui_menu() {
  */
 function entry_api_event_load($id) {
 
-  try {
+  //try {
     return DrupalCultureFeed_EntryApi::getEvent($id);
-  }
+  /*}
   catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
-  }
+  }*/
 
   return FALSE;
 
@@ -229,7 +229,8 @@ function entry_api_ui_page() {
     //DrupalCultureFeed_EntryApi::deleteEvent($id);
 
     // Get the event.
-    //DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
+    DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
+
   }
   catch (Exception $e) {
     return $e->getMessage();

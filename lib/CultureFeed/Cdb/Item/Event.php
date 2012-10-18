@@ -94,6 +94,13 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
   }
 
   /**
+   * Get the location from this event.
+   */
+  public function getLocation() {
+    return $this->location;
+  }
+
+  /**
    * Get the details from this event.
    */
   public function getDetails() {
@@ -284,7 +291,7 @@ class CultureFeed_Cdb_Event implements ICultureFeed_Cdb_Element {
       $event->setCalendar(CultureFeed_Cdb_Calendar_Permanent::parseFromCdbXml($xmlEvent->calendar));
     }
     elseif ($calendar_type == 'timestamps') {
-      $event->setCalendar(CultureFeed_Cdb_Calendar_TimestampList::parseFromCdbXml($xmlEvent->calendar));
+      $event->setCalendar(CultureFeed_Cdb_Calendar_TimestampList::parseFromCdbXml($xmlEvent->calendar->timestamps));
     }
     elseif ($calendar_type == 'periods') {
       $event->setCalendar(CultureFeed_Cdb_Calendar_PeriodList::parseFromCdbXml($xmlEvent->calendar));

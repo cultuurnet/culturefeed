@@ -40,7 +40,7 @@ class CultureFeed_Cdb_Calendar_TimestampList extends CultureFeed_Cdb_Calendar im
    */
   public static function parseFromCdbXml($xmlElement) {
 
-    $timestampList = new CultureFeed_Cdb_TimestampList();
+    $timestampList = new CultureFeed_Cdb_Calendar_TimestampList();
     foreach ($xmlElement->timestamp as $timestampElement) {
       $timestampList->add(CultureFeed_Cdb_Calendar_Timestamp::parseFromCdbXml($timestampElement));
     }

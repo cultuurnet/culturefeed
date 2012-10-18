@@ -57,7 +57,7 @@ class CultureFeed_Cdb_Calendar_Timestamp implements ICultureFeed_Cdb_Element {
    * Get the date.
    */
   public function getDate() {
-    return $this->endDate;
+    return $this->date;
   }
 
   /**
@@ -155,9 +155,9 @@ class CultureFeed_Cdb_Calendar_Timestamp implements ICultureFeed_Cdb_Element {
    * @return CultureFeed_Cdb_Calendar_Timestamp
    */
   public static function parseFromCdbXml($xmlElement) {
-
-    $attributes = $xmlElement->timestamp->attributes();
-    $timestamp = new CultureFeed_Cdb_Calendar_Timestamp((string)$xmlElement->timestamp->date);
+debug($xmlElement);
+    $attributes = $xmlElement->attributes();
+    $timestamp = new CultureFeed_Cdb_Calendar_Timestamp((string)$xmlElement->date);
     $timestamp->setOpenType($attributes['opentype']);
 
     return $timestamp;

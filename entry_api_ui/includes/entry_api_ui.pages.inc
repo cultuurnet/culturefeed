@@ -12,10 +12,32 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $form = array();
 
   $contact_info = array();
-  if ($event && ($info = $event->getContactInfo())) {
-    $contact_info = $info->getMails();
-    $contact_info = array_merge($contact_info, $info->getPhones());
-    $contact_info += array_merge($contact_info, $info->getUrls());
+  $category_defaults = array();
+  $default_location = '';
+  $publication_date = '';
+  if ($event) {
+
+    $form['#event'] = $event;
+
+    $publication_date = $event->getPublicationDate();
+
+    if (($info = $event->getContactInfo())) {
+      $contact_info = $info->getMails();
+      $contact_info = array_merge($contact_info, $info->getPhones());
+      $contact_info += array_merge($contact_info, $info->getUrls());
+    }
+
+    if ($event && ($categories = $event->getCategories())) {
+      foreach ($categories as $category) {
+        $category_defaults[] = $category->getId();
+      }
+    }
+
+    if ($location = $event->getLocation()) {
+      $address = $location->getAddress()->getPhysicalAddress();
+      $default_location = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
+    }
+
   }
 
   $form['title'] = array(
@@ -30,32 +52,37 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => 'Locatie',
     '#autocomplete_path' => 'cnapi/autocomplete/actor',
     '#required' => TRUE,
+    '#default_value' => $default_location,
   );
 
   $form['what'] = array('#type' => 'container');
   $form['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
     '#options' => entry_api_ui_get_category_options('Kijken en luisteren'),
-    '#title' => 'Kijken en luisteren'
+    '#title' => 'Kijken en luisteren',
+    '#default_value' => $category_defaults,
   );
 
   $form['what']['doen'] = array(
     '#type' => 'checkboxes',
     '#options' => entry_api_ui_get_category_options('Doen'),
-    '#title' => 'Doen'
+    '#title' => 'Doen',
+    '#default_value' => $category_defaults,
   );
 
   $form['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
     '#options' => entry_api_ui_get_category_options('Bezoeken'),
-    '#title' => 'Bezoeken'
+    '#title' => 'Bezoeken',
+    '#default_value' => $category_defaults,
   );
 
   $timestamps = array();
   $when = 'one_day';
   $calendar_class = '';
   if ($event) {
-    $calendar_class = get_class($event->getCalendar());
+    $calendar = $event->getCalendar();
+    $calendar_class = get_class($calendar);
     if ($calendar_class == 'CultureFeed_Cdb_Calendar_PeriodList') {
       $when = 'period';
     }
@@ -63,7 +90,8 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       $when = 'permanent';
     }
     elseif ($calendar_class == 'CultureFeed_Cdb_Calendar_TimestampList') {
-      $when = count($event->getCalendar() > 1) ? 'multiple_days' : 'one_day';
+      $timestamps = $event->getCalendar();
+      $when = count($timestamps) > 1 ? 'multiple_days' : 'one_day';
     }
   }
 
@@ -94,7 +122,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   if ($timestamps) {
-    foreach ($timestamps as $timestamp) {
+    foreach ($timestamps as $i => $timestamp) {
       entry_api_ui_add_timestamp_elements($form, $i, $timestamp);
     }
   }
@@ -172,6 +200,13 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => ($event) ? $event->getDetails()->current()->getShortDescription() : NULL
   );
 
+  $form['publication_date'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Publicatiedatum',
+    '#default_value' => $publication_date,
+    '#description' => 'Formaat: ' . date('Y-m-d'),
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Opslaan',
@@ -221,7 +256,7 @@ function entry_api_ui_add_contact_info_elements(&$form, $i, $info = NULL) {
     }
   }
 
-  $form['contacts'][$i]['contact_type'] = array(
+  $form['contacts'][$i]['type'] = array(
     '#type' => 'select',
     '#options' => array(
       'website' => 'Website',
@@ -231,12 +266,12 @@ function entry_api_ui_add_contact_info_elements(&$form, $i, $info = NULL) {
     '#default_value' => $type,
   );
 
-  $form['contacts'][$i]['contact_text'] = array(
+  $form['contacts'][$i]['text'] = array(
     '#type' => 'textfield',
     '#default_value' => $text,
   );
 
-  $form['contacts'][$i]['contact_reservation'] = array(
+  $form['contacts'][$i]['reservation'] = array(
     '#type' => 'checkbox',
     '#title' => 'voor reservatie',
     '#default_value' => $reservation,
@@ -260,18 +295,21 @@ function entry_api_ui_add_timestamp_elements(&$form, $i, $timestamp = NULL) {
     '#type' => 'textfield',
     '#title' => 'Startdatum',
     '#default_value' => ($timestamp) ? $timestamp->getDate() : '',
+    '#description' => 'Formaat: ' . date('Y-m-d'),
   );
 
   $form['timestamps'][$i]['start_time'] = array(
     '#type' => 'textfield',
     '#title' => 'van',
     '#default_value' => ($timestamp) ? $timestamp->getStartTime() : '',
+    '#description' => 'Formaat: 12:00:00',
   );
 
   $form['timestamps'][$i]['end_time'] = array(
     '#type' => 'textfield',
     '#title' => 'tot',
     '#default_value' => ($timestamp) ? $timestamp->getEndTime() : '',
+    '#description' => 'Formaat: 12:00:00',
   );
 
   $form['timestamps'][$i]['no_end_time'] = array(
@@ -287,8 +325,39 @@ function entry_api_ui_add_timestamp_elements(&$form, $i, $timestamp = NULL) {
  */
 function entry_api_ui_event_form_validate($form, &$form_state) {
 
+  // Validate publication date.
+  if ($form_state['values']['publication_date']) {
+    try {
+      CultureFeed_Cdb_Calendar::validateDate($form_state['values']['publication_date']);
+    }
+    catch (Exception $e) {
+      form_set_error('publication_date', 'Gelieve een geldige publicatie datum in te geven');
+    }
+  }
+
+  // Validate timestamps.
+  if ($form_state['values']['when'] == 'one_day' || $form_state['values']['when'] == 'multiple_days') {
+    foreach ($form_state['values']['timestamps'] as $timestamp) {
+      try {
+
+        CultureFeed_Cdb_Calendar::validateTime($timestamp['start_date']);
+
+        if (!empty($timestamp['end_time'])) {
+          CultureFeed_Cdb_Calendar::validateTime($timestamp['end_time']);
+        }
+        if (!empty($timestamp['start_time'])) {
+          CultureFeed_Cdb_Calendar::validateTime($timestamp['start_time']);
+        }
+      }
+      catch (Exception $e) {
+        form_set_error('timestamps', 'Gelieve een geldige tijd / datum in te geven.');
+      }
+    }
+  }
+
+  // Validate location.
   $location_label = $form_state['values']['location'];
-  $location = db_query("SELECT * FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :location", array(':location' => strtolower($location_label)))->fetchAssoc();
+  $location = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :location", array(':location' => strtolower($location_label)))->fetchAssoc();
 
   if (!$location) {
     form_set_error('location', 'Gelieve een correcte locatie in te voeren');
@@ -303,7 +372,55 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
  */
 function entry_api_ui_event_form_submit($form, &$form_state) {
 
-  $event = new CultureFeed_Cdb_Event();
+  $update = FALSE;
+  if (isset($form['#event'])) {
+    $update = TRUE;
+    $event = $form['#event'];
+  }
+  else {
+    $event = new CultureFeed_Cdb_Event();
+  }
+
+  // Publication date
+  if ($form_state['values']['publication_date']) {
+    $event->setPublicationDate($form_state['values']['publication_date']);
+  }
+
+  // Calendar
+
+  // Timestamps as calendar.
+  if ($form_state['values']['when'] == 'one_day' || $form_state['values']['when'] == 'multiple_days') {
+    $calendar = new CultureFeed_Cdb_Calendar_TimestampList();
+
+    foreach ($form_state['values']['timestamps'] as $timestamp) {
+      $timestamp_object = new CultureFeed_Cdb_Calendar_Timestamp($timestamp['start_date']);
+      if (!empty($timestamp['end_time'])) {
+        $timestamp_object->setEndTime($timestamp['end_time']);
+      }
+      if (!empty($timestamp['start_time'])) {
+        $timestamp_object->setStartTime($timestamp['start_time']);
+      }
+      $calendar->add($timestamp_object);
+    }
+
+    $event->setCalendar($calendar);
+  }
+
+  // Categories.
+  $category_values = $form_state['values']['kijken_en_luisteren'];
+  $category_values += $form_state['values']['doen'];
+  $category_values += $form_state['values']['bezoeken'];
+  $category_options = $form['what']['kijken_en_luisteren']['#options'];
+  $category_options += $form['what']['doen']['#options'];
+  $category_options += $form['what']['bezoeken']['#options'];
+
+  $categories = new CultureFeed_Cdb_CategoryList();
+  foreach ($category_values as $key => $value) {
+    if ($value) {
+      $categories->add(new CultureFeed_Cdb_Category(CultureFeed_Cdb_Category::CATEGORY_TYPE_EVENT_TYPE, $value, $category_options[$value]));
+    }
+  }
+  $event->setCategories($categories);
 
   // Event details.
   $detail = new Culturefeed_Cdb_EventDetail();
@@ -317,22 +434,76 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
 
   // Location / Address.
   $location_label = $form_state['values']['location'];
+  $country = 'BE';
   $location = $form_state['#location'];
+
+  // Actor is at the moment done, the old way.
+  $actor = cnapi_get_actor($form_state['#location']['cdbid']);
+  if ($actor) {
+    $location = $actor['contactinfo']['address'];
+    $country = $location['country'];
+    $location['zip'] = $location['zipcode'];
+  }
 
   $physical_address = new CultureFeed_Cdb_PhysicalAddress();
   $physical_address->setCity($location['city']);
-  $physical_address->setCountry('BE');
+  $physical_address->setCountry($country);
   $physical_address->setZip($location['zip']);
+  if (isset($location['street'])) {
+    $physical_address->setStreet($location['street']);
+    $physical_address->setHouseNumber($location['housenr']);
+  }
   $address = new CultureFeed_Cdb_Address($physical_address);
 
   $cdbLocation = new CultureFeed_Cdb_Location($address);
-  $cdbLocation->setLabel($location['name']);
+  $cdbLocation->setLabel($location_label);
+  $cdbLocation->setCdbid($form_state['#location']['cdbid']);
   $event->setLocation($cdbLocation);
 
   // Contact info.
-  $contact = new CultureFeed_Cdb_ContactInfo();
-  $contact->addAddress(new CultureFeed_Cdb_Address($physical_address));
-  $event->setContactInfo($contact);
+  $contact_object = new CultureFeed_Cdb_ContactInfo();
+  $contact_object->addAddress(new CultureFeed_Cdb_Address($physical_address));
+
+  foreach ($form_state['values']['contacts'] as $contact) {
+
+    switch ($contact['type']) {
+
+      case 'website':
+        $contact_object->addUrl(new CultureFeed_Cdb_Url($contact['text'], FALSE, $contact['reservation']));
+      break;
+
+      case 'email':
+        $contact_object->addMail(new CultureFeed_Cdb_Mail($contact['text'], FALSE, $contact['reservation']));
+      break;
+
+      case 'phone':
+        $contact_object->addPhone(new CultureFeed_Cdb_Phone($number, $type, $isMain, $forReservations));
+      break;
+
+    }
+
+  }
+
+  $event->setContactInfo($contact_object);
+
+  try {
+    if ($update) {
+      DrupalCultureFeed_EntryApi::updateEvent($event);
+      drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
+      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+    }
+    else {
+      $id = DrupalCultureFeed_EntryApi::createEvent($event);
+      drupal_set_message('id van event:' . $id);
+      drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
+        op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+    }
+  }
+  catch (Exception $e) {
+    debug($e->getMessage());
+    watchdog_exception(WATCHDOG_ERROR, $e);
+    drupal_set_message('Er ging iets fout tijdens het bewaren.');
+  }
 
 }
 
@@ -346,9 +517,9 @@ function entry_api_ui_delete_event_form($form, $form_state, $event) {
   return confirm_form($form,
     'Bent u zeker dat u dit event wil verwijderen?',
     '',
-    t('This action cannot be undone.'),
-    t('Delete'),
-    t('Cancel')
+    'Deze actie kan niet ongedaan worden gemaakt.',
+    'Verwijderen',
+    'Annuleren,'
   );
 
 }
@@ -476,6 +647,7 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
 
     // Remove old tags
     if ($removed_tags) {
+      debug($removed_tags);
       foreach ($removed_tags as $removed_tag) {
         DrupalCultureFeed_EntryApi::removeTagFromEvent($event, $removed_tag);
       }

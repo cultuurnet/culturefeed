@@ -85,10 +85,16 @@ class CultureFeed_Cdb_Address implements ICultureFeed_Cdb_Element {
   /**
    * @see ICultureFeed_Cdb_Element::parseFromCdbXml($xmlElement)
    * @return CultureFeed_Cdb_Address
+   *
+   * @throws Exception
    */
   public static function parseFromCdbXml($xmlElement) {
 
-    $physicalAddress = CultureFeed_Cdb_PhysicalAddress::parseFromCdbXml($xmlElement->physical_address);
+    if (empty($xmlElement->physical)) {
+      throw new Exception('Missing physical address to construct new address');
+    }
+
+    $physicalAddress = CultureFeed_Cdb_PhysicalAddress::parseFromCdbXml($xmlElement->physical);
     $address = new CultureFeed_Cdb_Address($physicalAddress);
 
     return $address;

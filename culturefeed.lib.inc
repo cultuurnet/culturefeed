@@ -264,10 +264,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $data;
   }
 
-  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
+  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL, $skip_cache = FALSE) {
     $cid = 'recommendation:user:' . $id . ':' . md5(serialize($query->toPostData()));
 
-    if ($cache = $this->cacheGet($cid)) {
+    if (!$skip_cache && $cache = $this->cacheGet($cid)) {
       return $cache->data;
     }
 
@@ -661,8 +661,8 @@ class DrupalCultureFeed {
     return self::getConsumerInstance()->getTopEvents($type, $max);
   }
 
-  public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
-    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query);
+  public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL, $skip_cache = FALSE) {
+    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query, $skip_cache);
   }
 
   public static function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {

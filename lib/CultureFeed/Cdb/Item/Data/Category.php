@@ -125,7 +125,7 @@ class CultureFeed_Cdb_Category implements ICultureFeed_Cdb_Element {
 
     $attributes = $xmlElement->attributes();
 
-    return new CultureFeed_Cdb_Category($attributes['type'], $attributes['id'], (string)$xmlElement);
+    return new CultureFeed_Cdb_Category((string)$attributes['type'], (string)$attributes['catid'], (string)$xmlElement);
 
   }
 

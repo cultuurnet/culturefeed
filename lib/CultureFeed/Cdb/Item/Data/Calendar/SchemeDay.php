@@ -142,7 +142,7 @@ class CultureFeed_Cdb_Calendar_SchemeDay implements ICultureFeed_Cdb_Element {
   public static function parseFromCdbXml($xmlElement) {
 
     $attributes = $xmlElement->attributes();
-    $day = new CultureFeed_Cdb_Calendar_SchemeDay(key($xmlElement), $attributes['opentype']);
+    $day = new CultureFeed_Cdb_Calendar_SchemeDay($xmlElement->getName(), $attributes['opentype']);
 
     if ($xmlElement->openingtime) {
       $attributes = $xmlElement->openingtime->attributes();
