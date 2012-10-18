@@ -84,12 +84,12 @@ function entry_api_ui_menu() {
  */
 function entry_api_event_load($id) {
 
-  //try {
+  try {
     return DrupalCultureFeed_EntryApi::getEvent($id);
-  /*}
+  }
   catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
-  }*/
+  }
 
   return FALSE;
 

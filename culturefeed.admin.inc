@@ -45,7 +45,7 @@ function culturefeed_admin_settings() {
     '#type' => 'textfield',
     '#title' => t('Entry API location'),
     '#description' => t('The URL where the Culture Feed Entry API resides. End with a slash. Example: http://www.uitid.be/culturefeed/rest/entry/test.rest.uitdatabank.be/api/v1/'),
-    '#default_value' => variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION),
+    '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
   );
 
   // proxy settings
