@@ -41,11 +41,11 @@ function culturefeed_admin_settings() {
     '#size' => 40,
     '#maxlength' => 40,
   );
-  $form['settings']['culturefeed_entry_api_location'] = array(
+  $form['settings']['culturefeed_entry_api_path'] = array(
     '#type' => 'textfield',
-    '#title' => t('Entry API location'),
-    '#description' => t('The URL where the Culture Feed Entry API resides. End with a slash. Example: http://www.uitid.be/culturefeed/rest/entry/test.rest.uitdatabank.be/api/v1/'),
-    '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
+    '#title' => t('Entry API path'),
+    '#description' => t('The path where the Culture Feed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v1/'),
+    '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
   );
 
   // proxy settings

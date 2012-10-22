@@ -796,7 +796,9 @@ class DrupalCultureFeed_EntryApi {
       $oauth_client->setHttpClient($http_client);
     }
 
-    $oauth_client->setEndpoint(variable_get('culturefeed_entry_api_location', CULTUREFEED_API_LOCATION));
+    $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+    $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
+    $oauth_client->setEndpoint($endpoint);
 
     return new CultureFeed_EntryApi($oauth_client);
 
