@@ -544,18 +544,9 @@ function entry_api_ui_delete_event_form_submit($form, &$form_state) {
 /**
  * Form callback: Show the manage tags form for a cnapi object.
  */
-function entry_api_ui_edit_tags_form($form, $form_state, $node) {
+function entry_api_ui_edit_tags_form($form, $form_state, $event) {
 
   $form = array();
-  try {
-    $event = DrupalCultureFeed_EntryApi::getEvent('cc83f911-2ad7-47c5-8bf3-14de3397099c');
-  }
-  catch (Excpeption $e) {
-    watchdog_exception(WATCHDOG_ERROR, $e);
-    drupal_set_message('Fout bij het laden van dit event', 'error');
-    return $form;
-  }
-
   $event_tags = $event->getKeywords();
   $form['#old_tags'] = $event_tags;
 
