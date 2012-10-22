@@ -69,12 +69,6 @@ function entry_api_ui_menu() {
     'file' => 'includes/entry_api_ui.pages.inc',
   );
 
-  $items['entryapi'] = array(
-    'title' => 'entryapi',
-    'page callback' => 'entry_api_ui_page',
-    'access callback' => TRUE
-  );
-
   return $items;
 
 }
