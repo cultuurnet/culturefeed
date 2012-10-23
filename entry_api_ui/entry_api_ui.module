@@ -95,8 +95,6 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     return;
   }
 
-  $event = entry_api_event_load($id);
-
   $tabs = array();
   // Add a tab for managing the tags.
   if (entry_api_ui_manage_tags_access()) {
@@ -126,8 +124,10 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
   if ($tabs) {
 
+    $event = cnapi_get_event($id);
+
     $link = array(
-      'href' => 'agenda/e/' . cnapi_ui_slug('test') . '/' . $id,
+      'href' => 'agenda/e/' . $event['detail']['nl']['title'] . '/' . $id,
       'localized_options' => array(),
       'title' => 'Weergeven',
     );
