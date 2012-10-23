@@ -560,11 +560,16 @@ function entry_api_ui_edit_tags_form($form, $form_state, $event) {
   );
 
   // Filter out lifestyle tags
-  foreach ($event_tags as $tag) {
-    if (array_key_exists($tag, $lifestyle_options)) {
-      unset($event_tags[$tag]);
-      $lifestyle_tags[$tag] = $tag;
+  if ($event_tags) {
+    foreach ($event_tags as $tag) {
+      if (array_key_exists($tag, $lifestyle_options)) {
+        unset($event_tags[$tag]);
+        $lifestyle_tags[$tag] = $tag;
+      }
     }
+  }
+  else {
+    $event_tags = array();
   }
 
   $form['#object_id'] = 'cc83f911-2ad7-47c5-8bf3-14de3397099c';
