@@ -160,7 +160,7 @@ function entry_api_event_load($id) {
     return $events[$id];
   }
   catch (Exception $e) {
-    watchdog_exception(WATCHDOG_ERROR, $e);
+    watchdog_exception('entry_api_ui', $e, array(), WATCHDOG_ERROR);
   }
 
   $events[$id] = FALSE;

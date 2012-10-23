@@ -87,7 +87,7 @@ class CultureFeed_Cdb_Data_Calendar_Timestamp implements CultureFeed_Cdb_IElemen
    *   Date to set.
    */
   public function setDate($date) {
-    CultureFeed_Cdb_Calendar::validateDate($date);
+    CultureFeed_Cdb_Data_Calendar::validateDate($date);
     $this->date = $date;
   }
 
@@ -97,7 +97,7 @@ class CultureFeed_Cdb_Data_Calendar_Timestamp implements CultureFeed_Cdb_IElemen
    *   Start time to set.
    */
   public function setStartTime($time) {
-    CultureFeed_Cdb_Calendar::validateTime($time);
+    CultureFeed_Cdb_Data_Calendar::validateTime($time);
     $this->startTime = $time;
   }
 
@@ -107,7 +107,7 @@ class CultureFeed_Cdb_Data_Calendar_Timestamp implements CultureFeed_Cdb_IElemen
    *   End time to set.
    */
   public function setEndTime($time) {
-    CultureFeed_Cdb_Calendar::validateTime($time);
+    CultureFeed_Cdb_Data_Calendar::validateTime($time);
     $this->endTime = $time;
   }
 
