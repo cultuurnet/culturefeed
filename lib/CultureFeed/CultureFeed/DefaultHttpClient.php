@@ -129,6 +129,9 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
       $curl_options[CURLOPT_POST] = TRUE;
       $curl_options[CURLOPT_POSTFIELDS] = $post_data;
     }
+    elseif ($method == 'DELETE') {
+      $curl_options[CURLOPT_CUSTOMREQUEST] = $method;
+    }
 
     // Do the CURL request.
     $ch = curl_init();

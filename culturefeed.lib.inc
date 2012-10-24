@@ -52,6 +52,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheClear($cid_base, TRUE);
   }
 
+  protected function cacheClearMailings() {
+    $cid_base = 'mailing:';
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
+  }
+
   protected function cacheClearRecommendations() {
     $cid_base = sprintf('recommendation:user:%s', $this->loggedInUserId);
     $cid_base = $this->getCacheCidBase($cid_base);
@@ -70,8 +76,8 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getRequestToken($callback);
   }
 
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR) {
-    return $this->realCultureFeed->getUrlAuthorize($token, $callback, $type);
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '') {
+    return $this->realCultureFeed->getUrlAuthorize($token, $callback, $type, $skip_confirmation, $skip_authorization, $via);
   }
 
   public function getAccessToken($oauth_verifier) {
@@ -170,6 +176,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $data;
   }
 
+  public function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
+    $this->realCultureFeed->postToSocial($id, $account_name, $account_type, $message, $image, $link);
+  }
+
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {
     $cid = sprintf('activity:users:%s:%s:%s:%s:%s', $nodeId, $type, $contentType, $start, $max);
 
@@ -182,6 +192,62 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
     return $data;
+  }
+
+  public function getMailing($id) {
+    return $this->realCultureFeed->getMailing($id);
+  }
+
+  public function createMailing(CultureFeed_Mailing $mailing) {
+    return $this->realCultureFeed->createMailing($mailing);
+
+    $this->cacheClearMailings();
+  }
+
+  public function updateMailing(CultureFeed_Mailing $mailing, $fields = array()) {
+    $this->realCultureFeed->updateMailing($mailing, $fields);
+
+    $this->cacheClearMailings();
+  }
+
+  public function disableMailing($id) {
+    $this->realCultureFeed->disableMailing($id);
+
+    $this->cacheClearMailings();
+  }
+
+  public function deleteMailing($id) {
+    $this->realCultureFeed->deleteMailing($id);
+
+    $this->cacheClearMailings();
+  }
+
+  public function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+    return $this->realCultureFeed->getMailingList($query);
+  }
+
+  public function sendTestMailing($user_id, $mailing_id) {
+    $this->realCultureFeed->sendTestMailing($user_id, $mailing_id);
+  }
+
+  public function sendMailing($id) {
+    $this->realCultureFeed->sendMailing($id);
+  }
+
+  public function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+    $this->realCultureFeed->searchMailings($query);
+  }
+
+  public function subscribeToMailing($user_id, $mailing_id) {
+    return $this->realCultureFeed->subscribeToMailing($user_id, $mailing_id);
+  }
+
+  public function unsubscribeFromMailing($user_id, $mailing_id) {
+    $this->realCultureFeed->unsubscribeFromMailing($user_id, $mailing_id);
+  }
+
+  public function getMailingSubscriptions($user_id) {
+    return $this->realCultureFeed->getMailingSubscriptions($user_id);
   }
 
   public function getTopEvents($type, $max = 5) {
@@ -198,10 +264,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $data;
   }
 
-  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
+  public function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL, $skip_cache = FALSE) {
     $cid = 'recommendation:user:' . $id . ':' . md5(serialize($query->toPostData()));
 
-    if ($cache = $this->cacheGet($cid)) {
+    if (!$skip_cache && $cache = $this->cacheGet($cid)) {
       return $cache->data;
     }
 
@@ -504,6 +570,10 @@ class DrupalCultureFeed {
     self::getLoggedInUserInstance()->createActivity($activity);
   }
 
+  public static function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
+    self::getLoggedInUserInstance()->postToSocial($id, $account_name, $account_type, $message, $image, $link);
+  }
+
   public static function updateActivity($id, $private) {
     self::getLoggedInUserInstance()->updateActivity($id, $private);
   }
@@ -546,12 +616,60 @@ class DrupalCultureFeed {
     return $data;
   }
 
+  public static function getMailing($id) {
+    return self::getLoggedInUserInstance()->getMailing($id);
+  }
+
+  public static function createMailing(CultureFeed_Mailing $mailing) {
+    return self::getLoggedInUserInstance()->createMailing($mailing);
+  }
+
+  public static function updateMailing(CultureFeed_Mailing $mailing, $fields = array()) {
+    self::getLoggedInUserInstance()->updateMailing($mailing, $fields);
+  }
+
+  public static function disableMailing($id) {
+    self::getLoggedInUserInstance()->disableMailing($id);
+  }
+
+  public static function deleteMailing($id) {
+    self::getLoggedInUserInstance()->deleteMailing($id);
+  }
+
+  public static function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->getMailingList($query);
+  }
+
+  public static function sendTestMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->sendTestMailing($user_id, $mailing_id);
+  }
+
+  public static function sendMailing($id) {
+    self::getLoggedInUserInstance()->sendMailing($id);
+  }
+
+  public static function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->searchMailings($query);
+  }
+
+  public static function subscribeToMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id);
+  }
+
+  public static function unsubscribeFromMailing($user_id, $mailing_id) {
+    self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id);
+  }
+
+  public static function getMailingSubscriptions($user_id) {
+    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id);
+  }
+
   public static function getTopEvents($type, $max = 5) {
     return self::getConsumerInstance()->getTopEvents($type, $max);
   }
 
-  public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL) {
-    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query);
+  public static function getRecommendationsForUser($id, CultureFeed_RecommendationsQuery $query = NULL, $skip_cache = FALSE) {
+    return self::getLoggedInUserInstance()->getRecommendationsForUser($id, $query, $skip_cache);
   }
 
   public static function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL) {
@@ -613,4 +731,126 @@ class DrupalCultureFeed {
 
     return FALSE;
   }
+}
+
+class DrupalCultureFeed_EntryApi {
+
+  protected static $user_instance;
+  protected static $consumer_instance;
+
+  public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (isset(self::$consumer_instance[$application_key])) {
+      return self::$consumer_instance[$application_key];
+    }
+
+    self::$consumer_instance[$application_key] = self::getInstance(NULL, NULL, $application_key, $shared_secret);
+
+    return self::$consumer_instance[$application_key];
+  }
+
+  public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (isset(self::$user_instance[$application_key])) {
+      return self::$user_instance[$application_key];
+    }
+
+    $account = DrupalCultureFeed::getLoggedInAccount();
+
+    if (!isset($account->tokens) ||
+        !isset($account->tokens[$application_key]) ||
+        !isset($account->tokens[$application_key]->token) ||
+        !isset($account->tokens[$application_key]->secret)) {
+      throw new Exception('Not a valid token set.');
+    }
+
+    $token = $account->tokens[$application_key];
+
+    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret, $application_key, $shared_secret);
+
+    return self::$user_instance[$application_key];
+  }
+
+  public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+
+    if (!$application_key) {
+      $application_key = variable_get('culturefeed_api_application_key', '');
+      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+    }
+
+    if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+
+    }
+    else {
+      $http_client = new CultureFeed_DefaultHttpClient();
+
+      $http_client->proxy_server   = variable_get('culturefeed_proxy_server', '');
+      $http_client->proxy_port     = variable_get('culturefeed_proxy_port', '');
+      $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
+      $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
+
+      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+
+      $oauth_client->setHttpClient($http_client);
+    }
+
+    $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+    $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
+    $oauth_client->setEndpoint($endpoint);
+
+    return new CultureFeed_EntryApi($oauth_client);
+
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::getEvent()
+   */
+  public static function getEvent($id) {
+    return self::getLoggedInUserInstance()->getEvent($id);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::createEvent()
+   */
+  public static function createEvent(CultureFeed_Cdb_Event $event) {
+    return self::getLoggedInUserInstance()->createEvent($event);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::updateEvent()
+   */
+  public static function updateEvent(CultureFeed_Cdb_Event $event) {
+    self::getLoggedInUserInstance()->updateEvent($event);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::deleteEvent()
+   */
+  public static function deleteEvent($id) {
+    self::getLoggedInUserInstance()->deleteEvent($id);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::addTagToEvent()
+   */
+  public static function addTagToEvent(CultureFeed_Cdb_Event $event, $keywords) {
+    self::getLoggedInUserInstance()->addTagToEvent($event, $keywords);
+  }
+
+  /**
+   * @see CultureFeed_EntryApi::removeTagFromEvent()
+   */
+  public static function removeTagFromEvent(CultureFeed_Cdb_Event $event, $keyword) {
+    self::getLoggedInUserInstance()->removeTagFromEvent($event, $keyword);
+  }
+
 }
