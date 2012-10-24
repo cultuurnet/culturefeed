@@ -1,0 +1,7 @@
+name = CultureFeed Mailing
+description = Creates a tool to subscribe to and construct mailings on CultureFeed
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed
+dependencies[] = culturefeed_ui

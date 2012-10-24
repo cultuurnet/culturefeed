@@ -164,10 +164,14 @@ class CultureFeed implements ICultureFeed {
    * @param string $type
    *   (optional) Type of CultureFeed screen: regular, register or force login (even when user was logged in.
    *   Possible values for the privacy status are represented in the AUTHORIZE_TYPE_* constants.
+   * @param bool $skip_authorization
+   *   (optional) Boolean indicating wether the authorization step can be skipped.
+   * @param string $via
+   *   (optional) Type of social network used to authorize the user.
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE) {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '') {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
@@ -180,6 +184,14 @@ class CultureFeed implements ICultureFeed {
 
     if ($skip_confirmation) {
       $query['skipConfirmation'] = 'true';
+    }
+
+    if ($skip_authorization) {
+      $query['skipAuthorization'] = 'true';
+    }
+
+    if (!empty($via)) {
+      $query['via'] = $via;
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);
@@ -556,6 +568,36 @@ class CultureFeed implements ICultureFeed {
     $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/delete', $data);
   }
 
+
+  /**
+   * Post a message to social network.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param int $id
+   *   ID of the user to push to his social account.
+   * @param string $accountName
+   *   ID of the social account
+   * @param string $accountType
+   *   type of social account (twitter/facebook)
+   * @param string $message
+   *   message to post to social account
+   * @param string $image
+   *   URL of an image (twitter ignore this parameter)
+   * @param string $link
+   *   Url to post
+   */
+  public function postToSocial($id, $account_name, $account_type, $message, $image, $link)  {
+    $data = array(
+      'accountName' => $account_name,
+      'accountType' => 'facebook',
+      'message' => $message,
+      'image' => $image,
+      'link' => $link,
+    );
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/post', $data);
+  }
+
   /**
    * Create a new activity.
    *
@@ -711,6 +753,256 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Get a mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID from the mailing to get.
+   *
+   * @return CultureFeed_Mailing
+   *   The mailing object.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function getMailing($id) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('mailing/' . $id);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $object = $xml->xpath('/response/mailing');
+
+    return self::parseMailing($object[0]);
+
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Create a new mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param CultureFeed_Mailing $mailing
+   *   The mailing to create.
+   *
+   * @return CultureFeed_Mailing
+   *   The new created mailing object.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function createMailing(CultureFeed_Mailing $mailing) {
+    $data = $mailing->toPostData();
+
+    $result = $this->oauth_client->authenticatedPostAsXml('mailing', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $object = $xml->xpath('/response/mailing');
+
+    return self::parseMailing($object[0]);
+
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Update an existing mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param CultureFeed_Mailing $mailing
+   *   The mailing to update. The mailing is identified by ID. Only fields that are set will be updated.
+   * @param array $fields
+   *   If this parameters is not empty, only the properties specified in this array will be updated on the API.
+   */
+  public function updateMailing(CultureFeed_Mailing $mailing, $fields = array()) {
+    $data = $mailing->toPostData($fields);
+
+    $id = $data['id'];
+
+    unset($data['id']);
+
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id, $data);
+  }
+
+  /**
+   * Disable a mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the mailing to disable.
+   */
+  public function disableMailing($id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/disable');
+  }
+
+  /**
+   * Delete a mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the mailing to delete.
+   */
+  public function deleteMailing($id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/delete');
+  }
+
+  /**
+   * Get a list of mailings
+   *
+   *  The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param CultureFeed_SearchMailingsQuery $query
+   *   The query.
+   *
+   * @return CultureFeed_Mailing[]
+   *   List of mailings.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+
+    $data = $query->toPostData();
+
+    $result = $this->oauth_client->authenticatedGetAsXml('mailing/list', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseMailings($xml);
+
+  }
+
+  /**
+   * Send a test from a mailing to a user.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $user_id
+   *   ID from user that needs to be subscribed.
+   * @param string $mailing_id
+   *   ID of the mailing to subscribe to.
+   */
+  public function sendTestMailing($user_id, $mailing_id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $mailing_id . '/test', array('userId' => $user_id));
+  }
+
+  /**
+   * Send the mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $id
+   *   ID of the mailing to send.
+   */
+  public function sendMailing($id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/send', array('userId' => $user_id));
+  }
+
+  /**
+   * Search for mailings.
+   *
+    * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param CultureFeed_SearchMailingsQuery $query
+   *   The query.
+   *
+   * @return CultureFeed_Mailing[]
+   *   List of mailings.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+
+    $data = $query->toPostData();
+
+    $result = $this->oauth_client->authenticatedPostAsXml('mailing/search', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseMailings($xml);
+  }
+
+  /**
+   * Subscribe a user to a mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $user_id
+   *   ID from user that needs to be subscribed.
+   * @param string
+   *   ID of the mailing to subscribe to.
+   */
+  public function subscribeToMailing($user_id, $mailing_id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $mailing_id . '/subscribe', array('userId' => $user_id));
+  }
+
+  /**
+   * Unsubscribe a user from a mailing.
+   *
+   * The object should be initialized with the consumer token and user access token of the user who is acted upon.
+   *
+   * @param string $user_id
+   *   ID from user that needs to be unsubscribed.
+   * @param string
+   *   ID of the mailing to unsubscribe from.
+   */
+  public function unsubscribeFromMailing($user_id, $mailing_id) {
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $mailing_id . '/unsubscribe', array('userId' => $user_id));
+  }
+
+  /**
+   * Get list from all mailings where the user is subscribed to.
+   *
+   * @param string $user_id
+   *   ID from user
+   *
+   * @return CultureFeed_Mailing[]
+   *   List of mailings.
+   *
+   * @throws CultureFeed_ParseException
+   *   If the result could not be parsed.
+   */
+  public function getMailingSubscriptions($user_id) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('mailing/subscriptions/' . $user_id);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseMailings($xml);
+  }
+
+  /**
    * Fetch a list of events that have the most activity.
    *
    * The object should be initialized with the consumer token and user access token of the user who is acted upon.
@@ -762,7 +1054,8 @@ class CultureFeed implements ICultureFeed {
     if ($query) {
       $data = $query->toPostData();
     }
-
+print_R($data);
+print $id;
     $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {
@@ -1022,25 +1315,27 @@ class CultureFeed implements ICultureFeed {
   protected static function parseUser(CultureFeed_SimpleXMLElement $element) {
     $user = new CultureFeed_User();
 
-    $user->id           = $element->xpath_str('/foaf:person/rdf:id');
-    $user->nick         = $element->xpath_str('/foaf:person/foaf:nick');
-    $user->givenName    = $element->xpath_str('/foaf:person/foaf:givenName');
-    $user->familyName   = $element->xpath_str('/foaf:person/foaf:familyName');
-    $user->mbox         = $element->xpath_str('/foaf:person/foaf:mbox');
-    $user->mboxVerified = $element->xpath_bool('/foaf:person/mboxVerified');
-    $user->gender       = $element->xpath_str('/foaf:person/foaf:gender');
-    $user->dob          = $element->xpath_time('/foaf:person/foaf:dob');
-    $user->depiction    = $element->xpath_str('/foaf:person/foaf:depiction');
-    $user->bio          = $element->xpath_str('/foaf:person/bio');
-    $user->street       = $element->xpath_str('/foaf:person/homeAddress/street');
-    $user->zip          = $element->xpath_str('/foaf:person/homeAddress/zip');
-    $user->city         = $element->xpath_str('/foaf:person/homeAddress/city');
-    $user->country      = $element->xpath_str('/foaf:person/homeAddress/country');
-    $user->status       = $element->xpath_str('/foaf:person/status');
+    $user->id               = $element->xpath_str('/foaf:person/rdf:id');
+    $user->nick             = $element->xpath_str('/foaf:person/foaf:nick');
+    $user->givenName        = $element->xpath_str('/foaf:person/foaf:givenName');
+    $user->familyName       = $element->xpath_str('/foaf:person/foaf:familyName');
+    $user->mbox             = $element->xpath_str('/foaf:person/foaf:mbox');
+    $user->mboxVerified     = $element->xpath_bool('/foaf:person/mboxVerified');
+    $user->gender           = $element->xpath_str('/foaf:person/foaf:gender');
+    $user->dob              = $element->xpath_time('/foaf:person/foaf:dob');
+    $user->hasChildren      = $element->xpath_bool('/foaf:person/hasChildren');
+    $user->depiction        = $element->xpath_str('/foaf:person/foaf:depiction');
+    $user->bio              = $element->xpath_str('/foaf:person/bio');
+    $user->street           = $element->xpath_str('/foaf:person/homeAddress/street');
+    $user->zip              = $element->xpath_str('/foaf:person/homeAddress/zip');
+    $user->city             = $element->xpath_str('/foaf:person/homeAddress/city');
+    $user->country          = $element->xpath_str('/foaf:person/homeAddress/country');
+    $user->lifestyleProfile = $element->xpath_str('/foaf:person/lifestyleProfile');
+    $user->status           = $element->xpath_str('/foaf:person/status');
     if ($user->status) {
       $user->status = strtolower($user->status);
     }
-    $user->openid       = $element->xpath_str('/foaf:person/foaf:openid');
+    $user->openid           = $element->xpath_str('/foaf:person/foaf:openid');
 
     $lat = $element->xpath_float('/foaf:person/homeLocation/geo:lat');
     $lng = $element->xpath_float('/foaf:person/homeLocation/geo:long');
@@ -1239,5 +1534,67 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $recommendations;
+  }
+
+   /**
+   * Parse the SimpleXML element as a CultureFeed_Mailing.
+   *
+   * @param CultureFeed_SimpleXMLElement $element
+   *   XML to parse.
+   * @return CultureFeed_Mailing
+   */
+  protected static function parseMailing(CultureFeed_SimpleXMLElement $element) {
+
+    $mailing = new CultureFeed_Mailing();
+
+    $mailing->id                    = $element->xpath_str('id');
+    $mailing->name                  = $element->xpath_str('name');
+    $mailing->template              = $element->xpath_str('template');
+    $mailing->consumerKey           = $element->xpath_str('serviceConsumerKey');
+    $mailing->subject               = $element->xpath_str('subject');
+    $mailing->frequency             = $element->xpath_str('frequency');
+    $mailing->fromAddress           = $element->xpath_str('fromAddress');
+    $mailing->startDay              = $element->xpath_int('startDay');
+    $mailing->startDayOfWeek        = $element->xpath_int('startDayOfWeek');
+    $mailing->startHour             = $element->xpath_int('startHour');
+    $mailing->startMinute           = $element->xpath_int('startMinute');
+    $mailing->block1                = $element->xpath_str('htmlBlock1');
+    $mailing->block2                = $element->xpath_str('htmlBlock2');
+    $mailing->block3                = $element->xpath_str('htmlBlock3');
+    $mailing->block4                = $element->xpath_str('htmlBlock4');
+    $mailing->block5                = $element->xpath_str('htmlBlock5');
+    $mailing->block6                = $element->xpath_str('htmlBlock6');
+    $mailing->searchQuery           = $element->xpath_str('searchQuery');
+    $mailing->recommendationQuery   = $element->xpath_str('recommendationQuery');
+    $mailing->recommendationQuery   = $element->xpath_str('recommendationQuery');
+    $mailing->searchEnabled         = $element->xpath_bool('searchEnabled');
+    $mailing->recommendationEnabled = $element->xpath_bool('recommendationEnabled');
+    $mailing->sendEmptySearchResult = $element->xpath_bool('sendEmptySearchResult');
+    $mailing->sendEmptyRecommendationResult  = $element->xpath_bool('sendEmptyRecommendationResult');
+    $mailing->enabled              = $element->xpath_bool('enabled');
+
+    return $mailing;
+  }
+
+  /**
+   * Parse the SimpleXML element as a CultureFeed_ResultSet.
+   *
+   * @param CultureFeed_SimpleXMLElement $element
+   *   XML to parse.
+   * @return CultureFeed_ResultSet
+   *   CultureFeed_ResultSet where the objects are of the CultureFeed_Mailing type.
+   */
+  protected static function parseMailings(CultureFeed_SimpleXMLElement $element) {
+    $total = $element->xpath_int('/response/total');
+
+    $mailings = array();
+
+    $objects = $element->xpath('/response/mailings/mailing');
+
+    foreach ($objects as $object) {
+      $mailings[] = self::parseMailing($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $mailings);
   }
 }

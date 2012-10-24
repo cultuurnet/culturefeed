@@ -205,6 +205,33 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
   }
 
   /**
+   * Do a DELETE request with a consumer token and user token.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDelete($path, $params = array(), $format = '') {
+    return $this->request($path, $params, 'DELETE', TRUE, $format);
+  }
+
+  /**
+   * Do a DELETE request with a consumer token and user token and return the response as XML.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDeleteAsXml($path, array $params = array()) {
+    return $this->authenticatedDelete($path, $params, 'xml');
+  }
+
+  /**
+   * Do a DELETE request with a consumer token and user token and return the response as JSON.
+   *
+   * Wrapper function around request. @see request for documentation of remaining parameters.
+   */
+  public function authenticatedDeleteAsJson($path, array $params = array()) {
+    return $this->authenticatedDelete($path, $params, 'json');
+  }
+
+  /**
    * Do a OAuth signed request.
    *
    * @param string $path
@@ -246,6 +273,13 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     // Since the OAuth library doesn't support multipart, we don't encode params that have a file.
     $params_to_encode = $has_file_upload ? array() : $params;
 
+    // If raw data should be posted, don't encode it.
+    $first_key = key($params);
+    if ($first_key == 'raw_data') {
+      $params_to_encode = array();
+      $params = $params[$first_key];
+    }
+
     // Constructing the request...
     $request = OAuthRequest::from_consumer_and_token($this->consumer, $request_token, $method, $url, $params_to_encode);
 
@@ -257,6 +291,9 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     if ($method == 'POST') {
       $url = $request->get_normalized_http_url();
+    }
+    elseif ($method == 'DELETE') {
+      $url = $this->getUrl($path, $params);
     }
 
     $http_headers = array();
@@ -274,8 +311,13 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         break;
     }
 
+    // Setting the 'Content-Type' header.
+    if (is_string($params) && substr($params, 0, 5) == '<?xml') {
+      $http_headers[] = 'Content-Type: application/xml';
+    }
+
     // If we have a file upload, we pass $params as an array to trigger CURL multipart.
-    $post_data = $has_file_upload ? $params : self::build_query($params);
+    $post_data = (is_string($params) || $has_file_upload) ? $params : self::build_query($params);
 
     // Necessary to support token setup calls.
     if (!$raw_post) {

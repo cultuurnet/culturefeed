@@ -1,0 +1,177 @@
+<?php
+
+module_load_include('inc', 'entry_api_ui', 'includes/entry_api_ui.helpers');
+
+/**
+ * Implements hook_permission().
+ */
+function entry_api_ui_permission() {
+  return array(
+    'manage object tags' => array(
+      'title' => t('Manage object tags'),
+      'description' => t('Manage all the tags from the objects on culturefeed (events, actors, ...).'),
+    ),
+    'manage lifestyle profile tags' => array(
+      'title' => t('Manage lifestyle profile tags'),
+      'description' => t('Manage the lifestyle profile tags from the objects on culturefeed (events, actors, ...).'),
+    ),
+    'create culturefeed events' => array(
+      'title' => t('Create events'),
+      'description' => t('Create new events through the entity api.'),
+    ),
+    'edit culturefeed events' => array(
+      'title' => t('Edit events'),
+      'description' => t('Edit events through the entity api.'),
+    ),
+    'delete culturefeed events' => array(
+      'title' => t('Delete events'),
+      'description' => t('Delete events through the entity api.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function entry_api_ui_menu() {
+
+  $items = array();
+
+  $items['entryapi/event/%entry_api_event/tags'] = array(
+    'title' => 'Tags',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_edit_tags_form', 2),
+    'access callback' => 'entry_api_ui_manage_tags_access',
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  $items['entryapi/event/add'] = array(
+    'title' => 'Nieuwe activiteit',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_event_form'),
+    'access arguments' => array('create culturefeed events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  $items['entryapi/event/%entry_api_event/edit'] = array(
+    'title' => 'Activiteit aanpassen',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_event_form', 2),
+    'access arguments' => array('edit culturefeed events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  $items['entryapi/event/%entry_api_event/delete'] = array(
+    'title' => 'Activiteit verwijderen',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('entry_api_ui_delete_event_form', 2),
+    'access arguments' => array('delete culturefeed events'),
+    'file' => 'includes/entry_api_ui.pages.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+
+  $id = '';
+  if (module_exists('cnapi_snode') && ($node = menu_get_object())) {
+    if ($node && isset($node->id)) {
+      $id = $node->id;
+    }
+  }
+  elseif (arg(0) == 'agenda' && arg(1) == 'e') {
+    $id = arg(3);
+  }
+  elseif (arg(0) == 'entryapi') {
+    $id = arg(2);
+  }
+
+  if (!$id) {
+    return;
+  }
+
+  $tabs = array();
+  // Add a tab for managing the tags.
+  if (entry_api_ui_manage_tags_access()) {
+
+    $link = array(
+      'href' => 'entryapi/event/' . $id . '/tags',
+      'localized_options' => array(),
+      'title' => 'Tags',
+    );
+
+    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
+
+  }
+
+  // Add tab for editing the event.
+  if (user_access('edit culturefeed events')) {
+
+    $link = array(
+      'href' => 'entryapi/event/' . $id . '/edit',
+      'localized_options' => array(),
+      'title' => 'Aanpassen',
+    );
+
+    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
+
+  }
+
+  if ($tabs) {
+
+    $event = cnapi_get_event($id);
+
+    $link = array(
+      'href' => 'agenda/e/' . $event['detail']['nl']['title'] . '/' . $id,
+      'localized_options' => array(),
+      'title' => 'Weergeven',
+    );
+    $tab = array('#theme' => 'menu_local_action', '#link' => $link);
+    array_unshift($tabs, $tab);
+
+  }
+
+  $data['tabs'] = array(
+    0 => array(
+      'output' => $tabs,
+      'count' => count($tabs),
+    ),
+  );
+
+}
+
+/**
+ * Load an event on the entry api.
+ */
+function entry_api_event_load($id) {
+
+  static $events = array();
+  if (isset($events[$id])) {
+    return $events[$id];
+  }
+
+  try {
+    $events[$id] = DrupalCultureFeed_EntryApi::getEvent($id);
+    return $events[$id];
+  }
+  catch (Exception $e) {
+    watchdog_exception('entry_api_ui', $e, array(), WATCHDOG_ERROR);
+  }
+
+  $events[$id] = FALSE;
+
+  return FALSE;
+
+}
+
+/**
+ * Access callback, to check if a user has access to the manage tags screen.
+ */
+function entry_api_ui_manage_tags_access() {
+  return user_access('manage lifestyle profile tags') || user_access('manage object tags');
+}

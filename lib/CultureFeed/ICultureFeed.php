@@ -8,7 +8,7 @@ interface ICultureFeed {
 
   public function getRequestToken($callback = '');
 
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR);
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '');
 
   public function getAccessToken($oauth_verifier);
 
@@ -51,6 +51,30 @@ interface ICultureFeed {
   public function searchActivities(CultureFeed_SearchActivitiesQuery $query);
 
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL);
+
+  public function getMailing($id);
+
+  public function createMailing(CultureFeed_Mailing $mailing);
+
+  public function updateMailing(CultureFeed_Mailing $mailing, $fields = array());
+
+  public function disableMailing($id);
+
+  public function deleteMailing($id);
+
+  public function getMailingList(CultureFeed_SearchMailingsQuery $query);
+
+  public function sendTestMailing($user_id, $mailing_id);
+
+  public function sendMailing($id);
+
+  public function searchMailings(CultureFeed_SearchMailingsQuery $query);
+
+  public function subscribeToMailing($user_id, $mailing_id);
+
+  public function unsubscribeFromMailing($user_id, $mailing_id);
+
+  public function getMailingSubscriptions($user_id);
 
   public function getTopEvents($type, $max = 5);
 

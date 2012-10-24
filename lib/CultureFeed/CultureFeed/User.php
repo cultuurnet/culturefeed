@@ -36,6 +36,26 @@ class CultureFeed_User {
   const STATUS_DELETED = 'deleted';
 
   /**
+   * Lifestyle profile 'ontdekker'.
+   */
+  const LIFESTYLE_ONTDEKKER = 'ONT';
+
+  /**
+   * Lifestyle profile 'fijnproever'.
+   */
+  const LIFESTYLE_FIJNPROEVER = 'FP';
+
+  /**
+   * Lifestyle profile 'actieve ontspanner'.
+   */
+  const LIFESTYLE_ACTIEVE_ONTSPANNER = 'AO';
+
+  /**
+   * Lifestyle profile 'actiezoeker'.
+   */
+  const LIFESTYLE_ACTIE_ZOEKER = 'AZ';
+
+  /**
    * ID of the user.
    *
    * @var string
@@ -93,6 +113,12 @@ class CultureFeed_User {
   public $gender;
 
   /**
+   * Does the user have children
+   * @var bool
+   */
+  public $hasChildren;
+
+  /**
    * Date of birth of the user represented as a UNIX timestamp.
    *
    * @var integer
@@ -140,6 +166,12 @@ class CultureFeed_User {
    * @var string
    */
   public $country;
+
+  /**
+   * Lifestyle profile of the user.
+   * @var string
+   */
+  public $lifestyleProfile;
 
   /**
    * Coordinates of the user's home address.
@@ -234,6 +266,10 @@ class CultureFeed_User {
     // Represent dob as a W3C date.
     if (!empty($data['dob'])) {
       $data['dob'] = date('c', $data['dob']);
+    }
+
+    if (isset($data['hasChildren'])) {
+      $data['hasChildren'] = $data['hasChildren'] ? 'true' : 'false';
     }
 
     $data = array_filter($data);
