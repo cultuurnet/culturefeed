@@ -49,6 +49,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CheckinConstraint.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CheckinActivity.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/Query/SearchCheckinsOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/Query/SearchEventsOptions.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/Query/SearchTicketSalesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CultureEvent.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/UitIdUser.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/SearchPassholdersOptions.php
