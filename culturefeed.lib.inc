@@ -335,7 +335,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
 }
 
-class DrupalCultureFeed {
+abstract class DrupalCultureFeedBase {
 
   protected static $consumer_instance;
 
@@ -424,9 +424,9 @@ class DrupalCultureFeed {
 
     $token = $account->tokens[$application_key];
 
-    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret, $application_key, $shared_secret);
+    static::$user_instance[$application_key] = static::getInstance($token->token, $token->secret, $application_key, $shared_secret);
 
-    return self::$user_instance[$application_key];
+    return static::$user_instance[$application_key];
   }
 
   public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
@@ -435,16 +435,22 @@ class DrupalCultureFeed {
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
     }
 
-    if (isset(self::$consumer_instance[$application_key])) {
-      return self::$consumer_instance[$application_key];
+    if (isset(static::$consumer_instance[$application_key])) {
+      return static::$consumer_instance[$application_key];
     }
 
-    self::$consumer_instance[$application_key] = self::getInstance(NULL, NULL, $application_key, $shared_secret);
+    static::$consumer_instance[$application_key] = static::getInstance(NULL, NULL, $application_key, $shared_secret);
 
-    return self::$consumer_instance[$application_key];
+    return static::$consumer_instance[$application_key];
   }
 
-  public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+  /**
+   * Get an OAuthClient instance for CultureFeed.
+   * @param string $endpoint
+   *   Endpoint for the client.
+   */
+  public static function getOAuthClient($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
@@ -467,6 +473,20 @@ class DrupalCultureFeed {
       $oauth_client->setHttpClient($http_client);
     }
 
+    return $oauth_client;
+
+  }
+
+}
+
+class DrupalCultureFeed extends DrupalCultureFeedBase {
+
+  protected static $consumer_instance;
+  protected static $user_instance;
+
+  public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
+
+    $oauth_client = self::getOAuthClient($token, $secret, $application_key, $shared_secret);
     $oauth_client->setEndpoint(variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION));
 
     $cf = new CultureFeed($oauth_client);
@@ -726,78 +746,21 @@ class DrupalCultureFeed {
   }
 }
 
-class DrupalCultureFeed_EntryApi {
+/**
+ * @class
+ * Drupal layer for the CultureFeed_EntryApi class.
+ */
+class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
 
-  protected static $user_instance;
   protected static $consumer_instance;
-
-  public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
-    if (!$application_key) {
-      $application_key = variable_get('culturefeed_api_application_key', '');
-      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
-    }
-
-    if (isset(self::$consumer_instance[$application_key])) {
-      return self::$consumer_instance[$application_key];
-    }
-
-    self::$consumer_instance[$application_key] = self::getInstance(NULL, NULL, $application_key, $shared_secret);
-
-    return self::$consumer_instance[$application_key];
-  }
-
-  public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
-    if (!$application_key) {
-      $application_key = variable_get('culturefeed_api_application_key', '');
-      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
-    }
-
-    if (isset(self::$user_instance[$application_key])) {
-      return self::$user_instance[$application_key];
-    }
-
-    $account = DrupalCultureFeed::getLoggedInAccount();
-
-    if (!isset($account->tokens) ||
-        !isset($account->tokens[$application_key]) ||
-        !isset($account->tokens[$application_key]->token) ||
-        !isset($account->tokens[$application_key]->secret)) {
-      throw new Exception('Not a valid token set.');
-    }
-
-    $token = $account->tokens[$application_key];
-
-    self::$user_instance[$application_key] = self::getInstance($token->token, $token->secret, $application_key, $shared_secret);
-
-    return self::$user_instance[$application_key];
-  }
+  protected static $user_instance;
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
 
-    if (!$application_key) {
-      $application_key = variable_get('culturefeed_api_application_key', '');
-      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
-    }
-
-    if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
-
-    }
-    else {
-      $http_client = new CultureFeed_DefaultHttpClient();
-
-      $http_client->proxy_server   = variable_get('culturefeed_proxy_server', '');
-      $http_client->proxy_port     = variable_get('culturefeed_proxy_port', '');
-      $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
-      $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
-
-      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
-
-      $oauth_client->setHttpClient($http_client);
-    }
-
     $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
     $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
+
+    $oauth_client = self::getOAuthClient($token, $secret, $application_key, $shared_secret);
     $oauth_client->setEndpoint($endpoint);
 
     return new CultureFeed_EntryApi($oauth_client);
