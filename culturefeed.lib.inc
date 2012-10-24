@@ -390,17 +390,17 @@ abstract class DrupalCultureFeedBase {
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
     }
 
-    if (!$reset && isset(self::$logged_in_user[$application_key])) {
-      return self::$logged_in_user[$application_key];
+    if (!$reset && isset(static::$logged_in_user[$application_key])) {
+      return static::$logged_in_user[$application_key];
     }
 
     if (!self::isCultureFeedUser()) {
       return NULL;
     }
 
-    self::$logged_in_user[$application_key] = self::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
+    static::$logged_in_user[$application_key] = static::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
 
-    return self::$logged_in_user[$application_key];
+    return static::$logged_in_user[$application_key];
   }
 
   public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
@@ -483,6 +483,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   protected static $consumer_instance;
   protected static $user_instance;
+  protected static $logged_in_user;
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
 
@@ -754,6 +755,7 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
 
   protected static $consumer_instance;
   protected static $user_instance;
+  protected static $logged_in_user;
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
 
