@@ -74,10 +74,16 @@ class CultureFeed_Cdb_Data_Calendar_Weekscheme implements CultureFeed_Cdb_IEleme
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Calendar_Weekscheme
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
+
+    foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
+      if (!isset($xmlElement->{$day})) {
+        throw new CultureFeed_ParseException("Missing required data for " . $day);
+      }
+    }
 
     $weekscheme = new CultureFeed_Cdb_Data_Calendar_Weekscheme();
 

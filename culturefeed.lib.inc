@@ -779,14 +779,14 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::createEvent()
    */
-  public static function createEvent(CultureFeed_Cdb_Event $event) {
+  public static function createEvent(CultureFeed_Cdb_Item_Event $event) {
     return self::getLoggedInUserInstance()->createEvent($event);
   }
 
   /**
    * @see CultureFeed_EntryApi::updateEvent()
    */
-  public static function updateEvent(CultureFeed_Cdb_Event $event) {
+  public static function updateEvent(CultureFeed_Cdb_Item_Event $event) {
     self::getLoggedInUserInstance()->updateEvent($event);
   }
 
@@ -800,14 +800,14 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::addTagToEvent()
    */
-  public static function addTagToEvent(CultureFeed_Cdb_Event $event, $keywords) {
+  public static function addTagToEvent(CultureFeed_Cdb_Item_Event $event, $keywords) {
     self::getLoggedInUserInstance()->addTagToEvent($event, $keywords);
   }
 
   /**
    * @see CultureFeed_EntryApi::removeTagFromEvent()
    */
-  public static function removeTagFromEvent(CultureFeed_Cdb_Event $event, $keyword) {
+  public static function removeTagFromEvent(CultureFeed_Cdb_Item_Event $event, $keyword) {
     self::getLoggedInUserInstance()->removeTagFromEvent($event, $keyword);
   }
 

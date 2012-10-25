@@ -38,6 +38,12 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   const CODE_KEYWORD_DELETED = 'KeywordWithdrawn';
 
   /**
+   * Status code when the keyword can only be used by admins.
+   * @var string
+   */
+  const CODE_KEYWORD_PRIVATE = 'PrivateKeyword';
+
+  /**
    * Constructor for a new CultureFeed_EntryApi instance.
    *
    * @param CultureFeed_OAuthClient $oauth_client
@@ -82,9 +88,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   The id from the newly created event.
    *
    */
-  public function createEvent(CultureFeed_Cdb_Event $event) {
+  public function createEvent(CultureFeed_Cdb_Item_Event $event) {
 
-    $cdb = new CultureFeed_Cdb();
+    $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem('events', $event);
     $cdb_xml = $cdb->getXml();
 
@@ -101,9 +107,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    * @param CultureFeed_Cdb_Event $event
    *   The event to update.
    */
-  public function updateEvent(CultureFeed_Cdb_Event $event) {
+  public function updateEvent(CultureFeed_Cdb_Item_Event $event) {
 
-    $cdb = new CultureFeed_Cdb();
+    $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem('events', $event);
     $cdb_xml = $cdb->getXml();
 

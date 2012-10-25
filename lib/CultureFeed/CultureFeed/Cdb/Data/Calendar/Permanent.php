@@ -76,10 +76,14 @@ class CultureFeed_Cdb_Data_Calendar_Permanent extends CultureFeed_Cdb_Data_Calen
   }
 
     /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Calendar_Permanent
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
+
+    if (!isset($xmlElement->permanentopeningtimes->permanent)) {
+      throw new CultureFeed_ParseException("Permanent data is missing for permanent opening times");
+    }
 
     $permanentXml = $xmlElement->permanentopeningtimes->permanent;
     $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();

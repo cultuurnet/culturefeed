@@ -175,3 +175,23 @@ function entry_api_event_load($id) {
 function entry_api_ui_manage_tags_access() {
   return user_access('manage lifestyle profile tags') || user_access('manage object tags');
 }
+
+function entry_api_ui_timestamp_add_more_submit($form, &$form_state) {
+
+  $button = $form_state['triggering_element'];
+
+  // Go one level up in the form, to the widgets container.
+  $element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
+
+  $form_state['#timestamps_needed'] = count(element_children($form['timestamps'])) + 1;
+
+  $form_state['rebuild'] = TRUE;
+
+}
+
+/**
+ * Ajax form submit: Add a new timestamp row.
+ */
+function entry_api_ui_timestamp_add_more_js($form, $form_state) {
+  return $form['timestamps'];
+}

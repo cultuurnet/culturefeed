@@ -151,14 +151,21 @@ class CultureFeed_Cdb_Data_Calendar_Timestamp implements CultureFeed_Cdb_IElemen
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Calendar_Timestamp
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
+
+    if (empty($xmlElement->date)) {
+      throw new CultureFeed_ParseException("Date is missing for timestamp");
+    }
 
     $attributes = $xmlElement->attributes();
     $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp((string)$xmlElement->date);
-    $timestamp->setOpenType($attributes['opentype']);
+
+    if (isset($attributes['opentype'])) {
+      $timestamp->setOpenType($attributes['opentype']);
+    }
 
     if (!empty($xmlElement->timestart)) {
       $timestamp->setStartTime((string)$xmlElement->timestart);

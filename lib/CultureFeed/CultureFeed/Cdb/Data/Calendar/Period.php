@@ -43,12 +43,40 @@ class CultureFeed_Cdb_Data_Calendar_Period implements CultureFeed_Cdb_IElement {
   }
 
   /**
+   * Get the start date for this period.
+   */
+  public function getDateFrom() {
+    return $this->dateFrom;
+  }
+
+  /**
+   * Get the end date for this period.
+   */
+  public function getDateTo() {
+    return $this->dateTo;
+  }
+
+  /**
+   * Get the exceptions for this period.
+   */
+  public function getExceptions() {
+    return $this->exceptions;
+  }
+
+  /**
+   * Get the weekscheme for this period.
+   */
+  public function getWeekScheme() {
+    return $this->weekScheme;
+  }
+
+  /**
    * Set the start date for this period.
    * @param string $dateFrom
    *   Start date to set.
    */
-  public function setdateFrom($dateFrom) {
-    CultureFeed_Cdb_Calendar::validateDate($dateFrom);
+  public function setDateFrom($dateFrom) {
+    CultureFeed_Cdb_Data_Calendar::validateDate($dateFrom);
     $this->dateFrom = $dateFrom;
   }
 
@@ -57,8 +85,8 @@ class CultureFeed_Cdb_Data_Calendar_Period implements CultureFeed_Cdb_IElement {
    * @param string $dateTo
    *   End date to set.
    */
-  public function setdateTo($dateTo) {
-    CultureFeed_Cdb_Calendar::validateDate($dateTo);
+  public function setDateTo($dateTo) {
+    CultureFeed_Cdb_Data_Calendar::validateDate($dateTo);
     $this->dateTo = $dateTo;
   }
 
@@ -104,10 +132,18 @@ class CultureFeed_Cdb_Data_Calendar_Period implements CultureFeed_Cdb_IElement {
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
-   * @return CultureFeed_Cdb_Data_Period
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
+   * @return CultureFeed_Cdb_Data_Calendar_Period
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
+
+    if (empty($xmlElement->datefrom)) {
+      throw new CultureFeed_ParseException("Date from is missing for period");
+    }
+
+    if (empty($xmlElement->dateto)) {
+      throw new CultureFeed_ParseException("Date to is missing for period");
+    }
 
     $period = new CultureFeed_Cdb_Data_Calendar_Period((string)$xmlElement->datefrom, (string)$xmlElement->dateto);
 
