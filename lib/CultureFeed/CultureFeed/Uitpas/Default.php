@@ -743,6 +743,11 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
   }
 
+  public function getPassholderForTicketSale( CultureFeed_Uitpas_Event_TicketSale $ts, $consumer_key_counter = NULL ) {
+    $user_id = $ts->userId;
+    return $this->getPassholderByUser($user_id, $consumer_key_counter);
+  }
+
   /**
    * Search for checkins
    *
@@ -862,6 +867,30 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     return new CultureFeed_ResultSet($total, $pos);
+  }
+
+  public function searchTicketSales(CultureFeed_Uitpas_Event_Query_SearchTicketSalesOptions $query) {
+    $data = $query->toPostData();
+
+
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchTicketsales', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $total = $xml->xpath_int('/response/total');
+    $objects = $xml->xpath('/response/ticketSales/ticketSale');
+    $ticket_sales = array();
+
+    foreach ($objects as $object) {
+      $ticket_sales[] = CultureFeed_Uitpas_Event_TicketSale::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $ticket_sales);
   }
 
   /**
