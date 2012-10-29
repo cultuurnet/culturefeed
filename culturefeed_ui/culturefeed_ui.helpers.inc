@@ -6,7 +6,7 @@
 function culturefeed_ui_set_canonical_and_noindex() {
   $canonical = FALSE;
   $noindex = FALSE;
-  
+
   if (arg(0) == 'culturefeed') {
     if (arg(1) == 'activities' && arg(2) == 'recent') {
       $noindex = TRUE;
@@ -52,7 +52,7 @@ function culturefeed_ui_block_ajaxload($config) {
       ),
     ),
   );
-  
+
   $block['content'] = ajax_pre_render_element($block['content']);
 
   return $block;
@@ -68,9 +68,10 @@ function culturefeed_ui_is_culturefeed_profile_page() {
   return FALSE;
 }
 
+
 function culturefeed_ui_online_account($online_account_type, $online_account = NULL) {
   $delete_link = '';
-  
+
   if ($online_account) {
     $delete_link = array(
       '#type' => 'link',
@@ -110,7 +111,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     'delete_link'      => $delete_link,
     'connect_link'     => $connect_link,
   );
-  
+
   return theme('culturefeed_ui_online_account', $vars);
 }
 
@@ -144,7 +145,7 @@ function culturefeed_ui_activity_context($cnapi_types = array(), $node_types = a
       );
     }
   }
-  
+
   return FALSE;
 }
 
@@ -220,6 +221,7 @@ function culturefeed_ui_recommendation_list_items($recommendations, $theme_funct
   }
 
   return $items;
+
 }
 
 function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
@@ -228,12 +230,12 @@ function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
 
   try {
     DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
-    
+
     return TRUE;
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    
+
     return FALSE;
   }
 }
@@ -256,7 +258,7 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
 
   try {
     DrupalCultureFeed::createActivity($activity);
-    
+
     return TRUE;
   }
   catch (Exception $e) {
@@ -330,7 +332,7 @@ function _culturefeed_ui_facebook_privacy_toggle() {
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . 'Post mijn acties door naar facebook <div class="tooltip">?</div><div class="tooltip-text">Lorem ipsum</div>';
+      $publish_link = drupal_render($publish_link) . 'Publiceer mijn acties op Facebook <div class="tooltip">?</div><div class="tooltip-text">Hiermee zullen de acties die je op UiTinVlaanderen.be doet (vind ik leuk, ga ik naartoe,...), automatisch op je Facebook Timeline verschijnen.</div>';
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }

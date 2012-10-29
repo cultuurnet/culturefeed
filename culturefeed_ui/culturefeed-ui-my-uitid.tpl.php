@@ -1,7 +1,7 @@
 <?php if ($picture || $name || $gender || $dob || $bio || $city): ?>
 
 <div class="uitid-contextual-links-wrapper">
-  <a href="#" class="uitid-contextual-links-trigger"></a>
+  <a href="" class="uitid-contextual-links-trigger"></a>
   <?php print $contextual_links; ?>
 </div>
 
@@ -44,17 +44,17 @@
 <div class="aantal-acties">
   Aantal acties
   <div class="tooltip">?</div>
-  <div class="tooltip-text">Lorem ipsum</div>
+  <div class="tooltip-text">Hoe meer je laat weten of je een activiteit leuk vindt of naartoe gaat, hoe beter je persoonlijke tips zullen worden.</div>
 </div>
 <?php if ($like): ?>
   <div class="total-likes">
-    <span><?php print $like; ?> X</span> vind ik leuk
+    <span><?php print $like; ?> x</span> vind ik leuk
   </div>
 <?php endif; ?>
 
 <?php if ($goto): ?>
   <div class="total-goto">
-    <span><?php print $goto; ?> X</span> ga ik naar toe
+    <span><?php print $goto; ?> x</span> ga ik naar toe
   </div>
 <?php endif; ?>
 <?php if ($recommendations_link): ?>
