@@ -178,8 +178,8 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
    */
   public function setAgeFrom($age) {
 
-    if (!is_int($age)) {
-      throw new UnexpectedValueException('Invalid age: ' . $value);
+    if (!is_numeric($age)) {
+      throw new UnexpectedValueException('Invalid age: ' . $age);
     }
 
     $this->ageFrom = $age;
@@ -263,6 +263,11 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
     $dom = $element->ownerDocument;
 
     $eventElement = $dom->createElement('event');
+
+    if ($this->ageFrom) {
+      $eventElement->appendChild($dom->createElement('agefrom', $this->ageFrom));
+    }
+
     if ($this->externalId) {
       $eventElement->setAttribute('externalid', $this->externalId);
     }
@@ -332,6 +337,10 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
     // Set ID.
     if (isset($event_attributes['cdbid'])) {
       $event->setExternalId((string)$event_attributes['cdbid']);
+    }
+
+    if (!empty($xmlEvent->agefrom)) {
+      $event->setAgeFrom((int)$xmlEvent->agefrom);
     }
 
     // Set calendar information.

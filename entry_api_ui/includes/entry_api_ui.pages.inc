@@ -28,6 +28,8 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     'saturday' => 'zat',
     'sunday' => 'zon',
   );
+  $age = '';
+  $age_category = 'everyone';
 
   // Load all default values.
   if ($event) {
@@ -86,6 +88,23 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       }
       $form_state['#opening_times_needed'] = $opening_times_needed;
     }
+
+    // Default age
+    $age = $event->getAgeFrom();
+    if ($age) {
+
+      if ($age < 12) {
+        $age_category = '1-12';
+      }
+      elseif ($age < 18) {
+        $age_category = '12-18';
+      }
+      else {
+        $age = '18+';
+      }
+
+    }
+
 
   }
 
@@ -346,6 +365,45 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => ($event) ? $event->getDetails()->current()->getShortDescription() : NULL
   );
 
+  $form['age_category'] = array(
+    '#type' => 'select',
+    '#title' => 'Leeftijd',
+    '#options' => array(
+      'everyone' => 'Voor iedereen',
+      '1-12' => 'Voor kinderen (tussen 1 en 12 jaar)',
+      '12-18' => 'Voor jongeren (tussen 12 en 18 jaar)',
+      '18+' => 'Voor volwassenen (18+)',
+    ),
+    '#default_value' => $age_category,
+  );
+
+  $form['age'] = array(
+    '#title' => 'Vanaf',
+    '#type' => 'textfield',
+    '#states' => array(
+      'invisible' => array(
+        ':input[name=age_category]' => array(
+          array('value' => 'everyone'),
+        ),
+      ),
+    ),
+    '#default_value' => $age,
+  );
+
+  $form['fly'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name=age_category]' => array(
+          array('value' => '1-12'),
+        ),
+      ),
+    ),
+  );
+  $form['fly']['value'] = array(
+    '#markup' => 'Activiteiten voor kinderen krijgen automatisch een vlieg',
+  );
+
   $form['publication_date'] = array(
     '#type' => 'textfield',
     '#title' => 'Publicatiedatum',
@@ -530,6 +588,11 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     }
   }
 
+  if ($values['age'] && !is_numeric($values['age'])) {
+    form_set_error('age', 'Gelieve een geldige leeftijd in te voeren');
+    $validation_failed = TRUE;
+  }
+
   // Validate timestamps.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
 
@@ -622,6 +685,9 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location) {
   if ($values['publication_date']) {
     $event->setPublicationDate($values['publication_date']);
   }
+
+  // Age
+  $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
 
   // Timestamps as calendar.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
