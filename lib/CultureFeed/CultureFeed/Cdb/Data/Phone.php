@@ -156,7 +156,7 @@ class CultureFeed_Cdb_Data_Phone implements CultureFeed_Cdb_IElement {
     $is_main = isset($attributes['main']) && $attributes['main'] == 'true';
     $for_reservations = isset($attributes['reservation']) && $attributes['reservation'] == 'true';
 
-    return new CultureFeed_Cdb_Data_Phone((string)$xmlElement, $attributes['type'], $is_main, $for_reservations);
+    return new CultureFeed_Cdb_Data_Phone((string)$xmlElement, (string)$attributes['type'], $is_main, $for_reservations);
 
   }
 

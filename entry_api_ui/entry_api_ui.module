@@ -31,6 +31,20 @@ function entry_api_ui_permission() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function entry_api_ui_theme() {
+
+  return array(
+    'entry_api_ui_opening_times_table' => array(
+      'file' => 'theme/theme.inc',
+      'render element' => 'element',
+    ),
+  );
+
+}
+
+/**
  * Implements hook_menu().
  */
 function entry_api_ui_menu() {
@@ -176,22 +190,51 @@ function entry_api_ui_manage_tags_access() {
   return user_access('manage lifestyle profile tags') || user_access('manage object tags');
 }
 
-function entry_api_ui_timestamp_add_more_submit($form, &$form_state) {
+/**
+ * Submit callback for the 'add more' buttons.
+ */
+function entry_api_ui_add_more_submit($form, &$form_state) {
 
-  $button = $form_state['triggering_element'];
+  switch ($form_state['input']['_triggering_element_name']) {
 
-  // Go one level up in the form, to the widgets container.
-  $element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
+    case 'timestamps_add_more':
+      $form_state['#timestamps_needed'] = count(element_children($form['timestamps'])) + 1;
+    break;
 
-  $form_state['#timestamps_needed'] = count(element_children($form['timestamps'])) + 1;
+    case 'contacts_add_more':
+      $form_state['#contacts_needed'] = count(element_children($form['contacts'])) + 1;
+    break;
+
+    case 'opening_times_add_more':
+      $form_state['#opening_times_needed'] = count(element_children($form['period_or_permanent']['opening_times']['monday'])) + 1;
+    break;
+
+  }
 
   $form_state['rebuild'] = TRUE;
 
 }
 
 /**
- * Ajax form submit: Add a new timestamp row.
+ * Ajax form callback: Add a new row.
+ * Return the element that was set in the submit.
  */
-function entry_api_ui_timestamp_add_more_js($form, $form_state) {
-  return $form['timestamps'];
+function entry_api_ui_add_more_js($form, $form_state) {
+
+  switch ($form_state['input']['_triggering_element_name']) {
+
+    case 'timestamps_add_more':
+      return $form['timestamps'];
+    break;
+
+    case 'contacts_add_more':
+      return $form['contacts'];
+    break;
+
+    case 'opening_times_add_more':
+      return $form['period_or_permanent']['opening_times'];
+    break;
+
+  }
+
 }

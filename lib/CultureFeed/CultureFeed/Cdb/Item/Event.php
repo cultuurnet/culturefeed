@@ -21,6 +21,13 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
   protected $publicationDate;
 
   /**
+   * Publication hour for the event.
+   *
+   * @var string
+   */
+  protected  $publicationTime = '00:00:00';
+
+  /**
    * Minimum age for the event.
    * @var int
    */
@@ -77,6 +84,13 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
    */
   public function getPublicationDate() {
     return $this->publicationDate;
+  }
+
+  /**
+   * Get the publication time for this event.
+   */
+  public function getPublicationTime() {
+    return $this->publicationTime;
   }
 
   /**
@@ -144,6 +158,15 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
   public function setPublicationDate($date) {
     CultureFeed_Cdb_Data_Calendar::validateDate($date);
     $this->publicationDate = $date;
+  }
+
+  /**
+   * Set the publication time for this event.
+   * @param string $time
+   */
+  public function setPublicationTime($time) {
+    CultureFeed_Cdb_Data_Calendar::validateTime($time);
+    $this->publicationTime = $time;
   }
 
   /**
@@ -243,6 +266,10 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
     if ($this->externalId) {
       $eventElement->setAttribute('externalid', $this->externalId);
     }
+
+    /*if ($this->publicationDate) {
+      $eventElement->setAttribute('availablefrom', $this->publicationDate . $this->publicationTime);
+    }*/
 
     if ($this->calendar) {
       $this->calendar->appendToDOM($eventElement);

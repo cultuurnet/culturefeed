@@ -34,13 +34,11 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
     $form['#event'] = $event;
 
-    $publication_date = $event->getPublicationDate();
-
     // Default mails, phones, urls.
-    if (($info = $event->getContactInfo())) {
+    if ($info = $event->getContactInfo()) {
       $contact_info = $info->getMails();
       $contact_info = array_merge($contact_info, $info->getPhones());
-      $contact_info += array_merge($contact_info, $info->getUrls());
+      $contact_info = array_merge($contact_info, $info->getUrls());
     }
 
     // Default categories.
@@ -73,6 +71,20 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
       $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
       $timestamps = $calendar;
+    }
+
+    // Set the total opening times needed. This need to be equal for every day.
+    if (!isset($form_state['#opening_times_needed'])) {
+      $opening_times_needed = 1;
+      foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
+        if ($weekscheme && $data = $weekscheme->getDay($day)) {
+          $opening_times = $data->getOpeningTimes();
+          if (count($opening_times) > $opening_times_needed) {
+            $opening_times_needed = count($opening_times);
+          }
+        }
+      }
+      $form_state['#opening_times_needed'] = $opening_times_needed;
     }
 
   }
@@ -170,12 +182,12 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#value' => 'nog een dag toevoegen',
     '#attributes' => array('class' => array('timestamp-add-more-submit')),
     '#ajax' => array(
-      'callback' => 'entry_api_ui_timestamp_add_more_js',
+      'callback' => 'entry_api_ui_add_more_js',
       'wrapper' => 'timestamp-ajax-wrapper',
       'effect' => 'fade',
     ),
     '#limit_validation_errors' => array(array('timestamps')),
-    '#submit' => array('entry_api_ui_timestamp_add_more_submit'),
+    '#submit' => array('entry_api_ui_add_more_submit'),
     '#states' => array(
       'visible' => array(
         ':input[name=when]' => array(
@@ -206,6 +218,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       'visible' => array(':input[name=when]' => array('value' => 'period')),
     ),
     '#default_value' => $default_start,
+    '#description' => 'Formaat: ' . date('Y-m-d'),
   );
 
   $form['period_or_permanent']['end_date'] = array(
@@ -215,6 +228,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       'visible' => array(':input[name=when]' => array('value' => 'period')),
     ),
     '#default_value' => $default_end,
+    '#description' => 'Formaat: ' . date('Y-m-d'),
   );
 
   $form['period_or_permanent']['all_day'] = array(
@@ -229,8 +243,12 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#states' => array(
       'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
     ),
+    '#prefix' => '<div id="opening-times-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#theme' => 'entry_api_ui_opening_times_table',
   );
 
+  // Add opening times information for every day.
   foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
 
     $form['period_or_permanent']['opening_times'][$day] = array(
@@ -244,27 +262,83 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
       $opening_times = $data->getOpeningTimes();
     }
 
+    $opening_count = 0;
     if ($opening_times) {
       foreach ($opening_times as $i => $opening_time) {
         entry_api_ui_attach_opening_time_elements($form, $day, $i, $opening_time);
+        $opening_count++;
       }
     }
     else {
       entry_api_ui_attach_opening_time_elements($form, $day, 0);
+      $opening_count++;
+    }
+
+    // Add more button was clicked. Check how many extra rows that need to be added.
+    if (isset($form_state['#opening_times_needed'])) {
+      for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
+        entry_api_ui_attach_opening_time_elements($form, $day, $opening_count);
+      }
     }
 
   }
 
-  $form['contacts'] = array('#tree' => TRUE, '#type' => 'container',);
+  $form['period_or_permanent']['add_more_opening_times'] = array(
+    '#type' => 'submit',
+    '#name' => 'opening_times_add_more',
+    '#value' => 'nog een openingsuur toevoegen',
+    '#attributes' => array('class' => array('opening-times-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'entry_api_ui_add_more_js',
+      'wrapper' => 'opening-times-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('period_or_permanent')),
+    '#submit' => array('entry_api_ui_add_more_submit'),
+    '#states' => array(
+      'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
+    ),
+  );
+
+  $form['contacts'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="contacts-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $contacts_count = 0;
   // Add contact type selections.
   if ($contact_info) {
     foreach ($contact_info as $i => $info) {
       entry_api_ui_attach_contact_info_elements($form, $i, $info);
+      $contacts_count++;
     }
   }
   else {
     entry_api_ui_attach_contact_info_elements($form, 0);
+    $contacts_count++;
   }
+
+  // Add more button was clicked. Check how many extra rows that need to be added.
+  if (isset($form_state['#contacts_needed'])) {
+    for (; $contacts_count < $form_state['#contacts_needed']; $contacts_count++) {
+      entry_api_ui_attach_contact_info_elements($form, $contacts_count);
+    }
+  }
+
+  $form['add_more_contacts'] = array(
+    '#type' => 'submit',
+    '#name' => 'contacts_add_more',
+    '#value' => 'nog een website, tel, of email toevoegen',
+    '#attributes' => array('class' => array('contacts-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'entry_api_ui_add_more_js',
+      'wrapper' => 'contacts-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('contacts')),
+    '#submit' => array('entry_api_ui_add_more_submit'),
+  );
 
   $form['short_description'] = array(
     '#type' => 'textarea',
@@ -283,6 +357,8 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'submit',
     '#value' => 'Opslaan',
   );
+
+  $form['#attached']['css'][] = drupal_get_path('module', 'entry_api_ui') . '/css/entry_api_ui.css';
 
   return $form;
 
@@ -307,19 +383,19 @@ function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
   if ($info) {
     switch (get_class($info)) {
 
-      case 'CultureFeed_Cdb_Mail':
+      case 'CultureFeed_Cdb_Data_Mail':
         $text = $info->getMailAddress();
         $type = 'email';
         $reservation = $info->isForReservations();
       break;
 
-      case 'CultureFeed_Cdb_Phone':
+      case 'CultureFeed_Cdb_Data_Phone':
         $text = $info->getNumber();
         $type = 'phone';
         $reservation = $info->isForReservations();
       break;
 
-      case 'CultureFeed_Cdb_Url':
+      case 'CultureFeed_Cdb_Data_Url':
         $text = $info->getUrl();
         $type = 'url';
         $reservation = $info->isForReservations();
@@ -363,11 +439,23 @@ function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
  */
 function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
 
+  $states = array();
+  if ($i > 0) {
+    $states =  array(
+      'visible' => array(
+        ':input[name=when]' => array(
+          array('value' => 'multiple_days'),
+        ),
+      ),
+    );
+  }
+
   $form['timestamps'][$i]['start_date'] = array(
     '#type' => 'textfield',
     '#title' => 'Startdatum',
     '#default_value' => ($timestamp) ? $timestamp->getDate() : '',
     '#description' => 'Formaat: ' . date('Y-m-d'),
+    '#states' => $states,
   );
 
   $form['timestamps'][$i]['start_time'] = array(
@@ -375,6 +463,7 @@ function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
     '#title' => 'van',
     '#default_value' => ($timestamp) ? $timestamp->getStartTime() : '',
     '#description' => 'Formaat: 12:00:00',
+    '#states' => $states,
   );
 
   $form['timestamps'][$i]['end_time'] = array(
@@ -382,12 +471,14 @@ function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
     '#title' => 'tot',
     '#default_value' => ($timestamp) ? $timestamp->getEndTime() : '',
     '#description' => 'Formaat: 12:00:00',
+    '#states' => $states,
   );
 
   $form['timestamps'][$i]['no_end_time'] = array(
     '#type' => 'checkbox',
     '#title' => 'Geen einduur',
     '#default_value' => ($timestamp) ? ($timestamp->getEndTime() == '') : FALSE,
+    '#states' => $states,
   );
 
 }
@@ -408,14 +499,14 @@ function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_ti
 
   $form['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
     '#type' => 'textfield',
-    '#title' => 'van',
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
+    '#description' => 'Formaat: 12:00:00',
   );
 
   $form['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
-    '#title' => 'tot',
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
+    '#description' => 'Formaat: 12:00:00',
   );
 
 }
@@ -425,6 +516,7 @@ function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_ti
  */
 function entry_api_ui_event_form_validate($form, &$form_state) {
 
+  $validation_failed = FALSE;
   $values = $form_state['values'];
 
   // Validate publication date.
@@ -434,13 +526,26 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     }
     catch (Exception $e) {
       form_set_error('publication_date', 'Gelieve een geldige publicatie datum in te geven');
+      $validation_failed = TRUE;
     }
   }
 
   // Validate timestamps.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
+
+    // Only one timestamp saved for one day.
+    if ($values['when'] == 'one_day') {
+      $form_state['values']['timestamps'] = array($values['timestamps'][0]);
+      $values['timestamps'] = $form_state['values']['timestamps'];
+    }
+
     foreach ($values['timestamps'] as $key => $timestamp) {
       try {
+
+        // Empty start dates are ignored.
+        if (empty($timestamp['start_date'])) {
+          continue;
+        }
 
         CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['start_date']);
 
@@ -453,6 +558,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
       }
       catch (UnexpectedValueException $e) {
         form_set_error('timestamps][' . $key, 'Gelieve een geldige tijd en datum in te geven.');
+        $validation_failed = TRUE;
       }
     }
   }
@@ -471,6 +577,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
             }
             catch (Exception $e) {
               form_set_error('period_or_permanent][opening_times][' . $day . '][' . $key, 'Gelieve een geldige tijd in te geven.');
+              $validation_failed = TRUE;
             }
           }
 
@@ -486,16 +593,19 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 
   if (!$location) {
     form_set_error('location', 'Gelieve een correcte locatie in te voeren');
+    $validation_failed = TRUE;
   }
 
-  $form_state['#location'] = $location;
+  if (!$validation_failed) {
+    _entryapi_ui_event_form_save_event($form, $form_state, $location);
+  }
 
 }
 
 /**
- * Submit the object editing form.
+ * Save the event form to the entity api
  */
-function entry_api_ui_event_form_submit($form, &$form_state) {
+function _entryapi_ui_event_form_save_event($form, &$form_state, $location) {
 
   $values = $form_state['values'];
 
@@ -513,64 +623,14 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
     $event->setPublicationDate($values['publication_date']);
   }
 
-  // Calendar
-
   // Timestamps as calendar.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
-    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
-
-    foreach ($values['timestamps'] as $timestamp) {
-      $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['start_date']);
-      if (!empty($timestamp['end_time'])) {
-        $timestamp_object->setEndTime($timestamp['end_time']);
-      }
-      if (!empty($timestamp['start_time'])) {
-        $timestamp_object->setStartTime($timestamp['start_time']);
-      }
-      $calendar->add($timestamp_object);
-    }
-
-    $event->setCalendar($calendar);
+    _entry_api_ui_event_save_timestamps($event, $values);
   }
 
-  // Period or permanent
-  if ($values['when'] == 'period' || $values['when'] == 'permanent') {
-
-    // Construct the weekscheme.
-    if (!$values['period_or_permanent']['all_day']) {
-
-      $weekscheme = new CultureFeed_Cdb_Data_Calendar_Weekscheme();
-      foreach ($values['period_or_permanent']['opening_times'] as $day => $opening_times) {
-
-        $opening_info = new CultureFeed_Cdb_Data_Calendar_SchemeDay($day);
-        $open_type = CultureFeed_Cdb_Data_Calendar_SchemeDay::SCHEMEDAY_OPEN_TYPE_CLOSED;
-        foreach ($opening_times as $opening_time) {
-          if (!empty($opening_time['open_from']) && !empty($opening_time['open_till'])) {
-            $open_type = CultureFeed_Cdb_Data_Calendar_SchemeDay::SCHEMEDAY_OPEN_TYPE_OPEN;
-            $opening_info->addOpeningTime(new CultureFeed_Cdb_Data_Calendar_OpeningTime($opening_time['open_from'], $opening_time['open_till']));
-          }
-        }
-
-        $opening_info->setOpenType($open_type);
-        $weekscheme->setDay($day, $opening_info);
-
-      }
-
-      if ($values['when'] == 'period') {
-        $calendar = new CultureFeed_Cdb_Data_Calendar_PeriodList();
-        $period = new CultureFeed_Cdb_Data_Calendar_Period($values['period_or_permanent']['start_date'], $values['period_or_permanent']['end_date']);
-        $period->setWeekScheme($weekscheme);
-        $calendar->add($period);
-      }
-      else {
-        $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
-        $calendar->setWeekScheme($weekscheme);
-      }
-
-      $event->setCalendar($calendar);
-
-    }
-
+  // Period or permanent as calendar.
+  elseif ($values['when'] == 'period' || $values['when'] == 'permanent') {
+    _entry_api_ui_event_save_weekscheme($event, $values);
   }
 
   // Categories.
@@ -592,7 +652,9 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
   // Event details.
   $detail = new Culturefeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  $detail->setShortDescription($values['short_description']);
+  if (!empty($values['short_description'])) {
+    $detail->setShortDescription($values['short_description']);
+  }
   $detail->setLanguage('nl');
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
@@ -601,11 +663,11 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
 
   // Location / Address.
   $location_label = $values['location'];
+  $location_cdbid = $location['cdbid'];
   $country = 'BE';
-  $location = $form_state['#location'];
 
   // Actor is at the moment done, the old way.
-  $actor = cnapi_get_actor($form_state['#location']['cdbid']);
+  $actor = cnapi_get_actor($location['cdbid']);
   if ($actor) {
     $location = $actor['contactinfo']['address'];
     $country = $location['country'];
@@ -624,7 +686,7 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
 
   $cdbLocation = new CultureFeed_Cdb_Data_Location($address);
   $cdbLocation->setLabel($location_label);
-  $cdbLocation->setCdbid($form_state['#location']['cdbid']);
+  $cdbLocation->setCdbid($location_cdbid);
   $event->setLocation($cdbLocation);
 
   // Contact info.
@@ -645,7 +707,7 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
         break;
 
         case 'phone':
-          $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], $type, $isMain, $forReservations));
+          $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
         break;
 
       }
@@ -657,21 +719,113 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
   $event->setContactInfo($contact_object);
 
   try {
+
     if ($update) {
       DrupalCultureFeed_EntryApi::updateEvent($event);
-      drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
-      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+      $form_state['#event_id'] = $event->getExternalId();
     }
     else {
-      $id = DrupalCultureFeed_EntryApi::createEvent($event);
-      drupal_set_message('id van event:' . $id);
-      drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
-        op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+      $form_state['#event_id'] = DrupalCultureFeed_EntryApi::createEvent($event);
     }
+
+    $form_state['#update_event'] = $update;
+
   }
   catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
-    drupal_set_message('Er ging iets fout tijdens het bewaren.');
+    form_set_error('', 'Er ging iets fout tijdens het bewaren.');
+  }
+
+}
+
+/**
+ * Save helper function that creates calendar object for timestamps.
+ */
+function _entry_api_ui_event_save_timestamps(&$event, $values) {
+
+  $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
+
+  foreach ($values['timestamps'] as $timestamp) {
+
+    // Empty start dates are ignored.
+    if (empty($timestamp['start_date'])) {
+      continue;
+    }
+
+    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['start_date']);
+    if (!empty($timestamp['end_time'])) {
+      $timestamp_object->setEndTime($timestamp['end_time']);
+    }
+    if (!empty($timestamp['start_time'])) {
+      $timestamp_object->setStartTime($timestamp['start_time']);
+    }
+    $calendar->add($timestamp_object);
+  }
+
+  $event->setCalendar($calendar);
+
+}
+
+/**
+ * Save helper function that creates calendar object for weekschemes.
+ */
+function _entry_api_ui_event_save_weekscheme(&$event, $values) {
+
+  $weekscheme = NULL;
+  // Construct the weekscheme.
+  if (!$values['period_or_permanent']['all_day']) {
+
+    $weekscheme = new CultureFeed_Cdb_Data_Calendar_Weekscheme();
+    foreach ($values['period_or_permanent']['opening_times'] as $day => $opening_times) {
+
+      $opening_info = new CultureFeed_Cdb_Data_Calendar_SchemeDay($day);
+      $open_type = CultureFeed_Cdb_Data_Calendar_SchemeDay::SCHEMEDAY_OPEN_TYPE_CLOSED;
+      foreach ($opening_times as $opening_time) {
+        if (!empty($opening_time['open_from']) && !empty($opening_time['open_till'])) {
+          $open_type = CultureFeed_Cdb_Data_Calendar_SchemeDay::SCHEMEDAY_OPEN_TYPE_OPEN;
+          $opening_info->addOpeningTime(new CultureFeed_Cdb_Data_Calendar_OpeningTime($opening_time['open_from'], $opening_time['open_till']));
+        }
+      }
+
+      $opening_info->setOpenType($open_type);
+      $weekscheme->setDay($day, $opening_info);
+
+    }
+
+  }
+
+  if ($values['when'] == 'period') {
+    $calendar = new CultureFeed_Cdb_Data_Calendar_PeriodList();
+    $period = new CultureFeed_Cdb_Data_Calendar_Period($values['period_or_permanent']['start_date'], $values['period_or_permanent']['end_date']);
+    if ($weekscheme) {
+      $period->setWeekScheme($weekscheme);
+    }
+    $calendar->add($period);
+  }
+  else {
+    $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
+    if ($weekscheme) {
+      $calendar->setWeekScheme($weekscheme);
+    }
+  }
+
+  $event->setCalendar($calendar);
+
+}
+
+/**
+ * Submit the event form: redirect form and show message.
+ */
+function entry_api_ui_event_form_submit($form, &$form_state) {
+
+  $form_state['redirect'] = 'entryapi/event/' . $form_state['#event_id'] . '/edit';
+  if ($form_state['#update_event']) {
+    drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
+    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+  }
+  else {
+    drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
+      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
   }
 
 }

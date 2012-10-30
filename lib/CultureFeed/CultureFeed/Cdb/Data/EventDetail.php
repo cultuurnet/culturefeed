@@ -15,7 +15,11 @@ class CultureFeed_Cdb_Data_EventDetail extends CultureFeed_Cdb_Data_Detail imple
 
     $detailElement = $dom->createElement('eventdetail');
     $detailElement->setAttribute('lang', $this->language);
-    $detailElement->appendChild($dom->createElement('shortdescription', htmlentities($this->shortDescription)));
+
+    if (!empty($this->shortDescription)) {
+      $detailElement->appendChild($dom->createElement('shortdescription', htmlentities($this->shortDescription)));
+    }
+
     $detailElement->appendChild($dom->createElement('title', htmlentities($this->title)));
 
     $element->appendChild($detailElement);
