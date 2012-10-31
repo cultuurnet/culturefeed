@@ -21,6 +21,13 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
   protected $publicationDate;
 
   /**
+   * Publication hour for the event.
+   *
+   * @var string
+   */
+  protected  $publicationTime = '00:00:00';
+
+  /**
    * Minimum age for the event.
    * @var int
    */
@@ -77,6 +84,13 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
    */
   public function getPublicationDate() {
     return $this->publicationDate;
+  }
+
+  /**
+   * Get the publication time for this event.
+   */
+  public function getPublicationTime() {
+    return $this->publicationTime;
   }
 
   /**
@@ -142,8 +156,17 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
    * @param string $date
    */
   public function setPublicationDate($date) {
-    CultureFeed_Cdb_Calendar::validateDate($date);
+    CultureFeed_Cdb_Data_Calendar::validateDate($date);
     $this->publicationDate = $date;
+  }
+
+  /**
+   * Set the publication time for this event.
+   * @param string $time
+   */
+  public function setPublicationTime($time) {
+    CultureFeed_Cdb_Data_Calendar::validateTime($time);
+    $this->publicationTime = $time;
   }
 
   /**
@@ -155,8 +178,8 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
    */
   public function setAgeFrom($age) {
 
-    if (!is_int($age)) {
-      throw new UnexpectedValueException('Invalid age: ' . $value);
+    if (!is_numeric($age)) {
+      throw new UnexpectedValueException('Invalid age: ' . $age);
     }
 
     $this->ageFrom = $age;
@@ -240,9 +263,18 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
     $dom = $element->ownerDocument;
 
     $eventElement = $dom->createElement('event');
+
+    if ($this->ageFrom) {
+      $eventElement->appendChild($dom->createElement('agefrom', $this->ageFrom));
+    }
+
     if ($this->externalId) {
       $eventElement->setAttribute('externalid', $this->externalId);
     }
+
+    /*if ($this->publicationDate) {
+      $eventElement->setAttribute('availablefrom', $this->publicationDate . $this->publicationTime);
+    }*/
 
     if ($this->calendar) {
       $this->calendar->appendToDOM($eventElement);
@@ -269,21 +301,47 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Event
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
     if (empty($xmlElement->events->event)) {
-      throw new Exception('No event was found in the xml');
+      throw new CultureFeed_ParseException('No event was found in the xml');
     }
 
     $xmlEvent = $xmlElement->events->event;
+    if (empty($xmlEvent->calendar)) {
+      throw new CultureFeed_ParseException('Calendar missing for event element');
+    }
+
+    if (empty($xmlEvent->categories)) {
+      throw new CultureFeed_ParseException('Categories missing for event element');
+    }
+
+    if (empty($xmlEvent->contactinfo)) {
+      throw new CultureFeed_ParseException('Contact info missing for event element');
+    }
+
+    if (empty($xmlEvent->eventdetails)) {
+      throw new CultureFeed_ParseException('Eventdetails missing for event element');
+    }
+
+    if (empty($xmlEvent->location)) {
+      throw new CultureFeed_ParseException('Location missing for event element');
+    }
+
     $event_attributes = $xmlEvent->attributes();
     $event = new CultureFeed_Cdb_Item_Event();
 
     // Set ID.
-    $event->setExternalId((string)$event_attributes['cdbid']);
+    if (isset($event_attributes['cdbid'])) {
+      $event->setExternalId((string)$event_attributes['cdbid']);
+    }
+
+    if (!empty($xmlEvent->agefrom)) {
+      $event->setAgeFrom((int)$xmlEvent->agefrom);
+    }
 
     // Set calendar information.
     $calendar_type = key($xmlEvent->calendar);

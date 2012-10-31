@@ -6,6 +6,28 @@
  */
 class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElement {
 
+  public static $allowedDays = array(
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  );
+
+  /**
+   * Scheme open type: open
+   * @var string
+   */
+  const SCHEMEDAY_OPEN_TYPE_OPEN = 'open';
+
+  /**
+   * Scheme open type: closed
+   * @var string
+   */
+  const SCHEMEDAY_OPEN_TYPE_CLOSED = 'closed';
+
   /**
    * Name of the week day
    * @var string
@@ -19,16 +41,10 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
   protected $openType;
 
   /**
-   * Openingtime: from
-   * @var string
+   * Opening hours for that day.
+   * @var array
    */
-  protected $openFrom;
-
-  /**
-   * Openingtime: till
-   * @var string
-   */
-  protected $openTill;
+  protected $openingTimes = array();
 
   /**
    * Construct the scheme day.
@@ -37,10 +53,12 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
    * @param string $openType
    *   Open type for the day.
    */
-  public function __construct($dayName, $openType) {
+  public function __construct($dayName, $openType = NULL) {
 
-    $this->dayName = $dayName;
-    $this->openType = $openType;
+    $this->setDayName($dayName);
+    if ($openType) {
+      $this->openType = $openType;
+    }
 
   }
 
@@ -59,17 +77,10 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
   }
 
   /**
-   * Get the opening from time.
+   * Get the opening times.
    */
-  public function getOpenFrom() {
-    return $this->openFrom;
-  }
-
-  /**
-   * Get the opening from time.
-   */
-  public function getOpenTill() {
-    return $this->openTill;
+  public function getOpeningTimes() {
+    return $this->openingTimes;
   }
 
   /**
@@ -78,7 +89,13 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
    *   Name of the day to set.
    */
   public function setDayName($dayName) {
+
+    if (!in_array($dayName, self::$allowedDays)) {
+      throw new UnexpectedValueException('Invalid day: ' . $dayName);
+    }
+
     $this->dayName = $dayName;
+
   }
 
   /**
@@ -87,27 +104,31 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
    *   Opening type to set.
    */
   public function setOpenType($type) {
-    $this->type = $type;
+    $this->openType = $type;
   }
 
   /**
-   * Set the opening from time.
-   * @param string $openFrom
-   *   Opening time to set.
+   * Add an opening time.
+   * @param CultureFeed_Cdb_Data_Calendar_OpeningTime $openingTime
+   *   Opening time to add.
    */
-  public function setOpenFrom($openFrom) {
-    CultureFeed_Cdb_Data_Calendar::validateTime($openFrom);
-    $this->openFrom = $openFrom;
+  public function addOpeningTime(CultureFeed_Cdb_Data_Calendar_OpeningTime $openingTime) {
+    $this->openingTimes[] = $openingTime;
   }
 
   /**
-   * Set the open till time.
-   * @param string $openTill
-   *   Open till time to set.
+   * Remove an opening time.
+   * @param int $i
+   *   Index to remove.
    */
-  public function setOpenTill($openTill) {
-    CultureFeed_Cdb_Data_Calendar::validateTime($openTill);
-    $this->openTill = $openTill;
+  public function removeOpeningTime($i) {
+
+    if (!isset($this->openingTimes[$i])) {
+      throw new Exception('Trying to remove a non-existing opening time.');
+    }
+
+    unset($this->openingTimes[$i]);
+
   }
 
   /**
@@ -122,13 +143,8 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
       $dayElement->setAttribute('opentype', $this->openType);
     }
 
-    if ($this->openFrom || $this->openTill) {
-      $openingElement = $dom->createElement('openingtime');
-      if ($this->openFrom) {
-        $openingElement->setAttribute('from', $this->openFrom);
-        $openingElement->setAttribute('to', $this->openTill);
-      }
-      $dayElement->appendChild($openingElement);
+    foreach ($this->openingTimes as $openingTime) {
+      $openingTime->appendToDOM($dayElement);
     }
 
     $element->appendChild($dayElement);
@@ -136,21 +152,21 @@ class CultureFeed_Cdb_Data_Calendar_SchemeDay implements CultureFeed_Cdb_IElemen
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Calendar_SchemeDay
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
     $attributes = $xmlElement->attributes();
-    $day = new CultureFeed_Cdb_Data_Calendar_SchemeDay($xmlElement->getName(), $attributes['opentype']);
+    if (!isset($attributes['opentype'])) {
+      throw new CultureFeed_ParseException("Opentype is missing for day information");
+    }
 
-    if ($xmlElement->openingtime) {
-      $attributes = $xmlElement->openingtime->attributes();
-      if (isset($attributes['from'])) {
-        $day->setOpenFrom($attributes['from']);
-      }
-      if (isset($attributes['to'])) {
-        $day->setOpenTill($attributes['to']);
+    $day = new CultureFeed_Cdb_Data_Calendar_SchemeDay($xmlElement->getName(), (string)$attributes['opentype']);
+
+    if (isset($xmlElement->openingtime)) {
+      foreach ($xmlElement->openingtime as $openingTimeElement) {
+        $day->addOpeningTime(CultureFeed_Cdb_Data_Calendar_OpeningTime::parseFromCdbXml($openingTimeElement));
       }
     }
 

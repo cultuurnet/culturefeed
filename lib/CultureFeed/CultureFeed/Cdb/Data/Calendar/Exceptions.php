@@ -79,10 +79,10 @@ class CultureFeed_Cdb_Data_Calendar_Exceptions implements CultureFeed_Cdb_IEleme
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Calendar_Exceptions
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
     $exceptions = new CultureFeed_Cdb_Data_Calendar_Exceptions();
 

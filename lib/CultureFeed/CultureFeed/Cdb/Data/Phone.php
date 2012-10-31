@@ -147,16 +147,16 @@ class CultureFeed_Cdb_Data_Phone implements CultureFeed_Cdb_IElement {
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_Phone
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
     $attributes = $xmlElement->attributes();
     $is_main = isset($attributes['main']) && $attributes['main'] == 'true';
     $for_reservations = isset($attributes['reservation']) && $attributes['reservation'] == 'true';
 
-    return new CultureFeed_Cdb_Data_Phone((string)$xmlElement, $attributes['type'], $is_main, $for_reservations);
+    return new CultureFeed_Cdb_Data_Phone((string)$xmlElement, (string)$attributes['type'], $is_main, $for_reservations);
 
   }
 

@@ -8,10 +8,10 @@ class CultureFeed_Cdb_Data_Calendar_PeriodList extends CultureFeed_Cdb_Data_Cale
 
   /**
    * Add a new period to the list.
-   * @param DOMElement $timestamp
+   * @param CultureFeed_Cdb_Data_Calendar_Period $period
    *   Period to add.
    */
-  public function add(CultureFeed_Cdb_Calendar_Period $period) {
+  public function add(CultureFeed_Cdb_Data_Calendar_Period $period) {
     $this->items[] = $period;
   }
 
@@ -33,14 +33,17 @@ class CultureFeed_Cdb_Data_Calendar_PeriodList extends CultureFeed_Cdb_Data_Cale
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
-   * @return CultureFeed_Cdb_Data_PeriodList
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
+   * @return CultureFeed_Cdb_Data_Calendar_PeriodList
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
-    $periodList = new CultureFeed_Cdb_Data_PeriodList();
-    foreach ($xmlElement->period as $periodElement) {
-      $periodList->add(CultureFeed_Cdb_Data_Calendar_Period::parseFromCdbXml($periodElement));
+    $periodList = new CultureFeed_Cdb_Data_Calendar_PeriodList();
+
+    if (!empty($xmlElement->periods->period)) {
+      foreach ($xmlElement->periods->period as $periodElement) {
+        $periodList->add(CultureFeed_Cdb_Data_Calendar_Period::parseFromCdbXml($periodElement));
+      }
     }
 
     return $periodList;

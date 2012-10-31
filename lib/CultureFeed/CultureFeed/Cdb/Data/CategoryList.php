@@ -79,15 +79,17 @@ class CultureFeed_Cdb_Data_CategoryList implements CultureFeed_Cdb_IElement, Ite
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_CategoryList
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
     $categoryList = new CultureFeed_Cdb_Data_CategoryList();
 
-    foreach ($xmlElement->category as $categoryElement) {
-      $categoryList->add(CultureFeed_Cdb_Data_Category::parseFromCdbXml($categoryElement));
+    if (!empty($xmlElement->category)) {
+      foreach ($xmlElement->category as $categoryElement) {
+        $categoryList->add(CultureFeed_Cdb_Data_Category::parseFromCdbXml($categoryElement));
+      }
     }
 
     return $categoryList;

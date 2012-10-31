@@ -184,10 +184,14 @@ class CultureFeed_Cdb_Data_ContactInfo implements CultureFeed_Cdb_IElement {
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_ContactInfo
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
+
+    if (empty($xmlElement->address)) {
+      throw new CultureFeed_ParseException("Address information for contactinfo element missing.");
+    }
 
     $contactInfo = new CultureFeed_Cdb_Data_ContactInfo();
 

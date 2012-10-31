@@ -78,12 +78,16 @@ class CultureFeed_Cdb_Data_GeoInformation implements CultureFeed_Cdb_IElement {
   }
 
   /**
-   * @see CultureFeed_Cdb_IElement::parseFromCdbXml($xmlElement)
+   * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
    * @return CultureFeed_Cdb_Data_GeoInformation
    */
-  public static function parseFromCdbXml($xmlElement) {
+  public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
-    return new CultureFeed_Cdb_Data_GeoInformation($xmlElement->xcoordinate, $xmlElement->ycoordinate);
+    if (empty($xmlElement->xcoordinate) || empty($xmlElement->ycoordinate)) {
+      throw new CultureFeed_ParseException("Coördinates are missing on gis element");
+    }
+
+    return new CultureFeed_Cdb_Data_GeoInformation((string)$xmlElement->xcoordinate, (string)$xmlElement->ycoordinate);
 
   }
 
