@@ -332,7 +332,7 @@ function _culturefeed_ui_facebook_privacy_toggle() {
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . 'Publiceer mijn acties op Facebook <div class="tooltip">?</div><div class="tooltip-text">Hiermee zullen de acties die je op UiTinVlaanderen.be doet (vind ik leuk, ga ik naartoe,...), automatisch op je Facebook Timeline verschijnen.</div>';
+      $publish_link = drupal_render($publish_link) . 'Publiceer mijn acties op Facebook <div class="tooltip">?</div><div class="tooltip-text">Hiermee zullen je acties (vind ik leuk, ga ik naartoe,...) automatisch op je Facebook Timeline verschijnen.</div>';
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }

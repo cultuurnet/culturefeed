@@ -1,6 +1,6 @@
 <h<?php print $heading_level ?><?php print $title_attributes; ?>><?php print $title ?></h<?php print $heading_level ?>>
 
-<?php print $thumbnail ?>
+<div class="image"><?php print $thumbnail ?></div>
 
 <div class="where">
   <span class="where-location"><?php print $location ?></span>
