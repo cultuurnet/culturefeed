@@ -429,7 +429,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   // profile
   $variables['profile_edit_link'] = NULL;
   if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l('Vervolledig profiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link'))));
+    $variables['profile_edit_link'] = l('Vervolledig profiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
   }
 
   // recommendations
