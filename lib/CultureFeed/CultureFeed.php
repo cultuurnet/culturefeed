@@ -590,12 +590,12 @@ class CultureFeed implements ICultureFeed {
   public function postToSocial($id, $account_name, $account_type, $message, $image, $link)  {
     $data = array(
       'accountName' => $account_name,
-      'accountType' => 'facebook',
+      'accountType' => $account_type,
       'message' => $message,
       'image' => $image,
       'link' => $link,
     );
-    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/post', $data);
+    $result = $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/post', $data);
   }
 
   /**
