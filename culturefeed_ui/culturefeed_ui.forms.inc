@@ -44,8 +44,13 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
     '#prefix' => '<p><b>Toon enkel aanbevelingen</b></p>',
     '#type' => 'radios',
     '#title' => '',
-    '#default_value' => isset($_GET['search']) ? $_GET['search'] : 'zip',
+    '#default_value' => isset($_GET['type']) ? $_GET['type'] : 'zip',
     '#options' => $options,
+  );
+
+  $form['previous_search_type'] = array(
+    '#type' => 'hidden',
+    '#value' => isset($_GET['type']) ? $_GET['type'] : '',
   );
 
   $form['geo_zipcode'] = array(
@@ -98,8 +103,8 @@ function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) 
     $options['query']['radius'] = $form_state['values']['radius'];
   }
 
+  $options['query']['type'] = $form_state['values']['search'];
   if ($form_state['values']['search'] == 'geo') {
-    $options['query']['search'] = $form_state['values']['search'];
     if (!empty($form_state['values']['geo_zipcode']))  {
       $zip = $form_state['values']['geo_zipcode'];
     }

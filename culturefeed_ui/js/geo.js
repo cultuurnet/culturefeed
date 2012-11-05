@@ -61,8 +61,12 @@
       $('.geo-location').html(postalcode + ' ' +city );
       //inject the postalcode in the hidden field
       $('input[name$="geo_zipcode"]').val(postalcode);
-      //switch the selected radio button to the geocode field
-      $('#edit-search-geo').attr('checked', 'checked');
+
+      // Switch the selected radio button to the geocode field, when this is the first search.
+      if ($('input[name="previous_search_type"]').val() == '') {
+        $('#edit-search-geo').attr('checked', 'checked');        
+      }
+
       //make everything visible
       $('#culturefeed-ui-recommendations-filter-form').addClass('geo-available');
       
