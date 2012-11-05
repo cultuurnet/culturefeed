@@ -2,12 +2,14 @@
 
 <div class="image"><?php print $thumbnail ?></div>
 
+<div class="algorithm"><?php print $algorithm ?></div>
+
+<div class="when"><?php print $date ?></div>
+
 <div class="where">
   <span class="where-location"><?php print $location ?></span>
   <span class="where-city"><?php print $address ?></span>
 </div>
-
-<div class="when"><?php print $date ?></div>
 
 <div class="more"><?php print $more ?></div>
 

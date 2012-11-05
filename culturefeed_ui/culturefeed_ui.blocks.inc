@@ -147,7 +147,7 @@ function culturefeed_ui_block_top_events_view() {
 
     if (!isset($user_likes[$cdbid])) {
       $url = 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
-      $title = 'Leuk';
+      $title = 'Vind ik leuk';
       $options = array('attributes' => array('class' => array_merge(array('like-link'), $disable)));
       $link = l($title, $url, $options) . $anonymous;
     }
@@ -171,6 +171,7 @@ function culturefeed_ui_block_top_events_view() {
     '#theme' => 'item_list',
     '#items' => $items,
     '#type' => 'ol',
+    '#attributes' => array('class' => 'event-teaser-list'),
   );
 
   return $block;

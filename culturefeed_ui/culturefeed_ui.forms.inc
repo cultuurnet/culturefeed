@@ -46,6 +46,7 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
   );
 
   $form['geo_zipcode'] = array(
+    '#prefix' => '<div class="filter-fields">',
     '#type' => 'hidden',
     '#default_value' => $zip ? $zip : '',
   );
@@ -72,6 +73,7 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Filter',
+    '#suffix' => '</div>',
   );
 
   // load the extra javascript and css for the geolocation feature

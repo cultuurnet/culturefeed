@@ -961,7 +961,7 @@ function entry_api_ui_edit_tags_form($form, $form_state, $event) {
     $event_tags = array();
   }
 
-  $form['#object_id'] = 'cc83f911-2ad7-47c5-8bf3-14de3397099c';
+  $form['#object_id'] = $event->getExternalId();
 
   if (user_access('manage lifestyle profile tags')) {
     $form['lifestyle_profile'] = array(

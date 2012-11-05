@@ -57,7 +57,7 @@ function culturefeed_ui_page_recommendations_json() {
     $content['recommendations'] = array(
       '#theme' => 'item_list',
       '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
+      '#attributes' => array('class' => 'event-recommendation-list event-teaser-list')
     );
 
     $content['outro'] = array(
@@ -151,7 +151,7 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
       $content['recommendations'] = array(
         '#theme' => 'item_list',
         '#items' => $recommendations,
-        '#attributes' => array('class' => 'event-recommendation-list')
+        '#attributes' => array('class' => 'event-recommendation-list event-teaser-list')
       );
     }
 

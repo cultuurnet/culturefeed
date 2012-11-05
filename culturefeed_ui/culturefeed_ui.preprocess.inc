@@ -292,11 +292,8 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   $variables['title'] = l($item->title, $object_url['path'], $object_url['options']);
 
   // date
-  $variables['date'] = !empty($item->from) ? $item->from : '';
-  if (!empty($item->from) && !empty($item->from)) {
-    $variables['date'] .= ' tot ' . $item->to;
-  }
-
+  $variables['date'] = $item->description_full;
+  
   // thumbnail
   $variables['thumbnail'] = !empty($item->thumbnail) ? theme('image', array('path' => $item->thumbnail)) : '';
 
@@ -304,7 +301,7 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
 
   // address
-  $variables['address'] = !empty($item->location_city) ? $item->segment . ' ' . $item->location_city : '';
+  $variables['address'] = !empty($item->location_city) ? $item->location_city : '';
 
   // more
   $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
@@ -314,6 +311,9 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // remove
   $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
+  
+  // algorithm
+  $variables['algorithm'] = $variables['event']->algorithm;
 
 }
 
@@ -369,7 +369,7 @@ function template_preprocess_culturefeed_ui_related_events(&$variables) {
     $items[] = theme('culturefeed_ui_event_recommendation', array('event' => $event_info, 'heading_level' => 3));
   }
 
-  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-recommendation-list')));
+  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-recommendation-list event-teaser-list')));
 
   // links
   $links = array();
