@@ -77,6 +77,126 @@ function culturefeed_ui_page_recommendations_json() {
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 }
 
+/**
+ * Ajax callback to deliver the top events.
+ */
+function culturefeed_ui_page_top_events_json() {
+
+  $sort = variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE);
+
+  try {
+    $events = DrupalCultureFeed::getTopEvents($sort, CULTUREFEED_UI_BLOCK_TOP_EVENTS_COUNT);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    return;
+  }
+
+  $items = array();
+
+  $events_info = culturefeed_get_nodes_for_cdbids('event', $events);
+
+  // Search what top events are liked.
+  $user_likes = array();
+  $user_goes = array();
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
+
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->type = array(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::TYPE_IK_GA,);
+      $query->nodeId = $events;
+      $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+      $query->userId = DrupalCultureFeed::getLoggedInUserId();
+      $query->private = TRUE;
+
+      $activities = DrupalCultureFeed::searchActivities($query);
+
+      foreach ($activities->objects as $activity) {
+        if ($activity->type == CultureFeed_Activity::TYPE_LIKE) {
+          $user_likes[$activity->nodeId] = TRUE;
+        }
+        else {
+          $user_goes[$activity->nodeId] = TRUE;
+        }
+      }
+
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+    }
+  }
+
+  $items = array();
+
+  foreach ($events as $cdbid) {
+
+    if (!isset($events_info[$cdbid])) {
+      continue;
+    }
+
+    $event = $events_info[$cdbid];
+
+    $anonymous = '';
+    $disable = array();
+    if (user_is_anonymous()) {
+      $url = 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
+      $anonymous = theme('culturefeed_ui_connect_hover', array('url' => $url));
+      $disable = array('disable');
+    }
+
+    if (!isset($user_likes[$cdbid])) {
+
+      $positive = array(
+        '#type' => 'link',
+        '#title' => 'Vind ik leuk',
+        '#href' => 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid . '/noredirect',
+        '#attributes' => array('class' => array_merge(array('like-link'), $disable)),
+        '#options' => array('query' => drupal_get_destination()),
+        '#ajax' => array(
+          'wrapper' => 'rate-' . $cdbid,
+        ),
+      );
+
+      $link = render($positive) . $anonymous;
+    }
+    else {
+
+      $negative = array(
+        '#type' => 'link',
+        '#title' => 'Niet meer',
+        '#href' => 'culturefeed/undo/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid . '/noredirect',
+        '#attributes' => array('class' => array('unlike-link'), 'title' => 'Vind ik niet meer leuk'),
+        '#ajax' => array(
+          'wrapper' => 'rate-' . $cdbid,
+        ),
+      );
+
+      $link = render($negative);
+    }
+
+    $items[] = theme('culturefeed_ui_top_event', array('event' => $event, 'rate_link' => $link));
+
+  }
+
+  $content = array();
+  if (!empty($items)) {
+    $content = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#type' => 'ol',
+      '#attributes' => array('class' => 'event-teaser-list'),
+    );
+  }
+
+  $commands = array();
+
+  $data = drupal_render($content);
+  $commands[] = ajax_command_html('#top-events', $data);
+
+  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+
+}
+
 function culturefeed_ui_page_related_events_json($cdbid) {
   $event = cnapi_get_event($cdbid);
 
@@ -480,25 +600,78 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
     culturefeed_ui_activity_based_goto($content_type, $node_id);
   }
   else {
-    if (!$success) {
-      $status = 'ERROR';
-    }
-    else {
-      $status = 'OK';
+
+    $commands = array();
+    if ($success) {
+
+      $link = array(
+        '#type' => 'link',
+        '#title' => 'Niet meer',
+        '#href' => 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . $node_id . '/noredirect',
+        '#attributes' => array('class' => array('unlike-link'), 'title' => 'Vind ik niet meer leuk'),
+        '#ajax' => array(
+          'wrapper' => 'rate-' . $cdbid,
+        ),
+      );
+
+      module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
+      $config = culturefeed_ui_block_users_attends_config();
+      $going  = $user_did_this ? $config['undo_link_title'] : $config['do_link_title'];
+
+      $go_link = array(
+        '#type' => 'link',
+        '#title' => $going,
+        '#href' => 'culturefeed/toggle/go/' . $content_type  . '/' . $node_id . '/nojs',
+        '#attributes' => array(
+          'id' => $node_id . '-do-link',
+          'class' => array('do-link', 'do-8-link'),
+        ),
+        '#options' => array('query' => array('destination' => $event_url['path'])),
+        '#ajax' => array(),
+      );
+
+      $commands[] = ajax_command_html('#rate-' . $node_id, render($link));
+      $commands[] = ajax_command_html('#go-wrapper-' . $node_id, render($go_link));
+
     }
 
-    drupal_json_output(array('status' => $status));
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+
   }
 }
 
-function culturefeed_ui_page_undo($activity_type, $content_type, $node_id) {
+function culturefeed_ui_page_undo($activity_type, $content_type, $node_id, $redirect = TRUE) {
   $success = _culturefeed_ui_undo($activity_type, $content_type, $node_id);
 
-  if (!$success) {
-    drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
-  }
+  if ($redirect) {
 
-  culturefeed_ui_activity_based_goto($content_type, $node_id);
+    if (!$success) {
+      drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
+    }
+
+    culturefeed_ui_activity_based_goto($content_type, $node_id);
+  }
+  else {
+
+    $commands = array();
+    if ($success) {
+      $link = array(
+        '#type' => 'link',
+        '#title' => 'Vind ik leuk',
+        '#href' => 'culturefeed/do/' . $activity_type . '/' . $content_type . '/' . $node_id . '/noredirect',
+        '#attributes' => array('class' => array('like-link')),
+        '#ajax' => array(
+          'wrapper' => 'rate-' . $cdbid,
+        ),
+      );
+
+      $commands[] = ajax_command_html('#rate-' . $node_id, render($link));
+
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+
+  }
 }
 
 function culturefeed_ui_page_recent_activities() {

@@ -73,109 +73,17 @@ function culturefeed_ui_block_user_liked_locations_view() {
 }
 
 function culturefeed_ui_block_top_events_cache_id() {
-  return array();
-}
-
-function culturefeed_ui_block_top_events_cache_expires() {
-  return $_SERVER['REQUEST_TIME'] + variable_get('culturefeed_ui_top_events_block_cache_expires', 3600);
+  return array(DrupalCultureFeed::isCultureFeedUser() ? 1 : 0);
 }
 
 function culturefeed_ui_block_top_events_view() {
-
-  $sort = variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE);
-
-  try {
-    $events = DrupalCultureFeed::getTopEvents($sort, CULTUREFEED_UI_BLOCK_TOP_EVENTS_COUNT);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = array();
-
-  $events_info = culturefeed_get_nodes_for_cdbids('event', $events);
-
-  // Search what top events are liked.
-  $user_likes = array();
-  $user_goes = array();
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-
-      $user_likes = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_LIKE, implode(',', $events), CultureFeed_Activity::CONTENT_TYPE_EVENT);
-
-      $query = new CultureFeed_SearchActivitiesQuery();
-      $query->type = array(CultureFeed_Activity::TYPE_LIKE, CultureFeed_Activity::TYPE_IK_GA,);
-      $query->nodeId = implode(',', $events);
-      $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-      $query->userId = DrupalCultureFeed::getLoggedInUserId();
-      $query->private = TRUE;
-
-      $activities = DrupalCultureFeed::searchActivities($query);
-
-      foreach ($activities->objects as $activity) {
-        if ($activity->type == CultureFeed_Activity::TYPE_LIKE) {
-          $user_goes[$activity->nodeId] = TRUE;
-        }
-        else {
-          $user_likes[$activity->nodeId] = TRUE;
-        }
-      }
-
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-    }
-  }
-
-  $items = array();
-
-  foreach ($events as $cdbid) {
-
-    if (!isset($events_info[$cdbid])) {
-      continue;
-    }
-
-    $event = $events_info[$cdbid];
-
-    $anonymous = '';
-    $disable = array();
-    if (user_is_anonymous()) {
-      $url = 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
-      $anonymous = theme('culturefeed_ui_connect_hover', array('url' => $url));
-      $disable = array('disable');
-    }
-
-    if (!isset($user_likes[$cdbid])) {
-      $url = 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
-      $title = 'Vind ik leuk';
-      $options = array('attributes' => array('class' => array_merge(array('like-link'), $disable)));
-      $link = l($title, $url, $options) . $anonymous;
-    }
-    else {
-      $url = 'culturefeed/undo/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
-      $title = 'Niet meer';
-      $options = array('attributes' => array('class' => array('unlike-link'), 'title' => 'Vind ik niet meer leuk'));
-      $link = l($title, $url, $options);
-    }
-
-    $items[] = theme('culturefeed_ui_top_event', array('event' => $event, 'rate_link' => $link));
-
-  }
-
-  if (empty($items)) {
-    return;
-  }
-
-  $block['subject'] = 'Top events';
-  $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#type' => 'ol',
-    '#attributes' => array('class' => 'event-teaser-list'),
+  $config = array(
+    'title' => 'Top events',
+    'id' => 'top-events',
+    'path' => 'culturefeed/topevents/json',
   );
 
-  return $block;
+  return culturefeed_ui_block_ajaxload($config);
 }
 
 function culturefeed_ui_block_similar_users_cache_id() {

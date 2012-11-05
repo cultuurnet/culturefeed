@@ -12,7 +12,10 @@
 <div class="more"><?php print $more ?></div>
 
 <div class="actions">
-  <?php if ($rate_link) : ?><div class="like"><?php print $rate_link ?></div><?php endif; ?>
+  <?php if ($rate_link) : ?>
+    <div class="like" id="rate-<?php print $id ?>"><?php print $rate_link ?></div>
+    <div id="go-wrapper-<?php print $id; ?>"></div>
+  <?php endif; ?>
 </div>
 
 <div class="clearfix"></div>

@@ -194,6 +194,15 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/undo/%/%/%/noredirect'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Actie ongedaan maken'),
+    'page callback' => 'culturefeed_ui_page_undo',
+    'page arguments' => array(2, 3, 4, FALSE),
+    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/activity/delete/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Actie ongedaan maken'),
@@ -225,7 +234,14 @@ function culturefeed_ui_menu() {
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Aanbevolen voor jou'),
     'page callback' => 'culturefeed_ui_page_recommendations_json',
-    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/topevents/json'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array('Top events'),
+    'page callback' => 'culturefeed_ui_page_top_events_json',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
