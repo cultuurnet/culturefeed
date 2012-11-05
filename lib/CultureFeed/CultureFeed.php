@@ -605,9 +605,9 @@ class CultureFeed implements ICultureFeed {
       throw new CultureFeed_ParseException($result);
     }
 
-    $status_code = $xml->xpath_str('/rsp/code');
-    if ($status_code != 'success') {
-      throw new InvalidCodeException($xml->xpath_str('/rsp/message'), $status_code);
+    $status_code = (string)$xml->code;
+    if ($status_code != 'Success') {
+      throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
     }
 
   }
