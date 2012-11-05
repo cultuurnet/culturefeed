@@ -324,7 +324,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-something-for-you',
     ),
     'culturefeed_ui_connect_hover' => array(
-      'variables' => array(),
+      'variables' => array('url' => ''),
       'template' => 'culturefeed-ui-connect-hover',
     ),
     'culturefeed_ui_my_uitid' => array(
@@ -334,10 +334,6 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_something_for_you' => array(
       'variables' => array(),
       'template' => 'culturefeed-ui-something-for-you',
-    ),
-    'culturefeed_ui_connect_hover' => array(
-      'variables' => array(),
-      'template' => 'culturefeed-ui-connect-hover',
     ),
   );
 }

@@ -39,6 +39,7 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
     'zip' => t('In de buurt van'),
   );
   $form['search'] = array(
+    '#prefix' => '<p><b>Toon enkel aanbevelingen</b></p>',
     '#type' => 'radios',
     '#title' => '',
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : 'zip',

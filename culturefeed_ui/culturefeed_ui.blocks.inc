@@ -141,7 +141,8 @@ function culturefeed_ui_block_top_events_view() {
     $anonymous = '';
     $disable = array();
     if (user_is_anonymous()) {
-      $anonymous = theme('culturefeed_ui_connect_hover');
+      $url = 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid;
+      $anonymous = theme('culturefeed_ui_connect_hover', array('url' => $url));
       $disable = array('disable');
     }
 

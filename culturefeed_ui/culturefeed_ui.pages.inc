@@ -788,6 +788,7 @@ function culturefeed_ui_page_profile_edit_form() {
 
   $form['picture'] = array(
     '#type' => 'file',
+    '#size' => 26,
     '#title' => 'Kies een foto',
   );
 

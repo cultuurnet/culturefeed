@@ -293,7 +293,7 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // date
   $variables['date'] = $item->description_full;
-  
+
   // thumbnail
   $variables['thumbnail'] = !empty($item->thumbnail) ? theme('image', array('path' => $item->thumbnail)) : '';
 
@@ -311,7 +311,7 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // remove
   $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
-  
+
   // algorithm
   $variables['algorithm'] = $variables['event']->algorithm;
 
@@ -347,6 +347,9 @@ function template_preprocess_culturefeed_ui_top_event(&$variables) {
 
   // address
   $variables['address'] = !empty($event['address']) ? $event['address'] : '';
+  
+  // city
+  $variables['city'] = !empty($event['city']) ? $event['city'] : '';
 
   // more
   $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
@@ -515,7 +518,18 @@ function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
  * @see culturefeed-ui-connect-hover.tpl.php
  */
 function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
-  $query = drupal_get_destination();
+
+  $query['destination'] = $variables['url'];
   $query['via'] = 'facebook';
   $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
+
+  $query['via'] = 'twitter';
+  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-twitter')), 'query' => $query));
+
+  $query['via'] = 'google';
+  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google')), 'query' => $query));
+
+  unset($query['via']);
+  $variables['link_email'] = l('je email', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
+
 }
