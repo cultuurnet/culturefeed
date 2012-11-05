@@ -6,4 +6,4 @@
 </ul>
 
 <span class="facebook"><?php print $link_facebook ?></span>
-<span class="other">OF via <?php print l('Twitter, Google of je e-mailadres', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination())) ?></span>
+<span class="other">OF via <?php print $link_twitter ?>, <?php print $link_google?> of <?php print $link_email?></span>

@@ -50,19 +50,6 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-connect.tpl.php.
- *
- * @see culturefeed-ui-connect.tpl.php
- */
-function template_preprocess_culturefeed_ui_connect(&$variables) {
-  $query = drupal_get_destination();
-  $query['via'] = 'facebook';
-  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
-  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
-  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
-}
-
-/**
  * Preprocess variables for culturefeed-ui-mbox-confirmation-reminder.tpl.php.
  *
  * @see culturefeed-ui-mbox-confirmation-reminder.tpl.php
@@ -347,7 +334,7 @@ function template_preprocess_culturefeed_ui_top_event(&$variables) {
 
   // address
   $variables['address'] = !empty($event['address']) ? $event['address'] : '';
-  
+
   // city
   $variables['city'] = !empty($event['city']) ? $event['city'] : '';
 
@@ -511,15 +498,14 @@ function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
   $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
 }
 
-
 /**
- * Preprocess variables for culturefeed-ui-connect-hover.tpl.php.
+ * Preprocess variables for culturefeed-ui-connect.tpl.php.
  *
- * @see culturefeed-ui-connect-hover.tpl.php
+ * @see culturefeed-ui-connect.tpl.php
  */
-function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
+function template_preprocess_culturefeed_ui_connect(&$variables) {
 
-  $query['destination'] = $variables['url'];
+  $query['destination'] = isset($variables['url']) ? $variables['url'] : $_GET['q'];
   $query['via'] = 'facebook';
   $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
 
@@ -532,4 +518,13 @@ function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
   unset($query['via']);
   $variables['link_email'] = l('je email', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
 
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-connect-hover.tpl.php.
+ *
+ * @see culturefeed-ui-connect-hover.tpl.php
+ */
+function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
+  template_preprocess_culturefeed_ui_connect($variables);
 }
