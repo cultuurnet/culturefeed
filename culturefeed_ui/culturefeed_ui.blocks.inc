@@ -496,6 +496,11 @@ function _culturefeed_ui_block_users_activity_view($config) {
     $content['link'] = array(
       '#markup' => '<div class="do-link-wrapper">' . l($title, $url, array('attributes' => array('class' => 'do-link ' . 'do-' . $config['activity_type'] . '-link'))) . '</div>',
     );
+
+    if (user_is_anonymous()) {
+      $content['link']['#markup'] .= theme('culturefeed_ui_connect_hover', array('url' => $url));
+    }
+
   }
   else {
     $url = 'culturefeed/undo/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
