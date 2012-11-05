@@ -588,6 +588,7 @@ class CultureFeed implements ICultureFeed {
    *   Url to post
    */
   public function postToSocial($id, $account_name, $account_type, $message, $image, $link)  {
+
     $data = array(
       'accountName' => $account_name,
       'accountType' => $account_type,
@@ -596,6 +597,19 @@ class CultureFeed implements ICultureFeed {
       'link' => $link,
     );
     $result = $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/onlineaccount/post', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $status_code = $xml->xpath_str('/rsp/code');
+    if ($status_code != 'success') {
+      throw new InvalidCodeException($xml->xpath_str('/rsp/message'), $status_code);
+    }
+
   }
 
   /**
