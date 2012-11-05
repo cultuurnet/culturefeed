@@ -1054,8 +1054,7 @@ class CultureFeed implements ICultureFeed {
     if ($query) {
       $data = $query->toPostData();
     }
-print_R($data);
-print $id;
+
     $result = $this->oauth_client->authenticatedGetAsXml('recommendation/user/' . $id, $data);
 
     try {

@@ -12,16 +12,27 @@
 
           // execute the request and send the respons to addpostalcode function
           geocoder.geocode({'latLng': latlng}, addPostalCode);
-          }
-        );
+        });
       }
 
       function addPostalCode(response) {
         if (response){
+          
+          var postalcode = '';
+          var city = '';
           place = response[0];
-          //retrieve the city and postalcodes from the respons
-          var city = place.address_components[3].long_name;
-          var postalcode = place.address_components[8].long_name ;
+          
+          for (i = 0; i < place.address_components.length; i++) {
+            
+            if (place.address_components[i].types[0] == 'postal_code') {
+              postalcode = place.address_components[i].long_name;    
+            }
+            else if(place.address_components[i].types[0] == 'locality') {
+              city = place.address_components[i].long_name; 
+            }
+            
+          }
+          
           //inject the html in the label
           $('.geo-location').html(postalcode + ' ' +city );
           //inject the postalcode in the hidden field

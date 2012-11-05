@@ -302,7 +302,7 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
 
   /**
    * @see CultureFeed_Cdb_IElement::parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement)
-   * @return CultureFeed_Cdb_Event
+   * @return CultureFeed_Cdb_Item_Event
    */
   public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 

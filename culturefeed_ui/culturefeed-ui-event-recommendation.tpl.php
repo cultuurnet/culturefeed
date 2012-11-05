@@ -15,4 +15,6 @@
   <?php if ($like_link) : ?><div class="like"><?php print $like_link ?></div><?php endif; ?><?php if ($remove_link) : ?><div class="remove"><?php print $remove_link ?></div><?php endif; ?>
 </div>
 
+<div id="go-wrapper-<?php print $id; ?>"></div>
+
 <div class="clearfix"></div>

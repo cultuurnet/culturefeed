@@ -311,6 +311,10 @@ function culturefeed_ui_theme() {
       'variables' => array('event' => '', 'links' => array(), 'heading_level' => ''),
       'template' => 'culturefeed-ui-event-recommendation',
     ),
+    'culturefeed_ui_top_event' => array(
+      'variables' => array('event' => '', 'rate_link' => ''),
+      'template' => 'culturefeed-ui-top-event',
+    ),
     'culturefeed_ui_my_uitid' => array(
       'variables' => array('account' => NULL, 'like' => NULL, 'goto' => NULL),
       'template' => 'culturefeed-ui-my-uitid',

@@ -84,7 +84,8 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
 
 function culturefeed_ui_recommendations_filter_form_submit($form, &$form_state) {
   $zip = $form_state['values']['zip'];
-  $zip = reset(explode(' ', $zip));
+  $zip_codes = explode(' ', $zip);
+  $zip = reset($zip_codes);
 
   $options = array('query' => array());
 

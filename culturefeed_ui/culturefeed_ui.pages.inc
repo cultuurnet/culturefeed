@@ -134,19 +134,27 @@ function culturefeed_ui_page_recommendations($zip = NULL) {
 
   $recommendations = culturefeed_ui_recommendations_list(CULTUREFEED_UI_PAGE_RECOMMENDATIONS_COUNT, $zip);
 
-  if (empty($recommendations)) {
+  if (empty($recommendations) && !$zip) {
     $content['recommendations'] = array(
-      '#markup' => 'Er zijn geen aanbevelingen beschikbaar voor de gekozen postcode.<br /><br />' . l('Terug naar volledige lijst', 'culturefeed/recommendations')
+      '#markup' => 'Er zijn geen aanbevelingen beschikbaar',
     );
   }
   else {
     $content['filter'] = drupal_get_form('culturefeed_ui_recommendations_filter_form', $zip);
 
-    $content['recommendations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $recommendations,
-      '#attributes' => array('class' => 'event-recommendation-list')
-    );
+    if (empty($recommendations)) {
+      $content['recommendations'] = array(
+        '#markup' => 'Er zijn geen aanbevelingen beschikbaar voor de gekozen postcode.<br /><br />' . l('Terug naar volledige lijst', 'culturefeed/recommendations')
+      );
+    }
+    else {
+      $content['recommendations'] = array(
+        '#theme' => 'item_list',
+        '#items' => $recommendations,
+        '#attributes' => array('class' => 'event-recommendation-list')
+      );
+    }
+
   }
 
   $content['#attached']['js'][]  = drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js';
@@ -215,7 +223,7 @@ function culturefeed_ui_page_recommendation_evaluate($evaluation, $recommendatio
 
           $link = drupal_render($action_event);
 
-          $commands[] = ajax_command_append('#recommendation-' . $recommendation_id, '<div id="go-wrapper-' . $recommendation_id . '">' . $link . '</div>');
+          $commands[] = ajax_command_html('#go-wrapper-' . $node_id, $link);
 
         break;
       }
@@ -279,7 +287,7 @@ function culturefeed_ui_toggle_go($go_id = NULL, $node_id = NULL, $type = 'ajax'
       );
       $link = drupal_render($action_event);
 
-      $commands[] = ajax_command_html('#go-wrapper-' . $go_id, $link);
+      $commands[] = ajax_command_html('#go-wrapper-' . $node_id, $link);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
@@ -547,7 +555,7 @@ function culturefeed_ui_page_users_for_content_activity($activity_type, $content
 
   if ($content_type == 'page') {
     $node = node_load($id);
-    
+
     $object_title = $node->title;
     $object_link = array('path' => 'node/' . $node->nid);
   }

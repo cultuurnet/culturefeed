@@ -278,6 +278,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
  * @see culturefeed-ui-event-recommendation.tpl.php
  */
 function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
+
   $item = $variables['event']->recommendationItem;
 
   // object_url
@@ -296,12 +297,6 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
     $variables['date'] .= ' tot ' . $item->to;
   }
 
-  // like
-  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
-
-  // remove
-  $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
-
   // thumbnail
   $variables['thumbnail'] = !empty($item->thumbnail) ? theme('image', array('path' => $item->thumbnail)) : '';
 
@@ -313,6 +308,52 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // more
   $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
+
+  // like
+  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
+
+  // remove
+  $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
+
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-top-event.tpl.php.
+ *
+ * @see culturefeed-ui-top-event.tpl.php
+ */
+function template_preprocess_culturefeed_ui_top_event(&$variables) {
+
+  $event = $variables['event'];
+
+  // object_url
+  $request_detail = array('event' => $event['cdbid'], 'title' => $event['title']);
+  $object_url = cnapi_url_dp2dua($request_detail);
+
+  // id
+  $variables['id'] = $event['cdbid'];
+
+  // title
+  $variables['title'] = l($event['title'], $object_url['path'], $object_url['options']);
+
+  // date
+  $variables['date'] = $event['calendarsummary'];
+
+  // thumbnail
+  $variables['thumbnail'] = !empty($event['thumbnail']) ? theme('image', array('path' => $event['thumbnail'])) : '';
+
+  // location
+  $variables['location'] = !empty($event['location']) ? $event['location'] : '';
+
+  // address
+  $variables['address'] = !empty($event['address']) ? $event['address'] : '';
+
+  // more
+  $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
+
+  // like
+//  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
+
 }
 
 /**

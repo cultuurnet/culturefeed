@@ -60,7 +60,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    * @param string $id
    *   ID of the event to load.
    *
-   * @return CultureFeed_Cdb_Event
+   * @return CultureFeed_Cdb_Item_Event
    * @throws CultureFeed_ParseException
    */
   public function getEvent($id) {
@@ -81,7 +81,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   /**
    * Create a new event.
    *
-   * @param CultureFeed_Cdb_Event $event
+   * @param CultureFeed_Cdb_Item_Event $event
    *   The event to create.
    *
    * @return string
@@ -104,7 +104,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   /**
    * Update an event.
    *
-   * @param CultureFeed_Cdb_Event $event
+   * @param CultureFeed_Cdb_Item_Event $event
    *   The event to update.
    */
   public function updateEvent(CultureFeed_Cdb_Item_Event $event) {
@@ -134,7 +134,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   /**
    * Add tags to an event.
    *
-   * @param CultureFeed_Cdb_Event $event
+   * @param CultureFeed_Cdb_Item_Event $event
    *   Event where the tags will be added to.
    * @param array $keywords
    *   Tags to add.
@@ -146,7 +146,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   /**
    * Remove tags from an event.
    *
-   * @param CultureFeed_Cdb_Event $event
+   * @param CultureFeed_Cdb_Item_Event $event
    *   Event where the tags will be removed from.
    * @param string $keyword
    *   Tag to remove.
