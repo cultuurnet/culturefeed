@@ -34,8 +34,10 @@ function culturefeed_ui_activities_filter_form_submit($form, &$form_state) {
 function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = NULL) {
   $form = array();
 
+  $geo_value = 'In de buurt van mijn <b>huidige locatie</b>';
+  $geo_value .= ' (<span class="geo-location"></span>) <a href="#" class="geo-refresh">opnieuw zoeken</a>';
   $options = array(
-    'geo' => 'In de buurt van mijn <b>huidige locatie</b> (<span class="geo-location"></span>)',
+    'geo' => $geo_value,
     'zip' => t('In de buurt van'),
   );
   $form['search'] = array(
