@@ -61,7 +61,7 @@ function culturefeed_ui_recommendations_filter_form($form, &$form_state, $zip = 
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#autocomplete_path' => 'cnapi/autocomplete/location/onlyzip',
+    '#autocomplete_path' => 'cnapi/autocomplete/location/cities',
     '#default_value' => $zip ? $zip : '',
     '#size' => 4,
   );
