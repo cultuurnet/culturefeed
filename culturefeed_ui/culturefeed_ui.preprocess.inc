@@ -516,7 +516,7 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
   $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google')), 'query' => $query));
 
   unset($query['via']);
-  $variables['link_email'] = l('je email', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
+  $variables['link_email'] = l('e-mailadres', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
 
 }
 

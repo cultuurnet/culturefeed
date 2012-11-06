@@ -16,10 +16,6 @@
         <div class="profile-field name"><?php print $name; ?></div>
       <?php endif; ?>
 
-      <?php if ($nick): ?>
-        <div class="profile-field name"><?php print $nick; ?></div>
-      <?php endif; ?>
-
       <?php if ($gender): ?>
         <div class="profile-field gender"><?php print $gender; ?></div>
       <?php endif; ?>
@@ -33,7 +29,7 @@
       <?php endif; ?>
 
       <?php if ($profile_edit_link): ?>
-        <?php print $profile_edit_link; ?>
+        <?php // print $profile_edit_link; ?>
       <?php endif; ?>
   </div>
 <?php else : ?>

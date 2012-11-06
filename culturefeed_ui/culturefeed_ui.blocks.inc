@@ -177,39 +177,25 @@ function culturefeed_ui_block_user_activities_view() {
       $content['edit'] = array(
         '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
       );
+      
+      $facebook = _culturefeed_ui_facebook_privacy_toggle();
+      if ($facebook) {
+        $item_list = array(
+          '#theme' => 'item_list',
+          '#items' => array(
+            array(
+              'data' => $facebook,
+              'id' => 'onlineaccount-facebook',
+            ),
+          ),
+        );
+        $content['facebook'] = array(
+          '#markup' => drupal_render($item_list),
+        );
+      }
+
     }
 
-    $facebook = _culturefeed_ui_facebook_privacy_toggle();
-    if ($facebook) {
-      $item_list = array(
-        '#theme' => 'item_list',
-        '#items' => array(
-          array(
-            'data' => $facebook,
-            'id' => 'onlineaccount-facebook',
-          ),
-        ),
-      );
-      $content['facebook'] = array(
-        '#markup' => drupal_render($item_list),
-      );
-    }
-
-    $facebook = _culturefeed_ui_facebook_privacy_toggle();
-    if ($facebook) {
-      $item_list = array(
-        '#theme' => 'item_list',
-        '#items' => array(
-          array(
-            'data' => $facebook,
-            'id' => 'onlineaccount-facebook',
-          ),
-        ),
-      );
-      $content['facebook'] = array(
-        '#markup' => drupal_render($item_list),
-      );
-    }
   }
 
   $block['subject'] = 'Recente acties';

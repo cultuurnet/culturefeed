@@ -1,8 +1,12 @@
+<h3>
+  <span>Kiezen wordt makkelijker</span>
+  <span>dankzij UiTiD</span>
+</h3>
 <p>Maak een UiTiD aan en:</p>
 <ul>
-  <li>ontvang tips op jouw maat</li>
-  <li>ontdek wat je vrienden leuk vinden</li>
-  <li>blijf als eerste op de hoogte van je favoriete activiteiten</li>
+  <li>ontvang <strong>persoonlijke tips</strong> op jouw maat</li>
+  <li>ontdek wat <strong>vrienden en gelijkaardige gebruikers</strong> leuk vinden</li>
+  <li>blijf <strong>als eerste op de hoogte</strong> van je favoriete activiteiten</li>
 </ul>
 
 <span class="facebook"><?php print $link_facebook ?></span>

@@ -148,6 +148,7 @@ function culturefeed_ui_page_top_events_json() {
 
       $positive = array(
         '#type' => 'link',
+        '#id' => 'top-like-'. $cdbid,
         '#title' => 'Vind ik leuk',
         '#href' => 'culturefeed/do/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid . '/noredirect',
         '#attributes' => array('class' => array_merge(array('like-link'), $disable)),
@@ -163,6 +164,7 @@ function culturefeed_ui_page_top_events_json() {
 
       $negative = array(
         '#type' => 'link',
+        '#id' => 'top-like-'. $cdbid,
         '#title' => 'Niet meer',
         '#href' => 'culturefeed/undo/' . CultureFeed_Activity::TYPE_LIKE . '/' . CultureFeed_Activity::CONTENT_TYPE_EVENT . '/' . $cdbid . '/noredirect',
         '#attributes' => array('class' => array('unlike-link'), 'title' => 'Vind ik niet meer leuk'),
@@ -610,13 +612,12 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
         '#href' => 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . $node_id . '/noredirect',
         '#attributes' => array('class' => array('unlike-link'), 'title' => 'Vind ik niet meer leuk'),
         '#ajax' => array(
-          'wrapper' => 'rate-' . $cdbid,
+          'wrapper' => 'rate-' . $node_id,
         ),
       );
 
       module_load_include('inc', 'culturefeed_ui', 'culturefeed_ui.blocks');
-      $config = culturefeed_ui_block_users_attends_config();
-      $going  = $user_did_this ? $config['undo_link_title'] : $config['do_link_title'];
+      $event_url = cnapi_url_dp2dua($request_detail);
 
       $go_link = array(
         '#type' => 'link',
@@ -626,7 +627,6 @@ function culturefeed_ui_page_do($activity_type, $content_type, $node_id, $redire
           'id' => $node_id . '-do-link',
           'class' => array('do-link', 'do-8-link'),
         ),
-        '#options' => array('query' => array('destination' => $event_url['path'])),
         '#ajax' => array(),
       );
 

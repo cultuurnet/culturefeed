@@ -187,6 +187,7 @@ function culturefeed_ui_recommendation_list_items($recommendations, $theme_funct
 
     $positive = array(
       '#type' => 'link',
+      '#id' => 'recommendation-like-'. $recommendation_id,
       '#title' => 'Vind ik leuk',
       '#href' => 'culturefeed/recommendations/positive/' . $recommendation_id . '/' . $node_id . '/nojs',
       '#attributes' => array('class' => 'like-link'),
@@ -199,6 +200,7 @@ function culturefeed_ui_recommendation_list_items($recommendations, $theme_funct
     $negative = array(
       '#type' => 'link',
       '#title' => 'Vind ik niet leuk',
+      '#id' => 'recommendation-dislike-'. $recommendation_id,
       '#href' => 'culturefeed/recommendations/negative/' . $recommendation_id . '/' . $node_id . '/nojs',
       '#attributes' => array('class' => 'remove-link'),
       '#options' => array('query' => drupal_get_destination()),
