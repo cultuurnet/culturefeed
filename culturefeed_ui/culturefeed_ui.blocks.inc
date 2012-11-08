@@ -8,10 +8,6 @@ function culturefeed_ui_block_recommendations_is_visible() {
   return FALSE;
 }
 
-function culturefeed_ui_block_recommendations_cache_id() {
-  return array(DrupalCultureFeed::getLoggedInUserId());
-}
-
 function culturefeed_ui_block_recommendations_view() {
   $config = array(
     'title' => 'Aanbevolen voor jou',
