@@ -9,7 +9,7 @@ function culturefeed_ui_block_recommendations_is_visible() {
 }
 
 function culturefeed_ui_block_recommendations_cache_id() {
-  return array(DrupalCultureFeed::isCultureFeedUser() ? 1 : 0);
+  return array(DrupalCultureFeed::getLoggedInUserId());
 }
 
 function culturefeed_ui_block_recommendations_view() {
@@ -177,7 +177,7 @@ function culturefeed_ui_block_user_activities_view() {
       $content['edit'] = array(
         '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
       );
-      
+
       $facebook = _culturefeed_ui_facebook_privacy_toggle();
       if ($facebook) {
         $item_list = array(
