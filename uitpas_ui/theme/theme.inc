@@ -213,49 +213,39 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
   );
   $base_pager = array('tags' => array(), 'parameters' => array());
   //advantages
-  $header = array(t('Welcome advantages'), t('valid till'), '');
+  $header = array(t('Welcome advantages'), t('valid till'));
   $rows = array();
   if (count($advantages)) {
     foreach ($advantages as $advantage) {
-      $location = array();
-      foreach ($advantage->counters as $counter) {
-        $location[] = $counter->name;
-      }
       $rows[] = array(
         l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
-        implode(', ', $location)
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-'
       );
     }
   }
   else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 2));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => 0, 'quantity' => $advantages_total);
   $vars['advantages'] = theme_table($table) . theme_pager($pager);
   //promotions
-  $header = array(array('data' => t('Promotions'), 'colspan' => 2), t('valid till'), '');
+  $header = array(array('data' => t('Promotions'), 'colspan' => 2), t('valid till'));
   $rows = array();
   if (count($promotions)) {
     foreach ($promotions as $promotion) {
-      $location = array();
-      foreach ($promotion->counters as $counter) {
-        $location[] = $counter->name;
-      }
       $singular = '%points point';
       $plural = '%points points';
       $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
-        implode(', ', $location)
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
       );
     }
   }
   else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 4));
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => 1, 'quantity' => $promotions_total);
