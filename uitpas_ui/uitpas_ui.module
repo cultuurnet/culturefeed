@@ -192,6 +192,7 @@ function uitpas_ui_theme() {
         'passholder' => NULL, 
         'advantages' => array(), 
         'promotions' => array(),
+        'coming_promotions' => array(),
         'cashed_in_advantages' => array(),
         'cashed_in_promotions' => array(),
       ),

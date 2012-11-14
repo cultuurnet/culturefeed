@@ -515,6 +515,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $passholder = $vars['passholder'];
   $advantages = $vars['advantages'];
   $promotions = $vars['promotions'];
+  $coming_promotions = $vars['coming_promotions'];
   $cashed_in_advantages = $vars['cashed_in_advantages'];
   $cashed_in_promotions = $vars['cashed_in_promotions'];
   $base_table = array(
@@ -538,8 +539,9 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       }
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
+      $points = format_plural($promotion->points, $singular, $plural);
       $rows[] = array(
-        format_plural($promotion->points, $singular, $plural),
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
         implode(', ', $location)
@@ -551,6 +553,34 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $vars['promotions'] = theme_table($table);
+  //coming promotions
+  $header = array(
+    array('data' => t('Coming trade-in options'), 'colspan' => 2),
+    array('data' => t('valid till'), 'colspan' => 2),
+  );
+  $rows = array();
+  if (count($coming_promotions)) {
+    foreach ($coming_promotions as $promotion) {
+      $location = array();
+      foreach ($promotion->counters as $counter) {
+        $location[] = $counter->name;
+      }
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $promotion->points));
+      $points = format_plural($promotion->points, $singular, $plural);
+      $rows[] = array(
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
+        implode(', ', $location)
+      );
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $vars['coming_promotions'] = theme_table($table);
   //advantages
   $header = array(
     array('data' => t('Advantages')),

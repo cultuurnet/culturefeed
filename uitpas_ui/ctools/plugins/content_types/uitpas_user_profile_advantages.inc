@@ -25,6 +25,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     $consumer_cf = DrupalCultureFeed::getConsumerInstance();
     $advantages = array();
     $promotions = array();
+    $coming_promotions = array();
     $cashed_in_promotions = array();
     $cashed_in_advantages = array();
     //welcome advantages
@@ -45,7 +46,10 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->uitpasNumber = $passholder->uitpasNumber;
+      $query->maxPoints = $passholder->points;
       $query->cashingPeriodBegin = time();
+      $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
+      $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions = $result->objects;
@@ -54,6 +58,23 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
     }
     catch (Exception $e) {
       watchdog_exception('uitpas_ui_content_type_user_profile_promotions', $e);
+    }
+    //coming promotions
+    try {
+      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
+      $query->uitpasNumber = $passholder->uitpasNumber;
+      $query->minPoints = $passholder->points + 1;
+      $query->cashingPeriodBegin = time();
+      $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
+      $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
+      $result = $cf->uitpas()->getPromotionPoints($query);
+      if ($result->total) {
+        $coming_promotions = $result->objects;
+        uitpas_ui_helpers_process_counters($coming_promotions);
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('uitpas_ui_content_type_user_profile_promotions_nearby', $e);
     }
     //cashed in advantages
     try {
@@ -92,6 +113,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       'passholder' => $passholder,
       'advantages' => $advantages,
       'promotions' => $promotions,
+      'coming_promotions' => $coming_promotions,
       'cashed_in_advantages' => $cashed_in_advantages,
       'cashed_in_promotions' => $cashed_in_promotions,
     ));
