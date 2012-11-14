@@ -77,13 +77,15 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
   }
   $vars['icons'] = (count($list['items'])) ? theme_item_list($list) : '';
   //headings
-  $list = array(
-    'title' => '',
-    'attributes' => array(),
-    'type' => 'ul',
-    'items' => $vars['headings'],
-  );
-  $vars['headings'] = (count($list['items'])) ? theme_item_list($list) : '';
+  if ($vars['headings']) {
+    $list = array(
+      'title' => '',
+      'attributes' => array(),
+      'type' => 'ul',
+      'items' => $vars['headings'],
+    );
+    $vars['headings'] = (count($list['items'])) ? theme_item_list($list) : '';
+  }
   //when
   $vars['when'] = $vars['when'];
   //where
