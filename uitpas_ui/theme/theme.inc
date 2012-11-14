@@ -528,23 +528,18 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   //promotions
   $header = array(
     array('data' => t('Trade-in options'), 'colspan' => 2),
-    array('data' => t('valid till'), 'colspan' => 2),
+    array('data' => t('valid till')),
   );
   $rows = array();
   if (count($promotions)) {
     foreach ($promotions as $promotion) {
-      $location = array();
-      foreach ($promotion->counters as $counter) {
-        $location[] = $counter->name;
-      }
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
-        implode(', ', $location)
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
       );
     }
   }
@@ -556,23 +551,18 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   //coming promotions
   $header = array(
     array('data' => t('Coming trade-in options'), 'colspan' => 2),
-    array('data' => t('valid till'), 'colspan' => 2),
+    array('data' => t('valid till')),
   );
   $rows = array();
   if (count($coming_promotions)) {
     foreach ($coming_promotions as $promotion) {
-      $location = array();
-      foreach ($promotion->counters as $counter) {
-        $location[] = $counter->name;
-      }
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-',
-        implode(', ', $location)
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
       );
     }
   }
@@ -584,19 +574,14 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   //advantages
   $header = array(
     array('data' => t('Advantages')),
-    array('data' => t('valid till'), 'colspan' => 2),
+    array('data' => t('valid till')),
   );
   $rows = array();
   if (count($advantages)) {
     foreach ($advantages as $advantage) {
-      $location = array();
-      foreach ($advantage->counters as $counter) {
-        $location[] = $counter->name;
-      }
       $rows[] = array(
         l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-',
-        implode(', ', $location)
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-'
       );
     }
   }
