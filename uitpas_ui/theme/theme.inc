@@ -4,7 +4,7 @@
  * @file
  * Uitpas preprocess functions.
  */
- 
+
 /**
  * Returns html for admin promotions highlight form
  */
@@ -187,7 +187,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $vars['location'] = t('At') . " " . implode(', ', $location);
   $location_options = variable_get_value('uitpas_ui_locations');
   $location_options = array_map('trim', explode("\n", $location_options));
-	$valid_for_cities = array_intersect($location_options, $advantage->validForCities);
+  $valid_for_cities = array_intersect($location_options, $advantage->validForCities);
   asort($valid_for_cities);
   $list = array(
     'title' => t('Valid for inhabitants of'),
@@ -279,12 +279,12 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $vars['location'] = t('At') . " " . implode(', ', $location);
   $location_options = variable_get_value('uitpas_ui_locations');
   $location_options = array_map('trim', explode("\n", $location_options));
-	$valid_for_cities = array_intersect($location_options, $promotion->validForCities);
+  $valid_for_cities = array_intersect($location_options, $promotion->validForCities);
   asort($valid_for_cities);
   $list = array(
-    'title' => t('Valid for inhabitants of'), 
-    'attributes' => array(), 
-    'type' => 'ul', 
+    'title' => t('Valid for inhabitants of'),
+    'attributes' => array(),
+    'type' => 'ul',
     'items' => $valid_for_cities,
   );
   $vars['available'] = theme_item_list($list);
@@ -350,7 +350,7 @@ function uitpas_ui_preprocess_uitpas_ui_recent_actions(&$vars) {
     $image = theme_image(array('path' => $image, 'attributes' => array()));
     $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);
   }
-  
+
   $vars['actions'] = theme_item_list($list);
   $vars['form'] = (count($vars['form'])) ? drupal_render($vars['form']) : '';
 }
