@@ -75,16 +75,9 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
       $query->city = $location;
     }
     $query->cashingPeriodBegin = time();
-<<<<<<< HEAD
 
-    $query->cashingPeriodEnd = time();
-
-    //dpm( $query );
-
-=======
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
->>>>>>> f40b60732c02ee52568a31dbc49d15f19c2ce2f3
     $result = $cf->uitpas()->getPromotionPoints($query);
 
 
