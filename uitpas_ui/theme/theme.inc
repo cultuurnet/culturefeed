@@ -219,7 +219,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
     foreach ($advantages as $advantage) {
       $rows[] = array(
         l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-'
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock')
       );
     }
   }
@@ -240,7 +240,7 @@ function uitpas_ui_preprocess_uitpas_ui_advantages_promotions(&$vars) {
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock')
       );
     }
   }
@@ -530,7 +530,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock')
       );
     }
   }
@@ -553,7 +553,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : '-'
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock')
       );
     }
   }
@@ -572,7 +572,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
     foreach ($advantages as $advantage) {
       $rows[] = array(
         l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : '-'
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock')
       );
     }
   }
