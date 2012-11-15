@@ -607,7 +607,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
       t('Welcome'),
       l($advantage->title, uitpas_ui_helpers_link_object('advantage', $advantage)),
       $advantage->counters[0]->name,
-      '-', //date('j/n/Y', $advantage->cashingDate),
+      date('j/n/Y', $advantage->cashingDate),
     );
   }
   if (!count($rows)) {
