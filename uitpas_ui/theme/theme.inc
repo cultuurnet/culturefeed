@@ -445,7 +445,7 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
   //promotions
   foreach ($promotions as $promotion) {
     $links['links'][] = array(
-      'title' => $promotion->title,
+      'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
       'href' => uitpas_ui_helpers_link_object('promotion', $promotion),
     );
   }
