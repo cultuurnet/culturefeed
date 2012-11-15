@@ -433,23 +433,24 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile(&$vars) {
   $singular = t('1 point saved');
   $plural = t('%points points saved', array('%points' => $passholder->points));
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
-  //advantages and promotions
-  $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   //advantages
+  $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   foreach ($advantages as $advantage) {
     $links['links'][] = array(
       'title' => $advantage->title,
       'href' => uitpas_ui_helpers_link_object('advantage', $advantage),
     );
   }
+  $vars['advantages'] = theme_links($links);
   //promotions
+  $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   foreach ($promotions as $promotion) {
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
       'href' => uitpas_ui_helpers_link_object('promotion', $promotion),
     );
   }
-  $vars['advantages_promotions'] = theme_links($links);
+  $vars['promotions'] = theme_links($links);
   //coming promotions
   $links = array('links' => array(), 'heading' => array(), 'attributes' => array());
   foreach ($coming_promotions as $promotion) {
