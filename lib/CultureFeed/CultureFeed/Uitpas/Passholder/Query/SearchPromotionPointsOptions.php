@@ -10,6 +10,8 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
   const ORDER_ASC = "ASC";
   const ORDER_DESC = "DESC";
 
+  const FILTER_POSSIBLE = "POSSIBLE";
+
   /**
    * List is cities where the pointspromotions must be valid. Possible values: Aalst, Lede, Haaltert, Erpe_Mere
    *
@@ -122,6 +124,17 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
    */
   public $simulatedExtraPoints;
 
+
+  /**
+   * Filter based on cashInState NOT_POSSIBLE_DATE_CONSTRAINT
+   *
+   * @var string POSSIBLE or NOT_POSSIBLE_DATE_CONSTRAINT or ...
+   */
+  public $cashInState = self::FILTER_POSSIBLE;
+
+
+
+
   protected function manipulatePostData(&$data) {
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
@@ -134,7 +147,7 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
     if (isset($data['grantingPeriodBegin'])) {
       $data['grantingPeriodBegin'] = date('c', $data['grantingPeriodBegin']);
     }
-  
+
     if (isset($data['grantingPeriodEnd'])) {
       $data['grantingPeriodEnd'] = date('c', $data['grantingPeriodEnd']);
     }

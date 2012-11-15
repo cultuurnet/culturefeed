@@ -12,7 +12,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function getRealCultureFeed() {
-    return $this->realCultureFeed();
+    return $this->realCultureFeed();//
   }
 
   protected function getCachePrefix() {

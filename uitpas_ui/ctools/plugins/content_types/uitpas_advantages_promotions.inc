@@ -37,8 +37,10 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_edit_form_submit($f
   $form_state['conf']['promotions_limit'] = $form_state['values']['promotions_limit'];
 }
 
-function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $conf, $args, $context) {
-  $location = $context->data->cf_query_argument;
+function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $conf, $args, $context) {  $location = $context->data->cf_query_argument;
+
+
+
   $advantages = array();
   $advantages_limit = $conf['advantages_limit'];
   $advantages_page = pager_find_page(0);
@@ -63,6 +65,9 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     uitpas_ui_helpers_process_counters($advantages);
     $advantages_total = $result->total;
     //promotions
+
+
+
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->start = $promotions_page * $promotions_limit;
     $query->max = $promotions_limit;
@@ -70,13 +75,31 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
       $query->city = $location;
     }
     $query->cashingPeriodBegin = time();
+<<<<<<< HEAD
+
+    $query->cashingPeriodEnd = time();
+
+    //dpm( $query );
+
+=======
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
+>>>>>>> f40b60732c02ee52568a31dbc49d15f19c2ce2f3
     $result = $cf->uitpas()->getPromotionPoints($query);
-    $promotions_page = pager_default_initialize($result->total, $promotions_limit, 1);
-    $promotions = $result->objects;
+
+
+    $objects = array();
+    foreach( $result->objects as $k => $v ) {
+      if( $v->cashInState == "POSSIBLE" ) {
+        $objects[] = $v;
+      }
+    }
+
+    $promotions_page = pager_default_initialize(count($objects), $promotions_limit, 1);
+    $promotions = $objects; //$result->objects;
+    //$promotions = $result->objects;
     uitpas_ui_helpers_process_counters($promotions);
-    $promotions_total = $result->total;
+    $promotions_total = count($objects);
   }
   catch (Exception $e) {
     watchdog_exception('uitpas_ui_content_type_advantages_promotions', $e);
