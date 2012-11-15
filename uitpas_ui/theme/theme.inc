@@ -61,10 +61,17 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
       'class' => array('uitpas_activity_has_points'),
     );
   }
-  if ($vars['promotions']) {
+  if ($vars['promotions_location']) {
     $path = uitpas_ui_helpers_link_object('actor', $activity['location']['actor']);
     $list['items'][] = array(
       'data' => l(t('Show advantages at this location'), $path),
+      'class' => array('uitpas_activity_has_promotion'),
+    );
+  }
+  if ($vars['promotions_organiser']) {
+    $path = uitpas_ui_helpers_link_object('actor', $activity['organiser']);
+    $list['items'][] = array(
+      'data' => l(t('Show advantages for this organiser'), $path),
       'class' => array('uitpas_activity_has_promotion'),
     );
   }

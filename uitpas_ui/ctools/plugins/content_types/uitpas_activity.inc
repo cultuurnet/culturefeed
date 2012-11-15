@@ -23,7 +23,8 @@ function uitpas_ui_uitpas_activity_content_type_edit_form($form, &$form_state) {
 function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $context) {
   $activity = $context[0]->data;
   $uitpas_activity = '';
-  $promotions = 0;
+  $promotions_location = 0;
+  $promotions_organiser = 0;
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
     //uitpas event
@@ -36,18 +37,31 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
     if ($result->total) {
       $uitpas_activity = $result->objects[0];
     }
-    //promotions
+    //promotions by location
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $activity['location']['actor']['cdbid'];
       $query->cashingPeriodBegin = time();
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
-        $promotions = $result->total;
+        $promotions_location = $result->total;
       }
     }
     catch (Exception $e) {
       watchdog_exception('uitpas_ui_content_type_activity_actor_' . $activity['location']['actor']['cdbid'], $e);
+    }
+    //promotions by organiser
+    try {
+      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
+      $query->balieConsumerKey = $activity['organiser']['cdbid'];
+      $query->cashingPeriodBegin = time();
+      $result = $cf->uitpas()->getPromotionPoints($query);
+      if ($result->total) {
+        $promotions_organiser = $result->total;
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('uitpas_ui_content_type_activity_actor_' . $activity['organiser']['cdbid'], $e);
     }
     
   }
@@ -59,7 +73,8 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
   $block->content = theme('uitpas_ui_activity', array(
     'activity' => $activity, 
     'uitpas_activity' => $uitpas_activity, 
-    'promotions' => $promotions,
+    'promotions_location' => $promotions_location, 
+    'promotions_organiser' => $promotions_organiser,
   ));
   return $block;
 }
