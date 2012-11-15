@@ -7,7 +7,6 @@
   <div class="uitpas_ui_profile_advantages_promotions">
   <h3>Jouw UiTPAS-voordelen</h3>
     <?php print $promotions; ?>
-    <?php print $advantages; ?>
   </div>
   <?php if ($coming_promotions): ?>
   <div class="uitpas_ui_profile_coming_promotions">
