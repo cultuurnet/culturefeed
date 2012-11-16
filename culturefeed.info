@@ -97,6 +97,7 @@ files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Calendar/SchemeDay.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Calendar/OpeningTime.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Calendar/Permanent.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Location.php
+files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Organiser.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/ContactInfo.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Mail.php
 files[] = lib/CultureFeed/CultureFeed/Cdb/Data/Phone.php
