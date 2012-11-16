@@ -13,6 +13,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $contact_info = array();
   $category_defaults = array();
   $default_location = '';
+  $default_organiser = '';
   $publication_date = '';
   $when = 'one_day';
   $timestamps = array();
@@ -54,6 +55,11 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     if ($location = $event->getLocation()) {
       $address = $location->getAddress()->getPhysicalAddress();
       $default_location = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
+    }
+
+    // Default organiser.
+    if ($organiser = $event->getOrganiser()) {
+      $default_organiser = $organiser->getLabel();
     }
 
     // Default calendar type, start / end date, weekscheme data.
@@ -123,6 +129,14 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#autocomplete_path' => 'cnapi/autocomplete/actor',
     '#required' => TRUE,
     '#default_value' => $default_location,
+  );
+
+  $form['organiser'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Organisatie',
+    '#autocomplete_path' => 'cnapi/autocomplete/actor',
+    '#required' => TRUE,
+    '#default_value' => $default_organiser,
   );
 
   $form['what'] = array('#type' => 'container');
@@ -658,9 +672,19 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     form_set_error('location', 'Gelieve een correcte locatie in te voeren');
     $validation_failed = TRUE;
   }
+  
+  // Validate organiser.
+  $organiser_label = $values['organiser'];
+  
+  $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
+
+  if (!$organiser) {
+    form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
+    $validation_failed = TRUE;
+  }
 
   if (!$validation_failed) {
-    _entryapi_ui_event_form_save_event($form, $form_state, $location);
+    _entryapi_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
 
 }
@@ -668,7 +692,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 /**
  * Save the event form to the entity api
  */
-function _entryapi_ui_event_form_save_event($form, &$form_state, $location) {
+function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $organiser) {
 
   $values = $form_state['values'];
 
@@ -754,6 +778,14 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location) {
   $cdbLocation->setLabel($location_label);
   $cdbLocation->setCdbid($location_cdbid);
   $event->setLocation($cdbLocation);
+  
+  // Organiser.
+  $organiser_label = $values['organiser'];
+  $organiser_cdbid = $organiser['cdbid'];
+
+  $cdbOrganiser = new CultureFeed_Cdb_Data_Organiser($organiser_label, $organiser_cdbid);
+  
+  $event->setOrganiser($cdbOrganiser);
 
   // Contact info.
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
@@ -884,14 +916,16 @@ function _entry_api_ui_event_save_weekscheme(&$event, $values) {
  */
 function entry_api_ui_event_form_submit($form, &$form_state) {
 
-  $form_state['redirect'] = 'entryapi/event/' . $form_state['#event_id'] . '/edit';
+  //$form_state['redirect'] = 'entryapi/event/' . $form_state['#event_id'] . '/edit';
+  $link_change_event = '<a href="/entryapi/event/' . $form_state['#event_id'] . '/edit">Klik hier om het event aan te passen</a>';
+  
   if ($form_state['#update_event']) {
     drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
-    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ' . $link_change_event);
   }
   else {
     drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
-      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn.');
+      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ' . $link_change_event);
   }
 
 }
