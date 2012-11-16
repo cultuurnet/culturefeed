@@ -174,10 +174,6 @@ class CultureFeed_Cdb_Data_PhysicalAddress implements CultureFeed_Cdb_IElement {
       throw new CultureFeed_ParseException("Country is missing for physical address");
     }
 
-    if (empty($xmlElement->housenr)) {
-      throw new CultureFeed_ParseException("House number is missing for physical address");
-    }
-
     if (empty($xmlElement->street)) {
       throw new CultureFeed_ParseException("Street is missing for physical address");
     }
@@ -189,9 +185,12 @@ class CultureFeed_Cdb_Data_PhysicalAddress implements CultureFeed_Cdb_IElement {
     $physicalAddress = new CultureFeed_Cdb_Data_PhysicalAddress();
     $physicalAddress->setCity((string)$xmlElement->city);
     $physicalAddress->setCountry((string)$xmlElement->country);
-    $physicalAddress->setHouseNumber((string)$xmlElement->housenr);
     $physicalAddress->setStreet((string)$xmlElement->street);
     $physicalAddress->setZip((string)$xmlElement->zipcode);
+    
+    if (!empty($xmlElement->housenr)) {
+      $physicalAddress->setHouseNumber((string)$xmlElement->housenr);
+    }
 
     if (!empty($xmlElement->gis)) {
       $physicalAddress->setGeoInformation(CultureFeed_Cdb_Data_GeoInformation::parseFromCdbXml($xmlElement->gis));
