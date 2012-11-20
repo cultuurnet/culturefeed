@@ -68,7 +68,7 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
       'class' => array('uitpas_activity_has_promotion'),
     );
   }
-  if ($vars['promotions_organiser']) {
+  if ($vars['promotions_organiser'] && $vars['promotions_organiser'] != $vars['promotions_location']) {
     $path = uitpas_ui_helpers_link_object('actor', $activity['organiser']);
     $list['items'][] = array(
       'data' => l(t('Show advantages for this organiser'), $path),
