@@ -75,12 +75,37 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
       'class' => array('uitpas_activity_has_promotion'),
     );
   }
-  if ($uitpas_activity && $uitpas_activity->tariff < $uitpas_activity->price) {
+  if ($uitpas_activity->price != 0) {
+    
     $list['items'][] = array(
-      'data' => t('Reduction for opportunity groups'),
-      'class' => array('uitpas_activity_has_tariff'),
+      'data' => t('Price'),
+      'class' => array('uitpas_activity_price'),
     );
-    $vars['price'] = '&euro; ' . $uitpas_activity->tariff . ' <span class="small">(standaardprijs: &euro; ' . $uitpas_activity->price . ')</span>';
+  
+    if (DrupalCultureFeed::isCultureFeedUser()) {
+      try {
+        $cf_user = DrupalCultureFeed::getLoggedInUser();
+        $cf = DrupalCultureFeed::getLoggedInUserInstance();
+        $passholder = $cf->uitpas()->getPassholderByUser($cf_user->id);
+        
+        if ($passholder->kansenStatuut) {
+          // user with kansenstatuut
+          $vars['price'] = '&euro; ' . $uitpas_activity->tariff . ' <span class="small">(standaardtarief: &euro; ' . $uitpas_activity->price . ')</span>';
+        }
+        else {
+          // user with no kansenstatuut
+          $vars['price'] = '&euro; ' . $uitpas_activity->price;
+        }
+      }
+      catch (Exception $e) {
+        watchdog_exception('uitpas_ui_get_passholder', $e);
+      }
+    }
+    else {
+      // anonymous user
+      $vars['price'] = '&euro; ' . $uitpas_activity->price . ' <span class="small">(kansentarief: &euro; ' . $uitpas_activity->tariff . ')</span>';
+    }
+  
   }
   $vars['icons'] = (count($list['items'])) ? theme_item_list($list) : '';
   //headings
