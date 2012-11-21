@@ -75,11 +75,11 @@ function uitpas_ui_preprocess_uitpas_ui_activity(&$vars) {
       'class' => array('uitpas_activity_has_promotion'),
     );
   }
-  if ($uitpas_activity->price != 0) {
+  if ($uitpas_activity && $uitpas_activity->price != 0) {
     
     $list['items'][] = array(
-      'data' => t('Price'),
-      'class' => array('uitpas_activity_price'),
+      'data' => t('Reduction for opportunity groups'),
+      'class' => array('uitpas_activity_has_tariff'),
     );
   
     if (DrupalCultureFeed::isCultureFeedUser()) {
