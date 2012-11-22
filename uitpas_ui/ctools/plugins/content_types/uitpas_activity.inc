@@ -33,7 +33,12 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
     if ($context[1]->data && $context[1]->data->passholder) {
       $query->uitpasNumber = ($context[1]->data->passholder->uitpasNumber);
     }
+    else {
+      // workaround to show kansenstatuut price for anonymous user
+      $query->uitpasNumber = '0930000221919';
+    }
     $result = $cf->uitpas()->searchEvents($query);
+    
     if ($result->total) {
       $uitpas_activity = $result->objects[0];
     }
