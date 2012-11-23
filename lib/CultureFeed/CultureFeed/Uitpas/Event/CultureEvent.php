@@ -181,6 +181,11 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    */
   public $numberOfPoints;
 
+  /*
+   * The number of months grace period for buy tickets.
+   */
+  public $gracePeriodMonths;
+
   /**
    * Modify an array of data for posting.
    */
@@ -205,6 +210,8 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $allowed[] = "checkinPeriodConstraintVolume";
     $allowed[] = "price";
     $allowed[] = "numberOfPoints";
+    $allowed[] = "gracePeriodMonths";
+    $allowed[] = "gracePeriod";
 
     foreach ($data as $key => $value) {
       if (!in_array($key, $allowed)) {
@@ -234,6 +241,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->title = $object->xpath_str('title');
     $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
     $event->numberOfPoints = $object->xpath_int('numberOfPoints');
+    $event->gracePeriodMonths = $object->xpath_int('gracePeriodMonths');
 
     return $event;
   }

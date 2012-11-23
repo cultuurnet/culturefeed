@@ -332,6 +332,11 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     // Do the request.
     $response = $this->http_client->request($url, $http_headers, $method, $post_data);
 
+    //dpm( $url , 'URL called');
+    //dpm( $post_data , 'Post Data: ');
+    //dpm( $response , 'Response: ');
+
+
     // In case the HTTP response status is not 200, we consider this an error.
     // In case we can parse a code and message from the response, we throw a CultureFeed_Exception.
     // In case we can't parse a code and message, we throw a CultureFeed_HTTPException.
@@ -347,7 +352,6 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $message = $xml->xpath_str('/response/message');
         throw new CultureFeed_Exception($message, $code);
       }
-
       throw new CultureFeed_HttpException($response->response, $response->code);
     }
 
