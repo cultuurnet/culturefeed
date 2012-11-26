@@ -69,7 +69,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function getDistributionKeysForOrganizer($cdbid) {
     $result = $this->oauth_client->consumerGetAsXML('uitpas/distributionkey/organiser/' . $cdbid, array());
-
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -176,21 +175,23 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
    public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event) {
 
+     $path = "/uitpas/cultureevent/register";
+
      $data = $event->toPostData();
-     $result = $this->oauth_client->consumerPostAsXml($path, $data);
 
-     //echo "THIS IS THE RESULT: ".var_dump($result);
+     //dpm($data, 'Data sent to uitpas call');
 
-     /*
+
+
+
      try {
        // Call the path.
        $result = $this->oauth_client->consumerPostAsXml( $path, $data );
      } catch(CultureFeed_Exception $e) {
        throw $e;
      }
-     */
 
-     /*
+
      try {
        $xml = new CultureFeed_SimpleXMLElement($result);
      }
@@ -198,11 +199,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
        throw new CultureFeed_ParseException($result);
      }
 
-     $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
-     return $response;
-    */
+     //dpm( print_r( $xml, true ) , 'xml return from register call' );
 
-     return $result;
+     $response = CultureFeed_Uitpas_Response::createFromXML($xml->xpath('/response', false));
+
+     //dpm( $response, 'Response from register uitpas call' );
+
+     return $response;
+
 
    }
 
@@ -787,7 +791,11 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query) {
     $data = $query->toPostData();
+    //$data['email'] = "sven@cultuurnet.be";
+
     $result = $this->oauth_client->consumerGetAsXml('uitpas/cultureevent/search', $data);
+    //dpm( $data );
+    //dpm( $result );
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);

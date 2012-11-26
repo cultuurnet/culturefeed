@@ -25,7 +25,7 @@ class CultureFeed_Cdb_Data_Address implements CultureFeed_Cdb_IElement {
    * @param CultureFeed_Cdb_Data_VirtualAddress $virtual
    *   Virtual address.
    */
-  public function __construct(CultureFeed_Cdb_Data_PhysicalAddress $physical = NULL, CultureFeed_Cdb_VirtualAddress $virtual = NULL) {
+  public function __construct(CultureFeed_Cdb_Data_PhysicalAddress $physical = NULL, CultureFeed_Cdb_Data_VirtualAddress $virtual = NULL) {
     $this->physicalAddress = $physical;
     $this->virtualAddress = $virtual;
   }
@@ -77,7 +77,7 @@ class CultureFeed_Cdb_Data_Address implements CultureFeed_Cdb_IElement {
     }
 
     if ($this->virtualAddress) {
-      $this->physicalAddress->appendToDOM($addressElement);
+      $this->virtualAddress->appendToDOM($addressElement);
     }
 
   }
