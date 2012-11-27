@@ -345,6 +345,9 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $xml = new CultureFeed_SimpleXMLElement($response->response);
       }
       catch (Exception $e) {
+        dpm($url, '$url');
+        dpm($post_data, '$post_data');
+        dpm($response->response, 'response');
         throw new CultureFeed_HttpException($response->response, $response->code);
       }
 
