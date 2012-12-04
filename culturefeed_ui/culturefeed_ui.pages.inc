@@ -472,7 +472,7 @@ function culturefeed_ui_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => $activity->private ? 'Privé' : 'Publiek',
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link'),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? 'Zet publiek' : 'Maak privé')), 
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -551,7 +551,7 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
         '#type' => 'link',
         '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? 'Zet publiek' : 'Maak privé')), 
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
