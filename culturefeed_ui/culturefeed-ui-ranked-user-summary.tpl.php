@@ -1,5 +1,17 @@
-<?php print $picture ?>
+<div class="image">
+  <?php print $picture ?>
+</div>
 
-<?php print $nick ?>
+<div class="teaser-info">
+  <div class="intro">
+    <div><?php print $nick ?></div>
+    <div><span class="number"><?php print $sortValue ?></span> acties</div>
+  </div>
+</div>
 
-<?php print $sortValue ?> acties
+
+
+
+
+
+

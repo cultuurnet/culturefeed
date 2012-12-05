@@ -113,9 +113,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
 
     $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem('events', $event);
-    $cdb_xml = $cdb->getXml();
 
-    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getExternalId(), array('raw_data' => $cdb_xml), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getExternalId(), array('raw_data' => $cdb->getXml()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
 
   }

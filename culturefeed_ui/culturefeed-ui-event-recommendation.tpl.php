@@ -2,7 +2,8 @@
 
 <div class="image"><?php print $thumbnail ?></div>
 
-<div class="algorithm"><?php print $algorithm ?></div>
+<div class="tooltip"></div>
+<div class="tooltip-text"><?php print $algorithm_description ?></div>
 
 <div class="when"><?php print $date ?></div>
 

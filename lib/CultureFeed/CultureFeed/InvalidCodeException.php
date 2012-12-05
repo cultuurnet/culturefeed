@@ -8,7 +8,7 @@ class CultureFeed_InvalidCodeException extends Exception {
   public $message;
 
   function __construct($message, $code, $format = 'xml') {
-    $this->message = 'Invalid code returned from service: ' . $message;
+    $this->message = 'Invalid code returned from service: ' . $code . ' - ' . $message;
     $this->code = $code;
   }
 }
