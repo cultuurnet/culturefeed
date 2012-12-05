@@ -273,16 +273,21 @@ function _culturefeed_ui_do($activity_type, $type, $id) {
 }
 
 function culturefeed_ui_activity_based_goto($content_type, $node_id) {
+
+  // Remember current querystring.
+  $options = array();
+  $options['query'] = $_GET;
+  unset($options['query']['q']);
+
   if ($content_type == 'page') {
-    drupal_goto('node/' . $node_id);
+    drupal_goto('node/' . $node_id, $options);
   }
   else {
     $object = cnapi_get(array('action' => 'detail', 'type' => $content_type, 'query' => array('cdbid' => $node_id)));
-
     $request = array($content_type => $node_id, 'title' => $object['detail']['nl']['title']);
-
-    cnapi_ui_goto($request);
+    cnapi_ui_goto($request, $options);
   }
+
 }
 
 function culturefeed_ui_activities_list($activities) {
