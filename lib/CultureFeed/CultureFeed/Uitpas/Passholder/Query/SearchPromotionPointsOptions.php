@@ -123,6 +123,13 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
    * @var integer
    */
   public $simulatedExtraPoints;
+  
+  /**
+   * Default: false. Indicates that only unexpired points promotions are returned.
+   *
+   * @var boolean
+   */
+  public $unexpired = false;
 
 
   /**
