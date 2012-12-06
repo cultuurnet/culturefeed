@@ -7,7 +7,8 @@
     <div class="uitpas_ui_activity_details_general_shortdescription"><?php print $shortdescription; ?></div>
     <div class="uitpas_ui_activity_details_general_when"><?php print $when; ?></div>
     <div class="uitpas_ui_activity_details_general_where"><?php print $where; ?></div>
-    <div class="uitpas_ui_activity_details_general_price"><?php print $price; ?></div>    
+    <div class="uitpas_ui_activity_details_general_price"><?php print $price; ?></div> 
+    <!-- TEST -->   
     <?php if ($organisation): ?>
       <div class="uitpas_ui_activity_details_general_organisation"><?php print $organisation; ?></div>
     <?php endif; ?>

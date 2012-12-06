@@ -97,6 +97,9 @@ class CultureFeed_Uitpas_Event_TicketSale extends CultureFeed_Uitpas_ValueObject
    */
 
 
+  public $dateOfBirth;
+  public $uitpasNumber;
+  public $status;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
@@ -115,6 +118,9 @@ class CultureFeed_Uitpas_Event_TicketSale extends CultureFeed_Uitpas_ValueObject
     $ticket_sale->lastName = $object->xpath_str('lastName');
     $ticket_sale->userId = $object->xpath_str('userId');
     $ticket_sale->userHomeCity = $object->xpath_str('userHomeCity');
+    $ticket_sale->dateOfBirth = $object->xpath_str('dateOfBirth');
+    $ticket_sale->uitpasNumber = $object->xpath_str('uitpasNumber');
+    $ticket_sale->status = $object->xpath_str('status');
 
 
     return $ticket_sale;

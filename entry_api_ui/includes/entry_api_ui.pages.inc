@@ -672,10 +672,19 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     form_set_error('location', 'Gelieve een correcte locatie in te voeren');
     $validation_failed = TRUE;
   }
-  
+
   // Validate organiser.
   $organiser_label = $values['organiser'];
-  
+
+  $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
+
+  if (!$organiser) {
+    form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
+    $validation_failed = TRUE;
+  }
+
+  // Validate organiser.
+  $organiser_label = $values['organiser'];
   $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
 
   if (!$organiser) {
@@ -778,14 +787,20 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
   $cdbLocation->setLabel($location_label);
   $cdbLocation->setCdbid($location_cdbid);
   $event->setLocation($cdbLocation);
-  
+
   // Organiser.
   $organiser_label = $values['organiser'];
   $organiser_cdbid = $organiser['cdbid'];
 
   $cdbOrganiser = new CultureFeed_Cdb_Data_Organiser($organiser_label, $organiser_cdbid);
-  
+
   $event->setOrganiser($cdbOrganiser);
+
+  // Organiser.
+  $organiser_object = new CultureFeed_Cdb_Data_Organiser();
+  $organiser_object->setLabel($values['organiser']);
+  $organiser_object->setCdbid($organiser['cdbid']);
+  $event->setOrganiser($organiser_object);
 
   // Contact info.
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
@@ -916,14 +931,15 @@ function _entry_api_ui_event_save_weekscheme(&$event, $values) {
  */
 function entry_api_ui_event_form_submit($form, &$form_state) {
 
-  //$form_state['redirect'] = 'entryapi/event/' . $form_state['#event_id'] . '/edit';
-  $link_change_event = '<a href="/entryapi/event/' . $form_state['#event_id'] . '/edit">Klik hier om het event aan te passen</a>';
-  
   if ($form_state['#update_event']) {
+    $request_detail = array('event' => $form_state['#event_id'], 'title' => $form_state['values']['title']);
+    $url = cnapi_url_dp2dua($request_detail);
+    $form_state['redirect'] = $url['path'];
     drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
-    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ' . $link_change_event);
+    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ');
   }
   else {
+    $link_change_event = '<a href="/entryapi/event/' . $form_state['#event_id'] . '/edit">Klik hier om het event aan te passen</a>';
     drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
       op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ' . $link_change_event);
   }
@@ -1050,9 +1066,11 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
 
   // Check what tags are removed.
   $removed_tags = array();
-  foreach ($form['#old_tags'] as $old_tag) {
-    if (!in_array($old_tag, $tags)) {
-      $removed_tags[] = $old_tag;
+  if (!empty($form['#old_tags'])) {
+    foreach ($form['#old_tags'] as $old_tag) {
+      if (!in_array($old_tag, $tags)) {
+        $removed_tags[] = $old_tag;
+      }
     }
   }
 
@@ -1062,7 +1080,10 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
   try {
 
     // Add new tags
-    DrupalCultureFeed_EntryApi::addTagToEvent($event, $tags);
+    $tags = array_filter($tags);
+    if ($tags) {
+      DrupalCultureFeed_EntryApi::addTagToEvent($event, $tags);
+    }
 
     // Remove old tags
     if ($removed_tags) {

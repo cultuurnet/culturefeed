@@ -109,6 +109,14 @@ class CultureFeed_Uitpas_Event_Query_SearchEventsOptions extends CultureFeed_Uit
     if (isset($data['endDate']) && is_integer($data['endDate'])) {
       $data['endDate'] = date('Y-m-d', $data['endDate']);
     }
+
+    if (isset($data['basicSearch']) && $data['basicSearch']) {
+      $data['basicSearch'] = 'true';
+    }
+    if (isset($data['basicSearch']) && ! $data['basicSearch']) {
+      $data['basicSearch'] = 'false';
+    }
+
   }
 
   /**

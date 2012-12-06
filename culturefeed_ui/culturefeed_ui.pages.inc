@@ -44,9 +44,21 @@ function culturefeed_ui_page_recommendations_json() {
   }
 
   if (empty($recommendations)) {
-    $content['recommendations'] = array(
-      '#markup' => 'Er zijn momenteel geen aanbevelingen beschikbaar.'
-    );
+
+    // no profile
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if (!$cf_account->lifestyleProfile) {
+        $profile_edit_message = '<h3>Bereken je vrijetijdsprofiel om nieuwe tips te krijgen</h3>' . l('Bereken je profiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
+      }
+      $content['recommendations'] = array(
+        '#markup' => '<div class="notice">Er zijn momenteel geen aanbevelingen beschikbaar voor jou.</div>' . $profile_edit_message . '<p class="quiet">TIP: hoe meer je aangeeft of je bepaalde activiteiten leuk vindt of naartoe gaat, hoe beter je persoonlijke tips zullen worden.</p>'
+      );
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
+    }
   }
 
   else {
@@ -472,7 +484,7 @@ function culturefeed_ui_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => $activity->private ? 'Privé' : 'Publiek',
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link'),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? 'Zet publiek' : 'Maak privé')),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -551,7 +563,7 @@ function culturefeed_ui_page_activity_privacy($id, $privacy, $type = 'ajax') {
         '#type' => 'link',
         '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link'),
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? 'Zet publiek' : 'Maak privé')),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
@@ -887,7 +899,8 @@ function culturefeed_ui_page_users_most_active() {
     $content['users'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
-      '#type' => 'ol',
+      '#type' => 'ul',
+      '#attributes' => array('class' => 'user-activity-list'),
     );
   }
 

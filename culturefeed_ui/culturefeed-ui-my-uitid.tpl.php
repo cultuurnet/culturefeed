@@ -14,6 +14,8 @@
   <div class="profile-fields">
       <?php if ($name) : ?>
         <div class="profile-field name"><?php print $name; ?></div>
+      <?php elseif ($nick) : ?>
+        <div class="profile-field nick"><?php print $nick; ?></div>
       <?php endif; ?>
 
       <?php if ($gender): ?>
@@ -29,7 +31,7 @@
       <?php endif; ?>
 
       <?php if ($profile_edit_link): ?>
-        <?php // print $profile_edit_link; ?>
+        <?php print $profile_edit_link; ?>
       <?php endif; ?>
   </div>
 <?php else : ?>
@@ -44,13 +46,13 @@
 </div>
 <?php if ($like): ?>
   <div class="total-likes">
-    <span><?php print $like; ?> x</span> vind ik leuk
+    <span class="number"><?php print $like; ?> x</span> <span>vind ik leuk</span>
   </div>
 <?php endif; ?>
 
 <?php if ($goto): ?>
   <div class="total-goto">
-    <span><?php print $goto; ?> x</span> ga ik naar toe
+    <span class="number"><?php print $goto; ?> x</span> <span>ga ik naar toe</span>
   </div>
 <?php endif; ?>
 <?php if ($recommendations_link): ?>
