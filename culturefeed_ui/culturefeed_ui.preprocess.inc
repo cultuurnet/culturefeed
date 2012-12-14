@@ -301,6 +301,19 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // algorithm
   $variables['algorithm'] = $variables['event']->algorithm;
+  
+  // algorithm description
+  switch ($variables['event']->algorithm) {
+    case "CBRecommender":
+      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van andere items die je leuk vond. " .$variables['event']->score;
+        break;
+    case "UserBasedCF":
+      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van gelijkaardige gebruikers die dit item leuk vonden. " .$variables['event']->score;
+        break;
+    default:
+      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van je profiel (Fijnproever, Actiezoeker, Actieve ontspanner of Ontdekker). " .$variables['event']->score;
+        break;
+  }
 
 }
 
@@ -421,7 +434,8 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['contextual_links'] = drupal_render($item_list);
 
   // nick
-  $variables['nick'] = $account->nick;
+  $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+  $variables['nick'] = l($account->nick, $url_profile);
 
   // name
   $name = array();
@@ -433,7 +447,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     $name[] = $account->familyName;
   }
 
-  $variables['name'] = !empty($name) ? implode(' ', $name) : '';
+  $variables['name'] = !empty($name) ? l(implode(' ', $name), $url_profile) : '';
 
   // gender
   $variables['gender'] = '';
@@ -452,7 +466,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   }
 
   // picture
-  $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
+  $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?width=50&height=50&crop=auto')) : '';
 
   // city
   $variables['city'] = !empty($account->city) ? $account->city : '';
@@ -460,7 +474,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   // profile
   $variables['profile_edit_link'] = NULL;
   if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l('Vervolledig profiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
+    $variables['profile_edit_link'] = l('Bereken je vrijetijdsprofiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
   }
 
   // recommendations
@@ -486,18 +500,6 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   }
 }
 
-
-/**
- * Preprocess variables for culturefeed-ui-something-for-you.tpl.php.
- *
- * @see culturefeed-ui-something-for-you.tpl.php
- */
-function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
-  $query = drupal_get_destination();
-  $query['via'] = 'facebook';
-  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
-}
-
 /**
  * Preprocess variables for culturefeed-ui-connect.tpl.php.
  *
@@ -516,7 +518,7 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
   $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google')), 'query' => $query));
 
   unset($query['via']);
-  $variables['link_email'] = l('e-mailadres', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
+  $variables['link_email'] = l('je e-mailadres', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
 
 }
 
@@ -527,4 +529,13 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
  */
 function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
   template_preprocess_culturefeed_ui_connect($variables);
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-something-for-you.tpl.php.
+ *
+ * @see culturefeed-ui-something-for-you.tpl.php
+ */
+function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
+  template_preprocess_culturefeed_ui_connect(&$variables);
 }

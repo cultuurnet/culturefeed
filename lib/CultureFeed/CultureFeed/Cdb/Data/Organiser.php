@@ -16,19 +16,6 @@ class CultureFeed_Cdb_Data_Organiser implements CultureFeed_Cdb_IElement {
    * Cdbid from organiser actor.
    */
   protected $cdbid;
-  
-  
-  /**
-   * Construct a new location.
-   * @param CultureFeed_Cdb_Data_Address $address
-   *   Address from the location.
-   */
-  public function __construct($organiser_label, $organiser_cdbid) {
-    
-    $this->label = $organiser_label;
-    $this->cdbid = $organiser_cdbid;
-
-  }
 
   /**
    * Get the cdbid for this organiser.
@@ -67,7 +54,6 @@ class CultureFeed_Cdb_Data_Organiser implements CultureFeed_Cdb_IElement {
   public function appendToDOM(DOMELement $element) {
 
     $dom = $element->ownerDocument;
-    
     $organiserElement = $dom->createElement('organiser');
 
     if ($this->label) {
@@ -88,14 +74,19 @@ class CultureFeed_Cdb_Data_Organiser implements CultureFeed_Cdb_IElement {
    */
   public static function parseFromCdbXml(CultureFeed_SimpleXMLElement $xmlElement) {
 
-    $organiser = new CultureFeed_Cdb_Data_Organiser();
+    if (empty($xmlElement->label) && empty($xmlElement->actor)) {
+      //throw new CultureFeed_ParseException("One of the required fields (actor or label) is missing for organiser element");
+    }
 
+    $attributes = $xmlElement->label->attributes();
+
+    $organiser = new CultureFeed_Cdb_Data_Organiser();
     if (!empty($xmlElement->label)) {
-      $attributes = $xmlElement->label->attributes();
       $organiser->setLabel((string)$xmlElement->label);
-      if (isset($attributes['cdbid'])) {
-        $organiser->setCdbid((string)$attributes['cdbid']);
-      }
+    }
+
+    if (isset($attributes['cdbid'])) {
+      $organiser->setCdbid((string)$attributes['cdbid']);
     }
 
     return $organiser;

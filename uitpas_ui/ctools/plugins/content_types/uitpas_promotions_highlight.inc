@@ -38,6 +38,7 @@ function uitpas_ui_uitpas_promotions_highlight_content_type_render($subtype, $co
     if ($location) {
       $query->city = $location;
     }
+    $query->unexpired = TRUE;
     $result = $cf->uitpas()->getPromotionPoints($query);
     foreach ($result->objects as $object) {
       if (!in_array($object->id, $highlights)) {

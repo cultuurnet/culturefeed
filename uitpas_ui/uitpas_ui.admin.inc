@@ -14,6 +14,7 @@ function uitpas_ui_admin_promotions_highlight_form($form, &$form_state) {
   try {
     $cf = DrupalCultureFeed::getConsumerInstance();
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
+    $query->unexpired = TRUE;
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
     $result = $cf->uitpas()->getPromotionPoints($query);
     $promotions = variable_get('uitpas_ui_promotions_highlight', array());

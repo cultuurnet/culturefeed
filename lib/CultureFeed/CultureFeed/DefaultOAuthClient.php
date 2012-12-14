@@ -342,9 +342,12 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
     // In case we can't parse a code and message, we throw a CultureFeed_HTTPException.
     if ($response->code != 200) {
 
+
       watchdog( 'oAuth' , 'URL CALLED' , $url);
       watchdog( 'oAuth', 'POST DATA', $post_data);
       watchdog( 'oAuth', 'Response', $response);
+
+
 
 
       try {

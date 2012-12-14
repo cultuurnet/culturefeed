@@ -64,13 +64,12 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     $advantages = $result->objects;
     uitpas_ui_helpers_process_counters($advantages);
     $advantages_total = $result->total;
+    
     //promotions
-
-
-
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->start = $promotions_page * $promotions_limit;
     $query->max = $promotions_limit;
+    $query->unexpired = TRUE;
     if ($location) {
       $query->city = $location;
     }
