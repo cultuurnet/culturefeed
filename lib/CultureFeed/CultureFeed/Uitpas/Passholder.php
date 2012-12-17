@@ -301,9 +301,9 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     foreach ($object->xpath('memberships/membership') as $membership) {
       $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
     }
-    
-    $passholder->memberships = $memberships;
-
+    if ($membership) {
+      $passholder->memberships = $memberships;
+    }
     return $passholder;
   }
 
