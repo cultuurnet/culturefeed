@@ -341,14 +341,14 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
         $xml = new CultureFeed_SimpleXMLElement($response->response);
       }
       catch (Exception $e) {
-        throw new CultureFeed_HttpException($response->response, $response->code);
+        throw new CultureFeed_HttpException($response->response . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $response->code);
       }
 
       if ($code = $xml->xpath_str('/response/code')) {
         $message = $xml->xpath_str('/response/message');
-        throw new CultureFeed_Exception($message, $code);
+        throw new CultureFeed_Exception($message . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $code);
       }
-      throw new CultureFeed_HttpException($response->response . 'URL CALLED: ' . $url . 'POST DATA: <pre>' . $post_data . '</pre>', $response->code);
+      throw new CultureFeed_HttpException($response->response . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $response->code);
     }
 
     // In case the HTTP response status is 200, we return the response.
