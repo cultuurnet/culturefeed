@@ -45,7 +45,7 @@ class CultureFeed_Cdb_Default {
 
   public function getXml() {
 
-    $dom = new DOMDocument('1.0', 'ISO-8859-1');
+    $dom = new DOMDocument('1.0', 'UTF-8');
     $dom->formatOutput = true;
     $dom->preserveWhiteSpace = false;
 
