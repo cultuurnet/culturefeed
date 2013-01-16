@@ -313,7 +313,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
     // Setting the 'Content-Type' header.
     if (is_string($params) && substr($params, 0, 5) == '<?xml') {
-      $http_headers[] = 'Content-Type: application/xml';
+      $http_headers[] = 'Content-Type: application/xml; charset=UTF-8';
     }
 
     // If we have a file upload, we pass $params as an array to trigger CURL multipart.
