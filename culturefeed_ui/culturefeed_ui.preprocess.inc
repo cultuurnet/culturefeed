@@ -476,6 +476,27 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   if (!$account->lifestyleProfile) {
     $variables['profile_edit_link'] = l('Bereken je vrijetijdsprofiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
   }
+  else {
+    // lifestyleProfile name
+    switch ($account->lifestyleProfile) {
+      case "AZ":
+        $variables['profile_name'] = 'Actiezoeker';
+          break;
+      case "AO":
+        $variables['profile_name'] = 'Actieve ontspanner';
+          break;
+      case "ONT":
+        $variables['profile_name'] = 'Ontdekker';
+          break;
+      case "FP":
+        $variables['profile_name'] = 'Fijnproever';
+          break;
+      default:
+        $variables['profile_name'] = 'Profiel nog niet berekend';
+          break;
+    }    
+    $variables['profile_refresh_link'] = l('Herbereken', 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
+  }
 
   // recommendations
   $variables['recommendations_link'] = l('Beoordeel nog enkele tips', 'culturefeed/recommendations', array('attributes' => array('class' => array('recommendations-link'))));
