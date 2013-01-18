@@ -11,8 +11,15 @@ function culturefeed_ui_uninstall() {
     'culturefeed_ui_top_events_block_cache_expires',
     'culturefeed_ui_similar_users_block_cache_expires',
   );
-  
+
   foreach ($variables as $variable) {
     variable_del($variable);
   }
+}
+
+/**
+ * Update the block cache setting for something_for_you to DRUPAL_CACHE_PER_PAGE.
+ */
+function culturefeed_ui_update_7001() {
+  db_update('block')->fields(array('cache' => DRUPAL_CACHE_PER_PAGE))->condition('delta', 'something_for_you')->execute();
 }

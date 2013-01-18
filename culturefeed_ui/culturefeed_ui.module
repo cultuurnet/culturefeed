@@ -407,13 +407,7 @@ function culturefeed_ui_block_info() {
   $block['my_uitid']['cache'] = DRUPAL_NO_CACHE;
 
   $block['something_for_you']['info'] = t('Something for you?');
-  $block['something_for_you']['cache'] = DRUPAL_CACHE_GLOBAL;
-
-  $block['my_uitid']['info'] = t('My UitID');
-  $block['my_uitid']['cache'] = DRUPAL_NO_CACHE;
-
-  $block['something_for_you']['info'] = t('Something for you?');
-  $block['something_for_you']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['something_for_you']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   return $block;
 }
