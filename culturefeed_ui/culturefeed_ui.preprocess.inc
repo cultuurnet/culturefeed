@@ -305,13 +305,13 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
   // algorithm description
   switch ($variables['event']->algorithm) {
     case "CBRecommender":
-      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van andere items die je leuk vond. " .$variables['event']->score;
+      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van gelijkaardige items die je leuk vond. <span class=score>" .$variables['event']->score . "</span>";
         break;
     case "UserBasedCF":
-      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van gelijkaardige gebruikers die dit item leuk vonden. " .$variables['event']->score;
+      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van gelijkaardige gebruikers die dit item leuk vonden. <span class=score>" .$variables['event']->score . "</span>";
         break;
     default:
-      $variables['algorithm_description'] = "Deze aanbeveling werd gegenereerd op basis van je profiel (Fijnproever, Actiezoeker, Actieve ontspanner of Ontdekker). " .$variables['event']->score;
+      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van je profiel (Fijnproever, Actiezoeker, Actieve ontspanner of Ontdekker).";
         break;
   }
 
