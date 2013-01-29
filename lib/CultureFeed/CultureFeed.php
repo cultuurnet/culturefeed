@@ -1494,6 +1494,7 @@ class CultureFeed implements ICultureFeed {
       $activity->depiction    = $object->xpath_str('depiction');
       $activity->nick         = $object->xpath_str('nick');
       $activity->creationDate = $object->xpath_time('creationDate');
+      $activity->parentActivity = $object->xpath_str('parentActivity');
 
       $activities[] = $activity;
     }

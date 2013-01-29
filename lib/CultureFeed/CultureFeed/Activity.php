@@ -73,6 +73,12 @@ class CultureFeed_Activity {
 
   const TYPE_UITPAS = 12;
 
+  const TYPE_REGULAR_CHECKIN = 13;
+
+  const TYPE_COMMENT = 14;
+
+  const TYPE_RECOMMEND = 15;
+
   /**
    * ID of the activity object.
    *
@@ -165,6 +171,13 @@ class CultureFeed_Activity {
    * @var integer
    */
   public $creationDate;
+
+  /**
+   * ID of the parent activity. Only allowed for activities of type 'comment'.
+   *
+   * @var string
+   */
+  public $parentActivity;
 
   /**
    * Convert a CultureFeed_Activity object to an array that can be used as data in POST requests that expect user info.
