@@ -351,7 +351,7 @@ abstract class DrupalCultureFeedBase {
     if (! self::isCultureFeedUser()) {
       return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
     } else {
-      return false;
+      return FALSE;
     }
 
   }
@@ -410,6 +410,12 @@ abstract class DrupalCultureFeedBase {
     return static::$logged_in_user[$application_key];
   }
 
+  /**
+   * @param string|null $application_key
+   * @param string|null $shared_secret
+   * @return ICultureFeed
+   * @throws Exception
+   */
   public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
