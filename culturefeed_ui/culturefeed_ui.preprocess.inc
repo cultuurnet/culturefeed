@@ -301,7 +301,7 @@ function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
 
   // algorithm
   $variables['algorithm'] = $variables['event']->algorithm;
-  
+
   // algorithm description
   switch ($variables['event']->algorithm) {
     case "CBRecommender":
@@ -494,7 +494,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
       default:
         $variables['profile_name'] = 'Profiel nog niet berekend';
           break;
-    }    
+    }
     $variables['profile_refresh_link'] = l('Herbereken', 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
 
@@ -558,5 +558,5 @@ function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
  * @see culturefeed-ui-something-for-you.tpl.php
  */
 function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
-  template_preprocess_culturefeed_ui_connect(&$variables);
+  template_preprocess_culturefeed_ui_connect($variables);
 }
