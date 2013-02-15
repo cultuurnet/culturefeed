@@ -396,10 +396,11 @@ class CultureFeed_Cdb_Item_Event implements CultureFeed_Cdb_IElement {
     $event->setLocation(CultureFeed_Cdb_Data_Location::parseFromCdbXml($xmlEvent->location));
 
     // Set organiser
-    $event->setOrganiser(CultureFeed_Cdb_Data_Organiser::parseFromCdbXml($xmlEvent->organiser));
+    if (!empty($xmlEvent->organiser)) {
+      $event->setOrganiser(CultureFeed_Cdb_Data_Organiser::parseFromCdbXml($xmlEvent->organiser));
+    }
     
     // Set the keywords.
-    
     if (!empty($xmlEvent->keywords)) {
       $keywords = explode(';', $xmlEvent->keywords);
       foreach ($keywords as $keyword) {
