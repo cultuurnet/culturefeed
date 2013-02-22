@@ -773,7 +773,7 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
     $location['zip'] = $location['zipcode'];
   }
 
-  $physical_address = new CultureFeed_Cdb_Data_PhysicalAddress();
+  $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
   $physical_address->setCity($location['city']);
   $physical_address->setCountry($country);
   $physical_address->setZip($location['zip']);
@@ -835,7 +835,7 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
 
     if ($update) {
       DrupalCultureFeed_EntryApi::updateEvent($event);
-      $form_state['#event_id'] = $event->getExternalId();
+      $form_state['#event_id'] = $event->getCdbId();
     }
     else {
       $form_state['#event_id'] = DrupalCultureFeed_EntryApi::createEvent($event);
@@ -951,7 +951,7 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
  */
 function entry_api_ui_delete_event_form($form, $form_state, $event) {
 
-  $form['id'] = array('#type' => 'value', '#value' => $event->getExternalId());
+  $form['id'] = array('#type' => 'value', '#value' => $event->getCdbId());
 
   return confirm_form($form,
     'Bent u zeker dat u dit event wil verwijderen?',
@@ -1011,7 +1011,7 @@ function entry_api_ui_edit_tags_form($form, $form_state, $event) {
     $event_tags = array();
   }
 
-  $form['#object_id'] = $event->getExternalId();
+  $form['#object_id'] = $event->getCdbId();
 
   if (user_access('manage lifestyle profile tags')) {
     $form['lifestyle_profile'] = array(
@@ -1075,7 +1075,7 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
   }
 
   $event = new CultureFeed_Cdb_Item_Event();
-  $event->setExternalId($form['#object_id']);
+  $event->setCdbId($form['#object_id']);
 
   try {
 
