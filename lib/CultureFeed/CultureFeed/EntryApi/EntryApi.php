@@ -74,7 +74,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    return CultureFeed_Cdb_Item_Event::parseFromCdbXml($xml);
+    $eventXml = $xml->events->event;
+
+    return CultureFeed_Cdb_Item_Event::parseFromCdbXml($eventXml);
 
   }
 
@@ -114,7 +116,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
     $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem('events', $event);
 
-    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getExternalId(), array('raw_data' => $cdb->getXml()), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->getXml()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
 
   }
@@ -141,7 +143,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   Tags to add.
    */
   public function addTagToEvent(CultureFeed_Cdb_Item_Event $event, $keywords) {
-    $this->addTags('event', $event->getExternalId(), $keywords);
+    $this->addTags('event', $event->getCdbId(), $keywords);
   }
 
   /**
@@ -153,7 +155,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   Tag to remove.
    */
   public function removeTagFromEvent(CultureFeed_Cdb_Item_Event $event, $keyword) {
-    $this->removeTag('event', $event->getExternalId(), $keyword);
+    $this->removeTag('event', $event->getCdbId(), $keyword);
   }
 
   /**
@@ -187,7 +189,6 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
 
     $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/keywords', array('keyword' => $keyword));
     $xml = $this->validateResult($result, self::CODE_KEYWORD_DELETED);
-
   }
 
   /**
@@ -197,11 +198,11 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   Result from the request.
    * @param string $valid_status_code
    *   Status code if this is a valid request.
-   * @return The parsed xml.
+   * @return CultureFeed_SimpleXMLElement The parsed xml.
    *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
-   * @throws InvalidCodeException
+   * @throws CultureFeed_InvalidCodeException
    *   If the result code was not itemCreated.
    */
   private function validateResult($result, $valid_status_code) {
