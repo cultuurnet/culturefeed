@@ -1,0 +1,8 @@
+{
+    "name": "cultuurnet/culturefeed",
+    "description": "CultuurNet culturefeed PHP library & Drupal module",
+    "license": "Apache-2.0",
+    "autoload": {
+        "classmap": ["lib/CultureFeed", "lib/OAuth"]
+    }
+}
