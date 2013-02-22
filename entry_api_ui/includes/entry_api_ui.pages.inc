@@ -749,7 +749,7 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
   $event->setCategories($categories);
 
   // Event details.
-  $detail = new Culturefeed_Cdb_Data_EventDetail();
+  $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
   if (!empty($values['short_description'])) {
     $detail->setShortDescription($values['short_description']);
