@@ -7,7 +7,9 @@ require_once dirname(__FILE__) . '/../../OAuth/OAuth.php';
 
 function culturefeed_autoload($class) {
   $file = str_replace('_', '/', $class) . '.php';
-  require_once $file;
+  if (FALSE !== stream_resolve_include_path($file)) {
+    require_once $file;
+  }
 }
 
 spl_autoload_register('culturefeed_autoload');
