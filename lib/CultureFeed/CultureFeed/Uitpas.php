@@ -294,4 +294,11 @@ interface CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Promotion_PassholderParameter $passholder
    */
   public function getPointsPromotion($id, CultureFeed_Uitpas_Promotion_PassholderParameter $passholder = NULL);
+
+  /**
+   * Register an event.
+   *
+   * @param CultureFeed_Uitpas_Event_CultureEvent $event The event data that needs to be sent over.
+   */
+  public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event);
 }
