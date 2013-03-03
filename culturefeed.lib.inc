@@ -726,16 +726,6 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
     if (!isset($userDidActivity[$nodeId][$contentType][$user])) {
       $query = new CultureFeed_SearchActivitiesQuery();
-      $query->type = array(
-        CultureFeed_Activity::TYPE_VIEW,
-        CultureFeed_Activity::TYPE_DETAIL,
-        CultureFeed_Activity::TYPE_LIKE,
-        CultureFeed_Activity::TYPE_MAIL,
-        CultureFeed_Activity::TYPE_PRINT,
-        CultureFeed_Activity::TYPE_FACEBOOK,
-        CultureFeed_Activity::TYPE_TWITTER,
-        CultureFeed_Activity::TYPE_IK_GA,
-      );
       $query->nodeId = $nodeId;
       $query->contentType = $contentType;
       $query->userId = $user;
