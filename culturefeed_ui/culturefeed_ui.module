@@ -364,6 +364,9 @@ function culturefeed_ui_block_info() {
   $block['users_likes']['info'] = t('Users who like this');
   $block['users_likes']['cache'] = DRUPAL_NO_CACHE;
 
+  $block['users_recommends']['info'] = t('Users who recommend this');
+  $block['users_recommends']['cache'] = DRUPAL_NO_CACHE;
+
   $block['users_attends']['info'] = t('Users who attend this');
   $block['users_attends']['cache'] = DRUPAL_NO_CACHE;
 

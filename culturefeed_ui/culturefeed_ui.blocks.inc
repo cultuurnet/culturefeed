@@ -287,14 +287,41 @@ function culturefeed_ui_block_users_likes_config() {
   return $config;
 }
 
+function culturefeed_ui_block_users_recommends_config() {
+  $config = array(
+    'node_types'          => array_keys(node_type_get_types()),
+    'cnapi_types'         => array('actor', 'event', 'production'),
+    'activity_type'       => CultureFeed_Activity::TYPE_RECOMMEND,
+    'block_subject'       => 'Aangeraden door',
+    'undo_link_title'     => 'Raad ik niet meer aan',
+    'do_link_title'       => 'Ook aanraden',
+    'do_first_link_title' => 'Raad dit als eerte aan',
+    'all_link_title'      => 'Toon iedereen die dit aanraadt',
+  );
+
+  return $config;
+}
+
 function culturefeed_ui_block_users_likes_is_visible() {
   $config = culturefeed_ui_block_users_likes_config();
 
   return _culturefeed_ui_block_users_activity_is_visible($config);
 }
 
+function culturefeed_ui_block_users_recommends_is_visible() {
+  $config = culturefeed_ui_block_users_recommends_config();
+
+  return _culturefeed_ui_block_users_activity_is_visible($config);
+}
+
 function culturefeed_ui_block_users_likes_view() {
   $config = culturefeed_ui_block_users_likes_config();
+
+  return _culturefeed_ui_block_users_activity_view($config);
+}
+
+function culturefeed_ui_block_users_recommends_view() {
+  $config = culturefeed_ui_block_users_recommends_config();
 
   return _culturefeed_ui_block_users_activity_view($config);
 }
