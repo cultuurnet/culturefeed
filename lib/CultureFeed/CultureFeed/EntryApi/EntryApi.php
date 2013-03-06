@@ -93,10 +93,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function createEvent(CultureFeed_Cdb_Item_Event $event) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('events', $event);
-    $cdb_xml = $cdb->getXml();
-
-    //dpm($cdb_xml);
+    $cdb->addItem($event);
+    $cdb_xml = $cdb->__toString();
 
     $result = $this->oauth_client->authenticatedPostAsXml('event', array('raw_data' => $cdb_xml), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
@@ -114,9 +112,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function updateEvent(CultureFeed_Cdb_Item_Event $event) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('events', $event);
+    $cdb->addItem($event);
 
-    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->getXml()), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
 
   }
@@ -156,6 +154,32 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    */
   public function removeTagFromEvent(CultureFeed_Cdb_Item_Event $event, $keyword) {
     $this->removeTag('event', $event->getCdbId(), $keyword);
+  }
+
+  /**
+   * Get an actor.
+   *
+   * @param string $id
+   *   ID of the actor to load.
+   *
+   * @return CultureFeed_Cdb_Item_Actor
+   * @throws CultureFeed_ParseException
+   */
+  public function getActor($id) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('actor/' . $id);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $actorXml = $xml->actors->actor;
+
+    return CultureFeed_Cdb_Item_Actor::parseFromCdbXml($actorXml);
+
   }
 
   /**
