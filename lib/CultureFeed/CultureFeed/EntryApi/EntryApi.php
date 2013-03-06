@@ -183,6 +183,58 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   }
 
   /**
+   * Create a new actor.
+   *
+   * @param CultureFeed_Cdb_Item_Actor $actor
+   *   The actor to create.
+   *
+   * @return string
+   *   The id from the newly created actor.
+   *
+   */
+  public function createActor(CultureFeed_Cdb_Item_Actor $actor) {
+
+    $cdb = new CultureFeed_Cdb_Default();
+    $cdb->addItem($actor);
+    $cdb_xml = $cdb->__toString();
+
+    $result = $this->oauth_client->authenticatedPostAsXml('actor', array('raw_data' => $cdb_xml), TRUE);
+    $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
+
+    return basename($xml->xpath_str('/rsp/link'));
+
+  }
+
+ /**
+   * Update an actor.
+   *
+   * @param CultureFeed_Cdb_Item_Actor $actor
+   *   The actor to update.
+   */
+  public function updateActor(CultureFeed_Cdb_Item_Actor $actor) {
+
+    $cdb = new CultureFeed_Cdb_Default();
+    $cdb->addItem($actor);
+
+    $result = $this->oauth_client->authenticatedPostAsXml('actor/' . $actor->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
+    $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
+
+  }
+
+  /**
+   * Delete an actor.
+   *
+   * @param string $id
+   *   ID from the actor.
+   */
+  public function deleteActor($id) {
+
+    $result = $this->oauth_client->authenticatedDeleteAsXml('actor/' . $id);
+    $xml = $this->validateResult($result, self::CODE_ITEM_DELETED);
+
+  }
+
+  /**
    * Add tags to an item.
    *
    * @param string $type
