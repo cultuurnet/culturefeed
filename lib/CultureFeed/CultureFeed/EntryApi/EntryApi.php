@@ -239,19 +239,19 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *
    * @param string $query
    *   String to search for.
-   * @param string $updated_since
-   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
    * @param int $page
    *   Page number to get.
    * @param int $page_length
    *   Items requested for current page.
    * @param string $sort
    *   Sort type.
+   * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
    *
    * @return CultureFeed_Cdb_List_Results
    */
-  public function getEvents($query, $updated_since = NULL, $page = NULL, $page_length = NULL, $sort = NULL) {
-    return $this->search('event', $query, $updated_since, $page, $page_length, $sort);
+  public function getEvents($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('event', $query, $page, $page_length, $sort, $updated_since);
   }
 
   /**
@@ -270,8 +270,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *
    * @return CultureFeed_Cdb_List_Results
    */
-  public function getProductions($query, $updated_since = NULL, $page = NULL, $page_length = NULL, $sort = NULL) {
-    return $this->search('production', $query, $updated_since, $page, $page_length, $sort);
+  public function getProductions($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('production', $query, $page, $page_length, $sort, $updated_since);
   }
 
   /**
@@ -279,19 +279,19 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *
    * @param string $query
    *   String to search for.
-   * @param string $updated_since
-   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
    * @param int $page
    *   Page number to get.
    * @param int $page_length
    *   Items requested for current page.
    * @param string $sort
    *   Sort type.
+  * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
    *
    * @return CultureFeed_Cdb_List_Results
    */
-  public function getActors($query, $updated_since = NULL, $page = NULL, $page_length = NULL, $sort = NULL) {
-    return $this->search('actor', $query, $updated_since, $page, $page_length, $sort);
+  public function getActors($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('actor', $query, $page, $page_length, $sort, $updated_since);
   }
 
   /**
@@ -299,18 +299,18 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *
    * @param string $query
    *   Query to search.
-   * @param string $updated_since
-   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21
    * @param int $page
    *   Page number to get.
    * @param int $page_length
    *   Items requested for current page.
    * @param string $sort
    *   Sort type.
+   * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21
    *
    * @return CultureFeed_Cdb_List_Results
    */
-  private function search($type, $query, $updated_since, $page, $page_length, $sort) {
+  private function search($type, $query, $page, $page_length, $sort, $updated_since) {
 
     $args = array(
       'q' => $query
@@ -325,7 +325,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
     }
 
     if ($page_length) {
-      $args['pagelength'] = $pagelength;
+      $args['pagelength'] = $page_length;
     }
 
     if ($sort) {
