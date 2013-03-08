@@ -131,13 +131,15 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $default_location,
   );
 
-  $form['organiser'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Organisatie',
-    '#autocomplete_path' => 'cnapi/autocomplete/actor',
-    '#required' => TRUE,
-    '#default_value' => $default_organiser,
-  );
+  if (module_exists('cnapi')) {
+    $form['organiser'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Organisatie',
+      '#autocomplete_path' => 'cnapi/autocomplete/actor',
+      '#required' => TRUE,
+      '#default_value' => $default_organiser,
+    );
+  }
 
   $form['what'] = array('#type' => 'container');
   $form['what']['kijken_en_luisteren'] = array(
@@ -665,22 +667,25 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
   }
 
   // Validate location.
-  $location_label = $values['location'];
-  $location = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :location", array(':location' => strtolower($location_label)))->fetchAssoc();
+  if (!empty($values['location'])) {
+    $location_label = $values['location'];
+    $location = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :location", array(':location' => strtolower($location_label)))->fetchAssoc();
 
-  if (!$location) {
-    form_set_error('location', 'Gelieve een correcte locatie in te voeren');
-    $validation_failed = TRUE;
+    if (!$location) {
+      form_set_error('location', 'Gelieve een correcte locatie in te voeren');
+      $validation_failed = TRUE;
+    }
   }
 
   // Validate organiser.
-  $organiser_label = $values['organiser'];
+  if (!empty($values['organiser'])) {
+    $organiser_label = $values['organiser'];
+    $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
 
-  $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
-
-  if (!$organiser) {
-    form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
-    $validation_failed = TRUE;
+    if (!$organiser) {
+      form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
+      $validation_failed = TRUE;
+    }
   }
 
   if (!$validation_failed) {
