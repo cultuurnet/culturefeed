@@ -683,15 +683,6 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     $validation_failed = TRUE;
   }
 
-  // Validate organiser.
-  $organiser_label = $values['organiser'];
-  $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
-
-  if (!$organiser) {
-    form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
-    $validation_failed = TRUE;
-  }
-
   if (!$validation_failed) {
     _entryapi_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
