@@ -36,19 +36,19 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    * @var string
    */
   const CODE_TRANSLATION_WITHDRAWN = 'TranslationWithdrawn';
-  
+
   /**
    * Status code when a link has been succesfully created.
    * @var string
    */
   const CODE_LINK_CREATED = 'LinkCreated';
-  
+
   /**
    * Status code when a link has been succesfully withdrawn.
    * @var string
    */
   const CODE_LINK_WITHDRAWN = 'LinkWithdrawn';
-  
+
   /**
    * Status code when the keywords are succesfully updated.
    * @var string
@@ -272,7 +272,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function updateProduction(CultureFeed_Cdb_Item_Production $production) {
     $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem($production);
-  
+
     $result = $this->oauth_client->authenticatedPostAsXml('production/' . $production->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
   }
@@ -344,7 +344,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function updateActor(CultureFeed_Cdb_Item_Actor $actor) {
     $cdb = new CultureFeed_Cdb_Default();
     $cdb->addItem($actor);
-  
+
     $result = $this->oauth_client->authenticatedPostAsXml('actor/' . $actor->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
   }
@@ -374,7 +374,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
 
   /**
    * Add tags to a production.
-   * 
+   *
    * @param CultureFeed_Cdb_Item_Production $production
    *   Production where the tags will be added to.
    * @param array $keywords
@@ -386,7 +386,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
 
   /**
    * Add tags to a actor.
-   * 
+   *
    * @param CultureFeed_Cdb_Item_Actor $actor
    *   Actor where the tags will be added to.
    * @param array $keywords
@@ -449,7 +449,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function addTranslationToProduction(CultureFeed_Cdb_Item_Production $production, $lang, $title = '', $shortDescription = '', $longDescription = '') {
     $this->addTranslation('production', $production->getCdbId(), $lang, $title, $shortDescription, $longDescription);
   }
-  
+
   /**
    * Add link to a production.
    *
@@ -464,8 +464,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    */
   public function addLinkToProduction(CultureFeed_Cdb_Item_Production $production, $link, $linktype = '', $lang = '') {
     $this->addLink('production', $production->getCdbId(), $link, $linktype, $lang);
-  }  
-  
+  }
+
   /**
    * Add link to an event.
    *
@@ -481,7 +481,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function addLinkToEvent(CultureFeed_Cdb_Item_Event $event, $link, $linktype = '', $lang = '') {
     $this->addLink('event', $event->getCdbId(), $link, $linktype, $lang);
   }
-  
+
   /**
    * Add link to an actor.
    *
@@ -624,36 +624,36 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    * @return CultureFeed_Cdb_List_Results
    */
   private function search($type, $query, $page, $page_length, $sort, $updated_since) {
-  
+
     $args = array(
       'q' => $query
     );
-  
+
     if ($updated_since) {
       $args['updatedsince'] = $updated_since;
     }
-  
+
     if ($page) {
       $args['page'] = $page;
     }
-  
+
     if ($page_length) {
       $args['pagelength'] = $page_length;
     }
-  
+
     if ($sort) {
       $args['sort'] = $sort;
     }
-  
+
     $result = $this->oauth_client->authenticatedGetAsXml($type, $args);
-  
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-  
+
     return CultureFeed_Cdb_List_Results::parseFromCdbXml($xml);
   }
 
@@ -727,7 +727,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
     $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/translations', array('lang' => $lang));
     $xml = $this->validateResult($result, self::CODE_TRANSLATION_WITHDRAWN);
   }
-  
+
   /**
    * Add Link for an item.
    *
@@ -743,7 +743,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   Language to add.
    */
   private function addLink($type, $id, $link, $linktype, $lang) {
-    $result = $this->oauth_client->authenticatedPostAsXml($type . '/' . $id . '/link', array(
+    $result = $this->oauth_client->authenticatedPostAsXml($type . '/' . $id . '/links', array(
       'link' => $link,
       'linktype' => $linktype,
       'lang' => $lang,
@@ -762,7 +762,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    *   Link itself.
    */
   private function removeLink($type, $id, $link) {
-    $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/link', array('link' => $link));
+    $result = $this->oauth_client->authenticatedDeleteAsXml($type . '/' . $id . '/links', array('link' => $link));
     $xml = $this->validateResult($result, self::CODE_LINK_WITHDRAWN);
   }
 
