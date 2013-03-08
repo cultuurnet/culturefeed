@@ -79,6 +79,66 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   }
 
   /**
+   * Search events on the entry api.
+   *
+   * @param string $query
+   *   String to search for.
+   * @param int $page
+   *   Page number to get.
+   * @param int $page_length
+   *   Items requested for current page.
+   * @param string $sort
+   *   Sort type.
+   * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
+   *
+   * @return CultureFeed_Cdb_List_Results
+   */
+  public function getEvents($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('event', $query, $page, $page_length, $sort, $updated_since);
+  }
+
+  /**
+   * Search productions on the entry api.
+   *
+   * @param string $query
+   *   Query to search.
+   * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
+   * @param int $page
+   *   Page number to get.
+   * @param int $page_length
+   *   Items requested for current page.
+   * @param string $sort
+   *   Sort type.
+   *
+   * @return CultureFeed_Cdb_List_Results
+   */
+  public function getProductions($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('production', $query, $page, $page_length, $sort, $updated_since);
+  }
+
+  /**
+   * Search actors on the entry api.
+   *
+   * @param string $query
+   *   String to search for.
+   * @param int $page
+   *   Page number to get.
+   * @param int $page_length
+   *   Items requested for current page.
+   * @param string $sort
+   *   Sort type.
+  * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21.
+   *
+   * @return CultureFeed_Cdb_List_Results
+   */
+  public function getActors($query, $page = NULL, $page_length = NULL, $sort = NULL, $updated_since = NULL) {
+    return $this->search('actor', $query, $page, $page_length, $sort, $updated_since);
+  }
+
+  /**
    * Get an event.
    *
    * @param string $id
@@ -117,10 +177,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function createEvent(CultureFeed_Cdb_Item_Event $event) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('events', $event);
-    $cdb_xml = $cdb->getXml();
-
-    //dpm($cdb_xml);
+    $cdb->addItem($event);
+    $cdb_xml = $cdb->__toString();
 
     $result = $this->oauth_client->authenticatedPostAsXml('event', array('raw_data' => $cdb_xml), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
@@ -138,9 +196,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function updateEvent(CultureFeed_Cdb_Item_Event $event) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('events', $event);
+    $cdb->addItem($event);
 
-    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->getXml()), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
 
   }
@@ -195,10 +253,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function createProduction(CultureFeed_Cdb_Item_Production $production) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('productions', $production);
-    $cdb_xml = $cdb->getXml();
-
-    //dpm($cdb_xml);
+    $cdb->addItem($production);
+    $cdb_xml = $cdb->__toString();
 
     $result = $this->oauth_client->authenticatedPostAsXml('production', array('raw_data' => $cdb_xml), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
@@ -215,9 +271,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    */
   public function updateProduction(CultureFeed_Cdb_Item_Production $production) {
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('productions', $production);
+    $cdb->addItem($production);
   
-    $result = $this->oauth_client->authenticatedPostAsXml('production/' . $production->getCdbId(), array('raw_data' => $cdb->getXml()), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('production/' . $production->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
   }
 
@@ -269,10 +325,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   public function createActor(CultureFeed_Cdb_Item_Actor $actor) {
 
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('actors', $actor);
-    $cdb_xml = $cdb->getXml();
-
-    //dpm($cdb_xml);
+    $cdb->addItem($actor);
+    $cdb_xml = $cdb->__toString();
 
     $result = $this->oauth_client->authenticatedPostAsXml('actor', array('raw_data' => $cdb_xml), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_CREATED);
@@ -289,9 +343,9 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    */
   public function updateActor(CultureFeed_Cdb_Item_Actor $actor) {
     $cdb = new CultureFeed_Cdb_Default();
-    $cdb->addItem('actors', $actor);
+    $cdb->addItem($actor);
   
-    $result = $this->oauth_client->authenticatedPostAsXml('actor/' . $actor->getCdbId(), array('raw_data' => $cdb->getXml()), TRUE);
+    $result = $this->oauth_client->authenticatedPostAsXml('actor/' . $actor->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
   }
 
@@ -457,6 +511,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
   }
 
   /**
+<<<<<<< HEAD
    * Remove tags from an production.
    *
    * @param CultureFeed_Cdb_Item_Production $production
@@ -550,6 +605,56 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
    */
   public function removeLinkFromActor(CultureFeed_Cdb_Item_Actor $actor, $link) {
     $this->removeLink('actor', $actor->getCdbId(), $link);
+  }
+
+  /**
+   * Search items on the entry api.
+   *
+   * @param string $query
+   *   Query to search.
+   * @param int $page
+   *   Page number to get.
+   * @param int $page_length
+   *   Items requested for current page.
+   * @param string $sort
+   *   Sort type.
+   * @param string $updated_since
+   *   Correct ISO date format (yyyy-m-dTH): example 2012-12-20T12:21
+   *
+   * @return CultureFeed_Cdb_List_Results
+   */
+  private function search($type, $query, $page, $page_length, $sort, $updated_since) {
+  
+    $args = array(
+      'q' => $query
+    );
+  
+    if ($updated_since) {
+      $args['updatedsince'] = $updated_since;
+    }
+  
+    if ($page) {
+      $args['page'] = $page;
+    }
+  
+    if ($page_length) {
+      $args['pagelength'] = $page_length;
+    }
+  
+    if ($sort) {
+      $args['sort'] = $sort;
+    }
+  
+    $result = $this->oauth_client->authenticatedGetAsXml($type, $args);
+  
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+  
+    return CultureFeed_Cdb_List_Results::parseFromCdbXml($xml);
   }
 
   /**

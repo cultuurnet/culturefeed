@@ -136,7 +136,8 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
   }
 
-  if ($tabs) {
+  // Detail only exists when cnapi ui is enabled.
+  if ($tabs && module_exists('cnapi_ui')) {
 
     $event = cnapi_get_event($id);
     $request_detail = array('event' => $id, 'title' => $event['detail']['nl']['title']);
