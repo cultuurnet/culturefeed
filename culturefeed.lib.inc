@@ -880,7 +880,7 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::removeLinkFromEvent()
    */
-  public static function removeTagFromEvent(CultureFeed_Cdb_Item_Event $event, $link) {
+  public static function removeLinkFromEvent(CultureFeed_Cdb_Item_Event $event, $link) {
     self::getLoggedInUserInstance()->removeLinkFromEvent($event, $link);
   }
 
@@ -890,7 +890,7 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   public static function addTranslationToEvent(CultureFeed_Cdb_Item_Event $event, $lang, $title = '', $shortDescription = '', $longDescription = '') {
     self::getLoggedInUserInstance()->addTranslationToEvent($event, $lang, $title, $shortDescription, $longDescription);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeTranslationFromEvent()
    */
@@ -904,82 +904,82 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   public static function addTagToProduction(CultureFeed_Cdb_Item_Production $production, $keywords) {
     self::getLoggedInUserInstance()->addTagToProduction($production, $keywords);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeTagFromProduction()
    */
   public static function removeTagFromProduction(CultureFeed_Cdb_Item_Production $production, $keyword) {
     self::getLoggedInUserInstance()->removeTagFromProduction($production, $keyword);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::addLinkToProduction()
    */
   public static function addLinkToProduction(CultureFeed_Cdb_Item_Production $production, $link, $linktype = '', $lang = '') {
     self::getLoggedInUserInstance()->addLinkToProduction($production, $link, $linktype, $lang);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeLinkFromProduction()
    */
-  public static function removeTagFromProduction(CultureFeed_Cdb_Item_Production $production, $link) {
+  public static function removeLinkFromProduction(CultureFeed_Cdb_Item_Production $production, $link) {
     self::getLoggedInUserInstance()->removeLinkFromProduction($production, $link);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::addTranslationToProduction()
    */
   public static function addTranslationToProduction(CultureFeed_Cdb_Item_Production $production, $lang, $title = '', $shortDescription = '', $longDescription = '') {
     self::getLoggedInUserInstance()->addTranslationToProduction($production, $lang, $title, $shortDescription, $longDescription);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeTranslationFromProduction()
    */
   public static function removeTranslationFromProduction(CultureFeed_Cdb_Item_Production $production, $lang) {
     self::getLoggedInUserInstance()->removeTranslationFromProduction($production, $lang);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::addTagToActor()
    */
   public static function addTagToActor(CultureFeed_Cdb_Item_Actor $actor, $keywords) {
     self::getLoggedInUserInstance()->addTagToActor($actor, $keywords);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeTagFromActor()
    */
   public static function removeTagFromActor(CultureFeed_Cdb_Item_Actor $actor, $keyword) {
     self::getLoggedInUserInstance()->removeTagFromActor($actor, $keyword);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::addLinkToActor()
    */
   public static function addLinkToActor(CultureFeed_Cdb_Item_Actor $actor, $link, $linktype = '', $lang = '') {
     self::getLoggedInUserInstance()->addLinkToActor($actor, $link, $linktype, $lang);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeLinkFromActor()
    */
-  public static function removeTagFromActor(CultureFeed_Cdb_Item_Actor $actor, $link) {
+  public static function removeLinkFromActor(CultureFeed_Cdb_Item_Actor $actor, $link) {
     self::getLoggedInUserInstance()->removeLinkFromActor($actor, $link);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::addTranslationToActor()
    */
   public static function addTranslationToActor(CultureFeed_Cdb_Item_Actor $actor, $lang, $title = '', $shortDescription = '', $longDescription = '') {
     self::getLoggedInUserInstance()->addTranslationToActor($actor, $lang, $title, $shortDescription, $longDescription);
   }
-  
+
   /**
    * @see CultureFeed_EntryApi::removeTranslationFromActor()
    */
   public static function removeTranslationFromActor(CultureFeed_Cdb_Item_Actor $actor, $lang) {
     self::getLoggedInUserInstance()->removeTranslationFromActor($actor, $lang);
   }
-  
+
 }
