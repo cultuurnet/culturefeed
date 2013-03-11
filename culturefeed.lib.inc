@@ -462,32 +462,30 @@ abstract class DrupalCultureFeedBase {
    * @param string $endpoint
    *   Endpoint for the client.
    */
-  public static function getOAuthClient($token, $secret, $application_key = NULL, $shared_secret = NULL) {
-
+  public static function getOAuthClient($endpoint, $token, $secret, $application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');
     }
 
-    if (!variable_get('culturefeed_proxy_enabled', FALSE)) {
-      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+    $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
 
-    }
-    else {
+    $oauth_client->setEndpoint($endpoint);
+
+    $uri = @parse_url($endpoint);
+    $proxy_server = variable_get('proxy_server', '');
+    if ($proxy_server && _drupal_http_use_proxy($uri['host'])) {
       $http_client = new CultureFeed_DefaultHttpClient();
 
-      $http_client->proxy_server   = variable_get('culturefeed_proxy_server', '');
-      $http_client->proxy_port     = variable_get('culturefeed_proxy_port', '');
-      $http_client->proxy_username = variable_get('culturefeed_proxy_username', '');
-      $http_client->proxy_password = variable_get('culturefeed_proxy_password', '');
-
-      $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
+      $http_client->setProxyServer($proxy_server);
+      $http_client->setProxyPort(variable_get('proxy_port', 8080));
+      $http_client->setProxyUsername(variable_get('proxy_username', ''));
+      $http_client->setProxyPassword(variable_get('proxy_password', ''));
 
       $oauth_client->setHttpClient($http_client);
     }
 
     return $oauth_client;
-
   }
 
 }
@@ -499,9 +497,8 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   protected static $logged_in_user;
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
-
-    $oauth_client = self::getOAuthClient($token, $secret, $application_key, $shared_secret);
-    $oauth_client->setEndpoint(variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION));
+    $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+    $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 
     $cf = new CultureFeed($oauth_client);
 
@@ -765,8 +762,7 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
     $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
     $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
 
-    $oauth_client = self::getOAuthClient($token, $secret, $application_key, $shared_secret);
-    $oauth_client->setEndpoint($endpoint);
+    $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 
     return new CultureFeed_EntryApi($oauth_client);
 
