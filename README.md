@@ -4,6 +4,15 @@ This section contains information regarding possible backwards compatibility bre
 outlines the necessary steps for upgrading third party code using the culturefeed module or
 libraries contained in it.
 
+## March 11, 2013 ##
+
+### Custom HTTP proxy settings were replaced by Drupal core proxy settings ###
+
+HTTP proxy support was added in Drupal 7.17, see http://drupal.org/node/7881 for more details.
+CultureFeed from now on takes into account the HTTP proxy settings of Drupal core and longer uses
+its own variables or settings form. To accomodate the proxy_exceptions setting of Drupal core,
+DrupalCultureFeed::getOAuthClient() now requires the base URL of the webservice as a first argument.
+
 ## February 21, 2013 ##
 
 ### Classes prefixed with CultureFeed_Cdb moved out ###
