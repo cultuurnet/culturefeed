@@ -3,7 +3,6 @@ description = CultureFeed
 package = CultureFeed
 version = VERSION
 core = 7.x
-dependencies[] = cnapi
 files[] = culturefeed.lib.inc
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php

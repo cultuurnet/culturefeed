@@ -89,77 +89,6 @@ function template_preprocess_culturefeed_ui_online_account(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-activity-summary.tpl.php.
- *
- * @see culturefeed-ui-activity-summary.tpl.php
- */
-function template_preprocess_culturefeed_ui_activity_summary(&$variables) {
-  $activity = $variables['activity'];
-  $activity instanceof CultureFeed_Activity;
-
-  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
-  $url = 'user/' . $variables['uid'];
-
-  $variables['picture'] = l($picture, $url, array('html' => TRUE));
-  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
-
-  $node = '';
-  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
-    $node = l($activity->nodeTitle, 'node/' . $activity->nodeId);
-  }
-  else {
-    $node = cnapi_url_dp2dul($activity->nodeTitle, array($activity->contentType => $activity->nodeId, 'title' => $activity->nodeTitle));
-  }
-
-  $type_prefix = '';
-  $type_suffix = '';
-
-  switch ($activity->type) {
-    case CultureFeed_Activity::TYPE_VIEW:
-      $type_prefix = 'heeft';
-      $type_suffix = 'bekeken';
-      break;
-    case CultureFeed_Activity::TYPE_DETAIL:
-      $type_prefix = 'heeft';
-      $type_suffix = 'bekeken';
-      break;
-    case CultureFeed_Activity::TYPE_LIKE:
-      $type_prefix = 'vindt';
-      $type_suffix = 'leuk';
-      break;
-    case CultureFeed_Activity::TYPE_MAIL:
-      $type_prefix = 'heeft';
-      $type_suffix = 'gemaild';
-      break;
-    case CultureFeed_Activity::TYPE_PRINT:
-      $type_prefix = 'heeft';
-      $type_suffix = 'afgedrukt';
-      break;
-    case CultureFeed_Activity::TYPE_FACEBOOK:
-      $type_prefix = 'heeft';
-      $type_suffix = 'via Facebook gedeeld';
-      break;
-    case CultureFeed_Activity::TYPE_TWITTER:
-      $type_prefix = 'heeft';
-      $type_suffix = 'via Twitter gedeeld';
-      break;
-    case CultureFeed_Activity::TYPE_IK_GA:
-      $type_prefix = 'gaat naar';
-      $type_suffix = '';
-      break;
-  }
-
-  $replace = array(
-    '!nick' => l($activity->nick, $url),
-    '!type_prefix' => $type_prefix,
-    '!type_suffix' => $type_suffix,
-    '!node' => $node,
-  );
-
-  $variables['text'] = rtrim(strtr('!nick !type_prefix !node !type_suffix', $replace), ' ') . '.';
-}
-
-/**
  * Preprocess variables for culturefeed-ui-ranked-user-summary.tpl.php.
  *
  * @see culturefeed-ui-ranked-user-summary.tpl.php
@@ -260,146 +189,6 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-event-recommendation.tpl.php.
- *
- * @see culturefeed-ui-event-recommendation.tpl.php
- */
-function template_preprocess_culturefeed_ui_event_recommendation(&$variables) {
-
-  $item = $variables['event']->recommendationItem;
-
-  // object_url
-  $request_detail = array('event' => $item->id, 'title' => $item->title);
-  $object_url = cnapi_url_dp2dua($request_detail);
-
-  // id
-  $variables['id'] = $variables['event']->itemid;
-
-  // title
-  $variables['title'] = l($item->title, $object_url['path'], $object_url['options']);
-
-  // date
-  $variables['date'] = $item->description_full;
-
-  // thumbnail
-  $variables['thumbnail'] = !empty($item->thumbnail) ? theme('image', array('path' => $item->thumbnail)) : '';
-
-  // location
-  $variables['location'] = !empty($item->location_simple) ? $item->location_simple : '';
-
-  // address
-  $variables['address'] = !empty($item->location_city) ? $item->location_city : '';
-
-  // more
-  $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
-
-  // like
-  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
-
-  // remove
-  $variables['remove_link'] = !empty($variables['links']['remove']) ? $variables['links']['remove'] : '';
-
-  // algorithm
-  $variables['algorithm'] = $variables['event']->algorithm;
-
-  // algorithm description
-  switch ($variables['event']->algorithm) {
-    case "CBRecommender":
-      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van gelijkaardige items die je leuk vond. <span class=score>" .$variables['event']->score . "</span>";
-        break;
-    case "UserBasedCF":
-      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van gelijkaardige gebruikers die dit item leuk vonden. <span class=score>" .$variables['event']->score . "</span>";
-        break;
-    default:
-      $variables['algorithm_description'] = "Deze tip werd gegenereerd op basis van je profiel (Fijnproever, Actiezoeker, Actieve ontspanner of Ontdekker).";
-        break;
-  }
-
-}
-
-/**
- * Preprocess variables for culturefeed-ui-top-event.tpl.php.
- *
- * @see culturefeed-ui-top-event.tpl.php
- */
-function template_preprocess_culturefeed_ui_top_event(&$variables) {
-
-  $event = $variables['event'];
-
-  // object_url
-  $request_detail = array('event' => $event['cdbid'], 'title' => $event['title']);
-  $object_url = cnapi_url_dp2dua($request_detail);
-
-  // id
-  $variables['id'] = $event['cdbid'];
-
-  // title
-  $variables['title'] = l($event['title'], $object_url['path'], $object_url['options']);
-
-  // date
-  $variables['date'] = $event['calendarsummary'];
-
-  // thumbnail
-  $variables['thumbnail'] = !empty($event['thumbnail']) ? theme('image', array('path' => $event['thumbnail'])) : '';
-
-  // location
-  $variables['location'] = !empty($event['location']) ? $event['location'] : '';
-
-  // address
-  $variables['address'] = !empty($event['address']) ? $event['address'] : '';
-
-  // city
-  $variables['city'] = !empty($event['city']) ? $event['city'] : '';
-
-  // more
-  $variables['more'] = l('Meer info', $object_url['path'], $object_url['options']);
-
-  // like
-//  $variables['like_link'] = !empty($variables['links']['like']) ? $variables['links']['like'] : '';
-
-}
-
-/**
- * Preprocess variables for culturefeed-ui-related-events.tpl.php.
- *
- * @see culturefeed-ui-related-events.tpl.php
- */
-function template_preprocess_culturefeed_ui_related_events(&$variables) {
-  // events
-  $items = array();
-
-  foreach ($variables['events'] as $event_info) {
-    $items[] = theme('culturefeed_ui_event_recommendation', array('event' => $event_info, 'heading_level' => 3));
-  }
-
-  $variables['event_list'] = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'event-recommendation-list event-teaser-list')));
-
-  // links
-  $links = array();
-
-  // links : headings
-  if (!empty($variables['headings'])) {
-    foreach ($variables['headings'] as $heading) {
-      $request = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
-      $links[] = cnapi_url_dp2dul('Meer ' . $heading['name'], $request);
-    }
-  }
-
-  // links : zip
-  if (!empty($variables['cityid'])) {
-    $cities = cnapi_get_cities();
-    $city = $cities[$variables['cityid']];
-
-    if ($city) {
-      $request = array('context' => 'event', 'query' => array('cityid' => $variables['cityid']));
-      $links[] = cnapi_url_dp2dul('Meer in ' . $city['zip'] . ' - ' . $city['name'], $request);
-    }
-  }
-
-  $variables['link_list'] = theme('item_list', array('items' => $links));
-}
-
-/**
  * Preprocess variables for culturefeed-ui-related-events.tpl.php.
  *
  * @see culturefeed-ui-related-events.tpl.php
@@ -423,7 +212,6 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   // contextual links
   $contextual_links = array(
     l('Bewerk profiel', 'culturefeed/profile/edit'),
-    l('Mijn aanbevelingen', 'culturefeed/recommendations'),
     l('Beheer mijn acties', 'culturefeed/activities'),
     l('Bewerk account', 'culturefeed/account/edit'),
   );
@@ -497,9 +285,6 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     }
     $variables['profile_refresh_link'] = l('Herbereken', 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
-
-  // recommendations
-  $variables['recommendations_link'] = l('Beoordeel nog enkele tips', 'culturefeed/recommendations', array('attributes' => array('class' => array('recommendations-link'))));
 
   // facebook toggle
   $variables['facebook_privacy_toggle'] = NULL;

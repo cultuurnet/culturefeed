@@ -29,20 +29,5 @@ function culturefeed_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
   );
 
-  $sort_options = array(
-    CultureFeed::TOP_EVENTS_SORT_LIKE     => t('Likes'),
-    CultureFeed::TOP_EVENTS_SORT_FACEBOOK => t('Facebook shares'),
-    CultureFeed::TOP_EVENTS_SORT_TWITTER  => t('Twitter shares'),
-    CultureFeed::TOP_EVENTS_SORT_ATTEND   => t('Attends'),
-    CultureFeed::TOP_EVENTS_SORT_ACTIVE   => t('Aggregate'),
-  );
-
-  $form['culturefeed_ui_block_top_events_sort'] = array(
-    '#type' => 'select',
-    '#title' => t('Top events : sort by'),
-    '#options' => $sort_options,
-    '#default_value' => variable_get('culturefeed_ui_block_top_events_sort', CultureFeed::TOP_EVENTS_SORT_ACTIVE),
-  );
-
   return system_settings_form($form);
 }

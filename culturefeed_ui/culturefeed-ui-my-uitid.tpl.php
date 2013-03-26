@@ -55,9 +55,6 @@
     <span class="number"><?php print $goto; ?> x</span> <span>ga ik naar toe</span>
   </div>
 <?php endif; ?>
-<?php if ($recommendations_link): ?>
-  <?php print $recommendations_link; ?>
-<?php endif; ?>
 
 <div class="clearfix"></div>
 
