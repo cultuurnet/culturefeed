@@ -66,6 +66,20 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
         $price->ageRange->ageTo = $ageTo;
       }
     }
+    
+    $voucherType = $object->xpath('voucherType', FALSE);
+    if ($voucherType) {
+      $name = $voucherType->xpath_str('name', FALSE);
+      if ($name) {
+        $price->voucherType->name = $name;
+      }
+
+      $prefix = $voucherType->xpath_str('prefix', FALSE);
+      if ($prefix) {
+        $price->voucherType->prefix = $prefix;
+      }
+    }
+
 
     return $price;
   }
