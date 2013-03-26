@@ -1,0 +1,56 @@
+<?php
+/**
+ * @file
+ * Performs searches to the Cultuurnet api.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_search_menu() {
+  
+  $items = array();
+  
+  $items['agenda/s'] = array(
+    'title' => 'Uitgebreid zoeken',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_search_advanced_search_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_search_block_info() {
+  $blocks = array();
+  
+  $blocks['advanced-search'] = array(
+    'info' => t('Advanced search field'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_search_block_view($delta) {
+
+  $query = drupal_get_query_parameters();
+  
+  switch ($delta) {
+    
+    case 'advanced-search':
+      $block['subject'] = '';
+      $block['content'] = drupal_get_form('culturefeed_search_block_form');
+      break;
+      
+    default:
+  }
+  
+}
