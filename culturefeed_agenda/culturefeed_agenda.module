@@ -13,29 +13,26 @@
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
 
 /**
- * Implements hook_menu().
- */
-function culturefeed_agenda_menu() {
-  
-  $items = array();
-  
-  $items['agenda/search'] = array(
-    'title' => 'Agenda',
-    'page callback' => 'culturefeed_agenda_search_page',
-    //'page arguments' => array(''),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_theme().
  */
 function culturefeed_agenda_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_agenda') . '/theme';
+
   return array(
+    'culturefeed_event_summary' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-event-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_event' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-event',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
     'culturefeed_search_page' => array(
       'variables' => array('searchresult' => NULL),
       'template' => 'culturefeed-search-page',
@@ -45,6 +42,59 @@ function culturefeed_agenda_theme() {
       'template' => 'culturefeed-searchresult-item',
     ),
   );
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_agenda_menu() {
+
+  $items = array();
+
+  // Menu path for search.
+  $items['agenda/search'] = array(
+    'title' => 'Agenda',
+    'page callback' => 'culturefeed_agenda_search_page',
+    //'page arguments' => array(''),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Menu path for detail pages.
+  $items['agenda/a/%/%culturefeed_agenda_actor'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'culturefeed_agenda_detail_page',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['agenda/e/%/%culturefeed_agenda_event'] = array(
+    'title callback' => 'culturefeed_ui_agenda_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'culturefeed_agenda_detail_page',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['agenda/p/%/%culturefeed_agenda_production'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'culturefeed_agenda_detail_page',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+
 }
 
 /**
@@ -52,7 +102,7 @@ function culturefeed_agenda_theme() {
  */
 function culturefeed_agenda_block_info() {
   $blocks = array();
-  
+
   $blocks['advanced-search'] = array(
     'info' => t('Advanced search field'),
     'cache' => DRUPAL_NO_CACHE,
@@ -69,17 +119,38 @@ function culturefeed_agenda_block_view($delta) {
   //$query = drupal_get_query_parameters();
   dsm($delta);
   switch ($delta) {
-    
+
     case 'advanced-search':
       $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_agenda_block_form');
       return $block;
       break;
-      
+
     default:
   }
-  
+
+}
+
+/**
+ * Load an event from the api.
+ */
+function culturefeed_agenda_event_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
+}
+
+/**
+ * Load an actor from the api.
+ */
+function culturefeed_agenda_actor_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
+}
+
+/**
+ * Load a production from the api.
+ */
+function culturefeed_agenda_production_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
 }
 
 /**

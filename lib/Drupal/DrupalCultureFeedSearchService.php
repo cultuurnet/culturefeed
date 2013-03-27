@@ -1,6 +1,6 @@
 <?php
 /**
- * @file 
+ * @file
  * DrupalCultureFeedSearchService
  */
 
@@ -21,6 +21,11 @@ class DrupalCultureFeedSearchService {
    */
   private $service = NULL;
   
+  /**
+   * Constructor
+   * 
+   * @param ConsumerCredentials $consumerCredentials
+   */
   private function __construct(ConsumerCredentials $consumerCredentials) {
     
     $endpoint = variable_get('culturefeed_api_location_v2', CULTUREFEED_API_LOCATION_V2);
@@ -39,25 +44,23 @@ class DrupalCultureFeedSearchService {
   
   /**
    * getClient().
-   * 
+   *
    * @param ConsumerCredentials $consumerCredentials
    * @return Ambigous <CultureFeed, DrupalCultureFeed_Cache>
    */
   public static function getClient(ConsumerCredentials $consumerCredentials) {
-
     if (!self::$searchService) {
       self::$searchService = new DrupalCultureFeedSearchService($consumerCredentials);
     }
     
     return self::$searchService;
-    
   }
-  
+
   /**
    * Executes a search call to the CultureFeed Search API V2.
    */
   public function search(Array $parameters = array()) {
     return $this->service->search($parameters);
   }
-  
+
 }
