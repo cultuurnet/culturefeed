@@ -103,8 +103,8 @@ function culturefeed_agenda_menu() {
 function culturefeed_agenda_block_info() {
   $blocks = array();
 
-  $blocks['advanced-search'] = array(
-    'info' => t('Advanced search field'),
+  $blocks['culturefeed-search-box'] = array(
+    'info' => t('Culturefeed search box'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -117,19 +117,30 @@ function culturefeed_agenda_block_info() {
 function culturefeed_agenda_block_view($delta) {
 
   //$query = drupal_get_query_parameters();
-  dsm($delta);
   switch ($delta) {
 
-    case 'advanced-search':
+    case 'culturefeed-search-box':
       $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = drupal_get_form('culturefeed_agenda_block_form');
+      $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
       return $block;
       break;
 
     default:
   }
 
+}
+
+/**
+ * Implements hook_culturefeed_search_type_info().
+ */
+function culturefeed_agenda_culturefeed_search_type_info() {
+  return array(
+    'activiteiten' => array(
+      'path' => 'agenda/search',
+      'title' => 'Activiteiten',
+    ),
+  );
 }
 
 /**

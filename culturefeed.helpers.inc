@@ -278,3 +278,11 @@ function culturefeed_search_item_load($cdb_id) {
   return reset($items);
 
 }
+
+/**
+ * Load all searchable head types.
+ */
+function culturefeed_get_searchable_types() {
+  $options = module_invoke_all('culturefeed_search_type_info');
+  return $options;
+}
