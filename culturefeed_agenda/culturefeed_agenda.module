@@ -2,6 +2,12 @@
 /**
  * @file
  * Performs searches to the Cultuurnet api.
+ * 
+ * @todo 
+ * - Remove the searchpoc helper functions
+ * - Fix the function searchpoc_activity_recommend_link so that the function
+ *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
+ * 
  */
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
@@ -23,6 +29,22 @@ function culturefeed_agenda_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_agenda_theme() {
+  return array(
+    'culturefeed_search_page' => array(
+      'variables' => array('searchresult' => NULL),
+      'template' => 'culturefeed-search-page',
+    ),
+    'culturefeed_searchresult_item' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-searchresult-item',
+    ),
+  );
 }
 
 /**
@@ -58,4 +80,13 @@ function culturefeed_agenda_block_view($delta) {
     default:
   }
   
+}
+
+/**
+ * Preprocess function for the search page main section.
+ * 
+ * @param array $vars
+ */
+function culturefeed_agenda_culturefeed_search_page_preprocess(&$vars) {
+  dsm($vars);
 }

@@ -83,7 +83,7 @@ class DrupalCultureFeedSearchService_Cache {
    * Executes a search call to the CultureFeed Search API V2.
    */
   public function search(Array $parameters = array()) {
-    $this->realSearchService->search($parameters);
+    return $this->realSearchService->search($parameters);
   }
   
 }

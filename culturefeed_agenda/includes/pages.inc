@@ -4,6 +4,7 @@
  * Defines page callbacks which access the Search api.
  */
 
+
 /**
  * Page callback to search.
  */
@@ -74,11 +75,11 @@ function culturefeed_agenda_search_page() {
       $item = '"' . str_replace('"', '\"', $item) . '"';
     });
   
-      $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
-      // tag this so we can exclude when calculating facets
-      $facetFilterQuery->setTags(array($facetFieldName));
-  
-      $parameters[] = $facetFilterQuery;
+    $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
+    // tag this so we can exclude when calculating facets
+    $facetFilterQuery->setTags(array($facetFieldName));
+
+    $parameters[] = $facetFilterQuery;
   }
   
   $parameters[] = $themeFacet;
@@ -97,15 +98,17 @@ function culturefeed_agenda_search_page() {
   
   pager_default_initialize($result->getTotalCount(), $limit);
   
-  $build = array(
-    'results' => array(
-      '#type' => 'markup',
-      '#markup' => theme('searchpoc_list', array('items' => $result->getItems())),
-    ),
+  $build = array();
+
+  $build['results'] = array(
+    '#theme' => 'culturefeed_search_page',
+    '#searchresult' => $result,
+    //'#type' => 'markup',
+    //'#markup' => theme('culturefeed_search_page', array('searchresult' => $results)),
   );
   
   if ($result->getTotalCount() > 0) {
-    
+
     $end = $start + $result->getCurrentCount();
     $args = array(
       '@range' => ($start + 1) . '-' . $end,
