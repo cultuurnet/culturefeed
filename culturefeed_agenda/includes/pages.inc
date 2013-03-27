@@ -10,7 +10,7 @@
  */
 function culturefeed_agenda_search_page() {
 
-  global $facetingComponent, $searchpoc_facets;
+  global $facetingComponent, $culturefeed_agenda_facets;
 
   $args = $_GET;
   $params = drupal_get_query_parameters();

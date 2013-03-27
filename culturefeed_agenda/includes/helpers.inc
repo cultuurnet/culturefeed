@@ -6,7 +6,7 @@
  * @param CultuurNet\Search\ActivityStatsExtendedEntity $activityStatsExtendedEntity
  * @return string
  */
-function searchpoc_activity_recommend_link(\CultuurNet\Search\ActivityStatsExtendedEntity $activityStatsExtendedEntity) {
+function culturefeed_agenda_activity_recommend_link(\CultuurNet\Search\ActivityStatsExtendedEntity $activityStatsExtendedEntity) {
   return "TODO: recommended link";
   
   $user_did_this = FALSE;
@@ -83,7 +83,7 @@ function searchpoc_activity_recommend_link(\CultuurNet\Search\ActivityStatsExten
  * @param CultureFeed_Cdb_Item_Event $event
  * @return array()
  */
-function searchpoc_get_categories($type, CultureFeed_Cdb_Item_Event $event) {
+function culturefeed_agenda_get_categories($type, CultureFeed_Cdb_Item_Event $event) {
   $categories = array();
   /* @var CultureFeed_Cdb_Data_Category $category */
   foreach ($event->getCategories() as $category) {

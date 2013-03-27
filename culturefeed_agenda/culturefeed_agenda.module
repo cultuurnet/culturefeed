@@ -4,8 +4,7 @@
  * Performs searches to the Cultuurnet api.
  * 
  * @todo 
- * - Remove the searchpoc helper functions
- * - Fix the function searchpoc_activity_recommend_link so that the function
+ * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
  *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
  * - check if it wouldn't be better to just use the convenience of 
  *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare 
