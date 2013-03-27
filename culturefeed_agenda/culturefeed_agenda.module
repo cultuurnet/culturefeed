@@ -7,6 +7,30 @@
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
 
 /**
+ * Implements hook_theme().
+ */
+function culturefeed_agenda_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_agenda') . '/theme';
+
+  return array(
+    'culturefeed_event_summary' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-event-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_event' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-event',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+  );
+
+}
+
+/**
  * Implements hook_menu().
  */
 function culturefeed_agenda_menu() {
@@ -24,30 +48,30 @@ function culturefeed_agenda_menu() {
   );
 
   // Menu path for detail pages.
-  $items['agenda/a/%/%culturefeed_ui_agenda_actor'] = array(
-    'title callback' => 'culturefeed_ui_agenda_detail_title',
+  $items['agenda/a/%/%culturefeed_agenda_actor'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
     'title arguments' => array(3),
-    'page callback' => 'culturefeed_ui_agenda_detail_page',
+    'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
 
-  $items['agenda/e/%/%culturefeed_ui_agenda_event'] = array(
+  $items['agenda/e/%/%culturefeed_agenda_event'] = array(
     'title callback' => 'culturefeed_ui_agenda_detail_title',
     'title arguments' => array(3),
-    'page callback' => 'culturefeed_ui_agenda_detail_page',
+    'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
 
-  $items['agenda/p/%/%culturefeed_ui_agenda_production'] = array(
-    'title callback' => 'culturefeed_ui_agenda_detail_title',
+  $items['agenda/p/%/%culturefeed_agenda_production'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
     'title arguments' => array(3),
-    'page callback' => 'culturefeed_ui_agenda_detail_page',
+    'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -55,6 +79,7 @@ function culturefeed_agenda_menu() {
   );
 
   return $items;
+
 }
 
 /**
@@ -95,20 +120,20 @@ function culturefeed_agenda_block_view($delta) {
 /**
  * Load an event from the api.
  */
-function culturefeed_agenda_event_load($id) {
-  return culturefeed_search_item_load($id);
+function culturefeed_agenda_event_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
 }
 
 /**
  * Load an actor from the api.
  */
-function culturefeed_agenda_actor_load($id) {
-  return culturefeed_search_item_load($id);
+function culturefeed_agenda_actor_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
 }
 
 /**
  * Load a production from the api.
  */
-function culturefeed_agenda_production_load($id) {
-  return culturefeed_search_item_load($id);
+function culturefeed_agenda_production_load($cdb_id) {
+  return culturefeed_search_item_load($cdb_id);
 }

@@ -258,7 +258,7 @@ function culturefeed_get_search_service() {
  * @param $cdb_id
  *   Cdb id to load.
  * @return mixed
- *   FALSE if not found, otherwise CultureFeed_Cdb_Item_Base.
+ *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_search_item_load($cdb_id) {
 
@@ -268,12 +268,12 @@ function culturefeed_search_item_load($cdb_id) {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $queryParameter = new \CultuurNet\Search\Parameter\Query($cdb_id);
 
+  $queryParameter->setLocalParam('type', 'term');
   $queryParameter->setLocalParam('f', 'cdbid');
   $parameters[] = $queryParameter;
   $result = $search_service->search($parameters);
 
   $items = $result->getItems();
-
 
   return reset($items);
 
