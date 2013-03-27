@@ -108,8 +108,6 @@ function culturefeed_agenda_search_page() {
     '#theme' => 'culturefeed_search_page',
     '#searchresult' => $result,
     '#sortorder_form' => $sortorder_form,
-    //'#type' => 'markup',
-    //'#markup' => theme('culturefeed_search_page', array('searchresult' => $results)),
   );
 
   if ($result->getTotalCount() > 0) {

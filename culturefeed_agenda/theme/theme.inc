@@ -34,7 +34,8 @@ function _template_preprocess_culturefeed_agenda(&$variables) {
   $item = $variables['item'];
 
   $cdb_item = $item->getEntity();
-  $details = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  //$details = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  $details = $cdb_item->getDetailByLanguage($language->language);
 
   $variables['title'] = $details->getTitle();
 

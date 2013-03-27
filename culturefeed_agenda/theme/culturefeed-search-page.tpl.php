@@ -18,6 +18,9 @@ else {
   }
   
   foreach ($variables['searchresult']->getItems() as $item) {
-    print theme('culturefeed_searchresult_item', array('item' => $item));
+    $entity = $item->getEntity();
+    if ($entity instanceof CultureFeed_Cdb_Item_Event) {
+      print theme('culturefeed_event_summary', array('item' => $item));
+    }
   }
 }
