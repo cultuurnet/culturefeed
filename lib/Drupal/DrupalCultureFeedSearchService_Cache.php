@@ -4,21 +4,45 @@
  * Drupal cache layer for the CultureFeed Search Service.
  */
 
+use \CultuurNet\Search\Guzzle\Service;
+use \CultuurNet\Auth\ConsumerCredentials;
+
 /**
  * DrupalCultureFeedSearchService_Cache
  */
 class DrupalCultureFeedSearchService_Cache {
 
+  /**
+   * @var Integer
+   */
   protected $loggedInUserId;
 
+  /**
+   * @var \CultuurNet\Search\Guzzle\Service
+   */
   protected $realSearchService;
   
-  public function __construct(CultureFeed $realSearchService, $loggedInUserId) {
+  /**
+   * Consumer.
+   * @var \CultuurNet\Auth\ConsumerCredentials
+   */
+  protected $consumer;
+  
+  /**
+   * Constructor.
+   * 
+   * @param Service $realSearchService
+   * @param ConsumerCredentials $consumerCredentials
+   * @param Integer $loggedInUserId
+   */
+  public function __construct(Service $realSearchService, 
+      $consumerCredentials, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
+    $this->consumerCredentials = $consumerCredentials;
     $this->realSearchService = $realSearchService;
   }
   
-  public function getRealCultureFeed() {
+  public function getRealSearchService() {
     return $this->realSearchService();
   }
   
@@ -27,8 +51,7 @@ class DrupalCultureFeedSearchService_Cache {
   }
   
   protected function getCacheSuffix() {
-    $consumer = $this->getConsumer();
-    return sprintf(':%s:%s', $consumer->getKey(), $consumer->getSecret());
+    return sprintf(':%s:%s', $this->getConsumer()->getKey(), $this->getConsumer()->getSecret());
   }
   
   protected function getCacheCid($cid) {
@@ -49,15 +72,18 @@ class DrupalCultureFeedSearchService_Cache {
     cache_clear_all($cid, 'cache_culturefeed', $wildcard);
   }
   
+  /**
+   * @return ConsumerCredentials
+   */
   protected function getConsumer() {
-    $this->realSearchService->getClient()->getConsumer();
+    $this->consumer;
   }
   
   /**
    * Executes a search call to the CultureFeed Search API V2.
    */
-  public function search() {
-    
+  public function search(Array $parameters = array()) {
+    $this->realSearchService->search($parameters);
   }
   
 }

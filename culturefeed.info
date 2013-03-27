@@ -79,6 +79,7 @@ files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
 
 files[] = lib/Drupal/DrupalCultureFeedSearchService.php
+files[] = lib/Drupal/DrupalCultureFeedSearchService_Cache.php
 
 configure = admin/config/services/culturefeed
 
