@@ -7,6 +7,10 @@
  * - Remove the searchpoc helper functions
  * - Fix the function searchpoc_activity_recommend_link so that the function
  *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
+ * - check if it wouldn't be better to just use the convenience of 
+ *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare 
+ *   the searchable types, it can have the search block, the sortorder block/functions, ...
+ * -
  * 
  */
 
@@ -34,9 +38,31 @@ function culturefeed_agenda_theme() {
     ),
 
     'culturefeed_search_page' => array(
-      'variables' => array('searchresult' => NULL),
+      'variables' => array('searchresult' => NULL, 'sortorder_form' => NULL),
       'template' => 'culturefeed-search-page',
+      'path' => $path,
+      'file' => 'theme.inc',
     ),
+    'culturefeed_search_facets_list' => array(
+      'variables' => array(
+        'facet' => NULL, 'path' => NULL, 'query' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_facet' => array(
+      'variables' => array(
+        'name' => NULL,
+        'count' => 0,
+        'active' => FALSE,
+        'url' => NULL,
+      ),
+      'template' => 'culturefeed-search-facet',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    
+    // @todo check where to merge this with (item or event?)
     'culturefeed_searchresult_item' => array(
       'variables' => array('item' => NULL),
       'template' => 'culturefeed-searchresult-item',
@@ -104,8 +130,18 @@ function culturefeed_agenda_block_info() {
   $blocks = array();
 
   $blocks['culturefeed-search-box'] = array(
-    'info' => t('Culturefeed search box'),
+    'info' => t('Culturefeed search: search box'),
     'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['culturefeed-search-sortorder'] = array(
+    'info' => t('Culturefeed search: sort order filter'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
+  $blocks['culturefeed-search-facets'] = array(
+    'info' => t('Culturefeed search: search facets'),
+    'cache' => DRUPAL_CACHE_PER_USER,
   );
 
   return $blocks;
@@ -116,18 +152,32 @@ function culturefeed_agenda_block_info() {
  */
 function culturefeed_agenda_block_view($delta) {
 
-  //$query = drupal_get_query_parameters();
+  $block = array();
+  
   switch ($delta) {
 
     case 'culturefeed-search-box':
       $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
-      return $block;
+      break;
+      
+    case 'culturefeed-search-sortorder':
+      $block['subject'] = '';
+      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
+      $block['content'] = drupal_get_form('culturefeed_agenda_search_sortorder_form');
+      break;
+      
+    case 'culturefeed-search-facets':
+      $block['subject'] = '';
+      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
+      $block['content'] = culturefeed_agenda_search_facets_block();
       break;
 
     default:
   }
+  
+  return $block;
 
 }
 
@@ -162,13 +212,4 @@ function culturefeed_agenda_actor_load($cdb_id) {
  */
 function culturefeed_agenda_production_load($cdb_id) {
   return culturefeed_search_item_load($cdb_id);
-}
-
-/**
- * Preprocess function for the search page main section.
- * 
- * @param array $vars
- */
-function culturefeed_agenda_culturefeed_search_page_preprocess(&$vars) {
-  dsm($vars);
 }
