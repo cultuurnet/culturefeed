@@ -13,10 +13,10 @@ function culturefeed_agenda_menu() {
   
   $items = array();
   
-  $items['agenda/s'] = array(
-    'title' => 'Uitgebreid zoeken',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_agenda_advanced_search_form'),
+  $items['agenda/search'] = array(
+    'title' => 'Agenda',
+    'page callback' => 'culturefeed_agenda_search_page',
+    //'page arguments' => array(''),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',

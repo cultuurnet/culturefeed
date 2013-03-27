@@ -8,6 +8,7 @@ define('CULTUREFEED_CACHE_ENABLED', 1);
 define('CULTUREFEED_CACHE_EXPIRES', 3600);
 
 define('CULTUREFEED_API_LOCATION', 'http://test.UiTiD.be/culturefeed/rest/');
+define('CULTUREFEED_API_LOCATION_V2', 'http://test.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_ENTRY_API_PATH', 'entry/test.rest.uitdatabank.be/api/v1/');
 
 /**

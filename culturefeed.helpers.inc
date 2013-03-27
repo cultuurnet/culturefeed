@@ -237,3 +237,20 @@ function culturefeed_is_connected($application_key = NULL) {
 
   return $account && isset($account->tokens) && !empty($account->tokens[$application_key]);
 }
+
+/**
+ * searchpoc_get_search_service().
+ * 
+ * Gets a service as a singleton.
+ * 
+ * @return \CultuurNet\Search\ServiceInterface
+ */
+function searchpoc_get_search_service() {
+  
+  $consumerCredentials = new \CultuurNet\Auth\ConsumerCredentials();
+  $consumerCredentials->setKey(variable_get('culturefeed_api_application_key', ''));
+  $consumerCredentials->setSecret(variable_get('culturefeed_api_application_secret', ''));
+  
+  return DrupalCultureFeedSearchService::getClient($consumerCredentials);
+  
+}

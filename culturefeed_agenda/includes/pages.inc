@@ -1,14 +1,13 @@
 <?php
 /**
  * @file 
- * Defines page callbacks which access the 
+ * Defines page callbacks which access the Search api.
  */
 
 /**
- * Page callback to search advanced.
+ * Page callback to search.
  */
-function culturefeed_agenda_advanced_search_form() {
-  $form = array();
+function culturefeed_agenda_search_page() {
   
   global $facetingComponent, $searchpoc_facets;
   
@@ -38,7 +37,6 @@ function culturefeed_agenda_advanced_search_form() {
   $q = array();
   
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  
   
   switch ($params['sort']) {
   
@@ -99,7 +97,7 @@ function culturefeed_agenda_advanced_search_form() {
   
   pager_default_initialize($result->getTotalCount(), $limit);
   
-  $form = array(
+  $build = array(
     'results' => array(
       '#type' => 'markup',
       '#markup' => theme('searchpoc_list', array('items' => $result->getItems())),
@@ -107,6 +105,7 @@ function culturefeed_agenda_advanced_search_form() {
   );
   
   if ($result->getTotalCount() > 0) {
+    
     $end = $start + $result->getCurrentCount();
     $args = array(
       '@range' => ($start + 1) . '-' . $end,
@@ -114,7 +113,7 @@ function culturefeed_agenda_advanced_search_form() {
     $pager_summary = format_plural($result->getTotalCount(), '@range van @count resultaat', '@range van @count resultaten', $args);
     $pager_summary = '<div class="pager-summary">' . $pager_summary . '</div>';
   
-    $form['pager-container'] =  array(
+    $build['pager-container'] =  array(
       '#type' => 'container',
       '#attributes' => array(),
       'pager_summary' => array(
@@ -128,5 +127,5 @@ function culturefeed_agenda_advanced_search_form() {
     );
   }
   
-  return $form;
+  return $build;
 }

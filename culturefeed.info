@@ -3,10 +3,6 @@ description = CultureFeed
 package = CultureFeed
 version = VERSION
 core = 7.x
-<<<<<<< Updated upstream
-=======
-;dependencies[] = cnapi
->>>>>>> Stashed changes
 files[] = culturefeed.lib.inc
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php
@@ -81,5 +77,8 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/IEntryApi.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
+
+files[] = lib/Drupal/DrupalCultureFeedSearchService.php
+
 configure = admin/config/services/culturefeed
 
