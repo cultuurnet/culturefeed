@@ -1,5 +1,0 @@
-name = CultureFeed Search
-description = CultureFeed Search
-package = CultureFeed
-version = VERSION
-core = 7.x

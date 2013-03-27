@@ -3,6 +3,10 @@ description = CultureFeed
 package = CultureFeed
 version = VERSION
 core = 7.x
+<<<<<<< Updated upstream
+=======
+;dependencies[] = cnapi
+>>>>>>> Stashed changes
 files[] = culturefeed.lib.inc
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php

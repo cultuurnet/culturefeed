@@ -4,7 +4,7 @@
  * Defines blocks which add integration to culturefeed.
  */
 
-function culturefeed_search_block_form($form, & $form_state) {
+function culturefeed_agenda_block_form($form, & $form_state) {
   
   $form['search'] = array(
     '#type' => 'textfield',
