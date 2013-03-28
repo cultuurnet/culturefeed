@@ -64,17 +64,14 @@ function culturefeed_agenda_search_page() {
       $q[] = '(comment_count:0 OR comment_count:[1 TO *]^999)';
   }
 
-  $themeFacet = $facetingComponent->facetField('category_theme_name');
-  $themeFacet->setExcludes(array('category_theme_name'));
-  $whereFacet = $facetingComponent->facetField('city');
-  $whereFacet->setExcludes(array('city'));
+  $categoryFacet = $facetingComponent->facetField('category');
 
   foreach ($params['facet'] as $facetFieldName => $facetFilter) {
     // @todo check escaping properly
     array_walk($facetFilter, function (&$item) {
       $item = '"' . str_replace('"', '\"', $item) . '"';
     });
-  
+
     $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
     // tag this so we can exclude when calculating facets
     $facetFilterQuery->setTags(array($facetFieldName));
@@ -82,8 +79,7 @@ function culturefeed_agenda_search_page() {
     $parameters[] = $facetFilterQuery;
   }
 
-  $parameters[] = $themeFacet;
-  $parameters[] = $whereFacet;
+  $parameters[] = $categoryFacet;
 
   if ('' == $params['search']) {
     $params['search'] = '*';
@@ -97,9 +93,9 @@ function culturefeed_agenda_search_page() {
   $facetingComponent->obtainResults($result);
 
   pager_default_initialize($result->getTotalCount(), $limit);
-  
+
   drupal_set_title($result->getTotalCount() . ' activiteiten gevonden');
-  
+
   $build = array();
 
   $build['results'] = array(
