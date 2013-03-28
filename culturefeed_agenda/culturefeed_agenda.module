@@ -143,6 +143,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_CACHE_PER_USER,
   );
 
+  $blocks['culturefeed-search-activefilters'] = array(
+    'info' => t('Culturefeed search: active filters'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
   return $blocks;
 }
 
@@ -171,6 +176,12 @@ function culturefeed_agenda_block_view($delta) {
       $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
       $block['content'] = culturefeed_agenda_search_facets_block();
+      break;
+      
+    case 'culturefeed-search-activefilters':
+      $block['subject'] = 'Je zocht op:';
+      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
+      $block['content'] = culturefeed_agenda_search_active_filters_block();
       break;
 
     default:

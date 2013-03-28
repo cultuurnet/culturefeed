@@ -82,7 +82,7 @@ function theme_culturefeed_search_facets_list($variables) {
   );
   
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
-  
+
   $facetListItems = array();
   
   foreach ($facet->getResult()->getItems() as $option => $number) {

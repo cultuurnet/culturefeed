@@ -12,14 +12,16 @@
  * @return array
  */
 function culturefeed_agenda_search_block_form($form, & $form_state) {
-
+  
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $default = isset($query['search']) ? $query['search']: '';
+  
   $searchable_types = culturefeed_get_searchable_types();
 
   $options = array();
   foreach ($searchable_types as $key => $type) {
     $options[$type['path']] = $type['title'];
   }
-  //$form['#action'] = url($type['path'], array('absolute' => TRUE));
   
   $form['type'] = array(
     '#type' => 'select',
@@ -31,7 +33,7 @@ function culturefeed_agenda_search_block_form($form, & $form_state) {
   $form['search'] = array(
     '#type' => 'textfield',
     '#title' => 'Zoekopdracht',
-    '#default_value' => '',
+    '#default_value' => $default,
   );
   
   $form['submit'] = array(
@@ -65,14 +67,10 @@ function culturefeed_agenda_search_block_form_submit($form, & $form_state) {
  * @return array
  */
 function culturefeed_agenda_search_sortorder_form($form, & $form_state) {
+  
   $query = drupal_get_query_parameters();
   
-  if (isset($query['sort'])) {
-    $default = $query['sort'];
-  }
-  else {
-    $default = 'relevancy';
-  }
+  $default = isset($query['sort']) ? $query['sort'] : 'relevancy';
   
   // @todo add JavaScript autosubmit to the select box
   $form['sort'] = array(
@@ -116,6 +114,7 @@ function culturefeed_agenda_search_sortorder_form_submit($form, & $form_state) {
  * @return string
  */
 function culturefeed_agenda_search_facets_block() {
+  // This currently means the page callback has already been invoked.
   global $facetingComponent;
   
   if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
@@ -158,6 +157,57 @@ function culturefeed_agenda_search_facets_block() {
         '#type' => 'markup',
         '#markup' => theme('culturefeed_search_facets_list', array('facet' => $facet)),
       );
+    }
+  }
+  
+  return $output;
+}
+
+/**
+ * Block callback for the active filters during search.
+ */
+function culturefeed_agenda_search_active_filters_block() {
+  // This currently means the page callback has already been invoked.
+  global $facetingComponent;
+  
+  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return '';
+  }
+  
+  $output = array(
+    '#type' => 'container',
+    '#attributes' => array(),
+  );
+  
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $path = current_path();
+
+  foreach ($facetingComponent->getFacets() as $facet) {
+    $items = $facet->getResult()->getItems();
+    if (!empty($items)) {
+      
+      $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
+
+      $facetListItems = array();
+      
+      foreach ($facet->getResult()->getItems() as $option => $number) {
+        $facet_query = $query;
+        $selected = in_array($option, $active_options);
+        if ($selected) {
+          // Remove this facet from URL, URL will function as removal URL.
+          $key = array_search($option, $facet_query['facet'][$facet->getKey()]);
+          if (FALSE !== $key) {
+            unset($facet_query['facet'][$facet->getKey()][$key]);
+          }
+          
+          $url = url($path, array('query' => $facet_query, 'absolute' => TRUE));
+          $output['item_' . $number] = array(
+            '#type' => 'markup',
+            '#markup' => '<span class="facet_item">' . check_plain($option) . '</span>' . l('x', $url)
+          );
+        }
+        
+      }
     }
   }
   
