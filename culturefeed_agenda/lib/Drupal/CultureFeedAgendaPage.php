@@ -7,7 +7,7 @@
 /**
  * Class CultureFeedAgendaPage
  */
-Class CultureFeedAgendaPage extends CultureFeedSearchPage 
+class CultureFeedAgendaPage extends CultureFeedSearchPage 
     implements CultureFeedSearchPageInterface {
 
   /**

@@ -4,6 +4,8 @@
  * Module file for all functionality for CultureFeed Search.
  */
 
+module_load_include('inc', 'culturefeed_search_ui', 'includes/helpers');
+
 /**
  * Implements hook_menu().
  */
