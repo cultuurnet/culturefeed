@@ -27,11 +27,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
   $vars['noitems'] = count($items) <= 0 ? TRUE : FALSE;
 
   foreach ($items as $item) {
-    $entity = $item->getEntity();
-    if ($entity instanceof CultureFeed_Cdb_Item_Event) {
-      $vars['items'][] = theme('culturefeed_event_summary', array('item' => $item));
-    }
-
+    $vars['items'][] = theme('culturefeed_' . $item->getType() . '_summary', array('item' => $item));
   }
 
 }

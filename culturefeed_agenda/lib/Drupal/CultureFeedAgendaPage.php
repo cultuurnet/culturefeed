@@ -96,7 +96,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     //print_R($result);
     // store faceting component in global, for use in blocks
     $facetingComponent->obtainResults($result);
-    
     pager_default_initialize($result->getTotalCount(), $limit);
     
     drupal_set_title($result->getTotalCount() . ' activiteiten gevonden');
