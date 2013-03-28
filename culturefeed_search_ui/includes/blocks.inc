@@ -11,7 +11,7 @@
  * @param array $form_state
  * @return array
  */
-function culturefeed_agenda_search_block_form($form, & $form_state) {
+function culturefeed_search_ui_search_block_form($form, & $form_state) {
   
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $default = isset($query['search']) ? $query['search']: '';
@@ -50,7 +50,7 @@ function culturefeed_agenda_search_block_form($form, & $form_state) {
  * @param array $form
  * @param array $form_state
  */
-function culturefeed_agenda_search_block_form_submit($form, & $form_state) {
+function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
   
   // When changing sort method, we remove the page parameter.
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
@@ -66,7 +66,7 @@ function culturefeed_agenda_search_block_form_submit($form, & $form_state) {
  * @param array $form_state
  * @return array
  */
-function culturefeed_agenda_search_sortorder_form($form, & $form_state) {
+function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
   
   $query = drupal_get_query_parameters();
   
@@ -100,7 +100,7 @@ function culturefeed_agenda_search_sortorder_form($form, & $form_state) {
  * @param array $form_state
  * @return array
  */
-function culturefeed_agenda_search_sortorder_form_submit($form, & $form_state) {
+function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state) {
 
   // When changing sort method, we remove the page parameter.
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
@@ -113,7 +113,7 @@ function culturefeed_agenda_search_sortorder_form_submit($form, & $form_state) {
  * Renders a facet block to go along with the search form.
  * @return string
  */
-function culturefeed_agenda_search_facets_block() {
+function culturefeed_search_ui_search_facets_block() {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
   
@@ -166,7 +166,7 @@ function culturefeed_agenda_search_facets_block() {
 /**
  * Block callback for the active filters during search.
  */
-function culturefeed_agenda_search_active_filters_block() {
+function culturefeed_search_ui_search_active_filters_block() {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
   
@@ -213,4 +213,3 @@ function culturefeed_agenda_search_active_filters_block() {
   
   return $output;
 }
-

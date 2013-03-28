@@ -1,5 +1,7 @@
 name = CultureFeed Agenda
-description = CultureFeed Agenda makes it possible to use search on pages, events, productions.
+description = CultureFeed Agenda makes it possible to use search on events and productions.
 package = CultureFeed
 version = VERSION
 core = 7.x
+
+files[] = lib/Drupal/CultureFeedAgendaPage.php

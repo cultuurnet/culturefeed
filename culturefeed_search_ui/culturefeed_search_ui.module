@@ -1,0 +1,169 @@
+<?php
+/**
+ * @file 
+ * Module file for all functionality for CultureFeed Search.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_search_ui_menu() {
+
+  $items = array();
+
+  foreach (culturefeed_get_searchable_types() as $name => $search_type) {
+
+    $class_name = isset($search_type['class_name']) ? $search_type['class_name'] : 'CultureFeedSearchPage';
+    
+    // Menu paths for search.
+    $items[$search_type['path']] = array(
+      'title' => $search_type['page_title'],
+      'page callback' => 'culturefeed_search_ui_search_page',
+      'page arguments' => array($name, $class_name),
+      'file' => 'includes/pages.inc',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+    
+  }
+  
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_search_ui_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_search_ui') . '/theme';
+
+  return array(
+
+    'culturefeed_search_page' => array(
+      'variables' => array('searchresult' => NULL),
+      'template' => 'culturefeed-search-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_list' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'culturefeed-search-list',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_facets_list' => array(
+      'variables' => array(
+        'facet' => NULL, 'path' => NULL, 'query' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_facet' => array(
+      'variables' => array(
+        'name' => NULL,
+        'count' => 0,
+        'active' => FALSE,
+        'url' => NULL,
+      ),
+      'template' => 'culturefeed-search-facet',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    
+    // @todo check where to merge this with (item or event?)
+    'culturefeed_searchresult_item' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-searchresult-item',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_search_ui_block_info() {
+  $blocks = array();
+
+  $blocks['culturefeed-search-box'] = array(
+    'info' => t('Culturefeed search: search box'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['culturefeed-search-sortorder'] = array(
+    'info' => t('Culturefeed search: sort order filter'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
+  $blocks['culturefeed-search-facets'] = array(
+    'info' => t('Culturefeed search: search facets'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
+  $blocks['culturefeed-search-activefilters'] = array(
+    'info' => t('Culturefeed search: active filters'),
+    'cache' => DRUPAL_CACHE_PER_USER,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_search_ui_block_view($delta) {
+
+  $block = array();
+
+  switch ($delta) {
+
+    case 'culturefeed-search-box':
+      $block['subject'] = '';
+      module_load_include('inc', 'search_ui', 'includes/blocks');
+      $block['content'] = drupal_get_form('culturefeed_search_ui_search_block_form');
+      break;
+
+    case 'culturefeed-search-sortorder':
+      $block['subject'] = '';
+      module_load_include('inc', 'search_ui', 'includes/blocks');
+      $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+      break;
+
+    case 'culturefeed-search-facets':
+      $block['subject'] = '';
+      module_load_include('inc', 'search_ui', 'includes/blocks');
+      $block['content'] = culturefeed_search_ui_search_facets_block();
+      break;
+
+    case 'culturefeed-search-activefilters':
+      $block['subject'] = 'Je zocht op:';
+      module_load_include('inc', 'search_ui', 'includes/blocks');
+      $block['content'] = culturefeed_search_ui_search_active_filters_block();
+      break;
+
+    default:
+  }
+
+  return $block;
+
+}
+
+/**
+ * Load all searchable types.
+ */
+function culturefeed_get_searchable_types() {
+  
+  // Get all searchable page types.
+  $options = module_invoke_all('culturefeed_search_page_info');
+  
+  foreach ($options as $key => $data) {
+    if (!isset($data['class_name'])) {
+      $options[$key]['class_name'] = 'CultureFeedSearchPage';
+    }
+  }
+  
+  // Make sure you can alter the searchable data per site.
+  drupal_alter('culturefeed_search_page_info', $options);
+  
+  return $options;
+}

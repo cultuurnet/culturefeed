@@ -51,7 +51,7 @@ if ($detail && $detail->getCalendarSummary()) {
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><?php print format_plural($recommend_count, '<span>@count</span> keer aangeraden', '<span>@count</span> keer aangeraden'); ?></div>
     <?php endif; ?>
-    <?php print culturefeed_agenda_activity_recommend_link($item); ?>
+    <?php print culturefeed_search_ui_activity_recommend_link($item); ?>
   </div>
  
   <div class="image">
@@ -81,7 +81,7 @@ if ($detail && $detail->getCalendarSummary()) {
     <?php endif; ?>
 
     <?php
-      $themes = culturefeed_agenda_get_categories('theme', $event);
+      $themes = culturefeed_cdb_item_get_categories('theme', $event);
       if (count($themes) > 0):
     ?>
     <dt>Thema</dt>

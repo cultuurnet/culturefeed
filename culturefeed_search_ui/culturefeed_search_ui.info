@@ -1,0 +1,8 @@
+name = CultureFeed Search UI
+description = CultureFeed Search UI leverages HTML components and some generic utility functions to perform searches. It also adds a hook "culturefeed_search_type_info" to add your searchable type.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+files[] = lib/Drupal/CultureFeedSearchPageInterface.php
+files[] = lib/Drupal/CultureFeedSearchPage.php

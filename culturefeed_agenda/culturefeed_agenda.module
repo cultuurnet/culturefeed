@@ -1,10 +1,12 @@
 <?php
+use Symfony\Component\Console\Output\NullOutput;
+
 /**
  * @file
  * Performs searches to the Cultuurnet api.
  * 
  * @todo 
- * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
+ * - Fix the function culturefeed_search_ui_activity_recommend_link so that the function
  *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
  * - check if it wouldn't be better to just use the convenience of 
  *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare 
@@ -35,43 +37,7 @@ function culturefeed_agenda_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
-    'culturefeed_search_page' => array(
-      'variables' => array('searchresult' => NULL),
-      'template' => 'culturefeed-search-page',
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
-    'culturefeed_search_list' => array(
-      'variables' => array('items' => NULL),
-      'template' => 'culturefeed-search-list',
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
-    'culturefeed_search_facets_list' => array(
-      'variables' => array(
-        'facet' => NULL, 'path' => NULL, 'query' => NULL,
-      ),
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
-    'culturefeed_search_facet' => array(
-      'variables' => array(
-        'name' => NULL,
-        'count' => 0,
-        'active' => FALSE,
-        'url' => NULL,
-      ),
-      'template' => 'culturefeed-search-facet',
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
     
-    // @todo check where to merge this with (item or event?)
-    'culturefeed_searchresult_item' => array(
-      'variables' => array('item' => NULL),
-      'template' => 'culturefeed-searchresult-item',
-    ),
   );
 
 }
@@ -82,16 +48,6 @@ function culturefeed_agenda_theme() {
 function culturefeed_agenda_menu() {
 
   $items = array();
-
-  // Menu path for search.
-  $items['agenda/search'] = array(
-    'title' => 'Agenda',
-    'page callback' => 'culturefeed_agenda_search_page',
-    //'page arguments' => array(''),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
 
   // Menu path for detail pages.
   $items['agenda/a/%/%culturefeed_agenda_actor'] = array(
@@ -129,82 +85,15 @@ function culturefeed_agenda_menu() {
 }
 
 /**
- * Implements hook_block_info().
+ * Implements hook_culturefeed_search_page_info().
  */
-function culturefeed_agenda_block_info() {
-  $blocks = array();
-
-  $blocks['culturefeed-search-box'] = array(
-    'info' => t('Culturefeed search: search box'),
-    'cache' => DRUPAL_NO_CACHE,
-  );
-
-  $blocks['culturefeed-search-sortorder'] = array(
-    'info' => t('Culturefeed search: sort order filter'),
-    'cache' => DRUPAL_CACHE_PER_USER,
-  );
-
-  $blocks['culturefeed-search-facets'] = array(
-    'info' => t('Culturefeed search: search facets'),
-    'cache' => DRUPAL_CACHE_PER_USER,
-  );
-
-  $blocks['culturefeed-search-activefilters'] = array(
-    'info' => t('Culturefeed search: active filters'),
-    'cache' => DRUPAL_CACHE_PER_USER,
-  );
-
-  return $blocks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function culturefeed_agenda_block_view($delta) {
-
-  $block = array();
-  
-  switch ($delta) {
-
-    case 'culturefeed-search-box':
-      $block['subject'] = '';
-      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
-      break;
-      
-    case 'culturefeed-search-sortorder':
-      $block['subject'] = '';
-      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = drupal_get_form('culturefeed_agenda_search_sortorder_form');
-      break;
-      
-    case 'culturefeed-search-facets':
-      $block['subject'] = '';
-      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = culturefeed_agenda_search_facets_block();
-      break;
-      
-    case 'culturefeed-search-activefilters':
-      $block['subject'] = 'Je zocht op:';
-      module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = culturefeed_agenda_search_active_filters_block();
-      break;
-
-    default:
-  }
-  
-  return $block;
-
-}
-
-/**
- * Implements hook_culturefeed_search_type_info().
- */
-function culturefeed_agenda_culturefeed_search_type_info() {
+function culturefeed_agenda_culturefeed_search_page_info() {
   return array(
     'activiteiten' => array(
       'path' => 'agenda/search',
-      'title' => 'Activiteiten',
+      'page_title' => 'Agenda',
+      'search_title' => 'Activiteiten',
+      'class_name' => 'CultureFeedAgendaPage',
     ),
   );
 }
