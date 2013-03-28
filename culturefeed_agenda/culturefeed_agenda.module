@@ -37,8 +37,14 @@ function culturefeed_agenda_theme() {
     ),
 
     'culturefeed_search_page' => array(
-      'variables' => array('searchresult' => NULL, 'sortorder_form' => NULL),
+      'variables' => array('searchresult' => NULL),
       'template' => 'culturefeed-search-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_list' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'culturefeed-search-list',
       'path' => $path,
       'file' => 'theme.inc',
     ),

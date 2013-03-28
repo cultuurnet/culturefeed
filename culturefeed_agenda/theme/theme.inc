@@ -34,8 +34,7 @@ function _template_preprocess_culturefeed_agenda(&$variables) {
   $item = $variables['item'];
 
   $cdb_item = $item->getEntity();
-  //$details = $cdb_item->getDetails()->getDetailByLanguage($language->language);
-  $details = $cdb_item->getDetailByLanguage($language->language);
+  $details = $cdb_item->getDetails()->getDetailByLanguage($language->language);
 
   $variables['title'] = $details->getTitle();
 
@@ -47,10 +46,27 @@ function _template_preprocess_culturefeed_agenda(&$variables) {
  * @param array $vars
  */
 function culturefeed_agenda_preprocess_culturefeed_search_page(&$vars) {
+
+  $vars['content'] = theme('culturefeed_search_list', array('result' => $vars['searchresult']));
   
-  // Prepare the sortorder widget.
-  if (!empty($vars['sortorder_form'])) {
-    $vars['sortorder_widget'] = drupal_render($vars['sortorder_form']);
+}
+
+/**
+ * Preprocess function for the search list.
+ *
+ * @param array $vars
+ */
+function culturefeed_agenda_preprocess_culturefeed_search_list(&$vars) {
+
+  $items = $vars['result']->getItems();
+  
+  $vars['noitems'] = count($items) <= 0 ? TRUE : FALSE;
+  
+  foreach ($items as $item) {
+    $entity = $item->getEntity();
+    if ($entity instanceof CultureFeed_Cdb_Item_Event) {
+      $vars['items'][] = theme('culturefeed_event_summary', array('item' => $item));
+    }
   }
   
 }

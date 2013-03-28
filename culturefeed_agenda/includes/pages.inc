@@ -98,16 +98,13 @@ function culturefeed_agenda_search_page() {
 
   pager_default_initialize($result->getTotalCount(), $limit);
   
-  // Create the sortorder form.
-  module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-  $sortorder_form = drupal_get_form('culturefeed_agenda_search_sortorder_form');
+  drupal_set_title($result->getTotalCount() . ' activiteiten gevonden');
   
   $build = array();
 
   $build['results'] = array(
     '#theme' => 'culturefeed_search_page',
     '#searchresult' => $result,
-    '#sortorder_form' => $sortorder_form,
   );
 
   if ($result->getTotalCount() > 0) {
