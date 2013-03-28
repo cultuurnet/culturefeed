@@ -125,25 +125,25 @@ function culturefeed_search_ui_block_view($delta) {
 
     case 'culturefeed-search-box':
       $block['subject'] = '';
-      module_load_include('inc', 'search_ui', 'includes/blocks');
+      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_block_form');
       break;
 
     case 'culturefeed-search-sortorder':
       $block['subject'] = '';
-      module_load_include('inc', 'search_ui', 'includes/blocks');
+      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
       break;
 
     case 'culturefeed-search-facets':
       $block['subject'] = '';
-      module_load_include('inc', 'search_ui', 'includes/blocks');
+      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = culturefeed_search_ui_search_facets_block();
       break;
 
     case 'culturefeed-search-activefilters':
       $block['subject'] = 'Je zocht op:';
-      module_load_include('inc', 'search_ui', 'includes/blocks');
+      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
       break;
 
