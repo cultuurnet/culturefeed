@@ -19,7 +19,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
 
   $options = array();
   foreach ($searchable_types as $key => $type) {
-    $options[$type['path']] = $type['title'];
+    $options[$type['path']] = $type['search_title'];
   }
 
   $form['type'] = array(
@@ -146,10 +146,7 @@ function culturefeed_search_ui_search_facets_block() {
   }
 
   if ($build) {
-    return array(
-      'content' => $build,
-      'title' => 'Verfijn of wijzig zoekopdracht',
-    );
+    return $build;
   }
 
 }

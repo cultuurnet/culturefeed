@@ -136,7 +136,7 @@ function culturefeed_search_ui_block_view($delta) {
       break;
 
     case 'culturefeed-search-facets':
-      $block['subject'] = '';
+      $block['subject'] = 'Verfijn of wijzig zoekopdracht';
       module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = culturefeed_search_ui_search_facets_block();
       break;
