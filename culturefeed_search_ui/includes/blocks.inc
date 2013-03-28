@@ -169,7 +169,19 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
+  
+  // Check the current search term.
+  if (!empty($query['search'])) {
+    $search_query = $query;
+    unset($search_query['search']);
+    $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
+    $output['item_search'] = array(
+      '#type' => 'markup',
+      '#markup' => '<span class="facet_item">' . check_plain($query['search']) . '</span> [' . l('x', $url) . ']'
+    );
+  }
 
+  // Check the facets.
   foreach ($facetingComponent->getFacets() as $facet) {
     $items = $facet->getResult()->getItems();
     if (!empty($items)) {
