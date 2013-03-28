@@ -28,7 +28,7 @@ class DrupalCultureFeedSearchService {
    */
   private function __construct(ConsumerCredentials $consumerCredentials) {
     
-    $endpoint = variable_get('culturefeed_api_location_v2', CULTUREFEED_API_LOCATION_V2);
+    $endpoint = variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION);
     $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
 
     if (variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED) {
