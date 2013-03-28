@@ -203,7 +203,7 @@ function culturefeed_agenda_search_active_filters_block() {
           $url = url($path, array('query' => $facet_query, 'absolute' => TRUE));
           $output['item_' . $number] = array(
             '#type' => 'markup',
-            '#markup' => '<span class="facet_item">' . check_plain($option) . '</span>' . l('x', $url)
+            '#markup' => '<span class="facet_item">' . check_plain($option) . '</span> [' . l('x', $url) . ']'
           );
         }
         
