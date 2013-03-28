@@ -4,15 +4,15 @@ use Symfony\Component\Console\Output\NullOutput;
 /**
  * @file
  * Performs searches to the Cultuurnet api.
- * 
- * @todo 
- * - Fix the function culturefeed_search_ui_activity_recommend_link so that the function
- *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
- * - check if it wouldn't be better to just use the convenience of 
- *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare 
+ *
+ * @todo
+ * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
+ *   "culturefeed_ui_block_users_recommends_config" is moved to correct place
+ * - check if it wouldn't be better to just use the convenience of
+ *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare
  *   the searchable types, it can have the search block, the sortorder block/functions, ...
  * -
- * 
+ *
  */
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
@@ -37,7 +37,6 @@ function culturefeed_agenda_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
   );
 
 }

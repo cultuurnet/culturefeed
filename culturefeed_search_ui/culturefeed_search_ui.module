@@ -51,30 +51,34 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_search_facets_list' => array(
-      'variables' => array(
-        'facet' => NULL, 'path' => NULL, 'query' => NULL,
-      ),
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
     'culturefeed_search_facet' => array(
       'variables' => array(
-        'name' => NULL,
-        'count' => 0,
-        'active' => FALSE,
-        'url' => NULL,
+        'facet' => NULL,
+        'title' => NULL,
+        'path' => NULL,
+        'query' => NULL,
       ),
       'template' => 'culturefeed-search-facet',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+    'culturefeed_search_facet_item' => array(
+      'variables' => array(
+        'facet_item' => NULL,
+        'facet' => NULL,
+        'path' => NULL,
+        'query' => NULL,
+      ),
+      'template' => 'culturefeed-search-facet-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     // @todo check where to merge this with (item or event?)
     'culturefeed_searchresult_item' => array(
       'variables' => array('item' => NULL),
       'template' => 'culturefeed-searchresult-item',
     ),
+    
   );
 
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @file 
- * 
+ * @file
+ *
  */
 
 ?>
-<h2>title &gt; <?php print $title; ?></h2>
+<h2><?php print $title; ?></h2>
