@@ -6,41 +6,41 @@
 
 /**
  * Form function for a search box in all searchable types.
- * 
+ *
  * @param array $form
  * @param array $form_state
  * @return array
  */
 function culturefeed_agenda_search_block_form($form, & $form_state) {
-  
+
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $default = isset($query['search']) ? $query['search']: '';
-  
+
   $searchable_types = culturefeed_get_searchable_types();
 
   $options = array();
   foreach ($searchable_types as $key => $type) {
     $options[$type['path']] = $type['title'];
   }
-  
+
   $form['type'] = array(
     '#type' => 'select',
     '#title' => 'Zoeken in',
     '#default_value' => key($options),
     '#options' => $options,
   );
-  
+
   $form['search'] = array(
     '#type' => 'textfield',
     '#title' => 'Zoekopdracht',
     '#default_value' => $default,
   );
-  
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Zoeken',
   );
-  
+
   return $form;
 }
 
@@ -51,27 +51,27 @@ function culturefeed_agenda_search_block_form($form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_agenda_search_block_form_submit($form, & $form_state) {
-  
+
   // When changing sort method, we remove the page parameter.
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
-  
+
   drupal_goto($form_state['values']['type'], array('query' => $query));
 }
 
 /**
  * Creates a form to change the sortorder of the search results.
- * 
+ *
  * @param array $form
  * @param array $form_state
  * @return array
  */
 function culturefeed_agenda_search_sortorder_form($form, & $form_state) {
-  
+
   $query = drupal_get_query_parameters();
-  
+
   $default = isset($query['sort']) ? $query['sort'] : 'relevancy';
-  
+
   // @todo add JavaScript autosubmit to the select box
   $form['sort'] = array(
     '#title' => t('Sorteer resultaten op'),
@@ -84,12 +84,12 @@ function culturefeed_agenda_search_sortorder_form($form, & $form_state) {
     ),
     '#default_value' => $default,
   );
-  
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
-  
+
   return $form;
 }
 
@@ -105,7 +105,7 @@ function culturefeed_agenda_search_sortorder_form_submit($form, & $form_state) {
   // When changing sort method, we remove the page parameter.
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['sort'] = $form_state['values']['sort'];
-  
+
   drupal_goto($_GET['q'], array('query' => $query));
 }
 
@@ -116,25 +116,19 @@ function culturefeed_agenda_search_sortorder_form_submit($form, & $form_state) {
 function culturefeed_agenda_search_facets_block() {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
-  
+
   if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return '';
   }
-  
-  $output = array(
-    '#type' => 'container',
-    '#attributes' => array(),
-  );
-  
+
+  $build = array();
+
   foreach ($facetingComponent->getFacets() as $facet) {
+
     $items = $facet->getResult()->getItems();
+
     if (!empty($items)) {
-      $output[$facet->getKey()] = array(
-        '#type' => 'container',
-        '#attributes' => array(),
-      );
-  
-      // @todo maybe we should labeling this as an integral part to the search component?
+
       switch ($facet->getKey()) {
         case 'city':
           $label = t('Waar');
@@ -145,22 +139,22 @@ function culturefeed_agenda_search_facets_block() {
         default:
           $label = $facet->getKey();
       }
-  
-      $output[$facet->getKey()]['name'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'h1',
-        '#value' => $label,
-      );
-  
-      // @todo check if we can use a render array as well for theme('item_list')
-      $output[$facet->getKey()]['options'] = array(
-        '#type' => 'markup',
-        '#markup' => theme('culturefeed_search_facets_list', array('facet' => $facet)),
+
+      $build[$facet->getKey()] = array(
+        '#theme' => 'culturefeed_search_facet',
+        '#facet' => $facet,
+        '#title' => $label,
       );
     }
   }
-  
-  return $output;
+
+  if ($build) {
+    return array(
+      'content' => $build,
+      'title' => 'Verfijn of wijzig zoekopdracht',
+    );
+  }
+
 }
 
 /**
@@ -169,28 +163,30 @@ function culturefeed_agenda_search_facets_block() {
 function culturefeed_agenda_search_active_filters_block() {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
-  
+
   if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return '';
   }
-  
+
   $output = array(
     '#type' => 'container',
     '#attributes' => array(),
   );
-  
+
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
 
   foreach ($facetingComponent->getFacets() as $facet) {
     $items = $facet->getResult()->getItems();
     if (!empty($items)) {
-      
+
       $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
 
       $facetListItems = array();
-      
-      foreach ($facet->getResult()->getItems() as $option => $number) {
+
+      foreach ($facet->getResult()->getItems() as $i => $result_item) {
+
+        $option = $result_item->getLabel();
         $facet_query = $query;
         $selected = in_array($option, $active_options);
         if ($selected) {
@@ -199,18 +195,18 @@ function culturefeed_agenda_search_active_filters_block() {
           if (FALSE !== $key) {
             unset($facet_query['facet'][$facet->getKey()][$key]);
           }
-          
+
           $url = url($path, array('query' => $facet_query, 'absolute' => TRUE));
-          $output['item_' . $number] = array(
+          $output['item_' . $i] = array(
             '#type' => 'markup',
-            '#markup' => '<span class="facet_item">' . check_plain($option) . '</span> [' . l('x', $url) . ']'
+            '#markup' => '<span class="facet_item">' . check_plain($result_item->getLabel()) . '</span> [' . l('x', $url) . ']'
           );
         }
-        
+
       }
     }
   }
-  
+
   return $output;
 }
 

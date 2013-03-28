@@ -1,20 +1,32 @@
 <?php
 /**
- * @file 
+ * @file
  * Template file for one culturefeed search facet.
  */
 
 /**
- * @var string $name
- * @var integer $count
- * @var string $url
- * @var boolean $active
+ * @var string title
+ * @var string $items
  */
 ?>
-<div class="facet_item">
-<?php if ($active): ?>
-  <?php print check_plain($name); ?> (<?php print $count; ?>) [<?php print l('x', $url); ?>]
-<?php else: ?>
-  <?php print l($name, $url); ?> (<?php print $count; ?>)
+
+<?php if (!empty($title)) : ?>
+  <h3><?php print $title; ?></h3>
 <?php endif; ?>
-</div>
+
+<ul>
+
+<?php foreach ($items as $facet_item): ?>
+  <li>
+    <?php print $facet_item['output'] ?>
+    <?php if (!empty($facet_item['sub_items'])): ?>
+      <ul>
+      <?php foreach ($facet_item['sub_items'] as $sub_item): ?>
+        <li><?php print $sub_item; ?></li>
+      <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
+  </li>
+
+<?php endforeach; ?>
+</ul>

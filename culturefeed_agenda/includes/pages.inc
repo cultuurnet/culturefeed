@@ -37,7 +37,7 @@ function culturefeed_agenda_search_page() {
 
   $q = array();
 
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
 
   switch ($params['sort']) {
 
@@ -88,7 +88,7 @@ function culturefeed_agenda_search_page() {
   $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' AND ', $q));
 
   $result = $searchService->search($parameters);
-
+print_R($result);
   // store faceting component in global, for use in blocks
   $facetingComponent->obtainResults($result);
 

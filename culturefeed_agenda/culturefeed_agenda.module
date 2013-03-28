@@ -2,15 +2,15 @@
 /**
  * @file
  * Performs searches to the Cultuurnet api.
- * 
- * @todo 
+ *
+ * @todo
  * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
- *   "culturefeed_ui_block_users_recommends_config" is moved to correct place 
- * - check if it wouldn't be better to just use the convenience of 
- *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare 
+ *   "culturefeed_ui_block_users_recommends_config" is moved to correct place
+ * - check if it wouldn't be better to just use the convenience of
+ *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare
  *   the searchable types, it can have the search block, the sortorder block/functions, ...
  * -
- * 
+ *
  */
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
@@ -48,25 +48,30 @@ function culturefeed_agenda_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_search_facets_list' => array(
-      'variables' => array(
-        'facet' => NULL, 'path' => NULL, 'query' => NULL,
-      ),
-      'path' => $path,
-      'file' => 'theme.inc',
-    ),
+
     'culturefeed_search_facet' => array(
       'variables' => array(
-        'name' => NULL,
-        'count' => 0,
-        'active' => FALSE,
-        'url' => NULL,
+        'facet' => NULL,
+        'title' => NULL,
+        'path' => NULL,
+        'query' => NULL,
       ),
       'template' => 'culturefeed-search-facet',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+    'culturefeed_search_facet_item' => array(
+      'variables' => array(
+        'facet_item' => NULL,
+        'facet' => NULL,
+        'path' => NULL,
+        'query' => NULL,
+      ),
+      'template' => 'culturefeed-search-facet-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
     // @todo check where to merge this with (item or event?)
     'culturefeed_searchresult_item' => array(
       'variables' => array('item' => NULL),
@@ -163,7 +168,7 @@ function culturefeed_agenda_block_info() {
 function culturefeed_agenda_block_view($delta) {
 
   $block = array();
-  
+
   switch ($delta) {
 
     case 'culturefeed-search-box':
@@ -171,19 +176,18 @@ function culturefeed_agenda_block_view($delta) {
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
       break;
-      
+
     case 'culturefeed-search-sortorder':
       $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_agenda_search_sortorder_form');
       break;
-      
+
     case 'culturefeed-search-facets':
-      $block['subject'] = '';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
-      $block['content'] = culturefeed_agenda_search_facets_block();
+      return culturefeed_agenda_search_facets_block();
       break;
-      
+
     case 'culturefeed-search-activefilters':
       $block['subject'] = 'Je zocht op:';
       module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
@@ -192,7 +196,7 @@ function culturefeed_agenda_block_view($delta) {
 
     default:
   }
-  
+
   return $block;
 
 }
