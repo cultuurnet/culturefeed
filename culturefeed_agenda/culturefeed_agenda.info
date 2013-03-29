@@ -4,6 +4,6 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
-dependencies[] = culturefeed_search_ui
+dependencies[] = culturefeed_search
 
 files[] = lib/Drupal/CultureFeedAgendaPage.php

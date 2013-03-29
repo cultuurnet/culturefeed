@@ -125,7 +125,25 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   }
 
   $variables['url'] = url($variables['path'], array('query' => $query, 'absolute' => TRUE));
-  $variables['name'] = $facet_option;
+  $variables['label'] = $facet_option;
   $variables['count'] = $facet_item->getTotalResults();
+
+}
+
+/**
+ * Theme the pager summary for a search result.
+ */
+function theme_culturefeed_search_pager_summary($variables) {
+
+  $result = $variables['result'];
+
+  $end = $variables['start'] + $result->getCurrentCount();
+  $args = array(
+    '@range' => ($variables['start'] + 1) . '-' . $end,
+  );
+
+  $pager_summary = format_plural($result->getTotalCount(), '@range van @count resultaat', '@range van @count resultaten', $args);
+
+  return '<div class="pager-summary">' . $pager_summary . '</div>';
 
 }

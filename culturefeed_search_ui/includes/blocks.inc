@@ -33,6 +33,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#type' => 'textfield',
     '#title' => 'Zoekopdracht',
     '#default_value' => $default,
+    '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
   $form['submit'] = array(
@@ -54,7 +55,10 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
 
-  drupal_goto($form_state['values']['type'], array('query' => $query));
+  $form_state['redirect'] = array(
+    $form_state['values']['type'],
+    array('query' => $query),
+  );
 }
 
 /**
@@ -110,43 +114,43 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  * Renders a facet block to go along with the search form.
  * @return string
  */
-function culturefeed_search_ui_search_facets_block() {
+function culturefeed_search_ui_search_facets_block($facet_name = 'category_misc_name') {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
 
   if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
-    return '';
+    return;
   }
 
   $build = array();
 
-  foreach ($facetingComponent->getFacets() as $facet) {
-
-    $items = $facet->getResult()->getItems();
-
-    if (!empty($items)) {
-
-      switch ($facet->getKey()) {
-        case 'city':
-          $label = t('Waar');
-          break;
-        case 'category_theme_name':
-          $label = t('Thema');
-          break;
-        default:
-          $label = $facet->getKey();
-      }
-
-      $build[$facet->getKey()] = array(
-        '#theme' => 'culturefeed_search_facet',
-        '#facet' => $facet,
-        '#title' => $label,
-      );
-    }
+  $facets = $facetingComponent->getFacets();
+  if (!isset($facets[$facet_name])) {
+    return;
   }
 
-  if ($build) {
-    return $build;
+  $facet = $facets[$facet_name];
+
+  $items = $facet->getResult()->getItems();
+
+  if (!empty($items)) {
+
+    switch ($facet->getKey()) {
+      case 'city':
+        $label = t('Waar');
+        break;
+      case 'category_theme_name':
+        $label = t('Thema');
+        break;
+      default:
+        $label = $facet->getKey();
+    }
+
+    return array(
+      '#theme' => 'culturefeed_search_facet',
+      '#facet' => $facet,
+      '#title' => $label,
+    );
   }
 
 }
@@ -162,56 +166,41 @@ function culturefeed_search_ui_search_active_filters_block() {
     return '';
   }
 
-  $output = array(
-    '#type' => 'container',
-    '#attributes' => array(),
-  );
-
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
-  
+  $build = array();
+
   // Check the current search term.
   if (!empty($query['search'])) {
     $search_query = $query;
     unset($search_query['search']);
     $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
-    $output['item_search'] = array(
-      '#type' => 'markup',
-      '#markup' => '<span class="facet_item">' . check_plain($query['search']) . '</span> [' . l('x', $url) . ']'
+    $build['item_search'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => check_plain($query['search']),
+      '#url' => $url
     );
   }
 
   // Check the facets.
-  foreach ($facetingComponent->getFacets() as $facet) {
-    $items = $facet->getResult()->getItems();
-    if (!empty($items)) {
+  if (isset($query['facet'])) {
 
-      $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
+    $facets = $facetingComponent->getFacets();
+    foreach ($query['facet'] as $active_facet_name => $selected_value) {
 
-      $facetListItems = array();
+      $search_query = $query;
+      unset($search_query['facet'][$active_facet_name]);
+      $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
+      $build['item_' . $active_facet_name] = array(
+        '#theme' => 'culturefeed_search_active_filters_item',
+        '#label' => check_plain($selected_value[0]),
+        '#url' => $url
+      );
 
-      foreach ($facet->getResult()->getItems() as $i => $result_item) {
-
-        $option = $result_item->getLabel();
-        $facet_query = $query;
-        $selected = in_array($option, $active_options);
-        if ($selected) {
-          // Remove this facet from URL, URL will function as removal URL.
-          $key = array_search($option, $facet_query['facet'][$facet->getKey()]);
-          if (FALSE !== $key) {
-            unset($facet_query['facet'][$facet->getKey()][$key]);
-          }
-
-          $url = url($path, array('query' => $facet_query, 'absolute' => TRUE));
-          $output['item_' . $i] = array(
-            '#type' => 'markup',
-            '#markup' => '<span class="facet_item">' . check_plain($result_item->getLabel()) . '</span> [' . l('x', $url) . ']'
-          );
-        }
-
-      }
     }
+
   }
 
-  return $output;
+  return $build;
+
 }

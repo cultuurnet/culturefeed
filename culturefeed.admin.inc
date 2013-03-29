@@ -18,12 +18,6 @@ function culturefeed_admin_settings() {
     '#description' => t('The URL where the CultureFeed API resides. End with a slash. Example: http://test.uitid.be/culturefeed/rest/'),
     '#default_value' => variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION),
   );
-  $form['culturefeed_search_api_location'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Search API location'),
-    '#description' => t('The URL where the CultureFeed Search API resides. End with a slash. Example: http://test.uitid.be/uitid/rest/searchv2/'),
-    '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
-  );
   $form['culturefeed_api_application_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Application key'),

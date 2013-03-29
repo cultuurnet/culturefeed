@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Install file for culturefeed search API.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function culturefeed_search_schema() {
+
+  $schema['culturefeed_search_domains'] = array(
+    'description' => 'Category domains for the Culturefeed Search API.',
+    'fields' => array(
+      'did' => array(
+        'description' => 'The primary identifier for a domain.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'label' => array(
+        'description' => 'Domain label.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'primary key' => array('did'),
+  );
+
+  $schema['culturefeed_search_terms'] = array(
+    'description' => 'Terms for the CultuurNet Search API.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The primary identifier for a term.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'Term name.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'did' => array(
+        'description' => 'Domain of the term.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+      ),
+    ),
+    'indexes' => array(
+      'did' => array('did'),
+    ),
+    'primary key' => array('tid'),
+  );
+
+  return $schema;
+
+}

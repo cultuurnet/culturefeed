@@ -1,51 +1,16 @@
-<?php
-/* @var \CultureFeed_Cdb_Item_Event $event */
-$event = $item->getEntity();
-
-foreach ($event->getDetails() as $detail) {
-  if ('nl' === $detail->getLanguage()) {
-      break;
-  }
-}
-
-$recommend_count = $item->getActivityCount('recommend');
-$comment_count = $item->getActivityCount('comment');
-
-if ($event->getLocation()) {
-  if ($event->getLocation()->getLabel()) {
-    $waar = $event->getLocation()->getLabel();
-  }
-  else if ($event->getLocation()->getActor() && $event->getLocation()->getActor()->getDetailByLanguage('nl')) {
-    $waar = $event->getLocation()->getActor()->getDetailByLanguage('nl')->getTitle();
-  }
-}
-
-if ($event->getOrganiser()) {
-  if ($event->getOrganiser()->getLabel()) {
-    $organisatie = $event->getOrganiser()->getLabel();
-  }
-  else if ($event->getOrganiser()->getActor() && $event->getOrganiser()->getActor()->getDetailByLanguage('nl')) {
-    $organisatie = $event->getOrganiser()->getActor()->getDetailByLanguage('nl')->getTitle();
-  }
-}
-
-if ($detail && $detail->getCalendarSummary()) {
-  $wanneer = $detail->getCalendarSummary();
-}
-
-?>
 <div class="event-teaser">
-  <h2><?php print l($detail->getTitle(), 'agenda/e/detail/' . $event->getCdbId()); ?></h2>
+
+  <h2><a href="<?print $link ?>"><?print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
-        <span class="comments"><?php print $comment_count; ?></span> 
-        <?php print l('Lees beoordelingen', 'agenda/e/detail/' . $event->getCdbId(), array('fragment' => 'lees')); ?>
-        <?php print l('Schrijf beoordeling', 'agenda/e/detail/' . $event->getCdbId(), array('fragment' => 'schrijf')); ?>
+        <span class="comments"><?php print $comment_count; ?></span>
+        <a href="<?php print $link ?>#lees">Lees beoordelingen</a>
+        <a href="<?php print $link ?>#schrijf">Schrijf een beoordeling</a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <?php print l('Schrijf als eerste een beoordeling', 'agenda/e/detail/' . $event->getCdbId(), array('fragment' => 'schrijf')); ?>
+        <a href="<?php print $link ?>#schrijf">Schrijf als eerste een beoordeling</a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
@@ -53,53 +18,40 @@ if ($detail && $detail->getCalendarSummary()) {
     <?php endif; ?>
     <?php print culturefeed_search_ui_activity_recommend_link($item); ?>
   </div>
- 
+
   <div class="image">
-  <?php
-    /* @var CultureFeed_Cdb_Data_File $file */
-    foreach ($detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO) as $file) {
-      print '<img src="' . $file->getHLink() . '?width=160&height=120&crop=auto" /><br />';
-    }
-  ?>
+    <?php if (!empty($thumbnail)): ?>
+    <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
+    <?php endif; ?>
   </div>
 
   <dl class="clearfix">
 
-    <?php if (isset($waar)): ?>
+    <?php if (!empty($where)): ?>
     <dt>Waar</dt>
-    <dd><?php print check_plain($waar); ?></dd>
+    <dd><?php print $where ?> <?php print $city; ?></dd>
     <?php endif; ?>
 
-    <?php if (isset($wanneer)): ?>
+    <?php if (!empty($when)): ?>
     <dt>Wanneer</dt>
-    <dd><?php print check_plain($wanneer); ?></dd>
+    <dd><?php print $when; ?></dd>
     <?php endif; ?>
 
-    <?php if (isset($organisatie)): ?>
+    <?php if (!empty($organisation)): ?>
     <dt>Organisatie</dt>
-    <dd><?php print $organisatie; ?></dd>
+    <dd><?php print $organisation; ?></dd>
     <?php endif; ?>
 
     <?php
-      $themes = culturefeed_cdb_item_get_categories('theme', $event);
-      if (count($themes) > 0):
+      if (!empty($themes)):
     ?>
     <dt>Thema</dt>
       <dd>
-      <?php
-      array_walk($themes, function(&$item) {
-        $item = check_plain($item->getName());
-      });
-
-      print implode(',', $themes);
-      ?>
+      <?php print $themes; ?>
       </dd>
     <? endif; ?>
   </dl>
-  <?php
-    // example
-    // print $event->getCdbId();
-  ?>
-  <?php print l('Meer info en boeking', 'agenda/e/info-en-boeking/' . $event->getCdbId(), array('attributes' => array('class' => 'button'))); ?>
+
+  <?php print culturefeed_agenda_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
 
 </div>

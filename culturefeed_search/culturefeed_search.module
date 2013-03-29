@@ -1,0 +1,30 @@
+<?php
+/**
+ * @file
+ * Module file for all functionality for CultureFeed Search.
+ */
+
+define('CULTUREFEED_SEARCH_API_LOCATION', 'http://searchv2.cultuurnet.lodgon.com/search-poc/rest');
+
+module_load_include('inc', 'culturefeed_search', 'includes/helpers');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_search_menu() {
+
+  $items['admin/config/services/culturefeed_search'] = array(
+    'title' => 'Culture Feed Search',
+    'description' => 'Change Culture Feed Search API setting like API Appliction key, location, ...',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_search_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+  return $items;
+
+}
+
+
+

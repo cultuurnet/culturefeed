@@ -1,6 +1,6 @@
 <?php
 /**
- * @file 
+ * @file
  * Module file for all functionality for CultureFeed Search.
  */
 
@@ -16,7 +16,7 @@ function culturefeed_search_ui_menu() {
   foreach (culturefeed_get_searchable_types() as $name => $search_type) {
 
     $class_name = isset($search_type['class_name']) ? $search_type['class_name'] : 'CultureFeedSearchPage';
-    
+
     // Menu paths for search.
     $items[$search_type['path']] = array(
       'title' => $search_type['page_title'],
@@ -26,9 +26,18 @@ function culturefeed_search_ui_menu() {
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
-    
+
+    // Autocomplete path for suggestions.
+    $items['autocomplete/culturefeed/suggestions'] = array(
+      'title' => 'Culturefeed suggestions autocomplete',
+      'page callback' => 'culturefeed_search_ui_suggestions_autocomplete_page',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
   }
-  
+
   return $items;
 }
 
@@ -75,12 +84,23 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    // @todo check where to merge this with (item or event?)
-    'culturefeed_searchresult_item' => array(
-      'variables' => array('item' => NULL),
-      'template' => 'culturefeed-searchresult-item',
+    'culturefeed_search_active_filters_item' => array(
+      'variables' => array(
+        'label' => NULL,
+        'url' => NULL,
+      ),
+      'template' => 'culturefeed-search-active-filters-item',
+      'path' => $path,
     ),
-    
+    'culturefeed_search_pager_summary' => array(
+      'variables' => array(
+        'result' => NULL,
+        'start' => 0,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
   );
 
 }
@@ -119,31 +139,28 @@ function culturefeed_search_ui_block_info() {
  */
 function culturefeed_search_ui_block_view($delta) {
 
+  module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
   $block = array();
 
   switch ($delta) {
 
     case 'culturefeed-search-box':
       $block['subject'] = '';
-      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_block_form');
       break;
 
     case 'culturefeed-search-sortorder':
       $block['subject'] = '';
-      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
       break;
 
     case 'culturefeed-search-facets':
       $block['subject'] = 'Verfijn of wijzig zoekopdracht';
-      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = culturefeed_search_ui_search_facets_block();
       break;
 
     case 'culturefeed-search-activefilters':
       $block['subject'] = 'Je zocht op:';
-      module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
       break;
 
@@ -158,18 +175,18 @@ function culturefeed_search_ui_block_view($delta) {
  * Load all searchable types.
  */
 function culturefeed_get_searchable_types() {
-  
+
   // Get all searchable page types.
   $options = module_invoke_all('culturefeed_search_page_info');
-  
+
   foreach ($options as $key => $data) {
     if (!isset($data['class_name'])) {
       $options[$key]['class_name'] = 'CultureFeedSearchPage';
     }
   }
-  
+
   // Make sure you can alter the searchable data per site.
   drupal_alter('culturefeed_search_page_info', $options);
-  
+
   return $options;
 }

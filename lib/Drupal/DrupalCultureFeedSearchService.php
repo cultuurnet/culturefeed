@@ -15,19 +15,19 @@ class DrupalCultureFeedSearchService {
    * @var DrupalCultureFeedSearchService
    */
   private static $searchService = NULL;
-  
+
   /**
    * @var \CultuurNet\Search\Guzzle\Service
    */
   private $service = NULL;
-  
+
   /**
    * Constructor
-   * 
+   *
    * @param ConsumerCredentials $consumerCredentials
    */
   private function __construct(ConsumerCredentials $consumerCredentials) {
-    
+
     $endpoint = variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION);
     $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
 
@@ -39,9 +39,9 @@ class DrupalCultureFeedSearchService {
     else {
       $this->service = $service;
     }
-    
+
   }
-  
+
   /**
    * getClient().
    *
@@ -52,15 +52,22 @@ class DrupalCultureFeedSearchService {
     if (!self::$searchService) {
       self::$searchService = new DrupalCultureFeedSearchService($consumerCredentials);
     }
-    
+
     return self::$searchService;
   }
 
   /**
-   * Executes a search call to the CultureFeed Search API V2.
+   * @see \CultuurNet\Search\Service::search().
    */
   public function search(Array $parameters = array()) {
     return $this->service->search($parameters);
+  }
+
+  /**
+   * @see \CultuurNet\Search\Service::searchSuggestions().
+   */
+  public function searchSuggestions($search_string) {
+    return $this->service->searchSuggestions($search_string);
   }
 
 }

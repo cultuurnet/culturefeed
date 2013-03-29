@@ -1,0 +1,8 @@
+name = CultureFeed Search API
+description = CultureFeed Search API
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed
+files[] = lib/Drupal/CultureFeedSearchPage.php

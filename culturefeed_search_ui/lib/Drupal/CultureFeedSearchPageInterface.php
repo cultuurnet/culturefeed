@@ -1,5 +1,6 @@
 <?php
 
 interface CultureFeedSearchPageInterface {
-  public static function loadPage();
+  public function loadPage();
+  public function getDrupalTitle();
 }
