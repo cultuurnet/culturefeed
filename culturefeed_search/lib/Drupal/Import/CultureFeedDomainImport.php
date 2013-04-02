@@ -24,7 +24,7 @@ class CultureFeedDomainImport {
     $this->client = new Client($this::END_POINT);
 
     try {
-      $body = $client->get('domain')->send()->getBody(TRUE);
+      $body = $this->client->get('domain')->send()->getBody(TRUE);
       $this->importDomains(new SimpleXMLElement($body));
     }
     catch (ClientErrorResponseException $e) {
@@ -38,8 +38,13 @@ class CultureFeedDomainImport {
    */
   public function importDomains($xmlElement) {
 
-    foreach ($xmlElement->xpath('//domain') as $domain) {
+    // Clear them first.
+    db_query('TRUNCATE {culturefeed_search_domains}');
 
+    // Import rows.
+    foreach ($xmlElement->categorisation->domain as $domain) {
+
+      $domainAttributes = $domain->attributes();
       $record = array(
         'did' => (string)$domainAttributes['id'],
         'label' => (string) $domainAttributes['label'],
@@ -47,7 +52,7 @@ class CultureFeedDomainImport {
 
       drupal_write_record('culturefeed_search_domains', $record);
 
-      drush_log('Imported domain ' . (string) $domainAttributes['label']);
+      drush_log('Imported domain ' . (string) $domainAttributes['label'], 'success');
 
     }
 

@@ -4,5 +4,6 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
+files[] = lib/Drupal/Import/CultureFeedDomainImport.php
 files[] = lib/Drupal/DrupalCultureFeedSearchService.php
 files[] = lib/Drupal/DrupalCultureFeedSearchService_Cache.php

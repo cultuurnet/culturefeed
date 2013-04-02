@@ -5,15 +5,9 @@
  */
 
 /**
- * @var string title
  * @var string $items
  */
 ?>
-
-<?php if (!empty($title)) : ?>
-  <h3><?php print $title; ?></h3>
-<?php endif; ?>
-
 <ul>
 
 <?php foreach ($items as $facet_item): ?>

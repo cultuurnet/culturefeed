@@ -10,8 +10,8 @@
  */
 function culturefeed_agenda_preprocess_culturefeed_event_summary(&$variables) {
 
-  _culturefeed_agenda_culturefeed_agenda($variables);
-  _culturefeed_agenda_culturefeed_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
   _culturefeed_agenda_preprocess_event($variables);
 
 }
@@ -22,8 +22,8 @@ function culturefeed_agenda_preprocess_culturefeed_event_summary(&$variables) {
  */
 function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variables) {
 
-  _culturefeed_agenda_culturefeed_agenda($variables);
-  _culturefeed_agenda_culturefeed_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
   _culturefeed_agenda_preprocess_production($variables);
 
 }
@@ -33,13 +33,15 @@ function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variable
  * @see culturefeed-event.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
-  _culturefeed_agenda_culturefeed_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_event($variables);
+  _culturefeed_agenda_preprocess_agenda_detail($variables);
 }
 
 /**
  * Helper preprocess function to preprocess the general agenda variables.
  */
-function _culturefeed_agenda_culturefeed_agenda(&$variables) {
+function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   global $language;
 
@@ -48,14 +50,21 @@ function _culturefeed_agenda_culturefeed_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
   if ($detail) {
+
     $variables['title'] = $detail->getTitle();
     $variables['shortdescription'] = $detail->getShortDescription();
     $variables['longdescription'] = $detail->getLongDescription();
+
+    if ($detail->getPrice()) {
+      $variables['price'] = $detail->getPrice()->getValue();
+      $variables['price_description'] = $detail->getPrice()->getDescription();
+    }
+
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
 
-  // Social stats:
+  // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
   $variables['comment_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
   $variables['attend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND);
@@ -67,7 +76,14 @@ function _culturefeed_agenda_culturefeed_agenda(&$variables) {
     array_walk($themes, function(&$item) {
       $item = check_plain($item->getName());
     });
-    $variables['themes'] = implode(',', $themes);
+    $variables['themes'] = $themes;
+  }
+
+  // All categories.
+  $categories = $cdb_item->getCategories();
+  $variables['categories'] = array();
+  foreach ($categories as $category) {
+    $variables['categories'][] = check_plain($category->getName());
   }
 
 }
@@ -75,7 +91,7 @@ function _culturefeed_agenda_culturefeed_agenda(&$variables) {
 /**
  * Helper preprocess function to preprocess the general agenda summary variables.
  */
-function _culturefeed_agenda_culturefeed_agenda_summary(&$variables) {
+function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
 
   global $language;
 
@@ -88,6 +104,30 @@ function _culturefeed_agenda_culturefeed_agenda_summary(&$variables) {
     $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     if (count($pictures) > 0) {
       $variables['thumbnail'] = $pictures->current()->getHLink();
+    }
+  }
+
+}
+
+/**
+ * Helper preprocess function to preprocess the general agenda detail variables.
+ */
+function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
+
+  global $language;
+
+  $item = $variables['item'];
+  $cdb_item = $item->getEntity();
+  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+
+  // Add thumbnail image.
+  if ($detail) {
+    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    foreach ($pictures as $picture) {
+      $variables['pictures'][] = $picture->getHLink();
+      if ($picture->isMain()) {
+        $variables['main_picture'] = $picture->getHLink();
+      }
     }
   }
 
@@ -107,22 +147,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $variables['agefrom'] = $event->getAgeFrom();
 
   // Location information.
+  $variables['has_location'] = FALSE;
   if ($event->getLocation()) {
+
+    $variables['has_location'] = TRUE;
 
     $location = $event->getLocation();
 
     if ($location->getActor()) {
-      $actor_detail = $location->getActor()->getDetailByLanguage($language->language);
+      $actor_detail = $location->getActor()->getDetails()->getDetailByLanguage($language->language);
       $variables['where'] = $actor_detail->getTitle();
+      $variables['where_linked'] = culturefeed_agenda_detail_l('actor', $actor->getCdbid(), $variables['where']);
     }
     elseif ($location->getLabel()) {
       $variables['where'] = $location->getLabel();
     }
 
-    $variables['city'] = $location->getAddress()->getPhysicalAddress()->getCity();
+    $physical_address = $location->getAddress()->getPhysicalAddress();
+    $variables['city'] = $physical_address->getCity();
+    $variables['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
+    $variables['zip'] = $physical_address->getZip();
 
   }
 
+  $actor = NULL;
   // Preprocess the organiser variables.
   if ($organiser) {
 
@@ -131,6 +179,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       $actor = $organiser->getActor();
       $organiser_actor_details = $organiser->getActor()->getDetailByLanguage($language->language);
       $variables['organiser'] = $organiser_actor_details->getTitle();
+      $variables['organiser_link'] = culturefeed_agenda_detail_l('production', $actor->getCdbid(), $variables['organiser']);
     }
     elseif ($organiser->getLabel()) {
       $variables['organiser'] = $organiser->getLabel();
@@ -141,10 +190,10 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   if ($event_detail) {
 
       // Add a link to the organiser => Media type culturefeed-page;
-    if ($event_detail->getMedia()) {
+    if (empty($actor) && $event_detail->getMedia()) {
       $page_links = $event_detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_CULTUREFEED_PAGE);
       if ($page_links->count() > 0) {
-        $variables['organiser_link'] = $page_links->current()->getHLink();
+        $variables['organiser_link'] = l($variables['organiser'], $page_links->current()->getHLink());
       }
     }
 
@@ -155,6 +204,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     if ($event_detail) {
       $variables['when'] = $event_detail->getCalendarSummary();
     }
+
+    // Reservation link.
+    $reservation_links = $event_detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
+    foreach ($reservation_links as $link) {
+      $variables['reservation_links'][] = $link->getHLink();
+    }
+
   }
 
 }
@@ -226,6 +282,9 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     }
 
     $variables['performers'] = implode(', ', $performer_labels);
+
+    // Link to detail.
+    $variables['link'] = culturefeed_agenda_detail_url('production', $production->getCdbid(), $production_detail->getTitle());
 
   }
 

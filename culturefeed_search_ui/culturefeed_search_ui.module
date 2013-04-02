@@ -118,20 +118,25 @@ function culturefeed_search_ui_block_info() {
 
   $blocks['culturefeed-search-sortorder'] = array(
     'info' => t('Culturefeed search: sort order filter'),
-    'cache' => DRUPAL_CACHE_PER_USER,
-  );
-
-  $blocks['culturefeed-search-facets'] = array(
-    'info' => t('Culturefeed search: search facets'),
-    'cache' => DRUPAL_CACHE_PER_USER,
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['culturefeed-search-activefilters'] = array(
     'info' => t('Culturefeed search: active filters'),
-    'cache' => DRUPAL_CACHE_PER_USER,
+    'cache' => DRUPAL_NO_CACHE,
   );
 
+  // Facet blocks.
+  $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
+  foreach ($domains as $domain) {
+    $blocks['facet-' . $domain->did] = array(
+      'info' => t('Culturefeed search facet: @label', array('@label' => $domain->label)),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
   return $blocks;
+
 }
 
 /**
@@ -152,12 +157,7 @@ function culturefeed_search_ui_block_view($delta) {
     case 'culturefeed-search-sortorder':
       $block['subject'] = '';
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
-      break;
-
-    case 'culturefeed-search-facets':
-      $block['subject'] = 'Verfijn of wijzig zoekopdracht';
-      $block['content'] = culturefeed_search_ui_search_facets_block();
-      break;
+    break;
 
     case 'culturefeed-search-activefilters':
       $block['subject'] = 'Je zocht op:';
@@ -165,6 +165,11 @@ function culturefeed_search_ui_block_view($delta) {
       break;
 
     default:
+  }
+
+  $delta_parts = explode('-', $delta);
+  if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+    $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_name', $delta_parts[1]);
   }
 
   return $block;

@@ -28,9 +28,9 @@ function culturefeed_search_drush_command() {
 }
 
 /**
- * Implements the 'cnapi-import-values' drush command.
+ * Implements the 'culturefeed-search-import-terms' drush command.
  */
-function drush_culturefeed_import_terms() {
+function drush_culturefeed_search_import_terms() {
 
   drush_log('Starting import', 'success');
 

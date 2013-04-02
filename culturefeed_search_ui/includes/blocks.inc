@@ -115,7 +115,7 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  * Renders a facet block to go along with the search form.
  * @return string
  */
-function culturefeed_search_ui_search_facets_block($facet_name = 'category_misc_name') {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '') {
   // This currently means the page callback has already been invoked.
   global $facetingComponent;
 
@@ -136,21 +136,17 @@ function culturefeed_search_ui_search_facets_block($facet_name = 'category_misc_
 
   if (!empty($items)) {
 
-    switch ($facet->getKey()) {
-      case 'city':
-        $label = t('Waar');
-        break;
-      case 'category_theme_name':
-        $label = t('Thema');
-        break;
-      default:
-        $label = $facet->getKey();
+    $subject = '';
+    if (!empty($domain_id)) {
+      $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => $domain_id))->fetchField();
     }
 
     return array(
-      '#theme' => 'culturefeed_search_facet',
-      '#facet' => $facet,
-      '#title' => $label,
+      'subject' => $subject,
+      'content' => array(
+        '#theme' => 'culturefeed_search_facet',
+        '#facet' => $facet,
+      ),
     );
   }
 

@@ -52,7 +52,11 @@
     ?>
     <dt>Thema</dt>
       <dd>
-      <?php print $themes; ?>
+      <ul>
+      <?php foreach ($themes as $theme): ?>
+        <li><?php print $theme; ?></li>
+      <?php endforeach; ?>
+      </ul>
       </dd>
     <? endif; ?>
   </dl>
