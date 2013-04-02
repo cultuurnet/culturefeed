@@ -60,15 +60,15 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
       case 'date':
         $this->parameters[] = new Parameter\Sort('startdate', Parameter\Sort::DIRECTION_ASC);
-        break;
+      break;
 
       case 'recommends':
         $this->parameters[] = new Parameter\Sort('recommend_count', Parameter\Sort::DIRECTION_DESC);
-        break;
+      break;
 
       case 'comments':
         $this->parameters[] = new Parameter\Sort('comment_count', Parameter\Sort::DIRECTION_DESC);
-        break;
+      break;
 
       default:
         // Ellen: tegelijkertijd boosten op recommend_count op bvb factor 500 en comment_count op pakweg 999
@@ -77,8 +77,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         // http://searchv2.cultuurnet.lodgon.com/search-poc/rest/search?q=text:* AND (recommend_count:0 OR
         // recommend_count:[1 TO *]^999)&group=true&rows=10
 
-        $this->query[] = '(recommend_count:0 OR recommend_count:[1 TO *]^500)';
-        $this->query[] = '(comment_count:0 OR comment_count:[1 TO *]^999)';
+        //$this->query[] = '(recommend_count:0 OR recommend_count:[1 TO *]^500)';
+        //$this->query[] = '(comment_count:0 OR comment_count:[1 TO *]^999)';
 
     }
 

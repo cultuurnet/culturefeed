@@ -1,7 +1,6 @@
 <?php
 
 require_once('culturefeed.helpers.inc');
-require_once('culturefeed.search.inc');
 
 define('CULTUREFEED_CACHE_DISABLED', 0);
 define('CULTUREFEED_CACHE_ENABLED', 1);

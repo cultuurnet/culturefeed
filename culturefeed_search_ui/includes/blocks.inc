@@ -73,7 +73,6 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
 
   $default = isset($query['sort']) ? $query['sort'] : 'relevancy';
 
-  // @todo add JavaScript autosubmit to the select box
   $form['sort'] = array(
     '#title' => t('Sorteer resultaten op'),
     '#type' => 'select',
@@ -90,6 +89,8 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
+
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/search_ui.js';
 
   return $form;
 }

@@ -22,22 +22,29 @@ module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
  */
 function culturefeed_agenda_theme() {
 
+  $theme = array();
   $path = drupal_get_path('module', 'culturefeed_agenda') . '/theme';
+  $item_types = array('event', 'production', 'actor');
 
-  return array(
-    'culturefeed_event_summary' => array(
+  foreach ($item_types as $type) {
+
+    $theme['culturefeed_' . $type . '_summary'] = array(
       'variables' => array('item' => NULL),
-      'template' => 'culturefeed-event-summary',
+      'template' => 'culturefeed-' . $type . '-summary',
       'path' => $path,
       'file' => 'theme.inc',
-    ),
-    'culturefeed_event' => array(
+    );
+
+    $theme['culturefeed_' . $type] = array(
       'variables' => array('item' => NULL),
-      'template' => 'culturefeed-event',
+      'template' => 'culturefeed-' . $type,
       'path' => $path,
       'file' => 'theme.inc',
-    ),
-  );
+    );
+
+  }
+
+  return $theme;
 
 }
 

@@ -1,6 +1,6 @@
 <div class="event-teaser">
 
-  <h2><a href="<?print $link ?>"><?print $title; ?></a></h2>
+  <h2><a href="<?print $link ?>">event => <?print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
@@ -26,6 +26,11 @@
   </div>
 
   <dl class="clearfix">
+
+    <?php if (!empty($age)): ?>
+    <dt>Leeftijd</dt>
+    <dd><?php print $age ?></dd>
+    <?php endif; ?>
 
     <?php if (!empty($where)): ?>
     <dt>Waar</dt>

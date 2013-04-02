@@ -33,7 +33,7 @@ function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variable
  * @see culturefeed-event.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
-  _template_preprocess_culturefeed_agenda($variables);
+  _culturefeed_agenda_culturefeed_agenda($variables);
 }
 
 /**
@@ -47,33 +47,22 @@ function _culturefeed_agenda_culturefeed_agenda(&$variables) {
 
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
-
-  $variables['title'] = $detail->getTitle();
-  $variables['cdbid'] = $cdb_item->getCdbid();
-
-  // Location information.
-  if ($cdb_item->getLocation()) {
-
-    $location = $cdb_item->getLocation();
-
-    if ($location->getActor()) {
-      $actor_detail = $location->getActor()->getDetailByLanguage($language->language);
-      $variables['where'] = $actor_detail->getTitle();
-    }
-    elseif ($location->getLabel()) {
-      $variables['where'] = $location->getLabel();
-    }
-
-    $variables['city'] = $location->getAddress()->getPhysicalAddress()->city;
-
+  if ($detail) {
+    $variables['title'] = $detail->getTitle();
+    $variables['shortdescription'] = $detail->getShortDescription();
+    $variables['longdescription'] = $detail->getLongDescription();
   }
 
+  $variables['cdbid'] = $cdb_item->getCdbid();
+
   // Social stats:
-  $variables['recommend_count'] = $item->getActivityCount('recommend');
-  $variables['comment_count'] = $item->getActivityCount('comment');
+  $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
+  $variables['comment_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+  $variables['attend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND);
+  $variables['like_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE);
 
   // Themes from this item.
-  $themes = culturefeed_cdb_item_get_categories('theme', $cdb_item);
+  $themes = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME);
   if ($themes) {
     array_walk($themes, function(&$item) {
       $item = check_plain($item->getName());
@@ -95,9 +84,11 @@ function _culturefeed_agenda_culturefeed_agenda_summary(&$variables) {
   $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
 
   // Add thumbnail image.
-  $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-  if (count($pictures) > 0) {
-    $variables['thumbnail'] = $pictures->current()->getHLink();
+  if ($detail) {
+    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    if (count($pictures) > 0) {
+      $variables['thumbnail'] = $pictures->current()->getHLink();
+    }
   }
 
 }
@@ -113,7 +104,24 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage($language->language);
   $organiser = $event->getOrganiser();
 
-  $variables['link'] = culturefeed_agenda_detail_url('event', $event->getCdbid(), $event_detail->getTitle());
+  $variables['agefrom'] = $event->getAgeFrom();
+
+  // Location information.
+  if ($event->getLocation()) {
+
+    $location = $event->getLocation();
+
+    if ($location->getActor()) {
+      $actor_detail = $location->getActor()->getDetailByLanguage($language->language);
+      $variables['where'] = $actor_detail->getTitle();
+    }
+    elseif ($location->getLabel()) {
+      $variables['where'] = $location->getLabel();
+    }
+
+    $variables['city'] = $location->getAddress()->getPhysicalAddress()->getCity();
+
+  }
 
   // Preprocess the organiser variables.
   if ($organiser) {
@@ -130,23 +138,40 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
   }
 
-  // When.
   if ($event_detail) {
-    $variables['when'] = $event_detail->getCalendarSummary();
+
+      // Add a link to the organiser => Media type culturefeed-page;
+    if ($event_detail->getMedia()) {
+      $page_links = $event_detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_CULTUREFEED_PAGE);
+      if ($page_links->count() > 0) {
+        $variables['organiser_link'] = $page_links->current()->getHLink();
+      }
+    }
+
+    // Link to detail.
+    $variables['link'] = culturefeed_agenda_detail_url('event', $event->getCdbid(), $event_detail->getTitle());
+
+    // When.
+    if ($event_detail) {
+      $variables['when'] = $event_detail->getCalendarSummary();
+    }
   }
 
 }
 
 /**
- * Preprocess the variables for one of the production templates.
+ * Preprocess the general variables for one of the production templates.
  */
 function _culturefeed_agenda_preprocess_production(&$variables) {
 
   global $language;
   $production = $variables['item']->getEntity();
+  $production_detail = $production->getDetails()->getDetailByLanguage($language->language);
 
-  $total_relations = count($production->relations);
+  $variables['agefrom'] = $production->getAgeFrom();
 
+  $relations = $production->getRelations();
+  $total_relations = count($relations);
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
     $variables['where'] = 'meerdere locaties';
@@ -160,12 +185,49 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
       $event_search = culturefeed_agenda_event_load($production->relations[0]->getCdbid());
       $variables['event'] = $event;
       $event_detail = $event_search->getEntity()->getDetails()->getDetailByLanguage($language->language);
-      $variables['when'] = $event_detail->getCalendarSummary();
+      if ($event_detail) {
+        $variables['when'] = $event_detail->getCalendarSummary();
+      }
+
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_agenda', $e);
     }
 
   }
+  // If no event, check if this productions is in regions.
+  else {
+
+    $region_data = $production->getCategories()->getCategoriesByType('flandersregion');
+    if ($region_data) {
+
+      $regions = array();
+      foreach ($region_data as $region) {
+        $regions[] = check_plain($region->getName());
+      }
+
+      $variables['where'] = 'op verplaatsing in ' . implode(', ', $regions);
+
+    }
+    // No regions.
+    else {
+      $variables['where'] = 'enkel op afspraak';
+    }
+
+  }
+
+  if ($production_detail) {
+
+    // Performers
+    $performers = $production_detail->getPerformers();
+    $performer_labels = array();
+    foreach ($performers as $performer) {
+      $performer_labels[] = $performer->getLabel();
+    }
+
+    $variables['performers'] = implode(', ', $performer_labels);
+
+  }
+
 
 }

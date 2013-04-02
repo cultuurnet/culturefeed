@@ -25,6 +25,9 @@ function culturefeed_agenda_detail_l($type, $cdbid, $slug_title, $display_title 
     $display_title = $slug_title;
   }
 
+  // Set external TRUE, so the second url() wont add an extra /.
+  $options['external'] = TRUE;
+
   return l($display_title, $url, $options);
 
 }
@@ -44,6 +47,6 @@ function culturefeed_agenda_detail_l($type, $cdbid, $slug_title, $display_title 
 function culturefeed_agenda_detail_url($type, $cdbid, $title, $options = array()) {
 
   // Currenly detail pages are always the first letter of type. (event = e, actor = a, production = p).
-  return url('agenda/' . $type[0] . culturefeed_search_slug($title) . '/' . $cdbid);
+  return url('agenda/' . $type[0] . '/' . culturefeed_search_slug($title) . '/' . $cdbid);
 
 }

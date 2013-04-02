@@ -4,6 +4,7 @@
  * Module file for all functionality for CultureFeed Search.
  */
 
+// Default API location. Can be overriden in settings form.
 define('CULTUREFEED_SEARCH_API_LOCATION', 'http://searchv2.cultuurnet.lodgon.com/search-poc/rest');
 
 module_load_include('inc', 'culturefeed_search', 'includes/helpers');

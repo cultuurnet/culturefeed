@@ -1,1 +1,57 @@
-<?php
+<div class="event-teaser">
+
+  <h2><a href="<?print $link ?>">production => <?print $title; ?></a></h2>
+
+  <div class="activity-wrapper">
+    <div class="comment-wrapper">
+      <?php if ($comment_count > 0): ?>
+        <span class="comments"><?php print $comment_count; ?></span>
+        <a href="<?php print $link ?>#lees">Lees beoordelingen</a>
+        <a href="<?php print $link ?>#schrijf">Schrijf een beoordeling</a>
+      <?php else: ?>
+        <span class="no-comments"><?php print $comment_count; ?></span>
+        <a href="<?php print $link ?>#schrijf">Schrijf als eerste een beoordeling</a>
+      <?php endif; ?>
+    </div>
+    <?php if ($recommend_count > 0): ?>
+      <div class="count-aangeraden"><?php print format_plural($recommend_count, '<span>@count</span> keer aangeraden', '<span>@count</span> keer aangeraden'); ?></div>
+    <?php endif; ?>
+    <?php print culturefeed_search_ui_activity_recommend_link($item); ?>
+  </div>
+
+  <div class="image">
+    <?php if (!empty($thumbnail)): ?>
+    <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
+    <?php endif; ?>
+  </div>
+
+  <dl class="clearfix">
+
+    <?php if (!empty($where)): ?>
+    <dt>Waar</dt>
+    <dd><?php print $where ?></dd>
+    <?php endif; ?>
+
+    <?php if (!empty($when)): ?>
+    <dt>Wanneer</dt>
+    <dd><?php print $when; ?></dd>
+    <?php endif; ?>
+
+    <?php if (!empty($organisation)): ?>
+    <dt>Organisatie</dt>
+    <dd><?php print $organisation; ?></dd>
+    <?php endif; ?>
+
+    <?php
+      if (!empty($themes)):
+    ?>
+    <dt>Thema</dt>
+      <dd>
+      <?php print $themes; ?>
+      </dd>
+    <? endif; ?>
+  </dl>
+
+  <?php print culturefeed_agenda_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
+
+</div>
