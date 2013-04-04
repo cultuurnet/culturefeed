@@ -1,3 +1,10 @@
+<?php
+/**
+ * @file
+ * Template for the summary of an event.
+ */
+?>
+
 <div class="event-teaser">
 
   <h2><a href="<?print $link ?>">event => <?print $title; ?></a></h2>
@@ -32,9 +39,9 @@
     <dd><?php print $age ?></dd>
     <?php endif; ?>
 
-    <?php if (!empty($where)): ?>
+    <?php if ($location): ?>
     <dt>Waar</dt>
-    <dd><?php print $where ?> <?php print $city; ?></dd>
+    <dd><?php print $location['title'] ?> <?php print $location['city']; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($when)): ?>
@@ -42,9 +49,9 @@
     <dd><?php print $when; ?></dd>
     <?php endif; ?>
 
-    <?php if (!empty($organisation)): ?>
+    <?php if ($organiser): ?>
     <dt>Organisatie</dt>
-    <dd><?php print $organisation; ?></dd>
+    <dd><?php print $organiser['title']; ?></dd>
     <?php endif; ?>
 
     <?php

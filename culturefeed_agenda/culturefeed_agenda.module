@@ -8,10 +8,6 @@ use Symfony\Component\Console\Output\NullOutput;
  * @todo
  * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
  *   "culturefeed_ui_block_users_recommends_config" is moved to correct place
- * - check if it wouldn't be better to just use the convenience of
- *   culturefeed_agenda > culturefeed_search_ui. This way the search ui can declare
- *   the searchable types, it can have the search block, the sortorder block/functions, ...
- * -
  *
  */
 
@@ -67,7 +63,7 @@ function culturefeed_agenda_menu() {
   );
 
   $items['agenda/e/%/%culturefeed_agenda_event'] = array(
-    'title callback' => 'culturefeed_ui_agenda_detail_title',
+    'title callback' => 'culturefeed_agenda_detail_title',
     'title arguments' => array(3),
     'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
@@ -102,6 +98,20 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'class_name' => 'CultureFeedAgendaPage',
     ),
   );
+}
+
+/**
+ * Title callback for agenda detail pages.
+ */
+function culturefeed_agenda_detail_title(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+
+  global $language;
+  $details = $item->getEntity()->getDetails()->getDetailByLanguage($language->language);
+
+  if ($details) {
+    return $details->getTitle();
+  }
+
 }
 
 /**

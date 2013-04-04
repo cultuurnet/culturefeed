@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- *
+ * Template for the detail of an event.
  */
-
 ?>
+
 <h2><?php print $title; ?></h2>
 
 beoordelingen:
@@ -25,15 +25,18 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
 
 <dl class="clearfix">
 
-  <?php if ($has_location): ?>
+  <?php if ($location): ?>
   <dt>Waar</dt>
   <dd>
-    <?php if (!empty($where_linked)): ?>
-    <?php print $where_linked; ?><br/>
-    <?php elseif (!empty($where)): ?>
-    <?php print $where;?><br/>
+    <?php if (!empty($location['link'])): ?>
+    <?php print $location['link']; ?><br/>
+    <?php else: ?>
+    <?php print $location['title'];?><br/>
     <?php endif; ?>
-    <?php print $street ?>, <?php print $zip; ?> <?php print $city; ?>
+    <?php print $location['street'] ?>, <?php print $location['zip']; ?> <?php print $location['city']; ?>
+    <?php if (!empty($coordinates)): ?>
+    <?php print $coordinates['lat'] ?> - <?php print $coordinates['lng'] ?>
+    <?php endif; ?>
   </dd>
   <?php endif; ?>
 
@@ -42,9 +45,30 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
 
-  <?php if (!empty($organisation)): ?>
+  <?php if ($organiser): ?>
   <dt>Organisatie</dt>
-  <dd><?php print $organisation; ?></dd>
+  <dd>
+    <?php if (empty($organiser['link'])):?>
+    <?php print $organiser['title']; ?>
+    <?php else: ?>
+    <?php print $organiser['link'] ?>
+    <?php endif; ?>
+  </dd>
+  <?php endif; ?>
+
+  <?php if (!empty($contact)) : ?>
+    <dt>Contact</dt>
+    <dd>
+    <?php if (isset($contact['mail'])) : ?>
+      Mail: <?php print $contact['mail'] ?><br />
+    <?php endif; ?>
+    <?php if (isset($contact['phone'])) : ?>
+      Telefoon: <?php print $contact['phone'] ?><br />
+    <?php endif; ?>
+    <?php if (isset($contact['fax'])) : ?>
+      Fax: <?php print $contact['fax'] ?>
+    <?php endif; ?>
+    </dd>
   <?php endif; ?>
 
   <?php if (!empty($age)): ?>
@@ -64,8 +88,29 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <? endif; ?>
 
   <?php if (!empty($price)): ?>
-  <dt>Price</dt>
+  <dt>Prijs</dt>
   <dd><?php print $price; ?><?php print $price_description; ?></dd>
   <?php endif; ?>
 
+  <?php if (!empty($links)): ?>
+  <dt>Links</dt>
+  <dd>
+    <ul>
+    <?php foreach ($links as $link): ?>
+      <li><?php print $link; ?></li>
+    <?php endforeach; ?>
+    </ul>
+  </dd>
+  <?php endif; ?>
+
 </dl>
+
+<img src="<?php print $main_picture; ?>" />
+
+<?php foreach ($pictures as $picture): ?>
+  <img src="<?php print $picture; ?>?width=160&height=120&crop=auto" />
+<?php endforeach; ?>
+
+<?php foreach ($videos as $video): ?>
+  <?php print $video; ?>
+<?php endforeach; ?>

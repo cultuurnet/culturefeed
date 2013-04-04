@@ -1,3 +1,10 @@
+<?php
+/**
+ * @file
+ * Template for the summary of a production.
+ */
+?>
+
 <div class="event-teaser">
 
   <h2><a href="<?print $link ?>">production => <?print $title; ?></a></h2>
@@ -27,19 +34,14 @@
 
   <dl class="clearfix">
 
-    <?php if (!empty($where)): ?>
+    <?php if ($location): ?>
     <dt>Waar</dt>
-    <dd><?php print $where ?></dd>
+    <dd><?php print $location['title'] ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($when)): ?>
     <dt>Wanneer</dt>
     <dd><?php print $when; ?></dd>
-    <?php endif; ?>
-
-    <?php if (!empty($organisation)): ?>
-    <dt>Organisatie</dt>
-    <dd><?php print $organisation; ?></dd>
     <?php endif; ?>
 
     <?php

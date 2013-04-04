@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- *
+ * Template for the detail of a production.
  */
-
 ?>
+
 <h2><?php print $title; ?></h2>
 
 beoordelingen:
@@ -25,15 +25,20 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
 
 <dl class="clearfix">
 
-  <?php if ($has_location): ?>
+  <?php if ($location): ?>
   <dt>Waar</dt>
   <dd>
-    <?php if (!empty($where_linked)): ?>
-    <?php print $where_linked; ?><br/>
-    <?php elseif (!empty($where)): ?>
-    <?php print $where;?><br/>
+    <?php print $location['title'];?><br/>
+    <?php if (!empty($location['street'])): ?>
+    <?php print $location['street'] ?>, <?php print $location['zip']; ?> <?php print $location['city']; ?>
     <?php endif; ?>
-    <?php print $street ?>, <?php print $zip; ?> <?php print $city; ?>
+    <?php if (!empty($regions)): ?>
+    <ul>
+    <?php foreach ($regions as $region): ?>
+      <li><?php print $region?></li>
+    <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
   </dd>
   <?php endif; ?>
 
@@ -42,14 +47,15 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
 
-  <?php if (!empty($organisation)): ?>
-  <dt>Organisatie</dt>
-  <dd><?php print $organisation; ?></dd>
-  <?php endif; ?>
-
-  <?php if (!empty($age)): ?>
-  <dt>Leeftijd</dt>
-  <dd><?php print $age; ?></dd>
+  <?php if (!empty($educationlevels)): ?>
+  <dt>Niveau</dt>
+  <dd>
+    <ul>
+    <?php foreach ($educationlevels as $educationlevel): ?>
+      <li><?php print $educationlevel; ?></li>
+    <?php endforeach; ?>
+    </ul>
+  </dd>
   <?php endif; ?>
 
   <?php if (!empty($themes)): ?>
@@ -63,9 +69,21 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
     </dd>
   <? endif; ?>
 
-  <?php if (!empty($price)): ?>
-  <dt>Price</dt>
-  <dd><?php print $price; ?><?php print $price_description; ?></dd>
+  <?php if (!empty($links)): ?>
+  <dt>Links</dt>
+  <dd>
+    <ul>
+    <?php foreach ($links as $link): ?>
+      <li><?php print $link; ?></li>
+    <?php endforeach; ?>
+    </ul>
+  </dd>
   <?php endif; ?>
 
 </dl>
+
+<img src="<?php print $main_picture; ?>" />
+
+<?php foreach ($pictures as $picture): ?>
+  <img src="<?php print $picture; ?>?width=160&height=120&crop=auto" />
+<?php endforeach; ?>
