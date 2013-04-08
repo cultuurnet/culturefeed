@@ -37,6 +37,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
     $this->parameters[] = $facetingComponent->facetField('category');
+    $this->parameters[] = $facetingComponent->facetField('datetype');
 
     $this->execute($params, $facetingComponent);
 

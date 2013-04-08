@@ -174,6 +174,12 @@ function culturefeed_ui_page_profile_edit_form() {
     return;
   }
 
+  $form['view-profile'] = array(
+    '#prefix' => '<div id="view-profile">',
+    '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#suffix' => '</div>',
+  );
+
   // Firstname.
   $form['givenName'] = array(
     '#type' => 'textfield',
@@ -410,6 +416,12 @@ function culturefeed_ui_page_account_edit_form() {
     drupal_set_message('Er is een fout opgetreden bij het laden van jouw account. Probeer het later opnieuw.');
     return;
   }
+
+  $form['view-profile'] = array(
+    '#prefix' => '<div id="view-profile">',
+    '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#suffix' => '</div>',
+  );
 
   $form['nick'] = array(
     '#type' => 'textfield',

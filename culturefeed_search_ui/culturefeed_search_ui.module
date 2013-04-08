@@ -65,6 +65,7 @@ function culturefeed_search_ui_theme() {
     'culturefeed_search_facet' => array(
       'variables' => array(
         'facet' => NULL,
+        'items' => array(),
         'title' => NULL,
         'path' => NULL,
         'query' => NULL,
@@ -106,6 +107,32 @@ function culturefeed_search_ui_theme() {
 }
 
 /**
+ * Implements hook_library().
+ */
+function culturefeed_search_ui_library() {
+
+  $path = drupal_get_path('module', 'culturefeed_search_ui');
+
+  // Date range picker
+  $libraries['ui.daterangepicker'] = array(
+    'title' => 'Datejs',
+    'website' => 'http://filamentgroup.com/lab/date_range_picker_using_jquery_ui_16_and_jquery_ui_css_framework/',
+    'version' => '1',
+    'js' => array(
+      $path . '/js/daterangepicker.jQuery.compressed.js' => array(),
+    ),
+    'css' => array(
+      $path . '/css/ui.daterangepicker.css' => array(),
+    ),
+    'dependencies' => array(
+      array('system', 'ui.datepicker'),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
  * Implements hook_block_info().
  */
 function culturefeed_search_ui_block_info() {
@@ -123,6 +150,11 @@ function culturefeed_search_ui_block_info() {
 
   $blocks['culturefeed-search-activefilters'] = array(
     'info' => t('Culturefeed search: active filters'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['facet-datetype'] = array(
+    'info' => t('Culturefeed search facet: When'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -162,14 +194,19 @@ function culturefeed_search_ui_block_view($delta) {
     case 'culturefeed-search-activefilters':
       $block['subject'] = 'Je zocht op:';
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
-      break;
+    break;
+
+    case 'facet-datetype':
+      $block = culturefeed_search_ui_block_date_facet();
+    break;
 
     default:
-  }
 
-  $delta_parts = explode('-', $delta);
-  if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
-    $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_name', $delta_parts[1]);
+      $delta_parts = explode('-', $delta);
+      if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_name', $delta_parts[1]);
+      }
+
   }
 
   return $block;

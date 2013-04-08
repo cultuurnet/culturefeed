@@ -33,6 +33,15 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // dob
   $variables['dob'] = !empty($account->dob) ? format_date($account->dob, 'custom', 'j/n/Y') : '';
 
+  // age
+  $variables['age'] = '';
+  if (!empty($account->dob)) {
+    $tz  = new DateTimeZone('Europe/Brussels');
+    $variables['age'] = DateTime::createFromFormat('d/m/Y', $variables['dob'], $tz)
+      ->diff(new DateTime('now', $tz))
+      ->y;
+  }
+
   // bio
   $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 
@@ -117,30 +126,41 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-profile-box.tpl.php.
+ * Preprocess variables for culturefeed-ui-anonymous-profile-box.tpl.php.
  *
- * @see culturefeed-ui-profile-box.tpl.php
+ * @see culturefeed-ui-anonymous-profile-box.tpl.php
  */
-function template_preprocess_culturefeed_ui_profile_box(&$variables) {
-  $variables['is_logged_in'] = !user_is_anonymous();
+function template_preprocess_culturefeed_ui_anonymous_profile_box(&$variables) {
 
-  if (!user_is_anonymous()) {
-    $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
-
-    $picture = $variables['account']->depiction . '?maxwidth=20&maxheight=20&crop=auto';
-    $variables['picture'] = theme('image', array('path' => $picture));
-
-    $variables['nick'] = l($variables['account']->nick, $url_profile);
-
-    $variables['link_profile'] = l('Mijn UiTiD', $url_profile);
-  }
-
-  $variables['link_logout'] = l('Afmelden', 'user/logout');
   $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $variables['link_register'] = l('Registreren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $query = drupal_get_destination();
   $query['via'] = 'facebook';
   $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
+
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-profile-box.tpl.php.
+ *
+ * @see culturefeed-ui-profile-box.tpl.php
+ */
+function template_preprocess_culturefeed_ui_profile_box(&$variables) {
+
+  $picture = $variables['account']->depiction . '?maxwidth=20&maxheight=20&crop=auto';
+  $variables['picture'] = theme('image', array('path' => $picture));
+
+  $variables['nick'] =  l($variables['account']->nick, 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick));
+
+  uasort($variables['main_items'], 'drupal_sort_weight');
+
+  uasort($variables['dropdown_items'], 'drupal_sort_weight');
+  foreach ($variables['dropdown_items'] as &$item) {
+    if (isset($dropdown_items['children'])) {
+      uasort($item, 'drupal_sort_weight');
+    }
+  }
+
 }
 
 /**

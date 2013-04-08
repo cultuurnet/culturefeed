@@ -219,6 +219,13 @@ class CultureFeed_User {
    */
   public $privacyConfig;
 
+
+  /**
+   * List of page memberships.
+   * @var CultureFeed_PageMembership[]
+   */
+  public $pageMemberships;
+
   /**
    * Convert a CultureFeed_User object to an array that can be used as data in POST requests that expect user info.
    *

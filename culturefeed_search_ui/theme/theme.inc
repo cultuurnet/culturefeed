@@ -24,7 +24,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
 
   $items = $vars['result']->getItems();
 
-  $vars['noitems'] = count($items) <= 0 ? TRUE : FALSE;
+  $vars['noitems'] = $vars['result']->getTotalCount() <= 0 ? TRUE : FALSE;
 
   foreach ($items as $item) {
     $vars['items'][] = theme('culturefeed_' . $item->getType() . '_summary', array('item' => $item));
@@ -54,7 +54,8 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
   );
 
   $items = array();
-  foreach ($facet->getResult()->getItems() as $facet_item) {
+  // Add all the facet items to the build.
+  foreach ($variables['items'] as $facet_item) {
 
     $sub_item_output = array();
     // Add the subitems from this facet item.
@@ -100,7 +101,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
-  $facet_option = $facet_item->getLabel();
+  $facet_option = $facet_item->getValue();
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
 
   $variables['active'] = in_array($facet_option, $active_options);
@@ -125,7 +126,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   }
 
   $variables['url'] = url($variables['path'], array('query' => $query, 'absolute' => TRUE));
-  $variables['label'] = $facet_option;
+  $variables['label'] = $facet_item->getLabel();
   $variables['count'] = $facet_item->getTotalResults();
 
 }

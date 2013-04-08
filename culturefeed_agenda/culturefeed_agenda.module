@@ -31,6 +31,13 @@ function culturefeed_agenda_theme() {
       'file' => 'theme.inc',
     );
 
+    $theme['culturefeed_' . $type . '_short_summary'] = array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-' . $type . '-short-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    );
+
     $theme['culturefeed_' . $type] = array(
       'variables' => array('item' => NULL),
       'template' => 'culturefeed-' . $type,
@@ -39,6 +46,12 @@ function culturefeed_agenda_theme() {
     );
 
   }
+
+  $theme['culturefeed_agenda_related_items'] = array(
+    'variables' => array('items' => array()),
+    'template' => 'culturefeed-agenda-related-items',
+    'path' => $path,
+  );
 
   return $theme;
 
@@ -98,6 +111,126 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'class_name' => 'CultureFeedAgendaPage',
     ),
   );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_agenda_block_info() {
+
+  $blocks = array();
+
+  $blocks['agenda-related-activities'] = array(
+    'info' => t('Culturefeed agenda: related activities'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function culturefeed_agenda_block_configure($delta) {
+
+  $form = array();
+
+  if ($delta == 'agenda-related-activities') {
+
+    $form['agenda_related_activities_context'] = array(
+      '#title' => t('Context field for the related events'),
+      '#type' => 'select',
+      '#options' => array(
+        '' => t('No context'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY => t('Facility'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME => t('Theme'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_PUBLICSCOPE => t('Public scope'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_TARGET_AUDIANCE => t('Target audience'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EDUCATION_FIELD => t('Education field'),
+        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EDUCATION_LEVEL => t('Education level'),
+      ),
+      '#default_value' => variable_get('agenda_related_activities_context'),
+      '#description' => t('The field to use for searching related activities. Leave empty if you only want to search on range.')
+    );
+
+    $form['agenda_related_activities_range'] = array(
+      '#title' => t('Radius to search in km'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('agenda_related_activities_range', 0),
+      '#description' => t('Search on the given radius. Leave empty to skip radius search. Radius search will only be done when viewing an event.'),
+    );
+
+    $form['agenda_related_activities_extra_query'] = array(
+      '#title' => t('Extra filter query for the result set'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('agenda_related_activities_extra_query'),
+      '#description' => t('Make sure this is a correct solr query. Example title=mytitle'),
+    );
+
+    $form['agenda_related_activities_sort'] = array(
+      '#title' => t('Sort field'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('agenda_related_activities_sort'),
+      '#description' => t('Field to sort on. Example startdate'),
+    );
+
+    $form['agenda_related_activities_sort_direction'] = array(
+      '#title' => t('Sort direction'),
+      '#type' => 'select',
+      '#options' => array(
+        \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC => t('Ascending'),
+        \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC => t('Descending'),
+      ),
+      '#default_value' => variable_get('agenda_related_activities_sort_direction', 'asc'),
+    );
+
+    $form['agenda_related_activities_total_items'] = array(
+      '#title' => t('Items to show'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('agenda_related_activities_total_items', 5),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_agenda_block_save($delta, $edit) {
+
+  if ($delta == 'agenda-related-activities') {
+    variable_set('agenda_related_activities_context', $edit['agenda_related_activities_context']);
+    variable_set('agenda_related_activities_range', $edit['agenda_related_activities_range']);
+    variable_set('agenda_related_activities_extra_query', $edit['agenda_related_activities_extra_query']);
+    variable_set('agenda_related_activities_sort', $edit['agenda_related_activities_sort']);
+    variable_set('agenda_related_activities_sort_direction', $edit['agenda_related_activities_sort_direction']);
+  }
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_agenda_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_agenda', 'includes/blocks');
+  $block = array();
+
+  switch ($delta) {
+
+    case 'agenda-related-activities':
+      return culturefeed_agenda_block_related_activities();
+    break;
+
+    default:
+  }
+
+  return $block;
+
 }
 
 /**

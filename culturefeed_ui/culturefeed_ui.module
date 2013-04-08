@@ -141,8 +141,16 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile',
     ),
     'culturefeed_ui_profile_box' => array(
-      'variables' => array('account' => NULL),
+      'variables' => array(
+        'account' => NULL,
+        'main_items' => array(),
+        'dropdown_items' => array(),
+      ),
       'template' => 'culturefeed-ui-profile-box',
+    ),
+    'culturefeed_ui_anonymous_profile_box' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-ui-anonymous-profile-box',
     ),
     'culturefeed_ui_most_active_user' => array(
       'variables' => array('account' => NULL, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
@@ -350,6 +358,38 @@ function culturefeed_ui_user_view($account) {
     '#theme' => 'culturefeed_ui_profile',
     '#user' => $cf_account,
   );
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
+
+  $items = array();
+
+  $items['my-profile'] = array(
+    'data' => 'Mijn profiel',
+    'class' => 'my-profile',
+    'children' => array(
+      array('data' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick))),
+    ),
+    'weight' => -20,
+  );
+
+  $items['settings'] = array(
+    'data' => l('Instellingen', 'culturefeed/profile/edit'),
+    'class' => 'settings',
+    'weight' => 19,
+  );
+
+  $items['logout'] = array(
+    'data' => l('Afmelden', 'user/logout'),
+    'class' => 'logout',
+    'weight' => 20,
+  );
+
+  return $items;
+
 }
 
 /**

@@ -17,6 +17,18 @@ function culturefeed_agenda_preprocess_culturefeed_event_summary(&$variables) {
 }
 
 /**
+ * Preprocess the variables for the event short summary.
+ * @see culturefeed-event-short-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_event_short_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_event($variables);
+
+}
+
+/**
  * Preprocess the variables for the event detail.
  * @see culturefeed-event.tpl.php
  */
@@ -31,6 +43,18 @@ function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
  * @see culturefeed-production-summary.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_production($variables);
+
+}
+
+/**
+ * Preprocess the variables for the production short summary.
+ * @see culturefeed-production-short-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_production_short_summary(&$variables) {
 
   _culturefeed_agenda_preprocess_agenda($variables);
   _culturefeed_agenda_preprocess_agenda_summary($variables);
@@ -213,11 +237,11 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   if ($organiser) {
 
     // If the organiser is a reference to an actor, link to it.
-    if ($organiser->getActor() && $organiser->getActor()->getDetailByLanguage($language->language)) {
+    if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
       $actor = $organiser->getActor();
-      $organiser_actor_details = $organiser->getActor()->getDetailByLanguage($language->language);
+      $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
       $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-      $variables['organiser']['link'] = culturefeed_agenda_detail_l('production', $actor->getCdbid(), $variables['organiser']);
+      $variables['organiser']['link'] = culturefeed_agenda_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
     }
     elseif ($organiser->getLabel()) {
       $variables['organiser']['title'] = $organiser->getLabel();

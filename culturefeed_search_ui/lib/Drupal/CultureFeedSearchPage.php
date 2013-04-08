@@ -51,6 +51,23 @@ class CultureFeedSearchPage {
    */
   protected function addFacetFilters($params) {
 
+    // Add the date range facet.
+    if (isset($params['date_range'])) {
+
+      $dates = explode('-', $params['date_range']);
+      $start_date = strtotime($dates[0]);
+      $end_date = $start_date;
+      if (isset($dates[1])) {
+        $end_date = strtotime($dates[1]) +  24 * 60 * 60;
+      }
+
+      // Add 23:59:59 to the end date, so it searches on the end of that day
+      $end_date +=  ((23 * 60 * 60) + (59 * 60) + 59);
+
+      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $start_date, $end_date);
+
+    }
+
     foreach ($params['facet'] as $facetFieldName => $facetFilter) {
 
       array_walk($facetFilter, function (&$item) {
@@ -77,10 +94,10 @@ class CultureFeedSearchPage {
     $this->parameters[] = new Parameter\Start($this->start);
 
     // Add items / page.
-    $this->parameters[] = new \CultuurNet\Search\Parameter\Rows($this->resultsPerPage);
+    $this->parameters[] = new Parameter\Rows($this->resultsPerPage);
 
     // Add grouping so returned events are not duplicate.
-    $this->parameters[] = new \CultuurNet\Search\Parameter\Group();
+    $this->parameters[] = new Parameter\Group();
 
     if ('' == $params['search']) {
       $params['search'] = '*';

@@ -11,6 +11,7 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
   Drupal.behaviors.culturefeedSearchUi = {
    attach: function (context, settings) {
      Drupal.CulturefeedSearch.bindSortDropdown();
+     Drupal.CulturefeedSearch.bindDatePicker();
    }
   };
   
@@ -32,6 +33,13 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
     // Hide the submit button.
     $form.find('input:submit').hide();
     
+  }
+  
+  /**
+   * Bind the datepicker functionality.
+   */
+  Drupal.CulturefeedSearch.bindDatePicker = function() {
+    $('#edit-date-range').daterangepicker();
   }
 
 })(jQuery);

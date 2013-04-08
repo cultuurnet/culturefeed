@@ -1398,6 +1398,29 @@ class CultureFeed implements ICultureFeed {
       $user->privacyConfig = $privacy_config;
     }
 
+    $memberships = $element->xpath('/foaf:person/pageMemberships');
+    $user_memberships = array();
+    foreach ($memberships as $membership) {
+
+      $pageId = $membership->xpath_str('page/uid');
+      if (empty($pageName)) {
+        continue;
+      }
+
+      $user_membership = new CultureFeed_PageMembership();
+
+      $user_membership->role          = $membership->xpath_str('role');
+      $user_membership->creationDate  = $membership->xpath_time('creationDate');
+      $user_membership->pageId        = $pageId;
+      $user_membership->pageName      = $membership->xpath_str('page/name');
+
+      $user_memberships[] = $user_membership;
+    }
+
+    if (!empty($user_memberships)) {
+      $user->pageMemberships = $user_memberships;
+    }
+
     if (!empty($accounts)) {
       $user->holdsAccount = $accounts;
     }

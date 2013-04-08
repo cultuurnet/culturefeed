@@ -47,6 +47,14 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
 
   }
 
+  $active_trail[] = array(
+    'title' => drupal_get_title(),
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
   menu_set_active_trail($active_trail);
 
   return array(

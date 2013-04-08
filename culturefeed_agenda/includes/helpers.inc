@@ -52,6 +52,22 @@ function culturefeed_agenda_detail_url($type, $cdbid, $title, $options = array()
 }
 
 /**
+ * Get the current active agenda object.
+ */
+function culturefeed_agenda_get_active_object() {
+
+  $supported_types = array(
+    'e' => 'culturefeed_agenda_event',
+    'p' => 'culturefeed_agenda_production',
+  );
+
+  if (arg(0) == 'agenda' && isset($supported_types[arg(1)])) {
+    return menu_get_object($supported_types[arg(1)], 3);
+  }
+
+}
+
+/**
  * Get all the links from a given item.
  * @var CultureFeed_Cdb_Item_Base $item
  */
