@@ -3,3 +3,35 @@
 /**
  * Implements hook_block_info().
  */
+function culturefeed_social_block_info() {
+
+  $blocks = array();
+
+  $blocks['user-activities'] = array(
+    'info' => t('User activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_social_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_social', 'includes/blocks');
+  $block = array();
+
+  switch ($delta) {
+
+    case 'user-activities':
+      $account = menu_get_object('user');
+      return culturefeed_social_block_user_activities($account);
+
+  }
+
+  return $block;
+
+}

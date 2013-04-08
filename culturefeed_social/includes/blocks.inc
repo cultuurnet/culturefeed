@@ -4,9 +4,7 @@
  * Block callbacks for the social module.
  */
 
-function culturefeed_ui_block_user_activities_view() {
-
-  $account = menu_get_object('user');
+function culturefeed_social_block_user_activities($account) {
 
   if (!$account->culturefeed_uid) {
     return;
