@@ -5,9 +5,10 @@
  */
 
 /**
- * Theme the user activity list.
+ * Preprocess the user activity list.
+ * @see culturefeed-social-user-activity-list.tpl.php
  */
-function theme_culturefeed_social_user_activity_list(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_user_activity_list(&$variables) {
 
   $activities = $variables['activities'];
   $items = array();

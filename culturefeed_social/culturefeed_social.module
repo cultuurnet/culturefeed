@@ -1,18 +1,36 @@
 <?php
+/**
+ * @file
+ * CultureFeed Social adds the ability to social actions (example like, comments, follow) on culturefeed items like events, productions, pages...
+ */
 
-define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 20);
+module_load_include('inc', 'culturefeed_social', 'includes/helpers');
+
+define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 10);
 
 /**
  * Implements hook_menu().
  */
 function culturefeed_social_menu() {
 
+  $items = array();
   $items['culturefeed/ajax/user/activities'] = array(
     'page callback' => 'culturefeed_social_page_ajax_get_activities',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+
+  $items['admin/config/services/culturefeed_social'] = array(
+    'title' => 'Culture Feed Social',
+    'description' => 'Change Culture Feed Social settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_social_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+  return $items;
 
 }
 
@@ -33,6 +51,7 @@ function culturefeed_social_theme() {
       ),
       'path' => $path,
       'file' => 'theme.inc',
+      'template' => 'culturefeed-social-user-activity-list',
     ),
     'culturefeed_social_user_activity_summary' => array(
       'variables' => array(

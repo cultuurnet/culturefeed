@@ -79,6 +79,8 @@ class CultureFeed_Activity {
 
   const TYPE_RECOMMEND = 15;
 
+  const TYPE_FOLLOW = 18;
+
   /**
    * ID of the activity object.
    *

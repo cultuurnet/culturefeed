@@ -4,20 +4,33 @@
  * Helper functions for culturefeed social.
  */
 
-function culturefeed_ui_activities_list($activities) {
+/**
+ * Get the actvitity filter options.
+ */
+function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 
-  $items = array();
+  $options = array(
+    CultureFeed_Activity::TYPE_LIKE => 'Likes',
+    CultureFeed_Activity::TYPE_RECOMMEND => 'Aanraden',
+    CultureFeed_Activity::TYPE_FOLLOW => 'Pagina volgen',
+    CultureFeed_Activity::TYPE_COMMENT => 'Beoordelingen',
+  );
 
-  $accounts = culturefeed_get_uids_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    if (!isset($accounts[$activity->userId])) {
-      continue;
-    }
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+  // Return all possible filters.
+  if (!$active_only) {
+    return $options;
   }
 
-  return $items;
+  // Only active filters
+  $activity_filters = variable_get('culturefeed_social_activity_filters', array());
+
+  $active_options = array();
+  foreach ($activity_filters as $activity_filter) {
+    if ($activity_filter) {
+      $active_options[$activity_filter] = $options[$activity_filter];
+    }
+  }
+
+  return $active_options;
 
 }

@@ -10,7 +10,7 @@
 
   <?php if ($pager_path): ?>
   <div class="more-pager">
-    <a class="pager-link" href="<?php print $pager_path; ?>">Lees oudere berichten</a>
+    <a class="pager-link" href="<?php print $pager_path; ?>" rel="no-follow">Lees oudere berichten</a>
   </div>
   <?php endif; ?>
 
