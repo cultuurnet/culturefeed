@@ -1,5 +1,38 @@
 <?php
 
+define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 20);
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_social_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_social') . '/theme';
+
+  return array(
+
+    'culturefeed_social_user_activity_list' => array(
+      'variables' => array(
+        'activities' => array(),
+        'class' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_user_activity_summary' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'uid' => 0,
+      ),
+      'template' => 'culturefeed-social-user-activity-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
+  );
+
+}
+
 /**
  * Implements hook_block_info().
  */

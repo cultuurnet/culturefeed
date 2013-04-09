@@ -97,18 +97,43 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
   private function xpath_cast($cast_function, $path, $multiple = FALSE) {
     $objects = $this->xpath($path);
 
+    if (empty($objects)) {
+      return NULL;
+    }
+
     if (!is_array($objects)) return $objects;
 
     if ($multiple) {
       $result = array();
       foreach ($objects as $object) {
-        $result[] = is_null($object) || ($cast_function != 'strval' && empty($object)) ? NULL : call_user_func($cast_function, $object);
+        $result[] = $this->xpath_object_value($cast_function, $object);
       }
       return array_filter($result);
     }
     else {
-      return empty($objects) || is_null($objects[0]) || ($cast_function != 'strval' && empty($objects[0])) ? NULL : call_user_func($cast_function, $objects[0]);
+
+      if (!isset($objects[0])) {
+        return NULL;
+      }
+
+      return call_user_func($cast_function, $objects[0]);
     }
+  }
+
+  /**
+   * Return the value from a simple xml object and cast it using a type casting function.
+   * @param unknown_type $cast_function
+   * @param unknown_type $object
+   */
+  private function xpath_object_value($cast_function, $object) {
+
+    $value = $object->__toString();
+    if ($cast_function != 'strval' && empty($value)) {
+      return NULL;
+    }
+
+    return call_user_func($cast_function, $object);
+
   }
 
 }

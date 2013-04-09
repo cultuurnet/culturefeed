@@ -58,6 +58,6 @@
     <? endif; ?>
   </dl>
 
-  <?php print culturefeed_agenda_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
+  <?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
 
 </div>

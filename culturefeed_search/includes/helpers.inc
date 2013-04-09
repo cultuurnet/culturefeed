@@ -68,6 +68,70 @@ function culturefeed_cdb_item_get_categories($type, CultureFeed_Cdb_Item_Base $i
 }
 
 /**
+ * Returns a link to the detail page from the given detail type / cdbid.
+ *
+ * @param $type
+ *   Type of object to load. Example event / production / actor.
+ * @param $cdbid
+ *   Cdbid from the item.
+ * @param $slug_title
+ *   Title to be used as slug in the url.
+ * @param $display_title
+ *   Title to show as link. If empty, the slug title will be used.
+ * @param $options
+ *   An associative array of additional options for the l() function.
+ */
+function culturefeed_search_detail_l($type, $cdbid, $slug_title, $display_title = NULL, $options = array()) {
+
+  $url = culturefeed_search_detail_url($type, $cdbid, $slug_title);
+
+  if (empty($display_title)) {
+    $display_title = $slug_title;
+  }
+
+  // Set external TRUE, so the second url() wont add an extra /.
+  $options['external'] = TRUE;
+
+  return l($display_title, $url, $options);
+
+}
+
+/**
+ * Returns the url to the detail page from the given detail type / cdbid.
+ *
+ * @param $type
+ *   Type of object to load. Example event / production / actor.
+ * @param $cdbid
+ *   Cdbid from the item.
+ * @param $title
+ *   Title to be used as slug in the url.
+ * @param $options
+ *   An associative array of additional options for the url() function.
+ */
+function culturefeed_search_detail_url($type, $cdbid, $title, $options = array()) {
+
+  switch ($type) {
+
+    // Currenly agenda detail pages are always the first letter of type. (event = e, actor = a, production = p).
+    case 'event':
+    case 'production':
+    case 'actor':
+      $url_prefix = 'agenda/' . $type[0];
+    break;
+
+    case 'page':
+      $url_prefix = 'agenda/g';
+    break;
+
+    default:
+      return '';
+
+  }
+
+  return url($url_prefix . '/' . culturefeed_search_slug($title) . '/' . $cdbid);
+
+}
+/**
  * Calculate a slug with a maximum length for a string.
  *
  * @param $string

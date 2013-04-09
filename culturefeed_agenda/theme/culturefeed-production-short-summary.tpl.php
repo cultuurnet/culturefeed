@@ -18,7 +18,7 @@
 <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
 <?php endif; ?>
 
-<?php print culturefeed_agenda_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
+<?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
 <?php print culturefeed_search_ui_activity_recommend_link($item); ?>
 
 

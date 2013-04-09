@@ -11,7 +11,7 @@ function culturefeed_social_block_user_activities($account) {
   }
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT;
+  $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
   $query->type = array(
     CultureFeed_Activity::TYPE_LIKE,
     CultureFeed_Activity::TYPE_FACEBOOK,
@@ -23,6 +23,7 @@ function culturefeed_social_block_user_activities($account) {
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
+    dsm($activities);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -35,12 +36,13 @@ function culturefeed_social_block_user_activities($account) {
     );
   }
   else {
-    $items = culturefeed_ui_activities_list($activities);
+
     $content['activities'] = array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#attributes' => array('class' => 'user-activity-list'),
+      '#theme' => 'culturefeed_social_user_activity_list',
+      '#activities' => $activities,
+      '#class' => 'user-activity-list',
     );
+
     if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
         '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
