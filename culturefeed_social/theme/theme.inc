@@ -22,7 +22,7 @@ function theme_culturefeed_social_user_activity_list(&$variables) {
     $items[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
   }
 
-  return theme('item_list', array('items' => $items, 'attributes' => array('class' => $variables['class'])));
+  $variables['items'] = $items;
 
 }
 

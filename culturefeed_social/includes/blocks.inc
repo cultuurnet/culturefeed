@@ -23,7 +23,6 @@ function culturefeed_social_block_user_activities($account) {
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
-    dsm($activities);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
@@ -41,7 +40,12 @@ function culturefeed_social_block_user_activities($account) {
       '#theme' => 'culturefeed_social_user_activity_list',
       '#activities' => $activities,
       '#class' => 'user-activity-list',
+      '#attached' => array('js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/activities.js')),
     );
+
+    if ($activities->total > count($activities->objects)) {
+      $content['activities']['#pager_path'] = 'culturefeed/ajax/user/activities';
+    }
 
     if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
