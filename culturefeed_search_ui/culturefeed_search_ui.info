@@ -8,3 +8,4 @@ dependencies[] = culturefeed_search
 
 files[] = lib/Drupal/CultureFeedSearchPageInterface.php
 files[] = lib/Drupal/CultureFeedSearchPage.php
+files[] = lib/Drupal/InvalidSearchPageException.php

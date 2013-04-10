@@ -21,6 +21,8 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   foreach ($searchable_types as $key => $type) {
     $options[$type['path']] = $type['search_title'];
   }
+  
+  $form['#action'] = url('culturefeed/search');
 
   $form['type'] = array(
     '#type' => 'select',

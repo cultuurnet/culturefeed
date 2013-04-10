@@ -13,6 +13,17 @@ function culturefeed_search_ui_menu() {
 
   $items = array();
 
+  // Dummy page callback used to redirect the user to the real search page.
+  $items['culturefeed/search'] = array(
+    'title' => 'Culturefeed search',
+    'title callback' => FALSE,
+    'page callback' => 'culturefeed_search_ui_search_page',
+    'page arguments' => array('submitted'),
+    'file' => 'includes/pages.inc',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
   foreach (culturefeed_get_searchable_types() as $name => $search_type) {
 
     $class_name = isset($search_type['class_name']) ? $search_type['class_name'] : 'CultureFeedSearchPage';
@@ -20,6 +31,7 @@ function culturefeed_search_ui_menu() {
     // Menu paths for search.
     $items[$search_type['path']] = array(
       'title' => $search_type['page_title'],
+      'title callback' => FALSE,
       'page callback' => 'culturefeed_search_ui_search_page',
       'page arguments' => array($name, $class_name),
       'file' => 'includes/pages.inc',

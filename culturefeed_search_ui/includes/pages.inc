@@ -4,6 +4,8 @@
  * Defines page callback to render the search results.
  */
 
+use \Guzzle\Http\Exception;
+
 /**
  * Page callback to search.
  *
@@ -12,15 +14,28 @@
  * @param String $class_name
  *   The name of class to be used to load the correct search page.
  */
-function culturefeed_search_ui_search_page($name, $class_name) {
-
+function culturefeed_search_ui_search_page($name, $class_name = NULL) {
+  
+  // The first search page callback is a dummy callback to redirect to the 
+  // real search page.
+  if ($name == "submitted") {
+    return "";
+  }
+  
   try {
     $page = new $class_name();
     return $page->loadPage();
   }
+  catch (Exception\ClientErrorResponseException $e) {
+    watchdog_exception('bibnet_book_search', $e);
+    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+  }
+  catch (Exception\CurlException $e) {
+    watchdog_exception('bibnet_book_search', $e);
+    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+  }
   catch (InvalidSearchPageException $e) {
-    watchdog('culturefeed_search_ui', "De zoekpagina kon niet geladen worden.", array(), WATCHDOG_CRITICAL);
-    return "De zoekpagina kon niet geladen worden.";
+    return $e->getMessage();
   }
 }
 
