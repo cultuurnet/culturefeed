@@ -32,7 +32,6 @@ files[] = lib/CultureFeed/CultureFeed/SearchUsersQuery.php
 files[] = lib/CultureFeed/CultureFeed/SimpleXMLElement.php
 files[] = lib/CultureFeed/CultureFeed/User.php
 files[] = lib/CultureFeed/CultureFeed/UserPrivacyConfig.php
-files[] = lib/CultureFeed/CultureFeed/PageMembership.php
 files[] = lib/CultureFeed/CultureFeed/Mailing.php
 files[] = lib/CultureFeed/CultureFeed/SearchMailingsQuery.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas.php
@@ -79,6 +78,12 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/IEntryApi.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Default.php
+files[] = lib/CultureFeed/CultureFeed/Pages.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Page.php
+files[] = lib/CultureFeed/CultureFeed/Pages/UserList.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Follower.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Membership.php
 
 configure = admin/config/services/culturefeed
 

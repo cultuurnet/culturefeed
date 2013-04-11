@@ -17,7 +17,7 @@
    attach: function (context, settings) {
      Drupal.CulturefeedSearch.Activities.activityList = $('.activity-list').find('ul');
      $('.activity-list').find('.pager-link').bind('click', Drupal.CulturefeedSearch.Activities.pagerClickListener);
-     Drupal.CulturefeedSearch.Activities.filterForm = $('#culturefeed-social-user-activity-filter');
+     Drupal.CulturefeedSearch.Activities.filterForm = $('#culturefeed-social-user-activity-filter-form');
      if (Drupal.CulturefeedSearch.Activities.filterForm.length) {
        Drupal.CulturefeedSearch.Activities.filterSelect = Drupal.CulturefeedSearch.Activities.filterForm.find('#edit-filter');
        Drupal.CulturefeedSearch.Activities.filterSelect.bind('change', Drupal.CulturefeedSearch.Activities.filterListener);  

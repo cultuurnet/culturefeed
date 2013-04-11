@@ -329,6 +329,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->uitpas();
   }
 
+  public function pages() {
+    return $this->realCultureFeed->pages();
+  }
+
   public function getClient() {
     return $this->realCultureFeed->getClient();
   }

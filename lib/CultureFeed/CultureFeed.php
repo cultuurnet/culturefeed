@@ -93,6 +93,13 @@ class CultureFeed implements ICultureFeed {
   protected $uitpas;
 
   /**
+   * Culturefeed pages instance
+   *
+   * @var CultureFeed_Pages
+   */
+  protected $pages;
+
+  /**
    * Get the consumer.
    *
    * @return OAuthConsumer $consumer
@@ -1285,6 +1292,21 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Returns the Pages object.
+   *
+   * @return CultureFeed_Pages
+   */
+  public function pages() {
+
+    if (!isset($this->pages)) {
+      $this->pages = new CultureFeed_Pages_Default($this);
+    }
+
+    return $this->pages;
+
+  }
+
+  /**
    * Returns the OAuth client.
    *
    * @return CultureFeed_OAuthClient
@@ -1398,34 +1420,66 @@ class CultureFeed implements ICultureFeed {
       $user->privacyConfig = $privacy_config;
     }
 
-    $memberships = $element->xpath('/foaf:person/pageMemberships');
+    if (!empty($accounts)) {
+      $user->holdsAccount = $accounts;
+    }
+
+    $memberships = $element->xpath('/foaf:person/pageMemberships/pageMembership');
     $user_memberships = array();
     foreach ($memberships as $membership) {
 
       $pageId = $membership->xpath_str('page/uid');
-      if (empty($pageName)) {
+      if (empty($pageId)) {
         continue;
       }
 
-      $user_membership = new CultureFeed_PageMembership();
+      $user_membership = new CultureFeed_Pages_Membership();
+
+      $page = new CultureFeed_Pages_Page();
+      $page->id = $pageId;
+      $page->name = $membership->xpath_str('page/name');
+      $user_membership->page          = $page;
 
       $user_membership->role          = $membership->xpath_str('role');
       $user_membership->creationDate  = $membership->xpath_time('creationDate');
-      $user_membership->pageId        = $pageId;
-      $user_membership->pageName      = $membership->xpath_str('page/name');
 
       $user_memberships[] = $user_membership;
+
     }
 
     if (!empty($user_memberships)) {
       $user->pageMemberships = $user_memberships;
     }
 
-    if (!empty($accounts)) {
-      $user->holdsAccount = $accounts;
+    $following = $element->xpath('/foaf:person/following/page');
+    $following_pages = array();
+    foreach ($following as $object) {
+
+      $page_id = $object->xpath_str('uid');
+      if (empty($page_id)) {
+        continue;
+      }
+
+      $follower = new CultureFeed_Pages_Follower();
+
+      $page = new CultureFeed_Pages_Page();
+      $page->id = $page_id;
+      $page->name = $object->xpath_str('name');
+
+      $follower->page          = $page;
+      $follower->user          = $user;
+      $follower->dateCreated  = $object->xpath_time('creationDate');
+
+      $followers[] = $follower;
+
+    }
+
+    if (!empty($followers)) {
+      $user->following = $followers;
     }
 
     return $user;
+
   }
 
   /**

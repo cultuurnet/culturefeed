@@ -154,7 +154,21 @@ function culturefeed_ui_block_profile_box_view() {
 }
 
 function culturefeed_ui_block_profile_menu_is_visible() {
-  return DrupalCultureFeed::isCultureFeedUser();
+
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return FALSE;
+  }
+
+  if (arg(0) == 'user') {
+    $account = menu_get_object('user');
+    global $user;
+    if ($account->uid != $user->uid) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+
 }
 
 function culturefeed_ui_block_profile_menu_view() {
@@ -175,11 +189,6 @@ function culturefeed_ui_block_profile_menu_view() {
       'title' => 'Account bewerken',
       'url' => 'culturefeed/account/edit',
       'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
-    ),
-    array(
-      'title' => 'Acties',
-      'url' => 'culturefeed/activities',
-      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTiD-profiel.',
     ),
   );
 

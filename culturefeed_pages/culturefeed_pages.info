@@ -1,0 +1,7 @@
+name = CultureFeed Pages
+description = CultureFeed Pages makes it possible to view / manage pages.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed_search

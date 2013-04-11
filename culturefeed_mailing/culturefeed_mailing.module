@@ -31,7 +31,7 @@ function culturefeed_mailing_menu() {
     'title arguments' => array('Newsletter opt-in'),
     'page callback' => 'culturefeed_mailing_toggle_optin',
     'page arguments' => array(3, 4),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_mailing.pages.inc',
   );

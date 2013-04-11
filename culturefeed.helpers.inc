@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Check if a user is a culturefeed user.
+ */
+function culturefeed_is_culturefeed_user($uid = NULL) {
+  return DrupalCultureFeed::isCultureFeedUser($uid);
+}
+
+/**
  * Fetch a unique username for the given Culture Feed user id.
  */
 function culturefeed_unique_username($cf_uid, $nick) {
@@ -197,6 +204,21 @@ function culturefeed_get_uids_for_activities($activities) {
     $ids[$activity->userId] = new stdClass();
     $ids[$activity->userId]->nick = $activity->nick;
     $ids[$activity->userId]->cf_uid = $activity->userId;
+  }
+
+  return culturefeed_get_uids_for_cf_uids($ids);
+}
+
+/**
+ * Get the drupal uids for all given memberships.
+ */
+function culturefeed_get_uids_for_memberships($memberships) {
+  $ids = array();
+
+  foreach ($memberships as $membership) {
+    $ids[$membership->user->id] = new stdClass();
+    $ids[$membership->user->id]->nick = $membership->user->nick;
+    $ids[$membership->user->id]->cf_uid = $membership->user->id;
   }
 
   return culturefeed_get_uids_for_cf_uids($ids);

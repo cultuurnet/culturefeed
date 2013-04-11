@@ -1,0 +1,80 @@
+<?php
+/**
+ * @file
+ * CultureFeed Pages makes it possible to view / manage pages.
+ */
+
+module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_pages_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_pages') . '/theme';
+
+  return array(
+
+    'culturefeed_pages_fellow_members_block' => array(
+      'variables' => array(
+        'account' => NULL,
+        'page' => NULL,
+        'members' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-fellow-members-block',
+    ),
+
+    'culturefeed_pages_following_pages_block' => array(
+      'variables' => array('following' => array()),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
+  );
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_pages_block_info() {
+
+  $blocks = array();
+
+  $blocks['user-fellow-members'] = array(
+    'info' => t('Fellow members from user'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['pages-user-follows'] = array(
+    'info' => t("Pages i'm following"),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_pages_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_pages', 'includes/blocks');
+
+  switch ($delta) {
+
+    case 'user-fellow-members':
+      $account = menu_get_object('user');
+      return culturefeed_pages_block_fellow_members($account);
+
+    case 'pages-user-follows':
+      $account = menu_get_object('user');
+      return culturefeed_pages_block_pages_user_follows($account);
+    break;
+
+  }
+
+}

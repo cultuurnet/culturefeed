@@ -25,7 +25,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('Profiel bewerken'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -33,7 +33,7 @@ function culturefeed_ui_menu() {
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Account bewerken'),
     'page callback' => 'culturefeed_ui_page_account_edit',
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -41,7 +41,7 @@ function culturefeed_ui_menu() {
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('E-mailbevestiging opnieuw versturen'),
     'page callback' => 'culturefeed_ui_page_mboxverify_resend',
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -58,7 +58,7 @@ function culturefeed_ui_menu() {
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array('Geconnecteerde kanalen'),
     'page callback' => 'culturefeed_ui_page_serviceconsumers',
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -67,7 +67,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('UiTiD kanaal verwijderen'),
     'page callback' => 'culturefeed_ui_page_serviceconsumer_revoke',
     'page arguments' => array(3, 4),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -76,7 +76,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('Social account verwijderen'),
     'page callback' => 'culturefeed_ui_page_online_account_delete',
     'page arguments' => array(3, 4, 5),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -85,7 +85,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('Social account privacy instellen'),
     'page callback' => 'culturefeed_ui_page_online_account_update_privacy',
     'page arguments' => array(3, 4, 5, 6),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -94,7 +94,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('Social account privacy instellen'),
     'page callback' => 'culturefeed_ui_page_online_account_toggle_facebook_privacy',
     'page arguments' => array(3, 4, 5, 6),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -112,7 +112,7 @@ function culturefeed_ui_menu() {
     'title arguments' => array('Account verwijderen'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_remove_account_form'),
-    'access callback' => 'culturefeed_ui_is_culturefeed_user',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
@@ -342,6 +342,7 @@ function culturefeed_ui_block_save($delta = '', $edit = array()) {
  * Implements hook_user_view().
  */
 function culturefeed_ui_user_view($account) {
+
   if (!DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -358,6 +359,7 @@ function culturefeed_ui_user_view($account) {
     '#theme' => 'culturefeed_ui_profile',
     '#user' => $cf_account,
   );
+
 }
 
 /**
@@ -418,8 +420,4 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
     '#options' => $period,
     '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
   );
-}
-
-function culturefeed_ui_is_culturefeed_user($uid = NULL) {
-  return DrupalCultureFeed::isCultureFeedUser($uid);
 }

@@ -70,13 +70,20 @@ class CultureFeedSearchPage {
 
     foreach ($params['facet'] as $facetFieldName => $facetFilter) {
 
-      array_walk($facetFilter, function (&$item) {
-        $item = '"' . str_replace('"', '\"', $item) . '"';
-      });
+      // Datetype is not a real facet, but a search field.
+      if ($facetFieldName == 'datetype') {
+        $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
+      }
+      else {
 
-      $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
-      // tag this so we can exclude when calculating facets
-      $facetFilterQuery->setTags(array($facetFieldName));
+        array_walk($facetFilter, function (&$item) {
+          $item = '"' . str_replace('"', '\"', $item) . '"';
+        });
+        $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
+        // tag this so we can exclude when calculating facets
+        $facetFilterQuery->setTags(array($facetFieldName));
+
+      }
 
       $this->parameters[] = $facetFilterQuery;
 

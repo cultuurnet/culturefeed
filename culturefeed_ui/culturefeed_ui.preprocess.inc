@@ -6,8 +6,8 @@
  * @see culturefeed-ui-profile.tpl.php
  */
 function template_preprocess_culturefeed_ui_profile(&$variables) {
+
   $account = $variables['user'];
-  $account instanceof CultureFeed_User;
 
   // nick
   $variables['nick'] = $account->nick;
@@ -56,6 +56,9 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   if (DrupalCultureFeed::getLoggedInUserId() == $account->id) {
     $variables['profile_edit_link'] = l('Beheer jouw profiel', 'culturefeed/profile/edit', array('attributes' => array('class' => array('profile-edit-link'))));
   }
+
+  $variables['memberships'] = $account->pageMemberships;
+
 }
 
 /**
