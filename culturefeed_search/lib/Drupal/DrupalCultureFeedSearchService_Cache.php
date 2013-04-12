@@ -35,8 +35,7 @@ class DrupalCultureFeedSearchService_Cache {
    * @param ConsumerCredentials $consumerCredentials
    * @param Integer $loggedInUserId
    */
-  public function __construct(Service $realSearchService,
-      $consumerCredentials, $loggedInUserId) {
+  public function __construct(Service $realSearchService, $consumerCredentials, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
     $this->consumerCredentials = $consumerCredentials;
     $this->realSearchService = $realSearchService;
@@ -51,7 +50,8 @@ class DrupalCultureFeedSearchService_Cache {
   }
 
   protected function getCacheSuffix() {
-    return sprintf(':%s:%s', $this->getConsumer()->getKey(), $this->getConsumer()->getSecret());
+    // Don't cache per user. Search is the same for every user. (for now)
+    return '';
   }
 
   protected function getCacheCid($cid) {
@@ -60,16 +60,16 @@ class DrupalCultureFeedSearchService_Cache {
 
   protected function cacheSet($cid, $data, $expires = CACHE_PERMANENT) {
     $cid = $this->getCacheCid($cid);
-    cache_set($cid, $data, 'cache_culturefeed', $expires);
+    cache_set($cid, $data, 'cache_culturefeed_search', $expires);
   }
 
   protected function cacheGet($cid) {
     $cid = $this->getCacheCid($cid);
-    return cache_get($cid, 'cache_culturefeed');
+    return cache_get($cid, 'cache_culturefeed_search');
   }
 
   protected function cacheClear($cid = NULL, $wildcard = FALSE) {
-    cache_clear_all($cid, 'cache_culturefeed', $wildcard);
+    cache_clear_all($cid, 'cache_culturefeed_search', $wildcard);
   }
 
   /**
@@ -83,14 +83,34 @@ class DrupalCultureFeedSearchService_Cache {
    * @see \CultuurNet\Search\Service::search().
    */
   public function search(Array $parameters = array()) {
-    return $this->realSearchService->search($parameters);
+
+    $cid = sprintf('search:%s', md5(serialize($parameters)));
+    if ($cache = $this->cacheGet($cid)) {
+//      return $cache->data;
+    }
+
+    $results = $this->realSearchService->search($parameters);
+    $this->cacheSet($cid, $results, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
+
+    return $results;
+
   }
 
   /**
    * @see \CultuurNet\Search\Service::searchSuggestions().
    */
   public function searchSuggestions($search_string) {
-    return $this->realSearchService->searchSuggestions($search_string);
+
+    $cid = sprintf('suggestions:%s', md5($search_string));
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
+    }
+
+    $suggestions = $this->realSearchService->searchSuggestions($search_string);
+    $this->cacheSet($cid, $suggestions, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
+
+    return $suggestions;
+
   }
 
 }

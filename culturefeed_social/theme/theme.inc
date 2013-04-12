@@ -85,6 +85,17 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
       $type_prefix = 'gaat naar';
       $type_suffix = '';
       break;
+    case CultureFeed_Activity::TYPE_RECOMMEND:
+      $type_prefix = 'heeft';
+      $type_suffix = 'aangeraden';
+      break;
+    case CultureFeed_Activity::TYPE_FOLLOW:
+      $type_prefix = 'volgt';
+      break;
+    case CultureFeed_Activity::TYPE_COMMENT:
+      $type_prefix = 'heeft over';
+      $type_suffix = 'een beoordeling geschreven';
+    break;
   }
 
   $replace = array(

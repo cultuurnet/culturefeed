@@ -49,10 +49,10 @@ function culturefeed_search_schema() {
       ),
       'did' => array(
         'description' => 'Domain of the term.',
-        'type' => 'int',
+       'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
-        'default' => 0,
-        'size' => 'tiny',
+        'default' => ''
       ),
     ),
     'indexes' => array(
@@ -60,6 +60,9 @@ function culturefeed_search_schema() {
     ),
     'primary key' => array('tid'),
   );
+
+  $schema['cache_culturefeed_search'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_culturefeed_search']['description'] = 'Cache table for the culturefeed search requests';
 
   return $schema;
 

@@ -156,7 +156,7 @@ function culturefeed_search_ui_block_info() {
   );
 
   $blocks['culturefeed-search-sortorder'] = array(
-    'info' => t('Culturefeed search: sort order filter'),
+    'info' => t('Culturefeed search: sort order'),
     'cache' => DRUPAL_NO_CACHE,
   );
 

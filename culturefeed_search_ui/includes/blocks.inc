@@ -21,7 +21,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   foreach ($searchable_types as $key => $type) {
     $options[$type['path']] = $type['search_title'];
   }
-  
+
   $form['#action'] = url('culturefeed/search');
 
   $form['type'] = array(
@@ -67,10 +67,6 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
 
 /**
  * Creates a form to change the sortorder of the search results.
- *
- * @param array $form
- * @param array $form_state
- * @return array
  */
 function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
 
@@ -82,10 +78,10 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
     '#title' => t('Sorteer resultaten op'),
     '#type' => 'select',
     '#options' => array(
-      'relevancy' => t('Relevantie'),
-      'date' => t('Datum'),
-      'recommends' => t('Aantal keer aangeraden'),
-      'comments' => t('Aantal beoordelingen'),
+      'relevancy' => 'Relevantie',
+      'date' => 'Datum',
+      'recommends' => 'Aantal keer aangeraden',
+      'comments' => 'Aantal beoordelingen',
     ),
     '#default_value' => $default,
   );
@@ -96,6 +92,7 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
   );
 
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/search_ui.js';
+  $form['#attributes']['class'] = array('sortorder-form');
 
   return $form;
 
@@ -103,10 +100,6 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
 
 /**
  * Submits and changes the sortorder of the search results.
- *
- * @param array $form
- * @param array $form_state
- * @return array
  */
 function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state) {
 
@@ -120,7 +113,6 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
 
 /**
  * Renders a facet block to go along with the search form.
- * @return string
  */
 function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '') {
 
@@ -277,7 +269,7 @@ function culturefeed_search_ui_search_active_filters_block() {
     $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
     $build['item_search'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => check_plain($query['search']),
+      '#label' => $query['search'],
       '#url' => $url
     );
   }
@@ -290,10 +282,16 @@ function culturefeed_search_ui_search_active_filters_block() {
 
       $search_query = $query;
       unset($search_query['facet'][$active_facet_name]);
+
+      // If this was the only facet. Also remove the global facet key.
+      if (empty($search_query['facet'])) {
+        unset($search_query['facet']);
+      }
+
       $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
       $build['item_' . $active_facet_name] = array(
         '#theme' => 'culturefeed_search_active_filters_item',
-        '#label' => check_plain($selected_value[0]),
+        '#label' => $selected_value[0],
         '#url' => $url
       );
 

@@ -42,9 +42,14 @@ function culturefeed_search_item_load($cdb_id) {
   $queryParameter->setLocalParam('type', 'term');
   $queryParameter->setLocalParam('f', 'cdbid');
   $parameters[] = $queryParameter;
-  $result = $search_service->search($parameters);
 
-  $items = $result->getItems();
+  try {
+    $result = $search_service->search($parameters);
+    $items = $result->getItems();
+  }
+  catch (Exception $e) {
+    watchdog_exception('bibnet_books', $e);
+  }
 
   return reset($items);
 

@@ -20,7 +20,7 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
    */
   Drupal.CulturefeedSearch.bindSortDropdown = function() {
     
-    var $form = $('#culturefeed-search-ui-search-sortorder-form');
+    var $form = $('.sortorder-form');
     if ($form.length == 0) {
       return;
     }

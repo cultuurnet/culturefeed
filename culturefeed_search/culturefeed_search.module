@@ -6,6 +6,7 @@
 
 // Default API location. Can be overriden in settings form.
 define('CULTUREFEED_SEARCH_API_LOCATION', 'http://searchv2.cultuurnet.lodgon.com/search-poc/rest');
+define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
 module_load_include('inc', 'culturefeed_search', 'includes/helpers');
 
@@ -28,6 +29,13 @@ function culturefeed_search_menu() {
 }
 
 /**
+ * Implements hook_flush_caches().
+ */
+function culturefeed_search_flush_caches() {
+  return array('cache_culturefeed_search');
+}
+
+/**
  * Implements hook_form_alter().
  */
 function culturefeed_search_form_system_performance_settings_alter(&$form, $form_state) {
@@ -37,18 +45,20 @@ function culturefeed_search_form_system_performance_settings_alter(&$form, $form
   $form['clear_cache']['#weight'] = 2;
 
   // Adding API cache settings to the performance settings form.
-  $form['culturefeed_cache'] = array(
+  $form['culturefeed_search_cache'] = array(
     '#type' => 'fieldset',
-    '#title' => t('CultureFeed cache'),
+    '#title' => t('CultureFeed Search cache'),
     '#weight' => 1,
     '#description' => t('Enabling the CultureFeed Search cache will cache some parsed results of requests to the CultureFeed API. This will reduce the number of requests made directly to the API service.'),
   );
 
-  $form['culturefeed_cache']['culturefeed_search_cache_enabled'] = array(
+  $form['culturefeed_search_cache']['culturefeed_search_cache_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Cache API requests'),
     '#default_value' => variable_get('culturefeed_search_cache_enabled', FALSE),
   );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
 
 }
 

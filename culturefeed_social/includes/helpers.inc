@@ -23,6 +23,10 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 
   // Only active filters
   $activity_filters = variable_get('culturefeed_social_activity_filters', array());
+  // If no settings yet, return all.
+  if (!$activity_filters) {
+    return $options;
+  }
 
   $active_options = array();
   foreach ($activity_filters as $activity_filter) {
