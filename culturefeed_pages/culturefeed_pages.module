@@ -7,6 +7,19 @@
 module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
 
 /**
+ * Implements hook_permission().
+ */
+function culturefeed_pages_permission() {
+
+  return array(
+    'join culturefeed page' => array(
+      'title' => t('Join a culturefeed page'),
+    ),
+  );
+
+}
+
+/**
  * Implements hook_theme().
  */
 function culturefeed_pages_theme() {
@@ -14,6 +27,24 @@ function culturefeed_pages_theme() {
   $path = drupal_get_path('module', 'culturefeed_pages') . '/theme';
 
   return array(
+
+    'culturefeed_pages_join_page' => array(
+      'variables' => array(
+        'form' => NULL,
+        'result' => NULL,
+        'search' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-join-page',
+    ),
+
+    'culturfeed_pages_join_search_result_item' => array(
+      'variables' => array('item' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-join-search-result-item',
+    ),
 
     'culturefeed_pages_fellow_members_block' => array(
       'variables' => array(
@@ -33,6 +64,42 @@ function culturefeed_pages_theme() {
     ),
 
   );
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_pages_menu() {
+
+  $items = array();
+
+  $items['pages/join'] = array(
+    'title callback' => 'culturefeed_pages_join_title',
+    'page callback' => 'culturefeed_pages_join_page',
+    'access arguments' => array('join culturefeed page'),
+    'file' => 'includes/pages.inc',
+  );
+
+  /*$items['agenda/p/%/%culturefeed_agenda_production'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'culturefeed_agenda_detail_page',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );*/
+
+  $items['ajax/culturefeed/pages/page-suggestion/%'] = array(
+    'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
+    'page arguments' => array(4),
+    'access arguments' => array('join culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
 
 }
 
@@ -77,4 +144,11 @@ function culturefeed_pages_block_view($delta) {
 
   }
 
+}
+
+/**
+ * Title callback for the join page.
+ */
+function culturefeed_pages_join_title() {
+  return format_string('Jouw pagina op @sitename', array('@sitename' => variable_get('site_name')));
 }

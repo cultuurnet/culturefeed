@@ -59,14 +59,21 @@ class DrupalCultureFeedSearchService {
   /**
    * @see \CultuurNet\Search\Service::search().
    */
-  public function search(Array $parameters = array()) {
-    return $this->service->search($parameters);
+  public function search(Array $parameters = array(), $path = 'search') {
+    return $this->service->search($parameters, $path);
+  }
+
+  /**
+   * @see \CultuurNet\Search\Service::search().
+   */
+  public function searchPages(Array $parameters = array()) {
+    return $this->service->searchPages($parameters);
   }
 
   /**
    * @see \CultuurNet\Search\Service::searchSuggestions().
    */
-  public function searchSuggestions($search_string) {
+  public function searchSuggestions($search_string, $type = NULL) {
     return $this->service->searchSuggestions($search_string);
   }
 

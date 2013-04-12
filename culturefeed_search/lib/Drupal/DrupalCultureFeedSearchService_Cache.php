@@ -84,12 +84,29 @@ class DrupalCultureFeedSearchService_Cache {
    */
   public function search(Array $parameters = array()) {
 
-    $cid = sprintf('search:%s', md5(serialize($parameters)));
+    $cid = 'search' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
-//      return $cache->data;
+      return $cache->data;
     }
 
     $results = $this->realSearchService->search($parameters);
+    $this->cacheSet($cid, $results, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
+
+    return $results;
+
+  }
+
+  /**
+   * @see \CultuurNet\Search\Service::search().
+   */
+  public function searchPages(Array $parameters = array()) {
+
+    $cid = 'search/page' . md5(serialize($parameters));
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
+    }
+
+    $results = $this->realSearchService->searchPages($parameters);
     $this->cacheSet($cid, $results, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
 
     return $results;

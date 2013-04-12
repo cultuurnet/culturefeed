@@ -1,8 +1,51 @@
 <?php
 /**
  * @file
- * Theming functions for cultuurkuur.
+ * Theming / preprocess functions for culturefeed pages.
  */
+
+
+/**
+ * Preprocess the culturefeed pages join page.
+ * @see culturefeed-pages-join-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
+
+  $variables['message'] = '';
+
+  if (!empty($variables['result'])) {
+
+    $items = $variables['result']->getItems();
+    $variables['items'] = array();
+    foreach ($items as $item) {
+      $variables['items'][] = theme('culturfeed_pages_join_search_result_item', array('item' => $item));
+    }
+
+    $variables['create_message'] = 'Heeft je organisatie nog geen pagina? ' . l('Maak een nieuwe pagina', 'page/add');
+
+  }
+
+  $variables['site'] = check_plain(variable_get('site_name', ''));
+  $variables['search'] = check_plain($variables['search']);
+
+}
+
+/**
+ * Preprocess a culturefeed page join result item.
+ * @see culturefeed-pages-join-search-result-item.tpl.php
+ */
+function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&$variables) {
+
+  $page = $variables['item']->getEntity();
+
+  $variables['title'] = $page->getName();
+
+  $address = $page->getAddress();
+  $variables['location']['street'] = $address->getStreet();
+  $variables['location']['city'] = $address->getCity();
+  $variables['location']['country'] = $address->getCountry();
+
+}
 
 /**
  * Theme 1 fellow members block.
@@ -38,7 +81,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
   }
   else {
     $variables['is_member'] = FALSE;
-    $variables['become_member_url'] = url('<front>');
+    $variables['become_member_url'] = url('<front>'); //@todo Correct join url
   }
 
 }
