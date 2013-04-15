@@ -7,7 +7,7 @@
 /**
  * Page where users can search for a page. And join them.
  */
-function culturefeed_pages_join_page() {
+function culturefeed_pages_join_page_search() {
 
   $form = drupal_get_form('culturefeed_pages_join_form');
 
@@ -75,6 +75,47 @@ function culturefeed_pages_join_form_submit($form, &$form_state) {
     'pages/join',
     array('query' => array('page' => $form_state['values']['page'])),
   );
+
+}
+
+/**
+ * Page callback to join a page.
+ * @param string $request_type
+ *   Request type. Ajax or nojs
+ * @param CultureFeed_Cdb_Item_Page $page
+ *   Page to add membership to.
+ */
+function culturefeed_pages_page_join($request_type, $page) {
+
+  $success = FALSE;
+
+  // Send request to join.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
+    $success = TRUE;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  // Correct message.
+  if ($success) {
+    $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
+  }
+  else {
+    $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+  }
+
+  // Deliver as ajax callback or normal page.
+  if ($request_type != 'ajax') {
+    drupal_set_message($message);
+    drupal_goto();
+  }
+  else {
+    $commands[] = ajax_command_html('#join-' . $page->getId(), $message);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
 
 }
 

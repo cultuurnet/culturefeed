@@ -6,9 +6,9 @@
 class CultureFeed_Activity {
 
   /**
-   * Content type 'page'.
+   * Content type 'node' (drupal).
    */
-  const CONTENT_TYPE_PAGE = 'page';
+  const CONTENT_TYPE_NODE = 'node';
 
   /**
    * Content type 'event'.
@@ -24,6 +24,11 @@ class CultureFeed_Activity {
    * Content type 'production'.
    */
   const CONTENT_TYPE_PRODUCTION = 'production';
+
+  /**
+   * Content type 'culturefeed page'.
+   */
+  const CONTENT_TYPE_CULTUREFEED_PAGE = 'culturefeed-page';
 
   /**
    * Consumer type that indicates the action "Viewed".

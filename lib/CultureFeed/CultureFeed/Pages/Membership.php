@@ -10,7 +10,7 @@ class CultureFeed_Pages_Membership {
 
   /**
    * Page from this membership
-   * @var CultureFeed_Pages_Page
+   * @var CultureFeed_Cdb_Item_Page
    */
   public $page;
 

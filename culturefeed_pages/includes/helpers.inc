@@ -14,7 +14,7 @@ function culturefeed_pages_is_user_member_of_page($page_id) {
 
   if (!empty($cf_account->pageMemberships)) {
     foreach ($cf_account->pageMemberships as $membership) {
-      if ($membership->page->id == $page_id) {
+      if ($membership->page->getId() == $page_id) {
         return TRUE;
       }
     }
