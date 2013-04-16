@@ -58,6 +58,86 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
 }
 
 /**
+ * Preprocess the variables for the page detail.
+ * @see culturefeed-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
+
+  $page = $variables['page'];
+
+  $variables['title'] = $page->getName();
+  $variables['description'] = $page->getDescription();
+  $variables['links'] = $page->getLinks();
+
+  // Add join link if not a member yet.
+  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+    $query = array('destination' => trim(culturefeed_search_detail_url('page', $page->getId(), $page->getName())), '/');
+    $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+  }
+
+  // Address information
+  $address = $page->getAddress();
+  if (!empty($address)) {
+
+    $variables['address'] = array();
+    $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
+    $variables['address']['city'] = $address->getCity();
+    $variables['address']['zip'] = $address->getZip();
+
+    $coordinates = $address->getGeoInformation();
+    if ($coordinates) {
+      $variables['coordinates'] = array(
+        'lat' => $coordinates->getXCoordinate(),
+        'lng' => $coordinates->getYCoordinate(),
+      );
+    }
+
+  }
+
+  // Contact information.
+  $variables['contact'] = array();
+  if ($page->getTelephone()) {
+    $variables['contact'][] = $page->getTelephone();
+  }
+  if ($page->getEmail()) {
+    $variables['contact'][] = $page->getEmail();
+  }
+
+  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+  $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+
+  // First put all memberships in an array, so we can get the drupal uids for it.
+  $variables['members'] = array();
+  if (!empty($user_list->memberships)) {
+
+    foreach ($user_list->memberships as $user_list_membership) {
+      $memberships[] = $user_list_membership;
+    }
+
+    $uids = culturefeed_get_uids_for_memberships($memberships);
+
+    // Add every membership to the variables.
+    foreach ($memberships as $membership) {
+
+      // If user was not found in drupal, don't show it.
+      if (!isset($uids[$membership->user->id])) {
+        continue;
+      }
+
+      $member = array();
+      $member['url'] = url('user/' . $uids[$membership->user->id]);
+      $member['name'] = $membership->user->nick;
+      $member['role'] = $membership->role;
+      $member['picture'] = $membership->user->depiction;
+
+      $variables['members'][] = $member;
+    }
+
+  }
+
+}
+
+/**
  * Theme 1 fellow members block.
  * @param $variables
  */

@@ -33,6 +33,12 @@ function culturefeed_get_search_service() {
  */
 function culturefeed_search_item_load($cdb_id) {
 
+  static $items = array();
+
+  if (isset($items[$cdb_id])) {
+    return $items[$cdb_id];
+  }
+
   $search_service = culturefeed_get_search_service();
 
   $parameters = array();
@@ -46,12 +52,14 @@ function culturefeed_search_item_load($cdb_id) {
   try {
     $result = $search_service->search($parameters);
     $items = $result->getItems();
+    $items[$cdb_id] = reset($items);
+    return $items[$cdb_id];
   }
   catch (Exception $e) {
     watchdog_exception('bibnet_books', $e);
   }
 
-  return reset($items);
+  return FALSE;
 
 }
 

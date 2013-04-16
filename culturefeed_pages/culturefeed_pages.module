@@ -49,6 +49,13 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-join-search-result-item',
     ),
 
+    'culturefeed_page' => array(
+      'variables' => array('page' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-page',
+    ),
+
     'culturefeed_pages_fellow_members_block' => array(
       'variables' => array(
         'account' => NULL,
@@ -83,7 +90,7 @@ function culturefeed_pages_menu() {
     'access arguments' => array('join culturefeed page'),
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['pages/add'] = array(
     'title' => 'Maak je eigen pagina',
     'title callback' => FALSE,
@@ -93,15 +100,15 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  /*$items['agenda/p/%/%culturefeed_agenda_production'] = array(
-    'title callback' s=> 'culturefeed_agenda_detail_title',
+  $items['agenda/g/%/%culturefeed_pages_page'] = array(
+    'title callback' => 'culturefeed_pages_detail_title',
     'title arguments' => array(3),
-    'page callback' => 'culturefeed_agenda_detail_page',
+    'page callback' => 'culturefeed_pages_detail_page',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
-  );*/
+  );
 
   $items['ajax/culturefeed/pages/page-suggestion'] = array(
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
@@ -179,10 +186,17 @@ function culturefeed_pages_block_view($delta) {
  */
 function culturefeed_pages_page_load($id) {
 
+  static $pages = array();
+
+  if (isset($pages[$id])) {
+    return $pages[$id];
+  }
+
   try {
 
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-    return $cf_pages->getPage($id);
+    $pages[$id] = $cf_pages->getPage($id);
+    return $pages[$id];
 
   }
   catch (Exception $e) {
@@ -198,4 +212,11 @@ function culturefeed_pages_page_load($id) {
  */
 function culturefeed_pages_join_title() {
   return format_string('Jouw pagina op @sitename', array('@sitename' => variable_get('site_name')));
+}
+
+/**
+ * Title callback for the 'page' detail page.
+ */
+function culturefeed_pages_detail_title($page) {
+  return $page->getName();
 }
