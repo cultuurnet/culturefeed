@@ -42,8 +42,9 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
   $node = '';
-  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PAGE) {
-    $node = l($activity->nodeTitle, 'node/' . $activity->nodeId);
+  // Drupal nodes and culturefeed pages already contains the full url.
+  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_NODE || $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE) {
+    $node = $activity->nodeId;
   }
   else {
     $node = culturefeed_search_detail_l($activity->contentType, $activity->nodeId, $activity->nodeTitle);

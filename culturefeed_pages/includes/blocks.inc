@@ -29,7 +29,7 @@ function culturefeed_pages_block_fellow_members($account) {
     }
 
     $memberships = array();
-    $user_list = $cf_pages->getUserList($membership->page->id, array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+    $user_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 
     if (!empty($user_list->memberships)) {
       foreach ($user_list->memberships as $user_list_membership) {

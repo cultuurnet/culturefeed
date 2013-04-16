@@ -79,7 +79,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/join'] = array(
     'title callback' => 'culturefeed_pages_join_title',
-    'page callback' => 'culturefeed_pages_join_page',
+    'page callback' => 'culturefeed_pages_join_page_search',
     'access arguments' => array('join culturefeed page'),
     'file' => 'includes/pages.inc',
   );
@@ -115,6 +115,14 @@ function culturefeed_pages_menu() {
     'page callback' => 'culturefeed_pages_region_suggestion_autocomplete_page',
     'page arguments' => array(4),
     'access arguments' => array('add culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/pages/join/%/%culturefeed_pages_page'] = array(
+    'page callback' => 'culturefeed_pages_page_join',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('join culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -163,6 +171,25 @@ function culturefeed_pages_block_view($delta) {
     break;
 
   }
+
+}
+
+/**
+ * Load a culturefeed page.
+ */
+function culturefeed_pages_page_load($id) {
+
+  try {
+
+    $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+    return $cf_pages->getPage($id);
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  return FALSE;
 
 }
 

@@ -1435,9 +1435,10 @@ class CultureFeed implements ICultureFeed {
 
       $user_membership = new CultureFeed_Pages_Membership();
 
-      $page = new CultureFeed_Pages_Page();
-      $page->id = $pageId;
-      $page->name = $membership->xpath_str('page/name');
+      $page = new CultureFeed_Cdb_Item_Page();
+      $page->setId($pageId);
+      $page->setName($membership->xpath_str('page/name'));
+
       $user_membership->page          = $page;
 
       $user_membership->role          = $membership->xpath_str('role');
@@ -1455,16 +1456,16 @@ class CultureFeed implements ICultureFeed {
     $following_pages = array();
     foreach ($following as $object) {
 
-      $page_id = $object->xpath_str('uid');
-      if (empty($page_id)) {
+      $pageId = $object->xpath_str('uid');
+      if (empty($pageId)) {
         continue;
       }
 
       $follower = new CultureFeed_Pages_Follower();
 
-      $page = new CultureFeed_Pages_Page();
-      $page->id = $page_id;
-      $page->name = $object->xpath_str('name');
+      $page = new CultureFeed_Cdb_Item_Page();
+      $page->setId($pageId);
+      $page->setName($membership->xpath_str('page/name'));
 
       $follower->page          = $page;
       $follower->user          = $user;

@@ -20,8 +20,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
     foreach ($items as $item) {
       $variables['items'][] = theme('culturfeed_pages_join_search_result_item', array('item' => $item));
     }
-
-    $variables['create_message'] = 'Heeft je organisatie nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
+    $variables['create_message'] = 'Heb je nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
   }
 
@@ -41,9 +40,20 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
   $variables['title'] = $page->getName();
 
   $address = $page->getAddress();
-  $variables['location']['street'] = $address->getStreet();
-  $variables['location']['city'] = $address->getCity();
-  $variables['location']['country'] = $address->getCountry();
+  if ($address) {
+    $variables['location']['street'] = $address->getStreet();
+    $variables['location']['city'] = $address->getCity();
+    $variables['location']['country'] = $address->getCountry();
+  }
+
+  drupal_add_library('system', 'drupal.ajax');
+
+  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+    $query = array('destination' => trim(culturefeed_search_detail_url('page', $page->getId(), $page->getName())), '/');
+    $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+  }
+
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina');
 
 }
 
@@ -74,14 +84,15 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
 
   $variables['colleagues'] = $colleagues;
   $variables['nick'] = $variables['account']->nick;
-  $variables['title'] = $variables['page']->name;
+  $variables['title'] = $variables['page']->getName();
 
-  if (culturefeed_pages_is_user_member_of_page($variables['page']->id)) {
+  if (culturefeed_pages_is_user_member_of_page($variables['page']->getId())) {
     $variables['is_member'] = TRUE;
   }
   else {
     $variables['is_member'] = FALSE;
-    $variables['become_member_url'] = url('<front>'); //@todo Correct join url
+    $query = array('destination' => culturefeed_search_detail_url('page', $variables['page']->getId(), $variables['page']->getName()));
+    $variables['become_member_url'] = url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
   }
 
 }

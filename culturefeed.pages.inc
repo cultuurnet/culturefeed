@@ -110,7 +110,17 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           $action = 'window.opener.location.href="' . url($_GET['destination'], array('absolute' => TRUE)) . '";';
         }
         else {
-          $action = 'window.opener.location.reload();';
+
+          $destination = '';
+          drupal_alter('culturefeed_login_redirect_destination', $destination);
+
+          if (!empty($destination)) {
+            $action = 'window.opener.location.href="' . url($destination, array('absolute' => TRUE)) . '";';
+          }
+          else {
+            $action = 'window.opener.location.reload();';
+          }
+
         }
 
         // We don't want to render all blocks, so we return minimal html.
@@ -130,7 +140,9 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           drupal_goto($_GET['destination']);
         }
         else {
-          drupal_goto();
+          $destination = '';
+          $destination = drupal_alter('culturefeed_login_redirect_destination', $destination);
+          drupal_goto($destination);
         }
       }
     }
