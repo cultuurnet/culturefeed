@@ -110,3 +110,121 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
   drupal_json_output($matches);
 
 }
+
+/**
+ * Page callback for the region suggestions autocomplete.
+ */
+function culturefeed_pages_region_suggestion_autocomplete_page($search_string) {
+
+  $matches = array();
+  
+  if ($search_string) {
+  
+    try {
+  
+      // Get the list of suggestions from service.
+      $suggestions = culturefeed_search_get_city_suggestions($search_string);
+      foreach ($suggestions as $key => $suggestion) {
+        $matches[$key] = check_plain($suggestion);
+      }
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_search', $e);
+    }
+  
+  }
+  
+  drupal_json_output($matches);
+}
+
+/**
+ * Creates form elements to add a page.
+ * 1 > POST http://test.uitid.be:80/culturefeed/rest/page
+linkBlog=http://www.denhemel.com/blog
+linkWebsite=http://www.denhemel.com
+linkYouTube=http://www.youtube.com/user/DenHemel
+linkeFacebook=https://www.facebook.com/den.hemel
+linkTwitter=https://twitter.com/DenHemel
+linkGooglePlus=https://google.com/DenHemel 
+linkTicketing=http://www.denhemel.com/tickets
+contactInfoTel=+32 13 772931
+contactInfoEmail=info@denhemel.com
+categoryId=8.11.0.0.0
+tagline=Pop-en rocktempel
+ */
+function culturefeed_pages_add_form() {
+  
+  $form = array();
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Naam',
+    '#default_value' => '',
+    '#weight' => -5,
+  );
+  
+  $form['categoryId'] = array(
+    '#type' => 'select',
+    '#title' => 'Type',
+    '#options' => array(),
+    '#default_value' => 0,
+    '#weight' => -4,
+  );
+
+  $form['description'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Beschrijving',
+    '#default_value' => '',
+    '#maxlength' => 250,
+    '#weight' => -3,
+  );
+
+  $form['street'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Adres',
+    '#default_value' => '',
+    '#attributes' => array('placeholder' => 'straat en huisnummer'),
+    '#weight' => 1,
+  );
+  
+  $form['zip'] = array(
+    '#type' => 'textfield',
+    '#title' => '',
+    '#default_value' => '',
+    '#attributes' => array('placeholder' => 'postcode'),
+    '#weight' => 2,
+  );
+  
+  $form['city'] = array(
+    '#type' => 'textfield',
+    '#title' => '',
+    '#default_value' => '',
+    '#attributes' => array('placeholder' => 'gemeente'),
+    '#weight' => 3,
+  );
+
+  $form['visible'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Opslaan',
+    '#weight' => 10,
+  );
+  
+  $form['#submit'] = array('culturefeed_pages_add_form_submit');
+  
+  return $form;
+  
+}
+
+/**
+ * Submit handler to create a culturefeed page.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_add_form_submit(& $form, & $form_state) {
+  dsm('real form submit');
+}

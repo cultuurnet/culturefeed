@@ -49,16 +49,55 @@ function culturefeed_search_schema() {
       ),
       'did' => array(
         'description' => 'Domain of the term.',
-       'type' => 'varchar',
+        'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => ''
+      ),
+      'parent' => array(
+        'description' => 'Parent of the term.',
+        'type' => 'varchar',
+        'length' => 150,
+        'not null' => TRUE,
+        'default' => '',
       ),
     ),
     'indexes' => array(
       'did' => array('did'),
     ),
     'primary key' => array('tid'),
+  );
+  
+  $schema['culturefeed_search_cities'] = array(
+    'description' => 'Cities for the CultuurNet Search API.',
+    'fields' => array(
+      'cid' => array(
+        'description' => 'The primary identifier for a city.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'City.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'zip' => array(
+        'description' => 'Zip of the city.',
+       'type' => 'char',
+        'length' => 4,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'cid' => array('cid'),
+      'zip' => array('zip'),
+    ),
+    'primary key' => array('cid'),
   );
 
   $schema['cache_culturefeed_search'] = drupal_get_schema_unprocessed('system', 'cache');

@@ -75,14 +75,16 @@ class CultureFeedDomainImport {
     foreach ($xmlElement->categorisation->term as $term) {
 
       $termAttributes = $term->attributes();
+      $parentId = trim((string) $termAttributes['parentid']);
       $record = array(
         'tid' => (string) $termAttributes['id'],
         'name' => (string) $termAttributes['label'],
         'did' => (string) $termAttributes['domain'],
+        'parent' => empty($parentId) ? NULL : $parentId,
       );
 
       drupal_write_record('culturefeed_search_terms', $record);
-      drush_log('Imported term ' . (string) $termAttributes['label'], 'success');
+      drush_log('Imported term ' . (string) $termAttributes['label'] . ' ' . $parentId, 'success');
 
     }
 

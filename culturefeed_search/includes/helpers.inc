@@ -287,3 +287,49 @@ function culturefeed_search_transliterate($string) {
   // transliterate
   return strtr($string, $charmap);
 }
+
+/**
+ * Retrieves a list of categories for the educationfield domain.
+ */
+function culturefeed_search_get_educationfield_categories() {
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name'));
+  $query->condition('cst.did', 'educationfield');
+  $result = $query->execute();
+  $categories = array();
+  foreach ($result as $row) {
+    $categories[$row->tid] = $row->name;
+  }
+  return $categories;
+}
+
+/**
+ * Retrieves a list of categories for the flandersregion domain.
+ */
+function culturefeed_search_get_flandersregion_categories() {
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name'));
+  $query->condition('cst.did', 'flandersregion');
+  $query->condition('cst.parent', '', '=');
+  $result = $query->execute();
+  $categories = array();
+  foreach ($result as $row) {
+    $categories[$row->tid] = $row->name;
+  }
+  sort($categories);
+  return $categories;
+}
+
+/**
+ * Retrieves a list of cities as suggestion.
+ */
+function culturefeed_search_get_city_suggestions($search_string) {
+  $result = db_query('SELECT csc.cid, csc.name FROM {culturefeed_search_cities} csc 
+      WHERE csc.name like :name', array(':name' => "%" . $search_string . "%"))
+    ->fetchAll();
+  $suggestions = array();
+  foreach ($result as $row) {
+    $suggestions[$row->name] = $row->name;
+  }
+  return $suggestions;
+}

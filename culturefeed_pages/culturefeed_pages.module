@@ -15,6 +15,9 @@ function culturefeed_pages_permission() {
     'join culturefeed page' => array(
       'title' => t('Join a culturefeed page'),
     ),
+    'add culturefeed page' => array(
+      'title' => t('Add a culturefeed page'),
+    ),
   );
 
 }
@@ -80,9 +83,18 @@ function culturefeed_pages_menu() {
     'access arguments' => array('join culturefeed page'),
     'file' => 'includes/pages.inc',
   );
+  
+  $items['pages/add'] = array(
+    'title' => 'Maak je eigen pagina',
+    'title callback' => FALSE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_add_form'),
+    'access arguments' => array('add culturefeed page'),
+    'file' => 'includes/pages.inc',
+  );
 
   /*$items['agenda/p/%/%culturefeed_agenda_production'] = array(
-    'title callback' => 'culturefeed_agenda_detail_title',
+    'title callback' s=> 'culturefeed_agenda_detail_title',
     'title arguments' => array(3),
     'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
@@ -91,10 +103,18 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );*/
 
-  $items['ajax/culturefeed/pages/page-suggestion/%'] = array(
+  $items['ajax/culturefeed/pages/page-suggestion'] = array(
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
     'page arguments' => array(4),
     'access arguments' => array('join culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['ajax/culturefeed/pages/region-suggestion'] = array(
+    'page callback' => 'culturefeed_pages_region_suggestion_autocomplete_page',
+    'page arguments' => array(4),
+    'access arguments' => array('add culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );

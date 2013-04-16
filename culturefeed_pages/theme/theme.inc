@@ -21,7 +21,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
       $variables['items'][] = theme('culturfeed_pages_join_search_result_item', array('item' => $item));
     }
 
-    $variables['create_message'] = 'Heeft je organisatie nog geen pagina? ' . l('Maak een nieuwe pagina', 'page/add');
+    $variables['create_message'] = 'Heeft je organisatie nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
   }
 
