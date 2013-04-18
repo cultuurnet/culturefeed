@@ -74,8 +74,6 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
         unset($params[$key]);
       }
     }
-    //
-    dsm($params, 'params being send');
     
     $result = $this->oauth_client->authenticatedPost('page', $params);
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::CODE_PAGE_CREATED);
@@ -144,7 +142,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $followers = $xml->xpath('/response/followers/follower');
     foreach ($followers as $object) {
 
-      $follower = new CultureFeed_Pages_Page_Follower();
+      $follower = new CultureFeed_Pages_Follower();
       $follower->userId        = $object->xpath_str('rdf:id');
       $follower->userName      = $object->xpath_str('foaf:nick');
       $follower->picture       = $object->xpath_str('foaf:depiction');

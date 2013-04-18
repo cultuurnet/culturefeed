@@ -12,6 +12,7 @@
  * @return array
  */
 function culturefeed_search_ui_search_block_form($form, & $form_state) {
+
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $default = isset($query['search']) ? $query['search']: '';
 
@@ -27,7 +28,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   $form['type'] = array(
     '#type' => 'select',
     '#title' => 'Zoeken in',
-    '#default_value' => key($options),
+    '#default_value' => $_GET['q'],
     '#options' => $options,
   );
 

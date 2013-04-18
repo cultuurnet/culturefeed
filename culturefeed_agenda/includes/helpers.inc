@@ -53,8 +53,8 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   }
 
   // Organiser links.
-  if (method_exists($item, 'getOrganiser') && $item->getOrganiser() && $item->getOrganiser()->getActor() && $item->getOrganiser()->getActor->getContactInfo()) {
-    $contact_links = _culturefeed_agenda_get_contact_links($item->getOrganiser()->getActor->getContactInfo());
+  if (method_exists($item, 'getOrganiser') && $item->getOrganiser() && $item->getOrganiser()->getActor() && $item->getOrganiser()->getActor()->getContactInfo()) {
+    $contact_links = _culturefeed_agenda_get_contact_links($item->getOrganiser()->getActor()->getContactInfo());
     $links += $contact_links['main'];
     $links += $contact_links['other'];
   }

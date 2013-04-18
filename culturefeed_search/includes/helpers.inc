@@ -33,6 +33,12 @@ function culturefeed_get_search_service() {
  */
 function culturefeed_search_item_load($cdb_id) {
 
+  static $items = array();
+
+  if (isset($items[$cdb_id])) {
+    return $items[$cdb_id];
+  }
+
   $search_service = culturefeed_get_search_service();
 
   $parameters = array();
@@ -46,12 +52,14 @@ function culturefeed_search_item_load($cdb_id) {
   try {
     $result = $search_service->search($parameters);
     $items = $result->getItems();
+    $items[$cdb_id] = reset($items);
+    return $items[$cdb_id];
   }
   catch (Exception $e) {
     watchdog_exception('bibnet_books', $e);
   }
 
-  return reset($items);
+  return FALSE;
 
 }
 
@@ -114,6 +122,21 @@ function culturefeed_search_detail_l($type, $cdbid, $slug_title, $display_title 
  *   An associative array of additional options for the url() function.
  */
 function culturefeed_search_detail_url($type, $cdbid, $title, $options = array()) {
+  $path = culturefeed_search_detail_path($type, $cdbid, $title);
+  return url($path, $options);
+}
+
+/**
+ * Returns the path to the detail page from the given detail type / cdbid.
+ *
+ * @param $type
+ *   Type of object to load. Example event / production / actor/ page.
+ * @param $cdbid
+ *   Cdbid from the item.
+ * @param $title
+ *   Title to be used as slug in the url.
+ */
+function culturefeed_search_detail_path($type, $cdbid, $title) {
 
   switch ($type) {
 
@@ -133,9 +156,10 @@ function culturefeed_search_detail_url($type, $cdbid, $title, $options = array()
 
   }
 
-  return url($url_prefix . '/' . culturefeed_search_slug($title) . '/' . $cdbid);
+  return $url_prefix . '/' . culturefeed_search_slug($title) . '/' . $cdbid;
 
 }
+
 /**
  * Calculate a slug with a maximum length for a string.
  *
@@ -289,32 +313,46 @@ function culturefeed_search_transliterate($string) {
 }
 
 /**
- * Retrieves a list of categories for the educationfield domain.
+ * Get a list of all categories for a given domain.
+ * @param string $domain
+ *   Domain to get.
  */
-function culturefeed_search_get_educationfield_categories() {
-  
+function culturefeed_search_get_categories_by_domain($domain) {
+
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
-  $query->condition('cst.did', 'educationfield');
+  $query->condition('cst.did', $domain);
   $result = $query->execute();
   $categories = array();
   foreach ($result as $row) {
     $categories[$row->tid] = $row->name;
   }
-  
+
   return $categories;
-  
+
+}
+
+/**
+ * Retrieves a list of categories for the educationfield domain.
+ */
+function culturefeed_search_get_educationfield_categories() {
+  return culturefeed_search_get_categories_by_domain('educationfield');
 }
 
 /**
  * Retrieves a list of categories for the flandersregion domain.
+ * 
+ * @param Boolean $first_level
+ *   Indicates if only the first level needs to be fetched.
+ *   If false, only subelements will be fetched.
  */
-function culturefeed_search_get_flandersregion_categories() {
+function culturefeed_search_get_flandersregion_categories($first_level = TRUE) {
   
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
-  $query->condition('cst.parent', '', '=');
+  $operator = $first_level ? '=' : '!=';
+  $query->condition('cst.parent', '', $operator);
   $result = $query->execute();
   $categories = array();
   foreach ($result as $row) {
@@ -334,8 +372,8 @@ function culturefeed_search_get_city_suggestions($search_string) {
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
   
-  $result = db_query('SELECT csc.cid, csc.name FROM {culturefeed_search_cities} csc 
-      WHERE csc.name like :name', array(':name' => "%" . $search_string . "%"))
+  $result = db_query("SELECT cst.tid, cst.name FROM {culturefeed_search_terms} cst 
+      WHERE cst.did = 'flandersregion' AND cst.name like :name", array(':name' => "%" . $search_string . "%"))
     ->fetchAll();
   $suggestions = array();
   foreach ($result as $row) {
