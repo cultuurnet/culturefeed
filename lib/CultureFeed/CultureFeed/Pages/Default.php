@@ -13,6 +13,20 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   const CODE_ACTION_SUCCEEDED = 'ACTION_SUCCEEDED';
 
   /**
+   * Status code when a page was successfully created
+   * Invalid codes ARE [MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
+   * @var string
+   */
+  const CODE_PAGE_CREATED = 'PAGE_CREATED';
+
+  /**
+   * Status code when an image upload was successful
+   * Invalid codes ARE [ACTION_FAILED]
+   * @var string
+   */
+  const IMAGE_UPLOADED = 'IMAGE_UPLOADED';
+
+  /**
    * CultureFeed object to make CultureFeed core requests.
    * @var ICultureFeed
    */
@@ -47,6 +61,39 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
 
     return CultureFeed_Cdb_Item_Page::parseFromCdbXml($xml);
 
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Pages::addPage()
+   */
+  public function addPage(array $params) {
+    
+    foreach ($params as $key => $value) {
+      if (is_string($value) && $value === "") {
+        unset($params[$key]);
+      }
+    }
+    //
+    dsm($params, 'params being send');
+    
+    $result = $this->oauth_client->authenticatedPost('page', $params);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::CODE_PAGE_CREATED);
+    
+    return $xmlElement->xpath_str('uid');
+  
+  }
+  
+  /**
+   * Implements CultureFeed_Pages::addImage().
+   * @see CultureFeed_Pages::addImage()
+   */
+  public function addImage($id, array $params) {
+
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/uploadImage', $params, TRUE, TRUE);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_UPLOADED);
+    
+    return $xmlElement->xpath_str('uid');
   }
 
   /**
@@ -157,7 +204,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
       return $xml;
     }
 
-    throw new CultureFeed_InvalidCodeException($xml->xpath_str('/rsp/message'), $status_code);
+    throw new CultureFeed_InvalidCodeException($xml->xpath_str('message'), $status_code);
 
   }
 

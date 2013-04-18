@@ -36,4 +36,20 @@ interface CultureFeed_Pages {
    */
   public function addMember($id, $userId, $relation = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER, $activityPrivate = TRUE);
 
+  /**
+   * Add a page.
+   * @param array $params
+   *   Params to create the page.
+   */
+  public function addPage(array $params);
+
+  /**
+   * Add image to an existing page.
+   * @param string $id
+   *   Id of the page.
+   * @param array $params
+   *   Params to create the image for the page.
+   */
+  public function addImage($id, array $params);
+  
 }

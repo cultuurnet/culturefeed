@@ -105,7 +105,7 @@ function culturefeed_search_detail_l($type, $cdbid, $slug_title, $display_title 
  * Returns the url to the detail page from the given detail type / cdbid.
  *
  * @param $type
- *   Type of object to load. Example event / production / actor.
+ *   Type of object to load. Example event / production / actor/ page.
  * @param $cdbid
  *   Cdbid from the item.
  * @param $title
@@ -292,6 +292,7 @@ function culturefeed_search_transliterate($string) {
  * Retrieves a list of categories for the educationfield domain.
  */
 function culturefeed_search_get_educationfield_categories() {
+  
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'educationfield');
@@ -300,13 +301,16 @@ function culturefeed_search_get_educationfield_categories() {
   foreach ($result as $row) {
     $categories[$row->tid] = $row->name;
   }
+  
   return $categories;
+  
 }
 
 /**
  * Retrieves a list of categories for the flandersregion domain.
  */
 function culturefeed_search_get_flandersregion_categories() {
+  
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
@@ -316,20 +320,63 @@ function culturefeed_search_get_flandersregion_categories() {
   foreach ($result as $row) {
     $categories[$row->tid] = $row->name;
   }
-  sort($categories);
+  
   return $categories;
+  
 }
 
 /**
  * Retrieves a list of cities as suggestion.
  */
 function culturefeed_search_get_city_suggestions($search_string) {
+  
+  $parts = array_reverse(explode(",", $search_string));
+  $search_string = trim(array_shift($parts));
+  $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
+  
   $result = db_query('SELECT csc.cid, csc.name FROM {culturefeed_search_cities} csc 
       WHERE csc.name like :name', array(':name' => "%" . $search_string . "%"))
     ->fetchAll();
   $suggestions = array();
   foreach ($result as $row) {
-    $suggestions[$row->name] = $row->name;
+    $suggestions[$old_parts . $row->name] = $row->name;
   }
+  
   return $suggestions;
+  
+}
+
+/**
+ * Retrieves a list of categories for the educationlevel domain.
+ */
+function culturefeed_search_get_educationlevel_categories() {
+  
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name', 'parent'));
+  $query->condition('cst.did', 'educationlevel');
+  $result = $query->execute();
+  
+  // Prepare the result.
+  $rows = array();
+  foreach ($result as $row) {
+    $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+  }
+  
+  $categories = array();
+  // First level.
+  foreach ($rows as $row) {
+    if (empty($row->parent)) {
+      $categories[$row->tid] = (object) array('tid' => $row->tid, 'parent' => $row->parent, 'name' => $row->name, 'children' => array());
+    }
+  }
+  
+  // Second level.
+  foreach ($rows as $row) {
+    if (!empty($row->parent) && isset($categories[$row->parent])) {
+      $categories[$row->parent]->children[$row->tid] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+    }
+  }
+  
+  return $categories;
+  
 }

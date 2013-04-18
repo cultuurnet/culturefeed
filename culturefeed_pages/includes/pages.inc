@@ -87,23 +87,16 @@ function culturefeed_pages_join_form_submit($form, &$form_state) {
  */
 function culturefeed_pages_page_join($request_type, $page) {
 
-  $success = FALSE;
+  $message = '';
 
   // Send request to join.
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
-    $success = TRUE;
+    $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-  }
-
-  // Correct message.
-  if ($success) {
-    $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
-  }
-  else {
     $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
   }
 
@@ -219,6 +212,8 @@ function culturefeed_pages_add_form() {
     '#maxlength' => 250,
     '#weight' => -3,
   );
+  
+  // Form alters can use weight -2 -> 0 here.
 
   $form['street'] = array(
     '#type' => 'textfield',
@@ -235,7 +230,7 @@ function culturefeed_pages_add_form() {
     '#attributes' => array('placeholder' => 'postcode'),
     '#weight' => 2,
   );
-  
+
   $form['city'] = array(
     '#type' => 'textfield',
     '#title' => '',
@@ -244,20 +239,169 @@ function culturefeed_pages_add_form() {
     '#weight' => 3,
   );
 
+  // Form alters can use weight 5 -> 9 here.
+
+  $form['contactInfoTel'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Telefoon nummer',
+    '#default_value' => '',
+    '#weight' => 10,
+  );
+  
+  $form['contactInfoEmail'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Emailadres',
+    '#default_value' => '',
+    '#weight' => 11,
+  );
+
+  $form['websites'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Websites',
+    '#default_value' => '',
+    '#weight' => 12,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['websites']['linkWebsite'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Website',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkTicketing'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Ticketing',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkFacebook'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Facebook pagina',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkTwitter'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Twitter pagina',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkGooglePlus'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Google+ pagina',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkYouTube'] = array(
+    '#type' => 'textfield',
+    '#title' => 'YouTube pagina',
+    '#default_value' => '',
+  );
+  
+  $form['websites']['linkBlog'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Blog pagina',
+    '#default_value' => '',
+  );
+
+  /*
+   $form['current_foto'] = array(
+     '#theme' => 'image',
+     '#path' => '',
+   );
+  */
+  $form['image'] = array(
+    '#type' => 'file',
+    '#title' => 'Foto',
+    '#size' => 26,
+    '#default_value' => '',
+    '#weight' => 12,
+  );
+  
   $form['visible'] = array(
     '#type' => 'hidden',
-    '#value' => TRUE,
+    '#value' => "true",
   );
   
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Opslaan',
-    '#weight' => 10,
+    '#weight' => 20,
+  );
+
+  $form['#validate'] = array(
+    'culturefeed_pages_add_arguments_prepare',
+    'culturefeed_pages_add_request_send'
+  );
+
+  $form['#submit'] = array(
+    'culturefeed_pages_add_form_submit'
   );
   
-  $form['#submit'] = array('culturefeed_pages_add_form_submit');
-  
   return $form;
+  
+}
+
+/**
+ * Validator to create and prepare all post parameters to create a culturefeed page.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
+  
+  // Add the post params to the form so other modules can add their params.
+  $post = $form_state['values'];
+  unset($post['form_id'], $post['form_token'], $post['form_build_id'], $post['submit'], $post['op'], $post['image']);
+  $form_state['post_params'] = $post;
+  
+}
+
+/**
+ * Validator which sends the request to create the page.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_add_request_send(& $form, & $form_state) {
+
+  // Local storage of the universal id.
+  $uid = NULL;
+  
+  // Send request to add a page.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $uid = $cf_pages->addPage($form_state['post_params']);
+    drupal_set_message(format_string('De pagina "@page" is aangemaakt.', array('@page' => $form_state['values']['name'])));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', 'Er is een fout opgetreden tijdens het aanmaken van de pagina.');
+  }
+  
+  if ($uid) {
+
+    $form_state['page_id'] = $uid;
+    $form_state['page_title'] = $form_state['values']['name'];
+
+    // Upload Page image.
+    if ($_FILES['files']['tmp_name']['image']) {
+      $image_path = $_FILES['files']['tmp_name']['image'];
+
+      $image = file_get_contents($image_path);
+      
+      if ($image) {
+        try {
+          $cf_pages->addImage($uid, array('image' => $image));
+        }
+        catch (Exception $e) {
+          watchdog_exception('culturefeed_pages', $e);
+          drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+        }
+      }
+    }
+    
+  }
   
 }
 
@@ -267,5 +411,8 @@ function culturefeed_pages_add_form() {
  * @param array $form_state
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
-  dsm('real form submit');
+  
+  // Redirect the user to the created page detail.
+  drupal_goto(culturefeed_search_detail_url('page', $form_state['page_id'], $form_state['page_title']));
+  
 }
