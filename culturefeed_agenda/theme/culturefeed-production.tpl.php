@@ -47,17 +47,6 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
 
-  <?php if (!empty($educationlevels)): ?>
-  <dt>Niveau</dt>
-  <dd>
-    <ul>
-    <?php foreach ($educationlevels as $educationlevel): ?>
-      <li><?php print $educationlevel; ?></li>
-    <?php endforeach; ?>
-    </ul>
-  </dd>
-  <?php endif; ?>
-
   <?php if (!empty($themes)): ?>
   <dt>Thema</dt>
     <dd>
