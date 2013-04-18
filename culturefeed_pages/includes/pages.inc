@@ -249,6 +249,7 @@ function culturefeed_pages_add_form() {
   $form['description'] = array(
     '#type' => 'textarea',
     '#title' => 'Beschrijving',
+    '#description' => 'Maximum 250 karakters',
     '#default_value' => '',
     '#maxlength' => 250,
     '#weight' => -3,
@@ -391,6 +392,15 @@ function culturefeed_pages_add_form() {
  * @param array $form_state
  */
 function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
+  
+  // Basic validation.
+  if (empty($form_state['values']['name'])) {
+    form_set_error('name', 'De titel moet ingevuld zijn');
+  }
+  
+  if (strlen($form_state['values']['description']) > 250) {
+    form_set_error('description', 'Het maximum karakters bedraagt 250');
+  }
   
   // Add the post params to the form so other modules can add their params.
   $post = $form_state['values'];
