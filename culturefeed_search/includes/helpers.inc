@@ -387,7 +387,7 @@ function culturefeed_search_get_city_suggestions($search_string) {
 /**
  * Retrieves a list of categories for the educationlevel domain.
  */
-function culturefeed_search_get_educationlevel_categories() {
+function culturefeed_search_get_educationlevel_categories_tree() {
   
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name', 'parent'));
@@ -417,4 +417,11 @@ function culturefeed_search_get_educationlevel_categories() {
   
   return $categories;
   
+}
+
+/**
+ * Retrieves a list of categories for the educationlevel domain.
+ */
+function culturefeed_search_get_educationlevel_categories() {
+  return culturefeed_search_get_categories_by_domain('educationlevel');
 }

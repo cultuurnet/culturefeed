@@ -71,7 +71,7 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
   // Add join link if not a member yet.
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $query = array('destination' => trim(culturefeed_search_detail_url('page', $page->getId(), $page->getName())), '/');
+    $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
     $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
 
