@@ -184,7 +184,7 @@ function theme_culturefeed_pages_following_pages_block($variables) {
 
   $items = array();
   foreach ($variables['following'] as $following) {
-    $items[] = culturefeed_search_detail_l('page', $following->page->id, $following->page->name);
+    $items[] = culturefeed_search_detail_l('page', $following->page->getId(), $following->page->getName());
   }
 
   return theme('item_list', array('items' => $items, 'attributes' => array('class' => array('pages-following'))));
