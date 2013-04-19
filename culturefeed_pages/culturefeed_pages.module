@@ -72,6 +72,12 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    
+    'culturefeed_pages_block_admin_options' => array(
+      'variables' => array('account' => array()),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
 
   );
 
@@ -155,6 +161,11 @@ function culturefeed_pages_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  $blocks['pages-admin-options'] = array(
+    'info' => t("Page administration"),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
   return $blocks;
 
 }
@@ -175,6 +186,10 @@ function culturefeed_pages_block_view($delta) {
     case 'pages-user-follows':
       $account = menu_get_object('user');
       return culturefeed_pages_block_pages_user_follows($account);
+    break;
+
+    case 'pages-admin-options':
+      return culturefeed_pages_block_pages_admin_options();
     break;
 
   }

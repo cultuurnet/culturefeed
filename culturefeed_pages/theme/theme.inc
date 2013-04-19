@@ -68,7 +68,8 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['title'] = $page->getName();
   $variables['description'] = $page->getDescription();
   $variables['links'] = $page->getLinks();
-
+  $variables['image'] = $page->getImage();
+  
   // Add join link if not a member yet.
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
