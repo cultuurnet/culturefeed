@@ -106,6 +106,7 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
   $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
   $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+  $variables['user_list'] = $user_list;
 
   // First put all memberships in an array, so we can get the drupal uids for it.
   $variables['members'] = array();
