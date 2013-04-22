@@ -23,3 +23,26 @@ function culturefeed_pages_is_user_member_of_page($page_id) {
   return FALSE;
 
 }
+
+/**
+ * Sets all the pages where the loggedIn user is ADMIN.
+ */
+function culturefeed_pages_set_pages($pages) {
+  $_SESSION['culturefeed']['pages'] = $pages;
+}
+
+/**
+ * Get the current page of the loggedIn user.
+ * 
+ * @return CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_get_active_page() {
+  return isset($_SESSION['culturefeed']['page']) ? $_SESSION['culturefeed']['page'] : NULL;
+}
+
+/**
+ * Sets the current page of the loggedIn user.
+ */
+function culturefeed_pages_set_active_page(CultureFeed_Cdb_Item_Page $page) {
+  $_SESSION['culturefeed']['page'] = $page;
+}

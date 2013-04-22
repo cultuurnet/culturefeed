@@ -469,11 +469,21 @@ function culturefeed_pages_add_form_submit(& $form, & $form_state) {
 }
 
 /**
- * 
+ * Form to edit a page.
  * @param array $form
  * @param array $form_state
  */
 function culturefeed_pages_edit_page_form($form, & $form_state, & $form_state){
 dsm(func_get_args());
+  return "x";
+}
+
+/**
+ * Switch to another CultureFeed Page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_switch_page(CultureFeed_Cdb_Item_Page $page) {
+  culturefeed_pages_set_active_page($page);
+  drupal_goto(culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
   return "x";
 }

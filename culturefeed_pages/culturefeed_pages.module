@@ -21,6 +21,9 @@ function culturefeed_pages_permission() {
     'edit culturefeed page' => array(
       'title' => t('Edit a culturefeed page'),
     ),
+    'switch culturefeed pages' => array(
+      'title' => t('Switch to another culturefeed page'),
+    ),
   );
 
 }
@@ -140,6 +143,15 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['pages/switch/%culturefeed_pages_page'] = array(
+    'title' => 'Switch to another page',
+    'page callback' => 'culturefeed_pages_switch_page',
+    'page arguments' => array(2),
+    'access arguments' => array('switch culturefeed pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['ajax/culturefeed/pages/page-suggestion'] = array(
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
     'page arguments' => array(4),
@@ -229,19 +241,30 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items($cultureFee
 
   if ($cultureFeedUser->adminPagesCount > 0) {
 
-    $items['my-pages'] = array(
-      'data' => 'Mijn pagina\'s',
-      'class' => 'my-pages',
+    $items['my-page'] = array(
+      'data' => 'Mijn pagina',
+      'class' => 'my-page',
       'children' => array(
-        array('data' => $data),
+        array('data' => 'Zoek jouw school')
       ),
-      'weight' => -20,
+      'weight' => -19,
     );
     
-    $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
-    foreach ($adminMemberships as $membership) {
-      $items['my-pages']['children'][] = array('data' => culturefeed_search_detail_l('page', $membership->page->getId(), 'slug'));
+    if (user_access('switch culturefeed pages')) {
+      
+      $items['switch-page'] = array(
+        'data' => 'Wijzig actieve pagina',
+        'class' => 'switch-page',
+        'children' => array(),
+        'weight' => -18,
+      );
+      
+      $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+      foreach ($adminMemberships as $membership) {
+        $items['switch-page']['children'][] = array('data' => l($membership->page->getName(), 'pages/switch/' . $membership->page->getId()));
+      }
     }
+    
   }
 
   return $items;
@@ -286,4 +309,17 @@ function culturefeed_pages_join_title() {
  */
 function culturefeed_pages_detail_title($page) {
   return $page->getName();
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_nick_alter().
+ * @param unknown_type $culture_feed_profile_name
+ */
+function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_profile_name) {
+  $active_page = culturefeed_pages_get_active_page();
+  $nick = $culture_feed_profile_name['nick'];
+  if (isset($active_page)) {
+    $culture_feed_profile_name['nick'] = l($nick . ' van ' . $active_page->getName(), 
+        'user/' . culturefeed_get_uid_for_cf_uid($culture_feed_profile_name['id'], $nick));
+  }
 }

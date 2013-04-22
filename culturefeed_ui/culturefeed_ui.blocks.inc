@@ -112,12 +112,12 @@ function culturefeed_ui_block_profile_box_view() {
 
     try {
 
-      global $user;
       $cf_account = DrupalCultureFeed::getLoggedInUser();
-
-      $items = array();
-      $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
-      $items['nick'] = l($cf_account->nick, $url_profile);
+      $culture_feed_profile_name = array(
+        'id' => $cf_account->id,
+        'nick' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+      );
+      drupal_alter('culturefeed_ui_profile_box_nick', $culture_feed_profile_name);
 
       // Get the main items. These are always visible.
       $main_items = module_invoke_all('culturefeed_ui_profile_box_main_items', $cf_account);
@@ -129,6 +129,7 @@ function culturefeed_ui_block_profile_box_view() {
 
       $content = array(
         '#theme' => 'culturefeed_ui_profile_box',
+        '#profile_name' => $culture_feed_profile_name,
         '#account' => $cf_account,
         '#main_items' => $main_items,
         '#dropdown_items' => $dropdown_items,
