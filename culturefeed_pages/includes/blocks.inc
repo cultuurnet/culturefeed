@@ -89,13 +89,81 @@ function culturefeed_pages_block_pages_user_follows($account) {
  */
 function culturefeed_pages_block_pages_admin_options() {
   
-  $page = menu_get_object('culturefeed_pages_page');
+  $page = menu_get_object('culturefeed_pages_page', 3);
+  
+  if (!$page) {
+    return;
+  }
+  
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  
+  // Calculate the number of pages where the current user is ADMIN.
+  if ($cultureFeedUser->adminPagesCount > 0) {
+    $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+  }
+  dsm($adminMemberships, 'user');
+
+  $menu = array(
+    array(
+      'title' => 'Basisinformatie',
+      'url' => 'pages/' . $page->getId() . '/edit',
+      'description' => '(bewerk contactinfo, foto, beschrijving, website, ...)',
+    ),
+    array(
+      'title' => 'Instellingen',
+      'url' => 'pages/' . $page->getId() . '/configuration',
+      'description' => '(Mogen gebruikers jouw pagina volgen, beoordelingen schrijven, activiteiten aanraden, ...)',
+    ),
+    array(
+      'title' => 'Berichten',
+      'url' => 'pages/' . $page->getId() . '/messages',
+      'description' => '(Lees en beantwoord berichten en boekingsaanvragen)',
+    ),
+    array(
+      'title' => 'Leden & rollen',
+      'url' => 'pages/' . $page->getId() . '/members-and-roles',
+      'description' => '(Beheer leden en toegangsrechten)',
+    ),
+    array(
+      'title' => 'Activiteiten',
+      'url' => 'pages/' . $page->getId() . '/activiteiten',
+      'description' => '(Beheer je activiteiten en beoordelingen)',
+    ),
+    array(
+      'title' => 'Statistieken',
+      'url' => 'pages/' . $page->getId() . '/stats',
+      'description' => '',
+    ),
+  );
+  
+  drupal_alter('culturefeed_pages_page_admin_menu', $menu);
+  
+  $items = array();
+  
+  foreach ($menu as $menu_item) {
+    $vars = array(
+      'title' => $menu_item['title'],
+      'url' => $menu_item['url'],
+      'description' => $menu_item['description'],
+    );
+  
+    $data = theme('culturefeed_pages_page_menu_item', $vars);
+  
+    $class = $_GET['q'] == $menu_item['url'] ? array('active') : array();
+  
+    $items[] = array(
+      'data' => $data,
+      'class' => $class,
+    );
+  }
+  
+  $admin_menu = theme('item_list', array('items' => $items));
 
   $block = array();
   $block['subject'] = "Pagina beheren";
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_block_admin_options',
+    '#admin_menu' => $admin_menu,
     '#account' => $cultureFeedUser,
     '#page' => $page,
   );

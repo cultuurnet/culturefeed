@@ -180,6 +180,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
 }
 
 /**
+ * Preprocess the variables for the page administration block detail.
+ * @see culturefeed-pages-page-menu-item.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_menu_item(&$variables) {
+  $variables['link'] = l($variables['title'], $variables['url']);
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {

@@ -210,8 +210,6 @@ class CultureFeed_User {
    */
   public $holdsAccount;
 
-
-
   /**
    * Field privacy status.
    *
@@ -219,12 +217,17 @@ class CultureFeed_User {
    */
   public $privacyConfig;
 
-
   /**
    * List of page memberships.
    * @var CultureFeed_Pages_Membership[]
    */
   public $pageMemberships;
+  
+  /**
+   * Number of pages where current user is admin.
+   * @var Integer
+   */
+  public $adminPagesCount = 0;
 
   /**
    * List of page followers.
@@ -296,6 +299,22 @@ class CultureFeed_User {
     }
 
     return $data;
+  }
+  
+  /**
+   * Gets all pages where current user is ADMIN.
+   */
+  public function getMembershipsByRole($role = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+
+    $membershipsByRole = array();
+    foreach ($this->pageMemberships as $membership) {
+      if ($membership->role == $role) {
+        $membershipsByRole[$membership->page->getId()] = $membership;
+      }
+    }
+    
+    return $membershipsByRole;
+    
   }
 
 }

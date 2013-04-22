@@ -18,6 +18,9 @@ function culturefeed_pages_permission() {
     'add culturefeed page' => array(
       'title' => t('Add a culturefeed page'),
     ),
+    'edit culturefeed page' => array(
+      'title' => t('Edit a culturefeed page'),
+    ),
   );
 
 }
@@ -75,12 +78,20 @@ function culturefeed_pages_theme() {
     
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
+        'admin_menu' => NULL,
         'account' => NULL,
         'page' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-block-admin-options',
+    ),
+
+    'culturefeed_pages_page_menu_item' => array(
+      'variables' => array('title' => '', 'url' => '', 'description' => ''),
+      'template' => 'culturefeed-pages-page-menu-item',
+      'path' => $path,
+      'file' => 'theme.inc',
     ),
 
   );
@@ -116,6 +127,15 @@ function culturefeed_pages_menu() {
     'page callback' => 'culturefeed_pages_detail_page',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/edit'] = array(
+    'title' => 'Edit',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_edit_page_form', 1),
+    'access arguments' => array('edit culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -197,6 +217,34 @@ function culturefeed_pages_block_view($delta) {
     break;
 
   }
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items($cultureFeedUser) {
+
+  $items = array();
+
+  if ($cultureFeedUser->adminPagesCount > 0) {
+
+    $items['my-pages'] = array(
+      'data' => 'Mijn pagina\'s',
+      'class' => 'my-pages',
+      'children' => array(
+        array('data' => $data),
+      ),
+      'weight' => -20,
+    );
+    
+    $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+    foreach ($adminMemberships as $membership) {
+      $items['my-pages']['children'][] = array('data' => culturefeed_search_detail_l('page', $membership->page->getId(), 'slug'));
+    }
+  }
+
+  return $items;
 
 }
 

@@ -1450,6 +1450,15 @@ class CultureFeed implements ICultureFeed {
 
     if (!empty($user_memberships)) {
       $user->pageMemberships = $user_memberships;
+
+      $adminPagesCount = 0;
+      foreach ($user->pageMemberships as $membership) {
+        if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+          $adminPagesCount++;
+        }
+      }
+      $user->adminPagesCount = $adminPagesCount;
+      
     }
 
     $following = $element->xpath('/foaf:person/following/page');

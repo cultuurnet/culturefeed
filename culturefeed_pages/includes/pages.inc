@@ -467,3 +467,13 @@ function culturefeed_pages_add_form_submit(& $form, & $form_state) {
   drupal_goto(culturefeed_search_detail_path('page', $form_state['page_id'], $form_state['page_title']));
   
 }
+
+/**
+ * 
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_edit_page_form($form, & $form_state, & $form_state){
+dsm(func_get_args());
+  return "x";
+}
