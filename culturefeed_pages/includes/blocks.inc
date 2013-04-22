@@ -88,15 +88,16 @@ function culturefeed_pages_block_pages_user_follows($account) {
  * Show the administrative options for the current page.
  */
 function culturefeed_pages_block_pages_admin_options() {
+  
   $page = menu_get_object('culturefeed_pages_page');
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  dsm($cultureFeedUser);
 
   $block = array();
   $block['subject'] = "Pagina beheren";
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_block_admin_options',
-    '#account' => $cf_account,
+    '#account' => $cultureFeedUser,
+    '#page' => $page,
   );
   
   return $block;

@@ -74,9 +74,13 @@ function culturefeed_pages_theme() {
     ),
     
     'culturefeed_pages_block_admin_options' => array(
-      'variables' => array('account' => array()),
+      'variables' => array(
+        'account' => NULL,
+        'page' => NULL,
+      ),
       'path' => $path,
       'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-block-admin-options',
     ),
 
   );
