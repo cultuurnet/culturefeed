@@ -17,11 +17,10 @@
     <p><?php print $nick; ?> is momenteel het enige lid van pagina <?php print $title ?>.</p>
   <?php endif; ?>
 
-  <p>Ben jij een collega van <?php print $nick; ?> bij <?php print $title ?>?</p>
-
   <?php if ($is_member): ?>
   <p>Je bent lid van <?php print $title ?></p>
   <?php else: ?>
+  <p>Ben jij een collega van <?php print $nick; ?> bij <?php print $title ?>?</p>
   <a href="<?php print $become_member_url; ?>">Word lid</a>
   <?php endif; ?>
 
