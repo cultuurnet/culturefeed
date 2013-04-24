@@ -39,16 +39,16 @@ function culturefeed_search_ui_menu() {
       'type' => MENU_CALLBACK,
     );
 
-    // Autocomplete path for suggestions.
-    $items['autocomplete/culturefeed/suggestions'] = array(
-      'title' => 'Culturefeed suggestions autocomplete',
-      'page callback' => 'culturefeed_search_ui_suggestions_autocomplete_page',
-      'access arguments' => array('access content'),
-      'type' => MENU_CALLBACK,
-      'file' => 'includes/pages.inc',
-    );
-
   }
+
+  // Autocomplete path for suggestions.
+  $items['autocomplete/culturefeed/suggestions'] = array(
+    'title' => 'Culturefeed suggestions autocomplete',
+    'page callback' => 'culturefeed_search_ui_suggestions_autocomplete_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
 
   return $items;
 }

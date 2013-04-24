@@ -42,6 +42,22 @@ interface CultureFeed_Pages {
    *   Params to create the page.
    */
   public function addPage(array $params);
+  
+  /**
+   * Update a page.
+   * @param Integer $id
+   *   The page ID.
+   * @param array $params
+   *   Params to update the page.
+   */
+  public function updatePage($id, array $params);
+  
+  /**
+   * Remove a page.
+   * @param Integer $id
+   *   The page ID of the page to remove (set invisible).
+   */
+  public function removePage($id);
 
   /**
    * Add image to an existing page.

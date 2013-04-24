@@ -113,9 +113,12 @@ function culturefeed_ui_block_profile_box_view() {
     try {
 
       $cf_account = DrupalCultureFeed::getLoggedInUser();
+      $uid = culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
       $culture_feed_profile_name = array(
         'id' => $cf_account->id,
-        'nick' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+        'uid' => $uid,
+        'nick' => $cf_account->nick,
+        'link' => l($cf_account->nick, 'user/' . $uid),
       );
       drupal_alter('culturefeed_ui_profile_box_nick', $culture_feed_profile_name);
 

@@ -14,17 +14,24 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
 
   /**
    * Status code when a page was successfully created
-   * Invalid codes ARE [MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
+   * Invalid codes: [MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
    * @var string
    */
   const CODE_PAGE_CREATED = 'PAGE_CREATED';
 
   /**
    * Status code when an image upload was successful
-   * Invalid codes ARE [ACTION_FAILED]
+   * Invalid codes: [ACTION_FAILED]
    * @var string
    */
   const IMAGE_UPLOADED = 'IMAGE_UPLOADED';
+  
+  /**
+   * Status code when a page was successfully updated.
+   * Invalid codes: [ACCESS_DENIED, MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
+   * @var string
+   */
+  const PAGE_MODIFIED = 'PAGE_MODIFIED';
 
   /**
    * CultureFeed object to make CultureFeed core requests.
@@ -80,6 +87,33 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     
     return $xmlElement->xpath_str('uid');
   
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Pages::updatePage()
+   */
+  public function updatePage($id, array $params) {
+    
+    foreach ($params as $key => $value) {
+      if (is_string($value) && $value === "") {
+        unset($params[$key]);
+      }
+    }
+    
+    $result = $this->oauth_client->authenticatedPost('page/' . $id, $params);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::PAGE_MODIFIED);
+    
+    return $xmlElement->xpath_str('uid');
+  
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Pages::removePage()
+   */
+  public function removePage($id) {
+    return $this->updatePage($id, array('visible' => "false"));
   }
   
   /**

@@ -41,6 +41,15 @@ function culturefeed_pages_get_active_page() {
 }
 
 /**
+ * Get the current page ID of the loggedIn user.
+ * 
+ * @return String $id
+ */
+function culturefeed_pages_get_active_page_id() {
+  return isset($_SESSION['culturefeed']['page']) ? $_SESSION['culturefeed']['page']->getId() : "";
+}
+
+/**
  * Sets the current page of the loggedIn user.
  */
 function culturefeed_pages_set_active_page(CultureFeed_Cdb_Item_Page $page) {

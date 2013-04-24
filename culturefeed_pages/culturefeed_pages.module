@@ -82,6 +82,8 @@ function culturefeed_pages_theme() {
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
+        'is_page_admin' => FALSE,
+        'logged_in_as_page_admin' => FALSE,
         'account' => NULL,
         'page' => NULL,
       ),
@@ -135,10 +137,23 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/edit'] = array(
-    'title' => 'Edit',
+    'title callback' => 'culturefeed_pages_detail_title',
+    'title arguments' => array(1, 'edit'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_edit_page_form', 1),
-    'access arguments' => array('edit culturefeed page'),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/configuration'] = array(
+    'title callback' => 'culturefeed_pages_detail_title',
+    'title arguments' => array(1, 'edit'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_configuration_page_form', 1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -198,7 +213,12 @@ function culturefeed_pages_block_info() {
   );
 
   $blocks['pages-admin-options'] = array(
-    'info' => t("Page administration"),
+    'info' => t("Page options"),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  $blocks['pages-admin-menu'] = array(
+    'info' => t("Page admin menu"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
@@ -226,6 +246,10 @@ function culturefeed_pages_block_view($delta) {
 
     case 'pages-admin-options':
       return culturefeed_pages_block_pages_admin_options();
+    break;
+
+    case 'pages-admin-menu':
+      return culturefeed_pages_block_pages_admin_menu();
     break;
 
   }
@@ -307,8 +331,44 @@ function culturefeed_pages_join_title() {
 /**
  * Title callback for the 'page' detail page.
  */
-function culturefeed_pages_detail_title($page) {
-  return $page->getName();
+function culturefeed_pages_detail_title($page, $op = 'view') {
+  if ($op == 'view') {
+    return $page->getName();
+  }
+  else {
+    $title = $page->getName();
+    
+    $address = $page->getAddress();
+    if (!empty($address)) {
+      $title .= ' - ' . $address->getCity();
+    }
+    
+    return $title;
+  }
+}
+
+/**
+ * Access callback to indicate whether the current has can administer
+ * the page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_edit_page_access($page) {
+
+  if (!user_access('edit culturefeed page')) {
+    return FALSE;
+  }
+  
+  $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  
+  // Calculate the number of pages where the current user is ADMIN.
+  if ($cultureFeedUser->adminPagesCount > 0) {
+    $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+  }
+  
+  // Check the current page against the current active admin page.
+  return in_array($page->getId(), array_keys($adminMemberships))
+     && $page->getId() === culturefeed_pages_get_active_page_id();
+  
 }
 
 /**
@@ -316,10 +376,14 @@ function culturefeed_pages_detail_title($page) {
  * @param unknown_type $culture_feed_profile_name
  */
 function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_profile_name) {
+  
   $active_page = culturefeed_pages_get_active_page();
-  $nick = $culture_feed_profile_name['nick'];
+  
   if (isset($active_page)) {
-    $culture_feed_profile_name['nick'] = l($nick . ' van ' . $active_page->getName(), 
-        'user/' . culturefeed_get_uid_for_cf_uid($culture_feed_profile_name['id'], $nick));
+    // Extend the current nickname.
+    $nick = $culture_feed_profile_name['nick'] . ' van ' . $active_page->getName();
+    // Create a new link for the same properties.
+    $culture_feed_profile_name['link'] = l($nick, 'user/' . $culture_feed_profile_name['uid']);
   }
+  
 }

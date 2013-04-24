@@ -180,6 +180,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
 }
 
 /**
+ * Preprocess the variables for the page administration options.
+ * @see culturefeed-pages-block-admin-options.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$variables) {
+  $variables['switch_link'] = l($variables['page']->getName(), 'pages/switch/' . $variables['page']->getId(), array('attributes' => array('class' => array('button'))));
+}
+
+/**
  * Preprocess the variables for the page administration block detail.
  * @see culturefeed-pages-page-menu-item.tpl.php
  */

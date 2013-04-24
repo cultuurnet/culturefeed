@@ -378,7 +378,12 @@ function culturefeed_search_get_flandersregion_categories($first_level = TRUE, $
 
   // Add extra conditions.
   foreach ($conditions as $field => $value) {
-    $query->condition($field, $value);
+    if (is_array($value)) {
+      $query->condition($field, $value, 'IN');
+    }
+    else {
+      $query->condition($field, $value);
+    }
   }
 
   $result = $query->execute();

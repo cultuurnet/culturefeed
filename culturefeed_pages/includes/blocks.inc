@@ -95,13 +95,74 @@ function culturefeed_pages_block_pages_admin_options() {
     return;
   }
   
+  // This refers very much to the access callback, but we offer all 
+  // components to the templates.
+  // @see culturefeed_pages_edit_page_access()
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
   
   // Calculate the number of pages where the current user is ADMIN.
+  $isPageAdmin = FALSE;
+  $loggedInAsPageAdmin = FALSE;
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+  
+    // Check the current page against the current active admin page.
+    $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
+    $loggedInAsPageAdmin = $page->getId() === culturefeed_pages_get_active_page_id();
   }
-  dsm($adminMemberships, 'user');
+  
+  // Page admins are allowed to administer the page.
+  if ($isPageAdmin && $loggedInAsPageAdmin) {
+    $admin_menu = _culturefeed_pages_block_pages_admin_menu($page);
+  }
+  // If the current user is admin of the current page, we ask the 
+  // user if he wants to login as the page administrator.
+  // elseif ($isPageAdmin) {}
+  // else {}
+  
+  $block = array();
+  $block['subject'] = "Pagina beheren";
+  $block['content'] = array(
+    '#theme' => 'culturefeed_pages_block_admin_options',
+    '#admin_menu' => isset($admin_menu) ? $admin_menu : "",
+    '#account' => $cultureFeedUser,
+    '#page' => $page,
+    '#is_page_admin' => $isPageAdmin,
+    '#logged_in_as_page_admin' => $loggedInAsPageAdmin,
+  );
+  
+  return $block;
+  
+}
+
+/**
+ * Show the administration menu for the current page.
+ */
+function culturefeed_pages_block_pages_admin_menu() {
+
+  $page = menu_get_object('culturefeed_pages_page', 1);
+  
+  if (!$page) {
+    return;
+  }
+  
+  if (!culturefeed_pages_edit_page_access($page)) {
+    return;
+  }
+  
+  $block = array();
+  $block['subject'] = "Pagina beheren";
+  $block['content'] = _culturefeed_pages_block_pages_admin_menu($page);
+  
+  return $block;
+  
+}
+
+/**
+ * Helper function to output the admin menu for a page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $page) {
 
   $menu = array(
     array(
@@ -158,16 +219,8 @@ function culturefeed_pages_block_pages_admin_options() {
   }
   
   $admin_menu = theme('item_list', array('items' => $items));
-
-  $block = array();
-  $block['subject'] = "Pagina beheren";
-  $block['content'] = array(
-    '#theme' => 'culturefeed_pages_block_admin_options',
-    '#admin_menu' => $admin_menu,
-    '#account' => $cultureFeedUser,
-    '#page' => $page,
-  );
   
-  return $block;
+  return $admin_menu;
+  
 }
 
