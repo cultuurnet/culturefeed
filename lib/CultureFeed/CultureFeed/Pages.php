@@ -58,6 +58,13 @@ interface CultureFeed_Pages {
    *   The page ID of the page to remove (set invisible).
    */
   public function removePage($id);
+  
+  /**
+   * Publish a page.
+   * @param Integer $id
+   *   The page ID of the page to publish (set visible).
+   */
+  public function publishPage($id);
 
   /**
    * Add image to an existing page.

@@ -100,9 +100,11 @@ function culturefeed_pages_block_pages_admin_options() {
   // @see culturefeed_pages_edit_page_access()
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
   
-  // Calculate the number of pages where the current user is ADMIN.
+  $isVisible = $page->isVisible();
   $isPageAdmin = FALSE;
   $loggedInAsPageAdmin = FALSE;
+  
+  // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   
@@ -117,8 +119,13 @@ function culturefeed_pages_block_pages_admin_options() {
   }
   // If the current user is admin of the current page, we ask the 
   // user if he wants to login as the page administrator.
-  // elseif ($isPageAdmin) {}
-  // else {}
+  elseif ($isPageAdmin) {
+    
+  }
+  else {
+    return;
+  }
+  //dsm("visible: " . $isVisible . " | PageAdmin: " . $isPageAdmin . " | LoggedInAsAdmin: " . $loggedInAsPageAdmin);
   
   $block = array();
   $block['subject'] = "Pagina beheren";

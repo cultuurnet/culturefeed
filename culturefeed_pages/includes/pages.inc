@@ -111,11 +111,24 @@ function culturefeed_pages_detail_page($page) {
   );
 
   menu_set_active_trail($active_trail);
+  
+  $isPageAdmin = FALSE;
+  $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+  $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
 
-  return array(
-    '#theme' => 'culturefeed_page',
-    '#page' => $page,
-  );
+  if (!$page->isVisible() && !$isPageAdmin) {
+    return array(
+      '#theme' => 'culturefeed_page_invisible',
+      '#page' => $page,
+    );
+  }
+  else {
+    return array(
+      '#theme' => 'culturefeed_page',
+      '#page' => $page,
+    );
+  }
 
 }
 
@@ -641,11 +654,44 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
     '#type' => 'submit',
     '#value' => 'Opslaan',
   );
+    
+  if ($page->isVisible()) {
+    $form['remove-link'] = array(
+      '#type' => 'markup',
+      '#markup' => l('Pagina verwijderen', 
+          'pages/' . $page->getId() . '/remove', 
+          array(
+            'attributes' => array(
+              'role' => 'button',
+              'data-toggle' => 'modal', 
+              'data-target' => '#page_confirm',
+            ),
+          )
+      ),
+    );
+  }
+  else {
+    $form['publish-link'] = array(
+      '#type' => 'markup',
+      '#markup' => l('Pagina opnieuw publiceren',
+        'pages/' . $page->getId() . '/publish',
+        array(
+          'attributes' => array(
+            'role' => 'button',
+            'data-toggle' => 'modal',
+            'data-target' => '#page_confirm',
+          ),
+        )
+      ),
+    );
+  }
   
-  $form['remove-link'] = array(
-    '#type' => 'link',
-    '#href' => 'pages/' . $page->getId() . '/remove',
-    '#title' => 'Pagina verwijderen',
+  $form['page_confirm'] = array(
+    '#type' => 'markup',
+    '#markup' => '
+      <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body"></div>
+      </div>',
   );
   
   return $form;
@@ -659,4 +705,156 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 function culturefeed_pages_switch_page(CultureFeed_Cdb_Item_Page $page) {
   culturefeed_pages_set_active_page($page);
   drupal_goto(culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
+}
+
+/**
+ * Page callback to add a confirimation to the 
+ * @param unknown_type $page
+ */
+function culturefeed_pages_remove_page_confirm($page) {
+  
+  $form = drupal_get_form('culturefeed_pages_remove_page_confirm_form', $page);
+  $output = drupal_render($form);
+  
+  print $output; 
+  exit();
+}
+
+/**
+ * Form confirmation callback to show a form to confirm the removal of a page.
+ */
+function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page) {
+
+  $form_state['page_id'] = $page->getId();
+  $form_state['page'] = $page;
+  
+  $form['wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="confirm-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $form['wrapper']['page_remove_confirm'] = array(
+    '#type' => 'markup',
+    '#markup' => '
+      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden je al je contactgegevens niet verwijderd.</p>
+      <p>Leden van deze pagina en activiteiten in naam van deze pagina worden niet verwijderd.</p>
+      <p><strong>Ben je zeker?</strong></p>',
+  );
+  
+  $form['wrapper']['remove'] = array(
+    '#type' => 'submit',
+    '#value' => 'Verwijder',
+    '#attributes' => array('class' => array('button-remove')),
+  );
+
+  $form['wrapper']['decline'] = array(
+    '#type' => 'button',
+    '#value' => 'Annuleer',
+    '#attributes' => array(
+      'data-dismiss' => 'modal',
+      'aria-hidden' => 'true',
+      'class' => array('button-decline close')
+    ),
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * Function to actually delete the page.
+ */
+function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) {
+  
+  $page = $form_state['page'];
+
+  // Send request to remove a page.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $uid = $cf_pages->removePage($page->getId());
+    drupal_set_message(format_string('De pagina "@page" is verwijderd.', array('@page' => $page->getName())));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van de pagina.');
+  }
+  
+  $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
+  
+}
+
+/**
+ * Page callback to add a confirimation to the
+ * @param unknown_type $page
+ */
+function culturefeed_pages_publish_page_confirm($page) {
+
+  $form = drupal_get_form('culturefeed_pages_publish_page_confirm_form', $page);
+  $output = drupal_render($form);
+
+  print $output;
+  exit();
+}
+
+/**
+ * Form confirmation callback to show a form to confirm the publishing of a page.
+ */
+function culturefeed_pages_publish_page_confirm_form($form, &$form_state, $page) {
+
+  $form_state['page_id'] = $page->getId();
+  $form_state['page'] = $page;
+  
+  $form['wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="confirm-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $form['wrapper']['page_confirm'] = array(
+    '#type' => 'markup',
+    '#markup' => '
+      <p>Door een pagina te publiceren, zal de pagina opnieuw verschijnen in de zoekresultaten.</p>
+      <p>Leden van deze pagina en activiteiten in naam van deze pagina worden opnieuw in het leven geroepen.</p>
+      <p><strong>Ben je zeker?</strong></p>',
+  );
+  
+  $form['wrapper']['publish'] = array(
+    '#type' => 'submit',
+    '#value' => 'Publiceer',
+    '#attributes' => array('class' => array('button-publish')),
+  );
+
+  $form['wrapper']['decline'] = array(
+    '#type' => 'button',
+    '#value' => 'Annuleer',
+    '#attributes' => array(
+      'data-dismiss' => 'modal',
+      'aria-hidden' => 'true',
+      'class' => array('button-decline close')
+    ),
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * Function to actually publish the page.
+ */
+function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state) {
+  
+  $page = $form_state['page'];
+
+  // Send request to (re-)publish a page.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $uid = $cf_pages->publishPage($page->getId());
+    drupal_set_message(format_string('De pagina "@page" is hersteld.', array('@page' => $page->getName())));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', 'Er is een fout opgetreden tijdens het herstellen van de pagina.');
+  }
+  
+  $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
+  
 }

@@ -62,6 +62,13 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-page',
     ),
 
+    'culturefeed_page_invisible' => array(
+      'variables' => array('page' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-page-invisible',
+    ),
+
     'culturefeed_pages_fellow_members_block' => array(
       'variables' => array(
         'account' => NULL,
@@ -141,6 +148,28 @@ function culturefeed_pages_menu() {
     'title arguments' => array(1, 'edit'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_edit_page_form', 1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/remove'] = array(
+    'title callback' => FALSE,
+    'title' => 'Pagina verwijderen',
+    'page callback' => 'culturefeed_pages_remove_page_confirm',
+    'page arguments' => array(1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/publish'] = array(
+    'title callback' => FALSE,
+    'title' => 'Pagina verwijderen',
+    'page callback' => 'culturefeed_pages_publish_page_confirm',
+    'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
@@ -357,7 +386,7 @@ function culturefeed_pages_edit_page_access($page) {
   if (!user_access('edit culturefeed page')) {
     return FALSE;
   }
-  
+
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
   
   // Calculate the number of pages where the current user is ADMIN.
@@ -367,8 +396,17 @@ function culturefeed_pages_edit_page_access($page) {
   
   // Check the current page against the current active admin page.
   return in_array($page->getId(), array_keys($adminMemberships))
-     && $page->getId() === culturefeed_pages_get_active_page_id();
+      && $page->getId() === culturefeed_pages_get_active_page_id()
+      && culturefeed_pages_view_page_access();
   
+}
+
+/**
+ * Access callback to indicate whether the current user can see the page
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_view_page_access($page) {
+  return $page->isVisible();
 }
 
 /**

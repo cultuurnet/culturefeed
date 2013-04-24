@@ -115,6 +115,14 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   public function removePage($id) {
     return $this->updatePage($id, array('visible' => "false"));
   }
+
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Pages::publishPage()
+   */
+  public function publishPage($id) {
+    return $this->updatePage($id, array('visible' => "true"));
+  }
   
   /**
    * Implements CultureFeed_Pages::addImage().

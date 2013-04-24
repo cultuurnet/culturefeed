@@ -140,6 +140,18 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 }
 
 /**
+ * Preprocess the variables for the page detail when invisible.
+ * @see culturefeed-page-invisible.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_page_invisible(&$variables) {
+  
+  $page = $variables['page'];
+
+  $variables['title'] = $page->getName();
+  
+}
+
+/**
  * Theme 1 fellow members block.
  * @param $variables
  */

@@ -153,7 +153,12 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
   $picture = $variables['account']->depiction . '?maxwidth=20&maxheight=20&crop=auto';
   $variables['picture'] = theme('image', array('path' => $picture));
   
-  $variables['nick'] = $variables['profile_name']['nick'];
+  if (isset($variables['profile_name']['link'])) {
+    $variables['nick'] = $variables['profile_name']['link'];
+  }
+  else {
+    $variables['nick'] = $variables['profile_name']['nick'];
+  }
 
   uasort($variables['main_items'], 'drupal_sort_weight');
 
