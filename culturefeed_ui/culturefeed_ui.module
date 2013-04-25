@@ -380,7 +380,7 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
   );
 
   $items['settings'] = array(
-    'data' => l('Instellingen', 'culturefeed/profile/edit'),
+    'data' => l('Beheer profiel', 'culturefeed/profile/edit'),
     'class' => 'settings',
     'weight' => 19,
   );
