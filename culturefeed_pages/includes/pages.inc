@@ -617,7 +617,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
  */
 function culturefeed_pages_configuration_page_form($form, & $form_state, CultureFeed_Cdb_Item_Page $page){
 
-  dvm($page);
+  //dvm($page);
   $form_state['page'] = $page;
 
   // Link to the detail page.
