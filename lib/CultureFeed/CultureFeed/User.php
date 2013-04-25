@@ -307,9 +307,11 @@ class CultureFeed_User {
   public function getMembershipsByRole($role = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
 
     $membershipsByRole = array();
-    foreach ($this->pageMemberships as $membership) {
-      if ($membership->role == $role) {
-        $membershipsByRole[$membership->page->getId()] = $membership;
+    if (!empty($this->pageMemberships)) {
+      foreach ($this->pageMemberships as $membership) {
+        if ($membership->role == $role) {
+          $membershipsByRole[$membership->page->getId()] = $membership;
+        }
       }
     }
     

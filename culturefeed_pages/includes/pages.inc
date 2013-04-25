@@ -515,12 +515,6 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // Contact information.
   $form['contactInfoTel']['#default_value'] = $page->getTelephone();
   $form['contactInfoEmail']['#default_value'] = $page->getEmail();
-  $form['contactVisible'] = array(
-    '#type' => 'checkbox',
-    '#title' => 'Toon contactinfo op openbare pagina',
-    '#default_value' => $page->getContactVisibility(),
-    '#weight' => 14,
-  );
   
   // Websites list.
   $links = $page->getLinks();
@@ -623,6 +617,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
  */
 function culturefeed_pages_configuration_page_form($form, & $form_state, CultureFeed_Cdb_Item_Page $page){
 
+  dvm($page);
   $form_state['page'] = $page;
 
   // Link to the detail page.
@@ -726,7 +721,7 @@ function culturefeed_pages_switch_page(CultureFeed_Cdb_Item_Page $page) {
 
 /**
  * Page callback to add a confirimation to the 
- * @param unknown_type $page
+ * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_remove_page_confirm($page) {
   
@@ -801,7 +796,7 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
 
 /**
  * Page callback to add a confirimation to the
- * @param unknown_type $page
+ * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_publish_page_confirm($page) {
 

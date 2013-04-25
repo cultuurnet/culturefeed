@@ -485,6 +485,8 @@ function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_
   if (isset($active_page)) {
     // Extend the current nickname.
     $nick = $culture_feed_profile_name['nick'] . ' van ' . $active_page->getName();
+    $culture_feed_profile_name['nick'] = $nick;
+    
     // Create a new link for the same properties.
     $culture_feed_profile_name['link'] = l($nick, 'user/' . $culture_feed_profile_name['uid']);
   }
