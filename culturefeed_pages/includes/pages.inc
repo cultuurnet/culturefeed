@@ -151,12 +151,11 @@ function culturefeed_pages_page_join($request_type, $page) {
     
     // If it's your first membership and you don't have an active page yet, 
     // also login as that page.
-    $has_memberships = count($cultureFeedUser->pageMemberships);
-    if ($has_memberships) {
-      if (!culturefeed_pages_has_active_page()) {
-        
-      }
+    $memberships = DrupalCultureFeed::getLoggedInUser()->pageMemberships;
+    if (count($memberships) > 0 && !culturefeed_pages_has_active_page()) {
+      culturefeed_pages_set_active_page($page);
     }
+    
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -726,8 +725,7 @@ function culturefeed_pages_remove_page_confirm($page) {
   $form = drupal_get_form('culturefeed_pages_remove_page_confirm_form', $page);
   $output = drupal_render($form);
   
-  print $output; 
-  exit();
+  print $output;
 }
 
 /**
