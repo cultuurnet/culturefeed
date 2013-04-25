@@ -148,6 +148,15 @@ function culturefeed_pages_page_join($request_type, $page) {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
     $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
+    
+    // If it's your first membership and you don't have an active page yet, 
+    // also login as that page.
+    $has_memberships = count($cultureFeedUser->pageMemberships);
+    if ($has_memberships) {
+      if (!culturefeed_pages_has_active_page()) {
+        
+      }
+    }
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -671,7 +680,8 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
     );
   }
   else {
-    $form['publish-link'] = array(
+    // @todo We can use this to quickly reinvoke the status.
+    /*$form['publish-link'] = array(
       '#type' => 'markup',
       '#markup' => l('Pagina opnieuw publiceren',
         'pages/' . $page->getId() . '/publish',
@@ -683,7 +693,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
           ),
         )
       ),
-    );
+    );*/
   }
   
   $form['page_confirm'] = array(

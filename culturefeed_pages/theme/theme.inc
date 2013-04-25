@@ -49,7 +49,7 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
   drupal_add_library('system', 'drupal.ajax');
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $query = array('destination' => trim(culturefeed_search_detail_url('page', $page->getId(), $page->getName())), '/');
+    $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
     $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
 

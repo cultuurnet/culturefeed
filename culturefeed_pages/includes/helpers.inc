@@ -32,6 +32,15 @@ function culturefeed_pages_set_pages($pages) {
 }
 
 /**
+ * Checks if the loggedIn user has an active page (yet).
+ * 
+ * @return Boolean hasActivePage.
+ */
+function culturefeed_pages_has_active_page() {
+  return isset($_SESSION['culturefeed']['page']);
+}
+
+/**
  * Get the current page of the loggedIn user.
  * 
  * @return CultureFeed_Cdb_Item_Page $page
