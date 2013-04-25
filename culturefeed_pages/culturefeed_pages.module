@@ -7,6 +7,11 @@
 module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
 
 /**
+ * Default actortype.
+ */
+define('CULTUREFEED_ACTORTYPE_ORGANISATION', '8.11.0.0.0');
+
+/**
  * Implements hook_permission().
  */
 function culturefeed_pages_permission() {

@@ -247,6 +247,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#weight' => -5,
   );
 
+  $form['categoryId'] = array(
+    '#type' => 'select',
+    '#title' => 'Type',
+    '#options' => culturefeed_search_get_actortype_categories(),
+    '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
+    '#weight' => -4,
+  );
+
   $form['description'] = array(
     '#type' => 'textarea',
     '#title' => 'Beschrijving',

@@ -341,6 +341,13 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
 }
 
 /**
+ * Get all available actortypes.
+ */
+function culturefeed_search_get_actortype_categories() {
+  culturefeed_search_get_categories_by_domain('actortype');
+}
+
+/**
  * Retrieves a list of categories for the educationfield domain.
  * @param $conditions
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
