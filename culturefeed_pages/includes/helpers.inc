@@ -63,4 +63,11 @@ function culturefeed_pages_get_active_page_id() {
  */
 function culturefeed_pages_set_active_page(CultureFeed_Cdb_Item_Page $page) {
   $_SESSION['culturefeed']['page'] = $page;
+  
+  $account = DrupalCultureFeed::getLoggedInAccount();
+  $account->data = array(
+    'culturefeed_pages_id' => $page->getId(),
+  );
+  user_save($account);
+  
 }
