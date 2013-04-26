@@ -69,6 +69,9 @@ function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
   $variables['more_text'] = 'Meer info';
   $variables['link'] = culturefeed_search_detail_url('page', $page->getId(), $page->getName());
 
+  $variables['member_count'] = $variables['item']->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER);
+  $variables['follower_count'] = $variables['item']->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW);
+
 }
 
 /**

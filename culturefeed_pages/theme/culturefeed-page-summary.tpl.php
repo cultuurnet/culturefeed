@@ -9,20 +9,17 @@
 
   <h2><a href="<?print $link ?>"><?print $title; ?></a></h2>
 
-  <?php
-  /*
   <div class="activity-wrapper">
+    <?php if ($member_count > 0): ?>
     <div class="members-wrapper">
-      <?php if ($members > 0): ?>
-        <span class="members"><?php print $members; ?></span> leden
+        <?php print format_plural($member_count, '<span class="members">@count</span> lid', '<span class="members">@count</span> leden'); ?>
         <a href="<?php print $link ?>#members">Bekijk leden</a>
     </div>
-    <?php if ($followers > 0): ?>
-      <div class="count-followers"><?php print format_plural($recommend_count, '<span>@count</span> volgers', '<span>@count</span> volger'); ?></div>
+    <?php endif; ?>
+    <?php if ($follower_count > 0): ?>
+      <div class="count-followers"><?php print format_plural($follower_count, '<span>@count</span> volger', '<span>@count</span> volgers'); ?></div>
     <?php endif; ?>
   </div>
-  */
-  ?>
 
   <div class="image">
     <?php if (!empty($thumbnail)): ?>
