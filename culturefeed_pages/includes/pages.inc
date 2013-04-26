@@ -639,26 +639,28 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
     '#type' => 'hidden',
     '#value' => $page->getId(),
   );
-  
-  $form['follow-page'] = array(
+
+  $permissions = $page->getPermissions();
+
+  $form['allow_followers'] = array(
     '#type' => 'checkbox',
     '#title' => 'mijn pagina volgen',
     '#description' => 'Op die manier kunnen gebruikers op de hoogte blijven van alle updates over deze pagina.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowFollowers),
   );
   
-  $form['become-member'] = array(
+  $form['allow_members'] = array(
     '#type' => 'checkbox',
     '#title' => 'lid worden van mijn pagina',
     '#description' => 'Op die manier wordt je pagina ook toegankelijk via de profielen, beoordelingen en reacties van alle collega\'s die actief zijn op deze site.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowMembers),
   );
   
-  $form['place-reviews'] = array(
+  $form['allow_comments'] = array(
     '#type' => 'checkbox',
     '#title' => 'beoordelingen schrijven over mijn activiteiten',
     '#description' => 'Enkel voor organisaties die activiteiten organiseren en ingevoerd hebben via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowComments),
   );
 
   $form['submit'] = array(
@@ -707,6 +709,32 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   );
   
   return $form;
+  
+}
+
+/**
+ * Submit handler to save the permissions of the configuration page.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_configuration_page_form_submit($form, &$form_state) {
+
+  $params = array(
+    'allowFollowers' => empty($form_state['values']['allow_followers']) ? "false" : "true",
+    'allowMembers' => empty($form_state['values']['allow_members']) ? "false" : "true",
+    'allowComments' => empty($form_state['values']['allow_comments']) ? "false" : "true",
+  );
+  
+  // Send request to change permissions for a page.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $uid = $cf_pages->changePermissions($form_state['values']['pageId'], $params);
+    drupal_set_message(format_string('De pagina instellingen zijn bewaard.'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', 'Er is een fout opgetreden tijdens het bewaren van de pagina instellingen.');
+  }
   
 }
 

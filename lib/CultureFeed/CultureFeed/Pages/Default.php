@@ -135,6 +135,18 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     
     return $xmlElement->xpath_str('uid');
   }
+  
+  /**
+   * (non-PHPdoc)
+   * @see CultureFeed_Pages::changePermissions()
+   */ 
+  public function changePermissions($id, array $params) {
+
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/permissions', $params, TRUE, FALSE);
+    $xmlElement = $this->validateResult($result, $id, 'uid');
+    
+    return $xmlElement->xpath_str('uid');
+  }
 
   /**
    * (non-PHPdoc)
@@ -223,6 +235,8 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    *   Result from the request.
    * @param string $valid_status_code
    *   Status code if this is a valid request.
+   * @param string $status_xml_tag
+   *   Xml tag where the status code can be checked.
    * @return CultureFeed_SimpleXMLElement The parsed xml.
    *
    * @throws CultureFeed_ParseException
@@ -230,8 +244,8 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    * @throws CultureFeed_InvalidCodeException
    *   If no valid result status code.
    */
-  private function validateResult($result, $valid_status_code) {
-
+  private function validateResult($result, $valid_status_code, $status_xml_tag = 'code') {
+    
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -239,7 +253,8 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
       throw new CultureFeed_ParseException($result);
     }
 
-    $status_code = $xml->xpath_str('code');
+    $status_code = $xml->xpath_str($status_xml_tag);
+    
     if ($status_code == $valid_status_code) {
       return $xml;
     }

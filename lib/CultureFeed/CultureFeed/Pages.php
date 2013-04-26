@@ -75,4 +75,13 @@ interface CultureFeed_Pages {
    */
   public function addImage($id, array $params);
   
+  /**
+   * Change the permissions for a page.
+   * @param Integer $id
+   *   The page ID of the page to remove (set invisible).
+   * @param array $params
+   *   Params of permissions keys to set. E.g. allowMembers, allowComments, ...
+   */
+  public function changePermissions($id, array $params);
+  
 }

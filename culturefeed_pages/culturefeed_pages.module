@@ -435,7 +435,10 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
     
     $address = $page->getAddress();
     if (!empty($address)) {
-      $title .= ' - ' . $address->getCity();
+      $city = $address->getCity();
+      if (!empty($city)) {
+        $title .= ' - ' . $address->getCity();
+      }
     }
     
     return $title;
