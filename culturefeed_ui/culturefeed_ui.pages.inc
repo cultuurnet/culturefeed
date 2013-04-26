@@ -754,7 +754,7 @@ function culturefeed_ui_page_users_for_content_activity($activity_type, $content
 
   switch ($activity_type) {
     case CultureFeed_Activity::TYPE_LIKE:
-      $title = 'Zijn vinden dit leuk';
+      $title = 'Zij vinden dit leuk';
       $intro = 'Zij vinden <strong>' . l($object_title, $object_link['path']) . '</strong> leuk.';
       break;
     case CultureFeed_Activity::TYPE_IK_GA:
