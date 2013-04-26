@@ -50,7 +50,13 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       $query->unexpired = TRUE;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
-        $promotions = $result->objects;
+        $objects = array();
+        foreach( $result->objects as $k => $v ) {
+          if( $v->cashInState == "POSSIBLE" ) {
+            $objects[] = $v;
+          }
+        }
+        $promotions = $objects;
       }
     }
     catch (Exception $e) {
@@ -67,7 +73,13 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
-        $coming_promotions = $result->objects;
+        $objects = array();
+        foreach( $result->objects as $k => $v ) {
+          if( $v->cashingPeriodBegin <= time() ) {
+            $objects[] = $v;
+          }
+        }
+        $coming_promotions = $objects;
       }
     }
     catch (Exception $e) {
