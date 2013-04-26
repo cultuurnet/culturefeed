@@ -167,6 +167,9 @@ function culturefeed_search_ui_block_date_facet() {
   $build = array();
 
   $facets = $facetingComponent->getFacets();
+  if (!isset($facets['datetype'])) {
+    return;
+  }
   $facet = $facets['datetype'];
 
   // Only this items should be shown.
@@ -196,7 +199,7 @@ function culturefeed_search_ui_block_date_facet() {
       '#items' => $items,
     );
 
-    $build[] = drupal_get_form('culturefeed_search_ui_where_facet_form');
+    $build[] = drupal_get_form('culturefeed_search_ui_date_facet_form');
 
     return array(
       'subject' => 'When',
@@ -207,9 +210,9 @@ function culturefeed_search_ui_block_date_facet() {
 }
 
 /**
- * Show the additional form for the where facet.
+ * Show the additional form for the date facet.
  */
-function culturefeed_search_ui_where_facet_form() {
+function culturefeed_search_ui_date_facet_form() {
 
   $form = array();
 
@@ -232,9 +235,9 @@ function culturefeed_search_ui_where_facet_form() {
 }
 
 /**
- * Submit the where facet form.
+ * Submit the date facet form.
  */
-function culturefeed_search_ui_where_facet_form_submit($form, &$form_state) {
+function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   if (!empty($form_state['values']['date_range'])) {
@@ -244,6 +247,86 @@ function culturefeed_search_ui_where_facet_form_submit($form, &$form_state) {
   $form_state['redirect'] = array(
     $_GET['q'],
     array('query' => $query)
+  );
+
+}
+
+/**
+ * Block callback to show the date facet.
+ */
+function culturefeed_search_ui_block_city_facet() {
+
+  // FacetingComponent is set in the page callback.
+  global $facetingComponent;
+  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $build = array();
+
+  $facets = $facetingComponent->getFacets();
+  // Check if a city or region facet was run.
+  if (!isset($facets['city']) && !isset($facets['flandersregion'])) {
+    return;
+  }
+
+  // Only this items should be shown.
+
+  //$items = $facet->getResult()->getItems();
+
+  $build = array();
+  /*$build[] = array(
+    '#theme' => 'culturefeed_search_facet',
+    '#facet' => $facet,
+    '#items' => $items,
+  );*/
+
+  $build[] = drupal_get_form('culturefeed_search_ui_city_facet_form');
+
+  return array(
+    'subject' => 'Where',
+    'content' => $build,
+  );
+
+}
+
+/**
+ * Show the additional form for the where facet.
+ */
+function culturefeed_search_ui_city_facet_form() {
+
+  $form = array();
+
+  $form['location'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Waar',
+    '#title_display' => 'invisible',
+    '#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Selecteer',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit the where facet form.
+ */
+function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  if (!empty($form_state['values']['location'])) {
+    $query['location'] = $form_state['values']['location'];
+  }
+
+  $form_state['redirect'] = array(
+      $_GET['q'],
+      array('query' => $query)
   );
 
 }

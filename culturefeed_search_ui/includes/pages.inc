@@ -71,3 +71,51 @@ function culturefeed_search_ui_suggestions_autocomplete_page($search_string) {
   drupal_json_output($matches);
 
 }
+
+/**
+ * Page callback for the region suggestions autocomplete.
+ */
+function culturefeed_pages_region_suggestion_autocomplete_page($search_string) {
+
+  $matches = array();
+
+  if ($search_string) {
+
+    try {
+
+      // Get the list of suggestions from service.
+      $suggestions = culturefeed_search_get_flandersregion_suggestions($search_string);
+      foreach ($suggestions as $key => $suggestion) {
+        $matches[$key] = check_plain($suggestion);
+      }
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_search', $e);
+    }
+
+  }
+
+  drupal_json_output($matches);
+
+}
+
+/**
+ * Page callback for the city suggestions autocomplete.
+ */
+function culturefeed_search_ui_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE) {
+
+  $matches = array();
+
+  if ($search_string) {
+
+    // Get the list of suggestions from service.
+    $suggestions = culturefeed_search_get_city_suggestions($search_string, $include_regions);
+    foreach ($suggestions as $key => $suggestion) {
+      $matches[$key] = check_plain($suggestion);
+    }
+
+  }
+
+  drupal_json_output($matches);
+
+}

@@ -6,3 +6,5 @@ core = 7.x
 
 dependencies[] = culturefeed_search
 dependencies[] = culturefeed
+
+files[] = lib/Drupal/CultureFeedPagesSearchPage.php

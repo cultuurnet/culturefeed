@@ -368,20 +368,24 @@ function culturefeed_search_get_educationlevel_categories($conditions = array())
 /**
  * Retrieves a list of categories for the flandersregion domain.
  *
- * @param Boolean $first_level
- *   Indicates if only the first level needs to be fetched.
+ * @param string $parent_operator
+ *   Indicates what operator should be used to load the regions. Can be '', != or =.
+ *   = means, load all the regions without a parent.
+ *   != means load all the regions that have a parent.
  *   If false, only subelements will be fetched.
  * @param $conditions
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
  *
  */
-function culturefeed_search_get_flandersregion_categories($first_level = TRUE, $conditions = array()) {
+function culturefeed_search_get_flandersregion_categories($parent_operator = '', $conditions = array()) {
 
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
-  $operator = $first_level ? '=' : '!=';
-  $query->condition('cst.parent', '', $operator);
+
+  if (!empty($parent_operator)) {
+    $query->condition('cst.parent', '', $parent_operator);
+  }
 
   // Add extra conditions.
   foreach ($conditions as $field => $value) {
@@ -404,20 +408,57 @@ function culturefeed_search_get_flandersregion_categories($first_level = TRUE, $
 }
 
 /**
- * Retrieves a list of cities as suggestion.
+ * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_city_suggestions($search_string) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $provinces_only = FALSE) {
 
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
 
-  $result = db_query("SELECT cst.tid, cst.name FROM {culturefeed_search_terms} cst
-      WHERE cst.did = 'flandersregion' AND cst.name like :name", array(':name' => "%" . $search_string . "%"))
-    ->fetchAll();
+
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name'));
+  $query->condition('did', 'flandersregion');
+  $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+  $query->range(0, 10);
+
+  if ($provinces_only) {
+    $query->condition('parent', '');
+  }
+
+  $result = $query->execute();
   $suggestions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
+  }
+
+  return $suggestions;
+
+}
+
+/**
+ * Retrieves a list of flanders regions as suggestion.
+ * @param string $search_string String to search for.
+ * @param bool $include_regions
+ *   Include also the regions in the suggestions, or not.
+ */
+function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
+
+  $suggestions = array();
+  if ($include_regions) {
+    $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, TRUE);
+    foreach ($region_suggestions as $region) {
+      $suggestions[$region] = $region;
+    }
+  }
+
+  $limit = 10 - count($suggestions);
+  $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
+      WHERE name LIKE :name LIMIT " . $limit, array(':name' => "%" . db_like($search_string) . "%"));
+
+  foreach ($result as $row) {
+    $suggestions[$row->name] = $row->name;
   }
 
   return $suggestions;

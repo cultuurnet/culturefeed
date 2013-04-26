@@ -61,48 +61,25 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
  * Preprocess the variables for the page detail.
  * @see culturefeed-page.tpl.php
  */
+function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
+
+  _culturefeed_pages_preprocess_culturefeed_page($variables);
+
+  $page = $variables['item']->getEntity();
+  $variables['more_text'] = 'Meer info';
+  $variables['link'] = culturefeed_search_detail_url('page', $page->getId(), $page->getName());
+
+}
+
+/**
+ * Preprocess the variables for the page detail.
+ * @see culturefeed-page.tpl.php
+ */
 function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
-  $page = $variables['page'];
+  _culturefeed_pages_preprocess_culturefeed_page($variables);
 
-  $variables['title'] = $page->getName();
-  $variables['description'] = $page->getDescription();
-  $variables['links'] = $page->getLinks();
-  $variables['image'] = $page->getImage();
-  
-  // Add join link if not a member yet.
-  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
-    $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
-  }
-
-  // Address information
-  $address = $page->getAddress();
-  if (!empty($address)) {
-
-    $variables['address'] = array();
-    $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
-    $variables['address']['city'] = $address->getCity();
-    $variables['address']['zip'] = $address->getZip();
-
-    $coordinates = $address->getGeoInformation();
-    if ($coordinates) {
-      $variables['coordinates'] = array(
-        'lat' => $coordinates->getXCoordinate(),
-        'lng' => $coordinates->getYCoordinate(),
-      );
-    }
-
-  }
-
-  // Contact information.
-  $variables['contact'] = array();
-  if ($page->getTelephone()) {
-    $variables['contact'][] = $page->getTelephone();
-  }
-  if ($page->getEmail()) {
-    $variables['contact'][] = $page->getEmail();
-  }
+  $page = $variables['item'];
 
   $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
   $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
@@ -135,6 +112,62 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
       $variables['members'][] = $member;
     }
 
+  }
+
+}
+
+/**
+ * Preprocess the general variables for a culturefeed page.
+ */
+function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
+
+  $item = $variables['item'];
+  if ($item instanceof CultureFeed_Cdb_Item_Page) {
+    $page = $item;
+  }
+  else {
+    $page = $item->getEntity();
+  }
+
+
+  $variables['title'] = $page->getName();
+  $variables['id'] = $page->getId();
+  $variables['description'] = $page->getDescription();
+  $variables['links'] = $page->getLinks();
+  $variables['image'] = $page->getImage();
+
+  // Add join link if not a member yet.
+  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+    $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
+    $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+  }
+
+  // Address information
+  $address = $page->getAddress();
+  if (!empty($address)) {
+
+    $variables['address'] = array();
+    $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
+    $variables['address']['city'] = $address->getCity();
+    $variables['address']['zip'] = $address->getZip();
+
+    $coordinates = $address->getGeoInformation();
+    if ($coordinates) {
+      $variables['coordinates'] = array(
+        'lat' => $coordinates->getXCoordinate(),
+        'lng' => $coordinates->getYCoordinate(),
+      );
+    }
+
+  }
+
+  // Contact information.
+  $variables['contact'] = array();
+  if ($page->getTelephone()) {
+    $variables['contact'][] = $page->getTelephone();
+  }
+  if ($page->getEmail()) {
+    $variables['contact'][] = $page->getEmail();
   }
 
 }

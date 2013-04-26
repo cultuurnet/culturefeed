@@ -68,6 +68,17 @@ class CultureFeedSearchPage {
 
     }
 
+    // Add the location facet.
+    if (isset($params['location'])) {
+
+      $type = isset($params['type']) ? $params['type'] : 'city';
+
+      if ($type == 'city') {
+
+      }
+
+    }
+
     foreach ($params['facet'] as $facetFieldName => $facetFilter) {
 
       // Datetype is not a real facet, but a search field.
@@ -117,7 +128,7 @@ class CultureFeedSearchPage {
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);
-    $facetingComponent->obtainResults($this->result);
+    $facetingComponent->obtainResults($this->result, \CultureFeed_Cdb_Default::CDB_SCHEME_URL);
 
   }
 

@@ -9,7 +9,7 @@
  */
 function culturefeed_search_schema() {
 
-  $schema['culturefeed_search_domains'] = array(
+ $schema['culturefeed_search_domains'] = array(
     'description' => 'Category domains for the Culturefeed Search API.',
     'fields' => array(
       'did' => array(
@@ -67,7 +67,7 @@ function culturefeed_search_schema() {
     ),
     'primary key' => array('tid'),
   );
-  
+
   $schema['culturefeed_search_cities'] = array(
     'description' => 'Cities for the CultuurNet Search API.',
     'fields' => array(

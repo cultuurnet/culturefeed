@@ -61,17 +61,25 @@ function culturefeed_pages_theme() {
     ),
 
     'culturefeed_page' => array(
-      'variables' => array('page' => NULL),
+      'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page',
     ),
 
+<<<<<<< HEAD
     'culturefeed_page_invisible' => array(
       'variables' => array('page' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page-invisible',
+=======
+    'culturefeed_page_summary' => array(
+      'variables' => array('item' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-page-summary',
+>>>>>>> Start of city facet + overview of pages
     ),
 
     'culturefeed_pages_fellow_members_block' => array(
@@ -90,7 +98,7 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
@@ -205,14 +213,6 @@ function culturefeed_pages_menu() {
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
     'page arguments' => array(4),
     'access arguments' => array('join culturefeed page'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
-
-  $items['ajax/culturefeed/pages/region-suggestion'] = array(
-    'page callback' => 'culturefeed_pages_region_suggestion_autocomplete_page',
-    'page arguments' => array(4),
-    'access arguments' => array('add culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -388,6 +388,20 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 
   return $items;
 
+}
+
+/**
+ * Implements hook_culturefeed_search_page_info().
+ */
+function culturefeed_pages_culturefeed_search_page_info() {
+  return array(
+    'pages' => array(
+      'path' => 'agenda/pages',
+      'page_title' => "Pagina's",
+      'search_title' => "Pagina's",
+      'class_name' => 'CultureFeedPagesSearchPage',
+    ),
+  );
 }
 
 /**
