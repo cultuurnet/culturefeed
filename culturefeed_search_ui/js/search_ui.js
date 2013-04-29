@@ -11,7 +11,9 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
   Drupal.behaviors.culturefeedSearchUi = {
    attach: function (context, settings) {
      Drupal.CulturefeedSearch.bindSortDropdown();
-     Drupal.CulturefeedSearch.bindDatePicker();
+     if ($('#edit-date-range').length > 0) {
+       Drupal.CulturefeedSearch.bindDatePicker();       
+     }
    }
   };
   
@@ -31,7 +33,7 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
     });
     
     // Hide the submit button.
-    $form.find('input:submit').hide();
+    $form.find('button').hide();
     
   }
   
