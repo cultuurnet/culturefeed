@@ -17,18 +17,18 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   $default = isset($query['search']) ? $query['search']: '';
 
   $searchable_types = culturefeed_get_searchable_types();
-
   $options = array();
   foreach ($searchable_types as $key => $type) {
-    $options[$type['path']] = $type['search_title'];
+    $options[$key] = $type['search_title'];
   }
+  $active_page = _culturefeed_search_ui_get_active_search_page();
 
   $form['#action'] = url('culturefeed/search');
 
   $form['type'] = array(
     '#type' => 'select',
     '#title' => 'Zoeken in',
-    '#default_value' => $_GET['q'],
+    '#default_value' => $active_page,
     '#options' => $options,
   );
 
@@ -43,6 +43,8 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#type' => 'submit',
     '#value' => 'Zoeken',
   );
+
+  $form_state['searchable_types'] = $searchable_types;
 
   return $form;
 }
@@ -59,8 +61,14 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
 
+  // Add extra possible querystring provided by the hook.
+  $search_page = $form_state['searchable_types'][$form_state['values']['type']];
+  if (!empty($search_page['active_facets'])) {
+    $query['facet'] = $search_page['active_facets'];
+  }
+
   $form_state['redirect'] = array(
-    $form_state['values']['type'],
+    $search_page['path'],
     array('query' => $query),
   );
 
@@ -72,18 +80,21 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
 function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
 
   $query = drupal_get_query_parameters();
+  $searchable_types = culturefeed_get_searchable_types();
+  $active_page = _culturefeed_search_ui_get_active_search_page();
 
-  $default = isset($query['sort']) ? $query['sort'] : 'relevancy';
+  // Don't show sort form, if we have no options.
+  if (!$active_page && !isset($searchable_types[$active_page]) & !empty($searchable_types[$active_page]['sort_options'])) {
+    return;
+  }
+
+  $options = $searchable_types[$active_page]['sort_options'];
+  $default = isset($query['sort']) ? $query['sort'] : '';
 
   $form['sort'] = array(
     '#title' => t('Sorteer resultaten op'),
     '#type' => 'select',
-    '#options' => array(
-      'relevancy' => 'Relevantie',
-      'date' => 'Datum',
-      'recommends' => 'Aantal keer aangeraden',
-      'comments' => 'Aantal beoordelingen',
-    ),
+    '#options' => $options,
     '#default_value' => $default,
   );
 

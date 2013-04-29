@@ -150,7 +150,12 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   if (!empty($address)) {
 
     $variables['address'] = array();
-    $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
+
+    $variables['address']['street'] = '';
+    if ($address->getStreet()) {
+      $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
+    }
+
     $variables['address']['city'] = $address->getCity();
     $variables['address']['zip'] = $address->getZip();
 
@@ -180,11 +185,11 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
  * @see culturefeed-page-invisible.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_page_invisible(&$variables) {
-  
+
   $page = $variables['page'];
 
   $variables['title'] = $page->getName();
-  
+
 }
 
 /**

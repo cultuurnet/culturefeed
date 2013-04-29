@@ -107,3 +107,47 @@ function _culturefeed_search_ui_video_url_to_embed($url, $width, $height) {
   return $embed;
 
 }
+
+/**
+ * Get the key value from the currently active search page.
+ */
+function _culturefeed_search_ui_get_active_search_page() {
+
+  $searchable_types = culturefeed_get_searchable_types();
+  foreach ($searchable_types as $key => $type) {
+
+    // Check if this is the current page.
+    if ($type['path'] == $_GET['q']) {
+
+      // If this page has active facets in the info definition. Check if all the facets matches.
+      if (!empty($type['active_facets']) && !empty($query['facet'])) {
+        $total_requested = count($type['active_facets']);
+        $total_matches = 0;
+        // Loop through the requested facets, and check if this is active in current search.
+        foreach ($type['active_facets'] as $requested_facet => $requested_values) {
+
+          // If the requested facet is active. Calculate the intersection, and check if all requested values are in the current page facets.
+          if (isset($query['facet'][$requested_facet])) {
+            $matches = array_intersect($requested_values, $query['facet'][$requested_facet]);
+            if (count($matches) == count($requested_values)) {
+              $total_matches++;
+            }
+          }
+        }
+
+        // If all the requested facets are found, this type should be default.
+        if ($total_matches == $total_requested) {
+          return $key;
+        }
+
+      }
+      else {
+        return $key;
+      }
+
+    }
+  }
+
+  return NULL;
+
+}

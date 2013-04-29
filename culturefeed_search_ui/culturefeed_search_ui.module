@@ -262,8 +262,29 @@ function culturefeed_search_ui_block_view($delta) {
 
 /**
  * Load all searchable types.
+ * This wil invoke a hook. Modules can define following stuff.
+ *  return array(
+ *   'activiteiten' => array(
+ *     'path' => 'agenda/search',
+ *     'page_title' => 'Agenda',
+ *     'search_title' => 'Activiteiten',
+ *     'class_name' => 'CultureFeedAgendaPage',
+ *       'sort_options' => array(
+ *       'relevancy' => 'Relevantie',
+ *       'date' => 'Datum',
+ *       'recommends' => 'Aantal keer aangeraden',
+ *       'comments' => 'Aantal beoordelingen',
+ *     ),
+ *     'active_facets' => array('category_actortype_name' => array('Organisator(en)')),  => optional
+ *   ),
+ * );
  */
 function culturefeed_get_searchable_types() {
+
+  $options = drupal_static('culturefeed_searchable_types');
+  if ($options !== NULL) {
+    return $options;
+  }
 
   // Get all searchable page types.
   $options = module_invoke_all('culturefeed_search_page_info');

@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * Defines a Page callback for Agenda search results.
+ * Defines a Page callback for Pages search results.
  */
 
 use \CultuurNet\Search\Parameter;
 use \CultuurNet\Search\Component\Facet;
 
 /**
- * Class CultureFeedAgendaPage
+ * Class CultureFeedPagesSearchPage
  */
 class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     implements CultureFeedSearchPageInterface {
@@ -33,7 +33,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     );
 
     $this->addFacetFilters($params);
-    //$this->addSort($params);
+    $this->addSort($params);
 
     $this->parameters[] = $facetingComponent->facetField('category');
     $this->parameters[] = $facetingComponent->facetField('city');
@@ -48,7 +48,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
    * Get the title to show.
    */
   public function getDrupalTitle() {
-    return $this->result->getTotalCount() . " pagina's gevonden";
+    return format_plural($this->result->getTotalCount(), '@count pagina gevonden', "@count pagina's gevonden");
   }
 
   /**
@@ -78,6 +78,35 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->searchPages($this->parameters);
     $facetingComponent->obtainResults($this->result, '');
+
+  }
+
+  /**
+   * Add the sorting parameters for the agenda searches.
+   */
+  private function addSort($params) {
+
+    switch ($params['sort']) {
+
+      case 'title':
+        $this->parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
+      break;
+
+      case \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER:
+        $this->parameters[] = new Parameter\Sort('pagemember_count', Parameter\Sort::DIRECTION_DESC);
+      break;
+
+      case \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW:
+        $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
+      break;
+
+      case 'activity_count':
+        $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
+      break;
+
+      default:
+
+    }
 
   }
 
