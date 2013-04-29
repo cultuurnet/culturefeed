@@ -47,6 +47,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   $form_state['searchable_types'] = $searchable_types;
 
   return $form;
+
 }
 
 /**
@@ -374,22 +375,25 @@ function culturefeed_search_ui_search_active_filters_block() {
 
     $facets = $facetingComponent->getFacets();
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
+      foreach ($selected_value as $key => $value) {
 
-      $search_query = $query;
-      unset($search_query['facet'][$active_facet_name]);
+        $search_query = $query;
+        unset($search_query['facet'][$active_facet_name][$key]);
 
-      // If this was the only facet. Also remove the global facet key.
-      if (empty($search_query['facet'])) {
-        unset($search_query['facet']);
+        // If this was the only facet. Also remove the global facet key.
+        if (empty($search_query['facet'])) {
+          unset($search_query['facet']);
+        }
+
+        $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
+
+        $build['item_' . $active_facet_name][$value] = array(
+          '#theme' => 'culturefeed_search_active_filters_item',
+          '#label' => $selected_value[$key],
+          '#url' => $url
+        );
+
       }
-
-      $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
-      $build['item_' . $active_facet_name] = array(
-        '#theme' => 'culturefeed_search_active_filters_item',
-        '#label' => $selected_value[0],
-        '#url' => $url
-      );
-
     }
 
   }
