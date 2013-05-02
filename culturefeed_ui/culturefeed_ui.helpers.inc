@@ -125,11 +125,15 @@ function culturefeed_ui_activity_types() {
 }
 
 function culturefeed_ui_users_list($users) {
+  return _culturefeed_ui_users_list($users->objects);
+}
+
+function _culturefeed_ui_users_list($user_objects) {
   $items = array();
 
-  $accounts = culturefeed_get_uids_for_users($users->objects);
+  $accounts = culturefeed_get_uids_for_users($user_objects);
 
-  foreach ($users->objects as $user) {
+  foreach ($user_objects as $user) {
     if (!isset($accounts[$user->id])) {
       continue;
     }

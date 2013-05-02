@@ -203,10 +203,10 @@ function culturefeed_social_block_view($delta) {
     case 'user-activities':
       $account = menu_get_object('user');
       return culturefeed_social_block_user_activities($account);
-      
-    case 'recommended-by':
-      $object = culturefeed_social_get_active_object();
-      return culturefeed_social_block_recommended_by($object);
+
+      case 'recommended-by':
+        $object = culturefeed_social_get_active_object();
+        return culturefeed_social_block_recommended_by($object);
 
   }
 

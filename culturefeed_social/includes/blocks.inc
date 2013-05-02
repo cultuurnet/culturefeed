@@ -143,17 +143,7 @@ function culturefeed_social_block_recommended_by($object) {
 
     if (count($user_objects) > 0) {
 
-      $items = array();
-      
-      $accounts = culturefeed_get_uids_for_users($user_objects);
-      
-      foreach ($user_objects as $user) {
-        if (!isset($accounts[$user->id])) {
-          continue;
-        }
-      
-        $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
-      }
+      $items = _culturefeed_ui_users_list($user_objects);
 
       $content['list'] = array(
         '#theme' => 'item_list',

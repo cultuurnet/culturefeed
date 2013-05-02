@@ -178,7 +178,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
 
     // Culturefeed pages.
     case $activity::CONTENT_TYPE_CULTUREFEED_PAGE:
-
+dsm($object);
       $object = culturefeed_pages_page_load($id);
       $activity->nodeTitle = $object['detail']['nl']['title'];
       $activity->nodeId = culturefeed_search_detail_url('page', $id, $object->getName(), array('absolute' => TRUE));

@@ -233,6 +233,51 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
 }
 
 /**
+ * Theme 1 followers block.
+ * @param $variables
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variables) {
+
+  $variables['title'] = $variables['page']->getName();
+
+  $uids = culturefeed_get_uids_for_memberships($variables['followers']);
+  
+  $followers = array();
+  foreach ($variables['followers'] as $cf_follower) {
+  
+    // If user was not found in drupal, don't show it.
+    if (!isset($uids[$cf_follower->user->id])) {
+      continue;
+    }
+  
+    $follower = array();
+    $follower['url'] = url('user/' . $uids[$membership->user->id]);
+    $follower['name'] = $membership->user->nick;
+    $follower['picture'] = $membership->user->depiction;
+  
+    $followers[] = $follower;
+  
+  }
+  
+  drupal_add_library('system', 'drupal.ajax');
+
+  $options = array(
+    'query' => array(
+      'destination' => culturefeed_search_detail_path('page', $variables['page']->getId(), $variables['page']->getName())
+    ),
+    'attributes' => array('class' => array('use-ajax'))
+  );
+  if ($variables['you_follow']) {
+    $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $variables['page']->getId(), $options);
+  }
+  else {
+    $variables['follow_link'] = l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $variables['page']->getId(), $options);
+  }
+  
+}
+
+
+/**
  * Preprocess the variables for the page administration options.
  * @see culturefeed-pages-block-admin-options.tpl.php
  */

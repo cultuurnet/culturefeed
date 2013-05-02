@@ -176,6 +176,52 @@ function culturefeed_pages_page_join($request_type, $page) {
 }
 
 /**
+ * Page callback to follow a page.
+ * @param string $request_type
+ *   Request type. Ajax or nojs
+ * @param CultureFeed_Cdb_Item_Page $page
+ *   Page to follow.
+ * @param Boolean $follow
+ *   action is follow, false to defollow.
+ */
+function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
+
+  $message = '';
+  
+  // Send request to follow.
+  try {
+  
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    if ($follow) {
+      $cf_pages->follow($page->getId(), array());
+      $message = '<p><strong>Je volgt nu deze pagina</strong></p>';
+      $message .= '<p>Werk je voor deze organisatie? ';
+      $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array(
+        'attributes' => array('class' => array('use-ajax'))));
+    }
+    else {
+      $cf_pages->defollow($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array());
+      $message = '<p><strong>Je volgt deze pagina niet meer</strong></p>';
+    }
+  
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+  }
+  
+  // Deliver as ajax callback or normal page.
+  if ($request_type != 'ajax') {
+    drupal_set_message($message);
+    drupal_goto();
+  }
+  else {
+    $commands[] = ajax_command_html('#follow-' . $page->getId(), $message);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+}
+
+/**
  * Page callback for the page suggestions autocomplete.
  */
 function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {

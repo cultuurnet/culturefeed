@@ -94,6 +94,29 @@ interface CultureFeed_Pages {
   public function updateMember($id, $userId, array $params);
 
   /**
+   * Update the page so it has a new follower.
+   * @param string $id
+   *   The page ID to update.
+
+   * @param array $params
+   *   Params for the follower data to be updated.
+   *   E.g. activityPrivate
+   */
+  public function follow($id, array $params);
+
+  /**
+   * Update the page so it looses a follower.
+   * @param string $id
+   *   The page ID to update.
+   * @param string $userId
+   *   User ID of the user which stops following the page.
+   * @param array $params
+   *   Params for the follower data to be updated.
+   *   E.g. activityPrivate
+   */
+  public function defollow($id, $userId, array $params);
+
+  /**
    * Delete a member from the given page.
    * @param string $id
    *   Id of the page.

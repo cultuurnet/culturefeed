@@ -267,3 +267,53 @@ function culturefeed_pages_block_page_timeline($page) {
   return $block;
 
 }
+
+/**
+ * Returns a block with followers of a certain type of content.
+ * @param misc $object
+ */
+function culturefeed_pages_block_followers($object) {
+
+  $account = DrupalCultureFeed::getLoggedInAccount();
+  
+  if (empty($account->culturefeed_uid)) {
+    return;
+  }
+  
+  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+  $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+
+  $build = array();
+
+  $followers = array();
+  $you_follow = FALSE;
+  
+  // Render all followers.
+  if (!empty($cf_account->following)) {
+
+    foreach ($cf_account->following as $follower) {
+      if ($follower->user->id != $account->culturefeed_uid) {
+        $followers[] = $follower;
+      }
+      else {
+        $you_follow = TRUE;
+      }
+    }
+    
+    $followers = array_slice($followers, 0, 6);
+
+  }
+
+  $build['items_list'] = array(
+    '#theme' => 'culturefeed_pages_followers_block',
+    '#page' => $object,
+    '#followers' => $followers,
+    '#num_followers' => count($cf_account->following),
+    '#you_follow' => $you_follow,
+  );
+
+  $block['subject'] = 'Volgen deze pagina';
+  $block['content'] = $build;
+
+  return $block;
+}

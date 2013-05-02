@@ -218,7 +218,6 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
 
   }
 
-
   /**
    * @see CultureFeed_Pages::updateMember()
    */
@@ -239,6 +238,27 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/member/remove', array('userId' => $userId));
     $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
 
+  }
+
+  /**
+   * @see CultureFeed_Pages::follow()
+   */
+  public function follow($id, array $params) {
+  
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/follow', $params);
+    $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
+  
+  }
+
+  /**
+   * @see CultureFeed_Pages::defollow()
+   */
+  public function defollow($id, $userId, array $params) {
+
+    $params['userId'] = $userId;
+
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/follower/remove', $params);
+    $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
   }
 
   /**

@@ -20,6 +20,9 @@ function culturefeed_pages_permission() {
     'join culturefeed page' => array(
       'title' => t('Join a culturefeed page'),
     ),
+    'follow culturefeed page' => array(
+      'title' => t('Follow a culturefeed page'),
+    ),
     'add culturefeed page' => array(
       'title' => t('Add a culturefeed page'),
     ),
@@ -127,6 +130,18 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-user-search-result',
       'path' => $path,
       'file' => 'theme.inc',
+    ),
+    
+    'culturefeed_pages_followers_block' => array(
+      'variables' => array(
+        'page' => NULL,
+        'followers' => array(),
+        'num_followers' => NULL,
+        'you_follow' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-followers-block',
     ),
   );
 
@@ -279,6 +294,26 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/pages/follow/%/%culturefeed_pages_page'] = array(
+    'title callback' => FALSE,
+    'title' => 'Pagina volgen',
+    'page callback' => 'culturefeed_pages_page_follow',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('follow culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/pages/defollow/%/%culturefeed_pages_page'] = array(
+    'title callback' => FALSE,
+    'title' => 'Pagina ontvolgen',
+    'page callback' => 'culturefeed_pages_page_follow',
+    'page arguments' => array(3, 4, FALSE),
+    'access arguments' => array('follow culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -308,6 +343,11 @@ function culturefeed_pages_block_info() {
   $blocks['pages-admin-menu'] = array(
     'info' => t("Page admin menu"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+  
+  $blocks['followers'] = array(
+    'info' => t('Followers'),
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   if (module_exists('culturefeed_social')) {
@@ -347,6 +387,10 @@ function culturefeed_pages_block_view($delta) {
     case 'page-timeline':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_page_timeline($page);
+
+    case 'followers':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_followers($page);
   }
 
 }
