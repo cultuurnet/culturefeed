@@ -190,7 +190,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     ),
     array(
       'title' => 'Activiteiten',
-      'url' => 'pages/' . $page->getId() . '/activiteiten',
+      'url' => 'pages/' . $page->getId() . '/events',
       'description' => '(Beheer je activiteiten en beoordelingen)',
     ),
     array(
