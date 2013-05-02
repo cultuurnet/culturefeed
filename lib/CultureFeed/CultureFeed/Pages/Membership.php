@@ -31,4 +31,10 @@ class CultureFeed_Pages_Membership {
    */
   public $role;
 
+  /**
+   * Relation for this page
+   * @var string
+   */
+  public $relation;
+
 }

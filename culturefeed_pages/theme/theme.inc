@@ -249,6 +249,47 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_menu_item(&$variabl
 }
 
 /**
+ * Preprocess the search results on a user.
+ * @see culturefeed-pages-user-search-result.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$variables) {
+
+  $variables['total'] = $variables['result']->total;
+  $accounts = culturefeed_get_uids_for_users($variables['result']->objects);
+
+  $members = array();
+  foreach ($variables['user_list']->memberships as $membership) {
+    $members[] = $membership->user->id;
+  }
+
+  $add_options = array(
+    'attributes' => array(
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#page_confirm',
+    ),
+    'query' => drupal_get_query_parameters(),
+  );
+
+  $variables['results'] = array();
+  foreach ($variables['result']->objects as $object) {
+
+    if (!isset($accounts[$object->id])) {
+      continue;
+    }
+
+    $result = array();
+    $result['nick'] = $object->nick;
+    $result['profile_link'] = l('Bekijk profiel', 'user/' . $accounts[$object->id]);
+    $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
+    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l('Voeg toe als lid', 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
+    $variables['results'][] = $result;
+
+  }
+
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {
@@ -259,5 +300,22 @@ function theme_culturefeed_pages_following_pages_block($variables) {
   }
 
   return theme('item_list', array('items' => $items, 'attributes' => array('class' => array('pages-following'))));
+
+}
+
+/**
+ * Theme the edit membership form.
+ */
+function theme_culturefeed_pages_edit_membership_form($variables) {
+
+  $cf_user = $variables['form']['#membership']->user;
+  $page = $variables['form']['#membership']->page;
+
+  $output = '<td>' . theme('image', array('path' => $cf_user->depiction . '?maxwidth=100')) . $cf_user->nick . '</td>';
+  $output .= '<td>' . date('d/m/Y H:i', $variables['form']['#membership']->creationDate) . '</td>';
+
+  $output .= '<td>' . drupal_render_children($variables['form']) . '</td>';
+
+  return $output;
 
 }

@@ -1458,7 +1458,7 @@ class CultureFeed implements ICultureFeed {
         }
       }
       $user->adminPagesCount = $adminPagesCount;
-      
+
     }
 
     $following = $element->xpath('/foaf:person/following/page');
@@ -1474,7 +1474,7 @@ class CultureFeed implements ICultureFeed {
 
       $page = new CultureFeed_Cdb_Item_Page();
       $page->setId($pageId);
-      $page->setName($membership->xpath_str('page/name'));
+      $page->setName($object->xpath_str('page/name'));
 
       $follower->page          = $page;
       $follower->user          = $user;
@@ -1558,7 +1558,7 @@ class CultureFeed implements ICultureFeed {
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  protected static function parseActivities(CultureFeed_SimpleXMLElement $element) {
+  public static function parseActivities(CultureFeed_SimpleXMLElement $element) {
     $total = $element->xpath_int('/response/total');
 
     $activities = array();
@@ -1568,19 +1568,21 @@ class CultureFeed implements ICultureFeed {
     foreach ($objects as $object) {
       $activity = new CultureFeed_Activity();
 
-      $activity->id           = $object->xpath_str('id');
-      $activity->nodeId       = $object->xpath_str('nodeID');
-      $activity->nodeTitle    = $object->xpath_str('nodeTitle');
-      $activity->private      = $object->xpath_bool('private');
-      $activity->createdVia   = $object->xpath_str('createdVia');
-      $activity->points       = $object->xpath_str('points');
-      $activity->contentType  = $object->xpath_str('contentType');
-      $activity->type         = $object->xpath_int('type');
-      $activity->value        = $object->xpath_str('value');
-      $activity->userId       = $object->xpath_str('userId');
-      $activity->depiction    = $object->xpath_str('depiction');
-      $activity->nick         = $object->xpath_str('nick');
-      $activity->creationDate = $object->xpath_time('creationDate');
+      $activity->id             = $object->xpath_str('id');
+      $activity->nodeId         = $object->xpath_str('nodeID');
+      $activity->nodeTitle      = $object->xpath_str('nodeTitle');
+      $activity->private        = $object->xpath_bool('private');
+      $activity->createdVia     = $object->xpath_str('createdVia');
+      $activity->points         = $object->xpath_str('points');
+      $activity->contentType    = $object->xpath_str('contentType');
+      $activity->type           = $object->xpath_int('type');
+      $activity->value          = $object->xpath_str('value');
+      $activity->userId         = $object->xpath_str('userId');
+      $activity->depiction      = $object->xpath_str('depiction');
+      $activity->nick           = $object->xpath_str('nick');
+      $activity->creationDate   = $object->xpath_time('creationDate');
+      $activity->onBehalfOf     = $object->xpath_str('onBehalfOf');
+      $activity->onBehalfOfName = $object->xpath_str('onBehalfOfName');
       $activity->parentActivity = $object->xpath_str('parentActivity');
 
       $activities[] = $activity;

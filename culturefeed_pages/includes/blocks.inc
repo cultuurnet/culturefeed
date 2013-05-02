@@ -88,45 +88,41 @@ function culturefeed_pages_block_pages_user_follows($account) {
  * Show the administrative options for the current page.
  */
 function culturefeed_pages_block_pages_admin_options() {
-  
+
   $page = menu_get_object('culturefeed_pages_page', 3);
-  
+
   if (!$page) {
     return;
   }
-  
-  // This refers very much to the access callback, but we offer all 
+
+  // This refers very much to the access callback, but we offer all
   // components to the templates.
   // @see culturefeed_pages_edit_page_access()
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  
+
   $isVisible = $page->isVisible();
   $isPageAdmin = FALSE;
   $loggedInAsPageAdmin = FALSE;
-  
+
   // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
-  
+
     // Check the current page against the current active admin page.
     $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
     $loggedInAsPageAdmin = $page->getId() === culturefeed_pages_get_active_page_id();
   }
-  
+
   // Page admins are allowed to administer the page.
   if ($isPageAdmin && $loggedInAsPageAdmin) {
     $admin_menu = _culturefeed_pages_block_pages_admin_menu($page);
   }
-  // If the current user is admin of the current page, we ask the 
+  // If the current user is admin of the current page, we ask the
   // user if he wants to login as the page administrator.
-  elseif ($isPageAdmin) {
-    
-  }
-  else {
+  elseif (!$isPageAdmin) {
     return;
   }
-  //dsm("visible: " . $isVisible . " | PageAdmin: " . $isPageAdmin . " | LoggedInAsAdmin: " . $loggedInAsPageAdmin);
-  
+
   $block = array();
   $block['subject'] = "Pagina beheren";
   $block['content'] = array(
@@ -137,9 +133,9 @@ function culturefeed_pages_block_pages_admin_options() {
     '#is_page_admin' => $isPageAdmin,
     '#logged_in_as_page_admin' => $loggedInAsPageAdmin,
   );
-  
+
   return $block;
-  
+
 }
 
 /**
@@ -148,21 +144,21 @@ function culturefeed_pages_block_pages_admin_options() {
 function culturefeed_pages_block_pages_admin_menu() {
 
   $page = menu_get_object('culturefeed_pages_page', 1);
-  
+
   if (!$page) {
     return;
   }
-  
+
   if (!culturefeed_pages_edit_page_access($page)) {
     return;
   }
-  
+
   $block = array();
   $block['subject'] = "Pagina beheren";
   $block['content'] = _culturefeed_pages_block_pages_admin_menu($page);
-  
+
   return $block;
-  
+
 }
 
 /**
@@ -189,7 +185,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     ),
     array(
       'title' => 'Leden & rollen',
-      'url' => 'pages/' . $page->getId() . '/members-and-roles',
+      'url' => 'pages/' . $page->getId() . '/members/nojs',
       'description' => '(Beheer leden en toegangsrechten)',
     ),
     array(
@@ -203,31 +199,71 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
       'description' => '',
     ),
   );
-  
+
   drupal_alter('culturefeed_pages_page_admin_menu', $menu);
-  
+
   $items = array();
-  
+
   foreach ($menu as $menu_item) {
     $vars = array(
       'title' => $menu_item['title'],
       'url' => $menu_item['url'],
       'description' => $menu_item['description'],
     );
-  
+
     $data = theme('culturefeed_pages_page_menu_item', $vars);
-  
+
     $class = $_GET['q'] == $menu_item['url'] ? array('active') : array();
-  
+
     $items[] = array(
       'data' => $data,
       'class' => $class,
     );
   }
-  
+
   $admin_menu = theme('item_list', array('items' => $items));
-  
+
   return $admin_menu;
-  
+
 }
 
+/**
+ * Show the timeline of a page in a block.
+ */
+function culturefeed_pages_block_page_timeline($page) {
+
+  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page) {
+    return;
+  }
+
+  $content = array();
+  try {
+
+    $activities = DrupalCultureFeed::getLoggedInUserInstance()->pages()->getTimeline($page->getId());
+
+    if (empty($activities->objects)) {
+      $content['activities'] = array(
+        '#markup' => 'Deze pagina heeft nog geen acties.',
+      );
+    }
+    else {
+
+      $content['activities'] = array(
+        '#theme' => 'culturefeed_social_user_activity_list',
+        '#activities' => $activities,
+        '#class' => 'page-time-line',
+      );
+
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  $block['subject'] = 'Tijdslijn';
+  $block['content'] = $content;
+
+  return $block;
+
+}

@@ -24,25 +24,12 @@ interface CultureFeed_Pages {
   public function getUserList($id, $roles = array());
 
   /**
-   * Add a member to the given page.
-   * @param string $id
-   *   Id of the page.
-   * @param string $userId
-   *   User ID of the user to add.
-   * @param string $relation
-   *   Relation to add
-   * @param bool $activityPrivate
-   *   Log an activity or not.
-   */
-  public function addMember($id, $userId, $relation = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER, $activityPrivate = TRUE);
-
-  /**
    * Add a page.
    * @param array $params
    *   Params to create the page.
    */
   public function addPage(array $params);
-  
+
   /**
    * Update a page.
    * @param Integer $id
@@ -51,14 +38,14 @@ interface CultureFeed_Pages {
    *   Params to update the page.
    */
   public function updatePage($id, array $params);
-  
+
   /**
    * Remove a page.
    * @param Integer $id
    *   The page ID of the page to remove (set invisible).
    */
   public function removePage($id);
-  
+
   /**
    * Publish a page.
    * @param Integer $id
@@ -74,7 +61,7 @@ interface CultureFeed_Pages {
    *   Params to create the image for the page.
    */
   public function addImage($id, array $params);
-  
+
   /**
    * Change the permissions for a page.
    * @param Integer $id
@@ -83,5 +70,67 @@ interface CultureFeed_Pages {
    *   Params of permissions keys to set. E.g. allowMembers, allowComments, ...
    */
   public function changePermissions($id, array $params);
-  
+
+  /**
+   * Add a member to the given page.
+   * @param string $id
+   *   Id of the page.
+   * @param string $userId
+   *   User ID of the user to add.
+   * @param array $params
+   *   Array of other data to be stored for the membership.
+   */
+  public function addMember($id, $userId, $params = array());
+
+  /**
+   * Update the membership data for a user on a page.
+   * @param string $id
+   *   The page ID to update.
+   * @param string $userId
+   *   The user id to update.
+   * @param array $params
+   *   Params of membership data to be updated.
+   */
+  public function updateMember($id, $userId, array $params);
+
+  /**
+   * Delete a member from the given page.
+   * @param string $id
+   *   Id of the page.
+   * @param string $userId
+   *   User ID of the user to remote.
+   */
+  public function removeMember($id, $userId);
+
+  /**
+   * Add a new admin to a page
+   * @param string $id
+   *   The page ID to add to.
+   * @param string $userId
+   *   The user id to add as admin.
+   * @param array $params
+   *   Extra data to add.
+   */
+  public function addAdmin($id, $userId, $params = array());
+
+  /**
+   * Remove an admin from a page
+   * @param string $id
+   *   The page ID to remove from.
+   * @param string $userId
+   *   The user id to remove as admin.
+   */
+  public function removeAdmin($id, $userId);
+
+  /**
+   * Get the timeline of a page.
+   * @param string $id
+   *   The page ID where the timeline is requested for.
+   * @param string date
+   *   ISO Date to set the startdate of the timeline. (optional)
+   * @return CultureFeed_ResultSet
+   *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
+   */
+  public function getTimeline($id, $dateFrom = NULL);
+
 }

@@ -123,7 +123,7 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $privacy = array(
       '#type' => 'link',
-      '#title' => $activity->private ? 'Privé' : 'Publiek',
+      '#title' => $activity->private ? 'Priv�' : 'Publiek',
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? 'Zet publiek' : 'Maak privé')),
       '#options' => array('query' => drupal_get_destination()),
@@ -132,10 +132,13 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
 
-    if ($activity->contentType == 'page') {
+    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_NODE) {
       $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
     }
-    elseif (in_array($activity->contentType, array('actor', 'event', 'production'))) {
+    elseif ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE || $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+      $data = l($activity->nodeTitle, $activity->nodeId);
+    }
+    else {
       $data = culturefeed_search_detail_l($activity->contentType, $activity->nodeId, $activity->nodeTitle);
     }
 

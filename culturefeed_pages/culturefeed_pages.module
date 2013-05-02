@@ -118,6 +118,16 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
     ),
 
+    'culturefeed_pages_user_search_result' => array(
+      'variables' => array(
+        'result' => NULL,
+        'page' => NULL,
+        'user_list' => NULL,
+      ),
+      'template' => 'culturefeed-pages-user-search-result',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -166,20 +176,20 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/remove'] = array(
+  $items['pages/%culturefeed_pages_page/remove/%'] = array(
     'title callback' => FALSE,
     'title' => 'Pagina verwijderen',
     'page callback' => 'culturefeed_pages_remove_page_confirm',
-    'page arguments' => array(1),
+    'page arguments' => array(1, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/publish'] = array(
+  $items['pages/%culturefeed_pages_page/publish/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Pagina verwijderen',
+    'title' => 'Pagina publiceren',
     'page callback' => 'culturefeed_pages_publish_page_confirm',
     'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -199,8 +209,53 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['pages/%culturefeed_pages_page/members/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Leden',
+    'page callback' => 'culturefeed_pages_page_manage_members',
+    'page arguments' => array(1, 3),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/membership/%cf_user/edit/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Leden',
+    'page callback' => 'culturefeed_pages_page_manage_members',
+    'page arguments' => array(1, 5, 3),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/membership/%cf_user/delete/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Lid verwijderen',
+    'page callback' => 'culturefeed_pages_page_delete_member',
+    'page arguments' => array(1, 3, 5),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/membership/add/%cf_user/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Lid toevoegen',
+    'page callback' => 'culturefeed_pages_page_add_member',
+    'page arguments' => array(1, 4, 5),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['pages/switch/%culturefeed_pages_page'] = array(
-    'title' => 'Switch to another page',
+    'title callback' => FALSE,
+    'title' => 'Verander actieve pagina',
     'page callback' => 'culturefeed_pages_switch_page',
     'page arguments' => array(2),
     'access arguments' => array('switch culturefeed pages'),
@@ -255,6 +310,13 @@ function culturefeed_pages_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  if (module_exists('culturefeed_social')) {
+    $blocks['page-timeline'] = array(
+      'info' => t("Page timeline"),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+  }
+
   return $blocks;
 
 }
@@ -275,16 +337,16 @@ function culturefeed_pages_block_view($delta) {
     case 'pages-user-follows':
       $account = menu_get_object('user');
       return culturefeed_pages_block_pages_user_follows($account);
-    break;
 
     case 'pages-admin-options':
       return culturefeed_pages_block_pages_admin_options();
-    break;
 
     case 'pages-admin-menu':
       return culturefeed_pages_block_pages_admin_menu();
-    break;
 
+    case 'page-timeline':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_page_timeline($page);
   }
 
 }
@@ -411,6 +473,10 @@ function culturefeed_pages_culturefeed_search_page_info() {
 
 /**
  * Load a culturefeed page.
+ * @param $id
+ *   Id to load.
+ * @return mixed
+ *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
 
@@ -483,8 +549,7 @@ function culturefeed_pages_edit_page_access($page) {
   }
 
   // Check the current page against the current active admin page.
-  return in_array($page->getId(), array_keys($adminMemberships))
-      && $page->getId() === culturefeed_pages_get_active_page_id();
+  return isset($adminMemberships[$page->getId()]) && $page->getId() === culturefeed_pages_get_active_page_id();
 
 }
 
@@ -512,5 +577,38 @@ function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_
     // Create a new link for the same properties.
     $culture_feed_profile_name['link'] = l($nick, 'user/' . $culture_feed_profile_name['uid']);
   }
+
+}
+
+/**
+ * Submit the edit membership form through ajax.
+ */
+function culturefeed_pages_edit_membership_ajax_form_submit($form, &$form_state) {
+
+  // If the submit was successfully done. Show the non-form row again.
+  if (isset($form_state['#success'])) {
+
+    $build = array();
+    try {
+
+      $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+      $user_list = $cf_pages->getUserList($form['#membership']->page->getId(),  array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER));
+      $build = culturefeed_pages_manage_members_list($form['#membership']->page, $user_list);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+
+    $commands = array(
+      ajax_command_html('#manage-members', render($build)),
+      ajax_command_prepend('#manage-members', theme('status_messages')),
+    );
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    exit;
+
+  }
+
+  return $form;
 
 }
