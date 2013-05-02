@@ -6,10 +6,12 @@
   <?php endforeach; ?>
   </ul>
 
+  <br />
+
   <?php if ($pager_path): ?>
-  <div class="more-pager">
+  <p>
     <a class="btn btn-warning pager-link" href="<?php print $pager_path; ?>" rel="no-follow">Lees oudere berichten</a>
-  </div>
+  </p>
   <?php endif; ?>
   
 </div>
