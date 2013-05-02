@@ -1443,6 +1443,7 @@ class CultureFeed implements ICultureFeed {
       $user_membership->page          = $page;
 
       $user_membership->role          = $membership->xpath_str('role');
+      $user_membership->relation      = $membership->xpath_str('relation');
       $user_membership->creationDate  = $membership->xpath_time('creationDate');
 
       $user_memberships[] = $user_membership;

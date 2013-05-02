@@ -13,7 +13,6 @@
  */
 function culturefeed_search_ui_search_block_form($form, & $form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $default = isset($query['search']) ? $query['search']: '';
 
   $searchable_types = culturefeed_get_searchable_types();

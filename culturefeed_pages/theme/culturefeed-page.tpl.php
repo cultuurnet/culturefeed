@@ -1,4 +1,4 @@
-<h1><?php print $title; ?></h1> 
+<h1><?php print $title; ?></h1>
 
 <?php if (!empty($image)): ?>
 <img src="<?php print $image; ?>" />
@@ -18,7 +18,10 @@
     <?php if ($members): ?>
     <ul>
     <?php foreach ($members as $member): ?>
-      <li><a href="<?php print $member['url']; ?>"><?php print $member['name']?></a> (<?php print $member['role'] ?>)</li>
+      <li>
+        <a href="<?php print $member['url']; ?>"><?php print $member['name']?></a>
+        <?php if (!empty($member['relation'])): ?>(<?php print $member['relation'] ?>)<?php endif; ?>
+      </li>
     <?php endforeach; ?>
     </ul>
     <?php endif; ?>

@@ -35,7 +35,9 @@ function _culturefeed_search_ui_video_url_to_embed($url, $width, $height) {
  */
 function _culturefeed_search_ui_get_active_search_page() {
 
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $searchable_types = culturefeed_get_searchable_types();
+
   foreach ($searchable_types as $key => $type) {
 
     // Check if this is the current page.

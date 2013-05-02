@@ -12,6 +12,16 @@ module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
 define('CULTUREFEED_ACTORTYPE_ORGANISATION', '8.11.0.0.0');
 
 /**
+ * Total items per page for the events admin.
+ */
+define('CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT', 50);
+
+/**
+ * Url to the edit page of an event inside uitdatabank.
+ */
+define('CULTUREFEED_PAGES_UITDATABANK_EVENT_URL', 'http://www.uitdatabank.be/2/Item/EventDetail/');
+
+/**
  * Implements hook_permission().
  */
 function culturefeed_pages_permission() {
@@ -143,6 +153,14 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-followers-block',
     ),
+
+    'culturefeed_pages_events_admin_page' => array(
+      'variables' => array('result' => NULL, 'page' => NULL),
+      'template' => 'culturefeed-pages-events-admin-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
   );
 
 }
@@ -214,10 +232,21 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/configuration'] = array(
-    'title callback' => 'culturefeed_pages_detail_title',
-    'title arguments' => array(1, 'edit'),
+    'title callback' => FALSE,
+    'title' => 'Instellingen',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_configuration_page_form', 1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/events'] = array(
+    'title callback' => FALSE,
+    'title' => 'Activiteiten',
+    'page callback' => 'culturefeed_pages_page_events',
+    'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
@@ -357,6 +386,13 @@ function culturefeed_pages_block_info() {
     );
   }
 
+  if (module_exists('culturefeed_agenda')) {
+    $blocks['activities-from-page'] = array(
+      'info' => t('Activities from page'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+  }
+
   return $blocks;
 
 }
@@ -391,6 +427,11 @@ function culturefeed_pages_block_view($delta) {
     case 'followers':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
+
+    case 'activities-from-page':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_activities_from_page($page);
+
   }
 
 }
@@ -580,7 +621,7 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-
+return TRUE;
   if (!user_access('edit culturefeed page')) {
     return FALSE;
   }

@@ -76,10 +76,8 @@ function culturefeed_pages_set_active_page(CultureFeed_Cdb_Item_Page $page) {
  * Set the breadcrumb to the given page.
  * @param CultureFeed_Cdb_Item_Page $page
  *   Page to set the breadcrumb to.
- * @param array $extra_trails
- *   Extra trails to append on the end of the trail. (example: trail to 'Leden').
  */
-function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page, $extra_trails = array()) {
+function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) {
 
   // Set the breadcrumb.
   $active_trail = array();
@@ -108,7 +106,13 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page, 
     'type' => 0,
   );
 
-  $active_trail = array_merge($active_trail, $extra_trails);
+  $active_trail[] = array(
+    'title' => drupal_get_title(),
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
 
   menu_set_active_trail($active_trail);
 
