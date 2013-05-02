@@ -49,15 +49,7 @@ function culturefeed_pages_page_manage_members(CultureFeed_Cdb_Item_Page $page, 
     }
   }
 
-  $extra_trails = array();
-  $extra_trails[] = array(
-    'title' => drupal_get_title(),
-    'href' => $_GET['q'],
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
-  culturefeed_pages_set_page_breadcrumb($page, $extra_trails);
+  culturefeed_pages_set_page_breadcrumb($page);
 
   return $build;
 

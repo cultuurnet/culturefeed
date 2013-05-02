@@ -592,7 +592,6 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
  */
 function culturefeed_pages_configuration_page_form($form, & $form_state, CultureFeed_Cdb_Item_Page $page){
 
-  //dvm($page);
   $form_state['page'] = $page;
 
   // Link to the detail page.
@@ -683,6 +682,8 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
         <div class="modal-body"></div>
       </div>',
   );
+
+  culturefeed_pages_set_page_breadcrumb($page);
 
   return $form;
 
@@ -878,8 +879,7 @@ function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state)
 
   // Send request to (re-)publish a page.
   try {
-    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
-    $uid = $cf_pages->publishPage($page->getId());
+    DrupalCultureFeed::getLoggedInUserInstance()->pages()->publishPage($page->getId());
     drupal_set_message(format_string('De pagina "@page" is hersteld.', array('@page' => $page->getName())));
   }
   catch (Exception $e) {
@@ -888,6 +888,76 @@ function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state)
   }
 
   $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
+
+}
+
+/**
+ * Page callback to show a list of all agenda activities for a page.
+ */
+function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
+
+  $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  // Add start index (page number we want) + items per page
+  $parameters[] = new \CultuurNet\Search\Parameter\Start($curr_page * CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
+
+  // Add grouping so returned events are not duplicate.
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+
+  // Search on events that have a relation to the page ID.
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+
+  // Add sorting.
+  $sort_field = 'startdate';
+  $direction = 'asc';
+  if (isset($_GET['order'])) {
+
+    $direction = $_GET['sort'];
+
+    switch ($_GET['order']) {
+
+      case 'Titel':
+        $sort_field = 'title_sort';
+      break;
+
+      case 'Datum':
+        $sort_field = 'startdate';
+      break;
+
+      case 'Reacties':
+        $sort_field = 'comment_count';
+      break;
+
+    }
+
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_field, $direction);
+  $service = culturefeed_get_search_service();
+
+  // Execute search and show results.
+  $build = array();
+  try {
+
+    $result = $service->search($parameters);
+    pager_default_initialize($result->getTotalCount(), CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
+
+    $build['page'] = array(
+      '#theme' => 'culturefeed_pages_events_admin_page',
+      '#result' => $result,
+      '#page' => $page,
+    );
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $build['error'] = array('#markup' => "Er is een fout opgetreden tijdens het laden van de activiteiten.");
+  }
+
+  culturefeed_pages_set_page_breadcrumb($page);
+
+  return $build;
 
 }
 

@@ -290,6 +290,50 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
 }
 
 /**
+ * Preprocess the culturefeed pages events admin page.
+ * @see culturefeed-pages-events-admin-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$variables) {
+
+  global $language;
+  $results = $variables['result']->getItems();
+  $rows = array();
+
+  foreach ($results as $result) {
+
+    $row = array();
+
+    $detail = $result->getEntity()->getDetails()->getDetailByLanguage($language->language);
+    if ($detail) {
+
+      $row['title'] = $detail->getTitle();
+      $row['date'] = $detail->getCalendarSummary();
+      $row['comment_count'] = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+      $row['edit_url'] = l('Bewerk in UDB', CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
+
+      $rows[] = $row;
+
+    }
+
+  }
+
+  if (!empty($rows)) {
+
+    $header = array(
+      array('data' => 'Titel', 'field' => 'title', 'sort' => 'asc'),
+      array('data' => 'Datum', 'field' => 'startdate', 'sort' => 'asc'),
+      array('data' => 'Reacties', 'field' => 'comment_count', 'sort' => 'desc'),
+      '',
+    );
+    $variables['items'] = theme('table', (array('header' => $header, 'rows' => $rows)));
+
+  }
+
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), 'Bekijk pagina');
+
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {
