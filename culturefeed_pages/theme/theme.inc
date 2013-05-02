@@ -109,6 +109,7 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
       $member = array();
       $member['url'] = url('user/' . $uids[$membership->user->id]);
       $member['name'] = $membership->user->nick;
+      $member['relation'] = $membership->relation;
       $member['role'] = $membership->role;
       $member['picture'] = $membership->user->depiction;
 
