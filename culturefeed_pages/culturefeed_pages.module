@@ -61,10 +61,17 @@ function culturefeed_pages_theme() {
     ),
 
     'culturefeed_page' => array(
-      'variables' => array('page' => NULL),
+      'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page',
+    ),
+
+    'culturefeed_page_summary' => array(
+      'variables' => array('item' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-page-summary',
     ),
 
     'culturefeed_page_invisible' => array(
@@ -90,7 +97,7 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
@@ -209,14 +216,6 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['ajax/culturefeed/pages/region-suggestion'] = array(
-    'page callback' => 'culturefeed_pages_region_suggestion_autocomplete_page',
-    'page arguments' => array(4),
-    'access arguments' => array('add culturefeed page'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
-
   $items['culturefeed/pages/join/%/%culturefeed_pages_page'] = array(
     'page callback' => 'culturefeed_pages_page_join',
     'page arguments' => array(3, 4),
@@ -316,9 +315,9 @@ function culturefeed_pages_user_login(&$edit, $account) {
       $page = reset($memberships);
     }
     culturefeed_pages_set_active_page($page);
-    
+
   }
-  
+
 }
 
 /**
@@ -340,10 +339,10 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 
   // The user is member of at least one page, login as ...
   if ($has_memberships) {
-    
+
     $active_page = culturefeed_pages_get_active_page();
     $active_page_id = 0;
-    
+
     if ($active_page) {
 
       $active_page_id = $active_page->getId();
@@ -351,7 +350,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
       $items['my-page']['children'] = array(
         array('data' => culturefeed_search_detail_l('page', $active_page->getId(), $active_page->getName())),
       );
-    
+
     }
     else {
       $items['my-page']['children'] = array(
@@ -361,14 +360,14 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 
     // If the user has more than 1 membership, allow him to switch pages.
     if (user_access('switch culturefeed pages') && $has_memberships > 1) {
-      
+
       $items['switch-page'] = array(
         'data' => 'Wijzig actieve pagina',
         'class' => 'switch-page',
         'children' => array(),
         'weight' => -18,
       );
-    
+
       foreach ($cultureFeedUser->pageMemberships as $membership) {
         if ($active_page_id != $membership->page->getId()) {
           $items['switch-page']['children'][] = array(
@@ -377,7 +376,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
         }
       }
     }
-    
+
   }
   // Provide the user with interesting pages so they can login as Page.
   else {
@@ -388,6 +387,26 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 
   return $items;
 
+}
+
+/**
+ * Implements hook_culturefeed_search_page_info().
+ */
+function culturefeed_pages_culturefeed_search_page_info() {
+  return array(
+    'pages' => array(
+      'path' => 'agenda/pages',
+      'page_title' => "Pagina's",
+      'search_title' => "Pagina's",
+      'class_name' => 'CultureFeedPagesSearchPage',
+      'sort_options' => array(
+        'relevancy' => 'Relevantie',
+        'title' => 'Alfabetisch',
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => 'Aantal leden',
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => 'Aantal volgers',
+      ),
+    ),
+  );
 }
 
 /**
@@ -432,12 +451,15 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
   }
   else {
     $title = $page->getName();
-    
+
     $address = $page->getAddress();
     if (!empty($address)) {
-      $title .= ' - ' . $address->getCity();
+      $city = $address->getCity();
+      if (!empty($city)) {
+        $title .= ' - ' . $address->getCity();
+      }
     }
-    
+
     return $title;
   }
 }
@@ -454,16 +476,16 @@ function culturefeed_pages_edit_page_access($page) {
   }
 
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  
+
   // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
-  
+
   // Check the current page against the current active admin page.
   return in_array($page->getId(), array_keys($adminMemberships))
       && $page->getId() === culturefeed_pages_get_active_page_id();
-  
+
 }
 
 /**
@@ -479,16 +501,16 @@ function culturefeed_pages_view_page_access($page) {
  * @param unknown_type $culture_feed_profile_name
  */
 function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_profile_name) {
-  
+
   $active_page = culturefeed_pages_get_active_page();
-  
+
   if (isset($active_page)) {
     // Extend the current nickname.
     $nick = $culture_feed_profile_name['nick'] . ' van ' . $active_page->getName();
     $culture_feed_profile_name['nick'] = $nick;
-    
+
     // Create a new link for the same properties.
     $culture_feed_profile_name['link'] = l($nick, 'user/' . $culture_feed_profile_name['uid']);
   }
-  
+
 }

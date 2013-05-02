@@ -111,7 +111,7 @@ function culturefeed_pages_detail_page($page) {
   );
 
   menu_set_active_trail($active_trail);
-  
+
   $isPageAdmin = FALSE;
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
   $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
@@ -120,13 +120,13 @@ function culturefeed_pages_detail_page($page) {
   if (!$page->isVisible() && !$isPageAdmin) {
     return array(
       '#theme' => 'culturefeed_page_invisible',
-      '#page' => $page,
+      '#item' => $page,
     );
   }
   else {
     return array(
       '#theme' => 'culturefeed_page',
-      '#page' => $page,
+      '#item' => $page,
     );
   }
 
@@ -148,14 +148,14 @@ function culturefeed_pages_page_join($request_type, $page) {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
     $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
-    
-    // If it's your first membership and you don't have an active page yet, 
+
+    // If it's your first membership and you don't have an active page yet,
     // also login as that page.
     $memberships = DrupalCultureFeed::getLoggedInUser()->pageMemberships;
     if (count($memberships) > 0 && !culturefeed_pages_has_active_page()) {
       culturefeed_pages_set_active_page($page);
     }
-    
+
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -208,32 +208,6 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 }
 
 /**
- * Page callback for the region suggestions autocomplete.
- */
-function culturefeed_pages_region_suggestion_autocomplete_page($search_string) {
-
-  $matches = array();
-  
-  if ($search_string) {
-  
-    try {
-  
-      // Get the list of suggestions from service.
-      $suggestions = culturefeed_search_get_city_suggestions($search_string);
-      foreach ($suggestions as $key => $suggestion) {
-        $matches[$key] = check_plain($suggestion);
-      }
-    }
-    catch (ClientErrorResponseException $e) {
-      watchdog_exception('culturefeed_search', $e);
-    }
-  
-  }
-  
-  drupal_json_output($matches);
-}
-
-/**
  * Creates form elements to add a page.
  */
 function culturefeed_pages_add_form($form, &$form_state) {
@@ -263,7 +237,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#maxlength' => 250,
     '#weight' => -3,
   );
-  
+
   // Form alters can use weight -2 -> 0 here.
 
   $form['street'] = array(
@@ -273,7 +247,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#attributes' => array('placeholder' => 'straat en huisnummer'),
     '#weight' => 1,
   );
-  
+
   $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => '',
@@ -298,7 +272,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => '',
     '#weight' => 10,
   );
-  
+
   $form['contactInfoEmail'] = array(
     '#type' => 'textfield',
     '#title' => 'Emailadres',
@@ -320,43 +294,43 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#title' => 'Website',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkTicketing'] = array(
     '#type' => 'textfield',
     '#title' => 'Ticketing',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkFacebook'] = array(
     '#type' => 'textfield',
     '#title' => 'Facebook pagina',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkTwitter'] = array(
     '#type' => 'textfield',
     '#title' => 'Twitter pagina',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkGooglePlus'] = array(
     '#type' => 'textfield',
     '#title' => 'Google+ pagina',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkYouTube'] = array(
     '#type' => 'textfield',
     '#title' => 'YouTube pagina',
     '#default_value' => '',
   );
-  
+
   $form['websites']['linkBlog'] = array(
     '#type' => 'textfield',
     '#title' => 'Blog pagina',
     '#default_value' => '',
   );
-  
+
   $form['image'] = array(
     '#type' => 'file',
     '#title' => 'Foto',
@@ -364,12 +338,12 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => '',
     '#weight' => 14,
   );
-  
+
   $form['visible'] = array(
     '#type' => 'hidden',
     '#value' => "true",
   );
-  
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Opslaan',
@@ -384,9 +358,9 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form['#submit'] = array(
     'culturefeed_pages_add_form_submit'
   );
-  
+
   return $form;
-  
+
 }
 
 /**
@@ -395,21 +369,21 @@ function culturefeed_pages_add_form($form, &$form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
-  
+
   // Basic validation.
   if (empty($form_state['values']['name'])) {
     form_set_error('name', 'De titel moet ingevuld zijn');
   }
-  
+
   if (strlen($form_state['values']['description']) > 250) {
     form_set_error('description', 'Het maximum karakters bedraagt 250');
   }
-  
+
   // Add the post params to the form so other modules can add their params.
   $post = $form_state['values'];
   unset($post['form_id'], $post['form_token'], $post['form_build_id'], $post['submit'], $post['op'], $post['image']);
   $form_state['post_params'] = $post;
-  
+
 }
 
 /**
@@ -421,7 +395,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
   // Local storage of the universal id.
   $uid = NULL;
-  
+
   // Send request to add a page.
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
@@ -432,7 +406,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     watchdog_exception('culturefeed_pages', $e);
     form_set_error('', 'Er is een fout opgetreden tijdens het aanmaken van de pagina.');
   }
-  
+
   if ($uid) {
 
     $form_state['page_id'] = $uid;
@@ -443,7 +417,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
       $image_path = $_FILES['files']['tmp_name']['image'];
 
       $image = file_get_contents($image_path);
-      
+
       if ($image) {
         try {
           $cf_pages->addImage($uid, array('image' => $image));
@@ -454,9 +428,9 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
   }
-  
+
 }
 
 /**
@@ -465,10 +439,10 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
-  
+
   // Redirect the user to the created page detail.
   drupal_goto(culturefeed_search_detail_path('page', $form_state['page_id'], $form_state['page_title']));
-  
+
 }
 
 /**
@@ -491,19 +465,19 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // General information.
   $form['basic'] = array(
     '#type' => 'markup',
-    '#markup' => '<h2>Basisinformatie</h2>',  
+    '#markup' => '<h2>Basisinformatie</h2>',
     '#weight' => -20,
   );
-  
+
   // Hidden page ID.
   $form['pageId'] = array(
     '#type' => 'hidden',
     '#value' => $page->getId(),
   );
-  
+
   $form['name']['#default_value'] = $page->getName();
   $form['description']['#default_value'] = $page->getDescription();
-  
+
   // Address.
   $address = $page->getAddress();
   if (!empty($address)) {
@@ -511,11 +485,11 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['zip']['#default_value'] = $address->getZip();
     $form['city']['#default_value'] = $address->getCity();
   }
-  
+
   // Contact information.
   $form['contactInfoTel']['#default_value'] = $page->getTelephone();
   $form['contactInfoEmail']['#default_value'] = $page->getEmail();
-  
+
   // Websites list.
   $links = $page->getLinks();
   if (!empty($links)) {
@@ -527,7 +501,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['websites']['linkYouTube']['#default_value'] = isset($links['linkYouTube']) ? $links['linkYouTube'] : '';
     $form['websites']['linkBlog']['#default_value'] = isset($links['linkBlog']) ? $links['linkBlog'] : '';
   }
-  
+
   // The image.
   $image = $page->getImage();
   if (!empty($image)) {
@@ -549,13 +523,13 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     'culturefeed_pages_add_arguments_prepare',
     'culturefeed_pages_edit_request_send',
   );
-  
+
   $form['#submit'] = array(
     'culturefeed_pages_add_form_submit'
   );
-  
+
   return $form;
-  
+
 }
 /**
  * Validator which sends the request to update a page.
@@ -566,7 +540,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
 
   // Local storage of the universal id.
   $uid = $form_state['values']['pageId'];
-  
+
   // Send request to add a page.
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
@@ -577,12 +551,12 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
     watchdog_exception('culturefeed_pages', $e);
     form_set_error('', 'Er is een fout opgetreden tijdens het bewerken van de pagina.');
   }
-  
+
   if ($uid) {
 
     $form_state['page_id'] = $uid;
     $form_state['page_title'] = $form_state['values']['name'];
-    
+
     // Remove the image
     if (!empty($form_state['values']['remove_image'])) {
       // @todo create the call to remove the image from a page.
@@ -593,7 +567,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
       $image_path = $_FILES['files']['tmp_name']['image'];
 
       $image = file_get_contents($image_path);
-      
+
       if ($image) {
         try {
           $cf_pages->addImage($uid, array('image' => $image));
@@ -604,13 +578,13 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
   }
-  
+
 }
 
 /**
- * Form callback to render a page to configure a page. 
+ * Form callback to render a page to configure a page.
  * E.g. delete a page.
  * @param array $form
  * @param array $form_state
@@ -630,51 +604,53 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   // General information.
   $form['basic'] = array(
     '#type' => 'markup',
-    '#markup' => '<h2>Instellingen</h2>',  
+    '#markup' => '<h2>Instellingen</h2>',
     '#weight' => -20,
   );
-  
+
   // Hidden page ID.
   $form['pageId'] = array(
     '#type' => 'hidden',
     '#value' => $page->getId(),
   );
-  
-  $form['follow-page'] = array(
+
+  $permissions = $page->getPermissions();
+
+  $form['allow_followers'] = array(
     '#type' => 'checkbox',
     '#title' => 'mijn pagina volgen',
     '#description' => 'Op die manier kunnen gebruikers op de hoogte blijven van alle updates over deze pagina.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowFollowers),
   );
-  
-  $form['become-member'] = array(
+
+  $form['allow_members'] = array(
     '#type' => 'checkbox',
     '#title' => 'lid worden van mijn pagina',
     '#description' => 'Op die manier wordt je pagina ook toegankelijk via de profielen, beoordelingen en reacties van alle collega\'s die actief zijn op deze site.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowMembers),
   );
-  
-  $form['place-reviews'] = array(
+
+  $form['allow_comments'] = array(
     '#type' => 'checkbox',
     '#title' => 'beoordelingen schrijven over mijn activiteiten',
     '#description' => 'Enkel voor organisaties die activiteiten organiseren en ingevoerd hebben via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.',
-    '#default_value' => 0,
+    '#default_value' => !empty($permissions->allowComments),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Opslaan',
   );
-    
+
   if ($page->isVisible()) {
     $form['remove-link'] = array(
       '#type' => 'markup',
-      '#markup' => l('Pagina verwijderen', 
-          'pages/' . $page->getId() . '/remove', 
+      '#markup' => l('Pagina verwijderen',
+          'pages/' . $page->getId() . '/remove',
           array(
             'attributes' => array(
               'role' => 'button',
-              'data-toggle' => 'modal', 
+              'data-toggle' => 'modal',
               'data-target' => '#page_confirm',
             ),
           )
@@ -697,7 +673,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
       ),
     );*/
   }
-  
+
   $form['page_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
@@ -705,9 +681,35 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
         <div class="modal-body"></div>
       </div>',
   );
-  
+
   return $form;
-  
+
+}
+
+/**
+ * Submit handler to save the permissions of the configuration page.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_configuration_page_form_submit($form, &$form_state) {
+
+  $params = array(
+    'allowFollowers' => empty($form_state['values']['allow_followers']) ? "false" : "true",
+    'allowMembers' => empty($form_state['values']['allow_members']) ? "false" : "true",
+    'allowComments' => empty($form_state['values']['allow_comments']) ? "false" : "true",
+  );
+
+  // Send request to change permissions for a page.
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $uid = $cf_pages->changePermissions($form_state['values']['pageId'], $params);
+    drupal_set_message(format_string('De pagina instellingen zijn bewaard.'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', 'Er is een fout opgetreden tijdens het bewaren van de pagina instellingen.');
+  }
+
 }
 
 /**
@@ -720,14 +722,14 @@ function culturefeed_pages_switch_page(CultureFeed_Cdb_Item_Page $page) {
 }
 
 /**
- * Page callback to add a confirimation to the 
+ * Page callback to add a confirimation to the
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_remove_page_confirm($page) {
-  
+
   $form = drupal_get_form('culturefeed_pages_remove_page_confirm_form', $page);
   $output = drupal_render($form);
-  
+
   print $output;
 }
 
@@ -738,7 +740,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page) 
 
   $form_state['page_id'] = $page->getId();
   $form_state['page'] = $page;
-  
+
   $form['wrapper'] = array(
     '#type' => 'markup',
     '#prefix' => '<div id="confirm-wrapper">',
@@ -751,7 +753,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page) 
       <p>Leden van deze pagina en activiteiten in naam van deze pagina worden niet verwijderd.</p>
       <p><strong>Ben je zeker?</strong></p>',
   );
-  
+
   $form['wrapper']['remove'] = array(
     '#type' => 'submit',
     '#value' => 'Verwijder',
@@ -767,16 +769,16 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page) 
       'class' => array('button-decline close')
     ),
   );
-  
+
   return $form;
-  
+
 }
 
 /**
  * Function to actually delete the page.
  */
 function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) {
-  
+
   $page = $form_state['page'];
 
   // Send request to remove a page.
@@ -789,9 +791,9 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
     watchdog_exception('culturefeed_pages', $e);
     form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van de pagina.');
   }
-  
+
   $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
-  
+
 }
 
 /**
@@ -814,7 +816,7 @@ function culturefeed_pages_publish_page_confirm_form($form, &$form_state, $page)
 
   $form_state['page_id'] = $page->getId();
   $form_state['page'] = $page;
-  
+
   $form['wrapper'] = array(
     '#type' => 'markup',
     '#prefix' => '<div id="confirm-wrapper">',
@@ -827,7 +829,7 @@ function culturefeed_pages_publish_page_confirm_form($form, &$form_state, $page)
       <p>Leden van deze pagina en activiteiten in naam van deze pagina worden opnieuw in het leven geroepen.</p>
       <p><strong>Ben je zeker?</strong></p>',
   );
-  
+
   $form['wrapper']['publish'] = array(
     '#type' => 'submit',
     '#value' => 'Publiceer',
@@ -843,16 +845,16 @@ function culturefeed_pages_publish_page_confirm_form($form, &$form_state, $page)
       'class' => array('button-decline close')
     ),
   );
-  
+
   return $form;
-  
+
 }
 
 /**
  * Function to actually publish the page.
  */
 function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state) {
-  
+
   $page = $form_state['page'];
 
   // Send request to (re-)publish a page.
@@ -865,7 +867,7 @@ function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state)
     watchdog_exception('culturefeed_pages', $e);
     form_set_error('', 'Er is een fout opgetreden tijdens het herstellen van de pagina.');
   }
-  
+
   $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
-  
+
 }

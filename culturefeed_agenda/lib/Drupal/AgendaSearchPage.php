@@ -38,6 +38,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
     $this->parameters[] = $facetingComponent->facetField('category');
     $this->parameters[] = $facetingComponent->facetField('datetype');
+    $this->parameters[] = $facetingComponent->facetField('city');
 
     $this->execute($params, $facetingComponent);
 
@@ -49,7 +50,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * Get the title to show.
    */
   public function getDrupalTitle() {
-    return $this->result->getTotalCount() . ' activiteiten gevonden';
+    return format_plural($this->result->getTotalCount(), '@count activiteit gevonden', '@count activiteiten gevonden');
   }
 
   /**

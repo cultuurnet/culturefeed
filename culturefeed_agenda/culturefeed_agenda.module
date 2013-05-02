@@ -108,6 +108,12 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'path' => 'agenda/search',
       'page_title' => 'Agenda',
       'search_title' => 'Activiteiten',
+      'sort_options' => array(
+        'relevancy' => 'Relevantie',
+        'date' => 'Datum',
+        'recommends' => 'Aantal keer aangeraden',
+        'comments' => 'Aantal beoordelingen',
+      ),
       'class_name' => 'CultureFeedAgendaPage',
     ),
   );
