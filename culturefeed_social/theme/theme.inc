@@ -41,14 +41,8 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
-  $node = '';
-  // Drupal nodes and culturefeed pages already contains the full url.
-  if ($activity->contentType == $activity::CONTENT_TYPE_NODE || $activity->contentType == $activity::CONTENT_TYPE_CULTUREFEED_PAGE) {
-    $node = l($activity->nodeTitle, $activity->nodeId);
-  }
-  else {
-    $node = culturefeed_search_detail_l($activity->contentType, $activity->nodeId, $activity->nodeTitle);
-  }
+  $url = culturefeed_social_detail_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
+  $link = l($activity->nodeTitle, $url);
 
   $type_prefix = '';
   $type_suffix = '';
@@ -97,19 +91,28 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
       $type_prefix = 'heeft over';
       $type_suffix = 'een beoordeling geschreven';
     break;
+
+    case $activity::TYPE_PAGE_MEMBER:
+      $type_prefix = 'werd lid van';
+    break;
+
+    case $activity::TYPE_PAGE_ADMIN:
+      $type_prefix = 'werd administrator van';
+    break;
+
   }
 
   $replace = array(
     '!nick' => l($activity->nick, $url),
     '!type_prefix' => $type_prefix,
     '!type_suffix' => $type_suffix,
-    '!node' => $node,
+    '!link' => $link,
   );
 
-  if (empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName)) {
-    $replace['!nick'] .= ' van ';
+  if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
+    $replace['!nick'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
-  $variables['text'] = rtrim(strtr('!nick !type_prefix !node !type_suffix', $replace), ' ') . '.';
+  $variables['text'] = rtrim(strtr('!nick !type_prefix !link !type_suffix', $replace), ' ') . '.';
 
 }

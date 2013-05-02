@@ -91,6 +91,11 @@ class CultureFeed_Activity {
 
   const TYPE_FOLLOW = 18;
 
+  const TYPE_PAGE_MEMBER = 16;
+  const TYPE_PAGE_ADMIN = 17;
+
+  const TYPE_NEW_EVENT = 19;
+
   /**
    * ID of the activity object.
    *
@@ -190,39 +195,51 @@ class CultureFeed_Activity {
    * @var string
    */
   public $parentActivity;
-  
+
+  /**
+   * ID of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOf;
+
+  /**
+   * Name of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOfName;
+
   /**
    * Helper method to get a string value for an ID.
-   * 
+   *
    * Requests to the /activities api will use the Integer values while requests
-   * to the /search api will use the predefined names. 
+   * to the /search api will use the predefined names.
    * This method maps the two with intention easy the usage.
-   * 
+   *
    * @param Integer $type
    * @return String $activity type.
    */
   public static function getNameById($id) {
-    
+
     $name = '';
-    
+
     switch ($id) {
 
       case self::TYPE_RECOMMEND:
         $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND;
         break;
-        
+
       case self::TYPE_LIKE:
         $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE;
         break;
-        
+
       case self::TYPE_COMMENT:
         $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT;
         break;
 
     }
-    
+
     return $name;
-    
+
   }
 
   /**
@@ -246,7 +263,7 @@ class CultureFeed_Activity {
     }
 
     $data = array_filter($data);
-    
+
     // Unset the path which is only used internally.
     unset($data['path']);
 

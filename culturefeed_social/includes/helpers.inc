@@ -6,11 +6,11 @@
 
 /**
  * Get configuration properties for a action.
- * @param Integer $activity_type 
+ * @param Integer $activity_type
  *   The activity type to get the configuration for.
  *   E.g. CultureFeed_Activity::TYPE_RECOMMEND, CultureFeed_Activity::TYPE_LIKE, ...
- *   
- * @return CultureFeedActivityConfigBase 
+ *
+ * @return CultureFeedActivityConfigBase
  */
 function culturefeed_social_activity_get_config($activity_type) {
   return CultureFeedActivityConfigBase::loadByType($activity_type);
@@ -71,15 +71,15 @@ function culturefeed_social_activity_recommend_link_advanced($extendedEntity) {
  * @todo Try to  make it work for all activity types.
  */
 function culturefeed_social_activity_recommend_link($extendedEntity, $advanced = FALSE) {
-  
+
   $itemEntity = $extendedEntity->getEntity();
   $id = $extendedEntity->getId();
   $current_query = drupal_get_query_parameters();
   $path = current_path();
-  
+
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
-  
+
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
   $activity_content_type = culturefeed_get_content_type($extendedEntity->getType());
 
@@ -93,16 +93,16 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
       watchdog_exception('culturefeed_social', $e);
     }
   }
-  
+
   $action = $user_did_this ? 'undo' : 'do';
-  
+
   if ($advanced) {
     $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/advanced';
   }
   else {
     $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/noredirect';
   }
-  
+
   $markup = array();
 
   $markup[$identifier] = array(
@@ -121,14 +121,14 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
       'wrapper' => $identifier_wrapper,
     ),
   );
-  
+
   if (!$user_did_this) {
-    
+
     $markup[$identifier]['#title'] = (0 == $extendedEntity->getActivityCount('recommend')) ? $config->titleDoFirst : $config->titleDo;
 
     if (user_is_anonymous()) {
       $markup['anon'] = array(
-        '#type' => 'markup', 
+        '#type' => 'markup',
         '#markup' => theme('culturefeed_ui_connect_hover', array('url' => 'culturefeed/do/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id)))
       );
     }
@@ -136,36 +136,36 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
   else {
     $markup[$identifier]['#title'] = $config->subjectUndo;
   }
-  
+
   return drupal_render($markup);
 }
 
 /**
- * 
+ *
  * @param String $activity_type
  * @param String $type
  * @param Integer $id
  * @return misc boolean false / CultureFeed_Activity on success
  */
 function _culturefeed_social_do($activity_type, $type, $id) {
-  
+
   $activity = new CultureFeed_Activity();
   $activity->contentType = $type;
   $activity->type = $activity_type;
   $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-  
+
   switch ($type) {
 
     // Drupal nodes.
     case $activity::CONTENT_TYPE_NODE:
-    
+
       $node = node_load($id);
       $activity->nodeTitle = $node->title;
       $activity->nodeId = url('node/' . $node->nid, array('absolute' => TRUE));
       $activity->path = 'node/' . $node->nid;
-    
+
       break;
-      
+
     // Bibnet books.
     case $activity::CONTENT_TYPE_BOOK:
 
@@ -173,9 +173,9 @@ function _culturefeed_social_do($activity_type, $type, $id) {
       $activity->nodeTitle = bibnet_books_detail_page_title($object);
       $activity->nodeId = url($object->getEntity()->getUri(), array('absolute' => TRUE));
       $activity->path = culturefeed_social_detail_path($object->getType(), $id, $activity->nodeTitle);
-      
+
       break;
-      
+
     // Culturefeed pages.
     case $activity::CONTENT_TYPE_CULTUREFEED_PAGE:
 
@@ -183,9 +183,9 @@ function _culturefeed_social_do($activity_type, $type, $id) {
       $activity->nodeTitle = $object['detail']['nl']['title'];
       $activity->nodeId = culturefeed_search_detail_url('page', $id, $object->getName(), array('absolute' => TRUE));
       $activity->path = culturefeed_search_detail_path('page', $id, $object->getName());
-      
+
       break;
-      
+
     // Normal Cdb items.
     case $activity::CONTENT_TYPE_ACTOR:
     case $activity::CONTENT_TYPE_EVENT:
@@ -195,13 +195,13 @@ function _culturefeed_social_do($activity_type, $type, $id) {
       $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage($GLOBALS['language']->language)->getTitle();
       $activity->nodeId = $id;
       $activity->path = culturefeed_search_detail_path($object->getType(), $id, $activity->nodeTitle);
-      
+
       break;
 
       // Please add your new types here.
       default:
         return FALSE;
-      
+
   }
 
   try {
@@ -216,28 +216,28 @@ function _culturefeed_social_do($activity_type, $type, $id) {
     }
     return TRUE;
   }
-  
+
 }
 
 /**
- * 
+ *
  * @param String $activity_type
  * @param String $type
  * @param Integer $id
  * @return misc boolean false / CultureFeed_Activity on success
  */
 function _culturefeed_social_undo($activity_type, $type, $id) {
-  
+
   $user_id = DrupalCultureFeed::getLoggedInUserId();
-  
+
   try {
     DrupalCultureFeed::deleteActivities($user_id, $node_id, $type, $activity_type);
-  
+
     return TRUE;
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
-  
+
     return FALSE;
   }
 }
@@ -250,7 +250,7 @@ function _culturefeed_social_undo($activity_type, $type, $id) {
  * @return string
  */
 function culturefeed_social_detail_path($type, $id, $title = '') {
-  
+
   if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE) {
     return 'node/' . $node_id;
   }
@@ -280,16 +280,23 @@ function culturefeed_social_goto($activity, $content_type, $node_id, $title = "r
 function culturefeed_social_get_active_object() {
 
   $first_argument = arg(0);
-  
-  // Agenda items (events, actors, productions)
+
+  // Agenda items (events, actors, productions) + pages
   if ($first_argument == 'agenda') {
-    return culturefeed_agenda_get_active_object();
+
+    if (arg(1) == 'g') {
+      return culturefeed_agenda_get_active_object();
+    }
+    else {
+      return menu_get_object('culturefeed_pages_page', 3);
+    }
+
   }
   // Bibnet books
   elseif ($first_argument == 'book') {
     return menu_get_object('bibnet_book', 1);
   }
-  // Culturefeed pages and drupal nodes.
+  // Drupal nodes.
   else {
     return menu_get_object();
   }
@@ -304,7 +311,7 @@ function culturefeed_social_get_active_object() {
 function culturefeed_social_get_activity_node_id($activity_content_type, $extendedEntity) {
 
   switch ($activity_content_type) {
-    
+
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
     case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
@@ -315,17 +322,17 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
         $path = culturefeed_social_detail_path($activity_content_type, $extendedEntity->getId(), $extendedEntity->getTitle($GLOBALS['language']->language));
         $nodeId = url($path, array('absolute' => TRUE));
         break;
-        
+
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
       $nodeId = url('node/' . $extendedEntity->getId(), array('absolute' => TRUE));
       break;
-      
+
     case CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE:
       $nodeId = url(culturefeed_social_detail_path('page', $extendedEntity->getId(), $object->getName()), array('absolute' => TRUE));
       break;
   }
-  
+
   return $nodeId;
-  
+
 }
 
