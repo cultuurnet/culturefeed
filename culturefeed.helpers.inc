@@ -1,6 +1,20 @@
 <?php
 
 /**
+ * Load callback for a culturefeed user.
+ */
+function cf_user_load($uid) {
+
+  try {
+    return DrupalCultureFeed::getUser($uid);
+  }
+  catch (Exception $e) {
+    watchdog_e('culturefeed', $e);
+  }
+
+}
+
+/**
  * Check if a user is a culturefeed user.
  */
 function culturefeed_is_culturefeed_user($uid = NULL) {

@@ -43,8 +43,8 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   $node = '';
   // Drupal nodes and culturefeed pages already contains the full url.
-  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_NODE || $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE) {
-    $node = $activity->nodeId;
+  if ($activity->contentType == $activity::CONTENT_TYPE_NODE || $activity->contentType == $activity::CONTENT_TYPE_CULTUREFEED_PAGE) {
+    $node = l($activity->nodeTitle, $activity->nodeId);
   }
   else {
     $node = culturefeed_search_detail_l($activity->contentType, $activity->nodeId, $activity->nodeTitle);
@@ -54,46 +54,46 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $type_suffix = '';
 
   switch ($activity->type) {
-    case CultureFeed_Activity::TYPE_VIEW:
+    case $activity::TYPE_VIEW:
       $type_prefix = 'heeft';
       $type_suffix = 'bekeken';
       break;
-    case CultureFeed_Activity::TYPE_DETAIL:
+    case $activity::TYPE_DETAIL:
       $type_prefix = 'heeft';
       $type_suffix = 'bekeken';
       break;
-    case CultureFeed_Activity::TYPE_LIKE:
+    case $activity::TYPE_LIKE:
       $type_prefix = 'vindt';
       $type_suffix = 'leuk';
       break;
-    case CultureFeed_Activity::TYPE_MAIL:
+    case $activity::TYPE_MAIL:
       $type_prefix = 'heeft';
       $type_suffix = 'gemaild';
       break;
-    case CultureFeed_Activity::TYPE_PRINT:
+    case $activity::TYPE_PRINT:
       $type_prefix = 'heeft';
       $type_suffix = 'afgedrukt';
       break;
-    case CultureFeed_Activity::TYPE_FACEBOOK:
+    case $activity::TYPE_FACEBOOK:
       $type_prefix = 'heeft';
       $type_suffix = 'via Facebook gedeeld';
       break;
-    case CultureFeed_Activity::TYPE_TWITTER:
+    case $activity::TYPE_TWITTER:
       $type_prefix = 'heeft';
       $type_suffix = 'via Twitter gedeeld';
       break;
-    case CultureFeed_Activity::TYPE_IK_GA:
+    case $activity::TYPE_IK_GA:
       $type_prefix = 'gaat naar';
       $type_suffix = '';
       break;
-    case CultureFeed_Activity::TYPE_RECOMMEND:
+    case $activity::TYPE_RECOMMEND:
       $type_prefix = 'heeft';
       $type_suffix = 'aangeraden';
       break;
-    case CultureFeed_Activity::TYPE_FOLLOW:
+    case $activity::TYPE_FOLLOW:
       $type_prefix = 'volgt';
       break;
-    case CultureFeed_Activity::TYPE_COMMENT:
+    case $activity::TYPE_COMMENT:
       $type_prefix = 'heeft over';
       $type_suffix = 'een beoordeling geschreven';
     break;
@@ -105,6 +105,10 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
     '!type_suffix' => $type_suffix,
     '!node' => $node,
   );
+
+  if (empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName)) {
+    $replace['!nick'] .= ' van ';
+  }
 
   $variables['text'] = rtrim(strtr('!nick !type_prefix !node !type_suffix', $replace), ' ') . '.';
 
