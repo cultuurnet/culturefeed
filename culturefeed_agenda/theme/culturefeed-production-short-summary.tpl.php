@@ -5,7 +5,7 @@
  */
 ?>
 
-<h3><a href="<?print $url ?>">production => <?print $title; ?></a></h3>
+<h3><a href="<?print $url ?>"><?print $title; ?></a></h3>
 <?php if ($themes): ?>
 <?php print $themes[0] ?>
 <?php endif; ?>

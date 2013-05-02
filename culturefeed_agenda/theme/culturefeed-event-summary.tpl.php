@@ -7,7 +7,7 @@
 
 <div class="event-teaser">
 
-  <h2><a href="<?print $url ?>">event => <?print $title; ?></a></h2>
+  <h2><a href="<?print $url ?>"><?print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
@@ -21,7 +21,7 @@
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
-      <div class="count-aangeraden"><?php print format_plural($recommend_count, '<span>@count</span> keer aangeraden', '<span>@count</span> keer aangeraden'); ?></div>
+      <div class="count-aangeraden"><span><?php print $recommend_count ?></span> keer aangeraden</div>
     <?php endif; ?>
     <?php print $link_recommend; ?>
   </div>

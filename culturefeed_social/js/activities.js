@@ -56,7 +56,7 @@
     
     Drupal.CulturefeedSearch.Activities.currentPage++;
     for (var i = 0; i < result.results.length; i++) {
-      Drupal.CulturefeedSearch.Activities.activityList.append('<li>' + result.results[i] + '</li>');
+      Drupal.CulturefeedSearch.Activities.activityList.append('<li class="media">' + result.results[i] + '</li>');
     }
     
     Drupal.CulturefeedSearch.Activities.throbber.remove();
