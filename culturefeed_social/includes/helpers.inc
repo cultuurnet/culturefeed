@@ -312,16 +312,16 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
       break;
 
       case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-        $path = culturefeed_social_detail_path($activity_content_type, $node_id, $extendedEntity->getTitle($GLOBALS['language']->language));
-        $url = url($path, array('absolute' => TRUE));
+        $path = culturefeed_social_detail_path($activity_content_type, $extendedEntity->getId(), $extendedEntity->getTitle($GLOBALS['language']->language));
+        $nodeId = url($path, array('absolute' => TRUE));
         break;
         
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
-      $nodeId = url('node/' . $extendedEntity->nid, array('absolute' => TRUE));
+      $nodeId = url('node/' . $extendedEntity->getId(), array('absolute' => TRUE));
       break;
       
     case CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE:
-      $nodeId = culturefeed_social_detail_path('page', $id, $object->getName());
+      $nodeId = url(culturefeed_social_detail_path('page', $extendedEntity->getId(), $object->getName()), array('absolute' => TRUE));
       break;
   }
   
