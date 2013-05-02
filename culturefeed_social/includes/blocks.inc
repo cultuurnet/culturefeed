@@ -35,26 +35,17 @@ function culturefeed_social_block_user_activities($account) {
     );
   }
   else {
+  
 
     $activity_filters = culturefeed_social_get_activity_filter_options(TRUE);
     if (!empty($activity_filters)) {
       $content['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', 'all', TRUE, $account);
     }
-
-    $content['activities'] = array(
-      '#theme' => 'culturefeed_social_user_activity_list',
-      '#activities' => $activities,
-      '#class' => 'user-activity-list',
-      '#attached' => array('js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/activities.js')),
-    );
-
-    if ($activities->total > count($activities->objects)) {
-      $content['activities']['#pager_path'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
-    }
-
-    if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
+    
+    
+       if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
-        '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
+      '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
       );
 
       $facebook = _culturefeed_ui_facebook_privacy_toggle();
@@ -73,6 +64,18 @@ function culturefeed_social_block_user_activities($account) {
         );
       }
 
+    }
+
+
+    $content['activities'] = array(
+      '#theme' => 'culturefeed_social_user_activity_list',
+      '#activities' => $activities,
+      '#class' => 'user-activity-list',
+      '#attached' => array('js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/activities.js')),
+    );
+
+    if ($activities->total > count($activities->objects)) {
+      $content['activities']['#pager_path'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
     }
 
   }
