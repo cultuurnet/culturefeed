@@ -217,7 +217,7 @@ function culturefeed_pages_menu() {
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
+    'file' => 'includes/members.inc',
   );
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/edit/%'] = array(
@@ -228,7 +228,7 @@ function culturefeed_pages_menu() {
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
+    'file' => 'includes/members.inc',
   );
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/delete/%'] = array(
@@ -239,7 +239,7 @@ function culturefeed_pages_menu() {
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
+    'file' => 'includes/members.inc',
   );
 
   $items['pages/%culturefeed_pages_page/membership/add/%cf_user/%'] = array(
@@ -250,7 +250,7 @@ function culturefeed_pages_menu() {
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
+    'file' => 'includes/members.inc',
   );
 
   $items['pages/switch/%culturefeed_pages_page'] = array(
