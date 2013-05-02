@@ -346,6 +346,13 @@ function culturefeed_pages_block_info() {
     );
   }
 
+  if (module_exists('culturefeed_agenda')) {
+    $blocks['activities-from-page'] = array(
+      'info' => t('Activities from page'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+  }
+
   return $blocks;
 
 }
@@ -376,6 +383,11 @@ function culturefeed_pages_block_view($delta) {
     case 'page-timeline':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_page_timeline($page);
+
+    case 'activities-from-page':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_activities_from_page($page);
+
   }
 
 }
