@@ -21,6 +21,11 @@ class CultureFeed_Activity {
   const CONTENT_TYPE_ACTOR = 'actor';
 
   /**
+   * Content type 'book'.
+   */
+  const CONTENT_TYPE_BOOK = 'book';
+
+  /**
    * Content type 'production'.
    */
   const CONTENT_TYPE_PRODUCTION = 'production';
@@ -185,6 +190,40 @@ class CultureFeed_Activity {
    * @var string
    */
   public $parentActivity;
+  
+  /**
+   * Helper method to get a string value for an ID.
+   * 
+   * Requests to the /activities api will use the Integer values while requests
+   * to the /search api will use the predefined names. 
+   * This method maps the two with intention easy the usage.
+   * 
+   * @param Integer $type
+   * @return String $activity type.
+   */
+  public static function getNameById($id) {
+    
+    $name = '';
+    
+    switch ($id) {
+
+      case self::TYPE_RECOMMEND:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND;
+        break;
+        
+      case self::TYPE_LIKE:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE;
+        break;
+        
+      case self::TYPE_COMMENT:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT;
+        break;
+
+    }
+    
+    return $name;
+    
+  }
 
   /**
    * Convert a CultureFeed_Activity object to an array that can be used as data in POST requests that expect user info.
@@ -207,6 +246,9 @@ class CultureFeed_Activity {
     }
 
     $data = array_filter($data);
+    
+    // Unset the path which is only used internally.
+    unset($data['path']);
 
     return $data;
   }

@@ -259,3 +259,24 @@ function culturefeed_is_connected($application_key = NULL) {
 
   return $account && isset($account->tokens) && !empty($account->tokens[$application_key]);
 }
+
+/**
+ *
+ * @param String $type
+ * @return Ambigous <string>|string
+ */
+function culturefeed_get_content_type($type) {
+  $mapping = array(
+    'bibnet_book' => CultureFeed_Activity::CONTENT_TYPE_BOOK,
+    'actor' => CultureFeed_Activity::CONTENT_TYPE_ACTOR,
+    'event' => CultureFeed_Activity::CONTENT_TYPE_EVENT,
+    'production' => CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+  );
+
+  if (isset($mapping[$type])) {
+    return $mapping[$type];
+  }
+
+  return CultureFeed_Activity::CONTENT_TYPE_NODE;
+}
+

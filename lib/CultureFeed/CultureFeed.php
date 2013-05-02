@@ -642,7 +642,8 @@ class CultureFeed implements ICultureFeed {
       throw new CultureFeed_ParseException($result);
     }
 
-    if ($id = $xml->xpath_str('/response/activityId')) {
+    $id = $xml->xpath_str('/response/activityId');
+    if (!empty($id)) {
       return $id;
     }
 

@@ -83,3 +83,94 @@ function culturefeed_social_block_user_activities($account) {
   return $block;
 
 }
+
+/**
+ * Block callback to render the users who have recommended the page.
+ * @param misc $object
+ * @return array
+ */
+function culturefeed_social_block_recommended_by($object) {
+
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
+  $content_type = $object->getType();
+  
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
+  $query->contentType = $content_type;
+  
+  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
+  //$query->private = TRUE;
+  
+  switch ($content_type) {
+    
+    case CultureFeed_Activity::CONTENT_TYPE_BOOK:
+      $node_title = $object->getTitle($GLOBALS['language']->language);
+      $id = $object->getId();
+      $query->nodeId = culturefeed_social_detail_path($object->getType(), $id, $node_title);
+      break;
+      
+    case CultureFeed_Activity::CONTENT_TYPE_EVENT:
+      $node_title = $object->getTitle($GLOBALS['language']->language);
+      $id = $object->getId();
+      $query->nodeId = $id;
+      break;
+  }
+  
+  $activities = DrupalCultureFeed::searchActivities($query);
+
+  $content = array();
+  
+  if ($activities->total > 0) {
+
+    $content['times'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="recommended-times">' . $activities->total . ' x</div>',
+    );
+    
+    $user_objects = array();
+    foreach ($activities->objects as $activity_object) {
+      if ($activity_object->userId != $cf_user_id) {
+        $user_object = new stdClass();
+        $user_object->nick = $activity_object->nick;
+        $user_object->id = $activity_object->userId;
+        $user_object->depiction = $activity_object->depiction;
+        $user_objects[] = $user_object;
+      }
+    }
+
+    if (count($user_objects) > 0) {
+
+      $items = array();
+      
+      $accounts = culturefeed_get_uids_for_users($user_objects);
+      
+      foreach ($user_objects as $user) {
+        if (!isset($accounts[$user->id])) {
+          continue;
+        }
+      
+        $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
+      }
+
+      $content['list'] = array(
+        '#theme' => 'item_list',
+        '#items' => $items,
+        '#attributes' => array('class' => 'user-list'),
+      );
+      
+    }
+    
+  }
+
+  // Advanced recommend link.
+  $content['recommend-advanced'] = array(
+    '#type' => 'markup',
+    '#markup' => culturefeed_social_activity_recommend_link_advanced($object),
+  );
+
+  $block['subject'] = $config->subject;
+  $block['content'] = $content;
+  
+  return $block;
+  
+}

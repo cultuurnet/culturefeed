@@ -107,9 +107,15 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
+  $variables['recommend_link'] = culturefeed_social_activity_recommend_link($item);
+  
   $variables['comment_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+  
   $variables['attend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND);
+  
   $variables['like_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE);
+  
+  
 
   // Themes from this item.
   $themes = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME);
@@ -297,7 +303,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   if ($event_detail) {
 
     // Link to detail.
-    $variables['link'] = culturefeed_search_detail_url('event', $event->getCdbid(), $event_detail->getTitle());
+    $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $event->getCdbid(), $event_detail->getTitle());
 
     // When.
     $variables['when'] = $event_detail->getCalendarSummary();

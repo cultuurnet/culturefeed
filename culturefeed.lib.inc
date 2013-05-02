@@ -145,9 +145,11 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function createActivity(CultureFeed_Activity $activity) {
-    $this->realCultureFeed->createActivity($activity);
+    $id = $this->realCultureFeed->createActivity($activity);
 
     $this->cacheClearActivities();
+    
+    return $id;
   }
 
   public function updateActivity($id, $private) {
@@ -595,19 +597,19 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function createActivity(CultureFeed_Activity $activity) {
-    self::getLoggedInUserInstance()->createActivity($activity);
+    return self::getLoggedInUserInstance()->createActivity($activity);
   }
 
   public static function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
-    self::getLoggedInUserInstance()->postToSocial($id, $account_name, $account_type, $message, $image, $link);
+    return self::getLoggedInUserInstance()->postToSocial($id, $account_name, $account_type, $message, $image, $link);
   }
 
   public static function updateActivity($id, $private) {
-    self::getLoggedInUserInstance()->updateActivity($id, $private);
+    return self::getLoggedInUserInstance()->updateActivity($id, $private);
   }
 
   public static function deleteActivity($id) {
-    self::getLoggedInUserInstance()->deleteActivity($id);
+    return self::getLoggedInUserInstance()->deleteActivity($id);
   }
 
   public static function deleteActivities($user_id, $node_id, $content_type, $activity_type) {

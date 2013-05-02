@@ -137,7 +137,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
   
   /**
-   * (non-PHPdoc)
+   * Implements CultureFeed_Pages::changePermissions()
    * @see CultureFeed_Pages::changePermissions()
    */ 
   public function changePermissions($id, array $params) {

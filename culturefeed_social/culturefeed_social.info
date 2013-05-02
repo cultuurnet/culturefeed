@@ -4,4 +4,10 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
+files[] = lib/Drupal/CultureFeedActivityConfigBase.php
+files[] = lib/Drupal/CultureFeedActivityConfigRecommend.php
+files[] = lib/Drupal/CultureFeedActivityConfigLike.php
+files[] = lib/Drupal/CultureFeedActivityConfigComment.php
+files[] = lib/Drupal/CultureFeedActivityConfigFollow.php
+
 dependencies[] = culturefeed_search

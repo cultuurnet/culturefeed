@@ -254,3 +254,138 @@ function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax')
 
 }
 
+/**
+ * Page callback to perform an activity (do action).
+ */
+function culturefeed_social_page_do($activity_type, $content_type, $node_id, $argument = '') {
+
+  $node_id = urldecode($node_id);
+  $activity = _culturefeed_social_do($activity_type, $content_type, $node_id);
+  $config = culturefeed_social_activity_get_config($activity_type);
+
+  $identifier = drupal_html_id('activity-element');
+  $identifier_wrapper = drupal_html_id('activity-wrapper');
+  
+  // No redirect if argument is advanced, noredirect.
+  $redirect = empty($argument);
+
+  if ($redirect) {
+    if (empty($activity)) {
+      drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+    }
+    culturefeed_social_goto($activity, $content_type, $node_id, $activity->nodeTitle);
+  }
+  else {
+    
+    $commands = array();
+    
+    if (!empty($activity)) {
+
+      $action_url = 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
+      if (!empty($argument)) {
+        $action_url .= '/' . $argument;
+      }
+      
+      $build = array();
+      $build[$identifier] = array(
+        '#id' => $identifier,
+        '#type' => 'link',
+        '#title' => $config->subjectUndo,
+        '#href' => $action_url,
+        '#query' => array(
+          'ajax_wrapper' => $identifier_wrapper
+        ),
+        '#attributes' => array(
+          'id' => $identifier,
+          'class' => array($config->linkClassUndo), 
+          'title' => $config->subjectUndo
+        ),
+        '#ajax' => array(
+          'wrapper' => $identifier_wrapper,
+        ),
+        '#prefix' => '<div id="' . $identifier_wrapper . '" class="do-link-wrapper">',
+        '#suffix' => '</div>',
+      );
+
+      if ($argument == 'advanced') {
+        drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
+      }
+      
+      $commands[] = ajax_command_replace(NULL, render($build));
+  
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+
+  }
+  
+}
+
+/**
+ * Page callback to perform an activity (undo action).
+ */
+function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $argument = '') {
+
+  $node_id = urldecode($node_id);
+  $activity = _culturefeed_social_undo($activity_type, $content_type, $node_id);
+  $config = culturefeed_social_activity_get_config($activity_type);
+  
+  $identifier = drupal_html_id('activity-element');
+  $identifier_wrapper = drupal_html_id('activity-wrapper');
+  
+  // No redirect if argument is advanced, noredirect.
+  $redirect = empty($argument);
+  
+  if ($redirect) {
+    if (empty($activity)) {
+      drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
+    }
+    culturefeed_social_goto($activity, $content_type, $node_id, $activity->nodeTitle);
+  }
+  else {
+
+    $commands = array();
+    
+    if (!empty($activity)) {
+
+      $action_url = 'culturefeed/do/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
+      if (!empty($argument)) {
+        $action_url .= '/' . $argument;
+      }
+      
+      $build = array(
+      );
+      $build[$identifier] = array(
+        '#id' => $identifier,
+        '#type' => 'link',
+        '#title' => $config->titleDo,
+        '#href' => $action_url,
+        '#query' => array(
+          'ajax_wrapper' => $identifier_wrapper
+        ),
+        '#attributes' => array(
+          'id' => $identifier,
+          'class' => array($config->linkClassDo),
+          'title' => $config->titleDo
+        ),
+        '#ajax' => array(
+          'wrapper' => $identifier_wrapper,
+        ),
+        '#prefix' => '<div id="' . $identifier_wrapper . '" class="do-link-wrapper">',
+        '#suffix' => '</div>',
+      );
+
+      if ($argument == 'advanced') {
+        drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
+      }
+
+      $commands[] =  ajax_command_replace(NULL, render($build));
+  
+    }
+  
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  
+  }
+  
+}
+

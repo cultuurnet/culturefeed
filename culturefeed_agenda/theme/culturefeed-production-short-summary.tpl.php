@@ -5,7 +5,7 @@
  */
 ?>
 
-<h3><a href="<?print $link ?>">production => <?print $title; ?></a></h3>
+<h3><a href="<?print $url ?>">production => <?print $title; ?></a></h3>
 <?php if ($themes): ?>
 <?php print $themes[0] ?>
 <?php endif; ?>
@@ -19,6 +19,6 @@
 <?php endif; ?>
 
 <?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
-<?php print culturefeed_search_ui_activity_recommend_link($item); ?>
+<?php print culturefeed_social_activity_recommend_link($item); ?>
 
 

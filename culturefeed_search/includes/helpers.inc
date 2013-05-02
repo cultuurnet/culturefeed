@@ -56,7 +56,7 @@ function culturefeed_search_item_load($cdb_id) {
     return $items[$cdb_id];
   }
   catch (Exception $e) {
-    watchdog_exception('bibnet_books', $e);
+    watchdog_exception('culturefeed_search', $e);
   }
 
   return FALSE;

@@ -17,7 +17,7 @@ beoordelingen:
   <a href="#schrijf">Schrijf als eerste een beoordeling</a>
 <?php endif; ?>
 
-<?php if ($themes): ?>
+<?php if (!empty($themes)): ?>
 Thema: <?php print $themes[0] ?><br/>
 <?php endif; ?>
 
@@ -114,3 +114,5 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
 <?php foreach ($videos as $video): ?>
   <?php print $video; ?>
 <?php endforeach; ?>
+
+<?php print culturefeed_social_activity_recommend_link($item); ?>

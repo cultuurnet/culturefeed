@@ -60,6 +60,78 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  // Activity.
+  $items['culturefeed/do/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Actie doen',
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/do/%/%/%/noredirect'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie doen'),
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4, 'noredirect'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/do/%/%/%/advanced'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie doen'),
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4, 'advanced'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/undo/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie ongedaan maken'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/undo/%/%/%/noredirect'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie ongedaan maken'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4, 'noredirect'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/undo/%/%/%/advanced'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie ongedaan maken'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4, 'advanced'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  
+  // @todo
+  $items['culturefeed/activity/delete/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => array('Actie ongedaan maken'),
+    'page callback' => 'culturefeed_ui_page_activity_delete',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -108,6 +180,11 @@ function culturefeed_social_block_info() {
     'info' => t('User activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  
+  $blocks['recommended-by'] = array(
+    'info' => t('Recommended by'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   return $blocks;
 
@@ -126,6 +203,10 @@ function culturefeed_social_block_view($delta) {
     case 'user-activities':
       $account = menu_get_object('user');
       return culturefeed_social_block_user_activities($account);
+      
+    case 'recommended-by':
+      $object = culturefeed_social_get_active_object();
+      return culturefeed_social_block_recommended_by($object);
 
   }
 
