@@ -99,7 +99,7 @@ function culturefeed_social_block_recommended_by($object) {
   }
 
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
-  $content_type = $object->getType();
+  $content_type = culturefeed_get_content_type($object->getType());
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
@@ -113,7 +113,7 @@ function culturefeed_social_block_recommended_by($object) {
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
       $node_title = $object->getTitle($GLOBALS['language']->language);
       $id = $object->getId();
-      $query->nodeId = culturefeed_social_detail_path($object->getType(), $id, $node_title);
+      $query->nodeId = url(culturefeed_social_detail_path($object->getType(), $id, $node_title), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
@@ -136,13 +136,11 @@ function culturefeed_social_block_recommended_by($object) {
 
     $user_objects = array();
     foreach ($activities->objects as $activity_object) {
-      if ($activity_object->userId != $cf_user_id) {
-        $user_object = new stdClass();
-        $user_object->nick = $activity_object->nick;
-        $user_object->id = $activity_object->userId;
-        $user_object->depiction = $activity_object->depiction;
-        $user_objects[] = $user_object;
-      }
+      $user_object = new stdClass();
+      $user_object->nick = $activity_object->nick;
+      $user_object->id = $activity_object->userId;
+      $user_object->depiction = $activity_object->depiction;
+      $user_objects[] = $user_object;
     }
 
     if (count($user_objects) > 0) {
