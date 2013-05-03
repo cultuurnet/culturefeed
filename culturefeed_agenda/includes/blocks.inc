@@ -93,7 +93,7 @@ function culturefeed_agenda_block_related_activities() {
   }
 
   $block = array();
-  $block['subject'] = $subject;
+  $block['subject'] = 'Gerelateerde activiteiten';
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,

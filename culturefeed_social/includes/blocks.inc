@@ -94,7 +94,7 @@ function culturefeed_social_block_user_activities($account) {
  */
 function culturefeed_social_block_recommended_by($object) {
 
-  if (!$object) {
+  if (!$object || !method_exists($object, 'getType')) {
     return;
   }
 
