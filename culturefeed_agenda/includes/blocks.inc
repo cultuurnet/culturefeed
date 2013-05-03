@@ -64,11 +64,18 @@ function culturefeed_agenda_block_related_activities() {
   }
 
   // Execute search.
-  $searchService = culturefeed_get_search_service();
-  $result = $searchService->search($parameters);
+  try {
 
-  if ($result->getTotalCount() == 0) {
-    return;
+    $searchService = culturefeed_get_search_service();
+    $result = $searchService->search($parameters);
+
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
   }
 
   global $language;
@@ -88,8 +95,9 @@ function culturefeed_agenda_block_related_activities() {
   $block = array();
   $block['subject'] = 'Gerelateerde activiteiten';
   $block['content'] = array(
-    '#theme' => 'culturefeed_agenda_related_items',
+    '#theme' => 'item_list',
     '#items' => $items,
+    '#class' => 'related-activities'
   );
 
   return $block;

@@ -98,13 +98,18 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
     'type' => 0,
   );
 
-  $active_trail[] = array(
-    'title' => $page->getName(),
-    'href' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()),
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
+  $page_path = culturefeed_search_detail_path('page', $page->getId(), $page->getName());
+
+  // When we are currently not on the page detail, also add breadcrumb to the page.
+  if ($page_path != $_GET['q']) {
+    $active_trail[] = array(
+      'title' => $page->getName(),
+      'href' => $page_path,
+      'link_path' => '',
+      'localized_options' => array(),
+      'type' => 0,
+    );
+  }
 
   $active_trail[] = array(
     'title' => drupal_get_title(),
