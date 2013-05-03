@@ -178,9 +178,10 @@ function _culturefeed_social_do($activity_type, $type, $id) {
 
     // Culturefeed pages.
     case $activity::CONTENT_TYPE_CULTUREFEED_PAGE:
-dsm($object);
+
+      // @todo: this cant be right.
       $object = culturefeed_pages_page_load($id);
-      $activity->nodeTitle = $object['detail']['nl']['title'];
+      $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage($GLOBALS['language']->language)->getTitle();
       $activity->nodeId = culturefeed_search_detail_url('page', $id, $object->getName(), array('absolute' => TRUE));
       $activity->path = culturefeed_search_detail_path('page', $id, $object->getName());
 
@@ -285,6 +286,9 @@ function culturefeed_social_get_active_object() {
   if ($first_argument == 'agenda') {
 
     if (arg(1) == 'g') {
+      return culturefeed_agenda_get_active_object();
+    }
+    elseif (arg(1) == 'e') {
       return culturefeed_agenda_get_active_object();
     }
     else {
