@@ -276,38 +276,6 @@ function culturefeed_social_goto($activity, $content_type, $node_id, $title = "r
 }
 
 /**
- * Get the current active agenda object.
- */
-function culturefeed_social_get_active_object() {
-
-  $first_argument = arg(0);
-
-  // Agenda items (events, actors, productions) + pages
-  if ($first_argument == 'agenda') {
-
-    if (arg(1) == 'g') {
-      return culturefeed_agenda_get_active_object();
-    }
-    elseif (arg(1) == 'e') {
-      return culturefeed_agenda_get_active_object();
-    }
-    else {
-      return menu_get_object('culturefeed_pages_page', 3);
-    }
-
-  }
-  // Bibnet books
-  elseif ($first_argument == 'book') {
-    return menu_get_object('bibnet_book', 1);
-  }
-  // Drupal nodes.
-  else {
-    return menu_get_object();
-  }
-
-}
-
-/**
  * Helper to get the nodeId used for activity.
  * @param String $activity_content_type
  * @param ActivityStatsExtendedEntity $extendedEntity

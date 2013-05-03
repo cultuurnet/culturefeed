@@ -9,7 +9,7 @@
  */
 function culturefeed_agenda_block_related_activities() {
 
-  // Get the currently viewed detail.
+  // Try to load the agenda detail.
   $item = culturefeed_agenda_get_active_object();
   if (!$item) {
     return;
@@ -93,7 +93,7 @@ function culturefeed_agenda_block_related_activities() {
   }
 
   $block = array();
-  $block['subject'] = 'Gerelateerde activiteiten';
+  $block['subject'] = $subject;
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,

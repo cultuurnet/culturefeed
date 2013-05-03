@@ -64,6 +64,36 @@ function culturefeed_search_item_load($cdb_id) {
 }
 
 /**
+ * Get the current active search object.
+ */
+function culturefeed_search_get_active_object() {
+
+  $first_argument = arg(0);
+  $second_argument = arg(1);
+
+  // Agenda items (events, actors, productions) + pages
+  if ($first_argument == 'agenda') {
+
+    if ($second_argument == 'g') {
+      return menu_get_object('culturefeed_pages_page', 3);
+    }
+    elseif ($second_argument == 'e') {
+      return culturefeed_agenda_get_active_object();
+    }
+
+  }
+  // Bibnet books
+  elseif ($first_argument == 'book') {
+    return menu_get_object('bibnet_book', 1);
+  }
+  // Drupal nodes.
+  else {
+    return menu_get_object();
+  }
+
+}
+
+/**
  * @param string $type
  * @param CultureFeed_Cdb_Item_Base $item
  * @return array()
