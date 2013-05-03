@@ -232,7 +232,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
  */
 function culturefeed_pages_block_page_timeline($page) {
 
-  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page) {
+  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page || !module_exists('culturefeed_social')) {
     return;
   }
 
@@ -308,7 +308,7 @@ function culturefeed_pages_block_page_timeline($page) {
  */
 function culturefeed_pages_block_page_agenda($page) {
 
-  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page) {
+  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page || !module_exists('culturefeed_agenda')) {
     return;
   }
 
