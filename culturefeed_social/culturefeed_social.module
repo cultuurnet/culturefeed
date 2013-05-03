@@ -70,7 +70,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
     'title' => array('Actie doen'),
@@ -80,7 +80,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/do/%/%/%/advanced'] = array(
     'title callback' => FALSE,
     'title' => array('Actie doen'),
@@ -90,7 +90,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/undo/%/%/%'] = array(
     'title callback' => FALSE,
     'title' => array('Actie ongedaan maken'),
@@ -100,7 +100,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/undo/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
     'title' => array('Actie ongedaan maken'),
@@ -110,7 +110,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/undo/%/%/%/advanced'] = array(
     'title callback' => FALSE,
     'title' => array('Actie ongedaan maken'),
@@ -120,7 +120,7 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   // @todo
   $items['culturefeed/activity/delete/%/%'] = array(
     'title callback' => FALSE,
@@ -180,7 +180,7 @@ function culturefeed_social_block_info() {
     'info' => t('User activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['recommended-by'] = array(
     'info' => t('Recommended by'),
     'cache' => DRUPAL_NO_CACHE,
@@ -205,7 +205,7 @@ function culturefeed_social_block_view($delta) {
       return culturefeed_social_block_user_activities($account);
 
       case 'recommended-by':
-        $object = culturefeed_social_get_active_object();
+        $object = culturefeed_search_get_active_object();
         return culturefeed_social_block_recommended_by($object);
 
   }

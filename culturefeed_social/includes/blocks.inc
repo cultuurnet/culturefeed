@@ -35,14 +35,14 @@ function culturefeed_social_block_user_activities($account) {
     );
   }
   else {
-  
+
 
     $activity_filters = culturefeed_social_get_activity_filter_options(TRUE);
     if (!empty($activity_filters)) {
       $content['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', 'all', TRUE, $account);
     }
-    
-    
+
+
        if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
       '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
@@ -94,42 +94,46 @@ function culturefeed_social_block_user_activities($account) {
  */
 function culturefeed_social_block_recommended_by($object) {
 
+  if (!$object) {
+    return;
+  }
+
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
   $content_type = $object->getType();
-  
+
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
   $query->contentType = $content_type;
-  
+
   $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
   //$query->private = TRUE;
-  
+
   switch ($content_type) {
-    
+
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
       $node_title = $object->getTitle($GLOBALS['language']->language);
       $id = $object->getId();
       $query->nodeId = culturefeed_social_detail_path($object->getType(), $id, $node_title);
       break;
-      
+
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
       $node_title = $object->getTitle($GLOBALS['language']->language);
       $id = $object->getId();
       $query->nodeId = $id;
       break;
   }
-  
+
   $activities = DrupalCultureFeed::searchActivities($query);
 
   $content = array();
-  
+
   if ($activities->total > 0) {
 
     $content['times'] = array(
       '#type' => 'markup',
       '#markup' => '<div class="recommended-times">' . $activities->total . ' x</div>',
     );
-    
+
     $user_objects = array();
     foreach ($activities->objects as $activity_object) {
       if ($activity_object->userId != $cf_user_id) {
@@ -150,9 +154,9 @@ function culturefeed_social_block_recommended_by($object) {
         '#items' => $items,
         '#attributes' => array('class' => 'user-list'),
       );
-      
+
     }
-    
+
   }
 
   // Advanced recommend link.
@@ -163,7 +167,7 @@ function culturefeed_social_block_recommended_by($object) {
 
   $block['subject'] = $config->subject;
   $block['content'] = $content;
-  
+
   return $block;
-  
+
 }
