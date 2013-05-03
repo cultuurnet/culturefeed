@@ -160,10 +160,10 @@ function culturefeed_pages_page_join($request_type, $page) {
 function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
 
   $message = '';
-  
+
   // Send request to follow.
   try {
-  
+
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     if ($follow) {
       $cf_pages->follow($page->getId(), array());
@@ -176,13 +176,13 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
       $cf_pages->defollow($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array());
       $message = '<p><strong>Je volgt deze pagina niet meer</strong></p>';
     }
-  
+
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
     $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
   }
-  
+
   // Deliver as ajax callback or normal page.
   if ($request_type != 'ajax') {
     drupal_set_message($message);

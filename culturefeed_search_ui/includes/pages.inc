@@ -75,7 +75,7 @@ function culturefeed_search_ui_suggestions_autocomplete_page($search_string) {
 /**
  * Page callback for the region suggestions autocomplete.
  */
-function culturefeed_pages_region_suggestion_autocomplete_page($search_string) {
+function culturefeed_search_ui_region_suggestion_autocomplete_page($search_string) {
 
   $matches = array();
 
