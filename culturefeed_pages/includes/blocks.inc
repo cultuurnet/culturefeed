@@ -236,24 +236,105 @@ function culturefeed_pages_block_page_timeline($page) {
     return;
   }
 
-  $content = array();
+  $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  // Add start index (page number we want) + items per page
+  $parameters[] = new \CultuurNet\Search\Parameter\Start($curr_page * CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
+
+  // Add grouping so returned events are not duplicate.
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+
+  // Search on events that have a relation to the page ID.
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+
+  // Add sorting.
+  $sort_field = 'startdate';
+  $direction = 'asc';
+  if (isset($_GET['order'])) {
+
+    $direction = $_GET['sort'];
+
+    switch ($_GET['order']) {
+
+      case 'Titel':
+        $sort_field = 'title_sort';
+      break;
+
+      case 'Datum':
+        $sort_field = 'startdate';
+      break;
+
+      case 'Reacties':
+        $sort_field = 'comment_count';
+      break;
+
+    }
+
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_field, $direction);
+  $service = culturefeed_get_search_service();
+
+  // Execute search and show results.
+  $build = array();
   try {
 
-    $activities = DrupalCultureFeed::getLoggedInUserInstance()->pages()->getTimeline($page->getId());
+    $result = $service->search($parameters);
+    pager_default_initialize($result->getTotalCount(), CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
 
-    if (empty($activities->objects)) {
-      $content['activities'] = array(
-        '#markup' => 'Deze pagina heeft nog geen acties.',
-      );
-    }
-    else {
+    $build['page'] = array(
+      '#theme' => 'culturefeed_pages_events_admin_page',
+      '#result' => $result,
+      '#page' => $page,
+    );
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $build['error'] = array('#markup' => "Er is een fout opgetreden tijdens het laden van de activiteiten.");
+  }
 
-      $content['activities'] = array(
-        '#theme' => 'culturefeed_social_user_activity_list',
-        '#activities' => $activities,
-        '#class' => 'page-time-line',
-      );
+  culturefeed_pages_set_page_breadcrumb($page);
 
+  return $build;
+
+  return $block;
+
+}
+
+/**
+ * Show the timeline of a page in a block.
+ */
+function culturefeed_pages_block_page_agenda($page) {
+
+  if (!$page || !$page instanceof CultureFeed_Cdb_Item_Page) {
+    return;
+  }
+
+  // Only an organisation has an agenda.
+  $categories = $page->getCategories();
+  if (!in_array(CULTUREFEED_ACTORTYPE_ORGANISATION, $categories)) {
+    return;
+  }
+
+  $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('pages_block_agenda_total_items', 5));
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+
+  $service = culturefeed_get_search_service();
+
+  // Execute search and show results.
+  $build = array();
+  try {
+
+    $searchService = culturefeed_get_search_service();
+    $result = $searchService->search($parameters);
+
+    if (!$is_admin && $result->getTotalCount() == 0) {
+      return;
     }
 
   }
@@ -261,8 +342,23 @@ function culturefeed_pages_block_page_timeline($page) {
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $block['subject'] = 'Tijdslijn';
-  $block['content'] = $content;
+  // Render the results.
+  $search_results = $result->getItems();
+  $items = array();
+  foreach ($search_results as $search_result) {
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_summary', array('item' => $search_result));
+  }
+
+  $block = array();
+  $block['subject'] = 'Activiteiten';
+
+  $block['content'] = array(
+    '#theme' => 'culturefeed_pages_page_agenda',
+    '#items' => $items,
+    '#is_admin' => $is_admin,
+    '#page' => $page,
+    '#class' => 'page-activities'
+  );
 
   return $block;
 

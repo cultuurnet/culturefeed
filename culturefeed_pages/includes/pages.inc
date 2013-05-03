@@ -81,36 +81,9 @@ function culturefeed_pages_join_form_submit($form, &$form_state) {
 /**
  * Page callback to show the details of a culturefeed page.
  */
-function culturefeed_pages_detail_page($page) {
+function culturefeed_pages_detail_page(CultureFeed_Cdb_Item_Page $page) {
 
-  // Hardcoded breadcrumb requested. Use active trail, so breadcrumb can be altered.
-  $active_trail = array();
-
-  $active_trail[] = array(
-    'title' => t('Home'),
-    'href' => '<front>',
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
-
-  $active_trail[] = array(
-    'title' => 'Pages',
-    'href' => 'pages/search',
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
-
-  $active_trail[] = array(
-    'title' => drupal_get_title(),
-    'href' => $_GET['q'],
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
-
-  menu_set_active_trail($active_trail);
+culturefeed_pages_set_page_breadcrumb($page);
 
   $isPageAdmin = FALSE;
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();

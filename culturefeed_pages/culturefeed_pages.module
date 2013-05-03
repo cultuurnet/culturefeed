@@ -12,7 +12,7 @@ module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
 define('CULTUREFEED_ACTORTYPE_ORGANISATION', '8.11.0.0.0');
 
 /**
- * Total items per page for the events admin.
+ * Total items per page for the events admin and the agenda block.
  */
 define('CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT', 50);
 
@@ -141,7 +141,7 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
     'culturefeed_pages_followers_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -159,6 +159,16 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-events-admin-page',
       'path' => $path,
       'file' => 'theme.inc',
+    ),
+
+    'culturefeed_pages_page_agenda' => array(
+      'variables' => array(
+        'items' => array(),
+        'page' => NULL,
+        'is_admin' => FALSE,
+      ),
+      'template' => 'culturefeed-pages-page-agenda',
+      'path' => $path,
     ),
 
   );
@@ -373,7 +383,7 @@ function culturefeed_pages_block_info() {
     'info' => t("Page admin menu"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
-  
+
   $blocks['followers'] = array(
     'info' => t('Followers'),
     'cache' => DRUPAL_NO_CACHE,
@@ -387,13 +397,43 @@ function culturefeed_pages_block_info() {
   }
 
   if (module_exists('culturefeed_agenda')) {
-    $blocks['activities-from-page'] = array(
-      'info' => t('Activities from page'),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+    $blocks['page-agenda'] = array(
+      'info' => t('Page Agenda'),
+      'cache' => DRUPAL_CACHE_PER_USER,
     );
   }
 
   return $blocks;
+
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function culturefeed_pages_block_configure($delta) {
+
+  $form = array();
+
+  if ($delta == 'page-agenda') {
+    $form['pages_block_agenda_total_items'] = array(
+      '#title' => t('Items to show'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('pages_block_agenda_total_items', 5),
+    );
+  }
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_pages_block_save($delta, $edit) {
+
+  if ($delta == 'page-agenda') {
+    variable_set('pages_block_agenda_total_items', $edit['pages_block_agenda_total_items']);
+  }
 
 }
 
@@ -428,9 +468,9 @@ function culturefeed_pages_block_view($delta) {
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
 
-    case 'activities-from-page':
+    case 'page-agenda':
       $page = menu_get_object('culturefeed_pages_page', 3);
-      return culturefeed_pages_block_activities_from_page($page);
+      return culturefeed_pages_block_page_agenda($page);
 
   }
 
@@ -621,7 +661,7 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-return TRUE;
+
   if (!user_access('edit culturefeed page')) {
     return FALSE;
   }
