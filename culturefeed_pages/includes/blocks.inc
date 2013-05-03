@@ -322,7 +322,7 @@ function culturefeed_pages_block_page_agenda($page) {
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('pages_block_agenda_total_items', 5));
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
 
   $service = culturefeed_get_search_service();
 

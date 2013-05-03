@@ -88,8 +88,12 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
     return;
   }
 
-  $options = $searchable_types[$active_page]['sort_options'];
+  $options = isset($searchable_types[$active_page]['sort_options']) ? $searchable_types[$active_page]['sort_options'] : array();
   $default = isset($query['sort']) ? $query['sort'] : '';
+
+  if (!$options) {
+    return;
+  }
 
   $form['sort'] = array(
     '#title' => t('Sorteer resultaten op'),

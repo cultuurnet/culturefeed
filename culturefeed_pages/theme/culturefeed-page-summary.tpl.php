@@ -7,13 +7,13 @@
 
 <div class="page-teaser">
 
-  <h2><a href="<?print $link ?>"><?print $title; ?></a></h2>
+  <h2><a href="<?print $url ?>"><?print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <?php if ($member_count > 0): ?>
     <div class="members-wrapper">
         <?php print format_plural($member_count, '<span class="members">@count</span> lid', '<span class="members">@count</span> leden'); ?>
-        <a href="<?php print $link ?>#members">Bekijk leden</a>
+        <a href="<?php print $url ?>#members">Bekijk leden</a>
     </div>
     <?php endif; ?>
     <?php if ($follower_count > 0): ?>

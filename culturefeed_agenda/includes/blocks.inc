@@ -103,4 +103,3 @@ function culturefeed_agenda_block_related_activities() {
   return $block;
 
 }
-

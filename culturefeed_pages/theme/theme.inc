@@ -67,7 +67,7 @@ function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
 
   $page = $variables['item']->getEntity();
   $variables['more_text'] = 'Meer info';
-  $variables['link'] = culturefeed_search_detail_url('page', $page->getId(), $page->getName());
+  $variables['url'] = culturefeed_search_detail_url('page', $page->getId(), $page->getName());
 
   $variables['member_count'] = $variables['item']->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER);
   $variables['follower_count'] = $variables['item']->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW);
@@ -242,24 +242,24 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
   $variables['title'] = $variables['page']->getName();
 
   $uids = culturefeed_get_uids_for_memberships($variables['followers']);
-  
+
   $followers = array();
   foreach ($variables['followers'] as $cf_follower) {
-  
+
     // If user was not found in drupal, don't show it.
     if (!isset($uids[$cf_follower->user->id])) {
       continue;
     }
-  
+
     $follower = array();
     $follower['url'] = url('user/' . $uids[$membership->user->id]);
     $follower['name'] = $membership->user->nick;
     $follower['picture'] = $membership->user->depiction;
-  
+
     $followers[] = $follower;
-  
+
   }
-  
+
   drupal_add_library('system', 'drupal.ajax');
 
   $options = array(
@@ -274,7 +274,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
   else {
     $variables['follow_link'] = l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $variables['page']->getId(), $options);
   }
-  
+
 }
 
 
