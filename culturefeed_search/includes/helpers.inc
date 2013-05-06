@@ -383,7 +383,7 @@ function culturefeed_search_get_actortype_categories() {
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
  */
 function culturefeed_search_get_educationfield_categories($conditions = array()) {
-  return culturefeed_search_get_categories_by_domain('educationfield');
+  return culturefeed_search_get_categories_by_domain('educationfield', $conditions);
 }
 
 /**
