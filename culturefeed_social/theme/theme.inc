@@ -117,3 +117,38 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $variables['text'] = rtrim(strtr('!nick !type_prefix !link !type_suffix', $replace), ' ') . '.';
 
 }
+
+/**
+ * Preprocess the variables for the user notifications page.
+ * @see culturefeedsocial-user-notifications-page.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_user_notifications_page(&$variables) {
+
+  $notifications = array();
+  dsm($variables);
+  // Split the notification resultset in 2 resultsets.
+  foreach ($variables['notifications']->objects as $notification) {
+
+    if (!isset($notifications[$notification->status])) {
+      $notifications[$notification->status] = new CultureFeed_ResultSet(0, array());
+    }
+
+    $notifications[$notification->status]->total++;
+    $notifications[$notification->status]->objects[] = $notification;
+
+  }
+
+  // Render the 2 lists.
+  $variables['new_notifications_count'] = 0;
+  if (isset($notifications[Culturefeed::NOTIFICATION_TYPE_NEW])) {
+    $variables['new_notifications_count'] = $notifications[Culturefeed::NOTIFICATION_TYPE_NEW]->total;
+    $variables['new_notifications'] = theme('culturefeed_social_user_activity_list', array('activities' => $notifications[Culturefeed::NOTIFICATION_TYPE_NEW]));
+  }
+
+  $variables['read_notifications_count'] = 0;
+  if (isset($notifications[Culturefeed::NOTIFICATION_TYPE_READ])) {
+    $variables['read_notifications_count'] = $notifications[Culturefeed::NOTIFICATION_TYPE_READ]->total;
+    $variables['read_notifications'] = theme('culturefeed_social_user_activity_list', array('activities' => $notifications[Culturefeed::NOTIFICATION_TYPE_READ]));
+  }
+
+}

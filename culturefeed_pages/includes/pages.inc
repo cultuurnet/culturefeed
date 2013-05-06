@@ -86,9 +86,16 @@ function culturefeed_pages_detail_page(CultureFeed_Cdb_Item_Page $page) {
 culturefeed_pages_set_page_breadcrumb($page);
 
   $isPageAdmin = FALSE;
-  $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
-  $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
+  try {
+    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+    if ($cultureFeedUser) {
+      $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+      $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
 
   if (!$page->isVisible() && !$isPageAdmin) {
     return array(

@@ -121,12 +121,11 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  // @todo
-  $items['culturefeed/activity/delete/%/%'] = array(
+  // Notifications
+  $items['culturefeed/notifications'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie ongedaan maken'),
-    'page callback' => 'culturefeed_ui_page_activity_delete',
-    'page arguments' => array(3, 4),
+    'title' => 'Mijn meldingen',
+    'page callback' => 'culturefeed_social_page_notifications',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -164,7 +163,14 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_social_user_notifications_page' => array(
+      'variables' => array(
+        'notifications' => NULL,
+      ),
+      'template' => 'culturefeed-social-user-notifications-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -238,11 +244,16 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
     $notification_count = DrupalCultureFeed::getNotificationsCount(DrupalCultureFeed::getLoggedInUserId());
 
     if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
-      $items['new-messages'] = array(
+      $items['notifications'] = array(
         'data' => l($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW], 'culturefeed/notifications'),
-        'class' => 'new-messages',
+        'class' => 'notifications',
         'weight' => -20,
       );
+
+      if ($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] > 0) {
+        $items['notifications']['class'] .= ' has-new';
+      }
+
     }
 
   }

@@ -1155,6 +1155,7 @@ class CultureFeed implements ICultureFeed {
    *   User Id to get the notifications for.
    * @param string dateFrom
    *   ISO Date to set the startdate of the timeline. (optional)
+   *
    * @throws CultureFeed_ParseException
    * @return CultureFeed_ResultSet
    */
@@ -1185,6 +1186,36 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $notifications_count;
+
+  }
+
+  /**
+   * Get the notifications for a user.
+   *
+   * @param string $userId
+   *   User Id to get the notifications for.
+   * @param string dateFrom
+   *   ISO Date to set the startdate of the timeline. (optional)
+   *
+   * @throws CultureFeed_ParseException
+   * @return CultureFeed_ResultSet
+   */
+  public function getNotifications($userId, $dateFrom = NULL) {
+
+    $params = array();
+    if (!empty($dateFrom)) {
+      $params['dateFrom'] = $dateFrom;
+    }
+dsm($userId);
+    $result = $this->oauth_client->authenticatedGetAsXml('user/' . $userId . '/notifications', $params);
+    try {
+      $xmlElement = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseActivities($xmlElement);
 
   }
 
@@ -1632,6 +1663,7 @@ class CultureFeed implements ICultureFeed {
       $activity->onBehalfOf     = $object->xpath_str('onBehalfOf');
       $activity->onBehalfOfName = $object->xpath_str('onBehalfOfName');
       $activity->parentActivity = $object->xpath_str('parentActivity');
+      $activity->status         = $object->xpath_str('status');
 
       $activities[] = $activity;
     }

@@ -86,6 +86,8 @@ interface ICultureFeed {
 
   public function getNotificationsCount($userId, $dateFrom = NULL);
 
+  public function getNotifications($userId, $dateFrom = NULL);
+
   public function getUrlAddSocialNetwork($network, $destination = '');
 
   public function getUrlChangePassword($id, $destination = '');

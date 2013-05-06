@@ -154,6 +154,13 @@ function _culturefeed_social_do($activity_type, $type, $id) {
   $activity->type = $activity_type;
   $activity->userId = DrupalCultureFeed::getLoggedInUserId();
 
+  if (module_exists('culturefeed_pages')) {
+    $active_page = culturefeed_pages_get_active_page_id();
+    if ($active_page) {
+      $activity->onBehalfOf = $active_page;
+    }
+  }
+
   switch ($type) {
 
     // Drupal nodes.
