@@ -6,8 +6,12 @@
 
 module_load_include('inc', 'culturefeed_social', 'includes/helpers');
 
+/**
+ * Max items per page / block.
+ */
 define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 10);
 define('CULTUREFEED_SOCIAL_PAGE_USER_ACTIVITIES_COUNT', 20);
+define('CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT', 50);
 
 /**
  * Implements hook_menu().

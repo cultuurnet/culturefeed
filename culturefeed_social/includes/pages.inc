@@ -401,8 +401,8 @@ function culturefeed_social_page_notifications() {
 
   try {
 
-    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId());
-    dsm($notifications);
+    // Currently get the messages till 1 year ago.
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT, date('Y-m-d', strtotime('-1 year')));
     return theme('culturefeed_social_user_notifications_page', array('notifications' => $notifications));
 
   }

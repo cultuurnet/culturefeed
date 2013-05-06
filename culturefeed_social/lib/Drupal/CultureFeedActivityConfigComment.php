@@ -19,6 +19,8 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->titleShowAll = 'Toon iedereen reageerde op deze pagina';
     $this->linkClassDo = 'comment-link';
     $this->linkClassUndo = 'uncomment-link';
+    $this->viewPrefix = 'heeft over';
+    $this->viewSuffix = 'een beoordeling geschreven';
   }
 
 }

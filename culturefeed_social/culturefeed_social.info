@@ -5,9 +5,18 @@ version = VERSION
 core = 7.x
 
 files[] = lib/Drupal/CultureFeedActivityConfigBase.php
-files[] = lib/Drupal/CultureFeedActivityConfigRecommend.php
-files[] = lib/Drupal/CultureFeedActivityConfigLike.php
 files[] = lib/Drupal/CultureFeedActivityConfigComment.php
+files[] = lib/Drupal/CultureFeedActivityConfigDetail.php
+files[] = lib/Drupal/CultureFeedActivityConfigFacebook.php
 files[] = lib/Drupal/CultureFeedActivityConfigFollow.php
+files[] = lib/Drupal/CultureFeedActivityConfigGo.php
+files[] = lib/Drupal/CultureFeedActivityConfigLike.php
+files[] = lib/Drupal/CultureFeedActivityConfigMail.php
+files[] = lib/Drupal/CultureFeedActivityConfigPageAdmin.php
+files[] = lib/Drupal/CultureFeedActivityConfigPageMember.php
+files[] = lib/Drupal/CultureFeedActivityConfigPrint.php
+files[] = lib/Drupal/CultureFeedActivityConfigRecommend.php
+files[] = lib/Drupal/CultureFeedActivityConfigTwitter.php
+files[] = lib/Drupal/CultureFeedActivityConfigView.php
 
 dependencies[] = culturefeed_search

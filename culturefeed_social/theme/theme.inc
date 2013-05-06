@@ -47,59 +47,11 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $type_prefix = '';
   $type_suffix = '';
 
-  switch ($activity->type) {
-    case $activity::TYPE_VIEW:
-      $type_prefix = 'heeft';
-      $type_suffix = 'bekeken';
-      break;
-    case $activity::TYPE_DETAIL:
-      $type_prefix = 'heeft';
-      $type_suffix = 'bekeken';
-      break;
-    case $activity::TYPE_LIKE:
-      $type_prefix = 'vindt';
-      $type_suffix = 'leuk';
-      break;
-    case $activity::TYPE_MAIL:
-      $type_prefix = 'heeft';
-      $type_suffix = 'gemaild';
-      break;
-    case $activity::TYPE_PRINT:
-      $type_prefix = 'heeft';
-      $type_suffix = 'afgedrukt';
-      break;
-    case $activity::TYPE_FACEBOOK:
-      $type_prefix = 'heeft';
-      $type_suffix = 'via Facebook gedeeld';
-      break;
-    case $activity::TYPE_TWITTER:
-      $type_prefix = 'heeft';
-      $type_suffix = 'via Twitter gedeeld';
-      break;
-    case $activity::TYPE_IK_GA:
-      $type_prefix = 'gaat naar';
-      $type_suffix = '';
-      break;
-    case $activity::TYPE_RECOMMEND:
-      $type_prefix = 'heeft';
-      $type_suffix = 'aangeraden';
-      break;
-    case $activity::TYPE_FOLLOW:
-      $type_prefix = 'volgt';
-      break;
-    case $activity::TYPE_COMMENT:
-      $type_prefix = 'heeft over';
-      $type_suffix = 'een beoordeling geschreven';
-    break;
-
-    case $activity::TYPE_PAGE_MEMBER:
-      $type_prefix = 'werd lid van';
-    break;
-
-    case $activity::TYPE_PAGE_ADMIN:
-      $type_prefix = 'werd administrator van';
-    break;
-
+  $config = culturefeed_social_activity_get_config($activity->type);
+  // If no config available, show default text
+  if ($config) {
+    $type_prefix = $config->viewPrefix;
+    $type_suffix = $config->viewSuffix;
   }
 
   $replace = array(
@@ -125,7 +77,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 function culturefeed_social_preprocess_culturefeed_social_user_notifications_page(&$variables) {
 
   $notifications = array();
-  dsm($variables);
+
   // Split the notification resultset in 2 resultsets.
   foreach ($variables['notifications']->objects as $notification) {
 

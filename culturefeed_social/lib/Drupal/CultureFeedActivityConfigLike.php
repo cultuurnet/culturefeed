@@ -1,7 +1,7 @@
 <?php
 
 class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
-  
+
   public $type = CultureFeed_Activity::TYPE_LIKE;
 
   /**
@@ -11,7 +11,7 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     parent::__construct();
 
     $this->allowedTypes = array('actor', 'event', 'production', 'book');
-    
+
     $this->subject = 'Vinden dit leuk';
     $this->subjectDo = 'Vind ik leuk';
     $this->subjectUndo = 'Vind ik niet meer leuk';
@@ -20,6 +20,8 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     $this->titleShowAll = 'Toon iedereen die dit leuk vindt';
     $this->linkClassDo = 'like-link';
     $this->linkClassUndo = 'unlike-link';
+    $this->viewPrefix = 'vindt';
+    $this->viewSuffix = 'leuk';
   }
-  
+
 }
