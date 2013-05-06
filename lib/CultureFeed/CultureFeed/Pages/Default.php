@@ -34,6 +34,12 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   const PAGE_MODIFIED = 'PAGE_MODIFIED';
 
   /**
+   * Status code when an action was not allowed.
+   * @var string
+   */
+  const ACTION_NOT_ALLOWED = 'ACTION_NOT_ALLOWED';
+
+  /**
    * CultureFeed object to make CultureFeed core requests.
    * @var ICultureFeed
    */
@@ -244,10 +250,10 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    * @see CultureFeed_Pages::follow()
    */
   public function follow($id, array $params) {
-  
+
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/follow', $params);
     $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
-  
+
   }
 
   /**

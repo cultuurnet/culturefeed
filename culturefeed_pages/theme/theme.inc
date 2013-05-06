@@ -49,6 +49,10 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
   drupal_add_library('system', 'drupal.ajax');
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+
+    $permissions = $page->getPermissions();
+    dsm($permissions);
+
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
     $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
@@ -141,7 +145,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
 
   // Add join link if not a member yet.
-  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+  if (!culturefeed_pages_is_user_member_of_page($page->getId()) && $page->getPermissions()->allowMembers) {
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
     $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
@@ -268,10 +272,11 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
     ),
     'attributes' => array('class' => array('use-ajax'))
   );
+
   if ($variables['you_follow']) {
     $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $variables['page']->getId(), $options);
   }
-  else {
+  elseif ($variables['page']->getPermissions()->allowFollowers) {
     $variables['follow_link'] = l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $variables['page']->getId(), $options);
   }
 
