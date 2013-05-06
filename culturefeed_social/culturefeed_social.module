@@ -249,12 +249,13 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
 
     if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
       $items['notifications'] = array(
-        'data' => l($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW], 'culturefeed/notifications'),
+        'data' => l('<span class="badge">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
         'class' => 'notifications',
         'weight' => -20,
       );
 
       if ($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] > 0) {
+        $items['notifications']['data'] = l('<span class="badge badge-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
         $items['notifications']['class'] .= ' has-new';
       }
 
