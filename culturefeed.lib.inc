@@ -148,7 +148,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $id = $this->realCultureFeed->createActivity($activity);
 
     $this->cacheClearActivities();
-    
+
     return $id;
   }
 
@@ -301,6 +301,13 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     if ($evaluation == CultureFeed::RECOMMENDATION_EVALUATION_POSITIVE) {
       $this->cacheClearActivities();
     }
+  }
+
+  /**
+   * @see ICultureFeed::getNotificationsCount()
+   */
+  public function getNotificationsCount($userId, $dateFrom = NULL) {
+    return $this->realCultureFeed->getNotificationsCount($userId, $dateFrom);
   }
 
   public function getUrlAddSocialNetwork($network, $destination = '') {
@@ -708,6 +715,13 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function evaluateRecommendation($id, $evaluation) {
     self::getLoggedInUserInstance()->evaluateRecommendation($id, $evaluation);
+  }
+
+  /**
+   * @see ICultureFeed::getNotificationsCount()
+   */
+  public static function getNotificationsCount($userId, $dateFrom = NULL) {
+    return self::getLoggedInUserInstance()->getNotificationsCount($userId, $dateFrom);
   }
 
   public static function getUrlAddSocialNetwork($network, $destination = '') {

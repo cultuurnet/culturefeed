@@ -79,6 +79,12 @@ class CultureFeed implements ICultureFeed {
   const AUTHORIZE_TYPE_FORCELOGIN = 'forcelogin';
 
   /**
+   * Notification count types.
+   */
+  const NOTIFICATION_TYPE_NEW = 'NEW';
+  const NOTIFICATION_TYPE_READ = 'READ';
+
+  /**
    * OAuth request object to do the request.
    *
    * @var CultureFeed_OAuthClient
@@ -1140,6 +1146,46 @@ class CultureFeed implements ICultureFeed {
     $data = array('evaluation' => $evaluation);
 
     $this->oauth_client->authenticatedPostAsXml('recommendation/evaluate/' . $id, $data);
+  }
+
+  /**
+   * Get the total count of notifications for a user.
+   *
+   * @param string $userId
+   *   User Id to get the notifications for.
+   * @param string dateFrom
+   *   ISO Date to set the startdate of the timeline. (optional)
+   * @throws CultureFeed_ParseException
+   * @return CultureFeed_ResultSet
+   */
+  public function getNotificationsCount($userId, $dateFrom = NULL) {
+
+    $params = array();
+    if (!empty($dateFrom)) {
+      $params['dateFrom'] = $dateFrom;
+    }
+
+    $result = $this->oauth_client->authenticatedGetAsXml('user/' . $userId . '/notifications/totals', $params);
+    try {
+      $xmlElement = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $notifications_count = array();
+    $total = $xmlElement->xpath('/response/total');
+    if (!$total) {
+      return array();
+    }
+
+    foreach ($total as $count) {
+      $attributes = $count->attributes();
+      $notifications_count[(string)$attributes['type']] = (string) $count;
+    }
+
+    return $notifications_count;
+
   }
 
   /**

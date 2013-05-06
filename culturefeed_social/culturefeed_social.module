@@ -228,6 +228,33 @@ function culturefeed_social_culturefeed_ui_profile_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_social_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+  try {
+
+    $notification_count = DrupalCultureFeed::getNotificationsCount(DrupalCultureFeed::getLoggedInUserId());
+
+    if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
+      $items['new-messages'] = array(
+        'data' => l($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW], 'culturefeed/notifications'),
+        'class' => 'new-messages',
+        'weight' => -20,
+      );
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  return $items;
+
+}
+
+/**
  * Form to filter on user activities.
  */
 function culturefeed_social_user_activity_filter_form($form, $form_state, $active_filter = 'all', $in_block = FALSE, $account = NULL) {
