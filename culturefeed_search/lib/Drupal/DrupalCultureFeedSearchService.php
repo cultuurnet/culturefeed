@@ -74,7 +74,7 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::searchSuggestions().
    */
   public function searchSuggestions($search_string, $type = NULL) {
-    return $this->service->searchSuggestions($search_string);
+    return $this->service->searchSuggestions($search_string, $type);
   }
 
 }
