@@ -116,14 +116,14 @@ function culturefeed_social_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => 'Verwijderen',
       '#href' => 'culturefeed/activity/delete/' . $activity->id . '/nojs',
-      '#attributes' => array('class' => 'remove-link'),
+      '#attributes' => array('class' => array('remove-link')),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
 
     $privacy = array(
       '#type' => 'link',
-      '#title' => $activity->private ? 'Priv�' : 'Publiek',
+      '#title' => $activity->private ? 'Privé' : 'Publiek',
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? 'Zet publiek' : 'Maak privé')),
       '#options' => array('query' => drupal_get_destination()),
@@ -217,6 +217,36 @@ function culturefeed_social_page_activity_delete($id, $type = 'ajax') {
     drupal_goto();
   }
 
+}
+
+/**
+ * Page callback to report abusive content.
+ */
+function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
+
+  $success = TRUE;
+  
+  try {
+    DrupalCultureFeed::deleteActivity($id);
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+  }
+  
+  if ($type == 'ajax') {
+    $commands = array();
+  
+    if ($success) {
+      $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
+    }
+  
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_goto();
+  }
+  
 }
 
 /**

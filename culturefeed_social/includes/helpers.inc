@@ -308,3 +308,47 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
 
 }
 
+/**
+ * Helper function to create a list of activities of the type COMMENT
+ * 
+ * @param misc $object (Culturefeed_Page, Bibnet_Book, ...
+ * @param CultureFeed_ResultSet $activities
+ */
+function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $activities) {
+
+  if ($activities->total < 0) {
+    return array();
+  }
+  
+  $activity_list = array();
+  $total = 0;
+  foreach ($activities->objects as $activity) {
+    if (empty($activity->parentActivity)) {
+      $activity_list[$activity->id] = $activity;
+      $total++;
+    }
+  }
+
+  foreach ($activities->objects as $activity) {
+    if (!empty($activity->parentActivity) && isset($activity_list[$activity->parentActivity])) {
+      $activity_list[$activity->parentActivity]->childActivities[$activity->id] = $activity;
+    }
+  }
+  
+  $accounts = culturefeed_get_uids_for_activities($activities->objects);
+
+  return array(
+    '#type' => 'markup',
+    '#markup' => theme('culturefeed_social_recommendation_list', array(
+      'object' => $object, 
+      'activities' => $activity_list, 
+      'total' => $total,
+      'accounts' => $accounts,
+    )),
+    '#attached' => array(
+      'js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/culturefeed-social.js'),
+    )
+  );
+  
+}
+

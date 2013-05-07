@@ -25,7 +25,7 @@ function culturefeed_social_block_user_activities($account) {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
+    watchdog_exception('culturefeed_social', $e);
     return;
   }
 
@@ -43,7 +43,7 @@ function culturefeed_social_block_user_activities($account) {
     }
 
 
-       if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
+    if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
       $content['edit'] = array(
       '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
       );
@@ -169,3 +169,44 @@ function culturefeed_social_block_recommended_by($object) {
   return $block;
 
 }
+
+/**
+ * Block callback to render the recommendations of an item.
+ * @param misc $object
+ * @return array
+ **/
+function culturefeed_social_block_recommendations($object) {
+
+  if (!$object || !method_exists($object, 'getType')) {
+    return;
+  }
+  
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $content_type = culturefeed_get_content_type($object->getType());
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = CultureFeed_Activity::TYPE_COMMENT;
+  $query->contentType = $content_type;
+  $query->nodeId = culturefeed_social_get_activity_node_id($content_type, $object);
+  
+  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+    return;
+  }
+  
+  $content = array();
+  $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
+  $content['recommendation_form'] = drupal_get_form('culturefeed_social_recommendation_form', $object);
+
+  $block['subject'] = 'Beoordelingen';
+  $block['content'] = $content;
+  
+  return $block;
+  
+}
+

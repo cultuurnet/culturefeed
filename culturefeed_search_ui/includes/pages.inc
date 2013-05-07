@@ -37,6 +37,10 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL) {
   catch (InvalidSearchPageException $e) {
     return $e->getMessage();
   }
+  catch (CultureFeed_Cdb_ParseException $e) {
+    watchdog_exception('culturefeed_search_ui', $e);
+    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+  }
 }
 
 /**

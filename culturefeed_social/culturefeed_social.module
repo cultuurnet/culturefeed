@@ -49,6 +49,16 @@ function culturefeed_social_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+  
+  $items['culturefeed/activity/mark-abusive/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Rapporteer als ongepast',
+    'page callback' => 'culturefeed_social_page_activity_mark_abusive',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
 
   $items['culturefeed/activity/privacy/%/%/%'] = array(
     'title callback' => FALSE,
@@ -121,17 +131,6 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  // @todo
-  $items['culturefeed/activity/delete/%/%'] = array(
-    'title callback' => FALSE,
-    'title' => array('Actie ongedaan maken'),
-    'page callback' => 'culturefeed_ui_page_activity_delete',
-    'page arguments' => array(3, 4),
-    'access callback' => 'culturefeed_is_culturefeed_user',
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
-
   return $items;
 
 }
@@ -164,7 +163,36 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_social_recommendation_form' => array(
+      'template' => 'culturefeed-social-recommendation-form',
+      'render element' => 'form',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_recommendation_list'=> array(
+      'variables' => array(
+        'activities' => NULL,
+        'accounts' => NULL,
+        'object' => NULL,
+        'total' => NULL,
+      ),
+      'template' => 'culturefeed-social-recommendation-list',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_recommendation_list_item'=> array(
+      'variables' => array(
+        'activity' => NULL,
+        'accounts' => NULL,
+        'object' => NULL,
+        'uid' => NULL,
+        'child_activities' => NULL,
+        'level' => 0,
+      ),
+      'template' => 'culturefeed-social-recommendation-list-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -183,6 +211,11 @@ function culturefeed_social_block_info() {
 
   $blocks['recommended-by'] = array(
     'info' => t('Recommended by'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['recommendations'] = array(
+    'info' => t('Recommendations'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -207,6 +240,10 @@ function culturefeed_social_block_view($delta) {
       case 'recommended-by':
         $object = culturefeed_search_get_active_object();
         return culturefeed_social_block_recommended_by($object);
+        
+      case 'recommendations':
+        $object = culturefeed_search_get_active_object();
+        return culturefeed_social_block_recommendations($object);
 
   }
 
@@ -283,4 +320,91 @@ function culturefeed_social_user_activity_filter_form_submit($form, &$form_state
     drupal_goto('culturefeed/activities');
   }
 
+}
+
+/**
+ * Form to write a recommendation.
+ * 
+ * @param array $form
+ * @param array $form_state
+ * @param misc $object (ExtendedEntity of a Culturefeed page, event, book, ...)
+ * @param CultureFeed_Activity $activity 
+ *   Optional activity if the comment needs to target the activity as parent.
+ */
+function culturefeed_social_recommendation_form($form, &$form_state, $object, $activity = NULL) {
+
+  $form_state['object'] = $object;
+  
+  $form = array(
+    '#theme' => 'culturefeed_social_recommendation_form'
+  );
+
+  $form['recommendation_message'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Schrijf zelf een beoordeling',
+    '#default_value' => '',
+    '#attributes' => array('class' => array('recommendation-message')),
+    '#weight' => -5,
+  );
+
+  $form['recommendation_updates'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over deze activiteit',
+    '#default_value' => TRUE,
+    '#attributes' => array('class' => array('recommendation-updates')),
+    '#weight' => 1,
+  );
+
+  if (isset($activity)) {
+    $form['recommendation_parent_id'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $activity->id,
+    );
+  }
+  
+  $form['recommendation_send'] = array(
+    '#type' => 'submit',
+    '#value' => 'Verzend beoordeling',
+    '#attributes' => array('class' => array('recommendation-button')),
+    '#weight' => 5,
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * Submit handler to post a written recommendation.
+ * 
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_social_recommendation_form_submit($form, $form_state) {
+  
+  $object = $form_state['object'];
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $activity_content_type = culturefeed_get_content_type($object->getType());
+  
+  $activity = new CultureFeed_Activity();
+  $activity->contentType = $activity_content_type;
+  $activity->type = $activity::TYPE_COMMENT;
+  $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $activity->nodeTitle = $object->getTitle($GLOBALS['language']->language);
+  $activity->userId = DrupalCultureFeed::getLoggedInUserId();
+  $activity->value = $form_state['values']['recommendation_message'];
+  $activity->onBehalfOf = !empty($form_state['values']['recommendation_on_behalf_of']) ? $form_state['values']['recommendation_on_behalf_of']: '';
+  
+  // Add the parent activity if that's the target.
+  if (!empty($form_state['values']['recommendation_parent_id'])) {
+    $activity->parentActivity = $form_state['values']['recommendation_parent_id'];
+  }
+  
+  $id = DrupalCultureFeed::createActivity($activity);
+  
+  $goto_link = l('beoordeling', culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
+    'absolute' => TRUE,
+    'fragment' => 'id-' . $id,
+  ));
+  drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)), 'ok');
+  
 }

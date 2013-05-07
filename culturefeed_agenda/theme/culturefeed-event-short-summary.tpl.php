@@ -6,7 +6,7 @@
 ?>
 
 <h3><a href="<?print $url ?>"><?print $title; ?></a></h3>
-<?php if ($themes): ?>
+<?php if (!empty($themes)): ?>
 <?php print $themes[0] ?>
 <?php endif; ?>
 

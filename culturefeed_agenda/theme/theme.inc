@@ -114,10 +114,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['attend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND);
   
   $variables['like_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE);
-  
-  
 
   // Themes from this item.
+  $variables['themes'] = array();
   $themes = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME);
   if ($themes) {
     array_walk($themes, function(&$item) {

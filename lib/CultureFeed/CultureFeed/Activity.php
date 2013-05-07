@@ -92,6 +92,7 @@ class CultureFeed_Activity {
   const TYPE_FOLLOW = 18;
 
   const TYPE_PAGE_MEMBER = 16;
+  
   const TYPE_PAGE_ADMIN = 17;
 
   const TYPE_NEW_EVENT = 19;
@@ -207,6 +208,12 @@ class CultureFeed_Activity {
    * @var string
    */
   public $onBehalfOfName;
+  
+  /**
+   * Activities nested in the current activity. For type TYPE_COMMENT
+   * @var array
+   */
+  public $childActivities = array();
 
   /**
    * Helper method to get a string value for an ID.
@@ -264,8 +271,8 @@ class CultureFeed_Activity {
 
     $data = array_filter($data);
 
-    // Unset the path which is only used internally.
-    unset($data['path']);
+    // Unset the variables which are only used internally.
+    unset($data['path'], $data['childActivities']);
 
     return $data;
   }
