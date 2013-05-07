@@ -216,6 +216,12 @@ class CultureFeed_Activity {
   public $childActivities = array();
 
   /**
+   * Read Status of this activity. NEW or READ
+   * @var string
+   */
+  public $status;
+
+  /**
    * Helper method to get a string value for an ID.
    *
    * Requests to the /activities api will use the Integer values while requests

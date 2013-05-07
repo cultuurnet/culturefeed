@@ -84,6 +84,10 @@ interface ICultureFeed {
 
   public function evaluateRecommendation($id, $evaluation);
 
+  public function getNotificationsCount($userId, $dateFrom = NULL);
+
+  public function getNotifications($userId, $max = 0, $dateFrom = NULL);
+
   public function getUrlAddSocialNetwork($network, $destination = '');
 
   public function getUrlChangePassword($id, $destination = '');

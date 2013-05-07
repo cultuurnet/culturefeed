@@ -86,9 +86,16 @@ function culturefeed_pages_detail_page(CultureFeed_Cdb_Item_Page $page) {
 culturefeed_pages_set_page_breadcrumb($page);
 
   $isPageAdmin = FALSE;
-  $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
-  $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
+  try {
+    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+    if ($cultureFeedUser) {
+      $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+      $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
 
   if (!$page->isVisible() && !$isPageAdmin) {
     return array(
@@ -115,6 +122,7 @@ culturefeed_pages_set_page_breadcrumb($page);
 function culturefeed_pages_page_join($request_type, $page) {
 
   $message = '';
+  $status_code = 'error';
 
   // Send request to join.
   try {
@@ -122,6 +130,7 @@ function culturefeed_pages_page_join($request_type, $page) {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
     $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
+    $status_code = 'status';
 
     // If it's your first membership and you don't have an active page yet,
     // also login as that page.
@@ -133,12 +142,18 @@ function culturefeed_pages_page_join($request_type, $page) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+
+    if ($e->getCode() == CultureFeed_Pages_Default::ACTION_NOT_ALLOWED) {
+      $message = format_string('Het is niet toegelaten om lid te worden van @page. Gelieve een beheerder te contacteren om toch lid te worden.', array('@page' => $page->getName()));
+    }
+    else {
+      $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+    }
   }
 
   // Deliver as ajax callback or normal page.
   if ($request_type != 'ajax') {
-    drupal_set_message($message);
+    drupal_set_message($message, $status_code);
     drupal_goto();
   }
   else {

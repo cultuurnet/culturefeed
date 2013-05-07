@@ -298,7 +298,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
-  
+
   // No redirect if argument is advanced, noredirect.
   $redirect = empty($argument);
 
@@ -309,16 +309,16 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
     culturefeed_social_goto($activity, $content_type, $node_id, $activity->nodeTitle);
   }
   else {
-    
+
     $commands = array();
-    
+
     if (!empty($activity)) {
 
       $action_url = 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
       if (!empty($argument)) {
         $action_url .= '/' . $argument;
       }
-      
+
       $build = array();
       $build[$identifier] = array(
         '#id' => $identifier,
@@ -330,7 +330,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
         ),
         '#attributes' => array(
           'id' => $identifier,
-          'class' => array($config->linkClassUndo), 
+          'class' => array($config->linkClassUndo),
           'title' => $config->subjectUndo
         ),
         '#ajax' => array(
@@ -343,15 +343,15 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
       if ($argument == 'advanced') {
         drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
       }
-      
+
       $commands[] = ajax_command_replace(NULL, render($build));
-  
+
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 
   }
-  
+
 }
 
 /**
@@ -362,13 +362,13 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
   $node_id = urldecode($node_id);
   $activity = _culturefeed_social_undo($activity_type, $content_type, $node_id);
   $config = culturefeed_social_activity_get_config($activity_type);
-  
+
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
-  
+
   // No redirect if argument is advanced, noredirect.
   $redirect = empty($argument);
-  
+
   if ($redirect) {
     if (empty($activity)) {
       drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
@@ -378,14 +378,14 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
   else {
 
     $commands = array();
-    
+
     if (!empty($activity)) {
 
       $action_url = 'culturefeed/do/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
       if (!empty($argument)) {
         $action_url .= '/' . $argument;
       }
-      
+
       $build = array(
       );
       $build[$identifier] = array(
@@ -413,12 +413,33 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
       }
 
       $commands[] =  ajax_command_replace(NULL, render($build));
-  
+
     }
-  
+
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-  
+
   }
-  
+
 }
 
+/**
+ * Page callback to show the overview of notifications for current user.
+ */
+function culturefeed_social_page_notifications() {
+
+  $build = array();
+
+  try {
+
+    // Currently get the messages till 1 year ago.
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT, date('Y-m-d', strtotime('-1 year')));
+    return theme('culturefeed_social_user_notifications_page', array('notifications' => $notifications));
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  return $build;
+
+}

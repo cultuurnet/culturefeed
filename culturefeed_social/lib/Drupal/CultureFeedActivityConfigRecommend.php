@@ -11,7 +11,7 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
     parent::__construct();
 
     $this->allowedTypes = array('event', 'production', 'actor', 'book');
-    
+
     $this->subject = 'Aangeraden door';
     $this->subjectDo = 'Activiteit aanraden';
     $this->subjectUndo = 'Activiteit niet meer aanraden';
@@ -20,6 +20,8 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
     $this->titleShowAll = 'Toon iedereen die dit aanraadt';
     $this->linkClassDo = 'recommend-link';
     $this->linkClassUndo = 'unrecommend-link';
+    $this->viewPrefix = 'heeft';
+    $this->viewSuffix = 'aangeraden';
   }
-  
+
 }

@@ -18,7 +18,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
     $items = $variables['result']->getItems();
     $variables['items'] = array();
     foreach ($items as $item) {
-      $variables['items'][] = theme('culturfeed_pages_join_search_result_item', array('item' => $item));
+      $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
     }
     $variables['create_message'] = 'Heb je nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
@@ -33,7 +33,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
  * Preprocess a culturefeed page join result item.
  * @see culturefeed-pages-join-search-result-item.tpl.php
  */
-function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&$variables) {
+function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(&$variables) {
 
   $page = $variables['item']->getEntity();
 
@@ -49,11 +49,14 @@ function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&
   drupal_add_library('system', 'drupal.ajax');
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+
+    $permissions = $page->getPermissions();
+
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
-    $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+    $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
   }
 
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina');
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => 'btn btn-link')));
 
 }
 
@@ -141,7 +144,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
 
   // Add join link if not a member yet.
-  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+  if (!culturefeed_pages_is_user_member_of_page($page->getId()) && $page->getPermissions()->allowMembers) {
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
     $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
@@ -268,10 +271,11 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
     ),
     'attributes' => array('class' => array('use-ajax'))
   );
+
   if ($variables['you_follow']) {
     $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $variables['page']->getId(), $options);
   }
-  else {
+  elseif ($variables['page']->getPermissions()->allowFollowers) {
     $variables['follow_link'] = l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $variables['page']->getId(), $options);
   }
 

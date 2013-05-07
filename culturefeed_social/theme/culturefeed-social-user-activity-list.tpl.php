@@ -10,8 +10,8 @@
 
   <?php if ($pager_path): ?>
   <p>
-    <a class="btn btn-warning pager-link" href="<?php print $pager_path; ?>" rel="no-follow">Lees oudere berichten</a>
+    <a class="btn btn-warning pager-link" href="<?php print $pager_path; ?>" rel="no-follow"><?php print $pager_text; ?></a>
   </p>
   <?php endif; ?>
-  
+
 </div>

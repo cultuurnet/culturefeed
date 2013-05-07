@@ -398,7 +398,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     $variables['performers'] = implode(', ', $performer_labels);
 
     // Link to detail.
-    $variables['link'] = culturefeed_search_detail_url('production', $production->getCdbid(), $production_detail->getTitle());
+    $variables['url'] = culturefeed_search_detail_url('production', $production->getCdbid(), $production_detail->getTitle());
 
   }
 

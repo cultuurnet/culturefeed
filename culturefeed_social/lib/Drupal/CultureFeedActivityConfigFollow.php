@@ -1,7 +1,7 @@
 <?php
 
 class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
-  
+
   public $type = CultureFeed_Activity::TYPE_FOLLOW;
 
   /**
@@ -10,8 +10,8 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
   public function __construct() {
     parent::__construct();
 
-    $this->allowedTypes = array('event');
-    
+    $this->allowedTypes = array('page');
+
     $this->subject = 'Volgen deze pagina';
     $this->subjectUndo = 'Volg ik niet meer';
     $this->titleDo = 'Ik volg deze pagina';
@@ -19,6 +19,7 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
     $this->titleShowAll = 'Toon iedereen die deze pagina volgt';
     $this->linkClassDo = 'follow-link';
     $this->linkClassUndo = 'unfollow-link';
+    $this->viewPrefix = 'volgt';
   }
-  
+
 }

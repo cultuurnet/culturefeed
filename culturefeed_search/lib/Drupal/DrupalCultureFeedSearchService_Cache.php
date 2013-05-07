@@ -116,14 +116,14 @@ class DrupalCultureFeedSearchService_Cache {
   /**
    * @see \CultuurNet\Search\Service::searchSuggestions().
    */
-  public function searchSuggestions($search_string) {
+  public function searchSuggestions($search_string, $type = NULL) {
 
-    $cid = sprintf('suggestions:%s', md5($search_string));
+    $cid = sprintf('suggestions:%s', md5($search_string . $type));
     if ($cache = $this->cacheGet($cid)) {
       return $cache->data;
     }
 
-    $suggestions = $this->realSearchService->searchSuggestions($search_string);
+    $suggestions = $this->realSearchService->searchSuggestions($search_string, $type);
     $this->cacheSet($cid, $suggestions, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
 
     return $suggestions;
