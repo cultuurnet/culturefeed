@@ -313,8 +313,8 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   /**
    * @see ICultureFeed::getNotifications()
    */
-  public function getNotifications($userId, $max = 0, $dateFrom = NULL) {
-    return $this->realCultureFeed->getNotifications($userId, $max, $dateFrom);
+  public function getNotifications($userId, $params = array()) {
+    return $this->realCultureFeed->getNotifications($userId, $params);
   }
 
   public function getUrlAddSocialNetwork($network, $destination = '') {
@@ -734,8 +734,8 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   /**
    * @see ICultureFeed::getNotifications()
    */
-  public static function getNotifications($userId, $max = 0, $dateFrom = NULL) {
-    return self::getLoggedInUserInstance()->getNotifications($userId, $max, $dateFrom);
+  public static function getNotifications($userId, $params = array()) {
+    return self::getLoggedInUserInstance()->getNotifications($userId, $params);
   }
 
   public static function getUrlAddSocialNetwork($network, $destination = '') {

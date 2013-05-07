@@ -319,27 +319,16 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('pages_block_agenda_total_items', 5));
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
-
-  $service = culturefeed_get_search_service();
+  if (!$is_admin) {
+    return;
+  }
 
   // Execute search and show results.
   $build = array();
-  try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
-
-    if (!$is_admin && $result->getTotalCount() == 0) {
-      return;
-    }
-
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_pages', $e);
+  $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+  if (!$result || $result->getTotalCount() == 0) {
+    return;
   }
 
   // Render the results.

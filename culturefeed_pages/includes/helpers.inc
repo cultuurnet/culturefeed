@@ -142,3 +142,31 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
   menu_set_active_trail($active_trail);
 
 }
+
+/**
+ * Search activities that are connected to the given page.
+ * @return mixed \CultuurNet\Search\SearchResult or NULL on exception
+ */
+function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $page, $max_results) {
+
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows($max_results);
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
+
+  $service = culturefeed_get_search_service();
+
+  try {
+
+    $searchService = culturefeed_get_search_service();
+    $result = $searchService->search($parameters);
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return NULL;
+  }
+
+  return $result;
+
+}

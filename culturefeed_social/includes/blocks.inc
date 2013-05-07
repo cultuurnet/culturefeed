@@ -10,14 +10,10 @@ function culturefeed_social_block_user_activities($account) {
     return;
   }
 
+  $active_types = culturefeed_social_get_activity_filter_options(TRUE);
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA,
-  );
+  $query->type = array_keys($active_types);
   $query->userId = $account->culturefeed_uid;
   $query->private = FALSE;
 
@@ -42,10 +38,10 @@ function culturefeed_social_block_user_activities($account) {
       $content['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', 'all', TRUE, $account);
     }
 
-
     if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
+
       $content['edit'] = array(
-      '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
+        '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
       );
 
       $facebook = _culturefeed_ui_facebook_privacy_toggle();
@@ -75,8 +71,8 @@ function culturefeed_social_block_user_activities($account) {
     );
 
     if ($activities->total > count($activities->objects)) {
-      $content['activities']['#pager_path'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
-      $content['activities']['#pager_text'] = 'Lees oudere berichten';
+      $content['activities']['#read_more_url'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
+      $content['activities']['#read_more_text'] = 'Lees oudere berichten';
     }
 
   }
@@ -181,7 +177,7 @@ function culturefeed_social_block_recommendations($object) {
   if (!$object || !method_exists($object, 'getType')) {
     return;
   }
-  
+
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
   $content_type = culturefeed_get_content_type($object->getType());
 
@@ -189,7 +185,7 @@ function culturefeed_social_block_recommendations($object) {
   $query->type = CultureFeed_Activity::TYPE_COMMENT;
   $query->contentType = $content_type;
   $query->nodeId = culturefeed_social_get_activity_node_id($content_type, $object);
-  
+
   $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
 
   try {
@@ -199,16 +195,16 @@ function culturefeed_social_block_recommendations($object) {
     watchdog_exception('culturefeed_social', $e);
     return;
   }
-  
+
   $content = array();
   $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
   $content['recommendation_form'] = drupal_get_form('culturefeed_social_recommendation_form', $object);
 
   $block['subject'] = 'Beoordelingen';
   $block['content'] = $content;
-  
+
   return $block;
-  
+
 }
 
 /**
@@ -226,14 +222,19 @@ function culturefeed_social_block_my_notifications() {
 
   try {
 
-    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT, date('Y-m-d', strtotime('-1 year')));
+    $params = array(
+      'max' => CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT,
+      'dateFrom' => date('Y-m-d', strtotime('-1 year')),
+    );
+
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
     if ($notifications->total > 0) {
       $block['content'] = array(
         '#theme' => 'culturefeed_social_user_activity_list',
         '#activities' => $notifications,
-        'class' => 'notifications',
-        'pager_path' => 'culturefeed/notifications',
-        'pager_text' => 'Bekijk alle meldingen',
+        '#class' => 'notifications',
+        '#read_more_url' => url('culturefeed/notifications'),
+        '#read_more_text' => 'Bekijk alle meldingen',
       );
     }
 

@@ -146,6 +146,19 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  if (module_exists('culturefeed_pages')) {
+    $items['pages/%culturefeed_pages_page/notifications'] = array(
+      'title callback' => FALSE,
+      'title' => 'Meldingen',
+      'page callback' => 'culturefeed_social_page_notifications',
+      'page arguments' => array(1),
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+  }
+
   return $items;
 
 }
@@ -163,8 +176,8 @@ function culturefeed_social_theme() {
       'variables' => array(
         'activities' => array(),
         'class' => NULL,
-        'pager_path' => NULL,
-        'pager_text' => NULL,
+        'read_more_url' => NULL,
+        'read_more_text' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',
