@@ -18,7 +18,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
     $items = $variables['result']->getItems();
     $variables['items'] = array();
     foreach ($items as $item) {
-      $variables['items'][] = theme('culturfeed_pages_join_search_result_item', array('item' => $item));
+      $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
     }
     $variables['create_message'] = 'Heb je nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
@@ -33,7 +33,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
  * Preprocess a culturefeed page join result item.
  * @see culturefeed-pages-join-search-result-item.tpl.php
  */
-function culturefeed_pages_preprocess_culturfeed_pages_join_search_result_item(&$variables) {
+function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(&$variables) {
 
   $page = $variables['item']->getEntity();
 
