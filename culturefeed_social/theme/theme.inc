@@ -111,7 +111,6 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   $accounts = $variables['accounts'];
   $destination = drupal_get_destination();
   $cf_user = DrupalCultureFeed::getLoggedInUser();
-  dsm($cf_user);
   
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
