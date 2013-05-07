@@ -106,6 +106,13 @@ class CultureFeed implements ICultureFeed {
   protected $pages;
 
   /**
+   * Culturefeed messages instance
+   *
+   * @var CultureFeed_Messages
+   */
+  protected $messages;
+
+  /**
    * Get the consumer.
    *
    * @return OAuthConsumer $consumer
@@ -1376,6 +1383,21 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $this->pages;
+
+  }
+
+  /**
+   * Returns the Messages object.
+   *
+   * @return CultureFeed_Messages_Default
+   */
+  public function messages() {
+
+    if (!isset($this->messages)) {
+      $this->messages = new CultureFeed_Messages_Default($this);
+    }
+
+    return $this->messages;
 
   }
 

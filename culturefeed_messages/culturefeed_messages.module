@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * CultureFeed Messages adds the ability to send messages to other users.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_messages_menu() {
+
+  $items = array();
+
+  $items['culturefeed/messages/new'] = array(
+    'title callback' => FALSE,
+    'title' => 'Berichten',
+    'page callback' => 'drupal_get_form',
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array('culturefeed_messages_new_message_form'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  if (module_exists('culturefeed_pages')) {
+    $items['pages/%culturefeed_pages_page/messages/new'] = array(
+      'title callback' => FALSE,
+      'title' => 'Berichten',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_messages_new_message_form', 1),
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+  }
+
+  return $items;
+
+}
