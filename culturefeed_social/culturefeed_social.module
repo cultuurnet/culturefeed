@@ -12,6 +12,7 @@ module_load_include('inc', 'culturefeed_social', 'includes/helpers');
 define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 10);
 define('CULTUREFEED_SOCIAL_PAGE_USER_ACTIVITIES_COUNT', 20);
 define('CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT', 50);
+define('CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT', 5);
 
 /**
  * Implements hook_menu().
@@ -153,6 +154,7 @@ function culturefeed_social_theme() {
         'activities' => array(),
         'class' => NULL,
         'pager_path' => NULL,
+        'pager_text' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',
@@ -196,6 +198,11 @@ function culturefeed_social_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['my-notifications'] = array(
+    'info' => t('My notifications'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   return $blocks;
 
 }
@@ -217,6 +224,9 @@ function culturefeed_social_block_view($delta) {
       case 'recommended-by':
         $object = culturefeed_search_get_active_object();
         return culturefeed_social_block_recommended_by($object);
+
+      case 'my-notifications':
+        return culturefeed_social_block_my_notifications();
 
   }
 

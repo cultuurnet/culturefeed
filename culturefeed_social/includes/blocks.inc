@@ -76,6 +76,7 @@ function culturefeed_social_block_user_activities($account) {
 
     if ($activities->total > count($activities->objects)) {
       $content['activities']['#pager_path'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
+      $content['activities']['#pager_text'] = 'Lees oudere berichten';
     }
 
   }
@@ -165,6 +166,41 @@ function culturefeed_social_block_recommended_by($object) {
 
   $block['subject'] = $config->subject;
   $block['content'] = $content;
+
+  return $block;
+
+}
+
+/**
+ * Show a block with the latest notifications for this user.
+ */
+function culturefeed_social_block_my_notifications() {
+
+  if (!culturefeed_is_culturefeed_user()) {
+    return;
+  }
+
+  $block = array();
+  $block['subject'] = 'Mijn meldingen';
+  $block['content'] = array('#markup' => '<div class="no-results">U hebt geen meldingen</div>');
+
+  try {
+
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT, date('Y-m-d', strtotime('-1 year')));
+    if ($notifications->total > 0) {
+      $block['content'] = array(
+        '#theme' => 'culturefeed_social_user_activity_list',
+        '#activities' => $notifications,
+        'class' => 'notifications',
+        'pager_path' => 'culturefeed/notifications',
+        'pager_text' => 'Bekijk alle meldingen',
+      );
+    }
+
+  }
+  catch (Exception $e) {
+    return;
+  }
 
   return $block;
 

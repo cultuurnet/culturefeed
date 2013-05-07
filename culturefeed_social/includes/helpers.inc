@@ -211,7 +211,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
         return FALSE;
 
   }
-
+dsm($activity);
   try {
     $id = DrupalCultureFeed::createActivity($activity);
     $activity->id = $id;
@@ -262,8 +262,26 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
   if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE) {
     return 'node/' . $node_id;
   }
-  if ($type = CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-    return 'book/' . urlencode($id);
+  if ($type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+    return 'book/' . $id;
+  }
+  else {
+    return culturefeed_search_detail_path($type, $id, $title);
+  }
+
+}
+
+/**
+ * Helper function to create a path to the detail of an activity object
+ * @param String $type
+ * @param String $id
+ * @param String $title
+ * @return string
+ */
+function culturefeed_social_activity_object_path($type, $id, $title = '') {
+
+  if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE || $type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+    return $id;
   }
   else {
     return culturefeed_search_detail_path($type, $id, $title);

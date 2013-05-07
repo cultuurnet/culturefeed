@@ -41,7 +41,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
-  $url = culturefeed_social_detail_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
+  $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
   $link = l($activity->nodeTitle, $url);
 
   $type_prefix = '';
