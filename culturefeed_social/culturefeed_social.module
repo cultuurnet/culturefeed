@@ -472,8 +472,8 @@ function culturefeed_social_recommendation_form_submit($form, $form_state) {
   
   $goto_link = l('beoordeling', culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
     'absolute' => TRUE,
-    'fragment' => 'id-' . $id,
+    'fragment' => 'activity-' . $id,
   ));
-  drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)), 'ok');
+  drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)));
   
 }

@@ -1559,7 +1559,7 @@ class CultureFeed implements ICultureFeed {
 
       $page = new CultureFeed_Cdb_Item_Page();
       $page->setId($pageId);
-      $page->setName($object->xpath_str('page/name'));
+      $page->setName($object->xpath_str('name'));
 
       $follower->page          = $page;
       $follower->user          = $user;

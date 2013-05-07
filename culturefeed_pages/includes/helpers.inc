@@ -25,6 +25,26 @@ function culturefeed_pages_is_user_member_of_page($page_id) {
 }
 
 /**
+ * Is the current user admin of a given page.
+ * @return bool
+ */
+function culturefeed_pages_is_user_admin_of_page($page_id) {
+
+  $cf_account = DrupalCultureFeed::getLoggedInUser();
+
+  if (!empty($cf_account->pageMemberships)) {
+    foreach ($cf_account->pageMemberships as $membership) {
+      if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN && $membership->page->getId() == $page_id) {
+        return TRUE;
+      }
+    }
+  }
+
+  return FALSE;
+
+}
+
+/**
  * Sets all the pages where the loggedIn user is ADMIN.
  */
 function culturefeed_pages_set_pages($pages) {

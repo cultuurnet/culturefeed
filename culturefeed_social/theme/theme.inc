@@ -110,7 +110,8 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   $activity = $variables['activity'];
   $accounts = $variables['accounts'];
   $destination = drupal_get_destination();
-  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
+  $cf_user = DrupalCultureFeed::getLoggedInUser();
+  dsm($cf_user);
   
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
@@ -146,7 +147,8 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   $variables['abuse_link'] = '';
   
   if ($variables['level'] == 0) {
-    if ($cf_user_id == $activity->userId) {
+    
+    if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
       $variables['delete_link'] = l('Verwijder reactie | X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
         'attributes' => array('class' => array('remove-link', 'use-ajax')),
         'query' => $destination,
@@ -156,15 +158,18 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
     $sub_form = drupal_get_form('culturefeed_social_recommendation_form', $object, $activity);
     $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
     $variables['abuse_link'] = l('Rapporteer als ongepast', 'culturefeed/activity/mark-abusive/' . $activity->id . '/nojs', array('attributes' => array('class' => array('abuse-link'))));
+
   }
   else {
-    if ($cf_user_id == $activity->userId) {
+    
+    if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
       $variables['delete_link'] = l('X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
         'attributes' => array('class' => array('remove-link', 'use-ajax')),
         'query' => $destination,
       ));
     }
     $variables['abuse_link'] = l('Rapporteer als ongepast', 'culturefeed/activity/mark-abusive/' . $activity->id . '/nojs', array('attributes' => array('class' => array('abuse-link'))));
+
   }
   
 }
