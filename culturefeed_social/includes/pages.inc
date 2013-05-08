@@ -250,6 +250,36 @@ function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
 }
 
 /**
+ * Page callback to unfollow a node.
+ */
+function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = 'ajax') {
+
+  $success = TRUE;
+  
+  try {
+    DrupalCultureFeed::unFollowNode($content_type, urldecode($nodeId), DrupalCultureFeed::getLoggedInUserId());
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+  }
+  
+  if ($type == 'ajax') {
+    $commands = array();
+  
+    if ($success) {
+      $commands[] = ajax_command_invoke('#node-status-wrapper', 'fadeOut', array('slow'));
+    }
+  
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_goto();
+  }
+  
+}
+
+/**
  * Page callback to change the privacy settings of 1 activity.
  */
 function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax') {

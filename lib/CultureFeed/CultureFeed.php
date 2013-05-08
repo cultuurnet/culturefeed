@@ -728,21 +728,6 @@ class CultureFeed implements ICultureFeed {
    * The object should be initialized with the consumer token.
    *
    * @param string $nodeId
-   * @param string $type
-   * @param string $contentType
-   * @param string $start
-   * @param string $max
-   *
-   * @throws CultureFeed_ParseException
-   *   If the result could not be parsed.
-   */
-
-  /**
-   * Search for users that have generated an activity.
-   *
-   * The object should be initialized with the consumer token.
-   *
-   * @param string $nodeId
    *   Node ID the activity is generated on.
    * @param string $type
    *   Possible values are represented in the CultureFeed_Activity::TYPE_* constants.
@@ -1223,6 +1208,108 @@ class CultureFeed implements ICultureFeed {
 
     return self::parseActivities($xmlElement);
 
+  }
+
+  /**
+   * Command to check the node status for (like following).
+   *
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId to check the node status for.
+   */
+  public function getNodeStatus($contentType, $nodeId, $userId) {
+
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedGet('node/status', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $code = $xml->xpath_str('/response/code');
+    if (!empty($code) && $code == "SUCCESS") {
+      return ($xml->xpath_str('/response/follows') == "true" ? TRUE : FALSE);
+    }
+    
+    throw new CultureFeed_ParseException($result);
+  }
+  
+  /**
+   * Command to update a node so the user follows  it.
+   * 
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId of the user who follows the node.
+   */
+  public function followNode($contentType, $nodeId, $userId) {
+    
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedPostAsXml('node/follow', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $nodeId = $xml->xpath_str('/response/nodeId');
+    if (!empty($nodeId)) {
+      return $nodeId;
+    }
+    
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Command to update a node so the user unfollows  it.
+   *
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId of the user who follows the node.
+   */
+  public function unFollowNode($contentType, $nodeId, $userId) {
+  
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedPostAsXml('node/unfollow', $data);
+  
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+  
+    $code = $xml->xpath_str('/response/code');
+    if ($code == "SUCCESS") {
+      return $xml->xpath_str('/response/nodeId');
+    }
+  
+    throw new CultureFeed_ParseException($result);
   }
 
   /**

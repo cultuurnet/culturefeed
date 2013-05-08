@@ -88,6 +88,12 @@ interface ICultureFeed {
 
   public function getNotifications($userId, $max = 0, $dateFrom = NULL);
 
+  public function getNodeStatus($contentType, $nodeId, $userId);
+  
+  public function followNode($contentType, $nodeId, $userId);
+
+  public function unFollowNode($contentType, $nodeId, $userId);
+
   public function getUrlAddSocialNetwork($network, $destination = '');
 
   public function getUrlChangePassword($id, $destination = '');

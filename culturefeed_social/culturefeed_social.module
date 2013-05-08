@@ -75,6 +75,16 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/node/unfollow/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Node ontvolgen',
+    'page callback' => 'culturefeed_social_page_node_unfollow',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Activity.
   $items['culturefeed/do/%/%/%'] = array(
     'title callback' => FALSE,
@@ -404,6 +414,12 @@ function culturefeed_social_recommendation_form($form, &$form_state, $object, $a
 
   $form_state['object'] = $object;
   
+  if (!isset($activity)) {
+    $activity_content_type = culturefeed_get_content_type($object->getType());
+    $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+    $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  }
+  
   $form = array(
     '#theme' => 'culturefeed_social_recommendation_form'
   );
@@ -416,13 +432,28 @@ function culturefeed_social_recommendation_form($form, &$form_state, $object, $a
     '#weight' => -5,
   );
 
-  $form['recommendation_updates'] = array(
-    '#type' => 'checkbox',
-    '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over deze activiteit',
-    '#default_value' => TRUE,
-    '#attributes' => array('class' => array('recommendation-updates')),
-    '#weight' => 1,
-  );
+  if (isset($status) && $status == TRUE) {
+
+    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($object->getId()) . '/nojs');
+    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.',
+      array('!link' => $link));
+    
+    $form['recommendation_updates'] = array(
+      '#type' => 'markup',
+      '#markup' => $message,
+      '#prefix' => '<div id="node-status-wrapper">',
+      '#suffix' => '</div>',
+    );
+  }
+  else {
+    $form['recommendation_updates'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over deze activiteit',
+      '#default_value' => isset($status) ? $status : TRUE,
+      '#attributes' => array('class' => array('recommendation-updates')),
+      '#weight' => 1,
+    );
+  }
 
   if (isset($activity)) {
     $form['recommendation_parent_id'] = array(
@@ -474,6 +505,20 @@ function culturefeed_social_recommendation_form_submit($form, $form_state) {
     'absolute' => TRUE,
     'fragment' => 'activity-' . $id,
   ));
-  drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)));
   
+  drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)));
+
+  $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  
+  if (!empty($form_state['values']['recommendation_updates'])) {
+    $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  }
+  else {
+    $id = DrupalCultureFeed::unFollowNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  }
+  if ($id) {
+    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($object->getId()) . '/nojs');
+    drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.', 
+      array('!link' => $link)));
+  }
 }
