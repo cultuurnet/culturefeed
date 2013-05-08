@@ -5,9 +5,43 @@
  */
 
 /**
+ * Page callback to via a message. If we are on the landing page, show the first one.
+ * @param mixed $message NULL or CultureFeed_Messages_Message
+ */
+function culturefeed_messages_page_view_message($message = NULL) {
+
+  // If we are on landing page, show the first message.
+  try {
+
+    if (!$message) {
+      $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages();
+      if ($messages->total == 0) {
+        return array('#markup' => 'U hebt nog geen meldingen');
+      }
+      $message = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($messages->objects[1]->id);
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+    return array('#markup' => 'Er ging iets fout tijdens het ophalen van je bericht.');
+  }
+
+  $build = array();
+  $build['message_thread'] = array(
+    '#theme' => 'culturefeed_messages_thread',
+    '#thread' => $message,
+    '#recipients' => $recipients
+  );
+
+  return $build;
+
+}
+
+/**
  * Show the form to add a new message.
  */
-function culturefeed_messages_new_message_form($form, $form_state, $page = NULL) {
+function culturefeed_messages_new_message_form($form, &$form_state, $page = NULL) {
 
   $form = array();
 
@@ -66,10 +100,36 @@ function culturefeed_messages_new_message_form($form, $form_state, $page = NULL)
     '#title' => 'Berichttekst',
   );
 
+  // Add select to choose the 'send as'.
+  try {
+
+    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+
+    if (!empty($cultureFeedUser->pageMemberships)) {
+      $send_as_options = array();
+      foreach ($cultureFeedUser->pageMemberships as $membership) {
+        $send_as_options[$membership->page->getId()] = $membership->page->getName();
+      }
+
+      $form['send_as'] = array(
+        '#title' => 'Stuur bericht als',
+        '#type' => 'select',
+        '#options' => $send_as_options,
+        '#default_value' => culturefeed_pages_get_active_page_id(),
+      );
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+  }
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Verzenden',
   );
+
+  $form['#theme'] = 'culturefeed_messages_new_message_form';
 
   return $form;
 
@@ -77,33 +137,147 @@ function culturefeed_messages_new_message_form($form, $form_state, $page = NULL)
 
 /**
  * Validate the send message form. Try to send the message to the service.
- * @param unknown $form
- * @param unknown $form_state
+ * Note: only sending a page, or a reply is available in the UI.
  */
 function culturefeed_messages_new_message_form_validate($form, &$form_state) {
+
+  $params = array(
+    'subject' => $form_state['values']['subject'],
+    'body' => $form_state['values']['message'],
+  );
+
+  if (!empty($form_state['values']['send_as'])) {
+    $params['senderPage'] = $form_state['values']['send_as'];
+  }
 
   $recipient = '';
   $recipient_page = '';
   $role = '';
   $reply_to = '';
   // Check if we are sending to a page.
-  if (!empty($form['page'])) {
-    $recipient_page = $form['page']->getId();
-    $role = $form_state['values']['recipient'];
+  if (!empty($form_state['page'])) {
+    //$params['recipientPage'] = $form_state['page']->getId();
+    //$params['role'] = $form_state['values']['recipient'];
+    //$params['type'] = CultureFeed_Messages_Message::TYPE_MEMBERS;
   }
   // Check if we are sending a reply.
-  elseif (!empty($form['reply_to'])) {
-    $reply_to = $form['reply_to'];
+  elseif (!empty($form_state['reply_to'])) {
+    $params['replyTo'] = $form_state['reply_to'];
   }
   else {
-    $recipient = $form_state['values']['recipient'];
+    $params['recipient'] = $form_state['values']['recipient'];
+  }
+  $params['recipient'] = 'df9049c1-a5d6-4eb2-bb28-015513d9793c';
+  try {
+    $cf_messages = DrupalCultureFeed::getLoggedInUserInstance()->messages();
+    $message_id = $cf_messages->sendMessage($params);
+  }
+  catch (Exception $e) {
+    form_set_error('', 'Er ging iets fout tijdens het versturen');
+    watchdog_exception('culturefeed_messages', $e);
   }
 
-  $params = array(
+}
 
+/**
+ * Submit the new message form.
+ */
+function culturefeed_messages_new_message_form_submit($form, &$form_state) {
+
+  drupal_set_message('Het bericht werd verstuurd');
+
+  $form_state['redirect'] = 'culturefeed/messages';
+  if (!empty($form_state['page'])) {
+    $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/messages';
+  }
+
+}
+
+/**
+ * Page callback to add a confirimation to the
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_messages_page_delete_message_confirm($message, $request_type = 'ajax') {
+
+  $form = drupal_get_form('culturefeed_messages_delete_message_confirm_form', $message, $request_type);
+
+  if ($request_type == 'ajax') {
+    $output = drupal_render($form);
+    print $output;
+  }
+  else {
+    return $form;
+  }
+
+}
+
+/**
+ * Form confirmation callback to show a form to confirm the removal of a message.
+ */
+function culturefeed_messages_delete_message_confirm_form($form, &$form_state, CultureFeed_Messages_Message $message, $request_type) {
+
+  if ($request_type == 'ajax') {
+    $form['#prefix'] = '<div class="modal-header"><h3>Bericht verwijderen</h3></div>';
+  }
+
+  $form_state['message'] = $message;
+
+  $form['body_wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
+    '#suffix' => '</div>',
+  );
+  $form['body_wrapper']['page_remove_confirm'] = array(
+    '#type' => 'markup',
+    '#markup' => '
+      <p>Deze actie kan niet meer ongedaan gemaakt worden.</p>
+      <p><strong>Ben je zeker dat u dit bericht wil verwijderen?</strong></p>',
   );
 
-  $cf_messages= DrupalCultureFeed::getLoggedInUserInstance()->messages();
-  $cf_messages->sendMessage($recipient, $recipient_page, $role, $reply_to, $params);
+  $form['footer_wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div class="modal-footer">',
+    '#suffix' => '</div>',
+  );
+
+  $form['footer_wrapper']['remove'] = array(
+    '#type' => 'submit',
+    '#value' => 'Verwijder',
+    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+  );
+
+  $form['footer_wrapper']['decline'] = array(
+    '#type' => 'link',
+    '#title' => 'Annuleer',
+    '#href' => isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/messages/' . $message->id,
+    '#attributes' => array(
+      'data-dismiss' => 'modal',
+      'aria-hidden' => 'true',
+      'class' => array('button-decline close btn')
+    ),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Function to actually delete the page.
+ */
+function culturefeed_messages_delete_message_confirm_form_submit($form, &$form_state) {
+
+  $message = $form_state['message'];
+
+  // Send request to remove the message.
+  try {
+    DrupalCultureFeed::getLoggedInUserInstance()->messages()->deleteMessage($message->id);
+    drupal_set_message(format_string('Het bericht "@message" is verwijderd.', array('@message' => $message->subject)));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+    drupal_set_message('Er is een fout opgetreden tijdens het verwijderen van het bericht.', 'error');
+  }
+
+  $form_state['redirect'] = 'culturefeed/messages/' . $message->id;
 
 }

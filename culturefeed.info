@@ -84,6 +84,9 @@ files[] = lib/CultureFeed/CultureFeed/Pages/Page.php
 files[] = lib/CultureFeed/CultureFeed/Pages/UserList.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Follower.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Membership.php
+files[] = lib/CultureFeed/CultureFeed/Messages.php
+files[] = lib/CultureFeed/CultureFeed/Messages/Default.php
+files[] = lib/CultureFeed/CultureFeed/Messages/Message.php
 
 configure = admin/config/services/culturefeed
 

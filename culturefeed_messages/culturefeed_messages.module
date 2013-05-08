@@ -7,9 +7,9 @@
 /**
  * Implements hook_theme().
  */
-function culturefeed_social_theme() {
+function culturefeed_messages_theme() {
 
-  $path = drupal_get_path('module', 'culturefeed_social') . '/theme';
+  $path = drupal_get_path('module', 'culturefeed_messages') . '/theme';
 
   return array(
     'culturefeed_messages_message_list'=> array(
@@ -27,6 +27,27 @@ function culturefeed_social_theme() {
       'template' => 'culturefeed-messages-message-list-item',
       'path' => $path,
       'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_thread' => array(
+      'variables' => array(
+        'thread' => NULL,
+      ),
+      'template' => 'culturefeed-messages-thread',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_new_message_form' => array(
+      'template' => 'culturefeed-messages-message-form',
+      'path' => $path,
+      'render element' => 'form',
     ),
   );
 
@@ -48,7 +69,16 @@ function culturefeed_messages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/messages/%culturefeed_messages_message/delete/%nojs'] = array(
+    'title callback' => FALSE,
+    'title' => 'Verwijder bericht',
+    'page callback' => 'culturefeed_messages_page_delete_message_confirm',
+    'page arguments' => array(2, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+  );
+
   if (module_exists('culturefeed_pages')) {
+
     $items['pages/%culturefeed_pages_page/messages/new'] = array(
       'title callback' => FALSE,
       'title' => 'Berichten',
@@ -59,7 +89,28 @@ function culturefeed_messages_menu() {
       'type' => MENU_CALLBACK,
       'file' => 'includes/pages.inc',
     );
+
+    $items['pages/%culturefeed_pages_page/messages'] = array(
+      'title callback' => FALSE,
+      'title' => 'Berichten',
+      'page callback' => 'culturefeed_messages_page_view_message',
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
   }
+
+  $items['culturefeed/messages'] = array(
+    'title callback' => FALSE,
+    'title' => 'Mijn berichten',
+    'page callback' => 'culturefeed_messages_page_view_message',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
 
   return $items;
 
@@ -68,7 +119,7 @@ function culturefeed_messages_menu() {
 /**
  * Implements hook_block_info().
  */
-function culturefeed_pages_block_info() {
+function culturefeed_messages_block_info() {
 
   $blocks = array();
 
@@ -83,7 +134,7 @@ function culturefeed_pages_block_info() {
 /**
  * Implements hook_block_view().
  */
-function culturefeed_pages_block_view($delta) {
+function culturefeed_messages_block_view($delta) {
 
   module_load_include('inc', 'culturefeed_messages', 'includes/blocks');
 
@@ -93,6 +144,33 @@ function culturefeed_pages_block_view($delta) {
       return culturefeed_messages_block_inbox();
 
   }
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+  try {
+
+    $message_count = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessageCount();
+
+    if (!empty($message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD])) {
+      $items['messages'] = array(
+        'data' => l('<span class="new-messages">' . $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] . '</span>', 'culturefeed/messages', array('html' => TRUE)),
+        'class' => 'messages',
+        'weight' => -20,
+      );
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+  }
+
+  return $items;
 
 }
 

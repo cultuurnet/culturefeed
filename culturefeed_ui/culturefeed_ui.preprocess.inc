@@ -36,8 +36,8 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // age
   $variables['age'] = '';
   if (!empty($account->dob)) {
-    $tz  = new DateTimeZone('Europe/Brussels');
-    $variables['age'] = DateTime::createFromFormat('d/m/Y', $variables['dob'], $tz)
+    $time_zone  = new DateTimeZone('Europe/Brussels');
+    $variables['age'] = DateTime::createFromFormat('d/m/Y', $variables['dob'], $time_zone)
       ->diff(new DateTime('now', $tz))
       ->y;
   }
