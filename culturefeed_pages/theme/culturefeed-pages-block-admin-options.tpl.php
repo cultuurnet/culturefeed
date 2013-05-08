@@ -17,7 +17,7 @@
   <div>
   <?php if (!$has_activities): ?>
     <div class="alert">
-      Jou pagina heeft nog geen activiteiten gepubliceerd.
+      Jouw pagina heeft nog geen activiteiten gepubliceerd.
       <a href="http://www.uitdatabank.be">Voeg nieuwe activiteiten toe.</a>
     </div>
   <?php endif; ?>
@@ -32,6 +32,8 @@
   </div>
 
 <?php elseif($is_page_admin): ?>
-  Je bent <strong>Beheerder</strong> van deze pagina, maar <strong>niet aangemeld</strong> als deze pagina. Wil je <strong>verder werken als deze pagina</strong>?
-  <?php print $switch_link; ?>
+  <div class="alert">
+    <p>Je bent <strong>beheerder</strong> van deze pagina, maar <strong>niet aangemeld</strong> als deze pagina. Wil je <strong>verder werken als deze pagina</strong>?</p>
+    <?php print $switch_link; ?>
+  </div>
 <?php endif; ?>

@@ -289,7 +289,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
 function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$variables) {
 
   $page = $variables['page'];
-  $variables['switch_link'] = l($page->getName(), 'pages/switch/' . $page->getId(), array('attributes' => array('class' => array('button'))));
+  $variables['switch_link'] = l('Aanmelden als ' . $page->getName(), 'pages/switch/' . $page->getId(), array('attributes' => array('class' => array('button'))));
 
   $variables['page_id'] = $page->getId();
 
