@@ -86,7 +86,7 @@ interface ICultureFeed {
 
   public function getNotificationsCount($userId, $dateFrom = NULL);
 
-  public function getNotifications($userId, $max = 0, $dateFrom = NULL);
+  public function getNotifications($userId, $params = array());
 
   public function getNodeStatus($contentType, $nodeId, $userId);
   

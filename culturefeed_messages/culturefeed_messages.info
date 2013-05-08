@@ -1,0 +1,7 @@
+name = CultureFeed Messages
+description = CultureFeed Messages adds the ability to send messages to other users.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed

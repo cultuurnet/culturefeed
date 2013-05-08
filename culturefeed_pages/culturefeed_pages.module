@@ -488,21 +488,32 @@ function culturefeed_pages_user_login(&$edit, $account) {
 
   // If it's your first membership and you don't have an active page yet,
   // also login as that page.
-  $cf_user = DrupalCultureFeed::getLoggedInUser();
-  $memberships = $cf_user->pageMemberships;
-  if (count($memberships) > 0) {
+  try {
 
-    $account = DrupalCultureFeed::getLoggedInAccount();
-    if (isset($account->data['culturefeed_pages_id'])) {
-      $page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if (!$cf_user) {
+      return;
     }
-    // If only 1 membership or more and there is no recollection of a previous state,
-    // take the first membership as active one.
-    else {
-      $page = reset($memberships);
-    }
-    culturefeed_pages_set_active_page($page);
 
+    $memberships = $cf_user->pageMemberships;
+    if (count($memberships) > 0) {
+
+      $account = DrupalCultureFeed::getLoggedInAccount();
+      if (isset($account->data['culturefeed_pages_id'])) {
+        $page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+      }
+      // If only 1 membership or more and there is no recollection of a previous state,
+      // take the first membership as active one.
+      else {
+        $page = reset($memberships);
+      }
+      culturefeed_pages_set_active_page($page);
+
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
   }
 
 }
@@ -747,13 +758,13 @@ function culturefeed_pages_edit_membership_ajax_form_submit($form, &$form_state)
 function culturefeed_pages_form_culturefeed_social_recommendation_form_alter(&$form, &$form_state) {
 
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-  
+
   if (!empty($cultureFeedUser->pageMemberships)) {
     $options = array();
     foreach ($cultureFeedUser->pageMemberships as $membership) {
       $options[$membership->page->getId()] = $membership->page->getName();
-    } 
-  
+    }
+
     $form['recommendation_on_behalf_of'] = array(
       '#type' => 'select',
       '#title' => 'Plaats beoordeling als',

@@ -8,9 +8,9 @@
 
   <br />
 
-  <?php if ($pager_path): ?>
+  <?php if ($read_more_url): ?>
   <p>
-    <a class="btn btn-warning pager-link" href="<?php print $pager_path; ?>" rel="no-follow"><?php print $pager_text; ?></a>
+    <a class="btn btn-warning pager-link" href="<?php print $read_more_url; ?>" rel="no-follow"><?php print $read_more_text; ?></a>
   </p>
   <?php endif; ?>
 

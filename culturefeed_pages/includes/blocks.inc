@@ -236,68 +236,20 @@ function culturefeed_pages_block_page_timeline($page) {
     return;
   }
 
-  $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
-
-  // Add start index (page number we want) + items per page
-  $parameters[] = new \CultuurNet\Search\Parameter\Start($curr_page * CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
-
-  // Add grouping so returned events are not duplicate.
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-
-  // Search on events that have a relation to the page ID.
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
-
-  // Add sorting.
-  $sort_field = 'startdate';
-  $direction = 'asc';
-  if (isset($_GET['order'])) {
-
-    $direction = $_GET['sort'];
-
-    switch ($_GET['order']) {
-
-      case 'Titel':
-        $sort_field = 'title_sort';
-      break;
-
-      case 'Datum':
-        $sort_field = 'startdate';
-      break;
-
-      case 'Reacties':
-        $sort_field = 'comment_count';
-      break;
-
-    }
-
-  }
-
-  $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_field, $direction);
-  $service = culturefeed_get_search_service();
-
-  // Execute search and show results.
-  $build = array();
   try {
-
-    $result = $service->search($parameters);
-    pager_default_initialize($result->getTotalCount(), CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT);
-
-    $build['page'] = array(
-      '#theme' => 'culturefeed_pages_events_admin_page',
-      '#result' => $result,
-      '#page' => $page,
-    );
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId());
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    $build['error'] = array('#markup' => "Er is een fout opgetreden tijdens het laden van de activiteiten.");
+    return;
   }
 
-  culturefeed_pages_set_page_breadcrumb($page);
-
-  return $build;
+  $block = array();
+  $block['subject'] = 'Tijdslijn';
+  $block['content'] = array(
+    '#theme' => 'culturefeed_social_user_activity_list',
+    '#activities' => $time_line,
+  );
 
   return $block;
 
@@ -319,27 +271,16 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('pages_block_agenda_total_items', 5));
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
-
-  $service = culturefeed_get_search_service();
+  if (!$is_admin) {
+    return;
+  }
 
   // Execute search and show results.
   $build = array();
-  try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
-
-    if (!$is_admin && $result->getTotalCount() == 0) {
-      return;
-    }
-
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_pages', $e);
+  $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+  if (!$result || $result->getTotalCount() == 0) {
+    return;
   }
 
   // Render the results.

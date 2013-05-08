@@ -89,6 +89,9 @@ function culturefeed_social_page_activities($type = NULL) {
   if (!empty($type)) {
     $query->type = $type;
   }
+  else {
+    $query->type = array_keys($types);
+  }
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
   $build['view-profile'] = array(
@@ -132,15 +135,8 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
 
-    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_NODE) {
-      $data = l($activity->nodeTitle, 'node/' . $activity->nodeId);
-    }
-    elseif ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE || $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-      $data = l($activity->nodeTitle, $activity->nodeId);
-    }
-    else {
-      $data = culturefeed_search_detail_l($activity->contentType, $activity->nodeId, $activity->nodeTitle);
-    }
+    $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
+    $data = l($activity->nodeTitle, $url);
 
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
@@ -453,16 +449,26 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
 }
 
 /**
- * Page callback to show the overview of notifications for current user.
+ * Page callback to show the overview of notifications for current user or page.
  */
-function culturefeed_social_page_notifications() {
+function culturefeed_social_page_notifications($page = NULL) {
 
   $build = array();
 
   try {
 
     // Currently get the messages till 1 year ago.
-    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT, date('Y-m-d', strtotime('-1 year')));
+    $params = array(
+      'max' => CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT,
+      'dateFrom' => date('Y-m-d', strtotime('-1 year')),
+    );
+
+    if ($page) {
+      $params['pageId'] = $page->getId();
+      culturefeed_pages_set_page_breadcrumb($page);
+    }
+
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
     return theme('culturefeed_social_user_notifications_page', array('notifications' => $notifications));
 
   }

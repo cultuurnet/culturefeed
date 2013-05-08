@@ -287,7 +287,44 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
  * @see culturefeed-pages-block-admin-options.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$variables) {
-  $variables['switch_link'] = l($variables['page']->getName(), 'pages/switch/' . $variables['page']->getId(), array('attributes' => array('class' => array('button'))));
+
+  $page = $variables['page'];
+  $variables['switch_link'] = l($page->getName(), 'pages/switch/' . $page->getId(), array('attributes' => array('class' => array('button'))));
+
+  $variables['page_id'] = $page->getId();
+
+  $variables['notifications'] = '';
+  if (module_exists('culturefeed_social')) {
+
+    $params = array(
+      'max' => CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT,
+      'dateFrom' => date('Y-m-d', strtotime('-1 year')),
+    );
+
+    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
+    if ($notifications->total > 0) {
+      $notification_variables = array(
+        'activities' => $notifications,
+        'class' => 'notifications',
+        'read_more_url' => url('pages/' . $page->getId() . '/notifications'),
+        'read_more_text' => 'Bekijk alle meldingen',
+      );
+      $variables['notifications'] = theme('culturefeed_social_user_activity_list', $notification_variables);
+    }
+    else {
+      $variables['notifications'] = 'Uw pagina heeft nog geen meldingen';
+    }
+
+  }
+
+  // Default to true, so message doesn't show when we have no agenda enabled.
+  $variables['has_activities'] = TRUE;
+  if (module_exists('culturefeed_agenda')) {
+    // Use same item count as the block, so we hit the same cache.
+    $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+    $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
+  }
+
 }
 
 /**

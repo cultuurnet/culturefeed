@@ -106,6 +106,13 @@ class CultureFeed implements ICultureFeed {
   protected $pages;
 
   /**
+   * Culturefeed messages instance
+   *
+   * @var CultureFeed_Messages
+   */
+  protected $messages;
+
+  /**
    * Get the consumer.
    *
    * @return OAuthConsumer $consumer
@@ -1179,24 +1186,13 @@ class CultureFeed implements ICultureFeed {
    *
    * @param string $userId
    *   User Id to get the notifications for.
-   * @param int $max
-   *   Max requested notifications
-   * @param string dateFrom
-   *   ISO Date to set the startdate of the timeline. (optional)
+   * @param array $params
+   *  Array with additional filter params
    *
    * @throws CultureFeed_ParseException
    * @return CultureFeed_ResultSet
    */
-  public function getNotifications($userId, $max = 0, $dateFrom = NULL) {
-
-    $params = array();
-    if ($max) {
-      $params['max'] = $max;
-    }
-
-    if (!empty($dateFrom)) {
-      $params['dateFrom'] = $dateFrom;
-    }
+  public function getNotifications($userId, $params = array()) {
 
     $result = $this->oauth_client->authenticatedGetAsXml('user/' . $userId . '/notifications', $params);
     try {
@@ -1474,6 +1470,21 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $this->pages;
+
+  }
+
+  /**
+   * Returns the Messages object.
+   *
+   * @return CultureFeed_Messages_Default
+   */
+  public function messages() {
+
+    if (!isset($this->messages)) {
+      $this->messages = new CultureFeed_Messages_Default($this);
+    }
+
+    return $this->messages;
 
   }
 
