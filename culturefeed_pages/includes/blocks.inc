@@ -99,6 +99,9 @@ function culturefeed_pages_block_pages_admin_options() {
   // components to the templates.
   // @see culturefeed_pages_edit_page_access()
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  if (!$cultureFeedUser) {
+    return;
+  }
 
   $isVisible = $page->isVisible();
   $isPageAdmin = FALSE;
