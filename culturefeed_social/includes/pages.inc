@@ -251,9 +251,11 @@ function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
 function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = 'ajax') {
 
   $success = TRUE;
+  $activity_content_type = culturefeed_get_content_type($content_type);
+  $nodeId = urldecode($nodeId);
   
   try {
-    DrupalCultureFeed::unFollowNode($content_type, urldecode($nodeId), DrupalCultureFeed::getLoggedInUserId());
+    DrupalCultureFeed::unFollowNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
   }
   catch (Exception $e) {
     $success = FALSE;
@@ -264,12 +266,13 @@ function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = '
     $commands = array();
   
     if ($success) {
-      $commands[] = ajax_command_invoke('#node-status-wrapper', 'fadeOut', array('slow'));
+      $commands[] = ajax_command_html('#node-status-wrapper', 'Je ontvangt geen updates meer van nieuwe reacties op deze activiteit');
     }
   
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
+    drupal_set_message('Je ontvangt momenteel geen updates van nieuwe reacties op deze activiteit.');
     drupal_goto();
   }
   

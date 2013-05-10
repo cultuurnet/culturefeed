@@ -154,7 +154,7 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
       ));
     }
     $variables['react_link'] = l('Reageer op deze beoordeling', $_GET['q'], array('attributes' => array('class' => array('recommend-subform-toggle'))));
-    $sub_form = drupal_get_form('culturefeed_social_recommendation_form', $object, $activity);
+    $sub_form = culturefeed_social_recommendation_actionbox($object, $activity);
     $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
     $variables['abuse_link'] = l('Rapporteer als ongepast', 'culturefeed/activity/mark-abusive/' . $activity->id . '/nojs', array('attributes' => array('class' => array('abuse-link'))));
 

@@ -377,3 +377,20 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
   
 }
 
+/**
+ * Create a form or login link.
+ * @param misc $object
+ * @param CultureFeed_Activity $activity
+ */
+function culturefeed_social_recommendation_actionbox($object, $activity = NULL) {
+  if (culturefeed_is_culturefeed_user()) {
+    return drupal_get_form('culturefeed_social_recommendation_form', $object, $activity);
+  }
+  else {
+    return array(
+      '#type' => 'markup',
+      '#markup' => 'Om een beoordeling te schrijven moet je aangemeld zijn.<br />' . l('Aanmelden', 'user/login', array('attributes' => array('class' => array('login-button')))),
+    );
+  }
+}
+

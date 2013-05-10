@@ -198,7 +198,7 @@ function culturefeed_social_block_recommendations($object) {
 
   $content = array();
   $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
-  $content['recommendation_form'] = drupal_get_form('culturefeed_social_recommendation_form', $object);
+  $content['recommendation_form'] = culturefeed_social_recommendation_actionbox($object);
 
   $block['subject'] = 'Beoordelingen';
   $block['content'] = $content;
