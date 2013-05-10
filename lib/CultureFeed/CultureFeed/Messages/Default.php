@@ -126,6 +126,17 @@ class CultureFeed_Messages_Default implements CultureFeed_Messages {
   }
 
   /**
+   * @see CultureFeed_Messages::deleteMessage()
+   */
+  public function deleteMessage($id) {
+
+    $result = $this->oauth_client->authenticatedPostAsXml('message/' . $id . '/delete');
+    dsm($result);
+    $xmlElement = $this->validateResult($result, CultureFeed_Messages_Default::CODE_SUCCESS);
+
+  }
+
+  /**
    * Validate the request result.
    *
    * @param string $result

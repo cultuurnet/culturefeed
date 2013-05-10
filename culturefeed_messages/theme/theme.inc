@@ -22,6 +22,15 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 
   $variables['items'] = $items;
 
+  if ($variables['add_new_allowed']) {
+    if (arg(0) == 'pages') {
+      $variables['add_new_url'] = url('pages/' . arg(1) . '/messages/new');
+    }
+    else {
+      $variables['add_new_url'] = url('culturefeed/messages/new');
+    }
+  }
+
 }
 
 /**
@@ -87,37 +96,26 @@ function culturefeed_messages_preprocess_culturefeed_messages_message(&$variable
   _culturefeed_messages_preprocess_message($variables);
 
   $message = $variables['message'];
-
-  // @todo move to helper function
-  $recipients = array();
-  // Recipients from a page.
-  if (!empty($message->recipientPage)) {
-
-    try {
-      $user_list = DrupalCultureFeed::getLoggedInUserInstance()->pages()
-      ->getUserList($message->recipientPage->getId(), array($message->role));
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_messages', $e);
-    }
-
-  }
-  else {
-    $recipients[$message->sender->id] = $message->sender->nick;
-  }
-
-  $accounts = culturefeed_get_uids_for_cf_uids($recipients);
   $recipient_links = array();
-  foreach ($variables['recipients'] as $uid => $recipient) {
+  $recipients = $message->recipients;
 
-    if (!isset($accounts[$uid])) {
-      continue;
+  // Build link to profile of every recipient.
+  $variables['recipient_links'] = '';
+  if (!empty($recipients)) {
+
+    $accounts = culturefeed_get_uids_for_cf_uids($recipients);
+    foreach ($recipients as $uid => $recipient) {
+
+      if (!isset($accounts[$uid])) {
+        continue;
+      }
+
+      $recipient_links[] = l($recipient->nick, 'user/' . $accounts[$uid]);
+
     }
-
-    $recipient_links[] = l($recipient, 'user/' . $accounts[$uid]);
+    $variables['recipient_links'] = implode(' ', $recipient_links);
 
   }
-  $variables['recipient_links'] = implode(' ', $recipient_links);
 
 }
 
@@ -138,19 +136,21 @@ function _culturefeed_messages_preprocess_message(&$variables) {
     $variables['sender'] .= ' van ' . $message->senderPage->getName();
   }
 
+  $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
+
   $date = empty($message->lastReply) ? $message->creationDate : $message->lastReply;
+  $time_zone  = new DateTimeZone('Europe/Brussels');
+  $last_reply = new DateTime();
+  $last_reply->setTimestamp($date);
+  $last_reply->setTimezone($time_zone);
 
   // Check if we should show x minutes ago, or not.
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60)) {
-    $variables['date'] = $minutes_ago . ' minuten geleden';
+    $minutes_ago = $last_reply->diff(new DateTime('now', $time_zone))->i;
+    $variables['date'] = format_plural($minutes_ago, '@count minuut geleden', '@count minuten geleden');
   }
   else {
-
-    $time_zone  = new DateTimeZone('Europe/Brussels');
-    $last_reply = new DateTime();
-    $last_reply->setTimestamp($date);
-    $last_reply->setTimezone($time_zone);
 
     $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
     if ($days_ago == 1) {
@@ -165,6 +165,6 @@ function _culturefeed_messages_preprocess_message(&$variables) {
 
   }
 
-  $variables['picture'] = !empty($message->user->depiction) ? theme('image', array('path' => $message->user->depiction . '?maxwidth=100')) : '';
+  $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
 
 }

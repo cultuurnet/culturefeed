@@ -316,7 +316,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   public function getNotifications($userId, $params = array()) {
     return $this->realCultureFeed->getNotifications($userId, $params);
   }
-  
+
   public function getNodeStatus($contentType, $nodeId, $userId) {
     return $this->realCultureFeed->getNodeStatus($contentType, $nodeId, $userId);
   }
@@ -324,7 +324,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   public function followNode($contentType, $nodeId, $userId) {
     return $this->realCultureFeed->followNode($contentType, $nodeId, $userId);
   }
-  
+
   public function unFollowNode($contentType, $nodeId, $userId) {
     return $this->realCultureFeed->unFollowNode($contentType, $nodeId, $userId);
   }
@@ -749,7 +749,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   public static function getNotifications($userId, $params = array()) {
     return self::getLoggedInUserInstance()->getNotifications($userId, $params);
   }
-  
+
   public static function getNodeStatus($contentType, $nodeId, $userId) {
     return self::getLoggedInUserInstance()->getNodeStatus($contentType, $nodeId, $userId);
   }
@@ -757,7 +757,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   public static function followNode($contentType, $nodeId, $userId) {
     return self::getLoggedInUserInstance()->followNode($contentType, $nodeId, $userId);
   }
-  
+
   public static function unFollowNode($contentType, $nodeId, $userId) {
     return self::getLoggedInUserInstance()->unFollowNode($contentType, $nodeId, $userId);
   }

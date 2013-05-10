@@ -8,6 +8,8 @@
 $button_printed = render($form['submit']);
 ?>
 
+<h2><?php print render($form['title']); ?></h2>
+
 <?php print render($form['recipient']) ?>
 
 <div class="new-message-primary">

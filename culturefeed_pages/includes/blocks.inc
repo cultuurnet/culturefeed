@@ -171,39 +171,41 @@ function culturefeed_pages_block_pages_admin_menu() {
 function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $page) {
 
   $menu = array(
-    array(
+    'info' => array(
       'title' => 'Basisinformatie',
       'url' => 'pages/' . $page->getId() . '/edit',
       'description' => '(bewerk contactinfo, foto, beschrijving, website, ...)',
+      'weight' => -20,
     ),
-    array(
+    'settings' => array(
       'title' => 'Instellingen',
       'url' => 'pages/' . $page->getId() . '/configuration',
       'description' => '(Mogen gebruikers jouw pagina volgen, beoordelingen schrijven, activiteiten aanraden, ...)',
+      'weight' => -19,
     ),
-    array(
-      'title' => 'Berichten',
-      'url' => 'pages/' . $page->getId() . '/messages',
-      'description' => '(Lees en beantwoord berichten en boekingsaanvragen)',
-    ),
-    array(
+    'members' => array(
       'title' => 'Leden & rollen',
       'url' => 'pages/' . $page->getId() . '/members/nojs',
       'description' => '(Beheer leden en toegangsrechten)',
+      'weight' => -18,
     ),
-    array(
+    'activities' => array(
       'title' => 'Activiteiten',
       'url' => 'pages/' . $page->getId() . '/events',
       'description' => '(Beheer je activiteiten en beoordelingen)',
+      'weight' => -17,
     ),
-    array(
+    'stats' => array(
       'title' => 'Statistieken',
       'url' => 'pages/' . $page->getId() . '/stats',
       'description' => '',
+      'weight' => -16,
     ),
   );
 
-  drupal_alter('culturefeed_pages_page_admin_menu', $menu);
+  drupal_alter('culturefeed_pages_page_admin_menu', $menu, $page);
+
+  uasort($menu, 'drupal_sort_weight');
 
   $items = array();
 
@@ -273,7 +275,7 @@ function culturefeed_pages_block_page_timeline($page) {
 }
 
 /**
- * Show the timeline of a page in a block.
+ * Show the agenda of a page in a block.
  */
 function culturefeed_pages_block_page_agenda($page) {
 
@@ -288,9 +290,6 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
-  if (!$is_admin) {
-    return;
-  }
 
   // Execute search and show results.
   $build = array();

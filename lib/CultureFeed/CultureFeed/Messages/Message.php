@@ -24,6 +24,12 @@ class CultureFeed_Messages_Message {
   public $sender;
 
   /**
+   * All recipients
+   * @var CultureFeed_User[]
+   */
+  public $recipients;
+
+  /**
    * Message type
    * @var string
    */
@@ -91,6 +97,7 @@ class CultureFeed_Messages_Message {
 
     $message = new self();
 
+    // General properties.
     $message->id           = $xmlElement->xpath_str('id');
     $message->type         = $xmlElement->xpath_str('type');
     $message->status       = $xmlElement->xpath_str('status');
@@ -100,11 +107,25 @@ class CultureFeed_Messages_Message {
     $message->body         = $xmlElement->xpath_str('body');
     $message->role         = $xmlElement->xpath_str('role');
 
+    // Parse sender.
     $user = new CultureFeed_User();
     $user->id        = $xmlElement->xpath_str('sender/rdf:id');
     $user->nick      = $xmlElement->xpath_str('sender/foaf:nick');
     $user->depiction = $xmlElement->xpath_str('sender/foaf:depiction');
     $message->sender = $user;
+
+    // Parse recipients.
+    $message->recipients = array();
+    $recipientElements = $xmlElement->xpath('recipients/recipient');
+    if ($recipientElements) {
+      foreach ($recipientElements as $recipientElement) {
+        $recipient = new CultureFeed_User();
+        $recipient->id        = $recipientElement->xpath_str('rdf:id');
+        $recipient->nick      = $recipientElement->xpath_str('foaf:nick');
+        $recipient->depiction = $recipientElement->xpath_str('foaf:depiction');
+        $message->recipients[$recipient->id] = $recipient;
+      }
+    }
 
     $senderPageId = $xmlElement->xpath_str('senderPageId');
     if ($senderPageId) {
