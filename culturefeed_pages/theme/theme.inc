@@ -421,6 +421,22 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
 }
 
 /**
+ * Preprocess the variables for the block to become admin member.
+ * @see culturefeed-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership_block(&$variables) {
+
+  $page = $variables['page'];
+  $cf_account_id = DrupalCultureFeed::getLoggedInUserId();
+
+  $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
+  
+  $variables['url'] = url($path, array('query' => drupal_get_destination()));
+  $variables['link'] = '<span id="request_adminship_link_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {

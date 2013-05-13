@@ -501,3 +501,120 @@ function culturefeed_pages_delete_member_form_submit($form, &$form_state) {
   drupal_set_message($message);
 
 }
+
+/**
+ * Page to request approval to become admin member of the page.
+ * 
+ * @param CultureFeed_Cdb_Item_Page $page
+ * @param CultureFeed_User $cf_user
+ * @param String $type
+ */
+function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type = 'ajax') {
+
+  $success = TRUE;
+
+  try {
+    $instance = DrupalCultureFeed::getLoggedInUserInstance();
+    $messages = $instance->messages();
+    $data = array(
+      'senderPage' => $page->getId(),
+      'recipientPage' => $page->getId(),
+      'type' => 'requestadmin',
+      'subject' => 'Aanvraag om beheerder te worden',
+      'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user->id, array('absolute' => TRUE)) . '"}',
+    );
+    $messages->sendMessage($data);
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  $message = "Uw aanvraag om beheerder te worden van deze pagina is verstuurd";
+  
+  if ($type == 'ajax') {
+    $commands = array();
+
+    if ($success) {
+      $commands[] = ajax_command_html('#request_adminship_link_wrapper', $message);
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_set_message($message);
+    drupal_goto();
+  }
+
+}
+
+/**
+ * Page callback to approve admin membership.
+ * 
+ * @param array $form
+ * @param array $form_state
+ * @param CultureFeed_Cdb_Item_Page $page
+ * @param CultureFeed_User $cf_user
+ */
+function culturefeed_pages_page_request_admin_membership_approved($form, &$form_state, $page, $cf_user) {
+
+  $form_state['page'] = $page;
+  $form_state['cf_user'] = $cf_user;
+  
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
+  $page_title = $page->getName();
+  $message = format_string("!username wil beheerder worden van !page.", array(
+    '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
+    '!page' => l($page_title, culturefeed_search_detail_path('page', $page->getId(), $page_title)),
+  ));
+  
+  $form['message'] = array('#type' => 'markup', '#markup' => $message);
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'OK',
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * Submit callback to approve admin membership.
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_pages_page_request_admin_membership_approved_submit($form, $form_state) {
+
+  $page = $form_state['page'];
+  $cf_user = $form_state['cf_user'];
+  
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
+
+  $page_title = $page->getName();
+  $page_path = culturefeed_search_detail_path('page', $page->getId(), $page_title);
+  
+  $message = format_string("!username werd succesvol toegevoegd als beheerder van !page.", array(
+    '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
+    '!page' => l($page_title, $page_path),
+  ));
+
+  $success = TRUE;
+  try {
+    $instance = DrupalCultureFeed::getLoggedInUserInstance();
+    $cf_pages = $instance->pages();
+    $cf_pages->addAdmin($page->getId(), $cf_user->id);
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_pages', $e);
+  }
+  
+  if ($success) {
+    drupal_set_message($message);
+  }
+  
+  drupal_goto($page_path);
+  
+}

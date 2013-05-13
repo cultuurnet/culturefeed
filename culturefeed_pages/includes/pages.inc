@@ -83,7 +83,7 @@ function culturefeed_pages_join_form_submit($form, &$form_state) {
  */
 function culturefeed_pages_detail_page(CultureFeed_Cdb_Item_Page $page) {
 
-culturefeed_pages_set_page_breadcrumb($page);
+  culturefeed_pages_set_page_breadcrumb($page);
 
   $isPageAdmin = FALSE;
   try {
@@ -995,3 +995,10 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
 
 }
 
+/**
+ * Page callback to show a list of my culturefeed pages.
+ */
+function culturefeed_pages_page_my_pages() {
+  
+  return "x";
+}

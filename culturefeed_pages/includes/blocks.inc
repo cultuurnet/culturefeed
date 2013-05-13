@@ -231,6 +231,20 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
 }
 
 /**
+ * Block with a request-link to become admin member of a page.
+ * 
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_block_pages_request_admin_membership(CultureFeed_Cdb_Item_Page $page) {
+  
+  $block = array();
+  $block['subject'] = '';
+  $block['content'] = culturefeed_pages_block_request_admin_membership($page, FALSE);
+  
+  return $block;
+}
+
+/**
  * Show the timeline of a page in a block.
  */
 function culturefeed_pages_block_page_timeline($page) {

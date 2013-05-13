@@ -170,3 +170,59 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   return $result;
 
 }
+
+/**
+ * Helper function to create a piece of content to request adminship of a page.
+ * 
+ * @param CultureFeed_Cdb_Item_Page $page
+ * @param integer $rendered
+ *   Indicates whether the output needs to be rendered or not.
+ */
+function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_Page $page, $rendered = TRUE) {
+
+  // Only for pages if the current user is already member of the page AND
+  // if the page does not have a default admin yet.
+  $is_member = FALSE;
+  $is_admin = FALSE;
+  $number_of_admins = 0;
+
+  $account = DrupalCultureFeed::getLoggedInAccount();
+  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+  $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+  
+  if (!empty($user_list->memberships)) {
+    foreach ($user_list->memberships as $user_list_membership) {
+      if ($user_list_membership->user->id == $account->culturefeed_uid) {
+        $is_member = TRUE;
+        if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+          $is_admin = TRUE;
+        }
+      }
+      if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+        $number_of_admins++;
+      }
+    }
+  }
+  
+  // Skip if the user is not even member.
+  if (!$is_member) {
+    return;
+  }
+  
+  // Skip if the user is already admin.
+  if ($is_admin) {
+    return;
+  }
+  
+  $build = array(
+    '#theme' => 'culturefeed_pages_request_admin_membership_block',
+    '#page' => $page,
+  );
+  
+  if ($rendered) {
+    return drupal_render($build);
+  }
+  else {
+    return $build;
+  }
+}

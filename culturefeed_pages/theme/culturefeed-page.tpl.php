@@ -48,13 +48,17 @@
 
   <?php if ($links): ?>
   <dt>Website</dt>
-  <dl>
+  <dd>
     <ul>
     <?php foreach ($links as $class => $link): ?>
-      <li class=<?php print $class; ?>"><a href="<?php print $link; ?>"><?php print $link; ?></a></li>
+      <li class="<?php print $class; ?>"><a href="<?php print $link; ?>"><?php print $link; ?></a></li>
     <?php endforeach; ?>
     </ul>
-  </dl>
+  </dd>
   <?php endif;?>
 
 </dl>
+
+<?php 
+print culturefeed_pages_block_request_admin_membership($item);
+ ?>

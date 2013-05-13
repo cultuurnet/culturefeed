@@ -273,8 +273,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   public function addAdmin($id, $userId, $params = array()) {
 
     $data = array(
-      'userId' => $userId,
-      'relation' => $relation,
+      'userId' => $userId
     );
     $data += $params;
 

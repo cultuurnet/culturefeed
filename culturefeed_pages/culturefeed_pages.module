@@ -27,6 +27,9 @@ define('CULTUREFEED_PAGES_UITDATABANK_EVENT_URL', 'http://www.uitdatabank.be/2/I
 function culturefeed_pages_permission() {
 
   return array(
+    'view my culturefeed pages' => array(
+      'title' => t('See my culturefeed pages'),
+    ),
     'join culturefeed page' => array(
       'title' => t('Join a culturefeed page'),
     ),
@@ -103,6 +106,16 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-fellow-members-block',
+    ),
+    
+    'culturefeed_pages_request_admin_membership_block' => array(
+      'variables' => array(
+        'page' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-request-admin-membership-block',
+      
     ),
 
     'culturefeed_pages_following_pages_block' => array(
@@ -307,6 +320,26 @@ function culturefeed_pages_menu() {
     'file' => 'includes/members.inc',
   );
 
+  $items['pages/%culturefeed_pages_page/membership/request-admin/%cf_user/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Aanvraag tot beheerder van de pagina',
+    'page callback' => 'culturefeed_pages_page_request_admin_membership',
+    'page arguments' => array(1, 4, 5),
+    'access arguments' => array('join culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/members.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/membership/request-approve/%cf_user'] = array(
+    'title callback' => FALSE,
+    'title' => 'Lid toevoegen als beheerder',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_page_request_admin_membership_approved', 1, 4),
+    'access arguments' => array('join culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/members.inc',
+  );
+
   $items['pages/switch/%culturefeed_pages_page'] = array(
     'title callback' => FALSE,
     'title' => 'Verander actieve pagina',
@@ -352,6 +385,15 @@ function culturefeed_pages_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+  
+  $items['culturefeed/pages'] = array(
+    'title callback' => FALSE,
+    'title' => 'Mijn pagina\'s',
+    'page callback' => 'culturefeed_pages_page_my_pages',
+    'access arguments' => array('view my culturefeed pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
 
   return $items;
 
@@ -376,6 +418,11 @@ function culturefeed_pages_block_info() {
 
   $blocks['pages-admin-options'] = array(
     'info' => t("Page options"),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  $blocks['pages-request-admin-membership'] = array(
+    'info' => t("Request to become admin member"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
@@ -459,6 +506,10 @@ function culturefeed_pages_block_view($delta) {
 
     case 'pages-admin-menu':
       return culturefeed_pages_block_pages_admin_menu();
+      
+    case 'pages-request-admin-membership':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_pages_request_admin_membership($page);
 
     case 'page-timeline':
       $page = menu_get_object('culturefeed_pages_page', 3);
