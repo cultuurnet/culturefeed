@@ -41,7 +41,16 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
    * Bind the datepicker functionality.
    */
   Drupal.CulturefeedSearch.bindDatePicker = function() {
-    $('#edit-date-range').daterangepicker();
+    $('#edit-date-range').daterangepicker({
+      presetRanges: [],
+      presets : {
+        specificDate: 'Specific Date',
+        dateRange: 'Date Range'
+      },
+      dateFormat: 'd/m/yy',
+      earliestDate : Date.parse(),
+      constrainDates : true
+    });
   }
 
 })(jQuery);

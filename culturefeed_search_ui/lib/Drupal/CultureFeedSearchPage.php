@@ -55,16 +55,19 @@ class CultureFeedSearchPage {
     if (isset($params['date_range'])) {
 
       $dates = explode('-', $params['date_range']);
-      $start_date = strtotime($dates[0]);
-      $end_date = $start_date;
+      $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+      $endDate = $startDate;
       if (isset($dates[1])) {
-        $end_date = strtotime($dates[1]) +  24 * 60 * 60;
+        $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
       }
 
-      // Add 23:59:59 to the end date, so it searches on the end of that day
-      $end_date +=  ((23 * 60 * 60) + (59 * 60) + 59);
+      // Set start date time on beginning of the day.
+      $startDate->setTime(0, 0, 1);
 
-      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $start_date, $end_date);
+      // Set end date time to end of the day day, to it searches on full day.
+      $endDate->setTime(23, 59, 59);
+
+      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
 
     }
 
