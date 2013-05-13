@@ -75,10 +75,10 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
  * @see culturefeed-social-recommendation-list.tpl.php
  */
 function culturefeed_social_preprocess_culturefeed_social_recommendation_list(&$variables) {
-  
+
   // Always include the javascript for ajax behavior.
   drupal_add_library('system', 'drupal.ajax');
-  
+
   $object = $variables['object'];
   $activities = $variables['activities'];
   $accounts = $variables['accounts'];
@@ -88,8 +88,8 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list(&$
   $list = array();
   foreach ($activities as $activity) {
     $list[] = theme('culturefeed_social_recommendation_list_item', array(
-      'activity' => $activity, 
-      'object' => $object, 
+      'activity' => $activity,
+      'object' => $object,
       'uid' => $accounts[$activity->userId],
       'child_activities' => $activity->childActivities,
       'accounts' => $accounts,
@@ -97,7 +97,7 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list(&$
     ));
   }
   $variables['list'] = $list;
-  
+
 }
 
 /**
@@ -111,7 +111,7 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   $accounts = $variables['accounts'];
   $destination = drupal_get_destination();
   $cf_user = DrupalCultureFeed::getLoggedInUser();
-  
+
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
   $url = 'user/' . $variables['uid'];
@@ -129,8 +129,8 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
     $list = array();
     foreach ($variables['child_activities'] as $child_activity) {
      $list[] = theme('culturefeed_social_recommendation_list_item', array(
-       'activity' => $child_activity, 
-       'object' => $object, 
+       'activity' => $child_activity,
+       'object' => $object,
        'uid' => $accounts[$child_activity->userId],
        'child_activities' => array(),
        'accounts' => array(),
@@ -139,14 +139,14 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
     }
     $variables['list'] = $list;
   }
-  
+
   $variables['react_form'] = '';
   $variables['react_link'] = '';
   $variables['delete_link'] = '';
   $variables['abuse_link'] = '';
-  
+
   if ($variables['level'] == 0) {
-    
+
     if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
       $variables['delete_link'] = l('Verwijder reactie | X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
         'attributes' => array('class' => array('remove-link', 'use-ajax')),
@@ -156,21 +156,27 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
     $variables['react_link'] = l('Reageer op deze beoordeling', $_GET['q'], array('attributes' => array('class' => array('recommend-subform-toggle'))));
     $sub_form = culturefeed_social_recommendation_actionbox($object, $activity);
     $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
-    $variables['abuse_link'] = l('Rapporteer als ongepast', 'culturefeed/activity/mark-abusive/' . $activity->id . '/nojs', array('attributes' => array('class' => array('abuse-link'))));
 
   }
   else {
-    
+
     if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
       $variables['delete_link'] = l('X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
         'attributes' => array('class' => array('remove-link', 'use-ajax')),
         'query' => $destination,
       ));
     }
-    $variables['abuse_link'] = l('Rapporteer als ongepast', 'culturefeed/activity/mark-abusive/' . $activity->id . '/nojs', array('attributes' => array('class' => array('abuse-link'))));
 
   }
-  
+
+  if (module_exists('culturefeed_messages')) {
+
+    $variables['abuse_link'] = l('Rapporteer als ongepast', $_GET['q'], array('attributes' => array('class' => array('recommend-abuse-toggle'))));
+    $abuse_form = drupal_get_form('culturefeed_social_report_abuse_form', $activity, culturefeed_search_get_active_object());
+    $variables['abuse_form'] = '<div class="recommendation-abuse-form">' . drupal_render($abuse_form) . '</div>';
+
+  }
+
 }
 
 /**

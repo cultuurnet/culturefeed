@@ -136,9 +136,6 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
     watchdog_exception('culturefeed_messages', $e);
   }
 
-  // Add context information
-  $object = culturefeed_search_get_active_object();
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Verzenden',

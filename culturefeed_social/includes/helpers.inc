@@ -211,7 +211,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
         return FALSE;
 
   }
-dsm($activity);
+
   try {
     $id = DrupalCultureFeed::createActivity($activity);
     $activity->id = $id;
@@ -335,7 +335,7 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
 
 /**
  * Helper function to create a list of activities of the type COMMENT
- * 
+ *
  * @param misc $object (Culturefeed_Page, Bibnet_Book, ...
  * @param CultureFeed_ResultSet $activities
  */
@@ -344,7 +344,7 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
   if ($activities->total < 0) {
     return array();
   }
-  
+
   $activity_list = array();
   $total = 0;
   foreach ($activities->objects as $activity) {
@@ -359,14 +359,14 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
       $activity_list[$activity->parentActivity]->childActivities[$activity->id] = $activity;
     }
   }
-  
+
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   return array(
     '#type' => 'markup',
     '#markup' => theme('culturefeed_social_recommendation_list', array(
-      'object' => $object, 
-      'activities' => $activity_list, 
+      'object' => $object,
+      'activities' => $activity_list,
       'total' => $total,
       'accounts' => $accounts,
     )),
@@ -374,7 +374,7 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
       'js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/culturefeed-social.js'),
     )
   );
-  
+
 }
 
 /**

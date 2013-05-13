@@ -100,3 +100,26 @@ function _culturefeed_agenda_get_contact_links(CultureFeed_Cdb_Data_ContactInfo 
   return $links;
 
 }
+
+/**
+ * Get the first culturefeed page link connected with the given item.
+ */
+function culturefeed_agenda_get_connected_page_id_of_item(CultureFeed_Cdb_Item_Base $item) {
+
+  global $language;
+  $detail = $item->getDetails()->getDetailByLanguage($language->language);
+
+  // Reset organiser link. For CEP we need to check on pages for it.
+  if ($detail->getMedia()) {
+
+    $page_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_CULTUREFEED_PAGE);
+    foreach ($page_links as $link) {
+      if ($link->getRelationType() == CultureFeed_Cdb_Data_File::REL_TYPE_ORGANISER) {
+        $link_parts = explode('/', $page_links->current()->getHLink());
+        return $link_parts[count($link_parts) - 1];
+      }
+    }
+
+  }
+
+}

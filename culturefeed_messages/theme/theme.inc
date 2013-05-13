@@ -65,13 +65,13 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   }
 
   $variables['messages'] = array();
-  $variables['messages'][] = theme('culturefeed_messages_message', array('message' => $thread));
+  $variables['messages'][] = theme('culturefeed_messages_message_' . $thread->type, array('message' => $thread));
 
   $thread_children = $thread->children;
   if (!empty($thread_children)) {
     $variables['message_count'] += count($thread_children);
     foreach ($thread_children as $message) {
-      $variables['messages'][] = theme('culturefeed_messages_message', array('message' => $message));
+      $variables['messages'][] = theme('culturefeed_messages_message_' . $message->type, array('message' => $message));
     }
   }
 
@@ -88,12 +88,64 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 }
 
 /**
- * Preprocess a message item.
- * @see culturefeed-messages-message.tpl.php
+ * Preprocess a message item of type contactmembers.
+ * @see culturefeed-messages-message-contactmembers.tpl.php
  */
-function culturefeed_messages_preprocess_culturefeed_messages_message(&$variables) {
+function culturefeed_messages_preprocess_culturefeed_messages_message_contactmembers(&$variables) {
 
   _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type contactpage.
+ * @see culturefeed-messages-message-contactpage.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_contactpage(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type booking.
+ * @see culturefeed-messages-message-booking.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_booking(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type report.
+ * @see culturefeed-messages-message-report.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_report(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type requestadmin.
+ * @see culturefeed-messages-message-requestadmin.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_requestadmin(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess recipients for a message.
+ */
+function _culturefeed_messages_preprocess_message_recipients(&$variables) {
 
   $message = $variables['message'];
   $recipient_links = array();
@@ -129,7 +181,15 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   $variables['id'] = $message->id;
   $variables['status'] = $message->status;
   $variables['subject'] = $message->subject;
-  $variables['body'] = $message->body;
+
+  // Body can be a json. If it is, add the array to the variables.
+  $body = drupal_json_decode($message->body);
+  if ($body && is_array($body)) {
+    $variables += $body;
+  }
+  else {
+    $variables['body'] = $message->body;
+  }
 
   $variables['sender'] = $message->sender->nick;
   if (!empty($message->senderPage)) {

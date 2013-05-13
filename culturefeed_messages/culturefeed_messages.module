@@ -39,11 +39,43 @@ function culturefeed_messages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_messages_message' => array(
+    'culturefeed_messages_message_contactmembers' => array(
       'variables' => array(
         'message' => NULL,
       ),
-      'template' => 'culturefeed-messages-message',
+      'template' => 'culturefeed-messages-message-contactmembers',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_contactpage' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-contactpage',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_booking' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-booking',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_report' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-report',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_requestadmin' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-requestadmin',
       'path' => $path,
       'file' => 'theme.inc',
     ),
@@ -230,11 +262,8 @@ function culturefeed_messages_message_load($message_id) {
     return $messages[$message_id];
   }
 
-  // If we are on landing page, show the first message.
   try {
-
     $messages[$message_id] = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($message_id);
-
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);

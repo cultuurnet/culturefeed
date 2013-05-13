@@ -12,6 +12,24 @@ class CultureFeed_Messages_Message {
   const TYPE_MEMBERS = 'contactmembers';
 
   /**
+   * Message type key when the message is a report.
+   * @var string
+   */
+  const TYPE_REPORT = 'report';
+
+  /**
+   * Message type key when the message is a booking.
+   * @var string
+   */
+  const TYPE_BOOKING = 'booking';
+
+  /**
+   * Message type when the message is a contact to a page.
+   * @var string
+   */
+  const TYPE_CONTACT_PAGE = 'contactpage';
+
+  /**
    * Message ID.
    * @var string
    */
