@@ -36,7 +36,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $activity = $variables['activity'];
 
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
-  $url = 'user/' . $variables['uid'];
+  $user_url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
@@ -55,7 +55,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   }
 
   $replace = array(
-    '!nick' => l($activity->nick, $url),
+    '!nick' => l($activity->nick, $user_url),
     '!type_prefix' => $type_prefix,
     '!type_suffix' => $type_suffix,
     '!link' => $link,
