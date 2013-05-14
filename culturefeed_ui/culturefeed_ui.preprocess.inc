@@ -335,7 +335,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     if (!empty($memberships)) {
       $variables['memberships'] = array();
       foreach ($memberships as $membership) {
-        $variables['membership'][] = culturefeed_search_detail_l('page', $membership->page->getId(), $membership->page->getName());
+        $variables['memberships'][] = culturefeed_search_detail_l('page', $membership->page->getId(), $membership->page->getName());
       }
     }
 

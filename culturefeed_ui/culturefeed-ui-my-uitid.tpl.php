@@ -56,7 +56,6 @@
   </div>
 <?php endif; ?>
 
-
 <?php if (!empty($memberships)): ?>
 <div class="page-memberships">
   Pagina's waar ik lid van ben:
