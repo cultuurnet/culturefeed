@@ -133,7 +133,7 @@ function culturefeed_social_page_activities($type = NULL) {
       '#ajax' => array(),
     );
 
-    $type_text = isset($types[$activity->type]) ? $types[$activity->type] : '';
+    $type_text = isset($types[$activity->type]) ? $types[$activity->type]->label : '';
 
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
     $data = l($activity->nodeTitle, $url);
@@ -221,7 +221,7 @@ function culturefeed_social_page_activity_delete($id, $type = 'ajax') {
 function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
 
   $success = TRUE;
-  
+
   try {
     DrupalCultureFeed::deleteActivity($id);
   }
@@ -229,20 +229,20 @@ function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
-  
+
   if ($type == 'ajax') {
     $commands = array();
-  
+
     if ($success) {
       $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
     }
-  
+
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     drupal_goto();
   }
-  
+
 }
 
 /**
@@ -253,7 +253,7 @@ function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = '
   $success = TRUE;
   $activity_content_type = culturefeed_get_content_type($content_type);
   $nodeId = urldecode($nodeId);
-  
+
   try {
     DrupalCultureFeed::unFollowNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
   }
@@ -261,21 +261,21 @@ function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = '
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
-  
+
   if ($type == 'ajax') {
     $commands = array();
-  
+
     if ($success) {
       $commands[] = ajax_command_html('#node-status-wrapper', 'Je ontvangt geen updates meer van nieuwe reacties op deze activiteit');
     }
-  
+
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     drupal_set_message('Je ontvangt momenteel geen updates van nieuwe reacties op deze activiteit.');
     drupal_goto();
   }
-  
+
 }
 
 /**

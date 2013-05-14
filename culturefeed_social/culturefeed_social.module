@@ -333,7 +333,7 @@ function culturefeed_social_block_view($delta) {
 
     case 'my-notifications':
       return culturefeed_social_block_my_notifications();
-      
+
     case 'my-activity-summary':
       $account = menu_get_object('user');
       return culturefeed_social_block_my_activity_summary($account);
