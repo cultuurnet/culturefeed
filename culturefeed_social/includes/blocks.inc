@@ -71,8 +71,7 @@ function culturefeed_social_block_user_activities($account) {
   }
   else {
 
-    $activity_filters = culturefeed_social_get_activity_filter_options(TRUE);
-    if (!empty($activity_filters)) {
+    if (!empty($active_types)) {
       $content['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', 'all', TRUE, $account);
     }
 
@@ -298,28 +297,28 @@ function culturefeed_social_block_my_activity_summary($account) {
   $has_pages = module_exists('culturefeed_pages');
   $has_books = module_exists('bibnet_books');
   $active_types = culturefeed_social_get_activity_filter_options(TRUE);
-  
+
   $types = array();
   foreach ($active_types as $type => $activityConfig) {
     $allowed_types = $activityConfig->allowed_types;
     foreach ($allowed_types as $type) {
-      
+
     }
     if (in_array('event', $allowed_types)) {
       $types[] = $type . '_event';
     }
-    
+
     if ($has_pages && in_array('page', $allowed_types)) {
       $types[] = $type . '_page';
     }
-    
+
     if ($has_books && in_array('book', $allowed_types)) {
       $types[] = $type . '_book';
     }
   }
-  
+
   $private = $account->culturefeed_uid == $GLOBALS['user']->uid ? TRUE : FALSE;
-  
+
   try {
     $activities = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
@@ -330,7 +329,7 @@ function culturefeed_social_block_my_activity_summary($account) {
 
   $block['subject'] = 'Recente acties';
   $block['content'] = $content;
-  
+
   return $block;
-  
+
 }

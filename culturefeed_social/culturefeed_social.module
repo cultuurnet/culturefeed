@@ -391,10 +391,14 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
     return;
   }
 
-  $activity_filters = array('all' => 'Alles') + $activity_filters;
+  $options = array('all' => 'Alles');
+  foreach ($filter_options as $activity_id => $activity_config) {
+    $options[$activity_id] = $activity_config->label;
+  }
+
   $form['filter'] = array(
     '#type' => 'select',
-    '#options' => $activity_filters,
+    '#options' => $options,
     '#title' => 'Filter gebeurtenissen op',
     '#default_value' => $active_filter,
   );
