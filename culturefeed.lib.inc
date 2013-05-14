@@ -195,6 +195,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     return $data;
   }
+  
+  public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
+    return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
+  }
 
   public function getMailing($id) {
     return $this->realCultureFeed->getMailing($id);
@@ -670,6 +674,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     }
 
     return $data;
+  }
+
+  public static function getTotalActivities($userId, $type_contentType, $private = FALSE) {
+    return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
   }
 
   public static function getMailing($id) {

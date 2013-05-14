@@ -768,8 +768,37 @@ class CultureFeed implements ICultureFeed {
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-
+    
     return self::parseUsers($xml);
+  }
+  
+  /**
+   * Get the total of activities for a user.
+   * 
+   * @param Integer $userId
+   *   The user Id to get all activities for.
+   * @param string $type_contentType
+   *   Array of unique strings for each combination of activity type and its content type.
+   *   E.g. 
+   */
+  public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
+
+    $data = array();
+    dsm($type_contentType);
+    $data['type_contentType'] = $type_contentType;
+    $data['userId'] = $userId;
+    
+    $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+      dsm($xml);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return NULL;
   }
 
   /**

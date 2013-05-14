@@ -51,6 +51,8 @@ interface ICultureFeed {
   public function searchActivities(CultureFeed_SearchActivitiesQuery $query);
 
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL);
+  
+  public function getTotalActivities($userId, $type_contentType, $private = FALSE);
 
   public function getMailing($id);
 

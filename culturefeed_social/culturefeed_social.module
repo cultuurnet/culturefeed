@@ -281,6 +281,11 @@ function culturefeed_social_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['my-activity-summary'] = array(
+    'info' => t('Summary of my activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   return $blocks;
 
 }
@@ -309,6 +314,10 @@ function culturefeed_social_block_view($delta) {
 
       case 'my-notifications':
         return culturefeed_social_block_my_notifications();
+        
+      case 'my-activity-summary':
+        $account = menu_get_object('user');
+        return culturefeed_social_block_my_activity_summary($account);
 
   }
 
