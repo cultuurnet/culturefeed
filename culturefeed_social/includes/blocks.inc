@@ -323,7 +323,9 @@ function culturefeed_social_block_my_activity_summary($account) {
     watchdog_exception('culturefeed_social', $e);
     return;
   }
-  if ($total_counts) {
+  
+  $content = array();
+  if ($totals) {
     
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',

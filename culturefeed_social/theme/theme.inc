@@ -219,19 +219,19 @@ function culturefeed_social_preprocess_culturefeed_social_user_notifications_pag
  * Preprocess the variables for the summary of activities of a user.
  * @see culturefeed-social-activity-summary.tpl.php
  */
-function culturefeed_social_preprocess_culturefeed_social_activities_summary(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$variables) {
   
   $total_per_type = array();
   
   foreach ($variables['totals'] as $total) {
     
-    if (!isset($total_per_type[$activity_type])) {
-      $total_per_type[$activity_type] = array('activities' => 0, 'books' => 0, 'pages' => 0);
-    }
-    
     // Conventional totals for each type/content type.
     list($activity_type, $content_type) = explode("_", $total->key);
     $variables[$content_type . '_' . $activity_type] = $total->value;
+
+    if (!isset($total_per_type[$activity_type])) {
+      $total_per_type[$activity_type] = array('activities' => 0, 'books' => 0, 'pages' => 0);
+    }
     
     if (in_array($content_type, array('actor', 'production', 'event'))) {
       $total_per_type[$activity_type]['activities'] += $total->value;
@@ -246,10 +246,12 @@ function culturefeed_social_preprocess_culturefeed_social_activities_summary(&$v
   }
 
   foreach ($total_per_type as $atype => $total_per_content_type) {
-    $variables['books_' . $atype . '_total'] = $total_per_content_type['books'];
-    $variables['pages_' . $atype . '_total'] = $total_per_content_type['pages'];
-    $variables['activities_' . $atype . '_total'] = $total_per_content_type['activities'];
+
+    $variables['total_' . $atype] = $total_per_content_type['books'] + $total_per_content_type['pages'] + $total_per_content_type['activities'];
+    $variables['books_total_' . $atype] = $total_per_content_type['books'];
+    $variables['pages_total_' . $atype] = $total_per_content_type['pages'];
+    $variables['activities_total_' . $atype] = $total_per_content_type['activities'];
+    
   }
-  dsm($variables);
   
 }
