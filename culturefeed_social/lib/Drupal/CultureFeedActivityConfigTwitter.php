@@ -15,6 +15,7 @@ class CultureFeedActivityConfigTwitter extends CultureFeedActivityConfigBase {
     $this->subject = 'Gedeeld door';
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'via Twitter gedeeld';
+    $this->label = 'Delen via Twitter';
 
   }
 

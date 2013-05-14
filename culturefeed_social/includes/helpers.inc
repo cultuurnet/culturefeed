@@ -18,36 +18,44 @@ function culturefeed_social_activity_get_config($activity_type) {
 
 /**
  * Get the actvitity filter options.
+ * @return Array of possible activity options.
+ *   key = activity id
+ *   value = activity config
  */
 function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 
-  $options = array(
-    CultureFeed_Activity::TYPE_LIKE => 'Likes',
-    CultureFeed_Activity::TYPE_RECOMMEND => 'Aanraden',
-    CultureFeed_Activity::TYPE_FOLLOW => 'Pagina volgen',
-    CultureFeed_Activity::TYPE_COMMENT => 'Beoordelingen',
+  // Defaults.
+  $active_options = array(
+    CultureFeed_Activity::TYPE_LIKE,
+    CultureFeed_Activity::TYPE_RECOMMEND,
+    CultureFeed_Activity::TYPE_FOLLOW,
+    CultureFeed_Activity::TYPE_COMMENT,
   );
 
-  // Return all possible filters.
-  if (!$active_only) {
-    return $options;
-  }
+  // Return only active filters.
+  if ($active_only) {
 
-  // Only active filters
-  $activity_filters = variable_get('culturefeed_social_activity_filters', array());
-  // If no settings yet, return all.
-  if (!$activity_filters) {
-    return $options;
-  }
-
-  $active_options = array();
-  foreach ($activity_filters as $activity_filter) {
-    if ($activity_filter) {
-      $active_options[$activity_filter] = $options[$activity_filter];
+    // Only active filters
+    $activity_filters = variable_get('culturefeed_social_activity_filters', array());
+    // If settings. Set only the active ones.
+    if ($activity_filters) {
+      $active_options = array();
+      foreach ($activity_filters as $activity_filter) {
+        if ($activity_filter) {
+          $active_options[] = $activity_filter;
+        }
+      }
     }
+
   }
 
-  return $active_options;
+  // Load the config for the active options.
+  $options = array();
+  foreach ($active_options as $activity_type) {
+    $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
+  }
+
+  return $options;
 
 }
 

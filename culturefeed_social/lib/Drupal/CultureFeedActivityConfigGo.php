@@ -13,6 +13,8 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
     $this->allowedTypes = array('event');
 
     $this->viewPrefix = 'gaat naar';
+    $this->label = 'gaat naar';
+
   }
 
 }

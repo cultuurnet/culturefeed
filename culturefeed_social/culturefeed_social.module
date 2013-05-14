@@ -13,6 +13,7 @@ define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 10);
 define('CULTUREFEED_SOCIAL_PAGE_USER_ACTIVITIES_COUNT', 20);
 define('CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT', 50);
 define('CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT', 5);
+define('CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT', 10);
 
 /**
  * Implements hook_menu().
@@ -261,6 +262,11 @@ function culturefeed_social_block_info() {
 
   $blocks = array();
 
+  $blocks['recent-activities'] = array(
+    'info' => t('Recent site activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   $blocks['user-activities'] = array(
     'info' => t('User activities'),
     'cache' => DRUPAL_NO_CACHE,
@@ -300,24 +306,27 @@ function culturefeed_social_block_view($delta) {
 
   switch ($delta) {
 
+    case 'recent-activities':
+      return culturefeed_social_block_recent_activities();
+
     case 'user-activities':
       $account = menu_get_object('user');
       return culturefeed_social_block_user_activities($account);
 
-      case 'recommended-by':
-        $object = culturefeed_search_get_active_object();
-        return culturefeed_social_block_recommended_by($object);
+    case 'recommended-by':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_block_recommended_by($object);
 
-      case 'recommendations':
-        $object = culturefeed_search_get_active_object();
-        return culturefeed_social_block_recommendations($object);
+    case 'recommendations':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_block_recommendations($object);
 
-      case 'my-notifications':
-        return culturefeed_social_block_my_notifications();
-        
-      case 'my-activity-summary':
-        $account = menu_get_object('user');
-        return culturefeed_social_block_my_activity_summary($account);
+    case 'my-notifications':
+      return culturefeed_social_block_my_notifications();
+      
+    case 'my-activity-summary':
+      $account = menu_get_object('user');
+      return culturefeed_social_block_my_activity_summary($account);
 
   }
 

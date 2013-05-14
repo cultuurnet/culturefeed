@@ -21,6 +21,8 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->linkClassUndo = 'uncomment-link';
     $this->viewPrefix = 'heeft over';
     $this->viewSuffix = 'een beoordeling geschreven';
+    $this->label = 'Commentaar';
+
   }
 
 }

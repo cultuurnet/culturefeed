@@ -15,6 +15,7 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->subject = 'Gedeeld door';
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'via Facebok gedeeld';
+    $this->label = 'Delen via Facebook';
 
   }
 

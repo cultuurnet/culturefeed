@@ -18,6 +18,7 @@ class CultureFeedActivityConfigBase {
   public $linkClassUndo = '';
   public $viewPrefix = '';
   public $viewSuffix = '';
+  public $label = '';
 
   /**
    * Constructor to load default values.

@@ -13,6 +13,7 @@ class CultureFeedActivityConfigPageAdmin extends CultureFeedActivityConfigBase {
     $this->allowedTypes = array('page');
 
     $this->viewPrefix = 'werd administrator van';
+    $this->label = 'Pagina administrator';
   }
 
 }
