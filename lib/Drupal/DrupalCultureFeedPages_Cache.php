@@ -71,6 +71,20 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   }
 
   /**
+   * Clear the userlist cache.
+   * @param string $id
+   *   Page id.
+   * @param string $memberType
+   *   Member type ex ADMIN
+   */
+  protected function clearUserListCache($id, $memberType) {
+    $cid_base = 'userList:' . $id . ':' . md5(serialize(array($memberType))) . ':';
+    // Clear both authorized and non authorized calls.
+    $this->cacheClear($cid_base . '1');
+    $this->cacheClear($cid_base . '0');
+  }
+
+  /**
    * @see CultureFeed_Pages::getPage()
    */
   public function getPage($id) {
@@ -93,42 +107,54 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @see CultureFeed_Pages::addPage()
    */
   public function addPage(array $params) {
-    return $this->realCultureFeedPages->addPage($params);
+    $result = $this->realCultureFeedPages->addPage($params);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
    * @see CultureFeed_Pages::updatePage()
    */
   public function updatePage($id, array $params) {
-    return $this->realCultureFeedPages->updatePage($id, $params);
+    $result = $this->realCultureFeedPages->updatePage($id, $params);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
    * @see CultureFeed_Pages::removePage()
    */
   public function removePage($id) {
-    return $this->realCultureFeedPages->removePage($id);
+    $result = $this->realCultureFeedPages->removePage($id);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
    * @see CultureFeed_Pages::publishPage()
    */
   public function publishPage($id) {
-    return $this->realCultureFeedPages->publishPage($id);
+    $result = $this->realCultureFeedPages->publishPage($id);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
    * @see CultureFeed_Pages::addImage()
    */
   public function addImage($id, array $params) {
-    return $this->realCultureFeedPages->addImage($id, $params);
+    $result = $this->realCultureFeedPages->addImage($id, $params);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
    * @see CultureFeed_Pages::changePermissions()
    */
   public function changePermissions($id, array $params) {
-    return $this->realCultureFeedPages->changePermissions($id, $params);
+    $result = $this->realCultureFeedPages->changePermissions($id, $params);
+    $this->cacheClear('page:' . $id);
+    return $result;
   }
 
   /**
@@ -155,6 +181,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function addMember($id, $userId, $params = array()) {
     $this->realCultureFeedPages->addMember($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER);
   }
 
   /**
@@ -162,6 +189,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function updateMember($id, $userId, array $params) {
     $this->realCultureFeedPages->updateMember($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER);
   }
 
   /**
@@ -169,6 +197,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function removeMember($id, $userId) {
     $this->realCultureFeedPages->removeMember($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER);
   }
 
   /**
@@ -176,6 +205,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function follow($id, array $params) {
     $this->realCultureFeedPages->follow($id, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Follower::ROLE);
   }
 
   /**
@@ -183,6 +213,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function defollow($id, $userId, array $params) {
     $this->realCultureFeedPages->defollow($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Follower::ROLE);
   }
 
   /**
@@ -190,6 +221,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function addAdmin($id, $userId, $params = array()) {
     $this->realCultureFeedPages->addAdmin($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
 
   /**
@@ -197,6 +229,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function updateAdmin($id, $userId, array $params) {
     $this->realCultureFeedPages->updateMember($id, $userId, $params);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
 
   /**
@@ -204,6 +237,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function removeAdmin($id, $userId) {
     $this->realCultureFeedPages->removeAdmin($id, $userId);
+    $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
 
   /**
