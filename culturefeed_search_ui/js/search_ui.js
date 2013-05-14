@@ -7,13 +7,16 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
 
 (function ($) {
   
-  //
   Drupal.behaviors.culturefeedSearchUi = {
    attach: function (context, settings) {
+     
      Drupal.CulturefeedSearch.bindSortDropdown();
      if ($('#edit-date-range').length > 0) {
        Drupal.CulturefeedSearch.bindDatePicker();       
      }
+     
+     $('input.auto-submit').click(Drupal.CulturefeedSearch.autoSubmit);
+     
    }
   };
   
@@ -41,7 +44,23 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
    * Bind the datepicker functionality.
    */
   Drupal.CulturefeedSearch.bindDatePicker = function() {
-    $('#edit-date-range').daterangepicker();
+    $('#edit-date-range').daterangepicker({
+      presetRanges: [],
+      presets : {
+        specificDate: 'Specific Date',
+        dateRange: 'Date Range'
+      },
+      dateFormat: 'd/m/yy',
+      earliestDate : Date.parse(),
+      constrainDates : true
+    });
+  }
+  
+  /**
+   * Click listener on autosubmit fields.
+   */
+  Drupal.CulturefeedSearch.autoSubmit = function() {
+    $(this).parents('form').submit();
   }
 
 })(jQuery);

@@ -253,7 +253,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
  */
 function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variables) {
 
-  $variables['title'] = $variables['page']->getName();
+  $page = $variables['page'];
+  $variables['title'] = $page->getName();
 
   $uids = culturefeed_get_uids_for_memberships($variables['followers']);
 
@@ -266,29 +267,16 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
     }
 
     $follower = array();
-    $follower['url'] = url('user/' . $uids[$membership->user->id]);
-    $follower['name'] = $membership->user->nick;
-    $follower['picture'] = $membership->user->depiction;
+    $follower['url'] = url('user/' . $uids[$cf_follower->user->id]);
+    $follower['name'] = $cf_follower->user->nick;
+    $follower['picture'] = $cf_follower->user->depiction;
 
     $followers[] = $follower;
 
   }
+  $variables['followers'] = $followers;
 
-  drupal_add_library('system', 'drupal.ajax');
-
-  $options = array(
-    'query' => array(
-      'destination' => culturefeed_search_detail_path('page', $variables['page']->getId(), $variables['page']->getName())
-    ),
-    'attributes' => array('class' => array('use-ajax'))
-  );
-
-  if ($variables['you_follow']) {
-    $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $variables['page']->getId(), $options);
-  }
-  elseif ($variables['page']->getPermissions()->allowFollowers) {
-    $variables['follow_link'] = l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $variables['page']->getId(), $options);
-  }
+  $variables['follow_link'] = culturefeed_pages_follow_link($page);
 
 }
 
@@ -441,7 +429,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $cf_account_id = DrupalCultureFeed::getLoggedInUserId();
 
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
-  
+
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
   $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
@@ -476,4 +464,25 @@ function theme_culturefeed_pages_edit_membership_form($variables) {
 
   return $output;
 
+}
+
+/**
+ * Theme the message when a follow action was succesfull.
+ */
+function theme_culturefeed_pages_follow_success_message($variables) {
+
+  $message = '<p><strong>Je volgt nu deze pagina</strong></p>';
+  $message .= '<p>Wil je lid worden van deze pagina? ';
+  $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $variables['page']->getId(), array(
+    'attributes' => array('class' => array('use-ajax'))));
+
+  return $message;
+
+}
+
+/**
+ * Theme the message when an unfollow action was succesfull.
+ */
+function theme_culturefeed_pages_unfollow_success_message($variables) {
+  return '<p><strong>Je volgt deze pagina niet meer</strong></p>';
 }

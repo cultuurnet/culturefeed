@@ -22,6 +22,15 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 
   $variables['items'] = $items;
 
+  if ($variables['add_new_allowed']) {
+    if (arg(0) == 'pages') {
+      $variables['add_new_url'] = url('pages/' . arg(1) . '/messages/new');
+    }
+    else {
+      $variables['add_new_url'] = url('culturefeed/messages/new');
+    }
+  }
+
 }
 
 /**
@@ -56,13 +65,13 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   }
 
   $variables['messages'] = array();
-  $variables['messages'][] = theme('culturefeed_messages_message', array('message' => $thread));
+  $variables['messages'][] = theme('culturefeed_messages_message_' . $thread->type, array('message' => $thread));
 
   $thread_children = $thread->children;
   if (!empty($thread_children)) {
     $variables['message_count'] += count($thread_children);
     foreach ($thread_children as $message) {
-      $variables['messages'][] = theme('culturefeed_messages_message', array('message' => $message));
+      $variables['messages'][] = theme('culturefeed_messages_message_' . $message->type, array('message' => $message));
     }
   }
 
@@ -79,45 +88,86 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 }
 
 /**
- * Preprocess a message item.
- * @see culturefeed-messages-message.tpl.php
+ * Preprocess a message item of type contactmembers.
+ * @see culturefeed-messages-message-contactmembers.tpl.php
  */
-function culturefeed_messages_preprocess_culturefeed_messages_message(&$variables) {
+function culturefeed_messages_preprocess_culturefeed_messages_message_contactmembers(&$variables) {
 
   _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type contactpage.
+ * @see culturefeed-messages-message-contactpage.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_contactpage(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type booking.
+ * @see culturefeed-messages-message-booking.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_booking(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type report.
+ * @see culturefeed-messages-message-report.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_report(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess a message item of type requestadmin.
+ * @see culturefeed-messages-message-requestadmin.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_requestadmin(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
+
+}
+
+/**
+ * Preprocess recipients for a message.
+ */
+function _culturefeed_messages_preprocess_message_recipients(&$variables) {
 
   $message = $variables['message'];
-
-  // @todo move to helper function
-  $recipients = array();
-  // Recipients from a page.
-  if (!empty($message->recipientPage)) {
-
-    try {
-      $user_list = DrupalCultureFeed::getLoggedInUserInstance()->pages()
-      ->getUserList($message->recipientPage->getId(), array($message->role));
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_messages', $e);
-    }
-
-  }
-  else {
-    $recipients[$message->sender->id] = $message->sender->nick;
-  }
-
-  $accounts = culturefeed_get_uids_for_cf_uids($recipients);
   $recipient_links = array();
-  foreach ($variables['recipients'] as $uid => $recipient) {
+  $recipients = $message->recipients;
 
-    if (!isset($accounts[$uid])) {
-      continue;
+  // Build link to profile of every recipient.
+  $variables['recipient_links'] = '';
+  if (!empty($recipients)) {
+
+    $accounts = culturefeed_get_uids_for_cf_uids($recipients);
+    foreach ($recipients as $uid => $recipient) {
+
+      if (!isset($accounts[$uid])) {
+        continue;
+      }
+
+      $recipient_links[] = l($recipient->nick, 'user/' . $accounts[$uid]);
+
     }
-
-    $recipient_links[] = l($recipient, 'user/' . $accounts[$uid]);
+    $variables['recipient_links'] = implode(' ', $recipient_links);
 
   }
-  $variables['recipient_links'] = implode(' ', $recipient_links);
 
 }
 
@@ -131,26 +181,36 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   $variables['id'] = $message->id;
   $variables['status'] = $message->status;
   $variables['subject'] = $message->subject;
-  $variables['body'] = $message->body;
+
+  // Body can be a json. If it is, add the array to the variables.
+  $body = drupal_json_decode($message->body);
+  if ($body && is_array($body)) {
+    $variables += $body;
+  }
+  else {
+    $variables['body'] = $message->body;
+  }
 
   $variables['sender'] = $message->sender->nick;
   if (!empty($message->senderPage)) {
     $variables['sender'] .= ' van ' . $message->senderPage->getName();
   }
 
+  $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
+
   $date = empty($message->lastReply) ? $message->creationDate : $message->lastReply;
+  $time_zone  = new DateTimeZone('Europe/Brussels');
+  $last_reply = new DateTime();
+  $last_reply->setTimestamp($date);
+  $last_reply->setTimezone($time_zone);
 
   // Check if we should show x minutes ago, or not.
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60)) {
-    $variables['date'] = $minutes_ago . ' minuten geleden';
+    $minutes_ago = $last_reply->diff(new DateTime('now', $time_zone))->i;
+    $variables['date'] = format_plural($minutes_ago, '@count minuut geleden', '@count minuten geleden');
   }
   else {
-
-    $time_zone  = new DateTimeZone('Europe/Brussels');
-    $last_reply = new DateTime();
-    $last_reply->setTimestamp($date);
-    $last_reply->setTimezone($time_zone);
 
     $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
     if ($days_ago == 1) {
@@ -165,6 +225,6 @@ function _culturefeed_messages_preprocess_message(&$variables) {
 
   }
 
-  $variables['picture'] = !empty($message->user->depiction) ? theme('image', array('path' => $message->user->depiction . '?maxwidth=100')) : '';
+  $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
 
 }

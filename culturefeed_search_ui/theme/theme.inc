@@ -25,7 +25,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
   $items = $vars['result']->getItems();
 
   $vars['noitems'] = $vars['result']->getTotalCount() <= 0 ? TRUE : FALSE;
-
+  $vars['items'] = array();
   foreach ($items as $item) {
     $vars['items'][] = theme('culturefeed_' . $item->getType() . '_summary', array('item' => $item));
   }
@@ -103,20 +103,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 
   $facet_option = $facet_item->getValue();
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
+  $variables['active'] = FALSE;
+
+  // Every filter will reset the current facet. Remove this facet from URL, URL will function as removal URL.
+  unset($query['facet'][$facet->getKey()]);
 
   $variables['active'] = in_array($facet_option, $active_options);
-  if ($variables['active']) {
-    // Remove this facet from URL, URL will function as removal URL.
-    $key = array_search($facet_option, $query['facet'][$facet->getKey()]);
-    if (FALSE !== $key) {
-      unset($query['facet'][$facet->getKey()][$key]);
-      if (!$query['facet'][$facet->getKey()]) {
-        unset($query['facet'][$facet->getKey()]);
-      }
-    }
-  }
-  else {
-    // Add this facet to URL, URL will function as additional filter URL.
+  // Add this facet to URL, URL will function as additional filter URL.
+  if (!$variables['active']) {
     $query['facet'][$facet->getKey()][] = $facet_option;
   }
 

@@ -75,3 +75,18 @@ function _culturefeed_search_ui_get_active_search_page() {
   return NULL;
 
 }
+
+/**
+ * Get the allowed date facet options.
+ */
+function culturefeed_search_ui_get_date_facet_options() {
+
+  return array(
+    'today' => 'Vandaag',
+    'next7days' => 'Deze week',
+    'next14days' => 'Volgende 14 dagen',
+    'next30days' => 'Volgende 30 dagen',
+    'next12months' => 'Volgende 12 maanden',
+  );
+
+}

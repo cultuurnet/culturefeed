@@ -36,4 +36,11 @@ interface CultureFeed_Messages {
    */
   public function sendMessage($params);
 
+  /**
+   * Delete a message.
+   * @param string $id
+   *   ID of message to delete.
+   */
+  public function deleteMessage($id);
+
 }

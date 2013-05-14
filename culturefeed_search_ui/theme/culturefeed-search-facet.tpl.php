@@ -8,13 +8,13 @@
  * @var string $items
  */
 ?>
-<ul>
+<ul class="facet-search facet-level-1">
 
 <?php foreach ($items as $facet_item): ?>
   <li>
     <?php print $facet_item['output'] ?>
     <?php if (!empty($facet_item['sub_items'])): ?>
-      <ul>
+      <ul class="facet-search facet-level-2">
       <?php foreach ($facet_item['sub_items'] as $sub_item): ?>
         <li><?php print $sub_item; ?></li>
       <?php endforeach; ?>

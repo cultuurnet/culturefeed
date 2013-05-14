@@ -181,14 +181,13 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     if ($follow) {
       $cf_pages->follow($page->getId(), array());
-      $message = '<p><strong>Je volgt nu deze pagina</strong></p>';
-      $message .= '<p>Werk je voor deze organisatie? ';
-      $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array(
-        'attributes' => array('class' => array('use-ajax'))));
+
+      $message = theme('culturefeed_pages_follow_success_message', array('page' => $page));
+
     }
     else {
       $cf_pages->defollow($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array());
-      $message = '<p><strong>Je volgt deze pagina niet meer</strong></p>';
+      $message = theme('culturefeed_pages_unfollow_success_message', array('page' => $page));
     }
 
   }
@@ -203,7 +202,7 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
     drupal_goto();
   }
   else {
-    $commands[] = ajax_command_html('#follow-' . $page->getId(), $message);
+    $commands[] = ajax_command_html('.follow-' . $page->getId(), $message);
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
 }
@@ -1135,4 +1134,5 @@ function culturefeed_pages_page_my_pages() {
   $build['search-pages'] = culturefeed_pages_join_page_search();
   
   return $build;
+  
 }

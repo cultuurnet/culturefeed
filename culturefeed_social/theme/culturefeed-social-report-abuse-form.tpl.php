@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Default theme implementation to provide a new message form
+ * Default theme implementation to provide a report abuse form
  */
 
 $button_printed = render($form['submit']);

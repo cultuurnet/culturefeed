@@ -8,13 +8,14 @@
  * Page callback to via a message. If we are on the landing page, show the first one.
  * @param mixed $message NULL or CultureFeed_Messages_Message
  */
-function culturefeed_messages_page_view_message($message = NULL) {
+function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
 
   // If we are on landing page, show the first message.
   try {
 
     if (!$message) {
-      $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages();
+      $recipientPage = empty($page) ? NULL : $page->getId();
+      $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipientPage);
       if ($messages->total == 0) {
         return array('#markup' => 'U hebt nog geen meldingen');
       }
@@ -31,8 +32,9 @@ function culturefeed_messages_page_view_message($message = NULL) {
   $build['message_thread'] = array(
     '#theme' => 'culturefeed_messages_thread',
     '#thread' => $message,
-    '#recipients' => $recipients
   );
+
+  $build['reply-form'] = drupal_get_form('culturefeed_messages_new_message_form', $message);
 
   return $build;
 
@@ -40,55 +42,65 @@ function culturefeed_messages_page_view_message($message = NULL) {
 
 /**
  * Show the form to add a new message.
+ * @param $object
+ *   Object to send this message to. Can be a page or a message.
  */
-function culturefeed_messages_new_message_form($form, &$form_state, $page = NULL) {
+function culturefeed_messages_new_message_form($form, &$form_state, $object = NULL) {
 
   $form = array();
+  $form['title'] = array('#markup' => 'Nieuw bericht');
 
-  $recipient_options = array();
+  if (!empty($object)) {
 
-  // If we are on a page. Options are to members or to admins.
-  if (!empty($page) && $page instanceof CultureFeed_Cdb_Item_Page) {
+    // If we are on a page. Options are to members or to admins.
+    if ($object instanceof CultureFeed_Cdb_Item_Page) {
 
-    try {
+      try {
 
-      $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-      $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+        $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+        $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 
-      if (!empty($user_list->memberships)) {
+        if (!empty($user_list->memberships)) {
 
-        $member_count = 0;
-        $admin_count = 0;
+          $member_count = 0;
+          $admin_count = 0;
 
-        foreach ($user_list->memberships as $user_list_membership) {
-          if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
-            $admin_count++;
+          foreach ($user_list->memberships as $user_list_membership) {
+            if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+              $admin_count++;
+            }
+            else {
+              $member_count++;
+            }
           }
-          else {
-            $member_count++;
-          }
+
         }
 
+        $form['recipient'] = array(
+          '#type' => 'radios',
+          '#title' => 'Stuur bericht naar:',
+          '#options' => array(
+            CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN => 'alle beheerders van mijn pagina (' . $admin_count . ')',
+            CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER => 'alle leden van mijn pagina (' . $member_count . ')',
+          ),
+        );
+
+        $form_state['page'] = $page;
+
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_messages', $e);
+        return $form;
       }
 
-      $recipient_options[CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN] = 'alle beheerders van mijn pagina (' . $admin_count . ')';
-      $recipient_options[CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER] = 'alle leden van mijn pagina (' . $member_count . ')';
-
-      $form_state['page'] = $page;
-
     }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_messages', $e);
-      return $form;
+    // If object is a message. We are sending a reply.
+    elseif ($object instanceof CultureFeed_Messages_Message) {
+      $form['title'] = array('#markup' => 'Beantwoorden');
+      $form_state['reply_to'] = $object->id;
     }
 
   }
-
-  $form['recipient'] = array(
-    '#type' => 'radios',
-    '#title' => 'Stuur bericht naar:',
-    '#options' => $recipient_options,
-  );
 
   $form['subject'] = array(
     '#type' => 'textfield',
@@ -159,6 +171,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
     //$params['recipientPage'] = $form_state['page']->getId();
     //$params['role'] = $form_state['values']['recipient'];
     //$params['type'] = CultureFeed_Messages_Message::TYPE_MEMBERS;
+    $params['recipient'] = 'df9049c1-a5d6-4eb2-bb28-015513d9793c';
   }
   // Check if we are sending a reply.
   elseif (!empty($form_state['reply_to'])) {
@@ -167,10 +180,9 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
   else {
     $params['recipient'] = $form_state['values']['recipient'];
   }
-  $params['recipient'] = 'df9049c1-a5d6-4eb2-bb28-015513d9793c';
+
   try {
-    $cf_messages = DrupalCultureFeed::getLoggedInUserInstance()->messages();
-    $message_id = $cf_messages->sendMessage($params);
+    $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);
   }
   catch (Exception $e) {
     form_set_error('', 'Er ging iets fout tijdens het versturen');
@@ -189,6 +201,10 @@ function culturefeed_messages_new_message_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'culturefeed/messages';
   if (!empty($form_state['page'])) {
     $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/messages';
+  }
+
+  if (!empty($form_state['reply_to'])) {
+    $form_state['redirect'] .= '/' . $form_state['reply_to'];
   }
 
 }
@@ -278,6 +294,6 @@ function culturefeed_messages_delete_message_confirm_form_submit($form, &$form_s
     drupal_set_message('Er is een fout opgetreden tijdens het verwijderen van het bericht.', 'error');
   }
 
-  $form_state['redirect'] = 'culturefeed/messages/' . $message->id;
+  $form_state['redirect'] = 'culturefeed/messages';
 
 }

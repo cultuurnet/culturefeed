@@ -188,18 +188,12 @@ function culturefeed_search_ui_block_date_facet() {
   $facet = $facets['datetype'];
 
   // Only this items should be shown.
-  $allowed_items = array(
-    'today' => 'Vandaag',
-    'next7days' => 'Deze week',
-    'next14days' => 'Volgende 14 dagen',
-    'next30days' => 'Volgende 30 dagen',
-    'next12months' => 'Volgende 12 maanden',
-  );
+  $allowed_items = culturefeed_search_ui_get_date_facet_options();
 
   $all_items = $facet->getResult()->getItems();
   $items = array();
   foreach ($all_items as $item) {
-    if (isset($allowed_items[$item->getLabel()])) {
+    if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
       $item->setLabel($allowed_items[$item->getLabel()]);
       $items[] = $item;
     }
@@ -255,6 +249,12 @@ function culturefeed_search_ui_date_facet_form() {
 function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  unset($query['facet']['datetype']);
+
+  if (empty($query['facet'])) {
+    unset($query['facet']);
+  }
+
   if (!empty($form_state['values']['date_range'])) {
     $query['date_range'] = $form_state['values']['date_range'];
   }
@@ -365,7 +365,7 @@ function culturefeed_search_ui_search_active_filters_block() {
   if (!empty($query['search'])) {
     $search_query = $query;
     unset($search_query['search']);
-    $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
+    $url = url($path, array('query' => $search_query));
     $build['item_search'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
       '#label' => $query['search'],
@@ -375,6 +375,8 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   // Check the facets.
   if (isset($query['facet'])) {
+
+    $date_options = culturefeed_search_ui_get_date_facet_options();
 
     $facets = $facetingComponent->getFacets();
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
@@ -388,17 +390,28 @@ function culturefeed_search_ui_search_active_filters_block() {
           unset($search_query['facet']);
         }
 
-        $url = url($path, array('query' => $search_query, 'absolute' => TRUE));
+        $url = url($path, array('query' => $search_query));
 
         $build['item_' . $active_facet_name][$value] = array(
           '#theme' => 'culturefeed_search_active_filters_item',
-          '#label' => $selected_value[$key],
+          '#label' => $active_facet_name == 'datetype' ? $date_options[$selected_value[$key]] : $selected_value[$key],
           '#url' => $url
         );
 
       }
     }
 
+  }
+
+  if (isset($query['date_range'])) {
+    $search_query = $query;
+    unset($search_query['date_range']);
+    $url = url($path, array('query' => $search_query));
+    $build['date_search'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => $query['date_range'],
+      '#url' => $url
+    );
   }
 
   return $build;

@@ -56,6 +56,29 @@
   </div>
 <?php endif; ?>
 
+
+<?php if (!empty($memberships)): ?>
+<div class="page-memberships">
+  Pagina's waar ik lid van ben:
+  <ul>
+  <?php foreach ($memberships as $membership) :?>
+    <li><?php print $membership; ?></li>
+  <?php endforeach; ?>
+  </ul>
+</div>
+<?php endif; ?>
+
+<?php if (!empty($following)): ?>
+<div class="following">
+  Pagina's die ik volg:
+  <ul>
+  <?php foreach ($following as $following_page) :?>
+    <li><?php print $following_page; ?></li>
+  <?php endforeach; ?>
+  </ul>
+</div>
+<?php endif; ?>
+
 <div class="clearfix"></div>
 
 <?php if ($facebook_privacy_toggle): ?>

@@ -328,6 +328,27 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     );
     $variables['facebook_privacy_toggle'] = drupal_render($facebook_privacy_toggle);
   }
+
+  if (module_exists('culturefeed_pages')) {
+
+    $memberships = $account->pageMemberships;
+    if (!empty($memberships)) {
+      $variables['memberships'] = array();
+      foreach ($memberships as $membership) {
+        $variables['membership'][] = culturefeed_search_detail_l('page', $membership->page->getId(), $membership->page->getName());
+      }
+    }
+
+    $following = $account->following;
+    if (!empty($following)) {
+      $variables['following'] = array();
+      foreach ($following as $following_page) {
+        $variables['following'][] = culturefeed_search_detail_l('page', $following_page->page->getId(), $following_page->page->getName());
+      }
+    }
+
+  }
+
 }
 
 /**

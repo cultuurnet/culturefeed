@@ -5,4 +5,4 @@
  */
 ?>
 
-<?php print check_plain($label); ?> [<?php print l('x', $url); ?>]
+<?php print check_plain($label); ?> [<a href="<?php print $url; ?>">x</a>]

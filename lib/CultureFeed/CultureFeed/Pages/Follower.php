@@ -7,6 +7,12 @@
 class CultureFeed_Pages_Follower {
 
   /**
+   * Role key inside a user list for followers.
+   * @var string
+   */
+  const ROLE = 'FOLLOWER';
+
+  /**
    * @var CultureFeed_Cdb_Item_Page
    */
   public $page;
