@@ -301,20 +301,15 @@ function culturefeed_social_block_my_activity_summary($account) {
   
   $types = array();
   foreach ($active_types as $type => $activityConfig) {
-    $allowed_types = $activityConfig->allowed_types;
-    foreach ($allowed_types as $type) {
-      
-    }
-    if (in_array('event', $allowed_types)) {
-      $types[] = $type . '_event';
-    }
-    
-    if ($has_pages && in_array('page', $allowed_types)) {
-      $types[] = $type . '_page';
-    }
-    
-    if ($has_books && in_array('book', $allowed_types)) {
-      $types[] = $type . '_book';
+    $allowed_types = $activityConfig->allowedTypes;
+    foreach ($allowed_types as $ctype) {
+      if ($ctype == 'page' && !$has_pages) {
+        continue;
+      }
+      if ($ctype == 'book' && !$has_books) {
+        continue;
+      }
+      $types[] = $type . '_' . $ctype;
     }
   }
   
