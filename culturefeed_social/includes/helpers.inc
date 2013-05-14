@@ -27,9 +27,14 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
   // Defaults.
   $active_options = array(
     CultureFeed_Activity::TYPE_LIKE,
+    CultureFeed_Activity::TYPE_IK_GA,
     CultureFeed_Activity::TYPE_RECOMMEND,
-    CultureFeed_Activity::TYPE_FOLLOW,
     CultureFeed_Activity::TYPE_COMMENT,
+    CultureFeed_Activity::TYPE_PAGE_ADMIN,
+    CultureFeed_Activity::TYPE_PAGE_MEMBER,
+    CultureFeed_Activity::TYPE_FACEBOOK,
+    CultureFeed_Activity::TYPE_TWITTER,
+    CultureFeed_Activity::TYPE_FOLLOW,
   );
 
   // Return only active filters.
