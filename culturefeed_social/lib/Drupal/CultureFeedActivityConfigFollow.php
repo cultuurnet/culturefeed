@@ -20,6 +20,7 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
     $this->linkClassDo = 'follow-link';
     $this->linkClassUndo = 'unfollow-link';
     $this->viewPrefix = 'volgt';
+    $this->label = 'Volgen';
   }
 
 }

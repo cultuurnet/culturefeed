@@ -22,6 +22,8 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     $this->linkClassUndo = 'unlike-link';
     $this->viewPrefix = 'vindt';
     $this->viewSuffix = 'leuk';
+    $this->label = 'Like';
+
   }
 
 }

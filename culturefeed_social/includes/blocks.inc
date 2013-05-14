@@ -4,6 +4,45 @@
  * Block callbacks for the social module.
  */
 
+/**
+ * Show the recent activities as block.
+ */
+function culturefeed_social_block_recent_activities() {
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->max = CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT;
+  $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    dsm($e->getMessage());
+    watchdog_exception('culturefeed_social', $e);
+    return;
+  }
+
+  if ($activities->total == 0) {
+    return;
+  }
+
+  $content = array();
+  $content['activities'] = array(
+    '#theme' => 'culturefeed_social_user_activity_list',
+    '#activities' => $activities,
+    '#class' => 'site-activity-list',
+  );
+
+  $block['subject'] = 'Recente acties';
+  $block['content'] = $content;
+
+  return $block;
+
+}
+
+/**
+ * Show the users recent activities.
+ */
 function culturefeed_social_block_user_activities($account) {
 
   if (empty($account->culturefeed_uid)) {

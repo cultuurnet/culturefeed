@@ -22,6 +22,7 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
     $this->linkClassUndo = 'unrecommend-link';
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'aangeraden';
+    $this->label = 'Aanraden';
   }
 
 }
