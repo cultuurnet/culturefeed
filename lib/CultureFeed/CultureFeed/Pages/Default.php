@@ -198,9 +198,12 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     foreach ($followers as $object) {
 
       $follower = new CultureFeed_Pages_Follower();
-      $follower->userId        = $object->xpath_str('rdf:id');
-      $follower->userName      = $object->xpath_str('foaf:nick');
-      $follower->picture       = $object->xpath_str('foaf:depiction');
+
+      $user = new CultureFeed_User();
+      $user->id            = $object->xpath_str('rdf:id');
+      $user->nick          = $object->xpath_str('foaf:nick');
+      $user->depiction     = $object->xpath_str('foaf:depiction');
+      $follower->user = $user;
 
       $userList->followers[] = $follower;
 

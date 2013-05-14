@@ -5,19 +5,52 @@
  */
 
 /**
+ * Get the correct follow url for current user.
+ * If he already follows, it will return a unfollow link, otherwise a follow.
+ * @param Culturefeed_Cdb_Item_Page $page
+ *   Page to follow / unfollow.
+ */
+function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page) {
+
+  $is_following = culturefeed_pages_is_user_following_page($page->getId());
+
+  drupal_add_library('system', 'drupal.ajax');
+
+  $options = array(
+    'query' => array(
+      'destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName())
+    ),
+    'attributes' => array('class' => array('use-ajax'))
+  );
+
+  if ($is_following) {
+    return l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), $options);
+  }
+  elseif ($page->getPermissions()->allowFollowers) {
+    return l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $page->getId(), $options);
+  }
+
+}
+
+/**
  * Is the current user member of a given page.
  * @return bool
  */
 function culturefeed_pages_is_user_member_of_page($page_id) {
 
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
 
-  if (!empty($cf_account->pageMemberships)) {
-    foreach ($cf_account->pageMemberships as $membership) {
-      if ($membership->page->getId() == $page_id) {
-        return TRUE;
+    if (!empty($cf_account->pageMemberships)) {
+      foreach ($cf_account->pageMemberships as $membership) {
+        if ($membership->page->getId() == $page_id) {
+          return TRUE;
+        }
       }
     }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
   }
 
   return FALSE;
@@ -30,14 +63,47 @@ function culturefeed_pages_is_user_member_of_page($page_id) {
  */
 function culturefeed_pages_is_user_admin_of_page($page_id) {
 
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
 
-  if (!empty($cf_account->pageMemberships)) {
-    foreach ($cf_account->pageMemberships as $membership) {
-      if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN && $membership->page->getId() == $page_id) {
-        return TRUE;
+    if (!empty($cf_account->pageMemberships)) {
+      foreach ($cf_account->pageMemberships as $membership) {
+        if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN && $membership->page->getId() == $page_id) {
+          return TRUE;
+        }
       }
     }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  return FALSE;
+
+}
+
+/**
+ * Is the current user following a given page id.
+ * @param string $page_id
+ */
+function culturefeed_pages_is_user_following_page($page_id) {
+
+  try {
+
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+
+    if (!empty($cf_account->following)) {
+      foreach ($cf_account->following as $follower) {
+        if ($follower->page->getId() == $page_id) {
+          return TRUE;
+        }
+      }
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return FALSE;
   }
 
   return FALSE;
@@ -173,7 +239,7 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
 
 /**
  * Helper function to create a piece of content to request adminship of a page.
- * 
+ *
  * @param CultureFeed_Cdb_Item_Page $page
  * @param integer $rendered
  *   Indicates whether the output needs to be rendered or not.
@@ -189,7 +255,7 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
   $account = DrupalCultureFeed::getLoggedInAccount();
   $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
   $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
-  
+
   if (!empty($user_list->memberships)) {
     foreach ($user_list->memberships as $user_list_membership) {
       if ($user_list_membership->user->id == $account->culturefeed_uid) {
@@ -203,22 +269,22 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
       }
     }
   }
-  
+
   // Skip if the user is not even member.
   if (!$is_member) {
     return;
   }
-  
+
   // Skip if the user is already admin.
   if ($is_admin) {
     return;
   }
-  
+
   $build = array(
     '#theme' => 'culturefeed_pages_request_admin_membership_block',
     '#page' => $page,
   );
-  
+
   if ($rendered) {
     return drupal_render($build);
   }

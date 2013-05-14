@@ -25,7 +25,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
   $items = $vars['result']->getItems();
 
   $vars['noitems'] = $vars['result']->getTotalCount() <= 0 ? TRUE : FALSE;
-
+  $vars['items'] = array();
   foreach ($items as $item) {
     $vars['items'][] = theme('culturefeed_' . $item->getType() . '_summary', array('item' => $item));
   }

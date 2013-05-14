@@ -234,15 +234,15 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
 
 /**
  * Block with a request-link to become admin member of a page.
- * 
+ *
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_block_pages_request_admin_membership(CultureFeed_Cdb_Item_Page $page) {
-  
+
   $block = array();
   $block['subject'] = '';
   $block['content'] = culturefeed_pages_block_request_admin_membership($page, FALSE);
-  
+
   return $block;
 }
 
@@ -260,6 +260,10 @@ function culturefeed_pages_block_page_timeline($page) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
+
+  if ($time_line->total == 0) {
     return;
   }
 
@@ -323,9 +327,13 @@ function culturefeed_pages_block_page_agenda($page) {
 
 /**
  * Returns a block with followers of a certain type of content.
- * @param misc $object
+ * @param CultureFeed_Cdb_Item_Page $page
  */
-function culturefeed_pages_block_followers($object) {
+function culturefeed_pages_block_followers($page) {
+
+  if (empty($page) || !($page instanceof CultureFeed_Cdb_Item_Page)) {
+    return;
+  }
 
   $account = DrupalCultureFeed::getLoggedInAccount();
 
@@ -333,36 +341,25 @@ function culturefeed_pages_block_followers($object) {
     return;
   }
 
-  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-  $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  $user_list = NULL;
+  try {
+    $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+    $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Follower::ROLE), FALSE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
 
   $build = array();
 
   $followers = array();
-  $you_follow = FALSE;
-
-  // Render all followers.
-  if (!empty($cf_account->following)) {
-
-    foreach ($cf_account->following as $follower) {
-      if ($follower->user->id != $account->culturefeed_uid) {
-        $followers[] = $follower;
-      }
-      else {
-        $you_follow = TRUE;
-      }
-    }
-
-    $followers = array_slice($followers, 0, 6);
-
-  }
 
   $build['items_list'] = array(
     '#theme' => 'culturefeed_pages_followers_block',
-    '#page' => $object,
-    '#followers' => $followers,
-    '#num_followers' => count($cf_account->following),
-    '#you_follow' => $you_follow,
+    '#page' => $page,
+    '#followers' => $user_list->followers,
+    '#num_followers' => count($user_list->followers),
   );
 
   $block['subject'] = 'Volgen deze pagina';

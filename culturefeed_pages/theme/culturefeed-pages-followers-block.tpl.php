@@ -1,10 +1,10 @@
 <div class="followers-block">
   <h3><?php print $title; ?></h3>
-  
-  <div class="followed-times"><?php print $num_followers ?> x</div>
 
   <?php if (!empty($followers)): ?>
-  
+
+    <div class="followed-times"><?php print $num_followers ?> x</div>
+
     <ul>
     <?php foreach ($followers as $follower): ?>
       <li>
@@ -16,25 +16,18 @@
     <?php endforeach; ?>
     </ul>
 
-  <?php elseif ($you_follow): ?>
-    <p>Je volgt nu deze pagina</p>
-  
   <?php else: ?>
     <p>Deze pagina heeft nog geen volgers.</p>
   <?php endif; ?>
-  
-  <?php 
+
+  <?php
   /**
-   * #follow-PAGEID is used to refresh that part of the html. You can use it
+   * .follow-PAGEID is used to refresh that part of the html. You can use it
    * freely as you want. E.g. wrap the text above in it or not.
    */
    ?>
-  <div id="follow-<?php print $page->getId() ?>">
-  <?php if (!$you_follow): ?>
+  <div class="follow-<?php print $page->getId() ?>">
     <?php print $follow_link ?>
-  <?php else: ?>
-    <?php print $follow_link ?>
-  <?php endif; ?>
   </div>
 
 </div>

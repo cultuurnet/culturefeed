@@ -107,7 +107,7 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-fellow-members-block',
     ),
-    
+
     'culturefeed_pages_request_admin_membership_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -115,7 +115,7 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-request-admin-membership-block',
-      
+
     ),
 
     'culturefeed_pages_following_pages_block' => array(
@@ -160,7 +160,6 @@ function culturefeed_pages_theme() {
         'page' => NULL,
         'followers' => array(),
         'num_followers' => NULL,
-        'you_follow' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',
@@ -182,6 +181,22 @@ function culturefeed_pages_theme() {
       ),
       'template' => 'culturefeed-pages-page-agenda',
       'path' => $path,
+    ),
+
+    'culturefeed_pages_follow_success_message' => array(
+      'variables' => array(
+        'page' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
+    'culturefeed_pages_unfollow_success_message' => array(
+      'variables' => array(
+        'page' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
     ),
 
   );
@@ -385,7 +400,7 @@ function culturefeed_pages_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['culturefeed/pages'] = array(
     'title callback' => FALSE,
     'title' => 'Mijn pagina\'s',
@@ -506,7 +521,7 @@ function culturefeed_pages_block_view($delta) {
 
     case 'pages-admin-menu':
       return culturefeed_pages_block_pages_admin_menu();
-      
+
     case 'pages-request-admin-membership':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_pages_request_admin_membership($page);
