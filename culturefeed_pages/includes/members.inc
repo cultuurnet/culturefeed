@@ -124,7 +124,6 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
 
   return array(
     '#theme' => 'table',
-    '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
     '#empty' => t('No content available.'),
@@ -536,7 +535,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
     $commands = array();
 
     if ($success) {
-      $commands[] = ajax_command_html('#request_adminship_link_wrapper', $message);
+      $commands[] = ajax_command_html('#request_adminship_link_' . $page->getId() . '_wrapper', $message);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));

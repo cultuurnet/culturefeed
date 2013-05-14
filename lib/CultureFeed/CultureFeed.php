@@ -1661,7 +1661,7 @@ class CultureFeed implements ICultureFeed {
 
       $follower->page          = $page;
       $follower->user          = $user;
-      $follower->dateCreated  = $object->xpath_time('creationDate');
+      $follower->creationDate  = $object->xpath_time('dateCreated');
 
       $followers[] = $follower;
 

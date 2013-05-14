@@ -20,7 +20,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
     foreach ($items as $item) {
       $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
     }
-    $variables['create_message'] = 'Heb je nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
+    $variables['create_message'] = 'Heeft jouw organisatie of vereniging nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
   }
 
@@ -47,15 +47,26 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
   }
 
   drupal_add_library('system', 'drupal.ajax');
+  
+  $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-
     $permissions = $page->getPermissions();
-
-    $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
     $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
   }
-
+  
+  // Local storage of the followers for the current user.
+  $cf_user = DrupalCultureFeed::getLoggedInUser();
+  $i_follow_pages = array();
+  foreach ($cf_user->following as $cfp_follower) {
+    $i_follow_pages[] = $cfp_follower->page->getId();
+  }
+  if (in_array($page->getId(), $i_follow_pages)) {
+    $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link', 'use-ajax'))));
+  }
+  else {
+    $variables['follow_link'] = l('Volg pagina', 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link', 'use-ajax'))));
+  }
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => 'btn btn-link')));
 
 }
@@ -432,7 +443,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
   
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
-  $variables['link'] = '<span id="request_adminship_link_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
 }
 

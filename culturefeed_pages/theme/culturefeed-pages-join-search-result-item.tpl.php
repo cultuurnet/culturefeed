@@ -8,5 +8,12 @@
 <?php else: ?>
 U bent reeds lid
 <?php endif; ?>
+
+<?php if (!empty($follow_link)): ?>
+<?php print $follow_link; ?>
+<?php else: ?>
+U volgt deze pagina
+<?php endif; ?>
+
 <?php print $view_page_link; ?>
 
