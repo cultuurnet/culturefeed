@@ -363,7 +363,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   /**
-   * Get pages service.
+   *
    * @return DrupalCultureFeedPages_Cache
    */
   public function pages() {
@@ -402,7 +402,7 @@ abstract class DrupalCultureFeedBase {
 
 
   public static function isCacheEnabled() {
-
+return FALSE;
     return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
 
   }

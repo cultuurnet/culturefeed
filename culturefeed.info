@@ -4,7 +4,12 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
-files[] = culturefeed.lib.inc
+files[] = lib/Drupal/DrupalCultureFeedBase.php
+files[] = lib/Drupal/DrupalCultureFeed.php
+files[] = lib/Drupal/DrupalCultureFeed_EntryApi.php
+files[] = lib/Drupal/DrupalCultureFeed_Cache.php
+files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
+
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php
 files[] = lib/CultureFeed/ICultureFeed.php
@@ -78,10 +83,8 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/IEntryApi.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
-files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Default.php
 files[] = lib/CultureFeed/CultureFeed/Pages.php
-files[] = lib/CultureFeed/CultureFeed/Pages/Page.php
 files[] = lib/CultureFeed/CultureFeed/Pages/UserList.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Follower.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Membership.php
