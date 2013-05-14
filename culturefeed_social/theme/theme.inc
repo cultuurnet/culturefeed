@@ -181,7 +181,7 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
 
 /**
  * Preprocess the variables for the user notifications page.
- * @see culturefeedsocial-user-notifications-page.tpl.php
+ * @see culturefeed-social-user-notifications-page.tpl.php
  */
 function culturefeed_social_preprocess_culturefeed_social_user_notifications_page(&$variables) {
 
@@ -212,4 +212,44 @@ function culturefeed_social_preprocess_culturefeed_social_user_notifications_pag
     $variables['read_notifications'] = theme('culturefeed_social_user_activity_list', array('activities' => $notifications[Culturefeed::NOTIFICATION_TYPE_READ]));
   }
 
+}
+
+
+/**
+ * Preprocess the variables for the summary of activities of a user.
+ * @see culturefeed-social-activity-summary.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_activities_summary(&$variables) {
+  
+  $total_per_type = array();
+  
+  foreach ($variables['totals'] as $total) {
+    
+    if (!isset($total_per_type[$activity_type])) {
+      $total_per_type[$activity_type] = array('activities' => 0, 'books' => 0, 'pages' => 0);
+    }
+    
+    // Conventional totals for each type/content type.
+    list($activity_type, $content_type) = explode("_", $total->key);
+    $variables[$content_type . '_' . $activity_type] = $total->value;
+    
+    if (in_array($content_type, array('actor', 'production', 'event'))) {
+      $total_per_type[$activity_type]['activities'] += $total->value;
+    }
+    elseif ($content_type == 'book') {
+      $total_per_type[$activity_type]['books'] = $total->value;
+    }
+    elseif ($content_type == 'page') {
+      $total_per_type[$activity_type]['pages'] = $total->value;
+    }
+    
+  }
+
+  foreach ($total_per_type as $atype => $total_per_content_type) {
+    $variables['books_' . $atype . '_total'] = $total_per_content_type['books'];
+    $variables['pages_' . $atype . '_total'] = $total_per_content_type['pages'];
+    $variables['activities_' . $atype . '_total'] = $total_per_content_type['activities'];
+  }
+  dsm($variables);
+  
 }

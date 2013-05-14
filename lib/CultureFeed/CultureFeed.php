@@ -784,21 +784,30 @@ class CultureFeed implements ICultureFeed {
   public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
 
     $data = array();
-    dsm($type_contentType);
     $data['type_contentType'] = $type_contentType;
     $data['userId'] = $userId;
-    
+    $data['private'] = $private ? "true" : "false";
+
     $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
-      dsm($xml);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
 
-    return NULL;
+    $totals = array();
+    $objects = $xml->xpath('/response/total');
+    foreach ($objects as $object) {
+      $total = new stdClass();
+      $total->key        = (string) $object->attributes()->type;
+      $total->value      = (string) $object;
+      $totals[] = $total;
+    }
+    
+    return $totals;
+    
   }
 
   /**

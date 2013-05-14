@@ -302,6 +302,8 @@ function culturefeed_social_block_my_activity_summary($account) {
   foreach ($active_types as $type => $activityConfig) {
     $allowed_types = $activityConfig->allowedTypes;
     foreach ($allowed_types as $ctype) {
+      // @todo remove
+      if ($ctype == 'book') continue;
       if ($ctype == 'page' && !$has_pages) {
         continue;
       }
@@ -315,14 +317,21 @@ function culturefeed_social_block_my_activity_summary($account) {
   $private = $account->culturefeed_uid == $GLOBALS['user']->uid ? TRUE : FALSE;
 
   try {
-    $activities = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
+    $totals = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
     return;
   }
+  if ($total_counts) {
+    
+    $content = array(
+      '#theme' => 'culturefeed_social_activity_summary',
+      '#totals' => $totals,
+    );
+  }
 
-  $block['subject'] = 'Recente acties';
+  $block['subject'] = '';
   $block['content'] = $content;
 
   return $block;
