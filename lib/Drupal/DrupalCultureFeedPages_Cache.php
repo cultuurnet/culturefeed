@@ -33,7 +33,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @return string
    */
   protected function getCacheSuffix() {
-    $consumer = $this->$realCultureFeedPages->getConsumer();
+    $consumer = $this->realCultureFeedPages->getConsumer();
     return sprintf(':%s:%s', $consumer->key, $consumer->secret);
   }
 
@@ -210,7 +210,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @see CultureFeed_Pages::getTimeline()
    */
   public function getTimeline($id, $dateFrom = NULL) {
-die(':)');
+
     $cid = 'timeline:' . $id . ':' . $dateFrom;
 
     if ($cache = $this->cacheGet($cid)) {
