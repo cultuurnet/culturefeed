@@ -323,7 +323,7 @@ function culturefeed_social_block_view($delta) {
 
     case 'my-notifications':
       return culturefeed_social_block_my_notifications();
-      
+
     case 'my-activity-summary':
       $account = menu_get_object('user');
       return culturefeed_social_block_my_activity_summary($account);
@@ -392,7 +392,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
   }
 
   $options = array('all' => 'Alles');
-  foreach ($filter_options as $activity_id => $activity_config) {
+  foreach ($activity_filters as $activity_id => $activity_config) {
     $options[$activity_id] = $activity_config->label;
   }
 
