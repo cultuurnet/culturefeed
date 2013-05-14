@@ -3,8 +3,9 @@
 class DrupalCultureFeed_Cache implements ICultureFeed {
 
   protected $loggedInUserId;
-
   protected $realCultureFeed;
+  protected $pages;
+  protected $messages;
 
   public function __construct(CultureFeed $realCultureFeed, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
@@ -195,7 +196,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     return $data;
   }
-  
+
   public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
   }
@@ -361,8 +362,26 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->uitpas();
   }
 
+  /**
+   * Get pages service.
+   * @return DrupalCultureFeedPages_Cache
+   */
   public function pages() {
-    return $this->realCultureFeed->pages();
+
+    if (!$this->pages) {
+      $this->pages = new DrupalCultureFeedPages_Cache($this->realCultureFeed->pages());
+    }
+
+    return $this->pages;
+
+  }
+
+  /**
+   * Get messages service.
+   * Messages don't need cache.
+   */
+  public function messages() {
+    return $this->realCultureFeed->messages();
   }
 
   public function getClient() {
@@ -384,11 +403,7 @@ abstract class DrupalCultureFeedBase {
 
   public static function isCacheEnabled() {
 
-    if (! self::isCultureFeedUser()) {
-      return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
-    } else {
-      return FALSE;
-    }
+    return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
 
   }
 

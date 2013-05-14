@@ -78,6 +78,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/IEntryApi.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
+files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Default.php
 files[] = lib/CultureFeed/CultureFeed/Pages.php
 files[] = lib/CultureFeed/CultureFeed/Pages/Page.php

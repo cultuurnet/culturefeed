@@ -58,6 +58,13 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
 
   /**
+   * Get the consumer for requests.
+   */
+  public function getConsumer() {
+    return $this->culturefeed->getConsumer();
+  }
+
+  /**
    * @see CultureFeed_Pages::getPage()
    */
   public function getPage($id) {
