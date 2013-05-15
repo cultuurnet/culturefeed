@@ -144,29 +144,32 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   $variables['react_link'] = '';
   $variables['delete_link'] = '';
   $variables['abuse_link'] = '';
+  $variables['abuse_form'] = '';
 
-  if ($variables['level'] == 0) {
+  if ($cf_user) {
+    if ($variables['level'] == 0) {
 
-    if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-      $variables['delete_link'] = l('Verwijder reactie | X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
-        'attributes' => array('class' => array('remove-link', 'use-ajax')),
-        'query' => $destination,
-      ));
+      if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
+        $variables['delete_link'] = l('Verwijder reactie | X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
+          'attributes' => array('class' => array('remove-link', 'use-ajax')),
+          'query' => $destination,
+        ));
+      }
+      $variables['react_link'] = l('Reageer op deze beoordeling', $_GET['q'], array('attributes' => array('class' => array('recommend-subform-toggle'))));
+      $sub_form = culturefeed_social_recommendation_actionbox($object, $activity);
+      $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
+
     }
-    $variables['react_link'] = l('Reageer op deze beoordeling', $_GET['q'], array('attributes' => array('class' => array('recommend-subform-toggle'))));
-    $sub_form = culturefeed_social_recommendation_actionbox($object, $activity);
-    $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
+    else {
 
-  }
-  else {
+      if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
+        $variables['delete_link'] = l('X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
+          'attributes' => array('class' => array('remove-link', 'use-ajax')),
+          'query' => $destination,
+        ));
+      }
 
-    if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-      $variables['delete_link'] = l('X', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
-        'attributes' => array('class' => array('remove-link', 'use-ajax')),
-        'query' => $destination,
-      ));
     }
-
   }
 
   if (module_exists('culturefeed_messages')) {

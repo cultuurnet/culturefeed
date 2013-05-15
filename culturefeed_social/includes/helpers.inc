@@ -396,8 +396,8 @@ function culturefeed_social_recommendation_actionbox($object, $activity = NULL) 
   }
   else {
     return array(
-      '#theme' => 'markup',
-      '#activity_id' => CultureFeed_Activity::TYPE_COMMENT,
+      '#theme' => 'culturefeed_social_login_required_message',
+      '#activity_type' => CultureFeed_Activity::TYPE_COMMENT,
     );
   }
 }

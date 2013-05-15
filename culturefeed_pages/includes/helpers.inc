@@ -253,6 +253,10 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
   $number_of_admins = 0;
 
   $account = DrupalCultureFeed::getLoggedInAccount();
+  if (!$account) {
+    return;
+  }
+
   $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
   $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 

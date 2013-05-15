@@ -41,7 +41,6 @@ class CultureFeedActivityConfigBase {
       return self::$configs[$type];
     }
 
-    $config = '';
     switch ($type) {
 
       case CultureFeed_Activity::TYPE_COMMENT:
@@ -96,11 +95,17 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityConfigView();
       break;
 
+      case CultureFeed_Activity::TYPE_NEW_EVENT:
+        $config = new CultureFeedActivityConfigNewEvent();
+      break;
+
+      default:
+        return NULL;
+
+
     }
 
-    if (!is_string($config)) {
-      drupal_alter('culturefeed_social_config_object', $config);
-    }
+    drupal_alter('culturefeed_social_config_object', $config);
 
     self::$configs[$type] = $config;
 
