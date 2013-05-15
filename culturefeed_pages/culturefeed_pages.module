@@ -127,7 +127,6 @@ function culturefeed_pages_theme() {
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
-        'is_page_admin' => FALSE,
         'logged_in_as_page_admin' => FALSE,
         'account' => NULL,
         'page' => NULL,
@@ -197,6 +196,16 @@ function culturefeed_pages_theme() {
         'page' => NULL,
       ),
       'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
+    'culturefeed_pages_page_my_pages' => array(
+      'variables' => array(
+        'build' => array(),
+        'user' => NULL,
+       ),
+      'path' => $path,
+      'template' => 'culturefeed-pages-page-my-page',
       'file' => 'theme.inc',
     ),
 
@@ -350,7 +359,7 @@ function culturefeed_pages_menu() {
     'title callback' => FALSE,
     'title' => 'Verwijder mijzelf als lid',
     'page callback' => 'culturefeed_pages_page_delete_member',
-    'page arguments' => array(1, 4),
+    'page arguments' => array(1, NULL, 4),
     'access arguments' => array('join culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/members.inc',

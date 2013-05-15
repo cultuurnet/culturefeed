@@ -84,19 +84,7 @@ function culturefeed_pages_detail_page(CultureFeed_Cdb_Item_Page $page) {
 
   culturefeed_pages_set_page_breadcrumb($page);
 
-  $isPageAdmin = FALSE;
-  try {
-    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-    if ($cultureFeedUser) {
-      $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
-      $isPageAdmin = in_array($page->getId(), array_keys($adminMemberships));
-    }
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_pages', $e);
-  }
-
-  if (!$page->isVisible() && !$isPageAdmin) {
+  if (!$page->isVisible() && !culturefeed_pages_is_user_admin_of_page($page->getId())) {
     return array(
       '#theme' => 'culturefeed_page_invisible',
       '#item' => $page,
@@ -1004,140 +992,125 @@ function culturefeed_pages_page_my_pages() {
 
   try {
 
-    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+    if (!$cf_user) {
+      return '';
+    }
 
-    $memberships = $followed_pages = array();
+    // Build all the membership rows.
+    $membership_page_ids = array();
+    if (!empty($cf_user->pageMemberships)) {
 
-    if ($cultureFeedUser) {
+      $memberships = $cf_user->pageMemberships;
+      foreach ($memberships as $membership) {
 
-      $build['detail-link'] = array(
-        '#type' => 'link',
-        '#title' => 'Bekijk profiel',
-        '#href' => 'user/' . culturefeed_get_uid_for_cf_uid($cultureFeedUser->id, $cultureFeedUser->nick),
+        $is_page_admin = $membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
+        $admins_of_page = array();
+        $path = culturefeed_search_detail_path('page', $membership->page->getId(), $membership->page->getName());
+
+        if ($is_page_admin) {
+
+          $admin_link = l('Pagina beheren', $path);
+
+          // We need the full user list of every page, to check if the user is the only admin.
+          try {
+            $admin_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
+          }
+          catch (Exception $e) {
+            watchdog_exception('culturefeed_pages', $e);
+            $admin_list = new CultureFeed_Pages_UserList();
+          }
+
+          foreach ($admin_list->memberships as $admin) {
+            $admins_of_page[$admin->user->id] = $admin->user->id;
+          }
+
+        }
+        else {
+
+          // Show request admin link.
+          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
+            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</div>';
+
+        }
+
+        // If user is only admin, he can't delete his membership.
+        if ($is_page_admin && count($admins_of_page) == 1) {
+          $member_link = 'Verwijderen niet mogelijk. <div>TOOLTIP: Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid.</div>';
+        }
+        else {
+          $delete_options = array(
+            'attributes' => array(
+              'role' => 'button',
+              'data-toggle' => 'modal',
+              'data-target' => '#page_confirm',
+              'data-remote' => url('pages/' . $membership->page->getId() . '/membership/delete/ajax'),
+            ),
+          );
+          $member_link = l('Verwijder mij als lid', 'pages/' . $membership->page->getId() . '/membership/delete/nojs', $delete_options);
+        }
+
+        $row = array(
+          l($membership->page->getName(), $path),
+          format_date($membership->creationDate, 'custom', 'D d/M/Y H:i'),
+          $member_link,
+          $admin_link
+        );
+
+        $membership_page_ids[] = $membership->page->getId();
+        $rows[] = $row;
+
+      }
+
+      // Pages where I am a member.
+      $build['member_pages'] = array(
+        '#theme' => 'table',
+        '#header' => array('Pagina', 'Lid sinds', '', ''),
+        '#rows' => $rows,
       );
 
-      if (!empty($cultureFeedUser->pageMemberships)) {
+    }
 
-        foreach ($cultureFeedUser->pageMemberships as $pageMembership) {
-          $object = new stdClass();
-          $object->page = $pageMembership->page;
-          $object->creationDate = $pageMembership->creationDate;
-          $object->role = $pageMembership->role;
-          $object->userList = $cf_pages->getUserList($pageMembership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
-          $memberships[$pageMembership->page->getId()] = $object;
+    // Build all the follow rows.
+    if (!empty($cf_user->following)) {
+
+      $followed_pages = $cf_user->following;
+
+      $rows = array();
+      foreach ($followed_pages as $followed_page) {
+
+        $path = culturefeed_search_detail_path('page', $followed_page->page->getId(), $followed_page->page->getName());
+
+        $follow_link = l('Niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
+        $become_member_link = 'Je bent lid van deze pagina';
+        if (!in_array($followed_page->page->getId(), $membership_page_ids)) {
+          $become_member_link = l('Lid worden', 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
         }
 
-        foreach ($cultureFeedUser->pageMemberships as $membership) {
-
-          $isPageAdmin = $membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
-          $adminsOfPage = array();
-          $path = culturefeed_search_detail_path('page', $membership->page->getId(), $membership->page->getName());
-
-          if ($isPageAdmin) {
-
-            $admin_link = l('Pagina beheren', $path);
-
-            // We need the full user list of every page, to check if the user is the only admin.
-            try {
-              $admin_list = $cf_pages->getUserList($pageMembership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
-            }
-            catch (Exception $e) {
-              watchdog_exception('culturefeed_pages', $e);
-              $admin_list = new CultureFeed_Pages_UserList();
-            }
-
-            foreach ($admin_list->memberships as $admin) {
-              $adminsOfPage[$admin->user->id] = $admin->user->id;
-            }
-
-          }
-          else {
-
-            // Show request admin link.
-            $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cultureFeedUser->id . '/nojs',
-              array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</div>';
-
-          }
-
-          // If user is only admin, he can't delete his membership.
-          if ($isPageAdmin && count($adminsOfPage) == 1) {
-            $member_link = 'Verwijderen niet mogelijk. <div>TOOLTIP: Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid.</div>';
-          }
-          else {
-            $member_link = l('Verwijder mij als lid', 'pages/' . $membership->page->getId() . '/membership/' . $cultureFeedUser->id . '/delete/%');
-          }
-
-          $row = array(
-            l($membership->page->getName(), $path),
-            format_date($membership->creationDate, 'custom', 'D d/M/Y H:i'),
-            $member_link,
-            $admin_link
-          );
-
-          $rows[] = $row;
-
+        if ($is_page_admin) {
+          $admin_link = l('Pagina beheren', $path);
+        }
+        else {
+          $admin_link = l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
         }
 
-        // Pages where I am a member.
-        $build['member-pages-title'] = array(
-          '#markup' => '<h2>Pagina\'s waar ik lid van ben</h2>',
+        $row = array(
+          l($followed_page->page->getName(), $path),
+          format_date($followed_page->creationDate, 'custom', 'D d/M/Y H:i'),
+          $follow_link,
+          $become_member_link
         );
-        $build['member-pages'] = array(
-          '#theme' => 'table',
-          '#header' => array('Pagina', 'Lid sinds', '', ''),
-          '#rows' => $rows,
-        );
+        $rows[] = $row;
 
       }
 
-      if (!empty($cultureFeedUser->pageMemberships)) {
-
-        foreach ($cultureFeedUser->following as $followed_item) {
-          $object = new stdClass();
-          $object->page = $followed_item->page;
-          $object->creationDate = $followed_item->creationDate;
-          $followed_pages[] = $object;
-        }
-
-        $rows = array();
-        foreach ($followed_pages as $followed_page) {
-
-          $path = culturefeed_search_detail_path('page', $followed_page->page->getId(), $followed_page->page->getName());
-
-          $follow_link = l('Niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-          $become_member_link = 'Je volgt deze pagina';
-          if (!isset($memberships[$followed_page->page->getId()])) {
-            $become_member_link = l('Lid worden', 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-          }
-
-          if ($isPageAdmin) {
-            $admin_link = l('Pagina beheren', $path);
-          }
-          else {
-            $admin_link = l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cultureFeedUser->id . '/nojs', array('query' => drupal_get_destination()));
-          }
-          $row = array(
-            l($followed_page->page->getName(), $path),
-            format_date($followed_page->creationDate, 'custom', 'D d/M/Y H:i'),
-            $follow_link,
-            $become_member_link
-          );
-          $rows[] = $row;
-
-        }
-
-        // Pages I follow.
-        $build['followed-pages-title'] = array(
-          '#markup' => '<h2>Pagina\'s die ik volg</h2>',
-        );
-        $build['followed-pages'] = array(
-          '#theme' => 'table',
-          '#header' => array('Pagina', 'Volgt sinds', '', ''),
-          '#rows' => $rows,
-        );
-
-      }
+      // Pages I follow.
+      $build['followed-pages'] = array(
+        '#theme' => 'table',
+        '#header' => array('Pagina', 'Volgt sinds', '', ''),
+        '#rows' => $rows,
+      );
 
     }
 
@@ -1151,6 +1124,10 @@ function culturefeed_pages_page_my_pages() {
   );
   $build['search-pages'] = culturefeed_pages_join_page_search();
 
-  return $build;
+  return array(
+    '#theme' => 'culturefeed_pages_page_my_pages',
+    '#build' => $build,
+    '#user' => $cf_user,
+  );
 
 }

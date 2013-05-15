@@ -461,9 +461,15 @@ function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_C
   $form['body_wrapper']['remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Deze actie kan niet meer ongedaan gemaakt worden.</p>
-      <p><strong>Ben je zeker dat u dit lid wil verwijderen?</strong></p>',
+      <p>Deze actie kan niet meer ongedaan gemaakt worden.</p>',
   );
+
+  if ($my_pages) {
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat u zich als lid wil verwijderen?</strong></p>';
+  }
+  else {
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat u dit lid wil verwijderen?</strong></p>';
+  }
 
   $form['footer_wrapper'] = array(
     '#type' => 'markup',
@@ -499,10 +505,19 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
 
   // Send request to remove the membership.
   try {
-    DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeMember($form_state['page']->getId(), $form_state['user']->id);
+
+    // Check if the user is admin or member.
+    if (culturefeed_pages_is_user_admin_of_page($form_state['page']->getId(), $form_state['user'])) {
+      DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeAdmin($form_state['page']->getId(), $form_state['user']->id);
+    }
+    else {
+      DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeMember($form_state['page']->getId(), $form_state['user']->id);
+    }
+
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
+    dsm($e->getMessage());
     form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lid.');
   }
 

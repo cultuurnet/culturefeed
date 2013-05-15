@@ -156,14 +156,13 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
 
   /**
-   * (non-PHPdoc)
    * @see CultureFeed_Pages::getUserList()
    */
   public function getUserList($id, $roles = array(), $use_auth = TRUE) {
 
     $query = array();
     if (!empty($roles)) {
-      $query['roles'] = $roles;
+      $query['role'] = $roles;
     }
 
     if ($use_auth) {
