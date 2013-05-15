@@ -98,7 +98,9 @@ class CultureFeedActivityConfigBase {
 
     }
 
-    drupal_alter('culturefeed_social_config_object', $config);
+    if (!is_string($config)) {
+      drupal_alter('culturefeed_social_config_object', $config);
+    }
 
     self::$configs[$type] = $config;
 

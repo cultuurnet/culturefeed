@@ -183,20 +183,24 @@ function culturefeed_ui_block_profile_menu_view() {
       'title' => 'Mijn UiTiD',
       'url' => 'user/' . $user->uid,
       'description' => 'Zo zien anderen jouw profiel.',
+      'weight' => -20,
     ),
     array(
       'title' => 'Profiel bewerken',
       'url' => 'culturefeed/profile/edit',
       'description' => 'Wijzig naam, adres, favoriete locaties, ...',
+      'weight' => -19,
     ),
     array(
       'title' => 'Account bewerken',
       'url' => 'culturefeed/account/edit',
       'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
+      'weight' => -18,
     ),
   );
 
   drupal_alter('culturefeed_ui_profile_menu', $menu);
+  uasort($menu, 'drupal_sort_weight');
 
   $items = array();
 

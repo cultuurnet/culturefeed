@@ -336,11 +336,21 @@ function culturefeed_pages_menu() {
     'file' => 'includes/members.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/membership/request-admin/%cf_user/%'] = array(
+  $items['pages/%culturefeed_pages_page/membership/request-admin/%'] = array(
     'title callback' => FALSE,
     'title' => 'Aanvraag tot beheerder van de pagina',
     'page callback' => 'culturefeed_pages_page_request_admin_membership',
-    'page arguments' => array(1, 4, 5),
+    'page arguments' => array(1, 4),
+    'access arguments' => array('join culturefeed page'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/members.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/membership/delete/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Verwijder mijzelf als lid',
+    'page callback' => 'culturefeed_pages_page_delete_member',
+    'page arguments' => array(1, 4),
     'access arguments' => array('join culturefeed page'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/members.inc',
@@ -351,7 +361,8 @@ function culturefeed_pages_menu() {
     'title' => 'Lid toevoegen als beheerder',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_page_request_admin_membership_approved', 1, 4),
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
     'type' => MENU_CALLBACK,
     'file' => 'includes/members.inc',
   );
@@ -651,6 +662,20 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   }
 
   return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu_alter().
+ */
+function culturefeed_pages_culturefeed_ui_profile_menu_alter(&$items) {
+
+  $items[] =     array(
+    'title' => "Pagina's",
+    'url' => 'culturefeed/pages',
+    'description' => "Beheer je pagina's.",
+    'weight' => -15,
+  );
 
 }
 

@@ -253,6 +253,20 @@ function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, $
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_menu_alter().
+ */
+function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
+
+  $items[] =     array(
+    'title' => 'Berichten',
+    'url' => 'culturefeed/messages',
+    'description' => 'Beheer je berichten.',
+    'weight' => -16,
+  );
+
+}
+
+/**
  * Load a message by id.
  * @param string $message_id
  *   ID of message to load.

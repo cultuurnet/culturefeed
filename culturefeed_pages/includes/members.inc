@@ -403,12 +403,24 @@ function culturefeed_pages_add_member_form_submit($form, &$form_state) {
 }
 
 /**
- * Page callback to add a confirimation to the
+ * Page callback to confirm deletion of a membership.
  * @param CultureFeed_Cdb_Item_Page $page
  */
-function culturefeed_pages_page_delete_member(CultureFeed_Cdb_Item_Page $page, CultureFeed_User $user, $request_type = 'nojs') {
+function culturefeed_pages_page_delete_member(CultureFeed_Cdb_Item_Page $page, $user = NULL, $request_type = 'nojs') {
 
-  $form = drupal_get_form('culturefeed_pages_delete_member_form', $page, $user, $request_type);
+  $my_pages = FALSE;
+  if (empty($user)) {
+    try {
+      $user = DrupalCultureFeed::getLoggedInUser();
+      $my_pages = TRUE;
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+      return;
+    }
+  }
+
+  $form = drupal_get_form('culturefeed_pages_delete_member_form', $page, $user, $request_type, $my_pages);
 
   if ($request_type == 'ajax') {
     $output = drupal_render($form);
@@ -422,8 +434,16 @@ function culturefeed_pages_page_delete_member(CultureFeed_Cdb_Item_Page $page, C
 
 /**
  * Form confirmation callback to show a form to confirm the removal of a page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ *  Page to remove membership.
+ * @param CultureFeed_User $user
+ *   User to delete membership
+ * @param string $request_type
+ *   Output beïng requested, ajax or nojs
+ * @param $my_pages
+ *   Is this page beïng called from the my pages screen, or the manage members screen.
  */
-function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_Cdb_Item_Page $page, CultureFeed_User $user, $request_type) {
+function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_Cdb_Item_Page $page, CultureFeed_User $user, $request_type, $my_pages) {
 
   if ($request_type == 'ajax') {
     $form['#prefix'] = '<div class="modal-header"><h3>Lid verwijderen</h3></div>';
@@ -431,6 +451,7 @@ function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_C
 
   $form_state['page'] = $page;
   $form_state['user'] = $user;
+  $form_state['my_pages'] = $my_pages;
 
   $form['body_wrapper'] = array(
     '#type' => 'markup',
@@ -492,18 +513,27 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
  */
 function culturefeed_pages_delete_member_form_submit($form, &$form_state) {
 
-  $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/members/nojs';
-  $message = format_string('De gebruiker @nick is verwijderd als lid van @page.', array(
-    '@nick' => $form_state['user']->nick,
-    '@page' => $form_state['page']->getName())
-  );
+  if ($form_state['my_pages']) {
+    $form_state['redirect'] = 'culturefeed/pages';
+    $message = format_string('Je lidmaatschap van @page is verwijdert.', array(
+      '@page' => $form_state['page']->getName())
+    );
+  }
+  else {
+    $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/members/nojs';
+    $message = format_string('De gebruiker @nick is verwijderd als lid van @page.', array(
+      '@nick' => $form_state['user']->nick,
+      '@page' => $form_state['page']->getName())
+    );
+  }
+
   drupal_set_message($message);
 
 }
 
 /**
  * Page to request approval to become admin member of the page.
- * 
+ *
  * @param CultureFeed_Cdb_Item_Page $page
  * @param CultureFeed_User $cf_user
  * @param String $type
@@ -518,19 +548,22 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
     $data = array(
       'senderPage' => $page->getId(),
       'recipientPage' => $page->getId(),
+      'role' => CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN,
       'type' => 'requestadmin',
       'subject' => 'Aanvraag om beheerder te worden',
       'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user->id, array('absolute' => TRUE)) . '"}',
     );
+
     $messages->sendMessage($data);
   }
   catch (Exception $e) {
     $success = FALSE;
+    dsm($e->getMessage());
     watchdog_exception('culturefeed_pages', $e);
   }
 
   $message = "Uw aanvraag om beheerder te worden van deze pagina is verstuurd";
-  
+
   if ($type == 'ajax') {
     $commands = array();
 
@@ -549,7 +582,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
 
 /**
  * Page callback to approve admin membership.
- * 
+ *
  * @param array $form
  * @param array $form_state
  * @param CultureFeed_Cdb_Item_Page $page
@@ -559,23 +592,23 @@ function culturefeed_pages_page_request_admin_membership_approved($form, &$form_
 
   $form_state['page'] = $page;
   $form_state['cf_user'] = $cf_user;
-  
+
   $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
   $page_title = $page->getName();
   $message = format_string("!username wil beheerder worden van !page.", array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, culturefeed_search_detail_path('page', $page->getId(), $page_title)),
   ));
-  
+
   $form['message'] = array('#type' => 'markup', '#markup' => $message);
-  
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'OK',
   );
-  
+
   return $form;
-  
+
 }
 
 /**
@@ -588,12 +621,12 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
 
   $page = $form_state['page'];
   $cf_user = $form_state['cf_user'];
-  
+
   $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
 
   $page_title = $page->getName();
   $page_path = culturefeed_search_detail_path('page', $page->getId(), $page_title);
-  
+
   $message = format_string("!username werd succesvol toegevoegd als beheerder van !page.", array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, $page_path),
@@ -609,11 +642,11 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
     $success = FALSE;
     watchdog_exception('culturefeed_pages', $e);
   }
-  
+
   if ($success) {
     drupal_set_message($message);
   }
-  
+
   drupal_goto($page_path);
-  
+
 }
