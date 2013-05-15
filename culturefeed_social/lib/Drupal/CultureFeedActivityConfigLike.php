@@ -23,7 +23,7 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     $this->viewPrefix = 'vindt';
     $this->viewSuffix = 'leuk';
     $this->label = 'Like';
-    $this->loginRequiredMessage = 'U moet ingelogd zijn om te liken';
+    $this->loginRequiredMessage = 'Om te liken moet je aangemeld zijn';
 
   }
 

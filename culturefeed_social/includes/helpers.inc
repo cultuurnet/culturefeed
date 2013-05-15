@@ -86,7 +86,7 @@ function culturefeed_social_activity_recommend_link_advanced($extendedEntity) {
 function culturefeed_social_activity_recommend_link($extendedEntity, $advanced = FALSE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_social_login_required_message', array('activity_type' => CultureFeed_Activity::TYPE_RECOMMEND));
+    return theme('culturefeed_social_login_required_message', array('activity_type' => CultureFeed_Activity::TYPE_RECOMMEND, 'item' => $extendedEntity));
   }
 
   $itemEntity = $extendedEntity->getEntity();
@@ -139,15 +139,7 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
   );
 
   if (!$user_did_this) {
-
     $markup[$identifier]['#title'] = (0 == $extendedEntity->getActivityCount('recommend')) ? $config->titleDoFirst : $config->titleDo;
-
-    if (user_is_anonymous()) {
-      $markup['anon'] = array(
-        '#type' => 'markup',
-        '#markup' => theme('culturefeed_ui_connect_hover', array('url' => 'culturefeed/do/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id)))
-      );
-    }
   }
   else {
     $markup[$identifier]['#title'] = $config->subjectUndo;
@@ -404,8 +396,8 @@ function culturefeed_social_recommendation_actionbox($object, $activity = NULL) 
   }
   else {
     return array(
-      '#type' => 'markup',
-      '#markup' => 'Om een beoordeling te schrijven moet je aangemeld zijn.<br />' . l('Aanmelden', 'user/login', array('attributes' => array('class' => array('login-button')))),
+      '#theme' => 'markup',
+      '#activity_id' => CultureFeed_Activity::TYPE_COMMENT,
     );
   }
 }

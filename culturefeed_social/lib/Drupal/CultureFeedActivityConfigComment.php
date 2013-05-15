@@ -16,13 +16,13 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->subjectUndo = '';
     $this->titleDo = 'Ook gereageerd';
     $this->titleDoFirst = 'Reageer als eerste';
-    $this->titleShowAll = 'Toon iedereen reageerde op deze pagina';
+    $this->titleShowAll = 'Toon iedereen die reageerde op deze pagina';
     $this->linkClassDo = 'comment-link';
     $this->linkClassUndo = 'uncomment-link';
-    $this->viewPrefix = 'heeft over';
-    $this->viewSuffix = 'een beoordeling geschreven';
+    $this->viewPrefix = 'heeft op';
+    $this->viewSuffix = 'commentaar gegeven';
     $this->label = 'Commentaar';
-    $this->loginRequiredMessage = 'U moet ingelogd zijn om commentaar te schrijven';
+    $this->loginRequiredMessage = 'Om commentaar te geven moet je aangemeld zijn';
 
   }
 

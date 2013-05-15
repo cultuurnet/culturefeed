@@ -21,6 +21,8 @@ class CultureFeedActivityConfigBase {
   public $label = '';
   public $loginRequiredMessage = '';
 
+  protected static $configs = array();
+
   /**
    * Constructor to load default values.
    */
@@ -34,48 +36,73 @@ class CultureFeedActivityConfigBase {
    */
   public static function loadByType($type) {
 
+    // Don't construct + drupal alter every time this type is requested.
+    if (isset(self::$configs[$type])) {
+      return self::$configs[$type];
+    }
+
+    $config = '';
     switch ($type) {
 
       case CultureFeed_Activity::TYPE_COMMENT:
-        return new CultureFeedActivityConfigComment();
+        $config = new CultureFeedActivityConfigComment();
+      break;
 
       case CultureFeed_Activity::TYPE_DETAIL:
-        return new CultureFeedActivityConfigDetail();
+        $config = new CultureFeedActivityConfigDetail();
+      break;
 
       case CultureFeed_Activity::TYPE_FACEBOOK:
-        return new CultureFeedActivityConfigFacebook();
+        $config = new CultureFeedActivityConfigFacebook();
+      break;
 
       case CultureFeed_Activity::TYPE_FOLLOW:
-        return new CultureFeedActivityConfigFollow();
+        $config = new CultureFeedActivityConfigFollow();
+      break;
 
       case CultureFeed_Activity::TYPE_IK_GA:
-        return new CultureFeedActivityConfigGo();
+        $config = new CultureFeedActivityConfigGo();
+      break;
 
       case CultureFeed_Activity::TYPE_LIKE:
-        return new CultureFeedActivityConfigLike();
+        $config = new CultureFeedActivityConfigLike();
+      break;
 
       case CultureFeed_Activity::TYPE_MAIL:
-        return new CultureFeedActivityConfigMail();
+        $config = new CultureFeedActivityConfigMail();
+      break;
 
       case CultureFeed_Activity::TYPE_PAGE_ADMIN:
-        return new CultureFeedActivityConfigPageAdmin();
+        $config = new CultureFeedActivityConfigPageAdmin();
+      break;
 
       case CultureFeed_Activity::TYPE_PAGE_MEMBER:
-        return new CultureFeedActivityConfigPageMember();
+        $config = new CultureFeedActivityConfigPageMember();
+      break;
 
       case CultureFeed_Activity::TYPE_PRINT:
-        return new CultureFeedActivityConfigPrint();
+        $config = new CultureFeedActivityConfigPrint();
+      break;
 
       case CultureFeed_Activity::TYPE_RECOMMEND:
-        return new CultureFeedActivityConfigRecommend();
+        $config = new CultureFeedActivityConfigRecommend();
+      break;
 
       case CultureFeed_Activity::TYPE_TWITTER:
-        return new CultureFeedActivityConfigTwitter();
+        $config = new CultureFeedActivityConfigTwitter();
+      break;
 
       case CultureFeed_Activity::TYPE_VIEW:
-        return new CultureFeedActivityConfigView();
+        $config = new CultureFeedActivityConfigView();
+      break;
 
     }
+
+    drupal_alter('culturefeed_social_config_object', $config);
+
+    self::$configs[$type] = $config;
+
+    return $config;
 
   }
 

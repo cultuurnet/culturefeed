@@ -24,12 +24,8 @@ function culturefeed_social_page_ajax_get_activities() {
     $query->type = array($_GET['type']);
   }
   else {
-    $query->type = array(
-      CultureFeed_Activity::TYPE_LIKE,
-      CultureFeed_Activity::TYPE_FACEBOOK,
-      CultureFeed_Activity::TYPE_TWITTER,
-      CultureFeed_Activity::TYPE_IK_GA,
-    );
+    $types = culturefeed_social_get_activity_filter_options(TRUE);
+    $query->type = array_keys($types);
   }
 
   $query->private = FALSE;
@@ -87,7 +83,7 @@ function culturefeed_social_page_activities($type = NULL) {
   $query->start       = $page * $pagelength;
 
   if (!empty($type)) {
-    $query->type = $type;
+    $query->type = array($type);
   }
   else {
     $query->type = array_keys($types);
