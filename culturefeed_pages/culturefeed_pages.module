@@ -131,6 +131,7 @@ function culturefeed_pages_theme() {
         'logged_in_as_page_admin' => FALSE,
         'account' => NULL,
         'page' => NULL,
+        'page_notifications' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',

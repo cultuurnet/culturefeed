@@ -595,6 +595,29 @@ function culturefeed_social_recommendation_form_submit($form, $form_state) {
  */
 function culturefeed_social_report_abuse_form($form, &$form_state, $activity, $context) {
 
+  // If we have a cdb item, a page can be connected.
+  $page_id = 0;
+  if ($context->getType() == 'page') {
+    $page_id = $context->getId();
+  }
+  elseif ($context->getType() != 'bibnet_book') {
+    $page_id = culturefeed_agenda_get_connected_page_id_of_item($context->getEntity());
+  }
+
+  if ($page_id) {
+    $form_state['post_params']['recipientPage'] = $page_id;
+    $form_state['post_params']['role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
+  }
+
+  // If there was no page, the message should go to the admin.
+  if (!isset($form_state['post_params']['recipientPage'])) {
+    $form_state['post_params']['recipient'] = variable_get('culturefeed_social_report_destination_uid');
+    // If no uid was set. Don't show a form.
+    if (empty($form_state['post_params']['recipient'])) {
+      return;
+    }
+  }
+
   $form = array();
 
   $form['message'] = array(
@@ -660,29 +683,17 @@ function culturefeed_social_report_abuse_form_validate($form, &$form_state) {
     $social_content_type . 'Id' => $context->getId(),
     'comment' => $activity->value,
     'linkUser' => url('user/' . culturefeed_get_uid_for_cf_uid($activity->userId, ''), array('absolute' => TRUE)),
-    'linkComment' => url(culturefeed_search_detail_path($context->getType(), $context->getId(), $context->getTitle($language->language)), array('absolute' => TRUE))
+    'linkComment' => url(culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle($language->language)), array('absolute' => TRUE))
   );
 
-  $params = array(
-    'subject' => $context->getTitle($language->language),
-    'type' => CultureFeed_Messages_Message::TYPE_REPORT,
-    'body' => drupal_json_encode($body),
-  );
+  $params = $form_state['post_params'];
+  $params['subject'] = $context->getTitle($language->language);
+  $params['type'] = CultureFeed_Messages_Message::TYPE_REPORT;
+  $params['body'] = drupal_json_encode($body);
 
   if (!empty($form_state['values']['send_as'])) {
     $params['senderPage'] = $form_state['values']['send_as'];
   }
-
-  // If we have a cdb item, a page can be connected.
-  if ($context->getType() != 'bibnet_book') {
-    $page_id = culturefeed_agenda_get_connected_page_id_of_item($context->getEntity());
-    if ($page_id) {
-      $params['recipientPage'] = $page_id;
-      $params['role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
-    }
-  }
-
-  $params['recipient'] = 'df9049c1-a5d6-4eb2-bb28-015513d9793c';
 
   try {
     $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);

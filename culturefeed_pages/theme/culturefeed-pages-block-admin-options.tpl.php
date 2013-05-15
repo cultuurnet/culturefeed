@@ -22,7 +22,7 @@
     </div>
   <?php endif; ?>
 
-  <?php if ($notifications): ?>
+  <?php if (!empty($notifications)): ?>
   <h2>Laatste meldingen</h2>
   <?php print $notifications; ?>
   <?php endif; ?>

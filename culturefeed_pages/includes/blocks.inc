@@ -95,9 +95,6 @@ function culturefeed_pages_block_pages_admin_options() {
     return;
   }
 
-  // This refers very much to the access callback, but we offer all
-  // components to the templates.
-  // @see culturefeed_pages_edit_page_access()
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
   if (!$cultureFeedUser) {
     return;
@@ -107,7 +104,12 @@ function culturefeed_pages_block_pages_admin_options() {
   $isPageAdmin = FALSE;
   $loggedInAsPageAdmin = FALSE;
 
-  // Calculate the number of pages where the current user is ADMIN.
+  /**
+   * This refers very much to the access callback, but we offer all
+   * components to the templates.
+   * @see culturefeed_pages_edit_page_access()
+   * Calculate the number of pages where the current user is ADMIN.
+   */
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
 
@@ -126,6 +128,23 @@ function culturefeed_pages_block_pages_admin_options() {
     return;
   }
 
+  $notifications = NULL;
+  if (module_exists('culturefeed_social')) {
+
+    $params = array(
+      'max' => CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT,
+      'dateFrom' => date('Y-m-d', strtotime('-1 year')),
+    );
+
+    try {
+      $notifications = DrupalCultureFeed::getLoggedInUserInstance()->pages()->getNotifications($page->getId(), $params);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+
+  }
+
   $block = array();
   $block['subject'] = "Pagina beheren";
   $block['content'] = array(
@@ -135,6 +154,7 @@ function culturefeed_pages_block_pages_admin_options() {
     '#page' => $page,
     '#is_page_admin' => $isPageAdmin,
     '#logged_in_as_page_admin' => $loggedInAsPageAdmin,
+    '#page_notifications' => $notifications,
   );
 
   return $block;

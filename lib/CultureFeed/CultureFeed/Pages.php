@@ -149,11 +149,22 @@ interface CultureFeed_Pages {
    * Get the timeline of a page.
    * @param string $id
    *   The page ID where the timeline is requested for.
-   * @param string date
+   * @param string $dateFrom
    *   ISO Date to set the startdate of the timeline. (optional)
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
   public function getTimeline($id, $dateFrom = NULL);
+
+  /**
+   * Get the notifications for a page.
+   * @param string $id
+   *   The page ID where the notifications are requested for.
+   * @param string $dateFrom
+   *   ISO Date to set the startdate of the notifications. (optional)
+   * @return CultureFeed_ResultSet
+   *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
+   */
+  public function getNotifications($id, $dateFrom = NULL);
 
 }

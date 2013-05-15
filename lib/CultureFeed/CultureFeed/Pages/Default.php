@@ -338,6 +338,28 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
 
   /**
+   * @see CultureFeed_Pages::getNotifications()
+   */
+  public function getNotifications($id, $dateFrom = NULL) {
+
+    $params = array();
+    if (!empty($dateFrom)) {
+      $params['dateFrom'] = $dateFrom;
+    }
+
+    $result = $this->oauth_client->authenticatedGetAsXml('page/' . $id . '/notifications', $params);
+    try {
+      $xmlElement = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return CultureFeed::parseActivities($xmlElement);
+
+  }
+
+  /**
    * Validate the request result.
    *
    * @param string $result

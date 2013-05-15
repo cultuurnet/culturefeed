@@ -24,6 +24,15 @@ function culturefeed_social_admin_settings_form() {
     '#default_value' => variable_get('culturefeed_social_activity_filters', array()),
   );
 
+  $form['culturefeed_social_report_destination_uid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Report as abuse messages destination uid'),
+    '#default_value' => variable_get('culturefeed_social_report_destination_uid'),
+    '#description' => t('Report as abuse messages will be sent to this account.
+      Only if no destination page was available. Otherwise the message will be sent to all the admins of the page'
+    ),
+  );
+
   return system_settings_form($form);
 
 }
