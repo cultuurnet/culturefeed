@@ -16,6 +16,8 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   $default = isset($query['search']) ? $query['search']: '';
 
   $searchable_types = culturefeed_get_searchable_types();
+  uasort($searchable_types, 'drupal_sort_weight');
+
   $options = array();
   foreach ($searchable_types as $key => $type) {
     $options[$key] = $type['search_title'];

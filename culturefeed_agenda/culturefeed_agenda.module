@@ -109,6 +109,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
         'comments' => 'Aantal beoordelingen',
       ),
       'class_name' => 'CultureFeedAgendaPage',
+      'weight' => -20,
     ),
   );
 }
