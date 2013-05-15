@@ -132,6 +132,7 @@ function culturefeed_messages_menu() {
       'title callback' => FALSE,
       'title' => 'Berichten',
       'page callback' => 'culturefeed_messages_page_view_message',
+      'page arguments' => array(NULL, 1),
       'access callback' => 'culturefeed_pages_edit_page_access',
       'access arguments' => array(1),
       'type' => MENU_CALLBACK,
@@ -142,8 +143,9 @@ function culturefeed_messages_menu() {
       'title callback' => FALSE,
       'title' => 'Berichten',
       'page callback' => 'culturefeed_messages_page_view_message',
+      'page arguments' => array(4, 1),
       'access callback' => 'culturefeed_pages_edit_page_access',
-      'access arguments' => array(4, 1),
+      'access arguments' => array(1),
       'type' => MENU_CALLBACK,
       'file' => 'includes/pages.inc',
     );

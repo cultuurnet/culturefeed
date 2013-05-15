@@ -17,9 +17,10 @@ function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
       $recipientPage = empty($page) ? NULL : $page->getId();
       $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipientPage);
       if ($messages->total == 0) {
-        return array('#markup' => 'U hebt nog geen meldingen');
+        return array('#markup' => 'U hebt nog geen berichten');
       }
-      $message = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($messages->objects[1]->id);
+
+      $message = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($messages->objects[0]->id);
     }
 
   }
@@ -58,7 +59,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
       try {
 
         $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-        $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+        $user_list = $cf_pages->getUserList($object->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 
         if (!empty($user_list->memberships)) {
 
@@ -85,7 +86,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
           ),
         );
 
-        $form_state['page'] = $page;
+        $form_state['page'] = $object;
 
       }
       catch (Exception $e) {
@@ -162,16 +163,11 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
     $params['senderPage'] = $form_state['values']['send_as'];
   }
 
-  $recipient = '';
-  $recipient_page = '';
-  $role = '';
-  $reply_to = '';
   // Check if we are sending to a page.
   if (!empty($form_state['page'])) {
-    //$params['recipientPage'] = $form_state['page']->getId();
-    //$params['role'] = $form_state['values']['recipient'];
-    //$params['type'] = CultureFeed_Messages_Message::TYPE_MEMBERS;
-    $params['recipient'] = 'df9049c1-a5d6-4eb2-bb28-015513d9793c';
+    $params['recipientPage'] = $form_state['page']->getId();
+    $params['role'] = $form_state['values']['recipient'];
+    $params['type'] = CultureFeed_Messages_Message::TYPE_MEMBERS;
   }
   // Check if we are sending a reply.
   elseif (!empty($form_state['reply_to'])) {
