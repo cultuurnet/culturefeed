@@ -16,6 +16,7 @@ class CultureFeedActivityConfigDetail extends CultureFeedActivityConfigBase {
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'bekeken';
     $this->label = 'Bekijken';
+
   }
 
 }

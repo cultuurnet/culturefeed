@@ -251,7 +251,7 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
     'culturefeed_social_activity_summary' => array(
       'variables' => array(
         'totals' => NULL,
@@ -260,7 +260,13 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
+    'culturefeed_social_login_required_message' => array(
+      'variables' => array('activity_type' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+
   );
 
 }

@@ -220,11 +220,11 @@ function culturefeed_social_preprocess_culturefeed_social_user_notifications_pag
  * @see culturefeed-social-activity-summary.tpl.php
  */
 function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$variables) {
-  
+
   $total_per_type = array();
-  
+
   foreach ($variables['totals'] as $total) {
-    
+
     // Conventional totals for each type/content type.
     list($activity_type, $content_type) = explode("_", $total->key);
     $variables[$content_type . '_' . $activity_type] = $total->value;
@@ -232,7 +232,7 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
     if (!isset($total_per_type[$activity_type])) {
       $total_per_type[$activity_type] = array('activities' => 0, 'books' => 0, 'pages' => 0);
     }
-    
+
     if (in_array($content_type, array('actor', 'production', 'event'))) {
       $total_per_type[$activity_type]['activities'] += $total->value;
     }
@@ -242,7 +242,7 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
     elseif ($content_type == 'page') {
       $total_per_type[$activity_type]['pages'] = $total->value;
     }
-    
+
   }
 
   foreach ($total_per_type as $atype => $total_per_content_type) {
@@ -251,7 +251,18 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
     $variables['books_total_' . $atype] = $total_per_content_type['books'];
     $variables['pages_total_' . $atype] = $total_per_content_type['pages'];
     $variables['activities_total_' . $atype] = $total_per_content_type['activities'];
-    
+
   }
-  
+
+}
+
+/**
+ * Theme the login required message when an anonymous user sees a social action.
+ */
+function theme_culturefeed_social_login_required_message($variables) {
+
+  $config = culturefeed_social_activity_get_config($variables['activity_type']);
+
+  return '<div class="login-required">' . $config->loginRequiredMessage . '</div>';
+
 }

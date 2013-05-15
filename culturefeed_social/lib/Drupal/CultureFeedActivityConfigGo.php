@@ -14,6 +14,7 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
 
     $this->viewPrefix = 'gaat naar';
     $this->label = 'Gaat naar';
+    $this->loginRequiredMessage = 'U moet ingelogd zijn om aan te geven dat u gaat';
 
   }
 

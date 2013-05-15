@@ -19,6 +19,7 @@ class CultureFeedActivityConfigBase {
   public $viewPrefix = '';
   public $viewSuffix = '';
   public $label = '';
+  public $loginRequiredMessage = '';
 
   /**
    * Constructor to load default values.

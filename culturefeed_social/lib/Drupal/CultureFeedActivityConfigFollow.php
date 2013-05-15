@@ -21,6 +21,8 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
     $this->linkClassUndo = 'unfollow-link';
     $this->viewPrefix = 'volgt';
     $this->label = 'Volgen';
+    $this->loginRequiredMessage = 'U moet ingelogd zijn om een pagina te volgen';
+
   }
 
 }

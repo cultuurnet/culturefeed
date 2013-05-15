@@ -85,6 +85,10 @@ function culturefeed_social_activity_recommend_link_advanced($extendedEntity) {
  */
 function culturefeed_social_activity_recommend_link($extendedEntity, $advanced = FALSE) {
 
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return theme('culturefeed_social_login_required_message', array('activity_type' => CultureFeed_Activity::TYPE_RECOMMEND));
+  }
+
   $itemEntity = $extendedEntity->getEntity();
   $id = $extendedEntity->getId();
   $current_query = drupal_get_query_parameters();
@@ -97,14 +101,13 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
   $activity_content_type = culturefeed_get_content_type($extendedEntity->getType());
 
   $user_did_this = FALSE;
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-      $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extendedEntity);
-      $user_did_this = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_RECOMMEND, $activity_node_id, $activity_content_type);
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_social', $e);
-    }
+
+  try {
+    $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extendedEntity);
+    $user_did_this = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_RECOMMEND, $activity_node_id, $activity_content_type);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
   }
 
   $action = $user_did_this ? 'undo' : 'do';
