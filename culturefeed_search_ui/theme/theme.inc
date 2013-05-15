@@ -108,6 +108,10 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   // Every filter will reset the current facet. Remove this facet from URL, URL will function as removal URL.
   unset($query['facet'][$facet->getKey()]);
 
+  if ($facet->getKey() == 'datetype' && isset($query['date_range'])) {
+    unset($query['date_range']);
+  }
+
   $variables['active'] = in_array($facet_option, $active_options);
   // Add this facet to URL, URL will function as additional filter URL.
   if (!$variables['active']) {
