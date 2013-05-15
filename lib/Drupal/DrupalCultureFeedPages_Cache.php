@@ -259,4 +259,11 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
 
   }
 
+  /**
+   * @see CultureFeed_Pages::getNotifications()
+   */
+  public function getNotifications($id, $params = array()) {
+    return $this->realCultureFeedPages->getNotifications($id, $params);
+  }
+
 }

@@ -463,11 +463,13 @@ function culturefeed_social_page_notifications($page = NULL) {
     );
 
     if ($page) {
-      $params['pageId'] = $page->getId();
       culturefeed_pages_set_page_breadcrumb($page);
+      $notifications = DrupalCultureFeed::getLoggedInUserInstance()->pages()->getNotifications($page->getId(), $params);
+    }
+    else {
+      $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
     }
 
-    $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
     return theme('culturefeed_social_user_notifications_page', array('notifications' => $notifications));
 
   }

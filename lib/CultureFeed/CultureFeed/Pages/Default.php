@@ -340,12 +340,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getNotifications()
    */
-  public function getNotifications($id, $dateFrom = NULL) {
-
-    $params = array();
-    if (!empty($dateFrom)) {
-      $params['dateFrom'] = $dateFrom;
-    }
+  public function getNotifications($id, $params = array()) {
 
     $result = $this->oauth_client->authenticatedGetAsXml('page/' . $id . '/notifications', $params);
     try {

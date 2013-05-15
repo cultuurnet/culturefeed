@@ -160,11 +160,11 @@ interface CultureFeed_Pages {
    * Get the notifications for a page.
    * @param string $id
    *   The page ID where the notifications are requested for.
-   * @param string $dateFrom
-   *   ISO Date to set the startdate of the notifications. (optional)
+   * @param array $params
+   *  Array with additional filter params
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  public function getNotifications($id, $dateFrom = NULL);
+  public function getNotifications($id, $params = array());
 
 }
