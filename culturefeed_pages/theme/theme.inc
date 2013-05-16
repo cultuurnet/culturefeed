@@ -385,9 +385,16 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
     $detail = $result->getEntity()->getDetails()->getDetailByLanguage($language->language);
     if ($detail) {
 
-      $row['title'] = $detail->getTitle();
+      $path = culturefeed_search_detail_path($result->getType(), $result->getId(), $detail->getTitle());
+      $row['title'] = l($detail->getTitle(), $path);
       $row['date'] = $detail->getCalendarSummary();
-      $row['comment_count'] = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+      $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+      if ($comment_count) {
+        $row['comment_count'] = l(format_plural($comment_count, '@count reactie', '@count reacties'), $path, array('fragment' => 'lees'));
+      }
+      else {
+        $row['comment_count'] = 'Nog geen reacties';
+      }
       $row['edit_url'] = l('Bewerk in UDB', CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
