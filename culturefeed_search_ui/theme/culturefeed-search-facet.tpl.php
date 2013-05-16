@@ -11,7 +11,7 @@
 <ul class="facet-search facet-level-1">
 
 <?php foreach ($items as $facet_item): ?>
-  <li<?php if ($facet_item['has_active_sub_item']) print ' class="active"'; ?>>
+  <li<?php if ($facet_item['has_active_sub_item']) print ' class="active-parent"'; ?>>
     <?php print $facet_item['output'] ?>
     <?php if (!empty($facet_item['sub_items'])): ?>
       <ul class="facet-search facet-level-2">

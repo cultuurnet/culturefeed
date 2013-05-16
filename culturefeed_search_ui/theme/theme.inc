@@ -80,6 +80,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'facet' => $facet,
           'query' => $query,
           'path' => $path,
+          'active' => $sub_item_active,
         ));
       }
     }
