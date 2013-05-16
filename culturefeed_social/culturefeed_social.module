@@ -204,8 +204,8 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_form' => array(
-      'template' => 'culturefeed-social-recommendation-form',
+    'culturefeed_social_comment_form' => array(
+      'template' => 'culturefeed-social-comment-form',
       'render element' => 'form',
       'path' => $path,
       'file' => 'theme.inc',
@@ -404,8 +404,8 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
 function culturefeed_social_forms($form_id, $args) {
 
   $forms = array();
-  if (strstr($form_id, 'culturefeed_social_recommendation_form')) {
-    $forms[$form_id] = array('callback' => 'culturefeed_social_base_recommendation_form');
+  if (strstr($form_id, 'culturefeed_social_comment_form')) {
+    $forms[$form_id] = array('callback' => 'culturefeed_social_base_comment_form');
   }
   elseif (strstr($form_id, 'culturefeed_social_report_abuse_form')) {
     $forms[$form_id] = array('callback' => 'culturefeed_social_base_report_abuse_form');
@@ -485,34 +485,41 @@ function culturefeed_social_user_activity_filter_form_submit($form, &$form_state
  * @param CultureFeed_Activity $activity
  *   Optional activity if the comment needs to target the activity as parent.
  */
-function culturefeed_social_base_recommendation_form($form, &$form_state, $object, $activity = NULL) {
+function culturefeed_social_base_comment_form($form, &$form_state, $object, $activity = NULL) {
 
   $form_state['object'] = $object;
 
   $activity_content_type = culturefeed_get_content_type($object->getType());
   $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
   $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $form_state['config'] = $config;
 
   $form = array(
-    '#theme' => 'culturefeed_social_recommendation_form'
+    '#theme' => 'culturefeed_social_comment_form'
   );
 
-  $form['recommendation_message'] = array(
+  $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => 'Schrijf zelf een beoordeling',
+    '#title' => $config->titleDo,
     '#default_value' => '',
-    '#attributes' => array('class' => array('recommendation-message')),
+    '#attributes' => array('class' => array('comment-message')),
     '#weight' => -5,
     '#required' => $status,
   );
 
+  $type = 'deze activiteit';
+  if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+    $type = 'dit boek';
+  }
+
   if ($status == TRUE) {
 
     $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.',
-      array('!link' => $link));
+    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op !type.<br />!link om geen berichten meer te ontvangen.',
+      array('!link' => $link, '!type' => $type));
 
-    $form['recommendation_updates'] = array(
+    $form['update_optin'] = array(
       '#type' => 'markup',
       '#markup' => $message,
       '#prefix' => '<div id="node-status-wrapper">',
@@ -520,9 +527,9 @@ function culturefeed_social_base_recommendation_form($form, &$form_state, $objec
     );
   }
   else {
-    $form['recommendation_updates'] = array(
+    $form['update_optin'] = array(
       '#type' => 'checkbox',
-      '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over deze activiteit',
+      '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over ' . $type,
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('recommendation-updates')),
       '#weight' => 1,
@@ -531,17 +538,17 @@ function culturefeed_social_base_recommendation_form($form, &$form_state, $objec
 
   if (isset($activity)) {
 
-    $form['recommendation_parent_id'] = array(
+    $form['parent_id'] = array(
       '#type' => 'hidden',
       '#default_value' => $activity->id,
     );
 
   }
 
-  $form['recommendation_send'] = array(
+  $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Verzend beoordeling',
-    '#attributes' => array('class' => array('recommendation-button')),
+    '#value' => 'Verzend',
+    '#attributes' => array('class' => array('comment-button')),
     '#weight' => 5,
   );
 
@@ -550,16 +557,16 @@ function culturefeed_social_base_recommendation_form($form, &$form_state, $objec
 }
 
 /**
- * Validate the recommendation form => Submit it to service.
+ * Validate the comment form => Submit it to service.
  */
-function culturefeed_social_base_recommendation_form_validate($form, $form_state) {
+function culturefeed_social_base_comment_form_validate($form, $form_state) {
 
   $object = $form_state['object'];
   $activity_content_type = culturefeed_get_content_type($object->getType());
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $config = $form_state['config'];
 
   // Send a comment.
-  if (!empty($form_state['values']['recommendation_message'])) {
+  if (!empty($form_state['values']['message'])) {
 
     $activity = new CultureFeed_Activity();
     $activity->contentType = $activity_content_type;
@@ -567,12 +574,12 @@ function culturefeed_social_base_recommendation_form_validate($form, $form_state
     $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
     $activity->nodeTitle = $object->getTitle($GLOBALS['language']->language);
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-    $activity->value = $form_state['values']['recommendation_message'];
-    $activity->onBehalfOf = !empty($form_state['values']['recommendation_on_behalf_of']) ? $form_state['values']['recommendation_on_behalf_of']: '';
+    $activity->value = $form_state['values']['message'];
+    $activity->onBehalfOf = !empty($form_state['values']['on_behalf_of']) ? $form_state['values']['on_behalf_of']: '';
 
     // Add the parent activity if that's the target.
-    if (!empty($form_state['values']['recommendation_parent_id'])) {
-      $activity->parentActivity = $form_state['values']['recommendation_parent_id'];
+    if (!empty($form_state['values']['parent_id'])) {
+      $activity->parentActivity = $form_state['values']['parent_id'];
     }
 
     try {
@@ -588,32 +595,39 @@ function culturefeed_social_base_recommendation_form_validate($form, $form_state
 }
 
 /**
- * Submit handler to post a written recommendation.
+ * Submit handler to post a comment.
  */
-function culturefeed_social_base_recommendation_form_submit($form, $form_state) {
+function culturefeed_social_base_comment_form_submit($form, $form_state) {
 
   $object = $form_state['object'];
   $activity_content_type = culturefeed_get_content_type($object->getType());
   $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $config = $form_state['config'];
 
   if (!empty($form_state['id'] )) {
     $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
       'absolute' => TRUE,
       'fragment' => 'activity-' . $form_state['id'],
     ));
-    drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)));
+    drupal_set_message(format_string('Uw !comment is bewaard.', array('!comment' => $goto_link)));
   }
 
   // Follow updates.
-  if (!empty($form_state['values']['recommendation_updates'])) {
+  if (!empty($form_state['values']['update_optin'])) {
 
     try {
       $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
       if ($id) {
+
+        $type = 'deze activiteit';
+        if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+          $type = 'dit boek';
+        }
+
         $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
-        drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.',
+        drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
         array('!link' => $link)));
+
       }
     }
     catch (Exception $e) {

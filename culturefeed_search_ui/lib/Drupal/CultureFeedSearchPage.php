@@ -94,8 +94,6 @@ class CultureFeedSearchPage {
           $item = '"' . str_replace('"', '\"', $item) . '"';
         });
         $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
-        // tag this so we can exclude when calculating facets
-        $facetFilterQuery->setTags(array($facetFieldName));
 
       }
 

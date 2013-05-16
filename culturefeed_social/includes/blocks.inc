@@ -234,7 +234,7 @@ function culturefeed_social_block_recommendations($object) {
 
   $content = array();
   $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
-  $content['recommendation_form'] = culturefeed_social_recommendation_actionbox($object);
+  $content['comment_form'] = culturefeed_social_comment_actionbox($object);
 
   $block['subject'] = 'Beoordelingen';
   $block['content'] = $content;

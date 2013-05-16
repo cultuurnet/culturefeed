@@ -390,10 +390,10 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
  * @param misc $object
  * @param CultureFeed_Activity $activity
  */
-function culturefeed_social_recommendation_actionbox($object, $activity = NULL) {
+function culturefeed_social_comment_actionbox($object, $activity = NULL) {
 
   if (culturefeed_is_culturefeed_user()) {
-    $form_id = ($activity) ? 'culturefeed_social_recommendation_form_' . $activity->id : 'culturefeed_social_recommendation_form';
+    $form_id = ($activity) ? 'culturefeed_social_comment_form_' . $activity->id : 'culturefeed_social_comment_form';
     return drupal_get_form($form_id, $object, $activity);
   }
   else {

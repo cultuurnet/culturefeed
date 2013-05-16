@@ -156,8 +156,8 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
         ));
       }
       $variables['react_link'] = l('Reageer', $_GET['q'], array('attributes' => array('class' => array('recommend-subform-toggle'))));
-      $sub_form = culturefeed_social_recommendation_actionbox($object, $activity);
-      $variables['react_form'] = '<div id="recommendation-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
+      $sub_form = culturefeed_social_comment_actionbox($object, $activity);
+      $variables['react_form'] = '<div id="comment-subform-' . $activity->id . '" class="recommendation-subform">' . drupal_render($sub_form) . '</div>';
 
     }
     else {

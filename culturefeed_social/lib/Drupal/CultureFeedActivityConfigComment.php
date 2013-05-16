@@ -14,7 +14,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
 
     $this->subject = 'Reactie door';
     $this->subjectUndo = '';
-    $this->titleDo = 'Ook gereageerd';
+    $this->titleDo = 'Schrijf zelf een reactie';
     $this->titleDoFirst = 'Reageer als eerste';
     $this->titleShowAll = 'Toon iedereen die reageerde op deze pagina';
     $this->linkClassDo = 'comment-link';
@@ -24,6 +24,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->label = 'Commentaar';
     $this->action = 'reactie';
     $this->loginRequiredMessage = 'Om commentaar te geven moet je aangemeld zijn';
+    $this->onBehalfOfMessage = 'Plaats commentaar als';
 
   }
 
