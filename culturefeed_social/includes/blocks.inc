@@ -140,14 +140,13 @@ function culturefeed_social_block_recommended_by($object) {
   $query->contentType = $content_type;
 
   $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
-  //$query->private = TRUE;
 
   switch ($content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
       $node_title = $object->getTitle($GLOBALS['language']->language);
       $id = $object->getId();
-      $query->nodeId = url(culturefeed_social_detail_path($object->getType(), $id, $node_title), array('absolute' => TRUE));
+      $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
@@ -323,10 +322,10 @@ function culturefeed_social_block_my_activity_summary($account) {
     watchdog_exception('culturefeed_social', $e);
     return;
   }
-  
+
   $content = array();
   if ($totals) {
-    
+
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,

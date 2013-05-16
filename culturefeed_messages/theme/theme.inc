@@ -177,9 +177,6 @@ function _culturefeed_messages_preprocess_message_recipients(&$variables) {
 function _culturefeed_messages_preprocess_message(&$variables) {
 
   $message = $variables['message'];
-  if ($message->id == 89) {
-    dsm($message);
-  }
 
   $variables['id'] = $message->id;
   $variables['status'] = $message->status;
