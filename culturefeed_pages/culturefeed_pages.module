@@ -22,34 +22,6 @@ define('CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT', 50);
 define('CULTUREFEED_PAGES_UITDATABANK_EVENT_URL', 'http://www.uitdatabank.be/2/Item/EventDetail/');
 
 /**
- * Implements hook_permission().
- */
-function culturefeed_pages_permission() {
-
-  return array(
-    'view my culturefeed pages' => array(
-      'title' => t('See my culturefeed pages'),
-    ),
-    'join culturefeed page' => array(
-      'title' => t('Join a culturefeed page'),
-    ),
-    'follow culturefeed page' => array(
-      'title' => t('Follow a culturefeed page'),
-    ),
-    'add culturefeed page' => array(
-      'title' => t('Add a culturefeed page'),
-    ),
-    'edit culturefeed page' => array(
-      'title' => t('Edit a culturefeed page'),
-    ),
-    'switch culturefeed pages' => array(
-      'title' => t('Switch to another culturefeed page'),
-    ),
-  );
-
-}
-
-/**
  * Implements hook_theme().
  */
 function culturefeed_pages_theme() {
@@ -223,7 +195,7 @@ function culturefeed_pages_menu() {
   $items['pages/join'] = array(
     'title callback' => 'culturefeed_pages_join_title',
     'page callback' => 'culturefeed_pages_join_page_search',
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -232,7 +204,7 @@ function culturefeed_pages_menu() {
     'title callback' => FALSE,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_add_form'),
-    'access arguments' => array('add culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -350,7 +322,7 @@ function culturefeed_pages_menu() {
     'title' => 'Aanvraag tot beheerder van de pagina',
     'page callback' => 'culturefeed_pages_page_request_admin_membership',
     'page arguments' => array(1, 4),
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/members.inc',
   );
@@ -360,7 +332,7 @@ function culturefeed_pages_menu() {
     'title' => 'Verwijder mijzelf als lid',
     'page callback' => 'culturefeed_pages_page_delete_member',
     'page arguments' => array(1, NULL, 4),
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/members.inc',
   );
@@ -381,7 +353,7 @@ function culturefeed_pages_menu() {
     'title' => 'Verander actieve pagina',
     'page callback' => 'culturefeed_pages_switch_page',
     'page arguments' => array(2),
-    'access arguments' => array('switch culturefeed pages'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -389,7 +361,7 @@ function culturefeed_pages_menu() {
   $items['ajax/culturefeed/pages/page-suggestion'] = array(
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
     'page arguments' => array(4),
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -397,7 +369,7 @@ function culturefeed_pages_menu() {
   $items['culturefeed/pages/join/%/%culturefeed_pages_page'] = array(
     'page callback' => 'culturefeed_pages_page_join',
     'page arguments' => array(3, 4),
-    'access arguments' => array('join culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -407,7 +379,7 @@ function culturefeed_pages_menu() {
     'title' => 'Pagina volgen',
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4),
-    'access arguments' => array('follow culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -417,7 +389,7 @@ function culturefeed_pages_menu() {
     'title' => 'Pagina ontvolgen',
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4, FALSE),
-    'access arguments' => array('follow culturefeed page'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -426,7 +398,7 @@ function culturefeed_pages_menu() {
     'title callback' => FALSE,
     'title' => 'Mijn pagina\'s',
     'page callback' => 'culturefeed_pages_page_my_pages',
-    'access arguments' => array('view my culturefeed pages'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -644,7 +616,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
     }
 
     // If the user has more than 1 membership, allow him to switch pages.
-    if (user_access('switch culturefeed pages') && $has_memberships > 1) {
+    if ($has_memberships > 1) {
 
       $items['switch-page'] = array(
         'data' => 'Wijzig actieve pagina',
@@ -773,10 +745,6 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-
-  if (!user_access('edit culturefeed page')) {
-    return FALSE;
-  }
 
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
 

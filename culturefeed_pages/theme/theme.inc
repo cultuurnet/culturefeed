@@ -445,6 +445,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
     $variables['i_follow'] = drupal_render($build['followed-pages']);
   }
 
+  $variables['search_pages'] = drupal_render($build['search-pages']);
+
 }
 
 /**

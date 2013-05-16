@@ -12,6 +12,9 @@
 <?php print $i_follow; ?>
 <?php endif; ?>
 
+<h2>Zoek nieuwe pagina's:</h2>
+<?php print $search_pages; ?>
+
 <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-body"></div>
 </div>

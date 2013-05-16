@@ -994,9 +994,6 @@ function culturefeed_pages_page_my_pages() {
 
     $cf_user = DrupalCultureFeed::getLoggedInUser();
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-    if (!$cf_user) {
-      return '';
-    }
 
     // Build all the membership rows.
     $membership_page_ids = array();
@@ -1119,9 +1116,6 @@ function culturefeed_pages_page_my_pages() {
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $build['search-pages-title'] = array(
-    '#markup' => '<h2>Zoek nieuwe pagina\'s:</h2>',
-  );
   $build['search-pages'] = culturefeed_pages_join_page_search();
 
   return array(
