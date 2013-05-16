@@ -347,7 +347,7 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
  * @param misc $object (Culturefeed_Page, Bibnet_Book, ...
  * @param CultureFeed_ResultSet $activities
  */
-function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $activities) {
+function culturefeed_social_comment_list($object, CultureFeed_ResultSet $activities) {
 
   if ($activities->total < 0) {
     return array();
@@ -372,7 +372,7 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
 
   return array(
     '#type' => 'markup',
-    '#markup' => theme('culturefeed_social_recommendation_list', array(
+    '#markup' => theme('culturefeed_social_comment_list', array(
       'object' => $object,
       'activities' => $activity_list,
       'total' => $total,

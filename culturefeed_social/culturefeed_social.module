@@ -211,19 +211,19 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_list'=> array(
+    'culturefeed_social_comment_list'=> array(
       'variables' => array(
         'activities' => NULL,
         'accounts' => NULL,
         'object' => NULL,
         'total' => NULL,
       ),
-      'template' => 'culturefeed-social-recommendation-list',
+      'template' => 'culturefeed-social-comment-list',
       'path' => $path,
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_list_item'=> array(
+    'culturefeed_social_comment_list_item'=> array(
       'variables' => array(
         'activity' => NULL,
         'accounts' => NULL,
@@ -232,7 +232,7 @@ function culturefeed_social_theme() {
         'child_activities' => NULL,
         'level' => 0,
       ),
-      'template' => 'culturefeed-social-recommendation-list-item',
+      'template' => 'culturefeed-social-comment-list-item',
       'path' => $path,
       'file' => 'theme.inc',
     ),
@@ -293,8 +293,8 @@ function culturefeed_social_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  $blocks['recommendations'] = array(
-    'info' => t('Recommendations'),
+  $blocks['comments'] = array(
+    'info' => t('Culturefeed Comments'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -333,9 +333,9 @@ function culturefeed_social_block_view($delta) {
       $object = culturefeed_search_get_active_object();
       return culturefeed_social_block_recommended_by($object);
 
-    case 'recommendations':
+    case 'comments':
       $object = culturefeed_search_get_active_object();
-      return culturefeed_social_block_recommendations($object);
+      return culturefeed_social_block_comments($object);
 
     case 'my-notifications':
       return culturefeed_social_block_my_notifications();
@@ -399,7 +399,7 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
 
 /**
  * Implements hook_forms().
- * This is needed to show multiple recommendation / abuse forms on 1 page.
+ * This is needed to show multiple comment / abuse forms on 1 page.
  */
 function culturefeed_social_forms($form_id, $args) {
 
@@ -478,7 +478,7 @@ function culturefeed_social_user_activity_filter_form_submit($form, &$form_state
 }
 
 /**
- * Base form to write a recommendation.
+ * Base form to write a comment.
  * This is called by culturefeed_social_forms().
  *
  * @param misc $object (ExtendedEntity of a Culturefeed page, event, book, ...)
@@ -531,7 +531,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
       '#type' => 'checkbox',
       '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over ' . $type,
       '#default_value' => isset($status) ? $status : TRUE,
-      '#attributes' => array('class' => array('recommendation-updates')),
+      '#attributes' => array('class' => array('comment-updates')),
       '#weight' => 1,
     );
   }

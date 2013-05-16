@@ -11,18 +11,18 @@ Drupal.CulturefeedSocial = Drupal.CulturefeedSocial || {};
     attach: function (context, settings) {
 	   
 	  // Look up toggle links.
-      $items = $('.recommendation-list-item');
-      var $comment_forms = $items.find('.recommendation-subform');
-      var $abuse_forms = $items.find('.recommendation-abuse-form');
+      $items = $('.comment-list-item');
+      var $comment_forms = $items.find('.comment-subform');
+      var $abuse_forms = $items.find('.comment-abuse-form');
       $comment_forms.hide();
       $abuse_forms.hide();
       
-      $items.find('.recommend-subform-toggle').bind('click', function() {
-        return Drupal.CulturefeedSocial.toggle($(this), '.recommendation-subform');
+      $items.find('.comment-subform-toggle').bind('click', function() {
+        return Drupal.CulturefeedSocial.toggle($(this), '.comment-subform');
       });
       
-      $items.find('.recommend-abuse-toggle').bind('click', function() {
-        return Drupal.CulturefeedSocial.toggle($(this), '.recommendation-abuse-form');
+      $items.find('.comment-abuse-toggle').bind('click', function() {
+        return Drupal.CulturefeedSocial.toggle($(this), '.comment-abuse-form');
       });      
       
     }
@@ -30,7 +30,7 @@ Drupal.CulturefeedSocial = Drupal.CulturefeedSocial || {};
   
   Drupal.CulturefeedSocial.toggle = function(element, toggle_class) {
     
-    $wrapper = element.parents('.recommendation-list-item').eq(0).find(toggle_class).eq(0);
+    $wrapper = element.parents('.comment-list-item').eq(0).find(toggle_class).eq(0);
     $wrapper.toggle('slow');
 	    
     return false;

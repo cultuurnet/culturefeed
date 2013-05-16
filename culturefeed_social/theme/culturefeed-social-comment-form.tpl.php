@@ -8,12 +8,12 @@
 $button_printed = render($form['submit']);
 ?>
 
-<div class="recommendation-left">
+<div class="comment-left">
   <?php print render($form['message'])?>
   <?php print render($form['update_optin'])?>
 </div>
 
-<div class="recommendation-right">
+<div class="comment-right">
   <?php print drupal_render_children($form); ?>
   <?php
   // Render the button as last one.

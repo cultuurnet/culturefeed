@@ -204,11 +204,11 @@ function culturefeed_social_block_recommended_by($object) {
 }
 
 /**
- * Block callback to render the recommendations of an item.
+ * Block callback to render the comments on an item.
  * @param misc $object
  * @return array
  **/
-function culturefeed_social_block_recommendations($object) {
+function culturefeed_social_block_comments($object) {
 
   if (!$object || !method_exists($object, 'getType')) {
     return;
@@ -233,7 +233,7 @@ function culturefeed_social_block_recommendations($object) {
   }
 
   $content = array();
-  $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
+  $content['comment_list'] = culturefeed_social_comment_list($object, $activities);
   $content['comment_form'] = culturefeed_social_comment_actionbox($object);
 
   $block['subject'] = 'Beoordelingen';
