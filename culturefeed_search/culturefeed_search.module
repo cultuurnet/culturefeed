@@ -5,7 +5,7 @@
  */
 
 // Default API location. Can be overriden in settings form.
-define('CULTUREFEED_SEARCH_API_LOCATION', 'http://searchv2.cultuurnet.lodgon.com/search-poc/rest');
+define('CULTUREFEED_SEARCH_API_LOCATION', 'http://test.uitid.be/uitid/rest/searchv2');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
 module_load_include('inc', 'culturefeed_search', 'includes/helpers');
