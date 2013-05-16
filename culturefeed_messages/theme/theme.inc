@@ -177,6 +177,9 @@ function _culturefeed_messages_preprocess_message_recipients(&$variables) {
 function _culturefeed_messages_preprocess_message(&$variables) {
 
   $message = $variables['message'];
+  if ($message->id == 89) {
+    dsm($message);
+  }
 
   $variables['id'] = $message->id;
   $variables['status'] = $message->status;
@@ -190,7 +193,9 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   else {
     $variables['body'] = $message->body;
   }
-
+  if ($message->id == 89) {
+    dsm($variables);
+  }
   $variables['sender'] = $message->sender->nick;
   if (!empty($message->senderPage)) {
     $variables['sender'] .= ' van ' . $message->senderPage->getName();

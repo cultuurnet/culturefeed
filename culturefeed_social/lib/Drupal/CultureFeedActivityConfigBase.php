@@ -20,6 +20,7 @@ class CultureFeedActivityConfigBase {
   public $viewSuffix = '';
   public $label = '';
   public $loginRequiredMessage = '';
+  public $action = '';
 
   protected static $configs = array();
 

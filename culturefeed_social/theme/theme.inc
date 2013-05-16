@@ -176,7 +176,7 @@ function culturefeed_social_preprocess_culturefeed_social_recommendation_list_it
   if (module_exists('culturefeed_messages')) {
 
     $variables['abuse_link'] = l('Rapporteer als ongepast', $_GET['q'], array('attributes' => array('class' => array('recommend-abuse-toggle'))));
-    $abuse_form = drupal_get_form('culturefeed_social_report_abuse_form', $activity, culturefeed_search_get_active_object());
+    $abuse_form = drupal_get_form('culturefeed_social_report_abuse_form_' . $activity->id, $activity, culturefeed_search_get_active_object());
     $variables['abuse_form'] = '<div class="recommendation-abuse-form">' . drupal_render($abuse_form) . '</div>';
 
   }

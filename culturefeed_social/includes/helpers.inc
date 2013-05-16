@@ -271,7 +271,7 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
     return 'node/' . $node_id;
   }
   if ($type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-    return 'book/' . $id;
+    return 'book/' . urlencode($id);
   }
   else {
     return culturefeed_search_detail_path($type, $id, $title);
@@ -391,8 +391,10 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
  * @param CultureFeed_Activity $activity
  */
 function culturefeed_social_recommendation_actionbox($object, $activity = NULL) {
+
   if (culturefeed_is_culturefeed_user()) {
-    return drupal_get_form('culturefeed_social_recommendation_form', $object, $activity);
+    $form_id = ($activity) ? 'culturefeed_social_recommendation_form_' . $activity->id : 'culturefeed_social_recommendation_form';
+    return drupal_get_form($form_id, $object, $activity);
   }
   else {
     return array(
@@ -400,5 +402,6 @@ function culturefeed_social_recommendation_actionbox($object, $activity = NULL) 
       '#activity_type' => CultureFeed_Activity::TYPE_COMMENT,
     );
   }
+
 }
 

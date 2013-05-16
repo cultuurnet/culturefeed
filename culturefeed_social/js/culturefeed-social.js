@@ -30,7 +30,7 @@ Drupal.CulturefeedSocial = Drupal.CulturefeedSocial || {};
   
   Drupal.CulturefeedSocial.toggle = function(element, toggle_class) {
     
-    $wrapper = element.parents('.recommendation-list-item').find(toggle_class);
+    $wrapper = element.parents('.recommendation-list-item').eq(0).find(toggle_class).eq(0);
     $wrapper.toggle('slow');
 	    
     return false;

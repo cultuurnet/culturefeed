@@ -22,6 +22,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->viewPrefix = 'heeft op';
     $this->viewSuffix = 'commentaar gegeven';
     $this->label = 'Commentaar';
+    $this->action = 'reactie';
     $this->loginRequiredMessage = 'Om commentaar te geven moet je aangemeld zijn';
 
   }
