@@ -366,6 +366,10 @@ function culturefeed_social_comment_list($object, CultureFeed_ResultSet $activit
     }
   }
 
+  // Most recent activities are on top in result object. But for comments, it should be on bottom.
+  $activity_list = array_reverse($activity_list);
+  $child_activities = array_reverse($child_activities);
+
   // Place child activities under the parent.
   foreach ($child_activities as $activity) {
     if (isset($activity_list[$activity->nodeId])) {
