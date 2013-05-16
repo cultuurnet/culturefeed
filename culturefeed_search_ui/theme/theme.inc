@@ -85,12 +85,15 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       }
     }
 
+    $item_active = in_array($facet_item->getValue(), $active_options);
+
     // Theme the item.
     $item_output = theme('culturefeed_search_facet_item', array(
       'facet_item' => $facet_item,
       'facet' => $facet,
       'query' => $query,
       'path' => $path,
+      'active' => $item_active,
     ));
 
     // Add it to the list.
