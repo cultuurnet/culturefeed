@@ -564,8 +564,10 @@ function culturefeed_pages_user_login(&$edit, $account) {
       // If only 1 membership or more and there is no recollection of a previous state,
       // take the first membership as active one.
       else {
-        $page = reset($memberships);
+        $membership = reset($memberships);
+        $page = $membership->page;
       }
+
       culturefeed_pages_set_active_page($page);
 
     }
