@@ -36,6 +36,11 @@ class CultureFeed_Activity {
   const CONTENT_TYPE_CULTUREFEED_PAGE = 'culturefeed-page';
 
   /**
+   * Activity on activity.
+   */
+  const CONTENT_TYPE_ACTIVITY = 'activity';
+
+  /**
    * Consumer type that indicates the action "Viewed".
    */
   const TYPE_VIEW = 1;
@@ -92,7 +97,7 @@ class CultureFeed_Activity {
   const TYPE_FOLLOW = 18;
 
   const TYPE_PAGE_MEMBER = 16;
-  
+
   const TYPE_PAGE_ADMIN = 17;
 
   const TYPE_NEW_EVENT = 19;
@@ -208,7 +213,7 @@ class CultureFeed_Activity {
    * @var string
    */
   public $onBehalfOfName;
-  
+
   /**
    * Activities nested in the current activity. For type TYPE_COMMENT
    * @var array

@@ -139,8 +139,6 @@ function culturefeed_social_block_recommended_by($object) {
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
   $query->contentType = $content_type;
 
-  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
-
   switch ($content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
@@ -221,8 +219,7 @@ function culturefeed_social_block_comments($object) {
   $query->type = CultureFeed_Activity::TYPE_COMMENT;
   $query->contentType = $content_type;
   $query->nodeId = culturefeed_social_get_activity_node_id($content_type, $object);
-
-  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
+  $query->depth = 2;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -301,8 +298,6 @@ function culturefeed_social_block_my_activity_summary($account) {
   foreach ($active_types as $type => $activityConfig) {
     $allowed_types = $activityConfig->allowedTypes;
     foreach ($allowed_types as $ctype) {
-      // @todo remove
-      if ($ctype == 'book') continue;
       if ($ctype == 'page' && !$has_pages) {
         continue;
       }

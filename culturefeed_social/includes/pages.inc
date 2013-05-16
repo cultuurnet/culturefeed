@@ -89,19 +89,20 @@ function culturefeed_social_page_activities($type = NULL) {
     $query->type = array_keys($types);
   }
 
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
-  $build['view-profile'] = array(
-    '#prefix' => '<div id="view-profile">',
-    '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
-    '#suffix' => '</div>',
-  );
-
   // Do the query.
   try {
+
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    $build['view-profile'] = array(
+      '#prefix' => '<div id="view-profile">',
+      '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+      '#suffix' => '</div>',
+    );
+
     $activities = DrupalCultureFeed::searchActivities($query);
+
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
     return $build;
   }
 

@@ -354,17 +354,22 @@ function culturefeed_social_comment_list($object, CultureFeed_ResultSet $activit
   }
 
   $activity_list = array();
+  $child_activities = array();
   $total = 0;
   foreach ($activities->objects as $activity) {
-    if (empty($activity->parentActivity)) {
+    if ($activity->contentType != CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
       $activity_list[$activity->id] = $activity;
       $total++;
     }
+    else {
+      $child_activities[] = $activity;
+    }
   }
 
-  foreach ($activities->objects as $activity) {
-    if (!empty($activity->parentActivity) && isset($activity_list[$activity->parentActivity])) {
-      $activity_list[$activity->parentActivity]->childActivities[$activity->id] = $activity;
+  // Place child activities under the parent.
+  foreach ($child_activities as $activity) {
+    if (isset($activity_list[$activity->nodeId])) {
+      $activity_list[$activity->nodeId]->childActivities[$activity->id] = $activity;
     }
   }
 
