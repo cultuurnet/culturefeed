@@ -53,15 +53,28 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
     'facet' => array()
   );
 
+  $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
+
   $items = array();
   // Add all the facet items to the build.
   foreach ($variables['items'] as $facet_item) {
 
     $sub_item_output = array();
+    $has_active_subitem = FALSE;
+
     // Add the subitems from this facet item.
     if ($facet_item->hasSubItems()) {
+
       $sub_items = $facet_item->getSubItems();
+
       foreach ($sub_items as $sub_item) {
+
+        // If the list has an active subitem. Add class.
+        $sub_item_active = in_array($sub_item->getValue(), $active_options);
+        if ($sub_item_active) {
+          $has_active_subitem = TRUE;
+        }
+
         $sub_item_output[] = theme('culturefeed_search_facet_item', array(
           'facet_item' => $sub_item,
           'facet' => $facet,
@@ -83,6 +96,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
     $items[] = array(
       'output' => $item_output,
       'sub_items' => $sub_item_output,
+      'has_active_sub_item' => $has_active_subitem,
     );
 
   }
@@ -101,10 +115,6 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
-  $facet_option = $facet_item->getValue();
-  $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
-  $variables['active'] = FALSE;
-
   // Every filter will reset the current facet. Remove this facet from URL, URL will function as removal URL.
   unset($query['facet'][$facet->getKey()]);
 
@@ -112,10 +122,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     unset($query['date_range']);
   }
 
-  $variables['active'] = in_array($facet_option, $active_options);
   // Add this facet to URL, URL will function as additional filter URL.
   if (!$variables['active']) {
-    $query['facet'][$facet->getKey()][] = $facet_option;
+    $query['facet'][$facet->getKey()][] = $facet_item->getValue();
   }
 
   // Remove facet completely if nothing left.
