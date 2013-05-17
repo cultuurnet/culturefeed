@@ -150,7 +150,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
     if ($variables['level'] == 0) {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-        $variables['delete_link'] = l('Verwijder conversatie', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
+        $variables['delete_link'] = l('Verwijder', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
           'attributes' => array('class' => array('remove-link', 'use-ajax')),
           'query' => $destination,
         ));
