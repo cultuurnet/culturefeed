@@ -196,7 +196,7 @@ function culturefeed_ui_set_profile_breadcrumb() {
 
   $active_trail[] = array(
     'title' => 'Mijn profiel',
-    'href' => url('user/' . $user->uid),
+    'href' => 'user/' . $user->uid,
     'link_path' => '',
     'localized_options' => array(),
     'type' => 0,

@@ -5,6 +5,6 @@
 
 <ul class="messages">
 <?php foreach ($items as $item): ?>
-  <li><?php print $item ?></li>
+  <li class="<?php print $item['class'] ?>"><?php print $item['data'] ?></li>
 <?php endforeach; ?>
 </ul>

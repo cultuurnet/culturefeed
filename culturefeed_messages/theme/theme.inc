@@ -12,12 +12,35 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 
   $items = array();
   if ($variables['messages']->total == 0) {
-    $items[] = 'U hebt geen berichten';
+    $items[] = array('data' => 'U hebt geen berichten', 'class' => 'message');
   }
   else {
-    foreach ($variables['messages']->objects as $message) {
-      $items[] = theme('culturefeed_messages_message_list_item', array('message' => $message));
+
+    if (arg(0) == 'pages') {
+      $active_message = arg(3);
     }
+    else {
+      $active_message = arg(2);
+    }
+
+    foreach ($variables['messages']->objects as $i => $message) {
+
+      $class = 'message';
+      if ($message->id == $active_message) {
+        $class .= ' active';
+      }
+
+      $items[] =  array(
+        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message)),
+        'class' => $class,
+      );
+
+    }
+
+    if (empty($active_message)) {
+      $items[0]['class'] .= ' active';
+    }
+
   }
 
   $variables['items'] = $items;
@@ -190,9 +213,7 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   else {
     $variables['body'] = $message->body;
   }
-  if ($message->id == 89) {
-    dsm($variables);
-  }
+
   $variables['sender'] = $message->sender->nick;
   if (!empty($message->senderPage)) {
     $variables['sender'] .= ' van ' . $message->senderPage->getName();
