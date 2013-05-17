@@ -201,7 +201,7 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
   }
 
   $active_trail[] = array(
-    'title' => drupal_get_title(),
+    'title' => $page->getName(),
     'href' => $_GET['q'],
     'link_path' => '',
     'localized_options' => array(),

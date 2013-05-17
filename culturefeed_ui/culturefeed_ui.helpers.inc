@@ -203,7 +203,7 @@ function culturefeed_ui_set_profile_breadcrumb() {
   );
 
   $active_trail[] = array(
-    'title' => drupal_get_title(),
+    'title' => $user->name,
     'href' => $_GET['q'],
     'link_path' => '',
     'localized_options' => array(),

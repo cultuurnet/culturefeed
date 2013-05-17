@@ -723,6 +723,7 @@ function culturefeed_pages_join_title() {
  * Title callback for the 'page' detail page.
  */
 function culturefeed_pages_detail_title($page, $op = 'view') {
+
   if ($op == 'view') {
     return $page->getName();
   }
