@@ -94,7 +94,8 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   if (!empty($thread_children)) {
     $variables['message_count'] += count($thread_children);
     foreach ($thread_children as $message) {
-      $variables['messages'][] = theme('culturefeed_messages_message_' . $message->type, array('message' => $message));
+      $message_type = empty($message->type) ? 'default' : $message->type;
+      $variables['messages'][] = theme('culturefeed_messages_message_' . $message_type, array('message' => $message));
     }
   }
 
@@ -107,6 +108,17 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
     ),
   );
   $variables['delete_link'] = l('Verwijder conversatie', 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
+
+}
+
+/**
+ * Preprocess a message item with empty type.
+ * @see culturefeed-messages-message-default.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_default(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
 
 }
 

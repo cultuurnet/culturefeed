@@ -99,6 +99,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
     elseif ($object instanceof CultureFeed_Messages_Message) {
       $form['title'] = array('#markup' => 'Beantwoorden');
       $form_state['reply_to'] = $object->id;
+      $form_state['message_type'] = $object->type;
     }
 
   }
@@ -172,6 +173,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
   // Check if we are sending a reply.
   elseif (!empty($form_state['reply_to'])) {
     $params['replyTo'] = $form_state['reply_to'];
+    $params['type'] = $form_state['message_type'];
   }
   else {
     $params['recipient'] = $form_state['values']['recipient'];

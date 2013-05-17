@@ -39,6 +39,14 @@ function culturefeed_messages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_messages_message_default' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-default',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_messages_message_contactmembers' => array(
       'variables' => array(
         'message' => NULL,
