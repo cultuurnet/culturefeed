@@ -175,3 +175,42 @@ function _culturefeed_ui_facebook_privacy_toggle() {
     return;
   }
 }
+
+/**
+ * Set the breadcrumb to the profile.
+ */
+function culturefeed_ui_set_profile_breadcrumb() {
+
+  global $user;
+
+  // Set the breadcrumb.
+  $active_trail = array();
+
+  $active_trail[] = array(
+    'title' => t('Home'),
+    'href' => '<front>',
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  $active_trail[] = array(
+    'title' => 'Mijn profiel',
+    'href' => url('user/' . $user->uid),
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  $active_trail[] = array(
+    'title' => drupal_get_title(),
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  menu_set_active_trail($active_trail);
+
+}
+
