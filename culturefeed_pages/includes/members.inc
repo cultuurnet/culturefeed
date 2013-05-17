@@ -214,13 +214,21 @@ function culturefeed_pages_edit_membership_form_validate($form, &$form_state) {
 
       $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
       if ($form['#membership']->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+
         $cf_pages->removeAdmin($form['#membership']->page->getId(), $form['#membership']->user->id);
+
         // If he was removed as admin, he is also removed as member. Re-add him as member.
-        $cf_pages->addMember($form['#membership']->page->getId(), $form['#membership']->user->id, array('relation' => $form['#membership']->relation));
+        $params = array(
+          'relation' => $form['#membership']->relation,
+          'activityPrivate' => FALSE,
+        );
+
+        $cf_pages->addMember($form['#membership']->page->getId(), $form['#membership']->user->id, $params);
         $form_state['new_role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER;
+
       }
       else {
-        $cf_pages->addAdmin($form['#membership']->page->getId(), $form['#membership']->user->id);
+        $cf_pages->addAdmin($form['#membership']->page->getId(), $form['#membership']->user->id, array('activityPrivate' => FALSE));
         $form_state['new_role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
       }
 
@@ -391,7 +399,8 @@ function culturefeed_pages_add_member_form_submit($form, &$form_state) {
   );
 
   try {
-    DrupalCultureFeed::getLoggedInUserInstance()->pages()->addMember($form_state['page']->getId(), $form_state['user']->id);
+    $params = array('activityPrivate' => FALSE);
+    DrupalCultureFeed::getLoggedInUserInstance()->pages()->addMember($form_state['page']->getId(), $form_state['user']->id, $params);
     $message = format_string('@nick is nu lid van @page.', array('@nick' => $form_state['user']->nick, '@page' => $page->getName()));
     drupal_set_message($message);
   }
@@ -651,7 +660,7 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
   try {
     $instance = DrupalCultureFeed::getLoggedInUserInstance();
     $cf_pages = $instance->pages();
-    $cf_pages->addAdmin($page->getId(), $cf_user->id);
+    $cf_pages->addAdmin($page->getId(), $cf_user->id, array('activityPrivate' => FALSE));
   }
   catch (Exception $e) {
     $success = FALSE;

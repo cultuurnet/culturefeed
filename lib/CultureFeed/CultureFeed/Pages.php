@@ -102,7 +102,7 @@ interface CultureFeed_Pages {
    *   Params for the follower data to be updated.
    *   E.g. activityPrivate
    */
-  public function follow($id, array $params);
+  public function follow($id, array $params = array());
 
   /**
    * Update the page so it looses a follower.
@@ -114,7 +114,7 @@ interface CultureFeed_Pages {
    *   Params for the follower data to be updated.
    *   E.g. activityPrivate
    */
-  public function defollow($id, $userId, array $params);
+  public function defollow($id, $userId, array $params = array());
 
   /**
    * Delete a member from the given page.

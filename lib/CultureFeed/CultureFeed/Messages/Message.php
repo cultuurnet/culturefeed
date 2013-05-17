@@ -30,6 +30,24 @@ class CultureFeed_Messages_Message {
   const TYPE_CONTACT_PAGE = 'contactpage';
 
   /**
+   * Read status
+   * @var string
+   */
+  const STATUS_READ = 'READ';
+
+  /**
+   * New status
+   * @var string
+   */
+  const STATUS_NEW = 'NEW';
+
+  /**
+   * Deleted status.
+   * @var string
+   */
+  const STATUS_DELETED = 'DELETED';
+
+  /**
    * Message ID.
    * @var string
    */

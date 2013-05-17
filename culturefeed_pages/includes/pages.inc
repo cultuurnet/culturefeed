@@ -115,7 +115,7 @@ function culturefeed_pages_page_join($request_type, $page) {
   try {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
-    $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId());
+    $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array('activityPrivate' => FALSE));
     $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
     $status_code = 'status';
 
@@ -168,13 +168,13 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     if ($follow) {
-      $cf_pages->follow($page->getId(), array());
+      $cf_pages->follow($page->getId(), array('activityPrivate' => FALSE));
 
       $message = theme('culturefeed_pages_follow_success_message', array('page' => $page));
 
     }
     else {
-      $cf_pages->defollow($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array());
+      $cf_pages->defollow($page->getId(), DrupalCultureFeed::getLoggedInUserId());
       $message = theme('culturefeed_pages_unfollow_success_message', array('page' => $page));
     }
 

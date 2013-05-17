@@ -314,6 +314,7 @@ function culturefeed_social_block_my_activity_summary($account) {
     $totals = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
   catch (Exception $e) {
+    dsm($e->getMessage());
     watchdog_exception('culturefeed_social', $e);
     return;
   }
