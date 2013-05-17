@@ -223,7 +223,7 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
 
     if (!empty($message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD])) {
       $items['messages'] = array(
-        'data' => l('<span class="new-messages">' . $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] . '</span>', 'culturefeed/messages', array('html' => TRUE)),
+        'data' => l('<span class="new-messages label label-important"><i class="icon-envelope"></i><span class="new-messages-count">' . $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] . '</span></span>', 'culturefeed/messages', array('html' => TRUE)),
         'class' => 'messages',
         'weight' => -20,
       );
