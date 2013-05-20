@@ -78,10 +78,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    *   Member type ex ADMIN
    */
   protected function clearUserListCache($id, $memberType) {
-    $cid_base = 'userList:' . $id . ':' . md5(serialize(array($memberType))) . ':';
-    // Clear both authorized and non authorized calls.
-    $this->cacheClear($cid_base . '1');
-    $this->cacheClear($cid_base . '0');
+    $this->cacheClear($this->getCachePrefix() . 'userList:' . $id, TRUE);
   }
 
   /**
@@ -196,14 +193,14 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @see CultureFeed_Pages::removeMember()
    */
   public function removeMember($id, $userId) {
-    $this->realCultureFeedPages->removeMember($id, $userId, $params);
+    $this->realCultureFeedPages->removeMember($id, $userId);
     $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER);
   }
 
   /**
    * @see CultureFeed_Pages::follow()
    */
-  public function follow($id, array $params) {
+  public function follow($id, array $params = array()) {
     $this->realCultureFeedPages->follow($id, $params);
     $this->clearUserListCache($id, CultureFeed_Pages_Follower::ROLE);
   }
@@ -211,7 +208,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::defollow()
    */
-  public function defollow($id, $userId, array $params) {
+  public function defollow($id, $userId, array $params = array()) {
     $this->realCultureFeedPages->defollow($id, $userId, $params);
     $this->clearUserListCache($id, CultureFeed_Pages_Follower::ROLE);
   }

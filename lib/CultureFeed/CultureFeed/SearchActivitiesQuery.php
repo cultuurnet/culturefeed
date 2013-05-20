@@ -71,6 +71,12 @@ class CultureFeed_SearchActivitiesQuery {
   public $max;
 
   /**
+   * Depth to search.
+   * @var int
+   */
+  public $depth;
+
+  /**
    * Convert a CultureFeed_SearchActivitiesQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array

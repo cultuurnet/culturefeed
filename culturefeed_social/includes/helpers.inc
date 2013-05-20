@@ -271,7 +271,7 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
     return 'node/' . $node_id;
   }
   if ($type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-    return 'book/' . $id;
+    return 'book/' . urlencode($id);
   }
   else {
     return culturefeed_search_detail_path($type, $id, $title);
@@ -347,24 +347,33 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
  * @param misc $object (Culturefeed_Page, Bibnet_Book, ...
  * @param CultureFeed_ResultSet $activities
  */
-function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $activities) {
+function culturefeed_social_comment_list($object, CultureFeed_ResultSet $activities) {
 
   if ($activities->total < 0) {
     return array();
   }
 
   $activity_list = array();
+  $child_activities = array();
   $total = 0;
   foreach ($activities->objects as $activity) {
-    if (empty($activity->parentActivity)) {
+    if ($activity->contentType != CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
       $activity_list[$activity->id] = $activity;
       $total++;
     }
+    else {
+      $child_activities[] = $activity;
+    }
   }
 
-  foreach ($activities->objects as $activity) {
-    if (!empty($activity->parentActivity) && isset($activity_list[$activity->parentActivity])) {
-      $activity_list[$activity->parentActivity]->childActivities[$activity->id] = $activity;
+  // Most recent activities are on top in result object. But for comments, it should be on bottom.
+  $activity_list = array_reverse($activity_list);
+  $child_activities = array_reverse($child_activities);
+
+  // Place child activities under the parent.
+  foreach ($child_activities as $activity) {
+    if (isset($activity_list[$activity->nodeId])) {
+      $activity_list[$activity->nodeId]->childActivities[$activity->id] = $activity;
     }
   }
 
@@ -372,7 +381,7 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
 
   return array(
     '#type' => 'markup',
-    '#markup' => theme('culturefeed_social_recommendation_list', array(
+    '#markup' => theme('culturefeed_social_comment_list', array(
       'object' => $object,
       'activities' => $activity_list,
       'total' => $total,
@@ -390,9 +399,11 @@ function culturefeed_social_recommendation_list($object, CultureFeed_ResultSet $
  * @param misc $object
  * @param CultureFeed_Activity $activity
  */
-function culturefeed_social_recommendation_actionbox($object, $activity = NULL) {
+function culturefeed_social_comment_actionbox($object, $activity = NULL) {
+
   if (culturefeed_is_culturefeed_user()) {
-    return drupal_get_form('culturefeed_social_recommendation_form', $object, $activity);
+    $form_id = ($activity) ? 'culturefeed_social_comment_form_' . $activity->id : 'culturefeed_social_comment_form';
+    return drupal_get_form($form_id, $object, $activity);
   }
   else {
     return array(
@@ -400,5 +411,6 @@ function culturefeed_social_recommendation_actionbox($object, $activity = NULL) 
       '#activity_type' => CultureFeed_Activity::TYPE_COMMENT,
     );
   }
+
 }
 

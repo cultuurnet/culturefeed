@@ -12,7 +12,7 @@
  */
 ?>
 
-<?php if ($is_page_admin && $logged_in_as_page_admin): ?>
+<?php if ($logged_in_as_page_admin): ?>
 
   <div>
   <?php if (!$has_activities): ?>
@@ -31,7 +31,7 @@
     <?php print $admin_menu; ?>
   </div>
 
-<?php elseif($is_page_admin): ?>
+<?php else: ?>
   <div class="alert">
     <p>Je bent <strong>beheerder</strong> van deze pagina, maar <strong>niet aangemeld</strong> als deze pagina. Wil je <strong>verder werken als deze pagina</strong>?</p>
     <?php print $switch_link; ?>

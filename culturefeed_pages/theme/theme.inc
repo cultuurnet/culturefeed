@@ -292,25 +292,29 @@ function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$va
 
   $variables['page_id'] = $page->getId();
 
-  // Default to true, so message doesn't show when we have no agenda enabled.
-  $variables['has_activities'] = TRUE;
-  if (module_exists('culturefeed_agenda')) {
-    // Use same item count as the block, so we hit the same cache.
-    $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
-    $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
-  }
+  if ($variables['logged_in_as_page_admin']) {
 
-  if ($variables['page_notifications'] && $variables['page_notifications']->total > 0) {
-    $notification_variables = array(
-      'activities' => $variables['page_notifications'],
-      'class' => 'notifications',
-      'read_more_url' => url('pages/' . $page->getId() . '/notifications'),
-      'read_more_text' => 'Bekijk alle meldingen',
-    );
-    $variables['notifications'] = theme('culturefeed_social_user_activity_list', $notification_variables);
-  }
-  else {
-    $variables['notifications'] = 'Uw pagina heeft nog geen meldingen';
+    // Default to true, so message doesn't show when we have no agenda enabled.
+    $variables['has_activities'] = TRUE;
+    if (module_exists('culturefeed_agenda')) {
+      // Use same item count as the block, so we hit the same cache.
+      $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+      $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
+    }
+
+    if ($variables['page_notifications'] && $variables['page_notifications']->total > 0) {
+      $notification_variables = array(
+        'activities' => $variables['page_notifications'],
+        'class' => 'notifications',
+        'read_more_url' => url('pages/' . $page->getId() . '/notifications'),
+        'read_more_text' => 'Bekijk alle meldingen',
+      );
+      $variables['notifications'] = theme('culturefeed_social_user_activity_list', $notification_variables);
+    }
+    else {
+      $variables['notifications'] = 'Uw pagina heeft nog geen meldingen';
+    }
+
   }
 
 }
@@ -381,9 +385,16 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
     $detail = $result->getEntity()->getDetails()->getDetailByLanguage($language->language);
     if ($detail) {
 
-      $row['title'] = $detail->getTitle();
+      $path = culturefeed_search_detail_path($result->getType(), $result->getId(), $detail->getTitle());
+      $row['title'] = l($detail->getTitle(), $path);
       $row['date'] = $detail->getCalendarSummary();
-      $row['comment_count'] = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+      $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
+      if ($comment_count) {
+        $row['comment_count'] = l(format_plural($comment_count, '@count reactie', '@count reacties'), $path, array('fragment' => 'lees'));
+      }
+      else {
+        $row['comment_count'] = 'Nog geen reacties';
+      }
       $row['edit_url'] = l('Bewerk in UDB', CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
@@ -421,6 +432,27 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
 
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
   $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+
+}
+
+/**
+ * Preprocess the variables for my pages overview.
+ * @see culturefeed-pages-page-my-pages.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variables) {
+
+  $build = $variables['build'];
+  $variables['user_url'] = url('user/' . culturefeed_get_uid_for_cf_uid($variables['user']->id, $variables['user']->nick));
+
+  if (!empty($build['member_pages'])) {
+    $variables['my_pages'] = drupal_render($build['member_pages']);
+  }
+
+  if (!empty($build['followed-pages'])) {
+    $variables['i_follow'] = drupal_render($build['followed-pages']);
+  }
+
+  $variables['search_pages'] = drupal_render($build['search-pages']);
 
 }
 

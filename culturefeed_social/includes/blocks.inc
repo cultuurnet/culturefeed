@@ -139,15 +139,12 @@ function culturefeed_social_block_recommended_by($object) {
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
   $query->contentType = $content_type;
 
-  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
-  //$query->private = TRUE;
-
   switch ($content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
       $node_title = $object->getTitle($GLOBALS['language']->language);
       $id = $object->getId();
-      $query->nodeId = url(culturefeed_social_detail_path($object->getType(), $id, $node_title), array('absolute' => TRUE));
+      $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
@@ -205,11 +202,11 @@ function culturefeed_social_block_recommended_by($object) {
 }
 
 /**
- * Block callback to render the recommendations of an item.
+ * Block callback to render the comments on an item.
  * @param misc $object
  * @return array
  **/
-function culturefeed_social_block_recommendations($object) {
+function culturefeed_social_block_comments($object) {
 
   if (!$object || !method_exists($object, 'getType')) {
     return;
@@ -222,8 +219,7 @@ function culturefeed_social_block_recommendations($object) {
   $query->type = CultureFeed_Activity::TYPE_COMMENT;
   $query->contentType = $content_type;
   $query->nodeId = culturefeed_social_get_activity_node_id($content_type, $object);
-
-  $cf_user_id = DrupalCultureFeed::getLoggedInUserId();
+  $query->depth = 2;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -234,8 +230,8 @@ function culturefeed_social_block_recommendations($object) {
   }
 
   $content = array();
-  $content['recommendation_list'] = culturefeed_social_recommendation_list($object, $activities);
-  $content['recommendation_form'] = culturefeed_social_recommendation_actionbox($object);
+  $content['comment_list'] = culturefeed_social_comment_list($object, $activities);
+  $content['comment_form'] = culturefeed_social_comment_actionbox($object);
 
   $block['subject'] = 'Beoordelingen';
   $block['content'] = $content;
@@ -302,8 +298,6 @@ function culturefeed_social_block_my_activity_summary($account) {
   foreach ($active_types as $type => $activityConfig) {
     $allowed_types = $activityConfig->allowedTypes;
     foreach ($allowed_types as $ctype) {
-      // @todo remove
-      if ($ctype == 'book') continue;
       if ($ctype == 'page' && !$has_pages) {
         continue;
       }
@@ -323,10 +317,10 @@ function culturefeed_social_block_my_activity_summary($account) {
     watchdog_exception('culturefeed_social', $e);
     return;
   }
-  
+
   $content = array();
   if ($totals) {
-    
+
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,

@@ -163,6 +163,9 @@ function culturefeed_ui_page_mboxverify_resend() {
 }
 
 function culturefeed_ui_page_profile_edit_form() {
+
+  culturefeed_ui_set_profile_breadcrumb();
+
   $form = array();
 
   try {
@@ -406,6 +409,9 @@ function culturefeed_ui_page_account_edit() {
 }
 
 function culturefeed_ui_page_account_edit_form() {
+
+  culturefeed_ui_set_profile_breadcrumb();
+
   $form = array();
 
   try {

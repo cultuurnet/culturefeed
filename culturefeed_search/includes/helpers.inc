@@ -17,8 +17,8 @@
 function culturefeed_get_search_service() {
 
   $consumerCredentials = new \CultuurNet\Auth\ConsumerCredentials();
-  $consumerCredentials->setKey(variable_get('culturefeed_api_application_key', ''));
-  $consumerCredentials->setSecret(variable_get('culturefeed_api_application_secret', ''));
+  $consumerCredentials->setKey(variable_get('culturefeed_search_api_application_key', ''));
+  $consumerCredentials->setSecret(variable_get('culturefeed_search_api_shared_secret', ''));
 
   return DrupalCultureFeedSearchService::getClient($consumerCredentials);
 

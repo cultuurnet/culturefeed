@@ -11,7 +11,7 @@
  */
 ?>
 
-<div id="activity-<?php print $activity_id ?>" class="recommendation-list-item">
+<div id="activity-<?php print $activity_id ?>" class="comment-list-item">
   <?php print $picture ?>
   <?php print $content ?>
   <p>Geplaatst door <?php print $author ?> <span>op <?php print $date ?></span>.</p>

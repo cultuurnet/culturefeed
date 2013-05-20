@@ -204,26 +204,26 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_form' => array(
-      'template' => 'culturefeed-social-recommendation-form',
+    'culturefeed_social_comment_form' => array(
+      'template' => 'culturefeed-social-comment-form',
       'render element' => 'form',
       'path' => $path,
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_list'=> array(
+    'culturefeed_social_comment_list'=> array(
       'variables' => array(
         'activities' => NULL,
         'accounts' => NULL,
         'object' => NULL,
         'total' => NULL,
       ),
-      'template' => 'culturefeed-social-recommendation-list',
+      'template' => 'culturefeed-social-comment-list',
       'path' => $path,
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_recommendation_list_item'=> array(
+    'culturefeed_social_comment_list_item'=> array(
       'variables' => array(
         'activity' => NULL,
         'accounts' => NULL,
@@ -232,7 +232,7 @@ function culturefeed_social_theme() {
         'child_activities' => NULL,
         'level' => 0,
       ),
-      'template' => 'culturefeed-social-recommendation-list-item',
+      'template' => 'culturefeed-social-comment-list-item',
       'path' => $path,
       'file' => 'theme.inc',
     ),
@@ -293,8 +293,8 @@ function culturefeed_social_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  $blocks['recommendations'] = array(
-    'info' => t('Recommendations'),
+  $blocks['comments'] = array(
+    'info' => t('Culturefeed Comments'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -333,9 +333,9 @@ function culturefeed_social_block_view($delta) {
       $object = culturefeed_search_get_active_object();
       return culturefeed_social_block_recommended_by($object);
 
-    case 'recommendations':
+    case 'comments':
       $object = culturefeed_search_get_active_object();
-      return culturefeed_social_block_recommendations($object);
+      return culturefeed_social_block_comments($object);
 
     case 'my-notifications':
       return culturefeed_social_block_my_notifications();
@@ -376,13 +376,13 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
 
     if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
       $items['notifications'] = array(
-        'data' => l('<span class="badge">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
+        'data' => l('<span class="label">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
         'class' => 'notifications',
         'weight' => -20,
       );
 
       if ($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] > 0) {
-        $items['notifications']['data'] = l('<span class="badge badge-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
+        $items['notifications']['data'] = l('<span class="label label-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
         $items['notifications']['class'] .= ' has-new';
       }
 
@@ -394,6 +394,24 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
   }
 
   return $items;
+
+}
+
+/**
+ * Implements hook_forms().
+ * This is needed to show multiple comment / abuse forms on 1 page.
+ */
+function culturefeed_social_forms($form_id, $args) {
+
+  $forms = array();
+  if (strstr($form_id, 'culturefeed_social_comment_form')) {
+    $forms[$form_id] = array('callback' => 'culturefeed_social_base_comment_form');
+  }
+  elseif (strstr($form_id, 'culturefeed_social_report_abuse_form')) {
+    $forms[$form_id] = array('callback' => 'culturefeed_social_base_report_abuse_form');
+  }
+
+  return $forms;
 
 }
 
@@ -460,41 +478,48 @@ function culturefeed_social_user_activity_filter_form_submit($form, &$form_state
 }
 
 /**
- * Form to write a recommendation.
+ * Base form to write a comment.
+ * This is called by culturefeed_social_forms().
  *
- * @param array $form
- * @param array $form_state
  * @param misc $object (ExtendedEntity of a Culturefeed page, event, book, ...)
  * @param CultureFeed_Activity $activity
  *   Optional activity if the comment needs to target the activity as parent.
  */
-function culturefeed_social_recommendation_form($form, &$form_state, $object, $activity = NULL) {
+function culturefeed_social_base_comment_form($form, &$form_state, $object, $activity = NULL) {
 
   $form_state['object'] = $object;
 
   $activity_content_type = culturefeed_get_content_type($object->getType());
   $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
   $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $form_state['config'] = $config;
 
   $form = array(
-    '#theme' => 'culturefeed_social_recommendation_form'
+    '#theme' => 'culturefeed_social_comment_form'
   );
 
-  $form['recommendation_message'] = array(
+  $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => 'Schrijf zelf een beoordeling',
+    '#title' => $config->titleDo,
     '#default_value' => '',
-    '#attributes' => array('class' => array('recommendation-message')),
+    '#attributes' => array('class' => array('comment-message')),
     '#weight' => -5,
+    '#required' => $status,
   );
+
+  $type = 'deze activiteit';
+  if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+    $type = 'dit boek';
+  }
 
   if ($status == TRUE) {
 
     $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.',
-      array('!link' => $link));
+    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op !type.<br />!link om geen berichten meer te ontvangen.',
+      array('!link' => $link, '!type' => $type));
 
-    $form['recommendation_updates'] = array(
+    $form['update_optin'] = array(
       '#type' => 'markup',
       '#markup' => $message,
       '#prefix' => '<div id="node-status-wrapper">',
@@ -502,28 +527,28 @@ function culturefeed_social_recommendation_form($form, &$form_state, $object, $a
     );
   }
   else {
-    $form['recommendation_updates'] = array(
+    $form['update_optin'] = array(
       '#type' => 'checkbox',
-      '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over deze activiteit',
+      '#title' => 'Blijf op de hoogte van nieuwe reacties en beoordelingen over ' . $type,
       '#default_value' => isset($status) ? $status : TRUE,
-      '#attributes' => array('class' => array('recommendation-updates')),
+      '#attributes' => array('class' => array('comment-updates')),
       '#weight' => 1,
     );
   }
 
   if (isset($activity)) {
 
-    $form['recommendation_parent_id'] = array(
+    $form['parent_id'] = array(
       '#type' => 'hidden',
       '#default_value' => $activity->id,
     );
 
   }
 
-  $form['recommendation_send'] = array(
+  $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Verzend beoordeling',
-    '#attributes' => array('class' => array('recommendation-button')),
+    '#value' => 'Verzend',
+    '#attributes' => array('class' => array('comment-button')),
     '#weight' => 5,
   );
 
@@ -532,69 +557,100 @@ function culturefeed_social_recommendation_form($form, &$form_state, $object, $a
 }
 
 /**
- * Submit handler to post a written recommendation.
- *
- * @param array $form
- * @param array $form_state
+ * Validate the comment form => Submit it to service.
  */
-function culturefeed_social_recommendation_form_submit($form, $form_state) {
+function culturefeed_social_base_comment_form_validate($form, &$form_state) {
 
   $object = $form_state['object'];
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
-  $activity_content_type = culturefeed_get_content_type($object->getType());
-  $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $config = $form_state['config'];
 
   // Send a comment.
-  if (!empty($form_state['values']['recommendation_message'])) {
+  if (!empty($form_state['values']['message'])) {
 
     $activity = new CultureFeed_Activity();
-    $activity->contentType = $activity_content_type;
     $activity->type = $activity::TYPE_COMMENT;
-    $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
     $activity->nodeTitle = $object->getTitle($GLOBALS['language']->language);
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-    $activity->value = $form_state['values']['recommendation_message'];
-    $activity->onBehalfOf = !empty($form_state['values']['recommendation_on_behalf_of']) ? $form_state['values']['recommendation_on_behalf_of']: '';
+    $activity->value = $form_state['values']['message'];
+    $activity->onBehalfOf = !empty($form_state['values']['on_behalf_of']) ? $form_state['values']['on_behalf_of']: '';
 
-    // Add the parent activity if that's the target.
-    if (!empty($form_state['values']['recommendation_parent_id'])) {
-      $activity->parentActivity = $form_state['values']['recommendation_parent_id'];
+    // If user is replying on another comment. Node id and content type is different.
+    if (!empty($form_state['values']['parent_id'])) {
+      $activity->nodeId = $form_state['values']['parent_id'];
+      $activity->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTIVITY;
+    }
+    else {
+      $activity_content_type = culturefeed_get_content_type($object->getType());
+      $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+      $activity->contentType = $activity_content_type;
     }
 
-    $id = DrupalCultureFeed::createActivity($activity);
-
-    $goto_link = l('beoordeling', culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
-      'absolute' => TRUE,
-      'fragment' => 'activity-' . $id,
-    ));
-
-    drupal_set_message(format_string('Uw !beoordeling is bewaard.', array('!beoordeling' => $goto_link)));
+    try {
+      $form_state['id'] = DrupalCultureFeed::createActivity($activity);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_social', $e);
+      form_set_error('', format_string('Er ging iets fout tijdens het versturen van je !action', array('!action' => $config->action)));
+    }
 
   }
 
-  // Follow updates.
-  if (!empty($form_state['values']['recommendation_updates'])) {
-    $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
-  }
-  else {
-    $id = DrupalCultureFeed::unFollowNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
-  }
-
-  if ($id) {
-    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
-    drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op deze activiteit.<br />!link om geen berichten meer te ontvangen.',
-      array('!link' => $link)));
-  }
 }
 
 /**
- * Show the form to report an activity as abuse.
+ * Submit handler to post a comment.
+ */
+function culturefeed_social_base_comment_form_submit($form, $form_state) {
+
+  $object = $form_state['object'];
+  $activity_content_type = culturefeed_get_content_type($object->getType());
+  $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $config = $form_state['config'];
+
+  if (!empty($form_state['id'] )) {
+    $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
+      'absolute' => TRUE,
+      'fragment' => 'activity-' . $form_state['id'],
+    ));
+    drupal_set_message(format_string('Uw !comment is bewaard.', array('!comment' => $goto_link)));
+  }
+
+  // Follow updates.
+  if (!empty($form_state['values']['update_optin'])) {
+
+    try {
+      $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+      if ($id) {
+
+        $type = 'deze activiteit';
+        if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+          $type = 'dit boek';
+        }
+
+        $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
+        drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
+        array('!link' => $link)));
+
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_social', 'Er ging iets mis tijdens de aanvraag tot volgen. Gelieve een administrator te contacteren');
+    }
+
+  }
+
+}
+
+/**
+ * Base form to report an activity as abuse.
+ * This is called by culturefeed_social_forms().
+ *
  * @param $activity
  *   Activity to report.
  * @param $context
  *   Context where the activity is done on. (event, book, production ... )
  */
-function culturefeed_social_report_abuse_form($form, &$form_state, $activity, $context) {
+function culturefeed_social_base_report_abuse_form($form, &$form_state, $activity, $context) {
 
   // If we have a cdb item, a page can be connected.
   $page_id = 0;
@@ -670,7 +726,7 @@ function culturefeed_social_report_abuse_form($form, &$form_state, $activity, $c
  * Validate the send message form. Try to send the message to the service.
  * Note: only sending a page, or a reply is available in the UI.
  */
-function culturefeed_social_report_abuse_form_validate($form, &$form_state) {
+function culturefeed_social_base_report_abuse_form_validate($form, &$form_state) {
 
   global $language;
   $context = $form_state['context'];
@@ -684,7 +740,7 @@ function culturefeed_social_report_abuse_form_validate($form, &$form_state) {
     $social_content_type . 'Id' => $context->getId(),
     'comment' => $activity->value,
     'linkUser' => url('user/' . culturefeed_get_uid_for_cf_uid($activity->userId, ''), array('absolute' => TRUE)),
-    'linkComment' => url(culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle($language->language)), array('absolute' => TRUE))
+    'linkComment' => url(culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle($language->language)), array('absolute' => TRUE, 'fragment' => 'activity-' . $activity->id))
   );
 
   $params = $form_state['post_params'];
@@ -709,7 +765,7 @@ function culturefeed_social_report_abuse_form_validate($form, &$form_state) {
 /**
  * Submit the new message form.
  */
-function culturefeed_social_report_abuse_form_submit($form, &$form_state) {
+function culturefeed_social_base_report_abuse_form_submit($form, &$form_state) {
 
   drupal_set_message('Het bericht werd verstuurd');
 

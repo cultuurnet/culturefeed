@@ -92,6 +92,12 @@ class CultureFeed_Messages_Default implements CultureFeed_Messages {
     $messageElements = $xmlElement->xpath('/response/messages/message');
 
     foreach ($messageElements as $element) {
+
+      // Service doesn't support filtering on status yet. We only return not deleted messages for now.
+      if ($element->xpath_str('status') == CultureFeed_Messages_Message::STATUS_DELETED) {
+        continue;
+      }
+
       $messages[] = CultureFeed_Messages_Message::parseFromXml($element);
     }
 

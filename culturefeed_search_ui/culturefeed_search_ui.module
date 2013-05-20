@@ -118,6 +118,7 @@ function culturefeed_search_ui_theme() {
         'facet' => NULL,
         'path' => NULL,
         'query' => NULL,
+        'active' => FALSE,
       ),
       'template' => 'culturefeed-search-facet-item',
       'path' => $path,

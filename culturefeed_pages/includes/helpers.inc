@@ -61,10 +61,13 @@ function culturefeed_pages_is_user_member_of_page($page_id) {
  * Is the current user admin of a given page.
  * @return bool
  */
-function culturefeed_pages_is_user_admin_of_page($page_id) {
+function culturefeed_pages_is_user_admin_of_page($page_id, $cf_account = NULL) {
 
   try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
+
+    if (empty($cf_account)) {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+    }
 
     if (!empty($cf_account->pageMemberships)) {
       foreach ($cf_account->pageMemberships as $membership) {
@@ -198,7 +201,7 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
   }
 
   $active_trail[] = array(
-    'title' => drupal_get_title(),
+    'title' => $page->getName(),
     'href' => $_GET['q'],
     'link_path' => '',
     'localized_options' => array(),

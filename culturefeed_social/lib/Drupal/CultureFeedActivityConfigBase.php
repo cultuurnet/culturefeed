@@ -20,6 +20,8 @@ class CultureFeedActivityConfigBase {
   public $viewSuffix = '';
   public $label = '';
   public $loginRequiredMessage = '';
+  public $action = '';
+  public $onBehalfOfMessage = 'Plaats commentaar als';
 
   protected static $configs = array();
 

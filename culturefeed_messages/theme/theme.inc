@@ -12,12 +12,35 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 
   $items = array();
   if ($variables['messages']->total == 0) {
-    $items[] = 'U hebt geen berichten';
+    $items[] = array('data' => 'U hebt geen berichten', 'class' => 'message');
   }
   else {
-    foreach ($variables['messages']->objects as $message) {
-      $items[] = theme('culturefeed_messages_message_list_item', array('message' => $message));
+
+    if (arg(0) == 'pages') {
+      $active_message = arg(3);
     }
+    else {
+      $active_message = arg(2);
+    }
+
+    foreach ($variables['messages']->objects as $i => $message) {
+
+      $class = 'message';
+      if ($message->id == $active_message) {
+        $class .= ' active';
+      }
+
+      $items[] =  array(
+        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message)),
+        'class' => $class,
+      );
+
+    }
+
+    if (empty($active_message)) {
+      $items[0]['class'] .= ' active';
+    }
+
   }
 
   $variables['items'] = $items;
@@ -71,7 +94,8 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   if (!empty($thread_children)) {
     $variables['message_count'] += count($thread_children);
     foreach ($thread_children as $message) {
-      $variables['messages'][] = theme('culturefeed_messages_message_' . $message->type, array('message' => $message));
+      $message_type = empty($message->type) ? 'default' : $message->type;
+      $variables['messages'][] = theme('culturefeed_messages_message_' . $message_type, array('message' => $message));
     }
   }
 
@@ -84,6 +108,17 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
     ),
   );
   $variables['delete_link'] = l('Verwijder conversatie', 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
+
+}
+
+/**
+ * Preprocess a message item with empty type.
+ * @see culturefeed-messages-message-default.tpl.php
+ */
+function culturefeed_messages_preprocess_culturefeed_messages_message_default(&$variables) {
+
+  _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
 
 }
 

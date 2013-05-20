@@ -156,14 +156,13 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
 
   /**
-   * (non-PHPdoc)
    * @see CultureFeed_Pages::getUserList()
    */
   public function getUserList($id, $roles = array(), $use_auth = TRUE) {
 
     $query = array();
     if (!empty($roles)) {
-      $query['roles'] = $roles;
+      $query['role'] = $roles;
     }
 
     if ($use_auth) {
@@ -259,7 +258,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::follow()
    */
-  public function follow($id, array $params) {
+  public function follow($id, array $params = array()) {
 
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/follow', $params);
     $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
@@ -269,7 +268,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::defollow()
    */
-  public function defollow($id, $userId, array $params) {
+  public function defollow($id, $userId, array $params = array()) {
 
     $params['userId'] = $userId;
 
