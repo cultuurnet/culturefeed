@@ -5,7 +5,7 @@
   <ul>
   <?php foreach ($colleagues as $colleague): ?>
     <li>
-      <a href="<?print $colleague['url'] ?>"><?php print $colleague['name']; ?></a>
+      <a href="<?php print $colleague['url'] ?>"><?php print $colleague['name']; ?></a>
       <?php if ($colleague['picture']): ?>
       <?php print theme('image', array('path' => $colleague['picture'] . '?maxwidth=100')) ?>
       <?php endif; ?>

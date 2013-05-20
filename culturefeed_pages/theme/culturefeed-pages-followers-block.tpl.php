@@ -8,7 +8,7 @@
     <ul>
     <?php foreach ($followers as $follower): ?>
       <li>
-        <a href="<?print $follower['url'] ?>"><?php print $follower['name']; ?></a>
+        <a href="<?php print $follower['url'] ?>"><?php print $follower['name']; ?></a>
         <?php if ($follower['picture']): ?>
         <?php print theme('image', array('path' => $follower['picture'] . '?maxwidth=100')) ?>
         <?php endif; ?>

@@ -7,7 +7,7 @@
 
 <div class="event-teaser">
 
-  <h2><a href="<?print $url ?>"><?print $title; ?></a></h2>
+  <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">

@@ -7,7 +7,7 @@
 
 <div class="page-teaser">
 
-  <h2><a href="<?print $url ?>"><?print $title; ?></a></h2>
+  <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
 
   <div class="activity-wrapper">
     <?php if ($member_count > 0): ?>
