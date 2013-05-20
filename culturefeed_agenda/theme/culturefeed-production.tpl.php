@@ -56,7 +56,7 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
       <?php endforeach; ?>
       </ul>
     </dd>
-  <? endif; ?>
+  <?php endif; ?>
 
   <?php if (!empty($links)): ?>
   <dt>Links</dt>

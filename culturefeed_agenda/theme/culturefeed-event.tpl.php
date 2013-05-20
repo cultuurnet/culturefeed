@@ -85,7 +85,7 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
       <?php endforeach; ?>
       </ul>
     </dd>
-  <? endif; ?>
+  <?php endif; ?>
 
   <?php if (!empty($price)): ?>
   <dt>Prijs</dt>

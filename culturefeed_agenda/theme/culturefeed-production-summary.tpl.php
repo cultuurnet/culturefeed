@@ -55,7 +55,7 @@
       <?php endforeach; ?>
       </ul>
       </dd>
-    <? endif; ?>
+    <?php endif; ?>
   </dl>
 
   <?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
