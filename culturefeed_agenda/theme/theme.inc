@@ -390,12 +390,16 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
     // Performers
     $performers = $production_detail->getPerformers();
-    $performer_labels = array();
-    foreach ($performers as $performer) {
-      $performer_labels[] = $performer->getLabel();
-    }
+    if ($performers) {
 
-    $variables['performers'] = implode(', ', $performer_labels);
+      $performer_labels = array();
+      foreach ($performers as $performer) {
+        $performer_labels[] = $performer->getLabel();
+      }
+  
+      $variables['performers'] = implode(', ', $performer_labels);
+
+    }
 
     // Link to detail.
     $variables['url'] = culturefeed_search_detail_url('production', $production->getCdbid(), $production_detail->getTitle());
