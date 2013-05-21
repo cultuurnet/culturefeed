@@ -64,10 +64,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
     }
   }
   if (in_array($page->getId(), $i_follow_pages)) {
-    $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link', 'use-ajax'))));
+    $variables['follow_link'] = l('Niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
   }
   else {
-    $variables['follow_link'] = l('Volg pagina', 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link', 'use-ajax'))));
+    $variables['follow_link'] = l('Volg pagina', 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
   }
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => 'btn btn-link')));
 
