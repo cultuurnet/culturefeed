@@ -58,8 +58,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
   // Local storage of the followers for the current user.
   $cf_user = DrupalCultureFeed::getLoggedInUser();
   $i_follow_pages = array();
-  foreach ($cf_user->following as $cfp_follower) {
-    $i_follow_pages[] = $cfp_follower->page->getId();
+  if ($cf_user->following) {
+    foreach ($cf_user->following as $cfp_follower) {
+      $i_follow_pages[] = $cfp_follower->page->getId();
+    }
   }
   if (in_array($page->getId(), $i_follow_pages)) {
     $variables['follow_link'] = l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link', 'use-ajax'))));
