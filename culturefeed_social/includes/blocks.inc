@@ -213,11 +213,11 @@ function culturefeed_social_block_comments($object) {
   }
 
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
-  //$content_type = culturefeed_get_content_type($object->getType());
+  $content_type = culturefeed_get_content_type($object->getType());
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_COMMENT;
-  $query->contentType = $content_type;
+  //$query->contentType = $content_type;
   $query->nodeId = culturefeed_social_get_activity_node_id($content_type, $object);
   $query->depth = 2;
 
