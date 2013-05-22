@@ -228,11 +228,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     elseif ($location->getLabel()) {
       $variables['location']['title'] = $location->getLabel();
     }
-
-    $physical_address = $location->getAddress()->getPhysicalAddress();
-    $variables['location']['city'] = $physical_address->getCity();
-    $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
-    $variables['location']['zip'] = $physical_address->getZip();
+    
+    if ($location->getAddress()->getPhysicalAddress()) {
+      $physical_address = $location->getAddress()->getPhysicalAddress();
+      $variables['location']['city'] = $physical_address->getCity();
+      $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
+      $variables['location']['zip'] = $physical_address->getZip();
+    }
 
   }
 
