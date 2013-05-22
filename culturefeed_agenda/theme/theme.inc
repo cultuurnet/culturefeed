@@ -319,8 +319,26 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   global $language;
   $production = $variables['item']->getEntity();
   $production_detail = $production->getDetails()->getDetailByLanguage($language->language);
+  $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
+
+  $variables['organiser'] = array();
+  // Preprocess the organiser variables.
+  if ($organiser) {
+  
+    // If the organiser is a reference to an actor, link to it.
+    if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
+      $actor = $organiser->getActor();
+      $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
+      $variables['organiser']['title'] = $organiser_actor_details->getTitle();
+      $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
+    }
+    elseif ($organiser->getLabel()) {
+      $variables['organiser']['title'] = $organiser->getLabel();
+    }
+  
+  }
 
   $relations = $production->getRelations();
   $total_relations = count($relations);

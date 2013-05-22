@@ -46,6 +46,17 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <dt>Wanneer</dt>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
+  
+  <?php if ($organiser): ?>
+  <dt>Organisatie</dt>
+  <dd>
+    <?php if (empty($organiser['link'])):?>
+    <?php print $organiser['title']; ?>
+    <?php else: ?>
+    <?php print $organiser['link'] ?>
+    <?php endif; ?>
+  </dd>
+  <?php endif; ?>
 
   <?php if (!empty($themes)): ?>
   <dt>Thema</dt>
