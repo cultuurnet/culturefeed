@@ -356,8 +356,10 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query->condition('cst.did', $domain);
 
   // Add extra conditions.
-  foreach ($conditions as $field => $value) {
-    $query->condition($field, $value);
+  if (!empty($conditions['tid'])) {
+    foreach ($conditions as $field => $value) {
+      $query->condition($field, $value);
+    }
   }
 
   $result = $query->execute();
@@ -416,17 +418,17 @@ function culturefeed_search_get_flandersregion_categories($parent_operator = '',
   if (!empty($parent_operator)) {
     $query->condition('cst.parent', '', $parent_operator);
   }
-
-  // Add extra conditions.
-  foreach ($conditions as $field => $value) {
-    if (is_array($value)) {
-      $query->condition($field, $value, 'IN');
-    }
-    else {
-      $query->condition($field, $value);
+  
+  if (!empty($conditions['tid'])) {
+    foreach ($conditions as $field => $value) {
+      if (is_array($value)) {
+        $query->condition($field, $value, 'IN');
+      }
+      else {
+        $query->condition($field, $value);
+      }
     }
   }
-
   $result = $query->execute();
   $categories = array();
   foreach ($result as $row) {
