@@ -110,7 +110,7 @@ function culturefeed_get_or_create_user($cf_uid, $cf_account = NULL, $token = NU
     // If the user is not known, create it.
     if (!$uid) {
       // If no CultureFeed user was passed, we can't create the user.
-      if (!$cf_account) {
+      if (!$cf_account || empty($cf_account->nick)) {
         return FALSE;
       }
 
@@ -203,8 +203,9 @@ function culturefeed_get_uids_for_cf_uids($users) {
   foreach ($users as $cf_uid => $user) {
     if (!isset($uids[$cf_uid])) {
       $account = culturefeed_get_or_create_user($cf_uid, $user);
-
-      $uids[$cf_uid] = $account->uid;
+      if ($account) {
+        $uids[$cf_uid] = $account->uid;
+      }
     }
   }
 
