@@ -19,6 +19,6 @@
 <?php endif; ?>
 
 <?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info en boeking', array('attributes' => array('class' => 'button'))); ?>
-<?php print culturefeed_social_activity_recommend_link($item); ?>
+<?php print $recommend_link; ?>
 
 

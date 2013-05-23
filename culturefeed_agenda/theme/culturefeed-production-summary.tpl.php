@@ -23,7 +23,7 @@
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><span><?php print $recommend_count ?></span> keer aangeraden</div>
     <?php endif; ?>
-    <?php print culturefeed_social_activity_recommend_link($item); ?>
+    <?php print $link_recommend; ?>
   </div>
 
   <div class="image">

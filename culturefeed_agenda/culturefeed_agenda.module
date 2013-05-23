@@ -126,6 +126,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  $blocks['agenda-search-block'] = array(
+    'info' => t('Agenda quick search'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   return $blocks;
 
 }
@@ -139,11 +144,12 @@ function culturefeed_agenda_block_configure($delta) {
 
   if ($delta == 'agenda-related-activities') {
 
+    $options = array('' => t('No context'));
+    $options += culturefeed_search_get_domains();
     $form['agenda_related_activities_context'] = array(
       '#title' => t('Context field for the related events'),
       '#type' => 'select',
       '#options' => array(
-        '' => t('No context'),
         CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY => t('Facility'),
         CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME => t('Theme'),
         CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_PUBLICSCOPE => t('Public scope'),
@@ -194,6 +200,20 @@ function culturefeed_agenda_block_configure($delta) {
 
   }
 
+  elseif ($delta == 'agenda-search-block') {
+
+    $options = array('' => t('None'));
+    $options += culturefeed_search_get_domains();
+
+    $form['agenda_search_block_domain_id'] = array(
+      '#title' => t('Categories to show in the dropdown'),
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => variable_get('agenda_search_block_domain_id'),
+    );
+
+  }
+
   return $form;
 
 }
@@ -210,6 +230,9 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_related_activities_sort', $edit['agenda_related_activities_sort']);
     variable_set('agenda_related_activities_sort_direction', $edit['agenda_related_activities_sort_direction']);
   }
+  elseif ($delta == 'agenda-search-block') {
+    variable_set('agenda_search_block_domain_id', $edit['agenda_search_block_domain_id']);
+  }
 
 }
 
@@ -225,9 +248,11 @@ function culturefeed_agenda_block_view($delta) {
 
     case 'agenda-related-activities':
       return culturefeed_agenda_block_related_activities();
+
+    case 'agenda-search-block':
+      $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
     break;
 
-    default:
   }
 
   return $block;

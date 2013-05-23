@@ -59,7 +59,6 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
  */
 function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
 
-  // When changing sort method, we remove the page parameter.
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
 
@@ -414,6 +413,10 @@ function culturefeed_search_ui_search_active_filters_block() {
       '#label' => $query['date_range'],
       '#url' => $url
     );
+  }
+
+  if (!empty($build)) {
+    $build['reset'] = l('Verwijder alles', $path);
   }
 
   return $build;

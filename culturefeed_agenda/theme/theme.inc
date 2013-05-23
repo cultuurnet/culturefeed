@@ -5,6 +5,23 @@
  */
 
 /**
+ * Preprocess the variables for the actor detail.
+ * @see culturefeed-actor.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_actor($variables);
+  _culturefeed_agenda_preprocess_agenda_detail($variables);
+
+  $weekscheme = $variables['item']->getEntity()->getWeekScheme();
+  if ($weekscheme) {
+
+  }
+
+}
+
+/**
  * Preprocess the variables for the event summary.
  * @see culturefeed-event-summary.tpl.php
  */
@@ -107,13 +124,15 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
-  $variables['recommend_link'] = culturefeed_social_activity_recommend_link($item);
-  
   $variables['comment_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
-  
   $variables['attend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND);
-  
   $variables['like_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE);
+
+  // Social actions.
+  $variables['recommend_link'] = '';
+  if (module_exists('culturefeed_social')) {
+    $variables['recommend_link'] = culturefeed_social_activity_recommend_link($item);
+  }
 
   // Themes from this item.
   $variables['themes'] = array();
@@ -228,9 +247,10 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     elseif ($location->getLabel()) {
       $variables['location']['title'] = $location->getLabel();
     }
-    
-    if ($location->getAddress()->getPhysicalAddress()) {
-      $physical_address = $location->getAddress()->getPhysicalAddress();
+
+    $physical_address = $location->getAddress()->getPhysicalAddress();
+    if ($physical_address) {
+
       $variables['location']['city'] = $physical_address->getCity();
       $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
       $variables['location']['zip'] = $physical_address->getZip();
@@ -328,7 +348,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $variables['organiser'] = array();
   // Preprocess the organiser variables.
   if ($organiser) {
-  
+
     // If the organiser is a reference to an actor, link to it.
     if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
       $actor = $organiser->getActor();
@@ -339,7 +359,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     elseif ($organiser->getLabel()) {
       $variables['organiser']['title'] = $organiser->getLabel();
     }
-  
+
   }
 
   $relations = $production->getRelations();
@@ -416,7 +436,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
       foreach ($performers as $performer) {
         $performer_labels[] = $performer->getLabel();
       }
-  
+
       $variables['performers'] = implode(', ', $performer_labels);
 
     }
@@ -426,5 +446,52 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
   }
 
+}
+
+/**
+ * Preprocess the general variables for an actor.
+ */
+function _culturefeed_agenda_preprocess_actor(&$variables) {
+
+  $actor = $variables['item']->getEntity();
+
+  // Location information.
+  $variables['location'] = '';
+  $variables['contact'] = array();
+  if ($actor->getContactInfo()) {
+
+    $contact_info = $actor->getContactInfo();
+    $addresses = $contact_info->getAddresses();
+    if ($addresses) {
+      $physical_address = $addresses[0]->getPhysicalAddress();
+      if ($physical_address) {
+        $variables['location']['city'] = $physical_address->getCity();
+        $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
+        $variables['location']['zip'] = $physical_address->getZip();
+      }
+    }
+
+    // Mails.
+    $mails = array();
+    foreach ($contact_info->getMails() as $mail) {
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress());
+    }
+    $variables['contact']['mail'] = implode(', ', $mails);
+
+    // Fax + phone numbers.
+    $phones = array();
+    $faxes = array();
+    foreach ($contact_info->getPhones() as $phone) {
+      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
+        $phones[] = $phone->getNumber();
+      }
+      else {
+        $faxes[] = $phone->getNumber();
+      }
+    }
+    $variables['contact']['phone'] = implode(', ', $phones);
+    $variables['contact']['fax'] = implode(', ', $faxes);
+
+  }
 
 }

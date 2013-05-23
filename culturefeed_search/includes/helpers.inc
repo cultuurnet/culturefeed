@@ -343,6 +343,26 @@ function culturefeed_search_transliterate($string) {
 }
 
 /**
+ * Get a list of all domains.
+ */
+function culturefeed_search_get_domains() {
+
+  $domains = drupal_static(__FUNCTION__, NULL);
+  if ($domains !== NULL) {
+    return $domains;
+  }
+
+  $result = db_query('SELECT did, label FROM {culturefeed_search_domains}');
+  $domains = array();
+  foreach ($result as $row) {
+    $domains[$row->did] = $row->label;
+  }
+
+  return $domains;
+
+}
+
+/**
  * Get a list of all categories for a given domain.
  * @param string $domain
  *   Domain to get.

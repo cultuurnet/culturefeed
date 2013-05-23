@@ -103,3 +103,81 @@ function culturefeed_agenda_block_related_activities() {
   return $block;
 
 }
+
+/**
+ * Form callback to show the agenda search block.
+ */
+function culturefeed_agenda_search_block_form($form, &$form_state) {
+
+  $form = array();
+
+  $domain_id = variable_get('agenda_search_block_domain_id');
+  if (!empty($domain_id)) {
+
+    $options = array('' => 'Alle categorieën');
+    $options += culturefeed_search_get_categories_by_domain($domain_id);
+
+    $form['category'] = array(
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
+    );
+
+    $form_state['#domain_id'] = $domain_id;
+
+  }
+
+  $form['search'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Zoekopdracht',
+    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
+    '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
+  );
+
+  $form['nearby'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location"></span>',
+  );
+
+  $form['coordinates'] = array(
+    '#type' => 'hidden',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Zoeken',
+  );
+
+  $form['#attached']['js'] = array(
+    CULTUREFEED_GOOGLE_MAPS_JS_API,
+    drupal_get_path('module', 'culturefeed_agenda') . '/js/search_block.js',
+    drupal_get_path('module', 'culturefeed') . '/js/common.js',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit the agenda search block form.
+ */
+function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $query['search'] = $form_state['values']['search'];
+
+  // Activate the category facet.
+  if (!empty($form_state['values']['category'])) {
+    $query['facet']['category_' . $form_state['#domain_id'] . '_id'][0] = $form_state['values']['category'];
+  }
+
+  if (!empty($form_state['values']['nearby']) && !empty($form_state['values']['coordinates'])) {
+    $query['coordinates'] = $form_state['values']['coordinates'];
+  }
+
+  $form_state['redirect'] = array(
+    'agenda/search',
+    array('query' => $query),
+  );
+
+}
