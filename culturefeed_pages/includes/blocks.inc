@@ -180,34 +180,28 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
 
   $menu = array(
     'info' => array(
-      'title' => 'Basisinformatie',
+      'title' => 'Wijzig gegevens',
       'url' => 'pages/' . $page->getId() . '/edit',
-      'description' => '(bewerk contactinfo, foto, beschrijving, website, ...)',
+      'description' => 'Bewerk contactinfo, foto, beschrijving, website,...',
       'weight' => -20,
     ),
     'settings' => array(
       'title' => 'Instellingen',
       'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => '(Mogen gebruikers jouw pagina volgen, beoordelingen schrijven, activiteiten aanraden, ...)',
+      'description' => 'Mogen gebruikers jouw pagina volgen, beoordelingen schrijven, activiteiten aanraden,...',
       'weight' => -19,
     ),
     'members' => array(
       'title' => 'Leden & rollen',
       'url' => 'pages/' . $page->getId() . '/members/nojs',
-      'description' => '(Beheer leden en toegangsrechten)',
+      'description' => 'Beheer leden en toegangsrechten',
       'weight' => -18,
     ),
     'activities' => array(
       'title' => 'Activiteiten',
       'url' => 'pages/' . $page->getId() . '/events',
-      'description' => '(Beheer je activiteiten en beoordelingen)',
+      'description' => 'Beheer je activiteiten en beoordelingen',
       'weight' => -17,
-    ),
-    'stats' => array(
-      'title' => 'Statistieken',
-      'url' => 'pages/' . $page->getId() . '/stats',
-      'description' => '',
-      'weight' => -16,
     ),
   );
 
