@@ -5,4 +5,4 @@
  */
 ?>
 
-<?php print check_plain($label); ?> [<a href="<?php print $url; ?>">x</a>]
+<span class="filter"><span class="filter-label"><?php print check_plain($label); ?></span> <a href="<?php print $url; ?>" class="filter-remove"><strong>&times;</strong></a></span>
