@@ -416,7 +416,7 @@ function culturefeed_search_ui_search_active_filters_block() {
   }
 
   if (!empty($build)) {
-    $build['reset'] = l('Verwijder alles', $path);
+    $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
   }
 
   return $build;
