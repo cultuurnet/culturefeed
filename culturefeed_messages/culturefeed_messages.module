@@ -261,7 +261,7 @@ function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, $
   $items['messages'] = array(
     'title' => 'Berichten',
     'url' => 'pages/' . $page->getId() . '/messages',
-    'description' => '(Lees en beantwoord berichten en boekingsaanvragen)',
+    'description' => 'Lees en beantwoord berichten en boekingsaanvragen',
     'weight' => -18,
   );
 
