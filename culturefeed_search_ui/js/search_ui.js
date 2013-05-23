@@ -47,9 +47,12 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
     $('#edit-date-range').daterangepicker({
       presetRanges: [],
       presets : {
-        specificDate: 'Specific Date',
-        dateRange: 'Date Range'
+        specificDate: 'Specifieke datum',
+        dateRange: 'Periode van/tot'
       },
+      rangeStartTitle: 'Begindatum',
+      rangeEndTitle: 'Einddatum',
+      doneButtonText: 'OK',
       dateFormat: 'd/m/yy',
       earliestDate : Date.parse(),
       constrainDates : true

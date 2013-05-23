@@ -235,7 +235,7 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Selecteer',
+    '#value' => 'Bevestig',
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
