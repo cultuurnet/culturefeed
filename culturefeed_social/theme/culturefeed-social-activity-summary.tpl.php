@@ -34,5 +34,5 @@
   <strong><?php print $activities_total_15 ?></strong> activiteiten aangeraden<br />
   <strong><?php print $books_total_15 ?></strong> boeken aangeraden<br />
   <strong><?php print $pages_total_18 ?></strong> pagina's die ik volg<br />
-  <strong><?php print $total_14 ?></strong> beoordelingen geschreven<br />
+  <strong><?php print $total_14 ?></strong> reacties geschreven<br />
 </p>

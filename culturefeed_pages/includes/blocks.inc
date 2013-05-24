@@ -188,7 +188,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     'settings' => array(
       'title' => 'Instellingen',
       'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => 'Mogen gebruikers jouw pagina volgen, beoordelingen schrijven, activiteiten aanraden,...',
+      'description' => 'Mogen gebruikers jouw pagina volgen, reacties schrijven, activiteiten aanraden,...',
       'weight' => -19,
     ),
     'members' => array(
@@ -200,7 +200,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     'activities' => array(
       'title' => 'Activiteiten',
       'url' => 'pages/' . $page->getId() . '/events',
-      'description' => 'Beheer je activiteiten en beoordelingen',
+      'description' => 'Beheer je activiteiten en reacties',
       'weight' => -17,
     ),
   );

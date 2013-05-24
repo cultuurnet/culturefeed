@@ -274,7 +274,7 @@ function culturefeed_search_ui_block_view($delta) {
  *       'relevancy' => 'Relevantie',
  *       'date' => 'Datum',
  *       'recommends' => 'Aantal keer aangeraden',
- *       'comments' => 'Aantal beoordelingen',
+ *       'comments' => 'Aantal reacties',
  *     ),
  *     'active_facets' => array('category_actortype_name' => array('Organisator(en)')),  => optional
  *   ),

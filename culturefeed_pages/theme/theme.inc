@@ -314,7 +314,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$va
       $variables['notifications'] = theme('culturefeed_social_user_activity_list', $notification_variables);
     }
     else {
-      $variables['notifications'] = 'Uw pagina heeft nog geen meldingen';
+      $variables['notifications'] = 'Jouw pagina heeft nog geen meldingen';
     }
 
   }

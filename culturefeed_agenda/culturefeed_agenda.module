@@ -106,7 +106,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
         'relevancy' => 'Relevantie',
         'date' => 'Datum',
         'recommends' => 'Aantal keer aangeraden',
-        'comments' => 'Aantal beoordelingen',
+        'comments' => 'Aantal reacties',
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,

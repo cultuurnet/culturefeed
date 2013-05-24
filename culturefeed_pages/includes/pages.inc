@@ -646,13 +646,13 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   $form['allow_members'] = array(
     '#type' => 'checkbox',
     '#title' => 'lid worden van mijn pagina',
-    '#description' => 'Op die manier wordt je pagina ook toegankelijk via de profielen, beoordelingen en reacties van alle collega\'s die actief zijn op deze site.',
+    '#description' => 'Op die manier wordt je pagina ook toegankelijk via de profielen, reacties en reacties van alle collega\'s die actief zijn op deze site.',
     '#default_value' => !empty($permissions->allowMembers),
   );
 
   $form['allow_comments'] = array(
     '#type' => 'checkbox',
-    '#title' => 'beoordelingen schrijven over mijn activiteiten',
+    '#title' => 'reacties schrijven over mijn activiteiten',
     '#description' => 'Enkel voor organisaties die activiteiten organiseren en ingevoerd hebben via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.',
     '#default_value' => !empty($permissions->allowComments),
   );
@@ -1034,7 +1034,7 @@ function culturefeed_pages_page_my_pages() {
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = 'Verwijderen niet mogelijk. <div>TOOLTIP: Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid.</div>';
+          $member_link = 'Verwijderen niet mogelijk. <p><small class="muted">Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid.</small></p>';
         }
         else {
           $delete_options = array(

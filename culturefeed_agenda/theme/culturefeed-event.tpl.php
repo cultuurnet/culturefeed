@@ -7,14 +7,14 @@
 
 <h2><?php print $title; ?></h2>
 
-beoordelingen:
+reacties:
 <?php if ($comment_count > 0): ?>
   <span class="comments"><?php print $comment_count; ?></span>
-  <a href="#lees">Lees beoordelingen</a>
-  <a href="#schrijf">Schrijf een beoordeling</a>
+  <a href="#lees">Lees reacties</a>
+  <a href="#schrijf">Schrijf een reactie</a>
 <?php else: ?>
   <span class="no-comments"><?php print $comment_count; ?></span>
-  <a href="#schrijf">Schrijf als eerste een beoordeling</a>
+  <a href="#schrijf">Schrijf als eerste een reactie</a>
 <?php endif; ?>
 
 <?php if (!empty($themes)): ?>

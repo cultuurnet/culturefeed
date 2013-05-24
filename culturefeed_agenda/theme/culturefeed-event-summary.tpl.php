@@ -13,11 +13,11 @@
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#lees">Lees beoordelingen</a>
-        <a href="<?php print $url ?>#schrijf">Schrijf een beoordeling</a>
+        <a href="<?php print $url ?>#lees">Lees reactieen</a>
+        <a href="<?php print $url ?>#schrijf">Schrijf een reactie</a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#schrijf">Schrijf als eerste een beoordeling</a>
+        <a href="<?php print $url ?>#schrijf">Schrijf als eerste een reactie</a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>

@@ -6,7 +6,7 @@
  *   $list
  */
 ?>
-<a href="<?php print $url ?>#schrijf">Schrijf beoordeling</a>
+<a href="<?php print $url ?>#schrijf">Schrijf reactie</a>
 
 <?php if (!empty($list)): ?>
   <?php foreach ($list as $list_item): ?>

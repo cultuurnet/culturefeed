@@ -474,10 +474,10 @@ function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_C
   );
 
   if ($my_pages) {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat u zich als lid wil verwijderen?</strong></p>';
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat je jezelf als lid wil verwijderen?</strong></p>';
   }
   else {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat u dit lid wil verwijderen?</strong></p>';
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat je dit lid wil verwijderen?</strong></p>';
   }
 
   $form['footer_wrapper'] = array(
@@ -527,7 +527,7 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
     dsm($e->getMessage());
-    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lid.');
+    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lidmaatschap.');
   }
 
 }
@@ -539,7 +539,7 @@ function culturefeed_pages_delete_member_form_submit($form, &$form_state) {
 
   if ($form_state['my_pages']) {
     $form_state['redirect'] = 'culturefeed/pages';
-    $message = format_string('Je lidmaatschap van @page is verwijdert.', array(
+    $message = format_string('Je ben niet langer lid van @page.', array(
       '@page' => $form_state['page']->getName())
     );
   }
@@ -586,7 +586,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $message = "Uw aanvraag om beheerder te worden van deze pagina is verstuurd";
+  $message = '<div class="alert alert-success">Je aanvraag om beheerder te worden van deze pagina is verstuurd</div>';
 
   if ($type == 'ajax') {
     $commands = array();
