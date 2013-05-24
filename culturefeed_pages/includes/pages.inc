@@ -1050,7 +1050,7 @@ function culturefeed_pages_page_my_pages() {
 
         $row = array(
           l($membership->page->getName(), $path),
-          format_date($membership->creationDate, 'custom', 'D d/M/Y H:i'),
+          format_date($membership->creationDate, 'custom', 'd/m/Y H:i'),
           $member_link,
           $admin_link
         );
@@ -1094,7 +1094,7 @@ function culturefeed_pages_page_my_pages() {
 
         $row = array(
           l($followed_page->page->getName(), $path),
-          format_date($followed_page->creationDate, 'custom', 'D d/M/Y H:i'),
+          format_date($followed_page->creationDate, 'custom', 'd/m/Y H:i'),
           $follow_link,
           $become_member_link
         );
