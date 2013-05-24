@@ -205,7 +205,11 @@ function culturefeed_pages_preprocess_culturefeed_page_invisible(&$variables) {
 
   $page = $variables['page'];
 
-  $variables['title'] = $page->getName();
+  // See if we can get a Name
+  if ($page->getName()) {
+    $variables['title'] = $page->getName();
+  }
+  else $variables['title'] = 'Pagina verwijderd';
 
 }
 
