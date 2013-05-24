@@ -144,6 +144,30 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['themes'] = $themes;
   }
 
+  // Preprocess the organiser variables.
+  if (method_exists($cdb_item, 'getOrganiser')) {
+
+    $organiser = $cdb_item->getOrganiser();
+    $variables['organiser'] = array();
+    if ($organiser) {
+
+      // If the organiser is a reference to an actor, link to it.
+      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
+        $actor = $organiser->getActor();
+        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
+        $variables['organiser']['title'] = $organiser_actor_details->getTitle();
+        $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
+      }
+      elseif ($organiser->getLabel()) {
+        $variables['organiser']['title'] = $organiser->getLabel();
+        if ($organiser->getCdbid()) {
+          $variables['organiser']['link'] = culturefeed_search_detail_l('production', $organiser->getCdbid(), $variables['organiser']['title']);
+        }
+      }
+
+    }
+  }
+
 }
 
 /**
@@ -229,7 +253,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
   $event = $variables['item']->getEntity();
   $event_detail = $event->getDetails()->getDetailByLanguage($language->language);
-  $organiser = $event->getOrganiser();
 
   $variables['agefrom'] = $event->getAgeFrom();
 
@@ -259,22 +282,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   }
 
   $actor = NULL;
-  $variables['organiser'] = array();
-  // Preprocess the organiser variables.
-  if ($organiser) {
-
-    // If the organiser is a reference to an actor, link to it.
-    if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
-      $actor = $organiser->getActor();
-      $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
-      $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-      $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
-    }
-    elseif ($organiser->getLabel()) {
-      $variables['organiser']['title'] = $organiser->getLabel();
-    }
-
-  }
 
   // Contact information
   $variables['contact'] = array();
@@ -344,23 +351,6 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
-
-  $variables['organiser'] = array();
-  // Preprocess the organiser variables.
-  if ($organiser) {
-
-    // If the organiser is a reference to an actor, link to it.
-    if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
-      $actor = $organiser->getActor();
-      $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
-      $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-      $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
-    }
-    elseif ($organiser->getLabel()) {
-      $variables['organiser']['title'] = $organiser->getLabel();
-    }
-
-  }
 
   $relations = $production->getRelations();
   $total_relations = count($relations);
