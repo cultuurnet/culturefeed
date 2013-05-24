@@ -529,7 +529,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   else {
     $form['update_optin'] = array(
       '#type' => 'checkbox',
-      '#title' => 'Blijf op de hoogte van nieuwe reacties en reacties over ' . $type,
+      '#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('comment-updates')),
       '#weight' => 1,
