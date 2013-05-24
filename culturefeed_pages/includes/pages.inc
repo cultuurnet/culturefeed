@@ -1027,14 +1027,14 @@ function culturefeed_pages_page_my_pages() {
         else {
 
           // Show request admin link.
-          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
-            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</div>';
+          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l('Beheerder worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
+            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => 'Hiermee wordt een aanvraag gestuurd naar de huidige beheerder van deze pagina.'))) . '</div>';
 
         }
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = 'Verwijderen niet mogelijk. <p><small class="muted">Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid.</small></p>';
+          $member_link = '<p class="muted">Verwijderen niet mogelijk <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid"><i class="icon icon-question-sign"></i></span></p>';
         }
         else {
           $delete_options = array(
