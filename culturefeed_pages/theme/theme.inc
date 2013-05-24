@@ -189,10 +189,10 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   // Contact information.
   $variables['contact'] = array();
   if ($page->getTelephone()) {
-    $variables['contact'][] = $page->getTelephone();
+    $variables['contact']['tel'] = $page->getTelephone();
   }
   if ($page->getEmail()) {
-    $variables['contact'][] = $page->getEmail();
+    $variables['contact']['mail'] = $page->getEmail();
   }
 
 }
