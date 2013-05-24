@@ -660,10 +660,10 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 function culturefeed_pages_culturefeed_ui_profile_menu_alter(&$items) {
 
   $items[] =     array(
-    'title' => "Pagina's",
+    'title' => "Mijn pagina's",
     'url' => 'culturefeed/pages',
-    'description' => "Beheer je pagina's.",
-    'weight' => -15,
+    'description' => "Beheer de pagina's waar je lid van bent of die je volgt",
+    'weight' => -17,
   );
 
 }

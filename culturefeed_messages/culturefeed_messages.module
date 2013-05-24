@@ -273,9 +273,9 @@ function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, $
 function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
 
   $items[] =     array(
-    'title' => 'Berichten',
+    'title' => 'Mijn berichten',
     'url' => 'culturefeed/messages',
-    'description' => 'Beheer je berichten.',
+    'description' => 'Lees en beantwoord je berichten.',
     'weight' => -16,
   );
 

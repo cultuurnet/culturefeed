@@ -188,13 +188,13 @@ function culturefeed_ui_block_profile_menu_view() {
     array(
       'title' => 'Profiel bewerken',
       'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, favoriete locaties, ...',
+      'description' => 'Wijzig naam, adres, profielfoto,...',
       'weight' => -19,
     ),
     array(
       'title' => 'Account bewerken',
       'url' => 'culturefeed/account/edit',
-      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
+      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,...',
       'weight' => -18,
     ),
   );

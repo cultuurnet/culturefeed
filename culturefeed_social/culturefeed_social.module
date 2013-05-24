@@ -358,8 +358,8 @@ function culturefeed_social_culturefeed_ui_profile_menu_alter(&$items) {
   $items[] =     array(
     'title' => 'Acties',
     'url' => 'culturefeed/activities',
-    'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTiD-profiel.',
-    'weight' => -17,
+    'description' => 'Stel in welke gebruikersacties voor anderen zichtbaar zijn op je profielpagina.',
+    'weight' => -15,
   );
 
 }
