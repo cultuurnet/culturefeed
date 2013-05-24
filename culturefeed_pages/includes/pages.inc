@@ -253,7 +253,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form['description'] = array(
     '#type' => 'textarea',
     '#title' => 'Beschrijving',
-    '#description' => 'Maximum 250 karakters',
+    '#description' => 'Maximum 400 karakters',
     '#default_value' => '',
     '#maxlength' => 250,
     '#weight' => -3,
@@ -289,14 +289,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['contactInfoTel'] = array(
     '#type' => 'textfield',
-    '#title' => 'Telefoon nummer',
+    '#title' => 'Telefoonnummer',
     '#default_value' => '',
     '#weight' => 10,
   );
 
   $form['contactInfoEmail'] = array(
     '#type' => 'textfield',
-    '#title' => 'Emailadres',
+    '#title' => 'E-mailadres',
     '#default_value' => '',
     '#weight' => 11,
   );
@@ -324,37 +324,37 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['websites']['linkFacebook'] = array(
     '#type' => 'textfield',
-    '#title' => 'Facebook pagina',
+    '#title' => 'Facebook',
     '#default_value' => '',
   );
 
   $form['websites']['linkTwitter'] = array(
     '#type' => 'textfield',
-    '#title' => 'Twitter pagina',
+    '#title' => 'Twitter',
     '#default_value' => '',
   );
 
   $form['websites']['linkGooglePlus'] = array(
     '#type' => 'textfield',
-    '#title' => 'Google+ pagina',
+    '#title' => 'Google+',
     '#default_value' => '',
   );
 
   $form['websites']['linkYouTube'] = array(
     '#type' => 'textfield',
-    '#title' => 'YouTube pagina',
+    '#title' => 'YouTube',
     '#default_value' => '',
   );
 
   $form['websites']['linkBlog'] = array(
     '#type' => 'textfield',
-    '#title' => 'Blog pagina',
+    '#title' => 'Blog',
     '#default_value' => '',
   );
 
   $form['image'] = array(
     '#type' => 'file',
-    '#title' => 'Foto',
+    '#title' => 'Afbeelding of logo',
     '#size' => 26,
     '#default_value' => '',
     '#weight' => 14,
@@ -396,8 +396,8 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
     form_set_error('name', 'De titel moet ingevuld zijn');
   }
 
-  if (strlen($form_state['values']['description']) > 250) {
-    form_set_error('description', 'Het maximum karakters bedraagt 250');
+  if (strlen($form_state['values']['description']) > 400) {
+    form_set_error('description', 'Het maximum karakters bedraagt 400');
   }
 
   // Add the post params to the form so other modules can add their params.
