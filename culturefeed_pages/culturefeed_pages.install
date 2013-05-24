@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Install file for culturefeed pages.
+ */
+
+/**
+ * Change block cache settings for 'admin options block'.
+ */
+function culturefeed_pages_update_7001() {
+  db_update('block')
+    ->condition('module', 'culturefeed_pages')
+    ->condition('delta', 'pages-admin-options')
+    ->fields(array('cache' => DRUPAL_NO_CACHE))
+    ->execute();
+}

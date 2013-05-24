@@ -426,7 +426,7 @@ function culturefeed_pages_block_info() {
 
   $blocks['pages-admin-options'] = array(
     'info' => t("Page options"),
-    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['pages-request-admin-membership'] = array(
