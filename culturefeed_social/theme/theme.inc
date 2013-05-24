@@ -41,8 +41,14 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $variables['picture'] = l($picture, $user_url, array('html' => TRUE));
   $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
 
-  $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
-  $link = l($activity->nodeTitle, $url);
+  // Not possible to link when it's an activity on an activity.
+  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
+    $link = $activity->nodeTitle;
+  }
+  else {
+    $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
+    $link = l($activity->nodeTitle, $url);
+  }
 
   $type_prefix = '';
   $type_suffix = '';
@@ -114,11 +120,15 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
-  $url = 'user/' . $variables['uid'];
-  $variables['picture'] = l($picture, $url, array('html' => TRUE));
+  $author_url = 'user/' . $variables['uid'];
+  $variables['picture'] = l($picture, $author_url, array('html' => TRUE));
   $variables['date'] = format_date($activity->creationDate, 'small');
-  $variables['author'] = format_string('!username van !active_page', array(
-      '!username' => $activity->nick, '!active_page' => $activity->onBehalfOfName));
+
+  $variables['author'] = l($activity->nick, $author_url);
+  if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
+    $variables['author'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
+  }
+
   $variables['content'] = check_plain($activity->value);
   $variables['activity_id'] = $activity->id;
 

@@ -526,8 +526,7 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    dsm($e->getMessage());
-    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lidmaatschap.');
+    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lid.');
   }
 
 }
@@ -582,7 +581,6 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
   }
   catch (Exception $e) {
     $success = FALSE;
-    dsm($e->getMessage());
     watchdog_exception('culturefeed_pages', $e);
   }
 

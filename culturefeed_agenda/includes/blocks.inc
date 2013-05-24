@@ -51,7 +51,7 @@ function culturefeed_agenda_block_related_activities() {
   if ($item->getType() == 'event' && variable_get('agenda_related_activities_range', 0)) {
 
     $address = $item->getEntity()->getLocation()->getAddress();
-    if ($address) {
+    if ($address && $address->getPhysicalAddress()) {
       $coordinates = $address->getPhysicalAddress()->getGeoInformation();
       if ($coordinates) {
         $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(variable_get('agenda_related_activities_range', 0));
