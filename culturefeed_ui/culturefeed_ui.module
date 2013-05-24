@@ -379,7 +379,7 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
   $items['logout'] = array(
     'data' => l('Afmelden', 'user/logout'),
     'class' => 'logout',
-    'weight' => 20,
+    'weight' => 21,
   );
 
   return $items;

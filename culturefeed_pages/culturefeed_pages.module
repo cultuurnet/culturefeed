@@ -596,6 +596,12 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
     'weight' => -19,
   );
 
+  $items['manage-pages'] = array(
+    'data' => l('Beheer pagina\'s', 'culturefeed/pages'),
+    'class' => 'settings',
+    'weight' => 20,
+  );
+
   // The user is member of at least one page, login as ...
   if ($has_memberships) {
 
