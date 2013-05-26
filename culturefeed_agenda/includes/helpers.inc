@@ -115,7 +115,8 @@ function culturefeed_agenda_get_connected_page_id_of_item(CultureFeed_Cdb_Item_B
     $page_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_CULTUREFEED_PAGE);
     foreach ($page_links as $link) {
 
-      if ($link->getRelationType() == CultureFeed_Cdb_Data_File::REL_TYPE_ORGANISER) {
+      // SHO if ($link->getRelationType() == CultureFeed_Cdb_Data_File::REL_TYPE_ORGANISER) {
+      if ($link->getTitle() == CultureFeed_Cdb_Data_File::REL_TYPE_ORGANISER) {
         $link_parts = explode('/', $page_links->current()->getHLink());
         return $link_parts[count($link_parts) - 1];
       }
