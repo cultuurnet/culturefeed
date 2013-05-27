@@ -130,8 +130,14 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
 
 /**
  * Renders a facet block to go along with the search form.
+ * @param $facet_name
+ *   Facet to show (ex category_theme_name)
+ * @param $domain_id
+ *   Domain id where this facet belongs to. This is used to show the title
+ * @param $allowed_items
+ *   List of allowed items, and the label that should be shown for every item.
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '') {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
 
   // FacetingComponent is set in the page callback.
   global $facetingComponent;
@@ -148,7 +154,20 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '')
 
   $facet = $facets[$facet_name];
 
-  $items = $facet->getResult()->getItems();
+  // Show only the allowed values, and set the requested label.
+  if (!empty($allowed_items)) {
+    $all_items = $facet->getResult()->getItems();
+    $items = array();
+    foreach ($all_items as $item) {
+      if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
+        $item->setLabel($allowed_items[$item->getLabel()]);
+        $items[] = $item;
+      }
+    }
+  }
+  else {
+    $items = $facet->getResult()->getItems();
+  }
 
   if (!empty($items)) {
 
@@ -182,32 +201,13 @@ function culturefeed_search_ui_block_date_facet() {
 
   $build = array();
 
-  $facets = $facetingComponent->getFacets();
-  if (!isset($facets['datetype'])) {
-    return;
-  }
-  $facet = $facets['datetype'];
-
-  // Only this items should be shown.
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items);
 
-  $all_items = $facet->getResult()->getItems();
-  $items = array();
-  foreach ($all_items as $item) {
-    if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
-      $item->setLabel($allowed_items[$item->getLabel()]);
-      $items[] = $item;
-    }
-  }
-
-  if (!empty($items)) {
+  if (!empty($facet_block)) {
 
     $build = array();
-    $build[] = array(
-      '#theme' => 'culturefeed_search_facet',
-      '#facet' => $facet,
-      '#items' => $items,
-    );
+    $build['facets'] = $facet_block['content'];
 
     $build[] = drupal_get_form('culturefeed_search_ui_date_facet_form');
 
@@ -280,24 +280,38 @@ function culturefeed_search_ui_block_city_facet() {
 
   $build = array();
 
-  $facets = $facetingComponent->getFacets();
-  // Check if a city or region facet was run.
-  if (!isset($facets['city']) && !isset($facets['flandersregion'])) {
-    return;
+  // Show facet layout for location.
+  if (isset($_GET['location'])) {
+
+    // Build facet for location.
+    $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
+    if (isset($_GET['distance'])) {
+      $label .= ' +' . $_GET['distance'] . ' km';
+    }
+
+    // Make a result item for location search.
+    global $pager_total_items;
+    $items = array(
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $pager_total_items[0]),
+    );
+
+    $build = array();
+    $build[] = array(
+      '#theme' => 'culturefeed_search_facet',
+      '#facet' => $facet,
+      '#items' => $items,
+    );
+
+    // If a postal was given. We can add proximity search.
+    $city_parts = explode(' ', $_GET['location']);
+    if (is_numeric($city_parts[0])) {
+      $build['distance-form'] = drupal_get_form('culturefeed_search_ui_proximity_distance_form');
+    }
+
   }
 
-  // Only this items should be shown.
-
-  //$items = $facet->getResult()->getItems();
-
-  $build = array();
-  /*$build[] = array(
-    '#theme' => 'culturefeed_search_facet',
-    '#facet' => $facet,
-    '#items' => $items,
-  );*/
-
-  $build[] = drupal_get_form('culturefeed_search_ui_city_facet_form');
+  $build['form'] = drupal_get_form('culturefeed_search_ui_city_facet_form');
 
   return array(
     'subject' => 'Where',
@@ -335,7 +349,8 @@ function culturefeed_search_ui_city_facet_form() {
  */
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location'));
+
   if (!empty($form_state['values']['location'])) {
     $query['location'] = $form_state['values']['location'];
   }
@@ -343,6 +358,50 @@ function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
   $form_state['redirect'] = array(
       $_GET['q'],
       array('query' => $query)
+  );
+
+}
+
+/**
+ * Form callback to show possibility to change the proximity distance.
+ */
+function culturefeed_search_ui_proximity_distance_form() {
+
+  $options = array('' => '');
+  for ($i = 10; $i <= 100; $i += 5) {
+    $options[$i] = '+' . $i . ' km';
+  }
+
+  $form = array();
+  $form['distance'] = array(
+    '#type' => 'select',
+    '#title' => 'Zoek in omgeving',
+    '#options' => $options,
+    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Ok',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit the distance form.
+ */
+function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  if (!empty($form_state['values']['distance'])) {
+    $query['distance'] = $form_state['values']['distance'];
+  }
+
+  $form_state['redirect'] = array(
+    $_GET['q'],
+    array('query' => $query)
   );
 
 }
@@ -415,7 +474,30 @@ function culturefeed_search_ui_search_active_filters_block() {
     );
   }
 
-  if (!empty($build)) {
+  if (isset($query['nearby']) && isset($query['coordinates'])) {
+    $search_query = $query;
+    unset($search_query['nearby']);
+    unset($search_query['coordinates']);
+    $url = url($path, array('query' => $search_query));
+    $build['nearby'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => 'In de buurt van ' . check_plain($query['nearby']),
+      '#url' => $url
+    );
+  }
+
+  if (isset($query['location'])) {
+    $search_query = $query;
+    unset($search_query['location']);
+    $url = url($path, array('query' => $search_query));
+    $build['location'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => check_plain($query['location']),
+      '#url' => $url
+    );
+  }
+
+  if (!empty($build) && count($build) > 1) {
     $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
   }
 

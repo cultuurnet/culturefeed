@@ -67,9 +67,9 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     $this->parameters[] = new Parameter\Group();
 
     if ('' == $params['search']) {
-      $params['search'] = '*';
+      $params['search'] = '*:*';
     }
-    $this->query[] = 'text:(' . str_replace(')', '\\)', $params['search']) . ')';
+    $this->query[] = $params['search'];
 
     $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
 
@@ -77,7 +77,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->searchPages($this->parameters);
-    $facetingComponent->obtainResults($this->result, '');
+    $facetingComponent->obtainResults($this->result);
 
   }
 

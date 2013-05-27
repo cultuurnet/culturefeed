@@ -1,8 +1,0 @@
-<div class="uitpas_ui_promotion_details">
-  <div class="uitpas_ui_promotion_points"><?php print $points; ?></div>
-  <?php if ($period): ?>
-  <div class="uitpas_ui_promotion_period"><?php print $period; ?></div>
-  <?php endif; ?>
-  <div class="uitpas_ui_promotion_location"><?php print $location; ?></div>
-  <div class="uitpas_ui_promotion_available"><?php print $available; ?></div>
-</div>
