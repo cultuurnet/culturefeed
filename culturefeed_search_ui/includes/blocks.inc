@@ -486,7 +486,18 @@ function culturefeed_search_ui_search_active_filters_block() {
     );
   }
 
-  if (!empty($build)) {
+  if (isset($query['location'])) {
+    $search_query = $query;
+    unset($search_query['location']);
+    $url = url($path, array('query' => $search_query));
+    $build['location'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => check_plain($query['location']),
+      '#url' => $url
+    );
+  }
+
+  if (!empty($build) && count($build) > 1) {
     $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
   }
 
