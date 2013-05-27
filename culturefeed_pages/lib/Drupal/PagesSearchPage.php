@@ -67,7 +67,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     $this->parameters[] = new Parameter\Group();
 
     if ('' == $params['search']) {
-      $params['search'] = '*';
+      $params['search'] = '*:*';
     }
     $this->query[] = $params['search'];
 
