@@ -115,12 +115,15 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   if (!empty($domain_id)) {
 
     $options = array('' => 'Alle categorieën');
-    $options += culturefeed_search_get_categories_by_domain($domain_id);
+    $categories = culturefeed_search_get_categories_by_domain($domain_id);
+    foreach ($categories as $category) {
+      $options[$category] = $category;
+    }
 
     $form['category'] = array(
       '#type' => 'select',
       '#options' => $options,
-      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
+      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_name'][0]) ? $_GET['facet']['category_' . $domain_id . '_name'][0] : NULL,
     );
 
     $form_state['#domain_id'] = $domain_id;
@@ -134,13 +137,21 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
+  $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location"></span>',
+    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . $location . '</span>',
+    '#default_value' => !empty($location),
   );
 
   $form['coordinates'] = array(
     '#type' => 'hidden',
+    '#default_value' => isset($_GET['coordinates']) ? $_GET['coordinates'] : '',
+  );
+
+  $form['city'] = array(
+    '#type' => 'hidden',
+    '#default_value' => $location,
   );
 
   $form['submit'] = array(
@@ -168,11 +179,12 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   // Activate the category facet.
   if (!empty($form_state['values']['category'])) {
-    $query['facet']['category_' . $form_state['#domain_id'] . '_id'][0] = $form_state['values']['category'];
+    $query['facet']['category_' . $form_state['#domain_id'] . '_name'][0] = $form_state['values']['category'];
   }
 
   if (!empty($form_state['values']['nearby']) && !empty($form_state['values']['coordinates'])) {
     $query['coordinates'] = $form_state['values']['coordinates'];
+    $query['nearby'] = $form_state['values']['city'];
   }
 
   $form_state['redirect'] = array(

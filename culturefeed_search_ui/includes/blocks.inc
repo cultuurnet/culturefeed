@@ -415,6 +415,18 @@ function culturefeed_search_ui_search_active_filters_block() {
     );
   }
 
+  if (isset($query['nearby']) && isset($query['coordinates'])) {
+    $search_query = $query;
+    unset($search_query['nearby']);
+    unset($search_query['coordinates']);
+    $url = url($path, array('query' => $search_query));
+    $build['nearby'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => 'In de buurt van ' . check_plain($query['nearby']),
+      '#url' => $url
+    );
+  }
+
   if (!empty($build)) {
     $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
   }

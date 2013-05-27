@@ -5,7 +5,7 @@
   /**
    * Geolocate current position.
    */
-  Drupal.CultureFeed.geolocate = function(label_selector, hidden_field_selector) {
+  Drupal.CultureFeed.geolocate = function(label_selector, coordinates_input_selector, city_input_selector) {
     
     if (navigator.geolocation) {
       //if the browser supports geolocations get along and execute
@@ -17,7 +17,7 @@
         var latlng = new google.maps.LatLng(lat, lng);
 
         // execute the request and send the respons to addpostalcode function
-        geocoder.geocode({'latLng': latlng}, function (response) { Drupal.CultureFeed.setLocation(response, label_selector, hidden_field_selector) });
+        geocoder.geocode({'latLng': latlng}, function (response) { Drupal.CultureFeed.setLocation(response, label_selector, coordinates_input_selector, city_input_selector) });
       });
       
     }       
@@ -27,9 +27,9 @@
   /**
    * Set the location properties based on a response on the given fields.
    * @param label_selector Selector for the visual label
-   * @param hidden_field_selector Selector for the hidden field with coordinates. 
+   * @param coordinates_input_selector Selector for the hidden field with coordinates. 
    */
-  Drupal.CultureFeed.setLocation = function(response, label_selector, hidden_field_selector) {
+  Drupal.CultureFeed.setLocation = function(response, label_selector, coordinates_input_selector, city_input_selector) {
    
     if (response){
       
@@ -48,15 +48,19 @@
         
       }
       
-      //inject the html in the label
+      // Inject the html in the label.
       if (label_selector != '') {
         $(label_selector).html(postalcode + ' '  + city );        
       }
       
-      //inject the postalcode in the hidden field
-      if (hidden_field_selector != '') {
-        $(hidden_field_selector).val(place.geometry.location.jb + ',' + place.geometry.location.kb);        
+      // Inject the postalcode in the hidden field.
+      if (coordinates_input_selector != '') {
+        $(coordinates_input_selector).val(place.geometry.location.jb + ',' + place.geometry.location.kb);        
       }
+
+      if (city_input_selector != '') {
+        $(city_input_selector).val(postalcode + ' ' + city);        
+      }      
       
     } 
     
