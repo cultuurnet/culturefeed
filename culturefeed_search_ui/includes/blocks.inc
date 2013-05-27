@@ -130,8 +130,14 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
 
 /**
  * Renders a facet block to go along with the search form.
+ * @param $facet_name
+ *   Facet to show (ex category_theme_name)
+ * @param $domain_id
+ *   Domain id where this facet belongs to. This is used to show the title
+ * @param $allowed_items
+ *   List of allowed items, and the label that should be shown for every item.
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '') {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
 
   // FacetingComponent is set in the page callback.
   global $facetingComponent;
@@ -148,7 +154,20 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '')
 
   $facet = $facets[$facet_name];
 
-  $items = $facet->getResult()->getItems();
+  // Show only the allowed values, and set the requested label.
+  if (!empty($allowed_items)) {
+    $all_items = $facet->getResult()->getItems();
+    $items = array();
+    foreach ($all_items as $item) {
+      if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
+        $item->setLabel($allowed_items[$item->getLabel()]);
+        $items[] = $item;
+      }
+    }
+  }
+  else {
+    $items = $facet->getResult()->getItems();
+  }
 
   if (!empty($items)) {
 
@@ -182,32 +201,13 @@ function culturefeed_search_ui_block_date_facet() {
 
   $build = array();
 
-  $facets = $facetingComponent->getFacets();
-  if (!isset($facets['datetype'])) {
-    return;
-  }
-  $facet = $facets['datetype'];
-
-  // Only this items should be shown.
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items);
 
-  $all_items = $facet->getResult()->getItems();
-  $items = array();
-  foreach ($all_items as $item) {
-    if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
-      $item->setLabel($allowed_items[$item->getLabel()]);
-      $items[] = $item;
-    }
-  }
-
-  if (!empty($items)) {
+  if (!empty($facet_block)) {
 
     $build = array();
-    $build[] = array(
-      '#theme' => 'culturefeed_search_facet',
-      '#facet' => $facet,
-      '#items' => $items,
-    );
+    $build['facets'] = $facet_block['content'];
 
     $build[] = drupal_get_form('culturefeed_search_ui_date_facet_form');
 

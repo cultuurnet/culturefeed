@@ -90,3 +90,17 @@ function culturefeed_search_ui_get_date_facet_options() {
   );
 
 }
+
+/**
+ * Get the allowed agefrom facet options.
+ */
+function culturefeed_search_ui_get_agefrom_facet_options() {
+
+  return array(
+    '3' => 'Vanaf 3 jaar',
+    '5' => 'Vanaf 5 jaar',
+    '7' => 'Vanaf 7 jaar',
+    '9' => 'Vanaf 9 jaar',
+  );
+
+}

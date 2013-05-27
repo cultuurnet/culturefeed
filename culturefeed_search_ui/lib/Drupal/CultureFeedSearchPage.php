@@ -179,6 +179,7 @@ class CultureFeedSearchPage {
           '#quantity' => 5
         ),
       );
+
     }
 
     drupal_set_title($this->getDrupalTitle());

@@ -202,6 +202,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-agefrom'] = array(
+    'info' => t('Culturefeed search facet: Minimum age'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
@@ -246,6 +251,14 @@ function culturefeed_search_ui_block_view($delta) {
 
     case 'facet-city':
       $block = culturefeed_search_ui_block_city_facet();
+    break;
+
+    case 'facet-agefrom':
+      $allowed_items = culturefeed_search_ui_get_agefrom_facet_options();
+      $block = culturefeed_search_ui_search_facets_block('agefrom', '', $allowed_items);
+      if ($block) {
+        $block['subject'] = 'Leeftijd';
+      }
     break;
 
     default:
