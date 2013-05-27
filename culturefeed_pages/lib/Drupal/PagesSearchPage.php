@@ -77,7 +77,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->searchPages($this->parameters);
-    $facetingComponent->obtainResults($this->result, '');
+    $facetingComponent->obtainResults($this->result);
 
   }
 

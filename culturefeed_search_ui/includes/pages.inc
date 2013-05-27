@@ -32,6 +32,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL) {
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
+    dsm($e->getMessage());
     return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
   }
   catch (InvalidSearchPageException $e) {

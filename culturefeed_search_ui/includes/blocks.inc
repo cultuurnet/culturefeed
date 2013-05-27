@@ -280,24 +280,38 @@ function culturefeed_search_ui_block_city_facet() {
 
   $build = array();
 
-  $facets = $facetingComponent->getFacets();
-  // Check if a city or region facet was run.
-  if (!isset($facets['city']) && !isset($facets['flandersregion'])) {
-    return;
+  // Show facet layout for location.
+  if (isset($_GET['location'])) {
+
+    // Build facet for location.
+    $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
+    if (isset($_GET['distance'])) {
+      $label .= ' +' . $_GET['distance'] . ' km';
+    }
+
+    // Make a result item for location search.
+    global $pager_total_items;
+    $items = array(
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $pager_total_items[0]),
+    );
+
+    $build = array();
+    $build[] = array(
+      '#theme' => 'culturefeed_search_facet',
+      '#facet' => $facet,
+      '#items' => $items,
+    );
+
+    // If a postal was given. We can add proximity search.
+    $city_parts = explode(' ', $_GET['location']);
+    if (is_numeric($city_parts[0])) {
+      $build['distance-form'] = drupal_get_form('culturefeed_search_ui_proximity_distance_form');
+    }
+
   }
 
-  // Only this items should be shown.
-
-  //$items = $facet->getResult()->getItems();
-
-  $build = array();
-  /*$build[] = array(
-    '#theme' => 'culturefeed_search_facet',
-    '#facet' => $facet,
-    '#items' => $items,
-  );*/
-
-  $build[] = drupal_get_form('culturefeed_search_ui_city_facet_form');
+  $build['form'] = drupal_get_form('culturefeed_search_ui_city_facet_form');
 
   return array(
     'subject' => 'Where',
@@ -335,7 +349,8 @@ function culturefeed_search_ui_city_facet_form() {
  */
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location'));
+
   if (!empty($form_state['values']['location'])) {
     $query['location'] = $form_state['values']['location'];
   }
@@ -343,6 +358,50 @@ function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
   $form_state['redirect'] = array(
       $_GET['q'],
       array('query' => $query)
+  );
+
+}
+
+/**
+ * Form callback to show possibility to change the proximity distance.
+ */
+function culturefeed_search_ui_proximity_distance_form() {
+
+  $options = array('' => '');
+  for ($i = 10; $i <= 100; $i += 5) {
+    $options[$i] = '+' . $i . ' km';
+  }
+
+  $form = array();
+  $form['distance'] = array(
+    '#type' => 'select',
+    '#title' => 'Zoek in omgeving',
+    '#options' => $options,
+    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Ok',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit the distance form.
+ */
+function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  if (!empty($form_state['values']['distance'])) {
+    $query['distance'] = $form_state['values']['distance'];
+  }
+
+  $form_state['redirect'] = array(
+    $_GET['q'],
+    array('query' => $query)
   );
 
 }

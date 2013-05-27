@@ -438,7 +438,7 @@ function culturefeed_search_get_flandersregion_categories($parent_operator = '',
   if (!empty($parent_operator)) {
     $query->condition('cst.parent', '', $parent_operator);
   }
-  
+
   if (!empty($conditions['tid'])) {
     foreach ($conditions as $field => $value) {
       if (is_array($value)) {
@@ -479,6 +479,9 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
     $query->condition('parent', '');
   }
 
+  // Order by parent, so that provinces appear at top of list.
+  $query->orderBy('parent', 'ASC');
+
   $result = $query->execute();
   $suggestions = array();
   foreach ($result as $row) {
@@ -498,8 +501,8 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
 function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
 
   $suggestions = array();
-  if ($include_regions) {
-    $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, TRUE);
+  if ($include_regions && !is_numeric($search_string)) {
+    $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, FALSE);
     foreach ($region_suggestions as $region) {
       $suggestions[$region] = $region;
     }
@@ -507,10 +510,10 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
 
   $limit = 10 - count($suggestions);
   $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
-      WHERE name LIKE :name LIMIT " . $limit, array(':name' => "%" . db_like($search_string) . "%"));
+      WHERE name LIKE :search OR zip LIKE :search LIMIT " . $limit, array(':search' => "%" . db_like($search_string) . "%"));
 
   foreach ($result as $row) {
-    $suggestions[$row->name] = $row->name;
+    $suggestions[$row->zip . ' ' . $row->name] = $row->name . ' (' . $row->zip . ')';
   }
 
   return $suggestions;

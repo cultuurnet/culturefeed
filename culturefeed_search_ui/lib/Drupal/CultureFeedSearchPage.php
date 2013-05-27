@@ -86,10 +86,15 @@ class CultureFeedSearchPage {
     // Add the location facet.
     if (isset($params['location'])) {
 
-      $type = isset($params['type']) ? $params['type'] : 'city';
-
-      if ($type == 'city') {
-
+      // Check if postal was present.
+      $city_parts = explode(' ', $params['location']);
+      if (is_numeric($city_parts[0])) {
+        $distance = isset($params['distance']) ? $params['distance'] : '';
+        $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+      }
+      else {
+        $location = '"' . str_replace('"', '\"', $params['location']) . '"';
+        $this->parameters[] = new Parameter\FilterQuery('category_flandersregion_name' . ':' . $location);
       }
 
     }
@@ -141,7 +146,7 @@ class CultureFeedSearchPage {
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);
-    $facetingComponent->obtainResults($this->result, \CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+    $facetingComponent->obtainResults($this->result);
 
   }
 

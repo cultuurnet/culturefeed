@@ -75,7 +75,9 @@ function culturefeed_agenda_block_related_activities() {
 
   }
   catch (Exception $e) {
+    dsm($e->getMessage());
     watchdog_exception('culturefeed_agenda', $e);
+    return;
   }
 
   global $language;
