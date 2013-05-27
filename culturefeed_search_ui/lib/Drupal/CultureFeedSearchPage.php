@@ -133,7 +133,7 @@ class CultureFeedSearchPage {
     if ('' == $params['search']) {
       $params['search'] = '*';
     }
-    $this->query[] = 'text:(' . str_replace(')', '\\)', $params['search']) . ')';
+    $this->query[] = $params['search'];
 
     $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
 
