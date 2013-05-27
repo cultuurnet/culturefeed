@@ -9,6 +9,12 @@ use \CultuurNet\Search\Parameter;
 class CultureFeedSearchPage {
 
   /**
+   * Constants to define the available pager types.
+   */
+  const PAGER_NORMAL = 0;
+  const PAGER_INFINITE_SCROLL = 1;
+
+  /**
    * Start index from items currently shown.
    * @var int
    */
@@ -19,6 +25,11 @@ class CultureFeedSearchPage {
    * @var int
    */
   protected $resultsPerPage = 10;
+  
+  /**
+   * Pager type to render with this page.
+   */
+  protected $pagerType = self::PAGER_NORMAL;
 
   /**
    * List of paramaters to be given to the search.
@@ -39,6 +50,20 @@ class CultureFeedSearchPage {
    */
   protected $result;
 
+  /**
+   * Sets the resultsPerPage property.
+   */
+  public function setResultsPerPage($resultsPerPage) {
+    $this->resultsPerPage = $resultsPerPage;
+  }
+  
+  /**
+   * Sets the pagerType property.
+   */
+  public function setPagerType($pagerType) {
+    $this->pagerType = $pagerType;
+  }
+  
   /**
    * Loads a search page.
    */
@@ -164,16 +189,31 @@ class CultureFeedSearchPage {
       $build['pager-container'] =  array(
         '#type' => 'container',
         '#attributes' => array(),
-        'pager_summary' => array(
-          '#theme' => 'culturefeed_search_pager_summary',
-          '#result' => $this->result,
-          '#start' => $this->start,
-        ),
-        'pager' => array(
+      );
+      $build['pager-container']['pager_summary'] = array(
+        '#theme' => 'culturefeed_search_pager_summary',
+        '#result' => $this->result,
+        '#start' => $this->start,
+      );
+      dsm($this->pagerType);
+      if ($this->pagerType == self::PAGER_NORMAL) {
+        $build['pager-container']['pager'] = array(
           '#theme' => 'pager',
           '#quantity' => 5
-        ),
-      );
+        );
+      }
+      elseif ($this->pagerType == self::PAGER_INFINITE_SCROLL) {
+        $build['pager-container']['pager'] = array(
+          '#type' => 'button',
+          '#value' => 'Meer resultaten',
+          '#ajax' => array(
+            'callback' => 'culturefeed_search_ui_search_page_more',
+            'wrapper' => 'culturefeed-search-results-more-wrapper',
+          ),
+          '#prefix' => '<div id="culturefeed-search-results-more-wrapper">',
+          '#suffix' => '</div>',
+        );
+      }
     }
 
     drupal_set_title($this->getDrupalTitle());
