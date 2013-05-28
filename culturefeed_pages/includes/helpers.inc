@@ -144,7 +144,7 @@ function culturefeed_pages_get_active_page() {
  * @return String $id
  */
 function culturefeed_pages_get_active_page_id() {
-  return isset($_SESSION['culturefeed']['page']) ? $_SESSION['culturefeed']['page']->getId() : "";
+  return isset($_SESSION['culturefeed']['page']) ? $_SESSION['culturefeed']['page']->getId() : '';
 }
 
 /**
