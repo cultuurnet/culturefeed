@@ -276,8 +276,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
     $followers[] = $follower;
 
   }
-  $variables['followers'] = $followers;
 
+  $variables['followers'] = $followers;
   $variables['follow_link'] = culturefeed_pages_follow_link($page);
 
 }

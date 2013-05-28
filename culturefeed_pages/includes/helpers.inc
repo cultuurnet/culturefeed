@@ -9,19 +9,23 @@
  * If he already follows, it will return a unfollow link, otherwise a follow.
  * @param Culturefeed_Cdb_Item_Page $page
  *   Page to follow / unfollow.
+ * @param $use_ajax
+ *   Should the follow link use ajax or not.
  */
-function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page) {
+function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_ajax = FALSE) {
 
   $is_following = culturefeed_pages_is_user_following_page($page->getId());
-
-  drupal_add_library('system', 'drupal.ajax');
 
   $options = array(
     'query' => array(
       'destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName())
     ),
-    'attributes' => array('class' => array('use-ajax'))
   );
+
+  if ($use_ajax) {
+    drupal_add_library('system', 'drupal.ajax');
+    $options['attributes'] = array('class' => array('use-ajax'));
+  }
 
   if ($is_following) {
     return l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), $options);
