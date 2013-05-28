@@ -11,7 +11,7 @@ function culturefeed_pages_join_page_search() {
 
   $form = drupal_get_form('culturefeed_pages_join_form');
 
-  $result = NULL;
+  $items = array();
   if (isset($_GET['page'])) {
 
     try {
@@ -20,6 +20,7 @@ function culturefeed_pages_join_page_search() {
       $parameters = array();
       $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
       $result = $searchService->searchPages($parameters);
+      $items = $result->getItems();
 
     }
     catch (Exception\ClientErrorResponseException $e) {
@@ -36,7 +37,7 @@ function culturefeed_pages_join_page_search() {
   return array(
     '#theme' => 'culturefeed_pages_join_page',
     '#form' => $form,
-    '#items' => $result->getItems(),
+    '#items' => $items,
     '#search' => isset($_GET['page']) ? $_GET['page'] : NULL,
   );
 
