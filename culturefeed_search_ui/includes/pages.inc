@@ -23,7 +23,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
   if ($name == "submitted") {
     return "";
   }
-  
+
   try {
     $page = new $class_name();
     $page->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
@@ -54,14 +54,14 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
       ajax_command_invoke('.more-link:first', 'remove'),
       ajax_command_append('#culturefeed-search-results-more-wrapper', render($build)),
     );
-  
+
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     exit;
   }
   else {
     return $build;
   }
-  
+
 }
 
 /**
