@@ -241,6 +241,7 @@ class CultureFeedSearchPage {
         $params += array(
           'page' => 0,
         );
+        $rest = $this->result->getTotalCount() - ($params['page'] * $this->resultsPerPage);
         $params['page']++;
 
         $build['pager-container'] =  array(
@@ -249,13 +250,22 @@ class CultureFeedSearchPage {
             'class' => array('more-link')
           ),
         );
-        $build['pager-container']['pager'] = array(
-          '#type' => 'link',
-          '#title' => 'Meer resultaten',
-          '#href' => $_GET['q'] . '/nojs', 
-          '#options' => array('query' => $params),
-          '#ajax' => array(),
-        );
+        
+        if ($rest >= 0) {
+          $build['pager-container']['pager'] = array(
+            '#type' => 'link',
+            '#title' => 'Meer resultaten',
+            '#href' => $_GET['q'] . '/nojs',
+            '#options' => array('query' => $params),
+            '#ajax' => array(),
+          );
+        }
+        dsm('rest: ' . $rest, $this->resultsPerPage);
+        if ($rest <= $this->resultsPerPage) {
+          $build['pager-container']['pager'] = array(
+            '#markup' => '<p><strong>Er zijn geen zoekresultaten meer.</strong></p>
+          <p>Niet gevonden wat u zocht? Voer een nieuwe zoekopdracht uit.</p>');
+        }
 
         if ($this->fullPage) {
           $build['#prefix'] = '<div id="culturefeed-search-results-more-wrapper">';
