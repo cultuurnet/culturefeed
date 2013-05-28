@@ -27,14 +27,14 @@ class CultureFeedSearchPage {
    * @var int
    */
   protected $resultsPerPage = 10;
-  
+
   /**
    * Indicator whether to render the full page or only the list items.
    * E.g. for ajax requests.
    * @var Boolean
    */
   protected $fullPage = TRUE;
-  
+
   /**
    * Pager type to render with this page.
    * @var Int
@@ -65,21 +65,21 @@ class CultureFeedSearchPage {
   public function setFullPage($fullPage) {
     $this->fullPage = $fullPage;
   }
-  
+
   /**
    * Sets the resultsPerPage property.
    */
   public function setResultsPerPage($resultsPerPage) {
     $this->resultsPerPage = $resultsPerPage;
   }
-  
+
   /**
    * Sets the pagerType property.
    */
   public function setPagerType($pagerType) {
     $this->pagerType = $pagerType;
   }
-  
+
   /**
    * Loads a search page.
    */
@@ -192,6 +192,66 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Warm up static caches that will be needed for this request.
+   * We do this before rendering, because data for by example the recommend link would generate 20 requests.
+   * This way we can lower this to only 1 request.
+   */
+  protected function warmupCache() {
+
+    // Do an activity search on all found nodeIds.
+    $items = $this->result->getItems();
+    $nodeIds = array();
+    foreach ($items as $item) {
+      $activity_content_type = culturefeed_get_content_type($item->getType());
+      $nodeIds[] = culturefeed_social_get_activity_node_id($activity_content_type, $item);
+    }
+
+    $userDidActivity = &drupal_static('userDidActivity', array());
+
+    // Get a list of all activities from this user, on the content to show.
+    $userActivities = array();
+    try {
+
+      $userId = DrupalCultureFeed::getLoggedInUserId();
+
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->nodeId = $nodeIds;
+      $query->userId = $userId;
+      $query->private = TRUE;
+
+      $activities = DrupalCultureFeed::searchActivities($query);
+      foreach ($activities->objects as $activity) {
+        $userActivities[$activity->nodeId][$activity->contentType][] = $activity;
+      }
+
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_search_ui', $e);
+    }
+
+    // Fill up cache for following content types.
+    $contentTypes = array(
+      CultureFeed_Activity::CONTENT_TYPE_EVENT,
+      CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+    );
+    // Fill up the $userDidActivity variable. This is used in DrupalCulturefeed::userDidActivity().
+    foreach ($nodeIds as $nodeId) {
+      foreach ($contentTypes as $contentType) {
+        // If user did this activitiy. Place it in the correct array.
+        if (isset($userActivities[$nodeId][$contentType])) {
+          $activities = new CultureFeed_ResultSet(count($userActivities[$nodeId][$contentType]), $userActivities[$nodeId][$contentType]);
+        }
+        // Otherwise create an empty result set.
+        else {
+          $activities = new CultureFeed_ResultSet(0, array());
+        }
+        $userDidActivity[$nodeId][$contentType][$userId] = $activities;
+      }
+    }
+
+  }
+
+  /**
    * Get the build from current search page.
    */
   protected function build() {
@@ -228,15 +288,15 @@ class CultureFeedSearchPage {
           '#result' => $this->result,
           '#start' => $this->start,
         );
-        
+
         $build['pager-container']['pager'] = array(
           '#theme' => 'pager',
           '#quantity' => 5
         );
-        
+
       }
       elseif ($this->pagerType == self::PAGER_INFINITE_SCROLL) {
-        
+
         $params = drupal_get_query_parameters();
         $params += array(
           'page' => 0,
@@ -250,7 +310,7 @@ class CultureFeedSearchPage {
             'class' => array('more-link')
           ),
         );
-        
+
         if ($rest >= 0) {
           $build['pager-container']['pager'] = array(
             '#type' => 'link',

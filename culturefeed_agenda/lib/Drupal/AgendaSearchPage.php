@@ -41,6 +41,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     $this->execute($params, $facetingComponent);
 
+    $this->warmupCache();
+
     return $this->build();
 
   }
