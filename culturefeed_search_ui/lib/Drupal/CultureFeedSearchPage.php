@@ -260,11 +260,12 @@ class CultureFeedSearchPage {
             '#ajax' => array(),
           );
         }
-        dsm('rest: ' . $rest, $this->resultsPerPage);
+
         if ($rest <= $this->resultsPerPage) {
+          $link = l('nieuwe zoekopdracht', str_replace("/ajax", "", $_GET['q']));
           $build['pager-container']['pager'] = array(
             '#markup' => '<p><strong>Er zijn geen zoekresultaten meer.</strong></p>
-          <p>Niet gevonden wat u zocht? Voer een nieuwe zoekopdracht uit.</p>');
+          <p>Niet gevonden wat u zocht? Voer een ' . $link . ' uit.</p>');
         }
 
         if ($this->fullPage) {
