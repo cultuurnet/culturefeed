@@ -21,8 +21,8 @@ function culturefeed_search_ui_admin_settings() {
     '#title' => t('Pager type for the search page(s)'),
     '#description' => t('The type of pager to use on search pages. This will trigger different templates as well.'),
     '#options' => array(
-      "CULTUREFEED_SEARCH_UI_PAGER_NORMAL" => t('Normal pager with page numbers'),
-      "CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL" => t('Pager with button to manually scroll to infinity'),
+      CULTUREFEED_SEARCH_UI_PAGER_NORMAL => t('Normal pager with page numbers'),
+      CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL => t('Pager with button to manually scroll to infinity'),
     ),
     '#default_value' => variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL),
   );

@@ -22,7 +22,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     global $facetingComponent;
     $facetingComponent = new Facet\FacetComponent();
 
-    $args = $_GET;
     $params = drupal_get_query_parameters();
 
     $params += array(

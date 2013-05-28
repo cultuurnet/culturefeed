@@ -22,6 +22,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
 
+  if (!empty($vars['items'])) {
+    $vars['result'] = $vars['items'];
+  }
   $items = $vars['result']->getItems();
 
   $vars['noitems'] = $vars['result']->getTotalCount() <= 0 ? TRUE : FALSE;

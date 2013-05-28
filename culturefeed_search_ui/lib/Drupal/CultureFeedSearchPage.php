@@ -1,5 +1,7 @@
 <?php
 
+use CultuurNet\Search\Parameter\BooleanParameter;
+
 use \CultuurNet\Search\Parameter;
 
 /**
@@ -27,7 +29,15 @@ class CultureFeedSearchPage {
   protected $resultsPerPage = 10;
   
   /**
+   * Indicator whether to render the full page or only the list items.
+   * E.g. for ajax requests.
+   * @var Boolean
+   */
+  protected $fullPage = TRUE;
+  
+  /**
    * Pager type to render with this page.
+   * @var Int
    */
   protected $pagerType = self::PAGER_NORMAL;
 
@@ -43,13 +53,19 @@ class CultureFeedSearchPage {
    */
   protected $query = array();
 
-
   /**
    * Search result from current search.
    * @var \CultuurNet\Search\SearchResult
    */
   protected $result;
 
+  /**
+   * Sets the fullPage property.
+   */
+  public function setFullPage($fullPage) {
+    $this->fullPage = $fullPage;
+  }
+  
   /**
    * Sets the resultsPerPage property.
    */
@@ -184,10 +200,19 @@ class CultureFeedSearchPage {
 
     $build = array();
 
-    $build['results'] = array(
-      '#theme' => 'culturefeed_search_page',
-      '#searchresult' => $this->result,
-    );
+    if ($this->fullPage) {
+      $build['results'] = array(
+        '#theme' => 'culturefeed_search_page',
+        '#searchresult' => $this->result,
+      );
+    }
+    else {
+      $build['results'] = array(
+        '#theme' => 'culturefeed_search_list',
+        '#items' => $this->result,
+        '#nowrapper' => TRUE,
+      );
+    }
 
     if ($this->result->getTotalCount() > 0) {
 
@@ -195,29 +220,47 @@ class CultureFeedSearchPage {
         '#type' => 'container',
         '#attributes' => array(),
       );
-      $build['pager-container']['pager_summary'] = array(
-        '#theme' => 'culturefeed_search_pager_summary',
-        '#result' => $this->result,
-        '#start' => $this->start,
-      );
-      //dsm($this->pagerType);
+
       if ($this->pagerType == self::PAGER_NORMAL) {
+
+        $build['pager-container']['pager_summary'] = array(
+          '#theme' => 'culturefeed_search_pager_summary',
+          '#result' => $this->result,
+          '#start' => $this->start,
+        );
+        
         $build['pager-container']['pager'] = array(
           '#theme' => 'pager',
           '#quantity' => 5
         );
+        
       }
       elseif ($this->pagerType == self::PAGER_INFINITE_SCROLL) {
-        $build['pager-container']['pager'] = array(
-          '#type' => 'button',
-          '#value' => 'Meer resultaten',
-          '#ajax' => array(
-            'callback' => 'culturefeed_search_ui_search_page_more',
-            'wrapper' => 'culturefeed-search-results-more-wrapper',
-          ),
-          '#prefix' => '<div id="culturefeed-search-results-more-wrapper">',
-          '#suffix' => '</div>',
+        
+        $params = drupal_get_query_parameters();
+        $params += array(
+          'page' => 0,
         );
+        $params['page']++;
+
+        $build['pager-container'] =  array(
+          '#type' => 'container',
+          '#attributes' => array(
+            'class' => array('more-link')
+          ),
+        );
+        $build['pager-container']['pager'] = array(
+          '#type' => 'link',
+          '#title' => 'Meer resultaten',
+          '#href' => $_GET['q'] . '/nojs', 
+          '#options' => array('query' => $params),
+          '#ajax' => array(),
+        );
+
+        if ($this->fullPage) {
+          $build['#prefix'] = '<div id="culturefeed-search-results-more-wrapper">';
+          $build['#suffix'] = '</div>';
+        }
       }
     }
 

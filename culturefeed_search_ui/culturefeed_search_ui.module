@@ -46,6 +46,15 @@ function culturefeed_search_ui_menu() {
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
+    $items[$search_type['path'] . '/%'] = array(
+      'title' => $search_type['page_title'],
+      'title callback' => FALSE,
+      'page callback' => 'culturefeed_search_ui_search_page',
+      'page arguments' => array($name, $class_name, TRUE),
+      'file' => 'includes/pages.inc',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
 
   }
 
@@ -106,13 +115,18 @@ function culturefeed_search_ui_theme() {
   return array(
 
     'culturefeed_search_page' => array(
-      'variables' => array('searchresult' => NULL),
+      'variables' => array(
+        'searchresult' => NULL
+      ),
       'template' => 'culturefeed-search-page',
       'path' => $path,
       'file' => 'theme.inc',
     ),
     'culturefeed_search_list' => array(
-      'variables' => array('items' => NULL),
+      'variables' => array(
+        'items' => NULL,
+        'nowrapper' => FALSE,
+      ),
       'template' => 'culturefeed-search-list',
       'path' => $path,
       'file' => 'theme.inc',
@@ -330,50 +344,4 @@ function culturefeed_get_searchable_types() {
   drupal_alter('culturefeed_search_page_info', $options);
 
   return $options;
-}
-
-/**
- * function to load more results.
- */
-function culturefeed_search_ui_search_page_more($form, &$form_state) {
-
-  // If the submit was successfully done. Show the non-form row again.
-  if (isset($form_state['#success'])) {
-  
-    $build = array();
-    try {
-      $page = new $class_name();
-      $page->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
-      $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
-      $build = $page->loadPage();
-    }
-    catch (Exception\ClientErrorResponseException $e) {
-      watchdog_exception('culturefeed_search_ui', $e);
-      return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
-    }
-    catch (Exception\CurlException $e) {
-      watchdog_exception('culturefeed_search_ui', $e);
-      return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
-    }
-    catch (InvalidSearchPageException $e) {
-      return $e->getMessage();
-    }
-    catch (CultureFeed_Cdb_ParseException $e) {
-      watchdog_exception('culturefeed_search_ui', $e);
-      return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
-    }
-  
-    $commands = array(
-      ajax_command_html('#culturefeed-search-results-more-wrapper', render($build)),
-      //ajax_command_prepend('#manage-members', theme('status_messages')),
-    );
-  
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-    exit;
-  
-  }
-  
-  return $form;
-  
-  
 }

@@ -13,37 +13,55 @@ use \Guzzle\Http\Exception;
  *   The name of the searchable type.
  * @param String $class_name
  *   The name of class to be used to load the correct search page.
+ * @param Boolean $ajax
+ *   The type of request.
  */
-function culturefeed_search_ui_search_page($name, $class_name = NULL) {
+function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FALSE) {
 
   // The first search page callback is a dummy callback to redirect to the
   // real search page.
   if ($name == "submitted") {
     return "";
   }
-
+  
   try {
     $page = new $class_name();
     $page->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
     $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
-    return $page->loadPage();
+    if ($ajax) {
+      $page->setFullPage(FALSE);
+    }
+    $build = $page->loadPage();
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    dsm($e->getMessage());
-    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
   }
   catch (InvalidSearchPageException $e) {
-    return $e->getMessage();
+    $build = $e->getMessage();
   }
   catch (CultureFeed_Cdb_ParseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
   }
+
+  if ($ajax) {
+    $commands = array(
+      ajax_command_invoke('.more-link:first', 'remove'),
+      ajax_command_append('#culturefeed-search-results-more-wrapper', render($build)),
+    );
+  
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    exit;
+  }
+  else {
+    return $build;
+  }
+  
 }
 
 /**
