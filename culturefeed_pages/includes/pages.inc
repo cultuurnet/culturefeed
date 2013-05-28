@@ -37,7 +37,7 @@ function culturefeed_pages_join_page_search() {
   return array(
     '#theme' => 'culturefeed_pages_join_page',
     '#form' => $form,
-    '#items' => $items,
+    '#results' => $items,
     '#search' => isset($_GET['page']) ? $_GET['page'] : NULL,
   );
 
