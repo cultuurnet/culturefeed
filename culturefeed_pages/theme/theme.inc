@@ -13,11 +13,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
 
   $variables['message'] = '';
 
-  if (!empty($variables['result'])) {
+  if (!empty($variables['results'])) {
 
-    $items = $variables['result']->getItems();
     $variables['items'] = array();
-    foreach ($items as $item) {
+    foreach ($variables['results'] as $item) {
       $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
     }
     $variables['create_message'] = 'Heeft jouw organisatie of vereniging nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
@@ -378,10 +377,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
 function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$variables) {
 
   global $language;
-  $results = $variables['result']->getItems();
   $rows = array();
 
-  foreach ($results as $result) {
+  foreach ($variables['results'] as $result) {
 
     $row = array();
 

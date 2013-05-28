@@ -36,7 +36,7 @@ function culturefeed_pages_join_page_search() {
   return array(
     '#theme' => 'culturefeed_pages_join_page',
     '#form' => $form,
-    '#result' => $result,
+    '#items' => $result->getItems(),
     '#search' => isset($_GET['page']) ? $_GET['page'] : NULL,
   );
 
@@ -966,7 +966,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
 
     $build['page'] = array(
       '#theme' => 'culturefeed_pages_events_admin_page',
-      '#result' => $result,
+      '#items' => $result->getItems(),
       '#page' => $page,
     );
   }

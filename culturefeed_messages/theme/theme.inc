@@ -185,6 +185,7 @@ function _culturefeed_messages_preprocess_message_recipients(&$variables) {
   $message = $variables['message'];
   $recipient_links = array();
   $recipients = $message->recipients;
+  $current_user_id = DrupalCultureFeed::getLoggedInUserId();
 
   // Build link to profile of every recipient.
   $variables['recipient_links'] = '';
@@ -193,14 +194,14 @@ function _culturefeed_messages_preprocess_message_recipients(&$variables) {
     $accounts = culturefeed_get_uids_for_cf_uids($recipients);
     foreach ($recipients as $uid => $recipient) {
 
-      if (!isset($accounts[$uid])) {
+      if ($uid == $current_user_id || !isset($accounts[$uid])) {
         continue;
       }
 
       $recipient_links[] = l($recipient->nick, 'user/' . $accounts[$uid]);
 
     }
-    $variables['recipient_links'] = implode(' ', $recipient_links);
+    $variables['recipient_links'] = implode(', ', $recipient_links);
 
   }
 

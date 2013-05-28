@@ -169,6 +169,15 @@ function culturefeed_messages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/messages/new'] = array(
+    'title callback' => FALSE,
+    'title' => 'Berichten',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_messages_new_message_form'),
+    'access callback' => 'culturefeed_pages_get_active_page_id',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
 
   return $items;
 

@@ -24,7 +24,7 @@ function culturefeed_messages_block_inbox($page = NULL) {
   $block['content'] = array(
     '#theme' => 'culturefeed_messages_message_list',
     '#messages' => $messages,
-    '#add_new_allowed' => TRUE,
+    '#add_new_allowed' => (!module_exists('culturefeed_pages') || culturefeed_pages_get_active_page_id()), // Only admins can send message with normal form.
   );
 
   return $block;

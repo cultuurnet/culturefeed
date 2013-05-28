@@ -51,6 +51,21 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   $form = array();
   $form['title'] = array('#markup' => 'Nieuw bericht');
 
+  // If empty object. Load active page. This form needs a page.
+  if (empty($object)) {
+
+    $page_id = culturefeed_pages_get_active_page_id();
+    if (!$page_id) {
+      return;
+    }
+    try {
+      $object = DrupalCultureFeed::getConsumerInstance()->pages()->getPage($page_id);
+    }
+    catch (Exception $e) {
+      return;
+    }
+  }
+
   if (!empty($object)) {
 
     // If we are on a page. Options are to members or to admins.
