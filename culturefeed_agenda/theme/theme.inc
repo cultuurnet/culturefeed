@@ -14,11 +14,6 @@ function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
   _culturefeed_agenda_preprocess_actor($variables);
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
-  $weekscheme = $variables['item']->getEntity()->getWeekScheme();
-  if ($weekscheme) {
-
-  }
-
 }
 
 /**

@@ -105,14 +105,19 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
 
 </dl>
 
+<?php if (!empty($main_picture)): ?>
 <img src="<?php print $main_picture; ?>" />
 
 <?php foreach ($pictures as $picture): ?>
   <img src="<?php print $picture; ?>?width=160&height=120&crop=auto" />
 <?php endforeach; ?>
 
+<?php endif; ?>
+
+<?php if (!empty($videos)): ?>
 <?php foreach ($videos as $video): ?>
   <?php print $video; ?>
 <?php endforeach; ?>
+<?php endif; ?>
 
-<?php print culturefeed_social_activity_recommend_link($item); ?>
+<?php print $recommend_link; ?>

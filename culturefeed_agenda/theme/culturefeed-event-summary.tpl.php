@@ -13,7 +13,7 @@
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#lees">Lees reactieen</a>
+        <a href="<?php print $url ?>#lees">Lees reacties</a>
         <a href="<?php print $url ?>#schrijf">Schrijf een reactie</a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
@@ -33,11 +33,6 @@
   </div>
 
   <dl class="clearfix">
-
-    <?php if (!empty($age)): ?>
-    <dt>Leeftijd</dt>
-    <dd><?php print $age ?></dd>
-    <?php endif; ?>
 
     <?php if ($location): ?>
     <dt>Waar</dt>

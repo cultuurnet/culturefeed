@@ -436,9 +436,17 @@ function culturefeed_search_ui_search_active_filters_block() {
   // Check the facets.
   if (isset($query['facet'])) {
 
-    $date_options = culturefeed_search_ui_get_date_facet_options();
+    // Load all possible human names for special facets.
+    $human_names = array();
+    if (isset($query['facet']['datetype'])) {
+      $human_names['datetype'] = culturefeed_search_ui_get_date_facet_options();
+    }
+    if (isset($query['facet']['agefrom'])) {
+      $human_names['agefrom'] = culturefeed_search_ui_get_agefrom_facet_options();
+    }
 
     $facets = $facetingComponent->getFacets();
+    // Loop through all active facets, and generate a remove link.
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
       foreach ($selected_value as $key => $value) {
 
@@ -451,10 +459,10 @@ function culturefeed_search_ui_search_active_filters_block() {
         }
 
         $url = url($path, array('query' => $search_query));
-
+        $label = $selected_value[$key];
         $build['item_' . $active_facet_name][$value] = array(
           '#theme' => 'culturefeed_search_active_filters_item',
-          '#label' => $active_facet_name == 'datetype' ? $date_options[$selected_value[$key]] : $selected_value[$key],
+          '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
           '#url' => $url
         );
 
@@ -463,6 +471,7 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   }
 
+  // Check if user is filtering on date range.
   if (isset($query['date_range'])) {
     $search_query = $query;
     unset($search_query['date_range']);
@@ -474,6 +483,7 @@ function culturefeed_search_ui_search_active_filters_block() {
     );
   }
 
+  // Check if user selected 'nearby activities'
   if (isset($query['nearby']) && isset($query['coordinates'])) {
     $search_query = $query;
     unset($search_query['nearby']);
@@ -486,6 +496,7 @@ function culturefeed_search_ui_search_active_filters_block() {
     );
   }
 
+  // Check if user is searching on a location.
   if (isset($query['location'])) {
     $search_query = $query;
     unset($search_query['location']);
