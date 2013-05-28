@@ -43,7 +43,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   // Not possible to link when it's an activity on an activity.
   if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
-    $link = $activity->nodeTitle;
+    $link = check_plain($activity->nodeTitle);
   }
   else {
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);

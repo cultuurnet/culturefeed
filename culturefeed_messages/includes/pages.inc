@@ -172,7 +172,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
 
   $params = array(
     'subject' => $form_state['values']['subject'],
-    'body' => $form_state['values']['message'],
+    'body' => str_replace("\n", "<br />", $form_state['values']['message']),
   );
 
   if (!empty($form_state['values']['send_as'])) {

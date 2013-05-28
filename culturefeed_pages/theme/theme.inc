@@ -40,9 +40,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
 
   $address = $page->getAddress();
   if ($address) {
-    $variables['location']['street'] = $address->getStreet();
-    $variables['location']['city'] = $address->getCity();
-    $variables['location']['country'] = $address->getCountry();
+    $variables['location']['street'] = check_plain($address->getStreet());
+    $variables['location']['city'] = check_plain($address->getCity());
+    $variables['location']['country'] = check_plain($address->getCountry());
   }
 
   drupal_add_library('system', 'drupal.ajax');
@@ -123,10 +123,10 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
       $member = array();
       $member['url'] = url('user/' . $uids[$membership->user->id]);
-      $member['name'] = $membership->user->nick;
-      $member['relation'] = $membership->relation;
-      $member['role'] = $membership->role;
-      $member['picture'] = $membership->user->depiction;
+      $member['name'] = check_plain($membership->user->nick);
+      $member['relation'] = check_plain($membership->relation);
+      $member['role'] = check_plain($membership->role);
+      $member['picture'] = check_plain($membership->user->depiction);
 
       $variables['members'][] = $member;
     }
@@ -149,9 +149,9 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   }
 
 
-  $variables['title'] = $page->getName();
+  $variables['title'] = check_plain($page->getName());
   $variables['id'] = $page->getId();
-  $variables['description'] = $page->getDescription();
+  $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
 
@@ -169,11 +169,11 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
     $variables['address']['street'] = '';
     if ($address->getStreet()) {
-      $variables['address']['street'] = $address->getStreet() . ' ' . $address->getHouseNumber();
+      $variables['address']['street'] = check_plain($address->getStreet() . ' ' . $address->getHouseNumber());
     }
 
-    $variables['address']['city'] = $address->getCity();
-    $variables['address']['zip'] = $address->getZip();
+    $variables['address']['city'] = check_plain($address->getCity());
+    $variables['address']['zip'] = check_plain($address->getZip());
 
     $coordinates = $address->getGeoInformation();
     if ($coordinates) {
@@ -188,10 +188,10 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   // Contact information.
   $variables['contact'] = array();
   if ($page->getTelephone()) {
-    $variables['contact']['tel'] = $page->getTelephone();
+    $variables['contact']['tel'] = check_plain($page->getTelephone());
   }
   if ($page->getEmail()) {
-    $variables['contact']['mail'] = $page->getEmail();
+    $variables['contact']['mail'] = check_plain($page->getEmail());
   }
 
 }
@@ -227,15 +227,15 @@ function culturefeed_pages_preprocess_culturefeed_pages_fellow_members_block(&$v
 
     $colleague = array();
     $colleague['url'] = url('user/' . $uids[$membership->user->id]);
-    $colleague['name'] = $membership->user->nick;
-    $colleague['picture'] = $membership->user->depiction;
+    $colleague['name'] = check_plain($membership->user->nick);
+    $colleague['picture'] = check_plain($membership->user->depiction);
 
     $colleagues[] = $colleague;
 
   }
 
   $variables['colleagues'] = $colleagues;
-  $variables['nick'] = $variables['account']->nick;
+  $variables['nick'] = check_plain($variables['account']->nick);
   $variables['title'] = $variables['page']->getName();
 
   if (culturefeed_pages_is_user_member_of_page($variables['page']->getId())) {
@@ -270,8 +270,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
 
     $follower = array();
     $follower['url'] = url('user/' . $uids[$cf_follower->user->id]);
-    $follower['name'] = $cf_follower->user->nick;
-    $follower['picture'] = $cf_follower->user->depiction;
+    $follower['name'] = check_plain($cf_follower->user->nick);
+    $follower['picture'] = check_plain($cf_follower->user->depiction);
 
     $followers[] = $follower;
 
@@ -360,7 +360,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     }
 
     $result = array();
-    $result['nick'] = $object->nick;
+    $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l('Bekijk profiel', 'user/' . $accounts[$object->id]);
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
     $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l('Voeg toe als lid', 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
@@ -388,7 +388,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
 
       $path = culturefeed_search_detail_path($result->getType(), $result->getId(), $detail->getTitle());
       $row['title'] = l($detail->getTitle(), $path);
-      $row['date'] = $detail->getCalendarSummary();
+      $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
         $row['comment_count'] = l(format_plural($comment_count, '@count reactie', '@count reacties'), $path, array('fragment' => 'lees'));

@@ -82,9 +82,9 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   $thread = $variables['thread'];
 
   $variables['message_count'] = 1;
-  $variables['sender'] = $thread->sender->nick;
+  $variables['sender'] = check_plain($thread->sender->nick);
   if (!empty($thread->senderPage)) {
-    $variables['sender'] .= ' van ' . $thread->senderPage->getName();
+    $variables['sender'] .= ' van ' . check_plain($thread->senderPage->getName());
   }
 
   $variables['messages'] = array();
@@ -227,9 +227,13 @@ function _culturefeed_messages_preprocess_message(&$variables) {
     $variables['body'] = $message->body;
   }
 
-  $variables['sender'] = $message->sender->nick;
+  if (isset($variables['body'])) {
+    $variables['body'] = check_markup($variables['body'], 'filtered_html');
+  }
+
+  $variables['sender'] = check_plain($message->sender->nick);
   if (!empty($message->senderPage)) {
-    $variables['sender'] .= ' van ' . $message->senderPage->getName();
+    $variables['sender'] .= ' van ' . check_plain($message->senderPage->getName());
   }
 
   $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
@@ -260,7 +264,4 @@ function _culturefeed_messages_preprocess_message(&$variables) {
     }
 
   }
-
-  $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
-
 }
