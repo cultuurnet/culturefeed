@@ -33,7 +33,7 @@ function culturefeed_pages_theme() {
     'culturefeed_pages_join_page' => array(
       'variables' => array(
         'form' => NULL,
-        'result' => NULL,
+        'results' => array(),
         'search' => '',
       ),
       'path' => $path,
@@ -139,7 +139,7 @@ function culturefeed_pages_theme() {
     ),
 
     'culturefeed_pages_events_admin_page' => array(
-      'variables' => array('result' => NULL, 'page' => NULL),
+      'variables' => array('results' => array(), 'page' => NULL),
       'template' => 'culturefeed-pages-events-admin-page',
       'path' => $path,
       'file' => 'theme.inc',
