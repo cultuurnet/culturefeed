@@ -395,17 +395,18 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   // Basic validation.
   if (empty($form_state['values']['name'])) {
     form_set_error('name', 'De titel moet ingevuld zijn');
+    $form_state['#validation_failed'] = TRUE;
   }
 
   if (strlen($form_state['values']['description']) > 400) {
     form_set_error('description', 'Het maximum karakters bedraagt 400');
+    $form_state['#validation_failed'] = TRUE;
   }
 
   // Add the post params to the form so other modules can add their params.
   $post = $form_state['values'];
   unset($post['form_id'], $post['form_token'], $post['form_build_id'], $post['submit'], $post['op'], $post['image']);
   $form_state['post_params'] = $post;
-  $form_state['#validation_failed'] = TRUE;
 
 }
 
