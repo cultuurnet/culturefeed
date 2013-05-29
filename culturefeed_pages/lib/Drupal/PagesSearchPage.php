@@ -103,6 +103,10 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
       case 'activity_count':
         $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
       break;
+      
+      case 'agefrom':
+        $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
+      break;
 
       default:
 
