@@ -5,7 +5,7 @@
  */
 ?>
 
-<h2><?php print $title; ?></h2>
+<h1><?php print $title; ?></h1>
 
 reacties:
 <?php if ($comment_count > 0): ?>

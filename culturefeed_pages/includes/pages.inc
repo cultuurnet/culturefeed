@@ -405,6 +405,7 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   $post = $form_state['values'];
   unset($post['form_id'], $post['form_token'], $post['form_build_id'], $post['submit'], $post['op'], $post['image']);
   $form_state['post_params'] = $post;
+  $form_state['#validation_failed'] = TRUE;
 
 }
 
@@ -414,6 +415,11 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_request_send(& $form, & $form_state) {
+
+  // If a previous validation function failed, don't send the request.
+  if (!empty($form_state['#validation_failed'])) {
+    return;
+  }
 
   // Local storage of the universal id.
   $uid = NULL;

@@ -41,7 +41,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     $this->execute($params, $facetingComponent);
 
-    $this->warmupCache();
+    if (module_exists('culturefeed_social')) {
+      $this->warmupCache();
+    }
 
     return $this->build();
 

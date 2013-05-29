@@ -144,21 +144,14 @@ function culturefeed_agenda_block_configure($delta) {
 
   if ($delta == 'agenda-related-activities') {
 
-    $options = array('' => t('No context'));
+    $options = array('' => t('None'));
     $options += culturefeed_search_get_domains();
     $form['agenda_related_activities_context'] = array(
-      '#title' => t('Context field for the related events'),
+      '#title' => t('Category type to search related events'),
       '#type' => 'select',
-      '#options' => array(
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY => t('Facility'),
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME => t('Theme'),
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_PUBLICSCOPE => t('Public scope'),
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_TARGET_AUDIANCE => t('Target audience'),
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EDUCATION_FIELD => t('Education field'),
-        CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EDUCATION_LEVEL => t('Education level'),
-      ),
+      '#options' => $options,
       '#default_value' => variable_get('agenda_related_activities_context'),
-      '#description' => t('The field to use for searching related activities. Leave empty if you only want to search on range.')
+      '#description' => t('The category type to use for searching related activities. Leave empty if you only want to search on range.')
     );
 
     $form['agenda_related_activities_range'] = array(
@@ -229,6 +222,7 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_related_activities_extra_query', $edit['agenda_related_activities_extra_query']);
     variable_set('agenda_related_activities_sort', $edit['agenda_related_activities_sort']);
     variable_set('agenda_related_activities_sort_direction', $edit['agenda_related_activities_sort_direction']);
+    variable_set('agenda_related_activities_total_items', $edit['agenda_related_activities_total_items']);
   }
   elseif ($delta == 'agenda-search-block') {
     variable_set('agenda_search_block_domain_id', $edit['agenda_search_block_domain_id']);

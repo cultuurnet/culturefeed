@@ -245,14 +245,14 @@ function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
 /**
  * Page callback to unfollow a node.
  */
-function culturefeed_social_page_node_unfollow($content_type, $nodeId, $type = 'ajax') {
+function culturefeed_social_page_node_unfollow($content_type, $node_id, $type = 'ajax') {
 
   $success = TRUE;
   $activity_content_type = culturefeed_get_content_type($content_type);
-  $nodeId = urldecode($nodeId);
+  $node_id = urldecode($node_id);
 
   try {
-    DrupalCultureFeed::unFollowNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+    DrupalCultureFeed::unFollowNode($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
   }
   catch (Exception $e) {
     $success = FALSE;
@@ -318,6 +318,7 @@ function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax')
  */
 function culturefeed_social_page_do($activity_type, $content_type, $node_id, $argument = '') {
 
+  $add_count = isset($_GET['add_count']);
   $node_id = urldecode($node_id);
   $activity = _culturefeed_social_do($activity_type, $content_type, $node_id);
   $config = culturefeed_social_activity_get_config($activity_type);
@@ -340,7 +341,16 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
     if (!empty($activity)) {
 
-      $action_url = 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
+      // If undo is not allowed, we should always show the do link.
+      if ($config->undoAllowed) {
+        $action_url = 'culturefeed/undo/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
+        $title = $config->subjectUndo;
+      }
+      else {
+        $action_url = 'culturefeed/do/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
+        $title = $config->titleDo;
+      }
+
       if (!empty($argument)) {
         $action_url .= '/' . $argument;
       }
@@ -349,10 +359,12 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
       $build[$identifier] = array(
         '#id' => $identifier,
         '#type' => 'link',
-        '#title' => $config->subjectUndo,
+        '#title' => $title,
         '#href' => $action_url,
-        '#query' => array(
-          'ajax_wrapper' => $identifier_wrapper
+        '#options' => array(
+          'query' => array(
+            'add_count' => $add_count,
+          ),
         ),
         '#attributes' => array(
           'id' => $identifier,
@@ -368,6 +380,14 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
       if ($argument == 'advanced') {
         drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
+      }
+
+      // Add the updated total activities.
+      if ($add_count) {
+        $activity_count = culturefeed_social_get_activity_count($activity_type, $content_type, $node_id);
+        if ($activity_count > 0) {
+          $build[$identifier]['#title'] .= ' (' . $activity_count . ')';
+        }
       }
 
       $commands[] = ajax_command_replace(NULL, render($build));
@@ -386,6 +406,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $argument = '') {
 
   $node_id = urldecode($node_id);
+  $add_count = isset($_GET['add_count']);
   $activity = _culturefeed_social_undo($activity_type, $content_type, $node_id);
   $config = culturefeed_social_activity_get_config($activity_type);
 
@@ -419,8 +440,10 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
         '#type' => 'link',
         '#title' => $config->titleDo,
         '#href' => $action_url,
-        '#query' => array(
-          'ajax_wrapper' => $identifier_wrapper
+        '#options' => array(
+          'query' => array(
+            'add_count' => $add_count,
+          ),
         ),
         '#attributes' => array(
           'id' => $identifier,
@@ -436,6 +459,17 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
 
       if ($argument == 'advanced') {
         drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
+      }
+
+      // Add the updated total activities.
+      if ($add_count) {
+        $activity_count = culturefeed_social_get_activity_count($activity_type, $content_type, $node_id);
+        if ($activity_count > 0) {
+          $build[$identifier]['#title'] .= ' (' . $activity_count . ')';
+        }
+        else {
+          $build[$identifier]['#title'] = $config->titleDoFirst;
+        }
       }
 
       $commands[] =  ajax_command_replace(NULL, render($build));

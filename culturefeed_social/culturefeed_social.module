@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * CultureFeed Social adds the ability to social actions (example like, comments, follow) on culturefeed items like events, productions, pages...
+ * CultureFeed Social adds the ability to perform social actions (for example: like, comments, follow, ...) on culturefeed items like events, productions, pages...
  */
 
 module_load_include('inc', 'culturefeed_social', 'includes/helpers');

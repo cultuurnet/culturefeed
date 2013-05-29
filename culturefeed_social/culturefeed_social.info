@@ -1,5 +1,5 @@
 name = CultureFeed Social
-description = CultureFeed Social adds the ability to social actions (example like, comments, follow) on culturefeed items like events, productions, pages...
+description = CultureFeed Social adds the ability to perform social actions (for example: like, comments, follow, ...) on culturefeed items like events, productions, pages...
 package = CultureFeed
 version = VERSION
 core = 7.x

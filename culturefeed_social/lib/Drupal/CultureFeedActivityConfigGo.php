@@ -12,6 +12,9 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
 
     $this->allowedTypes = array('event');
 
+    $this->titleDo = 'Ik ga';
+    $this->titleDoFirst = 'Ik ga';
+    $this->subjectUndo = 'Ik ga niet meer';
     $this->viewPrefix = 'gaat naar';
     $this->label = 'Gaat naar';
     $this->loginRequiredMessage = 'U moet ingelogd zijn om aan te geven dat u gaat';

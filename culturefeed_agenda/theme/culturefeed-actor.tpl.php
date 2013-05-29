@@ -5,7 +5,7 @@
  */
 ?>
 
-<h2><?php print $title; ?></h2>
+<h1><?php print $title; ?></h1>
 
 <?php print $recommend_link; ?>
 
@@ -66,4 +66,4 @@ Samengevat - <?php print $shortdescription; ?><br/>
   <?php print $video; ?>
 <?php endforeach; ?>
 
-<?php print culturefeed_social_activity_recommend_link($item); ?>
+<?php print $recommend_link; ?>

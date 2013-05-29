@@ -125,8 +125,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Social actions.
   $variables['recommend_link'] = '';
+  $variables['attend_link'] = '';
   if (module_exists('culturefeed_social')) {
-    $variables['recommend_link'] = culturefeed_social_activity_recommend_link($item);
+    $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
+    $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
 
   // Themes from this item.

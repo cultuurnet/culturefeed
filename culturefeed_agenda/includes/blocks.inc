@@ -15,10 +15,11 @@ function culturefeed_agenda_block_related_activities() {
     return;
   }
 
+  $total_items = variable_get('agenda_related_activities_total_items', 5);
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*');
   // 1 extra then requested, because it's possible that current event is in the result.
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_related_activities_total_items', 5) + 1);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows($total_items + 1);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
@@ -75,7 +76,6 @@ function culturefeed_agenda_block_related_activities() {
 
   }
   catch (Exception $e) {
-    dsm($e->getMessage());
     watchdog_exception('culturefeed_agenda', $e);
     return;
   }
@@ -84,6 +84,7 @@ function culturefeed_agenda_block_related_activities() {
   $search_results = $result->getItems();
   // Render the results.
   $items = array();
+  $count = 0;
   foreach ($search_results as $search_result) {
 
     // Don't add current activity to the list.
@@ -91,7 +92,13 @@ function culturefeed_agenda_block_related_activities() {
       continue;
     }
 
-    $items[] = theme('culturefeed_' . $search_result->getType() . '_short_summary', array('item' => $search_result));
+    // If current activity was not in results. Make sure we show only the request amount.
+    if ($count < $total_items) {
+      $items[] = theme('culturefeed_' . $search_result->getType() . '_short_summary', array('item' => $search_result));
+    }
+
+    $count++;
+
   }
 
   $block = array();

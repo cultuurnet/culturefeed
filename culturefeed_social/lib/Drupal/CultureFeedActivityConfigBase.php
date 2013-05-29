@@ -6,6 +6,7 @@
 class CultureFeedActivityConfigBase {
 
   public $nodeTypes;
+  public $undoAllowed = TRUE;
   public $allowedTypes;
   public $type;
   public $subject = '';

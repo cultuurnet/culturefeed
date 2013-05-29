@@ -23,7 +23,11 @@
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><span><?php print $recommend_count ?></span> keer aangeraden</div>
     <?php endif; ?>
-    <?php print $link_recommend; ?>
+    <?php print $recommend_link; ?>
+    <?php if ($attend_count > 0): ?>
+      <div class="count-attend"><span><?php print $attend_count ?></span> <?php print format_plural($attend_count, 'persoon gaat', 'personen gaan') ?></div>
+    <?php endif; ?>
+    <?php print $attend_link; ?>
   </div>
 
   <div class="image">

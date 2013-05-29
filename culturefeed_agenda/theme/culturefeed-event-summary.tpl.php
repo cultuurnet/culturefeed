@@ -23,7 +23,8 @@
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><span><?php print $recommend_count ?></span> keer aangeraden</div>
     <?php endif; ?>
-    <?php print $link_recommend; ?>
+    <?php print $recommend_link; ?>
+    <?php print $attend_link; ?>
   </div>
 
   <div class="image">

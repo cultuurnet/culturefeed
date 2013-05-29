@@ -5,7 +5,7 @@
  */
 ?>
 
-<h2><?php print $title; ?></h2>
+<h1><?php print $title; ?></h1>
 
 reacties:
 <?php if ($comment_count > 0): ?>
@@ -46,7 +46,7 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <dt>Wanneer</dt>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
-  
+
   <?php if ($organiser): ?>
   <dt>Organisatie</dt>
   <dd>

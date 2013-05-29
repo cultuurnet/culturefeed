@@ -32,7 +32,7 @@
 
     <?php // Render main items ?>
     <?php foreach ($main_items as $item): ?>
-    <li><?php print $item; ?></li>
+    <li<?php if (isset($item['class'])): print ' class="' . $item['class'] . '"' ?> <?php endif;?>><?php print $item['data']; ?></li>
     <?php endforeach; ?>
 
   </ul>

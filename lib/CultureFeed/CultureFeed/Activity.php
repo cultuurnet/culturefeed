@@ -254,6 +254,14 @@ class CultureFeed_Activity {
         $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT;
         break;
 
+      case self::TYPE_IK_GA:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND;
+        break;
+
+      case self::TYPE_FACEBOOK:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_FACEBOOK_SHARE;
+        break;
+
     }
 
     return $name;

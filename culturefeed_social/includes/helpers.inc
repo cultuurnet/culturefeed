@@ -65,49 +65,56 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 }
 
 /**
- * Extracted from culturefeed_ui_block_users_activity_view, should be made more generic.
+ * Show an advanced do / undo link for a given action, on a given entity.
  *
  * @see culturefeed_social_activity_recommend_link()
  */
-function culturefeed_social_activity_recommend_link_advanced($extendedEntity) {
-  return culturefeed_social_activity_recommend_link($extendedEntity, TRUE);
+function culturefeed_social_activity_recommend_link_advanced($activity_type, $extended_entity) {
+  return culturefeed_social_activity_link($extended_entity, TRUE);
 }
 
 /**
- * Extracted from culturefeed_ui_block_users_activity_view, should be made more generic.
+ * Show a link to do / undo a given activity on the given entity.
  *
+ * @param $activity_type
+ *   Activity type to perform (Example: CultureFeed_Activity::TYPE_RECOMMEND)
  * @param $activityStatsExtendedEntity
  *   The extended entity of the content to create a link for.
  * @param Boolean $advanced
  *   Indicates whether the link is advanced (with extra possibilities).
+ * @param Boolean $add_count
+ *   Add the current activity count to the link or not.
  * @return string
- * @todo Try to  make it work for all activity types.
  */
-function culturefeed_social_activity_recommend_link($extendedEntity, $advanced = FALSE) {
+function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_social_login_required_message', array('activity_type' => CultureFeed_Activity::TYPE_RECOMMEND, 'item' => $extendedEntity));
+    return theme('culturefeed_social_login_required_message', array('activity_type' => $activity_type, 'item' => $extended_entity));
   }
 
-  $itemEntity = $extendedEntity->getEntity();
-  $id = $extendedEntity->getId();
+  $itemEntity = $extended_entity->getEntity();
+  $id = $extended_entity->getId();
   $current_query = drupal_get_query_parameters();
   $path = current_path();
 
-  $identifier = drupal_html_id('activity-element');
-  $identifier_wrapper = drupal_html_id('activity-wrapper');
+  $identifier = drupal_html_id('activity-element-' . $activity_type);
+  $identifier_wrapper = drupal_html_id('activity-wrapper-' . $activity_type);
 
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
-  $activity_content_type = culturefeed_get_content_type($extendedEntity->getType());
+  $config = culturefeed_social_activity_get_config($activity_type);
+  $activity_content_type = culturefeed_get_content_type($extended_entity->getType());
 
   $user_did_this = FALSE;
 
-  try {
-    $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extendedEntity);
-    $user_did_this = DrupalCultureFeed::userDidActivity(CultureFeed_Activity::TYPE_RECOMMEND, $activity_node_id, $activity_content_type);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_social', $e);
+  // If undo is not allowed. The action is always do.
+  $user_did_this = FALSE;
+  if ($config->undoAllowed) {
+    try {
+      $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extended_entity);
+      $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $activity_node_id, $activity_content_type);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_social', $e);
+    }
   }
 
   $action = $user_did_this ? 'undo' : 'do';
@@ -128,8 +135,11 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
     '#attributes' => array(
       'class' => array($action . '-link', $action . '-' . $config->type . '-link'),
     ),
-    '#query' => array(
-      'destination' => url($path, array('query' => $current_query)),
+    '#options' => array(
+      'query' => array(
+        'destination' => url($path, array('query' => $current_query)),
+        'add_count' => $add_count,
+      ),
     ),
     '#prefix' => '<div id="' . $identifier_wrapper . '" class="' . $action . '-link-wrapper">',
     '#suffix' => '</div>',
@@ -138,11 +148,16 @@ function culturefeed_social_activity_recommend_link($extendedEntity, $advanced =
     ),
   );
 
+  $activity_count = $extended_entity->getActivityCount(CultureFeed_Activity::getNameById($activity_type));
   if (!$user_did_this) {
-    $markup[$identifier]['#title'] = (0 == $extendedEntity->getActivityCount('recommend')) ? $config->titleDoFirst : $config->titleDo;
+    $markup[$identifier]['#title'] = (0 == $activity_count) ? $config->titleDoFirst : $config->titleDo;
   }
   else {
     $markup[$identifier]['#title'] = $config->subjectUndo;
+  }
+
+  if ($activity_count && $add_count || isset($_GET['add_count'])) {
+    $markup[$identifier]['#title'] .= ' (' . $activity_count . ')';
   }
 
   return drupal_render($markup);
@@ -242,7 +257,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
  * @param Integer $id
  * @return misc boolean false / CultureFeed_Activity on success
  */
-function _culturefeed_social_undo($activity_type, $type, $id) {
+function _culturefeed_social_undo($activity_type, $type, $node_id) {
 
   $user_id = DrupalCultureFeed::getLoggedInUserId();
 
@@ -311,33 +326,61 @@ function culturefeed_social_goto($activity, $content_type, $node_id, $title = "r
 /**
  * Helper to get the nodeId used for activity.
  * @param String $activity_content_type
- * @param ActivityStatsExtendedEntity $extendedEntity
+ * @param ActivityStatsExtendedEntity $extended_entity
  */
-function culturefeed_social_get_activity_node_id($activity_content_type, $extendedEntity) {
+function culturefeed_social_get_activity_node_id($activity_content_type, $extended_entity) {
 
   switch ($activity_content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
     case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
-      $nodeId = $extendedEntity->getId();
+      $nodeId = $extended_entity->getId();
       break;
 
       case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-        $path = culturefeed_social_detail_path($activity_content_type, $extendedEntity->getId(), $extendedEntity->getTitle($GLOBALS['language']->language));
+        $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
         $nodeId = url($path, array('absolute' => TRUE));
         break;
 
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
-      $nodeId = url('node/' . $extendedEntity->getId(), array('absolute' => TRUE));
+      $nodeId = url('node/' . $extended_entity->getId(), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE:
-      $nodeId = url(culturefeed_social_detail_path('page', $extendedEntity->getId(), $object->getName()), array('absolute' => TRUE));
+      $nodeId = url(culturefeed_social_detail_path('page', $extended_entity->getId(), $object->getName()), array('absolute' => TRUE));
       break;
   }
 
   return $nodeId;
+
+}
+
+/**
+ * Get the total activity count for the given content.
+ * @param $activity_type
+ *   Type of activity to get the count for.
+ * @param $content_type
+ *   Type of content to get the count for.
+ * @param $node_id
+ *   Node ID to get the count for.
+ */
+function culturefeed_social_get_activity_count($activity_type, $content_type, $node_id) {
+
+  try {
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->contentType = $content_type;
+    $query->nodeId = $node_id;
+    $query->type = $activity_type;
+    $query->userId = DrupalCultureFeed::getLoggedInUserId();
+    $activities = DrupalCultureFeed::searchActivities($query);
+    return $activities->total;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  return 0;
 
 }
 
