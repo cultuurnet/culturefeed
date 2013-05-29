@@ -90,7 +90,8 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
   }
 
   $options = isset($searchable_types[$active_page]['sort_options']) ? $searchable_types[$active_page]['sort_options'] : array();
-  $default = isset($query['sort']) ? $query['sort'] : '';
+  $default = $searchable_types[$active_page]['sort_default'];
+  $default = isset($query['sort']) ? $query['sort'] : $default;
 
   if (!$options) {
     return;
