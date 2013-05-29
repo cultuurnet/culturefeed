@@ -19,10 +19,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
     foreach ($variables['results'] as $item) {
       $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
     }
-    $variables['create_message'] = 'Heeft jouw organisatie of vereniging nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
 
   }
 
+  $variables['create_message'] = 'Heeft jouw organisatie of vereniging nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
 
