@@ -206,6 +206,13 @@ class CultureFeedSearchPage {
     $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
 
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
+    
+    // Add in a boost for sort-type "relevancy".
+    // @todo Decide with zuuperman if this is best before or after the alter, and 
+    // if before it can be cleaner.
+    if ($params['sort'] == 'relevancy') {
+      $this->query[0] = '{!boost%20b=sum(recommend_count,product(comment_count,10))}' . $this->query[0];
+    }
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);
