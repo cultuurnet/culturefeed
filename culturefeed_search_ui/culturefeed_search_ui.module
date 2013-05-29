@@ -340,5 +340,5 @@ function culturefeed_get_searchable_types() {
  */
 function culturefeed_get_searchable_type($name) {
   $options = culturefeed_get_searchable_types();
-  return isset($options[$key]) ? $options[$key] : NULL;
+  return isset($options[$name]) ? $options[$name] : NULL;
 }
