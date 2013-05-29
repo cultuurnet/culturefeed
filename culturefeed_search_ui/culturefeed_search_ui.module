@@ -332,3 +332,13 @@ function culturefeed_get_searchable_types() {
 
   return $options;
 }
+
+/**
+ * Load a searchable type.
+ * @param String $name
+ * @return Array searchable type.
+ */
+function culturefeed_get_searchable_type($name) {
+  $options = culturefeed_get_searchable_types();
+  return isset($options[$key]) ? $options[$key] : NULL;
+}

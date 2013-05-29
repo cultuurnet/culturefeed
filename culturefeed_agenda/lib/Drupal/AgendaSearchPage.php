@@ -25,7 +25,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $params = drupal_get_query_parameters();
 
     $params += array(
-      'sort' => 'relevancy',
+      'sort' => $this->getDefaultSort(),
       'page' => 0,
       'search' => '',
       'facet' => array(),

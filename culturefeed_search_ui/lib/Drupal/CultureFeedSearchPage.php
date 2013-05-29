@@ -40,6 +40,12 @@ class CultureFeedSearchPage {
    * @var Int
    */
   protected $pagerType = self::PAGER_NORMAL;
+  
+  /**
+   * Default sort key.
+   * @var String
+   */
+  protected $defaultSortKey = 'relevancy';
 
   /**
    * List of paramaters to be given to the search.
@@ -58,12 +64,28 @@ class CultureFeedSearchPage {
    * @var \CultuurNet\Search\SearchResult
    */
   protected $result;
+  
+  /**
+   * Gets the default sortkey.
+   * @return String $sortKey
+   */
+  public function getDefaultSort() {
+    return $this->defaultSortKey;
+  }
 
   /**
    * Sets the fullPage property.
    */
   public function setFullPage($fullPage) {
     $this->fullPage = $fullPage;
+  }
+  
+  /**
+   * Sets the default sortkey.
+   * @param String $sortKey
+   */
+  public function setDefaultSort($sortKey) {
+    $this->defaultSortKey = $sortKey;
   }
 
   /**
