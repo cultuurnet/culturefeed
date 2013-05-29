@@ -348,7 +348,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
       }
       else {
         $action_url = 'culturefeed/do/' . $activity_type . '/' . $content_type . '/' . urlencode($node_id);
-        $title = $config->titleDo;
+        $title = $config->undoNotAllowedMessage;
       }
 
       if (!empty($argument)) {

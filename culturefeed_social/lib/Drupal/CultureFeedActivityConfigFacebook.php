@@ -19,6 +19,7 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'via Facebok gedeeld';
     $this->label = 'Delen via Facebook';
+    $this->undoNotAllowedMessage = 'Succesvol gedeeld';
 
   }
 

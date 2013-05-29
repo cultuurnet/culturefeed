@@ -23,6 +23,7 @@ class CultureFeedActivityConfigBase {
   public $loginRequiredMessage = '';
   public $action = '';
   public $onBehalfOfMessage = 'Plaats commentaar als';
+  public $undoNotAllowedMessage = '';
 
   protected static $configs = array();
 
