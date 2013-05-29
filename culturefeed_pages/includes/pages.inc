@@ -117,7 +117,7 @@ function culturefeed_pages_page_join($request_type, $page) {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array('activityPrivate' => FALSE));
-    $message = format_string('U bent nu lid van de pagina @page.', array('@page' => $page->getName()));
+    $message = format_string('Je bent nu lid van <strong>@page.</strong><br />Beheer je lidmaatschap van deze en andere pagina\'s via ' . l('mijn pagina\'s', 'culturefeed/pages'), array('@page' => $page->getName()));
     $status_code = 'status';
 
     // If it's your first membership and you don't have an active page yet,
