@@ -64,3 +64,36 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
   );
 
 }
+
+/**
+ * Page callback to do an autocomplete search on activity titles.
+ */
+function culturefeed_agenda_activity_suggestion_autocomplete_page() {
+
+  $searchService = culturefeed_get_search_service();
+  $matches = array();
+
+  if ($search_string) {
+
+    try {
+
+      // Get the list of suggestions from service.
+      $result = $searchService->searchSuggestions($search_string, array('event', 'production'));
+      if ($result->hasSuggestions()) {
+        $suggestions = $result->getSuggestions();
+        foreach ($suggestions as $suggestion) {
+          $matches[$suggestion] = check_plain($suggestion);
+        }
+
+      }
+
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_search', $e);
+    }
+
+  }
+
+  drupal_json_output($matches);
+
+}

@@ -209,7 +209,7 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
     try {
 
       // Get the list of suggestions from service.
-      $result = $searchService->searchSuggestions($search_string, 'page');
+      $result = $searchService->searchSuggestions($search_string, array('page'));
       if ($result->hasSuggestions()) {
         $suggestions = $result->getSuggestions();
         foreach ($suggestions as $suggestion) {
