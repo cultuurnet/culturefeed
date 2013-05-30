@@ -47,6 +47,13 @@ function culturefeed_agenda_theme() {
 
   }
 
+  $theme['culturefeed_agenda_actor_program'] = array(
+    'variables' => array('items' => array()),
+    'template' => 'culturefeed-agenda-actor-program',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
   return $theme;
 
 }
@@ -129,6 +136,11 @@ function culturefeed_agenda_block_info() {
 
   $blocks['agenda-search-block'] = array(
     'info' => t('Agenda quick search'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['actor-program'] = array(
+    'info' => t('Production / actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -247,6 +259,9 @@ function culturefeed_agenda_block_view($delta) {
     case 'agenda-search-block':
       $block['content'] = drupal_get_form('culturefeed_agenda_search_block_form');
     break;
+
+    case 'actor-program':
+      return culturefeed_agenda_block_actor_program();
 
   }
 

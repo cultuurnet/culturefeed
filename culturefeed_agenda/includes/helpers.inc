@@ -124,3 +124,20 @@ function culturefeed_agenda_get_connected_page_id_of_item(CultureFeed_Cdb_Item_B
   }
 
 }
+
+/**
+ * Calculate the different row classes for a program by weekscheme.
+ * @param CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme
+ * @param array $all_classes
+ */
+function culturefeed_agenda_calculate_program_classes_by_weekscheme(CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme, $all_classes) {
+
+  $classes = array();
+
+  $current_day = date('l');
+  $opening_info = $weekscheme->getDay($current_day);
+  if ($opening_info->isOpen()) {
+
+  }
+
+}

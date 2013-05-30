@@ -17,7 +17,7 @@ function culturefeed_agenda_block_related_activities() {
 
   $total_items = variable_get('agenda_related_activities_total_items', 5);
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   // 1 extra then requested, because it's possible that current event is in the result.
   $parameters[] = new \CultuurNet\Search\Parameter\Rows($total_items + 1);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
@@ -168,8 +168,15 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     '#value' => 'Zoeken',
   );
 
+  global $language;
+  $query = array(
+    'sensor' => 'true',
+    'v' => '3.5',
+    'region' => 'BE',
+    'hl' => $language->language,
+  );
   $form['#attached']['js'] = array(
-    CULTUREFEED_GOOGLE_MAPS_JS_API,
+    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/search_block.js',
     drupal_get_path('module', 'culturefeed') . '/js/common.js',
   );
@@ -199,6 +206,52 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   $form_state['redirect'] = array(
     'agenda/search',
     array('query' => $query),
+  );
+
+}
+
+/**
+ * Show the upcoming program of current actor.
+ */
+function culturefeed_agenda_block_actor_program() {
+
+  $item = culturefeed_agenda_get_active_object();
+  if (!$item || $item->getType() != 'actor') {
+    return;
+  }
+
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] =  new Parameter\DateTypeQuery('next30days');
+
+  // Add search on the different agenda connections for the actor.
+  $id_search = array(
+    'performer_cdbid' => $item->getId(),
+    'location_cdbid' => $item->getId(),
+    'organiser_cdbid' => $item->getId(),
+  );
+  $parameters[] = \CultuurNet\Search\Parameter\FilterQuery(implode(' OR ', $id_search));
+
+  try {
+
+    $searchService = culturefeed_get_search_service();
+    $result = $searchService->search($parameters);
+
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  return array(
+    '#theme' => 'culturefeed_agenda_actor_program',
+    '#items' => $result->getItems(),
   );
 
 }

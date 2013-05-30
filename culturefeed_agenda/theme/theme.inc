@@ -274,6 +274,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       $variables['location']['city'] = $physical_address->getCity();
       $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
       $variables['location']['zip'] = $physical_address->getZip();
+
     }
 
   }
@@ -319,7 +320,10 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-
+    $variables['coordinates'] = array(
+      'lat' => '51.020577',
+      'lng' => '3.959729',
+    );
     // Reservation data.
     $variables['reservation'] = $contact_info->getReservationInfo();
 
@@ -478,6 +482,41 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
     $variables['contact']['fax'] = check_plain(implode(', ', $faxes));
+
+  }
+
+}
+
+/**
+ * Preprocess the agenda actor program.
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variables) {
+
+  // Css class => title
+  $headers = array(
+    'program-all' => 'Alle',
+    'program-today' => 'Vandaag',
+    'program-thisweek' => 'Deze week',
+    'program-thisweekend' => 'Dit weekend',
+    'program-nextweekend' => 'Volgend weekend',
+    'program-next30days' => 'Volgende 30 dagen',
+  );
+
+  $all_classes = array_keys($headers);
+
+  $rows = array();
+  foreach ($variables['items'] as $item) {
+
+    $calendar = $item->getCalendar();
+    if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_Permanent) {
+      $classes = culturefeed_agenda_calculate_program_classes_by_weekscheme($calendar->getWeekScheme(), $all_classes);
+    }
+
+    $date = empty($message->lastReply) ? $message->creationDate : $message->lastReply;
+    $time_zone  = new DateTimeZone('Europe/Brussels');
+    $last_reply = new DateTime();
+    $last_reply->setTimestamp($date);
+    $last_reply->setTimezone($time_zone);
 
   }
 
