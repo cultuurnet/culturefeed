@@ -1,7 +1,5 @@
 <?php
 
-use CultuurNet\Search\Parameter\BooleanParameter;
-
 use \CultuurNet\Search\Parameter;
 
 /**
@@ -40,7 +38,7 @@ class CultureFeedSearchPage {
    * @var Int
    */
   protected $pagerType = self::PAGER_NORMAL;
-  
+
   /**
    * Default sort key.
    * @var String
@@ -64,7 +62,7 @@ class CultureFeedSearchPage {
    * @var \CultuurNet\Search\SearchResult
    */
   protected $result;
-  
+
   /**
    * Gets the default sortkey.
    * @return String $sortKey
@@ -79,7 +77,7 @@ class CultureFeedSearchPage {
   public function setFullPage($fullPage) {
     $this->fullPage = $fullPage;
   }
-  
+
   /**
    * Sets the default sortkey.
    * @param String $sortKey
@@ -205,14 +203,11 @@ class CultureFeedSearchPage {
 
     $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
 
-    drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
-    
     // Add in a boost for sort-type "relevancy".
-    // @todo Decide with zuuperman if this is best before or after the alter, and 
-    // if before it can be cleaner.
     if ($params['sort'] == 'relevancy') {
       $this->query[0] = '{!boost%20b=sum(recommend_count,product(comment_count,10))}' . $this->query[0];
     }
+    drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);

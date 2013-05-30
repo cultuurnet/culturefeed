@@ -64,6 +64,14 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     self::getLoggedInUserInstance()->updateUserPrivacy($id, $privacy_config);
   }
 
+  public static function getUserPreferences($id) {
+    return self::getLoggedInUserInstance()->getUserPreferences($id);
+  }
+
+  public static function setUserPreferences($id, CultureFeed_Preferences $preferences) {
+    self::getLoggedInUserInstance()->setUserPreferences($id, $preferences);
+  }
+
   public static function getUserServiceConsumers($id) {
     return self::getLoggedInUserInstance()->getUserServiceConsumers($id);
   }

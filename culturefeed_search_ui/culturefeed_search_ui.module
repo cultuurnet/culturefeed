@@ -257,13 +257,14 @@ function culturefeed_search_ui_block_view($delta) {
   switch ($delta) {
 
     case 'culturefeed-search-box':
-      $block['subject'] = '';
       $block['content'] = drupal_get_form('culturefeed_search_ui_search_block_form');
       break;
 
     case 'culturefeed-search-sortorder':
-      $block['subject'] = '';
-      $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+      global $facetingComponent;
+      if ($facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+        $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+      }
     break;
 
     case 'culturefeed-search-activefilters':

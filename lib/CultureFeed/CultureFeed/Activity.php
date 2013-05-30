@@ -102,6 +102,9 @@ class CultureFeed_Activity {
 
   const TYPE_NEW_EVENT = 19;
 
+  const TYPE_MEDIA_PHOTO = 22;
+  const TYPE_MEDIA_VIDEO = 23;
+
   /**
    * ID of the activity object.
    *

@@ -292,6 +292,32 @@ class CultureFeed implements ICultureFeed {
     return $this->parsePreferences($result);
   }
 
+  /**
+   * @see ICultureFeed::setUserPreferences()
+   */
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
+    $path = "user/{$uid}/preferences";
+
+    $params = array();
+
+    $activityPrivacyPreferences = array();
+
+    foreach ($preferences->activityPrivacyPreferences as $preference) {
+      $bool_as_string = $preference->private ? 'true' : 'false';
+      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
+    }
+
+    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
+
+    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
+
+    return $this->parsePreferences($result);
+  }
+
+  /**
+   * Parse the preferences xml to a CultureFeed_Preferences object.
+   * @return CultureFeed_Preferences
+   */
   protected function parsePreferences($result) {
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -315,29 +341,6 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $preferences;
-  }
-
-  /**
-   * (non-PHPdoc)
-   * @see ICultureFeed::setUserPreferences()
-   */
-  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
-    $path = "user/{$uid}/preferences";
-
-    $params = array();
-
-    $activityPrivacyPreferences = array();
-
-    foreach ($preferences->activityPrivacyPreferences as $preference) {
-      $bool_as_string = $preference->private ? 'true' : 'false';
-      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
-    }
-
-    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
-
-    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
-
-    return $this->parsePreferences($result);
   }
 
   /**
@@ -768,18 +771,18 @@ class CultureFeed implements ICultureFeed {
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     return self::parseUsers($xml);
   }
-  
+
   /**
    * Get the total of activities for a user.
-   * 
+   *
    * @param Integer $userId
    *   The user Id to get all activities for.
    * @param string $type_contentType
    *   Array of unique strings for each combination of activity type and its content type.
-   *   E.g. 
+   *   E.g.
    */
   public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
 
@@ -805,9 +808,9 @@ class CultureFeed implements ICultureFeed {
       $total->value      = (string) $object;
       $totals[] = $total;
     }
-    
+
     return $totals;
-    
+
   }
 
   /**
@@ -1262,25 +1265,25 @@ class CultureFeed implements ICultureFeed {
       'contentType' => $contentType
     );
     $result = $this->oauth_client->authenticatedGet('node/status', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $code = $xml->xpath_str('/response/code');
     if (!empty($code) && $code == "SUCCESS") {
       return ($xml->xpath_str('/response/follows') == "true" ? TRUE : FALSE);
     }
-    
+
     throw new CultureFeed_ParseException($result);
   }
-  
+
   /**
    * Command to update a node so the user follows  it.
-   * 
+   *
    * @param String $contentType
    *   The content type of the target node.
    * @param Integer $nodeId
@@ -1289,26 +1292,26 @@ class CultureFeed implements ICultureFeed {
    *   The userId of the user who follows the node.
    */
   public function followNode($contentType, $nodeId, $userId) {
-    
+
     $data = array(
       'nodeId' => $nodeId,
       'userId' => $userId,
       'contentType' => $contentType
     );
     $result = $this->oauth_client->authenticatedPostAsXml('node/follow', $data);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $nodeId = $xml->xpath_str('/response/nodeId');
     if (!empty($nodeId)) {
       return $nodeId;
     }
-    
+
     throw new CultureFeed_ParseException($result);
   }
 
@@ -1323,26 +1326,26 @@ class CultureFeed implements ICultureFeed {
    *   The userId of the user who follows the node.
    */
   public function unFollowNode($contentType, $nodeId, $userId) {
-  
+
     $data = array(
       'nodeId' => $nodeId,
       'userId' => $userId,
       'contentType' => $contentType
     );
     $result = $this->oauth_client->authenticatedPostAsXml('node/unfollow', $data);
-  
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-  
+
     $code = $xml->xpath_str('/response/code');
     if ($code == "SUCCESS") {
       return $xml->xpath_str('/response/nodeId');
     }
-  
+
     throw new CultureFeed_ParseException($result);
   }
 

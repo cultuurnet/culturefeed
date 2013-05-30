@@ -144,6 +144,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['movie-playlist'] = array(
+    'info' => t('Movie playlist'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
   return $blocks;
 
 }
@@ -262,6 +267,9 @@ function culturefeed_agenda_block_view($delta) {
 
     case 'actor-program':
       return culturefeed_agenda_block_actor_program();
+
+    case 'movie-playlist':
+      return culturefeed_agenda_block_movie_playlist();
 
   }
 
