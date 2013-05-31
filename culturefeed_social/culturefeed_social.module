@@ -634,7 +634,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_social', 'Er ging iets mis tijdens de aanvraag tot volgen. Gelieve een administrator te contacteren');
+      watchdog_exception('culturefeed_social', $e);
     }
 
   }

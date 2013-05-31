@@ -252,32 +252,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage($language->language);
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
-
-  // Location information.
-  $variables['location'] = '';
-  if ($event->getLocation()) {
-
-    $location = $event->getLocation();
-
-    if ($location->getActor()) {
-      $actor_detail = $location->getActor()->getDetails()->getDetailByLanguage($language->language);
-      $variables['location']['title'] = check_plain($actor_detail->getTitle());
-      $variables['location']['link'] = culturefeed_search_detail_l('actor', $location->getActor()->getCdbid(), $variables['location']['title']);
-    }
-    elseif ($location->getLabel()) {
-      $variables['location']['title'] = $location->getLabel();
-    }
-
-    $physical_address = $location->getAddress()->getPhysicalAddress();
-    if ($physical_address) {
-
-      $variables['location']['city'] = $physical_address->getCity();
-      $variables['location']['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
-      $variables['location']['zip'] = $physical_address->getZip();
-
-    }
-
-  }
+  $variables['location'] = culturefeed_agenda_get_location_of_event($event);
 
   $actor = NULL;
 
@@ -365,29 +340,15 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   elseif ($total_relations == 1) {
 
     try {
-      $event_search = culturefeed_agenda_event_load($production->relations[0]->getCdbid());
+      $event = culturefeed_agenda_event_load($production->relations[0]->getCdbid());
       $variables['event'] = $event;
-      $event_detail = $event_search->getEntity()->getDetails()->getDetailByLanguage($language->language);
+      $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage($language->language);
       if ($event_detail) {
         $variables['when'] = $event_detail->getCalendarSummary();
       }
 
       // Add location information from the event.
-      $location = $event->getLocation();
-
-      if ($location->getActor()) {
-        $actor_detail = $location->getActor()->getDetails()->getDetailByLanguage($language->language);
-        $variables['location']['title'] = check_plain($actor_detail->getTitle());
-        $variables['location']['link'] = culturefeed_search_detail_l('actor', $location->getActor()->getCdbid(), $variables['location']['title']);
-      }
-      elseif ($location->getLabel()) {
-        $variables['location']['title'] = check_plain($location->getLabel());
-      }
-
-      $physical_address = $location->getAddress()->getPhysicalAddress();
-      $variables['location']['city'] = check_plain($physical_address->getCity());
-      $variables['location']['street'] = check_plain($physical_address->getStreet() . ' '  . $physical_address->getHouseNumber());
-      $variables['location']['zip'] = check_plain($physical_address->getZip());
+      $variables['location'] = culturefeed_agenda_get_location_of_event($event->getEntity());
 
     }
     catch (Exception $e) {

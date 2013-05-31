@@ -76,7 +76,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    $this->result = $searchService->searchPages($this->parameters);
+    global $searchResult;
+    $searchResult = $this->result = $searchService->search($this->parameters);
     $facetingComponent->obtainResults($this->result);
 
   }
@@ -103,7 +104,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
       case 'activity_count':
         $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
       break;
-      
+
       case 'agefrom':
         $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
       break;

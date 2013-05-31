@@ -211,7 +211,6 @@ function culturefeed_social_block_comments($object) {
     return;
   }
 
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
   $content_type = culturefeed_get_content_type($object->getType());
 
   $query = new CultureFeed_SearchActivitiesQuery();

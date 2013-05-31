@@ -13,7 +13,6 @@ function culturefeed_pages_block_fellow_members($account) {
     return;
   }
 
-  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
   $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
 
   $build = array();
@@ -28,18 +27,8 @@ function culturefeed_pages_block_fellow_members($account) {
       break;
     }
 
+    $memberships = culturefeed_pages_get_members_of_page($membership->page, $cf_account);
     $memberships = array();
-    $user_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
-
-    if (!empty($user_list->memberships)) {
-      foreach ($user_list->memberships as $user_list_membership) {
-        // Don't show current user.
-        if ($user_list_membership->user->id == $account->culturefeed_uid) {
-          continue;
-        }
-        $memberships[] = $user_list_membership;
-      }
-    }
 
     $build[] = array(
       '#theme' => 'culturefeed_pages_fellow_members_block',

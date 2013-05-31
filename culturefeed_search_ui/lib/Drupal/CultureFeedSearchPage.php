@@ -210,7 +210,8 @@ class CultureFeedSearchPage {
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    $this->result = $searchService->search($this->parameters);
+    global $searchResult;
+    $searchResult = $this->result = $searchService->search($this->parameters);
     $facetingComponent->obtainResults($this->result);
 
   }

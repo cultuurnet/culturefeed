@@ -279,6 +279,15 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
+  global $searchResult;
+  if (!$searchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  if ($searchResult->getTotalCount() == 0) {
+    return;
+  }
+
   $build = array();
 
   // Show facet layout for location.

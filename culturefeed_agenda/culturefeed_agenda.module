@@ -99,7 +99,7 @@ function culturefeed_agenda_menu() {
   // Autocomplete for event / production suggestions
   $items['autocomplete/culturefeed/activity-suggestion'] = array(
     'page callback' => 'culturefeed_agenda_activity_suggestion_autocomplete_page',
-    'page arguments' => array(3, FALSE),
+    'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',

@@ -25,9 +25,9 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
   }
 
   try {
-    
+
     $conf = culturefeed_get_searchable_type($name);
-    
+
     $page = new $class_name();
     $page->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
     $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
@@ -36,6 +36,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
       $page->setFullPage(FALSE);
     }
     $build = $page->loadPage();
+
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
