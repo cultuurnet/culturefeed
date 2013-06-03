@@ -281,11 +281,13 @@ function culturefeed_is_connected($application_key = NULL) {
  * @return Ambigous <string>|string
  */
 function culturefeed_get_content_type($type) {
+
   $mapping = array(
     'bibnet_book' => CultureFeed_Activity::CONTENT_TYPE_BOOK,
     'actor' => CultureFeed_Activity::CONTENT_TYPE_ACTOR,
     'event' => CultureFeed_Activity::CONTENT_TYPE_EVENT,
     'production' => CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+    'CultureFeed_Activity' => CultureFeed_Activity::CONTENT_TYPE_ACTIVITY,
   );
 
   if (isset($mapping[$type])) {

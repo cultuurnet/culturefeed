@@ -378,6 +378,15 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
         '#suffix' => '</div>',
       );
 
+      if (isset($_GET['title_undo'])) {
+        $build[$identifier]['#options']['query']['undo_title'] = $_GET['title_undo'];
+        $build[$identifier]['#title'] = $_GET['title_undo'];
+      }
+
+      if (isset($_GET['title'])) {
+        $build[$identifier]['#options']['query']['title'] = $_GET['title'];
+      }
+
       if ($argument == 'advanced') {
         drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
       }
@@ -457,6 +466,15 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
         '#suffix' => '</div>',
       );
 
+      if (isset($_GET['undo_title'])) {
+        $build[$identifier]['#options']['query']['undo_title'] = $_GET['undo_title'];
+      }
+
+      if (isset($_GET['title'])) {
+        $build[$identifier]['#options']['query']['title'] = $_GET['title'];
+        $build[$identifier]['#title'] = $_GET['title'];
+      }
+
       if ($argument == 'advanced') {
         drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
       }
@@ -467,7 +485,7 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
         if ($activity_count > 0) {
           $build[$identifier]['#title'] .= ' (' . $activity_count . ')';
         }
-        else {
+        elseif (!isset($_GET['title'])) {
           $build[$identifier]['#title'] = $config->titleDoFirst;
         }
       }
