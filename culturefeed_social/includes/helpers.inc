@@ -283,7 +283,7 @@ function _culturefeed_social_undo($activity_type, $type, $node_id) {
 function culturefeed_social_detail_path($type, $id, $title = '') {
 
   if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE) {
-    return 'node/' . $node_id;
+    return 'node/' . $id;
   }
   if ($type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
     return 'book/' . urlencode($id);

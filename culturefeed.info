@@ -19,6 +19,7 @@ files[] = lib/CultureFeed/CultureFeed/Consumer.php
 files[] = lib/CultureFeed/CultureFeed/OAuthClient.php
 files[] = lib/CultureFeed/CultureFeed/DefaultOAuthClient.php
 files[] = lib/CultureFeed/CultureFeed/DefaultHttpClient.php
+files[] = lib/CultureFeed/CultureFeed/DrupalNodeExtendedEntity.php
 files[] = lib/CultureFeed/CultureFeed/Exception.php
 files[] = lib/CultureFeed/CultureFeed/HttpException.php
 files[] = lib/CultureFeed/CultureFeed/HttpClient.php
