@@ -67,10 +67,10 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 /**
  * Show an advanced do / undo link for a given action, on a given entity.
  *
- * @see culturefeed_social_activity_recommend_link()
+ * @see culturefeed_social_activity_link()
  */
-function culturefeed_social_activity_recommend_link_advanced($activity_type, $extended_entity) {
-  return culturefeed_social_activity_link($extended_entity, TRUE);
+function culturefeed_social_activity_link_advanced($activity_type, $extended_entity) {
+  return culturefeed_social_activity_link($activity_type, $extended_entity, TRUE);
 }
 
 /**
