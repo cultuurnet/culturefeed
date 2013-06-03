@@ -423,13 +423,11 @@ function culturefeed_social_comment_list($object, CultureFeed_ResultSet $activit
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
   return array(
-    '#type' => 'markup',
-    '#markup' => theme('culturefeed_social_comment_list', array(
-      'object' => $object,
-      'activities' => $activity_list,
-      'total' => $total,
-      'accounts' => $accounts,
-    )),
+    '#theme' => 'culturefeed_social_comment_list',
+    '#object' => $object,
+    '#activities' => $activity_list,
+    '#total' => $total,
+    '#accounts' => $accounts,
     '#attached' => array(
       'js' => array(drupal_get_path('module', 'culturefeed_social') . '/js/culturefeed-social.js'),
     )

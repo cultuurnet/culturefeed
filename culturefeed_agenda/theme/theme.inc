@@ -295,10 +295,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-    $variables['coordinates'] = array(
-      'lat' => '51.020577',
-      'lng' => '3.959729',
-    );
+
     // Reservation data.
     $variables['reservation'] = $contact_info->getReservationInfo();
 

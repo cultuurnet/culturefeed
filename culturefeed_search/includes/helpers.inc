@@ -77,7 +77,7 @@ function culturefeed_search_get_active_object() {
     if ($second_argument == 'g') {
       return menu_get_object('culturefeed_pages_page', 3);
     }
-    elseif ($second_argument == 'e') {
+    elseif ($second_argument == 'e' || $second_argument == 'p' || $second_argument == 'a') {
       return culturefeed_agenda_get_active_object();
     }
 
