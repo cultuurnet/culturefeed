@@ -200,6 +200,8 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
 
   // Add thumbnail image.
+  $variables['main_picture'] = '';
+  $variables['pictures'] = array();
   if ($detail) {
 
     $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
@@ -211,6 +213,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
 
     // Add videos.
+    $variables['videos'] = array();
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
   	foreach ($videos as $video) {
 			if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink(), 240, 180)) {
@@ -414,7 +417,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
     if ($addresses) {
 
-      $variables['location']['title'] = $addresses->getLabel();
+      $variables['location']['title'] = $addresses[0]->getLabel();
       $physical_address = $addresses[0]->getPhysicalAddress();
       if ($physical_address) {
         $variables['location']['city'] = check_plain($physical_address->getCity());

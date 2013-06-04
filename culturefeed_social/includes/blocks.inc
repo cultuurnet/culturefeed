@@ -211,6 +211,14 @@ function culturefeed_social_block_comments($object) {
     return;
   }
 
+  // When you want to show comments on a node. The field_comments_enabled should be checked.
+  if ($object instanceof DrupalNodeExtendedEntity) {
+    $status = field_get_items('node', $object->getEntity(), 'field_comments_enabled');
+    if (!$status || !$status[0]['value']) {
+      return;
+    }
+  }
+
   $content_type = culturefeed_get_content_type($object->getType());
 
   $query = new CultureFeed_SearchActivitiesQuery();
