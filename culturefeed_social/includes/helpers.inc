@@ -84,16 +84,31 @@ function culturefeed_social_activity_link_advanced($activity_type, $extended_ent
  *   Indicates whether the link is advanced (with extra possibilities).
  * @param Boolean $add_count
  *   Add the current activity count to the link or not.
+ * @param string $title
+ *   Title you want to use to override the default config title.
+ * @param string $undo_title
+ *   Undo title you want to use to override the default config title.
  * @return string
  */
-function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE) {
+function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE, $title = '', $title_undo = '') {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return theme('culturefeed_social_login_required_message', array('activity_type' => $activity_type, 'item' => $extended_entity));
   }
 
-  $itemEntity = $extended_entity->getEntity();
-  $id = $extended_entity->getId();
+  if (method_exists($extended_entity, 'getId')) {
+    $id = $extended_entity->getId();
+    $activity_content_type = culturefeed_get_content_type($extended_entity->getType());
+    $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extended_entity);
+    $activity_count = $extended_entity->getActivityCount(CultureFeed_Activity::getNameById($activity_type));
+  }
+  else {
+    $id = $extended_entity->id;
+    $activity_node_id = $id;
+    $activity_content_type = culturefeed_get_content_type(get_class($extended_entity));
+    $activity_count = DrupalCultureFeed::activityGetCount($activity_type, $activity_node_id, $activity_content_type);
+  }
+
   $current_query = drupal_get_query_parameters();
   $path = current_path();
 
@@ -101,7 +116,6 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
   $identifier_wrapper = drupal_html_id('activity-wrapper-' . $activity_type);
 
   $config = culturefeed_social_activity_get_config($activity_type);
-  $activity_content_type = culturefeed_get_content_type($extended_entity->getType());
 
   $user_did_this = FALSE;
 
@@ -109,7 +123,6 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
   $user_did_this = FALSE;
   if ($config->undoAllowed) {
     try {
-      $activity_node_id = culturefeed_social_get_activity_node_id($activity_content_type, $extended_entity);
       $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $activity_node_id, $activity_content_type);
     }
     catch (Exception $e) {
@@ -148,7 +161,17 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
     ),
   );
 
-  $activity_count = $extended_entity->getActivityCount(CultureFeed_Activity::getNameById($activity_type));
+  if (!empty($title)) {
+    $markup[$identifier]['#options']['query']['title'] = $title;
+    $config->titleDoFirst = $title;
+    $config->titleDo = $title;
+  }
+
+  if (!empty($title_undo)) {
+    $markup[$identifier]['#options']['query']['title_undo'] = $title_undo;
+    $config->subjectUndo = $title_undo;
+  }
+
   if (!$user_did_this) {
     $markup[$identifier]['#title'] = (0 == $activity_count) ? $config->titleDoFirst : $config->titleDo;
   }
@@ -209,7 +232,6 @@ function _culturefeed_social_do($activity_type, $type, $id) {
     // Culturefeed pages.
     case $activity::CONTENT_TYPE_CULTUREFEED_PAGE:
 
-      // @todo: this cant be right.
       $object = culturefeed_pages_page_load($id);
       $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage($GLOBALS['language']->language)->getTitle();
       $activity->nodeId = culturefeed_search_detail_url('page', $id, $object->getName(), array('absolute' => TRUE));
@@ -228,6 +250,27 @@ function _culturefeed_social_do($activity_type, $type, $id) {
       $activity->path = culturefeed_search_detail_path($object->getType(), $id, $activity->nodeTitle);
 
       break;
+
+    case $activity::CONTENT_TYPE_ACTIVITY:
+
+      try {
+        $query = new CultureFeed_SearchActivitiesQuery();
+        $query->activityId = $id;
+        $activities = DrupalCultureFeed::searchActivities($query);
+        if ($activities->total == 0) {
+          return FALSE;
+        }
+
+        $activity->nodeTitle = $activities->objects[0]->nodeTitle;
+        $activity->nodeId = $id;
+
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_social', $e);
+        return FALSE;
+      }
+
+    break;
 
       // Please add your new types here.
       default:

@@ -297,4 +297,35 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
     return FALSE;
   }
+
+  public static function activityGetCount($type, $nodeId, $contentType) {
+
+    $activityCount = &drupal_static(__FUNCTION__, array());
+
+    if (!isset($activityCount[$nodeId][$contentType])) {
+
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->nodeId = $nodeId;
+      $query->contentType = $contentType;
+
+      $activities = self::searchActivities($query);
+
+      $activityCount[$nodeId][$contentType][] = $activities;
+    }
+
+    $activities = $activityCount[$nodeId][$contentType];
+
+    $count = 0;
+    if (!empty($activities->objects)) {
+      foreach ($activities->objects as $activity) {
+        if ($activity->type == $type && $activity->nodeId == $nodeId) {
+          $count++;
+        }
+      }
+    }
+
+    return $count;
+
+  }
+
 }
