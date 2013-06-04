@@ -310,7 +310,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
       $activities = self::searchActivities($query);
 
-      $activityCount[$nodeId][$contentType][] = $activities;
+      $activityCount[$nodeId][$contentType] = $activities;
     }
 
     $activities = $activityCount[$nodeId][$contentType];
