@@ -505,7 +505,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     '#default_value' => '',
     '#attributes' => array('class' => array('comment-message')),
     '#weight' => -5,
-    '#required' => $status,
+    '#required' => TRUE,
   );
 
   $type = 'deze activiteit';
@@ -565,7 +565,7 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
   $config = $form_state['config'];
 
   // Send a comment.
-  if (!empty($form_state['values']['message'])) {
+  if (strlen($form_state['values']['message']) <= 250) {
 
     $activity = new CultureFeed_Activity();
     $activity->type = $activity::TYPE_COMMENT;
@@ -590,9 +590,12 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_social', $e);
-      form_set_error('', format_string('Er ging iets fout tijdens het versturen van je !action', array('!action' => $config->action)));
+      form_set_error('', format_string('Door technische problemen is het momenteel niet mogelijk om jouw boodschap te versturen. Aarzel niet om rechtstreeks met ons contact op te nemen via @site', array('@site' => variable_get('site_email', ''))));
     }
 
+  }
+  else {
+    form_set_error('message', 'Uw reactie mag de 250 karakters niet overschrijden.');
   }
 
 }
@@ -613,30 +616,31 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
       'fragment' => 'activity-' . $form_state['id'],
     ));
     drupal_set_message(format_string('Je !comment is verstuurd.', array('!comment' => $goto_link)));
-  }
 
-  // Follow updates.
-  if (!empty($form_state['values']['update_optin'])) {
-
-    try {
-      $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
-      if ($id) {
-
-        $type = 'deze activiteit';
-        if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-          $type = 'dit boek';
+    // Follow updates.
+    if (!empty($form_state['values']['update_optin'])) {
+    
+      try {
+        $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+        if ($id) {
+    
+          $type = 'deze activiteit';
+          if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+            $type = 'dit boek';
+          }
+    
+          $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
+          drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
+          array('!link' => $link)));
+    
         }
-
-        $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
-        drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
-        array('!link' => $link)));
-
       }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_social', $e);
+      }
+    
     }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_social', $e);
-    }
-
+    
   }
 
 }

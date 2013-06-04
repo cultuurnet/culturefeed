@@ -89,7 +89,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list(&$variabl
   $activities = $variables['activities'];
   $accounts = $variables['accounts'];
 
-  $variables['url'] = culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language));
+  $variables['url'] = url(culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)));
 
   $list = array();
   foreach ($activities as $activity) {
