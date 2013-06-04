@@ -411,7 +411,10 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
     $contact_info = $actor->getContactInfo();
     $addresses = $contact_info->getAddresses();
+
     if ($addresses) {
+
+      $variables['location']['title'] = $addresses->getLabel();
       $physical_address = $addresses[0]->getPhysicalAddress();
       if ($physical_address) {
         $variables['location']['city'] = check_plain($physical_address->getCity());
