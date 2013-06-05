@@ -1,0 +1,130 @@
+<?php
+/**
+ * @file
+ * Creates components to use in the user interface and integrates with 
+ * other Culturefeed objects.
+ */
+
+module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/helpers');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_userpoints_ui_menu() {
+  
+  $items = array();
+  
+  $items['culturefeed/userpoints/exchange'] = array(
+    'title' => 'Ruil je punten in',
+    'title callback' => FALSE,
+    'description' => 'Exchange your userpoints',
+    'page callback' => 'culturefeed_userpoints_ui_exchange_page',
+    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['admin/config/services/userpoints'] = array(
+    'title' => 'Culturefeed Userpoints User Interface',
+    'description' => 'All configurations to adjust the behavior of userpoints for this site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_userpoints_ui_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+  
+  return $items;
+}
+
+/**
+ * Access callback to be able to exchange points into gifts.
+ */
+function culturefeed_userpoints_ui_can_exchange() {
+  return DrupalCultureFeed::isCultureFeedUser();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_userpoints_ui_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_userpoints_ui') . '/theme';
+
+  return array(
+
+    'culturefeed_userpoints_ui_my_balance' => array(
+      'variables' => array(
+        'points' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-my-balance',
+    ),
+    'culturefeed_userpoints_ui_exchange_page' => array(
+      'variables' => array(
+        'points' => '',
+        'cf_user' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-exchange-page',
+    ),
+  );
+  
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_userpoints_ui_block_info() {
+  $blocks = array();
+
+  $blocks['culturefeed-userpoints-balance'] = array(
+    'info' => t('Culturefeed Userpoints UI: Your balance'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_userpoints_ui_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/blocks');
+  $block = array();
+
+  switch ($delta) {
+
+    case 'culturefeed-userpoints-balance':
+      $block['subject'] = 'Mijn puntensaldo';
+      $block['content'] = culturefeed_userpoints_ui_block_balance();
+      break;
+  }
+  
+  return $block;
+  
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ * @param array $items
+ */
+function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_account) {
+
+  $items = array();
+  
+  $data = 'Puntensaldo ';
+  $data .= '<span class="userpoints">' . culturefeed_userpoints_ui_real_points($cf_account->points) . '</span>';
+  $data .= '<span class="check-again">' . l('Inruilen', 'culturefeed/userpoints/exchange') . '</span>';
+
+  $items['my-points'] = array(
+    'data' =>  $data,
+    'class' => 'points-balance',
+    'weight' => -18,
+  );
+
+  return $items;
+
+}
+  

@@ -194,6 +194,13 @@ class CultureFeed_User {
    * @var string
    */
   public $status;
+  
+  /**
+   * Points of the user.
+   * 
+   * @var double
+   */
+  public $points;
 
   /**
    * OpenID handle of the user.

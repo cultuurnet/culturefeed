@@ -1590,6 +1590,7 @@ class CultureFeed implements ICultureFeed {
     $user->country          = $element->xpath_str('/foaf:person/homeAddress/country');
     $user->lifestyleProfile = $element->xpath_str('/foaf:person/lifestyleProfile');
     $user->status           = $element->xpath_str('/foaf:person/status');
+    $user->points           = $element->xpath_str('/foaf:person/points');
     if ($user->status) {
       $user->status = strtolower($user->status);
     }
