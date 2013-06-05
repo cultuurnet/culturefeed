@@ -9,7 +9,7 @@
  */
 function culturefeed_social_page_ajax_get_activities() {
 
-  $requested_page = isset($_GET['page']) ? $_GET['page'] : 0;
+  $requested_page = isset($_GET['page']) ? $_GET['page'] : 1;
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
@@ -32,7 +32,7 @@ function culturefeed_social_page_ajax_get_activities() {
 
   $result = new stdClass();
   $result->results = array();
-  $result->show_pager = FALSE;
+  $result->new_pager_url = '';
   try {
 
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -42,7 +42,11 @@ function culturefeed_social_page_ajax_get_activities() {
       $result->results[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
     }
 
-    $result->show_pager = ($query->max  + $query->start) < $activities->total;
+    if (($query->max  + $query->start) < $activities->total) {
+      $query_parameters = drupal_get_query_parameters($_GET, array('q'));
+      $query_parameters['page'] = $requested_page + 1;
+      $result->new_pager_url = url($_GET['q'], array('query' => $query_parameters));
+    }
 
   }
   catch (Exception $e) {

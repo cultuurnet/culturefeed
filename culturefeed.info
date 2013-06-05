@@ -9,6 +9,7 @@ files[] = lib/Drupal/DrupalCultureFeed.php
 files[] = lib/Drupal/DrupalCultureFeed_EntryApi.php
 files[] = lib/Drupal/DrupalCultureFeed_Cache.php
 files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
+files[] = lib/Drupal/DrupalNodeExtendedEntity.php
 
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php
@@ -19,7 +20,6 @@ files[] = lib/CultureFeed/CultureFeed/Consumer.php
 files[] = lib/CultureFeed/CultureFeed/OAuthClient.php
 files[] = lib/CultureFeed/CultureFeed/DefaultOAuthClient.php
 files[] = lib/CultureFeed/CultureFeed/DefaultHttpClient.php
-files[] = lib/CultureFeed/CultureFeed/DrupalNodeExtendedEntity.php
 files[] = lib/CultureFeed/CultureFeed/Exception.php
 files[] = lib/CultureFeed/CultureFeed/HttpException.php
 files[] = lib/CultureFeed/CultureFeed/HttpClient.php

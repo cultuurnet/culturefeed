@@ -7,15 +7,12 @@
 
   Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
   Drupal.CulturefeedSearch.Activities = Drupal.CulturefeedSearch.Activities || {};
-  Drupal.CulturefeedSearch.Activities.currentPage = 0;
-  Drupal.CulturefeedSearch.Activities.activityList;
   Drupal.CulturefeedSearch.Activities.filterForm;
   Drupal.CulturefeedSearch.Activities.filterSelect;
   Drupal.CulturefeedSearch.Activities.throbber = $('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>');  
   
   Drupal.behaviors.culturefeedActivitiesOverview = {
    attach: function (context, settings) {
-     Drupal.CulturefeedSearch.Activities.activityList = $('.activity-list').find('ul');
      $('.activity-list').find('.pager-link').bind('click', Drupal.CulturefeedSearch.Activities.pagerClickListener);
      Drupal.CulturefeedSearch.Activities.filterForm = $('#culturefeed-social-user-activity-filter-form');
      if (Drupal.CulturefeedSearch.Activities.filterForm.length) {
@@ -33,15 +30,19 @@
     
     $(this).after(Drupal.CulturefeedSearch.Activities.throbber);
     
-    var post_data = 'page=' + (Drupal.CulturefeedSearch.Activities.currentPage + 1);
-    if (Drupal.CulturefeedSearch.Activities.filterSelect.val() != 'all') {
-      post_data += ('&type=' + Drupal.CulturefeedSearch.Activities.filterSelect.val());
+    var post_data = '';
+    if (Drupal.CulturefeedSearch.Activities.filterSelect && Drupal.CulturefeedSearch.Activities.filterSelect.val() != 'all') {
+      post_data = ('type=' + Drupal.CulturefeedSearch.Activities.filterSelect.val());
     }
     
+    var $pager = $(this);
+    
     $.ajax({
-      url : $(this).attr('href'),
+      url : $pager.attr('href'),
       data : post_data,
-      success : Drupal.CulturefeedSearch.Activities.applyPagerResult,
+      success : function (result) {
+        Drupal.CulturefeedSearch.Activities.applyPagerResult($pager, result);
+      },
       'dataType' : 'json'
     });
     
@@ -52,20 +53,23 @@
   /**
    * Add the pager results to the current list.
    */
-  Drupal.CulturefeedSearch.Activities.applyPagerResult = function(result) {
+  Drupal.CulturefeedSearch.Activities.applyPagerResult = function($pager, result) {
     
-    Drupal.CulturefeedSearch.Activities.currentPage++;
+    var $list_wrapper = $pager.parents('.activity-list').eq(0);
+    var $list = $list_wrapper.find('ul');
+    
     for (var i = 0; i < result.results.length; i++) {
-      Drupal.CulturefeedSearch.Activities.activityList.append('<li class="media">' + result.results[i] + '</li>');
+      $list.append('<li class="media">' + result.results[i] + '</li>');
     }
     
     Drupal.CulturefeedSearch.Activities.throbber.remove();
     
-    if (!result.show_pager) {
-      $('.activity-list').find('.pager-link').hide();
+    if (result.new_pager_url == '') {
+      $pager.hide();
     }
     else {
-      $('.activity-list').find('.pager-link').show();
+      $pager.attr('href', result.new_pager_url);
+      $pager.show();
     }
     
   }
@@ -97,9 +101,12 @@
    */
   Drupal.CulturefeedSearch.Activities.filterActivities = function(result) {
     
-    Drupal.CulturefeedSearch.Activities.activityList.empty();
-    Drupal.CulturefeedSearch.Activities.applyPagerResult(result);
-    Drupal.CulturefeedSearch.Activities.currentPage = 0;
+    var $list_wrapper = $('.activity-list').eq(0);
+    var $list = $list_wrapper.find('ul');
+    var $pager = $list_wrapper.find('.pager-link');
+    
+    $list.empty();
+    Drupal.CulturefeedSearch.Activities.applyPagerResult($pager, result);
     
   }
   

@@ -611,6 +611,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
   $config = $form_state['config'];
 
   if (!empty($form_state['id'] )) {
+
     $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle($GLOBALS['language']->language)), array(
       'absolute' => TRUE,
       'fragment' => 'activity-' . $form_state['id'],
@@ -619,28 +620,28 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
 
     // Follow updates.
     if (!empty($form_state['values']['update_optin'])) {
-    
+
       try {
         $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
         if ($id) {
-    
+
           $type = 'deze activiteit';
           if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
             $type = 'dit boek';
           }
-    
+
           $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
           drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
           array('!link' => $link)));
-    
+
         }
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_social', $e);
       }
-    
+
     }
-    
+
   }
 
 }
