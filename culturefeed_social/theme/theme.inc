@@ -39,7 +39,31 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $user_url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $user_url, array('html' => TRUE));
-  $variables['date'] = format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden.';
+
+  $time_zone  = new DateTimeZone('Europe/Brussels');
+  $last_reply = new DateTime();
+  $last_reply->setTimestamp($activity->creationDate);
+  $last_reply->setTimezone($time_zone);
+
+  // Check if the activity happened today.
+  $time_ago = $_SERVER['REQUEST_TIME'] - $activity->creationDate;
+  if ($time_ago < (60 * 60 * 60)) {
+    $variables['date'] = format_interval($time_ago) . ' geleden.';
+  }
+  else {
+
+    $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
+    if ($days_ago == 1) {
+      $variables['date'] = 'Gisteren om ' . $last_reply->format('H:i') . ' uur';
+    }
+    elseif ($days_ago == 0) {
+      $variables['date'] = 'Vandaag om ' . $last_reply->format('H:i') . ' uur';
+    }
+    else {
+      $variables['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i') . ' uur';
+    }
+
+  }
 
   // Not possible to link when it's an activity on an activity.
   if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
@@ -54,6 +78,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   $type_suffix = '';
 
   $config = culturefeed_social_activity_get_config($activity->type);
+
   // If no config available, show default text
   if ($config) {
     $type_prefix = $config->viewPrefix;

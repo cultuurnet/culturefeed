@@ -103,6 +103,14 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityConfigNewEvent();
       break;
 
+      case CultureFeed_Activity::TYPE_REVIEW:
+        $config = new CultureFeedActivityConfigReview();
+      break;
+
+      case CultureFeed_Activity::TYPE_MEDIA_PHOTO:
+        $config = new CultureFeedActivityMediaPhoto();
+      break;
+
       default:
         return NULL;
 

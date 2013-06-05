@@ -19,5 +19,7 @@ files[] = lib/Drupal/CultureFeedActivityConfigRecommend.php
 files[] = lib/Drupal/CultureFeedActivityConfigTwitter.php
 files[] = lib/Drupal/CultureFeedActivityConfigView.php
 files[] = lib/Drupal/CultureFeedActivityConfigNewEvent.php
+files[] = lib/Drupal/CultureFeedActivityConfigReview.php
+files[] = lib/Drupal/CultureFeedActivityConfigMediaPhoto.php
 
 dependencies[] = culturefeed_search
