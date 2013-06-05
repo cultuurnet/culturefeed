@@ -219,6 +219,12 @@ class CultureFeed_Activity {
   public $onBehalfOfName;
 
   /**
+   * Picture of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOfDepiction;
+
+  /**
    * Activities nested in the current activity. For type TYPE_COMMENT
    * @var array
    */

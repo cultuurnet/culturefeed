@@ -1807,6 +1807,7 @@ class CultureFeed implements ICultureFeed {
       $activity->creationDate   = $object->xpath_time('creationDate');
       $activity->onBehalfOf     = $object->xpath_str('onBehalfOf');
       $activity->onBehalfOfName = $object->xpath_str('onBehalfOfName');
+      $activity->onBehalfOfDepiction = $object->xpath_str('onBehalfOfDepiction');
       $activity->parentActivity = $object->xpath_str('parentActivity');
       $activity->status         = $object->xpath_str('status');
 
