@@ -263,29 +263,33 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
 }
 
 /**
- * Implements hook_culturefeed_pages_page_admin_menu_alter().
+ * Implements hook_culturefeed_pages_page_admin_menu().
  */
 function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, $page) {
 
-  $items['messages'] = array(
-    'title' => 'Berichten',
-    'url' => 'pages/' . $page->getId() . '/messages',
-    'description' => 'Lees en beantwoord berichten en boekingsaanvragen',
-    'weight' => -18,
+  return array(
+    'messages' => array(
+      'title' => 'Berichten',
+      'url' => 'pages/' . $page->getId() . '/messages',
+      'description' => 'Lees en beantwoord berichten en boekingsaanvragen',
+      'weight' => -18,
+    ),
   );
 
 }
 
 /**
- * Implements hook_culturefeed_ui_profile_menu_alter().
+ * Implements hook_culturefeed_ui_profile_menu().
  */
 function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
 
-  $items[] =     array(
-    'title' => 'Mijn berichten',
-    'url' => 'culturefeed/messages',
-    'description' => 'Lees en beantwoord je berichten.',
-    'weight' => -16,
+  return array(
+    'messages' => array(
+      'title' => 'Mijn berichten',
+      'url' => 'culturefeed/messages',
+      'description' => 'Lees en beantwoord je berichten.',
+      'weight' => -16,
+    ),
   );
 
 }

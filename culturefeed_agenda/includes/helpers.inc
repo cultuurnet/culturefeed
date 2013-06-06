@@ -12,6 +12,7 @@ function culturefeed_agenda_get_active_object() {
   $supported_types = array(
     'e' => 'culturefeed_agenda_event',
     'p' => 'culturefeed_agenda_production',
+    'a' => 'culturefeed_agenda_actor',
   );
 
   if (arg(0) == 'agenda' && isset($supported_types[arg(1)])) {

@@ -355,6 +355,36 @@ function culturefeed_ui_user_view($account) {
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_ui_culturefeed_ui_profile_menu() {
+
+  global $user;
+
+  return array(
+    'uitid' => array(
+      'title' => 'Mijn UiTiD',
+      'url' => 'user/' . $user->uid,
+      'description' => 'Zo zien anderen jouw profiel.',
+      'weight' => -20,
+    ),
+    'profile' => array(
+      'title' => 'Profiel bewerken',
+      'url' => 'culturefeed/profile/edit',
+      'description' => 'Wijzig naam, adres, profielfoto,...',
+      'weight' => -19,
+    ),
+    'account' => array(
+      'title' => 'Account bewerken',
+      'url' => 'culturefeed/account/edit',
+      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,...',
+      'weight' => -18,
+    ),
+  );
+
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_box_dropdown_items().
  */
 function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {

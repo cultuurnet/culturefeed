@@ -35,6 +35,7 @@ Drupal.CulturefeedSocial = Drupal.CulturefeedSocial || {};
   Drupal.CulturefeedSocial.toggle = function(element, toggle_class, item_list_selector) {
     
     $wrapper = element.parents(item_list_selector).eq(0).find(toggle_class).eq(0);
+    console.log(element.parents(item_list_selector).eq(0).find(toggle_class));
     $wrapper.toggle('slow');
 	    
     return false;

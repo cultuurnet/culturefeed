@@ -156,11 +156,13 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $form['coordinates'] = array(
     '#type' => 'hidden',
     '#default_value' => isset($_GET['coordinates']) ? $_GET['coordinates'] : '',
+    '#attributes' => array('id' => 'geolocate-coordinates'),
   );
 
   $form['city'] = array(
     '#type' => 'hidden',
     '#default_value' => $location,
+    '#attributes' => array('id' => 'geolocate-city'),
   );
 
   $form['submit'] = array(
