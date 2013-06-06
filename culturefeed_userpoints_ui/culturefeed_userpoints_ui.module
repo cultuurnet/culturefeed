@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Creates components to use in the user interface and integrates with 
+ * Creates components to use in the user interface and integrates with
  * other Culturefeed objects.
  */
 
@@ -11,9 +11,9 @@ module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/helpers');
  * Implements hook_menu().
  */
 function culturefeed_userpoints_ui_menu() {
-  
+
   $items = array();
-  
+
   $items['culturefeed/userpoints/exchange'] = array(
     'title' => 'Ruil je punten in',
     'title callback' => FALSE,
@@ -22,7 +22,16 @@ function culturefeed_userpoints_ui_menu() {
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
-  
+
+  $items['culturefeed/userpoints'] = array(
+    'title' => 'Ruil je punten in',
+    'title callback' => FALSE,
+    'description' => 'Exchange your userpoints',
+    'page callback' => 'culturefeed_userpoints_ui_exchange_page',
+    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'file' => 'includes/pages.inc',
+  );
+
   $items['admin/config/services/userpoints'] = array(
     'title' => 'Culturefeed Userpoints User Interface',
     'description' => 'All configurations to adjust the behavior of userpoints for this site',
@@ -31,7 +40,7 @@ function culturefeed_userpoints_ui_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'includes/admin.inc',
   );
-  
+
   return $items;
 }
 
@@ -69,7 +78,7 @@ function culturefeed_userpoints_ui_theme() {
       'template' => 'culturefeed-userpoints-ui-exchange-page',
     ),
   );
-  
+
 }
 
 /**
@@ -82,7 +91,7 @@ function culturefeed_userpoints_ui_block_info() {
     'info' => t('Culturefeed Userpoints UI: Your balance'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   return $blocks;
 }
 
@@ -101,9 +110,9 @@ function culturefeed_userpoints_ui_block_view($delta) {
       $block['content'] = culturefeed_userpoints_ui_block_balance();
       break;
   }
-  
+
   return $block;
-  
+
 }
 
 /**
@@ -113,7 +122,7 @@ function culturefeed_userpoints_ui_block_view($delta) {
 function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_account) {
 
   $items = array();
-  
+
   $data = 'Puntensaldo ';
   $data .= '<span class="userpoints">' . culturefeed_userpoints_ui_real_points($cf_account->points) . '</span>';
   $data .= '<span class="check-again">' . l('Inruilen', 'culturefeed/userpoints/exchange') . '</span>';
@@ -127,4 +136,4 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   return $items;
 
 }
-  
+

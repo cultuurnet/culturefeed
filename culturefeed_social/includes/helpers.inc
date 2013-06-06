@@ -279,8 +279,8 @@ function _culturefeed_social_do($activity_type, $type, $id) {
   }
 
   try {
-    $id = DrupalCultureFeed::createActivity($activity);
-    $activity->id = $id;
+    $activitiy_result = DrupalCultureFeed::createActivity($activity);
+    $activity->id = $activitiy_result->id;
     return $activity;
   }
   catch (Exception $e) {
