@@ -77,6 +77,11 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-exchange-page',
     ),
+    'culturefeed_userpoints_ui_points_earned_message' => array(
+      'variables' => array('activity' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -134,6 +139,17 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   );
 
   return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_social_activity_created().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity) {
+
+  if (!empty($activity->points)) {
+    drupal_set_message(theme('culturefeed_userpoints_ui_points_earned_message', array('activity' => $activity)));
+  }
 
 }
 

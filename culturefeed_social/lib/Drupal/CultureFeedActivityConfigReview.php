@@ -14,6 +14,7 @@ class CultureFeedActivityConfigReview extends CultureFeedActivityConfigBase {
 
     $this->viewPrefix = 'heeft';
     $this->viewSuffix = 'een beoordeling gegeven';
+    $this->action = 'beoordeling';
 
   }
 

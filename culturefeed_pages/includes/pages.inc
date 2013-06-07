@@ -672,33 +672,27 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   if ($page->isVisible()) {
     $form['remove-link'] = array(
-      '#type' => 'markup',
-      '#markup' => l('Pagina verwijderen',
-        'pages/' . $page->getId() . '/remove/nojs',
-        array(
-          'attributes' => array(
-            'role' => 'button',
-            'data-toggle' => 'modal',
-            'data-target' => '#page_confirm',
-            'data-remote' => url('pages/' . $page->getId() . '/remove/ajax'),
-          ),
-        )
+      '#type' => 'link',
+      '#title' => 'Pagina verwijderen',
+      '#href' => 'pages/' . $page->getId() . '/remove/nojs',
+      '#attributes' => array(
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#page_confirm',
+        'data-remote' => url('pages/' . $page->getId() . '/remove/ajax'),
       ),
     );
   }
   else {
     // @todo We can use this to quickly reinvoke the status.
     /*$form['publish-link'] = array(
-      '#type' => 'markup',
-      '#markup' => l('Pagina opnieuw publiceren',
-        'pages/' . $page->getId() . '/publish',
-        array(
-          'attributes' => array(
-            'role' => 'button',
-            'data-toggle' => 'modal',
-            'data-target' => '#page_confirm',
-          ),
-        )
+      '#type' => 'link',
+      '#title' => 'Pagina opnieuw publiceren',
+      '#href' => 'pages/' . $page->getId() . '/publish',
+      '#attributes' => array(
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#page_confirm',
       ),
     );*/
   }
@@ -790,7 +784,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden je al je contactgegevens niet verwijderd.</p>
+      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden al je contactgegevens niet verwijderd.</p>
       <p>Leden van deze pagina en activiteiten in naam van deze pagina worden niet verwijderd.</p>
       <p><strong>Ben je zeker?</strong></p>',
   );

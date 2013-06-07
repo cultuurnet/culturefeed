@@ -24,3 +24,16 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
   $variables['points'] = culturefeed_userpoints_ui_real_points($variables['points']);
 
 }
+
+/**
+ * Theme the message when a user earned some points.
+ */
+function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
+
+  $points = culturefeed_userpoints_ui_real_points($variables['activity']->points);
+  $total_points = culturefeed_userpoints_ui_real_points($variables['activity']->newTotalPoints);
+  $message = 'Gefeliciteerd! Je verdiende ' . $points . ' met deze actie en hebt nu ' . $total_points . ' punten.';
+
+  return $message;
+
+}

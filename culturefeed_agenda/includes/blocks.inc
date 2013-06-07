@@ -195,6 +195,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
 
+  unset($query['facet']['category_' . $form_state['#domain_id'] . '_name']);
   // Activate the category facet.
   if (!empty($form_state['values']['category'])) {
     $query['facet']['category_' . $form_state['#domain_id'] . '_name'][0] = $form_state['values']['category'];
