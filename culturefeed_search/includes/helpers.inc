@@ -16,11 +16,11 @@
  */
 function culturefeed_get_search_service() {
 
-  $consumerCredentials = new \CultuurNet\Auth\ConsumerCredentials();
-  $consumerCredentials->setKey(variable_get('culturefeed_search_api_application_key', ''));
-  $consumerCredentials->setSecret(variable_get('culturefeed_search_api_shared_secret', ''));
+  $credentials = new \CultuurNet\Auth\ConsumerCredentials();
+  $credentials->setKey(variable_get('culturefeed_search_api_application_key', ''));
+  $credentials->setSecret(variable_get('culturefeed_search_api_shared_secret', ''));
 
-  return DrupalCultureFeedSearchService::getClient($consumerCredentials);
+  return DrupalCultureFeedSearchService::getClient($credentials);
 
 }
 
@@ -39,18 +39,16 @@ function culturefeed_search_item_load($cdb_id) {
     return $items[$cdb_id];
   }
 
-  $search_service = culturefeed_get_search_service();
-
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $queryParameter = new \CultuurNet\Search\Parameter\Query($cdb_id);
+  $query_parameter = new \CultuurNet\Search\Parameter\Query($cdb_id);
 
-  $queryParameter->setLocalParam('type', 'term');
-  $queryParameter->setLocalParam('f', 'cdbid');
-  $parameters[] = $queryParameter;
+  $query_parameter->setLocalParam('type', 'term');
+  $query_parameter->setLocalParam('f', 'cdbid');
+  $parameters[] = $query_parameter;
 
   try {
-    $result = $search_service->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
     $items = $result->getItems();
     $items[$cdb_id] = reset($items);
     return $items[$cdb_id];

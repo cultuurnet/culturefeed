@@ -227,20 +227,13 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
 
-  $service = culturefeed_get_search_service();
-
   try {
-
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
-
+    return culturefeed_get_search_service()->search($parameters);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
     return NULL;
   }
-
-  return $result;
 
 }
 
@@ -317,6 +310,7 @@ function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, 
     FALSE
   );
 
+  $memberships = array();
   if (!empty($user_list->memberships)) {
     foreach ($user_list->memberships as $user_list_membership) {
       // Exclude requested.

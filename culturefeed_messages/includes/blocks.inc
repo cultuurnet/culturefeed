@@ -12,8 +12,8 @@
 function culturefeed_messages_block_inbox($page = NULL) {
 
   try {
-    $recipientPage = empty($page) ? NULL : $page->getId();
-    $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipientPage);
+    $recipient_page = empty($page) ? NULL : $page->getId();
+    $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipient_page);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);

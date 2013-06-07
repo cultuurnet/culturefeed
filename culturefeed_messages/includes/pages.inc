@@ -14,8 +14,8 @@ function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
   try {
 
     if (!$message) {
-      $recipientPage = empty($page) ? NULL : $page->getId();
-      $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipientPage);
+      $recipient_page = empty($page) ? NULL : $page->getId();
+      $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipient_page);
       if ($messages->total == 0) {
         return array('#markup' => 'U hebt nog geen berichten');
       }
@@ -53,70 +53,59 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
 
   // If empty object. Load active page. This form needs a page.
   if (empty($object)) {
-
-    $page_id = culturefeed_pages_get_active_page_id();
-    if (!$page_id) {
-      return;
-    }
-    try {
-      $object = DrupalCultureFeed::getConsumerInstance()->pages()->getPage($page_id);
-    }
-    catch (Exception $e) {
+    $object = culturefeed_pages_get_active_page();
+    if (empty($object)) {
       return;
     }
   }
 
-  if (!empty($object)) {
+  // If we are on a page. Options are to members or to admins.
+  if ($object instanceof CultureFeed_Cdb_Item_Page) {
 
-    // If we are on a page. Options are to members or to admins.
-    if ($object instanceof CultureFeed_Cdb_Item_Page) {
+    try {
 
-      try {
+      $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+      $user_list = $cf_pages->getUserList($object->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 
-        $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-        $user_list = $cf_pages->getUserList($object->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
+      if (!empty($user_list->memberships)) {
 
-        if (!empty($user_list->memberships)) {
+        $member_count = 0;
+        $admin_count = 0;
 
-          $member_count = 0;
-          $admin_count = 0;
-
-          foreach ($user_list->memberships as $user_list_membership) {
-            if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
-              $admin_count++;
-            }
-            else {
-              $member_count++;
-            }
+        foreach ($user_list->memberships as $user_list_membership) {
+          if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+            $admin_count++;
           }
-
+          else {
+            $member_count++;
+          }
         }
 
-        $form['recipient'] = array(
-          '#type' => 'radios',
-          '#title' => 'Stuur bericht naar:',
-          '#options' => array(
-            CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN => 'alle beheerders van mijn pagina (' . $admin_count . ')',
-            CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER => 'alle leden van mijn pagina (' . $member_count . ')',
-          ),
-        );
-
-        $form_state['page'] = $object;
-
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_messages', $e);
-        return $form;
       }
 
+      $form['recipient'] = array(
+        '#type' => 'radios',
+        '#title' => 'Stuur bericht naar:',
+        '#options' => array(
+          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN => 'alle beheerders van mijn pagina (' . $admin_count . ')',
+          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER => 'alle leden van mijn pagina (' . $member_count . ')',
+        ),
+      );
+
+      $form_state['page'] = $object;
+
     }
-    // If object is a message. We are sending a reply.
-    elseif ($object instanceof CultureFeed_Messages_Message) {
-      $form['title'] = array('#markup' => 'Beantwoorden');
-      $form_state['reply_to'] = $object->id;
-      $form_state['message_type'] = $object->type;
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_messages', $e);
+      return $form;
     }
 
+  }
+  // If object is a message. We are sending a reply.
+  elseif ($object instanceof CultureFeed_Messages_Message) {
+    $form['title'] = array('#markup' => 'Beantwoorden');
+    $form_state['reply_to'] = $object->id;
+    $form_state['message_type'] = $object->type;
   }
 
   $form['subject'] = array(
@@ -132,11 +121,11 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   // Add select to choose the 'send as'.
   try {
 
-    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
 
-    if (!empty($cultureFeedUser->pageMemberships)) {
+    if (!empty($cf_user->pageMemberships)) {
       $send_as_options = array();
-      foreach ($cultureFeedUser->pageMemberships as $membership) {
+      foreach ($cf_user->pageMemberships as $membership) {
         $send_as_options[$membership->page->getId()] = $membership->page->getName();
       }
 

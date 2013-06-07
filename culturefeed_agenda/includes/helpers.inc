@@ -34,10 +34,10 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   // General links.
   if ($detail) {
     $media_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE);
-		foreach ($media_links as $media_link) {
-			$links[] = $media_link->getHLink();
-		}
-	}
+    foreach ($media_links as $media_link) {
+      $links[] = $media_link->getHLink();
+    }
+  }
 
   // Contact info links.
   if (method_exists($item, 'getContactInfo') && $item->getContactInfo()) {
@@ -193,7 +193,7 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     $physical_address = $location_info->getAddress()->getPhysicalAddress();
     if ($physical_address) {
       $location['city'] = $physical_address->getCity();
-      $location['street'] = $physical_address->getStreet() . ' '  . $physical_address->getHouseNumber();
+      $location['street'] = $physical_address->getStreet() . ' ' . $physical_address->getHouseNumber();
       $location['zip'] = $physical_address->getZip();
     }
 

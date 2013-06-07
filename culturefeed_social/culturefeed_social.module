@@ -211,7 +211,7 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_comment_list'=> array(
+    'culturefeed_social_comment_list' => array(
       'variables' => array(
         'activities' => NULL,
         'accounts' => NULL,
@@ -223,7 +223,7 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_social_comment_list_item'=> array(
+    'culturefeed_social_comment_list_item' => array(
       'variables' => array(
         'activity' => NULL,
         'accounts' => NULL,
@@ -492,8 +492,8 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   $form_state['object'] = $object;
 
   $activity_content_type = culturefeed_get_content_type($object->getType());
-  $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
-  $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+  $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
   $form_state['config'] = $config;
 
@@ -517,7 +517,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
 
   if ($status == TRUE) {
 
-    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
+    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
     $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op !type.<br />!link om geen berichten meer te ontvangen.',
       array('!link' => $link, '!type' => $type));
 
@@ -609,7 +609,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
 
   $object = $form_state['object'];
   $activity_content_type = culturefeed_get_content_type($object->getType());
-  $nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
   $config = $form_state['config'];
 
   if (!empty($form_state['activity_result'] )) {
@@ -624,7 +624,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
     if (!empty($form_state['values']['update_optin'])) {
 
       try {
-        $id = DrupalCultureFeed::followNode($activity_content_type, $nodeId, DrupalCultureFeed::getLoggedInUserId());
+        $id = DrupalCultureFeed::followNode($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
         if ($id) {
 
           $type = 'deze activiteit';
@@ -632,7 +632,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
             $type = 'dit boek';
           }
 
-          $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($nodeId) . '/nojs', array('query' => drupal_get_destination()));
+          $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
           drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties op ' . $type . '.<br />!link om geen berichten meer te ontvangen.',
           array('!link' => $link)));
 

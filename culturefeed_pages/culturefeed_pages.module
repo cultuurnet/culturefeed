@@ -557,13 +557,19 @@ function culturefeed_pages_user_login(&$edit, $account) {
     $memberships = $cf_user->pageMemberships;
     if (count($memberships) > 0) {
 
+      $page = NULL;
       $account = DrupalCultureFeed::getLoggedInAccount();
       if (isset($account->data['culturefeed_pages_id'])) {
-        $page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+        $preferred_page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+        // Check if this page was not deleted.
+        if ($preferred_page->isVisible()) {
+          $page = $preferred_page;
+        }
       }
-      // If only 1 membership or more and there is no recollection of a previous state,
+
+      // If there is no recollection of a previous state,
       // take the first membership as active one.
-      else {
+      if (empty($page)) {
         $membership = reset($memberships);
         $page = $membership->page;
       }
@@ -791,7 +797,7 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-
+return TRUE;
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
 
   // Calculate the number of pages where the current user is ADMIN.

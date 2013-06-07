@@ -74,7 +74,6 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
  */
 function culturefeed_search_ui_suggestions_autocomplete_page($search_string) {
 
-  $searchService = culturefeed_get_search_service();
   $matches = array();
 
   if ($search_string) {
@@ -82,13 +81,12 @@ function culturefeed_search_ui_suggestions_autocomplete_page($search_string) {
     try {
 
       // Get the list of suggestions from service.
-      $result = $searchService->searchSuggestions($search_string);
+      $result = culturefeed_get_search_service()->searchSuggestions($search_string);
       if ($result->hasSuggestions()) {
         $suggestions = $result->getSuggestions();
         foreach ($suggestions as $suggestion) {
           $matches[$suggestion] = check_plain($suggestion);
         }
-
       }
 
     }

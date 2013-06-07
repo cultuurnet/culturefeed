@@ -70,7 +70,6 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
  */
 function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string) {
 
-  $searchService = culturefeed_get_search_service();
   $matches = array();
 
   if ($search_string) {
@@ -78,7 +77,7 @@ function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string
     try {
 
       // Get the list of suggestions from service.
-      $result = $searchService->searchSuggestions($search_string, array('event', 'production'));
+      $result = culturefeed_get_search_service()->searchSuggestions($search_string, array('event', 'production'));
       if ($result->hasSuggestions()) {
         $suggestions = $result->getSuggestions();
         foreach ($suggestions as $suggestion) {

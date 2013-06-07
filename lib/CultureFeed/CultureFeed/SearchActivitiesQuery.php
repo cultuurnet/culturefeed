@@ -36,6 +36,13 @@ class CultureFeed_SearchActivitiesQuery {
   public $userId;
 
   /**
+   * onBehalfOf.
+   *
+   * @var string
+   */
+  public $onBehalfOf;
+
+  /**
    * Consumer.
    *
    * @var string

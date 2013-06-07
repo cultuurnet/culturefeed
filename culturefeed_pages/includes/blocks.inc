@@ -392,8 +392,7 @@ function culturefeed_pages_block_related_activities($page) {
   // Execute search.
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;

@@ -67,8 +67,7 @@ function culturefeed_agenda_block_related_activities() {
   // Execute search.
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;
@@ -149,7 +148,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . $location . '</span>',
+    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . check_plain($location) . '</span>',
     '#default_value' => !empty($location),
   );
 
@@ -239,8 +238,7 @@ function culturefeed_agenda_block_actor_program() {
 
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;

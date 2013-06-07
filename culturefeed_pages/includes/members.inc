@@ -1,8 +1,8 @@
 <?php
 /**
+ * @file
  * Page callbacks for member management.
  */
-
 
 /**
  * Show the manage members page for 1 culturefeed page.
