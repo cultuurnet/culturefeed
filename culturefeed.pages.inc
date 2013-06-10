@@ -28,6 +28,10 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $options['query']['closepopup'] = 'true';
   }
 
+  if (isset($_GET['dob'])) {
+    $options['query']['dob'] = $_GET['dob'];
+  }
+
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
 
   // Fetch the request token.
