@@ -149,6 +149,12 @@ class CultureFeed_Activity {
   public $points;
 
   /**
+   * The total of points after doing this activity.
+   * @var int
+   */
+  public $newTotalPoints;
+
+  /**
    * The type of content this activity handles.
    * Possible values are represented in the CONTENT_TYPE_* constants.
    *

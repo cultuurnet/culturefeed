@@ -643,6 +643,8 @@ class CultureFeed implements ICultureFeed {
    * @param CultureFeed_Activity $activity
    *   The activity to create.
    *
+   * @return CultureFeed_Activity
+   *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
@@ -660,7 +662,16 @@ class CultureFeed implements ICultureFeed {
 
     $id = $xml->xpath_str('/response/activityId');
     if (!empty($id)) {
-      return $id;
+
+      $activity->id = $id;
+
+      $activityPoints = $xml->xpath('/response/activityPointsList/activityPoints');
+      if (!empty($activityPoints)) {
+        $activity->newTotalPoints = $activityPoints[0]->xpath_float('newTotalPoints');
+        $activity->points = $activityPoints[0]->xpath_float('savedPoints');
+      }
+
+      return $activity;
     }
 
     throw new CultureFeed_ParseException($result);

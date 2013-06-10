@@ -16,10 +16,9 @@ function culturefeed_pages_join_page_search() {
 
     try {
 
-      $searchService = culturefeed_get_search_service();
       $parameters = array();
       $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
-      $result = $searchService->searchPages($parameters);
+      $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();
 
     }
@@ -201,15 +200,13 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
  */
 function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 
-  $searchService = culturefeed_get_search_service();
   $matches = array();
-
   if ($search_string) {
 
     try {
 
       // Get the list of suggestions from service.
-      $result = $searchService->searchSuggestions($search_string, array('page'));
+      $result = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
       if ($result->hasSuggestions()) {
         $suggestions = $result->getSuggestions();
         foreach ($suggestions as $suggestion) {
@@ -479,7 +476,7 @@ function culturefeed_pages_add_form_submit(& $form, & $form_state) {
  * @param array $form
  * @param array $form_state
  */
-function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_Item_Page $page){
+function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_Item_Page $page) {
 
   $form = culturefeed_pages_add_form($form, $form_state);
   $form_state['page'] = $page;
@@ -672,33 +669,28 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   if ($page->isVisible()) {
     $form['remove-link'] = array(
-      '#type' => 'markup',
-      '#markup' => l('Pagina verwijderen',
-        'pages/' . $page->getId() . '/remove/nojs',
-        array(
-          'attributes' => array(
-            'role' => 'button',
-            'data-toggle' => 'modal',
-            'data-target' => '#page_confirm',
-            'data-remote' => url('pages/' . $page->getId() . '/remove/ajax'),
-          ),
-        )
+      '#type' => 'link',
+      '#title' => 'Pagina verwijderen',
+      '#href' => 'pages/' . $page->getId() . '/remove/nojs',
+      '#attributes' => array(
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#page_confirm',
+        'data-remote' => url('pages/' . $page->getId() . '/remove/ajax'),
       ),
     );
   }
   else {
     // @todo We can use this to quickly reinvoke the status.
     /*$form['publish-link'] = array(
-      '#type' => 'markup',
-      '#markup' => l('Pagina opnieuw publiceren',
-        'pages/' . $page->getId() . '/publish',
-        array(
-          'attributes' => array(
-            'role' => 'button',
-            'data-toggle' => 'modal',
-            'data-target' => '#page_confirm',
-          ),
-        )
+      '#type' => 'link',
+      '#title' => 'Pagina opnieuw publiceren',
+      '#href' => 'pages/' . $page->getId() . '/publish/nojs',
+      '#attributes' => array(
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#page_confirm',
+        'data-remote' => url('pages/' . $page->getId() . '/publish/ajax'),
       ),
     );*/
   }
@@ -790,7 +782,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden je al je contactgegevens niet verwijderd.</p>
+      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden al je contactgegevens niet verwijderd.</p>
       <p>Leden van deze pagina en activiteiten in naam van deze pagina worden niet verwijderd.</p>
       <p><strong>Ben je zeker?</strong></p>',
   );
@@ -831,9 +823,16 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
 
   // Send request to remove a page.
   try {
+
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $uid = $cf_pages->removePage($page->getId());
     drupal_set_message(format_string('De pagina "@page" is verwijderd.', array('@page' => $page->getName())));
+
+    // Call the user login hook implementation of pages, to see if another page can be set as active.
+    global $user;
+    $edit = array();
+    culturefeed_pages_user_login($edit, $user);
+
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);

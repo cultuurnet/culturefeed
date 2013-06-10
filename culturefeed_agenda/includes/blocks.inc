@@ -67,8 +67,7 @@ function culturefeed_agenda_block_related_activities() {
   // Execute search.
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;
@@ -149,18 +148,20 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . $location . '</span>',
+    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . check_plain($location) . '</span>',
     '#default_value' => !empty($location),
   );
 
   $form['coordinates'] = array(
     '#type' => 'hidden',
     '#default_value' => isset($_GET['coordinates']) ? $_GET['coordinates'] : '',
+    '#attributes' => array('id' => 'geolocate-coordinates'),
   );
 
   $form['city'] = array(
     '#type' => 'hidden',
     '#default_value' => $location,
+    '#attributes' => array('id' => 'geolocate-city'),
   );
 
   $form['submit'] = array(
@@ -193,6 +194,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $query['search'] = $form_state['values']['search'];
 
+  unset($query['facet']['category_' . $form_state['#domain_id'] . '_name']);
   // Activate the category facet.
   if (!empty($form_state['values']['category'])) {
     $query['facet']['category_' . $form_state['#domain_id'] . '_name'][0] = $form_state['values']['category'];
@@ -236,8 +238,7 @@ function culturefeed_agenda_block_actor_program() {
 
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;

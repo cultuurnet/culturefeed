@@ -109,9 +109,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Ticket links.
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
     $variables['tickets'] = array();
-  	foreach ($ticket_links as $link) {
-  		$variables['tickets'][] = l('Bestel tickets', $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
-  	}
+    foreach ($ticket_links as $link) {
+      $variables['tickets'][] = l('Bestel tickets', $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
+    }
 
   }
 
@@ -215,11 +215,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // Add videos.
     $variables['videos'] = array();
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
-  	foreach ($videos as $video) {
-			if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink(), 240, 180)) {
-				$variables['videos'][] = $video_embed;
-  		}
-  	}
+    foreach ($videos as $video) {
+      if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink(), 240, 180)) {
+        $variables['videos'][] = $video_embed;
+      }
+    }
 
   }
 
@@ -230,9 +230,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['categories'][] = check_plain($category->getName());
   }
 
-	// Links.
-	$links = _culturefeed_agenda_get_links_from_item($cdb_item);
-	$variables['links'] = array();
+  // Links.
+  $links = _culturefeed_agenda_get_links_from_item($cdb_item);
+  $variables['links'] = array();
   foreach ($links as $link) {
     // clean up link text
     $link_text = str_replace('http://', '', $link);
@@ -421,7 +421,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       $physical_address = $addresses[0]->getPhysicalAddress();
       if ($physical_address) {
         $variables['location']['city'] = check_plain($physical_address->getCity());
-        $variables['location']['street'] = check_plain($physical_address->getStreet() . ' '  . $physical_address->getHouseNumber());
+        $variables['location']['street'] = check_plain($physical_address->getStreet() . ' ' . $physical_address->getHouseNumber());
         $variables['location']['zip'] = check_plain($physical_address->getZip());
       }
     }

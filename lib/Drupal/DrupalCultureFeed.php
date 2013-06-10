@@ -113,7 +113,14 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function createActivity(CultureFeed_Activity $activity) {
-    return self::getLoggedInUserInstance()->createActivity($activity);
+
+    $result = self::getLoggedInUserInstance()->createActivity($activity);
+
+    // Let other modules hook onto the activity creation result.
+    module_invoke_all('culturefeed_social_activity_created', $result);
+
+    return $result;
+
   }
 
   public static function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {

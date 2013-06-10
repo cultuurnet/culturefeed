@@ -60,8 +60,10 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   $variables['memberships'] = $account->pageMemberships;
 
   $variables['following'] = array();
-  foreach ($account->following as $following) {
-    $variables['following'][] = culturefeed_search_detail_l('page', $following->page->getId(), $following->page->getName());
+  if (!empty($account->following)) {
+    foreach ($account->following as $following) {
+      $variables['following'][] = culturefeed_search_detail_l('page', $following->page->getId(), $following->page->getName());
+    }
   }
 
 }

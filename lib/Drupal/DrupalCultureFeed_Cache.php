@@ -149,11 +149,15 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function createActivity(CultureFeed_Activity $activity) {
-    $id = $this->realCultureFeed->createActivity($activity);
+    $result = $this->realCultureFeed->createActivity($activity);
+
+    // Let other modules hook onto the activity creation result.
+    module_invoke_all('culturefeed_social_activity_created', $result);
 
     $this->cacheClearActivities();
 
-    return $id;
+
+    return $result;
   }
 
   public function updateActivity($id, $private) {

@@ -55,7 +55,7 @@
       
       // Inject the postalcode in the hidden field.
       if (coordinates_input_selector != '') {
-        $(coordinates_input_selector).val(place.geometry.location.jb + ',' + place.geometry.location.kb);        
+        $(coordinates_input_selector).val(place.geometry.location.lat() + ',' + place.geometry.location.lng());        
       }
 
       if (city_input_selector != '') {

@@ -19,8 +19,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
   public function loadPage() {
 
     // store faceting component in global, for use in blocks
-    global $facetingComponent;
-    $facetingComponent = new Facet\FacetComponent();
+    global $culturefeedFacetingComponent;
+    $culturefeedFacetingComponent = new Facet\FacetComponent();
 
     $params = drupal_get_query_parameters();
 
@@ -35,11 +35,11 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $this->addSort($params);
 
     $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
-    $this->parameters[] = $facetingComponent->facetField('category');
-    $this->parameters[] = $facetingComponent->facetField('datetype');
-    $this->parameters[] = $facetingComponent->facetField('city');
+    $this->parameters[] = $culturefeedFacetingComponent->facetField('category');
+    $this->parameters[] = $culturefeedFacetingComponent->facetField('datetype');
+    $this->parameters[] = $culturefeedFacetingComponent->facetField('city');
 
-    $this->execute($params, $facetingComponent);
+    $this->execute($params, $culturefeedFacetingComponent);
 
     if (module_exists('culturefeed_social')) {
       $this->warmupCache();

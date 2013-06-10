@@ -206,8 +206,10 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
     // @todo Update the user profile.
     // Check the fields with nils first.
     
+    // Thank you message.
     if (count($pointsPromotions) > 1) {
-      drupal_set_message('Bedankt');
+      $message = theme('culturefeed_userpoints_ui_points_exchanged_message', array('promotions' => $pointsPromotions));
+      drupal_set_message($message);
     }
     
   }

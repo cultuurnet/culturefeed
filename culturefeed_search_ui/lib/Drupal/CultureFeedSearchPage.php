@@ -184,7 +184,7 @@ class CultureFeedSearchPage {
   /**
    * Execute the search for current page.
    */
-  protected function execute($params, $facetingComponent) {
+  protected function execute($params, $culturefeedFacetingComponent) {
 
     // Add start index (page number we want)
     $this->start = $params['page'] * $this->resultsPerPage;
@@ -210,9 +210,9 @@ class CultureFeedSearchPage {
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    global $searchResult;
-    $searchResult = $this->result = $searchService->search($this->parameters);
-    $facetingComponent->obtainResults($this->result);
+    global $culturefeedSearchResult;
+    $culturefeedSearchResult = $this->result = $searchService->search($this->parameters);
+    $culturefeedFacetingComponent->obtainResults($this->result);
 
   }
 

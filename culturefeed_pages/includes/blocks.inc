@@ -167,33 +167,7 @@ function culturefeed_pages_block_pages_admin_menu() {
  */
 function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $page) {
 
-  $menu = array(
-    'info' => array(
-      'title' => 'Wijzig gegevens',
-      'url' => 'pages/' . $page->getId() . '/edit',
-      'description' => 'Bewerk contactinfo, foto, beschrijving, website,...',
-      'weight' => -20,
-    ),
-    'settings' => array(
-      'title' => 'Instellingen',
-      'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => 'Mogen gebruikers jouw pagina volgen, reacties schrijven, activiteiten aanraden,...',
-      'weight' => -19,
-    ),
-    'members' => array(
-      'title' => 'Leden & rollen',
-      'url' => 'pages/' . $page->getId() . '/members/nojs',
-      'description' => 'Beheer leden en toegangsrechten',
-      'weight' => -18,
-    ),
-    'activities' => array(
-      'title' => 'Activiteiten',
-      'url' => 'pages/' . $page->getId() . '/events',
-      'description' => 'Beheer je activiteiten en reacties',
-      'weight' => -17,
-    ),
-  );
-
+  $menu = module_invoke_all('culturefeed_pages_page_admin_menu');
   drupal_alter('culturefeed_pages_page_admin_menu', $menu, $page);
 
   uasort($menu, 'drupal_sort_weight');
@@ -418,8 +392,7 @@ function culturefeed_pages_block_related_activities($page) {
   // Execute search.
   try {
 
-    $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($parameters);
+    $result = culturefeed_get_search_service()->search($parameters);
 
     if ($result->getTotalCount() == 0) {
       return;

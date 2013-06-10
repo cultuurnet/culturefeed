@@ -35,12 +35,6 @@ function culturefeed_social_admin_settings_form() {
     );
   }
 
-  $form['culturefeed_social_show_scores'] = array(
-    '#type' => 'checkbox',
-    '#title' => 'Toon gescoorde punten na het uitvoeren van een actie',
-    '#default_value' => variable_get('culturefeed_social_show_scores', FALSE),
-  );
-
   return system_settings_form($form);
 
 }

@@ -261,8 +261,8 @@ function culturefeed_search_ui_block_view($delta) {
       break;
 
     case 'culturefeed-search-sortorder':
-      global $facetingComponent;
-      if ($facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+      global $culturefeedFacetingComponent;
+      if ($culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
         $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
       }
     break;

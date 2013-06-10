@@ -141,14 +141,14 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
 function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
 
   // FacetingComponent is set in the page callback.
-  global $facetingComponent;
-  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+  global $culturefeedFacetingComponent;
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
 
   $build = array();
 
-  $facets = $facetingComponent->getFacets();
+  $facets = $culturefeedFacetingComponent->getFacets();
   if (!isset($facets[$facet_name])) {
     return;
   }
@@ -178,7 +178,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
     }
 
     return array(
-      'subject' => $subject,
+      'subject' => check_plain($subject),
       'content' => array(
         '#theme' => 'culturefeed_search_facet',
         '#facet' => $facet,
@@ -195,8 +195,8 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
 function culturefeed_search_ui_block_date_facet() {
 
   // FacetingComponent is set in the page callback.
-  global $facetingComponent;
-  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+  global $culturefeedFacetingComponent;
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
 
@@ -274,17 +274,17 @@ function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
 function culturefeed_search_ui_block_city_facet() {
 
   // FacetingComponent is set in the page callback.
-  global $facetingComponent;
-  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+  global $culturefeedFacetingComponent;
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
 
-  global $searchResult;
-  if (!$searchResult instanceof \Cultuurnet\Search\SearchResult) {
+  global $culturefeedSearchResult;
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
     return;
   }
 
-  if ($searchResult->getTotalCount() == 0) {
+  if ($culturefeedSearchResult->getTotalCount() == 0) {
     return;
   }
 
@@ -421,9 +421,9 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
  */
 function culturefeed_search_ui_search_active_filters_block() {
   // This currently means the page callback has already been invoked.
-  global $facetingComponent;
+  global $culturefeedFacetingComponent;
 
-  if (!$facetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return '';
   }
 
@@ -455,7 +455,7 @@ function culturefeed_search_ui_search_active_filters_block() {
       $human_names['agefrom'] = culturefeed_search_ui_get_agefrom_facet_options();
     }
 
-    $facets = $facetingComponent->getFacets();
+    $facets = $culturefeedFacetingComponent->getFacets();
     // Loop through all active facets, and generate a remove link.
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
       foreach ($selected_value as $key => $value) {

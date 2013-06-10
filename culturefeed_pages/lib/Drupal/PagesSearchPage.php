@@ -19,8 +19,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
   public function loadPage() {
 
     // store faceting component in global, for use in blocks
-    global $facetingComponent;
-    $facetingComponent = new Facet\FacetComponent();
+    global $culturefeedFacetingComponent;
+    $culturefeedFacetingComponent = new Facet\FacetComponent();
 
     $args = $_GET;
     $params = drupal_get_query_parameters();
@@ -35,10 +35,10 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     $this->addFacetFilters($params);
     $this->addSort($params);
 
-    $this->parameters[] = $facetingComponent->facetField('category');
-    $this->parameters[] = $facetingComponent->facetField('city');
+    $this->parameters[] = $culturefeedFacetingComponent->facetField('category');
+    $this->parameters[] = $culturefeedFacetingComponent->facetField('city');
 
-    $this->execute($params, $facetingComponent);
+    $this->execute($params, $culturefeedFacetingComponent);
 
     return $this->build();
 
@@ -54,7 +54,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
   /**
    * Execute the search for current page.
    */
-  protected function execute($params, $facetingComponent) {
+  protected function execute($params, $culturefeedFacetingComponent) {
 
     // Add start index (page number we want)
     $this->start = $params['page'] * $this->resultsPerPage;
@@ -76,9 +76,9 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    global $searchResult;
-    $searchResult = $this->result = $searchService->search($this->parameters);
-    $facetingComponent->obtainResults($this->result);
+    global $culturefeedSearchResult;
+    $culturefeedSearchResult = $this->result = $searchService->search($this->parameters);
+    $culturefeedFacetingComponent->obtainResults($this->result);
 
   }
 

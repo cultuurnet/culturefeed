@@ -128,7 +128,7 @@ function culturefeed_ui_block_profile_box_view() {
 
       // Get the items that should appear in the dropdown.
       $dropdown_items = module_invoke_all('culturefeed_ui_profile_box_dropdown_items', $cf_account);
-      drupal_alter('culturefeed_ui_profile_box_dropdown_items', $dropdown_items);
+      drupal_alter('culturefeed_ui_profile_box_dropdown_items', $dropdown_items, $cf_account);
 
       $content = array(
         '#theme' => 'culturefeed_ui_profile_box',
@@ -176,29 +176,10 @@ function culturefeed_ui_block_profile_menu_is_visible() {
 }
 
 function culturefeed_ui_block_profile_menu_view() {
+
   global $user;
 
-  $menu = array(
-    array(
-      'title' => 'Mijn UiTiD',
-      'url' => 'user/' . $user->uid,
-      'description' => 'Zo zien anderen jouw profiel.',
-      'weight' => -20,
-    ),
-    array(
-      'title' => 'Profiel bewerken',
-      'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, profielfoto,...',
-      'weight' => -19,
-    ),
-    array(
-      'title' => 'Account bewerken',
-      'url' => 'culturefeed/account/edit',
-      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,...',
-      'weight' => -18,
-    ),
-  );
-
+  $menu = module_invoke_all('culturefeed_ui_profile_menu');
   drupal_alter('culturefeed_ui_profile_menu', $menu);
   uasort($menu, 'drupal_sort_weight');
 

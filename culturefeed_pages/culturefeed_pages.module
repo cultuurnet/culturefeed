@@ -557,13 +557,19 @@ function culturefeed_pages_user_login(&$edit, $account) {
     $memberships = $cf_user->pageMemberships;
     if (count($memberships) > 0) {
 
+      $page = NULL;
       $account = DrupalCultureFeed::getLoggedInAccount();
       if (isset($account->data['culturefeed_pages_id'])) {
-        $page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+        $preferred_page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
+        // Check if this page was not deleted.
+        if ($preferred_page->isVisible()) {
+          $page = $preferred_page;
+        }
       }
-      // If only 1 membership or more and there is no recollection of a previous state,
+
+      // If there is no recollection of a previous state,
       // take the first membership as active one.
-      else {
+      if (empty($page)) {
         $membership = reset($memberships);
         $page = $membership->page;
       }
@@ -655,15 +661,51 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 }
 
 /**
- * Implements hook_culturefeed_ui_profile_menu_alter().
+ * Implements hook_culturefeed_pages_page_admin_menu().
  */
-function culturefeed_pages_culturefeed_ui_profile_menu_alter(&$items) {
+function culturefeed_pages_culturefeed_pages_page_admin_menu() {
 
-  $items[] =     array(
-    'title' => "Mijn pagina's",
-    'url' => 'culturefeed/pages',
-    'description' => "Beheer de pagina's waar je lid van bent of die je volgt",
-    'weight' => -17,
+  return array(
+    'info' => array(
+      'title' => 'Wijzig gegevens',
+      'url' => 'pages/' . $page->getId() . '/edit',
+      'description' => 'Bewerk contactinfo, foto, beschrijving, website,...',
+      'weight' => -20,
+    ),
+    'settings' => array(
+      'title' => 'Instellingen',
+      'url' => 'pages/' . $page->getId() . '/configuration',
+      'description' => 'Mogen gebruikers jouw pagina volgen, reacties schrijven, activiteiten aanraden,...',
+      'weight' => -19,
+    ),
+    'members' => array(
+      'title' => 'Leden & rollen',
+      'url' => 'pages/' . $page->getId() . '/members/nojs',
+      'description' => 'Beheer leden en toegangsrechten',
+      'weight' => -18,
+    ),
+    'activities' => array(
+      'title' => 'Activiteiten',
+      'url' => 'pages/' . $page->getId() . '/events',
+      'description' => 'Beheer je activiteiten en reacties',
+      'weight' => -17,
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_pages_culturefeed_ui_profile_menu() {
+
+  return array(
+    'pages' => array(
+      'title' => "Mijn pagina's",
+      'url' => 'culturefeed/pages',
+      'description' => "Beheer de pagina's waar je lid van bent of die je volgt",
+      'weight' => -17,
+    ),
   );
 
 }
@@ -755,7 +797,7 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-
+return TRUE;
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
 
   // Calculate the number of pages where the current user is ADMIN.

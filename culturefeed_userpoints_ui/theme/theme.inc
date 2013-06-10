@@ -175,3 +175,25 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
   $variables['remove_link'] = l('x Verwijder', 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
 
 }
+
+/**
+ * Theme the message when a user earned some points.
+ */
+function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
+
+  $points = culturefeed_userpoints_ui_real_points($variables['activity']->points);
+  $total_points = culturefeed_userpoints_ui_real_points($variables['activity']->newTotalPoints);
+  $message = 'Gefeliciteerd! Je verdiende ' . $points . ' met deze actie en hebt nu ' . $total_points . ' punten.';
+
+  return $message;
+
+}
+
+/**
+ * Theme function for a message when the userpoints were exchanged.
+ * @param array $variables
+ */
+function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
+  // $variables['promotions']
+  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.";
+}

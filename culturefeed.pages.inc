@@ -128,7 +128,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         print '<html>';
         print '<head>';
         print '<title>You should not see this</title>';
-        print '<script type="text/javascript">try { ' . $action .' } catch (err) { } window.close();</script>';
+        print '<script type="text/javascript">try { ' . $action . ' } catch (err) { } window.close();</script>';
         print '<p>Als deze pagina niet automatisch sluit, klik dan op onderstaande link om verder te gaan.</p>';
         print '<p><a href="' . url('') . '">' . url('', array('absolute' => TRUE)) . '</a></p>';
         print '</head>';

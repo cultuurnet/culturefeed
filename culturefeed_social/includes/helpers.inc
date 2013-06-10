@@ -279,8 +279,8 @@ function _culturefeed_social_do($activity_type, $type, $id) {
   }
 
   try {
-    $id = DrupalCultureFeed::createActivity($activity);
-    $activity->id = $id;
+    $activitiy_result = DrupalCultureFeed::createActivity($activity);
+    $activity->id = $activitiy_result->id;
     return $activity;
   }
   catch (Exception $e) {
@@ -378,24 +378,25 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
     case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
-      $nodeId = $extended_entity->getId();
-      break;
+      $node_id = $extended_entity->getId();
+    break;
 
       case CultureFeed_Activity::CONTENT_TYPE_BOOK:
         $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
-        $nodeId = url($path, array('absolute' => TRUE));
-        break;
+        $node_id = url($path, array('absolute' => TRUE));
+      break;
 
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
-      $nodeId = url('node/' . $extended_entity->getId(), array('absolute' => TRUE));
+      $node_id = url('node/' . $extended_entity->getId(), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE:
-      $nodeId = url(culturefeed_social_detail_path('page', $extended_entity->getId(), $object->getName()), array('absolute' => TRUE));
-      break;
+      $node_id = url(culturefeed_social_detail_path('page', $extended_entity->getId(), $object->getName()), array('absolute' => TRUE));
+    break;
+
   }
 
-  return $nodeId;
+  return $node_id;
 
 }
 

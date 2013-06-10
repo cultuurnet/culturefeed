@@ -494,9 +494,12 @@ function theme_culturefeed_pages_edit_membership_form($variables) {
 function theme_culturefeed_pages_follow_success_message($variables) {
 
   $message = '<p><strong>Je volgt nu deze pagina</strong></p>';
-  $message .= '<p>Wil je lid worden van deze pagina? ';
-  $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $variables['page']->getId(), array(
-    'attributes' => array('class' => array('use-ajax'))));
+
+  if ($variables['page']->getPermissions()->allowMembers && !culturefeed_pages_is_user_member_of_page($variables['page']->getId())) {
+    $message .= '<p>Wil je lid worden van deze pagina? ';
+    $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $variables['page']->getId(), array(
+      'attributes' => array('class' => array('use-ajax'))));
+  }
 
   return $message;
 

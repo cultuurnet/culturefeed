@@ -301,8 +301,8 @@ function culturefeed_social_block_my_activity_summary($account) {
   $active_types = culturefeed_social_get_activity_filter_options(TRUE);
 
   $types = array();
-  foreach ($active_types as $type => $activityConfig) {
-    $allowed_types = $activityConfig->allowedTypes;
+  foreach ($active_types as $type => $activity_config) {
+    $allowed_types = $activity_config->allowedTypes;
     foreach ($allowed_types as $ctype) {
       if ($ctype == 'page' && !$has_pages) {
         continue;
