@@ -35,6 +35,7 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
     CultureFeed_Activity::TYPE_FACEBOOK,
     CultureFeed_Activity::TYPE_TWITTER,
     CultureFeed_Activity::TYPE_FOLLOW,
+    CultureFeed_Activity::TYPE_REVIEW,
   );
 
   // Return only active filters.

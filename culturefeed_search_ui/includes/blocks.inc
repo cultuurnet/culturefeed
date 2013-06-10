@@ -359,7 +359,7 @@ function culturefeed_search_ui_city_facet_form() {
  */
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location'));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'nearby', 'coordinates'));
 
   if (!empty($form_state['values']['location'])) {
     $query['location'] = $form_state['values']['location'];

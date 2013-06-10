@@ -10,7 +10,12 @@ class CultureFeedActivityMediaPhoto extends CultureFeedActivityConfigBase {
   public function __construct() {
     parent::__construct();
 
-    $this->allowedTypes = array('event', 'production');
+    $this->allowedTypes = array(
+      CultureFeed_Activity::CONTENT_TYPE_EVENT,
+      CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+      CultureFeed_Activity::CONTENT_TYPE_ACTOR,
+      CultureFeed_Activity::CONTENT_TYPE_ACTIVITY,
+    );
 
     $this->viewPrefix = 'heeft een nieuwe foto toegevoegd';
 

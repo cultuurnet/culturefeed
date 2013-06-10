@@ -10,7 +10,9 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
   public function __construct() {
     parent::__construct();
 
-    $this->allowedTypes = array('page');
+    $this->allowedTypes = array(
+      CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
+    );
 
     $this->subject = 'Volgen deze pagina';
     $this->subjectUndo = 'Volg ik niet meer';

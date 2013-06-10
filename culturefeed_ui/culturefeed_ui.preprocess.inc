@@ -10,7 +10,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   $account = $variables['user'];
 
   // nick
-  $variables['nick'] = $account->nick;
+  $variables['nick'] = check_plain($account->nick);
 
   // name
   $name = array();
@@ -43,13 +43,13 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   }
 
   // bio
-  $variables['bio'] = !empty($account->bio) ? $account->bio : '';
+  $variables['bio'] = !empty($account->bio) ? check_plain($account->bio) : '';
 
   // picture
   $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?maxwidth=100')) : '';
 
   // city
-  $variables['city'] = !empty($account->city) ? $account->city : '';
+  $variables['city'] = !empty($account->city) ? check_plain($account->city) : '';
 
   // profile
   $variables['profile_edit_link'] = '';
@@ -74,7 +74,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
  * @see culturefeed-ui-mbox-confirmation-reminder.tpl.php
  */
 function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variables) {
-  $variables['mbox'] = $variables['account']->mbox;
+  $variables['mbox'] = check_plain($variables['account']->mbox);
 
   $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
   $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
@@ -100,9 +100,9 @@ function template_preprocess_culturefeed_ui_online_account(&$variables) {
 
   $variables['type'] = $variables['account_type'];
 
-  $variables['name'] = !empty($account->accountName) ? $account->accountName: '';
-  $variables['nick'] = !empty($account->accountNick) ? $account->accountNick : '';
-  $variables['depiction'] = !empty($account->accountDepiction) ? $account->accountDepiction : '';
+  $variables['name'] = !empty($account->accountName) ? check_plain($account->accountName) : '';
+  $variables['nick'] = !empty($account->accountNick) ? check_plain($account->accountNick) : '';
+  $variables['depiction'] = !empty($account->accountDepiction) ? check_plain($account->accountDepiction) : '';
 
   $variables['picture'] = !empty($account->accountDepiction) ? theme('image', array('path' => $account->accountDepiction . '?maxwidth=50&maxheight=50&crop=auto')) : '';
 }
@@ -229,8 +229,8 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $consumer instanceof CultureFeed_Consumer;
 
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100')) : '';
-  $variables['name'] = isset($consumer->name) ? $consumer->name : '';
-  $variables['description'] = isset($consumer->description) ? $consumer->description : '';
+  $variables['name'] = isset($consumer->name) ? check_plain($consumer->name) : '';
+  $variables['description'] = isset($consumer->description) ? check_plain($consumer->description) : '';
   $variables['creation_date'] = 'Gekoppeld op ' . format_date($consumer->creationDate, 'custom', 'j F Y');
 }
 
@@ -288,7 +288,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['picture'] = !empty($account->depiction) ? theme('image', array('path' => $account->depiction . '?width=50&height=50&crop=auto')) : '';
 
   // city
-  $variables['city'] = !empty($account->city) ? $account->city : '';
+  $variables['city'] = !empty($account->city) ? check_plain($account->city) : '';
 
   // profile
   $variables['profile_edit_link'] = NULL;

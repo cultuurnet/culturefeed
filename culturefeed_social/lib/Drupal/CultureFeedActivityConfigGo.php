@@ -10,7 +10,10 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
   public function __construct() {
     parent::__construct();
 
-    $this->allowedTypes = array('event');
+    $this->allowedTypes = array(
+      CultureFeed_Activity::CONTENT_TYPE_EVENT,
+      CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+    );
 
     $this->titleDo = 'Ik ga';
     $this->titleDoFirst = 'Ik ga';
