@@ -54,6 +54,10 @@ interface ICultureFeed {
   
   public function getTotalActivities($userId, $type_contentType, $private = FALSE);
 
+  public function getActivityPointsPromotions($params = array());
+
+  public function cashInPromotion($userId, array $promotionId, array $promotionCount);
+  
   public function getMailing($id);
 
   public function createMailing(CultureFeed_Mailing $mailing);

@@ -2,11 +2,24 @@
 /**
  * @file
  * Template for block for userpoints.
+ * 
+ * @vars
+ *   $points
+ *   $real_points
+ *   $pointsPromotions
+ *   $cf_user
+ *   
+ *   @Note that the class <span class="userpoints-points"></span> will trigger
+ *   updates on the amount of the points. Example cases:
+ *   1) <span class="userpoints-points"><?php print $real_points_left ?></span>
+ *   2) <span><?php print $real_points ?></span>
  */
 
 ?>
 <div>
-<?php print $points ?>| <span><?php print l('Inruilen', 'culturefeed/userpoints/exchange'); ?></span>
+  <span class="userpoints-mypoints"><?php print $real_points ?></span>
+  <span class="userpoints-points"><?php print $real_points_left ?></span> | 
+  <span><?php print l('Inruilen', 'culturefeed/userpoints/exchange'); ?></span>
 </div>
 
 <ul>

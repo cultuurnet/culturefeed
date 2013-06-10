@@ -204,6 +204,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
   }
 
+  public function getActivityPointsPromotions($params = array()) {
+    return $this->realCultureFeed->getActivityPointsPromotions($params);
+  }
+
   public function getMailing($id) {
     return $this->realCultureFeed->getMailing($id);
   }

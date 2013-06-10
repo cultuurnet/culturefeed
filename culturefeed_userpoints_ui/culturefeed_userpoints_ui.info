@@ -3,3 +3,5 @@ description = CultureFeed Userpoints blocks and other interface components.
 package = CultureFeed
 version = VERSION
 core = 7.x
+
+files[] = lib/Drupal/CultureFeedUserpointsWishlist.php

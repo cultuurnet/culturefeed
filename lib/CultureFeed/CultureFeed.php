@@ -812,7 +812,86 @@ class CultureFeed implements ICultureFeed {
     return $totals;
 
   }
+  
+  /**
+   * Get the activity promotions.
+   * 
+   * @param array  $params
+   * @throws CultureFeed_ParseException
+   */
+  public function getActivityPointsPromotions($params = array()) {
 
+    // Default sort.
+    $params['sort'] = 'POINTS';
+    $params['unexpired'] = 'true';
+    $params['max'] = 999;
+    
+    $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotions', $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+    
+    $total = $xml->xpath_str('/response/total');
+    
+    $promotions = new stdClass();
+    $promotions->total = $total;
+    
+    if ($total > 0) {
+  
+      $objects = $xml->xpath('/response/promotions/promotion');
+      $data = array();
+      foreach ($objects as $object) {
+
+        $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($object);
+
+        $data[] = $pointsPromotion;
+        
+      }
+
+      $promotions->objects = $data;
+      
+    }
+    
+    return $promotions;
+  }
+
+  /**
+   * Exchange the userpoints for a promotion
+   * @see ICultureFeed::cashInPromotion()
+   */
+  public function cashInPromotion($userId, array $promotionId, array $promotionCount) {
+    
+    $params = array();
+    $params['promotionId'] = $promotionId;
+    $params += $promotionCount;
+    $result = $this->oauth_client->authenticatedPostAsXml('userpoints/user/' . $userId . '/cashInPromotion', $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $status_code = (string)$xml->code;
+    if (!empty($status_code)) {
+      throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
+    }
+    
+    $promotions = $xml->xpath('/response/promotion');
+    $pointsPromotion = array();
+    foreach ($promotions as $object) {
+      $pointsPromotions[] = CultureFeed_PointsPromotion::parseFromXML($object);
+    }
+    
+    return $pointsPromotions;
+    
+  }
+  
   /**
    * Get a mailing.
    *

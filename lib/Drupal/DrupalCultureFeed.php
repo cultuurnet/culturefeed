@@ -165,6 +165,14 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   public static function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
   }
+  
+  public static function getActivityPointsPromotions($params = array()) {
+    return self::getLoggedInUserInstance()->getActivityPointsPromotions($params);
+  }
+  
+  public static function cashInPromotion($userId, array $promotionId, array $promotionCount) {
+    return self::getLoggedInUserInstance()->cashInPromotion($userId, $promotionId, $promotionCount);
+  }
 
   public static function getMailing($id) {
     return self::getLoggedInUserInstance()->getMailing($id);

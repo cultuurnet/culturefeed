@@ -22,6 +22,26 @@ function culturefeed_userpoints_ui_menu() {
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
+
+  $items['culturefeed/userpoints/%/select/%'] = array(
+    'title' => 'Selecteer voordeel',
+    'title callback' => FALSE,
+    'description' => 'Select the promotion to exchange for userpoints.',
+    'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
+    'page arguments' => array(2, 4),
+    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'file' => 'includes/pages.inc',
+  );
+  
+  $items['culturefeed/userpoints/%/remove/%'] = array(
+    'title' => 'Deselecteer voordeel',
+    'title callback' => FALSE,
+    'description' => 'Remove the promotion from the wishlist.',
+    'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
+    'page arguments' => array(2, 4, 'remove'),
+    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'file' => 'includes/pages.inc',
+  );
   
   $items['admin/config/services/userpoints'] = array(
     'title' => 'Culturefeed Userpoints User Interface',
@@ -54,20 +74,71 @@ function culturefeed_userpoints_ui_theme() {
     'culturefeed_userpoints_ui_my_balance' => array(
       'variables' => array(
         'points' => '',
+        'points_in_wishlist' => NULL,
+        'points_left' => NULL,
       ),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-my-balance',
     ),
+    
     'culturefeed_userpoints_ui_exchange_page' => array(
       'variables' => array(
         'points' => '',
+        'points_in_wishlist' => NULL,
+        'points_left' => NULL,
         'cf_user' => NULL,
+        'promotions' => NULL,
+        'promotions_form' => array(),
       ),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-exchange-page',
     ),
+    
+    'culturefeed_userpoints_ui_promotions_list' => array(
+      'variables' => array(
+        'promotions' => array(),
+        'total' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-list',
+    ),
+    
+    'culturefeed_userpoints_ui_promotions_list_item' => array(
+      'variables' => array(
+        'promotion' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-list-item',
+    ),
+    
+    'culturefeed_userpoints_ui_exchange_form' => array(
+      'template' => 'culturefeed-userpoints-ui-exchange-form',
+      'path' => $path,
+      'render element' => 'form',
+    ),
+
+    'culturefeed_userpoints_ui_wishlist' => array(
+      'variables' => array(
+        'promotions' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-wishlist',
+    ),
+    
+    'culturefeed_userpoints_ui_wishlist_item' => array(
+      'variables' => array(
+        'item' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-wishlist-item',
+    ),
+    
   );
   
 }
@@ -115,7 +186,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   $items = array();
   
   $data = 'Puntensaldo ';
-  $data .= '<span class="userpoints">' . culturefeed_userpoints_ui_real_points($cf_account->points) . '</span>';
+  $data .= '<span class="userpoints">' . CultureFeedUserpointsWishlist::getRealPoints($cf_account->points) . '</span>';
   $data .= '<span class="check-again">' . l('Inruilen', 'culturefeed/userpoints/exchange') . '</span>';
 
   $items['my-points'] = array(
