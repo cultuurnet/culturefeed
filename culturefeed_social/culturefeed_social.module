@@ -299,12 +299,17 @@ function culturefeed_social_block_info() {
   );
 
   $blocks['my-notifications'] = array(
-    'info' => t('My notifications'),
+    'info' => t('My notifications (on user profile)'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['my-activity-summary'] = array(
-    'info' => t('Summary of my activities'),
+    'info' => t('Summary of my activities (on user profile)'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['loggedinuser-activity-summary'] = array(
+    'info' => t('Summary of loggedin users activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -343,6 +348,9 @@ function culturefeed_social_block_view($delta) {
     case 'my-activity-summary':
       $account = menu_get_object('user');
       return culturefeed_social_block_my_activity_summary($account);
+
+    case 'loggedinuser-activity-summary':
+      return culturefeed_social_block_my_activity_summary(DrupalCultureFeed::getLoggedInAccount());
 
   }
 
