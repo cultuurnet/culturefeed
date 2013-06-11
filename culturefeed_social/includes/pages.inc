@@ -225,7 +225,6 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->activityId = $id;
     $data = DrupalCultureFeed::searchActivities($query);
-    dsm($data);
   }
   catch (Exception $e) {
     $success = FALSE;
@@ -236,6 +235,9 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   
   if ($request_type == 'ajax') {
     $form['#prefix'] = '<div class="modal-header"><h3>' . $config->label . ' verwijderen</h3></div>';
+  }
+  else {
+    drupal_set_title($config->label . ' verwijderen?');
   }
   
   $destination = drupal_get_destination();
