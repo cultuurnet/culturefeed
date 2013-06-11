@@ -65,3 +65,14 @@ function culturefeed_search_form_system_performance_settings_alter(&$form, $form
 
 }
 
+/**
+ * Implements hook_page_build().
+ * Add query log to the footer.
+ */
+function culturefeed_search_page_build(&$page) {
+
+  if (variable_get('culturefeed_search_debug_mode', FALSE)) {
+    $page['page_bottom']['culturefeed_search_log'] = array('#markup' => \CultuurNet\Search\QueryLog::getInstance());
+  }
+
+}
