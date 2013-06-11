@@ -182,11 +182,21 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   $variables['abuse_form'] = '';
 
   if ($cf_user) {
+
+    $remove_path = 'culturefeed/activity/delete/' . $activity->id;
+    $attributes = array(
+      'class' => array('remove-link'/*, 'use-ajax'*/),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#culturefeed-social-modal-wrapper',
+      'data-remote' => url($remove_path . "/ajax", array('query' => $destination)),
+    );
+    
     if ($variables['level'] == 0) {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-        $variables['delete_link'] = l('Verwijder', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
-          'attributes' => array('class' => array('remove-link', 'use-ajax')),
+        $variables['delete_link'] = l('Verwijder', $remove_path . '/nojs', array(
+          'attributes' => $attributes,
           'query' => $destination,
         ));
       }
@@ -198,8 +208,8 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
     else {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-        $variables['delete_link'] = l('&times;', 'culturefeed/activity/delete/' . $activity->id . '/nojs', array(
-          'attributes' => array('class' => array('remove-link', 'use-ajax')),
+        $variables['delete_link'] = l('&times;', $remove_path . '/nojs', array(
+          'attributes' => $attributes,
           'query' => $destination,
           'html' => TRUE,
         ));

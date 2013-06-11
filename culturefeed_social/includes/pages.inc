@@ -116,13 +116,22 @@ function culturefeed_social_page_activities($type = NULL) {
   $rows = array();
 
   foreach ($activities->objects as $activity) {
+
+    $remove_path = 'culturefeed/activity/delete/' . $activity->id;
+    $attributes = array(
+      'class' => array('remove-link'),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#culturefeed-social-modal-wrapper',
+      'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
+    );
+    
     $delete = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
-      '#href' => 'culturefeed/activity/delete/' . $activity->id . '/nojs',
-      '#attributes' => array('class' => array('remove-link')),
+      '#href' => $remove_path . '/nojs',
+      '#attributes' => $attributes,
       '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(),
     );
 
     $privacy = array(
@@ -189,9 +198,96 @@ function culturefeed_social_page_activities($type = NULL) {
 /**
  * Page callback to delete an activity.
  */
-function culturefeed_social_page_activity_delete($id, $type = 'ajax') {
+function culturefeed_social_page_activity_delete($id, $request_type = 'ajax') {
 
+  $form = drupal_get_form('culturefeed_social_page_activity_delete_confirm_form', $id, $request_type);
+  
+  if ($request_type == 'ajax') {
+    $output = drupal_render($form);
+    print $output;
+  }
+  else {
+    return $form;
+  }
+  
+}
+
+/**
+ * Form callback to delete one activity.
+ * @param array $form
+ * @param array $form_state
+ * @param Integer $id
+ * @param String $request_type (nojs/ajax)
+ */
+function culturefeed_social_page_activity_delete_confirm_form($form, &$form_state, $id, $request_type) {
+
+  try {
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->activityId = $id;
+    $data = DrupalCultureFeed::searchActivities($query);
+    dsm($data);
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+  }
+  
+  $config = culturefeed_social_activity_get_config($data->objects[0]->type);
+  
+  if ($request_type == 'ajax') {
+    $form['#prefix'] = '<div class="modal-header"><h3>' . $config->label . ' verwijderen</h3></div>';
+  }
+  
+  $destination = drupal_get_destination();
+  
+  $form_state['id'] = $id;
+  
+  $form['body_wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
+    '#suffix' => '</div>',
+  );
+  $form['body_wrapper']['page_remove_confirm'] = array(
+    '#type' => 'markup',
+    '#markup' => '<p>Ben je zeker dat je jouw ' . $config->action . ' definitief wil verwijderen.</p>',
+  );
+  
+  $form['footer_wrapper'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div class="modal-footer">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['footer_wrapper']['remove'] = array(
+    '#type' => 'submit',
+    '#value' => 'Verwijder',
+    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+  );
+  
+  $form['footer_wrapper']['decline'] = array(
+    '#type' => 'link',
+    '#title' => 'Annuleer',
+    '#href' => url($destination['destination']),
+    '#attributes' => array(
+      'data-dismiss' => 'modal',
+      'aria-hidden' => 'true',
+      'class' => array('button-decline close btn')
+    ),
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * Submit handler to actually remove an activity.
+ * @param array $form
+ * @param array $form_state
+ */
+function culturefeed_social_page_activity_delete_confirm_form_submit($form, &$form_state) {
+  
   $success = TRUE;
+  $id = $form_state['id'];
 
   try {
     DrupalCultureFeed::deleteActivity($id);
@@ -200,19 +296,7 @@ function culturefeed_social_page_activity_delete($id, $type = 'ajax') {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
-
-  if ($type == 'ajax') {
-    $commands = array();
-
-    if ($success) {
-      $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
-    }
-
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-  }
-  else {
-    drupal_goto();
-  }
+  drupal_goto();
 
 }
 

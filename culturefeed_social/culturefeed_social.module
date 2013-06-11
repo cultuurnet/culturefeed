@@ -272,6 +272,19 @@ function culturefeed_social_theme() {
 }
 
 /**
+ * Implements hook_page_build()
+ */
+function culturefeed_social_page_build(&$build) {
+  $build['page_bottom']['modal-wrapper'] = array(
+    '#type' => 'markup',
+    '#markup' => '<div id="culturefeed-social-modal-wrapper" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body"></div>
+      </div>
+    ',
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function culturefeed_social_block_info() {

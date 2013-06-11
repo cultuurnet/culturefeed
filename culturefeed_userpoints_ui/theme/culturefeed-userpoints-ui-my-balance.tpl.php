@@ -23,7 +23,7 @@
 </div>
 
 <ul>
-<li>Hoe gaat alles in zijn werk?</li>
-<li>Hoe kan ik extra punten verdienen?</li>
-<li>Waarvoor kan ik mijn punten gebruken?</li>
+  <li>Hoe gaat alles in zijn werk?</li>
+  <li>Hoe kan ik extra punten verdienen?</li>
+  <li>Waarvoor kan ik mijn punten gebruken?</li>
 </ul>
