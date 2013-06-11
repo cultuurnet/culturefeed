@@ -88,6 +88,8 @@ function culturefeed_search_ui_get_date_facet_options() {
   return array(
     'today' => 'Vandaag',
     'next7days' => 'Deze week',
+    'thisweekend' => 'Dit weekend',
+    'nextweekend' => 'Volgend weekend',
     'next14days' => 'Volgende 14 dagen',
     'next30days' => 'Volgende 30 dagen',
     'next12months' => 'Volgende 12 maanden',

@@ -331,6 +331,30 @@ function culturefeed_ui_block_save($delta = '', $edit = array()) {
 }
 
 /**
+ * Implements hook_user_login().
+ */
+function culturefeed_ui_user_login() {
+
+  // Update dob if given during login.
+  if (isset($_GET['dob'])) {
+
+    try {
+
+      $cf_account = new CultureFeed_User();
+      $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
+      $cf_account->dob = $_GET['dob'];
+      DrupalCultureFeed::updateUser($cf_account);
+
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+    }
+
+  }
+
+}
+
+/**
  * Implements hook_user_view().
  */
 function culturefeed_ui_user_view($account) {
