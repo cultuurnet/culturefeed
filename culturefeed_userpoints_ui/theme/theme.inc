@@ -25,6 +25,15 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
   _culturefeed_userpoints_ui_preprocess_userpoints($variables);
   
   $build = culturefeed_userpoints_ui_promotions_list($variables['promotions']);
+  
+  $minimum_points = NULL;
+  foreach ($variables['promotions']->objects as $promotion) {
+    if (!isset($minimum_points) || $promotion->points < $minimum_points) {
+      $minimum_points = $promotion->points;
+    }
+  }
+  $variables['minimum_points'] = $minimum_points;
+  
   $variables['promotions_list'] = '<div id="culturefeed-userpoints-promotions-list">' . drupal_render($build) . '</div>';
   $variables['wishlist'] = '<div id="culturefeed-userpoints-wishlist">'; 
   $wishlist_build = culturefeed_userpoints_ui_get_wishlist($variables['promotions']->objects);
@@ -78,48 +87,12 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_list_item(&$variables) {
   
   $pointsPromotion = $variables['promotion'];
+  
+  _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
+  
   $promotion_id = $pointsPromotion->id;
-
-  // Calculate constraints. Eg. User volume constraint, volume contraint, ... .
-  $promotion_count = 0;
-  if (CultureFeedUserpointsWishlist::has($promotion_id)) {
-    $data = CultureFeedUserpointsWishlist::get($promotion_id);
-    $promotion_count = $data['count'];
-  }
-  $variables['volume_constraint'] = FALSE;
-  $units_taken = $pointsPromotion->unitsTaken + $promotion_count;
-  if (!empty($pointsPromotion->maxAvailableUnits) && 
-    $units_taken >= $pointsPromotion->maxAvailableUnits) {
-    $variables['volume_constraint'] = TRUE;
-  }
   
-  // Calculate the points.
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
-  $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
-  $variables['points'] = $pointsPromotion->points;
-  $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
-  $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
-  $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
-
-  $variables['title'] = $pointsPromotion->title;
-  $variables['id'] = $promotion_id;
-  $variables['cashInState'] = $pointsPromotion->cashInState;
-  $variables['cashedIn'] = $pointsPromotion->cashedIn;
-  $variables['cashingPeriodBegin'] = date('d/m/Y', $pointsPromotion->cashingPeriodBegin);
-  if (!empty($pointsPromotion->cashingPeriodEnd)) {
-    $variables['cashingPeriodEnd'] = date('d/m/Y', $pointsPromotion->cashingPeriodEnd);
-  }
-  $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
-  $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
-  $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
-  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
-  
-  $variables['period_volume'] = '';
-  $variables['period_type'] = '';
-  if (!empty($pointsPromotion->periodConstraint)) {
-    $variables['period_volume'] = $pointsPromotion->periodConstraint->periodVolume;
-    $variables['period_type'] = $pointsPromotion->periodConstraint->periodType;
-  }
+  $variables['link'] = l($pointsPromotion->title, 'culturefeed/promotion/' . $promotion_id);
   
   $variables['select_link'] = '';
   $variables['add_link'] = '';
@@ -181,8 +154,8 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
  */
 function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 
-  $points = culturefeed_userpoints_ui_real_points($variables['activity']->points);
-  $total_points = culturefeed_userpoints_ui_real_points($variables['activity']->newTotalPoints);
+  $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
+  $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
   $message = 'Gefeliciteerd! Je verdiende ' . $points . ' met deze actie en hebt nu ' . $total_points . ' punten.';
 
   return $message;
@@ -196,4 +169,67 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
   // $variables['promotions']
   return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.";
+}
+
+/**
+ * Preprocess a promotion detail.
+ *
+ * @see culturefeed-userpoints-ui-detail-page.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_page(&$variables) {
+
+  $pointsPromotion = $variables['promotion'];
+  
+  _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
+  
+}
+
+/**
+ * Helper preprocessor for one pointsPromotion.
+ */
+function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromotion) {
+
+  $promotion_id = $pointsPromotion->id;
+  
+  // Calculate constraints. Eg. User volume constraint, volume contraint, ... .
+  $promotion_count = 0;
+  if (CultureFeedUserpointsWishlist::has($promotion_id)) {
+    $data = CultureFeedUserpointsWishlist::get($promotion_id);
+    $promotion_count = $data['count'];
+  }
+  $variables['volume_constraint'] = FALSE;
+  $units_taken = $pointsPromotion->unitsTaken + $promotion_count;
+  if (!empty($pointsPromotion->maxAvailableUnits) &&
+    $units_taken >= $pointsPromotion->maxAvailableUnits) {
+    $variables['volume_constraint'] = TRUE;
+  }
+  
+  // Calculate the points.
+  $cf_account = DrupalCultureFeed::getLoggedInUser();
+  $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+  $variables['points'] = $pointsPromotion->points;
+  $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
+  $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
+  $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
+  
+  $variables['title'] = $pointsPromotion->title;
+  $variables['id'] = $promotion_id;
+  $variables['cashInState'] = $pointsPromotion->cashInState;
+  $variables['cashedIn'] = $pointsPromotion->cashedIn;
+  $variables['cashingPeriodBegin'] = date('d/m/Y', $pointsPromotion->cashingPeriodBegin);
+  if (!empty($pointsPromotion->cashingPeriodEnd)) {
+    $variables['cashingPeriodEnd'] = date('d/m/Y', $pointsPromotion->cashingPeriodEnd);
+  }
+  $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
+  $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
+  $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
+  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
+  
+  $variables['period_volume'] = '';
+  $variables['period_type'] = '';
+  if (!empty($pointsPromotion->periodConstraint)) {
+    $variables['period_volume'] = $pointsPromotion->periodConstraint->periodVolume;
+    $variables['period_type'] = $pointsPromotion->periodConstraint->periodType;
+  }
+
 }

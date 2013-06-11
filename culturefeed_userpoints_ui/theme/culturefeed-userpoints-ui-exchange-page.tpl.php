@@ -29,8 +29,10 @@
 ?>
 Resterend aantal punten: <span class="userpoints-points"><?php print $real_points_left ?></span>
 
-<div class="alert alert-block alert-success">Je hebt onvoldoende punten. <strong>Vanaf 500 punten</strong> kan je jouw punten inruilen voor tickets, gadgets, waardebonnen, kortingen, ... .<br />
-Niet voldoende punten? Niet getreurd, Ontdek hier hoe en hoeveel punten je telkens kunt sparen.</div>
+<?php if ($real_points_left < $minimum_points): ?>
+  <div class="alert alert-block alert-success">Je hebt onvoldoende punten. <strong>Vanaf <?php print $variables['minimum_points']; ?> punten</strong> kan je jouw punten inruilen voor tickets, gadgets, waardebonnen, kortingen, ... .<br />
+  Niet voldoende punten? Niet getreurd, Ontdek hier hoe en hoeveel punten je telkens kunt sparen.</div>
+<?php endif; ?>
 
 <?php print $promotions_list ?>
 

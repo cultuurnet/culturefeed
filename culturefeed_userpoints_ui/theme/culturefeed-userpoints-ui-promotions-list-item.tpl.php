@@ -31,7 +31,7 @@
 <div class="<?php print $classes ?>" id="culturefeed-userpoints-item-wrapper-<?php print $id ?>">
   
   <?php print $real_points ?><br />
-  <?php print $title ?><br />
+  <?php print $title ?> (<?php print $link ?>)<br />
   Geldig van <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' tot ' . $cashingPeriodEnd : '') ?>
 
   <div id="culturefeed-userpoints-item-<?php print $id ?>">

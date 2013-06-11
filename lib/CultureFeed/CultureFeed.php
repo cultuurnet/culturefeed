@@ -851,13 +851,19 @@ class CultureFeed implements ICultureFeed {
     $promotions = new stdClass();
     $promotions->total = $total;
     
+    $detail = NULL;
+    
     if ($total > 0) {
   
       $objects = $xml->xpath('/response/promotions/promotion');
       $data = array();
       foreach ($objects as $object) {
-
+        
         $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($object);
+
+        if (isset($params['promotionId']) && $object->id == $params['promotionId']) {
+          $detail = $pointsPromotion;
+        }
 
         $data[] = $pointsPromotion;
         
@@ -867,6 +873,9 @@ class CultureFeed implements ICultureFeed {
       
     }
     
+    if (isset($params['promotionId'])) {
+      return isset($detail) ? $detail : NULL;
+    }
     return $promotions;
   }
 
@@ -892,9 +901,9 @@ class CultureFeed implements ICultureFeed {
     if (!empty($status_code)) {
       throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
     }
-    
-    $promotions = $xml->xpath('/response/promotion');
-    $pointsPromotion = array();
+
+    $promotions = $xml->xpath('/response/promotions/promotion');
+    $pointsPromotions = array();
     foreach ($promotions as $object) {
       $pointsPromotions[] = CultureFeed_PointsPromotion::parseFromXML($object);
     }

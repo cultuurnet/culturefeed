@@ -58,6 +58,17 @@ function culturefeed_userpoints_ui_exchange_page() {
 }
 
 /**
+ * Page callback to load and display one promotion.
+ * @param CultureFeed_PointsPromotion $pointsPromotion
+ */
+function culturefeed_userpoints_ui_detail_page($pointsPromotion) {
+  return array(
+    '#theme' => 'culturefeed_userpoints_ui_detail_page',
+    '#promotion' => $pointsPromotion,
+  );
+}
+
+/**
  * Page callback to select a promotion to exchange for userpoints.
  */
 function culturefeed_userpoints_ui_promotion_select_page($promotion_id, $request_type, $operation = 'add') {
@@ -124,21 +135,21 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
     '#theme' => 'culturefeed_userpoints_ui_exchange_form',
   );
   
-  $form['email'] = array(
+  $form['mbox'] = array(
     '#type' => 'textfield',
     '#title' => 'E-mailadres',
     '#default_value' => $cf_user->mbox,
     '#required' => TRUE,
   );
   
-  $form['name'] = array(
+  $form['familyName'] = array(
     '#type' => 'textfield',
     '#title' => 'Naam',
     '#default_value' => $cf_user->familyName,
     '#required' => TRUE,
   );
   
-  $form['firstname'] = array(
+  $form['givenName'] = array(
     '#type' => 'textfield',
     '#title' => 'Voornaam',
     '#default_value' => $cf_user->givenName,
@@ -152,20 +163,7 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
     '#required' => TRUE,
   );
   
-  $form['number'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Nummer',
-    '#default_value' => $cf_user->street,
-    '#required' => TRUE,
-  );
-  
-  $form['box'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Bus',
-    '#default_value' => '',
-  );
-  
-  $form['postalcode'] = array(
+  $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => 'Postcode',
     '#default_value' => $cf_user->zip,
@@ -189,6 +187,19 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
 }
 
 /**
+ * Validate handler to exchange selected promotions for userpoints.
+ * @param array $form
+ * @param array $form_state
+ * @param Culturefeed_User $cf_account
+ */
+function culturefeed_userpoints_ui_exchange_form_validate($form, $form_state) {
+  $count = CultureFeedUserpointsWishlist::getIds();
+  if ($count <= 0) {
+    form_set_error('', 'U moet minstens 1 promotie selecteren.');
+  }
+}
+
+/**
  * Submit handler to exchange selected promotions for userpoints.
  * @param array $form
  * @param array $form_state
@@ -203,13 +214,49 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
       CultureFeedUserpointsWishlist::getIds(),
       CultureFeedUserpointsWishlist::getCounts());
     
-    // @todo Update the user profile.
-    // Check the fields with nils first.
+    $wishlistPromotions = CultureFeedUserpointsWishlist::getItems($pointsPromotions);
     
-    // Thank you message.
-    if (count($pointsPromotions) > 1) {
+    // Always update the user profile.
+    $values = $form_state['values'];
+    $user_update = new CultureFeed_User();
+    $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
+    $user_update->givenName  = $values['givenName'];
+    $user_update->familyName = $values['familyName'];
+    $user_update->street     = $values['street'];
+    $user_update->zip        = $values['zip'];
+    $user_update->city       = $values['city'];
+    $user_update->mbox       = $values['mbox'];
+    $fields = array('id', 'givenName', 'familyName', 'street', 'zip', 'city', 'mbox');
+
+    try {
+      DrupalCultureFeed::updateUser($user_update, $fields);
+      drupal_set_message('Jouw gegevens zijn bijgewerkt.');
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+      drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+      $success = FALSE;
+    }
+    
+    // Thank you message if successful.
+    if (count($pointsPromotions) >= 1) {
       $message = theme('culturefeed_userpoints_ui_points_exchanged_message', array('promotions' => $pointsPromotions));
       drupal_set_message($message);
+      CultureFeedUserpointsWishlist::clear();
+      
+      // Send mail to administrator.
+      $admin_uid = variable_get('culturefeed_social_report_destination_uid');
+      $to_email = empty($admin_uid) ? variable_get('site_mail', '') : user_load($admin_uid)->mail;
+
+      $params = array(
+        'promotions' => $pointsPromotions,
+        'wishlist' => $wishlistPromotions,
+        'values' => $values,
+        'cf_account' => DrupalCultureFeed::getLoggedInUser(),
+      );
+      
+      drupal_mail('culturefeed_userpoints_ui', 'userpoints-exchange-request', $to_email, $GLOBALS['language']->language, $params);
+
     }
     
   }

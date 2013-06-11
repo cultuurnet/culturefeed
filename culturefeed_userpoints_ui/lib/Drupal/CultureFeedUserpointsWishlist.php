@@ -66,9 +66,10 @@ class CultureFeedUserpointsWishlist {
   public static function getItems($promotions) {
 
     $selected = array();
-    
+
     if (isset($_SESSION['culturefeed_userpoints_wishlist'])) {
-      foreach ($promotions as $promotionId => $promotion) {
+      foreach ($promotions as $key => $promotion) {
+        $promotionId = $promotion->id;
         if (isset($_SESSION['culturefeed_userpoints_wishlist'][$promotionId])) {
           $selected[$promotionId] = $_SESSION['culturefeed_userpoints_wishlist'][$promotionId];
           $selected[$promotionId]['title'] = $promotion->title;
@@ -142,6 +143,13 @@ class CultureFeedUserpointsWishlist {
     
     return isset($_SESSION['culturefeed_userpoints_wishlist'], $_SESSION['culturefeed_userpoints_wishlist'][$promotionId]);
   
+  }
+  
+  /**
+   * Clears the wishlist.
+   */
+  public static function clear() {
+    unset($_SESSION['culturefeed_userpoints_wishlist']);
   }
 
   /**

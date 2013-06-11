@@ -41,7 +41,7 @@ function culturefeed_userpoints_ui_promotions_list($promotions) {
 function culturefeed_userpoints_ui_get_wishlist($promotions) {
 
   $selected_promotions = CultureFeedUserpointsWishlist::getItems($promotions);
-  
+
   $build = array(
     '#theme' => 'culturefeed_userpoints_ui_wishlist',
     '#promotions' => $selected_promotions,

@@ -87,7 +87,9 @@ function culturefeed_search_get_active_object() {
   // Drupal nodes.
   else {
     $node = menu_get_object();
-    return DrupalNodeExtendedEntity::fromDrupal($node);
+    if ($node) {
+      return DrupalNodeExtendedEntity::fromDrupal($node);
+    }
   }
 
 }

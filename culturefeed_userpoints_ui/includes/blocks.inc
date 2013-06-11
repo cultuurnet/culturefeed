@@ -10,7 +10,10 @@
 function culturefeed_userpoints_ui_block_balance() {
   
   $cf_user = DrupalCultureFeed::getLoggedInUser();
-
+  if (!$cf_user) {
+    return;
+  }
+  
   $output = array(
     '#points' => CultureFeedUserpointsWishlist::getRealPoints($cf_user->points),
     '#points_in_wishlist' => CultureFeedUserpointsWishlist::getPointsInWishlist(),

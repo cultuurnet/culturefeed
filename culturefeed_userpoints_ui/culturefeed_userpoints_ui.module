@@ -60,8 +60,47 @@ function culturefeed_userpoints_ui_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'includes/admin.inc',
   );
+  
+  $items['culturefeed/promotion/%culturefeed_userpoints_promotion'] = array(
+    'title' => 'Detail',
+    'title callback' => FALSE,
+    'description' => 'Detail of a promotion',
+    'page callback' => 'culturefeed_userpoints_ui_detail_page',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+  );
 
   return $items;
+}
+
+/**
+ * Load callback for one userpoints promotion.
+ * @param Integer $id
+ */
+function culturefeed_userpoints_promotion_load($id) {
+
+  $detail = NULL;
+  
+  try {
+    // @todo: create this shit.
+    $detail = DrupalCulturefeed::getActivityPointsPromotions(array('promotionId' => $id));
+  }
+  catch (Exception\ClientErrorResponseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+  }
+  catch (Exception\CurlException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+  }
+  catch (CultureFeed_ParseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+  }
+  
+  return $detail;
+  
 }
 
 /**
@@ -160,6 +199,15 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
     ),
     
+    'culturefeed_userpoints_ui_detail_page' => array(
+      'variables' => array(
+        'promotion' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-detail-page',
+    ),
+    
   );
 
 }
@@ -182,7 +230,7 @@ function culturefeed_userpoints_ui_block_info() {
  * Implements hook_block_view().
  */
 function culturefeed_userpoints_ui_block_view($delta) {
-
+  
   module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/blocks');
   $block = array();
 
@@ -196,6 +244,61 @@ function culturefeed_userpoints_ui_block_view($delta) {
 
   return $block;
 
+}
+
+/**
+ * Implements hook_mail().
+ */
+function culturefeed_userpoints_ui_mail($key, &$message, $params) {
+
+  switch ($key) {
+
+    case 'userpoints-exchange-request':
+      
+      $pointsPromotions = $params['promotions'];
+      $wishlistPromotions = $params['wishlist'];
+      $values = $params['values'];
+      $cf_account = $params['cf_account'];
+      $language = $message['language'];
+      
+      $message['subject'] .= 'Bende van Vlieg | aanvraag door ' . $cf_account->nick;
+
+      $variables = array();
+      $variables['@code'] = $cf_account->id;
+      $variables['@givenName'] = $values['givenName'];
+      $variables['@familyName'] = $values['familyName'];
+      $variables['@street'] = $values['street'];
+      $variables['@city'] = $values['city'];
+      $variables['@mbox'] = $values['mbox'];
+      
+      $promotions = array();
+      foreach ($wishlistPromotions as $promotionId => $data) {
+        $promotions[] = $data['title'] . ' (aantal: ' . $data['count'] . ' | inruilwaarde: ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' punten)
+    Bekijk online: ' . url('culturefeed/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
+';
+      }
+      
+      $variables['@url_admin'] = url('http://test.uitid.be/culturefeed/rest/admin/grantedpointspromotions', array('absolute' => TRUE));
+      $variables['@promotion'] = implode("\n", $promotions);
+      
+      $message['body'][] = format_string('Culturefeed User ID:
+@code
+
+Voordeel:
+  @promotion
+        
+Contactgegevens:
+  - @givenName @familyName
+  - @street
+  - @city
+  - @mbox
+
+Beheer:
+  @url_admin ', $variables);
+
+    break;
+
+  }
 }
 
 /**
