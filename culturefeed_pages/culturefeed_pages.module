@@ -663,7 +663,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
 /**
  * Implements hook_culturefeed_pages_page_admin_menu().
  */
-function culturefeed_pages_culturefeed_pages_page_admin_menu() {
+function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Item_Page $page) {
 
   return array(
     'info' => array(

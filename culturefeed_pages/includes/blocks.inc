@@ -167,7 +167,7 @@ function culturefeed_pages_block_pages_admin_menu() {
  */
 function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $page) {
 
-  $menu = module_invoke_all('culturefeed_pages_page_admin_menu');
+  $menu = module_invoke_all('culturefeed_pages_page_admin_menu', $page);
   drupal_alter('culturefeed_pages_page_admin_menu', $menu, $page);
 
   uasort($menu, 'drupal_sort_weight');
