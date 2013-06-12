@@ -85,19 +85,15 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
     $type_suffix = $config->viewSuffix;
   }
 
-  $replace = array(
-    '!nick' => l($activity->nick, $user_url),
-    '!type_prefix' => $type_prefix,
-    '!type_suffix' => $type_suffix,
-    '!link' => $link,
-  );
+  $variables['nick'] = l($activity->nick, $user_url);
+  $variables['prefix'] = $type_prefix;
+  $variables['suffix'] = $type_suffix;
+  $variables['link'] = $link;
 
   // If onbehalf is known, show it only when culturefeed pages is enabled.
   if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
     $replace['!nick'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
-
-  $variables['text'] = rtrim(strtr('!nick !type_prefix !link !type_suffix', $replace), ' ') . '.';
 
 }
 
@@ -191,7 +187,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
       'data-target' => '#culturefeed-social-modal-wrapper',
       'data-remote' => url($remove_path . "/ajax", array('query' => $destination)),
     );
-    
+
     if ($variables['level'] == 0) {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
