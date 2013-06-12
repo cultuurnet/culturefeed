@@ -38,7 +38,7 @@ function culturefeed_userpoints_ui_menu() {
     'title callback' => FALSE,
     'description' => 'Remove the promotion from the wishlist.',
     'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
-    'page arguments' => array(2, '0', 5, 'remove'),
+    'page arguments' => array(2, '0', 4, 'remove'),
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
