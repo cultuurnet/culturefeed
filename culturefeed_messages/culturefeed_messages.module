@@ -265,7 +265,7 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
 /**
  * Implements hook_culturefeed_pages_page_admin_menu().
  */
-function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, $page) {
+function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, CultureFeed_Cdb_Item_Page $page) {
 
   return array(
     'messages' => array(
