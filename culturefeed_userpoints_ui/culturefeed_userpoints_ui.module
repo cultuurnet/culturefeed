@@ -23,12 +23,12 @@ function culturefeed_userpoints_ui_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['culturefeed/userpoints/%/select/%'] = array(
+  $items['culturefeed/userpoints/%/%/select/%'] = array(
     'title' => 'Selecteer voordeel',
     'title callback' => FALSE,
     'description' => 'Select the promotion to exchange for userpoints.',
     'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
-    'page arguments' => array(2, 4),
+    'page arguments' => array(2, 3, 5),
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
@@ -38,7 +38,7 @@ function culturefeed_userpoints_ui_menu() {
     'title callback' => FALSE,
     'description' => 'Remove the promotion from the wishlist.',
     'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
-    'page arguments' => array(2, 4, 'remove'),
+    'page arguments' => array(2, '0', 5, 'remove'),
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
@@ -143,24 +143,19 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-exchange-page',
     ),
-    
+
     'culturefeed_userpoints_ui_promotions_list' => array(
-      'variables' => array(
-        'promotions' => array(),
-        'total' => NULL,
-      ),
-      'path' => $path,
       'file' => 'theme.inc',
+      'path' => $path,
       'template' => 'culturefeed-userpoints-ui-promotions-list',
+      'render element' => 'form',
     ),
     
     'culturefeed_userpoints_ui_promotions_list_item' => array(
-      'variables' => array(
-        'promotion' => '',
-      ),
-      'path' => $path,
       'file' => 'theme.inc',
+      'path' => $path,
       'template' => 'culturefeed-userpoints-ui-promotions-list-item',
+      'render element' => 'form',
     ),
     
     'culturefeed_userpoints_ui_exchange_form' => array(

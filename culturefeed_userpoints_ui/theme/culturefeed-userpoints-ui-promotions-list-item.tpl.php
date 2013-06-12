@@ -15,9 +15,9 @@
  *     $classes : the required classes (E.g. selected or not).
  *   Operations
  *     $can_exchange
- *     $select_link
- *     $add_link
  *     $remove_link
+ *     $select_list (the list / dropdown for the count)
+ *     $select_btn
  *     $volume_constraint 
  *       Whether the volume is exceeded during the call.
  *   
@@ -35,18 +35,28 @@
   Geldig van <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' tot ' . $cashingPeriodEnd : '') ?>
 
   <div id="culturefeed-userpoints-item-<?php print $id ?>">
+  
     <?php if ($volume_constraint): ?>
+    
     Dit voordeel is niet meer in voorraad.
     <?php print $remove_link ?>
+    
     <?php elseif ($can_exchange): ?>
-    <?php print $select_link ?>
-    <?php print $add_link ?>
+    
+    <?php print $select_list; ?>
+    <?php print $select_btn; ?>
     <?php print $remove_link ?>
+    
     <?php else: ?>
+    
     Je hebt onvoldoende punten voor dit geschenk. 
     
     <a href="/">Hoe extra punten sparen?</a>
+    
     <?php endif; ?>
+    
+    <?php drupal_render_children($form); ?>
+    
   </div>
   
 </div>

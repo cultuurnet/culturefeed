@@ -23,8 +23,10 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_my_balan
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange_page(&$variables) {
 
   _culturefeed_userpoints_ui_preprocess_userpoints($variables);
-  
-  $build = culturefeed_userpoints_ui_promotions_list($variables['promotions']);
+
+  //$build = culturefeed_userpoints_ui_promotions_list($variables['promotions']);
+  $build = drupal_get_form('culturefeed_userpoints_ui_promotions_list_form', $variables['promotions']);
+  $list = drupal_render($build);
   
   $minimum_points = NULL;
   foreach ($variables['promotions']->objects as $promotion) {
@@ -34,7 +36,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
   }
   $variables['minimum_points'] = $minimum_points;
   
-  $variables['promotions_list'] = '<div id="culturefeed-userpoints-promotions-list">' . drupal_render($build) . '</div>';
+  $variables['promotions_list'] = $list;
   $variables['wishlist'] = '<div id="culturefeed-userpoints-wishlist">'; 
   $wishlist_build = culturefeed_userpoints_ui_get_wishlist($variables['promotions']->objects);
   $variables['wishlist'] .= drupal_render($wishlist_build);
@@ -66,16 +68,16 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   // Always include the javascript for ajax behavior.
   drupal_add_library('system', 'drupal.ajax');
 
-  $promotions = $variables['promotions'];
-
-  $items = array();
-  foreach ($promotions as $promotion) {
-    $items[] = theme('culturefeed_userpoints_ui_promotions_list_item', array(
-      'promotion' => $promotion,
-    ));
+  $form = $variables['form'];
+  $promotions = $form['#promotions'];
+  
+  $list = array();
+  foreach (element_children($form) as $form_key) {
+    $list[] = drupal_render($form[$form_key]);
   }
+  
+  $variables['items'] = $list;
 
-  $variables['items'] = $items;
 
 }
 
@@ -85,8 +87,10 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
  * @see culturefeed-userpoints-ui-promotions-list-item.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_list_item(&$variables) {
-  
-  $pointsPromotion = $variables['promotion'];
+
+  //$pointsPromotion = $variables['promotion'];
+  $form = $variables['form'];
+  $pointsPromotion = $variables['form']['#promotion'];
   
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
   
@@ -97,6 +101,9 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   $variables['select_link'] = '';
   $variables['add_link'] = '';
   $variables['remove_link'] = '';
+  $variables['select_list'] = '';
+  $variables['select_btn'] = '';
+  $variables['select_id'] = drupal_render($form['select_id']);
   
   /*dsm('Volume constraint: ' . $variables['volume_constraint'] . '(' . $pointsPromotion->unitsTaken . '/' . $pointsPromotion->maxAvailableUnits . ')
      Can exchange: ' . $variables['can_exchange'] . '
@@ -104,13 +111,11 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   
   if ($variables['can_exchange']) {
     if (!$variables['active']) {
-      $variables['select_link'] = l('+ Selecteer', 'culturefeed/userpoints/' . $promotion_id . '/select/nojs', 
-        array('attributes' => array('class' => array('use-ajax')), 'query' => drupal_get_destination()));
+      $variables['select_list'] = drupal_render($form['select_count']);
+      $variables['select_btn'] = drupal_render($form['select_btn']);
     }
     else {
       $variables['classes_array'][] = 'item-selected';
-      $variables['add_link'] = l('+ 1', 'culturefeed/userpoints/' . $promotion_id . '/select/nojs',
-        array('attributes' => array('class' => array('use-ajax')), 'query' => drupal_get_destination()));
       $variables['remove_link'] = l('x Verwijder', 'culturefeed/userpoints/' . $promotion_id . '/remove/nojs',
         array('attributes' => array('class' => array('use-ajax')), 'query' => drupal_get_destination()));
     }

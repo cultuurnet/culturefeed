@@ -69,59 +69,6 @@ function culturefeed_userpoints_ui_detail_page($pointsPromotion) {
 }
 
 /**
- * Page callback to select a promotion to exchange for userpoints.
- */
-function culturefeed_userpoints_ui_promotion_select_page($promotion_id, $request_type, $operation = 'add') {
-  
-  // We need this to be able to retrieve 1 item.
-  // @todo: remove/refactor this if the api method exists.
-  $pointsPromotions = culturefeed_userpoints_ui_get_pointspromotions();
-
-  // Change the selection in the cart.
-  if ($operation == 'add') {
-    $promotion = NULL;
-    foreach ($pointsPromotions->objects as $object) {
-      if ($object->id == $promotion_id) {
-        $promotion = $object;
-      }
-    }
-    $points_diff = CultureFeedUserpointsWishlist::add($promotion_id, $promotion);
-    $message = 'Het voordeel werd toegevoegd aan uw promotie mandje.';
-  }
-  elseif ($operation == 'remove') {
-    $points_diff = CultureFeedUserpointsWishlist::remove($promotion_id);
-    $message = 'Het voordeel werd verwijderd uit uw promotie mandje.';
-  }
-  
-  if ($request_type != "ajax") {
-    
-    drupal_set_message($message);
-    drupal_goto();
-    
-  }
-  else {
-    
-    // Update the list.
-    $list_build = culturefeed_userpoints_ui_promotions_list($pointsPromotions);
-    $list = drupal_render($list_build);
-    $commands[] = ajax_command_html('#culturefeed-userpoints-promotions-list', $list);
-    
-    // Update the wishlist.
-    $wishlist_build = culturefeed_userpoints_ui_get_wishlist($pointsPromotions->objects);
-    $wishlist = drupal_render($wishlist_build);
-    $commands[] = ajax_command_html('#culturefeed-userpoints-wishlist', $wishlist);
-    
-    // Update the current userpoints in all places where the points are displayed.
-    $user_points = DrupalCultureFeed::getLoggedInUser()->points;
-    $commands[] = ajax_command_invoke('.userpoints-points', 'html', array(
-      CultureFeedUserpointsWishlist::getPointsLeft($user_points)));
-    
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
-    
-  }
-}
-
-/**
  * Form to exchange selected promotions for userpoints.
  * @param array $form
  * @param array $form_state

@@ -13,4 +13,5 @@
     <?php print $item ?>
   </div>
 <?php endforeach;?>
+<?php print drupal_render_children($form, array()); ?>
 </div>
