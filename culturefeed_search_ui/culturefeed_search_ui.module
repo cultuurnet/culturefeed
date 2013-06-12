@@ -261,10 +261,14 @@ function culturefeed_search_ui_block_view($delta) {
       break;
 
     case 'culturefeed-search-sortorder':
-      global $culturefeedFacetingComponent;
-      if ($culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
-        $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+
+      global $culturefeedSearchResult;
+      if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult || $culturefeedSearchResult->getTotalCount() == 0) {
+        return;
       }
+
+      $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+
     break;
 
     case 'culturefeed-search-activefilters':
