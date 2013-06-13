@@ -843,7 +843,7 @@ class CultureFeed implements ICultureFeed {
     if (!empty($status_code)) {
       throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
     }
-    
+
     $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($xml);
     
     return $pointsPromotion;
@@ -858,8 +858,7 @@ class CultureFeed implements ICultureFeed {
    */
   public function getActivityPointsPromotions($params = array()) {
 
-    // Default sort.
-    $params['sort'] = 'POINTS';
+    // Override params.
     $params['unexpired'] = 'true';
     $params['max'] = 999;
     

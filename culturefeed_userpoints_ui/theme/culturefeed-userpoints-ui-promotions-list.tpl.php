@@ -9,9 +9,9 @@
 
 <div class="clearfix">
 <?php foreach ($items as $item): ?>
-  <div style="float: left; margin: 10px; padding: 10px; border: 2px dashed green;">
+  <div style="float: left; width: 200px; margin: 2px; padding: 2px; border: 2px dashed green;">
     <?php print $item ?>
   </div>
 <?php endforeach;?>
-<?php print drupal_render_children($form, array()); ?>
+
 </div>

@@ -157,6 +157,16 @@ function culturefeed_userpoints_ui_theme() {
       'template' => 'culturefeed-userpoints-ui-promotions-list-item',
       'render element' => 'form',
     ),
+    
+    'culturefeed_userpoints_ui_block_more_promotions' => array(
+      'file' => 'theme.inc',
+      'path' => $path,
+      'template' => 'culturefeed-userpoints-ui-block-more-promotions',
+      'variables' => array(
+        'previous_item' => NULL,
+        'next_item' => NULL,
+      ),
+    ),
 
     'culturefeed_userpoints_ui_exchange_form' => array(
       'template' => 'culturefeed-userpoints-ui-exchange-form',
@@ -218,6 +228,11 @@ function culturefeed_userpoints_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['culturefeed-userpoints-more'] = array(
+    'info' => t('Culturefeed Userpoints UI: More promotions'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
   return $blocks;
 }
 
@@ -234,6 +249,11 @@ function culturefeed_userpoints_ui_block_view($delta) {
     case 'culturefeed-userpoints-balance':
       $block['subject'] = 'Mijn puntensaldo';
       $block['content'] = culturefeed_userpoints_ui_block_balance();
+      break;
+      
+    case 'culturefeed-userpoints-more':
+      $block['subject'] = 'Meer voordelen';
+      $block['content'] = culturefeed_userpoints_ui_block_more_promotions();
       break;
   }
 

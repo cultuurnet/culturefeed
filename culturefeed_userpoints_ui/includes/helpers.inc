@@ -50,11 +50,16 @@ function culturefeed_userpoints_ui_get_wishlist($promotions) {
 
 /**
  * Utility function + facade method to ease the request.
+ * @param $params 
+ *   Array of options the remote service call supports.
+ *   see 
  * @return array of PointsPromotions.
  */
-function culturefeed_userpoints_ui_get_pointspromotions() {
+function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
 
-  $params = array('sort' => 'POINTS', 'order' => 'ASC');
+  $default_params = array('sort' => 'POINTS', 'order' => 'ASC');
+  $params += $default_params;
+
   $pointsPromotions = DrupalCultureFeed::getActivityPointsPromotions($params);
 
   $list = array();

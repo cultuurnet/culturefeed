@@ -16,6 +16,34 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_my_balan
 }
 
 /**
+ * Preprocess a more promotions block.
+ *
+ * @see culturefeed-userpoints-ui-block-more-promotions.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_block_more_promotions(&$variables) {
+
+  $variables['prev_image_url'] = '';
+  $variables['next_image_url'] = '';
+
+  if (isset($variables['previous_item'])) {
+    if (!empty($variables['previous_item']->pictures)) {
+      $variables['prev_image_url'] = $variables['previous_item']->pictures[0];
+    }
+    $variables['prev_item_url'] = url('culturefeed/promotion/' . $variables['previous_item']->id);
+    $variables['prev_item_title'] = $variables['previous_item']->title;
+  }
+  
+  if (isset($variables['next_item'])) {
+    if (!empty($variables['next_item']->pictures)) {
+      $variables['next_image_url'] = $variables['next_item']->pictures[0];
+    }
+    $variables['next_item_url'] = url('culturefeed/promotion/' . $variables['next_item']->id);
+    $variables['next_item_title'] = $variables['next_item']->title;
+  }
+  
+}
+
+/**
  * Preprocess the culturefeed userpoints my exchange page.
  *
  * @see culturefeed-userpoints-ui-exchange-page.tpl.php
@@ -235,6 +263,7 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $variables['cashInState'] = $pointsPromotion->cashInState;
   $variables['cashedIn'] = $pointsPromotion->cashedIn;
   $variables['cashingPeriodBegin'] = date('d/m/Y', $pointsPromotion->cashingPeriodBegin);
+  $variables['cashingPeriodEnd'] = '';
   if (!empty($pointsPromotion->cashingPeriodEnd)) {
     $variables['cashingPeriodEnd'] = date('d/m/Y', $pointsPromotion->cashingPeriodEnd);
   }
