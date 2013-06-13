@@ -15,9 +15,6 @@ function culturefeed_userpoints_ui_block_balance() {
   }
   
   $output = array(
-    '#points' => CultureFeedUserpointsWishlist::getRealPoints($cf_user->points),
-    '#points_in_wishlist' => CultureFeedUserpointsWishlist::getPointsInWishlist(),
-    '#points_left' => CultureFeedUserpointsWishlist::getPointsLeft($cf_user->points),
     '#theme' => 'culturefeed_userpoints_ui_my_balance',
   );
 

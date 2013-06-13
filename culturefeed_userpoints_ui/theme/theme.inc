@@ -78,11 +78,10 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
 function _culturefeed_userpoints_ui_preprocess_userpoints(&$variables) {
 
   $cf_user = DrupalCultureFeed::getLoggedInUser();
-  $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_user->points);
 
-  $variables['real_points'] = $variables['points'];
-  $variables['real_points_in_wishlist'] = $variables['points_in_wishlist'];
-  $variables['real_points_left'] = $points_left;
+  $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($cf_user->points);
+  $variables['real_points_in_wishlist'] = CultureFeedUserpointsWishlist::getPointsInWishlist();
+  $variables['real_points_left'] = CultureFeedUserpointsWishlist::getPointsLeft($cf_user->points);
 
 }
 
@@ -126,21 +125,16 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   $variables['link'] = l($pointsPromotion->title, 'culturefeed/promotion/' . $promotion_id);
 
-  $variables['select_link'] = '';
   $variables['add_link'] = '';
   $variables['remove_link'] = '';
   $variables['select_list'] = '';
   $variables['select_btn'] = '';
   $variables['select_id'] = drupal_render($form['select_id']);
 
-  /*dsm('Volume constraint: ' . $variables['volume_constraint'] . '(' . $pointsPromotion->unitsTaken . '/' . $pointsPromotion->maxAvailableUnits . ')
-     Can exchange: ' . $variables['can_exchange'] . '
-     Active: ' . $variables['active'], $promotion_id);*/
-
   if ($variables['can_exchange']) {
+    $variables['select_list'] = drupal_render($form['select_count']);
+    $variables['select_btn'] = drupal_render($form['select_btn']);
     if (!$variables['active']) {
-      $variables['select_list'] = drupal_render($form['select_count']);
-      $variables['select_btn'] = drupal_render($form['select_btn']);
     }
     else {
       $variables['classes_array'][] = 'item-selected';
@@ -233,16 +227,11 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $data = CultureFeedUserpointsWishlist::get($promotion_id);
     $promotion_count = $data['count'];
   }
-  $variables['volume_constraint'] = FALSE;
   $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
-  $units_taken = $pointsPromotion->unitsTaken + $promotion_count;
-  $variables['currentUnitsTaken'] = $units_taken;
-  if (!empty($pointsPromotion->maxAvailableUnits) &&
-    $units_taken >= $pointsPromotion->maxAvailableUnits) {
-    $variables['volume_constraint'] = TRUE;
+  $variables['unitsLeft'] = -1;
+  if (!empty($pointsPromotion->maxAvailableUnits)) {
+    $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $pointsPromotion->unitsTaken;
   }
-
-  $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $units_taken;
 
   // Calculate the points.
   $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -270,7 +259,6 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
   $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
   $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
-  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
 
   $variables['period_volume'] = '';
   $variables['period_type'] = '';

@@ -16,8 +16,11 @@ class CultureFeedUserpointsWishlist {
     
     if (isset($_SESSION['culturefeed_userpoints_wishlist'])) {
       
-      if (isset($promotionId) && isset($_SESSION['culturefeed_userpoints_wishlist'][$promotionId])) {
-        return $_SESSION['culturefeed_userpoints_wishlist'][$promotionId];
+      if (isset($promotionId)){
+        if (isset($_SESSION['culturefeed_userpoints_wishlist'][$promotionId])) {
+          return $_SESSION['culturefeed_userpoints_wishlist'][$promotionId];
+        }
+        return NULL;
       }
       else {
         return $_SESSION['culturefeed_userpoints_wishlist'];

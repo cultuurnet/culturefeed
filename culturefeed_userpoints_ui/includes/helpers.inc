@@ -60,22 +60,34 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
   $default_params = array('sort' => 'POINTS', 'order' => 'ASC');
   $params += $default_params;
 
+  // Get the available promotions for the current user from the API.
   $pointsPromotions = DrupalCultureFeed::getActivityPointsPromotions($params);
 
   $list = array();
 
+  // Filter out the natural constraints.
+  // Also adjust properties according to the ones currently in wishlist.
   foreach ($pointsPromotions->objects as $pointsPromotion) {
 
-    // Every page load we need to filter some items out of the list. Note that
-    // this list does not follow the state of the promotion wishlist.
-    if ($pointsPromotion->cashInState != CultureFeed_PointsPromotion::NOT_POSSIBLE_POINTS_CONSTRAINT
-      && $pointsPromotion->cashInState != CultureFeed_PointsPromotion::NOT_POSSIBLE_USER_VOLUME_CONSTRAINT
-      && ($pointsPromotion->unitsTaken < $pointsPromotion->maxAvailableUnits
-        || empty($pointsPromotion->maxAvailableUnits))) {
-
-      $list[] = $pointsPromotion;
-
+    // Filter out the natural constraints. 
+    if ($pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_POINTS_CONSTRAINT
+      || $pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_USER_VOLUME_CONSTRAINT) {
+      continue;
     }
+    
+    // Filter out when the units taken exceed the maximum available units.
+    if (!empty($pointsPromotion->maxAvailableUnits) && $pointsPromotion->unitsTaken >= $pointsPromotion->maxAvailableUnits) {
+      continue;
+    }
+
+    // Update the item according to the one in the wishlist.
+    $wishlistItem = CultureFeedUserpointsWishlist::get($pointsPromotion->id);
+    if (isset($wishlistItem)) {
+      $pointsPromotion->maxAvailableUnits = $pointsPromotion->maxAvailableUnits - $wishlistItem['count'];
+    }
+
+    $list[] = $pointsPromotion;
+
   }
   $pointsPromotions->objects = $list;
 
@@ -85,13 +97,13 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
 
 /**
  * Helper function to get options for the maximum available units.
- * @param CultureFeed_PointsPromotion $pointsPromotion
+ * @param Integer $maxAvailableUnits
  * @return array
  */
-function culturefeed_userpoints_ui_get_max_available_units_options(CultureFeed_PointsPromotion $pointsPromotion) {
-  $max_units = $pointsPromotion->maxAvailableUnits;
+function culturefeed_userpoints_ui_get_max_available_units_options($maxAvailableUnits) {
+  
   $options = array();
-  for ($i = 1; $i < $max_units; $i++) {
+  for ($i = 1; $i <= $maxAvailableUnits; $i++) {
     $options[$i] = $i;
   }
 

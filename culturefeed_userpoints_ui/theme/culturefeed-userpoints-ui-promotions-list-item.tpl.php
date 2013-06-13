@@ -11,6 +11,7 @@
  *     $cashingPeriodBegin
  *     $cashingPeriodEnd
  *     $active : Whether the promotion is active in the wishlist.
+ *     $unitsLeft: Number of units left (max option in the select box).
  *   Styling
  *     $classes : the required classes (E.g. selected or not).
  *   Operations
@@ -18,8 +19,6 @@
  *     $remove_link
  *     $select_list (the list / dropdown for the count)
  *     $select_btn
- *     $volume_constraint
- *       Whether the volume is exceeded during the call.
  *
  * @note
  *   The culturefeed-userpoints-item-<?php print $id ?> should be available as wrapper
@@ -36,10 +35,8 @@
 
   <div id="culturefeed-userpoints-item-<?php print $id ?>">
 
-    <?php if ($volume_constraint): ?>
-
+    <?php if ($unitsLeft == 0): ?>
     Dit voordeel is niet meer in voorraad.
-    <?php print $remove_link ?>
 
     <?php elseif ($can_exchange): ?>
 

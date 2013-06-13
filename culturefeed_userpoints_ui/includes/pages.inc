@@ -26,8 +26,6 @@ function culturefeed_userpoints_ui_exchange_page() {
     $build = array(
       '#theme' => 'culturefeed_userpoints_ui_exchange_page',
       '#points' => CultureFeedUserpointsWishlist::getRealPoints($cf_account->points),
-      '#points_in_wishlist' => CultureFeedUserpointsWishlist::getPointsInWishlist(),
-      '#points_left' => CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points),
       '#cf_user' => $cf_account,
       '#promotions' => $pointsPromotions,
       '#promotions_form' => drupal_render($form),
@@ -76,7 +74,7 @@ function culturefeed_userpoints_ui_page_remove_promotion($promotion_id, $request
 
   // Check if this is a non ajax request.
   if ($request_type != 'ajax') {
-    drupal_set_message('Het voordeel werd verwijderd van uw promotie mandje.');
+    drupal_set_message('Het voordeel werd verwijderd van uw voordelen.');
     drupal_goto('culturefeed/userpoints/exchange');
   }
   else {
@@ -112,6 +110,8 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     return array();
   }
 
+  $cf_user = DrupalCultureFeed::getLoggedInUser();
+  
   $objects = array();
   foreach ($promotions->objects as $object) {
     $objects[] = $object;
@@ -139,16 +139,22 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
       '#promotion' => $promotion,
     );
 
-    $options = culturefeed_userpoints_ui_get_max_available_units_options($promotion);
+    $max_count = floor($cf_user->points / $promotion->points);
+    $max_count = $promotion->maxAvailableUnits < $max_count ? $promotion->maxAvailableUnits : $max_count;
+    $options = culturefeed_userpoints_ui_get_max_available_units_options($max_count);
     $form['list'][$promotion->id]['select_id'] = array(
       '#type' => 'hidden',
       '#default_value' => $promotion->id,
     );
 
+    $default_count = 1;
+    if ($wishlistItem = CultureFeedUserpointsWishlist::get($promotion->id))  {
+      $default_count = $wishlistItem['count'];
+    }
     $form['list'][$promotion->id]['select_count'] = array(
       '#type' => 'select',
       '#title' => '',
-      '#default_value' => 1,
+      '#default_value' => $default_count,
       '#options' => $options,
     );
 
