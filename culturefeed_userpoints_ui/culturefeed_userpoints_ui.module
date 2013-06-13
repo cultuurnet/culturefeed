@@ -304,9 +304,10 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
 
   $items = array();
 
-  $data = 'Puntensaldo ';
-  $data .= '<span class="userpoints">' . CultureFeedUserpointsWishlist::getRealPoints($cf_account->points) . '</span>';
-  $data .= '<span class="check-again">' . l('Inruilen', 'culturefeed/userpoints/exchange') . '</span>';
+  $data = '<small class="text-white">';
+  $data .= '<span class="userpoints label label-transparent">' . CultureFeedUserpointsWishlist::getRealPoints($cf_account->points) . ' punten</span>';
+  $data .= '<span class="check-again"> ' . l('Inruilen', 'culturefeed/userpoints/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
+  $data .= '</small>';
 
   $items['my-points'] = array(
     'data' =>  $data,
