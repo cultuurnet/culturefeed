@@ -343,6 +343,9 @@ class CultureFeedSearchPage {
             '#href' => $_GET['q'] . '/nojs',
             '#options' => array('query' => $params),
             '#ajax' => array(),
+            '#attributes' => array(
+              'class' => array('btn btn-inverse')
+          ),
           );
         }
 
