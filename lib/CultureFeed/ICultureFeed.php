@@ -54,6 +54,8 @@ interface ICultureFeed {
   
   public function getTotalActivities($userId, $type_contentType, $private = FALSE);
 
+  public function getActivityPointsPromotion($promotionId);
+
   public function getActivityPointsPromotions($params = array());
 
   public function cashInPromotion($userId, array $promotionId, array $promotionCount);

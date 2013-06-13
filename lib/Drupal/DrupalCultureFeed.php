@@ -172,6 +172,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   public static function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
   }
+
+  public static function getActivityPointsPromotion($promotionId) {
+    return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
+  }
   
   public static function getActivityPointsPromotions($params = array()) {
     return self::getLoggedInUserInstance()->getActivityPointsPromotions($params);

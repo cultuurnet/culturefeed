@@ -84,7 +84,7 @@ function culturefeed_userpoints_promotion_load($id) {
   
   try {
     // @todo: create this shit.
-    $detail = DrupalCulturefeed::getActivityPointsPromotions(array('promotionId' => $id));
+    $detail = DrupalCulturefeed::getActivityPointsPromotion($id);
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);

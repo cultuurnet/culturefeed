@@ -825,6 +825,32 @@ class CultureFeed implements ICultureFeed {
   }
   
   /**
+   * Get one userpoints promotion.
+   * @param Integer $promotionId
+   */
+  public function getActivityPointsPromotion($promotionId) {
+
+    $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotion/' . $promotionId);
+    
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $status_code = (string)$xml->code;
+    if (!empty($status_code)) {
+      throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
+    }
+    
+    $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($xml);
+    
+    return $pointsPromotion;
+    
+  }
+  
+  /**
    * Get the activity promotions.
    * 
    * @param array  $params
@@ -851,31 +877,19 @@ class CultureFeed implements ICultureFeed {
     $promotions = new stdClass();
     $promotions->total = $total;
     
-    $detail = NULL;
-    
     if ($total > 0) {
   
       $objects = $xml->xpath('/response/promotions/promotion');
       $data = array();
       foreach ($objects as $object) {
-        
         $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($object);
-
-        if (isset($params['promotionId']) && $object->id == $params['promotionId']) {
-          $detail = $pointsPromotion;
-        }
-
         $data[] = $pointsPromotion;
-        
       }
 
       $promotions->objects = $data;
       
     }
     
-    if (isset($params['promotionId'])) {
-      return isset($detail) ? $detail : NULL;
-    }
     return $promotions;
   }
 

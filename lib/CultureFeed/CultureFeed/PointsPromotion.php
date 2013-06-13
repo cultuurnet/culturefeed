@@ -79,6 +79,21 @@ class CultureFeed_PointsPromotion {
    * @var string.
    */
   public $title;
+
+  /**
+   * @var string.
+   */
+  public $description1;
+
+  /**
+   * @var string.
+   */
+  public $description2;
+  
+  /**
+   * @var array of picture urls.
+   */
+  public $pictures = array();
   
   /**
    * @var integer.
@@ -148,6 +163,18 @@ class CultureFeed_PointsPromotion {
     $pointsPromotion->points = $element->xpath_str('points');
     $pointsPromotion->title = $element->xpath_str('title');
     $pointsPromotion->unitsTaken = $element->xpath_str('unitsTaken');
+
+    $pointsPromotion->description1 = $element->xpath_str('description1');
+    $pointsPromotion->description2 = $element->xpath_str('description2');
+
+    // Set relations.
+    if (!empty($xmlElement->pictures) && !empty($xmlElement->pictures->picture)) {
+    
+      foreach ($xmlElement->pictures->picture as $picture) {
+        $pointsPromotion->pictures[] = (string) $picture;
+      }
+    
+    }
 
     $periodType = $element->xpath_str('periodConstraint/periodType');
     $periodVolume = $element->xpath_str('periodConstraint/periodVolume');
