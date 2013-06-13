@@ -45,13 +45,13 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     );
     
     $options = culturefeed_userpoints_ui_get_max_available_units_options($promotion);
-    $form['list'][$promotion->id]['select_id'] = array(
+    $form['list'][$promotion->id]['select_id_' . $promotion->id] = array(
       '#name' => 'select_id_' . $promotion->id,
       '#type' => 'hidden',
       '#default_value' => $promotion->id,
     );
     
-    $form['list'][$promotion->id]['select_count'] = array(
+    $form['list'][$promotion->id]['select_count_' . $promotion->id] = array(
       '#name' => 'select_count_' . $promotion->id,
       '#type' => 'select',
       '#title' => '',
@@ -59,9 +59,9 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
       '#options' => $options,
     );
     
-    $form['list'][$promotion->id]['select_btn'] = array(
+    $form['list'][$promotion->id]['select_btn_' . $promotion->id] = array(
       '#name' => 'select_btn_' . $promotion->id,
-      '#type' => 'button',
+      '#type' => 'submit',
       '#value' => 'Selecteer',
       '#ajax' => array(
         'callback' => 'culturefeed_userpoints_ui_promotions_list_form_callback',
@@ -85,7 +85,7 @@ function culturefeed_userpoints_ui_promotions_list_form_submit($form, &$form_sta
 
   $selected_button = $form_state['clicked_button']['#name'];
   $selected_id = str_replace("select_btn_", "", $selected_button);
-  $selected_count = $form_state['values'][$selected_id]['select_count'];
+  $selected_count = $form_state['values'][$selected_id]['select_count_' . $selected_id];
   
   culturefeed_userpoints_ui_promotion_select_page($selected_id, $selected_count, 'nojs', 'add');
 }
@@ -100,7 +100,7 @@ function culturefeed_userpoints_ui_promotions_list_form_callback($form, &$form_s
 
   $selected_button = $form_state['clicked_button']['#name'];
   $selected_id = str_replace("select_btn_", "", $selected_button);
-  $selected_count = $form_state['values'][$selected_id]['select_count'];
+  $selected_count = $form_state['values'][$selected_id]['select_count_' . $selected_id];
 
   culturefeed_userpoints_ui_promotion_select_page($selected_id, $selected_count, 'ajax', 'add');
   
@@ -123,7 +123,7 @@ function culturefeed_userpoints_ui_promotion_select_page($promotion_id, $promoti
         $promotion = $object;
       }
     }
-    $points_diff = CultureFeedUserpointsWishlist::add($promotion_id, $promotion);
+    $points_diff = CultureFeedUserpointsWishlist::add($promotion_id, $promotion_count, $promotion);
     $message = 'Het voordeel werd toegevoegd aan uw promotie mandje.';
   }
   elseif ($operation == 'remove') {
@@ -132,10 +132,8 @@ function culturefeed_userpoints_ui_promotion_select_page($promotion_id, $promoti
   }
 
   if ($request_type != "ajax") {
-    
     drupal_set_message($message);
-    drupal_goto();
-    
+    drupal_goto('culturefeed/userpoints/exchange');
   }
   else {
 
@@ -152,7 +150,7 @@ function culturefeed_userpoints_ui_promotion_select_page($promotion_id, $promoti
     // Update the list.
     //$list_build = culturefeed_userpoints_ui_promotions_list($pointsPromotions);
     $build = drupal_get_form('culturefeed_userpoints_ui_promotions_list_form', $pointsPromotions);
-    $list = render($build);
+    $list = render($build['list']);
     $commands[] = ajax_command_html('#culturefeed-userpoints-promotions-list', $list);
     //$commands[] = ajax_command_replace(NULL, $list);
     

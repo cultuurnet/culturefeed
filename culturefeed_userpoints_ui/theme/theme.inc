@@ -103,7 +103,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   $variables['remove_link'] = '';
   $variables['select_list'] = '';
   $variables['select_btn'] = '';
-  $variables['select_id'] = drupal_render($form['select_id']);
+  $variables['select_id'] = drupal_render($form['select_id_' . $promotion_id]);
   
   /*dsm('Volume constraint: ' . $variables['volume_constraint'] . '(' . $pointsPromotion->unitsTaken . '/' . $pointsPromotion->maxAvailableUnits . ')
      Can exchange: ' . $variables['can_exchange'] . '
@@ -111,8 +111,8 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   
   if ($variables['can_exchange']) {
     if (!$variables['active']) {
-      $variables['select_list'] = drupal_render($form['select_count']);
-      $variables['select_btn'] = drupal_render($form['select_btn']);
+      $variables['select_list'] = drupal_render($form['select_count_' . $promotion_id]);
+      $variables['select_btn'] = drupal_render($form['select_btn_' . $promotion_id]);
     }
     else {
       $variables['classes_array'][] = 'item-selected';

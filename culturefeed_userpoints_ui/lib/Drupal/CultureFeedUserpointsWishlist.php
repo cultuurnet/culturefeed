@@ -111,7 +111,7 @@ class CultureFeedUserpointsWishlist {
   /**
    * @param Integer $promotionId
    */
-  public static function add($promotionId, $promotion) {
+  public static function add($promotionId, $promotionCount, $promotion) {
 
     if (!isset($_SESSION['culturefeed_userpoints_wishlist'][$promotionId])) {
       $_SESSION['culturefeed_userpoints_wishlist'][$promotionId] = array(
@@ -121,7 +121,7 @@ class CultureFeedUserpointsWishlist {
       );
     }
     
-    $_SESSION['culturefeed_userpoints_wishlist'][$promotionId]['count']++;
+    $_SESSION['culturefeed_userpoints_wishlist'][$promotionId]['count'] = $promotionCount;
     
   }
   
