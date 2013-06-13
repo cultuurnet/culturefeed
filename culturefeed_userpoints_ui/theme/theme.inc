@@ -186,6 +186,9 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_p
   $pointsPromotion = $variables['promotion'];
   
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
+
+  $variables['exchange_url'] = url('culturefeed/userpoints/exchange');
+  $variables['exchange_link'] = l('Voordeel bestellen', 'culturefeed/userpoints/exchange');
   
 }
 
@@ -203,11 +206,14 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $promotion_count = $data['count'];
   }
   $variables['volume_constraint'] = FALSE;
+  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
   $units_taken = $pointsPromotion->unitsTaken + $promotion_count;
+  $variables['currentUnitsTaken'] = $units_taken;
   if (!empty($pointsPromotion->maxAvailableUnits) &&
     $units_taken >= $pointsPromotion->maxAvailableUnits) {
     $variables['volume_constraint'] = TRUE;
   }
+  $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $units_taken;
   
   // Calculate the points.
   $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -216,8 +222,14 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
   $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
   $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
-  
+
   $variables['title'] = $pointsPromotion->title;
+  $variables['description1'] = $pointsPromotion->description1;
+  $variables['description2'] = $pointsPromotion->description2;
+  $variables['picture_url'] = '';
+  if (!empty($pointsPromotion->pictures)) {
+    $variables['picture_url'] = reset($pointsPromotion->pictures);
+  }
   $variables['id'] = $promotion_id;
   $variables['cashInState'] = $pointsPromotion->cashInState;
   $variables['cashedIn'] = $pointsPromotion->cashedIn;
@@ -228,7 +240,6 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
   $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
   $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
-  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
   
   $variables['period_volume'] = '';
   $variables['period_type'] = '';

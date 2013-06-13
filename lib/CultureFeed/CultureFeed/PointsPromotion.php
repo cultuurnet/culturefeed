@@ -168,9 +168,9 @@ class CultureFeed_PointsPromotion {
     $pointsPromotion->description2 = $element->xpath_str('description2');
 
     // Set relations.
-    if (!empty($xmlElement->pictures) && !empty($xmlElement->pictures->picture)) {
+    if (!empty($element->pictures) && !empty($element->pictures->picture)) {
     
-      foreach ($xmlElement->pictures->picture as $picture) {
+      foreach ($element->pictures->picture as $picture) {
         $pointsPromotion->pictures[] = (string) $picture;
       }
     
