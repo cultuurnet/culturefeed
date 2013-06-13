@@ -6,18 +6,18 @@
 
 /**
  * Preprocess the culturefeed userpoints my balance block.
- * 
+ *
  * @see culturefeed-userpoints-ui-my-balance.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_my_balance(&$variables) {
 
   _culturefeed_userpoints_ui_preprocess_userpoints($variables);
-  
+
 }
 
 /**
  * Preprocess the culturefeed userpoints my exchange page.
- * 
+ *
  * @see culturefeed-userpoints-ui-exchange-page.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange_page(&$variables) {
@@ -27,7 +27,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
   //$build = culturefeed_userpoints_ui_promotions_list($variables['promotions']);
   $build = drupal_get_form('culturefeed_userpoints_ui_promotions_list_form', $variables['promotions']);
   $list = drupal_render($build);
-  
+
   $minimum_points = NULL;
   foreach ($variables['promotions']->objects as $promotion) {
     if (!isset($minimum_points) || $promotion->points < $minimum_points) {
@@ -35,13 +35,13 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
     }
   }
   $variables['minimum_points'] = $minimum_points;
-  
+
   $variables['promotions_list'] = $list;
-  $variables['wishlist'] = '<div id="culturefeed-userpoints-wishlist">'; 
+  $variables['wishlist'] = '<div id="culturefeed-userpoints-wishlist">';
   $wishlist_build = culturefeed_userpoints_ui_get_wishlist($variables['promotions']->objects);
   $variables['wishlist'] .= drupal_render($wishlist_build);
   $variables['wishlist'] .= '</div>';
-  
+
 }
 
 /**
@@ -51,16 +51,16 @@ function _culturefeed_userpoints_ui_preprocess_userpoints(&$variables) {
 
   $cf_user = DrupalCultureFeed::getLoggedInUser();
   $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_user->points);
-  
+
   $variables['real_points'] = $variables['points'];
   $variables['real_points_in_wishlist'] = $variables['points_in_wishlist'];
   $variables['real_points_left'] = $points_left;
-  
+
 }
 
 /**
  * Preprocess function for the promotions list.
- * 
+ *
  * @see culturefeed-userpoints-ui-promotions-list.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_list(&$variables) {
@@ -70,12 +70,12 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   $form = $variables['form'];
   $promotions = $form['#promotions'];
-  
+
   $list = array();
   foreach (element_children($form) as $form_key) {
     $list[] = drupal_render($form[$form_key]);
   }
-  
+
   $variables['items'] = $list;
 
 
@@ -83,7 +83,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
 /**
  * Preprocess a promotions list item.
- * 
+ *
  * @see culturefeed-userpoints-ui-promotions-list-item.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_list_item(&$variables) {
@@ -91,28 +91,28 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   //$pointsPromotion = $variables['promotion'];
   $form = $variables['form'];
   $pointsPromotion = $variables['form']['#promotion'];
-  
+
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
-  
+
   $promotion_id = $pointsPromotion->id;
-  
+
   $variables['link'] = l($pointsPromotion->title, 'culturefeed/promotion/' . $promotion_id);
-  
+
   $variables['select_link'] = '';
   $variables['add_link'] = '';
   $variables['remove_link'] = '';
   $variables['select_list'] = '';
   $variables['select_btn'] = '';
-  $variables['select_id'] = drupal_render($form['select_id_' . $promotion_id]);
-  
+  $variables['select_id'] = drupal_render($form['select_id']);
+
   /*dsm('Volume constraint: ' . $variables['volume_constraint'] . '(' . $pointsPromotion->unitsTaken . '/' . $pointsPromotion->maxAvailableUnits . ')
      Can exchange: ' . $variables['can_exchange'] . '
      Active: ' . $variables['active'], $promotion_id);*/
-  
+
   if ($variables['can_exchange']) {
     if (!$variables['active']) {
-      $variables['select_list'] = drupal_render($form['select_count_' . $promotion_id]);
-      $variables['select_btn'] = drupal_render($form['select_btn_' . $promotion_id]);
+      $variables['select_list'] = drupal_render($form['select_count']);
+      $variables['select_btn'] = drupal_render($form['select_btn']);
     }
     else {
       $variables['classes_array'][] = 'item-selected';
@@ -135,9 +135,9 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
       'item' => $promotion,
     ));
   }
-  
+
   $variables['items'] = $items;
-  
+
 }
 
 /**
@@ -184,12 +184,12 @@ function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_page(&$variables) {
 
   $pointsPromotion = $variables['promotion'];
-  
+
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
 
   $variables['exchange_url'] = url('culturefeed/userpoints/exchange');
   $variables['exchange_link'] = l('Voordeel bestellen', 'culturefeed/userpoints/exchange');
-  
+
 }
 
 /**
@@ -198,7 +198,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_p
 function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromotion) {
 
   $promotion_id = $pointsPromotion->id;
-  
+
   // Calculate constraints. Eg. User volume constraint, volume contraint, ... .
   $promotion_count = 0;
   if (CultureFeedUserpointsWishlist::has($promotion_id)) {
@@ -213,8 +213,9 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $units_taken >= $pointsPromotion->maxAvailableUnits) {
     $variables['volume_constraint'] = TRUE;
   }
+
   $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $units_taken;
-  
+
   // Calculate the points.
   $cf_account = DrupalCultureFeed::getLoggedInUser();
   $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
@@ -240,7 +241,8 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
   $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
   $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
-  
+  $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
+
   $variables['period_volume'] = '';
   $variables['period_type'] = '';
   if (!empty($pointsPromotion->periodConstraint)) {
