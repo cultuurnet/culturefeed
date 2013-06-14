@@ -82,7 +82,7 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
 
     // Update the item according to the one in the wishlist.
     $wishlistItem = CultureFeedUserpointsWishlist::get($pointsPromotion->id);
-    if (isset($wishlistItem)) {
+    if (!empty($wishlistItem)) {
       $pointsPromotion->maxAvailableUnits = $pointsPromotion->maxAvailableUnits - $wishlistItem['count'];
     }
 
@@ -101,7 +101,9 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
  * @return array
  */
 function culturefeed_userpoints_ui_get_max_available_units_options($maxAvailableUnits) {
-  
+  if (empty($maxAvailableUnits)) {
+    $maxAvailableUnits = CULTUREFEED_USERPOINTS_MAX_UNITS_DEFAULT;
+  }
   $options = array();
   for ($i = 1; $i <= $maxAvailableUnits; $i++) {
     $options[$i] = $i;

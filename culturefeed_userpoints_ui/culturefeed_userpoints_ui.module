@@ -5,6 +5,9 @@
  * other Culturefeed objects.
  */
 
+// If pointsPromotion.maxAvailableUnits is unlimited, this is the default.
+define('CULTUREFEED_USERPOINTS_MAX_UNITS_DEFAULT', 25);
+
 module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/helpers');
 
 /**

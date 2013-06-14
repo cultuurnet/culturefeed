@@ -9,8 +9,8 @@
  *   - $real_points
  *   - $maxAvailableUnits
  *   - $unitsTaken
- *   - $currentUnitsTaken : Calculated from ( $unitsTaken + $unitsTaken van huidige sessie)
- *   - $unitsLeft : Calculated from ( $maxAvailableUnits - $currentUnitsTaken)
+ *   - $unlimited Indicates whether the item is available unlimited
+ *   - $unitsLeft 
  *   - $cashingPeriodBegin
  *   - $cashingPeriodEnd
  *   - $description1
@@ -20,12 +20,11 @@
  *   - $exchange_url
  */
 
-$unitsLeft = $maxAvailableUnits - $currentUnitsTaken;
 ?>
 
 <h2><?php print $title ?></h2>
 
-<p>Geldig tot <?php print $cashingPeriodEnd ?> <?php print $unitsLeft ?> x op voorraad</p>
+<p>Geldig tot <?php print $cashingPeriodEnd ?> <?php print ($unlimited ? 'onbeperkt' : $unitsLeft . ' x op voorraad'); ?></p>
 
 <?php if (!empty($picture_url)): ?>
 <p>

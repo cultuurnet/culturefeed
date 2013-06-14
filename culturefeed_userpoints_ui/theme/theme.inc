@@ -221,15 +221,11 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
 
   $promotion_id = $pointsPromotion->id;
 
-  // Calculate constraints. Eg. User volume constraint, volume contraint, ... .
-  $promotion_count = 0;
-  if (CultureFeedUserpointsWishlist::has($promotion_id)) {
-    $data = CultureFeedUserpointsWishlist::get($promotion_id);
-    $promotion_count = $data['count'];
-  }
   $variables['unitsTaken'] = $pointsPromotion->unitsTaken;
+  $variables['unlimited'] = empty($pointsPromotion->maxAvailableUnits);
   $variables['unitsLeft'] = -1;
-  if (!empty($pointsPromotion->maxAvailableUnits)) {
+  if (!$variables['unlimited']) {
+    $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
     $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $pointsPromotion->unitsTaken;
   }
 
@@ -238,6 +234,7 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
   $variables['points'] = $pointsPromotion->points;
   $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
+  
   $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
   $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
 
@@ -257,7 +254,6 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $variables['cashingPeriodEnd'] = date('d/m/Y', $pointsPromotion->cashingPeriodEnd);
   }
   $variables['creationDate'] = date('d/m/Y', $pointsPromotion->creationDate);
-  $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
   $variables['inSpotlight'] = $pointsPromotion->inSpotlight;
 
   $variables['period_volume'] = '';

@@ -140,7 +140,9 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     );
 
     $max_count = floor($cf_user->points / $promotion->points);
-    $max_count = $promotion->maxAvailableUnits < $max_count ? $promotion->maxAvailableUnits : $max_count;
+    if (!empty($promotion->maxAvailableUnits)) {
+      $max_count = $promotion->maxAvailableUnits < $max_count ? $promotion->maxAvailableUnits : $max_count;
+    }
     $options = culturefeed_userpoints_ui_get_max_available_units_options($max_count);
     $form['list'][$promotion->id]['select_id'] = array(
       '#type' => 'hidden',
@@ -273,6 +275,7 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
 
     // Always update the user profile.
     $values = $form_state['values'];
+    dsm($values);
     $user_update = new CultureFeed_User();
     $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
     $user_update->givenName  = $values['givenName'];
