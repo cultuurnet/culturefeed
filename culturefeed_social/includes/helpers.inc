@@ -273,6 +273,16 @@ function _culturefeed_social_do($activity_type, $type, $id) {
 
     break;
 
+    // Generic content.
+    case $activity::CONTENT_TYPE_CONTENT:
+
+      $genericObject = culturefeed_userpoints_promotion_load($id);
+      $activity->nodeTitle = $genericObject->title;
+      $activity->nodeId = url('userpoints/promotion/' . $genericObject->id, array('absolute' => TRUE));
+      $activity->path = 'userpoints/promotion/' . $genericObject->id;
+    
+      break;
+
       // Please add your new types here.
       default:
         return FALSE;
@@ -329,6 +339,9 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
   if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE) {
     return 'node/' . $id;
   }
+  if ($type == CultureFeed_Activity::CONTENT_TYPE_CONTENT) {
+    return 'userpoints/promotion/' . $id;
+  }
   if ($type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
     return 'book/' . urlencode($id);
   }
@@ -347,7 +360,9 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
  */
 function culturefeed_social_activity_object_path($type, $id, $title = '') {
 
-  if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE || $type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
+  if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE 
+    || $type == CultureFeed_Activity::CONTENT_TYPE_BOOK
+    || $type == CultureFeed_Activity::CONTENT_TYPE_CONTENT) {
     return $id;
   }
   else {
@@ -382,10 +397,15 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
       $node_id = $extended_entity->getId();
     break;
 
-      case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-        $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
-        $node_id = url($path, array('absolute' => TRUE));
-      break;
+    case CultureFeed_Activity::CONTENT_TYPE_BOOK:
+      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
+      $node_id = url($path, array('absolute' => TRUE));
+    break;
+    
+    case CultureFeed_Activity::CONTENT_TYPE_CONTENT:
+      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
+      $node_id = url($path, array('absolute' => TRUE));
+    break;
 
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
       $node_id = url('node/' . $extended_entity->getId(), array('absolute' => TRUE));

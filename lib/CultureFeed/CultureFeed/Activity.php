@@ -6,6 +6,12 @@
 class CultureFeed_Activity {
 
   /**
+   * Content type 'content'.
+   * Most generic type separated from all others.
+   */
+  const CONTENT_TYPE_CONTENT = 'content';
+
+  /**
    * Content type 'node' (drupal).
    */
   const CONTENT_TYPE_NODE = 'node';
@@ -103,7 +109,9 @@ class CultureFeed_Activity {
   const TYPE_NEW_EVENT = 19;
 
   const TYPE_REVIEW = 21;
+  
   const TYPE_MEDIA_PHOTO = 22;
+  
   const TYPE_MEDIA_VIDEO = 23;
 
   /**

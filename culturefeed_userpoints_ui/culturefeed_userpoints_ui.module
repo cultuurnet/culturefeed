@@ -64,7 +64,7 @@ function culturefeed_userpoints_ui_menu() {
     'file' => 'includes/admin.inc',
   );
 
-  $items['culturefeed/promotion/%culturefeed_userpoints_promotion'] = array(
+  $items['userpoints/promotion/%culturefeed_userpoints_promotion'] = array(
     'title' => 'Detail',
     'title callback' => FALSE,
     'description' => 'Detail of a promotion',
@@ -285,7 +285,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $promotions = array();
       foreach ($wishlistPromotions as $promotionId => $data) {
         $promotions[] = $data['title'] . ' (aantal: ' . $data['count'] . ' | inruilwaarde: ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' punten)
-    Bekijk online: ' . url('culturefeed/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
+    Bekijk online: ' . url('userpoints/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
 ';
       }
 

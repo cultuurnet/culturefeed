@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * BibnetExtendedEntity extends the normal fake entity specific for drupal nodes.
+ * DrupalNodeExtendedEntity extends the normal fake entity specific for drupal nodes.
  */
 use \CultuurNet\Search\ActivityStatsExtendedEntity;
 
 /**
- * BibnetExtendedEntity
+ * DrupalNodeExtendedEntity
  */
 class DrupalNodeExtendedEntity extends ActivityStatsExtendedEntity {
 

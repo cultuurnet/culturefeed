@@ -84,6 +84,13 @@ function culturefeed_search_get_active_object() {
   elseif ($first_argument == 'book') {
     return menu_get_object('bibnet_book', 1);
   }
+  // Generic fallback.
+  elseif ($first_argument == 'userpoints' && $second_argument == 'promotion') {
+    $object = menu_get_object('culturefeed_userpoints_promotion', 2);
+    if ($object) {
+      return GenericContentExtendedEntity::createFrom($object);
+    }
+  }
   // Drupal nodes.
   else {
     $node = menu_get_object();

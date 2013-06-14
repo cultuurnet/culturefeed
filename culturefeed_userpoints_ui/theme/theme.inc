@@ -29,7 +29,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_block_mo
     if (!empty($variables['previous_item']->pictures)) {
       $variables['prev_image_url'] = $variables['previous_item']->pictures[0];
     }
-    $variables['prev_item_url'] = url('culturefeed/promotion/' . $variables['previous_item']->id);
+    $variables['prev_item_url'] = url('userpoints/promotion/' . $variables['previous_item']->id);
     $variables['prev_item_title'] = $variables['previous_item']->title;
   }
   
@@ -37,7 +37,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_block_mo
     if (!empty($variables['next_item']->pictures)) {
       $variables['next_image_url'] = $variables['next_item']->pictures[0];
     }
-    $variables['next_item_url'] = url('culturefeed/promotion/' . $variables['next_item']->id);
+    $variables['next_item_url'] = url('userpoints/promotion/' . $variables['next_item']->id);
     $variables['next_item_title'] = $variables['next_item']->title;
   }
   
@@ -123,7 +123,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   $promotion_id = $pointsPromotion->id;
 
-  $variables['link'] = l($pointsPromotion->title, 'culturefeed/promotion/' . $promotion_id);
+  $variables['link'] = l($pointsPromotion->title, 'userpoints/promotion/' . $promotion_id);
 
   $variables['add_link'] = '';
   $variables['remove_link'] = '';
