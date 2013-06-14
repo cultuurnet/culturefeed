@@ -16,8 +16,10 @@
  *   - $description1
  *   - $description2
  *   - $picture_url
- *   - $exchange_link
- *   - $exchange_url
+ *   - $exchange_link : link with fragment anchor to the id "culturefeed-userpoints-notifications"
+ *   - $exchange_url : If you use this, feel free to use deeplinks.
+ *     E.g. href="<?php print $exchange_url ?>#culturefeed-userpoints-notifications"
+ *   
  */
 
 ?>
@@ -38,12 +40,13 @@
 <p><?php print $description1 ?></p>
 <p><?php print $description2 ?></p>
 
-<?php if ($can_exchange && !$active): ?>
-  <p>
-    <span><?php print $exchange_link ?></span>
-    <span><?php print $real_points ?></span>
-  </p>
 
-<?php else: ?>
-
-<?php endif; ?>
+<p>
+  
+  <span><?php print $real_points ?></span>
+  <?php if ($can_exchange && !$active): ?>
+  <span><?php print $exchange_link ?></span>
+  <?php else: ?>
+  <?php endif; ?>
+  
+</p>

@@ -210,7 +210,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_p
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
 
   $variables['exchange_url'] = url('culturefeed/userpoints/exchange');
-  $variables['exchange_link'] = l('Voordeel bestellen', 'culturefeed/userpoints/exchange');
+  $variables['exchange_link'] = l('Voordeel bestellen', 'culturefeed/userpoints/exchange', array('fragment' => 'culturefeed-userpoints-notifications'));
 
 }
 
@@ -234,7 +234,6 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
   $variables['points'] = $pointsPromotion->points;
   $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
-  
   $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
   $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
 
