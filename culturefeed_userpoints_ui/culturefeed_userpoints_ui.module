@@ -17,12 +17,21 @@ function culturefeed_userpoints_ui_menu() {
 
   $items = array();
 
-  $items['culturefeed/userpoints/exchange'] = array(
+  $items['userpoints/promotions/exchange'] = array(
     'title' => 'Ruil je punten in',
     'title callback' => FALSE,
     'description' => 'Exchange your userpoints',
     'page callback' => 'culturefeed_userpoints_ui_exchange_page',
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['userpoints/promotions/list'] = array(
+    'title' => 'Voordelen',
+    'title callback' => FALSE,
+    'description' => 'Promotions list',
+    'page callback' => 'culturefeed_userpoints_ui_promotions_page',
+    'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
   );
 
@@ -42,15 +51,6 @@ function culturefeed_userpoints_ui_menu() {
     'description' => 'Remove the promotion from the wishlist.',
     'page callback' => 'culturefeed_userpoints_ui_page_remove_promotion',
     'page arguments' => array(2, 4),
-    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
-    'file' => 'includes/pages.inc',
-  );
-
-  $items['culturefeed/userpoints'] = array(
-    'title' => 'Ruil je punten in',
-    'title callback' => FALSE,
-    'description' => 'Exchange your userpoints',
-    'page callback' => 'culturefeed_userpoints_ui_exchange_page',
     'access callback' => 'culturefeed_userpoints_ui_can_exchange',
     'file' => 'includes/pages.inc',
   );
@@ -127,6 +127,24 @@ function culturefeed_userpoints_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-my-balance',
+    ),
+
+    'culturefeed_userpoints_ui_promotions_page' => array(
+      'variables' => array(
+        'promotions' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-page',
+    ),
+    
+    'culturefeed_userpoints_ui_promotions_page_item' => array(
+      'variables' => array(
+        'promotion' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-page-item',
     ),
 
     'culturefeed_userpoints_ui_exchange_page' => array(
@@ -325,7 +343,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   
   $data = '<small class="text-white">';
   $data .= '<span class="userpoints userpoints-points label label-transparent">' . $points_left . ' punten</span>';
-  $data .= '<span class="check-again"> ' . l('Inruilen', 'culturefeed/userpoints/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
+  $data .= '<span class="check-again"> ' . l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
   $data .= '</small>';
 
   $items['my-points'] = array(

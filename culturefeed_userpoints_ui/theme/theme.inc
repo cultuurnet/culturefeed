@@ -209,8 +209,8 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_p
 
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
 
-  $variables['exchange_url'] = url('culturefeed/userpoints/exchange');
-  $variables['exchange_link'] = l('Voordeel bestellen', 'culturefeed/userpoints/exchange', array('fragment' => 'culturefeed-userpoints-notifications'));
+  $variables['exchange_url'] = url('userpoints/promotions/exchange');
+  $variables['exchange_link'] = l('Voordeel bestellen', 'userpoints/promotions/exchange', array('fragment' => 'culturefeed-userpoints-notifications'));
 
 }
 
@@ -263,3 +263,35 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
   }
 
 }
+
+/**
+ * Preprocess a promotion list.
+ *
+ * @see culturefeed-userpoints-ui-promotions-list.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_page(&$variables) {
+
+  $items = array();
+  foreach ($variables['promotions']->objects as $promotion) {
+    $items[] = theme('culturefeed_userpoints_ui_promotions_page_item', array(
+      'promotion' => $promotion,
+    ));
+  }
+
+  $variables['items'] = $items;
+
+}
+
+/**
+ * Preprocess a promotion item.
+ *
+ * @see culturefeed-userpoints-ui-promotions-item.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotions_page_item(&$variables) {
+  $pointsPromotion = $variables['promotion'];
+
+  _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
+  
+  $variables['item_url'] = url('userpoints/promotion/' . $pointsPromotion->id);
+}
+

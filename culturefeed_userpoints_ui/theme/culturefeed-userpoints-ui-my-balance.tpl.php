@@ -19,7 +19,7 @@
 <div>
   <span class="userpoints-mypoints"><?php print $real_points ?></span>
   <span class="userpoints-points"><?php print $real_points_left ?></span> | 
-  <span><?php print l('Inruilen', 'culturefeed/userpoints/exchange'); ?></span>
+  <span><?php print l('Inruilen', 'userpoints/promotions/exchange'); ?></span>
 </div>
 
 <ul>

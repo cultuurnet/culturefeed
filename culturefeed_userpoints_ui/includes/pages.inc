@@ -4,9 +4,40 @@
  */
 
 /**
+ * Page callback for a list of promotions.
+ */
+function culturefeed_userpoints_ui_promotions_page() {
+
+  try {
+  
+    $pointsPromotions = culturefeed_userpoints_ui_get_pointspromotions();
+    $build = array(
+      '#theme' => 'culturefeed_userpoints_ui_promotions_page',
+      '#promotions' => $pointsPromotions,
+    );
+  
+  }
+  catch (Exception\ClientErrorResponseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+  }
+  catch (Exception\CurlException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+  }
+  catch (CultureFeed_ParseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+  }
+  
+  return $build;
+  
+}
+
+/**
  * Page callback to list the gifts and exchange the points for a gift.
  */
-function culturefeed_userpoints_ui_exchange_page() {
+function culturefeed_userpoints_ui_exchange_page($normal_list) {
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
 
@@ -75,7 +106,7 @@ function culturefeed_userpoints_ui_page_remove_promotion($promotion_id, $request
   // Check if this is a non ajax request.
   if ($request_type != 'ajax') {
     drupal_set_message('Het voordeel werd verwijderd van uw voordelen.');
-    drupal_goto('culturefeed/userpoints/exchange');
+    drupal_goto('userpoints/promotions/exchange');
   }
   else {
     $form = drupal_get_form('culturefeed_userpoints_ui_promotions_list_form', $promotion_points);
