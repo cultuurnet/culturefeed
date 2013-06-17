@@ -24,7 +24,7 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->titleDoFirst = 'Delen';
     $this->subject = 'Gedeeld door';
     $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'via Facebok gedeeld';
+    $this->viewSuffix = 'via Facebook gedeeld';
     $this->label = 'Delen via Facebook';
     $this->undoNotAllowedMessage = 'Succesvol gedeeld';
     $this->action = 'reactie';
