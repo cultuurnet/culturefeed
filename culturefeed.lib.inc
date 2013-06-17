@@ -347,13 +347,7 @@ abstract class DrupalCultureFeedBase {
 
 
   public static function isCacheEnabled() {
-
-    if (! self::isCultureFeedUser()) {
-      return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
-    } else {
-      return FALSE;
-    }
-
+    return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
   }
 
   public static function isCultureFeedUser($uid = NULL) {
