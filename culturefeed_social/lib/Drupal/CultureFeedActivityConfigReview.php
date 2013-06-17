@@ -19,6 +19,8 @@ class CultureFeedActivityConfigReview extends CultureFeedActivityConfigBase {
     $this->viewSuffix = 'een beoordeling gegeven';
     $this->action = 'beoordeling';
     $this->label = 'Beoordeling';
+    $this->titleDo = 'Schrijf een beoordeling';
+    $this->titleDoFirst = 'Schrijf als eerste een beoordeling';
 
   }
 

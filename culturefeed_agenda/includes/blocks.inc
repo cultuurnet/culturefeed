@@ -219,7 +219,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
  * Show the upcoming program of current actor.
  */
 function culturefeed_agenda_block_actor_program() {
-
+return;
   $item = culturefeed_agenda_get_active_object();
   if (!$item || $item->getType() != 'actor') {
     return;
@@ -261,9 +261,9 @@ function culturefeed_agenda_block_actor_program() {
 }
 
 /**
- * Show the movie playlist of current production.
+ * Show the program of current production.
  */
-function culturefeed_agenda_block_movie_playlist() {
+function culturefeed_agenda_block_production_program() {
 
   $item = culturefeed_agenda_get_active_object();
   if (!$item || $item->getType() != 'production') {
@@ -273,29 +273,35 @@ function culturefeed_agenda_block_movie_playlist() {
   $production = $item->getEntity();
   $relations = $production->getRelations();
 
-  $movies = array();
-
-  $locations = cnapi_get_locations_tree(CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, TRUE, 'flat');
-
+  // Currently we do an extra query to load the event details.
+  // Sven checks if this could be added to the event loading.
+  $cdb_ids = array();
   foreach ($relations as $relation) {
-
-
-
+    $cdb_ids[] = 'cdbid:' . $relation->getCdbid();
   }
-    $title = $event['detail']['nl']['title'];
-    $city = $event['location']['address']['city'];
-    $cityid = $event['location']['address']['cityid'];
-    $locationid = $event['location']['actor']['cdbid'];
-    $pid = $locations[$cityid]['pid'];
-    $pid = $locations[$pid]['pid'];
-    $province = $locations[$pid]['name'];
 
-    $movies[$province][$locationid][] = $event;
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
-  $block['subject'] = 'Speellijst';
+  try {
+    $result = culturefeed_get_search_service()->search($parameters);
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  $provinces = culturefeed_search_get_flandersregion_categories('=');
+
+  $block['subject'] = 'Programmatie';
   $block['content'] = array(
-    '#theme' => 'cnapi_extras_movie_playlist',
-    '#movies' => $movies,
+    '#theme' => 'culturefeed_agenda_production_program',
+    '#items' => $result->getItems(),
+    '#provinces' => $provinces,
   );
 
   return $block;

@@ -4,11 +4,6 @@ use Symfony\Component\Console\Output\NullOutput;
 /**
  * @file
  * Performs searches to the Cultuurnet api.
- *
- * @todo
- * - Fix the function culturefeed_agenda_activity_recommend_link so that the function
- *   "culturefeed_ui_block_users_recommends_config" is moved to correct place
- *
  */
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
@@ -50,6 +45,13 @@ function culturefeed_agenda_theme() {
   $theme['culturefeed_agenda_actor_program'] = array(
     'variables' => array('items' => array()),
     'template' => 'culturefeed-agenda-actor-program',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
+  $theme['culturefeed_agenda_production_program'] = array(
+    'variables' => array('items' => array(), 'provinces' => array()),
+    'template' => 'culturefeed-agenda-production-program',
     'path' => $path,
     'file' => 'theme.inc',
   );
@@ -149,12 +151,12 @@ function culturefeed_agenda_block_info() {
   );
 
   $blocks['actor-program'] = array(
-    'info' => t('Production / actor program'),
+    'info' => t('Actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  $blocks['movie-playlist'] = array(
-    'info' => t('Movie playlist'),
+  $blocks['production-program'] = array(
+    'info' => t('Production program'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
@@ -277,8 +279,8 @@ function culturefeed_agenda_block_view($delta) {
     case 'actor-program':
       return culturefeed_agenda_block_actor_program();
 
-    case 'movie-playlist':
-      return culturefeed_agenda_block_movie_playlist();
+    case 'production-program':
+      return culturefeed_agenda_block_production_program();
 
   }
 

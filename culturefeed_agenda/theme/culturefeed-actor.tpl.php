@@ -31,13 +31,13 @@ Samengevat - <?php print $shortdescription; ?><br/>
   <?php if (!empty($contact)) : ?>
     <dt>Contact</dt>
     <dd>
-    <?php if (isset($contact['mail'])) : ?>
+    <?php if (!empty($contact['mail'])) : ?>
       Mail: <?php print $contact['mail'] ?><br />
     <?php endif; ?>
-    <?php if (isset($contact['phone'])) : ?>
+    <?php if (!empty($contact['phone'])) : ?>
       Telefoon: <?php print $contact['phone'] ?><br />
     <?php endif; ?>
-    <?php if (isset($contact['fax'])) : ?>
+    <?php if (!empty($contact['fax'])) : ?>
       Fax: <?php print $contact['fax'] ?>
     <?php endif; ?>
     </dd>

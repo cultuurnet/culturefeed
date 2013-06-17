@@ -202,3 +202,55 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
   return $location;
 
 }
+
+/**
+ * Get the data for an item in the production program list.
+ */
+function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Search\ActivityStatsExtendedEntity $item) {
+
+  global $language;
+  $cdb_item = $item->getEntity();
+  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+
+  // Only place items in list that have a detail for current language.
+  if ($detail) {
+
+    $location = culturefeed_agenda_get_location_of_event($cdb_item);
+
+    // Construct base data.
+    $data = array(
+      'title' => $detail->getTitle(),
+      'id' => $item->getId(),
+      'url' => culturefeed_search_detail_url($item->getType(), $item->getId(), $detail->getTitle()),
+      'calendar' => $detail->getCalendarSummary(),
+      'city' => isset($location['city']) ? $location['city'] : '',
+    );
+
+    // Extend with an url to the actor.
+    // This can be an organiser, or a location.
+    $organiser = $cdb_item->getOrganiser();
+    if ($organiser) {
+
+      // Check if we can construct an actor url by label or actor reference..
+      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
+        $actor = $organiser->getActor();
+        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
+        $data['all_url'] = culturefeed_search_detail_url('production', $actor->getCdbid(), $actor->getDetails()->getDetailByLanguage($language->language)->getTitle());
+      }
+      elseif ($organiser->getLabel() && $organiser->getCdbid()) {
+        $data['all_url'] = culturefeed_search_detail_url('production', $organiser->getCdbid(), $organiser->getLabel());
+      }
+
+    }
+
+    // If we did not find an organiser. Check if we can link to the location.
+    if (!isset($data['all_url']) && isset($location['link'])) {
+      $location_actor = $cdb_item->getLocation()->getActor();
+      $data['all_url'] = culturefeed_search_detail_url('actor', $location_actor->getCdbid(), $location['title']);
+    }
+
+  }
+
+  return $data;
+
+}

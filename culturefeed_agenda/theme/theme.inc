@@ -485,3 +485,54 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
   }
 
 }
+
+/**
+ * Preprocess the production program.
+ * @see culturefeed-agenda-production-program.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$variables) {
+
+  $provinces = $variables['provinces'];
+  $items = $variables['items'];
+
+  $tabs = array();
+  $other = array(
+    'name' => 'Overige',
+    'class' => 'other',
+    'children' => array(),
+  );
+  foreach ($items as $item) {
+
+    // Get all flanders regions, and check if a province was set.
+    $regions = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
+    if ($regions) {
+      foreach ($regions as $region) {
+        if (isset($provinces[$region->getId()])) {
+
+          // Make sure tab exists.
+          if (!isset($tabs[$region->getId()])) {
+            $tabs[$region->getId()] = array(
+              'name' => $region->getName(),
+              'class' => culturefeed_search_slug($region->getName),
+            );
+          }
+
+          $tabs[$region->getId()]['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
+
+        }
+      }
+    }
+    // Events without region.
+    else {
+      $other['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
+    }
+
+  }
+
+  if (count($other['children']) > 0) {
+    $tabs['other'] = $other;
+  }
+
+  $variables['tabs'] = $tabs;
+
+}

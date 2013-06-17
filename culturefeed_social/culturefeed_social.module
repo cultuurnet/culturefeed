@@ -262,7 +262,7 @@ function culturefeed_social_theme() {
     ),
 
     'culturefeed_social_login_required_message' => array(
-      'variables' => array('activity_type' => NULL, 'item' => NULL),
+      'variables' => array('activity_type' => NULL, 'item' => NULL, 'url' => ''),
       'path' => $path,
       'file' => 'theme.inc',
     ),
