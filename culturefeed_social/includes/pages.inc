@@ -125,7 +125,7 @@ function culturefeed_social_page_activities($type = NULL) {
       'data-target' => '#culturefeed-social-modal-wrapper',
       'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
     );
-    
+
     $delete = array(
       '#type' => 'link',
       '#title' => 'Verwijderen',
@@ -201,7 +201,7 @@ function culturefeed_social_page_activities($type = NULL) {
 function culturefeed_social_page_activity_delete($id, $request_type = 'ajax') {
 
   $form = drupal_get_form('culturefeed_social_page_activity_delete_confirm_form', $id, $request_type);
-  
+
   if ($request_type == 'ajax') {
     $output = drupal_render($form);
     print $output;
@@ -209,7 +209,7 @@ function culturefeed_social_page_activity_delete($id, $request_type = 'ajax') {
   else {
     return $form;
   }
-  
+
 }
 
 /**
@@ -230,20 +230,20 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
-  
+
   $config = culturefeed_social_activity_get_config($data->objects[0]->type);
-  
+
   if ($request_type == 'ajax') {
     $form['#prefix'] = '<div class="modal-header"><h3>' . $config->label . ' verwijderen</h3></div>';
   }
   else {
     drupal_set_title($config->label . ' verwijderen?');
   }
-  
+
   $destination = drupal_get_destination();
-  
+
   $form_state['id'] = $id;
-  
+
   $form['body_wrapper'] = array(
     '#type' => 'markup',
     '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
@@ -253,19 +253,19 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
     '#type' => 'markup',
     '#markup' => '<p>Ben je zeker dat je jouw ' . $config->action . ' definitief wil verwijderen.</p>',
   );
-  
+
   $form['footer_wrapper'] = array(
     '#type' => 'markup',
     '#prefix' => '<div class="modal-footer">',
     '#suffix' => '</div>',
   );
-  
+
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
     '#value' => 'Verwijder',
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
   );
-  
+
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
     '#title' => 'Annuleer',
@@ -276,9 +276,9 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
       'class' => array('button-decline close btn')
     ),
   );
-  
+
   return $form;
-  
+
 }
 
 /**
@@ -287,7 +287,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
  * @param array $form_state
  */
 function culturefeed_social_page_activity_delete_confirm_form_submit($form, &$form_state) {
-  
+
   $success = TRUE;
   $id = $form_state['id'];
 
