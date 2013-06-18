@@ -150,7 +150,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
     $variables['author'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
-  $variables['content'] = check_plain($activity->value);
+  $variables['content'] = check_plain(strip_tags($activity->value)); // Cultuurnet doesn't want to see html tags converted to plain.
   $variables['activity_id'] = $activity->id;
 
   // The list of child activities if available.
