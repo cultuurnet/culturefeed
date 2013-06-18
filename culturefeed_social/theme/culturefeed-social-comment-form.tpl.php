@@ -7,7 +7,7 @@
 
 $button_printed = render($form['submit']);
 ?>
-
+<a id="schrijf"></a>
 <div class="comment-left">
   <?php print render($form['message'])?>
   <?php print render($form['update_optin'])?>
