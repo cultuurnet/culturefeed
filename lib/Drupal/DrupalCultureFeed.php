@@ -173,14 +173,21 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
   }
 
+  /**
+   * @see CultureFeed::getActivityPointsTimeline()
+   */
+  public static function getActivityPointsTimeline($userId) {
+    return self::getLoggedInUserInstance()->getActivityPointsTimeline($userId);
+  }
+
   public static function getActivityPointsPromotion($promotionId) {
     return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
   }
-  
+
   public static function getActivityPointsPromotions($params = array()) {
     return self::getLoggedInUserInstance()->getActivityPointsPromotions($params);
   }
-  
+
   public static function cashInPromotion($userId, array $promotionId, array $promotionCount) {
     return self::getLoggedInUserInstance()->cashInPromotion($userId, $promotionId, $promotionCount);
   }

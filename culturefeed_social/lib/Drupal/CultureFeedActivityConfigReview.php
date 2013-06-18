@@ -21,6 +21,7 @@ class CultureFeedActivityConfigReview extends CultureFeedActivityConfigBase {
     $this->label = 'Beoordeling';
     $this->titleDo = 'Schrijf een beoordeling';
     $this->titleDoFirst = 'Schrijf als eerste een beoordeling';
+    $this->pointsOverviewPrefix = 'Beoordeling voor';
 
   }
 

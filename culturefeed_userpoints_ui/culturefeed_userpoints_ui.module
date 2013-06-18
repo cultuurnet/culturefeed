@@ -22,7 +22,7 @@ function culturefeed_userpoints_ui_menu() {
     'title callback' => FALSE,
     'description' => 'Exchange your userpoints',
     'page callback' => 'culturefeed_userpoints_ui_exchange_page',
-    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -41,7 +41,7 @@ function culturefeed_userpoints_ui_menu() {
     'description' => 'Select the promotion to exchange for userpoints.',
     'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
     'page arguments' => array(2, 3, 5),
-    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -51,7 +51,7 @@ function culturefeed_userpoints_ui_menu() {
     'description' => 'Remove the promotion from the wishlist.',
     'page callback' => 'culturefeed_userpoints_ui_page_remove_promotion',
     'page arguments' => array(2, 4),
-    'access callback' => 'culturefeed_userpoints_ui_can_exchange',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -71,6 +71,14 @@ function culturefeed_userpoints_ui_menu() {
     'page callback' => 'culturefeed_userpoints_ui_detail_page',
     'page arguments' => array(2),
     'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/userpoints'] = array(
+    'title' => 'Puntenoverzicht',
+    'title callback' => FALSE,
+    'page callback' => 'culturefeed_userpoints_ui_page_points_overview',
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -107,13 +115,6 @@ function culturefeed_userpoints_promotion_load($id) {
 }
 
 /**
- * Access callback to be able to exchange points into gifts.
- */
-function culturefeed_userpoints_ui_can_exchange() {
-  return DrupalCultureFeed::isCultureFeedUser();
-}
-
-/**
  * Implements hook_theme().
  */
 function culturefeed_userpoints_ui_theme() {
@@ -137,7 +138,7 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-promotions-page',
     ),
-    
+
     'culturefeed_userpoints_ui_promotions_page_item' => array(
       'variables' => array(
         'promotion' => NULL,
@@ -171,7 +172,7 @@ function culturefeed_userpoints_ui_theme() {
       'template' => 'culturefeed-userpoints-ui-promotions-list-item',
       'render element' => 'form',
     ),
-    
+
     'culturefeed_userpoints_ui_block_more_promotions' => array(
       'file' => 'theme.inc',
       'path' => $path,
@@ -227,6 +228,15 @@ function culturefeed_userpoints_ui_theme() {
       'template' => 'culturefeed-userpoints-ui-detail-page',
     ),
 
+    'culturefeed_userpoints_earned_overview' => array(
+      'variables' => array(
+        'activities' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-earned-overview',
+    ),
+
   );
 
 }
@@ -246,7 +256,7 @@ function culturefeed_userpoints_ui_block_info() {
     'info' => t('Culturefeed Userpoints UI: More promotions'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   return $blocks;
 }
 
@@ -264,7 +274,7 @@ function culturefeed_userpoints_ui_block_view($delta) {
       $block['subject'] = 'Mijn puntensaldo';
       $block['content'] = culturefeed_userpoints_ui_block_balance();
       break;
-      
+
     case 'culturefeed-userpoints-more':
       $block['subject'] = 'Meer voordelen';
       $block['content'] = culturefeed_userpoints_ui_block_more_promotions();
@@ -311,19 +321,19 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@promotion'] = implode("\n", $promotions);
 
       $message['body'][] = format_string('Culturefeed User ID:
-@code
+        @code
 
-Voordeel:
-  @promotion
+        Voordeel:
+          @promotion
 
-Contactgegevens:
-  - @givenName @familyName
-  - @street
-  - @city
-  - @mbox
+        Contactgegevens:
+          - @givenName @familyName
+          - @street
+          - @city
+          - @mbox
 
-Beheer:
-  @url_admin ', $variables);
+        Beheer:
+          @url_admin ', $variables);
 
     break;
 
@@ -331,8 +341,23 @@ Beheer:
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_userpoints_ui_culturefeed_ui_profile_menu() {
+
+  return array(
+    'points' => array(
+      'title' => "Mijn puntensaldo",
+      'url' => 'culturefeed/userpoints',
+      'description' => "Bekijk het overzicht van je verdiende punten",
+      'weight' => -15,
+    ),
+  );
+
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_box_dropdown_items().
- * @param array $items
  */
 function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_account) {
 
@@ -340,7 +365,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
 
   $real_points = CultureFeedUserpointsWishlist::getRealPoints($cf_account->points);
   $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
-  
+
   $data = '<small class="text-white">';
   $data .= '<span class="userpoints userpoints-points label label-transparent">' . $points_left . ' punten</span>';
   $data .= '<span class="check-again"> ' . l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
@@ -369,9 +394,6 @@ function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity
 
 /**
  * Submit handler to add/remove points promotions.
- *
- * @param array $form
- * @param array $form_state
  */
 function culturefeed_userpoints_ui_promotions_list_form_submit($form, &$form_state) {
 

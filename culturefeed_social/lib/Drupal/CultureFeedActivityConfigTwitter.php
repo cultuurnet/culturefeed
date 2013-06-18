@@ -27,6 +27,7 @@ class CultureFeedActivityConfigTwitter extends CultureFeedActivityConfigBase {
     $this->viewSuffix = 'via Twitter gedeeld';
     $this->label = 'Delen via Twitter';
     $this->undoNotAllowedMessage = 'Succesvol gedeeld';
+    $this->pointsOverviewSuffix = 'gedeeld';
 
   }
 

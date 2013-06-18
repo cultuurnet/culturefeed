@@ -32,7 +32,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_block_mo
     $variables['prev_item_url'] = url('userpoints/promotion/' . $variables['previous_item']->id);
     $variables['prev_item_title'] = $variables['previous_item']->title;
   }
-  
+
   if (isset($variables['next_item'])) {
     if (!empty($variables['next_item']->pictures)) {
       $variables['next_image_url'] = $variables['next_item']->pictures[0];
@@ -40,7 +40,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_block_mo
     $variables['next_item_url'] = url('userpoints/promotion/' . $variables['next_item']->id);
     $variables['next_item_title'] = $variables['next_item']->title;
   }
-  
+
 }
 
 /**
@@ -177,28 +177,6 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
 }
 
 /**
- * Theme the message when a user earned some points.
- */
-function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
-
-  $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
-  $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
-  $message = 'Gefeliciteerd! Je verdiende ' . $points . ' punten met deze actie en hebt nu ' . $total_points . ' punten.';
-
-  return $message;
-
-}
-
-/**
- * Theme function for a message when the userpoints were exchanged.
- * @param array $variables
- */
-function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
-  // $variables['promotions']
-  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.";
-}
-
-/**
  * Preprocess a promotion detail.
  *
  * @see culturefeed-userpoints-ui-detail-page.tpl.php
@@ -291,7 +269,70 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   $pointsPromotion = $variables['promotion'];
 
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
-  
+
   $variables['item_url'] = url('userpoints/promotion/' . $pointsPromotion->id);
 }
 
+/**
+ * Preprocess the userpoints earned overview.
+ * @see culturefeed-userpoints-earned-overview.tpl.php
+ */
+function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variables) {
+
+  $variables['intro'] = check_plain(variable_get('culturefeed_userpoints_ui_points_overview_intro'));
+
+  try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    $variables['total_points'] = CultureFeedUserpointsWishlist::getRealPoints($cf_user->points);
+    $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning'))));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+  }
+
+  $variables['items'] = array();
+  foreach ($variables['activities'] as $activity) {
+
+    $item = array();
+    $item['date'] = format_date($activity->creationDate, 'custom', 'd/m/Y');
+    $item['points'] = format_plural(CultureFeedUserpointsWishlist::getRealPoints($activity->points), 'punt', 'punten');
+
+    $config = culturefeed_social_activity_get_config($activity->type);
+    $description = '';
+    if (!empty($config->pointsOverviewPrefix)) {
+      $description = $config->pointsOverviewPrefix . ' ';
+    }
+
+    $description .= $activity->nodeTitle;
+    if (!empty($config->pointsOverviewSuffix)) {
+      $description .= ' ' . $config->pointsOverviewSuffix;
+    }
+
+    $item['description'] = $description;
+
+    $variables['items'][] = $item;
+
+  }
+
+}
+
+/**
+ * Theme the message when a user earned some points.
+ */
+function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
+
+  $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
+  $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
+  $message = 'Gefeliciteerd! Je verdiende ' . $points . ' punten met deze actie en hebt nu ' . $total_points . ' punten.';
+
+  return $message;
+
+}
+
+/**
+ * Theme function for a message when the userpoints were exchanged.
+ * @param array $variables
+ */
+function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
+  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.";
+}

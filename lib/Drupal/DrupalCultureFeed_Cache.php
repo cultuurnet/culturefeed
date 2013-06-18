@@ -208,6 +208,13 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
   }
 
+  /**
+   * @see CultureFeed::getActivityPointsTimeline()
+   */
+  public function getActivityPointsTimeline($userId) {
+    return $this->realCultureFeed->getActivityPointsTimeline($userId);
+  }
+
   public function getActivityPointsPromotion($promotionId) {
     return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
   }

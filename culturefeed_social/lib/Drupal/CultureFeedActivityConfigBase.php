@@ -24,6 +24,8 @@ class CultureFeedActivityConfigBase {
   public $action = '';
   public $onBehalfOfMessage = 'Plaats commentaar als';
   public $undoNotAllowedMessage = '';
+  public $pointsOverviewPrefix = '';
+  public $pointsOverviewSuffix = '';
 
   protected static $configs = array();
 

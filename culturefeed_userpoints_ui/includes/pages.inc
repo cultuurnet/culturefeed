@@ -9,13 +9,13 @@
 function culturefeed_userpoints_ui_promotions_page() {
 
   try {
-  
+
     $pointsPromotions = culturefeed_userpoints_ui_get_pointspromotions();
     $build = array(
       '#theme' => 'culturefeed_userpoints_ui_promotions_page',
       '#promotions' => $pointsPromotions,
     );
-  
+
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
@@ -29,15 +29,15 @@ function culturefeed_userpoints_ui_promotions_page() {
     watchdog_exception('culturefeed_userpoints_ui', $e);
     $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
   }
-  
+
   return $build;
-  
+
 }
 
 /**
  * Page callback to list the gifts and exchange the points for a gift.
  */
-function culturefeed_userpoints_ui_exchange_page($normal_list) {
+function culturefeed_userpoints_ui_exchange_page() {
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
 
@@ -142,7 +142,7 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
   }
 
   $cf_user = DrupalCultureFeed::getLoggedInUser();
-  
+
   $objects = array();
   foreach ($promotions->objects as $object) {
     $objects[] = $object;
@@ -367,5 +367,26 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
     $build = "Er is een fout opgetreden tijdens het inruilen van de gebruikers voordelen.";
   }
+
+}
+
+/**
+ * Page callback to show the overview of points for current user.
+ */
+function culturefeed_userpoints_ui_page_points_overview() {
+
+  $activities = array();
+  try {
+    $timeline = DrupalCultureFeed::getActivityPointsTimeline(DrupalCultureFeed::getLoggedInUserId());
+    $activities = $timeline->objects;
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er ging iets fout tijdens het laden van je puntenoverzicht', 'error');
+  }
+
+  return array(
+    '#theme' => 'culturefeed_userpoints_earned_overview',
+    '#activities' => $activities,
+  );
 
 }

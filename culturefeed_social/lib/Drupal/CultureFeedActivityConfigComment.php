@@ -32,6 +32,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->action = 'reactie';
     $this->loginRequiredMessage = 'Om commentaar te geven moet je aangemeld zijn';
     $this->onBehalfOfMessage = 'Plaats commentaar als';
+    $this->pointsOverviewPrefix = 'Reactie geschreven op';
 
   }
 

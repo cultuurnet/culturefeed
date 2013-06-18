@@ -32,6 +32,7 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
     $this->viewSuffix = 'aangeraden';
     $this->label = 'Aanraden';
     $this->loginRequiredMessage = 'Om aan te raden moet u aangemeld zijn';
+    $this->pointsOverviewSuffix = 'aangeraden';
   }
 
 }

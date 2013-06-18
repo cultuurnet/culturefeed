@@ -28,6 +28,7 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->label = 'Delen via Facebook';
     $this->undoNotAllowedMessage = 'Succesvol gedeeld';
     $this->action = 'reactie';
+    $this->pointsOverviewSuffix = 'gedeeld';
 
   }
 

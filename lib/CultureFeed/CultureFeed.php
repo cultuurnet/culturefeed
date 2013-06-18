@@ -823,7 +823,25 @@ class CultureFeed implements ICultureFeed {
     return $totals;
 
   }
-  
+
+  /**
+   * Get the timeline of activity points for a user.
+   */
+  public function getActivityPointsTimeline($userId) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('userpoints/user/' . $userId . '/timeline');
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseActivities($xml);
+
+  }
+
   /**
    * Get one userpoints promotion.
    * @param Integer $promotionId
@@ -831,7 +849,7 @@ class CultureFeed implements ICultureFeed {
   public function getActivityPointsPromotion($promotionId) {
 
     $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotion/' . $promotionId);
-    
+
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -845,14 +863,14 @@ class CultureFeed implements ICultureFeed {
     }
 
     $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($xml);
-    
+
     return $pointsPromotion;
-    
+
   }
-  
+
   /**
    * Get the activity promotions.
-   * 
+   *
    * @param array  $params
    * @throws CultureFeed_ParseException
    */
@@ -861,7 +879,7 @@ class CultureFeed implements ICultureFeed {
     // Override params.
     $params['unexpired'] = 'true';
     $params['max'] = 999;
-    
+
     $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotions', $params);
 
     try {
@@ -870,14 +888,14 @@ class CultureFeed implements ICultureFeed {
     catch (Exception $e) {
       throw new CultureFeed_ParseException($result);
     }
-    
+
     $total = $xml->xpath_str('/response/total');
-    
+
     $promotions = new stdClass();
     $promotions->total = $total;
-    
+
     if ($total > 0) {
-  
+
       $objects = $xml->xpath('/response/promotions/promotion');
       $data = array();
       foreach ($objects as $object) {
@@ -886,9 +904,9 @@ class CultureFeed implements ICultureFeed {
       }
 
       $promotions->objects = $data;
-      
+
     }
-    
+
     return $promotions;
   }
 
@@ -897,7 +915,7 @@ class CultureFeed implements ICultureFeed {
    * @see ICultureFeed::cashInPromotion()
    */
   public function cashInPromotion($userId, array $promotionId, array $promotionCount) {
-    
+
     $params = array();
     $params['promotionId'] = $promotionId;
     $params += $promotionCount;
@@ -920,11 +938,11 @@ class CultureFeed implements ICultureFeed {
     foreach ($promotions as $object) {
       $pointsPromotions[] = CultureFeed_PointsPromotion::parseFromXML($object);
     }
-    
+
     return $pointsPromotions;
-    
+
   }
-  
+
   /**
    * Get a mailing.
    *
