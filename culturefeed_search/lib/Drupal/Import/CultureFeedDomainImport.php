@@ -87,16 +87,35 @@ class CultureFeedDomainImport {
         'did' => (string) $termAttributes['domain'],
         'parent' => empty($parentId) ? NULL : $parentId,
       );
-
-      drupal_write_record('culturefeed_search_terms', $record);
-
-      $this->logMessages[] = array(
-        'message' => 'Imported term ' . (string) $termAttributes['label'] . ' ' . $parentId,
-        'code' => 'success'
-      );
       
-    }
+      // Check if domain is 'eventtype' and import other languages.
+      if ($record['did'] == 'eventtype') {
+        foreach (array('nl', 'en', 'de', 'fr') as $language) {
+          $label_translated = (string) $termAttributes['label' . $language];
+          if (!empty($label_translated)) {
+            $record['language'] = $language;
+            $record['name'] = $label_translated;
+            drupal_write_record('culturefeed_search_terms', $record);
 
+            $this->logMessages[] = array(
+              'message' => 'Imported term ' . $record['name'] . ' ' . $parentId . ' in language ' . $record['language'],
+              'code' => 'success'
+            );
+            
+          }
+        }
+      }
+      else {
+        $record['language'] = LANGUAGE_NONE;
+
+        $this->logMessages[] = array(
+          'message' => 'Imported term ' . $record['name'] . ' ' . $parentId,
+          'code' => 'success'
+        );
+        
+        drupal_write_record('culturefeed_search_terms', $record);
+      }
+    }
 
   }
 

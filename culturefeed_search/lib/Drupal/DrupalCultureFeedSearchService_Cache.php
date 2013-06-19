@@ -10,7 +10,7 @@ use \CultuurNet\Auth\ConsumerCredentials;
 /**
  * DrupalCultureFeedSearchService_Cache
  */
-class DrupalCultureFeedSearchService_Cache {
+class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchService {
 
   /**
    * @var Integer
@@ -83,6 +83,7 @@ class DrupalCultureFeedSearchService_Cache {
    * @see \CultuurNet\Search\Service::search().
    */
   public function search(Array $parameters = array()) {
+    $this->addLanguageParameter($parameters);
 
     $cid = 'search' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
@@ -109,6 +110,7 @@ class DrupalCultureFeedSearchService_Cache {
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
+    $this->addLanguageParameter($parameters);
 
     $cid = 'search/page' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {

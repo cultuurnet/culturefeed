@@ -19,6 +19,8 @@ class CultureFeedActivityMediaPhoto extends CultureFeedActivityConfigBase {
 
     $this->viewPrefix = 'heeft een nieuwe foto toegevoegd';
     $this->pointsOverviewPrefix = "Foto's toegevoegd aan";
+    $this->titleDo = 'Voeg een foto toe';
+    $this->titleDoFirst = 'Voeg een foto toe';
 
   }
 

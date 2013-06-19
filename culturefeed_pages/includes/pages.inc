@@ -224,6 +224,8 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 
   drupal_json_output($matches);
 
+  // Cache if possible per request.
+  drupal_page_footer();
 }
 
 /**

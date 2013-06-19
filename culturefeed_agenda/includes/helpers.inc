@@ -111,7 +111,7 @@ function culturefeed_agenda_get_connected_page_id_of_item(CultureFeed_Cdb_Item_B
   $detail = $item->getDetails()->getDetailByLanguage($language->language);
 
   // Reset organiser link. For CEP we need to check on pages for it.
-  if ($detail->getMedia()) {
+  if ($detail && $detail->getMedia()) {
 
     $page_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_CULTUREFEED_PAGE);
     foreach ($page_links as $link) {
@@ -178,16 +178,21 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
   $location = array();
   if ($event->getLocation()) {
 
+    // Always send a title key.
+    $location['title'] = '';
+
     global $language;
     $location_info = $event->getLocation();
 
+    if ($location_info->getLabel()) {
+      $location['title'] = $location_info->getLabel();
+    }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage($language->language);
-      $location['title'] = check_plain($actor_detail->getTitle());
-      $location['link'] = culturefeed_search_detail_l('actor', $location_info->getActor()->getCdbid(), $location['title']);
-    }
-    elseif ($location_info->getLabel()) {
-      $location['title'] = $location_info->getLabel();
+      if ($actor_detail) {
+        $location['title'] = check_plain($actor_detail->getTitle());
+        $location['link'] = culturefeed_search_detail_l('actor', $location_info->getActor()->getCdbid(), $location['title']);
+      }
     }
 
     $physical_address = $location_info->getAddress()->getPhysicalAddress();

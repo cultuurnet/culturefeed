@@ -272,6 +272,9 @@ function culturefeed_agenda_block_production_program() {
 
   $production = $item->getEntity();
   $relations = $production->getRelations();
+  if (empty($relations)) {
+    return;
+  }
 
   // Currently we do an extra query to load the event details.
   // Sven checks if this could be added to the event loading.
