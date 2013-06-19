@@ -41,6 +41,10 @@ function drush_culturefeed_search_import_terms() {
 
   $import = new CultureFeedDomainImport();
   $import->import();
+  
+  foreach ($import->logMessages as $message) {
+    drush_log($message['message'], $message['code']);
+  }
 
   drush_log('Domains and terms are now imported', 'success');
 
@@ -55,6 +59,10 @@ function drush_culturefeed_search_import_cities() {
 
   $import = new CultureFeedCityImport();
   $import->import();
+  
+  foreach ($import->logMessages as $message) {
+    drush_log($message['message'], $message['code']);
+  }
 
   drush_log('Cities are now imported', 'success');
 

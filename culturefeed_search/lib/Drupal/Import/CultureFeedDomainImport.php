@@ -15,6 +15,8 @@ class CultureFeedDomainImport {
    * @var \Guzzle\Http\Client
    */
   private $client;
+  
+  public $logMessages = array();
 
   /**
    * Import the culturefeed domains.
@@ -58,7 +60,10 @@ class CultureFeedDomainImport {
       );
 
       drupal_write_record('culturefeed_search_domains', $record);
-      drush_log('Imported domain ' . (string) $domainAttributes['label'], 'success');
+      $this->logMessages[] = array(
+        'message' => 'Imported domain ' . (string) $domainAttributes['label'],
+        'code' => 'success'
+      );
 
     }
 
@@ -84,8 +89,12 @@ class CultureFeedDomainImport {
       );
 
       drupal_write_record('culturefeed_search_terms', $record);
-      drush_log('Imported term ' . (string) $termAttributes['label'] . ' ' . $parentId, 'success');
 
+      $this->logMessages[] = array(
+        'message' => 'Imported term ' . (string) $termAttributes['label'] . ' ' . $parentId,
+        'code' => 'success'
+      );
+      
     }
 
 

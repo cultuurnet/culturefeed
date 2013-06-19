@@ -15,6 +15,8 @@ class CultureFeedCityImport {
    * @var \Guzzle\Http\Client
    */
   private $client;
+  
+  public $logMessages = array();
 
   /**
    * Import the culturefeed domains.
@@ -55,7 +57,10 @@ class CultureFeedCityImport {
       );
 
       drupal_write_record('culturefeed_search_cities', $record);
-      drush_log('Imported city ' . (string) $cityAttributes['label'], 'success');
+      $this->logMessages[] = array(
+        'message' => 'Imported city ' . (string) $cityAttributes['label'],
+        'code' => 'success'
+      );
 
     }
 
