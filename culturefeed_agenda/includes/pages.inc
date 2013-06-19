@@ -94,4 +94,6 @@ function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string
 
   drupal_json_output($matches);
 
+  // Cache if possible per request.
+  drupal_page_footer();
 }

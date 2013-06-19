@@ -98,6 +98,8 @@ function culturefeed_search_ui_suggestions_autocomplete_page($search_string) {
 
   drupal_json_output($matches);
 
+  // Cache if possible per request.
+  drupal_page_footer();
 }
 
 /**
@@ -125,6 +127,8 @@ function culturefeed_search_ui_region_suggestion_autocomplete_page($search_strin
 
   drupal_json_output($matches);
 
+  // Cache if possible per request.
+  drupal_page_footer();
 }
 
 /**
@@ -146,4 +150,6 @@ function culturefeed_search_ui_city_suggestion_autocomplete_page($search_string,
 
   drupal_json_output($matches);
 
+  // Cache if possible per request.
+  drupal_page_footer();
 }
