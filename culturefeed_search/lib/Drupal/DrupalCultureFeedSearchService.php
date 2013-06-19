@@ -5,6 +5,7 @@
  */
 
 use \CultuurNet\Auth\ConsumerCredentials;
+use \CultuurNet\Search\Parameter;
 
 /**
  * Singleton for the CultureFeed Search Service.
@@ -64,6 +65,7 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::search().
    */
   public function search(Array $parameters = array(), $path = 'search') {
+    $this->addLanguageParameter($parameters);
     return $this->service->search($parameters, $path);
   }
 
@@ -71,6 +73,7 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
+    $this->addLanguageParameter($parameters);
     return $this->service->searchPages($parameters);
   }
 
@@ -79,6 +82,14 @@ class DrupalCultureFeedSearchService {
    */
   public function searchSuggestions($search_string, $types = array()) {
     return $this->service->searchSuggestions($search_string, $types);
+  }
+
+  /**
+   * Adds the language parameter to the search.
+   */
+  private function addLanguageParameter(&$parameters) {
+    global $language;
+    $parameters[] = new Parameter\FilterQuery('language:' . $language->language);
   }
 
 }
