@@ -83,11 +83,25 @@ class CultureFeedDomainImport {
         'parent' => empty($parentId) ? NULL : $parentId,
       );
 
-      drupal_write_record('culturefeed_search_terms', $record);
-      drush_log('Imported term ' . (string) $termAttributes['label'] . ' ' . $parentId, 'success');
 
+      // Check if domain is 'eventtype' and import other languages.
+      if ($record['did'] == 'eventtype') {
+        foreach (array('nl', 'en', 'de', 'fr') as $language) {
+          $label_translated = (string) $termAttributes['label' . $language];
+          if (!empty($label_translated)) {
+            $record['language'] = $language;
+            $record['name'] = $label_translated;
+            drupal_write_record('culturefeed_search_terms', $record);
+            drush_log('Imported term ' . $record['name'] . ' ' . $parentId . ' in language ' . $record['language'], 'success');
+          }
+        }
+      }
+      else {
+        $record['language'] = LANGUAGE_NONE;
+        drush_log('Imported term ' . $record['name'] . ' ' . $parentId, 'success');
+        drupal_write_record('culturefeed_search_terms', $record);
+      }
     }
-
 
   }
 
