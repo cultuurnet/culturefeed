@@ -288,7 +288,7 @@ function culturefeed_search_ui_block_view($delta) {
 
       $delta_parts = explode('-', $delta);
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_name', $delta_parts[1]);
+        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1]);
       }
 
   }
