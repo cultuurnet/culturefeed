@@ -470,6 +470,10 @@ function culturefeed_search_ui_search_active_filters_block() {
 
         $url = url($path, array('query' => $search_query));
         $label = $selected_value[$key];
+
+        // Get translated label from terms.
+        $label = culturefeed_search_get_term_translations(array(), $label);
+
         $build['item_' . $active_facet_name][$value] = array(
           '#theme' => 'culturefeed_search_active_filters_item',
           '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,

@@ -573,8 +573,17 @@ function culturefeed_search_get_preferred_language() {
 
 /**
  * Returns a list of terms to translate.
+ *
+ * @param $tids
+ *   (optional) A collection of tids to get translations from.
+ * @param $tid
+ *   (optional) Return the translation for a term.
+ *
+ * @return
+ *   A collection of terms with their translation or the translated
+ *   version of an individual term.
  */
-function culturefeed_search_get_term_translations($tids) {
+function culturefeed_search_get_term_translations($tids = array(), $tid = '') {
   static $terms = NULL;
 
   if (!$terms) {
@@ -584,12 +593,26 @@ function culturefeed_search_get_term_translations($tids) {
       ->condition('language', array('und', culturefeed_search_get_preferred_language()), 'IN')
       ->execute();
     foreach ($translations as $record) {
-      if (!isset($found_results[$record->tid])) {
+      if (!isset($terms[$record->tid])) {
         $terms[$record->tid] = array();
       }
       $terms[$record->tid][$record->language] = $record->name;
     }
+
   }
 
+  // Return an individual term translation.
+  if (!empty($tid)) {
+    if (isset($terms[$tid])) {
+      if (isset($terms[$tid][culturefeed_search_get_preferred_language()])) {
+        return $terms[$tid][culturefeed_search_get_preferred_language()];
+      }
+      else {
+        return $terms[$tid][LANGUAGE_NONE];
+      }
+    }
+  }
+
+  // Return the static terms.
   return $terms;
 }
