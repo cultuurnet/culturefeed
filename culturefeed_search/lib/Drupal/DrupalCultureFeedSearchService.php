@@ -87,7 +87,7 @@ class DrupalCultureFeedSearchService {
   /**
    * Adds the language parameter to the search.
    */
-  private function addLanguageParameter(&$parameters) {
+  protected function addLanguageParameter(&$parameters) {
     $parameters[] = new Parameter\FilterQuery('language:' . culturefeed_search_get_preferred_language());
   }
 
