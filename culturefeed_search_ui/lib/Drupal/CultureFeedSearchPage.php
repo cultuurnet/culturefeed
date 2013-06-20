@@ -244,19 +244,22 @@ class CultureFeedSearchPage {
         }
       }
 
-      // Get the term translations and the preferred language.
-      $found_results = culturefeed_search_get_term_translations($found_ids);
-      $preferred_language = culturefeed_search_get_preferred_language();
+      // Translate the facets.
+      if ($translations = culturefeed_search_term_translations($found_ids, TRUE)) {
 
-      // Translate the facets labels.
-      foreach ($facets as $key => $facet) {
-        // The key should start with 'category_'
-        if (substr($key, 0, 9) == 'category_') {
-          $items = $facet->getResult()->getItems();
-          foreach ($items as $item) {
-            // Translate if found.
-            if (!empty($found_results[$item->getValue()][$preferred_language])) {
-              $item->setLabel($found_results[$item->getValue()][$preferred_language]);
+        // Preferred language.
+        $preferred_language = culturefeed_search_get_preferred_language();
+
+        // Translate the facets labels.
+        foreach ($facets as $key => $facet) {
+          // The key should start with 'category_'
+          if (substr($key, 0, 9) == 'category_') {
+            $items = $facet->getResult()->getItems();
+            foreach ($items as $item) {
+              // Translate if found.
+              if (!empty($translations[$item->getValue()][$preferred_language])) {
+                $item->setLabel($translations[$item->getValue()][$preferred_language]);
+              }
             }
           }
         }

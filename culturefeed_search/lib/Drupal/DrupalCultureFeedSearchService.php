@@ -66,7 +66,9 @@ class DrupalCultureFeedSearchService {
    */
   public function search(Array $parameters = array(), $path = 'search') {
     $this->addLanguageParameter($parameters);
-    return $this->service->search($parameters, $path);
+    $items = $this->service->search($parameters, $path);
+    $this->translateCategories($items);
+    return $items;
   }
 
   /**
@@ -74,7 +76,9 @@ class DrupalCultureFeedSearchService {
    */
   public function searchPages(Array $parameters = array()) {
     $this->addLanguageParameter($parameters);
-    return $this->service->searchPages($parameters);
+    $items = $this->service->searchPages($parameters);
+    $this->translateCategories($items);
+    return $items;
   }
 
   /**
@@ -89,6 +93,30 @@ class DrupalCultureFeedSearchService {
    */
   protected function addLanguageParameter(&$parameters) {
     $parameters[] = new Parameter\FilterQuery('language:' . culturefeed_search_get_preferred_language());
+  }
+
+  /**
+   * Translates the categories.
+   */
+  protected function translateCategories($items) {
+
+    $tids = array();
+    foreach ($items->getItems() as $item) {
+      $categories = $item->getEntity()->getCategories();
+      foreach ($categories as $category) {
+        $tids[$category->getid()] = $category->getid();
+      }
+    }
+
+    // Translate the labels.
+    if (culturefeed_search_term_translations($tids)) {
+      foreach ($items->getItems() as $item) {
+        $categories = $item->getEntity()->getCategories();
+        foreach ($categories as $category) {
+          $category->setName(culturefeed_search_get_term_translation($category->getId()));
+        }
+      }
+    }
   }
 
 }

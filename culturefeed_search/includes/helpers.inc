@@ -574,19 +574,20 @@ function culturefeed_search_get_preferred_language() {
 /**
  * Returns a list of terms to translate.
  *
- * @param $tids
+ * @param array $tids
  *   (optional) A collection of tids to get translations from.
- * @param $tid
- *   (optional) Return the translation for a term.
+ * @param boolean $return_tids
+ *   (optional) Whether to return the static $terms or not.
  *
  * @return
- *   A collection of terms with their translation or the translated
- *   version of an individual term.
+ *   - TRUE if there are translated terms, FALSE if not
+ *   - A collection of tids keyed by the undefined and the user preferred language.
+ *     in case $return_tids is set to TRUE.
  */
-function culturefeed_search_get_term_translations($tids = array(), $tid = '') {
-  static $terms = NULL;
+function culturefeed_search_term_translations($tids = array(), $return_tids = FALSE) {
+  static $terms = array();
 
-  if (!$terms) {
+  if (!empty($tids)) {
     $translations = db_select('culturefeed_search_terms', 'cst')
       ->fields('cst', array('tid', 'name', 'language'))
       ->condition('tid', $tids, 'IN')
@@ -598,21 +599,37 @@ function culturefeed_search_get_term_translations($tids = array(), $tid = '') {
       }
       $terms[$record->tid][$record->language] = $record->name;
     }
-
-  }
-
-  // Return an individual term translation.
-  if (!empty($tid)) {
-    if (isset($terms[$tid])) {
-      if (isset($terms[$tid][culturefeed_search_get_preferred_language()])) {
-        return $terms[$tid][culturefeed_search_get_preferred_language()];
-      }
-      else {
-        return $terms[$tid][LANGUAGE_NONE];
-      }
-    }
   }
 
   // Return the static terms.
-  return $terms;
+  if ($return_tids) {
+    return $terms;
+  }
+
+  // Return whether we have translations currently or not.
+  return !empty($terms) ? TRUE : FALSE;
+}
+
+/**
+ * Get the translation for a term.
+ *
+ * @param string $tid
+ *   The id of the term.
+ *
+ * @return string
+ *   The label of the translated term.
+ */
+function culturefeed_search_get_term_translation($tid) {
+  $terms = culturefeed_search_term_translations(NULL, TRUE);
+
+  if (!isset($terms[$tid])) {
+    return $tid;
+  }
+
+  if (isset($terms[$tid][culturefeed_search_get_preferred_language()])) {
+    return $terms[$tid][culturefeed_search_get_preferred_language()];
+  }
+  else {
+    return $terms[$tid][LANGUAGE_NONE];
+  }
 }
