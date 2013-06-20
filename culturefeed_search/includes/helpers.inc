@@ -49,8 +49,8 @@ function culturefeed_search_item_load($cdb_id) {
 
   try {
     $result = culturefeed_get_search_service()->search($parameters);
-    $items = $result->getItems();
-    $items[$cdb_id] = reset($items);
+    $search_item = $result->getItems();
+    $items[$cdb_id] = reset($search_item);
     return $items[$cdb_id];
   }
   catch (Exception $e) {
