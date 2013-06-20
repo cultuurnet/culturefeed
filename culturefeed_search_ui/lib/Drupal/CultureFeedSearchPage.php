@@ -222,58 +222,101 @@ class CultureFeedSearchPage {
    * This way we can lower this to only 1 request.
    */
   protected function warmupCache() {
+    global $language;
 
-    // Do an activity search on all found nodeIds.
-    $items = $this->result->getItems();
-    $nodeIds = array();
-    foreach ($items as $item) {
-      $activity_content_type = culturefeed_get_content_type($item->getType());
-      $nodeIds[] = culturefeed_social_get_activity_node_id($activity_content_type, $item);
-    }
+    // Warm up cache for facets to translate the items.
+    global $culturefeedFacetingComponent;
 
-    $userDidActivity = &drupal_static('userDidActivity', array());
+    // This shouldn't happen, but let's make sure we don't get a fatal error.
+    if ($culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
 
-    // Get a list of all activities from this user, on the content to show.
-    $userActivities = array();
-    try {
-
-      $userId = DrupalCultureFeed::getLoggedInUserId();
-
-      $query = new CultureFeed_SearchActivitiesQuery();
-      $query->nodeId = $nodeIds;
-      $query->userId = $userId;
-      $query->private = TRUE;
-
-      $activities = DrupalCultureFeed::searchActivities($query);
-      foreach ($activities->objects as $activity) {
-        $userActivities[$activity->nodeId][$activity->contentType][] = $activity;
+      $found_ids = array();
+      $found_results = array();
+      $translated_terms = array();
+      $facets = $culturefeedFacetingComponent->getFacets();
+      foreach ($facets as $key => $facet) {
+        // The key should start with 'category_'
+        if (substr($key, 0, 9) == 'category_') {
+          $items = $facet->getResult()->getItems();
+          foreach ($items as $item) {
+            $found_ids[$item->getValue()] = $item->getValue();
+          }
+        }
       }
 
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_search_ui', $e);
-    }
+      // Get the term translations and the preferred language.
+      $found_results = culturefeed_search_get_term_translations($found_ids);
+      $preferred_language = culturefeed_search_get_preferred_language();
 
-    // Fill up cache for following content types.
-    $contentTypes = array(
-      CultureFeed_Activity::CONTENT_TYPE_EVENT,
-      CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
-    );
-    // Fill up the $userDidActivity variable. This is used in DrupalCulturefeed::userDidActivity().
-    foreach ($nodeIds as $nodeId) {
-      foreach ($contentTypes as $contentType) {
-        // If user did this activitiy. Place it in the correct array.
-        if (isset($userActivities[$nodeId][$contentType])) {
-          $activities = new CultureFeed_ResultSet(count($userActivities[$nodeId][$contentType]), $userActivities[$nodeId][$contentType]);
+      // Translate the facets labels.
+      foreach ($facets as $key => $facet) {
+        // The key should start with 'category_'
+        if (substr($key, 0, 9) == 'category_') {
+          $items = $facet->getResult()->getItems();
+          foreach ($items as $item) {
+            // Translate if found.
+            if (!empty($found_results[$item->getValue()][$preferred_language])) {
+              $item->setLabel($found_results[$item->getValue()][$preferred_language]);
+            }
+          }
         }
-        // Otherwise create an empty result set.
-        else {
-          $activities = new CultureFeed_ResultSet(0, array());
-        }
-        $userDidActivity[$nodeId][$contentType][$userId] = $activities;
       }
     }
 
+    // This part only needs to be done in case culturefeed_social is enabled.
+    if (module_exists('culturefeed_social')) {
+
+      // Do an activity search on all found nodeIds.
+      $items = $this->result->getItems();
+      $nodeIds = array();
+      foreach ($items as $item) {
+        $activity_content_type = culturefeed_get_content_type($item->getType());
+        $nodeIds[] = culturefeed_social_get_activity_node_id($activity_content_type, $item);
+      }
+
+      $userDidActivity = &drupal_static('userDidActivity', array());
+
+      // Get a list of all activities from this user, on the content to show.
+      $userActivities = array();
+      try {
+
+        $userId = DrupalCultureFeed::getLoggedInUserId();
+
+        $query = new CultureFeed_SearchActivitiesQuery();
+        $query->nodeId = $nodeIds;
+        $query->userId = $userId;
+        $query->private = TRUE;
+
+        $activities = DrupalCultureFeed::searchActivities($query);
+        foreach ($activities->objects as $activity) {
+          $userActivities[$activity->nodeId][$activity->contentType][] = $activity;
+        }
+
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_search_ui', $e);
+      }
+
+      // Fill up cache for following content types.
+      $contentTypes = array(
+        CultureFeed_Activity::CONTENT_TYPE_EVENT,
+        CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+      );
+      // Fill up the $userDidActivity variable. This is used in DrupalCulturefeed::userDidActivity().
+      foreach ($nodeIds as $nodeId) {
+        foreach ($contentTypes as $contentType) {
+          // If user did this activitiy. Place it in the correct array.
+          if (isset($userActivities[$nodeId][$contentType])) {
+            $activities = new CultureFeed_ResultSet(count($userActivities[$nodeId][$contentType]), $userActivities[$nodeId][$contentType]);
+          }
+          // Otherwise create an empty result set.
+          else {
+            $activities = new CultureFeed_ResultSet(0, array());
+          }
+          $userDidActivity[$nodeId][$contentType][$userId] = $activities;
+        }
+      }
+    }
   }
 
   /**

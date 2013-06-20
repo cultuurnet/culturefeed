@@ -15,7 +15,7 @@ class CultureFeedDomainImport {
    * @var \Guzzle\Http\Client
    */
   private $client;
-  
+
   public $logMessages = array();
 
   /**
@@ -83,37 +83,33 @@ class CultureFeedDomainImport {
       $parentId = trim((string) $termAttributes['parentid']);
       $record = array(
         'tid' => (string) $termAttributes['id'],
+        'language' => LANGUAGE_NONE,
         'name' => (string) $termAttributes['label'],
         'did' => (string) $termAttributes['domain'],
         'parent' => empty($parentId) ? NULL : $parentId,
       );
-      
-      // Check if domain is 'eventtype' and import other languages.
-      if ($record['did'] == 'eventtype') {
-        foreach (array('nl', 'en', 'de', 'fr') as $language) {
-          $label_translated = (string) $termAttributes['label' . $language];
-          if (!empty($label_translated)) {
-            $record['language'] = $language;
-            $record['name'] = $label_translated;
-            drupal_write_record('culturefeed_search_terms', $record);
 
-            $this->logMessages[] = array(
-              'message' => 'Imported term ' . $record['name'] . ' ' . $parentId . ' in language ' . $record['language'],
-              'code' => 'success'
-            );
-            
-          }
+      // Always save label as undefined language so we can fallback.
+      $this->logMessages[] = array(
+        'message' => 'Imported term ' . $record['name'] . ' ' . $parentId,
+        'code' => 'success'
+      );
+      drupal_write_record('culturefeed_search_terms', $record);
+
+      // Import other languages.
+      foreach (array('nl', 'en', 'de', 'fr') as $language) {
+        $key = 'label' . $language;
+        if (isset($termAttributes[$key]) && !empty($termAttributes[$key])) {
+          $record['language'] = $language;
+          $record['name'] = (string) $termAttributes[$key];
+          drupal_write_record('culturefeed_search_terms', $record);
+
+          $this->logMessages[] = array(
+            'message' => 'Imported term ' . $record['name'] . ' ' . $parentId . ' in language ' . $record['language'],
+            'code' => 'success'
+          );
+
         }
-      }
-      else {
-        $record['language'] = LANGUAGE_NONE;
-
-        $this->logMessages[] = array(
-          'message' => 'Imported term ' . $record['name'] . ' ' . $parentId,
-          'code' => 'success'
-        );
-        
-        drupal_write_record('culturefeed_search_terms', $record);
       }
     }
 

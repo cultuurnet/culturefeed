@@ -562,3 +562,34 @@ function culturefeed_search_get_educationlevel_categories_tree() {
   return $categories;
 
 }
+
+/**
+ * Returns the preferred language of the user.
+ */
+function culturefeed_search_get_preferred_language() {
+  global $language;
+  return $language->language;
+}
+
+/**
+ * Returns a list of terms to translate.
+ */
+function culturefeed_search_get_term_translations($tids) {
+  static $terms = NULL;
+
+  if (!$terms) {
+    $translations = db_select('culturefeed_search_terms', 'cst')
+      ->fields('cst', array('tid', 'name', 'language'))
+      ->condition('tid', $tids, 'IN')
+      ->condition('language', array('und', culturefeed_search_get_preferred_language()), 'IN')
+      ->execute();
+    foreach ($translations as $record) {
+      if (!isset($found_results[$record->tid])) {
+        $terms[$record->tid] = array();
+      }
+      $terms[$record->tid][$record->language] = $record->name;
+    }
+  }
+
+  return $terms;
+}
