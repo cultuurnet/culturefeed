@@ -456,34 +456,21 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
  */
 function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variables) {
 
-  // Css class => title
-  $headers = array(
-    'program-all' => 'Alle',
-    'program-today' => 'Vandaag',
-    'program-thisweek' => 'Deze week',
-    'program-thisweekend' => 'Dit weekend',
-    'program-nextweekend' => 'Volgend weekend',
-    'program-next30days' => 'Volgende 30 dagen',
-  );
-
-  $all_classes = array_keys($headers);
-
-  $rows = array();
+  $items = array();
   foreach ($variables['items'] as $item) {
-
-    $calendar = $item->getCalendar();
-    if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_Permanent) {
-      $classes = culturefeed_agenda_calculate_program_classes_by_weekscheme($calendar->getWeekScheme(), $all_classes);
-    }
-
-    $date = empty($message->lastReply) ? $message->creationDate : $message->lastReply;
-    $time_zone  = new DateTimeZone('Europe/Brussels');
-    $last_reply = new DateTime();
-    $last_reply->setTimestamp($date);
-    $last_reply->setTimezone($time_zone);
-
+    $items[] = theme('culturefeed_agenda_actor_program_item', array(
+      'item' => $item,
+    ));
   }
+  $variables['items'] = $items;
 
+}
+
+/**
+ * Preprocess the agenda actor program.
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program_item(&$variables) {
+  culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
 }
 
 /**

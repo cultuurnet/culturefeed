@@ -5,6 +5,7 @@ use Symfony\Component\Console\Output\NullOutput;
  * @file
  * Performs searches to the Cultuurnet api.
  */
+define('CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS', 15);
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
 
@@ -45,6 +46,13 @@ function culturefeed_agenda_theme() {
   $theme['culturefeed_agenda_actor_program'] = array(
     'variables' => array('items' => array()),
     'template' => 'culturefeed-agenda-actor-program',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
+  $theme['culturefeed_agenda_actor_program_item'] = array(
+    'variables' => array('item' => array()),
+    'template' => 'culturefeed-agenda-actor-program-item',
     'path' => $path,
     'file' => 'theme.inc',
   );

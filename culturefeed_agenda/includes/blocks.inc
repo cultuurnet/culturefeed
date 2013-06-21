@@ -221,7 +221,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
  * Show the upcoming program of current actor.
  */
 function culturefeed_agenda_block_actor_program() {
-return;
+  
   $item = culturefeed_agenda_get_active_object();
   if (!$item || $item->getType() != 'actor') {
     return;
@@ -231,7 +231,7 @@ return;
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $parameters[] =  new Parameter\DateTypeQuery('next30days');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
 
   // Add search on the different agenda connections for the actor.
   $id_search = array(
@@ -239,7 +239,7 @@ return;
     'location_cdbid' => $item->getId(),
     'organiser_cdbid' => $item->getId(),
   );
-  $parameters[] = \CultuurNet\Search\Parameter\FilterQuery(implode(' OR ', $id_search));
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery(implode(' OR ', $id_search));
 
   try {
 
@@ -255,10 +255,17 @@ return;
     return;
   }
 
-  return array(
+  $content = array(
     '#theme' => 'culturefeed_agenda_actor_program',
     '#items' => $result->getItems(),
   );
+  
+  $block = array(
+    'subject' => '',
+    'content' => $content,
+  );
+  
+  return $block;
 
 }
 
