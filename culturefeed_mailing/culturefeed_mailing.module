@@ -51,6 +51,15 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['culturefeed/mailing'] = array(
+    'title callback' => FALSE,
+    'title' => 'E-mails',
+    'page callback' => 'culturefeed_mailing_page_my_newsletters',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Configuration pages.
   $items['admin/config/services/culturefeed-mailing'] = array(
     'title' => 'Culture Feed Mailing',
@@ -166,6 +175,22 @@ function culturefeed_mailing_block_view($delta) {
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_mailing_culturefeed_ui_profile_menu() {
+
+  return array(
+    'pages' => array(
+      'title' => "E-mails",
+      'url' => 'culturefeed/emails',
+      'description' => "Beheer de nieuwsbrieven waarop je kan inschrijven",
+      'weight' => -17,
+    ),
+  );
+
+}
+
+/**
  * Subscribe a given user to a mailing.
  */
 function culturefeed_mailing_subscribe_user($account, $mailing_id) {
@@ -209,8 +234,10 @@ function culturefeed_mailing_newsletter_block_form() {
  */
 function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
+  $path = (!DrupalCultureFeed::isCultureFeedUser()) ? 'authenticated' : 'subscribe';
+
   $form_state['redirect'] = array(
-    'subscribe',
+    $path,
     array(
       'query' => array(
         'email' => $form_state['values']['mail'],

@@ -423,7 +423,8 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
     if (empty($activity)) {
       drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
     }
-    culturefeed_social_goto($activity, $content_type, $node_id, $activity->nodeTitle);
+    $title = empty($activity->nodeTitle) ? '' : $activity->nodeTitle;
+    culturefeed_social_goto($activity, $content_type, $node_id, $title);
   }
   else {
 

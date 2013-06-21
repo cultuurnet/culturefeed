@@ -113,6 +113,10 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityMediaPhoto();
       break;
 
+      case CultureFeed_Activity::TYPE_MEDIA_VIDEO:
+        $config = new CultureFeedActivityMediaVideo();
+      break;
+
       default:
         return NULL;
 

@@ -507,3 +507,12 @@ function culturefeed_mailing_test_list_form_submit($form, &$form_state) {
     drupal_set_message(t('Mail could not be sent'));
   }
 }
+
+/**
+ * Show the overview of newsletters + the possiblity to toggle them.
+ */
+function culturefeed_mailing_page_my_newsletters() {
+
+  $newsletters = module_invoke_all('culturefeed_mailing_newsletters');
+
+}

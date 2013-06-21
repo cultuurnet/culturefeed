@@ -189,6 +189,9 @@ function culturefeed_search_detail_path($type, $cdbid, $title) {
       $url_prefix = 'agenda/g';
     break;
 
+    case 'node':
+      return 'node/' . $cdbid;
+
     default:
       return '';
 
