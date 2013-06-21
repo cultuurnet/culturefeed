@@ -114,8 +114,6 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
-    $this->addLanguageParameter($parameters);
-
     $cid = 'search/page' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $results = $cache->data;

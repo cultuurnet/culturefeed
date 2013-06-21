@@ -75,7 +75,6 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
-    $this->addLanguageParameter($parameters);
     $items = $this->service->searchPages($parameters);
     $this->translateCategories($items);
     return $items;
