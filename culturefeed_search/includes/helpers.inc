@@ -46,7 +46,7 @@ function culturefeed_search_item_load($cdb_id) {
   $query_parameter->setLocalParam('type', 'term');
   $query_parameter->setLocalParam('f', 'cdbid');
   $parameters[] = $query_parameter;
-dsm($parameters);
+
   try {
     $result = culturefeed_get_search_service()->search($parameters);
     $search_item = $result->getItems();
