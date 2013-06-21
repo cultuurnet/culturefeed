@@ -17,5 +17,5 @@
     <?php endif; ?>
     <?php foreach ($themes as $theme): ?>
     <?php print $theme; ?>
-   <?php endforeach; ?>
+    <?php endforeach; ?>
     

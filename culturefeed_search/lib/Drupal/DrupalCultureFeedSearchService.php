@@ -103,7 +103,8 @@ class DrupalCultureFeedSearchService {
     foreach ($items->getItems() as $item) {
       $categories = $item->getEntity()->getCategories();
       foreach ($categories as $category) {
-        $tids[$category->getid()] = $category->getid();
+        $categoryId = is_object($category) ? $category->getId() : $category;
+        $tids[$categoryId] = $categoryId;
       }
     }
 
@@ -112,7 +113,8 @@ class DrupalCultureFeedSearchService {
       foreach ($items->getItems() as $item) {
         $categories = $item->getEntity()->getCategories();
         foreach ($categories as $category) {
-          $category->setName(culturefeed_search_get_term_translation($category->getId()));
+          $categoryId = is_object($category) ? $category->getId() : $category;
+          $category->setName(culturefeed_search_get_term_translation($categoryId));
         }
       }
     }
