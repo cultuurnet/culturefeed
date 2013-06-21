@@ -97,6 +97,10 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     }
 
     $results = $this->realSearchService->search($parameters);
+
+    // Translate categories.
+    $this->translateCategories($results);
+
     // Clear xml element because serialize doesn't work on simple xml.
     $results->setXmlElement(NULL);
 
@@ -110,8 +114,6 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
-    $this->addLanguageParameter($parameters);
-
     $cid = 'search/page' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $results = $cache->data;
@@ -123,6 +125,9 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     }
 
     $results = $this->realSearchService->searchPages($parameters);
+
+    // Translate categories.
+    $this->translateCategories($results);
 
     // Clear xml element because serialize doesn't work on simple xml.
     $results->setXmlElement(NULL);
