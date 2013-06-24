@@ -10,3 +10,5 @@
   <?php print $item ?>
   <?php endforeach;?>
 <?php endif; ?>
+
+<a href="<?php print $search_url ?>">Meer</a>

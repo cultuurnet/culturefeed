@@ -44,7 +44,7 @@ function culturefeed_agenda_theme() {
   }
 
   $theme['culturefeed_agenda_actor_program'] = array(
-    'variables' => array('items' => array()),
+    'variables' => array('items' => array(), 'actor' => NULL),
     'template' => 'culturefeed-agenda-actor-program',
     'path' => $path,
     'file' => 'theme.inc',

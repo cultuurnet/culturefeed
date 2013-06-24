@@ -509,6 +509,19 @@ function culturefeed_search_ui_search_active_filters_block() {
       '#url' => $url
     );
   }
+  
+  // Check the actor key.
+  if (isset($query['actor'])) {
+    $actor = culturefeed_agenda_actor_load($query['actor']);
+    $search_query = $query;
+    unset($search_query['actor']);
+    $url = url($path, array('query' => $search_query));
+    $build['nearby'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => 'In de buurt van ' . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+      '#url' => $url
+    );
+  }
 
   // Check if user is searching on a location.
   if (isset($query['location'])) {

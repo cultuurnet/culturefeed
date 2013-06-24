@@ -257,6 +257,7 @@ function culturefeed_agenda_block_actor_program() {
 
   $content = array(
     '#theme' => 'culturefeed_agenda_actor_program',
+    '#actor' => $item,
     '#items' => $result->getItems(),
   );
   
