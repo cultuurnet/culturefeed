@@ -301,8 +301,7 @@ function culturefeed_agenda_block_view($delta) {
  */
 function culturefeed_agenda_detail_title(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
 
-  global $language;
-  $details = $item->getEntity()->getDetails()->getDetailByLanguage($language->language);
+  $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   if ($details) {
     return $details->getTitle();

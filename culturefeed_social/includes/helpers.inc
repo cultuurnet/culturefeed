@@ -234,7 +234,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
     case $activity::CONTENT_TYPE_CULTUREFEED_PAGE:
 
       $object = culturefeed_pages_page_load($id);
-      $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage($GLOBALS['language']->language)->getTitle();
+      $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
       $activity->nodeId = culturefeed_search_detail_url('page', $id, $object->getName(), array('absolute' => TRUE));
       $activity->path = culturefeed_search_detail_path('page', $id, $object->getName());
 
@@ -246,7 +246,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
     case $activity::CONTENT_TYPE_PRODUCTION:
 
       $object = culturefeed_search_item_load($id);
-      $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage($GLOBALS['language']->language)->getTitle();
+      $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
       $activity->nodeId = $id;
       $activity->path = culturefeed_search_detail_path($object->getType(), $id, $activity->nodeTitle);
 
@@ -280,7 +280,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
       $activity->nodeTitle = $genericObject->title;
       $activity->nodeId = url('userpoints/promotion/' . $genericObject->id, array('absolute' => TRUE));
       $activity->path = 'userpoints/promotion/' . $genericObject->id;
-    
+
       break;
 
       // Please add your new types here.
@@ -360,7 +360,7 @@ function culturefeed_social_detail_path($type, $id, $title = '') {
  */
 function culturefeed_social_activity_object_path($type, $id, $title = '') {
 
-  if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE 
+  if ($type == CultureFeed_Activity::CONTENT_TYPE_NODE
     || $type == CultureFeed_Activity::CONTENT_TYPE_BOOK
     || $type == CultureFeed_Activity::CONTENT_TYPE_CONTENT) {
     return $id;
@@ -398,12 +398,12 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
     break;
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
+      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()));
       $node_id = url($path, array('absolute' => TRUE));
     break;
-    
+
     case CultureFeed_Activity::CONTENT_TYPE_CONTENT:
-      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle($GLOBALS['language']->language));
+      $path = culturefeed_social_detail_path($activity_content_type, $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()));
       $node_id = url($path, array('absolute' => TRUE));
     break;
 

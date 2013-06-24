@@ -89,12 +89,10 @@ function culturefeed_agenda_preprocess_culturefeed_production(&$variables) {
  */
 function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
-  global $language;
-
   $item = $variables['item'];
 
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
@@ -149,9 +147,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     if ($organiser) {
 
       // If the organiser is a reference to an actor, link to it.
-      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
+      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
         $actor = $organiser->getActor();
-        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
+        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
         $variables['organiser']['title'] = $organiser_actor_details->getTitle();
         $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
       }
@@ -172,11 +170,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
  */
 function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
 
-  global $language;
-
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   // Add thumbnail image.
   if ($detail) {
@@ -193,11 +189,9 @@ function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
  */
 function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
-  global $language;
-
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   // Add thumbnail image.
   $variables['main_picture'] = '';
@@ -249,10 +243,8 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
  */
 function _culturefeed_agenda_preprocess_event(&$variables) {
 
-  global $language;
-
   $event = $variables['item']->getEntity();
-  $event_detail = $event->getDetails()->getDetailByLanguage($language->language);
+  $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
   $variables['location'] = culturefeed_agenda_get_location_of_event($event);
@@ -321,9 +313,8 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
  */
 function _culturefeed_agenda_preprocess_production(&$variables) {
 
-  global $language;
   $production = $variables['item']->getEntity();
-  $production_detail = $production->getDetails()->getDetailByLanguage($language->language);
+  $production_detail = $production->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
@@ -342,7 +333,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     try {
       $event = culturefeed_agenda_event_load($production->relations[0]->getCdbid());
       $variables['event'] = $event;
-      $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage($language->language);
+      $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($event_detail) {
         $variables['when'] = $event_detail->getCalendarSummary();
       }

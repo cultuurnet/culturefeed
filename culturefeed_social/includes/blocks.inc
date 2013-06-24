@@ -141,13 +141,13 @@ function culturefeed_social_block_recommended_by($object) {
   switch ($content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-      $node_title = $object->getTitle($GLOBALS['language']->language);
+      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
       $id = $object->getId();
       $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
-      $node_title = $object->getTitle($GLOBALS['language']->language);
+      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
       $id = $object->getId();
       $query->nodeId = $id;
       break;
