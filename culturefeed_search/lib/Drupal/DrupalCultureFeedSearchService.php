@@ -76,7 +76,6 @@ class DrupalCultureFeedSearchService {
    */
   public function searchPages(Array $parameters = array()) {
     $items = $this->service->searchPages($parameters);
-    $this->translateCategories($items);
     return $items;
   }
 
@@ -113,8 +112,9 @@ class DrupalCultureFeedSearchService {
       foreach ($items->getItems() as $item) {
         $categories = $item->getEntity()->getCategories();
         foreach ($categories as $category) {
-          $categoryId = is_object($category) ? $category->getId() : $category;
-          $category->setName(culturefeed_search_get_term_translation($categoryId));
+          if (is_object($category)) {
+            $category->setName(culturefeed_search_get_term_translation($categoryId));
+          }
         }
       }
     }

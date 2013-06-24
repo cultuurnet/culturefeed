@@ -126,9 +126,6 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
 
     $results = $this->realSearchService->searchPages($parameters);
 
-    // Translate categories.
-    $this->translateCategories($results);
-
     // Clear xml element because serialize doesn't work on simple xml.
     $results->setXmlElement(NULL);
 
