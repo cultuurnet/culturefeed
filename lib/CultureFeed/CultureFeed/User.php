@@ -63,6 +63,13 @@ class CultureFeed_User {
   public $id;
 
   /**
+   * Preferred language of the user
+   *
+   * @var string
+   */
+  public $preferredLanguage;
+
+  /**
    * Nick of the user.
    *
    * @var string
@@ -194,10 +201,10 @@ class CultureFeed_User {
    * @var string
    */
   public $status;
-  
+
   /**
    * Points of the user.
-   * 
+   *
    * @var double
    */
   public $points;
@@ -229,7 +236,7 @@ class CultureFeed_User {
    * @var CultureFeed_Pages_Membership[]
    */
   public $pageMemberships;
-  
+
   /**
    * Number of pages where current user is admin.
    * @var Integer
@@ -307,7 +314,7 @@ class CultureFeed_User {
 
     return $data;
   }
-  
+
   /**
    * Gets all pages where current user is ADMIN.
    */
@@ -321,9 +328,9 @@ class CultureFeed_User {
         }
       }
     }
-    
+
     return $membershipsByRole;
-    
+
   }
 
 }

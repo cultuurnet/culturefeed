@@ -1703,24 +1703,25 @@ class CultureFeed implements ICultureFeed {
   protected static function parseUser(CultureFeed_SimpleXMLElement $element) {
     $user = new CultureFeed_User();
 
-    $user->id               = $element->xpath_str('/foaf:person/rdf:id');
-    $user->nick             = $element->xpath_str('/foaf:person/foaf:nick');
-    $user->givenName        = $element->xpath_str('/foaf:person/foaf:givenName');
-    $user->familyName       = $element->xpath_str('/foaf:person/foaf:familyName');
-    $user->mbox             = $element->xpath_str('/foaf:person/foaf:mbox');
-    $user->mboxVerified     = $element->xpath_bool('/foaf:person/mboxVerified');
-    $user->gender           = $element->xpath_str('/foaf:person/foaf:gender');
-    $user->dob              = $element->xpath_time('/foaf:person/foaf:dob');
-    $user->hasChildren      = $element->xpath_bool('/foaf:person/hasChildren');
-    $user->depiction        = $element->xpath_str('/foaf:person/foaf:depiction');
-    $user->bio              = $element->xpath_str('/foaf:person/bio');
-    $user->street           = $element->xpath_str('/foaf:person/homeAddress/street');
-    $user->zip              = $element->xpath_str('/foaf:person/homeAddress/zip');
-    $user->city             = $element->xpath_str('/foaf:person/homeAddress/city');
-    $user->country          = $element->xpath_str('/foaf:person/homeAddress/country');
-    $user->lifestyleProfile = $element->xpath_str('/foaf:person/lifestyleProfile');
-    $user->status           = $element->xpath_str('/foaf:person/status');
-    $user->points           = $element->xpath_str('/foaf:person/points');
+    $user->id                = $element->xpath_str('/foaf:person/rdf:id');
+    $user->preferredLanguage = $element->xpath_str('/foaf:person/preferredLanguage');
+    $user->nick              = $element->xpath_str('/foaf:person/foaf:nick');
+    $user->givenName         = $element->xpath_str('/foaf:person/foaf:givenName');
+    $user->familyName        = $element->xpath_str('/foaf:person/foaf:familyName');
+    $user->mbox              = $element->xpath_str('/foaf:person/foaf:mbox');
+    $user->mboxVerified      = $element->xpath_bool('/foaf:person/mboxVerified');
+    $user->gender            = $element->xpath_str('/foaf:person/foaf:gender');
+    $user->dob               = $element->xpath_time('/foaf:person/foaf:dob');
+    $user->hasChildren       = $element->xpath_bool('/foaf:person/hasChildren');
+    $user->depiction         = $element->xpath_str('/foaf:person/foaf:depiction');
+    $user->bio               = $element->xpath_str('/foaf:person/bio');
+    $user->street            = $element->xpath_str('/foaf:person/homeAddress/street');
+    $user->zip               = $element->xpath_str('/foaf:person/homeAddress/zip');
+    $user->city              = $element->xpath_str('/foaf:person/homeAddress/city');
+    $user->country           = $element->xpath_str('/foaf:person/homeAddress/country');
+    $user->lifestyleProfile  = $element->xpath_str('/foaf:person/lifestyleProfile');
+    $user->status            = $element->xpath_str('/foaf:person/status');
+    $user->points            = $element->xpath_str('/foaf:person/points');
     if ($user->status) {
       $user->status = strtolower($user->status);
     }
