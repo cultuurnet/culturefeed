@@ -3,7 +3,10 @@
 // Close popup.
 Drupal.behaviors.culturefeedPopupConnect = {
   attach: function (context, settings) {
-    $('a.culturefeedconnect', context).click(function() {
+    // This will open in a popup in case there's class called 'culturefeedpopuplogin'.
+    // By default, the class on those links is culturefeedconnect, so change this
+    // in your theme in case you want to have a popup functionality for your site.
+    $('a.culturefeedpopuplogin', context).click(function() {
       var href = $(this).attr('href');
 
       var hasPopupQuery = href.search(/closepopup\=true/i) > -1;
