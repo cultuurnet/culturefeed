@@ -531,16 +531,11 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     '#required' => TRUE,
   );
 
-  $type = 'deze activiteit';
-  if ($activity_content_type == CultureFeed_Activity::CONTENT_TYPE_BOOK) {
-    $type = 'dit boek';
-  }
-
   if ($status == TRUE) {
 
     $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties op !type.<br />!link om geen berichten meer te ontvangen.',
-      array('!link' => $link, '!type' => $type));
+    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.',
+      array('!link' => $link));
 
     $form['update_optin'] = array(
       '#type' => 'markup',
@@ -552,7 +547,8 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   else {
     $form['update_optin'] = array(
       '#type' => 'checkbox',
-      '#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
+      //'#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
+      '#title' => 'Blijf via e-mail op de hoogte van nieuwe reacties',
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('comment-updates')),
       '#weight' => 1,

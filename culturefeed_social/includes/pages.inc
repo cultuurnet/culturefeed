@@ -353,13 +353,13 @@ function culturefeed_social_page_node_unfollow($content_type, $node_id, $type = 
     $commands = array();
 
     if ($success) {
-      $commands[] = ajax_command_html('#node-status-wrapper', 'Je ontvangt geen updates meer van nieuwe reacties op deze activiteit');
+      $commands[] = ajax_command_html('#node-status-wrapper', 'Je ontvangt geen updates meer van nieuwe reacties');
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
-    drupal_set_message('Je ontvangt momenteel geen updates van nieuwe reacties op deze activiteit.');
+    drupal_set_message('Je ontvangt momenteel geen updates van nieuwe reacties.');
     drupal_goto();
   }
 
