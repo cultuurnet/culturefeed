@@ -5,7 +5,7 @@
  */
 
 ?>
-
+<div>
     <?php if (!empty($when)): ?>
     <?php print $when; ?>
     <?php endif; ?>
@@ -19,3 +19,5 @@
     <?php print $theme; ?>
     <?php endforeach; ?>
     
+    <a href="<?php print $url ?>">Meer details</a>
+</div>
