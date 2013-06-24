@@ -27,8 +27,7 @@ function culturefeed_agenda_get_active_object() {
  */
 function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item) {
 
-  global $language;
-  $detail = $item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $links = array();
   // General links.
@@ -107,8 +106,7 @@ function _culturefeed_agenda_get_contact_links(CultureFeed_Cdb_Data_ContactInfo 
  */
 function culturefeed_agenda_get_connected_page_id_of_item(CultureFeed_Cdb_Item_Base $item) {
 
-  global $language;
-  $detail = $item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   // Reset organiser link. For CEP we need to check on pages for it.
   if ($detail && $detail->getMedia()) {
@@ -181,14 +179,13 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     // Always send a title key.
     $location['title'] = '';
 
-    global $language;
     $location_info = $event->getLocation();
 
     if ($location_info->getLabel()) {
       $location['title'] = $location_info->getLabel();
     }
     if ($location_info->getActor()) {
-      $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage($language->language);
+      $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($actor_detail) {
         $location['title'] = check_plain($actor_detail->getTitle());
         $location['link'] = culturefeed_search_detail_l('actor', $location_info->getActor()->getCdbid(), $location['title']);
@@ -213,9 +210,8 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
  */
 function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Search\ActivityStatsExtendedEntity $item) {
 
-  global $language;
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage($language->language);
+  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   // Only place items in list that have a detail for current language.
   if ($detail) {
@@ -237,10 +233,10 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
     if ($organiser) {
 
       // Check if we can construct an actor url by label or actor reference..
-      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage($language->language)) {
+      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
         $actor = $organiser->getActor();
-        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage($language->language);
-        $data['all_url'] = culturefeed_search_detail_url('production', $actor->getCdbid(), $actor->getDetails()->getDetailByLanguage($language->language)->getTitle());
+        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+        $data['all_url'] = culturefeed_search_detail_url('production', $actor->getCdbid(), $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle());
       }
       elseif ($organiser->getLabel() && $organiser->getCdbid()) {
         $data['all_url'] = culturefeed_search_detail_url('production', $organiser->getCdbid(), $organiser->getLabel());

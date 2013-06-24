@@ -183,6 +183,19 @@ function culturefeed_ui_page_profile_edit_form() {
     '#suffix' => '</div>',
   );
 
+  // Default language.
+  $form['preferredLanguage'] = array(
+    '#type' => 'select',
+    '#title' => t('Preferred language'),
+    '#default_value' => !empty($cf_account->preferredLanguage) ? $cf_account->preferredLanguage : '',
+    '#options' => array(
+      'nl' => t('Dutch'),
+      'fr' => t('French'),
+      'en' => t('English'),
+      'de' => t('German'),
+    ),
+  );
+
   // Firstname.
   $form['givenName'] = array(
     '#type' => 'textfield',
@@ -313,6 +326,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   $user_update->zip        = $values['zip'];
   $user_update->city       = $values['city'];
   $user_update->country    = $values['country'];
+  $user_update->preferredLanguage = $values['preferredLanguage'];
 
   if (empty($values['dob'])) {
     $user_update->dob = '';

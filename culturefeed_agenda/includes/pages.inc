@@ -47,9 +47,8 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
 
   }
 
-  global $language;
   $active_trail[] = array(
-    'title' => $item->getTitle($language->language),
+    'title' => $item->getTitle(culturefeed_search_get_preferred_language()),
     'href' => $_GET['q'],
     'link_path' => '',
     'localized_options' => array(),

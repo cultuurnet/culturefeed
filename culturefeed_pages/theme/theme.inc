@@ -376,14 +376,13 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
  */
 function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$variables) {
 
-  global $language;
   $rows = array();
 
   foreach ($variables['results'] as $result) {
 
     $row = array();
 
-    $detail = $result->getEntity()->getDetails()->getDetailByLanguage($language->language);
+    $detail = $result->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
     if ($detail) {
 
       $path = culturefeed_search_detail_path($result->getType(), $result->getId(), $detail->getTitle());
