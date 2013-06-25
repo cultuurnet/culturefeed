@@ -826,13 +826,20 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
   try {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
-    $uid = $cf_pages->removePage($page->getId());
+    $cf_pages->removePage($page->getId());
     drupal_set_message(format_string('De pagina "@page" is verwijderd.', array('@page' => $page->getName())));
 
-    // Call the user login hook implementation of pages, to see if another page can be set as active.
-    global $user;
-    $edit = array();
-    culturefeed_pages_user_login($edit, $user);
+    // Set the next available page as active.
+    culturefeed_pages_remove_active_page();
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if (!empty($cf_user->pageMemberships)) {
+      foreach ($cf_user->pageMemberships as $key => $membership) {
+        if ($membership->page->id != $page->getId()) {
+          culturefeed_pages_set_active_page($page);
+          break;
+        }
+      }
+    }
 
   }
   catch (Exception $e) {
@@ -840,7 +847,7 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
     form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van de pagina.');
   }
 
-  $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
+  $form_state['redirect'] = '';
 
 }
 

@@ -155,12 +155,30 @@ function culturefeed_pages_get_active_page_id() {
  * Sets the current page of the loggedIn user.
  */
 function culturefeed_pages_set_active_page(CultureFeed_Cdb_Item_Page $page) {
+
   $_SESSION['culturefeed']['page'] = $page;
 
   $account = DrupalCultureFeed::getLoggedInAccount();
-  $account->data = array(
-    'culturefeed_pages_id' => $page->getId(),
-  );
+  $data = isset($account->data) ? $account->data : array();
+  $data['culturefeed_pages_id'] = $page->getId();
+  $account->data = $data;
+
+  user_save($account);
+
+}
+
+/**
+ * Remove the current page of the loggedIn user.
+ */
+function culturefeed_pages_remove_active_page() {
+
+  unset($_SESSION['culturefeed']['page']);;
+
+  $account = DrupalCultureFeed::getLoggedInAccount();
+  $data = isset($account->data) ? $account->data : array();
+  unset($data['culturefeed_pages_id']);
+  $account->data = $data;
+
   user_save($account);
 
 }
