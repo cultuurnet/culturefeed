@@ -8,7 +8,7 @@
 /**
  * Page callback to toggle newsletter optin
  */
-function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
+function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
 
   $success = TRUE;
 
@@ -20,10 +20,10 @@ function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
     }
 
     if ($optin == '1') {
-      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
+      culturefeed_mailing_subscribe_user($account, $mailing_id);
     }
     else {
-      DrupalCultureFeed::unsubscribeFromMailing($account->id, variable_get('culturefeed_mailing_list', ''));
+      DrupalCultureFeed::unsubscribeFromMailing($account->id, $mailing_id);
     }
 
   }
@@ -37,8 +37,8 @@ function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
     $commands = array();
 
     if ($success) {
-      $data = _culturefeed_mailing_optin_toggle();
-      $commands[] = ajax_command_html('#newsletter-optin', $data);
+      $data = _culturefeed_mailing_optin_toggle($mailing_id);
+      $commands[] = ajax_command_html('#newsletter-optin-' . $mailing_id, $data);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
@@ -513,6 +513,22 @@ function culturefeed_mailing_test_list_form_submit($form, &$form_state) {
  */
 function culturefeed_mailing_page_my_newsletters() {
 
-  $newsletters = module_invoke_all('culturefeed_mailing_newsletters');
+  $query = new CultureFeed_SearchMailingsQuery();
+  $query->max = 999;
+  $mailings = DrupalCultureFeed::searchMailings($query);
+
+  $build = array();
+  $build['intro'] = array(
+    '#markup' => 'Hier moet nog het juiste tekstje komen',
+  );
+
+  if ($mailings->total > 0) {
+    $build['mailings'] = array(
+      '#theme' => 'culturefeed_mailing_user_profile_admin',
+      '#mailings' => $mailings->objects,
+    );
+  }
+
+  return $build;
 
 }
