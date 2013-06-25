@@ -63,6 +63,13 @@ interface CultureFeed_Pages {
   public function addImage($id, array $params);
 
   /**
+   * Remove an image of the existing page.
+   * @param string $id
+   *   Id of the page.
+   */
+  public function removeImage($id);
+
+  /**
    * Change the permissions for a page.
    * @param Integer $id
    *   The page ID of the page to remove (set invisible).

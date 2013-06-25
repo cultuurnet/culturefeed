@@ -63,26 +63,28 @@ function culturefeed_search_item_load($cdb_id) {
 
 /**
  * Get the current active search object.
+ * @param $path
+ *   Path to load the active object of. Defaults to current path.
  */
-function culturefeed_search_get_active_object() {
+function culturefeed_search_get_active_object($path = NULL) {
 
-  $first_argument = arg(0);
-  $second_argument = arg(1);
+  $first_argument = arg(0, $path);
+  $second_argument = arg(1, $path);
 
   // Agenda items (events, actors, productions) + pages
   if ($first_argument == 'agenda') {
 
     if ($second_argument == 'g') {
-      return menu_get_object('culturefeed_pages_page', 3);
+      return menu_get_object('culturefeed_pages_page', 3, $path);
     }
     elseif ($second_argument == 'e' || $second_argument == 'p' || $second_argument == 'a') {
-      return culturefeed_agenda_get_active_object();
+      return culturefeed_agenda_get_active_object($path);
     }
 
   }
   // Bibnet books
   elseif ($first_argument == 'book') {
-    return menu_get_object('bibnet_book', 1);
+    return menu_get_object('bibnet_book', 1, $path);
   }
   // Generic fallback.
   elseif ($first_argument == 'userpoints' && $second_argument == 'promotion') {
@@ -93,7 +95,7 @@ function culturefeed_search_get_active_object() {
   }
   // Drupal nodes.
   else {
-    $node = menu_get_object();
+    $node = menu_get_object('node', 1, $path);
     if ($node) {
       return DrupalNodeExtendedEntity::fromDrupal($node);
     }

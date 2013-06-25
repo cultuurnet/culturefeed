@@ -324,7 +324,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
     $variables['location']['title'] = 'meerdere locaties';
-    $variables['location']['title'] = 'meerdere data';
+    $variables['when'] = 'meerdere data';
   }
 
   // If only 1 event. Show calendar information from that event.

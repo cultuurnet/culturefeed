@@ -27,6 +27,13 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   const IMAGE_UPLOADED = 'IMAGE_UPLOADED';
 
   /**
+   * Status code when an image was succesfully removed.
+   * Invalid codes: [ACTION_FAILED]
+   * @var string
+   */
+  const IMAGE_REMOVED = 'IMAGE_REMOVED';
+
+  /**
    * Status code when a page was successfully updated.
    * Invalid codes: [ACCESS_DENIED, MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
    * @var string
@@ -141,6 +148,14 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_UPLOADED);
 
     return $xmlElement->xpath_str('uid');
+  }
+
+  /**
+   * @see CultureFeed_Pages::removeImage()
+   */
+  public function removeImage($id) {
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
   }
 
   /**

@@ -697,13 +697,10 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
     );*/
   }
 
-  $form['page_confirm'] = array(
-    '#type' => 'markup',
-    '#markup' => '
-      <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-body"></div>
-      </div>',
-  );
+  $form['#suffix'] = '
+    <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-body"></div>
+    </div>';
 
   culturefeed_pages_set_page_breadcrumb($page);
 
@@ -799,6 +796,8 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
     '#type' => 'submit',
     '#value' => 'Verwijder',
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
+    '#submit' => array('culturefeed_pages_remove_page_confirm_form_submit'),
+    '#limit_validation_errors' => array(),
   );
 
   $form['footer_wrapper']['decline'] = array(

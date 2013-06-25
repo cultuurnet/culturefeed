@@ -146,6 +146,14 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   }
 
   /**
+   * @see CultureFeed_Pages::removeImage()
+   */
+  public function addImage($id) {
+    $result = $this->realCultureFeedPages->removeImage($id);
+    $this->cacheClear('page:' . $id);
+  }
+
+  /**
    * @see CultureFeed_Pages::changePermissions()
    */
   public function changePermissions($id, array $params) {

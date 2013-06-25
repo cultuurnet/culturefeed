@@ -6,8 +6,10 @@
 
 /**
  * Get the current active agenda object.
+ * @param $path
+ *   Path to load the active object of. Defaults to current path.
  */
-function culturefeed_agenda_get_active_object() {
+function culturefeed_agenda_get_active_object($path = NULL) {
 
   $supported_types = array(
     'e' => 'culturefeed_agenda_event',
@@ -15,8 +17,8 @@ function culturefeed_agenda_get_active_object() {
     'a' => 'culturefeed_agenda_actor',
   );
 
-  if (arg(0) == 'agenda' && isset($supported_types[arg(1)])) {
-    return menu_get_object($supported_types[arg(1)], 3);
+  if (arg(0, $path) == 'agenda' && isset($supported_types[arg(1, $path)])) {
+    return menu_get_object($supported_types[arg(1, $path)], 3, $path);
   }
 
 }
