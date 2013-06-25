@@ -422,6 +422,7 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
 function culturefeed_search_ui_search_active_filters_block() {
   // This currently means the page callback has already been invoked.
   global $culturefeedFacetingComponent;
+  global $culturefeedSearchResult;
 
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return '';
@@ -538,6 +539,31 @@ function culturefeed_search_ui_search_active_filters_block() {
   if (!empty($build) && count($build) > 1) {
     $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
   }
+
+  // Suggestions if available.
+  if ($culturefeedSearchResult instanceof \CultuurNet\Search\SearchResult) {
+    $suggestions_keys = $culturefeedSearchResult->getSuggestions();
+    if (!empty($suggestions_keys)) {
+      $search_query = $query;
+      $suggestions = array();
+      foreach ($suggestions_keys as $suggestion) {
+        $search_query['search'] = $suggestion;
+        $suggestions[$suggestion] = url($path, array('query' => $search_query));
+      }
+      
+      $build['suggestions'] =  array(
+        '#theme' => 'culturefeed_search_suggestions',
+        '#suggestions' => $suggestions
+      );
+    }
+    
+  }
+
+  /*$build['item_search'] =  array(
+    '#theme' => 'culturefeed_search_active_filters_item',
+    '#label' => $query['search'],
+    '#url' => $url
+  );*/
 
   return $build;
 

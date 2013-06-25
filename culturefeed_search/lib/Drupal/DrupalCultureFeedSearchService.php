@@ -65,10 +65,18 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::search().
    */
   public function search(Array $parameters = array(), $path = 'search') {
+
+    // Always add the spellcheck paramter.
+    $parameters[] = new Parameter\Parameter('spellcheck', 'true');
+    
     $this->addLanguageParameter($parameters);
+    
     $items = $this->service->search($parameters, $path);
+    
     $this->translateCategories($items);
+    
     return $items;
+    
   }
 
   /**

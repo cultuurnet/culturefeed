@@ -146,6 +146,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 }
 
 /**
+ * Preproces a search facet item.
+ * @see culturefeed-search-suggestions.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_suggestions(&$variables) {
+  
+}
+
+/**
  * Theme the pager summary for a search result.
  */
 function theme_culturefeed_search_pager_summary($variables) {

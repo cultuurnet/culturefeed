@@ -50,7 +50,7 @@ class CultureFeedSearchPage {
    * @var \CultuurNet\Search\Parameter\AbstractParameter[]
    */
   protected $parameters = array();
-
+  
   /**
    * Query to search on.
    * @var array
@@ -424,5 +424,5 @@ class CultureFeedSearchPage {
     return $build;
 
   }
-
+  
 }

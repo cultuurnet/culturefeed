@@ -171,6 +171,15 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    
+    'culturefeed_search_suggestions' => array(
+      'variables' => array(
+        'suggestions' => array(),
+      ),
+      'template' => 'culturefeed-search-suggestions',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
 
   );
 
