@@ -415,45 +415,45 @@ function culturefeed_pages_block_info() {
   $blocks = array();
 
   $blocks['user-fellow-members'] = array(
-    'info' => t('Fellow members from user'),
+    'info' => t('Culturefeed pages: fellow members from user'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['pages-user-follows'] = array(
-    'info' => t("Pages i'm following"),
+    'info' => t("Culturefeed pages: pages i'm following"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
   $blocks['pages-admin-options'] = array(
-    'info' => t("Page options"),
+    'info' => t("Culturefeed pages: page options"),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['pages-request-admin-membership'] = array(
-    'info' => t("Request to become admin member"),
+    'info' => t("Culturefeed pages: request to become admin member"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
   $blocks['pages-admin-menu'] = array(
-    'info' => t("Page admin menu"),
+    'info' => t("Culturefeed pages: page admin menu"),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
   $blocks['followers'] = array(
-    'info' => t('Followers'),
+    'info' => t('Culturefeed pages: followers'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
-      'info' => t("Page timeline"),
+      'info' => t("Culturefeed pages: page timeline"),
       'cache' => DRUPAL_CACHE_PER_PAGE,
     );
   }
 
   if (module_exists('culturefeed_agenda')) {
     $blocks['page-agenda'] = array(
-      'info' => t('Page Agenda'),
+      'info' => t('Culturefeed pages: page agenda'),
       'cache' => DRUPAL_CACHE_PER_USER,
     );
   }

@@ -154,17 +154,17 @@ function culturefeed_agenda_block_info() {
   );
 
   $blocks['agenda-search-block'] = array(
-    'info' => t('Agenda quick search'),
+    'info' => t('Culturefeed agenda: quick search'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['actor-program'] = array(
-    'info' => t('Actor program'),
+    'info' => t('Culturefeed agenda: actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['production-program'] = array(
-    'info' => t('Production program'),
+    'info' => t('Culturefeed agenda: production program'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 

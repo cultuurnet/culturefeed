@@ -191,13 +191,13 @@ function culturefeed_messages_block_info() {
   $blocks = array();
 
   $blocks['inbox'] = array(
-    'info' => t('Messages: User inbox'),
+    'info' => t('Culturefeed messages: user inbox'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   if (module_exists('culturefeed_pages')) {
     $blocks['page-inbox'] = array(
-      'info' => t('Messages: Page inbox'),
+      'info' => t('Culturefeed  messages: page inbox'),
       'cache' => DRUPAL_NO_CACHE,
     );
   }
