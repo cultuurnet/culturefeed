@@ -590,7 +590,7 @@ function culturefeed_search_get_preferred_language() {
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
       drupal_set_message('Er is een fout opgetreden.', 'error');
-      return $lanaguage->language;
+      return $language->language;
     }
 
   }
