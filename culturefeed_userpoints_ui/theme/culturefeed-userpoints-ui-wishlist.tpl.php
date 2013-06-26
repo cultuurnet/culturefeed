@@ -6,15 +6,24 @@
 ?>
 
 <?php if (!empty($items)): ?>
-Je koos voor:
+  <h2>Je koos voor</h2>
 
-<div class="clearfix">
-<?php foreach ($items as $item): ?>
-  <div>
-    <?php print $item ?>
-  </div>
-<?php endforeach;?>
-</div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Titel</th>
+        <th>Aantal</th>
+        <th>Verwijder</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($items as $item): ?>
+        <?php print $item ?>
+      <?php endforeach;?>
+    </tbody>
+  </table>
 <?php else: ?>
-  Je hebt nog geen items geselecteerd.
+  <div class="alert">
+    <span>Je hebt nog geen items geselecteerd.</span>
+  </div>
 <?php endif; ?>

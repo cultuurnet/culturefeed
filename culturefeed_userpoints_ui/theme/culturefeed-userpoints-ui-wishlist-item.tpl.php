@@ -7,9 +7,8 @@
  *
  */
 ?>
-
-<div class="<?php print $classes ?>">
-  <?php print $title ?> X <?php print $count ?>
-  | <?php print $remove_link ?>
-
-</div>
+<tr class="<?php print $classes ?>">
+  <td><?php print $title ?></td>
+  <td><?php print $count ?></td>
+  <td><?php print $remove_link ?></td>
+</tr>
