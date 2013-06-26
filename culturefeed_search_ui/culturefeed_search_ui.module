@@ -218,7 +218,7 @@ function culturefeed_search_ui_block_info() {
   $blocks = array();
 
   $blocks['culturefeed-search-box'] = array(
-    'info' => t('Culturefeed search: search box'),
+    'info' => t('Culturefeed search: search events and pages'),
     'cache' => DRUPAL_NO_CACHE,
   );
 

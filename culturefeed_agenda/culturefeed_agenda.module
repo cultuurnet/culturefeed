@@ -154,7 +154,7 @@ function culturefeed_agenda_block_info() {
   );
 
   $blocks['agenda-search-block'] = array(
-    'info' => t('Culturefeed agenda: quick search'),
+    'info' => t('Culturefeed agenda: search events'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
