@@ -292,37 +292,37 @@ function culturefeed_social_block_info() {
   $blocks = array();
 
   $blocks['recent-activities'] = array(
-    'info' => t('Recent site activities'),
+    'info' => t('Culturefeed social: recent site activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['user-activities'] = array(
-    'info' => t('User activities'),
+    'info' => t('Culturefeed social: user activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['recommended-by'] = array(
-    'info' => t('Recommended by'),
+    'info' => t('Culturefeed social: recommended by'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['comments'] = array(
-    'info' => t('Culturefeed Comments'),
+    'info' => t('Culturefeed social: comments'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['my-notifications'] = array(
-    'info' => t('My notifications (on user profile)'),
+    'info' => t('Culturefeed social: my notifications (on user profile)'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['my-activity-summary'] = array(
-    'info' => t('Summary of my activities (on user profile)'),
+    'info' => t('Culturefeed social: summary of my activities (on user profile)'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['loggedinuser-activity-summary'] = array(
-    'info' => t('Summary of loggedin users activities'),
+    'info' => t('Culturefeed social: summary of loggedin users activities'),
     'cache' => DRUPAL_NO_CACHE,
   );
 

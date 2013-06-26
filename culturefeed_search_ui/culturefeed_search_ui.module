@@ -233,12 +233,12 @@ function culturefeed_search_ui_block_info() {
   );
 
   $blocks['facet-datetype'] = array(
-    'info' => t('Culturefeed search facet: When'),
+    'info' => t('Culturefeed search: facet when'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['facet-city'] = array(
-    'info' => t('Culturefeed search facet: Where'),
+    'info' => t('Culturefeed search: facet where'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -246,7 +246,7 @@ function culturefeed_search_ui_block_info() {
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
     $blocks['facet-' . $domain->did] = array(
-      'info' => t('Culturefeed search facet: @label', array('@label' => $domain->label)),
+      'info' => t('Culturefeed search: facet @label', array('@label' => $domain->label)),
       'cache' => DRUPAL_NO_CACHE,
     );
   }
