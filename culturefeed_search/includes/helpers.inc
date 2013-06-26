@@ -588,7 +588,7 @@ function culturefeed_search_get_preferred_language() {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
+      watchdog_exception('culturefeed_search', $e);
       drupal_set_message('Er is een fout opgetreden.', 'error');
       return $language->language;
     }
