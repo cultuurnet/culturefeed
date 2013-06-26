@@ -177,7 +177,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
   $variables['title'] = $variables['item']['title'];
   $variables['count'] = $variables['item']['count'];
   $variables['id'] = $variables['item']['promotion_id'];
-  $variables['remove_link'] = l('x Verwijder', 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
+  $variables['remove_link'] = l('Verwijder', 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
 
 }
 
@@ -277,6 +277,17 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   $variables['item_url'] = url('userpoints/promotion/' . $pointsPromotion->id);
 }
+
+/**
+ * Preprocess promotion exchange form.
+ *
+ * @see culturefeed-userpoints-ui-exchange-form.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange_form(&$variables) {
+  // dsm($variables['form']);
+  
+}
+
 
 /**
  * Preprocess the userpoints earned overview.
