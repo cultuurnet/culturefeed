@@ -394,6 +394,10 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
       $query->condition($field, $value);
     }
   }
+  
+  if (!empty($conditions['language'])) {
+    $query->condition('language', $conditions['language']);
+  }
 
   $result = $query->execute();
   $categories = array();
@@ -409,7 +413,9 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
  * Get all available actortypes.
  */
 function culturefeed_search_get_actortype_categories() {
-  culturefeed_search_get_categories_by_domain('actortype');
+  $conditions = array();
+  $conditions['language'] = $GLOBALS['language']->language;
+  culturefeed_search_get_categories_by_domain('actortype', $conditions);
 }
 
 /**
@@ -418,6 +424,9 @@ function culturefeed_search_get_actortype_categories() {
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
  */
 function culturefeed_search_get_educationfield_categories($conditions = array()) {
+  if (!isset($conditions['language'])) {
+    $conditions['language'] = $GLOBALS['language']->language;
+  }
   return culturefeed_search_get_categories_by_domain('educationfield', $conditions);
 }
 
@@ -427,6 +436,9 @@ function culturefeed_search_get_educationfield_categories($conditions = array())
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
  */
 function culturefeed_search_get_educationlevel_categories($conditions = array()) {
+  if (!isset($conditions['language'])) {
+    $conditions['language'] = $GLOBALS['language']->language;
+  }
   return culturefeed_search_get_categories_by_domain('educationlevel', $conditions);
 }
 

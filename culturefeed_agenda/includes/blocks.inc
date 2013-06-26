@@ -126,7 +126,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   if (!empty($domain_id)) {
 
     $options = array('' => 'Alle categorieën');
-    $categories = culturefeed_search_get_categories_by_domain($domain_id);
+    $categories = culturefeed_search_get_categories_by_domain($domain_id, array('language' => $GLOBALS['language']->language));
     foreach ($categories as $category) {
       $options[$category] = $category;
     }
