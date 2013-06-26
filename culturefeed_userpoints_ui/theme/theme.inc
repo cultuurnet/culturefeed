@@ -131,6 +131,11 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   $variables['select_btn'] = '';
   $variables['select_id'] = drupal_render($form['select_id']);
 
+  // Make the width 100% so it will fit the container.
+  $form['select_count']['#attributes']['class'][] = 'span12';
+  
+  $form['select_btn']['#value'] = t('Add');
+  
   if ($variables['can_exchange']) {
     $variables['select_list'] = drupal_render($form['select_count']);
     $variables['select_btn'] = drupal_render($form['select_btn']);
@@ -138,7 +143,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
     }
     else {
       $variables['classes_array'][] = 'item-selected';
-      $variables['remove_link'] = l('x Verwijder', 'culturefeed/userpoints/' . $promotion_id . '/remove/nojs',
+      $variables['remove_link'] = l('Verwijder', 'culturefeed/userpoints/' . $promotion_id . '/remove/nojs',
         array('attributes' => array('class' => array('use-ajax')), 'query' => drupal_get_destination()));
     }
   }

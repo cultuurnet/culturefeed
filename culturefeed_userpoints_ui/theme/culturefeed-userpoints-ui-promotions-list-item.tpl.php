@@ -24,14 +24,19 @@
  *   The culturefeed-userpoints-item-<?php print $id ?> should be available as wrapper
  *   for ajax requests updating the userpoint promotions.
  */
-
+$label = $can_exchange ? 'label-success' : 'label-important';
 ?>
+<div class="thumbnail <?php if(!$can_exchange) print 'muted '; ?><?php print $classes ?>" id="culturefeed-userpoints-item-wrapper-<?php print $id ?>">
+  <?php if(!empty($picture_url)): ?>
+    <img src="<?php print $picture_url; ?>?width=480&height=320&crop=auto" />
+  <?php endif; ?>
 
-<div class="<?php print $classes ?>" id="culturefeed-userpoints-item-wrapper-<?php print $id ?>">
+  <h3><?php print $link ?></h3>
 
-  <?php print $real_points ?><br />
-  <?php print $title ?> (<?php print $link ?>)<br />
-  Geldig van <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' tot ' . $cashingPeriodEnd : '') ?>
+  <span class="cost label <?php print $label; ?>"><?php print $real_points ?></span>
+  <p class='date text-medium-grey'>
+    Geldig van <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' tot ' . $cashingPeriodEnd : '') ?>
+  </p>
 
   <div id="culturefeed-userpoints-item-<?php print $id ?>">
 
@@ -40,19 +45,22 @@
 
     <?php elseif ($can_exchange): ?>
 
-    <?php print $select_list; ?>
-    <?php print $select_btn; ?>
-    <?php print $remove_link ?>
+    <div class="row-fluid">
+      <div class="span12"><?php print $select_list; ?></div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12"><?php print $select_btn; ?></div>
+    </div>
+    <?php if($remove_link): ?>
+      <div class="row-fluid">
+        <div class="span12"><?php print $remove_link ?></div>
+      </div>
+    <?php endif; ?>
 
     <?php else: ?>
-
-    Je hebt onvoldoende punten voor dit geschenk.
-
-    <a href="/">Hoe extra punten sparen?</a>
-
+      <p>Je hebt onvoldoende punten voor dit geschenk. <a href="/">Hoe extra punten sparen?</a></p>
     <?php endif; ?>
 
   </div>
-
 </div>
 
