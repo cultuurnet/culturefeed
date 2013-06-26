@@ -386,7 +386,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
  */
 function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity) {
 
-  if (!empty($activity->points)) {
+  if (!empty($activity->points) && (arg(5) != 'noredirect' && arg(5) != 'ajax')) {
     drupal_set_message(theme('culturefeed_userpoints_ui_points_earned_message', array('activity' => $activity)));
   }
 

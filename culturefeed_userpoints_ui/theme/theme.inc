@@ -323,7 +323,11 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 
   $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
   $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
-  $message = 'Gefeliciteerd! Je verdiende ' . $points . ' punten met deze actie en hebt nu ' . $total_points . ' punten.';
+
+  $points_message = format_plural($points, 'punt', 'punten');
+  $total_points_message = format_plural($total_points, 'punt', 'punten');
+
+  $message = 'Gefeliciteerd! Je verdiende ' . $points_message . ' punten met deze actie en hebt nu ' . $total_points_message . ' punten.';
 
   return $message;
 
