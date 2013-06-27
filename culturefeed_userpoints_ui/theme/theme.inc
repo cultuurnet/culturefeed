@@ -302,6 +302,9 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
 
   // City
   $variables['form']['city']['#attributes']['class'][] = 'span12';
+
+  // Submit button
+  $variables['form']['submit']['#attributes']['class'][] = 'btn-primary';
 }
 
 
