@@ -358,7 +358,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#title' => 'Afbeelding of logo',
     '#size' => 26,
     '#default_value' => '',
-    '#weight' => 14,
+    '#weight' => 16,
   );
 
   $form['visible'] = array(
@@ -491,13 +491,6 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     '#weight' => -25,
   );
 
-  // General information.
-  $form['basic'] = array(
-    '#type' => 'markup',
-    '#markup' => '<h2>Basisinformatie</h2>',
-    '#weight' => -20,
-  );
-
   // Hidden page ID.
   $form['pageId'] = array(
     '#type' => 'hidden',
@@ -537,14 +530,14 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['current_image'] = array(
       '#theme' => 'image',
       '#path' => $image . "?width=100&height=100",
-      '#weight' => 13,
+      '#weight' => 14,
     );
     $form['image']['#title'] = 'Selecteer andere foto';
 
     $form['remove_image'] = array(
       '#type' => 'checkbox',
       '#title' => 'Verwijder foto',
-      '#weight' => 14,
+      '#weight' => 15,
     );
   }
 

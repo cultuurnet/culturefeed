@@ -225,6 +225,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/edit'] = array(
+    'title' => 'Bewerk pagina',
     'title callback' => 'culturefeed_pages_detail_title',
     'title arguments' => array(1, 'edit'),
     'page callback' => 'drupal_get_form',
