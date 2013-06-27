@@ -422,8 +422,15 @@ function culturefeed_userpoints_ui_promotions_list_form_validate($form, &$form_s
   $form_state['promotion_id'] = $promotion_id = str_replace("select_btn_", "", $selected_button);
   $promotion_count = $form_state['values']['list'][$promotion_id]['select_count'];
 
-  $user_points = DrupalCultureFeed::getLoggedInUser()->points;
-  $points_left = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
+
+  try {
+    $user_points = DrupalCultureFeed::getLoggedInUser()->points;
+    $points_left = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    return;
+  }
 
   // When an item was already in the list, check how many new that are beïng added.
   $form_state['promotion'] = DrupalCultureFeed::getActivityPointsPromotion($promotion_id);
