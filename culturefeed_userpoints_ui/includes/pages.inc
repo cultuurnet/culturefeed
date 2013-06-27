@@ -199,8 +199,8 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
         'callback' => 'culturefeed_userpoints_ui_promotions_list_form_callback',
         'wrapper' => 'culturefeed-userpoints-promotions-list',
       ),
-      '#limit_validation_errors' => array(array('list')),
       '#submit' => array('culturefeed_userpoints_ui_promotions_list_form_submit'),
+      '#validate' => array('culturefeed_userpoints_ui_promotions_list_form_validate'),
     );
 
   }

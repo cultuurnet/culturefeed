@@ -1,7 +1,7 @@
 <?php
 /**
  * Template for the userpoints exchange page.
- * 
+ *
  * @vars
  *   $points
  *     raw points from API
@@ -11,21 +11,21 @@
  *     Site points in wishlist
  *   $real_points_left
  *     Calculated points currently left.
- *   
+ *
  *   $cf_user
  *     the culturefeed user object
  *   $promotion_list
- *     String version of the list, 
+ *     String version of the list,
  *     see culturefeed-userpoints-ui-promotions-list.tpl.php
  *   $promotion_form
  *     The form to exchange points.
- *   
- *   @Note 
+ *
+ *   @Note
  *   - that the class <span class="userpoints-points"></span> will trigger
  *     updates on the amount of the points. Example cases:
  *       1) <span class="userpoints-points"><?php print $real_points_left ?></span>
  *       2) <span><?php print $real_points ?></span>
- *       
+ *
  *   - that the id "culturefeed-userpoints-notifications" is used to anchor the external pages
  *     to this page bringing the points left and notifications in the picture.
  */
@@ -35,7 +35,7 @@
   Resterend aantal punten: <span class="userpoints-points"><?php print $real_points_left ?></span>
 </div>
 
-<?php if ($real_points_left < $minimum_points): ?>
+<?php if ($real_points < $minimum_points): ?>
   <div class="alert alert-block alert-success">Je hebt onvoldoende punten. <strong>Vanaf <?php print $variables['minimum_points']; ?> punten</strong> kan je jouw punten inruilen voor tickets, gadgets, waardebonnen, kortingen, ... .<br />
   Niet voldoende punten? Niet getreurd, Ontdek hier hoe en hoeveel punten je telkens kunt sparen.</div>
 <?php endif; ?>

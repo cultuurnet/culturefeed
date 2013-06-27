@@ -50,9 +50,9 @@ function culturefeed_userpoints_ui_get_wishlist($promotions) {
 
 /**
  * Utility function + facade method to ease the request.
- * @param $params 
+ * @param $params
  *   Array of options the remote service call supports.
- *   see 
+ *   see
  * @return array of PointsPromotions.
  */
 function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
@@ -69,12 +69,12 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
   // Also adjust properties according to the ones currently in wishlist.
   foreach ($pointsPromotions->objects as $pointsPromotion) {
 
-    // Filter out the natural constraints. 
+    // Filter out the natural constraints.
     if ($pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_POINTS_CONSTRAINT
       || $pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_USER_VOLUME_CONSTRAINT) {
       continue;
     }
-    
+
     // Filter out when the units taken exceed the maximum available units.
     if (!empty($pointsPromotion->maxAvailableUnits) && $pointsPromotion->unitsTaken >= $pointsPromotion->maxAvailableUnits) {
       continue;
@@ -101,9 +101,7 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
  * @return array
  */
 function culturefeed_userpoints_ui_get_max_available_units_options($maxAvailableUnits) {
-  if (empty($maxAvailableUnits)) {
-    $maxAvailableUnits = CULTUREFEED_USERPOINTS_MAX_UNITS_DEFAULT;
-  }
+
   $options = array();
   for ($i = 1; $i <= $maxAvailableUnits; $i++) {
     $options[$i] = $i;
