@@ -306,7 +306,6 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
 
     // Always update the user profile.
     $values = $form_state['values'];
-    dsm($values);
     $user_update = new CultureFeed_User();
     $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
     $user_update->givenName  = $values['givenName'];

@@ -62,7 +62,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
       $minimum_points = $promotion->points;
     }
   }
-  $variables['minimum_points'] = $minimum_points;
+  $variables['minimum_points'] = CultureFeedUserpointsWishlist::getRealPoints($minimum_points);
 
   $variables['promotions_list'] = $list;
   $variables['wishlist'] = '<div id="culturefeed-userpoints-wishlist">';
