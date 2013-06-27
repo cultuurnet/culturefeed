@@ -301,52 +301,53 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#weight' => 11,
   );
 
-  $form['websites'] = array(
-    '#type' => 'fieldset',
-    '#title' => 'Websites',
+  $form['linkWebsite'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Website',
     '#default_value' => '',
     '#weight' => 12,
+  );
+
+  $form['otherWebsites'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Andere websites toevoegen',
+    '#default_value' => '',
+    '#weight' => 13,
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
 
-  $form['websites']['linkWebsite'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Website',
-    '#default_value' => '',
-  );
-
-  $form['websites']['linkTicketing'] = array(
+  $form['otherWebsites']['linkTicketing'] = array(
     '#type' => 'textfield',
     '#title' => 'Ticketing',
     '#default_value' => '',
   );
 
-  $form['websites']['linkFacebook'] = array(
+  $form['otherWebsites']['linkFacebook'] = array(
     '#type' => 'textfield',
     '#title' => 'Facebook',
     '#default_value' => '',
   );
 
-  $form['websites']['linkTwitter'] = array(
+  $form['otherWebsites']['linkTwitter'] = array(
     '#type' => 'textfield',
     '#title' => 'Twitter',
     '#default_value' => '',
   );
 
-  $form['websites']['linkGooglePlus'] = array(
+  $form['otherWebsites']['linkGooglePlus'] = array(
     '#type' => 'textfield',
     '#title' => 'Google+',
     '#default_value' => '',
   );
 
-  $form['websites']['linkYouTube'] = array(
+  $form['otherWebsites']['linkYouTube'] = array(
     '#type' => 'textfield',
     '#title' => 'YouTube',
     '#default_value' => '',
   );
 
-  $form['websites']['linkBlog'] = array(
+  $form['otherWebsites']['linkBlog'] = array(
     '#type' => 'textfield',
     '#title' => 'Blog',
     '#default_value' => '',
@@ -521,13 +522,13 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // Websites list.
   $links = $page->getLinks();
   if (!empty($links)) {
-    $form['websites']['linkWebsite']['#default_value'] = isset($links['linkWebsite']) ? $links['linkWebsite'] : '';
-    $form['websites']['linkTicketing']['#default_value'] = isset($links['linkTicketing']) ? $links['linkTicketing'] : '';
-    $form['websites']['linkFacebook']['#default_value'] = isset($links['linkFacebook']) ? $links['linkFacebook'] : '';
-    $form['websites']['linkTwitter']['#default_value'] = isset($links['linkTwitter']) ? $links['linkTwitter'] : '';
-    $form['websites']['linkGooglePlus']['#default_value'] = isset($links['linkGooglePlus']) ? $links['linkGooglePlus'] : '';
-    $form['websites']['linkYouTube']['#default_value'] = isset($links['linkYouTube']) ? $links['linkYouTube'] : '';
-    $form['websites']['linkBlog']['#default_value'] = isset($links['linkBlog']) ? $links['linkBlog'] : '';
+    $form['linkWebsite']['#default_value'] = isset($links['linkWebsite']) ? $links['linkWebsite'] : '';
+    $form['otherWebsites']['linkTicketing']['#default_value'] = isset($links['linkTicketing']) ? $links['linkTicketing'] : '';
+    $form['otherWebsites']['linkFacebook']['#default_value'] = isset($links['linkFacebook']) ? $links['linkFacebook'] : '';
+    $form['otherWebsites']['linkTwitter']['#default_value'] = isset($links['linkTwitter']) ? $links['linkTwitter'] : '';
+    $form['otherWebsites']['linkGooglePlus']['#default_value'] = isset($links['linkGooglePlus']) ? $links['linkGooglePlus'] : '';
+    $form['otherWebsites']['linkYouTube']['#default_value'] = isset($links['linkYouTube']) ? $links['linkYouTube'] : '';
+    $form['otherWebsites']['linkBlog']['#default_value'] = isset($links['linkBlog']) ? $links['linkBlog'] : '';
   }
 
   // The image.
