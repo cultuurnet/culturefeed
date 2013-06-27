@@ -1,0 +1,14 @@
+name = CultureFeed Search Views
+description = Views integration for culturefeed search
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+files[] = views/plugins/culturefeed_search_views_query.inc
+files[] = views/plugins/culturefeed_search_views_row_cdb.inc
+files[] = views/handlers/views_handler_filter_culturefeed_search_q.inc
+files[] = views/handlers/views_handler_filter_culturefeed_search_category.inc
+files[] = views/handlers/views_handler_filter_culturefeed_search_agefrom.inc
+files[] = views/handlers/views_handler_filter_culturefeed_search_string.inc
+
+dependencies[] = culturefeed_search
