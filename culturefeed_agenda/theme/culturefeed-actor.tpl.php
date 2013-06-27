@@ -5,7 +5,9 @@
  */
 ?>
 
-<h1><?php print $title; ?></h1>
+<?php 
+/* print '<h1>' . $title . '</h1>'; */
+?>
 
 <?php print $recommend_link; ?>
 

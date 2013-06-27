@@ -103,8 +103,32 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       drupal_goto();
     }
 
-    $account = culturefeed_get_or_create_user($token['userId'], $cf_account, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
+    // Check if the user is already known in our system.
+    $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $token['userId']))->fetchField();
+    if (!$uid) {
+      $account = culturefeed_create_user($cf_account);
+    }
+    else {
+      $account = user_load($uid);
+    }
 
+    // If a token was passed, save it after deleting a possible previous entry.
+    if ($token) {
+      db_delete('culturefeed_token')
+      ->condition('cf_uid', $token['userId'])
+      ->condition('application_key', $application_key)
+      ->execute();
+    
+      db_insert('culturefeed_token')
+      ->fields(array(
+      'cf_uid' => $token['userId'],
+      'token' => $token['oauth_token'],
+      'secret' => $token['oauth_token_secret'],
+      'application_key' => $application_key,
+      ))
+      ->execute();
+    }
+    
     if ($account) {
 
       global $user;
