@@ -148,26 +148,28 @@ function culturefeed_social_menu() {
   );
 
   // Notifications
-  $items['culturefeed/notifications'] = array(
-    'title callback' => FALSE,
-    'title' => 'Mijn meldingen',
-    'page callback' => 'culturefeed_social_page_notifications',
-    'access callback' => 'culturefeed_is_culturefeed_user',
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/pages.inc',
-  );
-
-  if (module_exists('culturefeed_pages')) {
-    $items['pages/%culturefeed_pages_page/notifications'] = array(
+  if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    $items['culturefeed/notifications'] = array(
       'title callback' => FALSE,
-      'title' => 'Meldingen',
+      'title' => 'Mijn meldingen',
       'page callback' => 'culturefeed_social_page_notifications',
-      'page arguments' => array(1),
-      'access callback' => 'culturefeed_pages_edit_page_access',
-      'access arguments' => array(1),
+      'access callback' => 'culturefeed_is_culturefeed_user',
       'type' => MENU_CALLBACK,
       'file' => 'includes/pages.inc',
     );
+
+    if (module_exists('culturefeed_pages')) {
+      $items['pages/%culturefeed_pages_page/notifications'] = array(
+        'title callback' => FALSE,
+        'title' => 'Meldingen',
+        'page callback' => 'culturefeed_social_page_notifications',
+        'page arguments' => array(1),
+        'access callback' => 'culturefeed_pages_edit_page_access',
+        'access arguments' => array(1),
+        'type' => MENU_CALLBACK,
+        'file' => 'includes/pages.inc',
+      );
+    }
   }
 
   return $items;
@@ -311,10 +313,12 @@ function culturefeed_social_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  $blocks['my-notifications'] = array(
-    'info' => t('Culturefeed social: my notifications (on user profile)'),
-    'cache' => DRUPAL_NO_CACHE,
-  );
+  if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    $blocks['my-notifications'] = array(
+      'info' => t('Culturefeed social: my notifications (on user profile)'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
 
   $blocks['my-activity-summary'] = array(
     'info' => t('Culturefeed social: summary of my activities (on user profile)'),
@@ -356,7 +360,9 @@ function culturefeed_social_block_view($delta) {
       return culturefeed_social_block_comments($object);
 
     case 'my-notifications':
-      return culturefeed_social_block_my_notifications();
+      if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+        return culturefeed_social_block_my_notifications();
+      }
 
     case 'my-activity-summary':
       $account = menu_get_object('user');
@@ -391,6 +397,10 @@ function culturefeed_social_culturefeed_ui_profile_menu_alter(&$items) {
  * Implements hook_culturefeed_ui_profile_box_main_items().
  */
 function culturefeed_social_culturefeed_ui_profile_box_main_items() {
+
+  if (!variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    return;
+  }
 
   $items = array();
   try {
@@ -527,7 +537,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     $status = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
-  
+
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
   $form_state['config'] = $config;
 

@@ -24,6 +24,12 @@ function culturefeed_social_admin_settings_form() {
     '#default_value' => variable_get('culturefeed_social_activity_filters', array()),
   );
 
+  $form['culturefeed_social_notifications_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable notifications'),
+    '#default_value' => variable_get('culturefeed_social_notifications_enabled', FALSE),
+  );
+
   $form['culturefeed_social_report_destination_uid'] = array(
     '#type' => 'textfield',
     '#title' => t('Report as abuse messages destination uid'),

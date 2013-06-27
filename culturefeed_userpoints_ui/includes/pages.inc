@@ -381,6 +381,7 @@ function culturefeed_userpoints_ui_page_points_overview() {
   }
   catch (Exception $e) {
     drupal_set_message('Er ging iets fout tijdens het laden van je puntenoverzicht', 'error');
+    watchdog_exception('culturefeed_userpoints_ui', $e);
   }
 
   return array(
