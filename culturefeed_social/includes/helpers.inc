@@ -437,7 +437,6 @@ function culturefeed_social_get_activity_count($activity_type, $content_type, $n
     $query->contentType = $content_type;
     $query->nodeId = $node_id;
     $query->type = $activity_type;
-    $query->userId = DrupalCultureFeed::getLoggedInUserId();
     $activities = DrupalCultureFeed::searchActivities($query);
     return $activities->total;
   }
