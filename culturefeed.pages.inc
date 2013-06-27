@@ -114,6 +114,11 @@ function culturefeed_oauth_authorize($application_key = NULL) {
 
     // If a token was passed, save it after deleting a possible previous entry.
     if ($token) {
+
+      if (!isset($application_key)) {
+        $application_key = variable_get('culturefeed_api_application_key', '');
+      }
+      
       db_delete('culturefeed_token')
       ->condition('cf_uid', $token['userId'])
       ->condition('application_key', $application_key)
