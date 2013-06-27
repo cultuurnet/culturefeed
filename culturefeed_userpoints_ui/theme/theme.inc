@@ -133,9 +133,9 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   // Make the width 100% so it will fit the container.
   $form['select_count']['#attributes']['class'][] = 'span12';
-  
+
   $form['select_btn']['#value'] = t('Add');
-  
+
   if ($variables['can_exchange']) {
     $variables['select_list'] = drupal_render($form['select_count']);
     $variables['select_btn'] = drupal_render($form['select_btn']);
@@ -284,7 +284,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
  * @see culturefeed-userpoints-ui-exchange-form.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange_form(&$variables) {
-  
+
   // Email
   $variables['form']['mbox']['#attributes']['class'][] = 'span12';
 
@@ -305,6 +305,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
 
   // Submit button
   $variables['form']['submit']['#attributes']['class'][] = 'btn-primary';
+
 }
 
 
@@ -359,10 +360,10 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
   $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
   $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
 
-  $points_message = format_plural($points, 'punt', 'punten');
-  $total_points_message = format_plural($total_points, 'punt', 'punten');
+  $points_message = format_plural($points, '@count punt', '@count punten');
+  $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
-  $message = 'Gefeliciteerd! Je verdiende ' . $points_message . ' punten met deze actie en hebt nu ' . $total_points_message . ' punten.';
+  $message = 'Gefeliciteerd! Je verdiende ' . $points_message . ' punten met deze actie en hebt nu ' . $total_points_message;
 
   return $message;
 

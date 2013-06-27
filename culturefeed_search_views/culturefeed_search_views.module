@@ -1,0 +1,15 @@
+<?php
+/**
+ * @file
+ * Views integration for culturefeed search
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_search_views_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module','culturefeed_search_views') . '/views',
+  );
+}
