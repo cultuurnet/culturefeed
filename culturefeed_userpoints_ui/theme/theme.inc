@@ -284,8 +284,27 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
  * @see culturefeed-userpoints-ui-exchange-form.tpl.php
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange_form(&$variables) {
-  // dsm($variables['form']);
   
+  // Email
+  $variables['form']['mbox']['#attributes']['class'][] = 'span12';
+
+  // Last name
+  $variables['form']['familyName']['#attributes']['class'][] = 'span12';
+
+  // First name
+  $variables['form']['givenName']['#attributes']['class'][] = 'span12';
+
+  // Street
+  $variables['form']['street']['#attributes']['class'][] = 'span12';
+
+  // Zip
+  $variables['form']['zip']['#attributes']['class'][] = 'span12';
+
+  // City
+  $variables['form']['city']['#attributes']['class'][] = 'span12';
+
+  // Submit button
+  $variables['form']['submit']['#attributes']['class'][] = 'btn-primary';
 }
 
 
