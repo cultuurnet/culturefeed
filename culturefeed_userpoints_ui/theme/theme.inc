@@ -331,7 +331,7 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
 
     $item = array();
     $item['date'] = format_date($activity->creationDate, 'custom', 'd/m/Y');
-    $item['points'] = format_plural(CultureFeedUserpointsWishlist::getRealPoints($activity->points), 'punt', 'punten');
+    $item['points'] = format_plural(CultureFeedUserpointsWishlist::getRealPoints($activity->points), '@count punt', '@count punten');
 
     $config = culturefeed_social_activity_get_config($activity->type);
     $description = '';
