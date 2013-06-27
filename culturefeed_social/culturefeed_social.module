@@ -514,7 +514,20 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
 
   $activity_content_type = culturefeed_get_content_type($object->getType());
   $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
-  $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
+
+  // Default is the status false.
+  try {
+    $status = FALSE;
+    $cf_id = DrupalCultureFeed::getLoggedInUserId();
+    if ($cf_id) {
+      $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $node_id, $cf_id);
+    }
+  }
+  catch (Exception $e) {
+    $status = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+  }
+  
   $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
   $form_state['config'] = $config;
 
