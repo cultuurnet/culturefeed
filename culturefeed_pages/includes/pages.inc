@@ -187,7 +187,7 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
   // Deliver as ajax callback or normal page.
   if ($request_type != 'ajax') {
     drupal_set_message($message);
-    drupal_goto();
+    drupal_goto(culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
   }
   else {
     $commands[] = ajax_command_html('.follow-' . $page->getId(), $message);
