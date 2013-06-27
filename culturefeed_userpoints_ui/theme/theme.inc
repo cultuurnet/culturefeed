@@ -374,5 +374,8 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
  * @param array $variables
  */
 function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
-  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.";
+
+  $points_left = format_plural($variables['points_left'], '@count punt', '@count punten');
+  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen. Je hebt " . $points_left . 'over';
+
 }

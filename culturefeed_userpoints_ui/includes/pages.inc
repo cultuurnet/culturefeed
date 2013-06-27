@@ -289,8 +289,8 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, $form_state) {
 
   try {
     $user_points = DrupalCultureFeed::getLoggedInUser()->points;
-    $points_left = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
-    if ($points_left < 0) {
+    $form_state['points_left'] = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
+    if ($form_state['points_left'] < 0) {
       form_set_error('', 'U hebt niet voldoende punten om dit te bestellen');
     }
   }
@@ -341,7 +341,10 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
 
     // Thank you message if successful.
     if (count($pointsPromotions) >= 1) {
-      $message = theme('culturefeed_userpoints_ui_points_exchanged_message', array('promotions' => $pointsPromotions));
+      $message = theme('culturefeed_userpoints_ui_points_exchanged_message', array(
+        'promotions' => $pointsPromotions
+        'points_left' => $form_state['points_left'],
+      ));
       drupal_set_message($message);
       CultureFeedUserpointsWishlist::clear();
 
