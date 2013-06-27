@@ -281,10 +281,18 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
  * @param Culturefeed_User $cf_account
  */
 function culturefeed_userpoints_ui_exchange_form_validate($form, $form_state) {
+
   $count = CultureFeedUserpointsWishlist::getIds();
   if ($count <= 0) {
     form_set_error('', 'U moet minstens 1 promotie selecteren.');
   }
+
+  $user_points = DrupalCultureFeed::getLoggedInUser()->points;
+  $points_left = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
+  if ($points_left < 0) {
+    form_set_error('', 'U hebt niet voldoende punten om dit te bestellen');
+  }
+
 }
 
 /**
