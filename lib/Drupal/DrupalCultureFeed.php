@@ -181,11 +181,17 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function getActivityPointsPromotion($promotionId) {
-    return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
+    if (self::isCultureFeedUser()) {
+      return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
+    }
+    return self::getConsumerInstance()->getActivityPointsPromotions($params);
   }
 
   public static function getActivityPointsPromotions($params = array()) {
-    return self::getLoggedInUserInstance()->getActivityPointsPromotions($params);
+    if (self::isCultureFeedUser()) {
+      return self::getLoggedInUserInstance()->getActivityPointsPromotions($params);
+    }
+    return self::getConsumerInstance()->getActivityPointsPromotions($params);
   }
 
   public static function cashInPromotion($userId, array $promotionId, array $promotionCount) {

@@ -81,6 +81,7 @@ abstract class DrupalCultureFeedBase {
    * @throws Exception
    */
   public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
+
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
       $shared_secret = variable_get('culturefeed_api_shared_secret', '');

@@ -29,6 +29,10 @@ function culturefeed_userpoints_ui_promotions_page() {
     watchdog_exception('culturefeed_userpoints_ui', $e);
     $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
   }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = '';
+  }
 
   return $build;
 
@@ -39,9 +43,9 @@ function culturefeed_userpoints_ui_promotions_page() {
  */
 function culturefeed_userpoints_ui_exchange_page() {
 
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
-
   try {
+    
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
 
     $pointsPromotions = culturefeed_userpoints_ui_get_pointspromotions();
 
@@ -80,6 +84,11 @@ function culturefeed_userpoints_ui_exchange_page() {
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
     $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    drupal_not_found();
+    exit();
   }
 
   return $build;
