@@ -204,6 +204,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       if ($picture->isMain()) {
         $variables['main_picture'] = $picture->getHLink();
       }
+      // if main is not set use first image as main picture
+      else { 
+        $variables['main_picture'] = $variables['pictures'][0];
+        unset($variables['pictures'][0]);
+      }       
     }
 
     // Add videos.
