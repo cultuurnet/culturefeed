@@ -498,6 +498,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('did', 'flandersregion');
+  $query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->range(0, 10);
 
