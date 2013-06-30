@@ -459,6 +459,7 @@ function culturefeed_search_get_flandersregion_categories($parent_operator = '',
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
+  $query->condition('cst.language', culturefeed_search_get_preferred_language());
 
   if (!empty($parent_operator)) {
     $query->condition('cst.parent', '', $parent_operator);
