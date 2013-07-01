@@ -211,15 +211,19 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
     $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $pointsPromotion->unitsTaken;
   }
-
+  
+  $variables['active'] = FALSE;
+  $variables['can_exchange'] = FALSE;
   // Calculate the points.
-  $cf_account = DrupalCultureFeed::getLoggedInUser();
-  $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
-  $variables['points'] = $pointsPromotion->points;
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    $user_points = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+    $variables['points'] = $pointsPromotion->points;
+    $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
+    $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
+  }
   $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
-  $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
-  $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
-
+    
   $variables['title'] = $pointsPromotion->title;
   $variables['description1'] = $pointsPromotion->description1;
   $variables['description2'] = $pointsPromotion->description2;
