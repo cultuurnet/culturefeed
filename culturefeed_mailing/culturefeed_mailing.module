@@ -156,12 +156,12 @@ function culturefeed_mailing_block_info() {
 
   $blocks = array();
   $blocks['newsletter_opt_in'] = array(
-    'info' => t('Newsletter opt in'),
+    'info' => t('Culturefeed mailings: Newsletter opt-in'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['newsletter_form'] = array(
-    'info' => t('Newsletter form'),
+    'info' => t('Culturefeed mailings: Newsletter form'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
