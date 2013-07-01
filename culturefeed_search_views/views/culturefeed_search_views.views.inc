@@ -38,19 +38,33 @@ function culturefeed_search_views_data() {
     );
   }
 
-  // Filter on city.
-  $data['cdb_items']['city'] = array(
-    'title' => t('City'),
-    'help' => t('Perform a search on the name of a city.'),
+  // Type
+  $data['cdb_items']['type'] = array(
+    'title' => t('Type'),
+    'help' => t('Type of the cdb item'),
     'filter' => array(
-      'handler' => 'views_handler_filter_culturefeed_search_city',
+      'handler' => 'views_handler_filter_culturefeed_search_type',
     ),
   );
-  $data['cdb_items']['zip'] = array(
-    'title' => t('City'),
-    'help' => t('Perform a search on the zipcode of a city.'),
+
+  // Title field
+  $data['cdb_items']['title'] = array(
+    'title' => t('Title'),
+    'help' => t('Title of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_title',
+    ),
     'filter' => array(
-      'handler' => 'views_handler_filter_culturefeed_search_zip',
+      'handler' => 'views_handler_filter_culturefeed_search_filter_query',
+    ),
+  );
+
+  // City field.
+  $data['cdb_items']['city'] = array(
+    'title' => t('City'),
+    'help' => t('Perform a search on a city.'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_city',
     ),
   );
 
@@ -59,7 +73,7 @@ function culturefeed_search_views_data() {
     'title' => t('Location name'),
     'help' => t('Perform a search on the location name.'),
     'filter' => array(
-      'handler' => 'views_handler_filter_culturefeed_search_string',
+      'handler' => 'views_handler_filter_culturefeed_search_filter_query',
     ),
   );
 
@@ -70,6 +84,9 @@ function culturefeed_search_views_data() {
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_agefrom',
     ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_agefrom',
+    ),
   );
 
   // Filter on organiser.
@@ -77,14 +94,96 @@ function culturefeed_search_views_data() {
     'title' => t('Organiser'),
     'help' => t('Perform a search on organiser name.'),
     'filter' => array(
-      'handler' => 'views_handler_filter_culturefeed_search_string',
+      'handler' => 'views_handler_filter_culturefeed_search_filter_query',
     ),
   );
 
-  // @todo Filter on free event.
+  // Filter on free event.
+  $data['cdb_items']['free'] = array(
+    'title' => t('Free event'),
+    'help' => t('Perform a search on free events.'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_free',
+    ),
+  );
+
+  // Filter on dates
+  $data['cdb_items']['datetype'] = array(
+    'title' => t('Date type'),
+    'help' => t('Perform a search on a predefined type of date query'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_datetype',
+    ),
+  );
+  $data['cdb_items']['datetype'] = array(
+    'title' => t('Date'),
+    'help' => t('Perform a search on a date'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_daterange',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_date',
+    ),
+  );
+
   // @todo Filter on permanent activity.
 
+  $data['cdb_items']['recommend_sort'] = array(
+    'title' => t('Total recommend'),
+    'help' => t('Sort on recommend count.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_recommends',
+    ),
+  );
+
+  $data['cdb_items']['comment_sort'] = array(
+    'title' => t('Total comments'),
+    'help' => t('Sort on comment count.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_comments',
+    ),
+  );
+
+  // Fields.
+
+  // Calendar summary.
+  $data['cdb_items']['when'] = array(
+    'title' => t('Calendar summary'),
+    'help' => t('Summary of the calendar'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_calendar_summary',
+    ),
+  );
+
+  // Location.
+  $data['cdb_items']['location'] = array(
+    'title' => t('Location'),
+    'help' => t('Location of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_location',
+    ),
+  );
+
+  // Organiser.
+  $data['cdb_items']['organiser'] = array(
+    'title' => t('Organiser'),
+    'help' => t('Organiser of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_organiser',
+    ),
+  );
+
+  // Picture.
+  $data['cdb_items']['picture'] = array(
+    'title' => t('Picture'),
+    'help' => t('Picture of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_picture',
+    ),
+  );
+
   return $data;
+
 }
 
 /**
@@ -98,7 +197,7 @@ function culturefeed_search_views_views_plugins() {
     'module' => 'culturefeed_search_views',
     'query' => array(
       'culturefeed_search_views_query' => array(
-        'uses fields' => FALSE,
+        'uses fields' => TRUE,
         'path' => $path . '/plugins',
         'title' => t('Culturefeed Search Query'),
         'help' => t('Query that allows you to search with culturefeed.'),

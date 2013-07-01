@@ -150,7 +150,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
  * @see culturefeed-search-suggestions.tpl.php
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_suggestions(&$variables) {
-  
+
 }
 
 /**

@@ -510,7 +510,7 @@ function culturefeed_search_ui_search_active_filters_block() {
       '#url' => $url
     );
   }
-  
+
   // Check the actor key.
   if (isset($query['actor'])) {
     $actor = culturefeed_agenda_actor_load($query['actor']);
@@ -550,13 +550,13 @@ function culturefeed_search_ui_search_active_filters_block() {
         $search_query['search'] = $suggestion;
         $suggestions[$suggestion] = url($path, array('query' => $search_query));
       }
-      
+
       $build['suggestions'] =  array(
         '#theme' => 'culturefeed_search_suggestions',
         '#suggestions' => $suggestions
       );
     }
-    
+
   }
 
   /*$build['item_search'] =  array(

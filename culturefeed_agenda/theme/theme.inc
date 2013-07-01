@@ -5,6 +5,30 @@
  */
 
 /**
+ * Preprocess the variables for the actor summary.
+ * @see culturefeed-actor-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_actor_summary(&$variables, $include_social_links = TRUE) {
+
+  _culturefeed_agenda_preprocess_agenda($variables, $include_social_links);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_actor($variables);
+
+}
+
+/**
+ * Preprocess the variables for the actor short summary.
+ * @see culturefeed-actory-short-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_actor_short_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_actor($variables);
+
+}
+
+/**
  * Preprocess the variables for the actor detail.
  * @see culturefeed-actor.tpl.php
  */
@@ -20,9 +44,9 @@ function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
  * Preprocess the variables for the event summary.
  * @see culturefeed-event-summary.tpl.php
  */
-function culturefeed_agenda_preprocess_culturefeed_event_summary(&$variables) {
+function culturefeed_agenda_preprocess_culturefeed_event_summary(&$variables, $include_social_links = TRUE) {
 
-  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda($variables, $include_social_links);
   _culturefeed_agenda_preprocess_agenda_summary($variables);
   _culturefeed_agenda_preprocess_event($variables);
 
@@ -54,9 +78,9 @@ function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
  * Preprocess the variables for the production summary.
  * @see culturefeed-production-summary.tpl.php
  */
-function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variables) {
+function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variables, $include_social_links = TRUE) {
 
-  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda($variables, $include_social_links);
   _culturefeed_agenda_preprocess_agenda_summary($variables);
   _culturefeed_agenda_preprocess_production($variables);
 
@@ -459,7 +483,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
     ));
   }
   $variables['items'] = $items;
-  
+
   $variables['search_url'] = url('agenda/search', array('query' => array('actor' => $variables['actor']->getId())));
 
 }

@@ -68,15 +68,15 @@ class DrupalCultureFeedSearchService {
 
     // Always add the spellcheck paramter.
     $parameters[] = new Parameter\Parameter('spellcheck', 'true');
-    
+
     $this->addLanguageParameter($parameters);
-    
+
     $items = $this->service->search($parameters, $path);
-    
+
     $this->translateCategories($items);
-    
+
     return $items;
-    
+
   }
 
   /**
