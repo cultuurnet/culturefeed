@@ -182,6 +182,14 @@ function culturefeed_search_views_data() {
     ),
   );
 
+  $data['cdb_items']['link'] = array(
+    'title' => t('Link'),
+    'help' => t('Link to the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_link',
+    ),
+  );
+
   return $data;
 
 }
