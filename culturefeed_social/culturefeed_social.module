@@ -380,7 +380,7 @@ function culturefeed_social_block_view($delta) {
 /**
  * Implements hook_culturefeed_ui_profile_menu().
  */
-function culturefeed_social_culturefeed_ui_profile_menu_alter(&$items) {
+function culturefeed_social_culturefeed_ui_profile_menu() {
 
   return array(
     'activities' => array(
