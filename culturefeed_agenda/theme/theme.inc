@@ -175,12 +175,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $actor = $organiser->getActor();
         $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
         $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-        $variables['organiser']['link'] = culturefeed_search_detail_l('production', $actor->getCdbid(), $variables['organiser']['title']);
+        $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
       }
       elseif ($organiser->getLabel()) {
         $variables['organiser']['title'] = $organiser->getLabel();
         if ($organiser->getCdbid()) {
-          $variables['organiser']['link'] = culturefeed_search_detail_l('production', $organiser->getCdbid(), $variables['organiser']['title']);
+          $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
         }
       }
 
@@ -229,10 +229,10 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['main_picture'] = $picture->getHLink();
       }
       // if main is not set use first image as main picture
-      else { 
+      else {
         $variables['main_picture'] = $variables['pictures'][0];
         unset($variables['pictures'][0]);
-      }       
+      }
     }
 
     // Add videos.
