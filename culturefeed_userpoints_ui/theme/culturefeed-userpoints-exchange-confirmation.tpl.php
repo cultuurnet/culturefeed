@@ -1,0 +1,1 @@
+Jouw huidig puntensaldo: <?php print $total_points; ?>

@@ -55,6 +55,14 @@ function culturefeed_userpoints_ui_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['userpoints/promotions/confirmation'] = array(
+    'title' => 'Voordelen',
+    'title callback' => FALSE,
+    'page callback' => 'culturefeed_userpoints_ui_page_exchange_confirmation',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
   $items['admin/config/services/userpoints'] = array(
     'title' => 'Culturefeed Userpoints User Interface',
     'description' => 'All configurations to adjust the behavior of userpoints for this site',
@@ -235,6 +243,13 @@ function culturefeed_userpoints_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-earned-overview',
+    ),
+
+    'culturefeed_userpoints_ui_page_exchange_confirmation' => array(
+      'variables' => array(),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-exchange-confirmation',
     ),
 
   );

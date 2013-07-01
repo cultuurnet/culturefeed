@@ -211,9 +211,10 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $variables['maxAvailableUnits'] = $pointsPromotion->maxAvailableUnits;
     $variables['unitsLeft'] = $pointsPromotion->maxAvailableUnits - $pointsPromotion->unitsTaken;
   }
-  
+
   $variables['active'] = FALSE;
   $variables['can_exchange'] = FALSE;
+  $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
   // Calculate the points.
   if (DrupalCultureFeed::isCultureFeedUser()) {
     $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -222,8 +223,7 @@ function _culturefeed_userpoints_ui_preprocess_detail(&$variables, $pointsPromot
     $variables['active'] = CultureFeedUserpointsWishlist::has($promotion_id);
     $variables['can_exchange'] = $variables['active'] || $user_points >= $variables['real_points'];
   }
-  $variables['real_points'] = CultureFeedUserpointsWishlist::getRealPoints($pointsPromotion->points);
-    
+
   $variables['title'] = $pointsPromotion->title;
   $variables['description1'] = $pointsPromotion->description1;
   $variables['description2'] = $pointsPromotion->description2;
@@ -320,11 +320,12 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_exchange
 function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variables) {
 
   $variables['intro'] = check_plain(variable_get('culturefeed_userpoints_ui_points_overview_intro'));
+  $variables['total_points'] = 0;
+  $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning'))));
 
   try {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
     $variables['total_points'] = CultureFeedUserpointsWishlist::getRealPoints($cf_user->points);
-    $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning'))));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
@@ -379,7 +380,23 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
  */
 function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
 
-  $points_left = format_plural($variables['points_left'], '@count punt', '@count punten');
-  return "Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen. Je hebt " . $points_left . 'over';
+  return 'Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.';
+
+}
+
+/**
+ * Preprocess the exchange confirmation page.
+ * @see culturefeed-userpoints-ui-page-exchange-confirmation.tpl.php
+ */
+function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_page_exchange_confirmation(&$variables) {
+
+  $variables['total_points'] = 0;
+  try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    $variables['total_points'] = CultureFeedUserpointsWishlist::getRealPoints($cf_user->points);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+  }
 
 }

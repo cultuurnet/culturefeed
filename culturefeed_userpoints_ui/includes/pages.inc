@@ -44,7 +44,7 @@ function culturefeed_userpoints_ui_promotions_page() {
 function culturefeed_userpoints_ui_exchange_page() {
 
   try {
-    
+
     $cf_account = DrupalCultureFeed::getLoggedInUser();
 
     $pointsPromotions = culturefeed_userpoints_ui_get_pointspromotions();
@@ -92,6 +92,15 @@ function culturefeed_userpoints_ui_exchange_page() {
   }
 
   return $build;
+
+}
+
+/**
+ * Page callback to show a confirmation page.
+ */
+function culturefeed_userpoints_ui_page_exchange_confirmation() {
+
+  return array('#theme' => 'culturefeed_userpoints_ui_page_exchange_confirmation');
 
 }
 
@@ -289,7 +298,7 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
  * @param array $form_state
  * @param Culturefeed_User $cf_account
  */
-function culturefeed_userpoints_ui_exchange_form_validate($form, $form_state) {
+function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
 
   $count = CultureFeedUserpointsWishlist::getIds();
   if ($count <= 0) {
@@ -311,11 +320,8 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, $form_state) {
 
 /**
  * Submit handler to exchange selected promotions for userpoints.
- * @param array $form
- * @param array $form_state
- * @param Culturefeed_User $cf_account
  */
-function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
+function culturefeed_userpoints_ui_exchange_form_submit($form, &$form_state) {
 
   try {
 
@@ -340,7 +346,6 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
 
     try {
       DrupalCultureFeed::updateUser($user_update, $fields);
-      drupal_set_message('Jouw gegevens zijn bijgewerkt.');
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_userpoints_ui', $e);
@@ -358,8 +363,7 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
       CultureFeedUserpointsWishlist::clear();
 
       // Send mail to administrator.
-      $admin_uid = variable_get('culturefeed_social_report_destination_uid');
-      $to_email = empty($admin_uid) ? variable_get('site_mail', '') : user_load($admin_uid)->mail;
+      $to_email = variable_get('culturefeed_userpoints_ui_exchange_email', '');
 
       $params = array(
         'promotions' => $pointsPromotions,
@@ -371,6 +375,8 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, $form_state) {
       drupal_mail('culturefeed_userpoints_ui', 'userpoints-exchange-request', $to_email, $GLOBALS['language']->language, $params);
 
     }
+
+    $form_state['redirect'] = 'userpoints/promotions/confirmation';
 
   }
   catch (CultureFeed_Exception $e) {
