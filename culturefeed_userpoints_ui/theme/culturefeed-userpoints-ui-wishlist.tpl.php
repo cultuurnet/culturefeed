@@ -1,6 +1,6 @@
 <?php
 /**
- * @file 
+ * @file
  * Template file for the list of wishlist items.
  */
 ?>
@@ -13,6 +13,7 @@
       <tr>
         <th>Titel</th>
         <th>Aantal</th>
+        <th>Punten</th>
         <th>Verwijder</th>
       </tr>
     </thead>

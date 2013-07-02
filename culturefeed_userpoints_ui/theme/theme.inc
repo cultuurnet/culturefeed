@@ -173,9 +173,10 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
  */
 function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist_item(&$variables) {
 
-  $variables['title'] = $variables['item']['title'];
+  $variables['title'] = check_plain($variables['item']['title']);
   $variables['count'] = $variables['item']['count'];
   $variables['id'] = $variables['item']['promotion_id'];
+  $variables['points'] = CultureFeedUserpointsWishlist::getRealPoints($variables['item']['points']);
   $variables['remove_link'] = l('Verwijder', 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
 
 }
