@@ -15,6 +15,29 @@ define("CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL", 1);
 define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 
 /**
+ * Implements hook_init().
+ */
+function culturefeed_search_ui_init() {
+
+  // Redirect to correct slug version, if an old slug was used.
+  if ($item = culturefeed_search_get_active_object()) {
+
+    if ($item instanceof CultureFeed_Cdb_Item_Page) {
+      $path = culturefeed_search_detail_path('page', $item->getId(), $item->getName());
+    }
+    else {
+      $path = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
+    }
+
+    if ($path != current_path()) {
+      drupal_goto($path, array(), 301);
+    }
+
+  }
+
+}
+
+/**
  * Implements hook_menu().
  */
 function culturefeed_search_ui_menu() {
@@ -171,7 +194,7 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    
+
     'culturefeed_search_suggestions' => array(
       'variables' => array(
         'suggestions' => array(),
