@@ -166,7 +166,7 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er ging iets fout tijdens het inschrijven. Gelieve opnieuw te proberen.');
+    drupal_set_message('Er ging iets fout tijdens het inschrijven. Gelieve opnieuw te proberen.', 'error');
     return;
   }
 
