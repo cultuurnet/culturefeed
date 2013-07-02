@@ -133,8 +133,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
 
   // Make the width 100% so it will fit the container.
   $form['select_count']['#attributes']['class'][] = 'span12';
-
-  $form['select_btn']['#value'] = t('Add');
+  $form['select_btn']['#attributes']['class'][] = 'btn-info';
 
   if ($variables['can_exchange']) {
     $variables['select_list'] = drupal_render($form['select_count']);

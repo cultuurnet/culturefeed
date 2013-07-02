@@ -199,9 +199,12 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     );
 
     $default_count = 1;
+    $submit_label = 'Toevoegen';
     if ($wishlistItem = CultureFeedUserpointsWishlist::get($promotion->id))  {
       $default_count = $wishlistItem['count'];
+      $submit_label = 'Aanpassen';
     }
+
     $form['list'][$promotion->id]['select_count'] = array(
       '#type' => 'select',
       '#title' => '',
@@ -212,7 +215,7 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     $form['list'][$promotion->id]['select_btn'] = array(
       '#name' => 'select_btn_' . $promotion->id,
       '#type' => 'submit',
-      '#value' => 'Selecteer',
+      '#value' => $submit_label,
       '#ajax' => array(
         'callback' => 'culturefeed_userpoints_ui_promotions_list_form_callback',
         'wrapper' => 'culturefeed-userpoints-promotions-list',
