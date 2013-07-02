@@ -297,6 +297,32 @@ function culturefeed_agenda_block_view($delta) {
 }
 
 /**
+ * Implements hook_culturefeed_search_ui_active_filters().
+ */
+function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFacetingComponent) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $path = current_path();
+  $build = array();
+
+  // Check the actor key.
+  if (isset($query['actor'])) {
+    $actor = culturefeed_agenda_actor_load($query['actor']);
+    $search_query = $query;
+    unset($search_query['actor']);
+    $url = url($path, array('query' => $search_query));
+    $build['nearby'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => 'In de buurt van ' . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+      '#url' => $url,
+    );
+  }
+
+  return $build;
+
+}
+
+/**
  * Title callback for agenda detail pages.
  */
 function culturefeed_agenda_detail_title(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {

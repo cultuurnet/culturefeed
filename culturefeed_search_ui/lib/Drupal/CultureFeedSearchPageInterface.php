@@ -8,4 +8,5 @@ interface CultureFeedSearchPageInterface {
   public function setDefaultSort($key);
   public function loadPage();
   public function getDrupalTitle();
+  public function setDefaultTitle();
 }

@@ -13,6 +13,8 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['content'] = theme('culturefeed_search_list', array('result' => $vars['searchresult']));
 
+  $vars['results_found'] = $vars['searchresult']->getTotalCount();
+
 }
 
 /**

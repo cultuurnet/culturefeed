@@ -420,6 +420,7 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
  * Block callback for the active filters during search.
  */
 function culturefeed_search_ui_search_active_filters_block() {
+
   // This currently means the page callback has already been invoked.
   global $culturefeedFacetingComponent;
   global $culturefeedSearchResult;
@@ -428,116 +429,10 @@ function culturefeed_search_ui_search_active_filters_block() {
     return '';
   }
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-  $path = current_path();
-  $build = array();
-
-  // Check the current search term.
-  if (!empty($query['search'])) {
-    $search_query = $query;
-    unset($search_query['search']);
-    $url = url($path, array('query' => $search_query));
-    $build['item_search'] =  array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $query['search'],
-      '#url' => $url
-    );
-  }
-
-  // Check the facets.
-  if (isset($query['facet'])) {
-
-    // Load all possible human names for special facets.
-    $human_names = array();
-    if (isset($query['facet']['datetype'])) {
-      $human_names['datetype'] = culturefeed_search_ui_get_date_facet_options();
-    }
-    if (isset($query['facet']['agefrom'])) {
-      $human_names['agefrom'] = culturefeed_search_ui_get_agefrom_facet_options();
-    }
-
-    $facets = $culturefeedFacetingComponent->getFacets();
-    // Loop through all active facets, and generate a remove link.
-    foreach ($query['facet'] as $active_facet_name => $selected_value) {
-      foreach ($selected_value as $key => $value) {
-
-        $search_query = $query;
-        unset($search_query['facet'][$active_facet_name][$key]);
-
-        // If this was the only facet. Also remove the global facet key.
-        if (empty($search_query['facet'])) {
-          unset($search_query['facet']);
-        }
-
-        $url = url($path, array('query' => $search_query));
-        $label = $selected_value[$key];
-
-        // Get translated label from terms.
-        $label = culturefeed_search_get_term_translation($label);
-
-        $build['item_' . $active_facet_name][$value] = array(
-          '#theme' => 'culturefeed_search_active_filters_item',
-          '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
-          '#url' => $url
-        );
-
-      }
-    }
-
-  }
-
-  // Check if user is filtering on date range.
-  if (isset($query['date_range'])) {
-    $search_query = $query;
-    unset($search_query['date_range']);
-    $url = url($path, array('query' => $search_query));
-    $build['date_search'] =  array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $query['date_range'],
-      '#url' => $url
-    );
-  }
-
-  // Check if user selected 'nearby activities'
-  if (isset($query['nearby']) && isset($query['coordinates'])) {
-    $search_query = $query;
-    unset($search_query['nearby']);
-    unset($search_query['coordinates']);
-    $url = url($path, array('query' => $search_query));
-    $build['nearby'] =  array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => 'In de buurt van ' . check_plain($query['nearby']),
-      '#url' => $url
-    );
-  }
-
-  // Check the actor key.
-  if (isset($query['actor'])) {
-    $actor = culturefeed_agenda_actor_load($query['actor']);
-    $search_query = $query;
-    unset($search_query['actor']);
-    $url = url($path, array('query' => $search_query));
-    $build['nearby'] =  array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => 'In de buurt van ' . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
-      '#url' => $url
-    );
-  }
-
-  // Check if user is searching on a location.
-  if (isset($query['location'])) {
-    $search_query = $query;
-    unset($search_query['location']);
-    $url = url($path, array('query' => $search_query));
-    $build['location'] =  array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => check_plain($query['location']),
-      '#url' => $url
-    );
-  }
+  $build = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
 
   if (!empty($build) && count($build) > 1) {
-    $build['reset'] = array('#markup' => l('Alle filters verwijderen', $path, array('attributes' => array('class' => array('delete-all')))));
+    $build['reset'] = array('#markup' => l('Alle filters verwijderen', current_path(), array('attributes' => array('class' => array('delete-all')))));
   }
 
   // Suggestions if available.

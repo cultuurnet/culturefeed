@@ -49,13 +49,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
   }
 
   /**
-   * Get the title to show.
-   */
-  public function getDrupalTitle() {
-    return format_plural($this->result->getTotalCount(), '@count activiteit gevonden', '@count activiteiten gevonden');
-  }
-
-  /**
    * Add the sorting parameters for the agenda searches.
    */
   private function addSort($params) {

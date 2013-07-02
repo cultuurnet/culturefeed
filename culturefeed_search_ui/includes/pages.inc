@@ -35,6 +35,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
     if ($ajax) {
       $page->setFullPage(FALSE);
     }
+    $page->setDefaultTitle($conf['page_title']);
     $build = $page->loadPage();
 
   }

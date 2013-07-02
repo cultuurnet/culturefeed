@@ -50,7 +50,7 @@ class CultureFeedSearchPage {
    * @var \CultuurNet\Search\Parameter\AbstractParameter[]
    */
   protected $parameters = array();
-  
+
   /**
    * Query to search on.
    * @var array
@@ -62,6 +62,12 @@ class CultureFeedSearchPage {
    * @var \CultuurNet\Search\SearchResult
    */
   protected $result;
+
+  /**
+   * Default page title.
+   * @var unknown
+   */
+  protected $defaultTitle = '';
 
   /**
    * Gets the default sortkey.
@@ -84,6 +90,14 @@ class CultureFeedSearchPage {
    */
   public function setDefaultSort($sortKey) {
     $this->defaultSortKey = $sortKey;
+  }
+
+  /**
+   * Set the default title.
+   * @param string $title
+   */
+  public function setDefaultTitle($title) {
+    $this->defaultTitle = $title;
   }
 
   /**
@@ -159,7 +173,7 @@ class CultureFeedSearchPage {
       }
 
     }
-    
+
     // Calculate actor if available.
     if (isset($params['actor']) && !empty($params['actor'])) {
       $id_search = array(
@@ -424,5 +438,36 @@ class CultureFeedSearchPage {
     return $build;
 
   }
-  
+
+  /**
+   * Get the title to show.
+   */
+  public function getDrupalTitle() {
+
+    global $culturefeedFacetingComponent;
+    $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+    if (!empty($active_filters)) {
+
+      $labels = array();
+      foreach ($active_filters as $active_filter) {
+
+        if (!isset($active_filter['#label'])) {
+          foreach ($active_filter as $subitem) {
+            $labels[] = $subitem['#label'];
+          }
+        }
+        else {
+          $labels[] = $active_filter['#label'];
+        }
+
+      }
+
+      return implode(', ', $labels);
+
+    }
+
+    return $this->defaultTitle;
+
+  }
+
 }
