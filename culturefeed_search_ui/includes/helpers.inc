@@ -96,3 +96,23 @@ function culturefeed_search_ui_get_date_facet_options() {
   );
 
 }
+
+/**
+ * Set the correct metatags for search pages.
+ */
+function culturefeed_search_ui_set_metatags() {
+
+  // Add the "noindex, follow" meta tag if needed.
+  if ($noindex) {
+    $element = array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'robots',
+        'content' => 'noindex, follow',
+      ),
+    );
+
+    drupal_add_html_head($element, 'nofollow');
+  }
+
+}

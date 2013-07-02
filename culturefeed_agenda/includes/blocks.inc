@@ -126,7 +126,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   if (!empty($domain_id)) {
 
     $options = array('' => 'Alle categorieën');
-    $categories = culturefeed_search_get_categories_by_domain($domain_id, array('language' => $GLOBALS['language']->language));
+    $categories = culturefeed_search_get_categories_by_domain($domain_id);
     foreach ($categories as $category) {
       $options[$category] = $category;
     }
@@ -221,7 +221,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
  * Show the upcoming program of current actor.
  */
 function culturefeed_agenda_block_actor_program() {
-  
+
   $item = culturefeed_agenda_get_active_object();
   if (!$item || $item->getType() != 'actor') {
     return;
@@ -260,12 +260,12 @@ function culturefeed_agenda_block_actor_program() {
     '#actor' => $item,
     '#items' => $result->getItems(),
   );
-  
+
   $block = array(
     'subject' => '',
     'content' => $content,
   );
-  
+
   return $block;
 
 }
