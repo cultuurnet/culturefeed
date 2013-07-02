@@ -45,13 +45,6 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
   }
 
   /**
-   * Get the title to show.
-   */
-  public function getDrupalTitle() {
-    return format_plural($this->result->getTotalCount(), '@count pagina gevonden', "@count pagina's gevonden");
-  }
-
-  /**
    * Execute the search for current page.
    */
   protected function execute($params, $culturefeedFacetingComponent) {
