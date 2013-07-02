@@ -249,16 +249,31 @@ function culturefeed_mailing_newsletter_block_form() {
  */
 function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
-  $path = (!DrupalCultureFeed::isCultureFeedUser()) ? 'authenticated' : 'subscribe';
+  if (DrupalCultureFeed::isCultureFeedUser()) {
 
-  $form_state['redirect'] = array(
-    $path,
-    array(
-      'query' => array(
-        'email' => $form_state['values']['mail'],
+    $form_state['redirect'] = array(
+      'subscribe',
+      array(
+        'query' => array(
+          'email' => $form_state['values']['mail'],
+        ),
       ),
-    ),
-  );
+    );
+
+  }
+  else {
+
+    $form_state['redirect'] = array(
+      'authenticated',
+      array(
+        'query' => array(
+          'email' => $form_state['values']['mail'],
+          'destination' => 'subscribe',
+        ),
+      ),
+    );
+
+  }
 
 }
 
