@@ -151,6 +151,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   }
 
   $variables['content'] = check_plain(strip_tags($activity->value)); // Cultuurnet doesn't want to see html tags converted to plain.
+  $variables['content'] = str_replace("\n", "<br />", $variables['content']);
   $variables['activity_id'] = $activity->id;
 
   // The list of child activities if available.
