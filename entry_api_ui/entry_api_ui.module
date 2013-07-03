@@ -93,12 +93,7 @@ function entry_api_ui_menu() {
 function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
   $id = '';
-  if (module_exists('cnapi_snode') && ($node = menu_get_object())) {
-    if ($node && $node->type == 'cnapi_event' && isset($node->id)) {
-      $id = $node->id;
-    }
-  }
-  elseif (arg(0) == 'agenda' && arg(1) == 'e') {
+  if (arg(0) == 'agenda' && arg(1) == 'e') {
     $id = arg(3);
   }
   elseif (arg(0) == 'entryapi') {
@@ -116,7 +111,7 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     $link = array(
       'href' => 'entryapi/event/' . $id . '/tags',
       'localized_options' => array(),
-      'title' => 'Tags',
+      'title' => t('Tags'),
     );
 
     $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
@@ -129,24 +124,28 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     $link = array(
       'href' => 'entryapi/event/' . $id . '/edit',
       'localized_options' => array(),
-      'title' => 'Aanpassen',
+      'title' => t('Edit'),
     );
 
     $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
 
   }
 
-  // Detail only exists when cnapi ui is enabled.
-  if ($tabs && module_exists('cnapi_ui')) {
+  // Detail only exists when culturefeed_agenda is enabled.
+  if ($tabs && module_exists('culturefeed_agenda')) {
 
-    $event = cnapi_get_event($id);
-    $request_detail = array('event' => $id, 'title' => $event['detail']['nl']['title']);
-    $url = cnapi_url_dp2dua($request_detail);
+    $event = culturefeed_search_item_load($id);
+    $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
+    $request_detail = array(
+      'event' => $id, 
+      'title' => $title,
+    );
+    $path = culturefeed_search_detail_path($event->getType(), $id, $title);
 
     $link = array(
-      'href' => $url['path'],
+      'href' => $path,
       'localized_options' => array(),
-      'title' => 'Weergeven',
+      'title' => t('View'),
     );
     $tab = array('#theme' => 'menu_local_action', '#link' => $link);
     array_unshift($tabs, $tab);

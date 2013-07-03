@@ -158,9 +158,12 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    $eventXml = $xml->events->event;
-
-    return CultureFeed_Cdb_Item_Event::parseFromCdbXml($eventXml);
+    if ($xml->events && $xml->events->event) {
+      $eventXml = $xml->events->event;
+      return CultureFeed_Cdb_Item_Event::parseFromCdbXml($eventXml);
+    }
+    
+    throw new CultureFeed_ParseException($result);
 
   }
 
@@ -199,6 +202,7 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
     $cdb->addItem($event);
 
     $result = $this->oauth_client->authenticatedPostAsXml('event/' . $event->getCdbId(), array('raw_data' => $cdb->__toString()), TRUE);
+
     $xml = $this->validateResult($result, self::CODE_ITEM_MODIFIED);
 
   }
@@ -236,9 +240,12 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    $productionXml = $xml->productions->production;
-
-    return CultureFeed_Cdb_Item_Production::parseFromCdbXml($productionXml);
+    if ($xml->productions && $xml->productions->production) {
+      $productionXml = $xml->productions->production;
+      return CultureFeed_Cdb_Item_Production::parseFromCdbXml($productionXml);
+    }
+    
+    throw new CultureFeed_ParseException($result);
   }
 
   /**
@@ -308,9 +315,12 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    $productionXml = $xml->actors->actor;
-
-    return CultureFeed_Cdb_Item_Actor::parseFromCdbXml($actorXml);
+    if ($xml->actors && $xml->actors->actor) {
+      $productionXml = $xml->actors->actor;
+      return CultureFeed_Cdb_Item_Actor::parseFromCdbXml($actorXml);
+    }
+    
+    throw new CultureFeed_ParseException($result);
   }
 
   /**
@@ -790,11 +800,19 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
     }
 
     $status_code = $xml->xpath_str('/rsp/code');
+    if (empty($status_code)) {
+      $status_code = $xml->xpath_str('/response/code');
+      $status_message = $xml->xpath_str('/response/message'); 
+    }
+    else {
+      $status_message = $xml->xpath_str('/rsp/message'); 
+    }
+    
     if ($status_code == $valid_status_code) {
       return $xml;
     }
 
-    throw new CultureFeed_InvalidCodeException($xml->xpath_str('/rsp/message'), $status_code);
+    throw new CultureFeed_InvalidCodeException($status_message, $status_code);
 
   }
 

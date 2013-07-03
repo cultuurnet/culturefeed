@@ -118,28 +118,26 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['title'] = array(
     '#type' => 'textfield',
-    '#title' => 'Titel',
-    '#default_value' => ($event) ? $event->getDetails()->current()->getTitle() : NULL,
+    '#title' => t('Titel'),
+    '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
     '#required' => TRUE,
   );
 
   $form['location'] = array(
     '#type' => 'textfield',
-    '#title' => 'Locatie',
-    '#autocomplete_path' => 'cnapi/autocomplete/actor',
+    '#title' => t('Location'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => TRUE,
     '#default_value' => $default_location,
   );
 
-  if (module_exists('cnapi')) {
-    $form['organiser'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Organisatie',
-      '#autocomplete_path' => 'cnapi/autocomplete/actor',
-      '#required' => TRUE,
-      '#default_value' => $default_organiser,
-    );
-  }
+  $form['organiser'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Organisation'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+    '#required' => TRUE,
+    '#default_value' => $default_organiser,
+  );
 
   $form['what'] = array('#type' => 'container');
   $form['what']['kijken_en_luisteren'] = array(
@@ -159,18 +157,18 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $form['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
     '#options' => entry_api_ui_get_category_options('Bezoeken'),
-    '#title' => 'Bezoeken',
+    '#title' => t('Visit'),
     '#default_value' => $category_defaults,
   );
 
   $form['when'] = array(
     '#type' => 'radios',
-    '#title' => 'Wanneer',
+    '#title' => t('When'),
     '#options' => array(
-      'one_day' => 'Eén dag',
-      'multiple_days' => 'Meerdere dagen',
-      'period' => 'Lange periode',
-      'permanent' => 'Eindigt nooit',
+      'one_day' => t('One single day'),
+      'multiple_days' => t('Multiple days'),
+      'period' => t('Long period'),
+      'permanent' => t('Never ending'),
     ),
     '#default_value' => $when,
   );
@@ -589,7 +587,7 @@ function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_ti
  * Validate the event form.
  */
 function entry_api_ui_event_form_validate($form, &$form_state) {
-
+  
   $validation_failed = FALSE;
   $values = $form_state['values'];
 
@@ -668,21 +666,54 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 
   // Validate location.
   if (!empty($values['location'])) {
-    $location_label = $values['location'];
-    $location = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :location", array(':location' => strtolower($location_label)))->fetchAssoc();
+    $location_label = $search_string = $values['location'];
+    if (preg_match("|-|", $location_label)) {
+      list($search_string, $zip) = explode("-", $location_label);
+    }
+    
+    try {
 
-    if (!$location) {
-      form_set_error('location', 'Gelieve een correcte locatie in te voeren');
+      $search_string = trim($search_string);
+      $parameters = array();
+      $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+      $parameters[] = new \CultuurNet\Search\Parameter\Group();
+      $result = culturefeed_get_search_service()->search($parameters);
+
+      if ($result->getTotalCount()  > 0) {
+        $items = $result->getItems();
+        $location = culturefeed_search_item_load($items[0]->getId());
+      }
+      else {
+        throw new Exception('No locations found');
+      }
+      
+    }
+    catch (Exception $e) {
+      form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
       $validation_failed = TRUE;
     }
   }
 
   // Validate organiser.
   if (!empty($values['organiser'])) {
-    $organiser_label = $values['organiser'];
-    $organiser = db_query("SELECT cdbid, city, zip FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) = :organiser", array(':organiser' => strtolower($organiser_label)))->fetchAssoc();
-
-    if (!$organiser) {
+    $organiser_label = $search_string = $values['organiser'];
+    if (preg_match("|-|", $organiser_label)) {
+      list($search_string, $zip) = explode("-", $organiser_label);
+    }
+    
+    try {
+      $parameters = array();
+      $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+      $parameters[] = new \CultuurNet\Search\Parameter\Group();
+      $result = culturefeed_get_search_service()->search($parameters);
+      if ($result->getTotalCount()  > 0) {
+        $items = $result->getItems();
+        $organiser = culturefeed_search_item_load($items[0]->getId());
+      }
+    }
+    catch (Exception $e) {
       form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
       $validation_failed = TRUE;
     }
@@ -750,55 +781,30 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
   if (!empty($values['short_description'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  $detail->setLanguage('nl');
+  $detail->setLanguage(culturefeed_search_get_preferred_language());
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
   $event->setDetails($details);
 
   // Location / Address.
-  $location_label = $values['location'];
-  $location_cdbid = $location['cdbid'];
-  $country = 'BE';
+  $addresses = $location->getEntity()->getContactInfo()->getAddresses();
+  $address = $addresses[0];
 
-  // Actor is at the moment done, the old way.
-  $actor = cnapi_get_actor($location['cdbid']);
-  if ($actor) {
-    $location = $actor['contactinfo']['address'];
-    $country = $location['country'];
-    $location['zip'] = $location['zipcode'];
-  }
-
-  $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-  $physical_address->setCity($location['city']);
-  $physical_address->setCountry($country);
-  $physical_address->setZip($location['zip']);
-  if (isset($location['street'])) {
-    $physical_address->setStreet($location['street']);
-    $physical_address->setHouseNumber($location['housenr']);
-  }
-  $address = new CultureFeed_Cdb_Data_Address($physical_address);
-
+  // Event location
   $cdbLocation = new CultureFeed_Cdb_Data_Location($address);
-  $cdbLocation->setLabel($location_label);
-  $cdbLocation->setCdbid($location_cdbid);
+  $cdbLocation->setLabel($values['location']);
+  $cdbLocation->setCdbid($location->getId());
   $event->setLocation($cdbLocation);
 
-  // Organiser.
-  $organiser_label = $values['organiser'];
-  $organiser_cdbid = $organiser['cdbid'];
-
-  $cdbOrganiser = new CultureFeed_Cdb_Data_Organiser($organiser_label, $organiser_cdbid);
-
-  $event->setOrganiser($cdbOrganiser);
-
-  // Organiser.
+  // Event organiser.
   $organiser_object = new CultureFeed_Cdb_Data_Organiser();
   $organiser_object->setLabel($values['organiser']);
-  $organiser_object->setCdbid($organiser['cdbid']);
+  $organiser_object->setCdbid($organiser->getId());
   $event->setOrganiser($organiser_object);
 
   // Contact info.
+  $physical_address = $address->getPhysicalAddress();
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
   $contact_object->addAddress(new CultureFeed_Cdb_Data_Address($physical_address));
 
@@ -841,7 +847,7 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
 
   }
   catch (Exception $e) {
-    watchdog_exception(WATCHDOG_ERROR, $e);
+    watchdog_exception('entry_api_ui', $e);
     form_set_error('', 'Er ging iets fout tijdens het bewaren.');
   }
 
