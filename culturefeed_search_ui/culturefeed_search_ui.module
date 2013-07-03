@@ -38,7 +38,7 @@ function culturefeed_search_ui_init() {
   // Set correct robot metatag.
   $active_page = _culturefeed_search_ui_get_active_search_page();
   if ($active_page) {
-    culturefeed_search_ui_set_metatags();
+    culturefeed_search_ui_set_noindex_metatag();
   }
 
 }

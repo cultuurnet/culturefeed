@@ -100,35 +100,34 @@ function culturefeed_search_ui_get_date_facet_options() {
 /**
  * Set the correct metatags for search pages.
  */
-function culturefeed_search_ui_set_metatags() {
+function culturefeed_search_ui_set_noindex_metatag() {
 
   // Default noindex should be shown.
   $noindex = TRUE;
 
-  $query = drupal_get_query_parameters();
+  $query = drupal_get_query_parameters(NULL, array('q'));
   // Start page should be indexed.
   if (empty($query)) {
     $noindex = FALSE;
   }
   else {
 
-    $solr_query_params = $query;
-    if (isset($query['facet'])) {
+    // No index can only be FALSE, if user is filtering on event type.
+    if (isset($query['facet']['category_eventtype_id'])) {
 
-      unset($solr_query_params['facet']);
-      $solr_query_params += $query['facet'];
+      $facets = $query['facet'];
+      unset($facets['category_eventtype_id']);
+      unset($facets['category_theme_id']);
 
-    }
+      $location = isset($query['location']) ? $query['location'] : '';
+      unset($query['location']);
+      unset($query['facet']);
 
-    $allowed_params = array(
-      'category_eventtype_id',
-      'category_theme_id',
-      'location',
-    );
+      // If theme_id was the only extra facet / parameters, set noindex to false.
+      if (count($facets) == 0 && count($query) == 0) {
+        $noindex = FALSE;
+      }
 
-    // When only allowed params are active, set noindex to false.
-    if (!(count(array_diff(array_keys($solr_query_params), $allowed_params)) > 0)) {
-      $noindex = FALSE;
     }
 
   }
