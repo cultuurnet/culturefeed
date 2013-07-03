@@ -180,7 +180,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
     return array(
       'subject' => check_plain($subject),
       'content' => array(
-        '#theme' => 'culturefeed_search_facet',
+        '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
         '#facet' => $facet,
         '#items' => $items,
       ),

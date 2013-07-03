@@ -115,6 +115,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
 }
 
 /**
+ * Preprocess function for the search facet.
+ * @see culturefeed-search-facet.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$variables) {
+  culturefeed_search_ui_preprocess_culturefeed_search_facet($variables);
+}
+
+/**
  * Preproces a search facet item.
  * @see culturefeed-search-facet-item.tpl.php
  */

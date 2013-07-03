@@ -138,6 +138,18 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_search_facet_eventtype' => array(
+      'variables' => array(
+        'facet' => NULL,
+        'items' => array(),
+        'title' => NULL,
+        'path' => NULL,
+        'query' => NULL,
+      ),
+      'template' => 'culturefeed-search-facet-eventtype',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_facet_item' => array(
       'variables' => array(
         'facet_item' => NULL,
