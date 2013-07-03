@@ -38,6 +38,13 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
     $page->setDefaultTitle($conf['page_title']);
     $build = $page->loadPage();
 
+    drupal_set_title($page->getDrupalTitle());
+    $active_trail = $page->getActiveTrail();
+    if ($active_trail) {
+      menu_set_active_trail($active_trail);
+    }
+
+
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);

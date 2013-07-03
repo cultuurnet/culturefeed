@@ -433,8 +433,6 @@ class CultureFeedSearchPage {
       }
     }
 
-    drupal_set_title($this->getDrupalTitle());
-
     return $build;
 
   }
@@ -467,6 +465,93 @@ class CultureFeedSearchPage {
     }
 
     return $this->defaultTitle;
+
+  }
+
+  /**
+   * Get the active trail to show.
+   */
+  public function getActiveTrail() {
+
+  $active_trail = array();
+
+  $active_trail[] = array(
+    'title' => t('Home'),
+    'href' => '<front>',
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+    $query = drupal_get_query_parameters(NULL, array('page', 'q'));
+    if (isset($query['facet']['category_eventtype_id']) || isset($query['facet']['category_theme_id'])) {
+
+      if (isset($query['facet']['category_eventtype_id'])) {
+        $active_trail[] = array(
+          'title' => culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]),
+          'href' => 'agenda/search',
+          'link_path' => '',
+          'localized_options' => array(
+            'query' => array(
+              'facet' => array('category_eventtype_id' => array($query['facet']['category_eventtype_id'])),
+            ),
+          ),
+          'type' => 0,
+        );
+      }
+
+      if (isset($query['facet']['category_theme_id'])) {
+        $active_trail[] = array(
+          'title' => culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]),
+          'href' => 'agenda/search',
+          'link_path' => '',
+          'localized_options' => array(
+            'query' => array(
+              'facet' => array('category_theme_id' => array($query['facet']['category_theme_id'])),
+            ),
+          ),
+          'type' => 0,
+        );
+      }
+
+    }
+    elseif (!empty($query)) {
+
+      $active_trail[] = array(
+        'title' => 'Alle activiteiten',
+        'href' => 'agenda/search',
+        'link_path' => '',
+        'localized_options' => array(),
+        'type' => 0,
+      );
+
+    }
+
+    if (isset($query['location'])) {
+
+      $active_trail[] = array(
+        'title' => $query['location'],
+        'href' => 'agenda/search',
+        'link_path' => '',
+        'localized_options' => array(
+          'query' => array(
+            'location' => $query['location'],
+          ),
+        ),
+        'type' => 0,
+      );
+
+    }
+
+    $active_trail[] = array(
+      'title' => $this->getDrupalTitle(),
+      'href' => $_GET['q'],
+      'link_path' => '',
+      'localized_options' => array(),
+      'type' => 0,
+    );
+
+    return $active_trail;
 
   }
 
