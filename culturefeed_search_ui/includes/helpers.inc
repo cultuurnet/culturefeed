@@ -102,6 +102,37 @@ function culturefeed_search_ui_get_date_facet_options() {
  */
 function culturefeed_search_ui_set_metatags() {
 
+  // Default noindex should be shown.
+  $noindex = TRUE;
+
+  $query = drupal_get_query_parameters();
+  // Start page should be indexed.
+  if (empty($query)) {
+    $noindex = FALSE;
+  }
+  else {
+
+    $solr_query_params = $query;
+    if (isset($query['facet'])) {
+
+      unset($solr_query_params['facet']);
+      $solr_query_params += $query['facet'];
+
+    }
+
+    $allowed_params = array(
+      'category_eventtype_id',
+      'category_theme_id',
+      'location',
+    );
+
+    // When only allowed params are active, set noindex to false.
+    if (!(count(array_diff(array_keys($solr_query_params), $allowed_params)) > 0)) {
+      $noindex = FALSE;
+    }
+
+  }
+
   // Add the "noindex, follow" meta tag if needed.
   if ($noindex) {
     $element = array(

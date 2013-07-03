@@ -121,7 +121,7 @@ class DrupalCultureFeedSearchService {
         $categories = $item->getEntity()->getCategories();
         foreach ($categories as $category) {
           if (is_object($category)) {
-            $category->setName(culturefeed_search_get_term_translation($categoryId));
+            $category->setName(culturefeed_search_get_term_translation($category->getId()));
           }
         }
       }

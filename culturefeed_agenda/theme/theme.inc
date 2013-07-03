@@ -433,17 +433,9 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   if ($actor->getContactInfo()) {
 
     $contact_info = $actor->getContactInfo();
-    $addresses = $contact_info->getAddresses();
-
-    if ($addresses) {
-
-      $variables['location']['title'] = $addresses[0]->getLabel();
-      $physical_address = $addresses[0]->getPhysicalAddress();
-      if ($physical_address) {
-        $variables['location']['city'] = check_plain($physical_address->getCity());
-        $variables['location']['street'] = check_plain($physical_address->getStreet() . ' ' . $physical_address->getHouseNumber());
-        $variables['location']['zip'] = check_plain($physical_address->getZip());
-      }
+    $locations = culturefeed_agenda_get_locations_of_item($actor);
+    if ($locations) {
+      $variables['location'] = $locations[0];
     }
 
     // Mails.

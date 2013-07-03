@@ -205,13 +205,24 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
     'type' => 0,
   );
 
-  $active_trail[] = array(
-    'title' => "Pagina's",
-    'href' => 'agenda/pages',
-    'link_path' => '',
-    'localized_options' => array(),
-    'type' => 0,
-  );
+  $address = $page->getAddress();
+  if ($address) {
+    $city = $address->getCity();
+    $postal = $address->getZip();
+    if ($city && $postal) {
+      $active_trail[] = array(
+        'title' => $postal . ' ' . $city,
+        'href' => 'agenda/pages',
+        'link_path' => '',
+        'localized_options' => array(
+          'query' => array(
+            'location' => $postal . ' ' . $city,
+          ),
+        ),
+        'type' => 0,
+      );
+    }
+  }
 
   $page_path = culturefeed_search_detail_path('page', $page->getId(), $page->getName());
 

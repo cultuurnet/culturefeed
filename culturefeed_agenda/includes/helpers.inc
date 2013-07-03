@@ -164,6 +164,30 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
       }
     }
   }
+  elseif ($item instanceof CultureFeed_Cdb_Item_Actor) {
+
+    if ($item->getContactInfo()) {
+
+      $contact_info = $item->getContactInfo();
+      $addresses = $contact_info->getAddresses();
+
+      if ($addresses) {
+
+        $location = array();
+        $location['title'] = $addresses[0]->getLabel();
+        $physical_address = $addresses[0]->getPhysicalAddress();
+        if ($physical_address) {
+          $location['city'] = check_plain($physical_address->getCity());
+          $location['street'] = check_plain($physical_address->getStreet() . ' ' . $physical_address->getHouseNumber());
+          $location['zip'] = check_plain($physical_address->getZip());
+        }
+        $locations[] = $location;
+
+      }
+
+    }
+
+  }
 
   return $locations;
 
@@ -255,5 +279,132 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
   }
 
   return $data;
+
+}
+
+/**
+ * Set the breadcrumb for an event / production.
+ * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
+ */
+function culturefeed_agenda_set_activity_breadcrumb(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+
+  $active_trail = array();
+
+  $active_trail[] = array(
+    'title' => t('Home'),
+    'href' => '<front>',
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  // Show the event type in breadcrumb.
+  $event_types = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
+  if ($event_types) {
+
+    // First event type.
+    $active_trail[] = array(
+      'title' => $event_types[0]->getName(),
+      'href' => 'agenda/search',
+      'link_path' => '',
+      'localized_options' => array(
+        'query' => array(
+          'facet' => array('category_eventtype_id' => array($event_types[0]->getId())),
+        ),
+      ),
+      'type' => 0,
+    );
+
+  }
+
+  // City
+  $locations = culturefeed_agenda_get_locations_of_item($item->getEntity());
+  if (!empty($locations) && isset($locations[0]['city'])) {
+    $active_trail[] = array(
+      'title' => $locations[0]['city'],
+      'href' => 'agenda/search',
+      'link_path' => '',
+      'localized_options' => array(
+        'query' => array(
+          'location' => $locations[0]['zip'] . ' ' . $locations[0]['city'],
+        ),
+      ),
+      'type' => 0,
+    );
+  }
+
+
+  $active_trail[] = array(
+    'title' => $item->getTitle(culturefeed_search_get_preferred_language()),
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  menu_set_active_trail($active_trail);
+
+}
+
+/**
+ * Set the breadcrumb for an actor.
+ * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
+ */
+function culturefeed_agenda_set_actor_breadcrumb(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+
+  $active_trail = array();
+
+  $active_trail[] = array(
+    'title' => t('Home'),
+    'href' => '<front>',
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  // Show the actor type in breadcrumb.
+  $actor_types = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE);
+  if ($actor_types) {
+
+    // First event type.
+    $active_trail[] = array(
+      'title' => $actor_types[0]->getName(),
+      'href' => 'agenda/search',
+      'link_path' => '',
+      'localized_options' => array(
+        'query' => array(
+          'facet' => array('category_actortype_id' => array($actor_types[0]->getId())),
+        ),
+      ),
+      'type' => 0,
+    );
+
+  }
+
+  // City
+  $locations = culturefeed_agenda_get_locations_of_item($item->getEntity());
+  if (!empty($locations) && isset($locations[0]['city'])) {
+    $active_trail[] = array(
+      'title' => $locations[0]['city'],
+      'href' => 'agenda/search',
+      'link_path' => '',
+      'localized_options' => array(
+        'query' => array(
+          'location' => $locations[0]['zip'] . ' ' . $locations[0]['city'],
+        ),
+      ),
+      'type' => 0,
+    );
+  }
+
+  $active_trail[] = array(
+    'title' => $item->getTitle(culturefeed_search_get_preferred_language()),
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  menu_set_active_trail($active_trail);
 
 }

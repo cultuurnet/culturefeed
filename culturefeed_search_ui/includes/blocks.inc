@@ -303,7 +303,7 @@ function culturefeed_search_ui_block_city_facet() {
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
     );
 
     $build = array();

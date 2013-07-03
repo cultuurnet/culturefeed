@@ -624,7 +624,15 @@ function culturefeed_search_get_preferred_language() {
  *     in case $return_tids is set to TRUE.
  */
 function culturefeed_search_term_translations($tids = array(), $return_tids = FALSE) {
+
   static $terms = array();
+
+  // Check what tids are already known.
+  foreach ($tids as $key => $tid) {
+    if (isset($terms[$tid])) {
+      unset($tids[$key]);
+    }
+  }
 
   if (!empty($tids)) {
     $translations = db_select('culturefeed_search_terms', 'cst')
@@ -659,7 +667,8 @@ function culturefeed_search_term_translations($tids = array(), $return_tids = FA
  *   The label of the translated term.
  */
 function culturefeed_search_get_term_translation($tid) {
-  $terms = culturefeed_search_term_translations(NULL, TRUE);
+
+  $terms = culturefeed_search_term_translations(array($tid), TRUE);
 
   if (!isset($terms[$tid])) {
     return $tid;
@@ -671,4 +680,5 @@ function culturefeed_search_get_term_translation($tid) {
   else {
     return $terms[$tid][LANGUAGE_NONE];
   }
+
 }
