@@ -33,6 +33,15 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // dob
   $variables['dob'] = !empty($account->dob) ? format_date($account->dob, 'custom', 'j/n/Y') : '';
 
+  // age
+  $variables['age'] = '';
+  if (!empty($account->dob)) {
+    $time_zone  = new DateTimeZone('Europe/Brussels');
+    $variables['age'] = DateTime::createFromFormat('d/m/Y', $variables['dob'], $time_zone)
+      ->diff(new DateTime('now', $time_zone))
+      ->y;
+  }
+
   // bio
   $variables['bio'] = !empty($account->bio) ? $account->bio : '';
 

@@ -2,7 +2,7 @@
   <?php print $profile_edit_link ?>
 <?php endif; ?>
 
-<?php if ($picture || $name || $gender || $dob || $bio || $city) : ?> 
+<?php if ($picture || $name || $gender || $age || $bio || $city) : ?> 
   <?php if ($picture) : ?>
     <div class="profile-picture">
       <?php print $picture ?>
@@ -18,8 +18,8 @@
         <div class="profile-field gender"><?php print $gender ?></div>
       <?php endif; ?>
       
-      <?php if ($dob) : ?>
-        <div class="profile-field dob"><?php print $dob?></div>
+      <?php if ($age) : ?>
+        <div class="profile-field age"><?php print $age?> jaar</div>
       <?php endif; ?>
       
       <?php if ($bio) : ?>
