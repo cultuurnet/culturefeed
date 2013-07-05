@@ -9,9 +9,11 @@
  */
 function culturefeed_social_block_recent_activities() {
 
+  $consumer_key = variable_get('culturefeed_api_application_key', '');
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT;
   $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+  $query->consumer = $consumer_key;
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
