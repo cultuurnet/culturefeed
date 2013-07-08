@@ -205,6 +205,27 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
     'type' => 0,
   );
 
+  $categories = $page->getCategories();
+  $actor_types = culturefeed_search_get_actortype_categories(array('tid' => $categories));
+  $facet = array();
+  if ($actor_types) {
+
+    $facet['category_actortype_id'] = array(key($actor_types));
+
+    $active_trail[] = array(
+      'title' => current($actor_types),
+      'href' => 'agenda/pages',
+      'link_path' => '',
+      'localized_options' => array(
+        'query' => array(
+          'facet' => $facet,
+        ),
+      ),
+      'type' => 0,
+    );
+
+  }
+
   $address = $page->getAddress();
   if ($address) {
     $city = $address->getCity();
@@ -216,6 +237,7 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
         'link_path' => '',
         'localized_options' => array(
           'query' => array(
+            'facet' => $facet,
             'location' => $postal . ' ' . $city,
           ),
         ),

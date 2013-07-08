@@ -289,6 +289,7 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
 function culturefeed_agenda_set_activity_breadcrumb(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
 
   $active_trail = array();
+  $facet = array();
 
   $active_trail[] = array(
     'title' => t('Home'),
@@ -302,6 +303,8 @@ function culturefeed_agenda_set_activity_breadcrumb(\CultuurNet\Search\ActivityS
   $event_types = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
   if ($event_types) {
 
+    $facet['category_eventtype_id'] = array($event_types[0]->getId());
+
     // First event type.
     $active_trail[] = array(
       'title' => $event_types[0]->getName(),
@@ -309,7 +312,7 @@ function culturefeed_agenda_set_activity_breadcrumb(\CultuurNet\Search\ActivityS
       'link_path' => '',
       'localized_options' => array(
         'query' => array(
-          'facet' => array('category_eventtype_id' => array($event_types[0]->getId())),
+          'facet' => $facet,
         ),
       ),
       'type' => 0,
@@ -327,6 +330,7 @@ function culturefeed_agenda_set_activity_breadcrumb(\CultuurNet\Search\ActivityS
       'localized_options' => array(
         'query' => array(
           'location' => $locations[0]['zip'] . ' ' . $locations[0]['city'],
+          'facet' => $facet,
         ),
       ),
       'type' => 0,

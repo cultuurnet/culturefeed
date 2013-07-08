@@ -94,16 +94,20 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     // Show event type and theme in breadcrumb.
     $query = drupal_get_query_parameters(NULL, array('page', 'q'));
+    $facet = array();
     if (isset($query['facet']['category_eventtype_id']) || isset($query['facet']['category_theme_id'])) {
 
       if (isset($query['facet']['category_eventtype_id'])) {
+
+        $facet['category_eventtype_id'] = $query['facet']['category_eventtype_id'];
+
         $active_trail[] = array(
           'title' => culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]),
           'href' => 'agenda/search',
           'link_path' => '',
           'localized_options' => array(
             'query' => array(
-              'facet' => array('category_eventtype_id' => array($query['facet']['category_eventtype_id'])),
+              'facet' => $facet,
             ),
           ),
           'type' => 0,
@@ -111,13 +115,16 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       }
 
       if (isset($query['facet']['category_theme_id'])) {
+
+        $facet['category_theme_id'] = $query['facet']['category_theme_id'];
+
         $active_trail[] = array(
           'title' => culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]),
           'href' => 'agenda/search',
           'link_path' => '',
           'localized_options' => array(
             'query' => array(
-              'facet' => array('category_theme_id' => array($query['facet']['category_theme_id'])),
+              'facet' => $facet,
             ),
           ),
           'type' => 0,
@@ -147,6 +154,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         'localized_options' => array(
           'query' => array(
             'location' => $query['location'],
+            'facet' => $facet,
           ),
         ),
         'type' => 0,

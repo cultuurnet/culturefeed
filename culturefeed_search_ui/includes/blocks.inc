@@ -59,8 +59,10 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
  */
 function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-  $query['search'] = $form_state['values']['search'];
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
+  if (!empty($form_state['values']['search'])) {
+    $query['search'] = $form_state['values']['search'];
+  }
 
   // Add extra possible querystring provided by the hook.
   $search_page = $form_state['searchable_types'][$form_state['values']['type']];

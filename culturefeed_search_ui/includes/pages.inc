@@ -42,6 +42,13 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
     $active_trail = $page->getActiveTrail();
     if ($active_trail) {
       menu_set_active_trail($active_trail);
+
+      // Last item of the breadcrumb should not be clickable.
+      $breadcrumb = drupal_get_breadcrumb();
+      $last_item = array_pop($breadcrumb);
+      $breadcrumb[] = strip_tags($last_item);
+      drupal_set_breadcrumb($breadcrumb);
+
     }
 
 
