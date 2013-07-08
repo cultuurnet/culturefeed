@@ -460,8 +460,14 @@ class CultureFeedSearchPage {
 
       }
 
-      return implode(', ', $labels);
+    }
 
+    if (isset($_GET['page']) && $_GET['page'] > 0) {
+      $labels[] = ('pagina ' . ($_GET['page'] + 1));
+    }
+
+    if (!empty($labels)) {
+      return implode(', ', $labels);
     }
 
     return $this->defaultTitle;
