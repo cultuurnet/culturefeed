@@ -194,8 +194,10 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
  */
 function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-  $query['search'] = $form_state['values']['search'];
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
+  if (!empty($form_state['values']['search'])) {
+    $query['search'] = $form_state['values']['search'];
+  }
 
   if (!empty($form_state['#domain_id'])) {
     unset($query['facet']['category_' . $form_state['#domain_id'] . '_name']);
