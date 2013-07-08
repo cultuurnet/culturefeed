@@ -93,6 +93,7 @@ class culturefeed_search_views_query extends views_plugin_query {
    */
   function build_search_parameters($where) {
 
+    $fq_groups = array();
     if (is_array($where)) {
       foreach ($where as $group => $group_where) {
 
@@ -104,11 +105,13 @@ class culturefeed_search_views_query extends views_plugin_query {
 
         // Add filter query search for this group.
         if (!empty($group_where['conditions']['fq'])) {
-          $this->parameters[] = new Parameter\FilterQuery(implode(' ' . $group_where['type'] . ' ', $group_where['conditions']['fq']));
+          $fq_groups[] = '(' . implode(' ' . $group_where['type'] . ' ', $group_where['conditions']['fq']) . ')';
         }
 
       }
     }
+
+    $this->parameters[] = new Parameter\FilterQuery(implode($fq_groups, ' ' . $this->group_operator . ' '));
 
   }
 
