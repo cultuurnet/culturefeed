@@ -255,7 +255,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#title' => 'Beschrijving',
     '#description' => 'Maximum 400 karakters',
     '#default_value' => '',
-    '#maxlength' => 250,
+    '#maxlength' => 400,
     '#weight' => -3,
   );
 
