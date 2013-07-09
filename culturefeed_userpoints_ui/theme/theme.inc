@@ -368,7 +368,7 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
   $points_message = format_plural($points, '@count punt', '@count punten');
   $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
-  $message = 'Gefeliciteerd! Je verdiende ' . $points_message . ' punten met deze actie en hebt nu ' . $total_points_message;
+  $message = '<p>Gefeliciteerd! Je verzamelde <strong> ' . $points_message . '</strong> met jouw beoordeling en hebt nu <strong>' . $total_points_message . '</strong></p>';
 
   return $message;
 
