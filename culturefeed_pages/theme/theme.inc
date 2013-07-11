@@ -515,7 +515,5 @@ function theme_culturefeed_pages_unfollow_success_message($variables) {
  * Theme the message when a user is anonymous, and the follow link would be displayed.
  */
 function theme_culturefeed_pages_follow_login_required_message($variables) {
-
-  return '<p>Om een pagina te volgen moet u ingelgod zijn</p>';
-
+  return l('Pagina volgen', 'cultuurkuur/login', array('query' => drupal_get_destination()));
 }
