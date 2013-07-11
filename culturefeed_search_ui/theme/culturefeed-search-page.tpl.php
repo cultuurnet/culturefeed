@@ -7,8 +7,10 @@
  */
 ?>
 
-<div class="result-title">
-  <?php print format_plural($results_found, '@count resultaat gevonden', '@count resultaten gevonden'); ?>
+<div class="result-title lead">
+  <?php print format_plural($results_found, '<strong>@count</strong> resultaat gevonden', '<strong>@count</strong> resultaten gevonden'); ?>
 </div>
+
+<hr />
 
 <?php print $content; ?>
