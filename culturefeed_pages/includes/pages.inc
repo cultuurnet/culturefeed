@@ -579,9 +579,14 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
     $form_state['page_id'] = $uid;
     $form_state['page_title'] = $form_state['values']['name'];
 
-    // Remove the image
+    // Remove the image if requested.
     if (!empty($form_state['values']['remove_image'])) {
-      // @todo create the call to remove the image from a page.
+      try {
+        $cf_pages->removeImage($uid);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_pages', $e);
+      }
     }
 
     // Upload Page image.
