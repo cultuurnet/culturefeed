@@ -15,9 +15,7 @@ abstract class DrupalCultureFeedBase {
 
 
   public static function isCacheEnabled() {
-
     return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
-
   }
 
   public static function isCultureFeedUser($uid = NULL) {

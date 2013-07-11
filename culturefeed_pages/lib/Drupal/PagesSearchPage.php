@@ -69,6 +69,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     global $culturefeedSearchResult;
+
     $culturefeedSearchResult = $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
     $culturefeedFacetingComponent->obtainResults($this->result);
 
