@@ -103,9 +103,11 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     DrupalCultureFeedSearchService::translateCategories($result);
 
     // Clear xml element because serialize doesn't work on simple xml.
+    $xmlElement = $result->getXmlElement();
     $result->setXmlElement(NULL);
 
     $this->cacheSet($cid, $result, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
+    $result->setXmlElement($xmlElement);
 
     return $result;
 
