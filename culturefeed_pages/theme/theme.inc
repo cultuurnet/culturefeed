@@ -204,9 +204,6 @@ function culturefeed_pages_preprocess_culturefeed_page_invisible(&$variables) {
 
   $page = $variables['page'];
 
-  //$variables['title'] = $page->getName();
-  $variables['title'] = 'Pagina verwijderd';
-
 }
 
 /**

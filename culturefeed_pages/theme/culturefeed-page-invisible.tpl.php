@@ -1,3 +1,1 @@
-<h1><?php print $title; ?></h1> 
-
-<p>De inhoud van de pagina werd verwijderd door de beheerder van de pagina.</p>
+<p class="alert alert-danger">De inhoud van deze pagina werd verwijderd door de beheerder van de pagina.</p>
