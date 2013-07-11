@@ -67,7 +67,8 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * Clear the cache.
    */
   protected function cacheClear($cid = NULL, $wildcard = FALSE) {
-    cache_clear_all($cid, 'cache_culturefeed', $wildcard);
+    $full_cid = $this->getCacheCid($cid);
+    cache_clear_all($full_cid, 'cache_culturefeed', $wildcard);
   }
 
   /**
@@ -105,7 +106,6 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function addPage(array $params) {
     $result = $this->realCultureFeedPages->addPage($params);
-    $this->cacheClear('page:' . $id);
     return $result;
   }
 

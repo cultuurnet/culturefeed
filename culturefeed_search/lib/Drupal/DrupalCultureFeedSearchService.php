@@ -64,16 +64,16 @@ class DrupalCultureFeedSearchService {
   /**
    * @see \CultuurNet\Search\Service::search().
    */
-  public function search(Array $parameters = array(), $path = 'search') {
+  public function search(Array $parameters = array()) {
 
     // Always add the spellcheck paramter.
     $parameters[] = new Parameter\Parameter('spellcheck', 'true');
 
-    $this->addLanguageParameter($parameters);
+    DrupalCultureFeedSearchService::addLanguageParameter($parameters);
 
-    $items = $this->service->search($parameters, $path);
+    $items = $this->service->search($parameters);
 
-    $this->translateCategories($items);
+    DrupalCultureFeedSearchService::translateCategories($items);
 
     return $items;
 
@@ -83,8 +83,7 @@ class DrupalCultureFeedSearchService {
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages(Array $parameters = array()) {
-    $items = $this->service->searchPages($parameters);
-    return $items;
+    return $this->service->searchPages($parameters);
   }
 
   /**
@@ -97,17 +96,18 @@ class DrupalCultureFeedSearchService {
   /**
    * Adds the language parameter to the search.
    */
-  protected function addLanguageParameter(&$parameters) {
+  public static function addLanguageParameter(&$parameters) {
     $parameters[] = new Parameter\FilterQuery('language:' . culturefeed_search_get_preferred_language());
   }
 
   /**
    * Translates the categories.
    */
-  protected function translateCategories($items) {
+  public static function translateCategories(CultuurNet\Search\SearchResult $result) {
 
+    $items = $result->getItems();
     $tids = array();
-    foreach ($items->getItems() as $item) {
+    foreach ($items as $item) {
       $categories = $item->getEntity()->getCategories();
       foreach ($categories as $category) {
         $categoryId = is_object($category) ? $category->getId() : $category;
@@ -117,7 +117,7 @@ class DrupalCultureFeedSearchService {
 
     // Translate the labels.
     if (culturefeed_search_term_translations($tids)) {
-      foreach ($items->getItems() as $item) {
+      foreach ($items as $item) {
         $categories = $item->getEntity()->getCategories();
         foreach ($categories as $category) {
           if (is_object($category)) {
