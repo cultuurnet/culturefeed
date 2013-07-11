@@ -22,10 +22,11 @@ function culturefeed_search_ui_init() {
   // Redirect to correct slug version, if an old slug was used.
   if ($item = culturefeed_search_get_active_object()) {
 
+    $path = current_path();
     if ($item instanceof CultureFeed_Cdb_Item_Page) {
       $path = culturefeed_search_detail_path('page', $item->getId(), $item->getName());
     }
-    else {
+    elseif ($item->getType() != 'node' && $item->getType() != 'content') {
       $path = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
     }
 
