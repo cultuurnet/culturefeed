@@ -4,8 +4,6 @@
  * CultureFeed Messages adds the ability to send messages to other users.
  */
 
-module_load_include('inc', 'culturefeed_messages', 'includes/helpers');
-
 /**
  * Implements hook_theme().
  */
