@@ -461,7 +461,7 @@ function culturefeed_pages_block_info() {
   if (module_exists('culturefeed_agenda')) {
     $blocks['page-agenda'] = array(
       'info' => t('Culturefeed pages: page agenda'),
-      'cache' => DRUPAL_CACHE_PER_USER,
+      'cache' => DRUPAL_CACHE_PER_PAGE,
     );
   }
 

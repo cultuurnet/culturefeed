@@ -14,3 +14,14 @@ function culturefeed_pages_update_7001() {
     ->fields(array('cache' => DRUPAL_NO_CACHE))
     ->execute();
 }
+
+/**
+ * Change block cache settings for 'agenda block'.
+ */
+function culturefeed_pages_update_7002() {
+  db_update('block')
+  ->condition('module', 'culturefeed_pages')
+  ->condition('delta', 'page-agenda')
+  ->fields(array('cache' => DRUPAL_CACHE_PER_PAGE))
+  ->execute();
+}

@@ -13,7 +13,13 @@ function culturefeed_pages_block_fellow_members($account) {
     return;
   }
 
-  $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  try {
+    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
 
   $build = array();
   // Render colleagues from first 3 memberships.
@@ -56,7 +62,13 @@ function culturefeed_pages_block_pages_user_follows($account) {
     return;
   }
 
-  $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  try {
+    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
 
   if (empty($cf_account->following)) {
     return;
