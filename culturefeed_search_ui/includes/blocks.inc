@@ -87,7 +87,7 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
   $active_page = _culturefeed_search_ui_get_active_search_page();
 
   // Don't show sort form, if we have no options.
-  if (!$active_page && !isset($searchable_types[$active_page]) & !empty($searchable_types[$active_page]['sort_options'])) {
+  if (!$active_page || !isset($searchable_types[$active_page]) || empty($searchable_types[$active_page]['sort_options'])) {
     return;
   }
 
