@@ -291,7 +291,7 @@ class CultureFeedSearchPage {
     }
 
     // This part only needs to be done in case culturefeed_social is enabled.
-    if (module_exists('culturefeed_social')) {
+    if (module_exists('culturefeed_social') && culturefeed_is_culturefeed_user()) {
 
       // Do an activity search on all found nodeIds.
       $items = $this->result->getItems();
