@@ -4,3 +4,4 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 dependencies[] = culturefeed_search
+dependencies[] = culturefeed
