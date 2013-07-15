@@ -186,6 +186,8 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     }
   }
+  
+  $variables['keywords'] = $cdb_item->getKeywords();
 
 }
 
@@ -263,7 +265,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
 
-  $variables['keywords'] = $cdb_item->getKeywords();
 
 }
 
