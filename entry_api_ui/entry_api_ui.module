@@ -96,7 +96,7 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   if (arg(0) == 'agenda' && arg(1) == 'e') {
     $id = arg(3);
   }
-  elseif (arg(0) == 'entryapi') {
+  elseif (arg(0) == 'entryapi' && arg(2) != 'add') {
     $id = arg(2);
   }
 
