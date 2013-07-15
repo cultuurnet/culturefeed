@@ -233,8 +233,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       // if main is not set use first image as main picture
       else {
         $variables['main_picture'] = $variables['pictures'][0];
-        unset($variables['pictures'][0]);
       }
+      // we don't want the main picture to show twice
+      unset($variables['pictures'][0]);
     }
 
     // Add videos.
