@@ -28,9 +28,9 @@ function _culturefeed_mailing_optin_toggle($mailing_id) {
   $subscribed_class = $subscribed ? 'ingeschreven' : 'niet-ingeschreven';
   $publish_link = array(
     '#type' => 'link',
-    '#title' => $subscribed ? 'Ingeschreven' : 'Niet ingeschreven',
+    '#title' => $subscribed ? 'Uitschrijven' : 'Inschrijven',
     '#href' => 'culturefeed/toggle/newsletter-optin/' . $mailing_id . '/' . ($subscribed ? '0' : '1') . '/nojs',
-    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('newsletter-optin-link', $subscribed_class)),
+    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('btn btn-warning newsletter-optin-link', $subscribed_class)),
     '#options' => array('query' => drupal_get_destination()),
     '#ajax' => array(),
   );
