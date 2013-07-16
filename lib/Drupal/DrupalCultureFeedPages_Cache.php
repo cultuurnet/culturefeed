@@ -123,7 +123,12 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    */
   public function removePage($id) {
     $result = $this->realCultureFeedPages->removePage($id);
+
     $this->cacheClear('page:' . $id);
+
+    // Also flush search results.
+    cache_clear_all('culturefeed:results:search/page:', 'cache_culturefeed_search', TRUE);
+
     return $result;
   }
 
