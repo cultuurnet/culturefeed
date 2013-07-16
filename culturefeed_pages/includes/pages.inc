@@ -406,6 +406,23 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   // Add the post params to the form so other modules can add their params.
   $post = $form_state['values'];
   unset($post['form_id'], $post['form_token'], $post['form_build_id'], $post['submit'], $post['op'], $post['image']);
+
+  // Make sure people don't save only http://
+  $link_fields = array(
+		'linkWebsite',
+  	'linkTicketing',
+    'linkFacebook',
+  	'linkTwitter',
+  	'linkGooglePlus',
+  	'linkYouTube',
+  	'linkBlog',
+  );
+  foreach ($link_fields as $link_field) {
+  	if ($post[$link_field] == 'http://') {
+  		$post[$link_field] = '';
+  	}
+  }
+
   $form_state['post_params'] = $post;
 
 }
