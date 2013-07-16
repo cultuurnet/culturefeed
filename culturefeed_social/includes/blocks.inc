@@ -146,16 +146,23 @@ function culturefeed_social_block_recommended_by($object) {
       $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
       $id = $object->getId();
       $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
-      break;
+    break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
+    	case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
       $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
       $id = $object->getId();
       $query->nodeId = $id;
-      break;
+    break;
   }
 
-  $activities = DrupalCultureFeed::searchActivities($query);
+  try {
+  	$activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+  	watchdog_exception('culturefeed_social', $e);
+  	return;
+  }
 
   $content = array();
 
