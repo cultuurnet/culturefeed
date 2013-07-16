@@ -112,12 +112,6 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    */
   public function updatePage($id, array $params) {
 
-    foreach ($params as $key => $value) {
-      if (is_string($value) && $value === "") {
-        unset($params[$key]);
-      }
-    }
-
     $result = $this->oauth_client->authenticatedPost('page/' . $id, $params);
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::PAGE_MODIFIED);
 
