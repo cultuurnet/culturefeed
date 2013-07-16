@@ -321,7 +321,7 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
 
   $variables['intro'] = check_plain(variable_get('culturefeed_userpoints_ui_points_overview_intro'));
   $variables['total_points'] = 0;
-  $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning'))));
+  $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('btn btn-warning'))));
 
   try {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
