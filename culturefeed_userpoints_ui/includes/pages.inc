@@ -309,14 +309,30 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
   }
 
   try {
+
     $user_points = DrupalCultureFeed::getLoggedInUser()->points;
     $form_state['points_left'] = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
     if ($form_state['points_left'] < 0) {
       form_set_error('', 'U hebt niet voldoende punten om dit te bestellen');
     }
+
   }
   catch (Exception $e) {
    watchdog_exception('culturefeed_userpoints_ui', $e);
+  }
+
+  try {
+
+
+  	$cf_user = DrupalCultureFeed::getLoggedInUser();
+  	$form_state['pointsPromotions'] = DrupalCultureFeed::cashInPromotion($cf_user->id,
+  			CultureFeedUserpointsWishlist::getIds(),
+  			CultureFeedUserpointsWishlist::getCounts());
+
+  }
+  catch (Exception $e) {
+  	watchdog_exception('culturefeed_userpoints_ui', $e);
+  	form_set_error('', 'Het is niet mogelijk om de bestelling door te sturen');
   }
 
 }
@@ -328,11 +344,7 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, &$form_state) {
 
   try {
 
-    $cf_user = DrupalCultureFeed::getLoggedInUser();
-    $pointsPromotions = DrupalCultureFeed::cashInPromotion($cf_user->id,
-      CultureFeedUserpointsWishlist::getIds(),
-      CultureFeedUserpointsWishlist::getCounts());
-
+  	$pointsPromotions = $form_state['pointsPromotions'];
     $wishlistPromotions = CultureFeedUserpointsWishlist::getItems($pointsPromotions);
 
     // Always update the user profile.
