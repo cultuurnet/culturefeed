@@ -89,11 +89,6 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     $cid = 'search:' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $result = $cache->data;
-      // Restore xml element.
-      if ($result) {
-        $xmlElement = new SimpleXMLElement($result->getXml(), 0, FALSE, \CultureFeed_Cdb_Default::CDB_SCHEME_URL);
-        $result->setXmlElement($xmlElement);
-      }
       return $result;
     }
 
@@ -102,12 +97,7 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     // Translate categories.
     DrupalCultureFeedSearchService::translateCategories($result);
 
-    // Clear xml element because serialize doesn't work on simple xml.
-    $xmlElement = $result->getXmlElement();
-    $result->setXmlElement(NULL);
-
     $this->cacheSet($cid, $result, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
-    $result->setXmlElement($xmlElement);
 
     return $result;
 
@@ -121,17 +111,10 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     $cid = 'search/page:' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $result = $cache->data;
-      // Restore xml element.
-      if ($result) {
-        $xmlElement = new SimpleXMLElement($result->getXml(), 0, FALSE);
-      }
       return $result;
     }
 
     $result = $this->realSearchService->searchPages($parameters);
-
-    // Clear xml element because serialize doesn't work on simple xml.
-    $result->setXmlElement(NULL);
 
     $this->cacheSet($cid, $result, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
 
