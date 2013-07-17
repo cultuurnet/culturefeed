@@ -67,27 +67,29 @@ function culturefeed_userpoints_ui_get_pointspromotions($params = array()) {
 
   // Filter out the natural constraints.
   // Also adjust properties according to the ones currently in wishlist.
-  foreach ($pointsPromotions->objects as $pointsPromotion) {
+  if (!empty($pointsPromotions->objects)) {
+    foreach ($pointsPromotions->objects as $pointsPromotion) {
 
-    // Filter out the natural constraints.
-    if ($pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_POINTS_CONSTRAINT
-      || $pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_USER_VOLUME_CONSTRAINT) {
-      continue;
+      // Filter out the natural constraints.
+      if ($pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_POINTS_CONSTRAINT
+        || $pointsPromotion->cashInState == CultureFeed_PointsPromotion::NOT_POSSIBLE_USER_VOLUME_CONSTRAINT) {
+        continue;
+      }
+
+      // Filter out when the units taken exceed the maximum available units.
+      if (!empty($pointsPromotion->maxAvailableUnits) && $pointsPromotion->unitsTaken >= $pointsPromotion->maxAvailableUnits) {
+        continue;
+      }
+
+      // Update the item according to the one in the wishlist.
+      $wishlistItem = CultureFeedUserpointsWishlist::get($pointsPromotion->id);
+      if (!empty($wishlistItem)) {
+        $pointsPromotion->maxAvailableUnits = $pointsPromotion->maxAvailableUnits - $wishlistItem['count'];
+      }
+
+      $list[] = $pointsPromotion;
+
     }
-
-    // Filter out when the units taken exceed the maximum available units.
-    if (!empty($pointsPromotion->maxAvailableUnits) && $pointsPromotion->unitsTaken >= $pointsPromotion->maxAvailableUnits) {
-      continue;
-    }
-
-    // Update the item according to the one in the wishlist.
-    $wishlistItem = CultureFeedUserpointsWishlist::get($pointsPromotion->id);
-    if (!empty($wishlistItem)) {
-      $pointsPromotion->maxAvailableUnits = $pointsPromotion->maxAvailableUnits - $wishlistItem['count'];
-    }
-
-    $list[] = $pointsPromotion;
-
   }
   $pointsPromotions->objects = $list;
 
