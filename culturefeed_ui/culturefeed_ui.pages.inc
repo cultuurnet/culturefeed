@@ -407,12 +407,12 @@ function culturefeed_ui_page_account_edit() {
     'account' => array(
       '#prefix' => '<div id="account-edit-form">',
       drupal_get_form('culturefeed_ui_page_account_edit_form'),
-      '#suffix' => '</div>',
+      '#suffix' => '</div><hr />',
     ),
     'online_accounts' => array(
       '#prefix' => '<div id="online-accounts"><h2>Gekoppelde accounts</h2>',
       culturefeed_ui_online_accounts(),
-      '#suffix' => '</div>',
+      '#suffix' => '</div><hr />',
     ),
     'consumers' => array(
       '#prefix' => '<div id="manage-consumers"><h2>Gekoppelde toepassingen</h2>',
