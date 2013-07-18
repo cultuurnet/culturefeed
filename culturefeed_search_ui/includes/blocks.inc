@@ -228,16 +228,20 @@ function culturefeed_search_ui_block_date_facet() {
 function culturefeed_search_ui_date_facet_form() {
 
   $form = array();
+  
+  $form['#attributes']['class'][] = 'append-button';
 
   $form['date_range'] = array(
     '#type' => 'textfield',
     '#title' => 'Kies een datum',
+    '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
+    '#attributes' => array('placeholder' => 'Of kies zelf een datum'),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Bevestig',
+    '#value' => 'Ok',
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
@@ -338,18 +342,21 @@ function culturefeed_search_ui_block_city_facet() {
 function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
+  
+  $form['#attributes']['class'][] = 'append-button';
 
   $form['location'] = array(
     '#type' => 'textfield',
     '#title' => 'Waar',
     '#title_display' => 'invisible',
-    '#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
+    //'#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
+    '#attributes' => array('placeholder' => 'Gemeente of provincie'),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Selecteer',
+    '#value' => 'Ok',
   );
 
   return $form;
@@ -380,16 +387,19 @@ function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 function culturefeed_search_ui_proximity_distance_form() {
 
   $options = array('' => '');
-  for ($i = 10; $i <= 100; $i += 5) {
+  for ($i = 10; $i <= 50; $i += 10) {
     $options[$i] = '+' . $i . ' km';
   }
 
   $form = array();
+  
+  $form['#attributes']['class'][] = 'append-button';
+
   $form['distance'] = array(
     '#type' => 'select',
     '#title' => 'Zoek in omgeving',
     '#options' => $options,
-    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '',
+    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '20',
   );
 
   $form['submit'] = array(
