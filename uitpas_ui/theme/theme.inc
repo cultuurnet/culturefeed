@@ -302,6 +302,12 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     if ($promotion->publicationPeriodEnd) {
       $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->publicationPeriodEnd)));
     }
+    elseif ($promotion->cashingPeriodEnd) {
+      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    }
+    else {
+      $period .= ' ' . t('end of stock');
+    }
     $vars['period'] = $period;
   }
   $pictures = array();
@@ -565,13 +571,22 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $rows = array();
   if (count($promotions)) {
     foreach ($promotions as $promotion) {
+      if ($promotion->publicationPeriodEnd) {
+        $end_date = ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->publicationPeriodEnd)));
+      }
+      elseif ($promotion->cashingPeriodEnd) {
+        $end_date = ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      }
+      else {
+        $end_date = ' ' . t('end of stock');
+      }
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock')
+        $end_date
       );
     }
   }
@@ -588,13 +603,22 @@ function uitpas_ui_preprocess_uitpas_ui_user_profile_advantages(&$vars) {
   $rows = array();
   if (count($coming_promotions)) {
     foreach ($coming_promotions as $promotion) {
+      if ($promotion->publicationPeriodEnd) {
+        $end_date = ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->publicationPeriodEnd)));
+      }
+      elseif ($promotion->cashingPeriodEnd) {
+        $end_date = ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      }
+      else {
+        $end_date = ' ' . t('end of stock');
+      }
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
       $rows[] = array(
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, uitpas_ui_helpers_link_object('promotion', $promotion)),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock')
+        $end_date
       );
     }
   }
