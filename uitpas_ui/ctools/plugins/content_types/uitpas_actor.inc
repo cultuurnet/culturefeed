@@ -45,7 +45,7 @@ function uitpas_ui_uitpas_actor_content_type_render($subtype, $conf, $args, $con
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $actor['cdbid'];
-      $query->cashingPeriodBegin = time();
+      //$query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {

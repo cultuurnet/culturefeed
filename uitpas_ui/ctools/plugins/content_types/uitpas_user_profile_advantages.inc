@@ -47,7 +47,7 @@ function uitpas_ui_uitpas_user_profile_advantages_content_type_render($subtype, 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->uitpasNumber = $passholder->uitpasNumber;
       $query->maxPoints = $passholder->points;
-      $query->cashingPeriodBegin = time();
+      //$query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
