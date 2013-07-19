@@ -82,7 +82,7 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
 
     $objects = array();
     foreach( $result->objects as $k => $v ) {
-      if( $v->cashInState == "POSSIBLE" || $v->cashInState == "NOT_POSSIBLE_DATE_CONSTRAINT" ) {
+      if(($v->cashInState == "POSSIBLE" || $v->cashInState == "NOT_POSSIBLE_DATE_CONSTRAINT") && ($v->publicationPeriodBegin <= time() || $v->publicationPeriodBegin == "")) {
         $objects[] = $v;
       }
     }
