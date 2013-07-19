@@ -306,7 +306,7 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
       $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     else {
-      $period .= ' ' . t('end of stock');
+      $period .= ' ' . t('till end of stock');
     }
     $vars['period'] = $period;
   }
