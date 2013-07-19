@@ -138,6 +138,13 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
     curl_setopt_array($ch, $curl_options);
 
     $response  = curl_exec($ch);
+
+    if (FALSE === $response) {
+      $error_message = curl_error($ch);
+      $error_code = curl_errno($ch);
+      throw new Exception("A curl error ({$error_code}) occurred: {$error_message}");
+    }
+
     $curl_info = curl_getinfo($ch);
     $curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
