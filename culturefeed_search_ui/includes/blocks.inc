@@ -351,7 +351,7 @@ function culturefeed_search_ui_city_facet_form() {
     '#title_display' => 'invisible',
     //'#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
-    '#attributes' => array('placeholder' => 'Gemeente of provincie'),
+    '#attributes' => array('placeholder' => 'Postcode of gemeente'),
   );
 
   $form['submit'] = array(
