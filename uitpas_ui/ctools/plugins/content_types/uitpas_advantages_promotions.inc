@@ -69,7 +69,7 @@ function uitpas_ui_uitpas_advantages_promotions_content_type_render($subtype, $c
     $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
     $query->start = $promotions_page * $promotions_limit;
     $query->max = $promotions_limit;
-    $query->unexpired = TRUE;
+    $query->unexpired = "TRUE";
     if ($location) {
       $query->city = $location;
     }

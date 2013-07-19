@@ -47,7 +47,7 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $activity['location']['actor']['cdbid'];
       //$query->cashingPeriodBegin = time();
-      $query->unexpired = TRUE;
+      $query->unexpired = "TRUE";
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions_location = $result->total;
@@ -61,7 +61,7 @@ function uitpas_ui_uitpas_activity_content_type_render($subtype, $conf, $args, $
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $activity['organiser']['cdbid'];
       //$query->cashingPeriodBegin = time();
-      $query->unexpired = TRUE;
+      $query->unexpired = "TRUE";
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $promotions_organiser = $result->total;

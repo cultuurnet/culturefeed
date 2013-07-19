@@ -47,7 +47,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_DESC;
       $query->max = 4;
-      $query->unexpired = TRUE;
+      $query->unexpired = "TRUE";
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
         $objects = array();
@@ -68,7 +68,7 @@ function uitpas_ui_uitpas_user_profile_content_type_render($subtype, $conf, $arg
       $query->minPoints = $passholder->points + 1;
       $query->max = 2;
       $query->cashingPeriodBegin = time();
-      $query->unexpired = TRUE;
+      $query->unexpired = "TRUE";
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
       $result = $cf->uitpas()->getPromotionPoints($query);
