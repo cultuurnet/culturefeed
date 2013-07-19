@@ -17,6 +17,41 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
   public $title;
 
   /**
+   * Description 1 of the advantage object.
+   *
+   * @var string
+   */
+  public $description1;
+
+  /**
+   * Description 2 of the advantage object.
+   *
+   * @var string
+   */
+  public $description2;
+
+  /**
+   * Pictures from the promotion
+   *
+   * @var array
+   */
+  public $pictures = array();
+
+  /**
+   * The date when the promotion will be pubished
+   *
+   * @var integer
+   */
+  public $publicationPeriodBegin;
+
+  /**
+   * The date when the promotion will be unpubished
+   *
+   * @var integer
+   */
+  public $publicationPeriodEnd;
+
+  /**
    * The number of points of the advantage object
    *
    * @var int
@@ -97,6 +132,11 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion = new CultureFeed_Uitpas_Passholder_PointsPromotion();
     $promotion->id = $object->xpath_int('id');
     $promotion->title = $object->xpath_str('title');
+    $promotion->description1 = $object->xpath_str('description1');
+    $promotion->description2 = $object->xpath_str('description2');   
+    $promotion->pictures = $object->xpath_str('pictures/picture', TRUE);
+    $promotion->publicationPeriodBegin = $object->xpath_time('publicationPeriodBegin');
+    $promotion->publicationPeriodEnd = $object->xpath_time('publicationPeriodEnd');
     $promotion->points = $object->xpath_int('points');
     $promotion->cashedIn = $object->xpath_bool('cashedIn');
     $promotion->counters = array();
@@ -106,7 +146,6 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $promotion->creationDate = $object->xpath_time('creationDate');
     $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
     $promotion->cashingPeriodEnd = $object->xpath_time('cashingPeriodEnd');
-    $promotion->cashingPeriodBegin = $object->xpath_time('cashingPeriodBegin');
     $promotion->validForCities = $object->xpath_str('validForCities/city', TRUE);
     $promotion->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $promotion->unitsTaken = $object->xpath_int('unitsTaken');

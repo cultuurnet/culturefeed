@@ -299,11 +299,18 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
-    if ($promotion->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    if ($promotion->publicationPeriodEnd) {
+      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->publicationPeriodEnd)));
     }
     $vars['period'] = $period;
   }
+  $pictures = array();
+  foreach ($promotion->pictures as $picture) {
+    $pictures[] = theme_image(array('path' => $picture . '?width=180', 'attributes' => array()));;
+  }
+  $vars['pictures'] = $pictures;
+  $vars['description1'] = $promotion->description1;
+  $vars['description2'] = $promotion->description2;
   $location = array();
   foreach ($promotion->counters as $counter) {
     $location[] = $counter->name;
