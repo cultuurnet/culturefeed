@@ -41,11 +41,7 @@ function culturefeed_search_item_load($cdb_id) {
 
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $query_parameter = new \CultuurNet\Search\Parameter\Query($cdb_id);
-
-  $query_parameter->setLocalParam('type', 'term');
-  $query_parameter->setLocalParam('f', 'cdbid');
-  $parameters[] = $query_parameter;
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('cdbid:' . $cdb_id);
 
   try {
     $result = culturefeed_get_search_service()->search($parameters);
