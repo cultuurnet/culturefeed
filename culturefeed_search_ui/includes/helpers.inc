@@ -146,3 +146,41 @@ function culturefeed_search_ui_set_noindex_metatag() {
   }
 
 }
+
+/**
+ * Check if current url is a cnapi version. If it is, redirect to
+ */
+function culturefeed_search_ui_redirect_cnapi_urls() {
+
+  $new_query = array();
+
+  // Heading is now facet on category id.
+  if (isset($_GET['heading'])) {
+
+    /*$result = db_query('SELECT did, tid FROM {culturefeed_search_terms} WHERE tid IN(:tid)', array(':tid' => explode(';', $_GET['heading'])));
+    foreach ($result as $row) {
+      $new_query['facet']['category_' . $row->did . '_id'][] = $row->tid;
+    }*/
+  }
+
+  // Regio is now location.
+  if (isset($_GET['regio'])) {
+    $region = db_query('SELECT name FROM {culturefeed_search_terms} WHERE tid = :tid', array(':tid' => 'reg.' . $_GET['regio']))->fetchField();
+    if ($region) {
+      $new_query['location'] = $region;
+    }
+  }
+
+  // City id is now location.
+  if (isset($_GET['cityid'])) {
+    $result = db_query('SELECT name, zip FROM {culturefeed_search_cities} WHERE cid = :cityid', array(':cityid' => $_GET['cityid']))->fetchObject();
+    if ($result) {
+      $new_query['location'] = $result->zip . ' ' . $result->name;
+    }
+  }
+
+  if (!empty($new_query)) {
+    drupal_goto(current_path(), array('query' => $new_query), 301);
+  }
+
+}
