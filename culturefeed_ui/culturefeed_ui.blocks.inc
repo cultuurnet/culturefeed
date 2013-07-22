@@ -35,7 +35,7 @@ function culturefeed_ui_block_similar_users_view() {
     return;
   }
 
-  $block['subject'] = 'Gelijkaardige gebruikers';
+  $block['subject'] = t('Similar users');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -65,7 +65,7 @@ function culturefeed_ui_block_most_active_user_view() {
     return;
   }
 
-  $block['subject'] = 'UiTslover van de week';
+  $block['subject'] = t('Most active user');
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_most_active_user',
     '#account' => $cf_account,
@@ -76,7 +76,7 @@ function culturefeed_ui_block_most_active_user_view() {
 }
 
 function culturefeed_ui_block_search_users_view() {
-  $block['subject'] = 'Zoek andere gebruikers';
+  $block['subject'] = t('Search users');
   $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
 
   return $block;
@@ -91,7 +91,7 @@ function culturefeed_ui_block_connect_is_visible() {
 }
 
 function culturefeed_ui_block_connect_view() {
-  $block['subject'] = 'Teveel te doen?';
+  $block['subject'] = t('UiTiD connect');
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
   );
@@ -202,7 +202,7 @@ function culturefeed_ui_block_profile_menu_view() {
     );
   }
 
-  $block['subject'] = 'Beheer je profiel';
+  $block['subject'] = t('Manage profile');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -228,7 +228,7 @@ function culturefeed_ui_block_mbox_confirmation_reminder_view() {
     return;
   }
 
-  $block['subject'] = 'Bevestig jouw e-mailadres';
+  $block['subject'] = 'Confirm emailaddress';
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
@@ -257,7 +257,7 @@ function culturefeed_ui_block_my_uitid_view() {
     $query->max = 1;
     $goto = DrupalCultureFeed::searchActivities($query)->total;
 
-    $block['subject'] = 'Mijn UiTiD';
+    $block['subject'] = t('My account');
     $block['content'] = theme('culturefeed_ui_my_uitid', array(
       'account' => $account,
       'like' => $like,
@@ -279,7 +279,7 @@ function culturefeed_ui_block_my_uitid_is_visible() {
 
 
 function culturefeed_ui_block_something_for_you_view() {
-  $block['subject'] = 'Echt iets voor jou?';
+  $block['subject'] = t('Something for you?');
   $block['content'] = theme('culturefeed_ui_something_for_you');
   return $block;
 }

@@ -5,13 +5,13 @@ function culturefeed_ui_users_search_form() {
 
   $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam',
+    '#title' => t('Name'),
     '#size' => 20,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Zoeken',
+    '#value' => t('Search'),
   );
 
   return $form;

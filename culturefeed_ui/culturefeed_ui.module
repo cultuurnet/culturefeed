@@ -22,7 +22,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/profile/edit'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Profiel bewerken'),
+    'title arguments' => array('Edit profile'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -31,7 +31,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/account/edit'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Account bewerken'),
+    'title arguments' => array('Edit account'),
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -39,7 +39,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/mboxverify/resend'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('E-mailbevestiging opnieuw versturen'),
+    'title arguments' => array('Resend email confirmation'),
     'page callback' => 'culturefeed_ui_page_mboxverify_resend',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -47,7 +47,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/search'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Gebruikers zoeken'),
+    'title arguments' => array('Search users'),
     'page callback' => 'culturefeed_ui_page_users_search',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -56,7 +56,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Geconnecteerde kanalen'),
+    'title arguments' => array('Channels connected'),
     'page callback' => 'culturefeed_ui_page_serviceconsumers',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -64,7 +64,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers/revoke/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('UiTiD kanaal verwijderen'),
+    'title arguments' => array('Remove UiTiD channel'),
     'page callback' => 'culturefeed_ui_page_serviceconsumer_revoke',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -73,7 +73,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/onlineaccounts/delete/%/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Social account verwijderen'),
+    'title arguments' => array('Remove social account'),
     'page callback' => 'culturefeed_ui_page_online_account_delete',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -82,7 +82,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/onlineaccounts/privacy/%/%/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Social account privacy instellen'),
+    'title arguments' => array('Configure privacy social account'),
     'page callback' => 'culturefeed_ui_page_online_account_update_privacy',
     'page arguments' => array(3, 4, 5, 6),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -91,7 +91,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/toggle/privacy/facebook/%/%/%'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Social account privacy instellen'),
+    'title arguments' => array('Configure privacy social account'),
     'page callback' => 'culturefeed_ui_page_online_account_toggle_facebook_privacy',
     'page arguments' => array(3, 4, 5, 6),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -100,7 +100,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/users/mostactive'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('UiTslover van de week'),
+    'title arguments' => array('Most active user'),
     'page callback' => 'culturefeed_ui_page_users_most_active',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -109,7 +109,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/removeaccount'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Account verwijderen'),
+    'title arguments' => array('Delete account'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_remove_account_form'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -128,7 +128,7 @@ function culturefeed_ui_init() {
 }
 
 function culturefeed_ui_default_title_callback($title = '') {
-  return $title;
+  return t($title);
 }
 
 /**
@@ -387,21 +387,21 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
 
   return array(
     'uitid' => array(
-      'title' => 'Mijn UiTiD',
+      'title' => t('My account'),
       'url' => 'user/' . $user->uid,
-      'description' => 'Zo zien anderen jouw profiel.',
+      'description' => t('How other user will see your account'),
       'weight' => -20,
     ),
     'profile' => array(
-      'title' => 'Profiel bewerken',
+      'title' => t('Edit profile'),
       'url' => 'culturefeed/profile/edit',
       'description' => 'Wijzig naam, adres, profielfoto,...',
       'weight' => -19,
     ),
     'account' => array(
-      'title' => 'Account bewerken',
+      'title' => t('Edit account'),
       'url' => 'culturefeed/account/edit',
-      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,...',
+      'description' => t('Change password, emailadress, connected channels, …'),
       'weight' => -18,
     ),
   );
@@ -416,7 +416,7 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
   $items = array();
 
   $items['my-profile'] = array(
-    'data' => 'Mijn profiel',
+    'data' => t('My profile'),
     'class' => 'my-profile',
     'children' => array(
       array('data' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick))),
@@ -425,13 +425,13 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
   );
 
   $items['settings'] = array(
-    'data' => l('Beheer profiel', 'culturefeed/profile/edit'),
+    'data' => l(t('Edit profile'), 'culturefeed/profile/edit'),
     'class' => 'settings',
     'weight' => 19,
   );
 
   $items['logout'] = array(
-    'data' => l('Afmelden', 'user/logout'),
+    'data' => l(t('Logout'), 'user/logout'),
     'class' => 'logout',
     'weight' => 21,
   );

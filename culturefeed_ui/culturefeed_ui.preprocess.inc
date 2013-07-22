@@ -27,7 +27,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // gender
   $variables['gender'] = '';
   if (!empty($account->gender)) {
-    $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? 'Man' : 'Vrouw';
+    $variables['gender'] = $account->gender == CultureFeed_User::GENDER_MALE ? t('Male') : t('Female');
   }
 
   // dob
@@ -76,9 +76,9 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
 function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variables) {
   $variables['mbox'] = check_plain($variables['account']->mbox);
 
-  $variables['resend_link'] = l('Bevestiging opnieuw versturen', 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
-  $variables['update_link'] = l('E-mailadres aanpassen', 'culturefeed/account/edit');
-  $variables['info_link'] = l('Meer info over UiTiD', 'http://www.uitinvlaanderen.be/over-uitid');
+  $variables['resend_link'] = l(t('Resend email confirmation'), 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
+  $variables['update_link'] = l(t('Change emailaddress'), 'culturefeed/account/edit');
+  $variables['info_link'] = l(t('More info about UiTiD'), 'http://www.uitinvlaanderen.be/over-uitid');
 }
 
 /**
@@ -142,8 +142,8 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
  */
 function template_preprocess_culturefeed_ui_anonymous_profile_box(&$variables) {
 
-  $variables['link_login'] = l('Aanmelden', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
-  $variables['link_register'] = l('Registreren', 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_login'] = l(t('Log in'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_register'] = l(t('Sign up'), 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
   $query = drupal_get_destination();
   $query['via'] = 'facebook';
   $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
@@ -190,22 +190,22 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
 
   switch ($variables['sort']) {
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVITIES:
-      $type_text = 'acties</strong> gedaan';
+      $type_text = t('actions</strong> done');
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFLIKES:
-      $type_text = 'pagina\'s</strong> leuk gevonden';
+      $type_text = t('pages</strong> liked');
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFSHARESFACEBOOK:
-      $type_text = 'pagina\'s</strong> op Facebook gedeeld';
+      $type_text = t('pagess</strong> shared on Facebook');
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFSHARESTWITTER:
-      $type_text = 'pagina\'s</strong> op Twitter gedeeld';
+      $type_text = t('pages</strong> shared on Twitter');
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFATTENDS:
-      $type_text = 'activiteiten</strong> gemarkeerd bij te zullen wonen';
+      $type_text = t('events</strong> to attend');
       break;
     case CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES:
-      $type_text = 'acties</strong> gedaan';
+      $type_text = t('actions</strong> done');
       break;
   }
 
@@ -213,10 +213,10 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
     '!nick' => l($account->nick, $url),
     '!sort_value' => $account->sortValue,
     '!type' => $type_text,
-    '!uitslover' => l('UiTslover', 'culturefeed/users/mostactive'),
+    '!uitslover' => l(t('Most active user'), 'culturefeed/users/mostactive'),
   );
 
-  $variables['text'] = strtr('!nick heeft de afgelopen week <strong>!sort_value !type en is de !uitslover van de week. Proficiat!', $replace);
+  $variables['text'] = strtr(t('!nick did <strong>!sort_value !type and is the !uitslover last week. Congratulations!'), $replace);
 }
 
 /**
@@ -231,7 +231,7 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100')) : '';
   $variables['name'] = isset($consumer->name) ? check_plain($consumer->name) : '';
   $variables['description'] = isset($consumer->description) ? check_plain($consumer->description) : '';
-  $variables['creation_date'] = 'Gekoppeld op ' . format_date($consumer->creationDate, 'custom', 'j F Y');
+  $variables['creation_date'] = t('Connected on ') . format_date($consumer->creationDate, 'custom', 'j F Y');
 }
 
 /**
@@ -242,9 +242,9 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
 
   // contextual links
   $contextual_links = array(
-    l('Bewerk profiel', 'culturefeed/profile/edit'),
-    l('Beheer mijn acties', 'culturefeed/activities'),
-    l('Bewerk account', 'culturefeed/account/edit'),
+    l(t('Edit profile'), 'culturefeed/profile/edit'),
+    l(t('Manage actions'), 'culturefeed/activities'),
+    l(t('Edit account'), 'culturefeed/account/edit'),
   );
   $item_list = array(
     '#theme' => 'item_list',
@@ -293,28 +293,28 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   // profile
   $variables['profile_edit_link'] = NULL;
   if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l('Bereken je vrijetijdsprofiel', 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
+    $variables['profile_edit_link'] = l(t('Generate your leisure profile!'), 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
   }
   else {
     // lifestyleProfile name
     switch ($account->lifestyleProfile) {
       case "AZ":
-        $variables['profile_name'] = 'Actiezoeker';
+        $variables['profile_name'] = t('Action searcher');
           break;
       case "AO":
-        $variables['profile_name'] = 'Actieve ontspanner';
+        $variables['profile_name'] = t('Leisure searcher');
           break;
       case "ONT":
-        $variables['profile_name'] = 'Ontdekker';
+        $variables['profile_name'] = t('Discoverer');
           break;
       case "FP":
-        $variables['profile_name'] = 'Fijnproever';
+        $variables['profile_name'] = t('Connoisseur');
           break;
       default:
-        $variables['profile_name'] = 'Profiel nog niet berekend';
+        $variables['profile_name'] = t('Leisure profile not yet generated');
           break;
     }
-    $variables['profile_refresh_link'] = l('Herbereken', 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
+    $variables['profile_refresh_link'] = l(t('Regenerate'), 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
 
   // facebook toggle
@@ -376,7 +376,7 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
   $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google')), 'query' => $query));
 
   unset($query['via']);
-  $variables['link_email'] = l('je e-mailadres', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
+  $variables['link_email'] = l(t('your email'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
 
 }
 

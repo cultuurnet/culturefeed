@@ -39,7 +39,7 @@ function culturefeed_ui_set_canonical_and_noindex() {
 function culturefeed_ui_block_ajaxload($config) {
   $block['subject'] = $config['title'];
   $block['content'] = array(
-    '#markup' => '<div id="' . $config['id'] . '">Bezig met laden...</div>',
+    '#markup' => '<div id="' . $config['id'] . '">' . t('Loading') . '</div>',
     '#id' => $config['id'],
     '#ajax' => array(
       'event' => 'ajaxload',
@@ -75,7 +75,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   if ($online_account) {
     $delete_link = array(
       '#type' => 'link',
-      '#title' => 'Verwijderen',
+      '#title' => t('Delete'),
       '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
       '#attributes' => array('class' => 'delete-link'),
       '#options' => array('query' => drupal_get_destination()),
@@ -85,15 +85,15 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = 'Ik geef toestemming aan UiTiD om mijn acties op ' . check_plain(variable_get('site_name', 'Drupal')) . ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
+  $statement = t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512');
 
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
-      '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+      '#title' => $online_account->publishActivities ? t('Publiek') : t('Privé'),
       '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? 'Zet uit' : 'Zet aan')),
+      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -102,7 +102,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l('Add account', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
@@ -117,10 +117,10 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
 
 function culturefeed_ui_activity_types() {
   return array(
-    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
-    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
-    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
-    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
+    CultureFeed_Activity::TYPE_LIKE     => t('Like'),
+    CultureFeed_Activity::TYPE_IK_GA    => t('Attend'),
+    CultureFeed_Activity::TYPE_FACEBOOK => t('Share on Facebook'),
+    CultureFeed_Activity::TYPE_TWITTER  => t('Share on Twitter'),
   );
 }
 
@@ -154,14 +154,14 @@ function _culturefeed_ui_facebook_privacy_toggle() {
     if ($online_account) {
       $publish_link = array(
         '#type' => 'link',
-        '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+        '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
         '#href' => 'culturefeed/toggle/privacy/facebook/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? 'Zet uit' : 'Zet aan')),
+        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Zet on'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . 'Publiceer mijn acties op Facebook <div class="tooltip">?</div><div class="tooltip-text">Hiermee zullen je acties (vind ik leuk, ga ik naartoe,...), automatisch op je Facebook Timeline verschijnen.</div>';
+      $publish_link = drupal_render($publish_link) . t('Post my actions to Facebook <div class="tooltip">?</div><div class="tooltip-text">All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>');
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }
@@ -171,7 +171,7 @@ function _culturefeed_ui_facebook_privacy_toggle() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 }
@@ -195,7 +195,7 @@ function culturefeed_ui_set_profile_breadcrumb() {
   );
 
   $active_trail[] = array(
-    'title' => 'Mijn profiel',
+    'title' => t('My profile'),
     'href' => 'user/' . $user->uid,
     'link_path' => '',
     'localized_options' => array(),

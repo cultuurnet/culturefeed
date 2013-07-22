@@ -2,11 +2,11 @@
 
 function culturefeed_ui_page_remove_account_form($form, &$form_state) {
   return confirm_form($form,
-    'Ben je zeker dat je jouw UiTiD wil verwijderen?',
+    t('Sure you want to delete your account?'),
     isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/account/edit',
-    'Deze actie kan niet ongedaan gemaakt worden.',
-    'Verwijderen',
-    'Annuleren'
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
   );
 }
 
@@ -18,7 +18,7 @@ function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het verwijderen van jouw account.');
+    drupal_set_message(t('An error occured while deleting your account.'));
     return;
   }
 
@@ -63,7 +63,7 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occured'), 'error');
     return;
   }
 
@@ -73,7 +73,7 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
 
   if (empty($items)) {
     $content['users'] = array(
-      '#markup' => 'Geen resultaten gevonden.',
+      '#markup' => t('No results found.'),
     );
   }
   else {
@@ -102,7 +102,7 @@ function culturefeed_ui_page_users_most_active() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occured'), 'error');
     return;
   }
 
@@ -112,7 +112,7 @@ function culturefeed_ui_page_users_most_active() {
 
   foreach ($users->objects as $user) {
     if (!isset($accounts[$user->id])) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
       return;
     }
 
@@ -121,7 +121,7 @@ function culturefeed_ui_page_users_most_active() {
 
   if (empty($items)) {
     $content['users'] = array(
-      '#markup' => 'Geen gebruikers gevonden.',
+      '#markup' => t('No users found'),
     );
   }
   else {
@@ -142,21 +142,21 @@ function culturefeed_ui_page_mboxverify_resend() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
+    drupal_set_message(t('Error occured, please try again later'), 'error');
   }
 
   if (!empty($cf_account) && !$cf_account->mboxVerified) {
     try {
       DrupalCultureFeed::resendMboxConfirmationForUser($cf_account->id);
-      drupal_set_message('De bevestigingsmail werd met succes verzonden.');
+      drupal_set_message(t('Confirmation mail succesfully sended'));
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-      drupal_set_message('Er is een fout opgetreden. Probeer later opnieuw.', 'error');
+      drupal_set_message(t('Error occured, please try again later'), 'error');
     }
   }
   else {
-    drupal_set_message('Het e-mailadres verbonden aan deze account werd reeds bevestigd.');
+    drupal_set_message(t('Emailaddress from this account already confirmed.'));
   }
 
   drupal_goto();
@@ -173,13 +173,13 @@ function culturefeed_ui_page_profile_edit_form() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occured'), 'error');
     return;
   }
 
   $form['view-profile'] = array(
     '#prefix' => '<div id="view-profile">',
-    '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#markup' => l(t('See profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
     '#suffix' => '</div>',
   );
 
@@ -199,24 +199,24 @@ function culturefeed_ui_page_profile_edit_form() {
   // Firstname.
   $form['givenName'] = array(
     '#type' => 'textfield',
-    '#title' => 'Voornaam',
+    '#title' => t('First name'),
     '#default_value' => $cf_account->givenName,
   );
   $form['givenNamePrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'voornaam\' in openbaar profiel',
+    '#title' => t('Hide \'first name\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   // Name.
   $form['familyName'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam',
+    '#title' => t('Family name'),
     '#default_value' => $cf_account->familyName,
   );
   $form['familyNamePrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'naam\' in openbaar profiel',
+    '#title' => t('Hide \'family name\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
@@ -226,7 +226,7 @@ function culturefeed_ui_page_profile_edit_form() {
   $form['picture'] = array(
     '#type' => 'file',
     '#size' => 26,
-    '#title' => 'Kies een foto',
+    '#title' => t('Choose picture'),
   );
 
   $form['current_picture'] = array(
@@ -238,72 +238,72 @@ function culturefeed_ui_page_profile_edit_form() {
   $form['gender'] = array(
     '#type' => 'radios',
     '#title' => 'Geslacht',
-    '#options' => array('male' => 'Man', 'female' => 'Vrouw'),
+    '#options' => array('male' => t('Male'), 'female' => t('Female')),
     '#default_value' => $cf_account->gender,
   );
   $form['genderPrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'geslacht\' in openbaar profiel',
+    '#title' => t('Hide \'gender\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   // Address
   $form['street'] = array(
     '#type' => 'textfield',
-    '#title' => 'Straatnaam en nummer',
+    '#title' => t('Street and number'),
     '#default_value' => $cf_account->street,
   );
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => t('Zipcode'),
     '#default_value' => $cf_account->zip,
   );
   $form['city'] = array(
     '#type' => 'textfield',
-    '#title' => 'Woonplaats',
+    '#title' => t('City'),
     '#default_value' => $cf_account->city,
   );
   $form['country'] = array(
     '#type' => 'select',
     '#options' => country_get_list(),
-    '#title' => 'Land',
+    '#title' => t('Country'),
     '#default_value' => !empty($cf_account->country) ? $cf_account->country : 'BE',
   );
   $form['homeAddressPrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'woonplaats\' in openbaar profiel',
+    '#title' => t('Hide \'address\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   // Date of birth.
   $form['dob'] = array(
-    '#title' => 'Geboortedatum',
+    '#title' => t('Date of birth'),
     '#type' => 'textfield',
     '#default_value' => $cf_account->dob ? date('d/m/Y', $cf_account->dob) : '',
-    '#description' => 'Formaat : dd/mm/yyyy',
+    '#description' => t('Format : dd/mm/yyyy'),
     '#size' => 10,
   );
   $form['dobPrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'geboortedatum\' in openbaar profiel',
+    '#title' => t('Hide \'date of birth\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   // Bio
   $form['bio'] = array(
     '#type' => 'textarea',
-    '#title' => 'Beschrijf jezelf',
+    '#title' => t('Biography'),
     '#default_value' => $cf_account->bio,
   );
   $form['bioPrivacy'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Verberg \'bio\' in openbaar profiel',
+    '#title' => t('Hide \'biography\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Save'),
   );
 
   return $form;
@@ -352,7 +352,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+    drupal_set_message(t('Error occured while saving your personal data.'), 'error');
 
     $success = FALSE;
   }
@@ -369,7 +369,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
-        drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+        drupal_set_message(t('Error occured while saving your picture.'), 'error');
 
         $success = FALSE;
       }
@@ -391,14 +391,14 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw privacy instellingen.', 'error');
+    drupal_set_message(t('Error occured while saving your privacy settings.'), 'error');
 
     $success = FALSE;
   }
 
   // Setting status message.
   if ($success) {
-    drupal_set_message('Jouw wijzigingen werden bewaard.');
+    drupal_set_message(t('Changes succesfully saved.'));
   }
 }
 
@@ -410,13 +410,13 @@ function culturefeed_ui_page_account_edit() {
       '#suffix' => '</div><hr />',
     ),
     'online_accounts' => array(
-      '#prefix' => '<div id="online-accounts"><h2>Gekoppelde accounts</h2>',
+      '#prefix' => '<div id="online-accounts"><h2>' . t('Connected accounts') . '</h2>',
       culturefeed_ui_online_accounts(),
       '#suffix' => '</div><hr />',
     ),
     'consumers' => array(
       '#prefix' => '<div id="manage-consumers"><h2>Gekoppelde toepassingen</h2>',
-      '#markup' => 'Beheer alle ' . l('websites en toepassingen', 'culturefeed/serviceconsumers') . ' die momenteel gebruik maken van je UiTiD.',
+      '#markup' => t('Manage all ') . l(t('websites and applications'), 'culturefeed/serviceconsumers') . t(' who uses your UiTiD profile.'),
       '#suffix' => '</div>',
     )
   );
@@ -433,33 +433,33 @@ function culturefeed_ui_page_account_edit_form() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden bij het laden van jouw account. Probeer het later opnieuw.');
+    drupal_set_message(t('An error occured while loading your account, please try again later.'));
     return;
   }
 
   $form['view-profile'] = array(
     '#prefix' => '<div id="view-profile">',
-    '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#markup' => l(t('See profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
     '#suffix' => '</div>',
   );
 
   $form['nick'] = array(
     '#type' => 'textfield',
-    '#title' => 'Gebruikersnaam',
+    '#title' => t('Username'),
     '#disabled' => TRUE,
     '#value' => $cf_account->nick,
   );
 
   $form['mbox'] = array(
     '#type' => 'textfield',
-    '#title' => 'E-mailadres',
+    '#title' => t('Emailaddress'),
     '#default_value' => $cf_account->mbox,
     '#required' => TRUE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Save'),
   );
 
   $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
@@ -470,13 +470,13 @@ function culturefeed_ui_page_account_edit_form() {
 
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
-    '#markup' => l('Paswoord wijzigen', $url, $options),
+    '#markup' => l(t('Change password'), $url, $options),
     '#suffix' => '</div>',
   );
 
   $form['remove_account'] = array(
     '#prefix' => '<div id="remove-account">',
-    '#markup' => l('UiTiD verwijderen', 'culturefeed/removeaccount'),
+    '#markup' => l(t('Delete account'), 'culturefeed/removeaccount'),
     '#suffix' => '</div>',
   );
 
@@ -485,7 +485,7 @@ function culturefeed_ui_page_account_edit_form() {
 
 function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['mbox'])) {
-    form_set_error('mbox', 'Ongeldig e-mailadres.');
+    form_set_error('mbox', t('Invalid email'));
   }
 }
 
@@ -496,11 +496,11 @@ function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
 
   try {
     DrupalCultureFeed::updateUser($cf_account);
-    drupal_set_message('Jouw aanpassingen zijn bewaard.');
+    drupal_set_message(t('Changes succesfully saved.'));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occured'), 'error');
   }
 }
 
@@ -515,7 +515,7 @@ function culturefeed_ui_online_accounts() {
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
       return;
     }
 
@@ -563,7 +563,7 @@ function culturefeed_ui_page_online_account_update_privacy($online_account_type,
   }
   else {
     if (!$success) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
     }
     drupal_goto();
   }
@@ -600,7 +600,7 @@ function culturefeed_ui_page_online_account_toggle_facebook_privacy($online_acco
   }
   else {
     if (!$success) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
     }
     drupal_goto();
   }
@@ -631,7 +631,7 @@ function culturefeed_ui_page_online_account_delete($online_account_type, $id, $t
   }
   else {
     if (!$success) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
     }
     drupal_goto();
   }
@@ -643,7 +643,7 @@ function culturefeed_ui_page_serviceconsumers() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occured'), 'error');
     return;
   }
 
@@ -655,7 +655,7 @@ function culturefeed_ui_page_serviceconsumers() {
     if ($consumer->consumerKey != variable_get('culturefeed_api_application_key', '')) {
       $revoke_link = array(
         '#type' => 'link',
-        '#title' => 'Verwijderen',
+        '#title' => t('Delete'),
         '#href' => 'culturefeed/serviceconsumers/revoke/' . $consumer->id . '/nojs',
         '#attributes' => array('class' => 'revoke-link'),
         '#options' => array('query' => drupal_get_destination()),
@@ -673,7 +673,7 @@ function culturefeed_ui_page_serviceconsumers() {
 
   if (empty($items)) {
     $content['consumers'] = array(
-      '#markup' => 'Geen kanalen gevonden.',
+      '#markup' => t('No channels found.'),
     );
   }
   else {
@@ -710,7 +710,7 @@ function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax'
   }
   else {
     if (!$success) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occured'), 'error');
     }
     drupal_goto();
   }
