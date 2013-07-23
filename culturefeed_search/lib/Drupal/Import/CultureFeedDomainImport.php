@@ -87,6 +87,7 @@ class CultureFeedDomainImport {
         'name' => (string) $termAttributes['label'],
         'did' => (string) $termAttributes['domain'],
         'parent' => empty($parentId) ? NULL : $parentId,
+        'slug' => culturefeed_search_slug((string) $termAttributes['label'], 128),
       );
 
       // Always save label as undefined language so we can fallback.

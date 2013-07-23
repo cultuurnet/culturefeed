@@ -47,7 +47,7 @@ function culturefeed_search_schema() {
         'not null' => FALSE,
         'default' => ''
       ),
-        'name' => array(
+      'name' => array(
         'description' => 'Term name.',
         'type' => 'varchar',
         'length' => 128,
@@ -68,10 +68,18 @@ function culturefeed_search_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'slug' => array(
+        'description' => 'Slug of the term name.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
     ),
     'indexes' => array(
       'did' => array('did'),
       'tid' => array('tid'),
+      'slug' => array('slug'),
     ),
   );
 
@@ -99,6 +107,13 @@ function culturefeed_search_schema() {
         'not null' => TRUE,
         'default' => ''
       ),
+      'slug' => array(
+        'description' => 'slug of the city',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
     ),
     'indexes' => array(
       'cid' => array('cid'),
@@ -121,4 +136,16 @@ function culturefeed_search_update_7001() {
   $schema = culturefeed_search_schema();
   db_drop_table('culturefeed_search_terms');
   db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
+}
+
+/**
+ * Re-creates the culturefeed_search_terms table.
+ */
+function culturefeed_search_update_7003() {
+  $schema = culturefeed_search_schema();
+  db_drop_table('culturefeed_search_terms');
+  db_drop_table('culturefeed_search_cities');
+  db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
+  db_create_table('culturefeed_search_cities', $schema['culturefeed_search_cities']);
+  drupal_set_message(t('Culturefeed search Tables are reïnstalled. Please run the drush imports again'));
 }

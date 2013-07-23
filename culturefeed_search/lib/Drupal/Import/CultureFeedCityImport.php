@@ -15,7 +15,7 @@ class CultureFeedCityImport {
    * @var \Guzzle\Http\Client
    */
   private $client;
-  
+
   public $logMessages = array();
 
   /**
@@ -54,6 +54,7 @@ class CultureFeedCityImport {
         'cid' => (string) $cityAttributes['id'],
         'name' => (string) $cityAttributes['label'],
         'zip' => (string) $cityAttributes['zip'],
+        'slug'  => (string) $cityAttributes['zip'] . '-' . culturefeed_search_slug((string) $cityAttributes['label'], 251),
       );
 
       drupal_write_record('culturefeed_search_cities', $record);
@@ -65,5 +66,5 @@ class CultureFeedCityImport {
     }
 
   }
-  
+
 }

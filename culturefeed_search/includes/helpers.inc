@@ -583,6 +583,30 @@ function culturefeed_search_get_educationlevel_categories_tree() {
 }
 
 /**
+ * Get a category by slug.
+ */
+function culturefeed_search_get_category_by_slug($slug, $domain = '') {
+
+  $query = db_select('culturefeed_search_terms', 'ct');
+  $query->condition('slug', $slug);
+  $query->range(0, 1);
+  $query->addField('ct', 'tid');
+  if (!empty($domain)) {
+    $query->condition('did', $domain);
+  }
+
+  return $query->execute()->fetchObject();
+
+}
+
+/**
+ * Get a city by slug.
+ */
+function culturefeed_search_get_city_by_slug($slug) {
+  return db_query('SELECT name, zip FROM {culturefeed_search_cities} WHERE slug = :slug', array(':slug' => $slug))->fetchObject();
+}
+
+/**
  * Returns the preferred language of the user.
  */
 function culturefeed_search_get_preferred_language() {
