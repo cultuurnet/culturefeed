@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2013-07-23 13:53+0200\n"
-"PO-Revision-Date: 2013-07-23 14:42+0100\n"
+"PO-Revision-Date: 2013-07-23 15:09+0100\n"
 "Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -82,31 +82,35 @@ msgstr "Geen"
 
 #: culturefeed_agenda.module:187
 msgid "Category type to search related events"
-msgstr ""
+msgstr "Categorie om relevante gegevens op te zoeken"
 
 #: culturefeed_agenda.module:191
 msgid ""
 "The category type to use for searching related activities. Leave empty if "
 "you only want to search on range."
 msgstr ""
+"De categorie om relevantie activiteiten op te zoeken. Je kan dit veld ook "
+"leeg laten."
 
 #: culturefeed_agenda.module:195
 msgid "Radius to search in km"
-msgstr ""
+msgstr "In een straal van"
 
 #: culturefeed_agenda.module:198
 msgid ""
 "Search on the given radius. Leave empty to skip radius search. Radius search "
 "will only be done when viewing an event."
 msgstr ""
+"Storteer op straal. Laat leeg om straal niet op te nemen in de zoekopdracht. "
+"Zoek op straal gebeurt enkel wanneer je een activiteit bekijkt. "
 
 #: culturefeed_agenda.module:202
 msgid "Extra filter query for the result set"
-msgstr ""
+msgstr "Verfijn je zoekopdracht"
 
 #: culturefeed_agenda.module:205
 msgid "Make sure this is a correct solr query. Example title=mytitle"
-msgstr ""
+msgstr "Zorg ervoor dat de solr query juist is. Bijvoorbeeld title=mytitle"
 
 #: culturefeed_agenda.module:209
 msgid "Sort field"
@@ -114,43 +118,43 @@ msgstr "Sorteer veld"
 
 #: culturefeed_agenda.module:212
 msgid "Field to sort on. Example startdate"
-msgstr ""
+msgstr "Te sorteren veld. Bijvoorbeeld startdatum"
 
 #: culturefeed_agenda.module:216
 msgid "Sort direction"
-msgstr ""
+msgstr "Volgorde"
 
 #: culturefeed_agenda.module:219
 msgid "Ascending"
-msgstr ""
+msgstr "Oplopend"
 
 #: culturefeed_agenda.module:220
 msgid "Descending"
-msgstr ""
+msgstr "Aflopend"
 
 #: culturefeed_agenda.module:226
 msgid "Items to show"
-msgstr ""
+msgstr "Te tonen items"
 
 #: culturefeed_agenda.module:239
 msgid "Categories to show in the dropdown"
-msgstr ""
+msgstr "Te tonen categorieën in de keuzelijst"
 
 #: culturefeed_agenda.module:316
 msgid "Near "
-msgstr ""
+msgstr "In de buurt van "
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed Agenda"
-msgstr ""
+msgstr "CultureFeed Agenda"
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed Agenda makes it possible to view events and productions."
-msgstr ""
+msgstr "Met CultureFeed Agenda kan je activiteiten en producties bekijken. "
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "CultureFeed"
 
 #: includes/blocks.inc:104
 msgid "Related activities"
@@ -162,7 +166,7 @@ msgstr "Alle categorieën"
 
 #: includes/blocks.inc:146
 msgid "Search string"
-msgstr ""
+msgstr "Zoekopdracht"
 
 #: includes/blocks.inc:154
 msgid "Activities near my current location:"
