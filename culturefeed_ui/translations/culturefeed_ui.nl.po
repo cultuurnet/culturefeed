@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2013-07-23 11:19+0200\n"
-"PO-Revision-Date: 2013-07-23 14:04+0100\n"
+"PO-Revision-Date: 2013-07-23 15:27+0100\n"
 "Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -125,7 +125,7 @@ msgstr "Aantal vind-ik-leuk's"
 
 #: culturefeed_ui.admin.inc:19
 msgid "Number of Facebook shares"
-msgstr ""
+msgstr "Aantal keer gedeeld op Facebook"
 
 #: culturefeed_ui.admin.inc:20
 msgid "Number of Twitter shares"
@@ -137,7 +137,7 @@ msgstr "Aantal ga-ik-naartoe's "
 
 #: culturefeed_ui.admin.inc:22
 msgid "Number of activities (aggregate)"
-msgstr ""
+msgstr "Aantal activiteiten (totaal)"
 
 #: culturefeed_ui.admin.inc:27
 msgid "Most active user block : Sort by"
@@ -587,11 +587,12 @@ msgstr ""
 
 #: culturefeed_ui.module:392
 msgid "How other user will see your account"
-msgstr ""
+msgstr "Zo zien anderen jouw profiel."
 
 #: culturefeed_ui.module:404
 msgid "Change password, emailadress, connected channels, …"
 msgstr ""
+"Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,…"
 
 #: culturefeed_ui.module:434
 msgid "Logout"
@@ -599,7 +600,7 @@ msgstr "Uitloggen"
 
 #: culturefeed_ui.module:455
 msgid "CultuurNet User Interface cache"
-msgstr ""
+msgstr "CultuurNet User Interface cache"
 
 #: culturefeed_ui.module:457
 msgid ""
@@ -607,6 +608,9 @@ msgid ""
 "of requests to the enrichments API. This will reduce the number of requests "
 "made directly to the API service."
 msgstr ""
+"De CultuurNet User Interface cache activeren zal alle verwerkte resultaten "
+"van ieder verzoek cachen. Dit zal het aantal directe verzoeken op de API "
+"verminderen. "
 
 #: culturefeed_ui.module:460
 msgid "none"
@@ -614,30 +618,32 @@ msgstr "geen"
 
 #: culturefeed_ui.module:464
 msgid "Minimum cache lifetime for the similar users block"
-msgstr ""
+msgstr "Minimum cacheduur van het 'Gelijkaardige gebruikers' blok"
 
 #: culturefeed_ui.module:467
 msgid ""
 "The minimum cache lifetime is the minimum amount of time that will elapse "
 "before the cache is emptied and recreated"
 msgstr ""
+"De minimum cacheduur is het minimum van tijd dat zal verlopen tot de cache "
+"is geleegd en opnieuw gecreeërd."
 
 #: culturefeed_ui.module:16
 msgid "Culture Feed User Interface"
-msgstr ""
+msgstr "CultureFeed User Interface"
 
 #: culturefeed_ui.module:17
 msgid "Change Culture Feed User Interface settings."
-msgstr ""
+msgstr "Verander instellingen van de CultureFeed User Interface. "
 
 #: culturefeed_ui.info:0
 msgid "CultureFeed User Interface"
-msgstr ""
+msgstr "CultureFeed User Interface"
 
 #: culturefeed_ui.info:0
 msgid "Creates a default user interface for CultureFeed"
-msgstr ""
+msgstr "Maakt een standaard user interface voor Culturefeed"
 
 #: culturefeed_ui.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "Culturefeed"
