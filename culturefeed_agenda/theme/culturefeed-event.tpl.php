@@ -9,26 +9,26 @@
 /* print '<h1>' . $title . '</h1>'; */
 ?>
 
-reacties:
+<?php print t('Reactions'); ?>
 <?php if ($comment_count > 0): ?>
   <span class="comments"><?php print $comment_count; ?></span>
-  <a href="#lees">Lees reacties</a>
-  <a href="#schrijf">Schrijf een reactie</a>
+  <a href="#lees"><?php print t('Read reactions'); ?></a>
+  <a href="#schrijf"><?php print t('Write reaction'); ?></a>
 <?php else: ?>
   <span class="no-comments"><?php print $comment_count; ?></span>
-  <a href="#schrijf">Schrijf als eerste een reactie</a>
+  <a href="#schrijf"><?php print t('Be the first to write a review'); ?></a>
 <?php endif; ?>
 
 <?php if (!empty($themes)): ?>
-Thema: <?php print $themes[0] ?><br/>
+<?php print t('Theme'); ?>: <?php print $themes[0] ?><br/>
 <?php endif; ?>
 
-Korte beschrijving: <?php print $shortdescription; ?><br/>
+<?php print t('Short description'); ?>: <?php print $shortdescription; ?><br/>
 
 <dl class="clearfix">
 
   <?php if ($location): ?>
-  <dt>Waar</dt>
+  <dt><?php print t('Where'); ?></dt>
   <dd>
     <?php if (!empty($location['link'])): ?>
     <?php print $location['link']; ?><br/>
@@ -43,12 +43,12 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <?php endif; ?>
 
   <?php if (!empty($when)): ?>
-  <dt>Wanneer</dt>
+  <dt><?php print t('When'); ?></dt>
   <dd><?php print $when; ?></dd>
   <?php endif; ?>
 
   <?php if ($organiser): ?>
-  <dt>Organisatie</dt>
+  <dt><?php print t('Organization'); ?></dt>
   <dd>
     <?php if (empty($organiser['link'])):?>
     <?php print $organiser['title']; ?>
@@ -59,27 +59,27 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <?php endif; ?>
 
   <?php if (!empty($contact)) : ?>
-    <dt>Contact</dt>
+    <dt><?php print t('Contact'); ?></dt>
     <dd>
     <?php if (!empty($contact['mail'])) : ?>
-      Mail: <?php print $contact['mail'] ?><br />
+      <?php print t('Mail'); ?>: <?php print $contact['mail'] ?><br />
     <?php endif; ?>
     <?php if (!empty($contact['phone'])) : ?>
-      Telefoon: <?php print $contact['phone'] ?><br />
+      <?php print t('Phone'); ?>: <?php print $contact['phone'] ?><br />
     <?php endif; ?>
     <?php if (!empty($contact['fax'])) : ?>
-      Fax: <?php print $contact['fax'] ?>
+      <?php print t('Fax'); ?>: <?php print $contact['fax'] ?>
     <?php endif; ?>
     </dd>
   <?php endif; ?>
 
   <?php if (!empty($age)): ?>
-  <dt>Leeftijd</dt>
+  <dt><?php print t('Age'); ?></dt>
   <dd><?php print $age; ?></dd>
   <?php endif; ?>
 
   <?php if (!empty($themes)): ?>
-  <dt>Thema</dt>
+  <dt><?php print t('Theme'); ?></dt>
     <dd>
       <ul>
       <?php foreach ($themes as $theme): ?>
@@ -90,12 +90,12 @@ Korte beschrijving: <?php print $shortdescription; ?><br/>
   <?php endif; ?>
 
   <?php if (!empty($price)): ?>
-  <dt>Prijs</dt>
+  <dt><?php print t('Price'); ?></dt>
   <dd><?php print $price; ?><?php print $price_description; ?></dd>
   <?php endif; ?>
 
   <?php if (!empty($links)): ?>
-  <dt>Links</dt>
+  <dt><?php print t('Links'); ?></dt>
   <dd>
     <ul>
     <?php foreach ($links as $link): ?>

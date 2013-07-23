@@ -13,15 +13,15 @@
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#lees">Lees reacties</a>
-        <a href="<?php print $url ?>#schrijf">Schrijf een reactie</a>
+        <a href="<?php print $url ?>#lees"><?php print t('Read reactions'); ?></a>
+        <a href="<?php print $url ?>#schrijf"><?php print t('Write reaction'); ?></a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#schrijf">Schrijf als eerste een reactie</a>
+        <a href="<?php print $url ?>#schrijf"><?php print t('Be the first to write a review'); ?></a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
-      <div class="count-aangeraden"><span><?php print $recommend_count ?></span> keer aangeraden</div>
+      <div class="count-aangeraden"><span><?php print $recommend_count ?></span> <?php print t('time recommended'); ?></div>
     <?php endif; ?>
     <?php print $recommend_link; ?>
     <?php print $attend_link; ?>
@@ -36,24 +36,24 @@
   <dl class="clearfix">
 
     <?php if ($location): ?>
-    <dt>Waar</dt>
+    <dt><?php print t('Where'); ?></dt>
     <dd><?php print $location['title'] ?> <?php print $location['city']; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($when)): ?>
-    <dt>Wanneer</dt>
+    <dt><?php print t('When'); ?></dt>
     <dd><?php print $when; ?></dd>
     <?php endif; ?>
 
     <?php if ($organiser): ?>
-    <dt>Organisatie</dt>
+    <dt><?php print t('Organization'); ?></dt>
     <dd><?php print $organiser['title']; ?></dd>
     <?php endif; ?>
 
     <?php
       if (!empty($themes)):
     ?>
-    <dt>Thema</dt>
+    <dt><?php print t('Theme'); ?></dt>
       <dd>
       <ul>
       <?php foreach ($themes as $theme): ?>
@@ -64,6 +64,6 @@
     <?php endif; ?>
   </dl>
 
-  <?php print culturefeed_search_detail_l('event', $cdbid, $title, 'Meer info', array('attributes' => array('class' => 'button'))); ?>
+  <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
 
 </div>

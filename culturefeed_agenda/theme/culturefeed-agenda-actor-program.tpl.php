@@ -11,4 +11,4 @@
   <?php endforeach;?>
 <?php endif; ?>
 
-<a href="<?php print $search_url ?>">Meer</a>
+<a href="<?php print $search_url ?>"><?php print t('More'); ?></a>

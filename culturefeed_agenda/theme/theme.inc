@@ -124,7 +124,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['longdescription'] = $detail->getLongDescription();
 
     if ($detail->getPrice()) {
-      $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : 'gratis';
+      $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
       $variables['price_description'] = $detail->getPrice()->getDescription();
     }
 
@@ -132,7 +132,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
     $variables['tickets'] = array();
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l('Bestel tickets', $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
     }
 
   }
@@ -354,8 +354,8 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $total_relations = count($relations);
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
-    $variables['location']['title'] = 'meerdere locaties';
-    $variables['when'] = 'meerdere data';
+    $variables['location']['title'] = t('multiple locations');
+    $variables['when'] = t('multiple dates');
   }
 
   // If only 1 event. Show calendar information from that event.
@@ -389,13 +389,13 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
         $regions[] = check_plain($region->getName());
       }
 
-      $variables['location']['title'] = 'op verplaatsing in';
+      $variables['location']['title'] = t('on displacement in');
       $variables['regions'] = $regions;
 
     }
     // No regions.
     else {
-      $variables['location']['title'] = 'enkel op afspraak';
+      $variables['location']['title'] = t('by appointment only');
     }
 
   }
@@ -500,7 +500,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
 
   $tabs = array();
   $other = array(
-    'name' => 'Overige',
+    'name' => t('Other'),
     'class' => 'other',
     'children' => array(),
   );

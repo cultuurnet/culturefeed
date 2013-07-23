@@ -11,12 +11,12 @@
 
 <?php print $recommend_link; ?>
 
-Samengevat - <?php print $shortdescription; ?><br/>
+<?php print t('Summarized'); ?> - <?php print $shortdescription; ?><br/>
 
 <dl class="clearfix">
 
   <?php if ($location): ?>
-  <dt>Waar</dt>
+  <dt><?php print t('Where'); ?></dt>
   <dd>
     <?php if (!empty($location['link'])): ?>
     <?php print $location['link']; ?><br/>
@@ -31,22 +31,22 @@ Samengevat - <?php print $shortdescription; ?><br/>
   <?php endif; ?>
 
   <?php if (!empty($contact)) : ?>
-    <dt>Contact</dt>
+    <dt><?php print t('Contact'); ?></dt>
     <dd>
     <?php if (!empty($contact['mail'])) : ?>
-      Mail: <?php print $contact['mail'] ?><br />
+      <?php print t('Mail'); ?>: <?php print $contact['mail'] ?><br />
     <?php endif; ?>
     <?php if (!empty($contact['phone'])) : ?>
-      Telefoon: <?php print $contact['phone'] ?><br />
+      <?php print t('Phone'); ?>: <?php print $contact['phone'] ?><br />
     <?php endif; ?>
     <?php if (!empty($contact['fax'])) : ?>
-      Fax: <?php print $contact['fax'] ?>
+      <?php print t('Fax'); ?>: <?php print $contact['fax'] ?>
     <?php endif; ?>
     </dd>
   <?php endif; ?>
 
   <?php if (!empty($links)): ?>
-  <dt>Links</dt>
+  <dt><?php print t('Links'); ?></dt>
   <dd>
     <ul>
     <?php foreach ($links as $link): ?>

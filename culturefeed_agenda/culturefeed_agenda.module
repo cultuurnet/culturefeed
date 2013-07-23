@@ -126,14 +126,14 @@ function culturefeed_agenda_culturefeed_search_page_info() {
   return array(
     'activiteiten' => array(
       'path' => 'agenda/search',
-      'page_title' => 'Agenda',
-      'search_title' => 'Activiteiten',
+      'page_title' => t('Agenda'),
+      'search_title' => t('Activities'),
       'sort_default' => 'relevancy',
       'sort_options' => array(
-        'relevancy' => 'Relevantie',
-        'date' => 'Datum',
-        'recommends' => 'Aantal keer aangeraden',
-        'comments' => 'Aantal reacties',
+        'relevancy' => t('Relevance'),
+        'date' => t('Date'),
+        'recommends' => t('Recommended'),
+        'comments' => t('Reactions'),
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,
@@ -313,7 +313,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
     $url = url($path, array('query' => $search_query));
     $build['nearby'] = array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => 'In de buurt van ' . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+      '#label' => t('Near ') . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
       '#url' => $url,
     );
   }

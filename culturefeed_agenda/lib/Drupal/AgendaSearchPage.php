@@ -136,7 +136,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     elseif (!empty($query)) {
 
       $active_trail[] = array(
-        'title' => 'Alle activiteiten',
+        'title' => t('All activities'),
         'href' => 'agenda/search',
         'link_path' => '',
         'localized_options' => array(),

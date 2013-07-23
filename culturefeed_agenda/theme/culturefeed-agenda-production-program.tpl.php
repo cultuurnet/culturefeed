@@ -15,7 +15,7 @@
       <?php print $content['city']; ?>
       <?php print $content['calendar']; ?>
       <?php if (isset($content['all_url'])): ?>
-      <a href="<?print $content['all_url']; ?>">Toon alle</a>
+      <a href="<?print $content['all_url']; ?>"><?php print t('Show all'); ?></a>
       <?php endif; ?>
 
     </div>

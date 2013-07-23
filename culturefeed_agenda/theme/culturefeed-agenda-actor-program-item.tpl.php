@@ -19,5 +19,5 @@
     <?php print $theme; ?>
     <?php endforeach; ?>
     
-    <a href="<?php print $url ?>">Meer details</a>
+    <a href="<?php print $url ?>"><?php print t('More details'); ?></a>
 </div>

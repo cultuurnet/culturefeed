@@ -101,7 +101,7 @@ function culturefeed_agenda_block_related_activities() {
   }
 
   $block = array();
-  $block['subject'] = 'Gerelateerde activiteiten';
+  $block['subject'] = t('Related activities');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -125,7 +125,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $domain_id = variable_get('agenda_search_block_domain_id');
   if (!empty($domain_id)) {
 
-    $options = array('' => 'Alle categorieën');
+    $options = array('' => t('All categories'));
     $categories = culturefeed_search_get_categories_by_domain($domain_id);
     foreach ($categories as $category) {
       $options[$category] = $category;
@@ -143,7 +143,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['search'] = array(
     '#type' => 'textfield',
-    '#title' => 'Zoekopdracht',
+    '#title' => t('Search string'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
@@ -151,7 +151,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . check_plain($location) . '</span>',
+    '#title' => t('Activities near my current location:') . ' <span id="current-location">' . check_plain($location) . '</span>',
     '#default_value' => !empty($location),
   );
 
@@ -169,7 +169,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Zoeken',
+    '#value' => t('Search'),
   );
 
   global $language;
@@ -312,7 +312,7 @@ function culturefeed_agenda_block_production_program() {
 
   $provinces = culturefeed_search_get_flandersregion_categories('=');
 
-  $block['subject'] = 'Programmatie';
+  $block['subject'] = t('Agenda');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',
     '#items' => $result->getItems(),
