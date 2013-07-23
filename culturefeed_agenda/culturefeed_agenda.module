@@ -323,6 +323,190 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
 }
 
 /**
+ * Implements hook_url_outbound_alter().
+ */
+function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path) {
+
+  if ($path == 'agenda/search') {
+
+    $type = '';
+    $term_slugs = &drupal_static('culturefeed_search_term_slugs', array());
+    $city_slugs = &drupal_static('culturefeed_search_city_slugs', array());
+
+    $facets = isset($options['query']['facet']) ? $options['query']['facet'] : array();
+    $location = isset($options['query']['location']) ? $options['query']['location'] : NULL;
+
+    // Check if this url is goïng to filter on event type.
+    if (!empty($facets['category_eventtype_id'])) {
+
+      // Set the new path for this category. Keep the slug static cached.
+      if (!isset($term_slugs[$facets['category_eventtype_id'][0]])) {
+        $term_slugs[$facets['category_eventtype_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_eventtype_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      }
+      $type = $term_slugs[$facets['category_eventtype_id'][0]];
+      $path = 'agenda/' . $type;
+
+      // Remove the facet, and check if this was the only one.
+      unset($options['query']['facet']['category_eventtype_id']);
+
+    }
+
+    // Only do something if location is a city that has a postal.
+    if (!empty($location)) {
+
+      $city_parts = explode(' ', $location);
+
+      // The search contains a zip code. Search city by zip + name.
+      if (is_numeric($city_parts[0])) {
+
+        // Static cache the result.
+        if (!isset($city_slugs[$city_parts[0]][$city_parts[1]])) {
+          $city_slugs[$city_parts[0]][$city_parts[1]] = db_query('SELECT slug FROM {culturefeed_search_cities} WHERE zip = :zip AND name = :name', array(':zip' => $city_parts[0], ':name' => $city_parts[1]))->fetchField();
+        }
+        $location_slug = $city_slugs[$city_parts[0]][$city_parts[1]];
+
+      }
+      // The search contains only a city / region name. Search on full name.
+      else {
+
+        // Static cache it.
+        if (!isset($term_slugs[$location])) {
+          $term_slugs[$location] = db_query("SELECT slug FROM {culturefeed_search_terms} WHERE name = :name AND did = 'flandersregion'", array(':name' => $location))->fetchField();
+        }
+        $location_slug = $term_slugs[$location];
+
+      }
+
+      unset($options['query']['location']);
+      $type = $type ?: 'alle';
+      $path = 'agenda/' . $type . '/' . $location_slug;
+
+    }
+
+    // Rewrite facet on theme.
+    if (isset($facets['category_theme_id'][0])) {
+
+      if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
+        $term_slugs[$facets['category_theme_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_theme_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      }
+
+      $options['query']['theme'] = $term_slugs[$facets['category_theme_id'][0]];
+      unset($options['query']['facet']['category_theme_id']);
+
+    }
+
+    // Make sure we leave no empty query data.
+    // This one is needed, otherwise you can end with following url: agenda/sportactiviteit?&theme=fitness-gymnastiek-dans-en-vechtsport
+    if (!empty($options['query'])) {
+
+      foreach ($options['query'] as $key => $requested_query) {
+
+        // If the element has subitems (facet query for example), check if subitems are not empty.
+        if (is_array($requested_query)) {
+          $has_sub_query = FALSE;
+          foreach ($requested_query as $requested_subquery) {
+            if (!empty($requested_subquery)) {
+              $has_sub_query = TRUE;
+            }
+          }
+
+          if (!$has_sub_query) {
+            unset($options['query'][$key]);
+          }
+        }
+        elseif (empty($options['query'][$key])) {
+          unset($options['query'][$key]);
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+/**
+ * Implements hook_url_inbound_alter().
+ */
+function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_language) {
+
+  // Only check on agenda pages.
+  if (arg(0, $path) == 'agenda') {
+
+    // A known search page, no need to alter.
+    $search_page = _culturefeed_search_ui_get_active_search_page();
+    if ($search_page) {
+      return;
+    }
+
+    // If we are on a detail page, no need to alter.
+    $object = culturefeed_search_get_active_object();
+    if ($object) {
+      return;
+    }
+
+    $rewrite = FALSE;
+
+    // Check if we need to alter on category type.
+    if (arg(1, $path) != 'alle') {
+      if ($category = culturefeed_search_get_category_by_slug(arg(1, $path), 'eventtype')) {
+        $_GET['facet']['category_eventtype_id'][] = $category->tid;
+        $_REQUEST['facet']['category_eventtype_id'][] = $category->tid;
+        $rewrite = TRUE;
+      }
+    }
+
+    // Check if we need to alter location.
+    $city_slug = arg(2, $path);
+    if (!empty($city_slug)) {
+
+      $city_parts = explode('-', $city_slug);
+      // Slug contains postal. Search city.
+      if (is_numeric($city_parts[0])) {
+        $city = culturefeed_search_get_city_by_slug($city_slug);
+        if ($city) {
+          $location = $city->zip . ' ' . $city->name;
+        }
+      }
+      // No postal, search flanders region.
+      else {
+        $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
+        if ($flanders_region) {
+          $location = $flanders_region->name;
+        }
+      }
+
+      if (!empty($location)) {
+        $_GET['location'] = $location;
+        $_REQUEST['location'] = $location;
+        $rewrite = TRUE;
+      }
+
+    }
+
+    // Check if we need to alter on theme.
+    if (isset($_GET['theme'])) {
+      $category = culturefeed_search_get_category_by_slug($_GET['theme']);
+      if ($category) {
+        $_GET['facet']['category_theme_id'][] = $category->tid;
+        $_REQUEST['facet']['category_theme_id'][] = $category->tid;
+      }
+      unset($_GET['theme']);
+      unset($_REQUEST['theme']);
+      $rewrite = TRUE;
+    }
+
+    // When rewrite flag is set, change the path.
+    if ($rewrite) {
+      $path = 'agenda/search';
+    }
+
+  }
+
+}
+
+/**
  * Title callback for agenda detail pages.
  */
 function culturefeed_agenda_detail_title(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {

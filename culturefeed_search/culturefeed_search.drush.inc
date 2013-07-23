@@ -25,9 +25,11 @@ function culturefeed_search_drush_help($section) {
 function culturefeed_search_drush_command() {
   $items['culturefeed-search-import-terms'] = array(
     'description' => 'Import all Culturefeed Search domains and terms.',
+    'aliases' => array('csit'),
   );
   $items['culturefeed-search-import-cities'] = array(
     'description' => 'Import all Culturefeed Search cities.',
+    'aliases' => array('csic'),
   );
   return $items;
 }
@@ -41,7 +43,7 @@ function drush_culturefeed_search_import_terms() {
 
   $import = new CultureFeedDomainImport();
   $import->import();
-  
+
   foreach ($import->logMessages as $message) {
     drush_log($message['message'], $message['code']);
   }
@@ -59,7 +61,7 @@ function drush_culturefeed_search_import_cities() {
 
   $import = new CultureFeedCityImport();
   $import->import();
-  
+
   foreach ($import->logMessages as $message) {
     drush_log($message['message'], $message['code']);
   }
