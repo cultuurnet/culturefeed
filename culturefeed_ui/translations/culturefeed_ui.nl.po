@@ -19,28 +19,30 @@
 #  culturefeed_ui.pages.inc: n/a
 #  culturefeed_ui.info: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-07-23 10:32+0200\n"
-"PO-Revision-Date: 2013-07-23 10:32+0200\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-07-23 11:19+0200\n"
+"PO-Revision-Date: 2013-07-23 11:21+0100\n"
+"Last-Translator: Cultuurnet Frontend <frontend@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed-ui-connect-hover.tpl.php:2
 msgid "To continue you have to be logged on with your UiTiD."
 msgstr ""
 
-#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13 culturefeed-ui-something-for-you.tpl.php:3
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
+#: culturefeed-ui-something-for-you.tpl.php:3
 msgid "Or via"
 msgstr ""
 
-#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13 culturefeed-ui-something-for-you.tpl.php:3
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
+#: culturefeed-ui-something-for-you.tpl.php:3
 msgid "or"
 msgstr ""
 
@@ -49,7 +51,7 @@ msgid "Choosing your events will be simplified"
 msgstr ""
 
 #: culturefeed-ui-connect.tpl.php:3
-msgid "dankzij UiTiD"
+msgid "thanks to UiTiD"
 msgstr ""
 
 #: culturefeed-ui-connect.tpl.php:5
@@ -77,7 +79,9 @@ msgid "Amount of actions"
 msgstr ""
 
 #: culturefeed-ui-my-uitid.tpl.php:45
-msgid "The more items you like or events you attend, the more tips will have a personal touch"
+msgid ""
+"The more items you like or events you attend, the more tips will have a "
+"personal touch"
 msgstr ""
 
 #: culturefeed-ui-my-uitid.tpl.php:49
@@ -101,7 +105,9 @@ msgid "actions"
 msgstr "acties"
 
 #: culturefeed-ui-something-for-you.tpl.php:1
-msgid "Create an UiTiD account, let us know what you like and receive more personal tips."
+msgid ""
+"Create an UiTiD account, let us know what you like and receive more personal "
+"tips."
 msgstr ""
 
 #: culturefeed_ui.admin.inc:17
@@ -188,19 +194,19 @@ msgstr ""
 msgid "User agreement"
 msgstr ""
 
-#: culturefeed_ui.helpers.inc:94
-msgid "Publiek"
+#: culturefeed_ui.helpers.inc:94;157
+msgid "Public"
 msgstr ""
 
-#: culturefeed_ui.helpers.inc:94
-msgid "Privé"
+#: culturefeed_ui.helpers.inc:94;157
+msgid "Private"
 msgstr ""
 
 #: culturefeed_ui.helpers.inc:96;159
 msgid "Switch off"
 msgstr ""
 
-#: culturefeed_ui.helpers.inc:96
+#: culturefeed_ui.helpers.inc:96;159
 msgid "Switch on"
 msgstr ""
 
@@ -220,23 +226,15 @@ msgstr ""
 msgid "Share on Twitter"
 msgstr ""
 
-#: culturefeed_ui.helpers.inc:157
-msgid "Public"
-msgstr ""
-
-#: culturefeed_ui.helpers.inc:157
-msgid "Private"
-msgstr ""
-
-#: culturefeed_ui.helpers.inc:159
-msgid "Zet on"
-msgstr ""
-
 #: culturefeed_ui.helpers.inc:164
-msgid "Post my actions to Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>"
+msgid ""
+"Post my actions to Facebook <div class=\"tooltip\">?</div><div class="
+"\"tooltip-text\">All your UiTiD actions (likes, attends, shares) will be "
+"posted automatically to your Facebook timeline.</div>"
 msgstr ""
 
 #: culturefeed_ui.helpers.inc:174
+#: culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
 msgid "Error occurred"
 msgstr ""
 
@@ -262,10 +260,6 @@ msgstr "Annuleren"
 
 #: culturefeed_ui.pages.inc:21
 msgid "An error occurred while deleting your account."
-msgstr ""
-
-#: culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
-msgid "Error occurred"
 msgstr ""
 
 #: culturefeed_ui.pages.inc:76
@@ -489,7 +483,9 @@ msgid "events</strong> to attend"
 msgstr ""
 
 #: culturefeed_ui.preprocess.inc:219
-msgid "!nick did <strong>!sort_value !type and is the !uitslover last week. Congratulations!"
+msgid ""
+"!nick did <strong>!sort_value !type and is the !uitslover last week. "
+"Congratulations!"
 msgstr ""
 
 #: culturefeed_ui.preprocess.inc:234
@@ -593,7 +589,10 @@ msgid "CultuurNet User Interface cache"
 msgstr ""
 
 #: culturefeed_ui.module:457
-msgid "Enabling the CultuurNet User Interface cache will cache all parsed results of requests to the enrichments API. This will reduce the number of requests made directly to the API service."
+msgid ""
+"Enabling the CultuurNet User Interface cache will cache all parsed results "
+"of requests to the enrichments API. This will reduce the number of requests "
+"made directly to the API service."
 msgstr ""
 
 #: culturefeed_ui.module:460
@@ -605,7 +604,9 @@ msgid "Minimum cache lifetime for the similar users block"
 msgstr ""
 
 #: culturefeed_ui.module:467
-msgid "The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated"
+msgid ""
+"The minimum cache lifetime is the minimum amount of time that will elapse "
+"before the cache is emptied and recreated"
 msgstr ""
 
 #: culturefeed_ui.module:16
@@ -627,4 +628,3 @@ msgstr ""
 #: culturefeed_ui.info:0
 msgid "CultureFeed"
 msgstr ""
-
