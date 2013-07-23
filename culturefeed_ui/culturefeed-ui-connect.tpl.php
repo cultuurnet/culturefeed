@@ -1,6 +1,6 @@
 <h3>
   <span><?php print t('Choosing your events will be simplified') ?></span>
-  <span><?php print t('dankzij UiTiD') ?></span>
+  <span><?php print t('thanks to UiTiD') ?></span>
 </h3>
 <p><?php print t('Create an UiTiD account and:') ?></p>
 <ul>

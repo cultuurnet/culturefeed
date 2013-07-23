@@ -18,7 +18,7 @@ function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('An error occured while deleting your account.'));
+    drupal_set_message(t('An error occurred while deleting your account.'));
     return;
   }
 
@@ -63,7 +63,7 @@ function _culturefeed_ui_page_users_search_results($name = NULL) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured'), 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 
@@ -102,7 +102,7 @@ function culturefeed_ui_page_users_most_active() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured'), 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 
@@ -112,7 +112,7 @@ function culturefeed_ui_page_users_most_active() {
 
   foreach ($users->objects as $user) {
     if (!isset($accounts[$user->id])) {
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
       return;
     }
 
@@ -142,7 +142,7 @@ function culturefeed_ui_page_mboxverify_resend() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured, please try again later'), 'error');
+    drupal_set_message(t('Error occurred, please try again later'), 'error');
   }
 
   if (!empty($cf_account) && !$cf_account->mboxVerified) {
@@ -152,7 +152,7 @@ function culturefeed_ui_page_mboxverify_resend() {
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-      drupal_set_message(t('Error occured, please try again later'), 'error');
+      drupal_set_message(t('Error occurred, please try again later'), 'error');
     }
   }
   else {
@@ -173,7 +173,7 @@ function culturefeed_ui_page_profile_edit_form() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured'), 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 
@@ -352,7 +352,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured while saving your personal data.'), 'error');
+    drupal_set_message(t('Error occurred while saving your personal data.'), 'error');
 
     $success = FALSE;
   }
@@ -369,7 +369,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
-        drupal_set_message(t('Error occured while saving your picture.'), 'error');
+        drupal_set_message(t('Error occurred while saving your picture.'), 'error');
 
         $success = FALSE;
       }
@@ -391,7 +391,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured while saving your privacy settings.'), 'error');
+    drupal_set_message(t('Error occurred while saving your privacy settings.'), 'error');
 
     $success = FALSE;
   }
@@ -433,7 +433,7 @@ function culturefeed_ui_page_account_edit_form() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('An error occured while loading your account, please try again later.'));
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
     return;
   }
 
@@ -500,7 +500,7 @@ function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured'), 'error');
+    drupal_set_message(t('Error occurred'), 'error');
   }
 }
 
@@ -515,7 +515,7 @@ function culturefeed_ui_online_accounts() {
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
       return;
     }
 
@@ -563,7 +563,7 @@ function culturefeed_ui_page_online_account_update_privacy($online_account_type,
   }
   else {
     if (!$success) {
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
     }
     drupal_goto();
   }
@@ -600,7 +600,7 @@ function culturefeed_ui_page_online_account_toggle_facebook_privacy($online_acco
   }
   else {
     if (!$success) {
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
     }
     drupal_goto();
   }
@@ -631,7 +631,7 @@ function culturefeed_ui_page_online_account_delete($online_account_type, $id, $t
   }
   else {
     if (!$success) {
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
     }
     drupal_goto();
   }
@@ -643,7 +643,7 @@ function culturefeed_ui_page_serviceconsumers() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occured'), 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 
@@ -710,7 +710,7 @@ function culturefeed_ui_page_serviceconsumer_revoke($consumer_id, $type = 'ajax'
   }
   else {
     if (!$success) {
-      drupal_set_message(t('Error occured'), 'error');
+      drupal_set_message(t('Error occurred'), 'error');
     }
     drupal_goto();
   }

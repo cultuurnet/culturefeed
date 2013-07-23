@@ -91,7 +91,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
-      '#title' => $online_account->publishActivities ? t('Publiek') : t('Privé'),
+      '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
       '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
       '#options' => array('query' => drupal_get_destination()),
@@ -156,7 +156,7 @@ function _culturefeed_ui_facebook_privacy_toggle() {
         '#type' => 'link',
         '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
         '#href' => 'culturefeed/toggle/privacy/facebook/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Zet on'))),
+        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );

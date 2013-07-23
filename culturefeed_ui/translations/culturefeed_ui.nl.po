@@ -261,11 +261,11 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 #: culturefeed_ui.pages.inc:21
-msgid "An error occured while deleting your account."
+msgid "An error occurred while deleting your account."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
-msgid "Error occured"
+msgid "Error occurred"
 msgstr ""
 
 #: culturefeed_ui.pages.inc:76
@@ -277,7 +277,7 @@ msgid "No users found"
 msgstr ""
 
 #: culturefeed_ui.pages.inc:145;155
-msgid "Error occured, please try again later"
+msgid "Error occurred, please try again later"
 msgstr ""
 
 #: culturefeed_ui.pages.inc:151
@@ -389,15 +389,15 @@ msgid "Save"
 msgstr "Opslaan"
 
 #: culturefeed_ui.pages.inc:355
-msgid "Error occured while saving your personal data."
+msgid "Error occurred while saving your personal data."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:372
-msgid "Error occured while saving your picture."
+msgid "Error occurred while saving your picture."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:394
-msgid "Error occured while saving your privacy settings."
+msgid "Error occurred while saving your privacy settings."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:401;499
@@ -421,7 +421,7 @@ msgid " who uses your UiTiD profile."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:436
-msgid "An error occured while loading your account, please try again later."
+msgid "An error occurred while loading your account, please try again later."
 msgstr ""
 
 #: culturefeed_ui.pages.inc:448
