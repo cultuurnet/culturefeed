@@ -151,7 +151,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Activiteiten in de buurt van mijn huidige locatie: <span id="current-location">' . check_plain($location) . '</span>',
+    '#title' => 'Activiteiten in de buurt van mijn huidige locatie<span id="current-location">' . check_plain($location) . '</span>',
     '#default_value' => !empty($location),
   );
 
