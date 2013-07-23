@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2013-07-23 13:53+0200\n"
-"PO-Revision-Date: 2013-07-23 14:34+0100\n"
+"PO-Revision-Date: 2013-07-23 14:42+0100\n"
 "Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,7 @@ msgstr ""
 
 #: culturefeed_agenda.module:209
 msgid "Sort field"
-msgstr ""
+msgstr "Sorteer veld"
 
 #: culturefeed_agenda.module:212
 msgid "Field to sort on. Example startdate"
