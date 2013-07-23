@@ -314,23 +314,27 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $items = array_merge($items, $facets['category_theme_id']->getResult()->getItems());
     }
 
-    $preferred_language = culturefeed_search_get_preferred_language();
-    $tids = array();
-    $items = $facets['category_eventtype_id']->getResult()->getItems();
-    $items += $facets['category_eventtype_id']->getResult()->getItems();
-    foreach ($items as $item) {
-      $subitems = $item->getSubItems();
-      if ($subitems) {
-        foreach ($subitems as $subitem) {
-          $tids[] = $subitem->getValue();
-        }
-      }
-      $tids[] = $item->getValue();
-    }
+    // Search the slug for all facet items.
+    if ($items) {
 
-    $result = db_query('SELECT tid, slug FROM {culturefeed_search_terms} WHERE tid IN(:tids) AND language = :language', array(':tids' => $tids, ':language' => $preferred_language));
-    foreach ($result as $row) {
-      $term_slugs[$row->tid] = $row->slug;
+      $preferred_language = culturefeed_search_get_preferred_language();
+
+      // Construct an array with tids to do the query.
+      $tids = array();
+      foreach ($items as $item) {
+        $subitems = $item->getSubItems();
+        if ($subitems) {
+          foreach ($subitems as $subitem) {
+            $tids[] = $subitem->getValue();
+          }
+        }
+        $tids[] = $item->getValue();
+      }
+
+      $result = db_query('SELECT tid, slug FROM {culturefeed_search_terms} WHERE tid IN(:tids) AND language = :language', array(':tids' => $tids, ':language' => $preferred_language));
+      foreach ($result as $row) {
+        $term_slugs[$row->tid] = $row->slug;
+      }
     }
 
   }
