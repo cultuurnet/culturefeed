@@ -17,7 +17,7 @@ function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
       $recipient_page = empty($page) ? NULL : $page->getId();
       $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipient_page);
       if ($messages->total == 0) {
-        return array('#markup' => 'U hebt nog geen berichten');
+        return array('#markup' => t('You have no messages'));
       }
 
       $message = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($messages->objects[0]->id);
@@ -26,7 +26,7 @@ function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);
-    return array('#markup' => 'Er ging iets fout tijdens het ophalen van je bericht.');
+    return array('#markup' => t('Something went wrong while getting your message.'));
   }
 
   $build = array();
@@ -49,7 +49,7 @@ function culturefeed_messages_page_view_message($message = NULL, $page = NULL) {
 function culturefeed_messages_new_message_form($form, &$form_state, $object = NULL) {
 
   $form = array();
-  $form['title'] = array('#markup' => 'Nieuw bericht');
+  $form['title'] = array('#markup' => t('New message'));
 
   // If empty object. Load active page. This form needs a page.
   if (empty($object)) {
@@ -85,10 +85,10 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
 
       $form['recipient'] = array(
         '#type' => 'radios',
-        '#title' => 'Stuur bericht naar:',
+        '#title' => t('Send new message to:'),
         '#options' => array(
-          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN => 'alle beheerders van mijn pagina (' . $admin_count . ')',
-          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER => 'alle leden van mijn pagina (' . $member_count . ')',
+          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN => t('all administrators of my page') . ' (' . $admin_count . ')',
+          CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER => t('all members of my page') . ' (' . $member_count . ')',
         ),
       );
 
@@ -103,19 +103,19 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   }
   // If object is a message. We are sending a reply.
   elseif ($object instanceof CultureFeed_Messages_Message) {
-    $form['title'] = array('#markup' => 'Beantwoorden');
+    $form['title'] = array('#markup' => t('Reply'));
     $form_state['reply_to'] = $object->id;
     $form_state['message_type'] = $object->type;
   }
 
   $form['subject'] = array(
     '#type' => 'textfield',
-    '#title' => 'Onderwerp',
+    '#title' => t('Subject'),
   );
 
   $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => 'Berichttekst',
+    '#title' => t('Message'),
   );
 
   // Add select to choose the 'send as'.
@@ -130,7 +130,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
       }
 
       $form['send_as'] = array(
-        '#title' => 'Stuur bericht als',
+        '#title' => t('Send message as'),
         '#type' => 'select',
         '#options' => $send_as_options,
         '#default_value' => culturefeed_pages_get_active_page_id(),
@@ -144,7 +144,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Verzenden',
+    '#value' => t('Send'),
   );
 
   $form['#theme'] = 'culturefeed_messages_new_message_form';
@@ -187,7 +187,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
     $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);
   }
   catch (Exception $e) {
-    form_set_error('', 'Er ging iets fout tijdens het versturen');
+    form_set_error('', t('Something went wrong while sending your message.'));
     watchdog_exception('culturefeed_messages', $e);
   }
 
@@ -198,7 +198,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
  */
 function culturefeed_messages_new_message_form_submit($form, &$form_state) {
 
-  drupal_set_message('Het bericht werd verstuurd');
+  drupal_set_message(t('Message send'));
 
   $form_state['redirect'] = 'culturefeed/messages';
   if (!empty($form_state['page'])) {
@@ -235,7 +235,7 @@ function culturefeed_messages_page_delete_message_confirm($message, $request_typ
 function culturefeed_messages_delete_message_confirm_form($form, &$form_state, CultureFeed_Messages_Message $message, $request_type) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>Bericht verwijderen</h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Delete message') . '</h3></div>';
   }
 
   $form_state['message'] = $message;
@@ -248,8 +248,8 @@ function culturefeed_messages_delete_message_confirm_form($form, &$form_state, C
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Deze actie kan niet meer ongedaan gemaakt worden.</p>
-      <p><strong>Ben je zeker dat u dit bericht wil verwijderen?</strong></p>',
+      <p>' . t('This action cannot be undone') . '</p>
+      <p><strong>' . t('Are you sure you want to delete this message?') . '</strong></p>',
   );
 
   $form['footer_wrapper'] = array(
@@ -260,13 +260,13 @@ function culturefeed_messages_delete_message_confirm_form($form, &$form_state, C
 
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
-    '#value' => 'Verwijder',
+    '#value' => t('Delete'),
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
   );
 
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
-    '#title' => 'Annuleer',
+    '#title' => t('Cancel'),
     '#href' => isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/messages/' . $message->id,
     '#attributes' => array(
       'data-dismiss' => 'modal',
@@ -289,11 +289,11 @@ function culturefeed_messages_delete_message_confirm_form_submit($form, &$form_s
   // Send request to remove the message.
   try {
     DrupalCultureFeed::getLoggedInUserInstance()->messages()->deleteMessage($message->id);
-    drupal_set_message(format_string('Het bericht "@message" is verwijderd.', array('@message' => $message->subject)));
+    drupal_set_message(format_string(t('Message  "@message" is deleted.'), array('@message' => $message->subject)));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);
-    drupal_set_message('Er is een fout opgetreden tijdens het verwijderen van het bericht.', 'error');
+    drupal_set_message(t('Something went wrong while deleting your message.'), 'error');
   }
 
   $form_state['redirect'] = 'culturefeed/messages';

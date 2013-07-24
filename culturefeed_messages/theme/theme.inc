@@ -12,7 +12,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 
   $items = array();
   if ($variables['messages']->total == 0) {
-    $items[] = array('data' => 'U hebt geen berichten', 'class' => 'message');
+    $items[] = array('data' => t('You have no messages'), 'class' => 'message');
   }
   else {
 
@@ -107,7 +107,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
       'data-remote' => url('culturefeed/messages/' . $thread->id . '/delete/ajax'),
     ),
   );
-  $variables['delete_link'] = l('Verwijder conversatie', 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
+  $variables['delete_link'] = l(t('Delete conversation'), 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
 
 }
 
@@ -234,7 +234,7 @@ function _culturefeed_messages_preprocess_message(&$variables) {
 
   $variables['sender'] = check_plain($message->sender->nick);
   if (!empty($message->senderPage)) {
-    $variables['sender'] .= ' van ' . check_plain($message->senderPage->getName());
+    $variables['sender'] .= ' ' . t('van') . ' ' . check_plain($message->senderPage->getName());
   }
 
   $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
@@ -249,19 +249,19 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60)) {
     $minutes_ago = $last_reply->diff(new DateTime('now', $time_zone))->i;
-    $variables['date'] = format_plural($minutes_ago, '@count minuut geleden', '@count minuten geleden');
+    $variables['date'] = format_plural($minutes_ago, t('@count minute ago'), t('@count minutes ago'));
   }
   else {
 
     $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
     if ($days_ago == 1) {
-      $variables['date'] = 'Gisteren om ' . $last_reply->format('H:i') . ' uur';
+      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
     }
     elseif ($days_ago == 0) {
-      $variables['date'] = 'Vandaag om ' . $last_reply->format('H:i') . ' uur';
+      $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
     }
     else {
-      $variables['date'] = format_date($date, 'custom', 'd M \o\m H:i') . ' uur';
+      $variables['date'] = format_date($date, 'custom', 'd M \o\m H:i') . ' '  . t('hour');
     }
 
   }

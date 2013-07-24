@@ -1,6 +1,6 @@
 
 <?php if (!empty($add_new_url)): ?>
-  <a href="<?php print $add_new_url; ?>">Nieuw bericht</a>
+  <a href="<?php print $add_new_url; ?>"><?php print t('New message'); ?></a>
 <?php endif; ?>
 
 <ul class="messages">

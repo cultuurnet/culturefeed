@@ -103,7 +103,7 @@ function culturefeed_messages_menu() {
 
   $items['culturefeed/messages/%culturefeed_messages_message'] = array(
     'title callback' => FALSE,
-    'title' => 'Mijn berichten',
+    'title' => t('My messages'),
     'page callback' => 'culturefeed_messages_page_view_message',
     'page arguments' => array(2),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -113,7 +113,7 @@ function culturefeed_messages_menu() {
 
   $items['culturefeed/messages/%culturefeed_messages_message/delete/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Verwijder bericht',
+    'title' => t('Delete message'),
     'page callback' => 'culturefeed_messages_page_delete_message_confirm',
     'page arguments' => array(2, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -125,7 +125,7 @@ function culturefeed_messages_menu() {
 
     $items['pages/%culturefeed_pages_page/messages/new'] = array(
       'title callback' => FALSE,
-      'title' => 'Berichten',
+      'title' => t('Messages'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('culturefeed_messages_new_message_form', 1),
       'access callback' => 'culturefeed_pages_edit_page_access',
@@ -136,7 +136,7 @@ function culturefeed_messages_menu() {
 
     $items['pages/%culturefeed_pages_page/messages'] = array(
       'title callback' => FALSE,
-      'title' => 'Berichten',
+      'title' => t('Messages'),
       'page callback' => 'culturefeed_messages_page_view_message',
       'page arguments' => array(NULL, 1),
       'access callback' => 'culturefeed_pages_edit_page_access',
@@ -147,7 +147,7 @@ function culturefeed_messages_menu() {
 
     $items['pages/%culturefeed_pages_page/messages/%culturefeed_messages_message'] = array(
       'title callback' => FALSE,
-      'title' => 'Berichten',
+      'title' => t('Messages'),
       'page callback' => 'culturefeed_messages_page_view_message',
       'page arguments' => array(4, 1),
       'access callback' => 'culturefeed_pages_edit_page_access',
@@ -160,7 +160,7 @@ function culturefeed_messages_menu() {
 
   $items['culturefeed/messages'] = array(
     'title callback' => FALSE,
-    'title' => 'Mijn berichten',
+    'title' => t('My messages'),
     'page callback' => 'culturefeed_messages_page_view_message',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -169,7 +169,7 @@ function culturefeed_messages_menu() {
 
   $items['culturefeed/messages/new'] = array(
     'title callback' => FALSE,
-    'title' => 'Berichten',
+    'title' => t('Messages'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_messages_new_message_form'),
     'access callback' => 'culturefeed_pages_get_active_page_id',
@@ -267,9 +267,9 @@ function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, C
 
   return array(
     'messages' => array(
-      'title' => 'Berichten',
+      'title' => t('Messages'),
       'url' => 'pages/' . $page->getId() . '/messages',
-      'description' => 'Lees en beantwoord berichten en boekingsaanvragen',
+      'description' => t('Read and reply to your messages'),
       'weight' => -18,
     ),
   );
@@ -285,7 +285,7 @@ function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
     'messages' => array(
       'title' => 'Mijn berichten',
       'url' => 'culturefeed/messages',
-      'description' => 'Lees en beantwoord je berichten.',
+      'description' => t('Read and reply to your messages'),
       'weight' => -16,
     ),
   );
