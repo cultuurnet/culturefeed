@@ -15,6 +15,8 @@ function culturefeed_search_drush_help($section) {
       return dt("Import all Culturefeed Search domains and terms");
     case 'culturefeed_search:culturefeed-search-import-cities':
       return dt("Import all Culturefeed Search cities");
+      case 'culturefeed_search:culturefeed-search-import-cnapi-headings':
+        return dt("Import all cnapi headings to be used for 301 redirects from old cnapi urls");
   }
 
 }
@@ -30,6 +32,10 @@ function culturefeed_search_drush_command() {
   $items['culturefeed-search-import-cities'] = array(
     'description' => 'Import all Culturefeed Search cities.',
     'aliases' => array('csic'),
+  );
+  $items['culturefeed-search-import-cnapi-headings'] = array(
+    'description' => 'Import all old cnapi headings.',
+    'aliases' => array('csicnapi'),
   );
   return $items;
 }
@@ -67,5 +73,19 @@ function drush_culturefeed_search_import_cities() {
   }
 
   drush_log('Cities are now imported', 'success');
+
+}
+
+/**
+ * Implements the 'culturefeed-search-import-cnapi-headings' drush command.
+ */
+function drush_culturefeed_search_import_cnapi_headings() {
+
+  drush_log('Starting import', 'success');
+
+  $import = new CnapiHeadingImport();
+  $import->import();
+
+  drush_log('Cnapi headings are now imported', 'success');
 
 }

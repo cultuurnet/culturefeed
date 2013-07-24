@@ -122,6 +122,30 @@ function culturefeed_search_schema() {
     'primary key' => array('cid'),
   );
 
+  $schema['cnapi_headings'] = array(
+    'description' => 'Mapping table between cnapi headings and categories.',
+    'fields' => array(
+      'hid' => array(
+        'description' => 'The heading id.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'cid' => array(
+        'description' => 'The category id.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'hid' => array('hid'),
+      'cid' => array('cid'),
+    ),
+  );
+
   $schema['cache_culturefeed_search'] = drupal_get_schema_unprocessed('system', 'cache');
   $schema['cache_culturefeed_search']['description'] = 'Cache table for the culturefeed search requests';
 
@@ -148,4 +172,13 @@ function culturefeed_search_update_7003() {
   db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
   db_create_table('culturefeed_search_cities', $schema['culturefeed_search_cities']);
   drupal_set_message(t('Culturefeed search Tables are reïnstalled. Please run the drush imports again'));
+}
+
+/**
+ * Create the cnapi_headings table.
+ */
+function culturefeed_search_update_7005() {
+  $schema = culturefeed_search_schema();
+  db_create_table('cnapi_headings', $schema['cnapi_headings']);
+  drupal_set_message(t('Cnapi headings table created. Please run the drush import for it.'));
 }
