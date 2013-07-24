@@ -607,7 +607,7 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
   }
 
   // Temp fix untill cnet decides to swap to ctools modal.
-  if ($errors = form_get_errors()) {
+  if (form_get_errors()) {
     drupal_goto($detail_path);
   }
 }

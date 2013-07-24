@@ -373,45 +373,56 @@ function culturefeed_social_activity_object_path($type, $id, $title = '') {
 
 /**
  * Helper function to load the correct main object.
- * 
- * @param $content_type
- *   The content type of the content.
- * @param $id
- *   The main identifier for the type of content.
+ *
+ * @param CultureFeed_Activity $activity
+ *   The activity to load the main object of.
  */
-function culturefeed_social_detail_object($content_type, $id) {
+function culturefeed_social_detail_object(CultureFeed_Activity $activity) {
 
   $object = NULL;
-  
-  switch ($content_type) {
+
+  switch ($activity->contentType) {
 
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
-      $object = node_load($id);
+      $object = node_load($activity->nodeId);
       break;
-      
+
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-      $object = bibnet_book_load(urldecode($id));
+      $object = bibnet_book_load(urldecode($activity->nodeId));
       break;
-      
+
     case CultureFeed_Activity::CONTENT_TYPE_CONTENT:
-      $object = NULL;
+      $object = culturefeed_userpoints_promotion_load($activity->nodeId);
       break;
-      
+
+    // Activity type. Load the activity to get the original object.
     case CultureFeed_Activity::CONTENT_TYPE_ACTIVITY:
-      $object = NULL;
+      try {
+        $query = new CultureFeed_SearchActivitiesQuery();
+        $query->activityId = $activity->nodeId;
+        $query->private = FALSE;
+        $activities = DrupalCultureFeed::searchActivities($query);
+        if ($activities->total > 0) {
+          $parent_activity = $activities->objects[0];
+          $object = culturefeed_social_detail_object($parent_activity);
+        }
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_social', $e);
+      }
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_EVENT:
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
     case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
     default:
-      $object = culturefeed_search_item_load($id);
+      $object = culturefeed_search_item_load($activity->nodeId);
       break;
-      
+
   }
-  
+
   return $object;
-  
+
 }
 
 /**

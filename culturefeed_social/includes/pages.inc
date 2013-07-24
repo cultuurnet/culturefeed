@@ -317,7 +317,7 @@ function culturefeed_social_page_activity_report_abuse($activity_id, $request_ty
     $active_object = NULL;
     if ($activities->total > 0) {
       $activity = $activities->objects[0];
-      $active_object = culturefeed_social_detail_object($activity->contentType, $activity->nodeId);
+      $active_object = culturefeed_social_detail_object($activity);
       $build = array(drupal_get_form('culturefeed_social_report_abuse_form_' . $activity->id, $activity, $active_object));
     }
 
@@ -357,10 +357,11 @@ function culturefeed_social_page_activity_comment($activity_id, $request_type = 
     $active_object = NULL;
     if ($activities->total > 0) {
       $activity = $activities->objects[0];
-      $active_object = culturefeed_social_detail_object($activity->contentType, $activity->nodeId);
+      $active_object = culturefeed_social_detail_object($activity);
       $build = culturefeed_social_comment_actionbox($active_object, $activity);
     }
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
     $build[] = array('Er is een onverwachte fout opgetreden.');
