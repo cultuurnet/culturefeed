@@ -228,7 +228,7 @@ function culturefeed_search_ui_block_date_facet() {
 function culturefeed_search_ui_date_facet_form() {
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['date_range'] = array(
@@ -342,14 +342,13 @@ function culturefeed_search_ui_block_city_facet() {
 function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['location'] = array(
     '#type' => 'textfield',
     '#title' => 'Waar',
     '#title_display' => 'invisible',
-    //'#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
     '#attributes' => array('placeholder' => 'Postcode of gemeente'),
   );
@@ -392,14 +391,14 @@ function culturefeed_search_ui_proximity_distance_form() {
   }
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['distance'] = array(
     '#type' => 'select',
     '#title' => 'Zoek in omgeving',
     '#options' => $options,
-    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '20',
+    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE,
   );
 
   $form['submit'] = array(
@@ -416,7 +415,7 @@ function culturefeed_search_ui_proximity_distance_form() {
  */
 function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'distance'));
   if (!empty($form_state['values']['distance'])) {
     $query['distance'] = $form_state['values']['distance'];
   }
