@@ -372,6 +372,49 @@ function culturefeed_social_activity_object_path($type, $id, $title = '') {
 }
 
 /**
+ * Helper function to load the correct main object.
+ * 
+ * @param $content_type
+ *   The content type of the content.
+ * @param $id
+ *   The main identifier for the type of content.
+ */
+function culturefeed_social_detail_object($content_type, $id) {
+
+  $object = NULL;
+  
+  switch ($content_type) {
+
+    case CultureFeed_Activity::CONTENT_TYPE_NODE:
+      $object = node_load($id);
+      break;
+      
+    case CultureFeed_Activity::CONTENT_TYPE_BOOK:
+      $object = bibnet_book_load(urldecode($id));
+      break;
+      
+    case CultureFeed_Activity::CONTENT_TYPE_CONTENT:
+      $object = NULL;
+      break;
+      
+    case CultureFeed_Activity::CONTENT_TYPE_ACTIVITY:
+      $object = NULL;
+      break;
+
+    case CultureFeed_Activity::CONTENT_TYPE_EVENT:
+    case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
+    case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
+    default:
+      $object = culturefeed_search_item_load($id);
+      break;
+      
+  }
+  
+  return $object;
+  
+}
+
+/**
  * Helper function to create a drupal goto based on activities.
  * @param Culturefeed_Activity $activity
  * @param string $content_type

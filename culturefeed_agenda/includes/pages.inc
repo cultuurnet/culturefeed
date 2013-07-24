@@ -31,7 +31,7 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
  * Page callback to do an autocomplete search on activity titles.
  */
 function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string) {
-
+  
   $matches = array();
 
   if ($search_string) {

@@ -18,17 +18,20 @@
 
   <div>
     <?php if ($level == 0): ?>
-    <?php print $react_link ?>
+      <?php print $comment_link ?>
+    <div id="comment-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-body"></div>
+    </div>
     <?php endif; ?>
-    <?php print $abuse_link ?>
+      <?php print $abuse_link ?>
+    <div id="abuse-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-body"></div>
+    </div>
     <?php print $delete_link ?>
+    <div id="delete-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-body"></div>
+    </div>
   </div>
-
-  <?php if ($level == 0) : ?>
-  <?php print $react_form ?>
-  <?php endif; ?>
-
-  <?php print $abuse_form; ?>
 
   <?php if (!empty($list)): ?>
     <div style="margin-left: 30px;">

@@ -172,11 +172,9 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
     $variables['list'] = $list;
   }
 
-  $variables['react_form'] = '';
-  $variables['react_link'] = '';
+  $variables['comment_link'] = '';
   $variables['delete_link'] = '';
   $variables['abuse_link'] = '';
-  $variables['abuse_form'] = '';
 
   if ($cf_user) {
 
@@ -185,7 +183,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
       'class' => array('remove-link'/*, 'use-ajax'*/),
       'role' => 'button',
       'data-toggle' => 'modal',
-      'data-target' => '#culturefeed-social-modal-wrapper',
+      'data-target' => '#delete-wrapper-' . $activity->id,
       'data-remote' => url($remove_path . "/ajax", array('query' => $destination)),
     );
 
@@ -195,12 +193,22 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
         $variables['delete_link'] = l('Verwijder', $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,
-        ));
+        )) . '<div id="delete-wrapper-' . $activity->id . '"></div>';
       }
-      $variables['react_link'] = l('Reageer', $_GET['q'], array('attributes' => array('class' => array('comment-subform-toggle'))));
-      $sub_form = culturefeed_social_comment_actionbox($object, $activity);
-      $variables['react_form'] = '<div id="comment-subform-' . $activity->id . '" class="comment-subform">' . drupal_render($sub_form) . '</div>';
 
+      $comment_url = 'culturefeed/activity/comment/' . $activity->id;
+      $attributes = array(
+        'class' => array('comment-link'),
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#comment-wrapper-' . $activity->id,
+        'data-remote' => url($comment_url . "/ajax", array('query' => $destination)),
+      );
+
+      $variables['comment_link'] = l('Reageer', $comment_url . '/nojs', array(
+        'attributes' => $attributes,
+        'query' => $destination,
+      ));
     }
     else {
 
@@ -217,9 +225,19 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
   if (module_exists('culturefeed_messages')) {
 
-    $variables['abuse_link'] = l('Rapporteer als ongepast', $_GET['q'], array('attributes' => array('class' => array('comment-abuse-toggle'))));
-    $abuse_form = drupal_get_form('culturefeed_social_report_abuse_form_' . $activity->id, $activity, culturefeed_search_get_active_object());
-    $variables['abuse_form'] = '<div class="comment-abuse-form">' . drupal_render($abuse_form) . '</div>';
+    $abuse_url = 'culturefeed/activity/report-abuse/' . $activity->id;
+    $attributes = array(
+      'class' => array('comment-abuse-link'),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#abuse-wrapper-' . $activity->id,
+      'data-remote' => url($abuse_url . "/ajax", array('query' => $destination)),
+    );
+
+    $variables['abuse_link'] = l('Rapporteer als ongepast', $abuse_url . '/nojs', array(
+      'attributes' => $attributes,
+      'query' => $destination,
+    ));
 
   }
 
