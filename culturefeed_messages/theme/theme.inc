@@ -249,7 +249,7 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60)) {
     $minutes_ago = $last_reply->diff(new DateTime('now', $time_zone))->i;
-    $variables['date'] = format_plural($minutes_ago, t('@count minute ago'), t('@count minutes ago'));
+    $variables['date'] = format_plural($minutes_ago, '@count minute ago', '@count minutes ago');
   }
   else {
 

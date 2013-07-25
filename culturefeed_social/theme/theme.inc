@@ -54,13 +54,13 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
     $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
     if ($days_ago == 1) {
-      $variables['date'] = 'Gisteren om ' . $last_reply->format('H:i') . ' uur';
+      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' ' . t('hour');
     }
     elseif ($days_ago == 0) {
-      $variables['date'] = 'Vandaag om ' . $last_reply->format('H:i') . ' uur';
+      $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' ' . t('hour');
     }
     else {
-      $variables['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i') . ' uur';
+      $variables['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i') . ' ' . t('hour');
     }
 
   }
@@ -92,7 +92,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   // If onbehalf is known, show it only when culturefeed pages is enabled.
   if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
-    $variables['nick'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
+    $variables['nick'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
 }
@@ -147,10 +147,10 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
   $variables['author'] = l($activity->nick, $author_url);
   if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
-    $variables['author'] .= ' van ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
+    $variables['author'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
-  $variables['content'] = check_plain(strip_tags($activity->value)); // Cultuurnet doesn't want to see html tags converted to plain.
+  $variables['content'] = check_plain(strip_tags($activity->value)); // CultuurNet doesn't want to see html tags converted to plain.
   $variables['content'] = str_replace("\n", "<br />", $variables['content']);
   $variables['activity_id'] = $activity->id;
 
@@ -190,7 +190,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
     if ($variables['level'] == 0) {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-        $variables['delete_link'] = l('Verwijder', $remove_path . '/nojs', array(
+        $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,
         )) . '<div id="delete-wrapper-' . $activity->id . '"></div>';
@@ -205,7 +205,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
         'data-remote' => url($comment_url . "/ajax", array('query' => $destination)),
       );
 
-      $variables['comment_link'] = l('Reageer', $comment_url . '/nojs', array(
+      $variables['comment_link'] = l(t('Reply'), $comment_url . '/nojs', array(
         'attributes' => $attributes,
         'query' => $destination,
       ));
@@ -234,7 +234,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
       'data-remote' => url($abuse_url . "/ajax", array('query' => $destination)),
     );
 
-    $variables['abuse_link'] = l('Rapporteer als ongepast', $abuse_url . '/nojs', array(
+    $variables['abuse_link'] = l(t('Report as inappropriate'), $abuse_url . '/nojs', array(
       'attributes' => $attributes,
       'query' => $destination,
     ));

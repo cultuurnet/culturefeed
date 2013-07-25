@@ -20,14 +20,14 @@ class CultureFeedActivityConfigTwitter extends CultureFeedActivityConfigBase {
     );
 
     $this->undoAllowed = FALSE;
-    $this->titleDo = 'Delen';
-    $this->titleDoFirst = 'Delen';
-    $this->subject = 'Gedeeld door';
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'via Twitter gedeeld';
-    $this->label = 'Delen via Twitter';
-    $this->undoNotAllowedMessage = 'Succesvol gedeeld';
-    $this->pointsOverviewSuffix = 'gedeeld';
+    $this->titleDo = t('Share');
+    $this->titleDoFirst = t('Share');
+    $this->subject = t('Shared by');
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('shared by Twitter');
+    $this->label = t('Share with Twitter');
+    $this->undoNotAllowedMessage = t('Successfully shared');
+    $this->pointsOverviewSuffix = t('shared');
 
   }
 

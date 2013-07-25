@@ -12,7 +12,7 @@
   <div class="activity-wrapper">
     <?php if ($member_count > 0): ?>
     <div class="members-wrapper">
-        <?php print format_plural($member_count, t('<span class="members">@count</span> member'), t('<span class="members">@count</span> members'); ?>
+        <?php print format_plural($member_count, '<span class="members">@count</span> member', '<span class="members">@count</span> members'); ?>
         <a href="<?php print $url ?>#members"><?php print t('View members'); ?></a>
     </div>
     <?php endif; ?>

@@ -387,7 +387,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
       $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
-        $row['comment_count'] = l(format_plural($comment_count, t('@count reaction'), t('@count reactions')), $path, array('fragment' => 'lees'));
+        $row['comment_count'] = l(format_plural($comment_count, '@count reaction', '@count reactions'), $path, array('fragment' => 'lees'));
       }
       else {
         $row['comment_count'] = t('No reactions yet');

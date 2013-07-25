@@ -20,18 +20,18 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->subject = 'Vinden dit leuk';
-    $this->subjectDo = 'Vind ik leuk';
-    $this->subjectUndo = 'Vind ik niet meer leuk';
-    $this->titleDo = 'Vind ik leuk';
-    $this->titleDoFirst = 'Vind dit als eerste leuk';
-    $this->titleShowAll = 'Toon iedereen die dit leuk vindt';
+    $this->subject = t('Like this');
+    $this->subjectDo = t('Like');
+    $this->subjectUndo = t('I do not like');
+    $this->titleDo = t('I Like');
+    $this->titleDoFirst = t('Like this the first');
+    $this->titleShowAll = t('Show everyone who likes this');
     $this->linkClassDo = 'like-link';
     $this->linkClassUndo = 'unlike-link';
-    $this->viewPrefix = 'vindt';
-    $this->viewSuffix = 'leuk';
-    $this->label = 'Like';
-    $this->loginRequiredMessage = 'Om te liken moet je aangemeld zijn';
+    $this->viewPrefix = t('likes');
+    $this->viewSuffix = t('this');
+    $this->label = t('Like');
+    $this->loginRequiredMessage = t('To like you have to be logged in');
 
   }
 

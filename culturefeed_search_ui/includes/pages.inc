@@ -55,18 +55,18 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = t('There was an error while loading the search results.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = t('There was an error while loading the search results.');
   }
   catch (InvalidSearchPageException $e) {
     $build = $e->getMessage();
   }
   catch (CultureFeed_Cdb_ParseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+    $build = t('There was an error while loading the search results.');
   }
 
   if ($ajax) {

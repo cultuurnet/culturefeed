@@ -367,9 +367,9 @@ function culturefeed_social_culturefeed_ui_profile_menu() {
 
   return array(
     'activities' => array(
-      'title' => 'Acties',
+      'title' => 'Actions',
       'url' => 'culturefeed/activities',
-      'description' => 'Stel in welke gebruikersacties voor anderen zichtbaar zijn op je profielpagina.',
+      'description' => 'Set which user actions are visible to others on your profile page.',
       'weight' => -15,
     ),
   );
@@ -443,7 +443,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
   $form['filter'] = array(
     '#type' => 'select',
     '#options' => $options,
-    '#title' => 'Filter gebeurtenissen op',
+    '#title' => t('Filter events on'),
     '#default_value' => $active_filter,
   );
 
@@ -461,7 +461,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
   } else {
     $form['submit'] = array(
       '#type' => 'submit',
-      '#value' => 'Filter',
+      '#value' => t('Filter'),
     );
   }
 
@@ -527,8 +527,8 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
 
   if ($status == TRUE) {
 
-    $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.', array('!link' => $link));
+    $link = l(t('Remove from list'), 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
+    $message = format_string(t('You currently receiving updates of new comments. <br/>!link to get anymore posts'), array('!link' => $link));
 
     $form['update_optin'] = array(
       '#type' => 'markup',
@@ -540,7 +540,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     $form['update_optin'] = array(
       '#type' => 'checkbox',
       //'#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
-      '#title' => 'Blijf via e-mail op de hoogte van nieuwe reacties',
+      '#title' => t('Receive email about new comments'),
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('comment-updates')),
       '#weight' => 1,
@@ -557,7 +557,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Verzend',
+    '#value' => t('Submit'),
     '#attributes' => array('class' => array('comment-button')),
     '#weight' => 5,
   );
@@ -600,10 +600,10 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
       $form_state['activity_result'] = DrupalCultureFeed::createActivity($activity);
     } catch (Exception $e) {
       watchdog_exception('culturefeed_social', $e);
-      form_set_error('', format_string('Door technische problemen is het momenteel niet mogelijk om jouw boodschap te versturen. Aarzel niet om rechtstreeks met ons contact op te nemen via @site', array('@site' => variable_get('site_email', ''))));
+      form_set_error('', format_string(t('Due to technical problems it is currently not possible to send your message. Do not hesitate to directly contact via @site'), array('@site' => variable_get('site_email', ''))));
     }
   } else {
-    form_set_error('message', 'Uw reactie mag de 250 karakters niet overschrijden.');
+    form_set_error('message', t('Your response should not exceed 250 characters.'));
   }
 
   // Temp fix untill cnet decides to swap to ctools modal.
@@ -628,7 +628,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
       'absolute' => TRUE,
       'fragment' => 'activity-' . $form_state['activity_result']->id,
     ));
-    drupal_set_message(format_string('Je !comment is verstuurd.', array('!comment' => $goto_link)));
+    drupal_set_message(format_string(t('Your !comment has been sent.'), array('!comment' => $goto_link)));
 
     // Follow updates.
     if (!empty($form_state['values']['update_optin'])) {
@@ -637,8 +637,8 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
         $id = DrupalCultureFeed::followNode($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
         if ($id) {
 
-          $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-          drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.', array('!link' => $link)));
+          $link = l(t('Remove from list'), 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
+          drupal_set_message(format_string(t('You currently receiving updates of new comments. <br/>!link to get anymore posts.'), array('!link' => $link)));
         }
       } catch (Exception $e) {
         watchdog_exception('culturefeed_social', $e);
@@ -684,8 +684,8 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
 
   $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => 'Berichttekst',
-    '#attributes' => array('placeholder' => 'Geef aan waarom dit volgens u een ongepaste reactie is'),
+    '#title' => t('Message test'),
+    '#attributes' => array('placeholder' => t('Please tell us why you think this is an inappropriate response')),
     '#required' => TRUE,
   );
 
@@ -701,7 +701,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
       }
 
       $form['send_as'] = array(
-        '#title' => 'Stuur bericht als',
+        '#title' => t('Send message as'),
         '#type' => 'select',
         '#options' => $send_as_options,
         '#default_value' => culturefeed_pages_get_active_page_id(),
@@ -716,7 +716,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Verzenden',
+    '#value' => t('Submit'),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';
@@ -760,7 +760,7 @@ function culturefeed_social_base_report_abuse_form_validate($form, &$form_state)
   try {
     $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);
   } catch (Exception $e) {
-    form_set_error('', 'Er ging iets fout tijdens het versturen');
+    form_set_error('', t('Something went wrong while sending'));
     watchdog_exception('culturefeed_social', $e);
   }
 
@@ -774,5 +774,5 @@ function culturefeed_social_base_report_abuse_form_validate($form, &$form_state)
  * Submit the new message form.
  */
 function culturefeed_social_base_report_abuse_form_submit($form, &$form_state) {
-  drupal_set_message('Het bericht werd verstuurd');
+  drupal_set_message(t('Message sent'));
 }

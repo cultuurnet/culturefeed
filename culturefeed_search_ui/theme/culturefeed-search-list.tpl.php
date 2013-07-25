@@ -13,7 +13,7 @@
 
 if ($noitems) :
   ?>
-  <b>Geen resultaten gevonden</b>
+  <b><?php print t('No results found'); ?></b>
   <?php 
 else :
   foreach ($items as $item) {

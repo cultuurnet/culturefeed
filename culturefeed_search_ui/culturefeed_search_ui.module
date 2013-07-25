@@ -95,7 +95,7 @@ function culturefeed_search_ui_menu() {
 
   $items['admin/config/services/culturefeed_search_ui'] = array(
     'title' => 'Culture Feed Search UI',
-    'description' => 'Change Culture Feed Search UI settings like display, filters, ...',
+    'description' => t('Change Culture Feed Search UI settings like display, filters, …'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_search_ui_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -402,7 +402,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     $url = url($path, array('query' => $search_query));
     $build['nearby'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => 'In de buurt van ' . check_plain($query['nearby']),
+      '#label' => t('Near') . ' ' . check_plain($query['nearby']),
       '#url' => $url
     );
   }

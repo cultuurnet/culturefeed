@@ -69,7 +69,7 @@
 
 <?php if (!empty($following)): ?>
 <div class="following">
-  <?php print t('Pages where i\'m member off:') ?>
+  <?php print t('Pages of which i\'m a member') ?>
   <ul>
   <?php foreach ($following as $following_page) :?>
     <li><?php print $following_page; ?></li>

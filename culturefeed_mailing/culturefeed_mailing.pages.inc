@@ -72,7 +72,7 @@ function culturefeed_mailing_subscribe_form() {
   $form = array();
   $form['mail'] = array(
     '#type' => 'textfield',
-    '#title' => t('Email address)',
+    '#title' => t('Email address',
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
@@ -202,7 +202,7 @@ function culturefeed_mailing_lists_overview() {
 
       $delete = array(
         '#type' => 'link',
-        '#title' => t('detele'),
+        '#title' => t('delete'),
         '#href' => 'admin/content/mailing-lists/delete/' . $list->id,
         '#options' => array('query' => drupal_get_destination()),
       );

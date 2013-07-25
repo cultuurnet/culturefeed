@@ -19,20 +19,20 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->subject = 'Reactie door';
+    $this->subject = t('Reaction by');
     $this->subjectUndo = '';
-    $this->titleDo = 'Schrijf zelf een reactie';
-    $this->titleDoFirst = 'Reageer als eerste';
-    $this->titleShowAll = 'Toon iedereen die reageerde op deze pagina';
+    $this->titleDo = t('Write your own comment');
+    $this->titleDoFirst = t('First to comment');
+    $this->titleShowAll = t('Show everyone who responded to this page');
     $this->linkClassDo = 'comment-link';
     $this->linkClassUndo = 'uncomment-link';
-    $this->viewPrefix = 'heeft op';
-    $this->viewSuffix = 'commentaar gegeven';
-    $this->label = 'Commentaar';
-    $this->action = 'reactie';
-    $this->loginRequiredMessage = 'Om commentaar te geven moet je aangemeld zijn';
-    $this->onBehalfOfMessage = 'Plaats commentaar als';
-    $this->pointsOverviewPrefix = 'Reactie geschreven op';
+    $this->viewPrefix = t('has given comment on');
+    $this->viewSuffix = '';
+    $this->label = t('Comment');
+    $this->action = t('reaction');
+    $this->loginRequiredMessage = t('To comment you must be logged');
+    $this->onBehalfOfMessage = t('Post comment as');
+    $this->pointsOverviewPrefix = t('Written response on');
 
   }
 

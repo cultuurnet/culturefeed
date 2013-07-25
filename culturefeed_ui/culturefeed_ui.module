@@ -56,7 +56,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/serviceconsumers'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Channels connected'),
+    'title arguments' => array('Connected channels'),
     'page callback' => 'culturefeed_ui_page_serviceconsumers',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -401,7 +401,7 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
     'account' => array(
       'title' => t('Edit account'),
       'url' => 'culturefeed/account/edit',
-      'description' => t('Change password, emailadress, connected channels, …'),
+      'description' => t('Change password, email address, connected channels, …'),
       'weight' => -18,
     ),
   );

@@ -36,7 +36,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['subscribe'] = array(
-    'title' =>  t('Subscribe to our newsletter'),
+    'title' =>  'Subscribe to our newsletter',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_subscribe_form'),
     'access arguments' => array('subscribe to mailings'),
@@ -44,7 +44,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['subscribe/subscribed'] = array(
-    'title' =>  t('Subscribed to our newsletter'),
+    'title' =>  'Subscribed to our newsletter',
     'page callback' => 'culturefeed_mailing_user_subscribed',
     'access arguments' => array('subscribe to mailings'),
     'file' => 'culturefeed_mailing.pages.inc',
@@ -52,7 +52,7 @@ function culturefeed_mailing_menu() {
 
   $items['culturefeed/mailing'] = array(
     'title callback' => FALSE,
-    'title' => t('Emails'),
+    'title' => 'Emails',
     'page callback' => 'culturefeed_mailing_page_my_newsletters',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -61,8 +61,8 @@ function culturefeed_mailing_menu() {
 
   // Configuration pages.
   $items['admin/config/services/culturefeed-mailing'] = array(
-    'title' => t('CultureFeed Mailing'),
-    'description' => t('CultureFeed Mailing settings'),
+    'title' => 'CultureFeed Mailing',
+    'description' => 'CultureFeed Mailing settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -198,7 +198,7 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
     'emails' => array(
       'title' => "E-mails",
       'url' => 'culturefeed/mailing',
-      'description' => t('Manage newsletters you can subscribe'),
+      'description' => t('Manage newsletters you can subscribe to'),
       'weight' => -17,
     ),
   );

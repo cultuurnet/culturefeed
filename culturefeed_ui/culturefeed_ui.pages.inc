@@ -2,7 +2,7 @@
 
 function culturefeed_ui_page_remove_account_form($form, &$form_state) {
   return confirm_form($form,
-    t('Sure you want to delete your account?'),
+    t('Are you sure you want to delete your account?'),
     isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/account/edit',
     t('This action cannot be undone.'),
     t('Delete'),
@@ -156,7 +156,7 @@ function culturefeed_ui_page_mboxverify_resend() {
     }
   }
   else {
-    drupal_set_message(t('Emailaddress from this account already confirmed.'));
+    drupal_set_message(t('Email address of this account is already confirmed.'));
   }
 
   drupal_goto();
@@ -179,7 +179,7 @@ function culturefeed_ui_page_profile_edit_form() {
 
   $form['view-profile'] = array(
     '#prefix' => '<div id="view-profile">',
-    '#markup' => l(t('See profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
     '#suffix' => '</div>',
   );
 
@@ -439,7 +439,7 @@ function culturefeed_ui_page_account_edit_form() {
 
   $form['view-profile'] = array(
     '#prefix' => '<div id="view-profile">',
-    '#markup' => l(t('See profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
     '#suffix' => '</div>',
   );
 
@@ -452,7 +452,7 @@ function culturefeed_ui_page_account_edit_form() {
 
   $form['mbox'] = array(
     '#type' => 'textfield',
-    '#title' => t('Emailaddress'),
+    '#title' => t('Email address'),
     '#default_value' => $cf_account->mbox,
     '#required' => TRUE,
   );

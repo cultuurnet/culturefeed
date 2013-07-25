@@ -14,16 +14,16 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->subject = 'Volgen deze pagina';
-    $this->subjectUndo = 'Volg ik niet meer';
-    $this->titleDo = 'Ik volg deze pagina';
-    $this->titleDoFirst = 'Volg ik als eerste';
-    $this->titleShowAll = 'Toon iedereen die deze pagina volgt';
+    $this->subject = t('Follow this page');
+    $this->subjectUndo = t('Unfollow');
+    $this->titleDo = t('I follow this page');
+    $this->titleDoFirst = t('Follow as first');
+    $this->titleShowAll = t('Show everyone who follows this page');
     $this->linkClassDo = 'follow-link';
     $this->linkClassUndo = 'unfollow-link';
-    $this->viewPrefix = 'volgt';
-    $this->label = 'Volgen';
-    $this->loginRequiredMessage = 'U moet ingelogd zijn om een pagina te volgen';
+    $this->viewPrefix = t('follows');
+    $this->label = t('Follow');
+    $this->loginRequiredMessage = t('You must be logged to follow a page');
 
   }
 

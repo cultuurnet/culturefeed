@@ -14,8 +14,8 @@ class CultureFeedActivityConfigPageMember extends CultureFeedActivityConfigBase 
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->viewPrefix = 'werd lid van';
-    $this->label = 'Lidmaatschap';
+    $this->viewPrefix = t('became member of');
+    $this->label = t('Membership');
 
   }
 

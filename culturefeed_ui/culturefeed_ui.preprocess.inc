@@ -77,7 +77,7 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
   $variables['mbox'] = check_plain($variables['account']->mbox);
 
   $variables['resend_link'] = l(t('Resend email confirmation'), 'culturefeed/mboxverify/resend', array('query' => drupal_get_destination()));
-  $variables['update_link'] = l(t('Change emailaddress'), 'culturefeed/account/edit');
+  $variables['update_link'] = l(t('Change Email address'), 'culturefeed/account/edit');
   $variables['info_link'] = l(t('More info about UiTiD'), 'http://www.uitinvlaanderen.be/over-uitid');
 }
 
@@ -216,7 +216,7 @@ function template_preprocess_culturefeed_ui_most_active_user(&$variables) {
     '!uitslover' => l(t('Most active user'), 'culturefeed/users/mostactive'),
   );
 
-  $variables['text'] = strtr(t('!nick did <strong>!sort_value !type and is the !uitslover last week. Congratulations!'), $replace);
+  $variables['text'] = strtr(t('!nick did <strong>!sort_value !type and is the !uitslover of the week. Congratulations!'), $replace);
 }
 
 /**
@@ -231,7 +231,7 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100')) : '';
   $variables['name'] = isset($consumer->name) ? check_plain($consumer->name) : '';
   $variables['description'] = isset($consumer->description) ? check_plain($consumer->description) : '';
-  $variables['creation_date'] = t('Connected on ') . format_date($consumer->creationDate, 'custom', 'j F Y');
+  $variables['creation_date'] = t('Connected to') . format_date($consumer->creationDate, 'custom', 'j F Y');
 }
 
 /**
@@ -293,7 +293,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   // profile
   $variables['profile_edit_link'] = NULL;
   if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l(t('Generate your leisure profile!'), 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
+    $variables['profile_edit_link'] = l(t('Calculate your leisure profile!'), 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
   }
   else {
     // lifestyleProfile name
@@ -311,10 +311,10 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
         $variables['profile_name'] = t('Connoisseur');
           break;
       default:
-        $variables['profile_name'] = t('Leisure profile not yet generated');
+        $variables['profile_name'] = t('Leisure profile not calculated yet');
           break;
     }
-    $variables['profile_refresh_link'] = l(t('Regenerate'), 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
+    $variables['profile_refresh_link'] = l(t('Recalculate'), 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
 
   // facebook toggle

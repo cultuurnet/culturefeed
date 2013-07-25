@@ -228,7 +228,7 @@ function culturefeed_ui_block_mbox_confirmation_reminder_view() {
     return;
   }
 
-  $block['subject'] = 'Confirm emailaddress';
+  $block['subject'] = 'Confirm email address';
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;

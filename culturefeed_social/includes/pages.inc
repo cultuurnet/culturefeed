@@ -55,7 +55,7 @@ function culturefeed_social_page_ajax_get_activities() {
 
   // If we are applying, and we have no results. Make sure we show a no results message.
   if (isset($_GET['new_filter']) && empty($result->results)) {
-    $result->results[] = 'Geen activiteiten gevonden';
+    $result->results[] = t('No activities found');
   }
 
   drupal_json_output($result);
@@ -99,7 +99,7 @@ function culturefeed_social_page_activities($type = NULL) {
     $cf_account = DrupalCultureFeed::getLoggedInUser();
     $build['view-profile'] = array(
       '#prefix' => '<div id="view-profile">',
-      '#markup' => l('Bekijk profiel', 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+      '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
       '#suffix' => '</div>',
     );
 
@@ -128,7 +128,7 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $delete = array(
       '#type' => 'link',
-      '#title' => 'Verwijderen',
+      '#title' => t('Remove'),
       '#href' => $remove_path . '/nojs',
       '#attributes' => $attributes,
       '#options' => array('query' => drupal_get_destination()),
@@ -136,9 +136,9 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $privacy = array(
       '#type' => 'link',
-      '#title' => $activity->private ? 'Privé' : 'Publiek',
+      '#title' => $activity->private ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? 'Zet publiek' : 'Maak privé')),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Put public') : t('Make privat'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -153,7 +153,7 @@ function culturefeed_social_page_activities($type = NULL) {
       'data' => array(
         $data,
         $type_text,
-        format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden <br />op ' . $activity->createdVia,
+        format_interval(REQUEST_TIME - $activity->creationDate) . ' ' . t('ago <br />on') . ' ' . $activity->createdVia,
         drupal_render($privacy),
         drupal_render($delete) . '<div id="delete-wrapper-' . $activity->id . '"></div>',
       ),
@@ -162,9 +162,9 @@ function culturefeed_social_page_activities($type = NULL) {
 
   $activities = array(
     '#theme' => 'table',
-    '#header' => array('Pagina', 'Actie', 'Tijdstip en publicatiekanaal', 'Publiek', ''),
+    '#header' => array(t('Page'), t('Action'), t('Time and publishing channel'), t('Public'), ''),
     '#rows' => $rows,
-    '#empty' => 'Je hebt nog geen acties gedaan.',
+    '#empty' => t('You have no actions done yet.'),
   );
 
   $facebook_privacy_toggle = NULL;
@@ -234,10 +234,10 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $config = culturefeed_social_activity_get_config($data->objects[0]->type);
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . $config->label . ' verwijderen</h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove') . ' ' . $config->label . ' </h3></div>';
   }
   else {
-    drupal_set_title($config->label . ' verwijderen?');
+    drupal_set_title(t('Remove') . ' ' . $config->label . '?');
   }
 
   $destination = drupal_get_destination();
@@ -251,7 +251,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   );
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
-    '#markup' => '<p>Ben je zeker dat je jouw ' . $config->action . ' definitief wil verwijderen.</p>',
+    '#markup' => '<p>' . t('Are you sure you want to delete your action') .  ' ' . $config->action . ' ' . t('permanently') .'?</p>',
   );
 
   $form['footer_wrapper'] = array(
@@ -262,13 +262,13 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
 
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
-    '#value' => 'Verwijder',
+    '#value' => t('Remove'),
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
   );
 
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
-    '#title' => 'Annuleer',
+    '#title' => t('Cancel'),
     '#href' => url($destination['destination']),
     '#attributes' => array(
       'data-dismiss' => 'modal',
@@ -325,7 +325,7 @@ function culturefeed_social_page_activity_report_abuse($activity_id, $request_ty
   catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
-    $build[] = array('Er is een onverwachte fout opgetreden.');
+    $build[] = array(t('An unexpected error has occurred.'));
   }
 
   if ($request_type == 'ajax') {
@@ -364,7 +364,7 @@ function culturefeed_social_page_activity_comment($activity_id, $request_type = 
   catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
-    $build[] = array('Er is een onverwachte fout opgetreden.');
+    $build[] = array(t('An unexpected error has occurred.'));
   }
 
   if ($request_type == 'ajax') {
@@ -396,13 +396,13 @@ function culturefeed_social_page_node_unfollow($content_type, $node_id, $request
     $commands = array();
 
     if ($success) {
-      $commands[] = ajax_command_html('#node-status-wrapper', 'Je ontvangt geen updates meer van nieuwe reacties');
+      $commands[] = ajax_command_html('#node-status-wrapper', t('You will no longer receive updates of new comments'));
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
-    drupal_set_message('Je ontvangt momenteel geen updates van nieuwe reacties.');
+    drupal_set_message(t('You are currently not receiving updates of new comments.'));
     drupal_goto();
   }
 
@@ -428,9 +428,9 @@ function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax')
       $commands = array();
       $privacy = array(
         '#type' => 'link',
-        '#title' => $privacy == 1 ? 'Privé' : 'Publiek',
+        '#title' => $privacy == 1 ? t('Private') : t('Public'),
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? 'Zet publiek' : 'Maak privé')),
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? t('Make public') : t('Put private'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
@@ -464,7 +464,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
   if ($redirect) {
     if (empty($activity)) {
-      drupal_set_message('Er is een fout opgetreden bij deze actie.', 'error');
+      drupal_set_message(t('An unexpected error has occurred.'), 'error');
     }
     $title = empty($activity->nodeTitle) ? '' : $activity->nodeTitle;
     culturefeed_social_goto($activity, $content_type, $node_id, $title);
@@ -561,7 +561,7 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
 
   if ($redirect) {
     if (empty($activity)) {
-      drupal_set_message('Actie kon niet ongedaan gemaakt worden.', 'error');
+      drupal_set_message(t('Action could not be undone.'), 'error');
     }
     culturefeed_social_goto($activity, $content_type, $node_id, $activity->nodeTitle);
   }

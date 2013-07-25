@@ -183,7 +183,7 @@ function theme_culturefeed_search_pager_summary($variables) {
     '@range' => ($variables['start'] + 1) . '-' . $end,
   );
 
-  $pager_summary = format_plural($result->getTotalCount(), '@range van @count resultaat', '@range van @count resultaten', $args);
+  $pager_summary = format_plural($result->getTotalCount(), '@range from @count result', '@range from @count results', $args);
 
   return '<div class="pager-summary">' . $pager_summary . '</div>';
 

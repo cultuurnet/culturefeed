@@ -14,8 +14,8 @@ class CultureFeedActivityConfigPageAdmin extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->viewPrefix = 'werd administrator van';
-    $this->label = 'Pagina administrator';
+    $this->viewPrefix = t('became administrator of');
+    $this->label = t('Page administrator');
   }
 
 }

@@ -15,13 +15,13 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
     );
 
-    $this->titleDo = 'Ik ga';
-    $this->titleDoFirst = 'Ik ga';
-    $this->subjectUndo = 'Ik ga niet meer';
-    $this->viewPrefix = 'gaat naar';
-    $this->label = 'Gaat naar';
-    $this->loginRequiredMessage = 'U moet ingelogd zijn om aan te geven dat u gaat';
-    $this->pointsOverviewPrefix = 'Gaat naar';
+    $this->titleDo = t('Attend');
+    $this->titleDoFirst = t('Attend');
+    $this->subjectUndo = t('I do not go');
+    $this->viewPrefix = t('goes to');
+    $this->label = t('Goes to');
+    $this->loginRequiredMessage = t('You must be logged in to indicate that you attend');
+    $this->pointsOverviewPrefix = t('Goes to');
 
   }
 

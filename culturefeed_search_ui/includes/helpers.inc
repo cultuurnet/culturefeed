@@ -86,13 +86,13 @@ function _culturefeed_search_ui_get_active_search_page() {
 function culturefeed_search_ui_get_date_facet_options() {
 
   return array(
-    'today' => 'Vandaag',
-    'next7days' => 'Deze week',
-    'thisweekend' => 'Dit weekend',
-    'nextweekend' => 'Volgend weekend',
-    'next14days' => 'Volgende 14 dagen',
-    'next30days' => 'Volgende 30 dagen',
-    'next12months' => 'Volgende 12 maanden',
+    'today' => t('Today'),
+    'next7days' => t('Next 7 days'),
+    'thisweekend' => t('This weekend'),
+    'nextweekend' => t('Next weekend'),
+    'next14days' => t('Next 14 days'),
+    'next30days' => t('Next 30 days'),
+    'next12months' => t('Next 12 months'),
   );
 
 }
