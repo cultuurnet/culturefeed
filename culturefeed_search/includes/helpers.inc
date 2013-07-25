@@ -58,6 +58,33 @@ function culturefeed_search_item_load($cdb_id) {
 }
 
 /**
+ * Search a cdb item by title and type.
+ * @param string $title
+ *  Title to search.
+ * @param string $type
+ *  Type to search
+ * @return mixed
+ *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
+ */
+function culturefeed_search_load_item_by_title($title, $type) {
+
+  $search_string = trim($title);
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $result = culturefeed_get_search_service()->search($parameters);
+
+  if ($result->getTotalCount()  > 0) {
+    $items = $result->getItems();
+    return $items[0];
+  }
+
+  return FALSE;
+
+}
+
+/**
  * Get the current active search object.
  * @param $path
  *   Path to load the active object of. Defaults to current path.

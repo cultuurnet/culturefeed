@@ -1,9 +1,9 @@
 <?php
+
 /**
  * @file
  * CultureFeed Social adds the ability to perform social actions (for example: like, comments, follow, ...) on culturefeed items like events, productions, pages...
  */
-
 module_load_include('inc', 'culturefeed_social', 'includes/helpers');
 
 /**
@@ -56,10 +56,20 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['culturefeed/activity/mark-abusive/%/%'] = array(
+  $items['culturefeed/activity/comment/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Rapporteer als ongepast',
-    'page callback' => 'culturefeed_social_page_activity_mark_abusive',
+    'title' => 'Abuse form',
+    'page callback' => 'culturefeed_social_page_activity_comment',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/activity/report-abuse/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => 'Abuse form',
+    'page callback' => 'culturefeed_social_page_activity_report_abuse',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -173,7 +183,6 @@ function culturefeed_social_menu() {
   }
 
   return $items;
-
 }
 
 /**
@@ -184,7 +193,6 @@ function culturefeed_social_theme() {
   $path = drupal_get_path('module', 'culturefeed_social') . '/theme';
 
   return array(
-
     'culturefeed_social_user_activity_list' => array(
       'variables' => array(
         'activities' => array(),
@@ -205,14 +213,12 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_comment_form' => array(
       'template' => 'culturefeed-social-comment-form',
       'render element' => 'form',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_comment_list' => array(
       'variables' => array(
         'activities' => NULL,
@@ -224,7 +230,6 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_comment_list_item' => array(
       'variables' => array(
         'activity' => NULL,
@@ -238,13 +243,11 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_report_abuse_form' => array(
       'template' => 'culturefeed-social-report-abuse-form',
       'render element' => 'form',
       'path' => $path,
     ),
-
     'culturefeed_social_user_notifications_page' => array(
       'variables' => array(
         'notifications' => NULL,
@@ -253,7 +256,6 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_activity_summary' => array(
       'variables' => array(
         'totals' => NULL,
@@ -262,27 +264,11 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_social_login_required_message' => array(
       'variables' => array('activity_type' => NULL, 'item' => NULL, 'url' => ''),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
-  );
-
-}
-
-/**
- * Implements hook_page_build()
- */
-function culturefeed_social_page_build(&$build) {
-  $build['page_bottom']['modal-wrapper'] = array(
-    '#type' => 'markup',
-    '#markup' => '<div id="culturefeed-social-modal-wrapper" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-body"></div>
-      </div>
-    ',
   );
 }
 
@@ -331,7 +317,6 @@ function culturefeed_social_block_info() {
   );
 
   return $blocks;
-
 }
 
 /**
@@ -370,11 +355,9 @@ function culturefeed_social_block_view($delta) {
 
     case 'loggedinuser-activity-summary':
       return culturefeed_social_block_my_activity_summary(DrupalCultureFeed::getLoggedInAccount());
-
   }
 
   return $block;
-
 }
 
 /**
@@ -390,7 +373,6 @@ function culturefeed_social_culturefeed_ui_profile_menu() {
       'weight' => -15,
     ),
   );
-
 }
 
 /**
@@ -418,16 +400,12 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
         $items['notifications']['data'] = l('<span class="label label-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
         $items['notifications']['class'] .= ' has-new';
       }
-
     }
-
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
   }
 
   return $items;
-
 }
 
 /**
@@ -439,13 +417,11 @@ function culturefeed_social_forms($form_id, $args) {
   $forms = array();
   if (strstr($form_id, 'culturefeed_social_comment_form')) {
     $forms[$form_id] = array('callback' => 'culturefeed_social_base_comment_form');
-  }
-  elseif (strstr($form_id, 'culturefeed_social_report_abuse_form')) {
+  } elseif (strstr($form_id, 'culturefeed_social_report_abuse_form')) {
     $forms[$form_id] = array('callback' => 'culturefeed_social_base_report_abuse_form');
   }
 
   return $forms;
-
 }
 
 /**
@@ -482,8 +458,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
       '#type' => 'hidden',
       '#value' => url('culturefeed/ajax/user/activities', array('query' => $query)),
     );
-  }
-  else {
+  } else {
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => 'Filter',
@@ -491,7 +466,6 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
   }
 
   return $form;
-
 }
 
 /**
@@ -503,11 +477,9 @@ function culturefeed_social_user_activity_filter_form_submit($form, &$form_state
 
   if ($type > -1 && $type != 'all') {
     drupal_goto('culturefeed/activities/' . $type);
-  }
-  else {
+  } else {
     drupal_goto('culturefeed/activities');
   }
-
 }
 
 /**
@@ -532,8 +504,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     if ($cf_id) {
       $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $node_id, $cf_id);
     }
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     $status = FALSE;
     watchdog_exception('culturefeed_social', $e);
   }
@@ -557,8 +528,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   if ($status == TRUE) {
 
     $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.',
-      array('!link' => $link));
+    $message = format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.', array('!link' => $link));
 
     $form['update_optin'] = array(
       '#type' => 'markup',
@@ -566,8 +536,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
       '#prefix' => '<div id="node-status-wrapper">',
       '#suffix' => '</div>',
     );
-  }
-  else {
+  } else {
     $form['update_optin'] = array(
       '#type' => 'checkbox',
       //'#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
@@ -584,7 +553,6 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
       '#type' => 'hidden',
       '#default_value' => $activity->id,
     );
-
   }
 
   $form['submit'] = array(
@@ -595,7 +563,6 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   );
 
   return $form;
-
 }
 
 /**
@@ -606,22 +573,24 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
   $object = $form_state['object'];
   $config = $form_state['config'];
 
+  $social_content_type = culturefeed_get_content_type($object->getType());
+  $detail_path = culturefeed_social_detail_path($social_content_type, $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language()));
+
   // Send a comment.
-  if (strlen($form_state['values']['message']) <= 250) {
+  if (!empty($form_state['values']['message']) && strlen($form_state['values']['message']) <= 250) {
 
     $activity = new CultureFeed_Activity();
     $activity->type = $activity::TYPE_COMMENT;
     $activity->nodeTitle = $object->getTitle(culturefeed_search_get_preferred_language());
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
     $activity->value = $form_state['values']['message'];
-    $activity->onBehalfOf = !empty($form_state['values']['on_behalf_of']) ? $form_state['values']['on_behalf_of']: '';
+    $activity->onBehalfOf = !empty($form_state['values']['on_behalf_of']) ? $form_state['values']['on_behalf_of'] : '';
 
     // If user is replying on another comment. Node id and content type is different.
     if (!empty($form_state['values']['parent_id'])) {
       $activity->nodeId = $form_state['values']['parent_id'];
       $activity->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTIVITY;
-    }
-    else {
+    } else {
       $activity_content_type = culturefeed_get_content_type($object->getType());
       $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
       $activity->contentType = $activity_content_type;
@@ -629,17 +598,18 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
 
     try {
       $form_state['activity_result'] = DrupalCultureFeed::createActivity($activity);
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       watchdog_exception('culturefeed_social', $e);
       form_set_error('', format_string('Door technische problemen is het momenteel niet mogelijk om jouw boodschap te versturen. Aarzel niet om rechtstreeks met ons contact op te nemen via @site', array('@site' => variable_get('site_email', ''))));
     }
-
-  }
-  else {
+  } else {
     form_set_error('message', 'Uw reactie mag de 250 karakters niet overschrijden.');
   }
 
+  // Temp fix untill cnet decides to swap to ctools modal.
+  if (form_get_errors()) {
+    drupal_goto($detail_path);
+  }
 }
 
 /**
@@ -652,7 +622,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
   $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
   $config = $form_state['config'];
 
-  if (!empty($form_state['activity_result'] )) {
+  if (!empty($form_state['activity_result'])) {
 
     $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language())), array(
       'absolute' => TRUE,
@@ -668,19 +638,13 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
         if ($id) {
 
           $link = l('Schrijf je uit', 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-          drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.',
-          array('!link' => $link)));
-
+          drupal_set_message(format_string('Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen berichten meer te ontvangen.', array('!link' => $link)));
         }
-      }
-      catch (Exception $e) {
+      } catch (Exception $e) {
         watchdog_exception('culturefeed_social', $e);
       }
-
     }
-
   }
-
 }
 
 /**
@@ -698,8 +662,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $page_id = 0;
   if ($context->getType() == 'page') {
     $page_id = $context->getId();
-  }
-  elseif ($context->getType() != 'bibnet_book') {
+  } elseif ($context->getType() != 'bibnet_book') {
     $page_id = culturefeed_agenda_get_connected_page_id_of_item($context->getEntity());
   }
 
@@ -744,9 +707,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
         '#default_value' => culturefeed_pages_get_active_page_id(),
       );
     }
-
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);
   }
 
@@ -761,7 +722,6 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['#theme'] = 'culturefeed_social_report_abuse_form';
 
   return $form;
-
 }
 
 /**
@@ -775,39 +735,44 @@ function culturefeed_social_base_report_abuse_form_validate($form, &$form_state)
   $activity = $form_state['activity'];
 
   $social_content_type = culturefeed_get_content_type($context->getType());
-  $body = array(
-    'body' => $form_state['values']['message'],
-    'commentUserId' => $activity->userId,
-    $social_content_type . 'Id' => $context->getId(),
-    'comment' => $activity->value,
-    'linkUser' => url('user/' . culturefeed_get_uid_for_cf_uid($activity->userId, ''), array('absolute' => TRUE)),
-    'linkComment' => url(culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle(culturefeed_search_get_preferred_language())), array('absolute' => TRUE, 'fragment' => 'activity-' . $activity->id))
-  );
+  $detail_path = culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle(culturefeed_search_get_preferred_language()));
 
-  $params = $form_state['post_params'];
-  $params['subject'] = $context->getTitle(culturefeed_search_get_preferred_language());
-  $params['type'] = CultureFeed_Messages_Message::TYPE_REPORT;
-  $params['body'] = drupal_json_encode($body);
+  if (!empty($form_state['values']['message'])) {
+    $body = array(
+      'body' => $form_state['values']['message'],
+      'commentUserId' => $activity->userId,
+      $social_content_type . 'Id' => $context->getId(),
+      'comment' => $activity->value,
+      'linkUser' => url('user/' . culturefeed_get_uid_for_cf_uid($activity->userId, ''), array('absolute' => TRUE)),
+      'linkComment' => url($detail_path, array('absolute' => TRUE, 'fragment' => 'activity-' . $activity->id))
+    );
 
-  if (!empty($form_state['values']['send_as'])) {
-    $params['senderPage'] = $form_state['values']['send_as'];
+    $params = $form_state['post_params'];
+    $params['subject'] = $context->getTitle(culturefeed_search_get_preferred_language());
+    $params['type'] = CultureFeed_Messages_Message::TYPE_REPORT;
+    $params['body'] = drupal_json_encode($body);
+
+    if (!empty($form_state['values']['send_as'])) {
+      $params['senderPage'] = $form_state['values']['send_as'];
+    }
   }
 
   try {
     $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     form_set_error('', 'Er ging iets fout tijdens het versturen');
     watchdog_exception('culturefeed_social', $e);
   }
 
+  // Temp fix untill cnet decides to swap to ctools modal.
+  if ($errors = form_get_errors()) {
+    drupal_goto($detail_path);
+  }
 }
 
 /**
  * Submit the new message form.
  */
 function culturefeed_social_base_report_abuse_form_submit($form, &$form_state) {
-
   drupal_set_message('Het bericht werd verstuurd');
-
 }

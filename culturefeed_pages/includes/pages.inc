@@ -850,7 +850,7 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
     $cf_user = DrupalCultureFeed::getLoggedInUser();
     if (!empty($cf_user->pageMemberships)) {
       foreach ($cf_user->pageMemberships as $key => $membership) {
-        if ($membership->page->id != $page->getId()) {
+        if ($membership->page->getId() != $page->getId()) {
           culturefeed_pages_set_active_page($page);
           break;
         }

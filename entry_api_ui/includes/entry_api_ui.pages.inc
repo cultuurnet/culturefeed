@@ -587,8 +587,7 @@ function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_ti
  * Validate the event form.
  */
 function entry_api_ui_event_form_validate($form, &$form_state) {
-  
-  $validation_failed = FALSE;
+
   $values = $form_state['values'];
 
   // Validate publication date.
@@ -598,13 +597,12 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     }
     catch (Exception $e) {
       form_set_error('publication_date', 'Gelieve een geldige publicatie datum in te geven');
-      $validation_failed = TRUE;
     }
   }
 
+  // Validate age.
   if ($values['age'] && !is_numeric($values['age'])) {
     form_set_error('age', 'Gelieve een geldige leeftijd in te voeren');
-    $validation_failed = TRUE;
   }
 
   // Validate timestamps.
@@ -635,7 +633,6 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
       }
       catch (UnexpectedValueException $e) {
         form_set_error('timestamps][' . $key, 'Gelieve een geldige tijd en datum in te geven.');
-        $validation_failed = TRUE;
       }
     }
   }
@@ -654,7 +651,6 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
             }
             catch (Exception $e) {
               form_set_error('period_or_permanent][opening_times][' . $day . '][' . $key, 'Gelieve een geldige tijd in te geven.');
-              $validation_failed = TRUE;
             }
           }
 
@@ -666,60 +662,47 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 
   // Validate location.
   if (!empty($values['location'])) {
+
     $location_label = $search_string = $values['location'];
     if (preg_match("|-|", $location_label)) {
       list($search_string, $zip) = explode("-", $location_label);
     }
-    
+
+    // Perform a search on location to check if this is an existing actor.
     try {
-
-      $search_string = trim($search_string);
-      $parameters = array();
-      $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
-      $parameters[] = new \CultuurNet\Search\Parameter\Group();
-      $result = culturefeed_get_search_service()->search($parameters);
-
-      if ($result->getTotalCount()  > 0) {
-        $items = $result->getItems();
-        $location = culturefeed_search_item_load($items[0]->getId());
+      $location = culturefeed_search_load_item_by_title($search_string, 'actor');
+      if (!$location) {
+        form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
       }
-      else {
-        throw new Exception('No locations found');
-      }
-      
     }
     catch (Exception $e) {
-      form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
-      $validation_failed = TRUE;
+      form_set_error('location', 'Er was een fout bij het valideren van de locatie');
     }
   }
 
   // Validate organiser.
   if (!empty($values['organiser'])) {
+
     $organiser_label = $search_string = $values['organiser'];
     if (preg_match("|-|", $organiser_label)) {
       list($search_string, $zip) = explode("-", $organiser_label);
     }
-    
+
     try {
-      $parameters = array();
-      $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
-      $parameters[] = new \CultuurNet\Search\Parameter\Group();
-      $result = culturefeed_get_search_service()->search($parameters);
-      if ($result->getTotalCount()  > 0) {
-        $items = $result->getItems();
-        $organiser = culturefeed_search_item_load($items[0]->getId());
+      $organiser = culturefeed_search_load_item_by_title($search_string, 'actor');
+      if (!$organiser) {
+        form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren.');
       }
     }
     catch (Exception $e) {
-      form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren');
-      $validation_failed = TRUE;
+      watchdog_exception('entry_api_ui', $e);
+      form_set_error('organiser', 'Er was een fout bij het valideren van de organisator');
     }
+
   }
 
-  if (!$validation_failed) {
+  $errors = form_get_errors();
+  if (empty($errors)) {
     _entryapi_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
 
@@ -934,9 +917,7 @@ function _entry_api_ui_event_save_weekscheme(&$event, $values) {
 function entry_api_ui_event_form_submit($form, &$form_state) {
 
   if ($form_state['#update_event']) {
-    $request_detail = array('event' => $form_state['#event_id'], 'title' => $form_state['values']['title']);
-    $url = cnapi_url_dp2dua($request_detail);
-    $form_state['redirect'] = $url['path'];
+    $form_state['redirect'] = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
     drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
     op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ');
   }
@@ -983,7 +964,7 @@ function entry_api_ui_delete_event_form_submit($form, &$form_state) {
 }
 
 /**
- * Form callback: Show the manage tags form for a cnapi object.
+ * Form callback: Show the manage tags form for a cdb object.
  */
 function entry_api_ui_edit_tags_form($form, $form_state, $event) {
 

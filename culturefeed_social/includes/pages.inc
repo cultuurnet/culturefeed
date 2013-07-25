@@ -122,7 +122,7 @@ function culturefeed_social_page_activities($type = NULL) {
       'class' => array('remove-link'),
       'role' => 'button',
       'data-toggle' => 'modal',
-      'data-target' => '#culturefeed-social-modal-wrapper',
+      'data-target' => '#delete-wrapper-' . $activity->id,
       'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
     );
 
@@ -155,7 +155,7 @@ function culturefeed_social_page_activities($type = NULL) {
         $type_text,
         format_interval(REQUEST_TIME - $activity->creationDate) . ' geleden <br />op ' . $activity->createdVia,
         drupal_render($privacy),
-        drupal_render($delete),
+        drupal_render($delete) . '<div id="delete-wrapper-' . $activity->id . '"></div>',
       ),
     );
   }
@@ -303,39 +303,82 @@ function culturefeed_social_page_activity_delete_confirm_form_submit($form, &$fo
 }
 
 /**
- * Page callback to report abusive content.
+ * Render a form in json for ajax requests.
  */
-function culturefeed_social_page_activity_mark_abusive($id, $type = 'ajax') {
-
-  $success = TRUE;
+function culturefeed_social_page_activity_report_abuse($activity_id, $request_type = 'ajax') {
 
   try {
-    DrupalCultureFeed::deleteActivity($id);
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->activityId = $activity_id;
+    $query->private = FALSE;
+
+    $activities = DrupalCultureFeed::searchActivities($query);
+    $activity = NULL;
+    $active_object = NULL;
+    if ($activities->total > 0) {
+      $activity = $activities->objects[0];
+      $active_object = culturefeed_social_detail_object($activity);
+      $build = array(drupal_get_form('culturefeed_social_report_abuse_form_' . $activity->id, $activity, $active_object));
+    }
+
   }
   catch (Exception $e) {
     $success = FALSE;
     watchdog_exception('culturefeed_social', $e);
+    $build[] = array('Er is een onverwachte fout opgetreden.');
   }
 
-  if ($type == 'ajax') {
-    $commands = array();
-
-    if ($success) {
-      $commands[] = ajax_command_invoke('#activity-' . $id, 'fadeOut', array('slow'));
-    }
-
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  if ($request_type == 'ajax') {
+    $output = drupal_render($build);
+    print $output;
   }
   else {
-    drupal_goto();
+    return $build;
   }
 
 }
 
 /**
+ * Render a comment form to comment on a given activity.
+ * @param string $activity_id
+ *   Activity id to comment on.
+ * @param string $request_type
+ *   Request type, ajax or not.
+ */
+function culturefeed_social_page_activity_comment($activity_id, $request_type = 'ajax') {
+
+  try {
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->activityId = $activity_id;
+    $query->private = FALSE;
+
+    $activities = DrupalCultureFeed::searchActivities($query);
+    $activity = NULL;
+    $active_object = NULL;
+    if ($activities->total > 0) {
+      $activity = $activities->objects[0];
+      $active_object = culturefeed_social_detail_object($activity);
+      $build = culturefeed_social_comment_actionbox($active_object, $activity);
+    }
+  }
+  catch (Exception $e) {
+    $success = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+    $build[] = array('Er is een onverwachte fout opgetreden.');
+  }
+
+  if ($request_type == 'ajax') {
+    $output = drupal_render($build);
+    print $output;
+  } else {
+    return $build;
+  }
+}
+
+/**
  * Page callback to unfollow a node.
  */
-function culturefeed_social_page_node_unfollow($content_type, $node_id, $type = 'ajax') {
+function culturefeed_social_page_node_unfollow($content_type, $node_id, $request_type = 'ajax') {
 
   $success = TRUE;
   $activity_content_type = culturefeed_get_content_type($content_type);
@@ -349,7 +392,7 @@ function culturefeed_social_page_node_unfollow($content_type, $node_id, $type = 
     watchdog_exception('culturefeed_social', $e);
   }
 
-  if ($type == 'ajax') {
+  if ($request_type == 'ajax') {
     $commands = array();
 
     if ($success) {
