@@ -7,17 +7,16 @@
   <?php print theme('pager') ?>
 
 <?php else: ?>
-  <div class="no-results">Je pagina heeft nog geen activiteiten</div>
+  <div class="no-results"></div>
 <?php endif; ?>
 
 <div class="info">
-  Deze lijst toont enkel de activiteiten die momenteel online staan. Afgelopen of niet gepubliceerde activeiten kan je raadplegen via de <a href="http://www.uitdatabank.be">Uitdatabank</a>.
+  <?php print t('This list shows only the activities that are currently online. You can find past or unpublished activities on <a href="http://www.uitdatabank.be"> UiT database </ a>.'); ?>
 </div>
 
 <div class="new-event">
-  <h2>Een nieuwe activiteit toevoegen</h2>
+  <h2><?php print t('Add a new activity'); ?></h2>
   <p>
-    Dat kan via de Uitdatabank. Je kan er aanmelden met dezelfde account als deze om onmiddelijk aan de slag te gaan.
-    <a href="http://www.uitdatabank.be/">Voeg nieuwe activiteit toe.</a>
+    <?php print t('Add new activities with the UiTdatabank. You can sign in with the same account and add activities immediately. <a href="http://www.uitdatabank.be/">Add new activity</a>.'); ?>
   </p>
 </div>

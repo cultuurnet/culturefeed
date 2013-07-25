@@ -1,1 +1,1 @@
-<p class="alert alert-danger">De inhoud van deze pagina werd verwijderd door de beheerder van de pagina.</p>
+<p class="alert alert-danger"><?php print t('The content of this page was removed by the administrator of the page.'); ?></p>

@@ -35,7 +35,7 @@ function culturefeed_pages_page_manage_members(CultureFeed_Cdb_Item_Page $page, 
 
   // Non-ajax pages should have more data.
   $build['view_page'] = array(
-    '#markup' => '<div id="view-page">' . culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina') . '</div>'
+    '#markup' => '<div id="view-page">' . culturefeed_search_detail_l('page', $page->getId(), $page->getName(), t('View page')) . '</div>'
   );
   $build['page'] = $list;
   $build['search_form'] = drupal_get_form('culturefeed_pages_search_user_form');
@@ -45,7 +45,7 @@ function culturefeed_pages_page_manage_members(CultureFeed_Cdb_Item_Page $page, 
       $build['search_result'] = culturefeed_pages_user_search_result($_GET['search'], $page, $user_list);
     }
     else {
-      drupal_set_message('Gelieve minstens 3 karakters in te geven', 'error');
+      drupal_set_message(t('Please enter at least 3 characters'), 'error');
     }
   }
 
@@ -63,10 +63,10 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
   $uids = culturefeed_get_uids_for_memberships($user_list->memberships);
 
   $header = array(
-    'Naam',
-    'Functie',
-    'Rol',
-    'Lid sinds',
+    t('Name'),
+    t('Function'),
+    t('Role'),
+    t('Member since'),
     '',
     '',
   );
@@ -90,7 +90,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
       $row['function'] = $member->relation;
       $row['role'] = $member->role;
       $row['member_since'] = date('d/m/Y H:i', $member->creationDate);
-      $row['edit'] = l('Bewerk', 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/edit/nojs', array('attributes' => array('class' => 'use-ajax')));
+      $row['edit'] = l(t('Edit'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/edit/nojs', array('attributes' => array('class' => 'use-ajax')));
 
       $delete_options = array(
         'attributes' => array(
@@ -100,7 +100,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
           'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
         ),
       );
-      $row['delete'] = l('Verwijder als lid', 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
+      $row['delete'] = l(t('Delete as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
 
     }
     else {
@@ -112,7 +112,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
       );
       $row['member_since'] = date('d/m/Y H:i', $member->creationDate);
       $row['cancel'] = array(
-        'data' => l('Annuleer bewerkingen', 'pages/' . $page->getId() . '/members/nojs', array('attributes' => array('class' => 'use-ajax'))),
+        'data' => l(t('Cancel changes'), 'pages/' . $page->getId() . '/members/nojs', array('attributes' => array('class' => 'use-ajax'))),
         'colspan' => 2,
       );
 
@@ -174,7 +174,7 @@ function culturefeed_pages_edit_membership_form($form, &$form_state, CultureFeed
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Bewaar',
+    '#value' => t('Save'),
     '#ajax' => array(
       'callback' => 'culturefeed_pages_edit_membership_ajax_form_submit',
       'wrapper' => 'membership-ajax-wrapper',
@@ -186,7 +186,7 @@ function culturefeed_pages_edit_membership_form($form, &$form_state, CultureFeed
     $form['role'] = array(
       '#type' => 'button',
       '#name' => 'toggle_role',
-      '#value' => $membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN ? 'Verwijder als beheerder' : 'Maak beheerder',
+      '#value' => $membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN ? t('Remove administrator') : t('Make administrator'),
       '#ajax' => array(
         'callback' => 'culturefeed_pages_edit_membership_ajax_form_submit',
         'wrapper' => 'membership-ajax-wrapper',
@@ -252,7 +252,7 @@ function culturefeed_pages_edit_membership_form_validate($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er ging iets fout tijdens het bewaren. Gelieve opnieuw te proberen of een administrator te contacteren.');
+    form_set_error('', t('Something went wrong while saving. Please try again or contact an administrator.'));
   }
 
 }
@@ -263,7 +263,7 @@ function culturefeed_pages_edit_membership_form_validate($form, &$form_state) {
 function culturefeed_pages_edit_membership_form_submit(&$form, &$form_state) {
 
   $form_state['#success'] = TRUE; // This boolean will be checked at in the ajax callback.
-  drupal_set_message('Het lidmaatschap werd aangepast');
+  drupal_set_message(t('Membership changed'));
 
 }
 
@@ -274,14 +274,14 @@ function culturefeed_pages_search_user_form() {
 
   $form = array();
   $form['search'] = array(
-    '#title' => 'Zoek gebruikers',
+    '#title' => t('Search users'),
     '#type' => 'textfield',
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Zoek',
+    '#value' => t('Search'),
   );
 
   return $form;
@@ -342,7 +342,7 @@ function culturefeed_pages_page_add_member(CultureFeed_Cdb_Item_Page $page, Cult
 function culturefeed_pages_add_member_form($form, &$form_state, $page, $user, $request_type) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>Lid toevoegen</h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Add member') . '</h3></div>';
   }
 
   $form_state['page'] = $page;
@@ -356,7 +356,7 @@ function culturefeed_pages_add_member_form($form, &$form_state, $page, $user, $r
   );
   $form['body_wrapper']['add_confirm'] = array(
     '#type' => 'markup',
-    '#markup' => format_string('<p><strong>Ben je zeker dat u @nick wil toevoegen als lid?</strong></p>', array('@nick' => $user->nick)),
+    '#markup' => format_string('<p><strong>' . t('Sure you want to add @nick as a member?') . '</strong></p>', array('@nick' => $user->nick)),
   );
 
   $form['footer_wrapper'] = array(
@@ -367,13 +367,13 @@ function culturefeed_pages_add_member_form($form, &$form_state, $page, $user, $r
 
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
-    '#value' => 'Toevoegen',
+    '#value' => t('Add'),
     '#attributes' => array('class' => array('button-add btn btn-primary')),
   );
 
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
-    '#title' => 'Annuleer',
+    '#title' => t('Cancel'),
     '#href' => 'pages/' . $page->getId() . '/members/nojs',
     '#attributes' => array(
       'data-dismiss' => 'modal',
@@ -401,12 +401,12 @@ function culturefeed_pages_add_member_form_submit($form, &$form_state) {
   try {
     $params = array('activityPrivate' => FALSE);
     DrupalCultureFeed::getLoggedInUserInstance()->pages()->addMember($form_state['page']->getId(), $form_state['user']->id, $params);
-    $message = format_string('@nick is nu lid van @page.', array('@nick' => $form_state['user']->nick, '@page' => $page->getName()));
+    $message = format_string(t('@nick is member of @page now.'), array('@nick' => $form_state['user']->nick, '@page' => $page->getName()));
     drupal_set_message($message);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    drupal_set_message('Er ging iets fout tijdens het toevoegen. Gelieve opnieuw te proberen, of een administrator te contacteren', 'error');
+    drupal_set_message(t('There was an error while saving. Please try again, or contact an administrator.'), 'error');
   }
 
 }
@@ -455,7 +455,7 @@ function culturefeed_pages_page_delete_member(CultureFeed_Cdb_Item_Page $page, $
 function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_Cdb_Item_Page $page, CultureFeed_User $user, $request_type, $my_pages) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>Lid verwijderen</h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove member') . '</h3></div>';
   }
 
   $form_state['page'] = $page;
@@ -470,14 +470,14 @@ function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_C
   $form['body_wrapper']['remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Deze actie kan niet meer ongedaan gemaakt worden.</p>',
+      <p>' . t('This action cannot be undone.') . '</p>',
   );
 
   if ($my_pages) {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat je jezelf als lid wil verwijderen?</strong></p>';
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove yourself as a member?') . '</strong></p>';
   }
   else {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>Ben je zeker dat je dit lid wil verwijderen?</strong></p>';
+    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove this member?') . '</strong></p>';
   }
 
   $form['footer_wrapper'] = array(
@@ -488,13 +488,13 @@ function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_C
 
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
-    '#value' => 'Verwijder',
+    '#value' => t('Remove'),
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
   );
 
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
-    '#title' => 'Annuleer',
+    '#title' => t('Cancel'),
     '#href' => 'pages/' . $page->getId() . '/configuration',
     '#attributes' => array(
       'data-dismiss' => 'modal',
@@ -526,7 +526,7 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van het lid.');
+    form_set_error('', t('There was an error while removing the member.'));
   }
 
 }
@@ -538,13 +538,13 @@ function culturefeed_pages_delete_member_form_submit($form, &$form_state) {
 
   if ($form_state['my_pages']) {
     $form_state['redirect'] = 'culturefeed/pages';
-    $message = format_string('Je ben niet langer lid van @page.', array(
+    $message = format_string(t('You are not longer a member of @page.'), array(
       '@page' => $form_state['page']->getName())
     );
   }
   else {
     $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/members/nojs';
-    $message = format_string('De gebruiker @nick is verwijderd als lid van @page.', array(
+    $message = format_string(t('User @nick is removed as member of page @page.'), array(
       '@nick' => $form_state['user']->nick,
       '@page' => $form_state['page']->getName())
     );
@@ -573,7 +573,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
       'recipientPage' => $page->getId(),
       'role' => CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN,
       'type' => 'requestadmin',
-      'subject' => 'Aanvraag om beheerder te worden',
+      'subject' => t('Request to become an administrator'),
       'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user->id, array('absolute' => TRUE)) . '"}',
     );
 
@@ -584,7 +584,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $message = '<div class="alert alert-success">Je aanvraag om beheerder te worden van deze pagina is verstuurd</div>';
+  $message = '<div class="alert alert-success">' . t('Your request to become an administrator of this page is sent') . '</div>';
 
   if ($type == 'ajax') {
     $commands = array();
@@ -617,7 +617,7 @@ function culturefeed_pages_page_request_admin_membership_approved($form, &$form_
 
   $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
   $page_title = $page->getName();
-  $message = format_string("!username wil beheerder worden van !page.", array(
+  $message = format_string(t('!username wants to be an administrator of !page.'), array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, culturefeed_search_detail_path('page', $page->getId(), $page_title)),
   ));
@@ -626,7 +626,7 @@ function culturefeed_pages_page_request_admin_membership_approved($form, &$form_
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'OK',
+    '#value' => t('OK'),
   );
 
   return $form;
@@ -649,7 +649,7 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
   $page_title = $page->getName();
   $page_path = culturefeed_search_detail_path('page', $page->getId(), $page_title);
 
-  $message = format_string("!username werd succesvol toegevoegd als beheerder van !page.", array(
+  $message = format_string(t('!username successfully added as administrator of page !page.'), array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, $page_path),
   ));

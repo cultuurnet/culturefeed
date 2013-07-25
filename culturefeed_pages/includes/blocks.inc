@@ -46,7 +46,7 @@ function culturefeed_pages_block_fellow_members($account) {
   }
 
   $block = array();
-  $block['subject'] = "Mijn collega's";
+  $block['subject'] = t('My colleague\'s');
   $block['content'] = $build;
 
   return $block;
@@ -75,7 +75,7 @@ function culturefeed_pages_block_pages_user_follows($account) {
   }
 
   $block = array();
-  $block['subject'] = "Pagina's die ik volg";
+  $block['subject'] = t('Pages I follow');
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_following_pages_block',
     '#following' => $cf_account->following,
@@ -136,7 +136,7 @@ function culturefeed_pages_block_pages_admin_options() {
   }
 
   $block = array();
-  $block['subject'] = "Pagina beheren";
+  $block['subject'] = t('Manage pages');
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_block_admin_options',
     '#admin_menu' => $admin_menu,
@@ -166,7 +166,7 @@ function culturefeed_pages_block_pages_admin_menu() {
   }
 
   $block = array();
-  $block['subject'] = "Pagina beheren";
+  $block['subject'] = t('Manage pages');
   $block['content'] = _culturefeed_pages_block_pages_admin_menu($page);
 
   return $block;
@@ -245,7 +245,7 @@ function culturefeed_pages_block_page_timeline($page) {
   }
 
   $block = array();
-  $block['subject'] = 'Tijdslijn';
+  $block['subject'] = t('Timeline');
   $block['content'] = array(
     '#theme' => 'culturefeed_social_user_activity_list',
     '#activities' => $time_line,
@@ -288,7 +288,7 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $block = array();
-  $block['subject'] = 'Activiteiten';
+  $block['subject'] = t('Activities');
 
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_page_agenda',
@@ -339,7 +339,7 @@ function culturefeed_pages_block_followers($page) {
     '#num_followers' => count($user_list->followers),
   );
 
-  $block['subject'] = 'Volgen deze pagina';
+  $block['subject'] = t('Page followers');
   $block['content'] = $build;
 
   return $block;
@@ -430,7 +430,7 @@ function culturefeed_pages_block_related_activities($page) {
   }
 
   $block = array();
-  $block['subject'] = 'Gerelateerde activiteiten';
+  $block['subject'] = t('Related activities');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,

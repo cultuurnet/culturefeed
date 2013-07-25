@@ -12,7 +12,7 @@
 
 <dl class="clearfix">
 
-  <dt>Leden</dt>
+  <dt><?php print t('Members'); ?></dt>
   <dd>
 
     <?php if ($members): ?>
@@ -33,21 +33,21 @@
   </dd>
 
   <?php if (!empty($address)): ?>
-  <dt>Adres</dt>
+  <dt><?php print t('Address'); ?></dt>
   <dd>
     <?php print $address['street']?>, <?php print $address['zip']?> <?php print $address['city']?>
   </dd>
   <?php endif; ?>
 
   <?php if (!empty($contact)): ?>
-  <dt>Contact</dt>
+  <dt><?php print t('Contact'); ?></dt>
   <dd>
-    <?php print implode(' of ', $contact)?>
+    <?php print implode(' ' . t('or') . ' ', $contact)?>
   </dd>
   <?php endif; ?>
 
   <?php if ($links): ?>
-  <dt>Website</dt>
+  <dt><?php print t('Website'); ?></dt>
   <dd>
     <ul>
     <?php foreach ($links as $class => $link): ?>

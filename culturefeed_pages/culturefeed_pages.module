@@ -206,7 +206,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/add'] = array(
-    'title' => 'Maak je eigen pagina',
+    'title' => t('Create your own page'),
     'title callback' => FALSE,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_add_form'),
@@ -225,7 +225,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/edit'] = array(
-    'title' => 'Bewerk pagina',
+    'title' => t('Edit page'),
     'title callback' => 'culturefeed_pages_detail_title',
     'title arguments' => array(1, 'edit'),
     'page callback' => 'drupal_get_form',
@@ -238,7 +238,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/remove/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Pagina verwijderen',
+    'title' => t('Delete page'),
     'page callback' => 'culturefeed_pages_remove_page_confirm',
     'page arguments' => array(1, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -249,7 +249,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/publish/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Pagina publiceren',
+    'title' => t('Publish page'),
     'page callback' => 'culturefeed_pages_publish_page_confirm',
     'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -260,7 +260,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/configuration'] = array(
     'title callback' => FALSE,
-    'title' => 'Instellingen',
+    'title' => t('Settings'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_configuration_page_form', 1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -271,7 +271,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/events'] = array(
     'title callback' => FALSE,
-    'title' => 'Activiteiten',
+    'title' => t('Activities'),
     'page callback' => 'culturefeed_pages_page_events',
     'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -282,7 +282,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/members/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Leden',
+    'title' => t('Members'),
     'page callback' => 'culturefeed_pages_page_manage_members',
     'page arguments' => array(1, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -293,7 +293,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/edit/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Leden',
+    'title' => t('Members'),
     'page callback' => 'culturefeed_pages_page_manage_members',
     'page arguments' => array(1, 5, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -304,7 +304,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/delete/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Lid verwijderen',
+    'title' => t('Delete member'),
     'page callback' => 'culturefeed_pages_page_delete_member',
     'page arguments' => array(1, 3, 5),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -315,7 +315,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/add/%cf_user/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Lid toevoegen',
+    'title' => t('Add member'),
     'page callback' => 'culturefeed_pages_page_add_member',
     'page arguments' => array(1, 4, 5),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -326,7 +326,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/request-admin/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Aanvraag tot beheerder van de pagina',
+    'title' => t('Application for administrator of the page'),
     'page callback' => 'culturefeed_pages_page_request_admin_membership',
     'page arguments' => array(1, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -336,7 +336,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/delete/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Verwijder mijzelf als lid',
+    'title' => t('Remove myself as a member'),
     'page callback' => 'culturefeed_pages_page_delete_member',
     'page arguments' => array(1, NULL, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -346,7 +346,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/%culturefeed_pages_page/membership/request-approve/%cf_user'] = array(
     'title callback' => FALSE,
-    'title' => 'Lid toevoegen als beheerder',
+    'title' => t('Add member as administrator'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_page_request_admin_membership_approved', 1, 4),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -357,7 +357,7 @@ function culturefeed_pages_menu() {
 
   $items['pages/switch/%culturefeed_pages_page'] = array(
     'title callback' => FALSE,
-    'title' => 'Verander actieve pagina',
+    'title' => t('Change active page'),
     'page callback' => 'culturefeed_pages_switch_page',
     'page arguments' => array(2),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -383,7 +383,7 @@ function culturefeed_pages_menu() {
 
   $items['culturefeed/pages/follow/%/%culturefeed_pages_page'] = array(
     'title callback' => FALSE,
-    'title' => 'Pagina volgen',
+    'title' => t('Follow page'),
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -393,7 +393,7 @@ function culturefeed_pages_menu() {
 
   $items['culturefeed/pages/defollow/%/%culturefeed_pages_page'] = array(
     'title callback' => FALSE,
-    'title' => 'Pagina ontvolgen',
+    'title' => t('Unfollow page'),
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4, FALSE),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -602,7 +602,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   $has_memberships = count($cultureFeedUser->pageMemberships);
 
   $items['my-page'] = array(
-    'data' => 'Mijn pagina',
+    'data' => t('My page'),
     'class' => 'my-page',
     'children' => array(
     ),
@@ -610,7 +610,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   );
 
   $items['manage-pages'] = array(
-    'data' => l('Beheer pagina\'s', 'culturefeed/pages'),
+    'data' => l(t('Manage pages'), 'culturefeed/pages'),
     'class' => 'settings',
     'weight' => 20,
   );
@@ -632,7 +632,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
     }
     else {
       $items['my-page']['children'] = array(
-        array('data' => l('Zoek jouw pagina', 'pages/join')),
+        array('data' => l(t('Search your page'), 'pages/join')),
       );
     }
 
@@ -640,7 +640,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
     if ($has_memberships > 1) {
 
       $items['switch-page'] = array(
-        'data' => 'Wijzig actieve pagina',
+        'data' => t('Change active page'),
         'class' => 'switch-page',
         'children' => array(),
         'weight' => -18,
@@ -659,7 +659,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   // Provide the user with interesting pages so they can login as Page.
   else {
     $items['my-page']['children'] = array(
-      array('data' => l('Zoek jouw pagina', 'pages/join')),
+      array('data' => l(t('Search your page'), 'pages/join')),
     );
   }
 
@@ -674,27 +674,27 @@ function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Ite
 
   return array(
     'info' => array(
-      'title' => 'Wijzig gegevens',
+      'title' => t('Change settings'),
       'url' => 'pages/' . $page->getId() . '/edit',
-      'description' => 'Bewerk contactinfo, foto, beschrijving, website,...',
+      'description' => t('Edit contact info, photos, description, website,...'),
       'weight' => -20,
     ),
     'settings' => array(
-      'title' => 'Instellingen',
+      'title' => t('Settings'),
       'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => 'Mogen gebruikers jouw pagina volgen, reacties schrijven, activiteiten aanraden,...',
+      'description' => t('Allow users to follow your page, write comments, suggest activities,...'),
       'weight' => -19,
     ),
     'members' => array(
-      'title' => 'Leden & rollen',
+      'title' => t('Members & roles'),
       'url' => 'pages/' . $page->getId() . '/members/nojs',
-      'description' => 'Beheer leden en toegangsrechten',
+      'description' => t('Manage members and access rights'),
       'weight' => -18,
     ),
     'activities' => array(
-      'title' => 'Activiteiten',
+      'title' => t('Activities'),
       'url' => 'pages/' . $page->getId() . '/events',
-      'description' => 'Beheer je activiteiten en reacties',
+      'description' => t('Manage your activities and reactions'),
       'weight' => -17,
     ),
   );
@@ -708,9 +708,9 @@ function culturefeed_pages_culturefeed_ui_profile_menu() {
 
   return array(
     'pages' => array(
-      'title' => "Mijn pagina's",
+      'title' => t('My pages'),
       'url' => 'culturefeed/pages',
-      'description' => "Beheer de pagina's waar je lid van bent of die je volgt",
+      'description' => t('Manage the pages where you\'re member off or that you follow'),
       'weight' => -17,
     ),
   );
@@ -724,15 +724,15 @@ function culturefeed_pages_culturefeed_search_page_info() {
   return array(
     'pages' => array(
       'path' => 'agenda/pages',
-      'page_title' => "Pagina's",
-      'search_title' => "Pagina's",
+      'page_title' => t('Pages'),
+      'search_title' => t('Pages'),
       'class_name' => 'CultureFeedPagesSearchPage',
       'sort_default' => 'relevancy',
       'sort_options' => array(
-        'relevancy' => 'Relevantie',
-        'title' => 'Alfabetisch',
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => 'Aantal leden',
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => 'Aantal volgers',
+        'relevancy' => t('Relevancy'),
+        'title' => t('Alphabetical'),
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => t('Number of members'),
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
       ),
     ),
   );
@@ -772,7 +772,7 @@ function culturefeed_pages_page_load($id) {
  * Title callback for the join page.
  */
 function culturefeed_pages_join_title() {
-  return format_string('Jouw pagina op @sitename', array('@sitename' => variable_get('site_name')));
+  return format_string(t('Your page in @sitename'), array('@sitename' => variable_get('site_name')));
 }
 
 /**
@@ -835,7 +835,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_nick_alter(&$culture_feed_
 
   if (isset($active_page)) {
     // Extend the current nickname.
-    $nick = $culture_feed_profile_name['nick'] . ' van ' . $active_page->getName();
+    $nick = $culture_feed_profile_name['nick'] . ' ' . t('from') . ' ' . $active_page->getName();
     $culture_feed_profile_name['nick'] = $nick;
 
     // Create a new link for the same properties.

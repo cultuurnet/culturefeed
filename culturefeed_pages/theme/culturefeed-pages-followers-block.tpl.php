@@ -17,7 +17,7 @@
     </ul>
 
   <?php else: ?>
-    <p>Deze pagina heeft nog geen volgers.</p>
+    <p><?php print t('This page has no followers yet.'); ?></p>
   <?php endif; ?>
 
   <?php
