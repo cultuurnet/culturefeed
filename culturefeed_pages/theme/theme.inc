@@ -22,7 +22,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
 
   }
 
-  $variables['create_message'] = 'Heeft jouw organisatie of vereniging nog geen pagina? ' . l('Maak een nieuwe pagina', 'pages/add');
+  $variables['create_message'] = t('Does your organization or association has no page yet?') . ' ' . l(t('Create a new page'), 'pages/add');
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
 
@@ -63,12 +63,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
     }
   }
   if (in_array($page->getId(), $i_follow_pages)) {
-    $variables['follow_link'] = l('Niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
+    $variables['follow_link'] = l(t('Unfollow'), 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
   }
   else {
-    $variables['follow_link'] = l('Volg pagina', 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
+    $variables['follow_link'] = l(t('Follow page'), 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
   }
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => 'btn btn-link')));
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => 'btn btn-link')));
 
 }
 
@@ -81,7 +81,7 @@ function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
   _culturefeed_pages_preprocess_culturefeed_page($variables);
 
   $page = $variables['item']->getEntity();
-  $variables['more_text'] = 'Meer info';
+  $variables['more_text'] = t('More info');
   $variables['url'] = culturefeed_search_detail_url('page', $page->getId(), $page->getName());
 
   $variables['member_count'] = $variables['item']->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER);
@@ -158,7 +158,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   // Add join link if not a member yet.
   if (!culturefeed_pages_is_user_member_of_page($page->getId()) && $page->getPermissions()->allowMembers) {
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
-    $variables['become_member_link'] = l('Word zelf lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+    $variables['become_member_link'] = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
 
   // Address information
@@ -287,7 +287,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
 function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$variables) {
 
   $page = $variables['page'];
-  $variables['switch_link'] = l('Aanmelden als ' . $page->getName(), 'pages/switch/' . $page->getId(), array('attributes' => array('class' => array('button'))));
+  $variables['switch_link'] = l(t('Login as') . ' ' . $page->getName(), 'pages/switch/' . $page->getId(), array('attributes' => array('class' => array('button'))));
 
   $variables['page_id'] = $page->getId();
 
@@ -306,12 +306,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_block_admin_options(&$va
         'activities' => $variables['page_notifications'],
         'class' => 'notifications',
         'read_more_url' => url('pages/' . $page->getId() . '/notifications'),
-        'read_more_text' => 'Bekijk alle meldingen',
+        'read_more_text' => t('View all notifications'),
       );
       $variables['notifications'] = theme('culturefeed_social_user_activity_list', $notification_variables);
     }
     else {
-      $variables['notifications'] = 'Jouw pagina heeft nog geen meldingen';
+      $variables['notifications'] = t('Your page has no notifications yet');
     }
 
   }
@@ -358,9 +358,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
 
     $result = array();
     $result['nick'] = check_plain($object->nick);
-    $result['profile_link'] = l('Bekijk profiel', 'user/' . $accounts[$object->id]);
+    $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
-    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l('Voeg toe als lid', 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
+    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l(t('Add as a member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
 
   }
@@ -387,12 +387,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
       $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
-        $row['comment_count'] = l(format_plural($comment_count, '@count reactie', '@count reacties'), $path, array('fragment' => 'lees'));
+        $row['comment_count'] = l(format_plural($comment_count, '@count reaction', '@count reactions'), $path, array('fragment' => 'lees'));
       }
       else {
-        $row['comment_count'] = 'Nog geen reacties';
+        $row['comment_count'] = t('No reactions yet');
       }
-      $row['edit_url'] = l('Bewerk in UDB', CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
+      $row['edit_url'] = l(t('Edit in the UiTdatabank'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
 
@@ -403,9 +403,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
   if (!empty($rows)) {
 
     $header = array(
-      array('data' => 'Titel', 'field' => 'title', 'sort' => 'asc'),
-      array('data' => 'Datum', 'field' => 'startdate', 'sort' => 'asc'),
-      array('data' => 'Reacties', 'field' => 'comment_count', 'sort' => 'desc'),
+      array('data' => t('Title'), 'field' => 'title', 'sort' => 'asc'),
+      array('data' => t('Date'), 'field' => 'startdate', 'sort' => 'asc'),
+      array('data' => t('Reactions'), 'field' => 'comment_count', 'sort' => 'desc'),
       '',
     );
     $variables['items'] = theme('table', (array('header' => $header, 'rows' => $rows)));
@@ -428,7 +428,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
 
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
-  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l('Stuur aanvraag om beheerder te worden', $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
 }
 
@@ -489,11 +489,11 @@ function theme_culturefeed_pages_edit_membership_form($variables) {
  */
 function theme_culturefeed_pages_follow_success_message($variables) {
 
-  $message = '<p><strong>Je volgt nu deze pagina</strong></p>';
+  $message = '<p><strong>' . t('You are following this page now') . '</strong></p>';
 
   if ($variables['page']->getPermissions()->allowMembers && !culturefeed_pages_is_user_member_of_page($variables['page']->getId())) {
-    $message .= '<p>Wil je lid worden van deze pagina? ';
-    $message .= l('Word lid', 'culturefeed/pages/join/nojs/' . $variables['page']->getId(), array(
+    $message .= '<p>' . t('Want to join this page?') . ' ';
+    $message .= l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $variables['page']->getId(), array(
       'attributes' => array('class' => array('use-ajax'))));
   }
 
@@ -505,7 +505,7 @@ function theme_culturefeed_pages_follow_success_message($variables) {
  * Theme the message when an unfollow action was succesfull.
  */
 function theme_culturefeed_pages_unfollow_success_message($variables) {
-  return '<p><strong>Je volgt deze pagina niet meer</strong></p>';
+  return '<p><strong>' . t('You are no longer following this page anymore') . '</strong></p>';
 }
 
 /**

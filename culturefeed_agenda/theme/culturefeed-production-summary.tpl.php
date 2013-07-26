@@ -25,7 +25,7 @@
     <?php endif; ?>
     <?php print $recommend_link; ?>
     <?php if ($attend_count > 0): ?>
-      <div class="count-attend"><span><?php print $attend_count ?></span> <?php print format_plural($attend_count, t('attendee'), t('attendees') ) ?></div>
+      <div class="count-attend"><span><?php print $attend_count ?></span> <?php print format_plural($attend_count, 'attendee', 'attendees') ?></div>
     <?php endif; ?>
     <?php print $attend_link; ?>
   </div>

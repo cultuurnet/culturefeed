@@ -8,8 +8,8 @@
 <?php elseif ($is_admin) :?>
 
 <div>
-  <h3>Jou pagina heeft nog geen activiteiten gepubliceerd.</h3>
-  <p>Voeg nieuwe activiteiten toe via <a href="http://www.uitdatabank.be">www.uitdatabank.be</a>.
+  <h3><?php print t('You page has published no activities yet.'); ?></h3>
+  <p><?php print t('Add new activities on <a href="http://www.uitdatabank.be">www.uitdatabank.be</a>.'); ?>
 </div>
 
 <?php endif; ?>

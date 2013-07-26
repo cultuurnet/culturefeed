@@ -28,21 +28,21 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
 
   $form['type'] = array(
     '#type' => 'select',
-    '#title' => 'Zoeken in',
+    '#title' => t('Search in'),
     '#default_value' => $active_page,
     '#options' => $options,
   );
 
   $form['search'] = array(
     '#type' => 'textfield',
-    '#title' => 'Zoekopdracht',
+    '#title' => t('Search terms'),
     '#default_value' => $default,
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Zoeken',
+    '#value' => t('Search'),
   );
 
   $form_state['searchable_types'] = $searchable_types;
@@ -100,7 +100,7 @@ function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
   }
 
   $form['sort'] = array(
-    '#title' => t('Sorteer resultaten op'),
+    '#title' => t('Sort'),
     '#type' => 'select',
     '#options' => $options,
     '#default_value' => $default,
@@ -215,7 +215,7 @@ function culturefeed_search_ui_block_date_facet() {
     $build[] = drupal_get_form('culturefeed_search_ui_date_facet_form');
 
     return array(
-      'subject' => 'When',
+      'subject' => t('When'),
       'content' => $build,
     );
   }
@@ -228,20 +228,20 @@ function culturefeed_search_ui_block_date_facet() {
 function culturefeed_search_ui_date_facet_form() {
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['date_range'] = array(
     '#type' => 'textfield',
-    '#title' => 'Kies een datum',
+    '#title' => t('Choose a date'),
     '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
-    '#attributes' => array('placeholder' => 'Of kies zelf een datum'),
+    '#attributes' => array('placeholder' => t('Our choose a custom date')),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Ok',
+    '#value' => t('Ok'),
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
@@ -330,7 +330,7 @@ function culturefeed_search_ui_block_city_facet() {
   $build['form'] = drupal_get_form('culturefeed_search_ui_city_facet_form');
 
   return array(
-    'subject' => 'Where',
+    'subject' => t('Where'),
     'content' => $build,
   );
 
@@ -342,21 +342,20 @@ function culturefeed_search_ui_block_city_facet() {
 function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['location'] = array(
     '#type' => 'textfield',
-    '#title' => 'Waar',
+    '#title' => t('Where'),
     '#title_display' => 'invisible',
-    //'#default_value' => isset($_GET['location']) ? $_GET['location'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
-    '#attributes' => array('placeholder' => 'Postcode of gemeente'),
+    '#attributes' => array('placeholder' => t('Zipcode or city')),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Ok',
+    '#value' => t('Ok'),
   );
 
   return $form;
@@ -392,19 +391,19 @@ function culturefeed_search_ui_proximity_distance_form() {
   }
 
   $form = array();
-  
+
   $form['#attributes']['class'][] = 'append-button';
 
   $form['distance'] = array(
     '#type' => 'select',
-    '#title' => 'Zoek in omgeving',
+    '#title' => t('Search nearby'),
     '#options' => $options,
-    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : '20',
+    '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Ok',
+    '#value' => t('Ok'),
   );
 
   return $form;
@@ -416,7 +415,7 @@ function culturefeed_search_ui_proximity_distance_form() {
  */
 function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'distance'));
   if (!empty($form_state['values']['distance'])) {
     $query['distance'] = $form_state['values']['distance'];
   }
@@ -444,7 +443,7 @@ function culturefeed_search_ui_search_active_filters_block() {
   $build = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
 
   if (!empty($build) && count($build) > 1) {
-    $build['reset'] = array('#markup' => l('Alle filters verwijderen', current_path(), array('attributes' => array('class' => array('delete-all')))));
+    $build['reset'] = array('#markup' => l(t('Remove all filters'), current_path(), array('attributes' => array('class' => array('delete-all')))));
   }
 
   // Suggestions if available.

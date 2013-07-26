@@ -20,10 +20,10 @@ class CultureFeedActivityConfigPrint extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->subject = 'Geprint door';
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'afgedrukt';
-    $this->label = 'Geprint';
+    $this->subject = t('Printed by');
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('printed');
+    $this->label = t('Printed');
 
   }
 

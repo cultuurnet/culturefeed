@@ -135,8 +135,16 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   // Every filter will reset the current facet. Remove this facet from URL, URL will function as removal URL.
   unset($query['facet'][$facet->getKey()]);
 
+  // When the facet is datetype. We don't want to keep a date range filter when clicking on it.
   if ($facet->getKey() == 'datetype' && isset($query['date_range'])) {
     unset($query['date_range']);
+  }
+
+  // Location facet items are always active when location is in query string.
+  if ($facet->getKey() == 'location' && isset($_GET['location'])) {
+    $variables['active'] = TRUE;
+    unset($query['location']);
+    unset($query['distance']);
   }
 
   // Add this facet to URL, URL will function as additional filter URL.
@@ -175,7 +183,7 @@ function theme_culturefeed_search_pager_summary($variables) {
     '@range' => ($variables['start'] + 1) . '-' . $end,
   );
 
-  $pager_summary = format_plural($result->getTotalCount(), '@range van @count resultaat', '@range van @count resultaten', $args);
+  $pager_summary = format_plural($result->getTotalCount(), '@range from @count result', '@range from @count results', $args);
 
   return '<div class="pager-summary">' . $pager_summary . '</div>';
 

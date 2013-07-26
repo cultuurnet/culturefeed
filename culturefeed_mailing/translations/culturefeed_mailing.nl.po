@@ -91,7 +91,7 @@ msgid "Error occurred"
 msgstr "Er is een fout opgetreden"
 
 #: culturefeed_mailing.pages.inc:75
-msgid "Email address)"
+msgid "Email address"
 msgstr "E-mailadres"
 
 #: culturefeed_mailing.pages.inc:85
@@ -125,7 +125,7 @@ msgid "edit"
 msgstr "bewerken"
 
 #: culturefeed_mailing.pages.inc:205
-msgid "detele"
+msgid "delete"
 msgstr "verwijder"
 
 #: culturefeed_mailing.pages.inc:212;491
@@ -289,7 +289,7 @@ msgid "Culturefeed mailings: Newsletter form"
 msgstr ""
 
 #: culturefeed_mailing.module:201
-msgid "Manage newsletters you can subscribe"
+msgid "Manage newsletters you can subscribe to"
 msgstr "Beheer de nieuwsbrieven waarop je kan inschrijven"
 
 #: culturefeed_mailing.module:233

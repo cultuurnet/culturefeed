@@ -17,10 +17,10 @@ class CultureFeedActivityMediaVideo extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_ACTIVITY,
     );
 
-    $this->viewPrefix = 'heeft een nieuwe video toegevoegd';
-    $this->pointsOverviewPrefix = "Video toegevoegd aan";
-    $this->titleDo = 'Voeg een video toe';
-    $this->titleDoFirst = 'Voeg een video toe';
+    $this->viewPrefix = t('has added a new video');;
+    $this->pointsOverviewPrefix = t('Video added to');
+    $this->titleDo = t('Add a video');
+    $this->titleDoFirst = t('Add a video');
 
   }
 

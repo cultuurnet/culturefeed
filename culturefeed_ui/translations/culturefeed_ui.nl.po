@@ -68,7 +68,7 @@ msgstr ""
 "ontdek wat <strong>vrienden en gelijkaardige gebruikers</strong> leuk vinden"
 
 #: culturefeed-ui-mbox-confirmation-reminder.tpl.php:1
-msgid "Confirm you emailadress to use all UiTiD features"
+msgid "Confirm your email address to use all UiTiD features"
 msgstr "Bevestig je e-mailadres om alle functies van UiTiD te gebruiken."
 
 #: culturefeed-ui-mbox-confirmation-reminder.tpl.php:3
@@ -96,11 +96,11 @@ msgid "attends"
 msgstr "ga ik naartoe"
 
 #: culturefeed-ui-my-uitid.tpl.php:72
-msgid "Pages where i'm member off:"
+msgid "Pages of which i'm a member"
 msgstr "Pagina's waar ik lid van ben:"
 
 #: culturefeed-ui-online-account.tpl.php:8
-msgid "Connected with:"
+msgid "Connected to:"
 msgstr "Gekoppeld met:"
 
 #: culturefeed-ui-ranked-user-summary.tpl.php:8
@@ -255,7 +255,7 @@ msgid "My profile"
 msgstr "Mijn profiel"
 
 #: culturefeed_ui.pages.inc:5
-msgid "Sure you want to delete your account?"
+msgid "Are you sure you want to delete your account?"
 msgstr "Ben je zeker dat je jouw UiTiD wil verwijderen?"
 
 #: culturefeed_ui.pages.inc:7
@@ -287,11 +287,11 @@ msgid "Confirmation mail succesfully sended"
 msgstr "De bevestigingsmail werd met succes verzonden."
 
 #: culturefeed_ui.pages.inc:159
-msgid "Emailaddress from this account already confirmed."
+msgid "Email address of this account is already confirmed."
 msgstr "Het e-mailadres verbonden aan deze account werd reeds bevestigd."
 
 #: culturefeed_ui.pages.inc:182;442
-msgid "See profile"
+msgid "View profile"
 msgstr "Bekijk profiel"
 
 #: culturefeed_ui.pages.inc:189
@@ -434,7 +434,7 @@ msgid "Username"
 msgstr "Gebruikersnaam"
 
 #: culturefeed_ui.pages.inc:455
-msgid "Emailaddress"
+msgid "Email address"
 msgstr "E-mailadres"
 
 #: culturefeed_ui.pages.inc:473
@@ -458,7 +458,7 @@ msgid "Resend email confirmation"
 msgstr "E-mailbevestiging opnieuw versturen"
 
 #: culturefeed_ui.preprocess.inc:80
-msgid "Change emailaddress"
+msgid "Change Email address"
 msgstr "E-mailadres aanpassen"
 
 #: culturefeed_ui.preprocess.inc:81
@@ -502,7 +502,7 @@ msgstr ""
 "van de week. Proficiat!"
 
 #: culturefeed_ui.preprocess.inc:234
-msgid "Connected on "
+msgid "Connected to"
 msgstr "Gekoppeld op"
 
 #: culturefeed_ui.preprocess.inc:245 culturefeed_ui.module:396;428
@@ -518,7 +518,7 @@ msgid "Edit account"
 msgstr "Account bewerken"
 
 #: culturefeed_ui.preprocess.inc:296
-msgid "Generate your leisure profile!"
+msgid "Calculate your leisure profile!"
 msgstr "Bereken je vrijetijdsprofiel"
 
 #: culturefeed_ui.preprocess.inc:302
@@ -538,11 +538,11 @@ msgid "Connoisseur"
 msgstr "Fijnproever"
 
 #: culturefeed_ui.preprocess.inc:314
-msgid "Leisure profile not yet generated"
+msgid "Leisure profile not calculated yet"
 msgstr "Profiel nog niet berekend"
 
 #: culturefeed_ui.preprocess.inc:317
-msgid "Regenerate"
+msgid "Recalculate"
 msgstr "Herbereken"
 
 #: culturefeed_ui.preprocess.inc:379
@@ -590,7 +590,7 @@ msgid "How other user will see your account"
 msgstr "Zo zien anderen jouw profiel."
 
 #: culturefeed_ui.module:404
-msgid "Change password, emailadress, connected channels, …"
+msgid "Change password, email address, connected channels, …"
 msgstr ""
 "Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,…"
 

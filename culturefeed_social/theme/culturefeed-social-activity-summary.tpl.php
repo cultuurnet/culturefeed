@@ -28,11 +28,11 @@
  */
 ?>
 
-<h2>Mijn activiteiten</h2>
+<h2><?php print t('My activities'); ?></h2>
 
 <p>
-  <strong><?php print $activities_total_15 ?></strong> activiteiten aangeraden<br />
-  <strong><?php print $books_total_15 ?></strong> boeken aangeraden<br />
-  <strong><?php print $pages_total_18 ?></strong> pagina's die ik volg<br />
-  <strong><?php print $total_14 ?></strong> reacties geschreven<br />
+  <strong><?php print $activities_total_15 ?></strong> <?php print t('activities recommended'); ?><br />
+  <strong><?php print $books_total_15 ?></strong> <?php print t('books recommended'); ?><br />
+  <strong><?php print $pages_total_18 ?></strong> <?php print t('pages I follow'); ?><br />
+  <strong><?php print $total_14 ?></strong> <?php print t('reactions written'); ?><br />
 </p>

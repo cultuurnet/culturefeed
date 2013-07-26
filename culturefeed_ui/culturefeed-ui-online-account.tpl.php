@@ -5,7 +5,7 @@
   <div class="depiction"><?php print $picture ?></div>
 <?php endif; ?>
 <?php if ($name || $nick) : ?>
-  <span class="small quiet"><?php print t('Connected with:') ?> </span>
+  <span class="small quiet"><?php print t('Connected to:') ?> </span>
 <?php endif; ?>
 <?php if ($name) : ?>
   <div class="name"><?php print $name ?></div>

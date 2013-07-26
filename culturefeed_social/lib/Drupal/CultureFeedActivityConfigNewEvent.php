@@ -12,8 +12,8 @@ class CultureFeedActivityConfigNewEvent extends CultureFeedActivityConfigBase {
 
     $this->allowedTypes = array();
 
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'aangemaakt';
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('added');
 
   }
 

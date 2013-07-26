@@ -1,5 +1,5 @@
 <h2><?php print $sender; ?></h2>
-<br/><?php print format_plural($message_count, t('@count message'), t('@count messages')) ?><br/>
+<br/><?php print format_plural($message_count, '@count message', '@count messages') ?><br/>
 <?php print $delete_link; ?><br/>
 
 <?php foreach ($messages as $message): ?>

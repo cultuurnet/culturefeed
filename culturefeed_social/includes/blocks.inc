@@ -34,7 +34,7 @@ function culturefeed_social_block_recent_activities() {
     '#class' => 'site-activity-list',
   );
 
-  $block['subject'] = 'Recente acties';
+  $block['subject'] = t('Recent actions');
   $block['content'] = $content;
 
   return $block;
@@ -67,7 +67,7 @@ function culturefeed_social_block_user_activities($account) {
 
   if (empty($activities->objects)) {
     $content['activities'] = array(
-      '#markup' => 'Deze gebruiker heeft nog geen acties gedaan.',
+      '#markup' => t('This user has no actions done yet.'),
     );
   }
   else {
@@ -79,7 +79,7 @@ function culturefeed_social_block_user_activities($account) {
     if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
 
       $content['edit'] = array(
-        '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> Beheer jouw acties', 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
+        '#markup' => '<p class="pull-right">' . l('<i class="icon-pencil"></i> ' . t('Manage your actions'), 'culturefeed/activities', array('html' => TRUE, 'attributes' => array('class' => array('manage-activities-link')))) . '</p><div class="clearfix"></div>',
       );
 
       $facebook = _culturefeed_ui_facebook_privacy_toggle();
@@ -110,12 +110,12 @@ function culturefeed_social_block_user_activities($account) {
 
     if ($activities->total > count($activities->objects)) {
       $content['activities']['#read_more_url'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
-      $content['activities']['#read_more_text'] = 'Lees oudere berichten';
+      $content['activities']['#read_more_text'] = t('Read older messages');
     }
 
   }
 
-  $block['subject'] = 'Recente acties';
+  $block['subject'] = t('Recent actions');
   $block['content'] = $content;
 
   return $block;
@@ -248,7 +248,7 @@ function culturefeed_social_block_comments($object) {
   $content['comment_list'] = culturefeed_social_comment_list($object, $activities);
   $content['comment_form'] = culturefeed_social_comment_actionbox($object);
 
-  $block['subject'] = 'Beoordelingen';
+  $block['subject'] = t('Recommendations');
   $block['content'] = $content;
 
   return $block;
@@ -265,8 +265,8 @@ function culturefeed_social_block_my_notifications() {
   }
 
   $block = array();
-  $block['subject'] = 'Mijn meldingen';
-  $block['content'] = array('#markup' => '<div class="no-results">U hebt geen meldingen</div>');
+  $block['subject'] = t('My notifications');
+  $block['content'] = array('#markup' => '<div class="no-results">' . t('You have no notifications'). '</div>');
 
   try {
 
@@ -282,7 +282,7 @@ function culturefeed_social_block_my_notifications() {
         '#activities' => $notifications,
         '#class' => 'notifications',
         '#read_more_url' => url('culturefeed/notifications'),
-        '#read_more_text' => 'Bekijk alle meldingen',
+        '#read_more_text' => t('View all notifications'),
       );
     }
 

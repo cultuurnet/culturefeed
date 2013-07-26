@@ -6,7 +6,8 @@
 
 <?php if ($search): ?>
 <?php if (empty($items)): ?>
-Er bestaat nog geen pagina van <?php print $search; ?> op <?php print $site?>
+<?php print t('There doesn\'t exists a page of'); ?> 
+<?php print $search; ?> <?php print t('on'); ?> <?php print $site?>
 <?php else :?>
 <ul>
   <?php foreach ($items as $item): ?>

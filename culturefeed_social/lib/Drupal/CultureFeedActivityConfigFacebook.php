@@ -20,15 +20,15 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     );
     $this->undoAllowed = FALSE;
 
-    $this->titleDo = 'Delen';
-    $this->titleDoFirst = 'Delen';
-    $this->subject = 'Gedeeld door';
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'via Facebook gedeeld';
-    $this->label = 'Delen via Facebook';
-    $this->undoNotAllowedMessage = 'Succesvol gedeeld';
-    $this->action = 'reactie';
-    $this->pointsOverviewSuffix = 'gedeeld';
+    $this->titleDo = t('Share');
+    $this->titleDoFirst = t('Share');
+    $this->subject = t('Shared by');
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('shared with Facebook');
+    $this->label = t('Share with Facebook');
+    $this->undoNotAllowedMessage = t('Successfully shared');
+    $this->action = t('reactions');
+    $this->pointsOverviewSuffix = t('shared');
 
   }
 

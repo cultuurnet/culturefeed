@@ -303,7 +303,7 @@ class CultureFeedSearchPage {
         if ($rest >= 0) {
           $build['pager-container']['pager'] = array(
             '#type' => 'link',
-            '#title' => 'Meer resultaten',
+            '#title' => t('More results'),
             '#href' => $_GET['q'] . '/nojs',
             '#options' => array('query' => $params),
             '#ajax' => array(),
@@ -314,10 +314,10 @@ class CultureFeedSearchPage {
         }
 
         if ($rest <= $this->resultsPerPage) {
-          $link = l('nieuwe zoekopdracht', str_replace("/ajax", "", $_GET['q']));
+          $link = l(t('new search'), str_replace("/ajax", "", $_GET['q']));
           $build['pager-container']['pager'] = array(
-            '#markup' => '<div class="alert"><p><strong>Er zijn geen zoekresultaten meer.</strong></p>
-          <p>Niet gevonden wat u zocht? Voer een ' . $link . ' uit.</p></div>');
+            '#markup' => '<div class="alert"><p><strong>' . t('There are no more results.') . '</strong></p>
+          <p>' . t('Did not find what you were looking for? Do a') . ' ' . $link . '.</p></div>');
         }
 
         if ($this->fullPage) {

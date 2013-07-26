@@ -19,9 +19,9 @@ class CultureFeedActivityConfigMail extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'gemaild';
-    $this->label = 'Mails';
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('mailed');
+    $this->label = t('Mails');
 
   }
 

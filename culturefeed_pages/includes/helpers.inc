@@ -32,10 +32,10 @@ function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_aja
   }
 
   if ($is_following) {
-    return l('Pagina niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $page->getId(), $options);
+    return l(t('Unfollow page'), 'culturefeed/pages/defollow/nojs/' . $page->getId(), $options);
   }
   elseif ($page->getPermissions()->allowFollowers) {
-    return l('Pagina volgen', 'culturefeed/pages/follow/nojs/' . $page->getId(), $options);
+    return l(t('Follow page'), 'culturefeed/pages/follow/nojs/' . $page->getId(), $options);
   }
 
 }

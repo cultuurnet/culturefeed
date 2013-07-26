@@ -24,11 +24,11 @@ function culturefeed_pages_join_page_search() {
     }
     catch (Exception\ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_pages', $e);
-      return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+      return t('There was an error while loading the search results.');
     }
     catch (Exception\CurlException $e) {
       watchdog_exception('culturefeed_pages', $e);
-      return "Er is een fout opgetreden tijdens het laden van de zoekresultaten.";
+      return t('There was an error while loading the search results.');
     }
 
   }
@@ -51,14 +51,14 @@ function culturefeed_pages_join_form() {
 
   $form['page'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam van jouw pagina',
+    '#title' => t('Name of your page'),
     '#autocomplete_path' => 'ajax/culturefeed/pages/page-suggestion',
     '#default_value' => isset($_GET['page']) ? $_GET['page'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'OK',
+    '#value' => t('OK'),
   );
 
   return $form;
@@ -116,7 +116,7 @@ function culturefeed_pages_page_join($request_type, $page) {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addMember($page->getId(), DrupalCultureFeed::getLoggedInUserId(), array('activityPrivate' => FALSE));
-    $message = format_string('Je bent nu lid van <strong>@page.</strong><br />Beheer je lidmaatschap van deze en andere pagina\'s via ' . l('mijn pagina\'s', 'culturefeed/pages'), array('@page' => $page->getName()));
+    $message = format_string(t('You are now a member of <strong>@page.</strong><br />Manage your membership of this and other pages with') . ' ' . l(t('My pages'), 'culturefeed/pages'), array('@page' => $page->getName()));
     $status_code = 'status';
 
     // If it's your first membership and you don't have an active page yet,
@@ -131,10 +131,10 @@ function culturefeed_pages_page_join($request_type, $page) {
     watchdog_exception('culturefeed_pages', $e);
 
     if ($e->getCode() == CultureFeed_Pages_Default::ACTION_NOT_ALLOWED) {
-      $message = format_string('Het is niet toegelaten om lid te worden van @page. Gelieve een beheerder te contacteren om toch lid te worden.', array('@page' => $page->getName()));
+      $message = format_string(t('It is not allowed to join @page as a member. Please contact the administrator of the page to become a member.'), array('@page' => $page->getName()));
     }
     else {
-      $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+      $message = format_string(t('You could not be added to @page.'), array('@page' => $page->getName()));
     }
   }
 
@@ -181,7 +181,7 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    $message = format_string('U kon niet toegevoegd worden aan @page.', array('@page' => $page->getName()));
+    $message = format_string(t('You could not be added to @page.'), array('@page' => $page->getName()));
   }
 
   // Deliver as ajax callback or normal page.
@@ -237,14 +237,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam',
+    '#title' => t('Name'),
     '#default_value' => '',
     '#weight' => -5,
   );
 
   $form['categoryId'] = array(
     '#type' => 'select',
-    '#title' => 'Type',
+    '#title' => t('Type'),
     '#options' => culturefeed_search_get_actortype_categories(),
     '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
     '#weight' => -4,
@@ -252,8 +252,8 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['description'] = array(
     '#type' => 'textarea',
-    '#title' => 'Beschrijving',
-    '#description' => 'Maximum 400 karakters',
+    '#title' => t('Description'),
+    '#description' => t('Maximum 400 characters'),
     '#default_value' => '',
     '#maxlength' => 400,
     '#weight' => -3,
@@ -263,7 +263,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['street'] = array(
     '#type' => 'textfield',
-    '#title' => 'Adres',
+    '#title' => t('Address'),
     '#default_value' => '',
     '#attributes' => array('placeholder' => 'straat en huisnummer'),
     '#weight' => 1,
@@ -289,28 +289,28 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['contactInfoTel'] = array(
     '#type' => 'textfield',
-    '#title' => 'Telefoonnummer',
+    '#title' => t('Phone'),
     '#default_value' => '',
     '#weight' => 10,
   );
 
   $form['contactInfoEmail'] = array(
     '#type' => 'textfield',
-    '#title' => 'E-mailadres',
+    '#title' => t('Email address'),
     '#default_value' => '',
     '#weight' => 11,
   );
 
   $form['linkWebsite'] = array(
     '#type' => 'textfield',
-    '#title' => 'Website',
+    '#title' => t('Website'),
     '#default_value' => '',
     '#weight' => 12,
   );
 
   $form['otherWebsites'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Andere websites toevoegen',
+    '#title' => t('Other websites'),
     '#default_value' => '',
     '#weight' => 13,
     '#collapsible' => TRUE,
@@ -319,43 +319,43 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['otherWebsites']['linkTicketing'] = array(
     '#type' => 'textfield',
-    '#title' => 'Ticketing',
+    '#title' => t('Ticketing'),
     '#default_value' => '',
   );
 
   $form['otherWebsites']['linkFacebook'] = array(
     '#type' => 'textfield',
-    '#title' => 'Facebook',
+    '#title' => t('Facebook'),
     '#default_value' => '',
   );
 
   $form['otherWebsites']['linkTwitter'] = array(
     '#type' => 'textfield',
-    '#title' => 'Twitter',
+    '#title' => t('Twitter'),
     '#default_value' => '',
   );
 
   $form['otherWebsites']['linkGooglePlus'] = array(
     '#type' => 'textfield',
-    '#title' => 'Google+',
+    '#title' => t('Google+'),
     '#default_value' => '',
   );
 
   $form['otherWebsites']['linkYouTube'] = array(
     '#type' => 'textfield',
-    '#title' => 'YouTube',
+    '#title' => t('YouTube'),
     '#default_value' => '',
   );
 
   $form['otherWebsites']['linkBlog'] = array(
     '#type' => 'textfield',
-    '#title' => 'Blog',
+    '#title' => t('Blog'),
     '#default_value' => '',
   );
 
   $form['image'] = array(
     '#type' => 'file',
-    '#title' => 'Afbeelding of logo',
+    '#title' => t('Picture or logo'),
     '#size' => 26,
     '#default_value' => '',
     '#weight' => 16,
@@ -368,7 +368,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Save'),
     '#weight' => 20,
   );
 
@@ -394,12 +394,12 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
 
   // Basic validation.
   if (empty($form_state['values']['name'])) {
-    form_set_error('name', 'De titel moet ingevuld zijn');
+    form_set_error('name', t('Title is required'));
     $form_state['#validation_failed'] = TRUE;
   }
 
   if (strlen($form_state['values']['description']) > 400) {
-    form_set_error('description', 'Het maximum karakters bedraagt 400');
+    form_set_error('description', t('The maximum is 400 characters'));
     $form_state['#validation_failed'] = TRUE;
   }
 
@@ -446,11 +446,11 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $uid = $cf_pages->addPage($form_state['post_params']);
-    drupal_set_message(format_string('De pagina "@page" is aangemaakt.', array('@page' => $form_state['values']['name'])));
+    drupal_set_message(format_string(t('Page "@page" has been created.'), array('@page' => $form_state['values']['name'])));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het aanmaken van de pagina.');
+    form_set_error('', t('There was an error while creating the page.'));
   }
 
   if ($uid) {
@@ -470,7 +470,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
-          drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+          drupal_set_message(t('An error occurred when uploading your image.'), 'error');
         }
       }
     }
@@ -504,7 +504,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // Link to the detail page.
   $form['detail_link'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => array('view-link')))),
+    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => array('view-link')))),
     '#weight' => -25,
   );
 
@@ -549,11 +549,11 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
       '#path' => $image . "?width=100&height=100",
       '#weight' => 14,
     );
-    $form['image']['#title'] = 'Selecteer andere foto';
+    $form['image']['#title'] = t('Select another photo');
 
     $form['remove_image'] = array(
       '#type' => 'checkbox',
-      '#title' => 'Verwijder foto',
+      '#title' => t('Remove photo'),
       '#weight' => 15,
     );
   }
@@ -584,11 +584,11 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $uid = $cf_pages->updatePage($uid, $form_state['post_params']);
-    drupal_set_message(format_string('De pagina "@page" is aangepast.', array('@page' => $form_state['values']['name'])));
+    drupal_set_message(format_string(t('Page "@page" is updated.'), array('@page' => $form_state['values']['name'])));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het bewerken van de pagina.');
+    form_set_error('', t('There was an error while updating the page.'));
   }
 
   if ($uid) {
@@ -618,7 +618,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
-          drupal_set_message('Er is een fout opgetreden bij het opladen van jouw afbeelding.', 'error');
+          drupal_set_message(t('An error occurred when uploading your image.'), 'error');
         }
       }
     }
@@ -640,14 +640,14 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   // Link to the detail page.
   $form['detail_link'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), 'Bekijk pagina', array('attributes' => array('class' => array('view-link')))),
+    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => array('view-link')))),
     '#weight' => -25,
   );
 
   // General information.
   $form['basic'] = array(
     '#type' => 'markup',
-    '#markup' => '<h2>Instellingen</h2>',
+    '#markup' => '<h2>' . t('Settings') . '</h2>',
     '#weight' => -20,
   );
 
@@ -661,34 +661,34 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   $form['allow_followers'] = array(
     '#type' => 'checkbox',
-    '#title' => 'mijn pagina volgen',
-    '#description' => 'Op die manier kunnen gebruikers op de hoogte blijven van alle updates over deze pagina.',
+    '#title' => t('follow my page'),
+    '#description' => t('This allows users to stay informed of any updates on this page.'),
     '#default_value' => !empty($permissions->allowFollowers),
   );
 
   $form['allow_members'] = array(
     '#type' => 'checkbox',
-    '#title' => 'lid worden van mijn pagina',
-    '#description' => 'Op die manier wordt je pagina ook toegankelijk via de profielen, reacties en reacties van alle collega\'s die actief zijn op deze site.',
+    '#title' => t('become a member of my page'),
+    '#description' => t('In this way, your page can also be accessed via the profiles, comments and reactions of all colleagues who are active on this site.'),
     '#default_value' => !empty($permissions->allowMembers),
   );
 
   $form['allow_comments'] = array(
     '#type' => 'checkbox',
-    '#title' => 'reacties schrijven over mijn activiteiten',
-    '#description' => 'Enkel voor organisaties die activiteiten organiseren en ingevoerd hebben via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.',
+    '#title' => t('write comments about my activities'),
+    '#description' => t('Only for organizations that provide activities and have entered via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.'),
     '#default_value' => !empty($permissions->allowComments),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Save'),
   );
 
   if ($page->isVisible()) {
     $form['remove-link'] = array(
       '#type' => 'link',
-      '#title' => 'Pagina verwijderen',
+      '#title' => t('Remove page'),
       '#href' => 'pages/' . $page->getId() . '/remove/nojs',
       '#attributes' => array(
         'role' => 'button',
@@ -741,11 +741,11 @@ function culturefeed_pages_configuration_page_form_submit($form, &$form_state) {
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $uid = $cf_pages->changePermissions($form_state['values']['pageId'], $params);
-    drupal_set_message(format_string('De pagina instellingen zijn bewaard.'));
+    drupal_set_message(format_string(t('Page settings has been saved.')));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het bewaren van de pagina instellingen.');
+    form_set_error('', t('There was an error while saving the settings page.'));
   }
 
 }
@@ -783,7 +783,7 @@ function culturefeed_pages_remove_page_confirm($page, $request_type = 'ajax') {
 function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, $request_type) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>Pagina verwijderen</h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove page') . '</h3></div>';
   }
 
   $form_state['page_id'] = $page->getId();
@@ -797,9 +797,9 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de zoekresultaten en worden al je contactgegevens niet verwijderd.</p>
-      <p>Leden van deze pagina en activiteiten in naam van deze pagina worden niet verwijderd.</p>
-      <p><strong>Ben je zeker?</strong></p>',
+      <p>' . t('By deleting a page, the page will no longer appear in search results, but it will not remove your contact info.') . '</p>
+      <p>' . t('Members of this page, and activities in the name of this page will not be deleted.') . '</p>
+      <p><strong>' . t('Are you sure?') . '</strong></p>',
   );
 
   $form['footer_wrapper'] = array(
@@ -810,7 +810,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
 
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
-    '#value' => 'Verwijder',
+    '#value' => t('Delete'),
     '#attributes' => array('class' => array('button-remove btn btn-warning')),
     '#submit' => array('culturefeed_pages_remove_page_confirm_form_submit'),
     '#limit_validation_errors' => array(),
@@ -818,7 +818,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
 
   $form['footer_wrapper']['decline'] = array(
     '#type' => 'link',
-    '#title' => 'Annuleer',
+    '#title' => t('Cancel'),
     '#href' => 'pages/' . $page->getId() . '/configuration',
     '#attributes' => array(
       'data-dismiss' => 'modal',
@@ -843,7 +843,7 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->removePage($page->getId());
-    drupal_set_message(format_string('De pagina "@page" is verwijderd.', array('@page' => $page->getName())));
+    drupal_set_message(format_string(t('Page "@page" is deleted.'), array('@page' => $page->getName())));
 
     // Set the next available page as active.
     culturefeed_pages_remove_active_page();
@@ -860,7 +860,7 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het verwijderen van de pagina.');
+    form_set_error('', t('There was an error while deleting the page.'));
   }
 
   $form_state['redirect'] = '';
@@ -896,20 +896,20 @@ function culturefeed_pages_publish_page_confirm_form($form, &$form_state, $page)
   $form['wrapper']['page_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>Door een pagina te publiceren, zal de pagina opnieuw verschijnen in de zoekresultaten.</p>
-      <p>Leden van deze pagina en activiteiten in naam van deze pagina worden opnieuw in het leven geroepen.</p>
-      <p><strong>Ben je zeker?</strong></p>',
+      <p>' . t('By publishing a page, the page will re-appear in the search results.') . '</p>
+      <p>' . t('Members of this page, and activities in the name of this page will be recreated.') . '</p>
+      <p><strong>' . t('Are you sure?') . '</strong></p>',
   );
 
   $form['wrapper']['publish'] = array(
     '#type' => 'submit',
-    '#value' => 'Publiceer',
+    '#value' => t('Publish'),
     '#attributes' => array('class' => array('button-publish')),
   );
 
   $form['wrapper']['decline'] = array(
     '#type' => 'button',
-    '#value' => 'Annuleer',
+    '#value' => t('Cancel'),
     '#attributes' => array(
       'data-dismiss' => 'modal',
       'aria-hidden' => 'true',
@@ -931,11 +931,11 @@ function culturefeed_pages_publish_page_confirm_form_submit($form, &$form_state)
   // Send request to (re-)publish a page.
   try {
     DrupalCultureFeed::getLoggedInUserInstance()->pages()->publishPage($page->getId());
-    drupal_set_message(format_string('De pagina "@page" is hersteld.', array('@page' => $page->getName())));
+    drupal_set_message(format_string(t('Page "@page" is recreated.'), array('@page' => $page->getName())));
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', 'Er is een fout opgetreden tijdens het herstellen van de pagina.');
+    form_set_error('', t('There was an error while recreating the page.'));
   }
 
   $form_state['redirect'] = culturefeed_search_detail_url("page", $page->getId(), $page->getName());
@@ -969,15 +969,15 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
 
     switch ($_GET['order']) {
 
-      case 'Titel':
+      case t('Title'):
         $sort_field = 'title_sort';
       break;
 
-      case 'Datum':
+      case t('Date'):
         $sort_field = 'startdate';
       break;
 
-      case 'Reacties':
+      case t('Reactions'):
         $sort_field = 'comment_count';
       break;
 
@@ -1003,7 +1003,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    $build['error'] = array('#markup' => "Er is een fout opgetreden tijdens het laden van de activiteiten.");
+    $build['error'] = array('#markup' => t('There was an error while loading the activities.'));
   }
 
   culturefeed_pages_set_page_breadcrumb($page);
@@ -1039,7 +1039,7 @@ function culturefeed_pages_page_my_pages() {
 
         if ($is_page_admin) {
 
-          $admin_link = l('Pagina beheren', $path);
+          $admin_link = l(t('Administer page'), $path);
 
           // We need the full user list of every page, to check if the user is the only admin.
           try {
@@ -1058,14 +1058,14 @@ function culturefeed_pages_page_my_pages() {
         else {
 
           // Show request admin link.
-          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l('Beheerder worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
-            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => 'Hiermee wordt een aanvraag gestuurd naar de huidige beheerder van deze pagina.'))) . '</div>';
+          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l(t('Become an administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
+            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => t('This is a request sent to the administrator of this page.')))) . '</div>';
 
         }
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = '<p class="muted">Verwijderen niet mogelijk <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen als lid"><i class="icon icon-question-sign"></i></span></p>';
+          $member_link = '<p class="muted">' . t('Not possible to remove') . ' <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="' . t('You\'re the only administrator of this page. You can not remove yourself as a member') . '"><i class="icon icon-question-sign"></i></span></p>';
         }
         else {
           $delete_options = array(
@@ -1094,7 +1094,7 @@ function culturefeed_pages_page_my_pages() {
       // Pages where I am a member.
       $build['member_pages'] = array(
         '#theme' => 'table',
-        '#header' => array('Pagina', 'Lid sinds', '', ''),
+        '#header' => array(t('Page'), t('Member since'), '', ''),
         '#rows' => $rows,
       );
 
@@ -1110,17 +1110,17 @@ function culturefeed_pages_page_my_pages() {
 
         $path = culturefeed_search_detail_path('page', $followed_page->page->getId(), $followed_page->page->getName());
 
-        $follow_link = l('Niet meer volgen', 'culturefeed/pages/defollow/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-        $become_member_link = 'Je bent lid van deze pagina';
+        $follow_link = l(t('Unfollow'), 'culturefeed/pages/defollow/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
+        $become_member_link = t('You are a member of this page');
         if (!in_array($followed_page->page->getId(), $membership_page_ids)) {
-          $become_member_link = l('Lid worden', 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
+          $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
         }
 
         if ($is_page_admin) {
-          $admin_link = l('Pagina beheren', $path);
+          $admin_link = l(t('Administer page'), $path);
         }
         else {
-          $admin_link = l('Stuur aanvraag om beheerder te worden', 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
+          $admin_link = l(t('Send request to become administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
         }
 
         $row = array(
@@ -1136,7 +1136,7 @@ function culturefeed_pages_page_my_pages() {
       // Pages I follow.
       $build['followed-pages'] = array(
         '#theme' => 'table',
-        '#header' => array('Pagina', 'Volgt sinds', '', ''),
+        '#header' => array(t('Page'), t('Following since'), '', ''),
         '#rows' => $rows,
       );
 

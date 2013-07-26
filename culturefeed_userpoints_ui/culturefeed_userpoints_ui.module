@@ -102,7 +102,6 @@ function culturefeed_userpoints_promotion_load($id) {
   $detail = NULL;
 
   try {
-    // @todo: create this shit.
     $detail = DrupalCulturefeed::getActivityPointsPromotion($id);
   }
   catch (Exception\ClientErrorResponseException $e) {

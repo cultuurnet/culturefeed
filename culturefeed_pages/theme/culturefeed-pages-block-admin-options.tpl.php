@@ -17,13 +17,13 @@
   <div>
   <?php if (!$has_activities): ?>
     <div class="alert">
-      Jouw pagina heeft nog geen activiteiten gepubliceerd.
-      <a href="http://www.uitdatabank.be">Voeg nieuwe activiteiten toe.</a>
+      <?php print t('Your page has published no activities yet.'); ?>
+      <a href="http://www.uitdatabank.be"><?php print t('Add new activities.'); ?></a>
     </div>
   <?php endif; ?>
 
   <?php if (!empty($notifications)): ?>
-  <h2>Laatste meldingen</h2>
+  <h2><?php print t('Latest notifications'); ?></h2>
   <?php print $notifications; ?>
   <?php endif; ?>
   </div>
@@ -33,7 +33,7 @@
 
 <?php else: ?>
   <div class="alert">
-    <p>Je bent <strong>beheerder</strong> van deze pagina, maar <strong>niet aangemeld</strong> als deze pagina. Wil je <strong>verder werken als deze pagina</strong>?</p>
+    <p><?php print t('You are <strong> manager</strong> on this page, but <strong>not logged in</strong> as this page. Do you want to continue working as <strong>this page</strong>?'); ?></p>
     <?php print $switch_link; ?>
   </div>
 <?php endif; ?>

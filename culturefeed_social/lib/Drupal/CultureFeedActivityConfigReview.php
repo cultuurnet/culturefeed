@@ -15,13 +15,13 @@ class CultureFeedActivityConfigReview extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
     );
 
-    $this->viewPrefix = 'heeft';
-    $this->viewSuffix = 'een beoordeling gegeven';
-    $this->action = 'beoordeling';
-    $this->label = 'Beoordeling';
-    $this->titleDo = 'Schrijf een beoordeling';
-    $this->titleDoFirst = 'Schrijf als eerste een beoordeling';
-    $this->pointsOverviewPrefix = 'Beoordeling voor';
+    $this->viewPrefix = t('has');
+    $this->viewSuffix = t('wrote a review');
+    $this->action = t('review');
+    $this->label = t('Reviews');
+    $this->titleDo = t('Write a review');
+    $this->titleDoFirst = t('Write as first a review');
+    $this->pointsOverviewPrefix = t('Reviews for');
 
   }
 

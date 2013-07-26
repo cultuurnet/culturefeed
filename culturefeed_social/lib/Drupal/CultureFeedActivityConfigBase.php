@@ -22,7 +22,7 @@ class CultureFeedActivityConfigBase {
   public $label = '';
   public $loginRequiredMessage = '';
   public $action = '';
-  public $onBehalfOfMessage = 'Plaats commentaar als';
+  public $onBehalfOfMessage = 'Post comment as';
   public $undoNotAllowedMessage = '';
   public $pointsOverviewPrefix = '';
   public $pointsOverviewSuffix = '';

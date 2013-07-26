@@ -14,7 +14,7 @@
 <div id="activity-<?php print $activity_id ?>" class="comment-list-item">
   <?php print $picture ?>
   <?php print $content ?>
-  <p>Geplaatst door <?php print $author ?> <span>op <?php print $date ?></span>.</p>
+  <p><?php print t('Posted by'); ?> <?php print $author ?> <span><?php print t('on'); ?> <?php print $date ?></span>.</p>
 
   <div>
     <?php if ($level == 0): ?>

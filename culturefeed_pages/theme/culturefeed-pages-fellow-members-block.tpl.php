@@ -14,15 +14,14 @@
   </ul>
 
   <?php else: ?>
-    <p><?php print $nick; ?> is momenteel het enige lid van pagina <?php print $title ?>.</p>
+    <p><?php print $nick; ?> <?php print t('is at the moment the only member of the page') . ' ' . $title ?>.</p>
   <?php endif; ?>
 
   <?php if ($is_member): ?>
-  <p>Je bent lid van <?php print $title ?></p>
+  <p><?php print t('You are a member of') . ' ' . $title ?></p>
   <?php else: ?>
-  <p>Ben jij een collega van <?php print $nick; ?> bij <?php print $title ?>?</p>
-  <a href="<?php print $become_member_url; ?>">Word lid</a>
+  <p><?php print t('Are you a colleague of') . ' ' . $nick . ' ' . t('of') . ' ' . $title ?>?</p>
+  <a href="<?php print $become_member_url; ?>"><?php print t('Become a member'); ?></a>
   <?php endif; ?>
-
 
 </div>
