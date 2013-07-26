@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2013-07-23 17:41+0200\n"
-"PO-Revision-Date: 2013-07-24 10:07+0100\n"
+"PO-Revision-Date: 2013-07-24 13:05+0100\n"
 "Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgstr "Onderwerp"
 
 #: culturefeed_mailing.pages.inc:249;307
 msgid "From address"
-msgstr "Verzendadres"
+msgstr "Van adres"
 
 #: culturefeed_mailing.pages.inc:249
 msgid "Actions"
@@ -146,7 +146,7 @@ msgstr "Acties"
 
 #: culturefeed_mailing.pages.inc:251
 msgid "No mailinglists yet"
-msgstr "Er zijn nog geen mailinglists"
+msgstr "Nog geen mailing list"
 
 #: culturefeed_mailing.pages.inc:267
 msgid "Are you sure you want to delete %title?"
