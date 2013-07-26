@@ -32,12 +32,12 @@
 
 ?>
 <div id="culturefeed-userpoints-notifications">
-  Resterend aantal punten: <span class="userpoints-points"><?php print $real_points_left ?></span>
+   <?php print t('Remaining number of points'); ?>: <span class="userpoints-points"><?php print $real_points_left ?></span>
 </div>
 
 <?php if ($real_points < $minimum_points): ?>
-  <div class="alert alert-block alert-success">Je hebt onvoldoende punten. <strong>Vanaf <?php print $variables['minimum_points']; ?> punten</strong> kan je jouw punten inruilen voor tickets, gadgets, waardebonnen, kortingen, ... .<br />
-  Niet voldoende punten? Niet getreurd, Ontdek hier hoe en hoeveel punten je telkens kunt sparen.</div>
+  <div class="alert alert-block alert-success"><?php print t('You do not have enough points.'); ?> <strong><?php print t('From'); ?> <?php print $variables['minimum_points']; ?> <?php print t('points'); ?></strong> <?php print t('you can redeem your points for tickets, gadgets, coupons, discounts, ... .'); ?><br />
+  <?php print t('Not enough points? Do not worry, learn how and how many points you can save each time.'); ?></div>
 <?php endif; ?>
 
 <?php print $promotions_list ?>

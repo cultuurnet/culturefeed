@@ -142,7 +142,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
     }
     else {
       $variables['classes_array'][] = 'item-selected';
-      $variables['remove_link'] = l('Verwijder', 'culturefeed/userpoints/' . $promotion_id . '/remove/nojs',
+      $variables['remove_link'] = l(t('Delete'), 'culturefeed/userpoints/' . $promotion_id . '/remove/nojs',
         array('attributes' => array('class' => array('use-ajax')), 'query' => drupal_get_destination()));
     }
   }
@@ -177,7 +177,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_wishlist
   $variables['count'] = $variables['item']['count'];
   $variables['id'] = $variables['item']['promotion_id'];
   $variables['points'] = CultureFeedUserpointsWishlist::getRealPoints($variables['item']['points']);
-  $variables['remove_link'] = l('Verwijder', 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
+  $variables['remove_link'] = l(t('Delete'), 'culturefeed/userpoints/' . $variables['item']['promotion_id'] . '/remove/nojs', array('attributes' => array('class' => array('use-ajax'))));
 
 }
 
@@ -193,7 +193,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_detail_p
   _culturefeed_userpoints_ui_preprocess_detail($variables, $pointsPromotion);
 
   $variables['exchange_url'] = url('userpoints/promotions/exchange');
-  $variables['exchange_link'] = l('Voordeel bestellen', 'userpoints/promotions/exchange', array('fragment' => 'culturefeed-userpoints-notifications'));
+  $variables['exchange_link'] = l(t('Order promotion'), 'userpoints/promotions/exchange', array('fragment' => 'culturefeed-userpoints-notifications'));
 
 }
 
@@ -321,7 +321,7 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
 
   $variables['intro'] = check_plain(variable_get('culturefeed_userpoints_ui_points_overview_intro'));
   $variables['total_points'] = 0;
-  $variables['exchange_link'] = l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('btn btn-warning'))));
+  $variables['exchange_link'] = l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('btn btn-warning'))));
 
   try {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
@@ -368,7 +368,7 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
   $points_message = format_plural($points, '@count punt', '@count punten');
   $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
-  $message = '<p>Gefeliciteerd! Je verzamelde <strong> ' . $points_message . '</strong> met jouw beoordeling en hebt nu <strong>' . $total_points_message . '</strong></p>';
+  $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('with your review and have now') . ' <strong>' . $total_points_message . '</strong></p>';
 
   return $message;
 
@@ -380,7 +380,7 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
  */
 function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
 
-  return 'Bedankt, uw punten zijn ingewisseld. U kunt voordelen afhalen.';
+  return t('Thank you, your points are redeemed. You can collect your promotions.');
 
 }
 

@@ -35,14 +35,13 @@ $label = $can_exchange ? 'label-success' : 'label-important';
 
   <span class="cost label <?php print $label; ?>"><?php print $real_points ?></span>
   <p class='date text-medium-grey'>
-    Geldig van <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' tot ' . $cashingPeriodEnd : '') ?>
+    <?php print t('Valid from'); ?> <?php print $cashingPeriodBegin; ?> <?php print (!empty($cashingPeriodEnd) ? ' ' . t('till') . ' ' . $cashingPeriodEnd : '') ?>
   </p>
 
   <div id="culturefeed-userpoints-item-<?php print $id ?>">
 
     <?php if ($unitsLeft == 0): ?>
-    Dit voordeel is niet meer in voorraad.
-
+      <?php print t('This promotion is no longer in stock.'); ?>
     <?php elseif ($can_exchange): ?>
 
     <div class="row-fluid">
@@ -58,7 +57,7 @@ $label = $can_exchange ? 'label-success' : 'label-important';
     <?php endif; ?>
 
     <?php else: ?>
-      <p>Je hebt onvoldoende punten voor dit geschenk. <a href="/">Hoe extra punten sparen?</a></p>
+      <p><?php print t('You do not have enough points for this promotion.'); ?><?php print t('points'); ?> <a href="/"><?php print t('How to save extra points?'); ?></a></p>
     <?php endif; ?>
 
   </div>

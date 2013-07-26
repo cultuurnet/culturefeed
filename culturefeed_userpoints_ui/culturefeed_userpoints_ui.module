@@ -18,7 +18,7 @@ function culturefeed_userpoints_ui_menu() {
   $items = array();
 
   $items['userpoints/promotions/exchange'] = array(
-    'title' => 'Ruil je punten in',
+    'title' => 'Exchange your points',
     'title callback' => FALSE,
     'description' => 'Exchange your userpoints',
     'page callback' => 'culturefeed_userpoints_ui_exchange_page',
@@ -27,7 +27,7 @@ function culturefeed_userpoints_ui_menu() {
   );
 
   $items['userpoints/promotions/list'] = array(
-    'title' => 'Voordelen',
+    'title' => 'Promotions',
     'title callback' => FALSE,
     'description' => 'Promotions list',
     'page callback' => 'culturefeed_userpoints_ui_promotions_page',
@@ -36,7 +36,7 @@ function culturefeed_userpoints_ui_menu() {
   );
 
   $items['culturefeed/userpoints/%/%/select/%'] = array(
-    'title' => 'Selecteer voordeel',
+    'title' => 'Select promotion',
     'title callback' => FALSE,
     'description' => 'Select the promotion to exchange for userpoints.',
     'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
@@ -46,7 +46,7 @@ function culturefeed_userpoints_ui_menu() {
   );
 
   $items['culturefeed/userpoints/%/remove/%'] = array(
-    'title' => 'Deselecteer voordeel',
+    'title' => 'Deselect promotion',
     'title callback' => FALSE,
     'description' => 'Remove the promotion from the wishlist.',
     'page callback' => 'culturefeed_userpoints_ui_page_remove_promotion',
@@ -56,7 +56,7 @@ function culturefeed_userpoints_ui_menu() {
   );
 
   $items['userpoints/promotions/confirmation'] = array(
-    'title' => 'Voordelen',
+    'title' => 'Promotions',
     'title callback' => FALSE,
     'page callback' => 'culturefeed_userpoints_ui_page_exchange_confirmation',
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -83,7 +83,7 @@ function culturefeed_userpoints_ui_menu() {
   );
 
   $items['culturefeed/userpoints'] = array(
-    'title' => 'Puntenoverzicht',
+    'title' => 'Points list',
     'title callback' => FALSE,
     'page callback' => 'culturefeed_userpoints_ui_page_points_overview',
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -106,15 +106,15 @@ function culturefeed_userpoints_promotion_load($id) {
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+    $build = t('There was an error while loading the promotion.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+    $build = t('There was an error while loading the promotion.');
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de promotie.";
+    $build t('There was an error while loading the promotion.');
   }
 
   return $detail;
@@ -285,12 +285,12 @@ function culturefeed_userpoints_ui_block_view($delta) {
   switch ($delta) {
 
     case 'culturefeed-userpoints-balance':
-      $block['subject'] = 'Mijn puntensaldo';
+      $block['subject'] = t('My points balance');
       $block['content'] = culturefeed_userpoints_ui_block_balance();
       break;
 
     case 'culturefeed-userpoints-more':
-      $block['subject'] = 'Meer voordelen';
+      $block['subject'] = t('More promotions');
       $block['content'] = culturefeed_userpoints_ui_block_more_promotions();
       break;
   }
@@ -314,7 +314,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $cf_account = $params['cf_account'];
       $language = $message['language'];
 
-      $message['subject'] .= 'Bende van Vlieg | aanvraag door ' . $cf_account->nick;
+      $message['subject'] .= t('Request a promotion | request by') . ' ' . $cf_account->nick;
 
       $variables = array();
       $variables['@code'] = $cf_account->id;
@@ -326,28 +326,28 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
 
       $promotions = array();
       foreach ($wishlistPromotions as $promotionId => $data) {
-        $promotions[] = $data['title'] . ' (aantal: ' . $data['count'] . ' | inruilwaarde: ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' punten)
-    Bekijk online: ' . url('userpoints/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
+        $promotions[] = $data['title'] . ' (' . t('amount') . ': ' . $data['count'] . ' | ' . t('resale value') . ': ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' ' . t('points'). ')
+    ' . t('View online') . ': ' . url('userpoints/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
 ';
       }
 
       $variables['@url_admin'] = url('http://test.uitid.be/culturefeed/rest/admin/grantedpointspromotions', array('absolute' => TRUE));
       $variables['@promotion'] = implode("\n", $promotions);
 
-      $message['body'][] = format_string('Culturefeed User ID:
+      $message['body'][] = format_string(t('Culturefeed User ID:
         @code
 
-        Voordeel:
+        Promotion:
           @promotion
 
-        Contactgegevens:
+        Contact:
           - @givenName @familyName
           - @street
           - @city
           - @mbox
 
-        Beheer:
-          @url_admin ', $variables);
+        Admin:
+          @url_admin '), $variables);
 
     break;
 
@@ -361,9 +361,9 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_menu() {
 
   return array(
     'points' => array(
-      'title' => "Mijn puntensaldo",
+      'title' => t('My points balance'),
       'url' => 'culturefeed/userpoints',
-      'description' => "Bekijk het overzicht van je verdiende punten",
+      'description' => t('See the overview of your earned points'),
       'weight' => -15,
     ),
   );
@@ -382,7 +382,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
 
   $data = '<small class="text-white">';
   $data .= '<span class="userpoints userpoints-points label label-transparent">' . $points_left . ' punten</span>';
-  $data .= '<span class="check-again"> ' . l('Inruilen', 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
+  $data .= '<span class="check-again"> ' . l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
   $data .= '</small>';
 
   $items['my-points'] = array(
@@ -422,7 +422,7 @@ function culturefeed_userpoints_ui_promotions_list_form_submit($form, &$form_sta
 
   // Check if this is a non ajax submit.
   if (arg(1) != 'ajax') {
-    drupal_set_message('Het voordeel werd toegevoegd aan uw promotie mandje.');
+    drupal_set_message(t('The promotion has been added to your basket promotion.'));
   }
 
 }
@@ -456,7 +456,7 @@ function culturefeed_userpoints_ui_promotions_list_form_validate($form, &$form_s
   $points_spent = $promotion_count * CultureFeedUserpointsWishlist::getRealPoints($form_state['promotion']->points);
 
   if ($points_left < $points_spent) {
-    form_set_error($form_state['clicked_button']['#name'], 'U hebt niet voldoende punten');
+    form_set_error($form_state['clicked_button']['#name'], t('You do not have enough points'));
   }
 
 }

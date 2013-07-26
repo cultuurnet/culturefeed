@@ -19,15 +19,15 @@ function culturefeed_userpoints_ui_promotions_page() {
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
@@ -75,15 +75,15 @@ function culturefeed_userpoints_ui_exchange_page() {
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $build = t('There was an error while loading the promotions.');
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
@@ -123,7 +123,7 @@ function culturefeed_userpoints_ui_page_remove_promotion($promotion_id, $request
 
   // Check if this is a non ajax request.
   if ($request_type != 'ajax') {
-    drupal_set_message('Het voordeel werd verwijderd van uw voordelen.');
+    drupal_set_message(t('The advantage was removed from your promotions.'));
     drupal_goto('userpoints/promotions/exchange');
   }
   else {
@@ -199,10 +199,10 @@ function culturefeed_userpoints_ui_promotions_list_form($form, $form_state, $pro
     );
 
     $default_count = 1;
-    $submit_label = 'Toevoegen';
+    $submit_label = t('Add');
     if ($wishlistItem = CultureFeedUserpointsWishlist::get($promotion->id))  {
       $default_count = $wishlistItem['count'];
-      $submit_label = 'Aanpassen';
+      $submit_label = t('Edit');
     }
 
     $form['list'][$promotion->id]['select_count'] = array(
@@ -246,49 +246,49 @@ function culturefeed_userpoints_ui_exchange_form($form, $form_state, $cf_account
 
   $form['mbox'] = array(
     '#type' => 'textfield',
-    '#title' => 'E-mailadres',
+    '#title' => t('Email address'),
     '#default_value' => $cf_user->mbox,
     '#required' => TRUE,
   );
 
   $form['familyName'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam',
+    '#title' => t('Family name'),
     '#default_value' => $cf_user->familyName,
     '#required' => TRUE,
   );
 
   $form['givenName'] = array(
     '#type' => 'textfield',
-    '#title' => 'Voornaam',
+    '#title' => t('First name'),
     '#default_value' => $cf_user->givenName,
     '#required' => TRUE,
   );
 
   $form['street'] = array(
     '#type' => 'textfield',
-    '#title' => 'Straat',
+    '#title' => t('Street'),
     '#default_value' => $cf_user->street,
     '#required' => TRUE,
   );
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => t('Zipcode'),
     '#default_value' => $cf_user->zip,
     '#required' => TRUE,
   );
 
   $form['city'] = array(
     '#type' => 'textfield',
-    '#title' => 'Gemeente',
+    '#title' => t('City'),
     '#default_value' => $cf_user->city,
     '#required' => TRUE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Geschenk aanvragen'
+    '#value' => t('Get promotion')
   );
 
   return $form;
@@ -305,7 +305,7 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
 
   $count = CultureFeedUserpointsWishlist::getIds();
   if ($count <= 0) {
-    form_set_error('', 'U moet minstens 1 promotie selecteren.');
+    form_set_error('', t('You must choose at least one promotion.'));
   }
 
   try {
@@ -313,7 +313,7 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
     $user_points = DrupalCultureFeed::getLoggedInUser()->points;
     $form_state['points_left'] = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
     if ($form_state['points_left'] < 0) {
-      form_set_error('', 'U hebt niet voldoende punten om dit te bestellen');
+      form_set_error('', t('You do not have enough points to order this'));
     }
 
   }
@@ -332,7 +332,7 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
   }
   catch (Exception $e) {
   	watchdog_exception('culturefeed_userpoints_ui', $e);
-  	form_set_error('', 'Het is niet mogelijk om de bestelling door te sturen');
+  	form_set_error('', t('It is not possible to process the order'));
   }
 
 }
@@ -364,7 +364,7 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, &$form_state) {
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_userpoints_ui', $e);
-      drupal_set_message('Er is een fout opgetreden bij het bewaren van jouw gegevens.', 'error');
+      drupal_set_message(t('An error occurred while saving your data.'), 'error');
       $success = FALSE;
     }
 
@@ -402,15 +402,15 @@ function culturefeed_userpoints_ui_exchange_form_submit($form, &$form_state) {
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het inruilen van de gebruikers voordelen.";
+    $build = t('There was an error during the exchange of your promotions.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het inruilen van de gebruikers voordelen.";
+    $build = t('There was an error during the exchange of your promotions.');
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build = "Er is een fout opgetreden tijdens het inruilen van de gebruikers voordelen.";
+    $build = t('There was an error during the exchange of your promotions.');
   }
 
 }
@@ -426,7 +426,7 @@ function culturefeed_userpoints_ui_page_points_overview() {
     $activities = $timeline->objects;
   }
   catch (Exception $e) {
-    drupal_set_message('Er ging iets fout tijdens het laden van je puntenoverzicht', 'error');
+    drupal_set_message(t('There was an error loading your points list'), 'error');
     watchdog_exception('culturefeed_userpoints_ui', $e);
   }
 

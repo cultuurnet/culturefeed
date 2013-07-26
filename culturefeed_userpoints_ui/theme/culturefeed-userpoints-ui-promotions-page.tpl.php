@@ -6,7 +6,7 @@
 
 ?>
 
-<p>Extra punten verzamelen? dat kan ... </p>
+<p><?php print t('Collect extra points? That possible ...'); ?></p>
 
 <div>
 <?php foreach ($items as $promotion): ?>

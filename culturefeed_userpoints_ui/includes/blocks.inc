@@ -62,15 +62,15 @@ function culturefeed_userpoints_ui_block_more_promotions() {
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $output = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $output = t('There was an error while loading the promotions.');
   }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $output = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $output = t('There was an error while loading the promotions.');
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $output = "Er is een fout opgetreden tijdens het laden van de gebruikers voordelen.";
+    $output = t('There was an error while loading the promotions.');
   }
   
   return $output;

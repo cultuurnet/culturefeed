@@ -23,7 +23,7 @@
 </div>
 
 <ul>
-  <li>Hoe gaat alles in zijn werk?</li>
-  <li>Hoe kan ik extra punten verdienen?</li>
-  <li>Waarvoor kan ik mijn punten gebruken?</li>
+  <li><?php print t('How does everything work?'); ?></li>
+  <li><?php print t('How can I earn extra points?'); ?></li>
+  <li><?php print t('Wherefore can I use my points?'); ?></li>
 </ul>

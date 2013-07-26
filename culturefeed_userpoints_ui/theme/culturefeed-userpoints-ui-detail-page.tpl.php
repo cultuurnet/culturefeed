@@ -26,7 +26,7 @@
 
 <h2><?php print $title ?></h2>
 
-<p>Geldig tot <?php print $cashingPeriodEnd ?> <?php print ($unlimited ? 'onbeperkt' : $unitsLeft . ' x op voorraad'); ?></p>
+<p><?php print t('Expires'); ?> <?php print $cashingPeriodEnd ?> <?php print ($unlimited ? t('unlimited') : $unitsLeft . ' ' . t('x in stock')); ?></p>
 
 <?php if (!empty($picture_url)): ?>
 <p>

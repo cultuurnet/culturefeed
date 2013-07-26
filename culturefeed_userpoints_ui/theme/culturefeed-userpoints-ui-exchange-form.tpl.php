@@ -13,9 +13,9 @@ $button_printed = render($form['submit']);
 
 <div id="culturefeed-userpoints-exchange-form-wrapper">
 
-  <h2>Vul jouw gegevens in</h2>
+  <h2><?php print t('Enter your details'); ?></h2>
   
-  <p>Informatie niet publiek. Enkel voor gebruik wedstrijden. Vulputate lectus quisque aliquip suspendisse placeat nisl nostrum eu natus numquam aspernatur.
+  <p><?php print t('Information not public. Use only for contests.'); ?></p>
   
   <div class="actions">
     <?php print drupal_render_children($form); ?>

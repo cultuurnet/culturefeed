@@ -1,1 +1,1 @@
-Jouw huidig puntensaldo: <?php print $total_points; ?>
+<?php print t('Your current points balance'); ?>: <?php print $total_points; ?>
