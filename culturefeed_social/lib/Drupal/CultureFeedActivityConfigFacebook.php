@@ -24,8 +24,8 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->titleDoFirst = t('Share');
     $this->subject = t('Shared by');
     $this->viewPrefix = t('has');
-    $this->viewSuffix = t('shared with Facebook');
-    $this->label = t('Share with Facebook');
+    $this->viewSuffix = t('shared on Facebook');
+    $this->label = t('Share on Facebook');
     $this->undoNotAllowedMessage = t('Successfully shared');
     $this->action = t('reactions');
     $this->pointsOverviewSuffix = t('shared');

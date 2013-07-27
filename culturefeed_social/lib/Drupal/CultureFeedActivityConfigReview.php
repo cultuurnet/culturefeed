@@ -20,7 +20,7 @@ class CultureFeedActivityConfigReview extends CultureFeedActivityConfigBase {
     $this->action = t('review');
     $this->label = t('Reviews');
     $this->titleDo = t('Write a review');
-    $this->titleDoFirst = t('Write as first a review');
+    $this->titleDoFirst = t('Be the first to write a review');
     $this->pointsOverviewPrefix = t('Reviews for');
 
   }

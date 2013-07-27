@@ -528,7 +528,7 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
   if ($status == TRUE) {
 
     $link = l(t('Remove from list'), 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-    $message = format_string(t('You currently receiving updates of new comments. <br/>!link to get anymore posts'), array('!link' => $link));
+    $message = format_string(t('You\'re currently receiving updates of new comments. <br/>!link to get no more posts.'), array('!link' => $link));
 
     $form['update_optin'] = array(
       '#type' => 'markup',
@@ -638,7 +638,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
         if ($id) {
 
           $link = l(t('Remove from list'), 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
-          drupal_set_message(format_string(t('You currently receiving updates of new comments. <br/>!link to get anymore posts.'), array('!link' => $link)));
+          drupal_set_message(format_string(t('You\'re currently receiving updates of new comments. <br/>!link to get no more posts.'), array('!link' => $link)));
         }
       } catch (Exception $e) {
         watchdog_exception('culturefeed_social', $e);

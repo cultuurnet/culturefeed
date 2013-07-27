@@ -86,8 +86,7 @@ msgstr "Schrijf je uit"
 
 #: culturefeed_social.module:531
 msgid ""
-"You currently receiving updates of new comments. <br/>!link to get anymore "
-"posts"
+"You're currently receiving updates of new comments. <br/>!link to get no more posts."
 msgstr ""
 "Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen "
 "berichten meer te ontvangen."
@@ -119,8 +118,7 @@ msgstr "Je !comment is verstuurd."
 
 #: culturefeed_social.module:641
 msgid ""
-"You currently receiving updates of new comments. <br/>!link to get anymore "
-"posts."
+"You're currently receiving updates of new comments. <br/>!link to get no more posts."
 msgstr ""
 "Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen "
 "berichten meer te ontvangen."
@@ -226,7 +224,7 @@ msgid "Recent actions"
 msgstr ""
 
 #: includes/blocks.inc:70
-msgid "This user has no actions done yet."
+msgid "This user didn't do any actions yet"
 msgstr "Deze gebruiker heeft nog geen acties gedaan."
 
 #: includes/blocks.inc:82
@@ -298,7 +296,7 @@ msgid "Time and publishing channel"
 msgstr "Tijdstip en publicatiekanaal"
 
 #: includes/pages.inc:167
-msgid "You have no actions done yet."
+msgid "You didn't do any actions yet."
 msgstr "Je hebt nog geen acties gedaan."
 
 #: includes/pages.inc:254
@@ -412,11 +410,11 @@ msgid "Shared by"
 msgstr "Gedeeld door"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:27
-msgid "shared with Facebook"
+msgid "shared on Facebook"
 msgstr "via Facebook gedeeld"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:28
-msgid "Share with Facebook"
+msgid "Share on Facebook"
 msgstr "Delen via Facebook"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:29
@@ -462,7 +460,7 @@ msgid "Follow"
 msgstr "Volg"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:26
-msgid "You must be logged to follow a page"
+msgid "You must be logged in to follow a page"
 msgstr "U moet ingelogd zijn om een pagina te volgen"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:18;19
@@ -502,7 +500,7 @@ msgid "I Like"
 msgstr "Vind ik leuk"
 
 #: lib/Drupal/CultureFeedActivityConfigLike.php:27
-msgid "Like this the first"
+msgid "Be the first to like this"
 msgstr "Vind dit als eerste leuk"
 
 #: lib/Drupal/CultureFeedActivityConfigLike.php:28
@@ -594,7 +592,7 @@ msgid "Recommended activity"
 msgstr "Aangeradan activiteit"
 
 #: lib/Drupal/CultureFeedActivityConfigRecommend.php:25
-msgid "Not recommend activity anymore"
+msgid "Do not recommend activity anymore"
 msgstr "Activiteit niet meer aanraden"
 
 #: lib/Drupal/CultureFeedActivityConfigRecommend.php:26
@@ -638,7 +636,7 @@ msgid "Write a review"
 msgstr "Schrijf een beoordeling"
 
 #: lib/Drupal/CultureFeedActivityConfigReview.php:23
-msgid "Write as first a review"
+msgid "Be the first to write a review"
 msgstr "Geef als eerste een beoordeling"
 
 #: lib/Drupal/CultureFeedActivityConfigReview.php:24
@@ -646,11 +644,11 @@ msgid "Reviews for"
 msgstr ""
 
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:27
-msgid "shared by Twitter"
+msgid "shared on Twitter"
 msgstr "gedeeld op Twitter"
 
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:28
-msgid "Share with Twitter"
+msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
 #: lib/Drupal/CultureFeedActivityConfigView.php:22

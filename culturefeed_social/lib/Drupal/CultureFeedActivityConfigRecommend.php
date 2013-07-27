@@ -22,7 +22,7 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
 
     $this->subject = t('Recommended by');
     $this->subjectDo = t('Recommended activity');
-    $this->subjectUndo = t('Not recommend activity anymore');
+    $this->subjectUndo = t('Do not recommend activity anymore');
     $this->titleDo = t('Also recommend activity');
     $this->titleDoFirst = t('Recommend this as the first');
     $this->titleShowAll = t('View everyone who recommends this');

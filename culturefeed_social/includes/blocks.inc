@@ -67,7 +67,7 @@ function culturefeed_social_block_user_activities($account) {
 
   if (empty($activities->objects)) {
     $content['activities'] = array(
-      '#markup' => t('This user has no actions done yet.'),
+      '#markup' => t('This user didn\'t do any actions yet'),
     );
   }
   else {

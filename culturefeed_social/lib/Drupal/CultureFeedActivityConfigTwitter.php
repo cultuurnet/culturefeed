@@ -24,8 +24,8 @@ class CultureFeedActivityConfigTwitter extends CultureFeedActivityConfigBase {
     $this->titleDoFirst = t('Share');
     $this->subject = t('Shared by');
     $this->viewPrefix = t('has');
-    $this->viewSuffix = t('shared by Twitter');
-    $this->label = t('Share with Twitter');
+    $this->viewSuffix = t('shared on Twitter');
+    $this->label = t('Share on Twitter');
     $this->undoNotAllowedMessage = t('Successfully shared');
     $this->pointsOverviewSuffix = t('shared');
 

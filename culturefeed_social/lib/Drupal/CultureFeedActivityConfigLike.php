@@ -24,7 +24,7 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     $this->subjectDo = t('Like');
     $this->subjectUndo = t('I do not like');
     $this->titleDo = t('I Like');
-    $this->titleDoFirst = t('Like this the first');
+    $this->titleDoFirst = t('Be the first to like this');
     $this->titleShowAll = t('Show everyone who likes this');
     $this->linkClassDo = 'like-link';
     $this->linkClassUndo = 'unlike-link';

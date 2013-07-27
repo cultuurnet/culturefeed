@@ -164,7 +164,7 @@ function culturefeed_social_page_activities($type = NULL) {
     '#theme' => 'table',
     '#header' => array(t('Page'), t('Action'), t('Time and publishing channel'), t('Public'), ''),
     '#rows' => $rows,
-    '#empty' => t('You have no actions done yet.'),
+    '#empty' => t('You didn\'t do any actions yet.'),
   );
 
   $facebook_privacy_toggle = NULL;
