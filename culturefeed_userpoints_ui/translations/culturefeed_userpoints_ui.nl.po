@@ -112,7 +112,7 @@ msgstr ""
 
 #: culturefeed_userpoints_ui.module:366
 msgid "See the overview of your earned points"
-msgstr "Bekijk het overzicht van je verdiende punten"
+msgstr "Bekijk je puntenoverzicht"
 
 #: culturefeed_userpoints_ui.module:385 theme/theme.inc:324
 msgid "Exchange"
