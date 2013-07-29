@@ -114,7 +114,7 @@ function culturefeed_userpoints_promotion_load($id) {
   }
   catch (CultureFeed_ParseException $e) {
     watchdog_exception('culturefeed_userpoints_ui', $e);
-    $build t('There was an error while loading the promotion.');
+    $build = t('There was an error while loading the promotion.');
   }
 
   return $detail;
