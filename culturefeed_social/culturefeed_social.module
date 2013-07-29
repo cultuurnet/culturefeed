@@ -29,8 +29,8 @@ function culturefeed_social_menu() {
   );
 
   $items['admin/config/services/culturefeed_social'] = array(
-    'title' => 'Culture Feed Social',
-    'description' => 'Change Culture Feed Social settings',
+    'title' => 'CultureFeed Social',
+    'description' => 'Change CultureFeed Social settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_social_admin_settings_form'),
     'access arguments' => array('administer site configuration'),
@@ -39,7 +39,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activities'] = array(
     'title callback' => FALSE,
-    'title' => 'Beheer acties',
+    'title' => 'Administer actions',
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -48,7 +48,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/delete/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Actie ongedaan maken',
+    'title' => 'Undo action',
     'page callback' => 'culturefeed_social_page_activity_delete',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -78,7 +78,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/privacy/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Actie privacy status instellen',
+    'title' => 'Edit action privacy',
     'page callback' => 'culturefeed_social_page_activity_privacy',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -88,7 +88,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/node/unfollow/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Node ontvolgen',
+    'title' => 'Unfollow node',
     'page callback' => 'culturefeed_social_page_node_unfollow',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -99,7 +99,7 @@ function culturefeed_social_menu() {
   // Activity.
   $items['culturefeed/do/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Actie doen',
+    'title' => 'Do action',
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -109,7 +109,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie doen'),
+    'title' => array('Do action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -119,7 +119,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie doen'),
+    'title' => array('Do action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -129,7 +129,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie ongedaan maken'),
+    'title' => array('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -139,7 +139,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie ongedaan maken'),
+    'title' => array('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -149,7 +149,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => array('Actie ongedaan maken'),
+    'title' => array('Undo actio'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -161,7 +161,7 @@ function culturefeed_social_menu() {
   if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
     $items['culturefeed/notifications'] = array(
       'title callback' => FALSE,
-      'title' => 'Mijn meldingen',
+      'title' => 'My notifications',
       'page callback' => 'culturefeed_social_page_notifications',
       'access callback' => 'culturefeed_is_culturefeed_user',
       'type' => MENU_CALLBACK,
@@ -171,7 +171,7 @@ function culturefeed_social_menu() {
     if (module_exists('culturefeed_pages')) {
       $items['pages/%culturefeed_pages_page/notifications'] = array(
         'title callback' => FALSE,
-        'title' => 'Meldingen',
+        'title' => 'Notifications',
         'page callback' => 'culturefeed_social_page_notifications',
         'page arguments' => array(1),
         'access callback' => 'culturefeed_pages_edit_page_access',
