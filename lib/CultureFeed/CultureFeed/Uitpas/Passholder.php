@@ -229,6 +229,13 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
 
   public $picture;
 
+  /**
+   * Empty properties to keep when converting to POST data.
+   *
+   * @var array
+   */
+  protected $postDataEmptyPropertiesToKeep = array();
+
   protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
       $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
@@ -246,7 +253,12 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       $data['inszNumber'] = $data['inszNumberHash'];
     }
 
-    $readOnlyProperties = array('currentCard', 'uitIdUser');
+    $readOnlyProperties = array(
+      'currentCard',
+      'uitIdUser',
+      'postDataEmptyPropertiesToKeep',
+    );
+
     if (isset($this->uitIdUser)) {
       $readOnlyProperties[] = 'uitpasNumber';
     }
@@ -307,4 +319,54 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     return $passholder;
   }
 
+  /**
+   * Variation of CultureFeed_Uitpas_ValueObject::toPostData() which
+   * supports posting certain empty properties.
+   *
+   * @return array
+   */
+  public function toPostData() {
+    $data = get_object_vars($this);
+    $this->manipulatePostData($data);
+
+    foreach ($data as $key => $value) {
+      if (!in_array($key, $this->postDataEmptyPropertiesToKeep)  && FALSE === (bool) $value) {
+        unset($data[$key]);
+      }
+    }
+
+    return $data;
+  }
+
+  /**
+   * Specify if a empty schoolConsumerKey property needs to be kept when
+   * converting to POST data.
+   *
+   * @param bool $keep Wether to keep an empty-valued schoolConsumerKey property or not.
+   *
+   * @return $this
+   */
+  public function toPostDataKeepEmptySchoolConsumerKey($keep = TRUE) {
+    $this->toPostDataKeepEmptyProperty('schoolConsumerKey', $keep);
+
+    return $this;
+  }
+
+  /**
+   * Specify if a certain property needs ot be kept when
+   * converting to POST data.
+   *
+   * @param string $name The name of the property
+   * @param bool $keep Wether to keep an empty-valued property or not.
+   */
+  protected function toPostDataKeepEmptyProperty($name, $keep) {
+    if ($keep) {
+      $this->postDataEmptyPropertiesToKeep[$name] = $keep;
+    }
+    else {
+      if(($key = array_search($name, $this->postDataEmptyPropertiesToKeep)) !== false) {
+        unset($this->postDataEmptyPropertiesToKeep[$name]);
+      }
+    }
+  }
 }
