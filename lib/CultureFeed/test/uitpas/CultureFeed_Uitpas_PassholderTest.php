@@ -21,8 +21,6 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
   public function testToPostData() {
     $postData = $this->passholder->toPostData();
 
-    var_dump($postData);
-
     $this->assertArrayNotHasKey('street', $postData);
 
     $this->assertArrayHasKey('schoolConsumerKey', $postData);
@@ -44,7 +42,6 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('true', $postData['kansenStatuut']);
   }
 
-  /*
   public function testToPostDataDropsEmptyPropertiesByDefault() {
     $this->passholder->schoolConsumerKey = '';
 
@@ -69,5 +66,5 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
     $postData = $this->passholder->toPostData();
 
     $this->assertArrayNotHasKey('schoolConsumerKey', $postData);
-  }*/
+  }
 }

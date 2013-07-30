@@ -330,7 +330,11 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $this->manipulatePostData($data);
 
     foreach ($data as $key => $value) {
-      if (!in_array($key, $this->postDataEmptyPropertiesToKeep)  && FALSE === (bool) $value) {
+      $keep_empty = in_array($key, $this->postDataEmptyPropertiesToKeep, TRUE);
+
+      $empty = (FALSE === (bool) $value);
+
+      if (!$keep_empty && $empty) {
         unset($data[$key]);
       }
     }
@@ -361,11 +365,11 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    */
   protected function toPostDataKeepEmptyProperty($name, $keep) {
     if ($keep) {
-      $this->postDataEmptyPropertiesToKeep[$name] = $keep;
+      $this->postDataEmptyPropertiesToKeep[] = $name;
     }
     else {
       if(($key = array_search($name, $this->postDataEmptyPropertiesToKeep)) !== false) {
-        unset($this->postDataEmptyPropertiesToKeep[$name]);
+        unset($this->postDataEmptyPropertiesToKeep[$key]);
       }
     }
   }
