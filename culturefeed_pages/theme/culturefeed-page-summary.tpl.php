@@ -22,8 +22,8 @@
   </div>
 
   <div class="image">
-    <?php if (!empty($thumbnail)): ?>
-    <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
+    <?php if (!empty($image)): ?>
+    <img src="<?php print $image; ?>?width=160&height=120&crop=auto" />
     <?php endif; ?>
   </div>
 
