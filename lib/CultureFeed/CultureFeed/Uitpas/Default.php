@@ -784,6 +784,33 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return new CultureFeed_ResultSet($total, $checkins);
   }
+  
+  /**
+   * Search for checkins
+   *
+   * @param CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query The query
+   */
+  public function searchPassholderCheckins(CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions $query) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchCheckins', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $checkins = array();
+    $objects = $xml->xpath('/response/checkinActivities/checkinActivitiy');
+    $total = $xml->xpath_int('/response/total');
+
+    foreach ($objects as $object) {
+      $checkins[] = CultureFeed_Uitpas_Event_CheckinActivity::createFromXML($object);
+    }
+
+    return new CultureFeed_ResultSet($total, $checkins);
+  }  
 
   /**
    * Search for Uitpas events
