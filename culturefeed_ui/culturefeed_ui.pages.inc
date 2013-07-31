@@ -415,7 +415,7 @@ function culturefeed_ui_page_account_edit() {
       '#suffix' => '</div><hr />',
     ),
     'consumers' => array(
-      '#prefix' => '<div id="manage-consumers"><h2>Gekoppelde toepassingen</h2>',
+      '#prefix' => '<div id="manage-consumers"><h2>' . t('Connected applications') . '</h2>',
       '#markup' => t('Manage all ') . l(t('websites and applications'), 'culturefeed/serviceconsumers') . t(' who uses your UiTiD profile.'),
       '#suffix' => '</div>',
     )
