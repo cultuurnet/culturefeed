@@ -564,7 +564,8 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
   $limit= 10;
 
   $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
-      WHERE (name LIKE :search1 AND name NOT LIKE :search2 ) OR name LIKE :search3 LIMIT " . $limit, array(':search1' => "%" . db_like($search_string) . "%", ':search2' => "%(%" . db_like($search_string) . "%)", ':search3' => "%" . db_like($search_string) . "%(%)"));
+      WHERE (zip like :search1) OR (name LIKE :search2 AND name NOT LIKE :search3 ) OR name LIKE :search4 LIMIT " . $limit, array(':search1' => db_like($search_string) . "%", ':search2' => "%" . db_like($search_string) . "%", ':search3' => "%(%" . db_like($search_string) . "%)", ':search4' => "%" . db_like($search_string) . "%(%)"));
+      
 
   foreach ($result as $row) {
     $suggestions[$row->zip . ' ' . $row->name] = $row->name . ' (' . $row->zip . ')';
