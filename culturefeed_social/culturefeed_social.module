@@ -149,7 +149,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => array('Undo actio'),
+    'title' => array('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',

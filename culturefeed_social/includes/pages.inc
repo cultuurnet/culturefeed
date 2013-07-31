@@ -138,7 +138,7 @@ function culturefeed_social_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => $activity->private ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Put public') : t('Make privat'))),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Put public') : t('Make private'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
