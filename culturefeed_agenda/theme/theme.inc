@@ -162,6 +162,16 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     });
     $variables['themes'] = $themes;
   }
+  
+  // Types from this item.
+  $variables['types'] = array();
+  $types = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
+  if ($types) {
+    array_walk($types, function(&$item) {
+      $item = check_plain($item->getName());
+    });
+    $variables['types'] = $types;
+  }
 
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
