@@ -324,6 +324,11 @@ function culturefeed_search_ui_block_view($delta) {
  */
 function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeedFacetingComponent) {
 
+  static $build = NULL;
+  if ($build !== NULL) {
+    return $build;
+  }
+  
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
   $build = array();
@@ -366,10 +371,9 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
         }
 
         $url = url($path, array('query' => $search_query));
-        $label = $selected_value[$key];
 
         // Get translated label from terms.
-        $label = culturefeed_search_get_term_translation($label);
+        $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
         $build['item_' . $active_facet_name][$value] = array(
           '#theme' => 'culturefeed_search_active_filters_item',

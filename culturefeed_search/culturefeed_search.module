@@ -26,17 +26,17 @@ function culturefeed_search_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'includes/admin.inc',
   );
-  
+
   // Autocomplete path for suggestions.
   $items['autocomplete/culturefeed/suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(3),
+    'page arguments' => array(3, NULL),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   $items['autocomplete/culturefeed/actor-suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',

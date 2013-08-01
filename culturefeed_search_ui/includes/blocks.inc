@@ -465,12 +465,6 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   }
 
-  /*$build['item_search'] =  array(
-    '#theme' => 'culturefeed_search_active_filters_item',
-    '#label' => $query['search'],
-    '#url' => $url
-  );*/
-
   return $build;
 
 }

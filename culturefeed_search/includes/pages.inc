@@ -40,7 +40,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $type 
     }
 
   }
-
+  
   drupal_json_output($matches);
 
   // Cache if possible per request.

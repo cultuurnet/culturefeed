@@ -119,7 +119,6 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($facets['category_eventtype_id']);
       unset($facets['category_theme_id']);
 
-      $location = isset($query['location']) ? $query['location'] : '';
       unset($query['location']);
       unset($query['facet']);
 
