@@ -308,7 +308,6 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
 
     case 'userpoints-exchange-request':
 
-      $pointsPromotions = $params['promotions'];
       $wishlistPromotions = $params['wishlist'];
       $values = $params['values'];
       $cf_account = $params['cf_account'];
@@ -325,7 +324,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@mbox'] = $values['mbox'];
 
       $promotions = array();
-      foreach ($wishlistPromotions as $promotionId => $data) {
+      foreach ($wishlistPromotions as $data) {
         $promotions[] = $data['title'] . ' (' . t('amount') . ': ' . $data['count'] . ' | ' . t('resale value') . ': ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' ' . t('points'). ')
     ' . t('View online') . ': ' . url('userpoints/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
 ';
@@ -377,11 +376,10 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
 
   $items = array();
 
-  $real_points = CultureFeedUserpointsWishlist::getRealPoints($cf_account->points);
   $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
 
   $data = '<small class="text-white">';
-  $data .= '<span class="userpoints userpoints-points label label-transparent">' . $points_left . ' punten</span>';
+  $data .= '<div class="userpoints label label-transparent"><span class="userpoints-points-left">' . $points_left . '</span> punten<span class="userpoints-points-new"></span></div>';
   $data .= '<span class="check-again"> ' . l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase label label-warning')))) . '</span>';
   $data .= '</small>';
 
@@ -407,18 +405,38 @@ function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity
 }
 
 /**
+ * Implements hook_culturefeed_social_page_do_ajax_commmands_alter().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_page_do_ajax_commmands_alter(&$commands, $activity) {
+
+  if (!empty($activity->points)) {
+
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+      $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+
+      $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+      $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('(' . $points_earned . ')'));
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
  * Submit handler to add/remove points promotions.
  */
 function culturefeed_userpoints_ui_promotions_list_form_submit($form, &$form_state) {
 
   $form_state['rebuild'] = TRUE;
 
-  $selected_button = $form_state['clicked_button']['#name'];
   $promotion_id = $form_state['promotion_id'];
   $promotion_count = $form_state['values']['list'][$promotion_id]['select_count'];
 
   // Retrieve 1 item.
-  $points_diff = CultureFeedUserpointsWishlist::add($promotion_id, $promotion_count, $form_state['promotion']);
+  CultureFeedUserpointsWishlist::add($promotion_id, $promotion_count, $form_state['promotion']);
 
   // Check if this is a non ajax submit.
   if (arg(1) != 'ajax') {

@@ -13,7 +13,7 @@ function culturefeed_userpoints_ui_promotions_list_ajax_refresh($form, $promotio
 
   // Update the current userpoints in all places where the points are displayed.
   $user_points = DrupalCultureFeed::getLoggedInUser()->points;
-  $commands[] = ajax_command_invoke('.userpoints-points', 'html', array(
+  $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array(
     CultureFeedUserpointsWishlist::getPointsLeft($user_points)));
 
   // Update the wishlist.

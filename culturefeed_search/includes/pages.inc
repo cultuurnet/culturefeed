@@ -17,14 +17,17 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $type 
 
     try {
 
-      $types = isset($type) ? array($type) : array();
+      $types = !empty($type) ? array($type) : array();
 
       // Get the list of suggestions from service.
-      $result = culturefeed_get_search_service()->searchSuggestions($search_string, $types);
-      if ($result->hasSuggestions()) {
-        $suggestions = $result->getSuggestions();
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types);
+      if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
-          $matches[$suggestion] = check_plain($suggestion);
+          $title = $suggestion->getTitle();
+          if ($type == 'actor') {
+            $title .= ' ' . $suggestion->getLocation() . ' ' . $suggestion->getZipCode();
+          }
+          $matches[$title] = check_plain($title);
         }
       }
 

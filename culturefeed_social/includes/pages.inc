@@ -535,6 +535,8 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
       $commands[] = ajax_command_replace(NULL, render($build));
 
+      // Give other modules the ability to add extra js commands.
+      drupal_alter('culturefeed_social_page_do_ajax_commmands', $commands, $activity);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
@@ -626,6 +628,8 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
 
       $commands[] =  ajax_command_replace(NULL, render($build));
 
+      // Give other modules the ability to add extra js commands.
+      drupal_alter('culturefeed_social_page_undo_ajax_commmands', $commands, $activity);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));

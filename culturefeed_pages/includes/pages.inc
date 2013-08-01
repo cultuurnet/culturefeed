@@ -206,11 +206,10 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
     try {
 
       // Get the list of suggestions from service.
-      $result = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
-      if ($result->hasSuggestions()) {
-        $suggestions = $result->getSuggestions();
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
+      if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
-          $matches[$suggestion] = check_plain($suggestion);
+          $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
         }
 
       }
