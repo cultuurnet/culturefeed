@@ -142,21 +142,21 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $form['what'] = array('#type' => 'container');
   $form['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
-    '#options' => entry_api_ui_get_category_options('Kijken en luisteren'),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
     '#title' => 'Kijken en luisteren',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['doen'] = array(
     '#type' => 'checkboxes',
-    '#options' => entry_api_ui_get_category_options('Doen'),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
     '#title' => 'Doen',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
-    '#options' => entry_api_ui_get_category_options('Bezoeken'),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
     '#title' => t('Visit'),
     '#default_value' => $category_defaults,
   );
@@ -670,7 +670,8 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 
     // Perform a search on location to check if this is an existing actor.
     try {
-      $location = culturefeed_search_load_item_by_title($search_string, 'actor');
+      //$location = culturefeed_search_item_load_by_title($search_string, 'actor');
+      $location = culturefeed_search_item_load('31411709-BD32-F722-863CBA78CBBDDBA7');
       if (!$location) {
         form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
       }
@@ -689,7 +690,8 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     }
 
     try {
-      $organiser = culturefeed_search_load_item_by_title($search_string, 'actor');
+      //$organiser = culturefeed_search_item_load_by_title($search_string, 'actor');
+      $organiser = culturefeed_search_item_load('31411709-BD32-F722-863CBA78CBBDDBA7');
       if (!$organiser) {
         form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren.');
       }

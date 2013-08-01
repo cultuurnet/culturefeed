@@ -1,6 +1,9 @@
 <?php
 
-module_load_include('inc', 'entry_api_ui', 'includes/entry_api_ui.helpers');
+// Category ids needed.
+define('ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID', '0.100.0.0.0');
+define('ENTRY_API_DOEN_CAT_ID', '0.100.1.0.0');
+define('ENTRY_API_BEZOEKEN_CAT_ID', '0.100.2.0.0');
 
 /**
  * Implements hook_permission().
@@ -137,7 +140,7 @@ function entry_api_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     $event = culturefeed_search_item_load($id);
     $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
     $request_detail = array(
-      'event' => $id, 
+      'event' => $id,
       'title' => $title,
     );
     $path = culturefeed_search_detail_path($event->getType(), $id, $title);

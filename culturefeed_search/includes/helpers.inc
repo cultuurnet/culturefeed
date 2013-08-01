@@ -66,7 +66,7 @@ function culturefeed_search_item_load($cdb_id) {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
  */
-function culturefeed_search_load_item_by_title($title, $type) {
+function culturefeed_search_item_load_by_title($title, $type) {
 
   $search_string = trim($title);
   $parameters = array();
@@ -439,6 +439,15 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
 }
 
 /**
+ * Retrieves a list of categories for the eventtype domain.
+ * @param $conditions
+ *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
+ */
+function culturefeed_search_get_eventtype_categories($conditions = array()) {
+  return culturefeed_search_get_categories_by_domain('eventtype', $conditions);
+}
+
+/**
  * Get all available actortypes.
  * @param $conditions
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
@@ -565,7 +574,7 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
 
   $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
       WHERE (zip like :search1) OR (name LIKE :search2 AND name NOT LIKE :search3 ) OR name LIKE :search4 LIMIT " . $limit, array(':search1' => db_like($search_string) . "%", ':search2' => "%" . db_like($search_string) . "%", ':search3' => "%(%" . db_like($search_string) . "%)", ':search4' => "%" . db_like($search_string) . "%(%)"));
-      
+
 
   foreach ($result as $row) {
     $suggestions[$row->zip . ' ' . $row->name] = $row->name . ' (' . $row->zip . ')';
