@@ -422,3 +422,6 @@ msgid "@count punt"
 msgid_plural "@count punten"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "You are not allowed to cashin the promotions because the allowed amount has been exceeded."
+msgstr "Het is niet mogelijk het geschenk aan te vragen. Het maximum toegelaten aantal is overschreden."

@@ -328,7 +328,7 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
   catch (CultureFeed_Exception $e) {
 
     if ($e->getCode() == CultureFeed_PointsPromotion::CASHIN_PROMOTION_NOT_ALLOWED) {
-      form_set_error('', t('You are not allowed to cashin this promotion because the allowed amount has been exceeded.'));
+      form_set_error('', t('You are not allowed to cashin this promotions because the allowed amount has been exceeded.'));
     }
     else {
       form_set_error('', t('It is not possible to process the order'));
