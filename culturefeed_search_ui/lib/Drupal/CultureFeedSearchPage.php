@@ -131,7 +131,7 @@ class CultureFeedSearchPage {
 
       $dates = explode('-', $params['date_range']);
       $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-      $endDate = $startDate;
+      $endDate = clone $startDate;
       if (isset($dates[1])) {
         $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
       }
