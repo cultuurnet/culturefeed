@@ -322,19 +322,23 @@ function culturefeed_userpoints_ui_exchange_form_validate($form, &$form_state) {
   }
 
   try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    $form_state['pointsPromotions'] = DrupalCultureFeed::cashInPromotion($cf_user->id, CultureFeedUserpointsWishlist::getIds(), CultureFeedUserpointsWishlist::getCounts());
+  }
+  catch (CultureFeed_Exception $e) {
 
-
-  	$cf_user = DrupalCultureFeed::getLoggedInUser();
-  	$form_state['pointsPromotions'] = DrupalCultureFeed::cashInPromotion($cf_user->id,
-  			CultureFeedUserpointsWishlist::getIds(),
-  			CultureFeedUserpointsWishlist::getCounts());
-
+    if ($e->getCode() == CultureFeed_PointsPromotion::CASHIN_PROMOTION_NOT_ALLOWED) {
+      form_set_error('', t('You are not allowed to cashin this promotion because the allowed amount has been exceeded.'));
+    }
+    else {
+      form_set_error('', t('It is not possible to process the order'));
+    }
+    watchdog_exception('culturefeed_userpoints_ui', $e);
   }
   catch (Exception $e) {
-  	watchdog_exception('culturefeed_userpoints_ui', $e);
-  	form_set_error('', t('It is not possible to process the order'));
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    form_set_error('', t('It is not possible to process the order'));
   }
-
 }
 
 /**
