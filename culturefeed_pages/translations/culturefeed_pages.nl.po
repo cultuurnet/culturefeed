@@ -75,7 +75,7 @@ msgstr "Weer te geven items"
 
 #: culturefeed_pages.module:605
 msgid "My page"
-msgstr "Pagina niet meer volgen"
+msgstr "Mijn pagina's"
 
 #: culturefeed_pages.module:613 includes/blocks.inc:139;169
 msgid "Manage pages"

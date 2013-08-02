@@ -602,7 +602,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   $has_memberships = count($cultureFeedUser->pageMemberships);
 
   $items['my-page'] = array(
-    'data' => t('My page'),
+    'data' => t('My page(s)'),
     'class' => 'my-page',
     'children' => array(
     ),
