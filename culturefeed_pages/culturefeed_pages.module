@@ -403,7 +403,7 @@ function culturefeed_pages_menu() {
 
   $items['culturefeed/pages'] = array(
     'title callback' => FALSE,
-    'title' => 'My pages',
+    'title' => t('My pages'),
     'page callback' => 'culturefeed_pages_page_my_pages',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -602,7 +602,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   $has_memberships = count($cultureFeedUser->pageMemberships);
 
   $items['my-page'] = array(
-    'data' => t('My page(s)'),
+    'data' => t('My page'),
     'class' => 'my-page',
     'children' => array(
     ),
