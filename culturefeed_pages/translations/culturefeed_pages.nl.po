@@ -95,7 +95,7 @@ msgstr "Pagina volgen"
 
 #: culturefeed_pages.module:396 includes/helpers.inc:35
 msgid "Unfollow page"
-msgstr "Pagina ontvolgen"
+msgstr "Pagina niet meer volgen"
 
 #: culturefeed_pages.module:425
 msgid "Culturefeed pages: fellow members from user"
@@ -135,7 +135,7 @@ msgstr "Weer te geven items"
 
 #: culturefeed_pages.module:605
 msgid "My page"
-msgstr "Pagina ontvolgen"
+msgstr "Pagina niet meer volgen"
 
 #: culturefeed_pages.module:613 includes/blocks.inc:139;169
 msgid "Manage pages"
@@ -673,7 +673,7 @@ msgstr "Pagina"
 
 #: includes/pages.inc:1113 theme/theme.inc:66
 msgid "Unfollow"
-msgstr "Pagina ontvolgen"
+msgstr "Pagina niet meer volgen"
 
 #: includes/pages.inc:1114
 msgid "You are a member of this page"
