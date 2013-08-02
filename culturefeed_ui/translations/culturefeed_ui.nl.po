@@ -19,30 +19,28 @@
 #  culturefeed_ui.pages.inc: n/a
 #  culturefeed_ui.info: n/a
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-07-23 11:19+0200\n"
-"PO-Revision-Date: 2013-07-23 15:27+0100\n"
-"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"POT-Creation-Date: 2013-08-02 09:32+0200\n"
+"PO-Revision-Date: 2013-08-02 09:32+0200\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed-ui-connect-hover.tpl.php:2
 msgid "To continue you have to be logged on with your UiTiD."
 msgstr "Om verder te gaan moet je aangemeld zijn met je UiTiD."
 
-#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
-#: culturefeed-ui-something-for-you.tpl.php:3
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13 culturefeed-ui-something-for-you.tpl.php:3
 msgid "Or via"
 msgstr "Of via"
 
-#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
-#: culturefeed-ui-something-for-you.tpl.php:3
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13 culturefeed-ui-something-for-you.tpl.php:3
 msgid "or"
 msgstr "of"
 
@@ -65,7 +63,12 @@ msgstr "ontvang <strong>persoonlijke tips</strong> op jouw maat"
 #: culturefeed-ui-connect.tpl.php:8
 msgid "discover what <string>your friends and similar users</strong> like"
 msgstr ""
-"ontdek wat <strong>vrienden en gelijkaardige gebruikers</strong> leuk vinden"
+"ontdek wat <strong>vrienden en gelijkaardige gebruikers</strong> leuk "
+"vinden"
+
+#: culturefeed-ui-connect.tpl.php:9
+msgid "be <strong>the first to know</strong> updates about your favorite activities"
+msgstr ""
 
 #: culturefeed-ui-mbox-confirmation-reminder.tpl.php:1
 msgid "Confirm your email address to use all UiTiD features"
@@ -80,16 +83,14 @@ msgid "Amount of actions"
 msgstr "Aantal acties"
 
 #: culturefeed-ui-my-uitid.tpl.php:45
-msgid ""
-"The more items you like or events you attend, the more tips will have a "
-"personal touch"
+msgid "The more items you like or events you attend, the more tips will have a personal touch"
 msgstr ""
-"Hoe meer je laat weten of je een activiteit leuk vindt of naartoe gaat, hoe "
-"beter je persoonlijke tips zullen worden."
+"Hoe meer je laat weten of je een activiteit leuk vindt of naartoe "
+"gaat, hoe beter je persoonlijke tips zullen worden."
 
 #: culturefeed-ui-my-uitid.tpl.php:49
 msgid "likes"
-msgstr "vind ik leuk"
+msgstr "vindt"
 
 #: culturefeed-ui-my-uitid.tpl.php:55
 msgid "attends"
@@ -108,12 +109,10 @@ msgid "actions"
 msgstr "acties"
 
 #: culturefeed-ui-something-for-you.tpl.php:1
-msgid ""
-"Create an UiTiD account, let us know what you like and receive more personal "
-"tips."
+msgid "Create an UiTiD account, let us know what you like and receive more personal tips."
 msgstr ""
-"Maak een UiTiD aan, laat ons weten wat je leuk vindt en ontvang nog meer "
-"tips op jouw maat."
+"Maak een UiTiD aan, laat ons weten wat je leuk vindt en ontvang nog "
+"meer tips op jouw maat."
 
 #: culturefeed_ui.admin.inc:17
 msgid "Number of activities"
@@ -153,7 +152,7 @@ msgstr "UiTslover van de week"
 
 #: culturefeed_ui.blocks.inc:79
 msgid "Search users"
-msgstr "Gebruikers zoeken"
+msgstr "Zoek gebruikers"
 
 #: culturefeed_ui.blocks.inc:94
 msgid "UiTiD connect"
@@ -215,34 +214,31 @@ msgstr "Zet uit"
 msgid "Switch on"
 msgstr "Zet aan"
 
+#: culturefeed_ui.helpers.inc:105
+msgid "Add account"
+msgstr ""
+
 #: culturefeed_ui.helpers.inc:120
 msgid "Like"
 msgstr "Vind ik leuk"
 
 #: culturefeed_ui.helpers.inc:121
 msgid "Attend"
-msgstr "Ga hier naartoe"
+msgstr "Ik ga hier naartoe"
 
 #: culturefeed_ui.helpers.inc:122
 msgid "Share on Facebook"
-msgstr "Gedeeld op Facebook"
+msgstr "Delen via Facebook"
 
 #: culturefeed_ui.helpers.inc:123
 msgid "Share on Twitter"
-msgstr "Gedeeld op Twitter"
+msgstr "Delen op Twitter"
 
 #: culturefeed_ui.helpers.inc:164
-msgid ""
-"Post my actions to Facebook <div class=\"tooltip\">?</div><div class="
-"\"tooltip-text\">All your UiTiD actions (likes, attends, shares) will be "
-"posted automatically to your Facebook timeline.</div>"
+msgid "Post my actions to Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>"
 msgstr ""
-"Publiceer mijn acties op Facebook <div class=\"tooltip\">?</div><div class="
-"\"tooltip-text\">Hiermee zullen je acties (vind ik leuk, ga ik naartoe,…), "
-"automatisch op je Facebook Timeline verschijnen.</div>"
 
-#: culturefeed_ui.helpers.inc:174
-#: culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
+#: culturefeed_ui.helpers.inc:174 culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
 msgid "Error occurred"
 msgstr "Er is een fout opgetreden."
 
@@ -276,7 +272,7 @@ msgstr "Geen resultaten gevonden."
 
 #: culturefeed_ui.pages.inc:124
 msgid "No users found"
-msgstr "Geen gebruikers gevonden."
+msgstr "Geen gebruikers gevonden"
 
 #: culturefeed_ui.pages.inc:145;155
 msgid "Error occurred, please try again later"
@@ -401,7 +397,8 @@ msgstr "Er is een fout opgetreden bij het opladen van jouw afbeelding."
 #: culturefeed_ui.pages.inc:394
 msgid "Error occurred while saving your privacy settings."
 msgstr ""
-"Er is een fout opgetreden bij het bewaren van jouw privacy instellingen."
+"Er is een fout opgetreden bij het bewaren van jouw privacy "
+"instellingen."
 
 #: culturefeed_ui.pages.inc:401;499
 msgid "Changes succesfully saved."
@@ -410,6 +407,10 @@ msgstr "Jouw wijzigingen werden bewaard."
 #: culturefeed_ui.pages.inc:413
 msgid "Connected accounts"
 msgstr "Gekoppelde accounts"
+
+#: culturefeed_ui.pages.inc:418
+msgid "Connected applications"
+msgstr ""
 
 #: culturefeed_ui.pages.inc:419
 msgid "Manage all "
@@ -426,8 +427,8 @@ msgstr " die momenteel gebruik maken van je UiTiD."
 #: culturefeed_ui.pages.inc:436
 msgid "An error occurred while loading your account, please try again later."
 msgstr ""
-"Er is een fout opgetreden bij het laden van jouw account. Probeer het later "
-"opnieuw."
+"Er is een fout opgetreden bij het laden van jouw account. Probeer het "
+"later opnieuw."
 
 #: culturefeed_ui.pages.inc:448
 msgid "Username"
@@ -494,12 +495,8 @@ msgid "events</strong> to attend"
 msgstr "activiteiten</strong> gemarkeerd bij te zullen wonen"
 
 #: culturefeed_ui.preprocess.inc:219
-msgid ""
-"!nick did <strong>!sort_value !type and is the !uitslover last week. "
-"Congratulations!"
+msgid "!nick did <strong>!sort_value !type and is the !uitslover of the week. Congratulations!"
 msgstr ""
-"!nick heeft de afgelopen week <strong>!sort_value !type en is de !uitslover "
-"van de week. Proficiat!"
 
 #: culturefeed_ui.preprocess.inc:234
 msgid "Connected to"
@@ -592,7 +589,8 @@ msgstr "Zo zien anderen jouw profiel."
 #: culturefeed_ui.module:404
 msgid "Change password, email address, connected channels, …"
 msgstr ""
-"Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account,…"
+"Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw "
+"account,…"
 
 #: culturefeed_ui.module:434
 msgid "Logout"
@@ -603,14 +601,11 @@ msgid "CultuurNet User Interface cache"
 msgstr "CultuurNet User Interface cache"
 
 #: culturefeed_ui.module:457
-msgid ""
-"Enabling the CultuurNet User Interface cache will cache all parsed results "
-"of requests to the enrichments API. This will reduce the number of requests "
-"made directly to the API service."
+msgid "Enabling the CultuurNet User Interface cache will cache all parsed results of requests to the enrichments API. This will reduce the number of requests made directly to the API service."
 msgstr ""
-"De CultuurNet User Interface cache activeren zal alle verwerkte resultaten "
-"van ieder verzoek cachen. Dit zal het aantal directe verzoeken op de API "
-"verminderen. "
+"De CultuurNet User Interface cache activeren zal alle verwerkte "
+"resultaten van ieder verzoek cachen. Dit zal het aantal directe "
+"verzoeken op de API verminderen. "
 
 #: culturefeed_ui.module:460
 msgid "none"
@@ -621,12 +616,10 @@ msgid "Minimum cache lifetime for the similar users block"
 msgstr "Minimum cacheduur van het 'Gelijkaardige gebruikers' blok"
 
 #: culturefeed_ui.module:467
-msgid ""
-"The minimum cache lifetime is the minimum amount of time that will elapse "
-"before the cache is emptied and recreated"
+msgid "The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated"
 msgstr ""
-"De minimum cacheduur is het minimum van tijd dat zal verlopen tot de cache "
-"is geleegd en opnieuw gecreeërd."
+"De minimum cacheduur is het minimum van tijd dat zal verlopen tot de "
+"cache is geleegd en opnieuw gecreeërd."
 
 #: culturefeed_ui.module:16
 msgid "Culture Feed User Interface"
@@ -646,4 +639,5 @@ msgstr "Maakt een standaard user interface voor Culturefeed"
 
 #: culturefeed_ui.info:0
 msgid "CultureFeed"
-msgstr "Culturefeed"
+msgstr "CultureFeed"
+
