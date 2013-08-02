@@ -162,7 +162,7 @@ msgstr "Teveel te doen?"
 msgid "Manage profile"
 msgstr "Beheer je profiel"
 
-#: culturefeed_ui.blocks.inc:260 culturefeed_ui.module:390
+#: culturefeed_ui.module:390
 msgid "My account"
 msgstr "Mijn account"
 
@@ -246,7 +246,7 @@ msgstr "Er is een fout opgetreden."
 msgid "Home"
 msgstr "Home"
 
-#: culturefeed_ui.helpers.inc:198 culturefeed_ui.module:419
+#: culturefeed_ui.helpers.inc:198 culturefeed_ui.module:419 culturefeed_ui.blocks.inc:260
 msgid "My profile"
 msgstr "Mijn profiel"
 

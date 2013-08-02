@@ -257,7 +257,7 @@ function culturefeed_ui_block_my_uitid_view() {
     $query->max = 1;
     $goto = DrupalCultureFeed::searchActivities($query)->total;
 
-    $block['subject'] = t('My account');
+    $block['subject'] = t('My profile');
     $block['content'] = theme('culturefeed_ui_my_uitid', array(
       'account' => $account,
       'like' => $like,
