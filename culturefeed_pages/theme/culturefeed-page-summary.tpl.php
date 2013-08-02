@@ -17,7 +17,7 @@
     </div>
     <?php endif; ?>
     <?php if ($follower_count > 0): ?>
-      <div class="count-followers"><?php print format_plural($follower_count, t('<span>@count</span> follower'), t('<span>@count</span> followers')); ?></div>
+      <div class="count-followers"><?php print format_plural($follower_count, '<span>@count</span> follower', '<span>@count</span> followers'); ?></div>
     <?php endif; ?>
   </div>
 

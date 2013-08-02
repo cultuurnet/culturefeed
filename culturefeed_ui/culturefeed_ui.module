@@ -128,7 +128,7 @@ function culturefeed_ui_init() {
 }
 
 function culturefeed_ui_default_title_callback($title = '') {
-  return t($title);
+  return $title;
 }
 
 /**
