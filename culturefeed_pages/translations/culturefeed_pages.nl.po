@@ -4,8 +4,8 @@
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_pages.module: n/a
-#  includes/pages.inc: n/a
 #  includes/blocks.inc: n/a
+#  includes/pages.inc: n/a
 #  theme/culturefeed-page.tpl.php: n/a
 #  includes/members.inc: n/a
 #  includes/helpers.inc: n/a
@@ -24,78 +24,18 @@
 #  theme/culturefeed-pages-request-admin-membership-block.tpl.php: n/a
 #  theme/culturefeed-pages-user-search-result.tpl.php: n/a
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-07-25 12:24+0200\n"
-"PO-Revision-Date: 2013-07-26 10:07+0100\n"
-"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"POT-Creation-Date: 2013-08-02 09:12+0200\n"
+"PO-Revision-Date: 2013-08-02 09:12+0200\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.7\n"
-
-#: culturefeed_pages.module:209
-msgid "Create your own page"
-msgstr "Maak je eigen pagina"
-
-#: culturefeed_pages.module:228
-msgid "Edit page"
-msgstr "Bewerk pagina"
-
-#: culturefeed_pages.module:241
-msgid "Delete page"
-msgstr "Pagina verwijderen"
-
-#: culturefeed_pages.module:252
-msgid "Publish page"
-msgstr "Pagina publiceren"
-
-#: culturefeed_pages.module:263;683 includes/pages.inc:650
-msgid "Settings"
-msgstr "Instellingen"
-
-#: culturefeed_pages.module:274;695 includes/blocks.inc:291
-msgid "Activities"
-msgstr "Activiteiten"
-
-#: culturefeed_pages.module:285;296 theme/culturefeed-page.tpl.php:15
-msgid "Members"
-msgstr "Leden"
-
-#: culturefeed_pages.module:307
-msgid "Delete member"
-msgstr "Lid verwijderen"
-
-#: culturefeed_pages.module:318 includes/members.inc:345
-msgid "Add member"
-msgstr "Lid toevoegen"
-
-#: culturefeed_pages.module:329
-msgid "Application for administrator of the page"
-msgstr "Aanvraag tot beheerder van de pagina"
-
-#: culturefeed_pages.module:339
-msgid "Remove myself as a member"
-msgstr "Verwijder mijzelf als lid"
-
-#: culturefeed_pages.module:349
-msgid "Add member as administrator"
-msgstr "Lid toevoegen als beheerder"
-
-#: culturefeed_pages.module:360;643
-msgid "Change active page"
-msgstr "Verander actieve pagina"
-
-#: culturefeed_pages.module:386 includes/helpers.inc:38 theme/theme.inc:69
-msgid "Follow page"
-msgstr "Pagina volgen"
-
-#: culturefeed_pages.module:396 includes/helpers.inc:35
-msgid "Unfollow page"
-msgstr "Pagina niet meer volgen"
 
 #: culturefeed_pages.module:425
 msgid "Culturefeed pages: fellow members from user"
@@ -131,53 +71,63 @@ msgstr ""
 
 #: culturefeed_pages.module:481
 msgid "Items to show"
-msgstr "Weer te geven items"
+msgstr ""
 
 #: culturefeed_pages.module:605
 msgid "My page"
-msgstr "Pagina niet meer volgen"
+msgstr ""
 
 #: culturefeed_pages.module:613 includes/blocks.inc:139;169
 msgid "Manage pages"
-msgstr "Beheer pagina's"
+msgstr ""
 
 #: culturefeed_pages.module:635;662
 msgid "Search your page"
-msgstr "Zoek jouw pagina"
+msgstr ""
+
+#: culturefeed_pages.module:643;360
+msgid "Change active page"
+msgstr ""
 
 #: culturefeed_pages.module:677
 msgid "Change settings"
-msgstr "Wijzig gegevens"
+msgstr ""
 
 #: culturefeed_pages.module:679
 msgid "Edit contact info, photos, description, website,..."
-msgstr "Bewerk contactinfo, foto, beschrijving, website,..."
+msgstr ""
+
+#: culturefeed_pages.module:683;263 includes/pages.inc:649
+msgid "Settings"
+msgstr "Instellingen"
 
 #: culturefeed_pages.module:685
 msgid "Allow users to follow your page, write comments, suggest activities,..."
 msgstr ""
-"Mogen gebruikers jouw pagina volgen, reacties schrijven, activiteiten "
-"aanraden,..."
 
 #: culturefeed_pages.module:689
 msgid "Members & roles"
-msgstr "Leden & rollen"
+msgstr ""
 
 #: culturefeed_pages.module:691
 msgid "Manage members and access rights"
-msgstr "Beheer leden en toegangsrechten"
+msgstr ""
+
+#: culturefeed_pages.module:695;274 includes/blocks.inc:291
+msgid "Activities"
+msgstr ""
 
 #: culturefeed_pages.module:697
 msgid "Manage your activities and reactions"
-msgstr "Beheer je activiteiten en reacties"
+msgstr ""
 
-#: culturefeed_pages.module:711 includes/pages.inc:119
+#: culturefeed_pages.module:711;406 includes/pages.inc:119
 msgid "My pages"
-msgstr "Mijn pagina's"
+msgstr ""
 
 #: culturefeed_pages.module:713
 msgid "Manage the pages where you're member off or that you follow"
-msgstr "Beheer de pagina's waar je lid van bent of die je volgt"
+msgstr ""
 
 #: culturefeed_pages.module:727;728
 msgid "Pages"
@@ -185,77 +135,121 @@ msgstr "Pagina's"
 
 #: culturefeed_pages.module:732
 msgid "Relevancy"
-msgstr "Relevantie"
+msgstr ""
 
 #: culturefeed_pages.module:733
 msgid "Alphabetical"
-msgstr "Alfabetisch"
+msgstr ""
 
 #: culturefeed_pages.module:734
 msgid "Number of members"
-msgstr "Aantal leden"
+msgstr ""
 
 #: culturefeed_pages.module:735
 msgid "Number of followers"
-msgstr "Aantal volgers"
+msgstr ""
 
 #: culturefeed_pages.module:775
 msgid "Your page in @sitename"
-msgstr "Jouw pagina op @sitename"
+msgstr ""
 
 #: culturefeed_pages.module:838
 msgid "from"
 msgstr "van"
 
-#: culturefeed_pages.module:406
-msgid "Mijn pagina's"
-msgstr "Mijn pagina's"
+#: culturefeed_pages.module:209
+msgid "Create your own page"
+msgstr ""
+
+#: culturefeed_pages.module:228
+msgid "Edit page"
+msgstr ""
+
+#: culturefeed_pages.module:241
+msgid "Delete page"
+msgstr ""
+
+#: culturefeed_pages.module:252
+msgid "Publish page"
+msgstr ""
+
+#: culturefeed_pages.module:285;296 theme/culturefeed-page.tpl.php:15
+msgid "Members"
+msgstr ""
+
+#: culturefeed_pages.module:307
+msgid "Delete member"
+msgstr ""
+
+#: culturefeed_pages.module:318 includes/members.inc:345
+msgid "Add member"
+msgstr ""
+
+#: culturefeed_pages.module:329
+msgid "Application for administrator of the page"
+msgstr ""
+
+#: culturefeed_pages.module:339
+msgid "Remove myself as a member"
+msgstr ""
+
+#: culturefeed_pages.module:349
+msgid "Add member as administrator"
+msgstr ""
+
+#: culturefeed_pages.module:386 includes/helpers.inc:38 theme/theme.inc:69
+msgid "Follow page"
+msgstr ""
+
+#: culturefeed_pages.module:396 includes/helpers.inc:35
+msgid "Unfollow page"
+msgstr ""
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed Pages"
-msgstr "CultureFeed pagina's"
+msgstr ""
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed Pages makes it possible to view / manage pages."
-msgstr "Met CultureFeed pagina's kan je pagina's bekijken en beheren. "
+msgstr ""
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed"
-msgstr "CultureFeed"
+msgstr ""
 
 #: includes/blocks.inc:49
 msgid "My colleague's"
-msgstr "Mijn collega's"
+msgstr ""
 
 #: includes/blocks.inc:78 theme/culturefeed-pages-page-my-page.tpl.php:13
 msgid "Pages I follow"
-msgstr "Pagina's die ik volg"
+msgstr ""
 
 #: includes/blocks.inc:248
 msgid "Timeline"
-msgstr "Tijdslijn"
+msgstr ""
 
 #: includes/blocks.inc:342
 msgid "Page followers"
-msgstr "Volgen deze pagina"
+msgstr ""
 
 #: includes/blocks.inc:433
 msgid "Related activities"
-msgstr "Gerelateerde activiteiten"
+msgstr ""
 
 #: includes/helpers.inc:201
 msgid "Home"
 msgstr "Home"
 
-#: includes/members.inc:38 includes/pages.inc:507;643 theme/theme.inc:71
+#: includes/members.inc:38 includes/pages.inc:506;642 theme/theme.inc:71
 msgid "View page"
-msgstr "Bekijk pagina"
+msgstr ""
 
 #: includes/members.inc:48
 msgid "Please enter at least 3 characters"
-msgstr "Gelieve minstens 3 karakters in te geven"
+msgstr ""
 
-#: includes/members.inc:66 includes/pages.inc:240
+#: includes/members.inc:66 includes/pages.inc:239
 msgid "Name"
 msgstr "Naam"
 
@@ -267,9 +261,9 @@ msgstr "Functie"
 msgid "Role"
 msgstr "Rol"
 
-#: includes/members.inc:69 includes/pages.inc:1097
+#: includes/members.inc:69 includes/pages.inc:1096
 msgid "Member since"
-msgstr "Lid sinds"
+msgstr ""
 
 #: includes/members.inc:93
 msgid "Edit"
@@ -277,43 +271,39 @@ msgstr "Bewerken"
 
 #: includes/members.inc:103
 msgid "Delete as member"
-msgstr "Verwijder als lid"
+msgstr ""
 
 #: includes/members.inc:115
 msgid "Cancel changes"
-msgstr "Annuleer bewerkingen"
+msgstr ""
 
 #: includes/members.inc:129
 msgid "No content available."
 msgstr "Geen inhoud beschikbaar."
 
-#: includes/members.inc:177 includes/pages.inc:371;685
+#: includes/members.inc:177 includes/pages.inc:370;684
 msgid "Save"
 msgstr "Opslaan"
 
 #: includes/members.inc:189
 msgid "Remove administrator"
-msgstr "Verwijder als beheerder"
+msgstr ""
 
 #: includes/members.inc:189
 msgid "Make administrator"
-msgstr "Maak beheerder"
+msgstr ""
 
 #: includes/members.inc:255
-msgid ""
-"Something went wrong while saving. Please try again or contact an "
-"administrator."
+msgid "Something went wrong while saving. Please try again or contact an administrator."
 msgstr ""
-"Er ging iets fout tijdens het bewaren. Gelieve opnieuw te proberen of een "
-"administrator te contacteren."
 
 #: includes/members.inc:266
 msgid "Membership changed"
-msgstr "Het lidmaatschap werd aangepast"
+msgstr ""
 
 #: includes/members.inc:277
 msgid "Search users"
-msgstr "Zoek gebruikers"
+msgstr ""
 
 #: includes/members.inc:284
 msgid "Search"
@@ -321,31 +311,27 @@ msgstr "Zoeken"
 
 #: includes/members.inc:359
 msgid "Sure you want to add @nick as a member?"
-msgstr "Ben je zeker dat u @nick wil toevoegen als lid?"
+msgstr ""
 
 #: includes/members.inc:370
 msgid "Add"
 msgstr "Toevoegen"
 
-#: includes/members.inc:376;497 includes/pages.inc:821;912
+#: includes/members.inc:376;497 includes/pages.inc:820;911
 msgid "Cancel"
 msgstr "Annuleren"
 
 #: includes/members.inc:404
 msgid "@nick is member of @page now."
-msgstr "@nick is nu lid van @page."
+msgstr ""
 
 #: includes/members.inc:409
-msgid ""
-"There was an error while saving. Please try again, or contact an "
-"administrator."
+msgid "There was an error while saving. Please try again, or contact an administrator."
 msgstr ""
-"Er ging iets fout tijdens het toevoegen. Gelieve opnieuw te proberen, of een "
-"administrator te contacteren."
 
 #: includes/members.inc:458
 msgid "Remove member"
-msgstr "Lid verwijderen"
+msgstr ""
 
 #: includes/members.inc:473
 msgid "This action cannot be undone."
@@ -353,11 +339,11 @@ msgstr "Deze actie kan niet ongedaan worden gemaakt."
 
 #: includes/members.inc:477
 msgid "Are you sure you want to remove yourself as a member?"
-msgstr "Ben je zeker dat je jezelf als lid wil verwijderen?"
+msgstr ""
 
 #: includes/members.inc:480
 msgid "Are you sure you want to remove this member?"
-msgstr "Ben je zeker dat je dit lid wil verwijderen?"
+msgstr ""
 
 #: includes/members.inc:491
 msgid "Remove"
@@ -365,27 +351,27 @@ msgstr "Verwijderen"
 
 #: includes/members.inc:529
 msgid "There was an error while removing the member."
-msgstr "Er is een fout opgetreden tijdens het verwijderen van het lid."
+msgstr ""
 
 #: includes/members.inc:541
 msgid "You are not longer a member of @page."
-msgstr "Je ben niet langer lid van @page."
+msgstr ""
 
 #: includes/members.inc:547
 msgid "User @nick is removed as member of page @page."
-msgstr "De gebruiker @nick is verwijderd als lid van @page."
+msgstr ""
 
 #: includes/members.inc:576
 msgid "Request to become an administrator"
-msgstr "Aanvraag om beheerder te worden"
+msgstr ""
 
 #: includes/members.inc:587
 msgid "Your request to become an administrator of this page is sent"
-msgstr "Jouw aanvraag om beheerder te worden van deze pagina is verzonden"
+msgstr ""
 
 #: includes/members.inc:620
 msgid "!username wants to be an administrator of !page."
-msgstr "!username wil beheerder worden van !page."
+msgstr ""
 
 #: includes/members.inc:629 includes/pages.inc:61
 msgid "OK"
@@ -393,330 +379,285 @@ msgstr "Ok"
 
 #: includes/members.inc:652
 msgid "!username successfully added as administrator of page !page."
-msgstr "!username werd succesvol toegevoegd als beheerder van !page."
+msgstr ""
 
 #: includes/pages.inc:27;31
 msgid "There was an error while loading the search results."
-msgstr "Er is een fout opgetreden tijdens het laden van de zoekresultaten."
+msgstr ""
 
 #: includes/pages.inc:54
 msgid "Name of your page"
-msgstr "Naam van jouw pagina"
+msgstr ""
 
 #: includes/pages.inc:119
-msgid ""
-"You are now a member of <strong>@page.</strong><br />Manage your membership "
-"of this and other pages with"
+msgid "You are now a member of <strong>@page.</strong><br />Manage your membership of this and other pages with"
 msgstr ""
-"Je bent nu lid van <strong>@page.</strong><br />Beheer je lidmaatschap van "
-"deze en andere pagina's via"
 
 #: includes/pages.inc:134
-msgid ""
-"It is not allowed to join @page as a member. Please contact the "
-"administrator of the page to become a member."
+msgid "It is not allowed to join @page as a member. Please contact the administrator of the page to become a member."
 msgstr ""
-"Het is niet toegelaten om lid te worden van @page. Gelieve een beheerder te "
-"contacteren om toch lid te worden."
 
 #: includes/pages.inc:137;184
 msgid "You could not be added to @page."
-msgstr "U kon niet toegevoegd worden aan @page."
+msgstr ""
 
-#: includes/pages.inc:247
+#: includes/pages.inc:246
 msgid "Type"
 msgstr "Type"
 
-#: includes/pages.inc:255
+#: includes/pages.inc:254
 msgid "Description"
 msgstr "Beschrijving"
 
-#: includes/pages.inc:256
+#: includes/pages.inc:255
 msgid "Maximum 400 characters"
-msgstr "Maximum 400 karakters"
+msgstr ""
 
-#: includes/pages.inc:266 theme/culturefeed-page-summary.tpl.php:32
-#: theme/culturefeed-page.tpl.php:36
+#: includes/pages.inc:265 theme/culturefeed-page-summary.tpl.php:32 theme/culturefeed-page.tpl.php:36
 msgid "Address"
-msgstr "Adres"
+msgstr ""
 
-#: includes/pages.inc:292
+#: includes/pages.inc:291
 msgid "Phone"
-msgstr "Telefoon"
+msgstr ""
 
-#: includes/pages.inc:299
+#: includes/pages.inc:298
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: includes/pages.inc:306 theme/culturefeed-page.tpl.php:50
+#: includes/pages.inc:305 theme/culturefeed-page.tpl.php:50
 msgid "Website"
-msgstr "Website"
+msgstr ""
 
-#: includes/pages.inc:313
+#: includes/pages.inc:312
 msgid "Other websites"
-msgstr "Andere websites"
+msgstr ""
 
-#: includes/pages.inc:322
+#: includes/pages.inc:321
 msgid "Ticketing"
-msgstr "Tickets"
+msgstr ""
 
-#: includes/pages.inc:328
+#: includes/pages.inc:327
 msgid "Facebook"
-msgstr "Facebook"
+msgstr ""
 
-#: includes/pages.inc:334
+#: includes/pages.inc:333
 msgid "Twitter"
-msgstr "Twitter"
+msgstr ""
 
-#: includes/pages.inc:340
+#: includes/pages.inc:339
 msgid "Google+"
-msgstr "Google+"
+msgstr ""
 
-#: includes/pages.inc:346
+#: includes/pages.inc:345
 msgid "YouTube"
-msgstr "YouTube"
+msgstr ""
 
-#: includes/pages.inc:352
+#: includes/pages.inc:351
 msgid "Blog"
 msgstr "Blog"
 
-#: includes/pages.inc:358
+#: includes/pages.inc:357
 msgid "Picture or logo"
-msgstr "Afbeelding of logo"
+msgstr ""
 
-#: includes/pages.inc:397
+#: includes/pages.inc:396
 msgid "Title is required"
-msgstr "De titel moet ingevuld zijn"
+msgstr ""
 
-#: includes/pages.inc:402
+#: includes/pages.inc:401
 msgid "The maximum is 400 characters"
-msgstr "Het maximum karakters bedraagt 400"
+msgstr ""
 
-#: includes/pages.inc:449
+#: includes/pages.inc:448
 msgid "Page \"@page\" has been created."
-msgstr "De pagina \"@page\" is aangemaakt."
+msgstr ""
 
-#: includes/pages.inc:453
+#: includes/pages.inc:452
 msgid "There was an error while creating the page."
-msgstr "Er is een fout opgetreden tijdens het aanmaken van de pagina."
+msgstr ""
 
-#: includes/pages.inc:473;621
+#: includes/pages.inc:472;620
 msgid "An error occurred when uploading your image."
-msgstr "Er is een fout opgetreden bij het opladen van jouw afbeelding."
+msgstr ""
 
-#: includes/pages.inc:552
+#: includes/pages.inc:551
 msgid "Select another photo"
-msgstr "Selecteer andere foto"
+msgstr ""
 
-#: includes/pages.inc:556
+#: includes/pages.inc:555
 msgid "Remove photo"
-msgstr "Verwijder foto"
+msgstr ""
 
-#: includes/pages.inc:587
+#: includes/pages.inc:586
 msgid "Page \"@page\" is updated."
-msgstr "De pagina \"@page\" is aangepast."
+msgstr ""
 
-#: includes/pages.inc:591
+#: includes/pages.inc:590
 msgid "There was an error while updating the page."
-msgstr "Er is een fout opgetreden tijdens het bewerken van de pagina."
+msgstr ""
+
+#: includes/pages.inc:663
+msgid "follow my page"
+msgstr ""
 
 #: includes/pages.inc:664
-msgid "follow my page"
-msgstr "mijn pagina volgen"
-
-#: includes/pages.inc:665
 msgid "This allows users to stay informed of any updates on this page."
 msgstr ""
-"Op die manier kunnen gebruikers op de hoogte blijven van alle updates over "
-"deze pagina."
+
+#: includes/pages.inc:670
+msgid "become a member of my page"
+msgstr ""
 
 #: includes/pages.inc:671
-msgid "become a member of my page"
-msgstr "lid worden van mijn pagina"
-
-#: includes/pages.inc:672
-msgid ""
-"In this way, your page can also be accessed via the profiles, comments and "
-"reactions of all colleagues who are active on this site."
+msgid "In this way, your page can also be accessed via the profiles, comments and reactions of all colleagues who are active on this site."
 msgstr ""
-"Op die manier wordt je pagina ook toegankelijk via de profielen, reacties en "
-"reacties van alle collega's die actief zijn op deze site."
+
+#: includes/pages.inc:677
+msgid "write comments about my activities"
+msgstr ""
 
 #: includes/pages.inc:678
-msgid "write comments about my activities"
-msgstr "reacties schrijven over mijn activiteiten"
-
-#: includes/pages.inc:679
-msgid ""
-"Only for organizations that provide activities and have entered via <a href="
-"\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
+msgid "Only for organizations that provide activities and have entered via <a href=\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
 msgstr ""
-"Enkel voor organisaties die activiteiten organiseren en ingevoerd hebben via "
-"<a href=\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
 
-#: includes/pages.inc:691;786
+#: includes/pages.inc:690;785
 msgid "Remove page"
-msgstr "Verwijder pagina"
+msgstr ""
 
-#: includes/pages.inc:744
+#: includes/pages.inc:743
 msgid "Page settings has been saved."
-msgstr "De pagina instellingen zijn bewaard."
+msgstr ""
 
-#: includes/pages.inc:748
+#: includes/pages.inc:747
 msgid "There was an error while saving the settings page."
 msgstr ""
-"Er is een fout opgetreden tijdens het bewaren van de pagina instellingen."
+
+#: includes/pages.inc:799
+msgid "By deleting a page, the page will no longer appear in search results, but it will not remove your contact info."
+msgstr ""
 
 #: includes/pages.inc:800
-msgid ""
-"By deleting a page, the page will no longer appear in search results, but it "
-"will not remove your contact info."
+msgid "Members of this page, and activities in the name of this page will not be deleted."
 msgstr ""
-"Door een pagina te verwijderen, zal de pagina niet meer verschijnen in de "
-"zoekresultaten en worden al je contactgegevens niet verwijderd."
 
-#: includes/pages.inc:801
-msgid ""
-"Members of this page, and activities in the name of this page will not be "
-"deleted."
-msgstr ""
-"Leden van deze pagina en activiteiten in naam van deze pagina worden niet "
-"verwijderd."
-
-#: includes/pages.inc:802;901
+#: includes/pages.inc:801;900
 msgid "Are you sure?"
-msgstr "Ben je zeker?"
+msgstr ""
 
-#: includes/pages.inc:813
+#: includes/pages.inc:812
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: includes/pages.inc:846
+#: includes/pages.inc:845
 msgid "Page \"@page\" is deleted."
-msgstr "De pagina \"@page\" is verwijderd."
+msgstr ""
 
-#: includes/pages.inc:863
+#: includes/pages.inc:862
 msgid "There was an error while deleting the page."
-msgstr "Er is een fout opgetreden tijdens het verwijderen van de pagina."
+msgstr ""
 
-#: includes/pages.inc:899
+#: includes/pages.inc:898
 msgid "By publishing a page, the page will re-appear in the search results."
 msgstr ""
-"Door een pagina te publiceren, zal de pagina opnieuw verschijnen in de "
-"zoekresultaten."
 
-#: includes/pages.inc:900
-msgid ""
-"Members of this page, and activities in the name of this page will be "
-"recreated."
+#: includes/pages.inc:899
+msgid "Members of this page, and activities in the name of this page will be recreated."
 msgstr ""
-"Leden van deze pagina en activiteiten in naam van deze pagina worden opnieuw "
-"in het leven geroepen."
 
-#: includes/pages.inc:906
+#: includes/pages.inc:905
 msgid "Publish"
-msgstr "Publiceer"
+msgstr ""
 
-#: includes/pages.inc:934
+#: includes/pages.inc:933
 msgid "Page \"@page\" is recreated."
-msgstr "De pagina \"@page\" is hersteld."
+msgstr ""
 
-#: includes/pages.inc:938
+#: includes/pages.inc:937
 msgid "There was an error while recreating the page."
-msgstr "Er is een fout opgetreden tijdens het herstellen van de pagina."
+msgstr ""
 
-#: includes/pages.inc:972 theme/theme.inc:406
+#: includes/pages.inc:971 theme/theme.inc:406
 msgid "Title"
 msgstr "Titel"
 
-#: includes/pages.inc:976 theme/theme.inc:407
+#: includes/pages.inc:975 theme/theme.inc:407
 msgid "Date"
 msgstr "Datum"
 
-#: includes/pages.inc:980 theme/theme.inc:408
+#: includes/pages.inc:979 theme/theme.inc:408
 msgid "Reactions"
-msgstr "Reacties"
+msgstr ""
 
-#: includes/pages.inc:1006
+#: includes/pages.inc:1005
 msgid "There was an error while loading the activities."
-msgstr "Er is een fout opgetreden tijdens het laden van de activiteiten."
+msgstr ""
 
-#: includes/pages.inc:1042;1120
+#: includes/pages.inc:1041;1119
 msgid "Administer page"
-msgstr "Pagina beheren"
+msgstr ""
+
+#: includes/pages.inc:1060
+msgid "Become an administrator"
+msgstr ""
 
 #: includes/pages.inc:1061
-msgid "Become an administrator"
-msgstr "Beheerder worden"
-
-#: includes/pages.inc:1062
 msgid "This is a request sent to the administrator of this page."
 msgstr ""
-"Hiermee wordt een aanvraag gestuurd naar de huidige beheerder van deze "
-"pagina."
 
-#: includes/pages.inc:1068
+#: includes/pages.inc:1067
 msgid "Not possible to remove"
-msgstr "Verwijderen niet mogelijk"
-
-#: includes/pages.inc:1068
-msgid ""
-"You're the only administrator of this page. You can not remove yourself as a "
-"member"
 msgstr ""
-"Je bent de enige beheerder van deze pagina. Je kan jezelf niet verwijderen "
-"als lid"
 
-#: includes/pages.inc:1097;1139
+#: includes/pages.inc:1067
+msgid "You're the only administrator of this page. You can not remove yourself as a member"
+msgstr ""
+
+#: includes/pages.inc:1096;1138
 msgid "Page"
 msgstr "Pagina"
 
-#: includes/pages.inc:1113 theme/theme.inc:66
+#: includes/pages.inc:1112 theme/theme.inc:66
 msgid "Unfollow"
-msgstr "Pagina niet meer volgen"
+msgstr "Volg ik niet meer"
 
-#: includes/pages.inc:1114
+#: includes/pages.inc:1113
 msgid "You are a member of this page"
-msgstr "Je bent lid van deze pagina"
+msgstr ""
 
-#: includes/pages.inc:1116
-#: theme/culturefeed-pages-fellow-members-block.tpl.php:24
-#: theme/theme.inc:161;496
+#: includes/pages.inc:1115 theme/culturefeed-pages-fellow-members-block.tpl.php:24 theme/theme.inc:161;496
 msgid "Become a member"
-msgstr "Word lid"
+msgstr ""
 
-#: includes/pages.inc:1123 theme/theme.inc:431
+#: includes/pages.inc:1122 theme/theme.inc:431
 msgid "Send request to become administrator"
-msgstr "Stuur aanvraag om beheerder te worden"
+msgstr ""
 
-#: includes/pages.inc:1139
+#: includes/pages.inc:1138
 msgid "Following since"
-msgstr "Volgend sinds"
+msgstr ""
 
 #: theme/culturefeed-page-invisible.tpl.php:1
 msgid "The content of this page was removed by the administrator of the page."
 msgstr ""
-"De inhoud van deze pagina werd verwijderd door de beheerder van de pagina."
-
-#: theme/culturefeed-page-summary.tpl.php:15
-msgid "<span class=\"members\">@count</span> member"
-msgstr "<span class=\"members\">@count</span> lid"
-
-#: theme/culturefeed-page-summary.tpl.php:15
-msgid "<span class=\"members\">@count</span> members"
-msgstr "<span class=\"members\">@count</span> leden"
 
 #: theme/culturefeed-page-summary.tpl.php:16
 msgid "View members"
-msgstr "Bekijk leden"
+msgstr ""
 
 #: theme/culturefeed-page-summary.tpl.php:20
 msgid "<span>@count</span> follower"
-msgstr "<span>@count</span> volger"
+msgstr ""
 
 #: theme/culturefeed-page-summary.tpl.php:20
 msgid "<span>@count</span> followers"
-msgstr "<span>@count</span> volgers"
+msgstr ""
+
+#: theme/culturefeed-page-summary.tpl.php:15
+msgid "<span class=\"members\">@count</span> member"
+msgid_plural "<span class=\"members\">@count</span> members"
+msgstr[0] ""
+msgstr[1] ""
 
 #: theme/culturefeed-page.tpl.php:43
 msgid "Contact"
@@ -724,77 +665,59 @@ msgstr "Contact"
 
 #: theme/culturefeed-page.tpl.php:45
 msgid "or"
-msgstr "of"
+msgstr ""
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:20
 msgid "Your page has published no activities yet."
-msgstr "Je pagina heeft nog geen activiteiten"
+msgstr ""
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:21
 msgid "Add new activities."
-msgstr "Een nieuwe activiteit toevoegen"
+msgstr ""
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:26
 msgid "Latest notifications"
-msgstr "Laatste meldingen"
+msgstr ""
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:36
-msgid ""
-"You are <strong> manager</strong> on this page, but <strong>not logged in</"
-"strong> as this page. Do you want to continue working as <strong>this page</"
-"strong>?"
+msgid "You are <strong> manager</strong> on this page, but <strong>not logged in</strong> as this page. Do you want to continue working as <strong>this page</strong>?"
 msgstr ""
-"Je bent <strong>beheerder</strong> van deze pagina, maar <strong>niet "
-"aangemeld</strong> als deze pagina. Wil je <strong>verder werken als deze "
-"pagina</strong>?"
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:14
-msgid ""
-"This list shows only the activities that are currently online. You can find "
-"past or unpublished activities on <a href=\"http://www.uitdatabank.be\"> UiT "
-"database </ a>."
+msgid "This list shows only the activities that are currently online. You can find past or unpublished activities on <a href=\"http://www.uitdatabank.be\"> UiT database </ a>."
 msgstr ""
-"Deze lijst toont enkel de activiteiten die momenteel online staan. Afgelopen "
-"of niet gepubliceerde activeiten kan je raadplegen via de <a href=\"http://"
-"www.uitdatabank.be\">Uitdatabank</a>."
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:18
 msgid "Add a new activity"
-msgstr "Een nieuwe activiteit toevoegen"
+msgstr ""
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:20
-msgid ""
-"Add new activities with the UiTdatabank. You can sign in with the same "
-"account and add activities immediately. <a href=\"http://www.uitdatabank.be/"
-"\">Add new activity</a>."
+msgid "Add new activities with the UiTdatabank. You can sign in with the same account and add activities immediately. <a href=\"http://www.uitdatabank.be/\">Add new activity</a>."
 msgstr ""
-"Dat kan via de Uitdatabank. Je kan er aanmelden met dezelfde account als "
-"deze om onmiddelijk aan de slag te gaan. <a href=\"http://www.uitdatabank.be/"
-"\">Voeg nieuwe activiteit toe</a>."
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:17
 msgid "is at the moment the only member of the page"
-msgstr "is momenteel het enige lid van pagina"
+msgstr ""
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:21
 msgid "You are a member of"
-msgstr "Je bent lid van"
+msgstr ""
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "Are you a colleague of"
-msgstr "Ben jij een collega van"
+msgstr ""
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "of"
-msgstr "van"
+msgstr ""
 
 #: theme/culturefeed-pages-followers-block.tpl.php:20
 msgid "This page has no followers yet."
-msgstr "Deze pagina heeft nog geen volgers."
+msgstr ""
 
 #: theme/culturefeed-pages-join-page.tpl.php:9
 msgid "There doesn't exists a page of"
-msgstr "Er bestaat nog geen pagina van"
+msgstr ""
 
 #: theme/culturefeed-pages-join-page.tpl.php:10
 msgid "on"
@@ -802,23 +725,19 @@ msgstr "op"
 
 #: theme/culturefeed-pages-join-search-result-item.tpl.php:9
 msgid "You are already a member"
-msgstr "Je bent reeds lid"
+msgstr ""
 
 #: theme/culturefeed-pages-join-search-result-item.tpl.php:15
 msgid "You follow this page"
-msgstr "Je volgt deze pagina"
+msgstr ""
 
 #: theme/culturefeed-pages-page-agenda.tpl.php:11
 msgid "You page has published no activities yet."
-msgstr "Jouw pagina heeft nog geen activiteiten gepubliceerd."
+msgstr ""
 
 #: theme/culturefeed-pages-page-agenda.tpl.php:12
-msgid ""
-"Add new activities on <a href=\"http://www.uitdatabank.be\">www.uitdatabank."
-"be</a>."
+msgid "Add new activities on <a href=\"http://www.uitdatabank.be\">www.uitdatabank.be</a>."
 msgstr ""
-"Voeg nieuwe activiteiten toe via <a href=\"http://www.uitdatabank.be\">www."
-"uitdatabank.be</a>."
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:2 theme/theme.inc:361
 msgid "View profile"
@@ -826,65 +745,51 @@ msgstr "Bekijk profiel"
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:5
 msgid "Pages where I am a member of"
-msgstr "Pagina's waar ik lid van ben"
+msgstr ""
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:9
-msgid ""
-"<strong>You are not a member of any page.</strong> <br/> Search (or create) "
-"the page of your employer and become a member. If you create a new page, you "
-"automatically become a member and administrator of the page."
+msgid "<strong>You are not a member of any page.</strong> <br/> Search (or create) the page of your employer and become a member. If you create a new page, you automatically become a member and administrator of the page."
 msgstr ""
-"<strong>Je bent nog geen lid van een pagina.</strong><br />Zoek (of maak) de "
-"pagina van je werkgever en word lid. als je een nieuwe pagina maakt, ben je "
-"automatische en lid en beheerder van de pagina."
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:17
-msgid ""
-"<strong> You follow no pages. </strong> <br/> Find and follow pages that "
-"interest you and receive a notification when there are relevant updates."
+msgid "<strong> You follow no pages. </strong> <br/> Find and follow pages that interest you and receive a notification when there are relevant updates."
 msgstr ""
-"<strong>Je volgt nog geen pagina's.</strong><br />Zoek en volg pagina's die "
-"je interesseren en ontvang een melding als er relevante updates zijn."
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:20
 msgid "Search new pages:"
-msgstr "Zoek nieuwe pagina's:"
+msgstr ""
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:9
 msgid "Mistake seen?"
-msgstr "Foutje gezien?"
+msgstr ""
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:10
-msgid ""
-"This page has no administrator. As an administrator, you can change the "
-"information on this page and manage the members."
+msgid "This page has no administrator. As an administrator, you can change the information on this page and manage the members."
 msgstr ""
-"Deze pagina heeft nog geen beheerder. Als beheerder kan je de info op deze "
-"pagina wijzigen en de leden beheren."
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:11
 msgid "Send application to become an administrator"
-msgstr "Stuur aanvraag om beheerder te worden"
+msgstr ""
 
 #: theme/culturefeed-pages-user-search-result.tpl.php:2
 msgid "No users found"
-msgstr "Geen gebruikers gevonden"
+msgstr ""
 
 #: theme/theme.inc:25
 msgid "Does your organization or association has no page yet?"
-msgstr "Heeft jouw organisatie of vereniging nog geen pagina?"
+msgstr ""
 
 #: theme/theme.inc:25
 msgid "Create a new page"
-msgstr "Maak een nieuwe pagina"
+msgstr ""
 
 #: theme/theme.inc:84
 msgid "More info"
-msgstr "Meer info"
+msgstr ""
 
 #: theme/theme.inc:290
 msgid "Login as"
-msgstr "Meld aan als"
+msgstr ""
 
 #: theme/theme.inc:309
 msgid "View all notifications"
@@ -892,36 +797,35 @@ msgstr "Bekijk alle meldingen"
 
 #: theme/theme.inc:314
 msgid "Your page has no notifications yet"
-msgstr "Jouw pagina heeft nog geen meldingen"
+msgstr ""
 
 #: theme/theme.inc:363
 msgid "Add as a member"
-msgstr "Voeg toe als lid"
-
-#: theme/theme.inc:390
-msgid "@count reaction"
-msgstr "@count reactie"
-
-#: theme/theme.inc:390
-msgid "@count reactions"
-msgstr "@count reacties"
+msgstr ""
 
 #: theme/theme.inc:393
 msgid "No reactions yet"
-msgstr "Nog geen reacties"
+msgstr ""
 
 #: theme/theme.inc:395
 msgid "Edit in the UiTdatabank"
-msgstr "Bewerk in de UiTdatabank"
+msgstr ""
 
 #: theme/theme.inc:492
 msgid "You are following this page now"
-msgstr "Je volgt nu deze pagina"
+msgstr ""
 
 #: theme/theme.inc:495
 msgid "Want to join this page?"
-msgstr "Wil je lid worden van deze pagina?"
+msgstr ""
 
 #: theme/theme.inc:508
 msgid "You are no longer following this page anymore"
-msgstr "Je volgt deze pagina niet meer"
+msgstr ""
+
+#: theme/theme.inc:390
+msgid "@count reaction"
+msgid_plural "@count reactions"
+msgstr[0] ""
+msgstr[1] ""
+
