@@ -415,7 +415,7 @@ msgstr "Geschenk aanvragen"
 
 #: theme/theme.inc:371
 msgid "Congratulations! you collected"
-msgstr "Proficiat! Je verzamelde"
+msgstr "Gelukt! Je spaarde"
 
 #: theme/theme.inc:371
 msgid "with your review and have now"
