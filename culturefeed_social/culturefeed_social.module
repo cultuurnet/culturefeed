@@ -577,7 +577,7 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
   $detail_path = culturefeed_social_detail_path($social_content_type, $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language()));
 
   // Send a comment.
-  if (!empty($form_state['values']['message']) && strlen($form_state['values']['message']) <= 250) {
+  if (!empty($form_state['values']['message']) && strlen($form_state['values']['message']) <= 1000) {
 
     $activity = new CultureFeed_Activity();
     $activity->type = $activity::TYPE_COMMENT;
@@ -603,7 +603,7 @@ function culturefeed_social_base_comment_form_validate($form, &$form_state) {
       form_set_error('', format_string(t('Due to technical problems it is currently not possible to send your message. Do not hesitate to directly contact via @site'), array('@site' => variable_get('site_email', ''))));
     }
   } else {
-    form_set_error('message', t('Your response should not exceed 250 characters.'));
+    form_set_error('message', t('Your response should not exceed 1000 characters.'));
   }
 
   // Temp fix untill cnet decides to swap to ctools modal.

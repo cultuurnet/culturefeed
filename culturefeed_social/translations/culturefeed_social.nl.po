@@ -114,8 +114,8 @@ msgstr ""
 "te nemen via @site"
 
 #: culturefeed_social.module:606
-msgid "Your response should not exceed 250 characters."
-msgstr "Uw reactie mag de 250 karakters niet overschrijden."
+msgid "Your response should not exceed 1000 characters."
+msgstr "Uw reactie mag de 1000 karakters niet overschrijden."
 
 #: culturefeed_social.module:631
 msgid "Your !comment has been sent."
