@@ -23,7 +23,7 @@ foreach ($items as $item) {
 $output .= '</div>';
 ?>
 
-<h2><?php print t('1. Select one or more gifts'); ?></h2>
+<h2><?php print t('Select one or more gifts'); ?></h2>
 <div class="thumbnails">
   <?php print $output; ?>
 </div>

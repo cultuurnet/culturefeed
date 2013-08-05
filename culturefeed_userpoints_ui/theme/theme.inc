@@ -380,7 +380,7 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
  */
 function theme_culturefeed_userpoints_ui_points_exchanged_message($variables) {
 
-  return t('Thank you, your points are redeemed. You can collect your promotions.');
+  return t('Thank you, your points have been exchanged. Your gift will be sent shortly to the specified address.');
 
 }
 

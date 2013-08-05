@@ -6,7 +6,7 @@
 ?>
 
 <?php if (!empty($items)): ?>
-  <h2><?php print t('points'); ?>Je koos voor</h2>
+  <h2>Je koos voor</h2>
 
   <table class="table table-striped">
     <thead>

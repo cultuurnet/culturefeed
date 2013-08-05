@@ -60,7 +60,7 @@ msgstr "Aanvraag tot ontvangen voordeel | aanvraag door"
 
 #: culturefeed_userpoints_ui.module:328
 msgid "amount"
-msgstr "hoeveelheid"
+msgstr "aantal"
 
 #: culturefeed_userpoints_ui.module:328
 msgid "resale value"
@@ -124,7 +124,7 @@ msgstr "Het voordeel werd toegevoegd aan uw promotie mandje."
 
 #: culturefeed_userpoints_ui.module:477
 msgid "You do not have enough points"
-msgstr "U hebt niet voldoende punten"
+msgstr "Je hebt onvoldoende punten"
 
 #: culturefeed_userpoints_ui.module:21
 msgid "Exchange your points"
@@ -284,12 +284,8 @@ msgid "There was an error loading your points list"
 msgstr "Er is iets fout gelopen tijdens het laden van jouw punten."
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
-msgid ""
-"Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nullam "
-"quis risus eget urna mollis ornare vel eu leo. Cras justo odio, dapibus ac "
-"facilisis in, egestas eget quam. Aenean eu leo quam. Pellentesque ornare sem "
-"lacinia quam venenatis vestibulum."
-msgstr ""
+msgid "As an UiTiD user, you can save points by performing actions. Points can be exchanged for one or more gifts."
+msgstr "Als UiTiD gebruiker kan je punten sparen. Punten kan je inruilen tegen leuke voordelen"
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
 msgid "More info"
@@ -297,7 +293,7 @@ msgstr "Meer info"
 
 #: theme/culturefeed-userpoints-exchange-confirmation.tpl.php:1
 msgid "Your current points balance"
-msgstr "Je huidig puntensaldo"
+msgstr "Jouw puntensaldo"
 
 #: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
 msgid "Expires"
@@ -318,8 +314,8 @@ msgid "Enter your details"
 msgstr "Vul jouw gegevens in"
 
 #: theme/culturefeed-userpoints-ui-exchange-form.tpl.php:18
-msgid "Information not public. Use only for contests."
-msgstr "Deze informatie is niet publiek. Gebruik dit enkel voor wedstrijden. "
+msgid "This information will only be used to send the chosen gift(s) to the address listed below, so it will not be published on this website."
+msgstr "Deze informatie wordt enkel gebruikt voor het verzenden van je voordeel en is niet publiek."
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:35
 msgid "Remaining number of points"
@@ -378,8 +374,8 @@ msgid "How to save extra points?"
 msgstr "Hoe kan ik extra punten sparen?"
 
 #: theme/culturefeed-userpoints-ui-promotions-list.tpl.php:26
-msgid "1. Select one or more gifts"
-msgstr "1. Selecteer één of meerdere geschenken"
+msgid "Select one or more gifts"
+msgstr "Kies één of meerdere voordelen"
 
 #: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "Valid till"
@@ -395,7 +391,7 @@ msgstr "Titel"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:15
 msgid "Amount"
-msgstr "Hoeveelheid"
+msgstr "Aantal"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:16
 msgid "Points"
@@ -403,7 +399,7 @@ msgstr "Punten"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:17 theme/theme.inc:145;180
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "Verwijder"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:28
 msgid "You have not selected any items."
@@ -422,8 +418,8 @@ msgid "with your review and have now"
 msgstr "met jouw beoordeling en je hebt nu"
 
 #: theme/theme.inc:383
-msgid "Thank you, your points are redeemed. You can collect your promotions."
-msgstr "Dankjewel, je punten zijn ingeruild. Je kan je geschenk afhalen."
+msgid "Thank you, your points have been exchanged. Your gift will be sent shortly to the specified address."
+msgstr "Bedankt, je voordeel werd aangevraagd! Hou je brievenbus in de gaten."
 
 #: theme/theme.inc:339;368;369
 msgid "@count punt"

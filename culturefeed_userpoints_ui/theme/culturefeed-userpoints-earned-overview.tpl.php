@@ -1,6 +1,6 @@
 <p><strong><span class="lead"><?php print $total_points; ?> <?php print t('points'); ?></span></strong> <?php print $exchange_link; ?></p>
 
-<p class="muted"><small><?php print t('Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nullam quis risus eget urna mollis ornare vel eu leo. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.'); ?> <a href="#"><?php print t('More info'); ?></a></small></p>
+<p class="muted"><small><?php print t('As an UiTiD user, you can save points by performing actions. Points can be exchanged for one or more gifts.'); ?> <a href="#"><?php print t('More info'); ?></a></small></p>
 
 <table class="table table-striped table-hover">
   <thead>
