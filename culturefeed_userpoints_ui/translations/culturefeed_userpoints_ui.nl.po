@@ -21,18 +21,18 @@
 #  theme/culturefeed-userpoints-ui-promotions-list.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-promotions-page.tpl.php: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2013-08-02 09:32+0200\n"
-"PO-Revision-Date: 2013-08-02 09:32+0200\n"
+"PO-Revision-Date: 2013-08-05 12:26+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed_userpoints_ui.module:109;113;117
 msgid "There was an error while loading the promotion."
@@ -66,7 +66,11 @@ msgstr "hoeveelheid"
 msgid "resale value"
 msgstr "inruilwaarde"
 
-#: culturefeed_userpoints_ui.module:328 theme/culturefeed-userpoints-earned-overview.tpl.php:1 theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39 theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60 theme/culturefeed-userpoints-ui-wishlist.tpl.php:9
+#: culturefeed_userpoints_ui.module:328
+#: theme/culturefeed-userpoints-earned-overview.tpl.php:1
+#: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
+#: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60
+#: theme/culturefeed-userpoints-ui-wishlist.tpl.php:9
 msgid "points"
 msgstr "punten"
 
@@ -75,7 +79,21 @@ msgid "View online"
 msgstr "Bekijk online"
 
 #: culturefeed_userpoints_ui.module:336
-msgid "Culturefeed User ID:\n        @code\n\n        Promotion:\n          @promotion\n\n        Contact:\n          - @givenName @familyName\n          - @street\n          - @city\n          - @mbox\n\n        Admin:\n          @url_admin "
+msgid ""
+"Culturefeed User ID:\n"
+"        @code\n"
+"\n"
+"        Promotion:\n"
+"          @promotion\n"
+"\n"
+"        Contact:\n"
+"          - @givenName @familyName\n"
+"          - @street\n"
+"          - @city\n"
+"          - @mbox\n"
+"\n"
+"        Admin:\n"
+"          @url_admin "
 msgstr ""
 "Culturefeed User ID:\n"
 "        @code\n"
@@ -147,8 +165,7 @@ msgstr ""
 #: culturefeed_userpoints_ui.module:68
 msgid "All configurations to adjust the behavior of userpoints for this site"
 msgstr ""
-"Alle aanpassingen aan de configuratie beïnvloeden de werking van de "
-"punten"
+"Alle aanpassingen aan de configuratie beïnvloeden de werking van de punten"
 
 #: culturefeed_userpoints_ui.module:76
 msgid "Detail"
@@ -179,7 +196,9 @@ msgid "Exchange ratio"
 msgstr "Inruil verhouding"
 
 #: includes/admin.inc:12
-msgid "Exchange ratio to recalculate points for this site. E.g. \"0.03 points is worth 1 point on this site.\""
+msgid ""
+"Exchange ratio to recalculate points for this site. E.g. \"0.03 points is "
+"worth 1 point on this site.\""
 msgstr ""
 "De inruilverhouding om punten voor deze site te herberekenen is \"0.03 "
 "punten is op deze site 1 punt waard\""
@@ -241,8 +260,12 @@ msgid "You do not have enough points to order this"
 msgstr "Je hebt niet voldoende punten om dit te bestellen"
 
 #: includes/pages.inc:331
-msgid "You are not allowed to cashin this promotions because the allowed amount has been exceeded."
+msgid ""
+"You are not allowed to cashin this promotions because the allowed amount has "
+"been exceeded."
 msgstr ""
+"Het is niet mogelijk het voordeel aan te vragen. Het maximum toegelaten "
+"aantal is overschreden."
 
 #: includes/pages.inc:334;340
 msgid "It is not possible to process the order"
@@ -261,7 +284,11 @@ msgid "There was an error loading your points list"
 msgstr "Er is iets fout gelopen tijdens het laden van jouw punten."
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
-msgid "Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nullam quis risus eget urna mollis ornare vel eu leo. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum."
+msgid ""
+"Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nullam "
+"quis risus eget urna mollis ornare vel eu leo. Cras justo odio, dapibus ac "
+"facilisis in, egestas eget quam. Aenean eu leo quam. Pellentesque ornare sem "
+"lacinia quam venenatis vestibulum."
 msgstr ""
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
@@ -276,11 +303,13 @@ msgstr "Je huidig puntensaldo"
 msgid "Expires"
 msgstr "Vervalt"
 
-#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29 theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
+#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
+#: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "unlimited"
-msgstr ""
+msgstr "onbeperkt"
 
-#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29 theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
+#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
+#: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "x in stock"
 msgstr "x in voorraad"
 
@@ -305,13 +334,15 @@ msgid "From"
 msgstr "Van"
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
-msgid "you can redeem your points for tickets, gadgets, coupons, discounts, ... ."
+msgid ""
+"you can redeem your points for tickets, gadgets, coupons, discounts, ... ."
 msgstr ""
-"Je punten kan je ook inruilen voor tickets, gadgets, bonnen, "
-"kortingen,..."
+"Je punten kan je ook inruilen voor tickets, gadgets, bonnen, kortingen,..."
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:40
-msgid "Not enough points? Do not worry, learn how and how many points you can save each time."
+msgid ""
+"Not enough points? Do not worry, learn how and how many points you can save "
+"each time."
 msgstr "Niet genoeg punten? Leer hoe en hoeveel punten je telkens kan sparen. "
 
 #: theme/culturefeed-userpoints-ui-my-balance.tpl.php:26
@@ -388,7 +419,7 @@ msgstr "Proficiat! Je verzamelde"
 
 #: theme/theme.inc:371
 msgid "with your review and have now"
-msgstr ""
+msgstr "met jouw beoordeling en je hebt nu"
 
 #: theme/theme.inc:383
 msgid "Thank you, your points are redeemed. You can collect your promotions."
@@ -399,4 +430,3 @@ msgid "@count punt"
 msgid_plural "@count punten"
 msgstr[0] ""
 msgstr[1] ""
-
