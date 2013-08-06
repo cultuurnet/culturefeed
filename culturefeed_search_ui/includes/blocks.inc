@@ -13,7 +13,7 @@
  */
 function culturefeed_search_ui_search_block_form($form, & $form_state) {
 
-  $default = isset($query['search']) ? $query['search']: '';
+  $default = isset($_GET['search']) ? check_plain($_GET['search']) : '';
 
   $searchable_types = culturefeed_get_searchable_types();
   uasort($searchable_types, 'drupal_sort_weight');
@@ -46,6 +46,11 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   );
 
   $form_state['searchable_types'] = $searchable_types;
+
+  global $user;
+  if ($user->uid) {
+    $form['#token'] = FALSE;
+  }
 
   return $form;
 

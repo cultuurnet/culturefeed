@@ -185,6 +185,11 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     drupal_get_path('module', 'culturefeed') . '/js/common.js',
   );
 
+  global $user;
+  if ($user->uid) {
+    $form['#token'] = FALSE;
+  }
+
   return $form;
 
 }
