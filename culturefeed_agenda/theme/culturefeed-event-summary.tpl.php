@@ -37,7 +37,7 @@
 
     <?php if ($location): ?>
     <dt><?php print t('Where'); ?></dt>
-    <dd><?php print $location['title'] ?> <?php print $location['city']; ?></dd>
+    <dd><?php if (!empty($location['title'])): print $location['title']; endif; ?> <?php if (!empty($location['city'])): print $location['city']; endif; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($when)): ?>
