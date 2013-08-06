@@ -72,7 +72,7 @@ function culturefeed_mailing_subscribe_form() {
   $form = array();
   $form['mail'] = array(
     '#type' => 'textfield',
-    '#title' => t('Email address',
+    '#title' => t('Email address'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,

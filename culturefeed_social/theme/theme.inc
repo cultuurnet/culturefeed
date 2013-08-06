@@ -193,7 +193,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
         $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,
-        )) . '<div id="delete-wrapper-' . $activity->id . '"></div>';
+        ));
       }
 
       $comment_url = 'culturefeed/activity/comment/' . $activity->id;
