@@ -35,7 +35,15 @@
     <?php else: ?>
     <?php print $location['title'];?><br/>
     <?php endif; ?>
-    <?php print $location['street'] ?>, <?php print $location['zip']; ?> <?php print $location['city']; ?>
+    <?php if (!empty($location['street'])): ?>
+      <?php print $location['street'] ?>,
+    <?php endif; ?>
+    <?php if (!empty($location['zip'])): ?>
+      <?php print $location['zip']; ?>
+    <?php endif; ?>
+    <?php if (!empty($location['city'])): ?>
+      <?php print $location['city']; ?>
+    <?php endif; ?>
     <?php if (!empty($coordinates)): ?>
     <?php print $coordinates['lat'] ?> - <?php print $coordinates['lng'] ?>
     <?php endif; ?>
