@@ -19,7 +19,6 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
   public function loadPage() {
     $this->facetComponent = new Facet\FacetComponent();
 
-    $args = $_GET;
     $params = drupal_get_query_parameters();
 
     $params += array(
