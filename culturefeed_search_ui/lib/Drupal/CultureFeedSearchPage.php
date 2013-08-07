@@ -156,7 +156,8 @@ class CultureFeedSearchPage {
    * Loads a search page.
    */
   public function loadPage() {
-    return array();
+    $this->initialize();
+    return $this->build();
   }
 
   /**

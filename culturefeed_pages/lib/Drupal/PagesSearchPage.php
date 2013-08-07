@@ -41,14 +41,6 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
   }
 
   /**
-   * Loads a search page.
-   */
-  public function loadPage() {
-    $this->initialize();
-    return $this->build();
-  }
-
-  /**
    * Execute the search for current page.
    */
   protected function execute($params) {

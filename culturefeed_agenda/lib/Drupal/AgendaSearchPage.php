@@ -46,14 +46,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
   }
 
   /**
-   * Loads a search page.
-   */
-  public function loadPage() {
-    $this->initialize();
-    return $this->build();
-  }
-
-  /**
    * Add the sorting parameters for the agenda searches.
    */
   private function addSort($params) {
