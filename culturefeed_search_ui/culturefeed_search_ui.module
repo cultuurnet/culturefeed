@@ -537,3 +537,15 @@ function culturefeed_get_facet_component() {
   $page = culturefeed_get_search_page($type);
   return $page->getFacetComponent();
 }
+
+/**
+ * Returns the search result for the current page.
+ *
+ * @return \CultuurNet\Search\Component\Facet\FacetComponent
+ *   The search facets for the current page.
+ */
+function culturefeed_get_search_result() {
+  $type = culturefeed_get_searchable_type_by_path();
+  $page = culturefeed_get_search_page($type);
+  return $page->getSearchResult();
+}

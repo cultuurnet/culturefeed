@@ -92,6 +92,13 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Gets the search result.
+   */
+  public function getSearchResult() {
+    return $this->result;
+  }
+
+  /**
    * Sets the fullPage property.
    */
   public function setFullPage($fullPage) {
@@ -273,8 +280,7 @@ class CultureFeedSearchPage {
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    global $culturefeedSearchResult;
-    $culturefeedSearchResult = $this->result = $searchService->search($this->parameters);
+    $this->result = $searchService->search($this->parameters);
     $this->facetComponent->obtainResults($this->result);
 
   }

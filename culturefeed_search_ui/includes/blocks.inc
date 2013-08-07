@@ -286,7 +286,7 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
-  global $culturefeedSearchResult;
+  $culturefeedSearchResult = culturefeed_get_search_result();
   if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
     return;
   }
@@ -433,9 +433,7 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
  */
 function culturefeed_search_ui_search_active_filters_block() {
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
-
-  // This currently means the page callback has already been invoked.
-  global $culturefeedSearchResult;
+  $culturefeedSearchResult = culturefeed_get_search_result();
 
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return '';
