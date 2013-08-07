@@ -1,6 +1,7 @@
 <?php
 
 use \CultuurNet\Search\Parameter;
+use \CultuurNet\Search\Component\Facet\FacetComponent;
 
 /**
  * @file
@@ -70,11 +71,24 @@ class CultureFeedSearchPage {
   protected $defaultTitle = '';
 
   /**
+   * Stores search facets with corresponding values for the active search.
+   * @var \CultuurNet\Search\Component\Facet\FacetComponent
+   */
+  protected $facetComponent;
+
+  /**
    * Gets the default sortkey.
    * @return String $sortKey
    */
   public function getDefaultSort() {
     return $this->defaultSortKey;
+  }
+
+  /**
+   * Gets the search facets.
+   */
+  public function getFacetComponent() {
+    return $this->facetComponent;
   }
 
   /**
@@ -208,7 +222,7 @@ class CultureFeedSearchPage {
   /**
    * Execute the search for current page.
    */
-  protected function execute($params, $culturefeedFacetingComponent) {
+  protected function execute($params) {
 
     // Add start index (page number we want)
     $this->start = $params['page'] * $this->resultsPerPage;
@@ -236,7 +250,7 @@ class CultureFeedSearchPage {
     $searchService = culturefeed_get_search_service();
     global $culturefeedSearchResult;
     $culturefeedSearchResult = $this->result = $searchService->search($this->parameters);
-    $culturefeedFacetingComponent->obtainResults($this->result);
+    $this->facetComponent->obtainResults($this->result);
 
   }
 
@@ -335,9 +349,7 @@ class CultureFeedSearchPage {
    * Get the title to show.
    */
   public function getDrupalTitle() {
-
-    global $culturefeedFacetingComponent;
-    $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+    $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
     if (!empty($active_filters)) {
 
       $labels = array();
