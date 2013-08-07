@@ -328,7 +328,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   if ($build !== NULL) {
     return $build;
   }
-  
+
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
   $build = array();

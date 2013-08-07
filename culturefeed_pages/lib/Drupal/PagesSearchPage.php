@@ -21,8 +21,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     if (empty($this->facetComponent)) {
       $this->facetComponent = new Facet\FacetComponent();
 
+      // Retrieve search parameters and add some defaults.
       $params = drupal_get_query_parameters();
-
       $params += array(
         'sort' => 'relevancy',
         'page' => 0,
