@@ -14,36 +14,43 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     implements CultureFeedSearchPageInterface {
 
   /**
+   * Initializes the search with data from the URL query parameters.
+   */
+  public function initialize() {
+    // Only initialize once.
+    if (empty($this->facetComponent)) {
+      $this->facetComponent = new Facet\FacetComponent();
+
+      $params = drupal_get_query_parameters();
+
+      $params += array(
+        'sort' => $this->getDefaultSort(),
+        'page' => 0,
+        'search' => '',
+        'facet' => array(),
+      );
+
+      $this->addFacetFilters($params);
+      $this->addSort($params);
+
+      $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
+      $this->parameters[] = $this->facetComponent->facetField('category');
+      $this->parameters[] = $this->facetComponent->facetField('datetype');
+      $this->parameters[] = $this->facetComponent->facetField('city');
+
+      $this->execute($params);
+
+      // Warm up cache.
+      $this->warmupCache();
+    }
+  }
+
+  /**
    * Loads a search page.
    */
   public function loadPage() {
-
-    $this->facetComponent = new Facet\FacetComponent();
-
-    $params = drupal_get_query_parameters();
-
-    $params += array(
-      'sort' => $this->getDefaultSort(),
-      'page' => 0,
-      'search' => '',
-      'facet' => array(),
-    );
-
-    $this->addFacetFilters($params);
-    $this->addSort($params);
-
-    $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
-    $this->parameters[] = $this->facetComponent->facetField('category');
-    $this->parameters[] = $this->facetComponent->facetField('datetype');
-    $this->parameters[] = $this->facetComponent->facetField('city');
-
-    $this->execute($params);
-
-    // Warm up cache.
-    $this->warmupCache();
-
+    $this->initialize();
     return $this->build();
-
   }
 
   /**
