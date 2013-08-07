@@ -148,7 +148,7 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
 function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
 
   // FacetingComponent is set in the page callback.
-  global $culturefeedFacetingComponent;
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
@@ -200,9 +200,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
  * Block callback to show the date facet.
  */
 function culturefeed_search_ui_block_date_facet() {
-
-  // FacetingComponent is set in the page callback.
-  global $culturefeedFacetingComponent;
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
@@ -283,9 +281,7 @@ function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
  * Block callback to show the date facet.
  */
 function culturefeed_search_ui_block_city_facet() {
-
-  // FacetingComponent is set in the page callback.
-  global $culturefeedFacetingComponent;
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
     return;
   }
@@ -436,9 +432,9 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
  * Block callback for the active filters during search.
  */
 function culturefeed_search_ui_search_active_filters_block() {
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
 
   // This currently means the page callback has already been invoked.
-  global $culturefeedFacetingComponent;
   global $culturefeedSearchResult;
 
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
