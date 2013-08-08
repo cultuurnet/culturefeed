@@ -14,38 +14,35 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     implements CultureFeedSearchPageInterface {
 
   /**
-   * Loads a search page.
+   * Initializes the search with data from the URL query parameters.
    */
-  public function loadPage() {
+  public function initialize() {
+    // Only initialize once.
+    if (empty($this->facetComponent)) {
+      $this->facetComponent = new Facet\FacetComponent();
 
-    // store faceting component in global, for use in blocks
-    global $culturefeedFacetingComponent;
-    $culturefeedFacetingComponent = new Facet\FacetComponent();
+      // Retrieve search parameters and add some defaults.
+      $params = drupal_get_query_parameters();
+      $params += array(
+        'sort' => $this->getDefaultSort(),
+        'page' => 0,
+        'search' => '',
+        'facet' => array(),
+      );
 
-    $params = drupal_get_query_parameters();
+      $this->addFacetFilters($params);
+      $this->addSort($params);
 
-    $params += array(
-      'sort' => $this->getDefaultSort(),
-      'page' => 0,
-      'search' => '',
-      'facet' => array(),
-    );
+      $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
+      $this->parameters[] = $this->facetComponent->facetField('category');
+      $this->parameters[] = $this->facetComponent->facetField('datetype');
+      $this->parameters[] = $this->facetComponent->facetField('city');
 
-    $this->addFacetFilters($params);
-    $this->addSort($params);
+      $this->execute($params);
 
-    $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
-    $this->parameters[] = $culturefeedFacetingComponent->facetField('category');
-    $this->parameters[] = $culturefeedFacetingComponent->facetField('datetype');
-    $this->parameters[] = $culturefeedFacetingComponent->facetField('city');
-
-    $this->execute($params, $culturefeedFacetingComponent);
-
-    // Warm up cache.
-    $this->warmupCache();
-
-    return $this->build();
-
+      // Warm up cache.
+      $this->warmupCache();
+    }
   }
 
   /**
@@ -194,13 +191,10 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * Warm up cache for facets to translate the items.
    */
   private function translateFacets() {
-
-    global $culturefeedFacetingComponent;
-
     $found_ids = array();
     $found_results = array();
     $translated_terms = array();
-    $facets = $culturefeedFacetingComponent->getFacets();
+    $facets = $this->facetComponent->getFacets();
     foreach ($facets as $key => $facet) {
       // The key should start with 'category_'
       if (substr($key, 0, 9) == 'category_') {
@@ -239,9 +233,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * Prepare all the social activity stats for this user.
    */
   private function prepareSocialStats() {
-
-    global $culturefeedFacetingComponent;
-
     // Do an activity search on all found nodeIds.
     $items = $this->result->getItems();
     $nodeIds = array();
@@ -300,10 +291,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * Prepare slugs for culturefeed_agenda_url_outbound_alter().
    */
   private function prepareSlugs() {
-
-    global $culturefeedFacetingComponent;
     $term_slugs = &drupal_static('culturefeed_search_term_slugs', array());
-    $facets = $culturefeedFacetingComponent->getFacets();
+    $facets = $this->facetComponent->getFacets();
     $items = array();
 
     // At the moment we only need slugs for event type and themes.

@@ -328,7 +328,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   if ($build !== NULL) {
     return $build;
   }
-  
+
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $path = current_path();
   $build = array();
@@ -482,4 +482,76 @@ function culturefeed_get_searchable_types() {
 function culturefeed_get_searchable_type($name) {
   $options = culturefeed_get_searchable_types();
   return isset($options[$name]) ? $options[$name] : NULL;
+}
+
+/**
+ * Returns a searchable type by path.
+ *
+ * @param string $path
+ *   An optional menu path. Defaults to the current path.
+ *
+ * @return array
+ *   The requested searchable type, or FALSE if no searchable type matches the
+ *   path.
+ */
+function culturefeed_get_searchable_type_by_path($path = '') {
+  if (!$path) {
+    $menu_item = menu_get_item();
+    $path = $menu_item['path'];
+  }
+  foreach (culturefeed_get_searchable_types() as $name => $type) {
+    if ($type['path'] == $path) {
+      return $type;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Returns an instance of a search page.
+ *
+ * @param array $type
+ *   A searchable type, as supplied by hook_culturefeed_searchable_types().
+ *
+ * @return CultureFeedSearchPage
+ *   An instance of the requested search page.
+ */
+function culturefeed_get_search_page($type) {
+  $pages = &drupal_static(__FUNCTION__);
+  $class_name = $type['class_name'];
+  if (!isset($pages[$class_name])) {
+    $pages[$class_name] = new $type['class_name']();
+    $pages[$class_name]->initialize();
+  }
+  return $pages[$class_name];
+}
+
+/**
+ * Returns the search facets for the current page.
+ *
+ * @return \CultuurNet\Search\Component\Facet\FacetComponent
+ *   The search facets for the current page or FALSE if the current page is not
+ *   a search page.
+ */
+function culturefeed_get_facet_component() {
+  if ($type = culturefeed_get_searchable_type_by_path()) {
+    $page = culturefeed_get_search_page($type);
+    return $page->getFacetComponent();
+  }
+  return FALSE;
+}
+
+/**
+ * Returns the search result for the current page.
+ *
+ * @return \CultuurNet\Search\SearchResult
+ *   The search result for the current page or FALSE if the current page is not
+ *   a search page.
+ */
+function culturefeed_get_search_result() {
+  if ($type = culturefeed_get_searchable_type_by_path()) {
+    $page = culturefeed_get_search_page($type);
+    return $page->getSearchResult();
+  }
+  return FALSE;
 }

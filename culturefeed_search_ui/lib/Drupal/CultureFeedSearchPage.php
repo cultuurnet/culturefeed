@@ -1,6 +1,7 @@
 <?php
 
 use \CultuurNet\Search\Parameter;
+use \CultuurNet\Search\Component\Facet\FacetComponent;
 
 /**
  * @file
@@ -70,11 +71,31 @@ class CultureFeedSearchPage {
   protected $defaultTitle = '';
 
   /**
+   * Stores search facets with corresponding values for the active search.
+   * @var \CultuurNet\Search\Component\Facet\FacetComponent
+   */
+  protected $facetComponent;
+
+  /**
    * Gets the default sortkey.
    * @return String $sortKey
    */
   public function getDefaultSort() {
     return $this->defaultSortKey;
+  }
+
+  /**
+   * Gets the search facets.
+   */
+  public function getFacetComponent() {
+    return $this->facetComponent;
+  }
+
+  /**
+   * Gets the search result.
+   */
+  public function getSearchResult() {
+    return $this->result;
   }
 
   /**
@@ -115,10 +136,35 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Initializes the search with data from the URL query parameters.
+   */
+  public function initialize() {
+    // Only initialize once.
+    if (empty($this->facetComponent)) {
+      $this->facetComponent = new Facet\FacetComponent();
+
+      // Retrieve search parameters and add some defaults.
+      $params = drupal_get_query_parameters();
+      $params += array(
+        'sort' => 'relevancy',
+        'page' => 0,
+        'search' => '',
+        'facet' => array(),
+      );
+
+      $this->addFacetFilters($params);
+      $this->addSort($params);
+
+      $this->execute($params);
+    }
+  }
+
+  /**
    * Loads a search page.
    */
   public function loadPage() {
-    return array();
+    $this->initialize();
+    return $this->build();
   }
 
   /**
@@ -208,7 +254,7 @@ class CultureFeedSearchPage {
   /**
    * Execute the search for current page.
    */
-  protected function execute($params, $culturefeedFacetingComponent) {
+  protected function execute($params) {
 
     // Add start index (page number we want)
     $this->start = $params['page'] * $this->resultsPerPage;
@@ -234,9 +280,8 @@ class CultureFeedSearchPage {
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     $searchService = culturefeed_get_search_service();
-    global $culturefeedSearchResult;
-    $culturefeedSearchResult = $this->result = $searchService->search($this->parameters);
-    $culturefeedFacetingComponent->obtainResults($this->result);
+    $this->result = $searchService->search($this->parameters);
+    $this->facetComponent->obtainResults($this->result);
 
   }
 
@@ -335,9 +380,7 @@ class CultureFeedSearchPage {
    * Get the title to show.
    */
   public function getDrupalTitle() {
-
-    global $culturefeedFacetingComponent;
-    $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+    $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
     if (!empty($active_filters)) {
 
       $labels = array();

@@ -14,40 +14,36 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     implements CultureFeedSearchPageInterface {
 
   /**
-   * Loads a search page.
+   * Initializes the search with data from the URL query parameters.
    */
-  public function loadPage() {
+  public function initialize() {
+    // Only initialize once.
+    if (empty($this->facetComponent)) {
+      $this->facetComponent = new Facet\FacetComponent();
 
-    // store faceting component in global, for use in blocks
-    global $culturefeedFacetingComponent;
-    $culturefeedFacetingComponent = new Facet\FacetComponent();
+      // Retrieve search parameters and add some defaults.
+      $params = drupal_get_query_parameters();
+      $params += array(
+        'sort' => 'relevancy',
+        'page' => 0,
+        'search' => '',
+        'facet' => array(),
+      );
 
-    $args = $_GET;
-    $params = drupal_get_query_parameters();
+      $this->addFacetFilters($params);
+      $this->addSort($params);
 
-    $params += array(
-      'sort' => 'relevancy',
-      'page' => 0,
-      'search' => '',
-      'facet' => array(),
-    );
+      $this->parameters[] = $this->facetComponent->facetField('category');
+      $this->parameters[] = $this->facetComponent->facetField('city');
 
-    $this->addFacetFilters($params);
-    $this->addSort($params);
-
-    $this->parameters[] = $culturefeedFacetingComponent->facetField('category');
-    $this->parameters[] = $culturefeedFacetingComponent->facetField('city');
-
-    $this->execute($params, $culturefeedFacetingComponent);
-
-    return $this->build();
-
+      $this->execute($params);
+    }
   }
 
   /**
    * Execute the search for current page.
    */
-  protected function execute($params, $culturefeedFacetingComponent) {
+  protected function execute($params) {
 
     // Add start index (page number we want)
     $this->start = $params['page'] * $this->resultsPerPage;
@@ -68,10 +64,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
-    global $culturefeedSearchResult;
-
-    $culturefeedSearchResult = $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
-    $culturefeedFacetingComponent->obtainResults($this->result);
+    $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
+    $this->facetComponent->obtainResults($this->result);
 
   }
 
