@@ -150,6 +150,7 @@ function culturefeed_pages_theme() {
         'items' => array(),
         'page' => NULL,
         'is_admin' => FALSE,
+        'read_more_path' => '',
       ),
       'template' => 'culturefeed-pages-page-agenda',
       'path' => $path,
@@ -410,6 +411,14 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/ajax/page/agenda/%culturefeed_pages_page'] = array(
+    'page callback' => 'culturefeed_social_page_ajax_get_agenda',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -478,7 +487,7 @@ function culturefeed_pages_block_configure($delta) {
 
   if ($delta == 'page-agenda') {
     $form['pages_block_agenda_total_items'] = array(
-      '#title' => t('Items to show'),
+      '#title' => t('Items to show per page'),
       '#type' => 'textfield',
       '#default_value' => variable_get('pages_block_agenda_total_items', 5),
     );

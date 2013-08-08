@@ -271,11 +271,11 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
+  $max_results = variable_get('pages_block_agenda_total_items', 5);
 
   // Execute search and show results.
   $build = array();
-
-  $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+  $result = culturefeed_pages_get_activities_from_page($page, $max_results);
   if (!$result || $result->getTotalCount() == 0) {
     return;
   }
@@ -295,8 +295,12 @@ function culturefeed_pages_block_page_agenda($page) {
     '#items' => $items,
     '#is_admin' => $is_admin,
     '#page' => $page,
-    '#class' => 'page-activities'
+    '#class' => 'page-activities',
   );
+
+  if ($result->getTotalCount() > $max_results) {
+    $block['content']['#read_more_path'] = 'culturefeed/ajax/page/agenda/' . $page->getId();
+  }
 
   return $block;
 
