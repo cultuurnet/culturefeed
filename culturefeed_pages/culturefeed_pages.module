@@ -487,7 +487,7 @@ function culturefeed_pages_block_configure($delta) {
 
   if ($delta == 'page-agenda') {
     $form['pages_block_agenda_total_items'] = array(
-      '#title' => t('Items to show'),
+      '#title' => t('Items to show per page'),
       '#type' => 'textfield',
       '#default_value' => variable_get('pages_block_agenda_total_items', 5),
     );
