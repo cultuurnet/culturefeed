@@ -31,7 +31,7 @@ function culturefeed_search_ui_admin_settings() {
     '#type' => 'checkbox',
     '#title' => t('Redirect old cnapi urls to the new system'),
     '#description' => t('If enabled, all urls that where used by the cnapi module, will be redirected to urls for the new search api.'),
-    '#default_value' => variable_get('culturefeed_search_redirect_old_search', TRUE),
+    '#default_value' => variable_get('culturefeed_search_redirect_old_search', FALSE),
   );
 
   return system_settings_form($form);
