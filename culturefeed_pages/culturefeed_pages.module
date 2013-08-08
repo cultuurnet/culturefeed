@@ -150,6 +150,7 @@ function culturefeed_pages_theme() {
         'items' => array(),
         'page' => NULL,
         'is_admin' => FALSE,
+        'read_more_path' => '',
       ),
       'template' => 'culturefeed-pages-page-agenda',
       'path' => $path,
@@ -406,6 +407,14 @@ function culturefeed_pages_menu() {
     'title' => t('My pages'),
     'page callback' => 'culturefeed_pages_page_my_pages',
     'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/ajax/page/agenda/%culturefeed_pages_page'] = array(
+    'page callback' => 'culturefeed_social_page_ajax_get_agenda',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );

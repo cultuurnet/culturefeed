@@ -275,12 +275,13 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
  * Search activities that are connected to the given page.
  * @return mixed \CultuurNet\Search\SearchResult or NULL on exception
  */
-function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $page, $max_results) {
+function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $page, $max_results, $page_nr = 0) {
 
   $parameters[] = new \CultuurNet\Search\Parameter\Rows($max_results);
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
+  $parameters[] = new \CultuurNet\Search\Parameter\Start($page_nr);
 
   try {
     return culturefeed_get_search_service()->search($parameters);
@@ -379,3 +380,4 @@ function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, 
   return $memberships;
 
 }
+

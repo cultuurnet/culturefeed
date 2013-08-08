@@ -454,6 +454,20 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 }
 
 /**
+ * Preprocess the variables for my pages overview.
+ * @see culturefeed-pages-page-agenda.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables) {
+
+  if (!empty($variables['read_more_path'])) {
+    drupal_add_library('system', 'drupal.ajax');
+    $query = array();
+    $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
+    $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
+  }
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {
