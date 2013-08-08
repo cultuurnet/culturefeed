@@ -89,7 +89,7 @@ function culturefeed_get_or_create_user($cf_uid, $cf_account = NULL, $token = NU
     // If the user is not known, create it.
     if (!$uid) {
       // If no CultureFeed user was passed, we can't create the user.
-      if (!$cf_account) {
+      if (!$cf_account || empty($cf_account->nick)) {
         return FALSE;
       }
 
