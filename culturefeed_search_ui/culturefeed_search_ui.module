@@ -530,22 +530,28 @@ function culturefeed_get_search_page($type) {
  * Returns the search facets for the current page.
  *
  * @return \CultuurNet\Search\Component\Facet\FacetComponent
- *   The search facets for the current page.
+ *   The search facets for the current page or FALSE if the current page is not
+ *   a search page.
  */
 function culturefeed_get_facet_component() {
-  $type = culturefeed_get_searchable_type_by_path();
-  $page = culturefeed_get_search_page($type);
-  return $page->getFacetComponent();
+  if ($type = culturefeed_get_searchable_type_by_path()) {
+    $page = culturefeed_get_search_page($type);
+    return $page->getFacetComponent();
+  }
+  return FALSE;
 }
 
 /**
  * Returns the search result for the current page.
  *
- * @return \CultuurNet\Search\Component\Facet\FacetComponent
- *   The search facets for the current page.
+ * @return \CultuurNet\Search\SearchResult
+ *   The search result for the current page or FALSE if the current page is not
+ *   a search page.
  */
 function culturefeed_get_search_result() {
-  $type = culturefeed_get_searchable_type_by_path();
-  $page = culturefeed_get_search_page($type);
-  return $page->getSearchResult();
+  if ($type = culturefeed_get_searchable_type_by_path()) {
+    $page = culturefeed_get_search_page($type);
+    return $page->getSearchResult();
+  }
+  return FALSE;
 }
