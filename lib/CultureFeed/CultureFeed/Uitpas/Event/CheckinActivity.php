@@ -152,6 +152,26 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
    * @var integer
    */
   public $userPoints;
+  
+  /**
+   * Latitude of the location where checked in.
+   *
+   * @var float
+   */
+  public $eventLocationLat;
+
+  /**
+   * Longitude of the location where checked in.
+   *
+   * @var float
+   */
+  public $eventLocationLon;
+  
+  /**
+   * Gender of the passholder who checked in.
+   * @var string
+   */
+  public $gender;  
 
   /**
    * Instantiates a new checkin activity object based on the passed XML representation.
@@ -183,6 +203,9 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
     $checkin->firstName = $object->xpath_str('firstName');
     $checkin->lastName = $object->xpath_str('lastName');
     $checkin->userPoints = $object->xpath_int('userPoints');
+    $checkin->eventLocationLat = $object->xpath_float('eventLocationLat');
+    $checkin->eventLocationLon = $object->xpath_float('eventLocationLon');
+    $checkin->gender = $object->xpath_str('gender');
 
     return $checkin;
   }
