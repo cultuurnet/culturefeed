@@ -32,8 +32,8 @@ class DrupalCultureFeedSearchService {
     $endpoint = variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION);
     $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
 
-    if (variable_get('culturefeed_search_debug_mode')) {
-      $service->setDebugMode(TRUE);
+    if (module_exists('culturefeed_devel')) {
+      $service->enableLogging();
     }
 
     if (variable_get('culturefeed_search_cache_enabled', FALSE)) {

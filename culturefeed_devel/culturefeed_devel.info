@@ -1,0 +1,6 @@
+name = CultureFeed Devel
+description = Enables query logging for culturefeed requests. Only search requests are supported for the moment.
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed_search

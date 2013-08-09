@@ -182,3 +182,11 @@ function culturefeed_search_update_7005() {
   db_create_table('cnapi_headings', $schema['cnapi_headings']);
   drupal_set_message(t('Cnapi headings table created. Please run the drush import for it.'));
 }
+
+/**
+ * Remove debug variable.
+ */
+function culturefeed_search_update_7006() {
+  variable_del('culturefeed_search_debug_mode');
+}
+

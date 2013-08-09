@@ -35,12 +35,6 @@ function culturefeed_search_admin_settings() {
     '#maxlength' => 40,
   );
 
-  $form['culturefeed_search_debug_mode'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Print search queries to the screen'),
-    '#default_value' => variable_get('culturefeed_search_debug_mode', FALSE),
-  );
-
   return system_settings_form($form);
 
 }

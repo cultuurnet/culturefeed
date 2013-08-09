@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Enables query logging for culturefeed requests.
+ * Only search requests are supported for the moment.
+ */
+
+// Default slow request pointer in ms.
+define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 5);
+
+/**
+ * Implementation of hook_boot(). Runs even for cached pages.
+ */
+function culturefeed_devel_boot() {
+  drupal_register_shutdown_function('culturefeed_devel_shutdown');
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_devel_theme() {
+  return array(
+    'culturefeed_devel_request_log' => array(
+      'variables' => array(
+        'header' => array(),
+        'rows' => array(),
+        'total' => 0,
+        'max_time' => CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_devel_menu() {
+
+  $items = array();
+  $items['admin/config/devel/culturefeed'] = array(
+    'title' => 'Culture Feed Devel',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_devel_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+
+  return $items;
+}
+
+/**
+ * Shutdown function. Log all slow requests to db, and output full log if enabled.
+ */
+function culturefeed_devel_shutdown() {
+
+  $request_log = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance();
+  $requests = $request_log->getRequests();
+  $max_time = variable_get('culturefeed_devel_show_requests', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
+
+  foreach ($requests as $request) {
+    if ($request->getTime() > $max_time) {
+      watchdog('culturefeed_devel', t('Slow query on api: @query. Time taken: @time ms', array(
+        '@query' => urldecode($request->getUrl()),
+        '@time' => $request->getTime(),
+      )));
+    }
+  }
+
+  if (variable_get('culturefeed_devel_show_requests', TRUE)) {
+    print culturefeed_devel_requests_table($request_log, $max_time);
+  }
+
+}
+
+/**
+ * Adds a table at the bottom of the page cataloguing data on all the database queries that were made to
+ * generate the page.
+ */
+function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog $request_log, $max_time) {
+
+  $header = array(t('Total time'), t('Response code'), t('Url'));
+  $rows = array();
+
+  $requests = $request_log->getRequests();
+
+  $i = 0;
+  foreach ($requests as $request) {
+    $rows[$i]['time'] = $request->getTime();
+    $rows[$i]['status'] = $request->getResponse()->getStatusCode();
+    $rows[$i]['url'] = urldecode($request->getUrl());
+    $i++;
+    unset($diff);
+  }
+
+  return theme('culturefeed_devel_request_log', array(
+    'header' => $header,
+    'rows' => $rows,
+    'total' => $request_log->getRequestCount(),
+    'max_time' => $max_time,
+  ));
+}
+
+/**
+ * Theme the request log.
+ */
+function theme_culturefeed_devel_request_log($variables) {
+
+  $output = '<h3>' . t('Total requests to API') . '(' . $variables['total'] . ')</h3>';
+
+  $header = $variables['header'];
+  $rows = $variables['rows'];
+  $max_time = $variables['max_time'];
+  $output = '';
+
+  if (!empty($header)) {
+    $output .= "<div class='culturefeed-log-header clear-block'>";
+    foreach ($header as $heading) {
+      $output .= '<div class="culturefeed-log-header-item">';
+      $output .= $heading;
+      $output .= '</div>';
+    }
+    $output .= "</div>";
+  }
+
+  if (!empty($rows)) {
+    $i = 0;
+    foreach ($rows as $row) {
+
+      $i++;
+      $zebra = ($i % 2) == 0 ? 'even' : 'odd';
+      $slow_query = ($row['time'] > $max_time) ? ' slow-query' : '';
+      $output .= '<div class="culturefeed-log culturefeed-log-' . $zebra . $slow_query . 'clear-block">';
+      $output .= '<div class="culturefeed-log-item">' . $row['time'] . '</div>';
+      $output .= '<div class="culturefeed-log-item">' . $row['status'] . '</div>';
+      $output .= '<div class="culturefeed-log-item">' . $row['url'] . '</div>';
+
+      $output .= "</div>";
+    }
+  }
+
+  return $output;
+}
