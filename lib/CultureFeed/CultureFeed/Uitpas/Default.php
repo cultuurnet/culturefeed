@@ -341,7 +341,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $advantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::fromXML($xml);
+    $advantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createfromXML($xml);
     return $advantages;
   }
 
@@ -413,7 +413,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('response'));
+    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('/response', false));
 
     return $promotions;
   }
@@ -472,7 +472,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   public function getPassholderEventActions(CultureFeed_Uitpas_Passholder_Query_EventActions $query) {
     $data = $query->toPostData();
 
-    $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/eventActions', $data);
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/eventActions', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -576,7 +576,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('response'));
+    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('response', false));
     return $promotions;
   }
 

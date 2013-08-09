@@ -38,8 +38,9 @@ class CultureFeed_Uitpas_Passholder_EventActions {
   public static function createFromXML(CultureFeed_SimpleXMLElement $xml) {
     $eventActions = new self();
 
-    $eventActions->welcomeAdvantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('/welcomeAdvantages', 'welcomeAdvantage'));
-    $eventActions->pointsPromotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('/pointsPromotions', 'pointsPromotion'));
+    $eventActions->passholder = CultureFeed_Uitpas_Passholder::createFromXML($xml->xpath('//passHolder', FALSE));
+    $eventActions->welcomeAdvantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('//welcomeAdvantages', FALSE), 'welcomeAdvantage');
+    $eventActions->pointsPromotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('//pointsPromotions', FALSE), 'pointsPromotion');
 
     //$eventActions->eventCheckin = ::createFromXML($xml->xpath('eventCheckin'));
     //$eventActions->eventBuyTicket = ::createFromXML($xml->xpath('eventBuyTicket'));
