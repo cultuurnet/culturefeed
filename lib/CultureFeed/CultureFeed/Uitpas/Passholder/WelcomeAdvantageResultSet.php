@@ -7,8 +7,9 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet extends CultureFee
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $xml, $promotionElementName = 'promotion') {
     $advantages = array();
-    $objects = $xml->xpath('/promotions/' . $promotionElementName);
-    $total = count($objects);
+
+    $objects = $xml->xpath('promotions/' . $promotionElementName);
+    $total = $xml->xpath_int('total');
 
     foreach ($objects as $object) {
       $advantages[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($object);

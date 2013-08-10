@@ -341,7 +341,16 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $advantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createfromXML($xml);
+    // Can not use CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createfromXML() here
+    // because the response format is not consistent.
+    // It lacks a 'total' element for example.
+    $promotion_elements = $xml->xpath('promotion');
+    foreach ($promotion_elements as $promotion_element) {
+      $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($promotion_element);
+    }
+    $total = count($promotions);
+
+    $advantages = new CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet($total, $promotions);
     return $advantages;
   }
 
@@ -576,7 +585,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('response', false));
+    $promotions = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('/response', false));
     return $promotions;
   }
 
