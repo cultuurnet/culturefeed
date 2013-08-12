@@ -353,7 +353,7 @@ class CultureFeedSearchPage {
             '#options' => array('query' => $params),
             '#ajax' => array(),
             '#attributes' => array(
-              'class' => array('btn btn-primary')
+              'class' => array('btn btn-primary btn-block btn-large')
           ),
           );
         }
