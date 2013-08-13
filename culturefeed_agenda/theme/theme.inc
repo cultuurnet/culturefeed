@@ -135,6 +135,20 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
     }
 
+    // Performers
+    $performers = $detail->getPerformers();
+    $variables['performers'] = '';
+    if ($performers) {
+  
+      $performer_labels = array();
+      foreach ($performers as $performer) {
+        $performer_labels[] = check_plain($performer->getLabel());
+      }
+  
+      $variables['performers'] = implode(', ', $performer_labels);
+  
+    }
+
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
@@ -276,7 +290,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
 
-
 }
 
 /**
@@ -411,19 +424,6 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   }
 
   if ($production_detail) {
-
-    // Performers
-    $performers = $production_detail->getPerformers();
-    if ($performers) {
-
-      $performer_labels = array();
-      foreach ($performers as $performer) {
-        $performer_labels[] = check_plain($performer->getLabel());
-      }
-
-      $variables['performers'] = implode(', ', $performer_labels);
-
-    }
 
     // Link to detail.
     $variables['url'] = culturefeed_search_detail_url('production', $production->getCdbid(), $production_detail->getTitle());
