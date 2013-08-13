@@ -11,7 +11,6 @@
 #  includes/pages.inc: n/a
 #  js/search_ui.js: n/a
 #  lib/Drupal/CultureFeedSearchPage.php: n/a
-#  lib/Drupal/InvalidSearchPageException.php: n/a
 #  theme/culturefeed-search-list.tpl.php: n/a
 #  theme/culturefeed-search-page.tpl.php: n/a
 #  theme/culturefeed-search-suggestions.tpl.php: n/a
@@ -20,9 +19,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-07-25 17:33+0200\n"
-"PO-Revision-Date: 2013-07-26 10:33+0100\n"
-"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"POT-Creation-Date: 2013-08-13 10:19+0200\n"
+"PO-Revision-Date: 2013-08-13 10:43+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -38,29 +37,29 @@ msgstr ""
 
 #: culturefeed_search_ui.module:234
 msgid "Culturefeed search: search events and pages"
-msgstr ""
+msgstr "Culturefeed search: zoek activiteiten en pagina's"
 
 #: culturefeed_search_ui.module:239
 msgid "Culturefeed search: sort order"
-msgstr ""
+msgstr "Culturefeed search: zoekresultaten sorteren"
 
 #: culturefeed_search_ui.module:244
 msgid "Culturefeed search: active filters"
-msgstr ""
+msgstr "Culturefeed search: actieve filters"
 
 #: culturefeed_search_ui.module:249
 msgid "Culturefeed search: facet when"
-msgstr ""
+msgstr "Culturefeed search: facet wanneer"
 
 #: culturefeed_search_ui.module:254
 msgid "Culturefeed search: facet where"
-msgstr ""
+msgstr "Culturefeed search: facet waar"
 
 #: culturefeed_search_ui.module:262
 msgid "Culturefeed search: facet @label"
 msgstr ""
 
-#: culturefeed_search_ui.module:405
+#: culturefeed_search_ui.module:409
 msgid "Near"
 msgstr "In de buurt van"
 
@@ -81,9 +80,8 @@ msgid ""
 "CultureFeed Search UI is the basic framework needed to view search pages "
 "from items. For example agenda/search page from the agenda module."
 msgstr ""
-"CultureFeed Search UI is het basis framework om zoekopdrachten en "
-"resultatenpagina's te bekijken. Bijvoorbeeld agenda of zoekpagina's van de "
-"agendamodule. "
+"CultureFeed Search UI is het basis framework om zoekresultatenpagina's en "
+"detailpagina's te raadplegen."
 
 #: culturefeed_search_ui.info:0
 msgid "CultureFeed"
@@ -91,39 +89,41 @@ msgstr "CultureFeed"
 
 #: includes/admin.inc:15
 msgid "Number of items per page"
-msgstr "Aantal items per pagina"
+msgstr "Aantal resultaten per pagina"
 
 #: includes/admin.inc:21
 msgid "Pager type for the search page(s)"
-msgstr "Type bladwijzer bij zoekresultaten"
+msgstr "Type navigatie op zoekresultatenpagina's"
 
 #: includes/admin.inc:22
 msgid ""
 "The type of pager to use on search pages. This will trigger different "
 "templates as well."
 msgstr ""
-"Het type bladwijzer op zoekpagina's. Hiervoor worden verschillende templates "
-"gebruikt. "
+"Type navigatie op zoekresultatenpagina's (paginering / 'infinite scroll'). "
+"Voor elk type navigatie wordt een ander sjabloon gebruikt."
 
 #: includes/admin.inc:24
 msgid "Normal pager with page numbers"
-msgstr "Normale bladwijzer met paginanummers"
+msgstr "Paginering met paginanummering en vorige / volgende opties."
 
 #: includes/admin.inc:25
 msgid "Pager with button to manually scroll to infinity"
-msgstr "Bladwijzer met knop om handmatig te scrollen tot oneindig"
+msgstr ""
+"Paginering die je toelaat om onbeperkt zoekresultaten in te laden ('infinite "
+"scroll')."
 
 #: includes/admin.inc:32
 msgid "Redirect old cnapi urls to the new system"
-msgstr "Verwijs oude cnapi url's door naar het nieuwe systeem"
+msgstr "Leid oude (CNAPI) URL's om naar de nieuwe (SAPI) URL's."
 
 #: includes/admin.inc:33
 msgid ""
 "If enabled, all urls that where used by the cnapi module, will be redirected "
 "to urls for the new search api."
 msgstr ""
-"Wanneer ingeschakeld zullen alle oude url's van op de cnapi-module, "
-"doorverwezen worden naar url's op de nieuwe search api"
+"Wanneer ingeschakeld zullen alle oude URL's (CNAPI), omgeleid worden naar "
+"nieuwe URL's (SAPI)."
 
 #: includes/blocks.inc:31
 msgid "Search in"
@@ -131,49 +131,49 @@ msgstr "Zoek in"
 
 #: includes/blocks.inc:38
 msgid "Search terms"
-msgstr "Zoekopdracht"
+msgstr "Trefwoorden"
 
 #: includes/blocks.inc:45
 msgid "Search"
 msgstr "Zoeken"
 
-#: includes/blocks.inc:103
+#: includes/blocks.inc:108
 msgid "Sort"
 msgstr "Sorteer resultaten op"
 
-#: includes/blocks.inc:111
+#: includes/blocks.inc:116
 msgid "Submit"
 msgstr "Voeg toe"
 
-#: includes/blocks.inc:218
+#: includes/blocks.inc:221
 msgid "When"
 msgstr "Wanneer"
 
-#: includes/blocks.inc:236
+#: includes/blocks.inc:239
 msgid "Choose a date"
 msgstr "Datum"
 
-#: includes/blocks.inc:239
+#: includes/blocks.inc:242
 msgid "Our choose a custom date"
 msgstr "Of kies zelf een datum"
 
-#: includes/blocks.inc:244;358;406
+#: includes/blocks.inc:247;359;407
 msgid "Ok"
 msgstr "Ok"
 
-#: includes/blocks.inc:333;350
+#: includes/blocks.inc:334;351
 msgid "Where"
 msgstr "Waar"
 
-#: includes/blocks.inc:353
+#: includes/blocks.inc:354
 msgid "Zipcode or city"
 msgstr "Postcode of gemeente"
 
-#: includes/blocks.inc:399
+#: includes/blocks.inc:400
 msgid "Search nearby"
-msgstr "Zoek in omgeving"
+msgstr "Zoek in de buurt"
 
-#: includes/blocks.inc:446
+#: includes/blocks.inc:445
 msgid "Remove all filters"
 msgstr "Alle filters verwijderen"
 
@@ -207,7 +207,7 @@ msgstr "Volgende 12 maanden"
 
 #: includes/pages.inc:58;62;69
 msgid "There was an error while loading the search results."
-msgstr "Er is een fout opgetreden tijdens het laden van de zoekresultaten."
+msgstr "Er is een fout opgetreden bij het laden van de zoekresultaten."
 
 #: js/search_ui.js:0
 msgid "Specific date"
@@ -215,7 +215,7 @@ msgstr "Specifieke datum"
 
 #: js/search_ui.js:0
 msgid "Period from/to"
-msgstr "Van/tot"
+msgstr "van / tot"
 
 #: js/search_ui.js:0
 msgid "Start date"
@@ -229,25 +229,21 @@ msgstr "Einddatum"
 msgid "OK"
 msgstr "Ok"
 
-#: lib/Drupal/CultureFeedSearchPage.php:306
+#: lib/Drupal/CultureFeedSearchPage.php:351
 msgid "More results"
 msgstr "Meer resultaten"
 
-#: lib/Drupal/CultureFeedSearchPage.php:317
-msgid "new search"
-msgstr "Nieuwe zoekopdracht"
+#: lib/Drupal/CultureFeedSearchPage.php:362
+msgid "perform a new search."
+msgstr "voer een nieuwe zoekopdracht uit."
 
-#: lib/Drupal/CultureFeedSearchPage.php:319
-msgid "There are no more results."
+#: lib/Drupal/CultureFeedSearchPage.php:364
+msgid "There are no more search results."
 msgstr "Er zijn geen zoekresultaten meer."
 
-#: lib/Drupal/CultureFeedSearchPage.php:320
-msgid "Did not find what you were looking for? Do a"
-msgstr "Niet gevonden wat u zocht? Voer een"
-
-#: lib/Drupal/InvalidSearchPageException.php:10
-msgid "Searchresults could not be loaded."
-msgstr "De zoekpagina kon niet geladen worden."
+#: lib/Drupal/CultureFeedSearchPage.php:365
+msgid "Refine your search results or"
+msgstr "Verfijn jouw zoekopdracht of"
 
 #: theme/culturefeed-search-list.tpl.php:16
 msgid "No results found"
@@ -261,7 +257,7 @@ msgstr[1] "<strong>@count</strong> resultaten gevonden"
 
 #: theme/culturefeed-search-suggestions.tpl.php:8
 msgid "Did you mean"
-msgstr "Bedoelde je"
+msgstr "Bedoelde je:"
 
 #: theme/theme.inc:186
 msgid "@range from @count result"

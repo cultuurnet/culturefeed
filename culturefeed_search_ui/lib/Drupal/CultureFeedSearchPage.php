@@ -353,16 +353,16 @@ class CultureFeedSearchPage {
             '#options' => array('query' => $params),
             '#ajax' => array(),
             '#attributes' => array(
-              'class' => array('btn btn-primary')
+              'class' => array('btn btn-primary btn-block btn-large')
           ),
           );
         }
 
         if ($rest <= $this->resultsPerPage) {
-          $link = l(t('new search'), str_replace("/ajax", "", $_GET['q']));
+          $link = l(t('perform a new search.'), str_replace("/ajax", "", $_GET['q']));
           $build['pager-container']['pager'] = array(
-            '#markup' => '<div class="alert"><p><strong>' . t('There are no more results.') . '</strong></p>
-          <p>' . t('Did not find what you were looking for? Do a') . ' ' . $link . '.</p></div>');
+            '#markup' => '<div class="alert"><p><strong>' . t('There are no more search results.') . '</strong></p>
+          <p>' . t('Refine your search results or') . ' ' . $link . '</p></div>');
         }
 
         if ($this->fullPage) {

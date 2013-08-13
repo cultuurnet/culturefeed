@@ -5,4 +5,9 @@
  */
 ?>
 
-<span class="filter"><span class="filter-label"><?php print check_plain($label); ?></span> <a href="<?php print $url; ?>" class="filter-remove"><strong>&times;</strong></a></span>
+<span class="filter">
+    <span class="filter-label"><?php print check_plain($label); ?></span>
+    <a href="<?php print $url; ?>" title="Verwijder filter '<?php print check_plain($label); ?>'">
+      <i class="icon-remove icon-large text-red"></i><span class="hidden">verwijder
+    </a>
+</span>
