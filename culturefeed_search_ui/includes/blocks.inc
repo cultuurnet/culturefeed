@@ -442,7 +442,7 @@ function culturefeed_search_ui_search_active_filters_block() {
   $build = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
 
   if (!empty($build) && count($build) > 1) {
-    $build['reset'] = array('#markup' => l(t('Remove all filters'), current_path(), array('attributes' => array('class' => array('delete-all')))));
+    $build['reset'] = array('#markup' => l(t('Remove all filters') . ' <i class="icon-remove icon-large text-red"></i>', current_path(), array('html' => TRUE, 'attributes' => array('class' => array('remove-all')))));
   }
 
   // Suggestions if available.
