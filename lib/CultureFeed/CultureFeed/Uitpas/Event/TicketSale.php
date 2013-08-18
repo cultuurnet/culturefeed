@@ -100,6 +100,11 @@ class CultureFeed_Uitpas_Event_TicketSale extends CultureFeed_Uitpas_ValueObject
   public $dateOfBirth;
   public $uitpasNumber;
   public $status;
+  
+  /**
+   * Get the amount being refunded.
+   */
+  public $refunded;
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
@@ -121,6 +126,9 @@ class CultureFeed_Uitpas_Event_TicketSale extends CultureFeed_Uitpas_ValueObject
     $ticket_sale->dateOfBirth = $object->xpath_str('dateOfBirth');
     $ticket_sale->uitpasNumber = $object->xpath_str('uitpasNumber');
     $ticket_sale->status = $object->xpath_str('status');
+    
+    // TODO: verify the formula with CN for the refunded amount
+    $ticket_sale->refunded = $ticket_sale->price - $ticket_sale->tariff;
 
 
     return $ticket_sale;
