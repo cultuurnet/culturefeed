@@ -346,7 +346,9 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
       if ($code = $xml->xpath_str('/response/code')) {
         $message = $xml->xpath_str('/response/message');
-        throw new CultureFeed_Exception($message . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $code);
+        $exception = new CultureFeed_Exception($message . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $code);
+        $exception->setUserFriendlyMessage($message);
+        throw $exception;
       }
       throw new CultureFeed_HttpException($response->response . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data . ' HTTP HEADERS: ' . implode(',' , $http_headers), $response->code);
     }
