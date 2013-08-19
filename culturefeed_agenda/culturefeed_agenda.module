@@ -433,6 +433,11 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
  */
 function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_language) {
 
+  // Catch old D6 urls.
+  if ($path == 'agenda/r') {
+    $path = 'agenda/search';
+  }
+
   // Only check on agenda pages.
   if (arg(0, $path) == 'agenda') {
 

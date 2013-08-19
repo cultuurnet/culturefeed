@@ -153,6 +153,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
 
   $new_query = array();
 
+  // Check if we are on a searchable page.
+  $current_search_page = culturefeed_get_searchable_type_by_path();
+  if (!$current_search_page) {
+    return;
+  }
+
   // Heading is now facet on category id.
   if (isset($_GET['heading'])) {
 
