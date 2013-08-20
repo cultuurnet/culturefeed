@@ -239,7 +239,7 @@ function culturefeed_search_ui_date_facet_form() {
     '#title' => t('Choose a date'),
     '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
-    '#attributes' => array('placeholder' => t('Our choose a custom date')),
+    '#attributes' => array('placeholder' => t('Or choose a custom date'), 'autocomplete' => 'off'),
   );
 
   $form['submit'] = array(

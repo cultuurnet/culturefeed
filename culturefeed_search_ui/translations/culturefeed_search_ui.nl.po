@@ -154,7 +154,7 @@ msgid "Choose a date"
 msgstr "Datum"
 
 #: includes/blocks.inc:242
-msgid "Our choose a custom date"
+msgid "Or choose a custom date"
 msgstr "Of kies zelf een datum"
 
 #: includes/blocks.inc:247;359;407
