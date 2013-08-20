@@ -1,4 +1,6 @@
 <?php
+use CultuurNet\Search\Parameter\Parameter;
+
 /**
  * @file
  * Helper functions for the culturefeed_search.
@@ -41,6 +43,7 @@ function culturefeed_search_item_load($cdb_id) {
 
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\Parameter("past", "true");
   $parameters[] = new \CultuurNet\Search\Parameter\Query('cdbid:' . $cdb_id);
 
   try {
