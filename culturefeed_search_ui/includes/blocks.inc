@@ -449,11 +449,11 @@ function culturefeed_search_ui_search_active_filters_block() {
   if ($culturefeedSearchResult instanceof \CultuurNet\Search\SearchResult) {
     $suggestions_keys = $culturefeedSearchResult->getSuggestions();
     if (!empty($suggestions_keys)) {
-      $search_query = $query;
+      $search_query = array();
       $suggestions = array();
       foreach ($suggestions_keys as $suggestion) {
         $search_query['search'] = $suggestion;
-        $suggestions[$suggestion] = url($path, array('query' => $search_query));
+        $suggestions[$suggestion] = url(current_path(), array('query' => $search_query));
       }
 
       $build['suggestions'] =  array(
