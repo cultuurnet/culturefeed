@@ -425,7 +425,7 @@ class CultureFeedSearchPage {
   public function getDrupalTitle() {
     // Return the title that has been explicitly set with $this->setTitle().
     if (!empty($this->title)) {
-      return check_plain($this->title);
+      return $this->title;
     }
 
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
