@@ -59,6 +59,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Add grouping so returned events are not duplicate.
     $this->parameters[] = new Parameter\Group();
 
+    // @todo For completeness, it should also be possible to alter localParams.
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     // Prepare the search query and add to the search parameters.

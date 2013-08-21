@@ -55,6 +55,18 @@ class CultureFeedSearchPage {
   /**
    * Query to search on.
    * @var array
+   *   An array containing search strings. The respective values will be treated
+   *   as required search terms, joined with "AND". If a single value contains
+   *   multiple words separated by spaces, these will be treated as "OR".
+   *   For example if you want to do search for "(blue OR red) AND (shoe OR
+   *   sandal)" you can pass the following array:
+   *   @code
+   *   $query = array('blue red', 'shoe sandal');
+   *   @endcode
+   *   Using "OR" and "AND" inside the search terms is also permitted:
+   *   @code
+   *   $query = array('blue OR red', 'shoe AND leather');
+   *   @endcode
    */
   protected $query = array();
 
@@ -398,6 +410,8 @@ class CultureFeedSearchPage {
       $this->setLocalParam('type', 'boost');
       $this->setLocalParam('b', 'sum(recommend_count,product(comment_count,10))');
     }
+
+    // @todo For completeness, it should also be possible to alter localParams.
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
     // Prepare the search query and add to the search parameters.
