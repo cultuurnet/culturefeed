@@ -122,6 +122,40 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Sets the search query.
+   *
+   * @param array $query
+   *   The search query array.
+   */
+  public function setQuery(array $query) {
+    $this->query = $query;
+  }
+
+  /**
+   * Gets the search query.
+   *
+   * @return array
+   *   The search query array.
+   */
+  public function getQuery() {
+    return $this->query;
+  }
+
+  /**
+   * Adds a search term to the search query.
+   *
+   * @param string $term
+   *   The search term to add. This will be a required term.
+   *
+   * @return array
+   *   The updated search query array.
+   */
+  public function addQueryTerm($term) {
+    $this->query[] = $term;
+    return $this->query;
+  }
+
+  /**
    * Sets the resultsPerPage property.
    */
   public function setResultsPerPage($resultsPerPage) {
@@ -151,6 +185,10 @@ class CultureFeedSearchPage {
         'search' => '',
         'facet' => array(),
       );
+
+      if (!empty($params['search'])) {
+        $this->addQueryTerm($params['search']);
+      }
 
       $this->addFacetFilters($params);
       $this->addSort($params);
@@ -252,6 +290,26 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Prepare search query for inclusion as a search parameter.
+   *
+   * @return \CultuurNet\Search\Parameter\Query
+   *   The search parameter to use.
+   */
+  protected function prepareQuery() {
+    $query = $this->query;
+
+    // If no search terms have been given, match on everything.
+    if (empty($query)) {
+      $query[] = '*.*';
+    }
+
+    // String required search terms together with 'AND'.
+    $keywords = implode(' AND ', $query);
+
+    return new Parameter\Query($keywords);
+  }
+
+  /**
    * Execute the search for current page.
    */
   protected function execute($params) {
@@ -266,18 +324,14 @@ class CultureFeedSearchPage {
     // Add grouping so returned events are not duplicate.
     $this->parameters[] = new Parameter\Group();
 
-    if ('' == $params['search']) {
-      $params['search'] = '*:*';
-    }
-    $this->query[] = $params['search'];
-
-    $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
-
     // Add in a boost for sort-type "relevancy".
     if ($params['sort'] == 'relevancy') {
       $this->query[0] = '{!boost%20b=sum(recommend_count,product(comment_count,10))}' . $this->query[0];
     }
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
+
+    // Prepare the search query and add to the search parameters.
+    $this->parameters[] = $this->prepareQuery();
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);
