@@ -533,13 +533,12 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     $form['update_optin'] = array(
       '#type' => 'markup',
       '#markup' => $message,
-      '#prefix' => '<div id="node-status-wrapper">',
-      '#suffix' => '</div>',
+      '#prefix' => '<div id="node-status-wrapper"><p class="muted">',
+      '#suffix' => '</p></div>',
     );
   } else {
     $form['update_optin'] = array(
       '#type' => 'checkbox',
-      //'#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
       '#title' => t('Receive email about new comments'),
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('comment-updates')),
@@ -717,6 +716,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
+    '#attributes' => array('class' => 'btn-primary'),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';

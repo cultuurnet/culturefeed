@@ -26,7 +26,7 @@
     <? if ($abuse_link): ?>
       <?php print $abuse_link ?>
     <div id="abuse-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-body outer"></div>
+      <div class="modal-body"></div>
         </div>
     <? endif; ?>
 
