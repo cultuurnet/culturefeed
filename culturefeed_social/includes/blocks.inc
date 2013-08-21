@@ -67,7 +67,7 @@ function culturefeed_social_block_user_activities($account) {
 
   if (empty($activities->objects)) {
     $content['activities'] = array(
-      '#markup' => t('This user didn\'t do any actions yet'),
+      '#markup' => t('This user didn\'t perform any actions yet'),
     );
   }
   else {
@@ -110,7 +110,7 @@ function culturefeed_social_block_user_activities($account) {
 
     if ($activities->total > count($activities->objects)) {
       $content['activities']['#read_more_url'] = url('culturefeed/ajax/user/activities', array('query' => array('culturefeed_uid' => $account->culturefeed_uid)));
-      $content['activities']['#read_more_text'] = t('Read older messages');
+      $content['activities']['#read_more_text'] = t('Read previous messages');
     }
 
   }

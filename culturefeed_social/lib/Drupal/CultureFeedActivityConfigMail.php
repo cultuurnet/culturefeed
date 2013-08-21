@@ -20,8 +20,8 @@ class CultureFeedActivityConfigMail extends CultureFeedActivityConfigBase {
     );
 
     $this->viewPrefix = t('has');
-    $this->viewSuffix = t('mailed');
-    $this->label = t('Mails');
+    $this->viewSuffix = t('sent');
+    $this->label = t('E-mails');
 
   }
 

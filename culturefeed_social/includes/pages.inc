@@ -138,7 +138,7 @@ function culturefeed_social_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => $activity->private ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Put public') : t('Make private'))),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Make public') : t('Make private'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -162,9 +162,9 @@ function culturefeed_social_page_activities($type = NULL) {
 
   $activities = array(
     '#theme' => 'table',
-    '#header' => array(t('Page'), t('Action'), t('Time and publishing channel'), t('Public'), ''),
+    '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Public'), ''),
     '#rows' => $rows,
-    '#empty' => t('You didn\'t do any actions yet.'),
+    '#empty' => t('You didn\'t perform any actions yet.'),
   );
 
   $facebook_privacy_toggle = NULL;
@@ -430,7 +430,7 @@ function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax')
         '#type' => 'link',
         '#title' => $privacy == 1 ? t('Private') : t('Public'),
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? t('Make public') : t('Put private'))),
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? t('Make public') : t('Make private'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );

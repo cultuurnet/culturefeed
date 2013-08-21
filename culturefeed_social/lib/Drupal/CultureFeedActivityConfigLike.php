@@ -22,16 +22,16 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
 
     $this->subject = t('Like this');
     $this->subjectDo = t('Like');
-    $this->subjectUndo = t('I do not like');
+    $this->subjectUndo = t('Unlike');
     $this->titleDo = t('I Like');
     $this->titleDoFirst = t('Be the first to like this');
-    $this->titleShowAll = t('Show everyone who likes this');
+    $this->titleShowAll = t('Show all users who likes this');
     $this->linkClassDo = 'like-link';
     $this->linkClassUndo = 'unlike-link';
     $this->viewPrefix = t('likes');
     $this->viewSuffix = t('this');
     $this->label = t('Like');
-    $this->loginRequiredMessage = t('To like you have to be logged in');
+    $this->loginRequiredMessage = t('You must be logged in to like this item');
 
   }
 
