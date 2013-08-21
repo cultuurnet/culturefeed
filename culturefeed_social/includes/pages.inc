@@ -234,10 +234,11 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $config = culturefeed_social_activity_get_config($data->objects[0]->type);
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove') . ' ' . $config->label . ' </h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h6>' . t('Remove') . ' ' . $config->action . ' </h6></div>';
   }
   else {
-    drupal_set_title(t('Remove') . ' ' . $config->label . '?');
+    drupal_set_title(t('Remove') . ' ' . $config->action . '?');
   }
 
   $destination = drupal_get_destination();
@@ -263,7 +264,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Remove'),
-    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+    '#attributes' => array('class' => array('btn btn-danger')),
   );
 
   $form['footer_wrapper']['decline'] = array(
@@ -273,7 +274,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
     '#attributes' => array(
       'data-dismiss' => 'modal',
       'aria-hidden' => 'true',
-      'class' => array('button-decline close btn')
+      'class' => array('btn btn-link')
     ),
   );
 
