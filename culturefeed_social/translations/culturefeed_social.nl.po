@@ -472,7 +472,7 @@ msgstr "ik ga"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:22;24
 msgid "Will be attending"
-msgstr "Ik ga"
+msgstr "Ik ga naar"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:23
 msgid "You must be logged in to indicate that you will be  attending"
