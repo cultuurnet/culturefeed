@@ -59,6 +59,16 @@ class CultureFeedSearchPage {
   protected $query = array();
 
   /**
+   * Apache Solr local parameters.
+   *
+   * @see http://wiki.apache.org/solr/LocalParams
+   *
+   * @var array
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  protected $localParams = array();
+
+  /**
    * Search result from current search.
    * @var \CultuurNet\Search\SearchResult
    */
@@ -167,6 +177,56 @@ class CultureFeedSearchPage {
    */
   public function setPagerType($pagerType) {
     $this->pagerType = $pagerType;
+  }
+
+  /**
+   * Gets the Apache Solr local parameters.
+   *
+   * @return array
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  public function getLocalParams() {
+    return $this->localParams;
+  }
+
+  /**
+   * Sets the Apache Solr local parameters.
+   *
+   * @param array $local_params
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  public function setLocalParams(array $localParams) {
+    $this->localParams = $localParams;
+  }
+
+  /**
+   * Sets an Apache Solr local parameter pair.
+   *
+   * @param string $key
+   *   The local parameter key.
+   * @param string $value
+   *   The local parameter value.
+   *
+   * @return array
+   *   The updated local parameters array.
+   */
+  public function setLocalParam($key, $value) {
+    $this->localParams[$key] = $value;
+    return $this->localParams;
+  }
+
+  /**
+   * Unsets an Apache Solr local parameter pair.
+   *
+   * @param string $key
+   *   The key of the local parameter to unset.
+   *
+   * @return array
+   *   The updated local parameters array.
+   */
+  public function unsetLocalParam($key) {
+    unset($this->localParams[$key]);
+    return $this->localParams;
   }
 
   /**
@@ -306,6 +366,15 @@ class CultureFeedSearchPage {
     // String required search terms together with 'AND'.
     $keywords = implode(' AND ', $query);
 
+    // Prepend local parameters to the query string if they were specified.
+    if (!empty($this->localParams)) {
+      $local_parameters = array();
+      foreach ($this->localParams as $key => $value) {
+        $local_parameters[] = "$key=$value";
+      }
+      $keywords = '{!' . implode(' ', $local_parameters) . '}' . $keywords;
+    }
+
     return new Parameter\Query($keywords);
   }
 
@@ -326,7 +395,8 @@ class CultureFeedSearchPage {
 
     // Add in a boost for sort-type "relevancy".
     if ($params['sort'] == 'relevancy') {
-      $this->query[0] = '{!boost%20b=sum(recommend_count,product(comment_count,10))}' . $this->query[0];
+      $this->setLocalParam('type', 'boost');
+      $this->setLocalParam('b', 'sum(recommend_count,product(comment_count,10))');
     }
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
