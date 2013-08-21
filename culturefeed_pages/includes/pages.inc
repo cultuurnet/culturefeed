@@ -714,7 +714,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   $form['#suffix'] = '
     <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-body"></div>
+      <div class="modal-body outer"></div>
     </div>';
 
   culturefeed_pages_set_page_breadcrumb($page);

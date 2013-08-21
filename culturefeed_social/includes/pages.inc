@@ -138,7 +138,7 @@ function culturefeed_social_page_activities($type = NULL) {
       '#type' => 'link',
       '#title' => $activity->private ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Put public') : t('Make private'))),
+      '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Make public') : t('Make private'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -162,9 +162,9 @@ function culturefeed_social_page_activities($type = NULL) {
 
   $activities = array(
     '#theme' => 'table',
-    '#header' => array(t('Page'), t('Action'), t('Time and publishing channel'), t('Public'), ''),
+    '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Public'), ''),
     '#rows' => $rows,
-    '#empty' => t('You didn\'t do any actions yet.'),
+    '#empty' => t('You didn\'t perform any actions yet.'),
   );
 
   $facebook_privacy_toggle = NULL;
@@ -234,10 +234,11 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $config = culturefeed_social_activity_get_config($data->objects[0]->type);
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove') . ' ' . $config->label . ' </h3></div>';
+    $form['#prefix'] = '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h6>' . t('Remove') . ' ' . $config->action . ' </h6></div>';
   }
   else {
-    drupal_set_title(t('Remove') . ' ' . $config->label . '?');
+    drupal_set_title(t('Remove') . ' ' . $config->action . '?');
   }
 
   $destination = drupal_get_destination();
@@ -263,7 +264,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $form['footer_wrapper']['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Remove'),
-    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+    '#attributes' => array('class' => array('btn btn-danger')),
   );
 
   $form['footer_wrapper']['decline'] = array(
@@ -273,7 +274,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
     '#attributes' => array(
       'data-dismiss' => 'modal',
       'aria-hidden' => 'true',
-      'class' => array('button-decline close btn')
+      'class' => array('btn btn-link')
     ),
   );
 
@@ -430,7 +431,7 @@ function culturefeed_social_page_activity_privacy($id, $privacy, $type = 'ajax')
         '#type' => 'link',
         '#title' => $privacy == 1 ? t('Private') : t('Public'),
         '#href' => 'culturefeed/activity/privacy/' . $id . '/' . ($privacy == 1 ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? t('Make public') : t('Put private'))),
+        '#attributes' => array('id' => 'activity-privacy-' . $id, 'class' => 'privacy-link ' . ($privacy == 1 ? 'status-prive' : 'status-publiek'), 'title' => ($privacy == 1 ? t('Make public') : t('Make private'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );

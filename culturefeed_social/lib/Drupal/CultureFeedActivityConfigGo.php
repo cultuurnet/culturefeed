@@ -17,11 +17,11 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
 
     $this->titleDo = t('Attend');
     $this->titleDoFirst = t('Attend');
-    $this->subjectUndo = t('I do not go');
-    $this->viewPrefix = t('goes to');
-    $this->label = t('Goes to');
-    $this->loginRequiredMessage = t('You must be logged in to indicate that you attend');
-    $this->pointsOverviewPrefix = t('Goes to');
+    $this->subjectUndo = t('Not attending');
+    $this->viewPrefix = t('will be attending');
+    $this->label = t('Will be attending');
+    $this->loginRequiredMessage = t('You must be logged in to indicate that you will be  attending');
+    $this->pointsOverviewPrefix = t('Will be attending');
 
   }
 
