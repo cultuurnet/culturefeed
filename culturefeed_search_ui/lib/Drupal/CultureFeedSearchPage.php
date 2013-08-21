@@ -65,10 +65,16 @@ class CultureFeedSearchPage {
   protected $result;
 
   /**
-   * Default page title.
-   * @var unknown
+   * Default page title. This is a fallback in case no other title is provided.
+   * @var string
    */
   protected $defaultTitle = '';
+
+  /**
+   * The page title to use. If empty this will be overridden by $defaultTitle.
+   * @var string
+   */
+  protected $title = '';
 
   /**
    * Stores search facets with corresponding values for the active search.
@@ -114,11 +120,33 @@ class CultureFeedSearchPage {
   }
 
   /**
-   * Set the default title.
+   * Set the default title. Used as a fallback when there is no page title.
    * @param string $title
    */
   public function setDefaultTitle($title) {
     $this->defaultTitle = $title;
+  }
+
+  /**
+   * Set the page title.
+   *
+   * @param string $title
+   *   The text to set as page title. If this is not set the defaultTitle will
+   *   be used instead.
+   */
+  public function setTitle($title) {
+    $this->title = $title;
+  }
+
+  /**
+   * Get the page title.
+   *
+   * @return string
+   *   The currently set page title. If no page title has been set an empty
+   *   string will be returned.
+   */
+  public function getTitle() {
+    return $this->title;
   }
 
   /**
@@ -380,6 +408,11 @@ class CultureFeedSearchPage {
    * Get the title to show.
    */
   public function getDrupalTitle() {
+    // Return the title that has been explicitly set with $this->setTitle().
+    if (!empty($this->title)) {
+      return check_plain($this->title);
+    }
+
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
     if (!empty($active_filters)) {
 
