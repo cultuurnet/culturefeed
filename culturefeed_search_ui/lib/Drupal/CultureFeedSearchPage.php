@@ -405,7 +405,22 @@ class CultureFeedSearchPage {
   }
 
   /**
-   * Get the title to show.
+   * Returns the title to show on the page.
+   *
+   * @see culturefeed_search_ui_search_page()
+   *
+   * @return string
+   *   Returns the page title according to the following logic:
+   *   1. If a title has been set with $this->setTitle(), this will be returned.
+   *   2. If no title was set, and one or more search facets are active, a
+   *      comma-separated list of active search facets are returned.
+   *   3. If no title was set, and no search facets are active, the default
+   *      title is returned. This is usually defined in the 'page_title' key in
+   *      hook_culturefeed_search_page_info().
+   *   If the query parameter 'page' is present and no title has been set with
+   *   $this->setTitle(), the returned title will be appended with a comma
+   *   and the Dutch word 'pagina' with the page parameter increased by one,
+   *   surrounded by parentheses.
    */
   public function getDrupalTitle() {
     // Return the title that has been explicitly set with $this->setTitle().
