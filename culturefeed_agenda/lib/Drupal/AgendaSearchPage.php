@@ -30,6 +30,10 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         'facet' => array(),
       );
 
+      if (!empty($params['search'])) {
+        $this->addQueryTerm($params['search']);
+      }
+
       $this->addFacetFilters($params);
       $this->addSort($params);
 

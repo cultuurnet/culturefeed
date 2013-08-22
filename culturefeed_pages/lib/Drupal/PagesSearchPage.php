@@ -30,6 +30,10 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
         'facet' => array(),
       );
 
+      if (!empty($params['search'])) {
+        $this->addQueryTerm($params['search']);
+      }
+
       $this->addFacetFilters($params);
       $this->addSort($params);
 
@@ -55,14 +59,11 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Add grouping so returned events are not duplicate.
     $this->parameters[] = new Parameter\Group();
 
-    if ('' == $params['search']) {
-      $params['search'] = '*:*';
-    }
-    $this->query[] = $params['search'];
-
-    $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
-
+    // @todo For completeness, it should also be possible to alter localParams.
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
+
+    // Prepare the search query and add to the search parameters.
+    $this->parameters[] = $this->prepareQuery();
 
     $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
     $this->facetComponent->obtainResults($this->result);
