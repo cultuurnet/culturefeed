@@ -405,12 +405,6 @@ class CultureFeedSearchPage {
     // Add grouping so returned events are not duplicate.
     $this->parameters[] = new Parameter\Group();
 
-    // Add in a boost for sort-type "relevancy".
-    if ($params['sort'] == 'relevancy') {
-      $this->setLocalParam('type', 'boost');
-      $this->setLocalParam('b', 'sum(recommend_count,product(comment_count,10))');
-    }
-
     // @todo For completeness, it should also be possible to alter localParams.
     drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
 
