@@ -39,7 +39,7 @@ class CultureFeed_Activity {
   /**
    * Content type 'culturefeed page'.
    */
-  const CONTENT_TYPE_CULTUREFEED_PAGE = 'culturefeed-page';
+  const CONTENT_TYPE_CULTUREFEED_PAGE = 'page';
 
   /**
    * Activity on activity.
