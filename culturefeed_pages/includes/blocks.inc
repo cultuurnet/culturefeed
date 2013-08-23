@@ -33,8 +33,8 @@ function culturefeed_pages_block_fellow_members($account) {
       break;
     }
 
-    $memberships = culturefeed_pages_get_members_of_page($membership->page, $cf_account);
     $memberships = array();
+    $memberships = culturefeed_pages_get_members_of_page($membership->page, $cf_account);
 
     $build[] = array(
       '#theme' => 'culturefeed_pages_fellow_members_block',
