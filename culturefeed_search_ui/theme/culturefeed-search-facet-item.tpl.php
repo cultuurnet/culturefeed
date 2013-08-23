@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Template file for one culturefeed search facet item.
+ * Template file for a single culturefeed search facet item.
  */
 
 /**
@@ -12,7 +12,7 @@
  */
 ?>
 <?php if ($active): ?>
-  <span class="facet-label active"><?php print check_plain($label); ?> <small class="muted">(<?php print $count; ?>)</small> <?php print l('<i class="icon-remove text-red pull-right icon-large"></i>', $url, array('attributes' => array('class' => 'facet-remove pull-right', 'title' => 'Verwijder filter'), 'html' => TRUE)); ?></span>
+  <span class="facet-label active"><?php print check_plain($label); ?> <small class="muted">(<?php print $count; ?>)</small> <a href="<?php print $url; ?>" class="facet-remove pull-right" title="<?php print t('Remove filter'); ?>"><i class="icon-remove text-red pull-right icon-large"></i></a></span>
 <?php else: ?>
-  <?php print '' . l($label, $url, array('html' => TRUE)); ?> <small class="muted facet-count">(<?php print $count; ?>)</small>
+  <a href="<?php print $url; ?>"><?php print check_plain($label); ?></a> <small class="muted facet-count">(<?php print $count; ?>)</small>
 <?php endif; ?>
