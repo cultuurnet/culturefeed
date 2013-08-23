@@ -63,6 +63,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
 function culturefeed_messages_preprocess_culturefeed_messages_message_list_item(&$variables) {
 
   _culturefeed_messages_preprocess_message($variables);
+  _culturefeed_messages_preprocess_message_recipients($variables);
 
   if (arg(0) == 'pages') {
     $variables['url'] = url('pages/' . arg(1) . '/messages/' . $variables['message']->id);
@@ -82,9 +83,39 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   $thread = $variables['thread'];
 
   $variables['message_count'] = 1;
+
+  $recipient_links = array();
+  $recipients = $thread->recipients;
+  $sender_id = $thread->sender->id;
+
+  // Build link to profile of every recipient.
+  $variables['recipient_links'] = '';
+  if (!empty($recipients)) {
+
+    $accounts = culturefeed_get_uids_for_cf_uids($recipients);
+    foreach ($recipients as $uid => $recipient) {
+
+      // Don't show the sender in the list.
+      if ($uid == $sender_id || !isset($accounts[$uid])) {
+        $sender_link = l($recipient->nick, 'user/' . $accounts[$uid]);
+        continue;
+      }
+
+      $recipient_links[] = l($recipient->nick, 'user/' . $accounts[$uid]);
+
+    }
+    $variables['recipient_links'] = implode(', ', $recipient_links);
+
+  }
+
+  if (!empty($thread->recipientPage)) {
+      $variables['recipient_page'] =  check_plain($thread->recipientPage->getName());
+  }
+
   $variables['sender'] = check_plain($thread->sender->nick);
+  $variables['sender_link'] = $sender_link;
   if (!empty($thread->senderPage)) {
-    $variables['sender'] .= ' van ' . check_plain($thread->senderPage->getName());
+    $variables['sender_page'] = check_plain($thread->senderPage->getName());
   }
 
   $variables['messages'] = array();
@@ -108,6 +139,8 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
     ),
   );
   $variables['delete_link'] = l(t('Delete conversation'), 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
+  
+  $variables['subject'] = $thread->subject;
 
 }
 
@@ -206,6 +239,10 @@ function _culturefeed_messages_preprocess_message_recipients(&$variables) {
 
   }
 
+  if (!empty($message->recipientPage)) {
+      $variables['recipient_page'] =  check_plain($message->recipientPage->getName());
+  }
+
 }
 
 /**
@@ -234,7 +271,7 @@ function _culturefeed_messages_preprocess_message(&$variables) {
 
   $variables['sender'] = check_plain($message->sender->nick);
   if (!empty($message->senderPage)) {
-    $variables['sender'] .= ' ' . t('van') . ' ' . check_plain($message->senderPage->getName());
+    $variables['sender_page'] = check_plain($message->senderPage->getName());
   }
 
   $variables['picture'] = !empty($message->sender->depiction) ? theme('image', array('path' => $message->sender->depiction . '?maxwidth=100')) : '';
