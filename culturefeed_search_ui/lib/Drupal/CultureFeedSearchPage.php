@@ -205,7 +205,7 @@ class CultureFeedSearchPage {
     }
 
     // Add the location facet.
-    if (isset($params['location'])) {
+    if (!empty($params['location'])) {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
