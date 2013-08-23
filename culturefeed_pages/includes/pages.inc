@@ -233,11 +233,14 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 function culturefeed_pages_add_form($form, &$form_state) {
 
   $form = array();
+  
+  $query = drupal_get_query_parameters();
+  $page_name = !empty($query['page']) ? $query['page'] : '';
 
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
-    '#default_value' => '',
+    '#default_value' => $page_name,
     '#weight' => -5,
   );
 
