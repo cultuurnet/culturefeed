@@ -20,7 +20,7 @@
     <?php if ($level == 0): ?>
       <?php print $comment_link ?>
     <div id="comment-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-body"></div>
+      <div class="modal-body outer"></div>
     </div>
     <?php endif; ?>
     <? if ($abuse_link): ?>
@@ -33,7 +33,7 @@
     <? if ($delete_link): ?>
     <?php print $delete_link ?>
     <div id="delete-wrapper-<?php print $activity->id ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-body"></div>
+      <div class="modal-body outer"></div>
         </div>
     <?php endif; ?>
   </div>

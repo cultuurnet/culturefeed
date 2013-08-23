@@ -78,7 +78,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/privacy/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Edit action privacy',
+    'title' => 'Edit privacy settings',
     'page callback' => 'culturefeed_social_page_activity_privacy',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -99,7 +99,7 @@ function culturefeed_social_menu() {
   // Activity.
   $items['culturefeed/do/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Do action',
+    'title' => t('Perform action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -533,13 +533,12 @@ function culturefeed_social_base_comment_form($form, &$form_state, $object, $act
     $form['update_optin'] = array(
       '#type' => 'markup',
       '#markup' => $message,
-      '#prefix' => '<div id="node-status-wrapper">',
-      '#suffix' => '</div>',
+      '#prefix' => '<div id="node-status-wrapper"><p class="muted">',
+      '#suffix' => '</p></div>',
     );
   } else {
     $form['update_optin'] = array(
       '#type' => 'checkbox',
-      //'#title' => 'Blijf op de hoogte van nieuwe reacties op ' . $type,
       '#title' => t('Receive email about new comments'),
       '#default_value' => isset($status) ? $status : TRUE,
       '#attributes' => array('class' => array('comment-updates')),
@@ -717,6 +716,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
+    '#attributes' => array('class' => 'btn-primary'),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';

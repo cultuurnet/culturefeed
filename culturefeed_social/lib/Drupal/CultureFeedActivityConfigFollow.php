@@ -17,8 +17,8 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
     $this->subject = t('Follow this page');
     $this->subjectUndo = t('Unfollow');
     $this->titleDo = t('I follow this page');
-    $this->titleDoFirst = t('Follow as first');
-    $this->titleShowAll = t('Show everyone who follows this page');
+    $this->titleDoFirst = t('Be the first to follow this page');
+    $this->titleShowAll = t('Show all users who follow this page');
     $this->linkClassDo = 'follow-link';
     $this->linkClassUndo = 'unfollow-link';
     $this->viewPrefix = t('follows');

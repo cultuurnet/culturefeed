@@ -12,7 +12,7 @@
  */
 ?>
 <?php if ($active): ?>
-  <span class="facet-label active"><?php print check_plain($label); ?> <span class="facet-count">(<?php print $count; ?>)</span> <?php print l('&times;', $url, array('attributes' => array('class' => 'facet-remove'), 'html' => TRUE)); ?></span>
+  <span class="facet-label active"><?php print check_plain($label); ?> <small class="muted">(<?php print $count; ?>)</small> <?php print l('<i class="icon-remove text-red pull-right icon-large"></i>', $url, array('attributes' => array('class' => 'facet-remove pull-right', 'title' => 'Verwijder filter'), 'html' => TRUE)); ?></span>
 <?php else: ?>
-  <span class="facet-label"><?php print '' . l($label, $url, array('html' => TRUE)); ?></span> <span class="facet-count">(<?php print $count; ?>)</span>
+  <?php print '' . l($label, $url, array('html' => TRUE)); ?> <small class="muted facet-count">(<?php print $count; ?>)</small>
 <?php endif; ?>

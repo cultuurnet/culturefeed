@@ -22,16 +22,16 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
 
     $this->subject = t('Recommended by');
     $this->subjectDo = t('Recommended activity');
-    $this->subjectUndo = t('Do not recommend activity anymore');
-    $this->titleDo = t('Also recommend activity');
-    $this->titleDoFirst = t('Recommend this as the first');
-    $this->titleShowAll = t('View everyone who recommends this');
+    $this->subjectUndo = t('Undo recommend');
+    $this->titleDo = t('Also recommend');
+    $this->titleDoFirst = t('Be the first to recommend');
+    $this->titleShowAll = t('View all users who recommend this');
     $this->linkClassDo = 'recommend-link';
     $this->linkClassUndo = 'unrecommend-link';
     $this->viewPrefix = t('has');
     $this->viewSuffix = t('recommended');
     $this->label = t('Recommend');
-    $this->loginRequiredMessage = t('To recommend you have to be logged on');
+    $this->loginRequiredMessage = t('You must be logged in to recommend this item');
     $this->pointsOverviewSuffix = t('recommended');
   }
 

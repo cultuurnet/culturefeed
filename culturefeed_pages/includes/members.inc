@@ -130,7 +130,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     '#attached' => array('library' => array(array('system', 'drupal.ajax'))),
     '#prefix' => '<div id="manage-members">',
     '#suffix' => '</div><div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-body"></div>
+        <div class="modal-body outer"></div>
       </div>',
   );
 

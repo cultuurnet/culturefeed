@@ -198,7 +198,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
       $comment_url = 'culturefeed/activity/comment/' . $activity->id;
       $attributes = array(
-        'class' => array('comment-link'),
+        'class' => array('comment-link link-icon'),
         'role' => 'button',
         'data-toggle' => 'modal',
         'data-target' => '#comment-wrapper-' . $activity->id,

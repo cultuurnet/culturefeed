@@ -18,10 +18,10 @@ class CultureFeedActivityConfigDetail extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
-    $this->subject = t('Read by');
+    $this->subject = t('Viewed by');
     $this->viewPrefix = t('has');
     $this->viewSuffix = t('seen');
-    $this->label = t('Read');
+    $this->label = t('Viewed');
 
   }
 

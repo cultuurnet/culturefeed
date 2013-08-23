@@ -31,8 +31,8 @@
 <h2><?php print t('My activities'); ?></h2>
 
 <p>
-  <strong><?php print $activities_total_15 ?></strong> <?php print t('activities recommended'); ?><br />
-  <strong><?php print $books_total_15 ?></strong> <?php print t('books recommended'); ?><br />
+  <strong><?php print $activities_total_15 ?></strong> <?php print t('recommended activities'); ?><br />
+  <strong><?php print $books_total_15 ?></strong> <?php print t('recommended books'); ?><br />
   <strong><?php print $pages_total_18 ?></strong> <?php print t('pages I follow'); ?><br />
-  <strong><?php print $total_14 ?></strong> <?php print t('reactions written'); ?><br />
+  <strong><?php print $total_14 ?></strong> <?php print t('comments'); ?><br />
 </p>
