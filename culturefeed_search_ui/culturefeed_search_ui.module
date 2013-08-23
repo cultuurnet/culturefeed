@@ -346,14 +346,14 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check the facets.
-  if (isset($query['facet'])) {
+  if (!empty($query['facet'])) {
 
     // Load all possible human names for special facets.
     $human_names = array();
-    if (isset($query['facet']['datetype'])) {
+    if (!empty($query['facet']['datetype'])) {
       $human_names['datetype'] = culturefeed_search_ui_get_date_facet_options();
     }
-    if (isset($query['facet']['agefrom'])) {
+    if (!empty($query['facet']['agefrom'])) {
       $human_names['agefrom'] = culturefeed_search_ui_get_agefrom_facet_options();
     }
 
@@ -361,33 +361,32 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     // Loop through all active facets, and generate a remove link.
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
       foreach ($selected_value as $key => $value) {
+        if (!empty($value)) {
+          $search_query = $query;
+          unset($search_query['facet'][$active_facet_name][$key]);
 
-        $search_query = $query;
-        unset($search_query['facet'][$active_facet_name][$key]);
+          // If this was the only facet. Also remove the global facet key.
+          if (empty($search_query['facet'])) {
+            unset($search_query['facet']);
+          }
 
-        // If this was the only facet. Also remove the global facet key.
-        if (empty($search_query['facet'])) {
-          unset($search_query['facet']);
+          $url = url($path, array('query' => $search_query));
+
+          // Get translated label from terms.
+          $label = culturefeed_search_get_term_translation($selected_value[$key]);
+
+          $build['item_' . $active_facet_name][$value] = array(
+            '#theme' => 'culturefeed_search_active_filters_item',
+            '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
+            '#url' => $url
+          );
         }
-
-        $url = url($path, array('query' => $search_query));
-
-        // Get translated label from terms.
-        $label = culturefeed_search_get_term_translation($selected_value[$key]);
-
-        $build['item_' . $active_facet_name][$value] = array(
-          '#theme' => 'culturefeed_search_active_filters_item',
-          '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
-          '#url' => $url
-        );
-
       }
     }
-
   }
 
   // Check if user is filtering on date range.
-  if (isset($query['date_range'])) {
+  if (!empty($query['date_range'])) {
     $search_query = $query;
     unset($search_query['date_range']);
     $url = url($path, array('query' => $search_query));
@@ -399,7 +398,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if user selected 'nearby activities'
-  if (isset($query['nearby']) && isset($query['coordinates'])) {
+  if (!empty($query['nearby']) && !empty($query['coordinates'])) {
     $search_query = $query;
     unset($search_query['nearby']);
     unset($search_query['coordinates']);
@@ -418,7 +417,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     $url = url($path, array('query' => $search_query));
 
     $label = check_plain($query['location']);
-    if (isset($query['distance'])) {
+    if (!empty($query['distance'])) {
       $label .= ' +' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);
     }
