@@ -412,7 +412,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if user is searching on a location.
-  if (isset($query['location'])) {
+  if (!empty($query['location'])) {
     $search_query = $query;
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));
