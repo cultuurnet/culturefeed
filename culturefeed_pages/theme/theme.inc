@@ -22,7 +22,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
 
   }
 
-  $variables['create_message'] = t('Does your organization or association has no page yet?') . ' ' . l(t('Create a new page'), 'pages/add');
+  $query = drupal_get_query_parameters();
+  $variables['create_message'] = t('Does your organization or association has no page yet?') . ' ' . l(t('Create a new page'), 'pages/add', array('query' => $query));
+
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
 
