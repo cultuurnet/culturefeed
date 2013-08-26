@@ -77,9 +77,8 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     $row = array();
 
     $name = '';
-    if (!empty($member->user->depiction)) {
-      $name = '<span class="depiction">' . theme('image', array('path' => $member->user->depiction . '?maxwidth=100')) . '</span>';
-    }
+    $depiction = !empty($member->user->depiction) ? $member->user->depiction : 'http://media.uitid.be/fis/rest/download/ce126667652776f0e9e55160f12f5478/uiv/default.png';
+    $name = '<span class="depiction">' . theme('image', array('path' => $depiction . '?width=30&height=30&crop=auto')) . '</span>';
     $drupal_uid = culturefeed_get_uid_for_cf_uid($member->user->id, $member->user->nick);
     $name .= l($member->user->nick, 'user/' . $drupal_uid);
 
