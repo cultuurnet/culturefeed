@@ -80,7 +80,8 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     if (!empty($member->user->depiction)) {
       $name = '<span class="depiction">' . theme('image', array('path' => $member->user->depiction . '?maxwidth=100')) . '</span>';
     }
-    $name .= l($member->user->nick, url('user/' . $uids[$member->user->id]));
+    $drupal_uid = culturefeed_get_uid_for_cf_uid($member->user->id, $member->user->nick);
+    $name .= l($member->user->nick, 'user/' . $drupal_uid);
 
     $row['name'] = $name;
 
