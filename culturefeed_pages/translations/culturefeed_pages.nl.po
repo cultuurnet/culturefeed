@@ -87,7 +87,7 @@ msgstr "Zoek jouw pagina"
 
 #: culturefeed_pages.module:643;360
 msgid "Change active page"
-msgstr "Verander actieve pagina"
+msgstr "Wijzig actieve pagina"
 
 #: culturefeed_pages.module:677
 msgid "Change settings"
@@ -159,7 +159,7 @@ msgstr "Jouw pagina op @sitename"
 msgid "from"
 msgstr "van"
 
-#: culturefeed_pages.module:209
+#: culturefeed_pages.module:210
 msgid "Create your own page"
 msgstr "Maak je eigen pagina"
 
@@ -650,7 +650,7 @@ msgstr "Pagina"
 
 #: includes/pages.inc:1112 theme/theme.inc:66
 msgid "Unfollow"
-msgstr "Volg ik niet meer"
+msgstr "Niet meer volgen"
 
 #: includes/pages.inc:1113
 msgid "You are a member of this page"

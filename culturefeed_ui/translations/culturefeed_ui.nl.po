@@ -216,7 +216,7 @@ msgstr "Zet aan"
 
 #: culturefeed_ui.helpers.inc:105
 msgid "Add account"
-msgstr ""
+msgstr "Account toevoegen"
 
 #: culturefeed_ui.helpers.inc:120
 msgid "Like"
@@ -235,8 +235,8 @@ msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
 #: culturefeed_ui.helpers.inc:164
-msgid "Post my actions to Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>"
-msgstr ""
+msgid "Post my actions to Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">All your UiTiD actions will be posted automatically to your Facebook timeline.</div>"
+msgstr "Publiceer mijn acties op Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">Je UiTiD-acties worden automatisch op je Facebook timeline gepubliceerd.</div>"
 
 #: culturefeed_ui.helpers.inc:174 culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
 msgid "Error occurred"

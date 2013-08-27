@@ -162,7 +162,7 @@ function culturefeed_social_page_activities($type = NULL) {
 
   $activities = array(
     '#theme' => 'table',
-    '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Public'), ''),
+    '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Status'), ''),
     '#rows' => $rows,
     '#empty' => t('You didn\'t perform any actions yet.'),
   );

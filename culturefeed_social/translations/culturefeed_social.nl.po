@@ -266,7 +266,7 @@ msgstr "Verwijderen"
 msgid "Private"
 msgstr "Privé"
 
-#: includes/pages.inc:139;165;431
+#: includes/pages.inc:139;431
 msgid "Public"
 msgstr "Publiek"
 
@@ -292,7 +292,11 @@ msgstr "Actie"
 
 #: includes/pages.inc:165
 msgid "Time and publication channel"
-msgstr "Tijd en publicatiekanaal"
+msgstr "Tijdstip en publicatiekanaal"
+
+#: includes/pages.inc:165
+msgid "Status"
+msgstr "Status"
 
 #: includes/pages.inc:167
 msgid "You didn't perform any actions yet."
@@ -432,7 +436,7 @@ msgstr "Volg deze pagina"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:18
 msgid "Unfollow"
-msgstr "Volg ik niet meer"
+msgstr "Niet meer volgen"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:19
 msgid "I follow this page"
@@ -564,7 +568,7 @@ msgstr "is lid geworden van"
 
 #: lib/Drupal/CultureFeedActivityConfigPageMember.php:18
 msgid "Membership"
-msgstr "lidmaatschap"
+msgstr "Lidmaatschap"
 
 #: lib/Drupal/CultureFeedActivityConfigPrint.php:23
 msgid "Printed by"
