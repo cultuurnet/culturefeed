@@ -235,8 +235,12 @@ msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
 #: culturefeed_ui.helpers.inc:164
-msgid "Post my actions to Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">All your UiTiD actions will be posted automatically to your Facebook timeline.</div>"
-msgstr "Publiceer mijn acties op Facebook <div class=\"tooltip\">?</div><div class=\"tooltip-text\">Je UiTiD-acties worden automatisch op je Facebook timeline gepubliceerd.</div>"
+msgid "Post my actions to Facebook"
+msgstr "Publiceer mijn acties op Facebook"
+
+#: culturefeed_ui.helpers.inc:164
+msgid "All your UiTiD actions will be posted automatically to your Facebook timeline."
+msgstr "Je UiTiD-acties worden automatisch op je Facebook timeline gepubliceerd."
 
 #: culturefeed_ui.helpers.inc:174 culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
 msgid "Error occurred"
