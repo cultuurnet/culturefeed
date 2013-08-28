@@ -314,8 +314,8 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     '#type' => 'textfield',
     '#title' => t('Subject'),
     '#default_value' => $list ? $list->subject : '',
-    '#size' => 60,
-    '#maxlength' => 128,
+    '#size' => 200,
+    '#maxlength' => 255,
     '#required' => TRUE,
   );
 
