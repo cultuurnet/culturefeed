@@ -183,19 +183,6 @@ function culturefeed_ui_page_profile_edit_form() {
     '#suffix' => '</div>',
   );
 
-  // Default language.
-  $form['preferredLanguage'] = array(
-    '#type' => 'select',
-    '#title' => t('Preferred language'),
-    '#default_value' => !empty($cf_account->preferredLanguage) ? $cf_account->preferredLanguage : '',
-    '#options' => array(
-      'nl' => t('Dutch'),
-      'fr' => t('French'),
-      'en' => t('English'),
-      'de' => t('German'),
-    ),
-  );
-
   // Firstname.
   $form['givenName'] = array(
     '#type' => 'textfield',
@@ -223,15 +210,17 @@ function culturefeed_ui_page_profile_edit_form() {
   // Picture.
   $form['#attributes']['enctype'] = 'multipart/form-data';
 
+  $form['current_picture'] = array(
+    '#prefix' => '<div class="current-picture">',
+    '#theme' => 'image',
+    '#path' => $cf_account->depiction . '?maxwidth=50&maxheight=50&crop=auto',
+    '#suffix' => '</div>',
+  );
+
   $form['picture'] = array(
     '#type' => 'file',
     '#size' => 26,
     '#title' => t('Choose picture'),
-  );
-
-  $form['current_picture'] = array(
-    '#theme' => 'image',
-    '#path' => $cf_account->depiction . '?maxwidth=50&maxheight=50&crop=auto',
   );
 
   // Gender.
@@ -299,6 +288,19 @@ function culturefeed_ui_page_profile_edit_form() {
     '#type' => 'checkbox',
     '#title' => t('Hide \'biography\' in public profile'),
     '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+  );
+
+  // Default language.
+  $form['preferredLanguage'] = array(
+    '#type' => 'select',
+    '#title' => t('Preferred language'),
+    '#default_value' => !empty($cf_account->preferredLanguage) ? $cf_account->preferredLanguage : '',
+    '#options' => array(
+      'nl' => t('Dutch'),
+      'fr' => t('French'),
+      'en' => t('English'),
+      'de' => t('German'),
+    ),
   );
 
   $form['submit'] = array(
