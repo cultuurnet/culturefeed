@@ -6,6 +6,11 @@
 class CultureFeed_Mailing {
 
   /**
+   * Frequency once.
+   */
+  const MAILING_FREQUENCY_ONCE = 'ONCE';
+
+  /**
    * Frequency daily.
    */
   const MAILING_FREQUENCY_DAILY = 'DAILY';

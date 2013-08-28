@@ -320,6 +320,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
   );
 
   $frequency = array(
+    CultureFeed_Mailing::MAILING_FREQUENCY_ONCE => 'Once',
     CultureFeed_Mailing::MAILING_FREQUENCY_DAILY => 'Daily',
     CultureFeed_Mailing::MAILING_FREQUENCY_WEEKLY => 'Weekly',
     CultureFeed_Mailing::MAILING_FREQUENCY_BIWEEKLY => 'Biweekly',
