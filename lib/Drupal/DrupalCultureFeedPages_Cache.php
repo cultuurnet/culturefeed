@@ -29,22 +29,13 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   }
 
   /**
-   * Get the cache suffix.
-   * @return string
-   */
-  protected function getCacheSuffix() {
-    $consumer = $this->realCultureFeedPages->getConsumer();
-    return sprintf(':%s:%s', $consumer->key, $consumer->secret);
-  }
-
-  /**
    * Get the full cache id.
    * @param string $cid
    *   Cid to use in the full cache id.
    * @return string
    */
   protected function getCacheCid($cid) {
-    return self::getCachePrefix() . $cid . self::getCacheSuffix();
+    return self::getCachePrefix() . $cid;
   }
 
   /**
@@ -79,7 +70,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    *   Member type ex ADMIN
    */
   protected function clearUserListCache($id, $memberType) {
-    $this->cacheClear($this->getCachePrefix() . 'userList:' . $id, TRUE);
+    $this->cacheClear('userList:' . $id, TRUE);
   }
 
   /**

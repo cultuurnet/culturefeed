@@ -139,7 +139,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
     ),
   );
   $variables['delete_link'] = l(t('Delete conversation'), 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
-  
+
   $variables['subject'] = $thread->subject;
 
 }
@@ -290,12 +290,11 @@ function _culturefeed_messages_preprocess_message(&$variables) {
   }
   else {
 
-    $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
-    if ($days_ago == 1) {
-      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
-    }
-    elseif ($days_ago == 0) {
+    if ($date >= strtotime("today")) {
       $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
+    }
+    else if ($date >= strtotime("yesterday")) {
+      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
     }
     else {
       $variables['date'] = format_date($date, 'custom', 'd M \o\m H:i') . ' '  . t('hour');
