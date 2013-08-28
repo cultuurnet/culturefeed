@@ -40,27 +40,27 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   $variables['picture'] = l($picture, $user_url, array('html' => TRUE));
 
+  $date = $activity->creationDate;
   $time_zone  = new DateTimeZone('Europe/Brussels');
   $last_reply = new DateTime();
-  $last_reply->setTimestamp($activity->creationDate);
+  $last_reply->setTimestamp($date);
   $last_reply->setTimezone($time_zone);
 
   // Check if the activity happened today.
-  $time_ago = $_SERVER['REQUEST_TIME'] - $activity->creationDate;
+  $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60 * 60)) {
     $variables['date'] = format_interval($time_ago) . ' geleden.';
   }
   else {
 
-    $days_ago = $last_reply->diff(new DateTime('now', $time_zone))->d;
-    if ($days_ago == 1) {
-      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' ' . t('hour');
+    if ($date >= strtotime("today")) {
+      $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
     }
-    elseif ($days_ago == 0) {
-      $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' ' . t('hour');
+    else if ($date >= strtotime("yesterday")) {
+      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
     }
     else {
-      $variables['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i') . ' ' . t('hour');
+      $variables['date'] = format_date($date, 'custom', 'd M \o\m H:i') . ' '  . t('hour');
     }
 
   }
