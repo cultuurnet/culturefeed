@@ -124,9 +124,16 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
   /*
    * The cash-in state of the welcome advantage
    *
-   * @var boolean
+   * @var string
    */
   public $cashInState;
+
+  const CASHIN_POSSIBLE = 'POSSIBLE';
+  const CASHIN_NOT_POSSIBLE_DATE_CONSTRAINT = 'NOT_POSSIBLE_DATE_CONSTRAINT';
+  const CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT = 'NOT_POSSIBLE_VOLUME_CONSTRAINT';
+  const CASHIN_NOT_POSSIBLE_POINTS_CONSTRAINT = 'NOT_POSSIBLE_POINTS_CONSTRAINT';
+  const CASHIN_NOT_POSSIBLE_USER_VOLUME_CONSTRAINT = 'NOT_POSSIBLE_USER_VOLUME_CONSTRAINT';
+  const CASHIN_NOT_POSSIBLE_INVALID_CARD = 'NOT_POSSIBLE_INVALID_CARD';
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $promotion = new CultureFeed_Uitpas_Passholder_PointsPromotion();

@@ -10,6 +10,9 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
   const ORDER_ASC = "ASC";
   const ORDER_DESC = "DESC";
 
+  /**
+   * @deprecated Use one of the CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_... constants instead.
+   */
   const FILTER_POSSIBLE = "POSSIBLE";
 
   /**
