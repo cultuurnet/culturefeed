@@ -18,6 +18,12 @@ class CultureFeed_Uitpas_Passholder_EventCheckin {
    */
   public $cdbid;
 
+
+  /**
+   * @var string
+   */
+  public $checkinReason;
+
   /**
    * @param CultureFeed_SimpleXMLElement $xml
    * @return CultureFeed_Uitpas_Passholder_EventCheckin
@@ -25,9 +31,10 @@ class CultureFeed_Uitpas_Passholder_EventCheckin {
   public static function createFromXml(CultureFeed_SimpleXMLElement $xml) {
     $eventCheckin = new self();
 
-    $eventCheckin->checkinAllowed = $xml->xpath_bool('checkinAllowed', TRUE);
-    $eventCheckin->numberOfPoints = $xml->xpath_int('numberOfPoints', TRUE);
-    $eventCheckin->cdbid = $xml->xpath_str('cdbid', TRUE);
+    $eventCheckin->checkinAllowed = $xml->xpath_bool('checkinAllowed');
+    $eventCheckin->numberOfPoints = $xml->xpath_int('numberOfPoints');
+    $eventCheckin->cdbid = $xml->xpath_str('cdbid');
+    $eventCheckin->checkinReason = $xml->xpath_str('checkinReason');
 
     return $eventCheckin;
   }

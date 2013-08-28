@@ -19,15 +19,21 @@ class CultureFeed_Uitpas_Passholder_EventBuyTicket {
   public $cdbid;
 
   /**
+   * @var string
+   */
+  public $buyConstraintReason;
+
+  /**
    * @param CultureFeed_SimpleXMLElement $xml
    * @return CultureFeed_Uitpas_Passholder_EventBuyTicket
    */
   public static function createFromXml(CultureFeed_SimpleXMLElement $xml) {
     $buyTicket = new self();
 
-    $buyTicket->tariff = $xml->xpath_float('tariff', TRUE);
-    $buyTicket->price = $xml->xpath_float('price', TRUE);
-    $buyTicket->cdbid = $xml->xpath_str('cdbid', TRUE);
+    $buyTicket->tariff = $xml->xpath_float('tariff');
+    $buyTicket->price = $xml->xpath_float('price');
+    $buyTicket->cdbid = $xml->xpath_str('cdbid');
+    $buyTicket->buyConstraintReason = $xml->xpath_str('buyConstraintReason');
 
     return $buyTicket;
   }

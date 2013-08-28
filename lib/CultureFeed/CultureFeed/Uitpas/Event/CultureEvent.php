@@ -2,6 +2,10 @@
 
 class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObject {
 
+  const CHECKIN_CONSTRAINT_REASON_MAXIMUM_REACHED = 'MAXIMUM_REACHED';
+
+  const CHECKIN_CONSTRAINT_REASON_INVALID_DATE_TIME = 'INVALID_DATE_TIME';
+
   /**
    * The identification of the event
    *
@@ -130,19 +134,24 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    */
   public $checkinAllowed;
 
-  public $checkinConstraint;
-
   /**
    * The checkin constraint of the event
    *
    * @var CultureFeed_Uitpas_Event_CheckinConstraint
+   */
+  public $checkinConstraint;
+
+  /**
+   * The reason the passholder cannot check in on the event
+   *
+   * @var string
    */
   public $checkinConstraintReason;
 
   /**
    * The reason the passholder cannot buy tickets for the event
    *
-   * @var CultureFeed_Uitpas_Event_CheckinConstraint
+   * @var string
    */
   public $buyConstraintReason;
 
