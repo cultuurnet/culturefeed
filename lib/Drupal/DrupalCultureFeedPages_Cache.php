@@ -229,7 +229,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @see CultureFeed_Pages::updateAdmin()
    */
   public function updateAdmin($id, $userId, array $params) {
-    $this->realCultureFeedPages->updateMember($id, $userId, $params);
+    $this->realCultureFeedPages->updateAdmin($id, $userId, $params);
     $this->clearUserListCache($id, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
 
