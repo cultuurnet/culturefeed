@@ -357,7 +357,7 @@ msgstr "Reactie"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:32 theme/theme.inc:208
 msgid "Reply"
-msgstr "Beantwoord"
+msgstr "Reageer"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:33
 msgid "You must be logged in to post a comment"
