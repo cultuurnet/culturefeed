@@ -248,7 +248,7 @@ function culturefeed_social_block_comments($object) {
   $content['comment_list'] = culturefeed_social_comment_list($object, $activities);
   $content['comment_form'] = culturefeed_social_comment_actionbox($object);
 
-  $block['subject'] = t('Recommendations');
+  $block['subject'] = t('Comments');
   $block['content'] = $content;
 
   return $block;
