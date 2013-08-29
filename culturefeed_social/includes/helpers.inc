@@ -384,7 +384,19 @@ function culturefeed_social_detail_object(CultureFeed_Activity $activity) {
   switch ($activity->contentType) {
 
     case CultureFeed_Activity::CONTENT_TYPE_NODE:
-      $object = node_load($activity->nodeId);
+
+      // Get the node url of the full url. We need it to get the nid.
+      global $base_url;
+      $path = str_replace($base_url . '/', '', $activity->nodeId);
+      $node_path = drupal_get_normal_path($path);
+
+      $object = node_load(arg(1, $node_path));
+      if (!$object) {
+        return NULL;
+      }
+
+      return new DrupalNodeExtendedEntity($object);
+
       break;
 
     case CultureFeed_Activity::CONTENT_TYPE_BOOK:
