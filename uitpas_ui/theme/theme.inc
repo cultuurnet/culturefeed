@@ -206,12 +206,25 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
   $advantage = $vars['advantage'];
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
-    $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
-    if ($advantage->cashingPeriodEnd) {
-      $period = t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
+    $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin)));
+    if ($advantage->publicationPeriodEnd) {
+      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $advantage->publicationPeriodEnd)));
+    }
+    elseif ($advantage->cashingPeriodEnd) {
+      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
+    }
+    else {
+      $period .= ' ' . t('till end of stock');
     }
     $vars['period'] = $period;
   }
+  $pictures = array();
+  foreach ($advantage->pictures as $picture) {
+    $pictures[] = theme_image(array('path' => $picture . '?width=180', 'attributes' => array()));;
+  }
+  $vars['pictures'] = $pictures;
+  $vars['description1'] = $advantage->description1;
+  $vars['description2'] = $advantage->description2;
   $location = array();
   foreach ($advantage->counters as $counter) {
     $location[] = $counter->name;

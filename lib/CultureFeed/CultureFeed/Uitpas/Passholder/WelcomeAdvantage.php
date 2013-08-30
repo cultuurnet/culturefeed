@@ -17,6 +17,41 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
   public $title;
 
   /**
+   * Description 1 of the advantage object.
+   *
+   * @var string
+   */
+  public $description1;
+
+  /**
+   * Description 2 of the advantage object.
+   *
+   * @var string
+   */
+  public $description2;
+
+  /**
+   * Pictures from the advantage
+   *
+   * @var array
+   */
+  public $pictures = array();
+
+  /**
+   * The date when the promotion will be pubished
+   *
+   * @var integer
+   */
+  public $publicationPeriodBegin;
+
+  /**
+   * The date when the promotion will be unpubished
+   *
+   * @var integer
+   */
+  public $publicationPeriodEnd;
+
+  /**
    * The number of points of the advantage object
    *
    * @var int
@@ -104,6 +139,11 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage = new CultureFeed_Uitpas_Passholder_WelcomeAdvantage();
     $welcome_advantage->id = $object->xpath_int('id');
     $welcome_advantage->title = $object->xpath_str('title');
+    $welcome_advantage->description1 = $object->xpath_str('description1');
+    $welcome_advantage->description2 = $object->xpath_str('description2');   
+    $welcome_advantage->pictures = $object->xpath_str('pictures/picture', TRUE);
+    $welcome_advantage->publicationPeriodBegin = $object->xpath_time('publicationPeriodBegin');
+    $welcome_advantage->publicationPeriodEnd = $object->xpath_time('publicationPeriodEnd');
     $welcome_advantage->points = $object->xpath_int('points');
     $welcome_advantage->cashedIn = $object->xpath_bool('cashedIn');
     $welcome_advantage->cashingDate = $object->xpath_time('cashingDate');
