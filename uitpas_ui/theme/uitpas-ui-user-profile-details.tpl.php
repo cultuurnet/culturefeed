@@ -3,7 +3,6 @@
     <div><?php print $uitpas_number; ?></div>
   </div>
   <div class="uitpas_ui_user_profile_details_data">
-    <div class="uitpas_ui_user_profile_details_intro"><?php print $intro; ?></div>
     <?php if ($image): ?>
       <div class="uitpas_ui_user_profile_details_image"><?php print $image; ?></div>
     <?php endif; ?>
@@ -20,14 +19,14 @@
     <div><?php print $tel; ?></div>
     <div><?php print $mobile; ?></div>
     <div><?php print $email; ?></div>
-    <?php if ($kansenStatuut && $kansenStatuutValidEndDate): ?>
-      <div class="uitpas_ui_user_profile_details_status">
-        <h3><?php print $status_title; ?></h3>
-        <div><?php print $status_valid_till; ?></div>
-        <?php if ($memberships): ?>
-        <div><?php print $memberships; ?></div>
-        <?php endif; ?>
-      </div>
+    <div class="uitpas_ui_user_profile_details_intro"><?php print $intro; ?></div>
+  </div>
+  <?php if ($kansenStatuut && $kansenStatuutValidEndDate): ?>
+  <div class="uitpas_ui_user_profile_details_status">
+    <div><?php print $status_valid_till; ?></div>
+    <?php if ($memberships): ?>
+    <div><?php print $memberships; ?></div>
     <?php endif; ?>
   </div>
+  <?php endif; ?>
 </div>
