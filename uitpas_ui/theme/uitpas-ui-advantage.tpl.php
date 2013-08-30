@@ -1,5 +1,5 @@
 <div class="uitpas_ui_advantage_details">
-  <div class="uitpas_ui_advantage_description1 large"><strong><?php print $description1; ?></strong></div>
+  <div class="uitpas_ui_advantage_description1"><?php print $description1; ?></div>
   <?php if ($period): ?>
   <div class="uitpas_ui_advantage_period"><?php print $period; ?></div>
   <?php endif; ?>
