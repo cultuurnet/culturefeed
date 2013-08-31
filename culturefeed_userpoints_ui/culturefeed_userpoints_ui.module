@@ -379,7 +379,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
 
   $data = '<div class="btn-group userpoints">';
-  $data .= '<span class="userpoints-points btn btn-small"><span class="user-points-left">' . l($points_left . ' punten ', '/culturefeed/userpoints') .  '</span>';
+  $data .= '<span class="userpoints-points btn btn-small"><span class="user-points-left">' . l($points_left . ' punten ', 'culturefeed/userpoints') .  '</span>';
   $data .= '<span class="userpoints-points-new"></span></span>';
   $data .= '<span class="check-again userpoints-exchange btn btn-small btn-warning"> ' . l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase')))) . '</span>';
   $data .= '</div>';
@@ -418,7 +418,7 @@ function culturefeed_userpoints_ui_culturefeed_social_page_do_ajax_commmands_alt
       $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
 
       $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
-      $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('(' . $points_earned . ')'));
+      $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> + ' . $points_earned));
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_userpoints_ui', $e);
