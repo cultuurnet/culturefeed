@@ -379,7 +379,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
   $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
 
   $data = '<div class="btn-group userpoints">';
-  $data .= '<span class="userpoints-points btn btn-mini"><span class="user-points-left">' . l($points_left . ' punten ', 'culturefeed/userpoints') .  '</span>';
+  $data .= '<span class="userpoints-points btn btn-mini"><span class="userpoints-points-left">' . l($points_left . ' punten ', 'culturefeed/userpoints') .  '</span>';
   $data .= '<span class="userpoints-points-new"></span></span>';
   $data .= '<span class="check-again userpoints-exchange btn btn-mini btn-warning"> ' . l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase')))) . '</span>';
   $data .= '</div>';
