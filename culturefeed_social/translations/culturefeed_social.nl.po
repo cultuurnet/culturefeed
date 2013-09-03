@@ -544,7 +544,7 @@ msgstr "heeft een nieuw filmpje toegevoegd"
 
 #: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:21
 msgid "Video added to"
-msgstr "Filmje toegevoegd aan"
+msgstr "Video toegevoegd aan"
 
 #: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:22;23
 msgid "Add a video"
