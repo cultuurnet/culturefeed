@@ -128,7 +128,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'path' => 'agenda/search',
       'page_title' => t('Agenda'),
       'search_title' => t('Activities'),
-      'sort_default' => 'relevancy',
+      'sort_default' => 'date',
       'sort_options' => array(
         'relevancy' => t('Relevance'),
         'date' => t('Date'),

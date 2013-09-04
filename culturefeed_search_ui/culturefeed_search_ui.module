@@ -284,8 +284,8 @@ function culturefeed_search_ui_block_view($delta) {
 
     case 'culturefeed-search-sortorder':
 
-      global $culturefeedSearchResult;
-      if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult || $culturefeedSearchResult->getTotalCount() == 0) {
+      $search_result = culturefeed_get_search_result();
+      if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
         return;
       }
 
@@ -510,17 +510,19 @@ function culturefeed_get_searchable_type_by_path($path = '') {
 /**
  * Returns an instance of a search page.
  *
- * @param array $type
+ * @param array $search_type
  *   A searchable type, as supplied by hook_culturefeed_searchable_types().
  *
  * @return CultureFeedSearchPage
  *   An instance of the requested search page.
  */
-function culturefeed_get_search_page($type) {
+function culturefeed_get_search_page($search_type) {
   $pages = &drupal_static(__FUNCTION__);
-  $class_name = $type['class_name'];
+  $class_name = $search_type['class_name'];
   if (!isset($pages[$class_name])) {
-    $pages[$class_name] = new $type['class_name']();
+    $pages[$class_name] = new $search_type['class_name']();
+    $pages[$class_name]->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
+    $pages[$class_name]->setDefaultSort($search_type['sort_default']);
     $pages[$class_name]->initialize();
   }
   return $pages[$class_name];

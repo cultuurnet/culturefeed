@@ -414,8 +414,8 @@ msgid "Congratulations! you collected"
 msgstr "Gelukt! Je spaarde"
 
 #: theme/theme.inc:371
-msgid "with your review and have now"
-msgstr "met jouw beoordeling en je hebt nu"
+msgid "with your @action and have now"
+msgstr "met jouw @action en je hebt nu"
 
 #: theme/theme.inc:383
 msgid "Thank you, your points have been exchanged. Your gift will be sent shortly to the specified address."

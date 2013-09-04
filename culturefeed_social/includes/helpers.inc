@@ -455,6 +455,7 @@ function culturefeed_social_goto($activity, $content_type, $node_id, $title = "r
  */
 function culturefeed_social_get_activity_node_id($activity_content_type, $extended_entity) {
 
+  $node_id = 0;
   switch ($activity_content_type) {
 
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:

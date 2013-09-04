@@ -96,7 +96,6 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   drupal_add_library('system', 'drupal.ajax');
 
   $form = $variables['form'];
-  $promotions = $form['#promotions'];
 
   $list = array();
   foreach (element_children($form) as $form_key) {
@@ -362,13 +361,16 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
  */
 function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 
-  $points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->points);
-  $total_points = CultureFeedUserpointsWishlist::getRealPoints($variables['activity']->newTotalPoints);
+  $activity = $variables['activity'];
+  $points = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+  $total_points = CultureFeedUserpointsWishlist::getRealPoints($activity->newTotalPoints);
 
   $points_message = format_plural($points, '@count punt', '@count punten');
   $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
-  $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('with your review and have now') . ' <strong>' . $total_points_message . '</strong></p>';
+  $config = CultureFeedActivityConfigBase::loadByType($activity->type);
+
+  $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
 
   return $message;
 

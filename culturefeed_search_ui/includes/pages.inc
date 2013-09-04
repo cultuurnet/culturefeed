@@ -28,13 +28,10 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
 
     $conf = culturefeed_get_searchable_type($name);
     $page = culturefeed_get_search_page($conf);
-
-    $page->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
-    $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
-    $page->setDefaultSort($conf['sort_default']);
     if ($ajax) {
       $page->setFullPage(FALSE);
     }
+    $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
     $page->setDefaultTitle($conf['page_title']);
     $build = $page->loadPage();
 
