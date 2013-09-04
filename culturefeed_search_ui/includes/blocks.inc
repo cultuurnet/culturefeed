@@ -13,8 +13,6 @@
  */
 function culturefeed_search_ui_search_block_form($form, & $form_state) {
 
-  $default = isset($_GET['search']) ? check_plain($_GET['search']) : '';
-
   $searchable_types = culturefeed_get_searchable_types();
   uasort($searchable_types, 'drupal_sort_weight');
 
@@ -36,7 +34,7 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
   $form['search'] = array(
     '#type' => 'textfield',
     '#title' => t('Search terms'),
-    '#default_value' => $default,
+    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
