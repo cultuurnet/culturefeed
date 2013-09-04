@@ -55,6 +55,11 @@ function culturefeed_devel_menu() {
  */
 function culturefeed_devel_shutdown() {
 
+  // Don't add output on ajax requests.
+  if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+    return;
+  }
+
   $request_log = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance();
   $requests = $request_log->getRequests();
   $max_time = variable_get('culturefeed_devel_show_requests', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
