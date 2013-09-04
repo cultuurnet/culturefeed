@@ -1128,7 +1128,6 @@ class CultureFeed implements ICultureFeed {
     $data = $query->toPostData();
 
     $result = $this->oauth_client->authenticatedGetAsXml('mailing/search', $data);
-
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -2009,7 +2008,8 @@ class CultureFeed implements ICultureFeed {
     $mailing = new CultureFeed_Mailing();
 
     $mailing->id                    = $element->xpath_str('id');
-    $mailing->name                  = $element->xpath_str('name');
+    $mailing->name = $element->xpath_str('name');
+    $mailing->description = $element->xpath_str('description');
     $mailing->template              = $element->xpath_str('template');
     $mailing->consumerKey           = $element->xpath_str('serviceConsumerKey');
     $mailing->subject               = $element->xpath_str('subject');

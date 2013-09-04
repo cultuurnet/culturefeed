@@ -136,19 +136,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
 
     // Performers
-    $performers = $detail->getPerformers();
-    $variables['performers'] = '';
-    if ($performers) {
-  
-      $performer_labels = array();
-      foreach ($performers as $performer) {
-        $performer_labels[] = check_plain($performer->getLabel());
-      }
-  
-      $variables['performers'] = implode(', ', $performer_labels);
-  
-    }
+    if (method_exists($detail, 'getPerformers')) {
+      $performers = $detail->getPerformers();
+      $variables['performers'] = '';
+      if ($performers) {
 
+        $performer_labels = array();
+        foreach ($performers as $performer) {
+          $performer_labels[] = check_plain($performer->getLabel());
+        }
+
+        $variables['performers'] = implode(', ', $performer_labels);
+      }
+    }
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
@@ -176,7 +176,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     });
     $variables['themes'] = $themes;
   }
-  
+
   // Types from this item.
   $variables['types'] = array();
   $types = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
@@ -210,7 +210,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     }
   }
-  
+
   $variables['keywords'] = $cdb_item->getKeywords();
 
 }

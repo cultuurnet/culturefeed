@@ -515,8 +515,9 @@ function culturefeed_mailing_page_my_newsletters() {
 
   $query = new CultureFeed_SearchMailingsQuery();
   $query->max = 999;
+  $query->consumerKey = variable_get('culturefeed_api_application_key', '');
   $mailings = DrupalCultureFeed::searchMailings($query);
-
+  
   $build = array();
   $build['intro'] = array(
     '#markup' => '<p class="muted"><small>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Donec sed odio dui.</small></p>',

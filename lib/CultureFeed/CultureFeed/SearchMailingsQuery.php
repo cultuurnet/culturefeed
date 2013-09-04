@@ -20,6 +20,12 @@ class CultureFeed_SearchMailingsQuery {
   public $max;
 
   /**
+   * Consumer key to filter on.
+   * @var string
+   */
+  public $consumerKey;
+
+  /**
    * Convert a CultureFeed_SearchMailingsQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
