@@ -54,6 +54,10 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
     watchdog_exception('culturefeed_search_ui', $e);
     $build = t('There was an error while loading the search results.');
   }
+  catch (Exception\ServerErrorResponseException $e) {
+    watchdog_exception('culturefeed_search_ui', $e);
+    $build = t('There was an error while loading the search results.');
+  }
   catch (Exception\CurlException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
     $build = t('There was an error while loading the search results.');
