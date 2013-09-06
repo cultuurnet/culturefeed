@@ -184,7 +184,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     if (self::isCultureFeedUser()) {
       return self::getLoggedInUserInstance()->getActivityPointsPromotion($promotionId);
     }
-    return self::getConsumerInstance()->getActivityPointsPromotions($params);
+    return self::getConsumerInstance()->getActivityPointsPromotion($promotionId);
   }
 
   public static function getActivityPointsPromotions($params = array()) {
