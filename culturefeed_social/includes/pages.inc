@@ -403,7 +403,7 @@ function culturefeed_social_page_node_unfollow($content_type, $node_id, $request
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
-    drupal_set_message(t('You are currently not receiving updates of new comments.'));
+    drupal_set_message(t('You will no longer receive updates of new comments'));
     drupal_goto();
   }
 

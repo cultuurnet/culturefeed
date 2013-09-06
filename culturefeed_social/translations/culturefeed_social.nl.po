@@ -314,13 +314,9 @@ msgstr "Annuleren"
 msgid "An unexpected error has occurred."
 msgstr "Er is iets foutgelopen."
 
-#: includes/pages.inc:399
+#: includes/pages.inc:399;405
 msgid "You will no longer receive updates of new comments"
 msgstr "Je ontvangt geen updates meer van nieuwe reacties"
-
-#: includes/pages.inc:405
-msgid "You are currently not receiving updates of new comments."
-msgstr "Je ontvangt momenteel geen updates van nieuwe reacties."
 
 #: includes/pages.inc:566
 msgid "Action could not be undone."
