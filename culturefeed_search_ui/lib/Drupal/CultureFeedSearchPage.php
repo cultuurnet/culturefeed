@@ -210,7 +210,8 @@ class CultureFeedSearchPage {
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
       if (is_numeric($city_parts[0])) {
-        $distance = isset($params['distance']) ? $params['distance'] : '';
+        $distance = isset($params['distance']) ? $params['distance'] : '0.00001';
+        
         $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
       }
       else {
