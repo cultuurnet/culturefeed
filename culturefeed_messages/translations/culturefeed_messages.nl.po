@@ -85,7 +85,7 @@ msgstr "alle leden van mijn pagina"
 
 #: includes/pages.inc:106
 msgid "Reply"
-msgstr "Beantwoord"
+msgstr "reactie"
 
 #: includes/pages.inc:113
 msgid "Subject"
