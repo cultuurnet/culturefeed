@@ -6,11 +6,12 @@
 
 use \CultuurNet\Auth\ConsumerCredentials;
 use \CultuurNet\Search\Parameter;
+use \CultuurNet\Search\ServiceInterface;
 
 /**
  * Singleton for the CultureFeed Search Service.
  */
-class DrupalCultureFeedSearchService {
+class DrupalCultureFeedSearchService implements ServiceInterface {
 
   /**
    * @var DrupalCultureFeedSearchService
@@ -64,7 +65,7 @@ class DrupalCultureFeedSearchService {
   /**
    * @see \CultuurNet\Search\Service::search().
    */
-  public function search(Array $parameters = array()) {
+  public function search($parameters = array()) {
 
     // Always add the spellcheck paramter.
     $parameters[] = new Parameter\Parameter('spellcheck', 'true');
@@ -82,7 +83,7 @@ class DrupalCultureFeedSearchService {
   /**
    * @see \CultuurNet\Search\Service::search().
    */
-  public function searchPages(Array $parameters = array()) {
+  public function searchPages($parameters = array()) {
     return $this->service->searchPages($parameters);
   }
 
@@ -91,6 +92,10 @@ class DrupalCultureFeedSearchService {
    */
   public function searchSuggestions($search_string, $types = array()) {
     return $this->service->searchSuggestions($search_string, $types);
+  }
+
+  public function detail($type, $id) {
+    return $this->service->detail($type, $id);
   }
 
   /**

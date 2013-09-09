@@ -670,8 +670,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 
     // Perform a search on location to check if this is an existing actor.
     try {
-      //$location = culturefeed_search_item_load_by_title($search_string, 'actor');
-      $location = culturefeed_search_item_load('31411709-BD32-F722-863CBA78CBBDDBA7');
+      $location = culturefeed_search_item_load_by_title($search_string, 'actor');
       if (!$location) {
         form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
       }
@@ -690,8 +689,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     }
 
     try {
-      //$organiser = culturefeed_search_item_load_by_title($search_string, 'actor');
-      $organiser = culturefeed_search_item_load('31411709-BD32-F722-863CBA78CBBDDBA7');
+      $organiser = culturefeed_search_item_load_by_title($search_string, 'actor');
       if (!$organiser) {
         form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren.');
       }

@@ -245,7 +245,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
     case $activity::CONTENT_TYPE_EVENT:
     case $activity::CONTENT_TYPE_PRODUCTION:
 
-      $object = culturefeed_search_item_load($id);
+      $object = culturefeed_search_item_load($id, $type);
       $activity->nodeTitle = $object->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
       $activity->nodeId = $id;
       $activity->path = culturefeed_search_detail_path($object->getType(), $id, $activity->nodeTitle);
@@ -425,7 +425,7 @@ function culturefeed_social_detail_object(CultureFeed_Activity $activity) {
     case CultureFeed_Activity::CONTENT_TYPE_ACTOR:
     case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
     default:
-      $object = culturefeed_search_item_load($activity->nodeId);
+      $object = culturefeed_search_item_load($activity->nodeId, $activity->contentType);
       break;
 
   }

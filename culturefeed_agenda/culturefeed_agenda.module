@@ -530,19 +530,19 @@ function culturefeed_agenda_detail_title(\CultuurNet\Search\ActivityStatsExtende
  * Load an event from the api.
  */
 function culturefeed_agenda_event_load($cdb_id) {
-  return culturefeed_search_item_load($cdb_id);
+  return culturefeed_search_item_load($cdb_id, 'event');
 }
 
 /**
  * Load an actor from the api.
  */
 function culturefeed_agenda_actor_load($cdb_id) {
-  return culturefeed_search_item_load($cdb_id);
+  return culturefeed_search_item_load($cdb_id, 'actor');
 }
 
 /**
  * Load a production from the api.
  */
 function culturefeed_agenda_production_load($cdb_id) {
-  return culturefeed_search_item_load($cdb_id);
+  return culturefeed_search_item_load($cdb_id, 'production');
 }

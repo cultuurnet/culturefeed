@@ -30,10 +30,12 @@ function culturefeed_get_search_service() {
  * Load the detail from an item on the search service.
  * @param $cdb_id
  *   Cdb id to load.
+ * @param $type
+ *   Type of item to load (example event)
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
-function culturefeed_search_item_load($cdb_id) {
+function culturefeed_search_item_load($cdb_id, $type = '') {
 
   static $items = array();
 
@@ -41,19 +43,31 @@ function culturefeed_search_item_load($cdb_id) {
     return $items[$cdb_id];
   }
 
-  $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $parameters[] = new \CultuurNet\Search\Parameter\Parameter("past", "true");
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('cdbid:' . $cdb_id);
+  if (empty($type)) {
 
-  try {
-    $result = culturefeed_get_search_service()->search($parameters);
-    $search_item = $result->getItems();
-    $items[$cdb_id] = reset($search_item);
-    return $items[$cdb_id];
+    $parameters = array();
+    $parameters[] = new \CultuurNet\Search\Parameter\Group();
+    $parameters[] = new \CultuurNet\Search\Parameter\Parameter("past", "true");
+    $parameters[] = new \CultuurNet\Search\Parameter\Query('cdbid:' . $cdb_id);
+
+    try {
+      $result = culturefeed_get_search_service()->search($parameters);
+      $search_item = $result->getItems();
+      $items[$cdb_id] = reset($search_item);
+      return $items[$cdb_id];
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_search', $e);
+    }
   }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_search', $e);
+  else {
+    try {
+      $items[$cdb_id] = culturefeed_get_search_service()->detail($type, $cdb_id);
+      return $items[$cdb_id];
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_search', $e);
+    }
   }
 
   return FALSE;
@@ -572,12 +586,12 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
   }
 
   $limit = 10 - count($suggestions);
-  
+
   /*
   $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
       WHERE (zip like :search1) OR (name LIKE :search2 AND name NOT LIKE :search3 ) OR name LIKE :search4 LIMIT " . $limit, array(':search1' => db_like($search_string) . "%", ':search2' => "%" . db_like($search_string) . "%", ':search3' => "%(%" . db_like($search_string) . "%)", ':search4' => "%" . db_like($search_string) . "%(%)"));
   */
-  
+
   $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
     WHERE (zip like :search) LIMIT " . $limit, array(':search' => db_like($search_string) . "%"));
 

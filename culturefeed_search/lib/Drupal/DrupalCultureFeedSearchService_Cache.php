@@ -80,9 +80,9 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
   }
 
   /**
-   * @see \CultuurNet\Search\Service::search().
+   * @see \CultuurNet\Search\ServiceInterface::search().
    */
-  public function search(Array $parameters = array()) {
+  public function search($parameters = array()) {
 
     DrupalCultureFeedSearchService::addLanguageParameter($parameters);
 
@@ -104,9 +104,9 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
   }
 
   /**
-   * @see \CultuurNet\Search\Service::search().
+   * @see \CultuurNet\Search\ServiceInterface::search().
    */
-  public function searchPages(Array $parameters = array()) {
+  public function searchPages($parameters = array()) {
 
     $cid = 'search/page:' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
@@ -123,7 +123,7 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
   }
 
   /**
-   * @see \CultuurNet\Search\Service::searchSuggestions().
+   * @see \CultuurNet\Search\ServiceInterface::searchSuggestions().
    */
   public function searchSuggestions($search_string, $types = array()) {
 
@@ -137,6 +137,22 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
 
     return $suggestions;
 
+  }
+
+  /**
+   * @see \CultuurNet\Search\ServiceInterface::searchSuggestions().
+   */
+  public function detail($type, $id) {
+
+    $cid = sprintf('detail:%s:%s', $type, $id);
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
+    }
+
+    $detail = $this->realSearchService->detail($type, $id);
+    $this->cacheSet($cid, $detail, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
+
+    return $detail;
   }
 
 }
