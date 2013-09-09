@@ -19,7 +19,7 @@ function culturefeed_messages_block_inbox($page = NULL) {
     watchdog_exception('culturefeed_messages', $e);
     return;
   }
-
+  
   $block['subject'] = 'Inbox';
   $block['content'] = array(
     '#theme' => 'culturefeed_messages_message_list',

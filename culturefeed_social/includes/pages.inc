@@ -10,6 +10,9 @@
 function culturefeed_social_page_ajax_get_activities() {
 
   $requested_page = isset($_GET['page']) ? $_GET['page'] : 1;
+  if (isset($_GET['new_filter'])) {
+    $requested_page = 0;
+  }
 
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
@@ -36,6 +39,7 @@ function culturefeed_social_page_ajax_get_activities() {
   try {
 
     $activities = DrupalCultureFeed::searchActivities($query);
+
     $accounts = culturefeed_get_uids_for_activities($activities->objects);
 
     foreach ($activities->objects as $activity) {

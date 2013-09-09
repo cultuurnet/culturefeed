@@ -137,7 +137,15 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   $activity = $variables['activity'];
   $accounts = $variables['accounts'];
   $destination = drupal_get_destination();
-  $cf_user = DrupalCultureFeed::getLoggedInUser();
+  $cf_user = NULL;
+  if (culturefeed_is_culturefeed_user()) {
+    try {
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_social', $e);
+    }
+  }
 
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));

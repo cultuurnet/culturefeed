@@ -92,18 +92,21 @@ function culturefeed_pages_block_pages_admin_options() {
 
   $page = menu_get_object('culturefeed_pages_page', 3);
 
-  if (!$page) {
-    return;
-  }
-
-  $cf_user = DrupalCultureFeed::getLoggedInUser();
-  if (!$cf_user) {
+  if (!$page || !culturefeed_is_culturefeed_user()) {
     return;
   }
 
   $is_page_admin = culturefeed_pages_is_user_admin_of_page($page->getId());
 
   if (!$is_page_admin) {
+    return;
+  }
+
+  try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
     return;
   }
 

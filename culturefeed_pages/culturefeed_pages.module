@@ -892,22 +892,31 @@ function culturefeed_pages_edit_membership_ajax_form_submit($form, &$form_state)
  */
 function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$form, &$form_state) {
 
-  $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
-
-  if (!empty($cultureFeedUser->pageMemberships)) {
-    $options = array();
-    foreach ($cultureFeedUser->pageMemberships as $membership) {
-      $options[$membership->page->getId()] = $membership->page->getName();
-    }
-
-    $form['on_behalf_of'] = array(
-      '#type' => 'select',
-      '#title' => $form_state['config']->onBehalfOfMessage,
-      '#default_value' => culturefeed_pages_get_active_page_id(),
-      '#options' => $options,
-      '#attributes' => array('class' => array('on-behalf-of')),
-      '#weight' => 0,
-    );
+  if (!culturefeed_is_culturefeed_user()) {
+    return;
   }
 
+  try {
+
+    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+
+    if (!empty($cultureFeedUser->pageMemberships)) {
+      $options = array();
+      foreach ($cultureFeedUser->pageMemberships as $membership) {
+        $options[$membership->page->getId()] = $membership->page->getName();
+      }
+
+      $form['on_behalf_of'] = array(
+        '#type' => 'select',
+        '#title' => $form_state['config']->onBehalfOfMessage,
+        '#default_value' => culturefeed_pages_get_active_page_id(),
+        '#options' => $options,
+        '#attributes' => array('class' => array('on-behalf-of')),
+        '#weight' => 0,
+      );
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
 }

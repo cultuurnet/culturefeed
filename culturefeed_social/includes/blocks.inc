@@ -72,7 +72,7 @@ function culturefeed_social_block_user_activities($account) {
   }
   else {
 
-    if (!empty($active_types)) {
+    if (!empty($active_types) && $activities->total > 20) {
       $content['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', 'all', TRUE, $account);
     }
 
