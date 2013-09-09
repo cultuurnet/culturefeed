@@ -129,14 +129,12 @@ function culturefeed_userpoints_ui_theme() {
   $path = drupal_get_path('module', 'culturefeed_userpoints_ui') . '/theme';
 
   return array(
-
     'culturefeed_userpoints_ui_my_balance' => array(
       'variables' => array(),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-my-balance',
     ),
-
     'culturefeed_userpoints_ui_promotions_page' => array(
       'variables' => array(
         'promotions' => NULL,
@@ -145,7 +143,6 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-promotions-page',
     ),
-
     'culturefeed_userpoints_ui_promotions_page_item' => array(
       'variables' => array(
         'promotion' => NULL,
@@ -154,7 +151,6 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-promotions-page-item',
     ),
-
     'culturefeed_userpoints_ui_exchange_page' => array(
       'variables' => array(
         'cf_user' => NULL,
@@ -165,21 +161,18 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-exchange-page',
     ),
-
     'culturefeed_userpoints_ui_promotions_list' => array(
       'file' => 'theme.inc',
       'path' => $path,
       'template' => 'culturefeed-userpoints-ui-promotions-list',
       'render element' => 'form',
     ),
-
     'culturefeed_userpoints_ui_promotions_list_item' => array(
       'file' => 'theme.inc',
       'path' => $path,
       'template' => 'culturefeed-userpoints-ui-promotions-list-item',
       'render element' => 'form',
     ),
-
     'culturefeed_userpoints_ui_block_more_promotions' => array(
       'file' => 'theme.inc',
       'path' => $path,
@@ -189,13 +182,11 @@ function culturefeed_userpoints_ui_theme() {
         'next_item' => NULL,
       ),
     ),
-
     'culturefeed_userpoints_ui_exchange_form' => array(
       'template' => 'culturefeed-userpoints-ui-exchange-form',
       'path' => $path,
       'render element' => 'form',
     ),
-
     'culturefeed_userpoints_ui_wishlist' => array(
       'variables' => array(
         'promotions' => array(),
@@ -204,7 +195,6 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-wishlist',
     ),
-
     'culturefeed_userpoints_ui_wishlist_item' => array(
       'variables' => array(
         'item' => array(),
@@ -213,19 +203,21 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-wishlist-item',
     ),
-
     'culturefeed_userpoints_ui_points_earned_message' => array(
       'variables' => array('activity' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_userpoints_ui_points_lost_message' => array(
+      'variables' => array('activity' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_userpoints_ui_points_exchanged_message' => array(
       'variables' => array('promotions' => NULL, 'points_lef' => 0),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_userpoints_ui_detail_page' => array(
       'variables' => array(
         'promotion' => array(),
@@ -234,7 +226,6 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-ui-detail-page',
     ),
-
     'culturefeed_userpoints_earned_overview' => array(
       'variables' => array(
         'activities' => array(),
@@ -243,14 +234,12 @@ function culturefeed_userpoints_ui_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-earned-overview',
     ),
-
     'culturefeed_userpoints_ui_page_exchange_confirmation' => array(
       'variables' => array(),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-userpoints-exchange-confirmation',
     ),
-
   );
 
 }
@@ -400,25 +389,76 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_acc
 function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity) {
 
   if (!empty($activity->points) && (arg(5) != 'noredirect' && arg(5) != 'ajax')) {
-    drupal_set_message(theme('culturefeed_userpoints_ui_points_earned_message', array('activity' => $activity)));
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        drupal_set_message(theme('culturefeed_userpoints_ui_points_earned_message', array('activity' => $activity)));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
   }
 
 }
 
 /**
+ * Implements hook_culturefeed_social_activity_deleted().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_activity_deleted($activity) {
+
+  if (!empty($activity->points) && (arg(5) != 'noredirect' && arg(5) != 'ajax')) {
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        drupal_set_message(theme('culturefeed_userpoints_ui_points_lost_message', array('activity' => $activity)));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
  * Implements hook_culturefeed_social_page_do_ajax_commmands_alter().
  */
-function culturefeed_userpoints_ui_culturefeed_social_page_do_ajax_commmands_alter(&$commands, $activity) {
+function culturefeed_userpoints_ui_culturefeed_social_page_do_ajax_commmands_alter(&$commands, CultureFeed_Activity $activity) {
 
   if (!empty($activity->points)) {
 
     try {
       $cf_account = DrupalCultureFeed::getLoggedInUser();
-      $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
-      $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+      if ($cf_account->id == $activity->userpointsUserId) {
+        $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+        $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
 
-      $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
-      $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> + ' . $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> + ' . $points_earned));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
+ * Implements hook_culturefeed_social_page_undo_ajax_commmands_alter().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_page_undo_ajax_commmands_alter(&$commands, $activity) {
+
+  if (!empty($activity->points)) {
+
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+        $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+
+        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> - ' . $points_earned));
+      }
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_userpoints_ui', $e);

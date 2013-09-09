@@ -96,8 +96,8 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * @see CultureFeed_Pages::addPage()
    */
   public function addPage(array $params) {
-    $result = $this->realCultureFeedPages->addPage($params);
-    return $result;
+    $pageId = $this->realCultureFeedPages->addPage($params);
+    return $pageId;
   }
 
   /**

@@ -669,6 +669,7 @@ class CultureFeed implements ICultureFeed {
       if (!empty($activityPoints)) {
         $activity->newTotalPoints = $activityPoints[0]->xpath_float('newTotalPoints');
         $activity->points = $activityPoints[0]->xpath_float('savedPoints');
+        $activity->userpointsUserId = $activityPoints[0]->xpath_str('uitIdUser/rdf:id');
       }
 
       return $activity;
@@ -700,7 +701,29 @@ class CultureFeed implements ICultureFeed {
    *   ID of the activity that is deleted.
    */
   public function deleteActivity($id) {
-    $this->oauth_client->authenticatedGetAsXml('activity/' . $id . '/delete');
+
+    $result = $this->oauth_client->authenticatedGetAsXml('activity/' . $id . '/delete');
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $id = $xml->xpath_str('/response/activityId');
+    if (!empty($id)) {
+      $activity = new CultureFeed_Activity();
+
+      $activityPoints = $xml->xpath('/response/activityPointsList/activityPoints');
+      if (!empty($activityPoints)) {
+        $activity->newTotalPoints = $activityPoints[0]->xpath_float('newTotalPoints');
+        $activity->points = $activityPoints[0]->xpath_float('lostPoints');
+        $activity->userpointsUserId = $activityPoints[0]->xpath_str('uitIdUser/rdf:id');
+      }
+      return $activity;
+    }
+    throw new CultureFeed_ParseException($result);
   }
 
   /**

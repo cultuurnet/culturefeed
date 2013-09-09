@@ -309,22 +309,19 @@ function _culturefeed_social_do($activity_type, $type, $id) {
  * @param String $activity_type
  * @param String $type
  * @param Integer $id
- * @return misc boolean false / CultureFeed_Activity on success
+ * @return array Deleted activity results.
  */
 function _culturefeed_social_undo($activity_type, $type, $node_id) {
 
   $user_id = DrupalCultureFeed::getLoggedInUserId();
 
   try {
-    DrupalCultureFeed::deleteActivities($user_id, $node_id, $type, $activity_type);
-
-    return TRUE;
+    return DrupalCultureFeed::deleteActivities($user_id, $node_id, $type, $activity_type);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
-
-    return FALSE;
   }
+  return array();
 }
 
 /**

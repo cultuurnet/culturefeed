@@ -160,7 +160,7 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
     if ($relations) {
       foreach ($relations as $relation) {
         $event = culturefeed_agenda_event_load($relation->getCdbid());
-        if ($event) {
+        if ($event && $event instanceof CultureFeed_Cdb_Item_Event) {
           $locations[] = culturefeed_agenda_get_location_of_event($event->getEntity());
         }
       }
@@ -235,6 +235,8 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
 
 /**
  * Get the data for an item in the production program list.
+ * @param Cultuurnet\Search\ActivityStatsExtendedEntity $item
+ *   Extended entity of a CultureFeed_Cdb_Item_Event.
  */
 function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Search\ActivityStatsExtendedEntity $item) {
 

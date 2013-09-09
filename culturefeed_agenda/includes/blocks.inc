@@ -301,6 +301,7 @@ function culturefeed_agenda_block_production_program() {
   }
 
   $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
   $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 

@@ -553,7 +553,8 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
 
   $node_id = urldecode($node_id);
   $add_count = isset($_GET['add_count']);
-  $activity = _culturefeed_social_undo($activity_type, $content_type, $node_id);
+  $activities = _culturefeed_social_undo($activity_type, $content_type, $node_id);
+  $activity = array_pop($activities);
   $config = culturefeed_social_activity_get_config($activity_type);
 
   $identifier = drupal_html_id('activity-element');

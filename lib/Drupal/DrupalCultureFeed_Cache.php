@@ -167,9 +167,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function deleteActivity($id) {
-    $this->realCultureFeed->deleteActivity($id);
-
+    $result = $this->realCultureFeed->deleteActivity($id);
+    module_invoke_all('culturefeed_social_activity_deleted', $result);
     $this->cacheClearActivities();
+    return $result;
   }
 
   public function searchActivities(CultureFeed_SearchActivitiesQuery $query) {

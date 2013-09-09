@@ -109,9 +109,9 @@ class CultureFeed_Activity {
   const TYPE_NEW_EVENT = 19;
 
   const TYPE_REVIEW = 21;
-  
+
   const TYPE_MEDIA_PHOTO = 22;
-  
+
   const TYPE_MEDIA_VIDEO = 23;
 
   /**
@@ -249,6 +249,12 @@ class CultureFeed_Activity {
    * @var string
    */
   public $status;
+
+  /**
+   * The uitid user id of the user that will receive points for this activity.
+   * @var string
+   */
+  public $userpointsUserId;
 
   /**
    * Helper method to get a string value for an ID.

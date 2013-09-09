@@ -114,13 +114,12 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function createActivity(CultureFeed_Activity $activity) {
 
-    $result = self::getLoggedInUserInstance()->createActivity($activity);
+    $activity = self::getLoggedInUserInstance()->createActivity($activity);
 
     // Let other modules hook onto the activity creation result.
-    module_invoke_all('culturefeed_social_activity_created', $result);
+    module_invoke_all('culturefeed_social_activity_created', $activity);
 
-    return $result;
-
+    return $activity;
   }
 
   public static function postToSocial($id, $account_name, $account_type, $message, $image = NULL, $link = NULL) {
@@ -132,7 +131,9 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function deleteActivity($id) {
-    return self::getLoggedInUserInstance()->deleteActivity($id);
+    $result = self::getLoggedInUserInstance()->deleteActivity($id);
+    module_invoke_all('culturefeed_social_activity_deleted', $result);
+    return $result;
   }
 
   public static function deleteActivities($user_id, $node_id, $content_type, $activity_type) {
@@ -149,9 +150,11 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
       return;
     }
 
+    $result = array();
     foreach ($activities->objects as $activity) {
-      self::deleteActivity($activity->id);
+      $result[] = self::deleteActivity($activity->id);
     }
+    return $result;
   }
 
   public static function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL) {

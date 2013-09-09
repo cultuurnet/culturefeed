@@ -377,6 +377,25 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 }
 
 /**
+ * Theme the message when a user lost some points.
+ */
+function theme_culturefeed_userpoints_ui_points_lost_message($variables) {
+
+  $activity = $variables['activity'];
+  $points = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+  $total_points = CultureFeedUserpointsWishlist::getRealPoints($activity->newTotalPoints);
+
+  $points_message = format_plural($points, '@count punt', '@count punten');
+  $total_points_message = format_plural($total_points, '@count punt', '@count punten');
+
+  $config = CultureFeedActivityConfigBase::loadByType($activity->type);
+
+  $message = '<p>' . t('Message comes here') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
+
+  return $message;
+}
+
+/**
  * Theme function for a message when the userpoints were exchanged.
  * @param array $variables
  */
