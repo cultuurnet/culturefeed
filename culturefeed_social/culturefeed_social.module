@@ -712,7 +712,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
-    '#attributes' => array('class' => 'btn-primary'),
+    '#attributes' => array('class' => array('btn-primary')),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';
