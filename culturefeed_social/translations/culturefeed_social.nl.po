@@ -130,8 +130,8 @@ msgid "Your !comment has been sent."
 msgstr "Jouw !comment is verzonden."
 
 #: culturefeed_social.module:687
-msgid "Message test"
-msgstr "Testbericht"
+msgid "Inappropriate response"
+msgstr "Ongepaste reactie"
 
 #: culturefeed_social.module:688
 msgid "Please tell us why you think this is an inappropriate response"

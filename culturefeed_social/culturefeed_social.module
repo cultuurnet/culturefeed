@@ -679,7 +679,7 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
 
   $form['message'] = array(
     '#type' => 'textarea',
-    '#title' => t('Message test'),
+    '#title' => t('Inappropriate response'),
     '#attributes' => array('placeholder' => t('Please tell us why you think this is an inappropriate response')),
     '#required' => TRUE,
   );
