@@ -390,7 +390,7 @@ function theme_culturefeed_userpoints_ui_points_lost_message($variables) {
 
   $config = CultureFeedActivityConfigBase::loadByType($activity->type);
 
-  $message = '<p>' . t('Message comes here') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
+  $message = '<p>' . t('You lost') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
 
   return $message;
 }
