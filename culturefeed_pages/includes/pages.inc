@@ -233,7 +233,7 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 function culturefeed_pages_add_form($form, &$form_state) {
 
   $form = array();
-  
+
   $query = drupal_get_query_parameters();
   $page_name = !empty($query['page']) ? $query['page'] : '';
 
@@ -442,12 +442,18 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
   }
 
   // Local storage of the universal id.
-  $uid = NULL;
+  $page_id = NULL;
 
   // Send request to add a page.
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
-    $uid = $cf_pages->addPage($form_state['post_params']);
+    $page_id = $cf_pages->addPage($form_state['post_params']);
+
+    // Create activity for the page creation.
+    $activity = new CultureFeed_Activity();
+    $activity->nodeId = $page_id;
+    $activity->nodeTitle = $form_state['values']['name'];
+
     drupal_set_message(format_string(t('Page "@page" has been created.'), array('@page' => $form_state['values']['name'])));
   }
   catch (Exception $e) {
@@ -455,9 +461,9 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     form_set_error('', t('There was an error while creating the page.'));
   }
 
-  if ($uid) {
+  if ($page_id) {
 
-    $form_state['page_id'] = $uid;
+    $form_state['page_id'] = $page_id;
     $form_state['page_title'] = $form_state['values']['name'];
 
     // Upload Page image.
@@ -468,7 +474,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
       if ($image) {
         try {
-          $cf_pages->addImage($uid, array('image' => $image));
+          $cf_pages->addImage($page_id, array('image' => $image));
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);

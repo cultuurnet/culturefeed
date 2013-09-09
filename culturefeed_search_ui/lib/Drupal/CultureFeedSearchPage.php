@@ -177,19 +177,23 @@ class CultureFeedSearchPage {
 
       $dates = explode('-', $params['date_range']);
       $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-      $endDate = clone $startDate;
-      if (isset($dates[1])) {
-        $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
+      if ($startDate) {
+        $endDate = clone $startDate;
+        if (isset($dates[1])) {
+          $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
+          if ($endDateTime) {
+            $endDate = $endDateTime;
+          }
+        }
+
+        // Set start date time on beginning of the day.
+        $startDate->setTime(0, 0, 1);
+
+        // Set end date time to end of the day day, to it searches on full day.
+        $endDate->setTime(23, 59, 59);
+
+        $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
       }
-
-      // Set start date time on beginning of the day.
-      $startDate->setTime(0, 0, 1);
-
-      // Set end date time to end of the day day, to it searches on full day.
-      $endDate->setTime(23, 59, 59);
-
-      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
-
     }
 
     // Add search on coordinates.
@@ -211,7 +215,7 @@ class CultureFeedSearchPage {
       $city_parts = explode(' ', $params['location']);
       if (is_numeric($city_parts[0])) {
         $distance = isset($params['distance']) ? $params['distance'] : '0.00001';
-        
+
         $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
       }
       else {

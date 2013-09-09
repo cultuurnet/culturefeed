@@ -87,32 +87,20 @@ class CultureFeed_Activity {
   const TYPE_IK_GA = 8;
 
   const TYPE_TICKET = 9;
-
   const TYPE_ROUTE = 10;
-
   const TYPE_MORE_INFO = 11;
-
   const TYPE_UITPAS = 12;
-
   const TYPE_REGULAR_CHECKIN = 13;
-
   const TYPE_COMMENT = 14;
-
   const TYPE_RECOMMEND = 15;
-
   const TYPE_FOLLOW = 18;
-
   const TYPE_PAGE_MEMBER = 16;
-
   const TYPE_PAGE_ADMIN = 17;
-
   const TYPE_NEW_EVENT = 19;
-
   const TYPE_REVIEW = 21;
-
   const TYPE_MEDIA_PHOTO = 22;
-
   const TYPE_MEDIA_VIDEO = 23;
+  const TYPE_PAGE_CREATED = 24;
 
   /**
    * ID of the activity object.

@@ -253,6 +253,28 @@ function culturefeed_search_ui_date_facet_form() {
 }
 
 /**
+ * Validate the date facet form.
+ */
+function culturefeed_search_ui_date_facet_form_validate($form, &$form_state) {
+
+  if (!empty($form_state['values']['date_range'])) {
+
+    $form_state['values']['date_range'] = str_replace(t('till'), '-', $form_state['values']['date_range']);
+    $dates = explode('-', $form_state['values']['date_range']);
+    $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+    if (!$startDate) {
+      form_set_error('date_range', t('Please enter a valid date'));
+    }
+    elseif (isset($dates[1])) {
+      $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
+      if (!$endDate) {
+        form_set_error('date_range', t('Please enter a valid date'));
+      }
+    }
+  }
+}
+
+/**
  * Submit the date facet form.
  */
 function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
