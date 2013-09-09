@@ -173,6 +173,10 @@ msgstr "Postcode of gemeente"
 msgid "Search nearby"
 msgstr "Zoek in de buurt"
 
+#: includes/blocks.inc:266
+msgid "Please enter a valid date"
+msgstr "Gelieve een geldige datum in te voeren"
+
 #: includes/blocks.inc:445
 msgid "Remove all filters"
 msgstr "Alle filters verwijderen"
