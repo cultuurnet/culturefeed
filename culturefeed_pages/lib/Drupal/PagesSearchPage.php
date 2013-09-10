@@ -30,6 +30,10 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
         'facet' => array(),
       );
 
+      if (!empty($params['search'])) {
+        $this->addQueryTerm($params['search']);
+      }
+
       $this->addFacetFilters($params);
       $this->addSort($params);
 
@@ -58,14 +62,10 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
 
-    if ('' == $params['search']) {
-      $params['search'] = '*:*';
-    }
-    $this->query[] = $params['search'];
+    drupal_alter('culturefeed_search_page_query', $this);
 
-    $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
-
-    drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
+    // Prepare the search query and add to the search parameters.
+    $this->parameters[] = $this->prepareQuery();
 
     $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
     $this->facetComponent->obtainResults($this->result);

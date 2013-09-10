@@ -47,7 +47,7 @@ class CultureFeedSearchPage {
   protected $defaultSortKey = 'relevancy';
 
   /**
-   * List of paramaters to be given to the search.
+   * List of input parameters to be given to the search.
    * @var \CultuurNet\Search\Parameter\AbstractParameter[]
    */
   protected $parameters = array();
@@ -55,8 +55,30 @@ class CultureFeedSearchPage {
   /**
    * Query to search on.
    * @var array
+   *   An array containing search strings. The respective values will be treated
+   *   as required search terms, joined with "AND". If a single value contains
+   *   multiple words separated by spaces, these will be treated as "OR".
+   *   For example if you want to do search for "(blue OR red) AND (shoe OR
+   *   sandal)" you can pass the following array:
+   *   @code
+   *   $query = array('blue red', 'shoe sandal');
+   *   @endcode
+   *   Using "OR" and "AND" inside the search terms is also permitted:
+   *   @code
+   *   $query = array('blue OR red', 'shoe AND leather');
+   *   @endcode
    */
   protected $query = array();
+
+  /**
+   * Apache Solr local parameters.
+   *
+   * @see http://wiki.apache.org/solr/LocalParams
+   *
+   * @var array
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  protected $localParams = array();
 
   /**
    * Search result from current search.
@@ -136,12 +158,124 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Sets the search query.
+   *
+   * @param array $query
+   *   The search query array.
+   */
+  public function setQuery(array $query) {
+    $this->query = $query;
+  }
+
+  /**
+   * Gets the search query.
+   *
+   * @return array
+   *   The search query array.
+   */
+  public function getQuery() {
+    return $this->query;
+  }
+
+  /**
+   * Adds a search term to the search query.
+   *
+   * @param string $term
+   *   The search term to add. This will be a required term.
+   *
+   * @return array
+   *   The updated search query array.
+   */
+  public function addQueryTerm($term) {
+    $this->query[] = $term;
+    return $this->query;
+  }
+
+  /**
+   * Gets the Apache Solr local parameters.
+   *
+   * @return array
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  public function getLocalParams() {
+    return $this->localParams;
+  }
+
+  /**
+   * Sets the Apache Solr local parameters.
+   *
+   * @param array $local_params
+   *   An array containing Apache Solr local parameters as key-value pairs.
+   */
+  public function setLocalParams(array $localParams) {
+    $this->localParams = $localParams;
+  }
+
+  /**
+   * Sets an Apache Solr local parameter pair.
+   *
+   * @param string $key
+   *   The local parameter key.
+   * @param string $value
+   *   The local parameter value.
+   *
+   * @return array
+   *   The updated local parameters array.
+   */
+  public function setLocalParam($key, $value) {
+    $this->localParams[$key] = $value;
+    return $this->localParams;
+  }
+
+  /**
+   * Unsets an Apache Solr local parameter pair.
+   *
+   * @param string $key
+   *   The key of the local parameter to unset.
+   *
+   * @return array
+   *   The updated local parameters array.
+   */
+  public function unsetLocalParam($key) {
+    unset($this->localParams[$key]);
+    return $this->localParams;
+  }
+
+  /**
+   * Add an Apache Solr input parameter.
+   *
+   * @param \CultuurNet\Search\Parameter\AbstractParameter $parameter
+   *   The parameter to add.
+   *
+   * @return array
+   *   The updated parameters array.
+   */
+  public function addParameter(Parameter\AbstractParameter $parameter) {
+    $this->parameters[] = $parameter;
+    return $this->parameters;
+  }
+
+  /**
+   * Unsets an Apache Solr input parameter.
+   *
+   * @param string $key
+   *   The key of the parameter to unset.
+   *
+   * @return array
+   *   The updated parameters array.
+   */
+  public function unsetParameter($key) {
+    unset($this->parameters[$key]);
+    return $this->parameters;
+  }
+
+  /**
    * Initializes the search with data from the URL query parameters.
    */
   public function initialize() {
     // Only initialize once.
     if (empty($this->facetComponent)) {
-      $this->facetComponent = new Facet\FacetComponent();
+      $this->facetComponent = new FacetComponent();
 
       // Retrieve search parameters and add some defaults.
       $params = drupal_get_query_parameters();
@@ -151,6 +285,10 @@ class CultureFeedSearchPage {
         'search' => '',
         'facet' => array(),
       );
+
+      if (!empty($params['search'])) {
+        $this->addQueryTerm($params['search']);
+      }
 
       $this->addFacetFilters($params);
       $this->addSort($params);
@@ -260,6 +398,35 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Prepare search query for inclusion as a search parameter.
+   *
+   * @return \CultuurNet\Search\Parameter\Query
+   *   The search parameter to use.
+   */
+  protected function prepareQuery() {
+    $query = $this->query;
+
+    // If no search terms have been given, match on everything.
+    if (empty($query)) {
+      $query[] = '*:*';
+    }
+
+    // String required search terms together with 'AND'.
+    $keywords = implode(' AND ', $query);
+
+    // Prepend local parameters to the query string if they were specified.
+    if (!empty($this->localParams)) {
+      $local_parameters = array();
+      foreach ($this->localParams as $key => $value) {
+        $local_parameters[] = "$key=$value";
+      }
+      $keywords = '{!' . implode(' ', $local_parameters) . '}' . $keywords;
+    }
+
+    return new Parameter\Query($keywords);
+  }
+
+  /**
    * Execute the search for current page.
    */
   protected function execute($params) {
@@ -277,18 +444,10 @@ class CultureFeedSearchPage {
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
 
-    if ('' == $params['search']) {
-      $params['search'] = '*:*';
-    }
-    $this->query[] = $params['search'];
+    drupal_alter('culturefeed_search_page_query', $this);
 
-    $this->parameters[] = new Parameter\Query(implode(' AND ', $this->query));
-
-    // Add in a boost for sort-type "relevancy".
-    if ($params['sort'] == 'relevancy') {
-      $this->query[0] = '{!boost%20b=sum(recommend_count,product(comment_count,10))}' . $this->query[0];
-    }
-    drupal_alter('culturefeed_search_query', $this->parameters, $this->query);
+    // Prepare the search query and add to the search parameters.
+    $this->parameters[] = $this->prepareQuery();
 
     $searchService = culturefeed_get_search_service();
     $this->result = $searchService->search($this->parameters);
