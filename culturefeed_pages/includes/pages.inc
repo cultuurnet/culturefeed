@@ -453,10 +453,6 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     $activity = new CultureFeed_Activity();
     $activity->nodeId = $page_id;
     $activity->nodeTitle = $form_state['values']['name'];
-    $activity->contentType = CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE;
-    $activity->type = CultureFeed_Activity::TYPE_PAGE_CREATED;
-    $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-    DrupalCultureFeed::createActivity($activity);
 
     drupal_set_message(format_string(t('Page "@page" has been created.'), array('@page' => $form_state['values']['name'])));
   }
