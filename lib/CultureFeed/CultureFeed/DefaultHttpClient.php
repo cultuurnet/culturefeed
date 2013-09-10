@@ -41,6 +41,12 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
   protected $timeout = 15;
 
   /**
+   * Should we log requests or not.
+   * @var bool
+   */
+  protected $loggingEnabled = FALSE;
+
+  /**
    * Set the proxy server URI.
    *
    * @param string $proxy_server
@@ -86,6 +92,20 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
   }
 
   /**
+   * Enable the logging of requests.
+   */
+  public function enableLogging() {
+    $this->loggingEnabled = TRUE;
+  }
+
+  /**
+   * Disable the logging of requests.
+   */
+  public function disableLogging() {
+    $this->loggingEnabled = FALSE;
+  }
+
+  /**
    * Make an HTTP request
    *
    * @param string $url
@@ -102,6 +122,10 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
    */
   public function request($url, $http_headers = array(), $method = 'GET', $post_data = '') {
     // Initialising some general CURL options (url, timeout, ...).
+
+    if ($this->loggingEnabled) {
+      $requestToLog = new Culturefeed_Log_Request($url);
+    }
 
     $curl_options = array(
       CURLOPT_URL => $url,
@@ -143,7 +167,14 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
 
     curl_close($ch);
 
-    return new CultureFeed_HttpResponse($curl_code, $response);
+    $culturefeedResponse = new CultureFeed_HttpResponse($curl_code, $response);
+    if ($this->loggingEnabled) {
+      $requestToLog->onRequestSent($culturefeedResponse);
+      $requestLog = Culturefeed_Log_RequestLog::getInstance();
+      $requestLog->addRequest($requestToLog);
+    }
+
+    return $culturefeedResponse;
   }
 
 }

@@ -77,13 +77,18 @@ function culturefeed_devel_menu() {
  */
 function culturefeed_devel_shutdown() {
 
-  // Don't add output on ajax requests.
-  if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+  // Don't add output on ajax / drush requests.
+  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
     return;
   }
 
-  $request_log = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance();
-  $requests = $request_log->getRequests();
+  // Search api requests.
+  $requests = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance()->getRequests();
+
+  // Culturefeed requests.
+  $culturefeed_requests = Culturefeed_Log_RequestLog::getInstance()->getRequests();
+  $requests = array_merge($requests, $culturefeed_requests);
+
   $max_time = variable_get('culturefeed_devel_slow_request', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
 
   foreach ($requests as $request) {
@@ -96,7 +101,7 @@ function culturefeed_devel_shutdown() {
   }
 
   if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
-    print culturefeed_devel_requests_table($request_log, $max_time);
+    print culturefeed_devel_requests_table($requests, $max_time);
   }
 
 }
@@ -105,12 +110,10 @@ function culturefeed_devel_shutdown() {
  * Adds a table at the bottom of the page cataloguing data on all the database queries that were made to
  * generate the page.
  */
-function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog $request_log, $max_time) {
+function culturefeed_devel_requests_table($requests, $max_time) {
 
   $header = array(t('Total time'), t('Response code'), t('Url'));
   $rows = array();
-
-  $requests = $request_log->getRequests();
 
   $i = 0;
   $total_time = 0;
@@ -127,7 +130,7 @@ function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog
   return theme('culturefeed_devel_request_log', array(
     'header' => $header,
     'rows' => $rows,
-    'total' => $request_log->getRequestCount(),
+    'total' => count($requests),
     'total_time' => $total_time,
     'max_time' => $max_time,
   ));

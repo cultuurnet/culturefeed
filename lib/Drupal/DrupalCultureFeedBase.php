@@ -135,18 +135,25 @@ abstract class DrupalCultureFeedBase {
 
     $oauth_client->setEndpoint($endpoint);
 
+    $http_client = new CultureFeed_DefaultHttpClient();
+
+    // Enable the logging.
+    if (module_exists('culturefeed_devel')) {
+      $http_client->enableLogging();
+    }
+
     $uri = @parse_url($endpoint);
     $proxy_server = variable_get('proxy_server', '');
     if ($proxy_server && _drupal_http_use_proxy($uri['host'])) {
-      $http_client = new CultureFeed_DefaultHttpClient();
 
       $http_client->setProxyServer($proxy_server);
       $http_client->setProxyPort(variable_get('proxy_port', 8080));
       $http_client->setProxyUsername(variable_get('proxy_username', ''));
       $http_client->setProxyPassword(variable_get('proxy_password', ''));
 
-      $oauth_client->setHttpClient($http_client);
     }
+
+    $oauth_client->setHttpClient($http_client);
 
     return $oauth_client;
   }
