@@ -268,3 +268,7 @@ msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count resultaat"
 msgstr[1] "@range van @count resultaten"
+
+#: theme/culturefeed-search-facet-item.tpl.php:15
+msgid "Remove filter"
+msgstr "Verwijder filter"
