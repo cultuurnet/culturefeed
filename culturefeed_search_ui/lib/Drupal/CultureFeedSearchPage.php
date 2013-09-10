@@ -209,7 +209,7 @@ class CultureFeedSearchPage {
     }
 
     // Add the location facet.
-    if (isset($params['location'])) {
+    if (!empty($params['location'])) {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
@@ -236,22 +236,25 @@ class CultureFeedSearchPage {
     }
 
     foreach ($params['facet'] as $facetFieldName => $facetFilter) {
+      // Filter out empty facets.
+      $facetFilter = array_filter($facetFilter);
 
-      // Datetype is not a real facet, but a search field.
-      if ($facetFieldName == 'datetype') {
-        $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
+      if (!empty($facetFilter)) {
+        // Datetype is not a real facet, but a search field.
+        if ($facetFieldName == 'datetype') {
+          $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
+        }
+        else {
+
+          array_walk($facetFilter, function (&$item) {
+            $item = '"' . str_replace('"', '\"', $item) . '"';
+          });
+          $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
+
+        }
+
+        $this->parameters[] = $facetFilterQuery;
       }
-      else {
-
-        array_walk($facetFilter, function (&$item) {
-          $item = '"' . str_replace('"', '\"', $item) . '"';
-        });
-        $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
-
-      }
-
-      $this->parameters[] = $facetFilterQuery;
-
     }
 
   }

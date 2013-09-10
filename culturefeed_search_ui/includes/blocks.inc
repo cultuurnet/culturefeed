@@ -318,7 +318,7 @@ function culturefeed_search_ui_block_city_facet() {
   $build = array();
 
   // Show facet layout for location.
-  if (isset($_GET['location'])) {
+  if (!empty($_GET['location'])) {
 
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
