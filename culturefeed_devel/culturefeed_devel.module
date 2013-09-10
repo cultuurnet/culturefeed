@@ -7,13 +7,35 @@
  */
 
 // Default slow request pointer in ms.
-define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 5);
+define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 100);
 
 /**
  * Implementation of hook_boot(). Runs even for cached pages.
  */
 function culturefeed_devel_boot() {
   drupal_register_shutdown_function('culturefeed_devel_shutdown');
+}
+
+/**
+ * Implement hook_permission().
+ */
+function culturefeed_devel_permission() {
+  return array(
+    'access culturefeed devel information' => array(
+      'description' => t('View culturefeed devel output.'),
+      'title' => t('Access developer information'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_init().
+ */
+function culturefeed_devel_init() {
+  if (user_access('access culturefeed devel information')) {
+    drupal_add_css(drupal_get_path('module', 'culturefeed_devel') . '/culturefeed_devel.css');
+  }
 }
 
 /**
@@ -38,7 +60,7 @@ function culturefeed_devel_theme() {
 function culturefeed_devel_menu() {
 
   $items = array();
-  $items['admin/config/devel/culturefeed'] = array(
+  $items['admin/config/development/culturefeed'] = array(
     'title' => 'Culture Feed Devel',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_devel_admin_settings_form'),
@@ -62,7 +84,7 @@ function culturefeed_devel_shutdown() {
 
   $request_log = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance();
   $requests = $request_log->getRequests();
-  $max_time = variable_get('culturefeed_devel_show_requests', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
+  $max_time = variable_get('culturefeed_devel_slow_request', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
 
   foreach ($requests as $request) {
     if ($request->getTime() > $max_time) {
@@ -73,7 +95,7 @@ function culturefeed_devel_shutdown() {
     }
   }
 
-  if (variable_get('culturefeed_devel_show_requests', TRUE)) {
+  if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
     print culturefeed_devel_requests_table($request_log, $max_time);
   }
 
@@ -91,11 +113,14 @@ function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog
   $requests = $request_log->getRequests();
 
   $i = 0;
+  $total_time = 0;
   foreach ($requests as $request) {
     $rows[$i]['time'] = $request->getTime();
     $rows[$i]['status'] = $request->getResponse()->getStatusCode();
     $rows[$i]['url'] = urldecode($request->getUrl());
     $i++;
+
+    $total_time += $request->getTime();
     unset($diff);
   }
 
@@ -103,6 +128,7 @@ function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog
     'header' => $header,
     'rows' => $rows,
     'total' => $request_log->getRequestCount(),
+    'total_time' => $total_time,
     'max_time' => $max_time,
   ));
 }
@@ -112,34 +138,40 @@ function culturefeed_devel_requests_table(\CultuurNet\Auth\Guzzle\Log\RequestLog
  */
 function theme_culturefeed_devel_request_log($variables) {
 
-  $output = '<h3>' . t('Total requests to API') . '(' . $variables['total'] . ')</h3>';
+  $total_api_calls = format_plural($variables['total'], '@count API call', '@count API calls');
+  $output = '<div class="culturefeed-dev-query">';
+  $output .= t('Requested @total in @time ms', array('@total' => $total_api_calls, '@time' => $variables['total_time']));
+  $output .= t(' Queries exceeding @threshold ms are <span class="slow-query">highlighted</span>.', array('@threshold' => $variables['max_time']));
+  $output .= '</div>';
 
   $header = $variables['header'];
   $rows = $variables['rows'];
   $max_time = $variables['max_time'];
-  $output = '';
-
-  if (!empty($header)) {
-    $output .= "<div class='culturefeed-log-header clear-block'>";
-    foreach ($header as $heading) {
-      $output .= '<div class="culturefeed-log-header-item">';
-      $output .= $heading;
-      $output .= '</div>';
-    }
-    $output .= "</div>";
-  }
 
   if (!empty($rows)) {
+
+    if (!empty($header)) {
+      $output .= "<div class='culturefeed-dev-log culturefeed-dev-header clear-block'>";
+      $i = 0;
+      foreach ($header as $heading) {
+        $i++;
+        $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-' . $i . '">';
+        $output .= $heading;
+        $output .= '</div>';
+      }
+      $output .= "</div>";
+    }
+
     $i = 0;
     foreach ($rows as $row) {
 
       $i++;
       $zebra = ($i % 2) == 0 ? 'even' : 'odd';
-      $slow_query = ($row['time'] > $max_time) ? ' slow-query' : '';
-      $output .= '<div class="culturefeed-log culturefeed-log-' . $zebra . $slow_query . 'clear-block">';
-      $output .= '<div class="culturefeed-log-item">' . $row['time'] . '</div>';
-      $output .= '<div class="culturefeed-log-item">' . $row['status'] . '</div>';
-      $output .= '<div class="culturefeed-log-item">' . $row['url'] . '</div>';
+      $time = ($row['time'] < $max_time) ? $row['time'] : '<span class="slow-query">' . $row['time'] . '</span>';
+      $output .= '<div class="culturefeed-dev-log culturefeed-dev-' . $zebra . ' clear-block">';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-1">' . $time . '</div>';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-2">' . $row['status'] . '</div>';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-3">' . $row['url'] . '</div>';
 
       $output .= "</div>";
     }

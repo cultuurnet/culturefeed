@@ -1,0 +1,56 @@
+/**
+ * Querylog
+ */
+
+/**
+ * Query summary
+ */
+div.culturefeed-dev-query {
+  font-size: 11px;
+  background: #fff;
+  border-top: 3px solid #ccc;
+  color: #333;
+  padding: 1em;
+}
+
+div.culturefeed-dev-query .slow-query,
+div.culturefeed-dev-log .slow-query{
+  color: #f00;
+  font-weight: bold;
+}
+
+div.culturefeed-dev-header {
+  border-top:3px solid #ccc;
+  background:#fff;
+  font-weight:bold;
+}
+
+div.culturefeed-dev-log {
+  color: #333;
+  border-bottom: 1px solid #eee;
+  font-size: 11px;
+  line-height: 100%;
+  padding-left: 17em;
+  padding-right: 2em;
+  position: relative;
+  overflow: hidden;
+}
+
+div.culturefeed-dev-log div.culturefeed-dev-cell {
+  overflow:hidden;
+  padding: 1em .5em;
+}
+
+div.culturefeed-dev-log div.culturefeed-dev-cell-1 {
+  position:absolute;
+  left:0px;
+  width:7em;
+}
+
+div.culturefeed-dev-log div.culturefeed-dev-cell-2 {
+  position:absolute;
+  left:7em;
+  width:8em;
+}
+
+
