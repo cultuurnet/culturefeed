@@ -55,6 +55,9 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Add grouping so returned events are not duplicate.
     $this->parameters[] = new Parameter\Group();
 
+    // Always add spellcheck.
+    $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
+
     if ('' == $params['search']) {
       $params['search'] = '*:*';
     }

@@ -67,9 +67,6 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    */
   public function search($parameters = array()) {
 
-    // Always add the spellcheck paramter.
-    $parameters[] = new Parameter\Parameter('spellcheck', 'true');
-
     DrupalCultureFeedSearchService::addLanguageParameter($parameters);
 
     $items = $this->service->search($parameters);
