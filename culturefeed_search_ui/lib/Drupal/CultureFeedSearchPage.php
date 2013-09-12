@@ -87,10 +87,16 @@ class CultureFeedSearchPage {
   protected $result;
 
   /**
-   * Default page title.
-   * @var unknown
+   * Default page title. This is a fallback in case no other title is provided.
+   * @var string
    */
   protected $defaultTitle = '';
+
+  /**
+   * The page title to use. If empty this will be overridden by $defaultTitle.
+   * @var string
+   */
+  protected $title = '';
 
   /**
    * Stores search facets with corresponding values for the active search.
@@ -136,11 +142,33 @@ class CultureFeedSearchPage {
   }
 
   /**
-   * Set the default title.
+   * Set the default title. Used as a fallback when there is no page title.
    * @param string $title
    */
   public function setDefaultTitle($title) {
     $this->defaultTitle = $title;
+  }
+
+  /**
+   * Set the page title.
+   *
+   * @param string $title
+   *   The text to set as page title. If this is not set the defaultTitle will
+   *   be used instead.
+   */
+  public function setTitle($title) {
+    $this->title = $title;
+  }
+
+  /**
+   * Get the page title.
+   *
+   * @return string
+   *   The currently set page title. If no page title has been set an empty
+   *   string will be returned.
+   */
+  public function getTitle() {
+    return $this->title;
   }
 
   /**
@@ -547,9 +575,29 @@ class CultureFeedSearchPage {
   }
 
   /**
-   * Get the title to show.
+   * Returns the title to show on the page.
+   *
+   * @see culturefeed_search_ui_search_page()
+   *
+   * @return string
+   *   Returns the page title according to the following logic:
+   *   1. If a title has been set with $this->setTitle(), this will be returned.
+   *   2. If no title was set, and one or more search facets are active, a
+   *      comma-separated list of active search facets are returned.
+   *   3. If no title was set, and no search facets are active, the default
+   *      title is returned. This is usually defined in the 'page_title' key in
+   *      hook_culturefeed_search_page_info().
+   *   If the query parameter 'page' is present and no title has been set with
+   *   $this->setTitle(), the returned title will be appended with a comma
+   *   and the Dutch word 'pagina' with the page parameter increased by one,
+   *   surrounded by parentheses.
    */
   public function getDrupalTitle() {
+    // Return the title that has been explicitly set with $this->setTitle().
+    if (!empty($this->title)) {
+      return $this->title;
+    }
+
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
     if (!empty($active_filters)) {
 
