@@ -160,7 +160,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     }
 
     $active_trail[] = array(
-      'title' => $this->getDrupalTitle(),
+      'title' => $this->getPageTitle(),
       'href' => $_GET['q'],
       'link_path' => '',
       'localized_options' => array(),

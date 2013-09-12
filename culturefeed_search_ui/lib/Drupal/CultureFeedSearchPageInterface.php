@@ -142,7 +142,7 @@ interface CultureFeedSearchPageInterface {
   /**
    * Get the title to show.
    */
-  public function getDrupalTitle();
+  public function getPageTitle();
 
   /**
    * Get the active trail to show.

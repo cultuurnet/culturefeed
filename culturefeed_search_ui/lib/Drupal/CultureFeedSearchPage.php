@@ -16,6 +16,11 @@ class CultureFeedSearchPage {
   const PAGER_INFINITE_SCROLL = 1;
 
   /**
+   * Current page number that is shown.
+   */
+  protected $pageNumber = 1;
+
+  /**
    * Start index from items currently shown.
    * @var int
    */
@@ -309,10 +314,11 @@ class CultureFeedSearchPage {
       $params = drupal_get_query_parameters();
       $params += array(
         'sort' => 'relevancy',
-        'page' => 0,
         'search' => '',
         'facet' => array(),
       );
+
+      $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
 
       if (!empty($params['search'])) {
         $this->addQueryTerm($params['search']);
@@ -460,8 +466,7 @@ class CultureFeedSearchPage {
   protected function execute($params) {
 
     // Add start index (page number we want)
-    $this->start = $params['page'] * $this->resultsPerPage;
-    $this->parameters[] = new Parameter\Start($this->start);
+    $this->parameters[] = new Parameter\Start(($this->pageNumber - 1) * $this->resultsPerPage);
 
     // Add items / page.
     $this->parameters[] = new Parameter\Rows($this->resultsPerPage);
@@ -530,11 +535,8 @@ class CultureFeedSearchPage {
       elseif ($this->pagerType == self::PAGER_INFINITE_SCROLL) {
 
         $params = drupal_get_query_parameters();
-        $params += array(
-          'page' => 0,
-        );
-        $rest = $this->result->getTotalCount() - ($params['page'] * $this->resultsPerPage);
-        $params['page']++;
+        $rest = $this->result->getTotalCount() - (($this->pageNumber - 1) * $this->resultsPerPage);
+        $params['page'] = $this->pageNumber + 1;
 
         $build['pager-container'] =  array(
           '#type' => 'container',
@@ -589,15 +591,17 @@ class CultureFeedSearchPage {
    *      hook_culturefeed_search_page_info().
    *   If the query parameter 'page' is present and no title has been set with
    *   $this->setTitle(), the returned title will be appended with a comma
-   *   and the Dutch word 'pagina' with the page parameter increased by one,
+   *   and the page number with the page parameter increased by one,
    *   surrounded by parentheses.
    */
-  public function getDrupalTitle() {
+  public function getPageTitle() {
+
     // Return the title that has been explicitly set with $this->setTitle().
     if (!empty($this->title)) {
       return $this->title;
     }
 
+    // Otherwise the framework version will be used.
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
     if (!empty($active_filters)) {
 
@@ -620,8 +624,8 @@ class CultureFeedSearchPage {
       $labels[] = $this->defaultTitle;
     }
 
-    if (isset($_GET['page']) && $_GET['page'] > 0) {
-      $labels[] = ('pagina ' . ($_GET['page'] + 1));
+    if ($this->pageNumber > 1) {
+      $labels[] = (t('page') . ' ' . $this->pageNumber);
     }
 
     if (!empty($labels)) {
