@@ -30,7 +30,7 @@ function _culturefeed_mailing_optin_toggle($mailing_id) {
     '#type' => 'link',
     '#title' => $subscribed ? t('Unsubscribe') : t('Subscribe'),
     '#href' => 'culturefeed/toggle/newsletter-optin/' . $mailing_id . '/' . ($subscribed ? '0' : '1') . '/nojs',
-    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('btn btn-warning newsletter-optin-link', $subscribed_class)),
+    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('btn btn-primary newsletter-optin-link', $subscribed_class)),
     '#options' => array('query' => drupal_get_destination()),
     '#ajax' => array(),
   );
