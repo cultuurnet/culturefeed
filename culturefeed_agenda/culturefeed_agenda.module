@@ -115,6 +115,14 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['autocomplete/culturefeed/activity-suggestion/past'] = array(
+    'page callback' => 'culturefeed_agenda_activity_suggestion_autocomplete_page',
+    'page arguments' => array(3, TRUE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }

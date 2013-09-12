@@ -87,8 +87,8 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   /**
    * @see \CultuurNet\Search\Service::searchSuggestions().
    */
-  public function searchSuggestions($search_string, $types = array()) {
-    return $this->service->searchSuggestions($search_string, $types);
+  public function searchSuggestions($search_string, $types = array(), $past = FALSE) {
+    return $this->service->searchSuggestions($search_string, $types, $past);
   }
 
   public function detail($type, $id) {

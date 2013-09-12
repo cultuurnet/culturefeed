@@ -30,7 +30,7 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
 /**
  * Page callback to do an autocomplete search on activity titles.
  */
-function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string) {
+function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string, $past = FALSE) {
 
   $matches = array();
 
@@ -39,7 +39,7 @@ function culturefeed_agenda_activity_suggestion_autocomplete_page($search_string
     try {
 
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('event', 'production'));
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('event', 'production'), $past);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());

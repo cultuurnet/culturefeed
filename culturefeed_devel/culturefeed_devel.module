@@ -77,10 +77,6 @@ function culturefeed_devel_menu() {
  */
 function culturefeed_devel_shutdown() {
 
-  // Don't add output on ajax / drush requests.
-  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-    return;
-  }
 
   // Search api requests.
   $requests = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance()->getRequests();
@@ -100,8 +96,13 @@ function culturefeed_devel_shutdown() {
     }
   }
 
-  if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
-    print culturefeed_devel_requests_table($requests, $max_time);
+  // Don't add output on ajax / drush requests.
+  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+    return;
+  }
+
+  if (variable_get('culturefeed_devel_show_requests', TRUE)) {
+    print culturefeed_devel_requests_table($request_log, $max_time);
   }
 
 }

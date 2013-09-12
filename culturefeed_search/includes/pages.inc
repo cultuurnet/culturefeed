@@ -9,7 +9,7 @@ use \Guzzle\Http\Exception;
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $type = NULL) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE) {
 
   $matches = array();
 
@@ -20,7 +20,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $type 
       $types = !empty($type) ? array($type) : array();
 
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types);
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $title = $suggestion->getTitle();
@@ -40,7 +40,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $type 
     }
 
   }
-  
+
   drupal_json_output($matches);
 
   // Cache if possible per request.
