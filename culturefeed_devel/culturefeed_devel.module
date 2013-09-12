@@ -102,7 +102,7 @@ function culturefeed_devel_shutdown() {
   }
 
   if (variable_get('culturefeed_devel_show_requests', TRUE)) {
-    print culturefeed_devel_requests_table($request_log, $max_time);
+    print culturefeed_devel_requests_table($requests, $max_time);
   }
 
 }
