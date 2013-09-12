@@ -412,12 +412,12 @@ function culturefeed_ui_page_account_edit() {
       '#suffix' => '</div><hr />',
     ),
     'online_accounts' => array(
-      '#prefix' => '<div id="online-accounts"><h2>' . t('Connected accounts') . '</h2>',
+      '#prefix' => '<div id="online-accounts"><h3>' . t('Connected accounts') . '</h3>',
       culturefeed_ui_online_accounts(),
       '#suffix' => '</div><hr />',
     ),
     'consumers' => array(
-      '#prefix' => '<div id="manage-consumers"><h2>' . t('Connected applications') . '</h2>',
+      '#prefix' => '<div id="manage-consumers"><h3>' . t('Connected applications') . '</h3>',
       '#markup' => t('Manage all ') . l(t('websites and applications'), 'culturefeed/serviceconsumers') . t(' who uses your UiTiD profile.'),
       '#suffix' => '</div>',
     )
