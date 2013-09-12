@@ -266,10 +266,10 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
         $actor = $organiser->getActor();
         $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-        $data['all_url'] = culturefeed_search_detail_url('production', $actor->getCdbid(), $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle());
+        $data['all_url'] = culturefeed_search_detail_url('actor', $actor->getCdbid(), $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle());
       }
       elseif ($organiser->getLabel() && $organiser->getCdbid()) {
-        $data['all_url'] = culturefeed_search_detail_url('production', $organiser->getCdbid(), $organiser->getLabel());
+        $data['all_url'] = culturefeed_search_detail_url('actor', $organiser->getCdbid(), $organiser->getLabel());
       }
 
     }

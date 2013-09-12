@@ -101,7 +101,7 @@ function culturefeed_devel_shutdown() {
     return;
   }
 
-  if (variable_get('culturefeed_devel_show_requests', TRUE)) {
+  if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
     print culturefeed_devel_requests_table($requests, $max_time);
   }
 
