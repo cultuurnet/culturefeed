@@ -520,7 +520,7 @@ function culturefeed_mailing_page_my_newsletters() {
   
   $build = array();
   $build['intro'] = array(
-    '#markup' => '<p class="muted"><small>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Donec sed odio dui.</small></p>',
+    '#markup' => '',
   );
 
   if ($mailings->total > 0) {
