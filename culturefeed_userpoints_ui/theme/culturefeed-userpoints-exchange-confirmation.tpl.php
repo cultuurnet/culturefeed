@@ -1,1 +1,1 @@
-<?php print t('Your current points balance'); ?>: <?php print $total_points; ?>
+<p class="lead"><?php print t('Your current points balance'); ?>: <strong><?php print $total_points; ?> <?php print t('points'); ?></strong></p>
