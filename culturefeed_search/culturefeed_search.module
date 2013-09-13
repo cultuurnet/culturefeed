@@ -1,0 +1,111 @@
+<?php
+/**
+ * @file
+ * Module file for all functionality for CultureFeed Search.
+ */
+
+// Default API location. Can be overriden in settings form.
+define('CULTUREFEED_SEARCH_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/searchv2/');
+define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
+
+// Default proximity search range.
+define('CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE', 20);
+
+module_load_include('inc', 'culturefeed_search', 'includes/helpers');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_search_menu() {
+
+  $items['admin/config/services/culturefeed_search'] = array(
+    'title' => 'Culture Feed Search',
+    'description' => 'Change Culture Feed Search API setting like API Appliction key, location, ...',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_search_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+  // Autocomplete path for suggestions.
+  $items['autocomplete/culturefeed/suggestions'] = array(
+    'title' => 'Culturefeed suggestions autocomplete',
+    'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
+    'page arguments' => array(3, NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['autocomplete/culturefeed/actor-suggestions'] = array(
+    'title' => 'Culturefeed suggestions autocomplete',
+    'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
+    'page arguments' => array(3, 'actor'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Autocomplete path for region suggestions.
+  $items['autocomplete/culturefeed/region-suggestion'] = array(
+    'page callback' => 'culturefeed_search_region_suggestion_autocomplete_page',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Autocomplete for city and region suggestions
+  $items['autocomplete/culturefeed/city-suggestion'] = array(
+    'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, FALSE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+  $items['autocomplete/culturefeed/city-region-suggestion'] = array(
+    'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, TRUE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function culturefeed_search_flush_caches() {
+  return array('cache_culturefeed_search');
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function culturefeed_search_form_system_performance_settings_alter(&$form, $form_state) {
+
+  // We want our stuff before the clear cache fieldset and button.
+  $form['buttons']['#weight'] = 3;
+  $form['clear_cache']['#weight'] = 2;
+
+  // Adding API cache settings to the performance settings form.
+  $form['culturefeed_search_cache'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CultureFeed Search cache'),
+    '#weight' => 1,
+    '#description' => t('Enabling the CultureFeed Search cache will cache some parsed results of requests to the CultureFeed API. This will reduce the number of requests made directly to the API service.'),
+  );
+
+  $form['culturefeed_search_cache']['culturefeed_search_cache_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Cache API requests'),
+    '#default_value' => variable_get('culturefeed_search_cache_enabled', FALSE),
+  );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
+
+}
+

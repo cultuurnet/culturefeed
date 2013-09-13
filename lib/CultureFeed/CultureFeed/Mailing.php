@@ -52,6 +52,12 @@ class CultureFeed_Mailing {
   public $template;
 
   /**
+   * Description of the mailing.
+   * @var string
+   */
+  public $description;
+
+  /**
    * Id of the service consumer.
    * @var string
    */

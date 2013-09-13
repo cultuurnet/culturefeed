@@ -1,87 +1,5 @@
 <?php
 
-function culturefeed_ui_block_recommendations_is_visible() {
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-function culturefeed_ui_block_recommendations_view() {
-  $config = array(
-    'title' => 'Aanbevolen voor jou',
-    'id' => 'recommendations',
-    'path' => 'culturefeed/recommendations/json',
-  );
-
-  return culturefeed_ui_block_ajaxload($config);
-}
-
-function culturefeed_ui_block_user_liked_locations_is_visible() {
-  return culturefeed_ui_is_culturefeed_profile_page();
-}
-
-function culturefeed_ui_block_user_liked_locations_view() {
-  $account = menu_get_object('user');
-
-  if (!$account->culturefeed_uid) {
-    return;
-  }
-
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTOR;
-  $query->type        = CultureFeed_Activity::TYPE_LIKE;
-  $query->userId      = $account->culturefeed_uid;
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  if (empty($activities->objects)) {
-    $content['locations'] = array(
-      '#markup' => 'Deze gebruiker vond nog geen locaties leuk.',
-    );
-  }
-  else {
-    $actors = culturefeed_get_nodes_for_activities($activities->objects);
-
-    $items = array();
-
-    foreach ($actors as $actor) {
-      $items[] = theme('cnapi_ui_actor_mini_summary', array('actor' => $actor));
-    }
-
-    $content['locations'] = array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-    );
-  }
-
-  $block['subject'] = 'Favoriete locaties';
-  $block['content'] = $content;
-
-  return $block;
-}
-
-function culturefeed_ui_block_top_events_cache_id() {
-  return array(DrupalCultureFeed::isCultureFeedUser() ? 1 : 0);
-}
-
-function culturefeed_ui_block_top_events_view() {
-  $config = array(
-    'title' => 'Top events',
-    'id' => 'top-events',
-    'path' => 'culturefeed/topevents/json',
-  );
-
-  return culturefeed_ui_block_ajaxload($config);
-}
-
 function culturefeed_ui_block_similar_users_cache_id() {
   $account = menu_get_object('user');
 
@@ -117,318 +35,12 @@ function culturefeed_ui_block_similar_users_view() {
     return;
   }
 
-  $block['subject'] = 'Gelijkaardige gebruikers';
+  $block['subject'] = t('Similar users');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
     '#attributes' => array('class' => 'user-list'),
   );
-
-  return $block;
-}
-
-function culturefeed_ui_block_user_activities_is_visible() {
-  return culturefeed_ui_is_culturefeed_profile_page();
-}
-
-function culturefeed_ui_block_user_activities_view() {
-  $account = menu_get_object('user');
-
-  if (!$account->culturefeed_uid) {
-    return;
-  }
-
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_USER_ACTIVITIES_COUNT;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA,
-  );
-  $query->userId = $account->culturefeed_uid;
-  $query->private = FALSE;
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  if (empty($activities->objects)) {
-    $content['activities'] = array(
-      '#markup' => 'Deze gebruiker heeft nog geen acties gedaan.',
-    );
-  }
-  else {
-    $items = culturefeed_ui_activities_list($activities);
-    $content['activities'] = array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#attributes' => array('class' => 'user-activity-list'),
-    );
-    if ($account->culturefeed_uid == DrupalCultureFeed::getLoggedInUserId()) {
-      $content['edit'] = array(
-        '#markup' => l('Beheer jouw acties', 'culturefeed/activities', array('attributes' => array('class' => array('manage-activities-link')))),
-      );
-
-      $facebook = _culturefeed_ui_facebook_privacy_toggle();
-      if ($facebook) {
-        $item_list = array(
-          '#theme' => 'item_list',
-          '#items' => array(
-            array(
-              'data' => $facebook,
-              'id' => 'onlineaccount-facebook',
-            ),
-          ),
-        );
-        $content['facebook'] = array(
-          '#markup' => drupal_render($item_list),
-        );
-      }
-
-    }
-
-  }
-
-  $block['subject'] = 'Recente acties';
-  $block['content'] = $content;
-
-  return $block;
-}
-
-function culturefeed_ui_block_recent_activities_view() {
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_UI_BLOCK_RECENT_ACTIVITIES_COUNT;
-  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
-  $query->type = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_IK_GA
-  );
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = culturefeed_ui_activities_list($activities);
-
-  if (empty($items)) {
-    return;
-  }
-
-  $content['activities'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'user-activity-list'),
-  );
-
-  $content['more'] = array(
-    '#markup' => l('Meer acties', 'culturefeed/activities/recent'),
-  );
-
-  $block['subject'] = 'Recente acties';
-  $block['content'] = $content;
-
-  return $block;
-}
-
-function culturefeed_ui_block_related_events_is_visible() {
-  $request = cnapi_ui_get_active_request();
-
-  // We only act upon cnapi requests.
-  if (!$request) {
-    return FALSE;
-  }
-
-  $is_event = array_search('event', array_keys($request)) !== FALSE;
-
-  if (!$is_event) {
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-function culturefeed_ui_block_related_events_view() {
-  $request = cnapi_ui_get_active_request();
-
-  $cdbid = $request['event'];
-
-  $config = array(
-    'title' => 'Ontdek ook',
-    'id' => 'related-events',
-    'path' => 'culturefeed/relatedevents/' . $cdbid . '/json',
-  );
-
-  return culturefeed_ui_block_ajaxload($config);
-}
-
-function culturefeed_ui_block_users_likes_config() {
-  $config = array(
-    'node_types'          => array_keys(node_type_get_types()),
-    'cnapi_types'         => array('actor', 'event', 'production'),
-    'activity_type'       => CultureFeed_Activity::TYPE_LIKE,
-    'block_subject'       => 'Vinden dit leuk',
-    'undo_link_title'     => 'Vind ik niet meer leuk',
-    'do_link_title'       => 'Vind ik leuk',
-    'do_first_link_title' => 'Vind dit als eerste leuk',
-    'all_link_title'      => 'Toon iedereen die dit leuk vindt',
-  );
-
-  return $config;
-}
-
-function culturefeed_ui_block_users_recommends_config() {
-  $config = array(
-    'node_types'          => array_keys(node_type_get_types()),
-    'cnapi_types'         => array('actor', 'event', 'production'),
-    'activity_type'       => CultureFeed_Activity::TYPE_RECOMMEND,
-    'block_subject'       => 'Aangeraden door',
-    'undo_link_title'     => 'Raad ik niet meer aan',
-    'do_link_title'       => 'Ook aanraden',
-    'do_first_link_title' => 'Raad dit als eerte aan',
-    'all_link_title'      => 'Toon iedereen die dit aanraadt',
-  );
-
-  return $config;
-}
-
-function culturefeed_ui_block_users_likes_is_visible() {
-  $config = culturefeed_ui_block_users_likes_config();
-
-  return _culturefeed_ui_block_users_activity_is_visible($config);
-}
-
-function culturefeed_ui_block_users_recommends_is_visible() {
-  $config = culturefeed_ui_block_users_recommends_config();
-
-  return _culturefeed_ui_block_users_activity_is_visible($config);
-}
-
-function culturefeed_ui_block_users_likes_view() {
-  $config = culturefeed_ui_block_users_likes_config();
-
-  return _culturefeed_ui_block_users_activity_view($config);
-}
-
-function culturefeed_ui_block_users_recommends_view() {
-  $config = culturefeed_ui_block_users_recommends_config();
-
-  return _culturefeed_ui_block_users_activity_view($config);
-}
-
-function culturefeed_ui_block_users_attends_config() {
-  $config = array(
-    'node_types'          => array(),
-    'cnapi_types'         => array('event', 'production'),
-    'activity_type'       => CultureFeed_Activity::TYPE_IK_GA,
-    'block_subject'       => 'Gaan hier naartoe',
-    'undo_link_title'     => 'Ik ga hier niet meer naartoe',
-    'do_link_title'       => 'Ik ga hier naartoe',
-    'do_first_link_title' => 'Ik ga hier naartoe',
-    'all_link_title'      => 'Toon iedereen die hier naartoe gaat',
-  );
-
-  return $config;
-}
-
-function culturefeed_ui_block_users_attends_is_visible() {
-  $config = culturefeed_ui_block_users_attends_config();
-
-  return _culturefeed_ui_block_users_activity_is_visible($config);
-}
-
-function culturefeed_ui_block_users_attends_view() {
-  $config = culturefeed_ui_block_users_attends_config();
-
-  return _culturefeed_ui_block_users_activity_view($config);
-}
-
-function _culturefeed_ui_block_users_activity_is_visible($config) {
-  $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);
-
-  return $context !== FALSE;
-}
-
-function _culturefeed_ui_block_users_activity_view($config) {
-  $max = CULTUREFEED_UI_BLOCK_USERS_ACTIVITY_COUNT;
-
-  $context = culturefeed_ui_activity_context($config['cnapi_types'], $config['node_types']);
-  extract($context);
-
-  $activity_type = $config['activity_type'];
-
-  try {
-    $users = DrupalCultureFeed::searchActivityUsers($node_id, $activity_type, $activity_content_type, 0, $max);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
-
-  $items = culturefeed_ui_users_list($users);
-
-  $content['users'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#attributes' => array('class' => 'user-list'),
-  );
-
-  if ($users->total > $max) {
-    $content['more'] = array(
-      '#markup' => '<div class="more-link">' . l($config['all_link_title'], 'culturefeed/users/activity/' . $activity_type . '/' . $activity_content_type . '/' . $node_id, array('attributes' => array('class' => 'all-link'))) . '</div>',
-    );
-  }
-
-  $user_did_this = FALSE;
-
-  if (DrupalCultureFeed::isCultureFeedUser()) {
-    try {
-      $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $node_id, $activity_content_type);
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-    }
-  }
-
-  $items = array();
-
-  if (!$user_did_this) {
-    $url = 'culturefeed/do/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
-    if ($users->total == 0) {
-      $title = $config['do_first_link_title'];
-    }
-    else {
-      $title = $config['do_link_title'];
-    }
-    $content['link'] = array(
-      '#markup' => '<div class="do-link-wrapper">' . l($title, $url, array('attributes' => array('class' => 'do-link ' . 'do-' . $config['activity_type'] . '-link'))) . '</div>',
-    );
-
-    if (user_is_anonymous()) {
-      $content['link']['#markup'] .= theme('culturefeed_ui_connect_hover', array('url' => $url));
-    }
-
-  }
-  else {
-    $url = 'culturefeed/undo/' . $activity_type . '/' . $activity_content_type . '/' . $node_id;
-    $title = $config['undo_link_title'];
-    $content['link'] = array(
-      '#markup' => '<div class="undo-link-wrapper">' . l($title, $url, array('attributes' => array('class' => 'undo-link ' . 'undo-' . $config['activity_type'] . '-link'))) . '</div>',
-    );
-  }
-
-  $block['subject'] = $config['block_subject'];
-  $block['content'] = $content;
 
   return $block;
 }
@@ -453,7 +65,7 @@ function culturefeed_ui_block_most_active_user_view() {
     return;
   }
 
-  $block['subject'] = 'UiTslover van de week';
+  $block['subject'] = t('Most active user');
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_most_active_user',
     '#account' => $cf_account,
@@ -464,7 +76,7 @@ function culturefeed_ui_block_most_active_user_view() {
 }
 
 function culturefeed_ui_block_search_users_view() {
-  $block['subject'] = 'Zoek andere gebruikers';
+  $block['subject'] = t('Search users');
   $block['content'] = drupal_get_form('culturefeed_ui_users_search_form');
 
   return $block;
@@ -479,7 +91,7 @@ function culturefeed_ui_block_connect_is_visible() {
 }
 
 function culturefeed_ui_block_connect_view() {
-  $block['subject'] = 'Teveel te doen?';
+  $block['subject'] = t('UiTiD connect');
   $block['content'] = array(
     '#theme' => 'culturefeed_ui_connect',
   );
@@ -497,60 +109,79 @@ function culturefeed_ui_block_profile_box_is_visible() {
 
 function culturefeed_ui_block_profile_box_view() {
   if (DrupalCultureFeed::isCultureFeedUser()) {
+
     try {
+
       $cf_account = DrupalCultureFeed::getLoggedInUser();
+      $uid = culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick);
+      $culture_feed_profile_name = array(
+        'id' => $cf_account->id,
+        'uid' => $uid,
+        'nick' => $cf_account->nick,
+        'link' => l($cf_account->nick, 'user/' . $uid),
+      );
+      drupal_alter('culturefeed_ui_profile_box_nick', $culture_feed_profile_name);
+
+      // Get the main items. These are always visible.
+      $main_items = module_invoke_all('culturefeed_ui_profile_box_main_items', $cf_account);
+      drupal_alter('culturefeed_ui_profile_box_main_items', $main_items, $cf_account);
+
+      // Get the items that should appear in the dropdown.
+      $dropdown_items = module_invoke_all('culturefeed_ui_profile_box_dropdown_items', $cf_account);
+      drupal_alter('culturefeed_ui_profile_box_dropdown_items', $dropdown_items, $cf_account);
+
+      $content = array(
+        '#theme' => 'culturefeed_ui_profile_box',
+        '#profile_name' => $culture_feed_profile_name,
+        '#account' => $cf_account,
+        '#main_items' => $main_items,
+        '#dropdown_items' => $dropdown_items,
+      );
+
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_ui', $e);
       return;
     }
   }
+  else {
+    $content = array(
+      '#theme' => 'culturefeed_ui_anonymous_profile_box',
+      '#account' => isset($cf_account) ? $cf_account : FALSE,
+    );
+  }
 
   $block['subject'] = '';
-  $block['content'] = array(
-    '#theme' => 'culturefeed_ui_profile_box',
-    '#account' => isset($cf_account) ? $cf_account : FALSE,
-  );
+  $block['content'] = $content;
 
   return $block;
 }
 
 function culturefeed_ui_block_profile_menu_is_visible() {
-  return DrupalCultureFeed::isCultureFeedUser();
+
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return FALSE;
+  }
+
+  if (arg(0) == 'user') {
+    $account = menu_get_object('user');
+    global $user;
+    if ($account->uid != $user->uid) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+
 }
 
 function culturefeed_ui_block_profile_menu_view() {
+
   global $user;
 
-  $menu = array(
-    array(
-      'title' => 'Mijn UiTiD',
-      'url' => 'user/' . $user->uid,
-      'description' => 'Zo zien anderen jouw profiel.',
-    ),
-    array(
-      'title' => 'Profiel bewerken',
-      'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, favoriete locaties, ...',
-    ),
-    array(
-      'title' => 'Account bewerken',
-      'url' => 'culturefeed/account/edit',
-      'description' => 'Wijzig paswoord, e-mailadres, toepassingen verbonden met jouw account, ...',
-    ),
-    array(
-      'title' => 'Aanbevelingen',
-      'url' => 'culturefeed/recommendations',
-      'description' => 'Ontdek activiteiten op jouw maat.',
-    ),
-    array(
-      'title' => 'Acties',
-      'url' => 'culturefeed/activities',
-      'description' => 'Stel in welke acties (Leuk, Deel, Tweet, ...) voor anderen zichtbaar zijn in je UiTiD-profiel.',
-    ),
-  );
-
+  $menu = module_invoke_all('culturefeed_ui_profile_menu');
   drupal_alter('culturefeed_ui_profile_menu', $menu);
+  uasort($menu, 'drupal_sort_weight');
 
   $items = array();
 
@@ -571,7 +202,7 @@ function culturefeed_ui_block_profile_menu_view() {
     );
   }
 
-  $block['subject'] = 'Beheer je profiel';
+  $block['subject'] = t('Manage profile');
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
@@ -597,7 +228,7 @@ function culturefeed_ui_block_mbox_confirmation_reminder_view() {
     return;
   }
 
-  $block['subject'] = 'Bevestig jouw e-mailadres';
+  $block['subject'] = 'Confirm email address';
   $block['content'] = theme('culturefeed_ui_mbox_confirmation_reminder', array('account' => $cf_account));
 
   return $block;
@@ -626,7 +257,7 @@ function culturefeed_ui_block_my_uitid_view() {
     $query->max = 1;
     $goto = DrupalCultureFeed::searchActivities($query)->total;
 
-    $block['subject'] = 'Mijn UiTiD';
+    $block['subject'] = t('My profile');
     $block['content'] = theme('culturefeed_ui_my_uitid', array(
       'account' => $account,
       'like' => $like,
@@ -648,7 +279,7 @@ function culturefeed_ui_block_my_uitid_is_visible() {
 
 
 function culturefeed_ui_block_something_for_you_view() {
-  $block['subject'] = 'Echt iets voor jou?';
+  $block['subject'] = t('Something for you?');
   $block['content'] = theme('culturefeed_ui_something_for_you');
   return $block;
 }

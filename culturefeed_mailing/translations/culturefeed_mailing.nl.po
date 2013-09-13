@@ -1,0 +1,307 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_mailing.admin.inc: n/a
+#  culturefeed_mailing.pages.inc: n/a
+#  culturefeed_mailing.blocks.inc: n/a
+#  culturefeed_mailing.helpers.inc: n/a
+#  culturefeed_mailing.module: n/a
+#  culturefeed_mailing.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-07-23 17:41+0200\n"
+"PO-Revision-Date: 2013-07-24 13:05+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_mailing.admin.inc:21
+msgid "None"
+msgstr "Geen"
+
+#: culturefeed_mailing.admin.inc:29 culturefeed_mailing.pages.inc:249
+msgid "Mailing list"
+msgstr "Mailing list"
+
+#: culturefeed_mailing.admin.inc:36
+msgid "Optional mailing list"
+msgstr "Optionele mailing list"
+
+#: culturefeed_mailing.admin.inc:43
+msgid "Newsletter block description"
+msgstr "Nieuwsbrief block omschrijving"
+
+#: culturefeed_mailing.admin.inc:44
+msgid "Description displayed in the form as block"
+msgstr "Beschrijving word als block weergegeven in het formulier"
+
+#: culturefeed_mailing.admin.inc:50
+msgid "Optional newsletter description"
+msgstr "Optionele nieuwsbrief omschrijving"
+
+#: culturefeed_mailing.admin.inc:51
+msgid "Description displayed beside the checkbox for an optional registration"
+msgstr ""
+"Omschrijving die getoond wordt bij de checkbox voor een optionele "
+"inschrijving"
+
+#: culturefeed_mailing.admin.inc:57
+msgid "Subscribed message"
+msgstr "Bericht bij inschrijven"
+
+#: culturefeed_mailing.admin.inc:58
+msgid "Message after a successfull subscription"
+msgstr "Bericht na succesvol inschrijven"
+
+#: culturefeed_mailing.admin.inc:59
+msgid "Successfully subscribed to our newsletter"
+msgstr "U bent succesvol ingeschreven voor onze nieuwsbrief"
+
+#: culturefeed_mailing.blocks.inc:30
+msgid "Newsletter"
+msgstr "Nieuwsbrief"
+
+#: culturefeed_mailing.helpers.inc:28
+msgid "subscribed"
+msgstr "ingegeschreven"
+
+#: culturefeed_mailing.helpers.inc:28
+msgid "not subscribed"
+msgstr "niet ingeschreven"
+
+#: culturefeed_mailing.helpers.inc:31
+msgid "Unsubscribe"
+msgstr "Uitschrijven"
+
+#: culturefeed_mailing.helpers.inc:31 culturefeed_mailing.pages.inc:127
+#: culturefeed_mailing.module:240
+msgid "Subscribe"
+msgstr "Inschrijven"
+
+#: culturefeed_mailing.pages.inc:48
+msgid "Error occurred"
+msgstr "Er is een fout opgetreden"
+
+#: culturefeed_mailing.pages.inc:75
+msgid "Email address"
+msgstr "E-mailadres"
+
+#: culturefeed_mailing.pages.inc:85
+msgid "Zipcode"
+msgstr "Postcode"
+
+#: culturefeed_mailing.pages.inc:95
+msgid "First name"
+msgstr "Voornaam"
+
+#: culturefeed_mailing.pages.inc:105
+msgid "Family name"
+msgstr "Naam"
+
+#: culturefeed_mailing.pages.inc:122
+msgid "Privacy statement"
+msgstr "Privacyverklaring"
+
+#: culturefeed_mailing.pages.inc:169
+msgid "An error occurred while subscribing, please try again later."
+msgstr ""
+"Er is een fout opgetreden tijdens het inschrijven. Probeer het later "
+"opnieuw. "
+
+#: culturefeed_mailing.pages.inc:179
+msgid "You have successfully subscribed to our newsletter"
+msgstr "U bent succesvol ingeschreven voor onze nieuwsbrief."
+
+#: culturefeed_mailing.pages.inc:198
+msgid "edit"
+msgstr "bewerken"
+
+#: culturefeed_mailing.pages.inc:205
+msgid "delete"
+msgstr "verwijder"
+
+#: culturefeed_mailing.pages.inc:212;491
+msgid "send test mail"
+msgstr "Stuur testmail"
+
+#: culturefeed_mailing.pages.inc:249;315
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: culturefeed_mailing.pages.inc:249;307
+msgid "From address"
+msgstr "Van adres"
+
+#: culturefeed_mailing.pages.inc:249
+msgid "Actions"
+msgstr "Acties"
+
+#: culturefeed_mailing.pages.inc:251
+msgid "No mailinglists yet"
+msgstr "Nog geen mailing list"
+
+#: culturefeed_mailing.pages.inc:267
+msgid "Are you sure you want to delete %title?"
+msgstr "Weet u zeker dat u %title wilt verwijderen?"
+
+#: culturefeed_mailing.pages.inc:269
+msgid "This action cannot be undone."
+msgstr "Deze actie kan niet ongedaan worden gemaakt."
+
+#: culturefeed_mailing.pages.inc:270
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: culturefeed_mailing.pages.inc:271
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: culturefeed_mailing.pages.inc:286
+msgid "Error occurred while deleting the mailing"
+msgstr "Er is een fout opgetreden tijdens het verwijderen van de mailing."
+
+#: culturefeed_mailing.pages.inc:299
+msgid "Title"
+msgstr "Titel"
+
+#: culturefeed_mailing.pages.inc:331
+msgid "Frequency"
+msgstr "Frequentie"
+
+#: culturefeed_mailing.pages.inc:339
+msgid "Search Query"
+msgstr "Zoekopdracht"
+
+#: culturefeed_mailing.pages.inc:347
+msgid "Recommendation Query"
+msgstr "Aanbevolen zoekopdracht"
+
+#: culturefeed_mailing.pages.inc:355
+msgid "Template"
+msgstr "Template"
+
+#: culturefeed_mailing.pages.inc:363
+msgid "Block 1"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:370
+msgid "Block 2"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:377
+msgid "Block 3"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:384
+msgid "Block 4"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:391
+msgid "Block 5"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:398
+msgid "Block 6"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:410
+msgid "Submit"
+msgstr "Indienen"
+
+#: culturefeed_mailing.pages.inc:440
+msgid "Mailing list updated"
+msgstr "Aanpassingen aan de mailing list zijn opgeslagen"
+
+#: culturefeed_mailing.pages.inc:444
+msgid "Could not update mailing list"
+msgstr "Aanpassingen aan de mailing list konden niet worden opgeslagen. "
+
+#: culturefeed_mailing.pages.inc:467
+msgid "New mailing list created"
+msgstr "Maak een nieuwe mailing list aan"
+
+#: culturefeed_mailing.pages.inc:471
+msgid "Could not save new mailing list"
+msgstr "Kon de aanpassingen aan de nieuwe mailing list niet opslaan."
+
+#: culturefeed_mailing.pages.inc:503
+msgid "Test mail sent"
+msgstr "Test mail is verstuurd."
+
+#: culturefeed_mailing.pages.inc:507
+msgid "Mail could not be sent"
+msgstr "Mail kon niet worden verzonden. "
+
+#: culturefeed_mailing.module:15
+msgid "Subscribe to mailings"
+msgstr "Schrijf je in "
+
+#: culturefeed_mailing.module:16
+msgid "Allows the user to subscribe to mailings"
+msgstr "Sta gebruiker toe zich in te schrijven op een mailing list"
+
+#: culturefeed_mailing.module:39
+msgid "Subscribe to our newsletter"
+msgstr "Inschrijven op de nieuwsbrief"
+
+#: culturefeed_mailing.module:47
+msgid "Subscribed to our newsletter"
+msgstr "Ingeschreven op de nieuwsbrief"
+
+#: culturefeed_mailing.module:55
+msgid "Emails"
+msgstr "E-mails"
+
+#: culturefeed_mailing.module:64 culturefeed_mailing.info:0
+msgid "CultureFeed Mailing"
+msgstr "CultureFeed Mailing"
+
+#: culturefeed_mailing.module:65
+msgid "CultureFeed Mailing settings"
+msgstr "CultureFeed Mailing instellingen"
+
+#: culturefeed_mailing.module:75
+msgid "Mailing lists"
+msgstr "Mailing lists"
+
+#: culturefeed_mailing.module:84;94;112
+msgid "Add mailing list"
+msgstr "Voeg mailing list toe"
+
+#: culturefeed_mailing.module:103
+msgid "Test mailing list"
+msgstr "Test mailing list"
+
+#: culturefeed_mailing.module:159
+msgid "Culturefeed mailings: Newsletter opt-in"
+msgstr ""
+
+#: culturefeed_mailing.module:164
+msgid "Culturefeed mailings: Newsletter form"
+msgstr ""
+
+#: culturefeed_mailing.module:201
+msgid "Manage newsletters you can subscribe to"
+msgstr "Beheer de nieuwsbrieven waarop je kan inschrijven"
+
+#: culturefeed_mailing.module:233
+msgid "Email address"
+msgstr "E-mailadres"
+
+#: culturefeed_mailing.info:0
+msgid "Creates a tool to subscribe to and construct mailings on CultureFeed"
+msgstr ""
+"Maakt een tool aan waarmee je kan inschrijven op en CultureFeed mailings kan "
+"aanmaken. "
+
+#: culturefeed_mailing.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"

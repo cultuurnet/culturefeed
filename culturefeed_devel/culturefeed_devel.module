@@ -1,0 +1,185 @@
+<?php
+
+/**
+ * @file
+ * Enables query logging for culturefeed requests.
+ * Only search requests are supported for the moment.
+ */
+
+// Default slow request pointer in ms.
+define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 100);
+
+/**
+ * Implementation of hook_boot(). Runs even for cached pages.
+ */
+function culturefeed_devel_boot() {
+  drupal_register_shutdown_function('culturefeed_devel_shutdown');
+}
+
+/**
+ * Implement hook_permission().
+ */
+function culturefeed_devel_permission() {
+  return array(
+    'access culturefeed devel information' => array(
+      'description' => t('View culturefeed devel output.'),
+      'title' => t('Access developer information'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_init().
+ */
+function culturefeed_devel_init() {
+  if (user_access('access culturefeed devel information')) {
+    drupal_add_css(drupal_get_path('module', 'culturefeed_devel') . '/culturefeed_devel.css');
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_devel_theme() {
+  return array(
+    'culturefeed_devel_request_log' => array(
+      'variables' => array(
+        'header' => array(),
+        'rows' => array(),
+        'total' => 0,
+        'max_time' => CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_devel_menu() {
+
+  $items = array();
+  $items['admin/config/development/culturefeed'] = array(
+    'title' => 'Culture Feed Devel',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_devel_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+
+  return $items;
+}
+
+/**
+ * Shutdown function. Log all slow requests to db, and output full log if enabled.
+ */
+function culturefeed_devel_shutdown() {
+
+
+  // Search api requests.
+  $requests = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance()->getRequests();
+
+  // Culturefeed requests.
+  $culturefeed_requests = Culturefeed_Log_RequestLog::getInstance()->getRequests();
+  $requests = array_merge($requests, $culturefeed_requests);
+
+  $max_time = variable_get('culturefeed_devel_slow_request', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
+
+  foreach ($requests as $request) {
+    if ($request->getTime() > $max_time) {
+      watchdog('culturefeed_devel', t('Slow query on api: @query. Time taken: @time ms', array(
+        '@query' => urldecode($request->getUrl()),
+        '@time' => $request->getTime(),
+      )));
+    }
+  }
+
+  // Don't add output on ajax / drush requests.
+  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+    return;
+  }
+
+  if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
+    print culturefeed_devel_requests_table($requests, $max_time);
+  }
+
+}
+
+/**
+ * Adds a table at the bottom of the page cataloguing data on all the database queries that were made to
+ * generate the page.
+ */
+function culturefeed_devel_requests_table($requests, $max_time) {
+
+  $header = array(t('Total time'), t('Response code'), t('Url'));
+  $rows = array();
+
+  $i = 0;
+  $total_time = 0;
+  foreach ($requests as $request) {
+    $rows[$i]['time'] = $request->getTime();
+    $rows[$i]['status'] = $request->getResponse()->getStatusCode();
+    $rows[$i]['url'] = urldecode($request->getUrl());
+    $i++;
+
+    $total_time += $request->getTime();
+    unset($diff);
+  }
+
+  return theme('culturefeed_devel_request_log', array(
+    'header' => $header,
+    'rows' => $rows,
+    'total' => count($requests),
+    'total_time' => $total_time,
+    'max_time' => $max_time,
+  ));
+}
+
+/**
+ * Theme the request log.
+ */
+function theme_culturefeed_devel_request_log($variables) {
+
+  $total_api_calls = format_plural($variables['total'], '@count API call', '@count API calls');
+  $output = '<div class="culturefeed-dev-query">';
+  $output .= t('Requested @total in @time ms', array('@total' => $total_api_calls, '@time' => $variables['total_time']));
+  $output .= t(' Queries exceeding @threshold ms are <span class="slow-query">highlighted</span>.', array('@threshold' => $variables['max_time']));
+  $output .= '</div>';
+
+  $header = $variables['header'];
+  $rows = $variables['rows'];
+  $max_time = $variables['max_time'];
+
+  if (!empty($rows)) {
+
+    if (!empty($header)) {
+      $output .= "<div class='culturefeed-dev-log culturefeed-dev-header clear-block'>";
+      $i = 0;
+      foreach ($header as $heading) {
+        $i++;
+        $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-' . $i . '">';
+        $output .= $heading;
+        $output .= '</div>';
+      }
+      $output .= "</div>";
+    }
+
+    $i = 0;
+    foreach ($rows as $row) {
+
+      $i++;
+      $zebra = ($i % 2) == 0 ? 'even' : 'odd';
+      $time = ($row['time'] < $max_time) ? $row['time'] : '<span class="slow-query">' . $row['time'] . '</span>';
+      $output .= '<div class="culturefeed-dev-log culturefeed-dev-' . $zebra . ' clear-block">';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-1">' . $time . '</div>';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-2">' . $row['status'] . '</div>';
+      $output .= '<div class="culturefeed-dev-cell culturefeed-dev-cell-3">' . $row['url'] . '</div>';
+
+      $output .= "</div>";
+    }
+  }
+
+  return $output;
+}

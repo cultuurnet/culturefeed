@@ -8,7 +8,7 @@
 /**
  * Page callback to toggle newsletter optin
  */
-function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
+function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
 
   $success = TRUE;
 
@@ -20,10 +20,10 @@ function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
     }
 
     if ($optin == '1') {
-      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
+      culturefeed_mailing_subscribe_user($account, $mailing_id);
     }
     else {
-      DrupalCultureFeed::unsubscribeFromMailing($account->id, variable_get('culturefeed_mailing_list', ''));
+      DrupalCultureFeed::unsubscribeFromMailing($account->id, $mailing_id);
     }
 
   }
@@ -37,15 +37,15 @@ function culturefeed_mailing_toggle_optin($optin, $type = 'ajax') {
     $commands = array();
 
     if ($success) {
-      $data = _culturefeed_mailing_optin_toggle();
-      $commands[] = ajax_command_html('#newsletter-optin', $data);
+      $data = _culturefeed_mailing_optin_toggle($mailing_id);
+      $commands[] = ajax_command_html('#newsletter-optin-' . $mailing_id, $data);
     }
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
     if (!$success) {
-      drupal_set_message('Er is een fout opgetreden.', 'error');
+      drupal_set_message(t('Error occurred'), 'error');
     }
     drupal_goto();
   }
@@ -72,7 +72,7 @@ function culturefeed_mailing_subscribe_form() {
   $form = array();
   $form['mail'] = array(
     '#type' => 'textfield',
-    '#title' => 'E-mailadres',
+    '#title' => t('Email address'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
@@ -82,7 +82,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => t('Zipcode'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
@@ -92,7 +92,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $form['firstname'] = array(
     '#type' => 'textfield',
-    '#title' => 'Voornaam',
+    '#title' => t('First name'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
@@ -102,7 +102,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $form['lastname'] = array(
     '#type' => 'textfield',
-    '#title' => 'Naam',
+    '#title' => t('Family name'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
@@ -119,12 +119,12 @@ function culturefeed_mailing_subscribe_form() {
 
   $form['privacy'] = array(
     '#type' => 'markup',
-    '#value' => '<div id="privacy">' . l('Privacyverklaring', 'privacyverklaring') . '</div>',
+    '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Inschrijven',
+    '#value' => t('Subscribe'),
     '#weight' => 10
   );
 
@@ -166,7 +166,7 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er ging iets fout tijdens het inschrijven. Gelieve opnieuw te proberen.');
+    drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
     return;
   }
 
@@ -176,7 +176,7 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
  * Page callback: Show a confirmation that the user is subscribed.
  */
 function culturefeed_mailing_user_subscribed() {
-  return variable_get('culturefeed_mailing_subscribed_message', 'U bent succesvol ingeschreven voor onze nieuwsbrief');
+  return variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter'));
 }
 
 /**
@@ -195,21 +195,21 @@ function culturefeed_mailing_lists_overview() {
 
       $edit = array(
         '#type' => 'link',
-        '#title' => 'bewerken',
+        '#title' => t('edit'),
         '#href' => 'admin/content/mailing-lists/edit/' . $list->id,
         '#options' => array('query' => drupal_get_destination()),
       );
 
       $delete = array(
         '#type' => 'link',
-        '#title' => 'verwijderen',
+        '#title' => t('delete'),
         '#href' => 'admin/content/mailing-lists/delete/' . $list->id,
         '#options' => array('query' => drupal_get_destination()),
       );
 
       $test = array(
         '#type' => 'link',
-        '#title' => 'test mail verzenden',
+        '#title' => t('send test mail'),
         '#href' => 'admin/content/mailing-lists/test/' . $list->id,
         '#options' => array('query' => drupal_get_destination()),
       );
@@ -246,9 +246,9 @@ function culturefeed_mailing_lists_overview() {
 
   return array(
     '#theme' => 'table',
-    '#header' => array('Mailing list', 'ID', 'Subject', 'From address', 'Acties'),
+    '#header' => array(t('Mailing list'), 'ID', t('Subject'), t('From address'), t('Actions')),
     '#rows' => $rows,
-    '#empty' => 'Nog geen mailing lists',
+    '#empty' => t('No mailinglists yet'),
   );
 
 }
@@ -283,7 +283,7 @@ function culturefeed_mailing_delete_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_mailing', $e);
-    drupal_set_message('Er is een fout opgetreden bij het verwijderen van de mailing.', 'error');
+    drupal_set_message(t('Error occurred while deleting the mailing'), 'error');
   }
 
 }
@@ -489,7 +489,7 @@ function culturefeed_mailing_test_list_form($form, &$form_state, $list) {
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Test mail verzenden'),
+    '#value' => t('send test mail'),
   );
   return $form;
 }
@@ -507,4 +507,30 @@ function culturefeed_mailing_test_list_form_submit($form, &$form_state) {
     watchdog('culturefeed_mailing', $e->getMessage());
     drupal_set_message(t('Mail could not be sent'));
   }
+}
+
+/**
+ * Show the overview of newsletters + the possiblity to toggle them.
+ */
+function culturefeed_mailing_page_my_newsletters() {
+
+  $query = new CultureFeed_SearchMailingsQuery();
+  $query->max = 999;
+  $query->consumerKey = variable_get('culturefeed_api_application_key', '');
+  $mailings = DrupalCultureFeed::searchMailings($query);
+  
+  $build = array();
+  $build['intro'] = array(
+    '#markup' => '',
+  );
+
+  if ($mailings->total > 0) {
+    $build['mailings'] = array(
+      '#theme' => 'culturefeed_mailing_user_profile_admin',
+      '#mailings' => $mailings->objects,
+    );
+  }
+
+  return $build;
+
 }

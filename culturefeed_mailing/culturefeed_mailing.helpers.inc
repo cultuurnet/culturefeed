@@ -8,7 +8,7 @@
 /**
  * Helper function to build mailing optin toggle
  */
-function _culturefeed_mailing_optin_toggle() {
+function _culturefeed_mailing_optin_toggle($mailing_id) {
 
   try {
 
@@ -17,7 +17,6 @@ function _culturefeed_mailing_optin_toggle() {
       return NULL;
     }
 
-    $mailing_id = variable_get('culturefeed_mailing_list', '');
     $subscribed = _culturefeed_mailing_check_user_subscription($account->id, $mailing_id);
 
   }
@@ -26,17 +25,17 @@ function _culturefeed_mailing_optin_toggle() {
     return;
   }
 
-  $subscribed_class = $subscribed ? 'ingeschreven' : 'niet-ingeschreven';
+  $subscribed_class = $subscribed ? t('subscribed') : t('not subscribed');
   $publish_link = array(
     '#type' => 'link',
-    '#title' => $subscribed ? 'Ingeschreven' : 'Niet ingeschreven',
-    '#href' => 'culturefeed/toggle/newsletter-optin/' . ($subscribed ? '0' : '1') . '/nojs',
-    '#attributes' => array('id' => 'newsletter-optin-link', 'class' => array('newsletter-optin-link', $subscribed_class)),
+    '#title' => $subscribed ? t('Unsubscribe') : t('Subscribe'),
+    '#href' => 'culturefeed/toggle/newsletter-optin/' . $mailing_id . '/' . ($subscribed ? '0' : '1') . '/nojs',
+    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('btn btn-primary newsletter-optin-link', $subscribed_class)),
     '#options' => array('query' => drupal_get_destination()),
     '#ajax' => array(),
   );
 
-  return drupal_render($publish_link) . ' ' . 'Ik wil een tweewekelijkse e-mail met nieuwe aanbevelingen ontvangen';
+  return drupal_render($publish_link);
 
 }
 

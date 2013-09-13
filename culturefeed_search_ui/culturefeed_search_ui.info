@@ -1,0 +1,11 @@
+name = CultureFeed Search UI
+description = CultureFeed Search UI is the basic framework needed to view search pages from items. For example agenda/search page from the agenda module.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed_search
+
+files[] = lib/Drupal/CultureFeedSearchPageInterface.php
+files[] = lib/Drupal/CultureFeedSearchPage.php
+files[] = lib/Drupal/InvalidSearchPageException.php

@@ -1,0 +1,317 @@
+<?php
+/**
+ * @file
+ * CultureFeed Messages adds the ability to send messages to other users.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_messages_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_messages') . '/theme';
+
+  return array(
+    'culturefeed_messages_message_list'=> array(
+      'variables' => array(
+        'messages' => NULL,
+        'add_new_allowed' => FALSE,
+      ),
+      'template' => 'culturefeed-messages-message-list',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_list_item'=> array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-list-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_thread' => array(
+      'variables' => array(
+        'thread' => NULL,
+      ),
+      'template' => 'culturefeed-messages-thread',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_default' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-default',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_contactmembers' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-contactmembers',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_contactpage' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-contactpage',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_booking' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-booking',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_report' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-report',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_message_requestadmin' => array(
+      'variables' => array(
+        'message' => NULL,
+      ),
+      'template' => 'culturefeed-messages-message-requestadmin',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_messages_new_message_form' => array(
+      'template' => 'culturefeed-messages-message-form',
+      'path' => $path,
+      'render element' => 'form',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_messages_menu() {
+
+  $items = array();
+
+  $items['culturefeed/messages/%culturefeed_messages_message'] = array(
+    'title callback' => FALSE,
+    'title' => t('My messages'),
+    'page callback' => 'culturefeed_messages_page_view_message',
+    'page arguments' => array(2),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/messages/%culturefeed_messages_message/delete/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Delete message'),
+    'page callback' => 'culturefeed_messages_page_delete_message_confirm',
+    'page arguments' => array(2, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  if (module_exists('culturefeed_pages')) {
+
+    $items['pages/%culturefeed_pages_page/messages/new'] = array(
+      'title callback' => FALSE,
+      'title' => t('Messages'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_messages_new_message_form', 1),
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
+    $items['pages/%culturefeed_pages_page/messages'] = array(
+      'title callback' => FALSE,
+      'title' => t('Messages'),
+      'page callback' => 'culturefeed_messages_page_view_message',
+      'page arguments' => array(NULL, 1),
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
+    $items['pages/%culturefeed_pages_page/messages/%culturefeed_messages_message'] = array(
+      'title callback' => FALSE,
+      'title' => t('Messages'),
+      'page callback' => 'culturefeed_messages_page_view_message',
+      'page arguments' => array(4, 1),
+      'access callback' => 'culturefeed_pages_edit_page_access',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
+  }
+
+  $items['culturefeed/messages'] = array(
+    'title callback' => FALSE,
+    'title' => t('My messages'),
+    'page callback' => 'culturefeed_messages_page_view_message',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/messages/new'] = array(
+    'title callback' => FALSE,
+    'title' => t('Messages'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_messages_new_message_form'),
+    'access callback' => 'culturefeed_pages_get_active_page_id',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_messages_block_info() {
+
+  $blocks = array();
+
+  $blocks['inbox'] = array(
+    'info' => t('Culturefeed messages: user inbox'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  if (module_exists('culturefeed_pages')) {
+    $blocks['page-inbox'] = array(
+      'info' => t('Culturefeed  messages: page inbox'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
+  return $blocks;
+
+}
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_messages_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_messages', 'includes/blocks');
+
+  switch ($delta) {
+
+    case 'inbox':
+      return culturefeed_messages_block_inbox();
+
+    case 'page-inbox':
+      $page = menu_get_object('culturefeed_pages_page', 1);
+      if (!$page || arg(2) != 'messages') {
+        return;
+      }
+      return culturefeed_messages_block_inbox($page);
+
+  }
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+  try {
+
+    $message_count = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessageCount();
+
+    if (!empty($message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD])) {
+      $items['messages'] = array(
+        'data' => l('<span class="new-messages label label-important"><i class="icon-envelope"></i><span class="new-messages-count">' . $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] . '</span></span>', 'culturefeed/messages', array('html' => TRUE)),
+        'class' => 'messages',
+        'weight' => -20,
+      );
+    }
+    else {
+      $items['messages'] = array(
+        'data' => l('<span class="no-new-messages muted"><i class="icon-envelope"></i><span class="new-messages-count">' . $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] . '</span></span>', 'culturefeed/messages', array('html' => TRUE)),
+        'class' => 'messages',
+        'weight' => -20,
+      );
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+  }
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_pages_page_admin_menu().
+ */
+function culturefeed_messages_culturefeed_pages_page_admin_menu_alter(&$items, CultureFeed_Cdb_Item_Page $page) {
+
+  return array(
+    'messages' => array(
+      'title' => t('Messages'),
+      'url' => 'pages/' . $page->getId() . '/messages',
+      'description' => t('Read and reply to your messages'),
+      'weight' => -18,
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
+
+  return array(
+    'messages' => array(
+      'title' => t('My messages'),
+      'url' => 'culturefeed/messages',
+      'description' => t('Read and reply to your messages'),
+      'weight' => -16,
+    ),
+  );
+
+}
+
+/**
+ * Load a message by id.
+ * @param string $message_id
+ *   ID of message to load.
+ */
+function culturefeed_messages_message_load($message_id) {
+
+  $messages = array();
+  if (isset($messages[$message_id])) {
+    return $messages[$message_id];
+  }
+
+  try {
+    $messages[$message_id] = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessage($message_id);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+    $messages[$message_id] = FALSE;
+  }
+
+  return $messages[$message_id];
+
+}

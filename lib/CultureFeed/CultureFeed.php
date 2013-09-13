@@ -79,6 +79,12 @@ class CultureFeed implements ICultureFeed {
   const AUTHORIZE_TYPE_FORCELOGIN = 'forcelogin';
 
   /**
+   * Notification count types.
+   */
+  const NOTIFICATION_TYPE_NEW = 'NEW';
+  const NOTIFICATION_TYPE_READ = 'READ';
+
+  /**
    * OAuth request object to do the request.
    *
    * @var CultureFeed_OAuthClient
@@ -91,6 +97,20 @@ class CultureFeed implements ICultureFeed {
    * @var CultureFeed_Uitpas
    */
   protected $uitpas;
+
+  /**
+   * Culturefeed pages instance
+   *
+   * @var CultureFeed_Pages
+   */
+  protected $pages;
+
+  /**
+   * Culturefeed messages instance
+   *
+   * @var CultureFeed_Messages
+   */
+  protected $messages;
 
   /**
    * Get the consumer.
@@ -272,6 +292,32 @@ class CultureFeed implements ICultureFeed {
     return $this->parsePreferences($result);
   }
 
+  /**
+   * @see ICultureFeed::setUserPreferences()
+   */
+  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
+    $path = "user/{$uid}/preferences";
+
+    $params = array();
+
+    $activityPrivacyPreferences = array();
+
+    foreach ($preferences->activityPrivacyPreferences as $preference) {
+      $bool_as_string = $preference->private ? 'true' : 'false';
+      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
+    }
+
+    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
+
+    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
+
+    return $this->parsePreferences($result);
+  }
+
+  /**
+   * Parse the preferences xml to a CultureFeed_Preferences object.
+   * @return CultureFeed_Preferences
+   */
   protected function parsePreferences($result) {
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -295,29 +341,6 @@ class CultureFeed implements ICultureFeed {
     }
 
     return $preferences;
-  }
-
-  /**
-   * (non-PHPdoc)
-   * @see ICultureFeed::setUserPreferences()
-   */
-  public function setUserPreferences($uid, CultureFeed_Preferences $preferences) {
-    $path = "user/{$uid}/preferences";
-
-    $params = array();
-
-    $activityPrivacyPreferences = array();
-
-    foreach ($preferences->activityPrivacyPreferences as $preference) {
-      $bool_as_string = $preference->private ? 'true' : 'false';
-      $activityPrivacyPreferences[] = "{$preference->activityType}={$bool_as_string}";
-    }
-
-    $params['activityPrivacyPreferences'] = implode(',', $activityPrivacyPreferences);
-
-    $result = $this->oauth_client->authenticatedPostAsXml($path, $params);
-
-    return $this->parsePreferences($result);
   }
 
   /**
@@ -620,6 +643,8 @@ class CultureFeed implements ICultureFeed {
    * @param CultureFeed_Activity $activity
    *   The activity to create.
    *
+   * @return CultureFeed_Activity
+   *
    * @throws CultureFeed_ParseException
    *   If the result could not be parsed.
    */
@@ -635,8 +660,19 @@ class CultureFeed implements ICultureFeed {
       throw new CultureFeed_ParseException($result);
     }
 
-    if ($id = $xml->xpath_str('/response/activityId')) {
-      return $id;
+    $id = $xml->xpath_str('/response/activityId');
+    if (!empty($id)) {
+
+      $activity->id = $id;
+
+      $activityPoints = $xml->xpath('/response/activityPointsList/activityPoints');
+      if (!empty($activityPoints)) {
+        $activity->newTotalPoints = $activityPoints[0]->xpath_float('newTotalPoints');
+        $activity->points = $activityPoints[0]->xpath_float('savedPoints');
+        $activity->userpointsUserId = $activityPoints[0]->xpath_str('uitIdUser/rdf:id');
+      }
+
+      return $activity;
     }
 
     throw new CultureFeed_ParseException($result);
@@ -665,7 +701,29 @@ class CultureFeed implements ICultureFeed {
    *   ID of the activity that is deleted.
    */
   public function deleteActivity($id) {
-    $this->oauth_client->authenticatedGetAsXml('activity/' . $id . '/delete');
+
+    $result = $this->oauth_client->authenticatedGetAsXml('activity/' . $id . '/delete');
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $id = $xml->xpath_str('/response/activityId');
+    if (!empty($id)) {
+      $activity = new CultureFeed_Activity();
+
+      $activityPoints = $xml->xpath('/response/activityPointsList/activityPoints');
+      if (!empty($activityPoints)) {
+        $activity->newTotalPoints = $activityPoints[0]->xpath_float('newTotalPoints');
+        $activity->points = $activityPoints[0]->xpath_float('lostPoints');
+        $activity->userpointsUserId = $activityPoints[0]->xpath_str('uitIdUser/rdf:id');
+      }
+      return $activity;
+    }
+    throw new CultureFeed_ParseException($result);
   }
 
   /**
@@ -714,21 +772,6 @@ class CultureFeed implements ICultureFeed {
    * The object should be initialized with the consumer token.
    *
    * @param string $nodeId
-   * @param string $type
-   * @param string $contentType
-   * @param string $start
-   * @param string $max
-   *
-   * @throws CultureFeed_ParseException
-   *   If the result could not be parsed.
-   */
-
-  /**
-   * Search for users that have generated an activity.
-   *
-   * The object should be initialized with the consumer token.
-   *
-   * @param string $nodeId
    *   Node ID the activity is generated on.
    * @param string $type
    *   Possible values are represented in the CultureFeed_Activity::TYPE_* constants.
@@ -764,6 +807,163 @@ class CultureFeed implements ICultureFeed {
     }
 
     return self::parseUsers($xml);
+  }
+
+  /**
+   * Get the total of activities for a user.
+   *
+   * @param Integer $userId
+   *   The user Id to get all activities for.
+   * @param string $type_contentType
+   *   Array of unique strings for each combination of activity type and its content type.
+   *   E.g.
+   */
+  public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
+
+    $data = array();
+    $data['type_contentType'] = $type_contentType;
+    $data['userId'] = $userId;
+    $data['private'] = $private ? "true" : "false";
+
+    $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $totals = array();
+    $objects = $xml->xpath('/response/total');
+    foreach ($objects as $object) {
+      $total = new stdClass();
+      $total->key        = (string) $object->attributes()->type;
+      $total->value      = (string) $object;
+      $totals[] = $total;
+    }
+
+    return $totals;
+
+  }
+
+  /**
+   * Get the timeline of activity points for a user.
+   */
+  public function getActivityPointsTimeline($userId) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('userpoints/user/' . $userId . '/timeline');
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseActivities($xml);
+
+  }
+
+  /**
+   * Get one userpoints promotion.
+   * @param Integer $promotionId
+   */
+  public function getActivityPointsPromotion($promotionId) {
+
+    $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotion/' . $promotionId);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $status_code = (string)$xml->code;
+    if (!empty($status_code)) {
+      throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
+    }
+
+    $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($xml);
+
+    return $pointsPromotion;
+
+  }
+
+  /**
+   * Get the activity promotions.
+   *
+   * @param array  $params
+   * @throws CultureFeed_ParseException
+   */
+  public function getActivityPointsPromotions($params = array()) {
+
+    // Override params.
+    $params['unexpired'] = 'true';
+    $params['max'] = 999;
+
+    $result = $this->oauth_client->consumerGetAsXml('userpoints/activityPointsPromotions', $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $total = $xml->xpath_str('/response/total');
+
+    $promotions = new stdClass();
+    $promotions->total = $total;
+
+    if ($total > 0) {
+
+      $objects = $xml->xpath('/response/promotions/promotion');
+      $data = array();
+      foreach ($objects as $object) {
+        $pointsPromotion = CultureFeed_PointsPromotion::parseFromXML($object);
+        $data[] = $pointsPromotion;
+      }
+
+      $promotions->objects = $data;
+
+    }
+
+    return $promotions;
+  }
+
+  /**
+   * Exchange the userpoints for a promotion
+   * @see ICultureFeed::cashInPromotion()
+   */
+  public function cashInPromotion($userId, array $promotionId, array $promotionCount) {
+
+    $params = array();
+    $params['promotionId'] = $promotionId;
+    $params += $promotionCount;
+    $result = $this->oauth_client->authenticatedPostAsXml('userpoints/user/' . $userId . '/cashInPromotion', $params);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $status_code = (string)$xml->code;
+    if (!empty($status_code)) {
+      throw new CultureFeed_InvalidCodeException((string)$xml->message, $status_code);
+    }
+
+    $promotions = $xml->xpath('/response/promotions/promotion');
+    $pointsPromotions = array();
+    foreach ($promotions as $object) {
+      $pointsPromotions[] = CultureFeed_PointsPromotion::parseFromXML($object);
+    }
+
+    return $pointsPromotions;
+
   }
 
   /**
@@ -950,8 +1150,7 @@ class CultureFeed implements ICultureFeed {
 
     $data = $query->toPostData();
 
-    $result = $this->oauth_client->authenticatedPostAsXml('mailing/search', $data);
-
+    $result = $this->oauth_client->authenticatedGetAsXml('mailing/search', $data);
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -1135,6 +1334,174 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Get the total count of notifications for a user.
+   *
+   * @param string $userId
+   *   User Id to get the notifications for.
+   * @param string dateFrom
+   *   ISO Date to set the startdate of the timeline. (optional)
+   *
+   * @throws CultureFeed_ParseException
+   * @return CultureFeed_ResultSet
+   */
+  public function getNotificationsCount($userId, $dateFrom = NULL) {
+
+    $params = array();
+    if (!empty($dateFrom)) {
+      $params['dateFrom'] = $dateFrom;
+    }
+
+    $result = $this->oauth_client->authenticatedGetAsXml('user/' . $userId . '/notifications/totals', $params);
+    try {
+      $xmlElement = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $notifications_count = array();
+    $total = $xmlElement->xpath('/response/total');
+    if (!$total) {
+      return array();
+    }
+
+    foreach ($total as $count) {
+      $attributes = $count->attributes();
+      $notifications_count[(string)$attributes['type']] = (string) $count;
+    }
+
+    return $notifications_count;
+
+  }
+
+  /**
+   * Get the notifications for a user.
+   *
+   * @param string $userId
+   *   User Id to get the notifications for.
+   * @param array $params
+   *  Array with additional filter params
+   *
+   * @throws CultureFeed_ParseException
+   * @return CultureFeed_ResultSet
+   */
+  public function getNotifications($userId, $params = array()) {
+
+    $result = $this->oauth_client->authenticatedGetAsXml('user/' . $userId . '/notifications', $params);
+    try {
+      $xmlElement = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    return self::parseActivities($xmlElement);
+
+  }
+
+  /**
+   * Command to check the node status for (like following).
+   *
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId to check the node status for.
+   */
+  public function getNodeStatus($contentType, $nodeId, $userId) {
+
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedGet('node/status', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $code = $xml->xpath_str('/response/code');
+    if (!empty($code) && $code == "SUCCESS") {
+      return ($xml->xpath_str('/response/follows') == "true" ? TRUE : FALSE);
+    }
+
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Command to update a node so the user follows  it.
+   *
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId of the user who follows the node.
+   */
+  public function followNode($contentType, $nodeId, $userId) {
+
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedPostAsXml('node/follow', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $nodeId = $xml->xpath_str('/response/nodeId');
+    if (!empty($nodeId)) {
+      return $nodeId;
+    }
+
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
+   * Command to update a node so the user unfollows  it.
+   *
+   * @param String $contentType
+   *   The content type of the target node.
+   * @param Integer $nodeId
+   *   The nodeId to target the node (can be url).
+   * @param Integer $userId
+   *   The userId of the user who follows the node.
+   */
+  public function unFollowNode($contentType, $nodeId, $userId) {
+
+    $data = array(
+      'nodeId' => $nodeId,
+      'userId' => $userId,
+      'contentType' => $contentType
+    );
+    $result = $this->oauth_client->authenticatedPostAsXml('node/unfollow', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $code = $xml->xpath_str('/response/code');
+    if ($code == "SUCCESS") {
+      return $xml->xpath_str('/response/nodeId');
+    }
+
+    throw new CultureFeed_ParseException($result);
+  }
+
+  /**
    * Get the URL of the page to allow a user to connect his account with a social service (Twitter, Facebook, Google).
    *
    * @param string $network
@@ -1285,6 +1652,36 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Returns the Pages object.
+   *
+   * @return CultureFeed_Pages
+   */
+  public function pages() {
+
+    if (!isset($this->pages)) {
+      $this->pages = new CultureFeed_Pages_Default($this);
+    }
+
+    return $this->pages;
+
+  }
+
+  /**
+   * Returns the Messages object.
+   *
+   * @return CultureFeed_Messages_Default
+   */
+  public function messages() {
+
+    if (!isset($this->messages)) {
+      $this->messages = new CultureFeed_Messages_Default($this);
+    }
+
+    return $this->messages;
+
+  }
+
+  /**
    * Returns the OAuth client.
    *
    * @return CultureFeed_OAuthClient
@@ -1328,23 +1725,25 @@ class CultureFeed implements ICultureFeed {
   protected static function parseUser(CultureFeed_SimpleXMLElement $element) {
     $user = new CultureFeed_User();
 
-    $user->id               = $element->xpath_str('/foaf:person/rdf:id');
-    $user->nick             = $element->xpath_str('/foaf:person/foaf:nick');
-    $user->givenName        = $element->xpath_str('/foaf:person/foaf:givenName');
-    $user->familyName       = $element->xpath_str('/foaf:person/foaf:familyName');
-    $user->mbox             = $element->xpath_str('/foaf:person/foaf:mbox');
-    $user->mboxVerified     = $element->xpath_bool('/foaf:person/mboxVerified');
-    $user->gender           = $element->xpath_str('/foaf:person/foaf:gender');
-    $user->dob              = $element->xpath_time('/foaf:person/foaf:dob');
-    $user->hasChildren      = $element->xpath_bool('/foaf:person/hasChildren');
-    $user->depiction        = $element->xpath_str('/foaf:person/foaf:depiction');
-    $user->bio              = $element->xpath_str('/foaf:person/bio');
-    $user->street           = $element->xpath_str('/foaf:person/homeAddress/street');
-    $user->zip              = $element->xpath_str('/foaf:person/homeAddress/zip');
-    $user->city             = $element->xpath_str('/foaf:person/homeAddress/city');
-    $user->country          = $element->xpath_str('/foaf:person/homeAddress/country');
-    $user->lifestyleProfile = $element->xpath_str('/foaf:person/lifestyleProfile');
-    $user->status           = $element->xpath_str('/foaf:person/status');
+    $user->id                = $element->xpath_str('/foaf:person/rdf:id');
+    $user->preferredLanguage = $element->xpath_str('/foaf:person/preferredLanguage');
+    $user->nick              = $element->xpath_str('/foaf:person/foaf:nick');
+    $user->givenName         = $element->xpath_str('/foaf:person/foaf:givenName');
+    $user->familyName        = $element->xpath_str('/foaf:person/foaf:familyName');
+    $user->mbox              = $element->xpath_str('/foaf:person/foaf:mbox');
+    $user->mboxVerified      = $element->xpath_bool('/foaf:person/mboxVerified');
+    $user->gender            = $element->xpath_str('/foaf:person/foaf:gender');
+    $user->dob               = $element->xpath_time('/foaf:person/foaf:dob');
+    $user->hasChildren       = $element->xpath_bool('/foaf:person/hasChildren');
+    $user->depiction         = $element->xpath_str('/foaf:person/foaf:depiction');
+    $user->bio               = $element->xpath_str('/foaf:person/bio');
+    $user->street            = $element->xpath_str('/foaf:person/homeAddress/street');
+    $user->zip               = $element->xpath_str('/foaf:person/homeAddress/zip');
+    $user->city              = $element->xpath_str('/foaf:person/homeAddress/city');
+    $user->country           = $element->xpath_str('/foaf:person/homeAddress/country');
+    $user->lifestyleProfile  = $element->xpath_str('/foaf:person/lifestyleProfile');
+    $user->status            = $element->xpath_str('/foaf:person/status');
+    $user->points            = $element->xpath_str('/foaf:person/points');
     if ($user->status) {
       $user->status = strtolower($user->status);
     }
@@ -1402,7 +1801,73 @@ class CultureFeed implements ICultureFeed {
       $user->holdsAccount = $accounts;
     }
 
+    $memberships = $element->xpath('/foaf:person/pageMemberships/pageMembership');
+    $user_memberships = array();
+    foreach ($memberships as $membership) {
+
+      $pageId = $membership->xpath_str('page/uid');
+      if (empty($pageId)) {
+        continue;
+      }
+
+      $user_membership = new CultureFeed_Pages_Membership();
+
+      $page = new CultureFeed_Cdb_Item_Page();
+      $page->setId($pageId);
+      $page->setName($membership->xpath_str('page/name'));
+
+      $user_membership->page          = $page;
+
+      $user_membership->role          = $membership->xpath_str('role');
+      $user_membership->relation      = $membership->xpath_str('relation');
+      $user_membership->creationDate  = $membership->xpath_time('creationDate');
+
+      $user_memberships[] = $user_membership;
+
+    }
+
+    if (!empty($user_memberships)) {
+      $user->pageMemberships = $user_memberships;
+
+      $adminPagesCount = 0;
+      foreach ($user->pageMemberships as $membership) {
+        if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+          $adminPagesCount++;
+        }
+      }
+      $user->adminPagesCount = $adminPagesCount;
+
+    }
+
+    $following = $element->xpath('/foaf:person/following/page');
+    $following_pages = array();
+    foreach ($following as $object) {
+
+      $pageId = $object->xpath_str('uid');
+      if (empty($pageId)) {
+        continue;
+      }
+
+      $follower = new CultureFeed_Pages_Follower();
+
+      $page = new CultureFeed_Cdb_Item_Page();
+      $page->setId($pageId);
+      $page->setName($object->xpath_str('name'));
+
+      $follower->page          = $page;
+      $follower->user          = $user;
+      $follower->creationDate  = $object->xpath_time('dateCreated');
+
+      $followers[] = $follower;
+
+    }
+
+    if (!empty($followers)) {
+      $user->following = $followers;
+    }
+
     return $user;
+
   }
 
   /**
@@ -1471,7 +1936,7 @@ class CultureFeed implements ICultureFeed {
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  protected static function parseActivities(CultureFeed_SimpleXMLElement $element) {
+  public static function parseActivities(CultureFeed_SimpleXMLElement $element) {
     $total = $element->xpath_int('/response/total');
 
     $activities = array();
@@ -1481,20 +1946,24 @@ class CultureFeed implements ICultureFeed {
     foreach ($objects as $object) {
       $activity = new CultureFeed_Activity();
 
-      $activity->id           = $object->xpath_str('id');
-      $activity->nodeId       = $object->xpath_str('nodeID');
-      $activity->nodeTitle    = $object->xpath_str('nodeTitle');
-      $activity->private      = $object->xpath_bool('private');
-      $activity->createdVia   = $object->xpath_str('createdVia');
-      $activity->points       = $object->xpath_str('points');
-      $activity->contentType  = $object->xpath_str('contentType');
-      $activity->type         = $object->xpath_int('type');
-      $activity->value        = $object->xpath_str('value');
-      $activity->userId       = $object->xpath_str('userId');
-      $activity->depiction    = $object->xpath_str('depiction');
-      $activity->nick         = $object->xpath_str('nick');
-      $activity->creationDate = $object->xpath_time('creationDate');
+      $activity->id             = $object->xpath_str('id');
+      $activity->nodeId         = $object->xpath_str('nodeID');
+      $activity->nodeTitle      = $object->xpath_str('nodeTitle');
+      $activity->private        = $object->xpath_bool('private');
+      $activity->createdVia     = $object->xpath_str('createdVia');
+      $activity->points         = $object->xpath_str('points');
+      $activity->contentType    = $object->xpath_str('contentType');
+      $activity->type           = $object->xpath_int('type');
+      $activity->value          = $object->xpath_str('value');
+      $activity->userId         = $object->xpath_str('userId');
+      $activity->depiction      = $object->xpath_str('depiction');
+      $activity->nick           = $object->xpath_str('nick');
+      $activity->creationDate   = $object->xpath_time('creationDate');
+      $activity->onBehalfOf     = $object->xpath_str('onBehalfOf');
+      $activity->onBehalfOfName = $object->xpath_str('onBehalfOfName');
+      $activity->onBehalfOfDepiction = $object->xpath_str('onBehalfOfDepiction');
       $activity->parentActivity = $object->xpath_str('parentActivity');
+      $activity->status         = $object->xpath_str('status');
 
       $activities[] = $activity;
     }
@@ -1562,7 +2031,8 @@ class CultureFeed implements ICultureFeed {
     $mailing = new CultureFeed_Mailing();
 
     $mailing->id                    = $element->xpath_str('id');
-    $mailing->name                  = $element->xpath_str('name');
+    $mailing->name = $element->xpath_str('name');
+    $mailing->description = $element->xpath_str('description');
     $mailing->template              = $element->xpath_str('template');
     $mailing->consumerKey           = $element->xpath_str('serviceConsumerKey');
     $mailing->subject               = $element->xpath_str('subject');

@@ -1,0 +1,172 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_messages.module: n/a
+#  includes/pages.inc: n/a
+#  culturefeed_messages.info: n/a
+#  theme/theme.inc: n/a
+#  theme/culturefeed-messages-message-list.tpl.php: n/a
+#  theme/culturefeed-messages-thread.tpl.php: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-07-24 10:25+0200\n"
+"PO-Revision-Date: 2013-07-24 11:04+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_messages.module:106;163;286
+msgid "My messages"
+msgstr "Mijn berichten"
+
+#: culturefeed_messages.module:116 includes/pages.inc:238
+msgid "Delete message"
+msgstr "Verwijder bericht"
+
+#: culturefeed_messages.module:128;139;150;172;270
+msgid "Messages"
+msgstr "Berichten"
+
+#: culturefeed_messages.module:192
+msgid "Culturefeed messages: user inbox"
+msgstr ""
+
+#: culturefeed_messages.module:198
+msgid "Culturefeed  messages: page inbox"
+msgstr ""
+
+#: culturefeed_messages.module:272;288
+msgid "Read and reply to your messages"
+msgstr "Lees en beantwoord jouw berichten"
+
+#: culturefeed_messages.info:0
+msgid "CultureFeed Messages"
+msgstr "CultureFeed Berichten"
+
+#: culturefeed_messages.info:0
+msgid "CultureFeed Messages adds the ability to send messages to other users."
+msgstr "Met CultureFeed Berichten kan je berichten sturen naar andere gebruikers."
+
+#: culturefeed_messages.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"
+
+#: includes/pages.inc:20 theme/theme.inc:15
+msgid "You have no messages"
+msgstr "Je hebt geen berichten"
+
+#: includes/pages.inc:29
+msgid "Something went wrong while getting your message."
+msgstr "Er is iets misgegaan bij het ophalen van je berichten. "
+
+#: includes/pages.inc:52 theme/culturefeed-messages-message-list.tpl.php:3
+msgid "New message"
+msgstr "Nieuw bericht"
+
+#: includes/pages.inc:88
+msgid "Send new message to:"
+msgstr "Stuur een nieuw bericht naar:"
+
+#: includes/pages.inc:90
+msgid "all administrators of my page"
+msgstr "alle beheerders van mijn pagina"
+
+#: includes/pages.inc:91
+msgid "all members of my page"
+msgstr "alle leden van mijn pagina"
+
+#: includes/pages.inc:106
+msgid "Reply"
+msgstr "reactie"
+
+#: includes/pages.inc:113
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: includes/pages.inc:118
+msgid "Message"
+msgstr "Bericht"
+
+#: includes/pages.inc:133
+msgid "Send message as"
+msgstr "Verzend als"
+
+#: includes/pages.inc:147
+msgid "Send"
+msgstr "Versturen"
+
+#: includes/pages.inc:190
+msgid "Something went wrong while sending your message."
+msgstr "Er is iets misgegaan bij het verzenden van je bericht."
+
+#: includes/pages.inc:201
+msgid "Message send"
+msgstr "Bericht verzonden"
+
+#: includes/pages.inc:251
+msgid "This action cannot be undone"
+msgstr "Deze actie kan je niet ongedaan maken"
+
+#: includes/pages.inc:252
+msgid "Are you sure you want to delete this message?"
+msgstr "Ben je zeker dat je dit bericht wilt verwijderen?"
+
+#: includes/pages.inc:263
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: includes/pages.inc:269
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: includes/pages.inc:292
+msgid "Message  \"@message\" is deleted."
+msgstr "Bericht \"@message\" is verwijderd. "
+
+#: includes/pages.inc:296
+msgid "Something went wrong while deleting your message."
+msgstr "Er is iets misgegaan bij het verwijderen van je bericht."
+
+#: theme/culturefeed-messages-thread.tpl.php:2
+msgid "@count message"
+msgstr "@count bericht"
+
+#: theme/culturefeed-messages-thread.tpl.php:2
+msgid "@count messages"
+msgstr "@count berichten"
+
+#: theme/theme.inc:110
+msgid "Delete conversation"
+msgstr "Verwijder conversatie"
+
+#: theme/theme.inc:237
+msgid "van"
+msgstr "van"
+
+#: theme/theme.inc:252
+msgid "@count minute ago"
+msgstr "@count minuut geleden"
+
+#: theme/theme.inc:252
+msgid "@count minutes ago"
+msgstr "@count minuten geleden"
+
+#: theme/theme.inc:258
+msgid "Yesterday at"
+msgstr "Gisteren om"
+
+#: theme/theme.inc:258;261;264
+msgid "hour"
+msgstr "uur"
+
+#: theme/theme.inc:261
+msgid "Today at"
+msgstr "Vandaag om"

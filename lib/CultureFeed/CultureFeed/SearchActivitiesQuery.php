@@ -36,6 +36,13 @@ class CultureFeed_SearchActivitiesQuery {
   public $userId;
 
   /**
+   * onBehalfOf.
+   *
+   * @var string
+   */
+  public $onBehalfOf;
+
+  /**
    * Consumer.
    *
    * @var string
@@ -69,6 +76,12 @@ class CultureFeed_SearchActivitiesQuery {
    * @var integer
    */
   public $max;
+
+  /**
+   * Depth to search.
+   * @var int
+   */
+  public $depth;
 
   /**
    * Convert a CultureFeed_SearchActivitiesQuery object to an array that can be used as data in POST requests that expect search user query info.

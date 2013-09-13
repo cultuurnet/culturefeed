@@ -39,7 +39,7 @@ function culturefeed_ui_set_canonical_and_noindex() {
 function culturefeed_ui_block_ajaxload($config) {
   $block['subject'] = $config['title'];
   $block['content'] = array(
-    '#markup' => '<div id="' . $config['id'] . '">Bezig met laden...</div>',
+    '#markup' => '<div id="' . $config['id'] . '">' . t('Loading') . '</div>',
     '#id' => $config['id'],
     '#ajax' => array(
       'event' => 'ajaxload',
@@ -75,7 +75,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   if ($online_account) {
     $delete_link = array(
       '#type' => 'link',
-      '#title' => 'Verwijderen',
+      '#title' => t('Delete'),
       '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
       '#attributes' => array('class' => 'delete-link'),
       '#options' => array('query' => drupal_get_destination()),
@@ -85,15 +85,15 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = 'Ik geef toestemming aan UiTiD om mijn acties op ' . check_plain(variable_get('site_name', 'Drupal')) . ' automatisch te publiceren op ' . $online_account_type . '. ' . l('Gebruiksvoorwaarden', 'node/2512');
+  $statement = t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512');
 
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
-      '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+      '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
       '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? 'Zet uit' : 'Zet aan')),
+      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
       '#options' => array('query' => drupal_get_destination()),
       '#ajax' => array(),
     );
@@ -102,7 +102,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l('Account toevoegen', DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Add account'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
@@ -117,201 +117,23 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
 
 function culturefeed_ui_activity_types() {
   return array(
-    CultureFeed_Activity::TYPE_LIKE     => 'Vind ik leuk',
-    CultureFeed_Activity::TYPE_IK_GA    => 'Ga hier naartoe',
-    CultureFeed_Activity::TYPE_FACEBOOK => 'Gedeeld op Facebook',
-    CultureFeed_Activity::TYPE_TWITTER  => 'Gedeeld op Twitter',
+    CultureFeed_Activity::TYPE_LIKE     => t('Like'),
+    CultureFeed_Activity::TYPE_IK_GA    => t('Attend'),
+    CultureFeed_Activity::TYPE_FACEBOOK => t('Share on Facebook'),
+    CultureFeed_Activity::TYPE_TWITTER  => t('Share on Twitter'),
   );
 }
 
-function culturefeed_ui_activity_context($cnapi_types = array(), $node_types = array()) {
-  $node = menu_get_object();
-  $request = cnapi_ui_get_active_request();
-
-  if ($request) {
-    $type = reset(array_intersect($cnapi_types, array_keys($request)));
-    if ($type) {
-      return array(
-        'node_id' => $request[$type],
-        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($type),
-      );
-    }
-  }
-  elseif ($node) {
-    if (in_array($node->type, $node_types)) {
-      return array(
-        'node_id' => $node->nid,
-        'activity_content_type' => culturefeed_activity_content_type_from_cnapi_type($node->type),
-      );
-    }
-  }
-
-  return FALSE;
-}
-
-function culturefeed_ui_recommendations_list($total, $zip = NULL) {
-  $query = new CultureFeed_RecommendationsQuery();
-  $query->max = $total;
-
-  if ($zip) {
-    $query->zipcode = $zip;
-    if (isset($_GET['radius']) && is_numeric($_GET['radius'])) {
-      $query->zipcode .= '!' . $_GET['radius'] . 'km';
-    }
-  }
-
-  try {
-    global $conf;
-    $conf['culturefeed_cache_status'] = 0;
-    $recommendations = DrupalCultureFeed::getRecommendationsForUser(DrupalCultureFeed::getLoggedInUserId(), $query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return FALSE;
-  }
-
-  return culturefeed_ui_recommendation_list_items($recommendations, 'culturefeed_ui_event_recommendation');
-
-}
-
-/**
- * Build all the list items that are needed for a recommendation list.
- */
-function culturefeed_ui_recommendation_list_items($recommendations, $theme_function) {
-
-  $items = array();
-
-  foreach ($recommendations as $recommendation) {
-    $recommendation_id = $recommendation->id;
-    $node_id = $recommendation->itemid;
-
-    $positive = array(
-      '#type' => 'link',
-      '#id' => 'recommendation-like-'. $recommendation_id,
-      '#title' => 'Vind ik leuk',
-      '#href' => 'culturefeed/recommendations/positive/' . $recommendation_id . '/' . $node_id . '/nojs',
-      '#attributes' => array('class' => 'like-link'),
-      '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation_id,
-      ),
-    );
-
-    $negative = array(
-      '#type' => 'link',
-      '#title' => 'Vind ik niet leuk',
-      '#id' => 'recommendation-dislike-'. $recommendation_id,
-      '#href' => 'culturefeed/recommendations/negative/' . $recommendation_id . '/' . $node_id . '/nojs',
-      '#attributes' => array('class' => 'remove-link'),
-      '#options' => array('query' => drupal_get_destination()),
-      '#ajax' => array(
-        'wrapper' => 'recommendation-' . $recommendation_id,
-      ),
-    );
-
-    $links = array('like' => drupal_render($positive), 'remove' => drupal_render($negative));
-    $item = theme($theme_function, array(
-      'event' => $recommendation,
-      'links' => $links,
-      'heading_level' => 3,
-     ));
-
-    $items[] = array(
-      'data' => $item,
-      'id' => 'recommendation-' . $recommendation_id,
-    );
-  }
-
-  return $items;
-
-}
-
-function _culturefeed_ui_undo($activity_type, $content_type, $node_id) {
-  $user_id = DrupalCultureFeed::getLoggedInUserId();
-  $content_type = culturefeed_activity_content_type_from_cnapi_type($content_type);
-
-  try {
-    DrupalCultureFeed::deleteActivities($user_id, $node_id, $content_type, $activity_type);
-
-    return TRUE;
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-
-    return FALSE;
-  }
-}
-
-function _culturefeed_ui_do($activity_type, $type, $id) {
-  $activity = new CultureFeed_Activity();
-  $activity->contentType = culturefeed_activity_content_type_from_cnapi_type($type);
-  $activity->type = $activity_type;
-  $activity->nodeId = $id;
-  $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-
-  if ($type == 'page') {
-    $node = node_load($id);
-    $activity->nodeTitle = $node->title;
-  }
-  else {
-    $object = cnapi_get(array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $id)));
-    $activity->nodeTitle = $object['detail']['nl']['title'];
-  }
-
-  try {
-    DrupalCultureFeed::createActivity($activity);
-
-    return TRUE;
-  }
-  catch (Exception $e) {
-    if ($e->getCode() != 421) {
-      watchdog_exception('culturefeed_ui', $e);
-      return FALSE;
-    }
-    return TRUE;
-  }
-}
-
-function culturefeed_ui_activity_based_goto($content_type, $node_id) {
-
-  // Remember current querystring.
-  $options = array();
-  $options['query'] = $_GET;
-  unset($options['query']['q']);
-
-  if ($content_type == 'page') {
-    drupal_goto('node/' . $node_id, $options);
-  }
-  else {
-    $object = cnapi_get(array('action' => 'detail', 'type' => $content_type, 'query' => array('cdbid' => $node_id)));
-    $request = array($content_type => $node_id, 'title' => $object['detail']['nl']['title']);
-    cnapi_ui_goto($request, $options);
-  }
-
-}
-
-function culturefeed_ui_activities_list($activities) {
-  $items = array();
-
-  $accounts = culturefeed_get_uids_for_activities($activities->objects);
-
-  foreach ($activities->objects as $activity) {
-    if (!isset($accounts[$activity->userId])) {
-      continue;
-    }
-
-    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
-  }
-
-  return $items;
-}
-
 function culturefeed_ui_users_list($users) {
+  return _culturefeed_ui_users_list($users->objects);
+}
+
+function _culturefeed_ui_users_list($user_objects) {
   $items = array();
 
-  $accounts = culturefeed_get_uids_for_users($users->objects);
+  $accounts = culturefeed_get_uids_for_users($user_objects);
 
-  foreach ($users->objects as $user) {
+  foreach ($user_objects as $user) {
     if (!isset($accounts[$user->id])) {
       continue;
     }
@@ -332,14 +154,14 @@ function _culturefeed_ui_facebook_privacy_toggle() {
     if ($online_account) {
       $publish_link = array(
         '#type' => 'link',
-        '#title' => $online_account->publishActivities ? 'Publiek' : 'Privé',
+        '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
         '#href' => 'culturefeed/toggle/privacy/facebook/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? 'Zet uit' : 'Zet aan')),
+        '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . 'Publiceer mijn acties op Facebook <div class="tooltip">?</div><div class="tooltip-text">Hiermee zullen je acties (vind ik leuk, ga ik naartoe,...), automatisch op je Facebook Timeline verschijnen.</div>';
+      $publish_link = drupal_render($publish_link) . t('Post my actions to Facebook') . '<div class="tooltip">?</div><div class="tooltip-text">' . t('All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>');
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }
@@ -349,7 +171,46 @@ function _culturefeed_ui_facebook_privacy_toggle() {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message(t('Error occurred'), 'error');
     return;
   }
 }
+
+/**
+ * Set the breadcrumb to the profile.
+ */
+function culturefeed_ui_set_profile_breadcrumb() {
+
+  global $user;
+
+  // Set the breadcrumb.
+  $active_trail = array();
+
+  $active_trail[] = array(
+    'title' => t('Home'),
+    'href' => '<front>',
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  $active_trail[] = array(
+    'title' => t('My profile'),
+    'href' => 'user/' . $user->uid,
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  $active_trail[] = array(
+    'title' => $user->name,
+    'href' => $_GET['q'],
+    'link_path' => '',
+    'localized_options' => array(),
+    'type' => 0,
+  );
+
+  menu_set_active_trail($active_trail);
+
+}
+

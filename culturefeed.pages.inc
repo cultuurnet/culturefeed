@@ -28,6 +28,13 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $options['query']['closepopup'] = 'true';
   }
 
+  if (isset($_GET['dob'])) {
+    $options['query']['dob'] = $_GET['dob'];
+  }
+
+  // Add the language parameter.
+  $options['query']['lang'] = culturefeed_search_get_preferred_language();
+
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
 
   // Fetch the request token.
@@ -96,9 +103,39 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       drupal_goto();
     }
 
-    $account = culturefeed_get_or_create_user($token['userId'], $cf_account, $token['oauth_token'], $token['oauth_token_secret'], $application_key);
+    // Check if the user is already known in our system.
+    $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $token['userId']))->fetchField();
+    if (!$uid) {
+      $account = culturefeed_create_user($cf_account);
+    }
+    else {
+      $account = user_load($uid);
+    }
 
+    // If a token was passed, save it after deleting a possible previous entry.
+    if ($token) {
+
+      if (!isset($application_key)) {
+        $application_key = variable_get('culturefeed_api_application_key', '');
+      }
+      
+      db_delete('culturefeed_token')
+      ->condition('cf_uid', $token['userId'])
+      ->condition('application_key', $application_key)
+      ->execute();
+    
+      db_insert('culturefeed_token')
+      ->fields(array(
+      'cf_uid' => $token['userId'],
+      'token' => $token['oauth_token'],
+      'secret' => $token['oauth_token_secret'],
+      'application_key' => $application_key,
+      ))
+      ->execute();
+    }
+    
     if ($account) {
+
       global $user;
       $user = $account;
 
@@ -110,14 +147,24 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           $action = 'window.opener.location.href="' . url($_GET['destination'], array('absolute' => TRUE)) . '";';
         }
         else {
-          $action = 'window.opener.location.reload();';
+
+          $destination = '';
+          drupal_alter('culturefeed_login_redirect_destination', $destination);
+
+          if (!empty($destination)) {
+            $action = 'window.opener.location.href="' . url($destination, array('absolute' => TRUE)) . '";';
+          }
+          else {
+            $action = 'window.opener.location.reload();';
+          }
+
         }
 
         // We don't want to render all blocks, so we return minimal html.
         print '<html>';
         print '<head>';
         print '<title>You should not see this</title>';
-        print '<script type="text/javascript">try { ' . $action .' } catch (err) { } window.close();</script>';
+        print '<script type="text/javascript">try { ' . $action . ' } catch (err) { } window.close();</script>';
         print '<p>Als deze pagina niet automatisch sluit, klik dan op onderstaande link om verder te gaan.</p>';
         print '<p><a href="' . url('') . '">' . url('', array('absolute' => TRUE)) . '</a></p>';
         print '</head>';
@@ -130,7 +177,9 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           drupal_goto($_GET['destination']);
         }
         else {
-          drupal_goto();
+          $destination = '';
+          $destination = drupal_alter('culturefeed_login_redirect_destination', $destination);
+          drupal_goto($destination);
         }
       }
     }

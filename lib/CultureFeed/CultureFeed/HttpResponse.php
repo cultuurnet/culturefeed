@@ -32,4 +32,11 @@ class CultureFeed_HttpResponse {
     $this->response = $response;
   }
 
+  /**
+   * Get the status code.
+   */
+  public function getStatusCode() {
+    return $this->code;
+  }
+
 }

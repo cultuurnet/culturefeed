@@ -52,6 +52,16 @@ interface ICultureFeed {
 
   public function searchActivityUsers($nodeId, $type, $contentType, $start = NULL, $max = NULL);
 
+  public function getTotalActivities($userId, $type_contentType, $private = FALSE);
+
+  public function getActivityPointsTimeline($userId);
+
+  public function getActivityPointsPromotion($promotionId);
+
+  public function getActivityPointsPromotions($params = array());
+
+  public function cashInPromotion($userId, array $promotionId, array $promotionCount);
+
   public function getMailing($id);
 
   public function createMailing(CultureFeed_Mailing $mailing);
@@ -83,6 +93,16 @@ interface ICultureFeed {
   public function getRecommendationsForEvent($id, CultureFeed_RecommendationsQuery $query = NULL);
 
   public function evaluateRecommendation($id, $evaluation);
+
+  public function getNotificationsCount($userId, $dateFrom = NULL);
+
+  public function getNotifications($userId, $params = array());
+
+  public function getNodeStatus($contentType, $nodeId, $userId);
+
+  public function followNode($contentType, $nodeId, $userId);
+
+  public function unFollowNode($contentType, $nodeId, $userId);
 
   public function getUrlAddSocialNetwork($network, $destination = '');
 

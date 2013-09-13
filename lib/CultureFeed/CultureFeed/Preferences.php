@@ -20,6 +20,10 @@ class CultureFeed_Preferences {
    */
   public $activityPrivacyPreferences;
 
+  /**
+   * Constructor
+   * Sets activity privacy preference by default.
+   */
   public function __construct() {
     $this->activityPrivacyPreferences = array();
   }

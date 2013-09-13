@@ -32,3 +32,16 @@ with the setCdbId() method and exclusively use the setExternalId() method
 for specifying an external ID.
 
 [cultuurnet\cdb]: https://github.com/cultuurnet/cdb
+
+## September 9, 2013 ##
+
+hook_culturefeed_search_query_alter has been renamed to hook_culturefeed_search_page_query_alter.
+The arguments have been changed to CultureFeedSearchPageInterface $culturefeedSearchPage.
+
+Example of usage:
+  // Add boost for relevance
+  if (!empty($_GET['sort']) && $_GET['sort'] == 'relevancy') {
+    $culturefeedSearchPage->setLocalParam('type', 'boost');
+    $culturefeedSearchPage->setLocalParam('b', 'sum(recommend_count,product(comment_count,10))');
+  }
+

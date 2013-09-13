@@ -1,25 +1,39 @@
-<?php if ($is_logged_in) : ?>
+<div class="image">
+  <?php print $picture ?>
+</div>
 
-  <div class="image">
-    <?php print $picture ?>
-  </div>
+<div class="options">
+  <ul>
+    <li><strong><?php print $nick ?></strong></li>
 
-  <div class="options">
-    <ul>
-      <li><strong><?php print $nick ?></strong></li>
-      <li><?php print $link_profile ?></li>
-      <li><?php print $link_logout ?></li>
-    </ul>
-  </div>
+    <?php // Render dropdown if he contains items. ?>
+    <?php if ($dropdown_items): ?>
+    <li class="dropdown">
+      <ul>
+      <?php foreach ($dropdown_items as $dropdown_item): ?>
+        <li<?php if (isset($dropdown_item['class'])):?> class="<?php print $dropdown_item['class']?>"<?php endif;?>>
+          <?php print $dropdown_item['data']; ?>
 
-<?php else : ?>
+          <?php if (isset($dropdown_item['children'])): ?>
+          <ul>
+          <?php foreach ($dropdown_item['children'] as $dropdown_sub_item): ?>
+            <li<?php if (isset($dropdown_item['class'])):?> class="<?php print $dropdown_item['class']?>"<?php endif;?>>
+            <?php print $dropdown_sub_item['data']; ?>
+            </li>
+          <?php endforeach; ?>
+          </ul>
+          <?php endif; ?>
 
-  <div class="options">
-    <ul>
-      <li><?php print $link_login ?></li>
-      <li><?php print $link_register ?></li>
-      <li><?php print $link_login_facebook ?></li>
-    </ul>
-  </div>
+        </li>
+      <?php endforeach;?>
+      </ul>
+    </li>
+    <?php endif; ?>
 
-<?php endif; ?>
+    <?php // Render main items ?>
+    <?php foreach ($main_items as $item): ?>
+    <li<?php if (isset($item['class'])): print ' class="' . $item['class'] . '"' ?> <?php endif;?>><?php print $item['data']; ?></li>
+    <?php endforeach; ?>
+
+  </ul>
+</div>

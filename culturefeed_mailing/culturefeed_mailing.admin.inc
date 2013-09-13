@@ -18,7 +18,7 @@ function culturefeed_mailing_admin_settings() {
 
     $query = new CultureFeed_SearchMailingsQuery();
     $lists = DrupalCultureFeed::getMailingList($query)->objects;
-    $options = array('' => 'None');
+    $options = array('' => t('None'));
 
     foreach ($lists as $list) {
       $options[$list->id] = $list->name;
@@ -40,23 +40,23 @@ function culturefeed_mailing_admin_settings() {
 
     $form['culturefeed_mailing_block_description'] = array(
       '#type' => 'textfield',
-      '#title' => 'Nieuwsbrief block omschrijving',
-      '#description' => 'Omschrijving die getoond wordt bij het formulier als block',
+      '#title' => t('Newsletter block description'),
+      '#description' => t('Description displayed in the form as block'),
       '#default_value' => variable_get('culturefeed_mailing_block_description', ''),
     );
 
     $form['culturefeed_mailing_optional_description'] = array(
       '#type' => 'textarea',
-      '#title' => 'Optionele nieuwsbrief omschrijving',
-      '#description' => 'Omschrijving die getoond wordt bij de checkbox voor een optionele inschrijving',
+      '#title' => t('Optional newsletter description'),
+      '#description' => t('Description displayed beside the checkbox for an optional registration'),
       '#default_value' => variable_get('culturefeed_mailing_optional_description', ''),
     );
 
     $form['culturefeed_mailing_subscribed_message'] = array(
       '#type' => 'textarea',
-      '#title' => 'Optionele nieuwsbrief omschrijving',
-      '#description' => 'Omschrijving die getoond wordt bij de checkbox voor een optionele inschrijving',
-      '#default_value' => variable_get('culturefeed_mailing_subscribed_message', 'U bent succesvol ingeschreven voor onze nieuwsbrief'),
+      '#title' => t('Subscribed message'),
+      '#description' => t('Message after a successfull subscription'),
+      '#default_value' => variable_get('culturefeed_mailing_subscribed_message', t('Successfully subscribed to our newsletter')),
     );
 
   }

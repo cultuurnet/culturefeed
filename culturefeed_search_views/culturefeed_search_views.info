@@ -1,0 +1,31 @@
+name = CultureFeed Search Views
+description = Views integration for culturefeed search
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+files[] = views/plugins/culturefeed_search_views_query.inc
+files[] = views/plugins/culturefeed_search_views_row_cdb.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_filter_query.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_in.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_q.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_type.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_category.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_agefrom.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_city.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_free.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_datetype.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_base.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_date.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_recommends.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_comments.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_agefrom.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_title.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_link.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_calendar_summary.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_location.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_organiser.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_picture.inc
+
+dependencies[] = culturefeed_search

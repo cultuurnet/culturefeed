@@ -40,23 +40,42 @@
 <div class="clearfix"></div>
 
 <div class="aantal-acties">
-  Aantal acties
+  <?php print t('Amount of actions') ?>
   <div class="tooltip">?</div>
-  <div class="tooltip-text">Hoe meer je laat weten of je een activiteit leuk vindt of naartoe gaat, hoe beter je persoonlijke tips zullen worden.</div>
+  <div class="tooltip-text"><?php print t('The more items you like or events you attend, the more tips will have a personal touch') ?></div>
 </div>
 <?php if ($like): ?>
   <div class="total-likes">
-    <span class="number"><?php print $like; ?> x</span> <span>vind ik leuk</span>
+    <span class="number"><?php print $like; ?> x</span> <span><?php print t('likes') ?></span>
   </div>
 <?php endif; ?>
 
 <?php if ($goto): ?>
   <div class="total-goto">
-    <span class="number"><?php print $goto; ?> x</span> <span>ga ik naar toe</span>
+    <span class="number"><?php print $goto; ?> x</span> <span><?php print t('attends') ?></span>
   </div>
 <?php endif; ?>
-<?php if ($recommendations_link): ?>
-  <?php print $recommendations_link; ?>
+
+<?php if (!empty($memberships)): ?>
+<div class="page-memberships">
+  
+  <ul>
+  <?php foreach ($memberships as $membership) :?>
+    <li><?php print $membership; ?></li>
+  <?php endforeach; ?>
+  </ul>
+</div>
+<?php endif; ?>
+
+<?php if (!empty($following)): ?>
+<div class="following">
+  <?php print t('Pages of which i\'m a member') ?>
+  <ul>
+  <?php foreach ($following as $following_page) :?>
+    <li><?php print $following_page; ?></li>
+  <?php endforeach; ?>
+  </ul>
+</div>
 <?php endif; ?>
 
 <div class="clearfix"></div>

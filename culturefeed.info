@@ -3,8 +3,15 @@ description = CultureFeed
 package = CultureFeed
 version = VERSION
 core = 7.x
-dependencies[] = cnapi
-files[] = culturefeed.lib.inc
+
+files[] = lib/Drupal/DrupalCultureFeedBase.php
+files[] = lib/Drupal/DrupalCultureFeed.php
+files[] = lib/Drupal/DrupalCultureFeed_EntryApi.php
+files[] = lib/Drupal/DrupalCultureFeed_Cache.php
+files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
+files[] = lib/Drupal/DrupalNodeExtendedEntity.php
+files[] = lib/Drupal/GenericContentExtendedEntity.php
+
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php
 files[] = lib/CultureFeed/ICultureFeed.php
@@ -30,6 +37,8 @@ files[] = lib/CultureFeed/CultureFeed/SearchActivitiesQuery.php
 files[] = lib/CultureFeed/CultureFeed/SearchUser.php
 files[] = lib/CultureFeed/CultureFeed/SearchUsersQuery.php
 files[] = lib/CultureFeed/CultureFeed/SimpleXMLElement.php
+files[] = lib/CultureFeed/CultureFeed/PointsPromotion.php
+files[] = lib/CultureFeed/CultureFeed/PeriodConstraint.php
 files[] = lib/CultureFeed/CultureFeed/User.php
 files[] = lib/CultureFeed/CultureFeed/UserPrivacyConfig.php
 files[] = lib/CultureFeed/CultureFeed/Mailing.php
@@ -78,5 +87,16 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/IEntryApi.php
 files[] = lib/CultureFeed/CultureFeed/EntryApi/EntryApi.php
 files[] = lib/CultureFeed/CultureFeed/InvalidCodeException.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Default.php
+files[] = lib/CultureFeed/CultureFeed/Pages.php
+files[] = lib/CultureFeed/CultureFeed/Pages/UserList.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Follower.php
+files[] = lib/CultureFeed/CultureFeed/Pages/Membership.php
+files[] = lib/CultureFeed/CultureFeed/Messages.php
+files[] = lib/CultureFeed/CultureFeed/Messages/Default.php
+files[] = lib/CultureFeed/CultureFeed/Messages/Message.php
+files[] = lib/CultureFeed/CultureFeed/Log/RequestLog.php
+files[] = lib/CultureFeed/CultureFeed/Log/Request.php
+
 configure = admin/config/services/culturefeed
 

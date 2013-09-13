@@ -17,7 +17,7 @@ function culturefeed_mailing_block_newsletter_opt_in_is_visible() {
  */
 function culturefeed_mailing_block_newsletter_opt_in_view() {
   $block['subject'] = '';
-  $block['content'] = theme('culturefeed_mailing_optin');
+  $block['content'] = theme('culturefeed_mailing_optin', array('mailing_id' => variable_get('culturefeed_mailing_list', '')));
   return $block;
 }
 
@@ -27,7 +27,7 @@ function culturefeed_mailing_block_newsletter_opt_in_view() {
 function culturefeed_mailing_block_newsletter_form_view() {
 
   return array(
-    'subject' => 'Nieuwsbrief',
+    'subject' => t('Newsletter'),
     'content' => drupal_get_form('culturefeed_mailing_newsletter_block_form')
   );
 

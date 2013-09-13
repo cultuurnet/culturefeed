@@ -6,9 +6,15 @@
 class CultureFeed_Activity {
 
   /**
-   * Content type 'page'.
+   * Content type 'content'.
+   * Most generic type separated from all others.
    */
-  const CONTENT_TYPE_PAGE = 'page';
+  const CONTENT_TYPE_CONTENT = 'content';
+
+  /**
+   * Content type 'node' (drupal).
+   */
+  const CONTENT_TYPE_NODE = 'node';
 
   /**
    * Content type 'event'.
@@ -21,9 +27,24 @@ class CultureFeed_Activity {
   const CONTENT_TYPE_ACTOR = 'actor';
 
   /**
+   * Content type 'book'.
+   */
+  const CONTENT_TYPE_BOOK = 'book';
+
+  /**
    * Content type 'production'.
    */
   const CONTENT_TYPE_PRODUCTION = 'production';
+
+  /**
+   * Content type 'culturefeed page'.
+   */
+  const CONTENT_TYPE_CULTUREFEED_PAGE = 'page';
+
+  /**
+   * Activity on activity.
+   */
+  const CONTENT_TYPE_ACTIVITY = 'activity';
 
   /**
    * Consumer type that indicates the action "Viewed".
@@ -66,18 +87,20 @@ class CultureFeed_Activity {
   const TYPE_IK_GA = 8;
 
   const TYPE_TICKET = 9;
-
   const TYPE_ROUTE = 10;
-
   const TYPE_MORE_INFO = 11;
-
   const TYPE_UITPAS = 12;
-
   const TYPE_REGULAR_CHECKIN = 13;
-
   const TYPE_COMMENT = 14;
-
   const TYPE_RECOMMEND = 15;
+  const TYPE_FOLLOW = 18;
+  const TYPE_PAGE_MEMBER = 16;
+  const TYPE_PAGE_ADMIN = 17;
+  const TYPE_NEW_EVENT = 19;
+  const TYPE_REVIEW = 21;
+  const TYPE_MEDIA_PHOTO = 22;
+  const TYPE_MEDIA_VIDEO = 23;
+  const TYPE_PAGE_CREATED = 24;
 
   /**
    * ID of the activity object.
@@ -120,6 +143,12 @@ class CultureFeed_Activity {
    * @var int
    */
   public $points;
+
+  /**
+   * The total of points after doing this activity.
+   * @var int
+   */
+  public $newTotalPoints;
 
   /**
    * The type of content this activity handles.
@@ -180,6 +209,84 @@ class CultureFeed_Activity {
   public $parentActivity;
 
   /**
+   * ID of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOf;
+
+  /**
+   * Name of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOfName;
+
+  /**
+   * Picture of the page this action was done on behalf.
+   * @var string
+   */
+  public $onBehalfOfDepiction;
+
+  /**
+   * Activities nested in the current activity. For type TYPE_COMMENT
+   * @var array
+   */
+  public $childActivities = array();
+
+  /**
+   * Read Status of this activity. NEW or READ
+   * @var string
+   */
+  public $status;
+
+  /**
+   * The uitid user id of the user that will receive points for this activity.
+   * @var string
+   */
+  public $userpointsUserId;
+
+  /**
+   * Helper method to get a string value for an ID.
+   *
+   * Requests to the /activities api will use the Integer values while requests
+   * to the /search api will use the predefined names.
+   * This method maps the two with intention easy the usage.
+   *
+   * @param Integer $type
+   * @return String $activity type.
+   */
+  public static function getNameById($id) {
+
+    $name = '';
+
+    switch ($id) {
+
+      case self::TYPE_RECOMMEND:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND;
+        break;
+
+      case self::TYPE_LIKE:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_LIKE;
+        break;
+
+      case self::TYPE_COMMENT:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT;
+        break;
+
+      case self::TYPE_IK_GA:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_ATTEND;
+        break;
+
+      case self::TYPE_FACEBOOK:
+        $name = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_FACEBOOK_SHARE;
+        break;
+
+    }
+
+    return $name;
+
+  }
+
+  /**
    * Convert a CultureFeed_Activity object to an array that can be used as data in POST requests that expect user info.
    *
    * @return array
@@ -200,6 +307,9 @@ class CultureFeed_Activity {
     }
 
     $data = array_filter($data);
+
+    // Unset the variables which are only used internally.
+    unset($data['path'], $data['childActivities']);
 
     return $data;
   }

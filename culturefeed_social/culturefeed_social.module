@@ -1,0 +1,774 @@
+<?php
+
+/**
+ * @file
+ * CultureFeed Social adds the ability to perform social actions (for example: like, comments, follow, ...) on culturefeed items like events, productions, pages...
+ */
+module_load_include('inc', 'culturefeed_social', 'includes/helpers');
+
+/**
+ * Max items per page / block.
+ */
+define('CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT', 10);
+define('CULTUREFEED_SOCIAL_PAGE_USER_ACTIVITIES_COUNT', 20);
+define('CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT', 50);
+define('CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT', 5);
+define('CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT', 10);
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_social_menu() {
+
+  $items = array();
+  $items['culturefeed/ajax/user/activities'] = array(
+    'page callback' => 'culturefeed_social_page_ajax_get_activities',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['admin/config/services/culturefeed_social'] = array(
+    'title' => 'CultureFeed Social',
+    'description' => 'Change CultureFeed Social settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_social_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+  $items['culturefeed/activities'] = array(
+    'title callback' => FALSE,
+    'title' => t('Administer actions'),
+    'page callback' => 'culturefeed_social_page_activities',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/activity/delete/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Undo action'),
+    'page callback' => 'culturefeed_social_page_activity_delete',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/activity/comment/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Abuse form'),
+    'page callback' => 'culturefeed_social_page_activity_comment',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/activity/report-abuse/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Abuse form'),
+    'page callback' => 'culturefeed_social_page_activity_report_abuse',
+    'page arguments' => array(3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/activity/privacy/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Edit privacy settings'),
+    'page callback' => 'culturefeed_social_page_activity_privacy',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/node/unfollow/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Unfollow node'),
+    'page callback' => 'culturefeed_social_page_node_unfollow',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Activity.
+  $items['culturefeed/do/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => t('Perform action'),
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/do/%/%/%/noredirect'] = array(
+    'title callback' => FALSE,
+    'title' => array('Do action'),
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4, 'noredirect'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/do/%/%/%/advanced'] = array(
+    'title callback' => FALSE,
+    'title' => array('Do action'),
+    'page callback' => 'culturefeed_social_page_do',
+    'page arguments' => array(2, 3, 4, 'advanced'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/undo/%/%/%'] = array(
+    'title callback' => FALSE,
+    'title' => array('Undo action'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/undo/%/%/%/noredirect'] = array(
+    'title callback' => FALSE,
+    'title' => array('Undo action'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4, 'noredirect'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/undo/%/%/%/advanced'] = array(
+    'title callback' => FALSE,
+    'title' => array('Undo action'),
+    'page callback' => 'culturefeed_social_page_undo',
+    'page arguments' => array(2, 3, 4, 'advanced'),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Notifications
+  if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    $items['culturefeed/notifications'] = array(
+      'title callback' => FALSE,
+      'title' => t('My notifications'),
+      'page callback' => 'culturefeed_social_page_notifications',
+      'access callback' => 'culturefeed_is_culturefeed_user',
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/pages.inc',
+    );
+
+    if (module_exists('culturefeed_pages')) {
+      $items['pages/%culturefeed_pages_page/notifications'] = array(
+        'title callback' => FALSE,
+        'title' => t('Notifications'),
+        'page callback' => 'culturefeed_social_page_notifications',
+        'page arguments' => array(1),
+        'access callback' => 'culturefeed_pages_edit_page_access',
+        'access arguments' => array(1),
+        'type' => MENU_CALLBACK,
+        'file' => 'includes/pages.inc',
+      );
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_social_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_social') . '/theme';
+
+  return array(
+    'culturefeed_social_user_activity_list' => array(
+      'variables' => array(
+        'activities' => array(),
+        'class' => NULL,
+        'read_more_url' => NULL,
+        'read_more_text' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-social-user-activity-list',
+    ),
+    'culturefeed_social_user_activity_summary' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'uid' => 0,
+      ),
+      'template' => 'culturefeed-social-user-activity-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_comment_form' => array(
+      'template' => 'culturefeed-social-comment-form',
+      'render element' => 'form',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_comment_list' => array(
+      'variables' => array(
+        'activities' => NULL,
+        'accounts' => NULL,
+        'object' => NULL,
+        'total' => NULL,
+      ),
+      'template' => 'culturefeed-social-comment-list',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_comment_list_item' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'accounts' => NULL,
+        'object' => NULL,
+        'uid' => NULL,
+        'child_activities' => NULL,
+        'level' => 0,
+      ),
+      'template' => 'culturefeed-social-comment-list-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_report_abuse_form' => array(
+      'template' => 'culturefeed-social-report-abuse-form',
+      'render element' => 'form',
+      'path' => $path,
+    ),
+    'culturefeed_social_user_notifications_page' => array(
+      'variables' => array(
+        'notifications' => NULL,
+      ),
+      'template' => 'culturefeed-social-user-notifications-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_activity_summary' => array(
+      'variables' => array(
+        'totals' => NULL,
+      ),
+      'template' => 'culturefeed-social-activity-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_login_required_message' => array(
+      'variables' => array('activity_type' => NULL, 'item' => NULL, 'url' => ''),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_social_block_info() {
+
+  $blocks = array();
+
+  $blocks['recent-activities'] = array(
+    'info' => t('Culturefeed social: recent site activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['user-activities'] = array(
+    'info' => t('Culturefeed social: user activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['recommended-by'] = array(
+    'info' => t('Culturefeed social: recommended by'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['comments'] = array(
+    'info' => t('Culturefeed social: comments'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    $blocks['my-notifications'] = array(
+      'info' => t('Culturefeed social: my notifications (on user profile)'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
+  $blocks['my-activity-summary'] = array(
+    'info' => t('Culturefeed social: summary of my activities (on user profile)'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['loggedinuser-activity-summary'] = array(
+    'info' => t('Culturefeed social: summary of loggedin users activities'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_social_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_social', 'includes/blocks');
+  $block = array();
+
+  switch ($delta) {
+
+    case 'recent-activities':
+      return culturefeed_social_block_recent_activities();
+
+    case 'user-activities':
+      $account = menu_get_object('user');
+      return culturefeed_social_block_user_activities($account);
+
+    case 'recommended-by':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_block_recommended_by($object);
+
+    case 'comments':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_block_comments($object);
+
+    case 'my-notifications':
+      if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+        return culturefeed_social_block_my_notifications();
+      }
+
+    case 'my-activity-summary':
+      $account = menu_get_object('user');
+      return culturefeed_social_block_my_activity_summary($account);
+
+    case 'loggedinuser-activity-summary':
+      return culturefeed_social_block_my_activity_summary(DrupalCultureFeed::getLoggedInAccount());
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_social_culturefeed_ui_profile_menu() {
+
+  return array(
+    'activities' => array(
+      'title' => t('Actions'),
+      'url' => 'culturefeed/activities',
+      'description' => t('Set which user actions are visible to others on your profile page.'),
+      'weight' => -15,
+    ),
+  );
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_social_culturefeed_ui_profile_box_main_items() {
+
+  if (!variable_get('culturefeed_social_notifications_enabled', FALSE)) {
+    return;
+  }
+
+  $items = array();
+  try {
+
+    $notification_count = DrupalCultureFeed::getNotificationsCount(DrupalCultureFeed::getLoggedInUserId());
+
+    if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
+      $items['notifications'] = array(
+        'data' => l('<span class="label">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
+        'class' => 'notifications',
+        'weight' => -20,
+      );
+
+      if ($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] > 0) {
+        $items['notifications']['data'] = l('<span class="label label-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
+        $items['notifications']['class'] .= ' has-new';
+      }
+    }
+  } catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_forms().
+ * This is needed to show multiple comment / abuse forms on 1 page.
+ */
+function culturefeed_social_forms($form_id, $args) {
+
+  $forms = array();
+  if (strstr($form_id, 'culturefeed_social_comment_form')) {
+    $forms[$form_id] = array('callback' => 'culturefeed_social_base_comment_form');
+  } elseif (strstr($form_id, 'culturefeed_social_report_abuse_form')) {
+    $forms[$form_id] = array('callback' => 'culturefeed_social_base_report_abuse_form');
+  }
+
+  return $forms;
+}
+
+/**
+ * Form to filter on user activities.
+ */
+function culturefeed_social_user_activity_filter_form($form, $form_state, $active_filter = 'all', $in_block = FALSE, $account = NULL) {
+
+  $form = array();
+  $activity_filters = culturefeed_social_get_activity_filter_options(TRUE);
+  if (!$activity_filters) {
+    return;
+  }
+
+  $options = array('all' => 'Alles');
+  foreach ($activity_filters as $activity_id => $activity_config) {
+    $options[$activity_id] = $activity_config->label;
+  }
+
+  $form['filter'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#title' => t('Filter events on'),
+    '#default_value' => $active_filter,
+  );
+
+  $query = array();
+  if ($account) {
+    $query['culturefeed_uid'] = $account->culturefeed_uid;
+  }
+
+  // If the form is shown in a block. Filtering is done by ajax.
+  if ($in_block) {
+    $form['filter_url'] = array(
+      '#type' => 'hidden',
+      '#value' => url('culturefeed/ajax/user/activities', array('query' => $query)),
+    );
+  } else {
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Filter'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Submit the user activity filter.
+ */
+function culturefeed_social_user_activity_filter_form_submit($form, &$form_state) {
+
+  $type = $form_state['values']['filter'];
+
+  if ($type > -1 && $type != 'all') {
+    drupal_goto('culturefeed/activities/' . $type);
+  } else {
+    drupal_goto('culturefeed/activities');
+  }
+}
+
+/**
+ * Base form to write a comment.
+ * This is called by culturefeed_social_forms().
+ *
+ * @param misc $object (ExtendedEntity of a Culturefeed page, event, book, ...)
+ * @param CultureFeed_Activity $activity
+ *   Optional activity if the comment needs to target the activity as parent.
+ */
+function culturefeed_social_base_comment_form($form, &$form_state, $object, $activity = NULL) {
+
+  $form_state['object'] = $object;
+
+  $activity_content_type = culturefeed_get_content_type($object->getType());
+  $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+
+  // Default is the status false.
+  try {
+    $status = FALSE;
+    $cf_id = DrupalCultureFeed::getLoggedInUserId();
+    if ($cf_id) {
+      $status = DrupalCultureFeed::getNodeStatus($activity_content_type, $node_id, $cf_id);
+    }
+  } catch (Exception $e) {
+    $status = FALSE;
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_COMMENT);
+  $form_state['config'] = $config;
+
+  $form = array(
+    '#theme' => 'culturefeed_social_comment_form'
+  );
+
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => $config->titleDo,
+    '#default_value' => '',
+    '#attributes' => array('class' => array('comment-message')),
+    '#weight' => -5,
+    '#required' => TRUE,
+  );
+
+  if ($status == TRUE) {
+
+    $link = l(t('Remove from list'), 'culturefeed/node/unfollow/' . $object->getType() . '/' . urlencode($node_id) . '/nojs', array('query' => drupal_get_destination()));
+    $message = format_string(t('You\'re currently receiving updates of new comments. <br/>!link to get no more posts.'), array('!link' => $link));
+
+    $form['update_optin'] = array(
+      '#type' => 'markup',
+      '#markup' => $message,
+      '#prefix' => '<div id="node-status-wrapper"><p class="muted">',
+      '#suffix' => '</p></div>',
+    );
+  } else {
+    $form['update_optin'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Receive email about new comments'),
+      '#default_value' => isset($status) ? $status : TRUE,
+      '#attributes' => array('class' => array('comment-updates')),
+      '#weight' => 1,
+    );
+  }
+
+  if (isset($activity)) {
+
+    $form['parent_id'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $activity->id,
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#attributes' => array('class' => array('comment-button')),
+    '#weight' => 5,
+  );
+
+  return $form;
+}
+
+/**
+ * Validate the comment form => Submit it to service.
+ */
+function culturefeed_social_base_comment_form_validate($form, &$form_state) {
+
+  $object = $form_state['object'];
+  $config = $form_state['config'];
+
+  $social_content_type = culturefeed_get_content_type($object->getType());
+  $detail_path = culturefeed_social_detail_path($social_content_type, $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language()));
+
+  // Send a comment.
+  if (!empty($form_state['values']['message']) && strlen($form_state['values']['message']) <= 1000) {
+
+    $activity = new CultureFeed_Activity();
+    $activity->type = $activity::TYPE_COMMENT;
+    $activity->nodeTitle = $object->getTitle(culturefeed_search_get_preferred_language());
+    $activity->userId = DrupalCultureFeed::getLoggedInUserId();
+    $activity->value = $form_state['values']['message'];
+    $activity->onBehalfOf = !empty($form_state['values']['on_behalf_of']) ? $form_state['values']['on_behalf_of'] : '';
+
+    // If user is replying on another comment. Node id and content type is different.
+    if (!empty($form_state['values']['parent_id'])) {
+      $activity->nodeId = $form_state['values']['parent_id'];
+      $activity->contentType = CultureFeed_Activity::CONTENT_TYPE_ACTIVITY;
+    } else {
+      $activity_content_type = culturefeed_get_content_type($object->getType());
+      $activity->nodeId = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+      $activity->contentType = $activity_content_type;
+    }
+
+    try {
+      $form_state['activity_result'] = DrupalCultureFeed::createActivity($activity);
+    } catch (Exception $e) {
+      watchdog_exception('culturefeed_social', $e);
+      form_set_error('', format_string(t('Due to technical problems it is currently not possible to send your message. Do not hesitate to directly contact via @site'), array('@site' => variable_get('site_email', ''))));
+    }
+  } else {
+    form_set_error('message', t('Your response should not exceed 1000 characters.'));
+  }
+
+  // Temp fix untill cnet decides to swap to ctools modal.
+  if (form_get_errors()) {
+    drupal_goto($detail_path);
+  }
+}
+
+/**
+ * Submit handler to post a comment.
+ */
+function culturefeed_social_base_comment_form_submit($form, $form_state) {
+
+  $object = $form_state['object'];
+  $activity_content_type = culturefeed_get_content_type($object->getType());
+  $node_id = culturefeed_social_get_activity_node_id($activity_content_type, $object);
+  $config = $form_state['config'];
+
+  if (!empty($form_state['activity_result'])) {
+
+    $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language())), array(
+      'absolute' => TRUE,
+      'fragment' => 'activity-' . $form_state['activity_result']->id,
+    ));
+    drupal_set_message(format_string(t('Your !comment has been sent.'), array('!comment' => $goto_link)));
+
+    // Follow updates.
+    if (!empty($form_state['values']['update_optin'])) {
+
+      try {
+        $id = DrupalCultureFeed::followNode($activity_content_type, $node_id, DrupalCultureFeed::getLoggedInUserId());
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_social', $e);
+      }
+    }
+  }
+}
+
+/**
+ * Base form to report an activity as abuse.
+ * This is called by culturefeed_social_forms().
+ *
+ * @param $activity
+ *   Activity to report.
+ * @param $context
+ *   Context where the activity is done on. (event, book, production ... )
+ */
+function culturefeed_social_base_report_abuse_form($form, &$form_state, $activity, $context) {
+
+  // If we have a cdb item, a page can be connected.
+  $page_id = 0;
+  if ($context->getType() == 'page') {
+    $page_id = $context->getId();
+  } elseif ($context->getType() != 'bibnet_book') {
+    $page_id = culturefeed_agenda_get_connected_page_id_of_item($context->getEntity());
+  }
+
+  if ($page_id) {
+    $form_state['post_params']['recipientPage'] = $page_id;
+    $form_state['post_params']['role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
+  }
+
+  // If there was no page, the message should go to the admin.
+  if (!isset($form_state['post_params']['recipientPage'])) {
+    $form_state['post_params']['recipient'] = variable_get('culturefeed_social_report_destination_uid');
+    // If no uid was set. Don't show a form.
+    if (empty($form_state['post_params']['recipient'])) {
+      return;
+    }
+  }
+
+  $form = array();
+
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Inappropriate response'),
+    '#attributes' => array('placeholder' => t('Please tell us why you think this is an inappropriate response')),
+    '#required' => TRUE,
+  );
+
+  // Add select to choose the 'send as'.
+  try {
+
+    $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+
+    if (!empty($cultureFeedUser->pageMemberships)) {
+      $send_as_options = array();
+      foreach ($cultureFeedUser->pageMemberships as $membership) {
+        $send_as_options[$membership->page->getId()] = $membership->page->getName();
+      }
+
+      $form['send_as'] = array(
+        '#title' => t('Send message as'),
+        '#type' => 'select',
+        '#options' => $send_as_options,
+        '#default_value' => culturefeed_pages_get_active_page_id(),
+      );
+    }
+  } catch (Exception $e) {
+    watchdog_exception('culturefeed_messages', $e);
+  }
+
+  $form_state['context'] = $context;
+  $form_state['activity'] = $activity;
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#attributes' => array('class' => array('btn-primary')),
+  );
+
+  $form['#theme'] = 'culturefeed_social_report_abuse_form';
+
+  return $form;
+}
+
+/**
+ * Validate the send message form. Try to send the message to the service.
+ * Note: only sending a page, or a reply is available in the UI.
+ */
+function culturefeed_social_base_report_abuse_form_validate($form, &$form_state) {
+
+  $context = $form_state['context'];
+
+  $activity = $form_state['activity'];
+
+  $social_content_type = culturefeed_get_content_type($context->getType());
+  $detail_path = culturefeed_social_detail_path($social_content_type, $context->getId(), $context->getTitle(culturefeed_search_get_preferred_language()));
+
+  if (!empty($form_state['values']['message'])) {
+    $body = array(
+      'body' => $form_state['values']['message'],
+      'commentUserId' => $activity->userId,
+      $social_content_type . 'Id' => $context->getId(),
+      'comment' => $activity->value,
+      'linkUser' => url('user/' . culturefeed_get_uid_for_cf_uid($activity->userId, ''), array('absolute' => TRUE)),
+      'linkComment' => url($detail_path, array('absolute' => TRUE, 'fragment' => 'activity-' . $activity->id))
+    );
+
+    $params = $form_state['post_params'];
+    $params['subject'] = $context->getTitle(culturefeed_search_get_preferred_language());
+    $params['type'] = CultureFeed_Messages_Message::TYPE_REPORT;
+    $params['body'] = drupal_json_encode($body);
+
+    if (!empty($form_state['values']['send_as'])) {
+      $params['senderPage'] = $form_state['values']['send_as'];
+    }
+  }
+
+  try {
+    $message_id = DrupalCultureFeed::getLoggedInUserInstance()->messages()->sendMessage($params);
+  } catch (Exception $e) {
+    form_set_error('', t('Something went wrong while sending'));
+    watchdog_exception('culturefeed_social', $e);
+  }
+
+  // Temp fix untill cnet decides to swap to ctools modal.
+  if ($errors = form_get_errors()) {
+    drupal_goto($detail_path);
+  }
+}
+
+/**
+ * Submit the new message form.
+ */
+function culturefeed_social_base_report_abuse_form_submit($form, &$form_state) {
+  drupal_set_message(t('Message sent'));
+}

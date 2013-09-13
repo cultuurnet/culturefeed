@@ -1,0 +1,9 @@
+name = CultureFeed Userpoints UI
+description = CultureFeed Userpoints blocks and other interface components.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed_social
+
+files[] = lib/Drupal/CultureFeedUserpointsWishlist.php

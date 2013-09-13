@@ -1,0 +1,531 @@
+<?php
+/**
+ * @file
+ * Creates components to use in the user interface and integrates with
+ * other Culturefeed objects.
+ */
+
+// If pointsPromotion.maxAvailableUnits is unlimited, this is the default.
+define('CULTUREFEED_USERPOINTS_MAX_UNITS_DEFAULT', 25);
+
+module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/helpers');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_userpoints_ui_menu() {
+
+  $items = array();
+
+  $items['userpoints/promotions/exchange'] = array(
+    'title' => 'Exchange your points',
+    'title callback' => FALSE,
+    'description' => 'Exchange your userpoints',
+    'page callback' => 'culturefeed_userpoints_ui_exchange_page',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['userpoints/promotions/list'] = array(
+    'title' => 'Promotions',
+    'title callback' => FALSE,
+    'description' => 'Promotions list',
+    'page callback' => 'culturefeed_userpoints_ui_promotions_page',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/userpoints/%/%/select/%'] = array(
+    'title' => 'Select promotion',
+    'title callback' => FALSE,
+    'description' => 'Select the promotion to exchange for userpoints.',
+    'page callback' => 'culturefeed_userpoints_ui_promotion_select_page',
+    'page arguments' => array(2, 3, 5),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/userpoints/%/remove/%'] = array(
+    'title' => 'Deselect promotion',
+    'title callback' => FALSE,
+    'description' => 'Remove the promotion from the wishlist.',
+    'page callback' => 'culturefeed_userpoints_ui_page_remove_promotion',
+    'page arguments' => array(2, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['userpoints/promotions/confirmation'] = array(
+    'title' => 'Promotions',
+    'title callback' => FALSE,
+    'page callback' => 'culturefeed_userpoints_ui_page_exchange_confirmation',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['admin/config/services/userpoints'] = array(
+    'title' => 'Culturefeed Userpoints User Interface',
+    'description' => 'All configurations to adjust the behavior of userpoints for this site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_userpoints_ui_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
+  $items['userpoints/promotion/%culturefeed_userpoints_promotion'] = array(
+    'title' => 'Detail',
+    'title callback' => FALSE,
+    'description' => 'Detail of a promotion',
+    'page callback' => 'culturefeed_userpoints_ui_detail_page',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/userpoints'] = array(
+    'title' => 'Points list',
+    'title callback' => FALSE,
+    'page callback' => 'culturefeed_userpoints_ui_page_points_overview',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Load callback for one userpoints promotion.
+ * @param Integer $id
+ */
+function culturefeed_userpoints_promotion_load($id) {
+
+  $detail = NULL;
+
+  try {
+    $detail = DrupalCulturefeed::getActivityPointsPromotion($id);
+  }
+  catch (Exception\ClientErrorResponseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = t('There was an error while loading the promotion.');
+  }
+  catch (Exception\CurlException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = t('There was an error while loading the promotion.');
+  }
+  catch (CultureFeed_ParseException $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    $build = t('There was an error while loading the promotion.');
+  }
+
+  return $detail;
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_userpoints_ui_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_userpoints_ui') . '/theme';
+
+  return array(
+    'culturefeed_userpoints_ui_my_balance' => array(
+      'variables' => array(),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-my-balance',
+    ),
+    'culturefeed_userpoints_ui_promotions_page' => array(
+      'variables' => array(
+        'promotions' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-page',
+    ),
+    'culturefeed_userpoints_ui_promotions_page_item' => array(
+      'variables' => array(
+        'promotion' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-promotions-page-item',
+    ),
+    'culturefeed_userpoints_ui_exchange_page' => array(
+      'variables' => array(
+        'cf_user' => NULL,
+        'promotions' => NULL,
+        'promotions_form' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-exchange-page',
+    ),
+    'culturefeed_userpoints_ui_promotions_list' => array(
+      'file' => 'theme.inc',
+      'path' => $path,
+      'template' => 'culturefeed-userpoints-ui-promotions-list',
+      'render element' => 'form',
+    ),
+    'culturefeed_userpoints_ui_promotions_list_item' => array(
+      'file' => 'theme.inc',
+      'path' => $path,
+      'template' => 'culturefeed-userpoints-ui-promotions-list-item',
+      'render element' => 'form',
+    ),
+    'culturefeed_userpoints_ui_block_more_promotions' => array(
+      'file' => 'theme.inc',
+      'path' => $path,
+      'template' => 'culturefeed-userpoints-ui-block-more-promotions',
+      'variables' => array(
+        'previous_item' => NULL,
+        'next_item' => NULL,
+      ),
+    ),
+    'culturefeed_userpoints_ui_exchange_form' => array(
+      'template' => 'culturefeed-userpoints-ui-exchange-form',
+      'path' => $path,
+      'render element' => 'form',
+    ),
+    'culturefeed_userpoints_ui_wishlist' => array(
+      'variables' => array(
+        'promotions' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-wishlist',
+    ),
+    'culturefeed_userpoints_ui_wishlist_item' => array(
+      'variables' => array(
+        'item' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-wishlist-item',
+    ),
+    'culturefeed_userpoints_ui_points_earned_message' => array(
+      'variables' => array('activity' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_userpoints_ui_points_lost_message' => array(
+      'variables' => array('activity' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_userpoints_ui_points_exchanged_message' => array(
+      'variables' => array('promotions' => NULL, 'points_lef' => 0),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_userpoints_ui_detail_page' => array(
+      'variables' => array(
+        'promotion' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-ui-detail-page',
+    ),
+    'culturefeed_userpoints_earned_overview' => array(
+      'variables' => array(
+        'activities' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-earned-overview',
+    ),
+    'culturefeed_userpoints_ui_page_exchange_confirmation' => array(
+      'variables' => array(),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-userpoints-exchange-confirmation',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_userpoints_ui_block_info() {
+  $blocks = array();
+
+  $blocks['culturefeed-userpoints-balance'] = array(
+    'info' => t('Culturefeed Userpoints UI: Your balance'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['culturefeed-userpoints-more'] = array(
+    'info' => t('Culturefeed Userpoints UI: More promotions'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_userpoints_ui_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_userpoints_ui', 'includes/blocks');
+  $block = array();
+
+  switch ($delta) {
+
+    case 'culturefeed-userpoints-balance':
+      $block['subject'] = t('My points balance');
+      $block['content'] = culturefeed_userpoints_ui_block_balance();
+      break;
+
+    case 'culturefeed-userpoints-more':
+      $block['subject'] = t('More promotions');
+      $block['content'] = culturefeed_userpoints_ui_block_more_promotions();
+      break;
+  }
+
+  return $block;
+
+}
+
+/**
+ * Implements hook_mail().
+ */
+function culturefeed_userpoints_ui_mail($key, &$message, $params) {
+
+  switch ($key) {
+
+    case 'userpoints-exchange-request':
+
+      $wishlistPromotions = $params['wishlist'];
+      $values = $params['values'];
+      $cf_account = $params['cf_account'];
+      $language = $message['language'];
+
+      $message['subject'] .= t('Request a promotion | request by') . ' ' . $cf_account->nick;
+
+      $variables = array();
+      $variables['@code'] = $cf_account->id;
+      $variables['@givenName'] = $values['givenName'];
+      $variables['@familyName'] = $values['familyName'];
+      $variables['@street'] = $values['street'];
+      $variables['@city'] = $values['city'];
+      $variables['@mbox'] = $values['mbox'];
+
+      $promotions = array();
+      foreach ($wishlistPromotions as $data) {
+        $promotions[] = $data['title'] . ' (' . t('amount') . ': ' . $data['count'] . ' | ' . t('resale value') . ': ' . CultureFeedUserpointsWishlist::getRealPoints($data['points']) . ' ' . t('points'). ')
+    ' . t('View online') . ': ' . url('userpoints/promotion/' . $data['promotion_id'], array('absolute' => TRUE)) . '
+';
+      }
+
+      $variables['@url_admin'] = url('http://test.uitid.be/culturefeed/rest/admin/grantedpointspromotions', array('absolute' => TRUE));
+      $variables['@promotion'] = implode("\n", $promotions);
+
+      $message['body'][] = format_string(t('Culturefeed User ID:
+        @code
+
+        Promotion:
+          @promotion
+
+        Contact:
+          - @givenName @familyName
+          - @street
+          - @city
+          - @mbox
+
+        Admin:
+          @url_admin '), $variables);
+
+    break;
+
+  }
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_userpoints_ui_culturefeed_ui_profile_menu() {
+
+  return array(
+    'points' => array(
+      'title' => t('My points balance'),
+      'url' => 'culturefeed/userpoints',
+      'description' => t('See the overview of your earned points'),
+      'weight' => -15,
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_userpoints_ui_culturefeed_ui_profile_box_main_items($cf_account) {
+
+  $items = array();
+
+  $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+
+  $data = '<div class="btn-group userpoints">';
+  $data .= '<span class="userpoints-points btn btn-mini"><span class="userpoints-points-left">' . l($points_left, 'culturefeed/userpoints') .  '</span>';
+  $data .= ' punten <span class="userpoints-points-new"></span></span>';
+  $data .= '<span class="check-again userpoints-exchange btn btn-mini btn-warning"> ' . l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('uppercase')))) . '</span>';
+  $data .= '</div>';
+
+  $items['my-points'] = array(
+    'data' =>  $data,
+    'class' => 'points-balance',
+    'weight' => -18,
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_social_activity_created().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_activity_created($activity) {
+
+  if (!empty($activity->points) && (arg(5) != 'noredirect' && arg(5) != 'ajax')) {
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        drupal_set_message(theme('culturefeed_userpoints_ui_points_earned_message', array('activity' => $activity)));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+
+}
+
+/**
+ * Implements hook_culturefeed_social_activity_deleted().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_activity_deleted($activity) {
+
+  if (!empty($activity->points) && (arg(5) != 'noredirect' && arg(5) != 'ajax')) {
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        drupal_set_message(theme('culturefeed_userpoints_ui_points_lost_message', array('activity' => $activity)));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
+ * Implements hook_culturefeed_social_page_do_ajax_commmands_alter().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_page_do_ajax_commmands_alter(&$commands, CultureFeed_Activity $activity) {
+
+  if (!empty($activity->points)) {
+
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+        $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+
+        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> + ' . $points_earned));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
+ * Implements hook_culturefeed_social_page_undo_ajax_commmands_alter().
+ */
+function culturefeed_userpoints_ui_culturefeed_social_page_undo_ajax_commmands_alter(&$commands, $activity) {
+
+  if (!empty($activity->points)) {
+
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if ($cf_account->id == $activity->userpointsUserId) {
+        $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
+        $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
+
+        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> - ' . $points_earned));
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_userpoints_ui', $e);
+    }
+  }
+}
+
+/**
+ * Submit handler to add/remove points promotions.
+ */
+function culturefeed_userpoints_ui_promotions_list_form_submit($form, &$form_state) {
+
+  $form_state['rebuild'] = TRUE;
+
+  $promotion_id = $form_state['promotion_id'];
+  $promotion_count = $form_state['values']['list'][$promotion_id]['select_count'];
+
+  // Retrieve 1 item.
+  CultureFeedUserpointsWishlist::add($promotion_id, $promotion_count, $form_state['promotion']);
+
+  // Check if this is a non ajax submit.
+  if (arg(1) != 'ajax') {
+    drupal_set_message(t('The promotion has been added to your basket promotion.'));
+  }
+
+}
+
+/**
+ * Validate the ajax callback when a user clicked on 'add to cart'.
+ */
+function culturefeed_userpoints_ui_promotions_list_form_validate($form, &$form_state) {
+
+  $selected_button = $form_state['clicked_button']['#name'];
+  $form_state['promotion_id'] = $promotion_id = str_replace("select_btn_", "", $selected_button);
+  $promotion_count = $form_state['values']['list'][$promotion_id]['select_count'];
+
+
+  try {
+    $user_points = DrupalCultureFeed::getLoggedInUser()->points;
+    $points_left = CultureFeedUserpointsWishlist::getPointsLeft($user_points);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_userpoints_ui', $e);
+    return;
+  }
+
+  // When an item was already in the list, check how many new that are beïng added.
+  $form_state['promotion'] = DrupalCultureFeed::getActivityPointsPromotion($promotion_id);
+  if (CultureFeedUserpointsWishlist::has($promotion_id)) {
+    $promotion_count -= $_SESSION['culturefeed_userpoints_wishlist'][$promotion_id]['count'];
+  }
+
+  // Calculate how many points that will be spent for the new request.
+  $points_spent = $promotion_count * CultureFeedUserpointsWishlist::getRealPoints($form_state['promotion']->points);
+
+  if ($points_left < $points_spent) {
+    form_set_error($form_state['clicked_button']['#name'], t('You do not have enough points'));
+  }
+
+}
+
+/**
+ * Ajax Callback handler to add/remove points promotions.
+ * Save functionality is already done. This should just do the commands.
+ */
+function culturefeed_userpoints_ui_promotions_list_form_callback($form, &$form_state) {
+  $points = culturefeed_userpoints_ui_get_pointspromotions();
+  return culturefeed_userpoints_ui_promotions_list_ajax_refresh($form, $points);
+}
+

@@ -63,6 +63,13 @@ class CultureFeed_User {
   public $id;
 
   /**
+   * Preferred language of the user
+   *
+   * @var string
+   */
+  public $preferredLanguage;
+
+  /**
    * Nick of the user.
    *
    * @var string
@@ -196,6 +203,13 @@ class CultureFeed_User {
   public $status;
 
   /**
+   * Points of the user.
+   *
+   * @var double
+   */
+  public $points;
+
+  /**
    * OpenID handle of the user.
    *
    * @var string
@@ -210,14 +224,30 @@ class CultureFeed_User {
    */
   public $holdsAccount;
 
-
-
   /**
    * Field privacy status.
    *
    * @var CultureFeed_UserPrivacyConfig
    */
   public $privacyConfig;
+
+  /**
+   * List of page memberships.
+   * @var CultureFeed_Pages_Membership[]
+   */
+  public $pageMemberships;
+
+  /**
+   * Number of pages where current user is admin.
+   * @var Integer
+   */
+  public $adminPagesCount = 0;
+
+  /**
+   * List of page followers.
+   * @var CultureFeed_Pages_Follower[]
+   */
+  public $following;
 
   /**
    * Convert a CultureFeed_User object to an array that can be used as data in POST requests that expect user info.
@@ -283,6 +313,24 @@ class CultureFeed_User {
     }
 
     return $data;
+  }
+
+  /**
+   * Gets all pages where current user is ADMIN.
+   */
+  public function getMembershipsByRole($role = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+
+    $membershipsByRole = array();
+    if (!empty($this->pageMemberships)) {
+      foreach ($this->pageMemberships as $membership) {
+        if ($membership->role == $role) {
+          $membershipsByRole[$membership->page->getId()] = $membership;
+        }
+      }
+    }
+
+    return $membershipsByRole;
+
   }
 
 }

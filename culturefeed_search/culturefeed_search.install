@@ -1,0 +1,192 @@
+<?php
+/**
+ * @file
+ * Install file for culturefeed search API.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function culturefeed_search_schema() {
+
+ $schema['culturefeed_search_domains'] = array(
+    'description' => 'Category domains for the Culturefeed Search API.',
+    'fields' => array(
+      'did' => array(
+        'description' => 'The primary identifier for a domain.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'label' => array(
+        'description' => 'Domain label.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'primary key' => array('did'),
+  );
+
+  $schema['culturefeed_search_terms'] = array(
+    'description' => 'Terms for the CultuurNet Search API.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The primary identifier for a term.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'language' => array(
+        'description' => 'The language for this term.',
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => FALSE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'Term name.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'did' => array(
+        'description' => 'Domain of the term.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'parent' => array(
+        'description' => 'Parent of the term.',
+        'type' => 'varchar',
+        'length' => 150,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'slug' => array(
+        'description' => 'Slug of the term name.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'did' => array('did'),
+      'tid' => array('tid'),
+      'slug' => array('slug'),
+    ),
+  );
+
+  $schema['culturefeed_search_cities'] = array(
+    'description' => 'Cities for the CultuurNet Search API.',
+    'fields' => array(
+      'cid' => array(
+        'description' => 'The primary identifier for a city.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'City.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'zip' => array(
+        'description' => 'Zip of the city.',
+       'type' => 'char',
+        'length' => 4,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'slug' => array(
+        'description' => 'slug of the city',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'cid' => array('cid'),
+      'zip' => array('zip'),
+    ),
+    'primary key' => array('cid'),
+  );
+
+  $schema['cnapi_headings'] = array(
+    'description' => 'Mapping table between cnapi headings and categories.',
+    'fields' => array(
+      'hid' => array(
+        'description' => 'The heading id.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'cid' => array(
+        'description' => 'The category id.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'hid' => array('hid'),
+      'cid' => array('cid'),
+    ),
+  );
+
+  $schema['cache_culturefeed_search'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_culturefeed_search']['description'] = 'Cache table for the culturefeed search requests';
+
+  return $schema;
+
+}
+
+/**
+ * Re-creates the culturefeed_search_terms table.
+ */
+function culturefeed_search_update_7001() {
+  $schema = culturefeed_search_schema();
+  db_drop_table('culturefeed_search_terms');
+  db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
+}
+
+/**
+ * Re-creates the culturefeed_search_terms table.
+ */
+function culturefeed_search_update_7003() {
+  $schema = culturefeed_search_schema();
+  db_drop_table('culturefeed_search_terms');
+  db_drop_table('culturefeed_search_cities');
+  db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
+  db_create_table('culturefeed_search_cities', $schema['culturefeed_search_cities']);
+  drupal_set_message(t('Culturefeed search Tables are reïnstalled. Please run the drush imports again'));
+}
+
+/**
+ * Create the cnapi_headings table.
+ */
+function culturefeed_search_update_7005() {
+  $schema = culturefeed_search_schema();
+  db_create_table('cnapi_headings', $schema['cnapi_headings']);
+  drupal_set_message(t('Cnapi headings table created. Please run the drush import for it.'));
+}
+
+/**
+ * Remove debug variable.
+ */
+function culturefeed_search_update_7006() {
+  variable_del('culturefeed_search_debug_mode');
+}
+
