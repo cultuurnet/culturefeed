@@ -160,7 +160,7 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
     if ($relations) {
       foreach ($relations as $relation) {
         $event = culturefeed_agenda_event_load($relation->getCdbid());
-        if ($event && $event instanceof CultureFeed_Cdb_Item_Event) {
+        if ($event) {
           $locations[] = culturefeed_agenda_get_location_of_event($event->getEntity());
         }
       }
@@ -190,7 +190,7 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
     }
 
   }
-
+  
   return $locations;
 
 }
