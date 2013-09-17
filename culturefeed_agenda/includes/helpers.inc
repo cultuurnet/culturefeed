@@ -34,9 +34,11 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   $links = array();
   // General links.
   if ($detail) {
-    $media_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE);
-    foreach ($media_links as $media_link) {
-      $links[] = $media_link->getHLink();
+    
+    foreach ($detail->getMedia() as $media) {
+      if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
+        $links[] = $media->getHLink();
+      }
     }
   }
 
