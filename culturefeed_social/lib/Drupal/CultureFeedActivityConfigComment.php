@@ -32,7 +32,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->action = t('Reply');
     $this->loginRequiredMessage = t('You must be logged in to post a comment');
     $this->onBehalfOfMessage = t('Reply as');
-    $this->pointsOverviewPrefix = t('posted a comment on');
+    $this->pointsOverviewPrefix = t('Posted a comment on');
 
   }
 
