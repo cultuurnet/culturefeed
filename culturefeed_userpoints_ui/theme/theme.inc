@@ -320,7 +320,7 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
 
   $variables['intro'] = check_plain(variable_get('culturefeed_userpoints_ui_points_overview_intro'));
   $variables['total_points'] = 0;
-  $variables['exchange_link'] = l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('btn btn-warning'))));
+  $variables['exchange_link'] = l(t('Exchange'), 'userpoints/promotions/exchange', array('attributes' => array('class' => array('btn btn-large btn-warning'))));
 
   try {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
@@ -336,6 +336,7 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
     $item = array();
     $item['date'] = format_date($activity->creationDate, 'custom', 'd/m/Y');
     $item['points'] = format_plural(CultureFeedUserpointsWishlist::getRealPoints($activity->points), '@count punt', '@count punten');
+    $item['created_via'] =  $activity->createdVia;
 
     $config = culturefeed_social_activity_get_config($activity->type);
     $description = '';
