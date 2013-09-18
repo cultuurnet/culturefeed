@@ -16,7 +16,7 @@ use \Guzzle\Http\Exception;
  * @param Boolean $ajax
  *   The type of request.
  */
-function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FALSE) {
+function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_type = 'nojs') {
 
   // The first search page callback is a dummy callback to redirect to the
   // real search page.
@@ -28,6 +28,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $ajax = FA
 
     $conf = culturefeed_get_searchable_type($name);
     $page = culturefeed_get_search_page($conf);
+    $ajax = $request_type == 'ajax';
     if ($ajax) {
       $page->setFullPage(FALSE);
     }

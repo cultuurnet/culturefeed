@@ -81,11 +81,12 @@ function culturefeed_search_ui_menu() {
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
+    $arguments = explode('/', $search_type['path']);
     $items[$search_type['path'] . '/%'] = array(
       'title' => $search_type['page_title'],
       'title callback' => FALSE,
       'page callback' => 'culturefeed_search_ui_search_page',
-      'page arguments' => array($name, $class_name, TRUE),
+      'page arguments' => array($name, $class_name, count($arguments)),
       'file' => 'includes/pages.inc',
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
