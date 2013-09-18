@@ -523,7 +523,7 @@ class CultureFeedSearchPage {
         $build['pager-container']['pager_summary'] = array(
           '#theme' => 'culturefeed_search_pager_summary',
           '#result' => $this->result,
-          '#start' => $this->start,
+          '#start' => ($this->pageNumber - 1) * $this->resultsPerPage,
         );
 
         $build['pager-container']['pager'] = array(

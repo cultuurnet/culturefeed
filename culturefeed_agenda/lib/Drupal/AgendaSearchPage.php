@@ -25,10 +25,11 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $params = drupal_get_query_parameters();
       $params += array(
         'sort' => $this->getDefaultSort(),
-        'page' => 0,
         'search' => '',
         'facet' => array(),
       );
+
+      $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
 
       if (!empty($params['search'])) {
         $this->addQueryTerm($params['search']);
