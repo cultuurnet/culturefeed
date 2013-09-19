@@ -33,7 +33,7 @@ function culturefeed_agenda_block_related_activities() {
       foreach ($categories as $category) {
         $context_filter[] = $category->getId();
       }
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_' . $context . '_id' . ':(' . implode(' OR ', $context_filter) . ')');
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $context_filter) . ')');
     }
 
   }

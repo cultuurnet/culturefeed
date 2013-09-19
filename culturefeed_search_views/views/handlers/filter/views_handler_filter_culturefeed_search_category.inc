@@ -16,7 +16,7 @@ class views_handler_filter_culturefeed_search_category extends views_handler_fil
 
     $id_parts = explode('_', $options['id']);
     $this->domain_id = $id_parts[1];
-    $this->search_field = 'category_' . $this->domain_id . '_id';
+    $this->search_field = 'category_id';
 
   }
 

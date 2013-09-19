@@ -421,8 +421,7 @@ class CultureFeedSearchPage {
           array_walk($facetFilter, function (&$item) {
             $item = '"' . str_replace('"', '\"', $item) . '"';
           });
-          $facetFilterQuery = new Parameter\FilterQuery($facetFieldName . ':(' . implode(' OR ', $facetFilter) . ')');
-
+          $facetFilterQuery = new Parameter\FilterQuery('category_id:(' . implode(' OR ', $facetFilter) . ')');
         }
 
         $this->parameters[] = $facetFilterQuery;
