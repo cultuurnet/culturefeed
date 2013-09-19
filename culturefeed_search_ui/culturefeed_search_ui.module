@@ -94,9 +94,9 @@ function culturefeed_search_ui_menu() {
 
   }
 
-  $items['admin/config/services/culturefeed_search_ui'] = array(
-    'title' => 'Culture Feed Search UI',
-    'description' => t('Change Culture Feed Search UI settings like display, filters, …'),
+  $items['admin/config/culturefeed/search-ui'] = array(
+    'title' => 'CultureFeed Search UI',
+    'description' => t('Change CultureFeed Search UI settings like display, filters, …'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_search_ui_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -523,6 +523,7 @@ function culturefeed_get_search_page($search_type) {
     $pages[$class_name] = new $search_type['class_name']();
     $pages[$class_name]->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
     $pages[$class_name]->setDefaultSort($search_type['sort_default']);
+    $pages[$class_name]->setGroup(variable_get('culturefeed_search_group', TRUE));
     $pages[$class_name]->initialize();
   }
   return $pages[$class_name];

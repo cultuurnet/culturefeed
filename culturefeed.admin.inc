@@ -21,7 +21,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_api_application_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Application key'),
-    '#description' => t('Your Culture Feed Application key.'),
+    '#description' => t('Your CultureFeed Application key.'),
     '#default_value' => variable_get('culturefeed_api_application_key', ''),
     '#size' => 40,
     '#maxlength' => 40,
@@ -29,7 +29,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_api_shared_secret'] = array(
     '#type' => 'textfield',
     '#title' => t('Shared secret'),
-    '#description' => t('Your Culture Feed Shared Secret.'),
+    '#description' => t('Your CultureFeed Shared Secret.'),
     '#default_value' => variable_get('culturefeed_api_shared_secret', ''),
     '#size' => 40,
     '#maxlength' => 40,
@@ -37,7 +37,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_entry_api_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API path'),
-    '#description' => t('The path where the Culture Feed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v1/'),
+    '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v1/'),
     '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
   );
 

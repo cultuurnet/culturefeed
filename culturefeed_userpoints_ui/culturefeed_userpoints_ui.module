@@ -63,8 +63,8 @@ function culturefeed_userpoints_ui_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['admin/config/services/userpoints'] = array(
-    'title' => 'Culturefeed Userpoints User Interface',
+  $items['admin/config/culturefeed/userpoints'] = array(
+    'title' => 'CultureFeed Userpoints User Interface',
     'description' => 'All configurations to adjust the behavior of userpoints for this site',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_userpoints_ui_settings_form'),

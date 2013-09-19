@@ -34,6 +34,13 @@ function culturefeed_search_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_redirect_old_search', FALSE),
   );
 
+  $form['culturefeed_search_group'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Group'),
+    '#description' => t('Group description'),
+    '#default_value' => variable_get('culturefeed_search_group', TRUE),
+  );
+
   return system_settings_form($form);
 
 }

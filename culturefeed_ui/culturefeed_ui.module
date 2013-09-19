@@ -12,9 +12,9 @@ define('CULTUREFEED_UI_PAGE_USERS_FOR_CONTENT_ACTIVITY', 20);
  * Implements hook_menu().
  */
 function culturefeed_ui_menu() {
-  $items['admin/config/services/culturefeed_ui'] = array(
-    'title' => 'Culture Feed User Interface',
-    'description' => 'Change Culture Feed User Interface settings.',
+  $items['admin/config/culturefeed/culturefeed_ui'] = array(
+    'title' => 'CultureFeed User Interface',
+    'description' => 'Change CultureFeed User Interface settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_admin_settings'),
     'access arguments' => array('administer site configuration'),

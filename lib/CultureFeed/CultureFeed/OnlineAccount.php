@@ -56,7 +56,7 @@ class CultureFeed_OnlineAccount {
    * Convert a CultureFeed_OnlineAccount object to an array that can be used as data in POST requests that expect online account info.
    *
    * @return array
-   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   *   Associative array representing the object. For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.

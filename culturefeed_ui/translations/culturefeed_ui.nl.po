@@ -626,11 +626,11 @@ msgstr ""
 "cache is geleegd en opnieuw gecreeërd."
 
 #: culturefeed_ui.module:16
-msgid "Culture Feed User Interface"
+msgid "CultureFeed User Interface"
 msgstr "CultureFeed User Interface"
 
 #: culturefeed_ui.module:17
-msgid "Change Culture Feed User Interface settings."
+msgid "Change CultureFeed User Interface settings."
 msgstr "Verander instellingen van de CultureFeed User Interface. "
 
 #: culturefeed_ui.info:0

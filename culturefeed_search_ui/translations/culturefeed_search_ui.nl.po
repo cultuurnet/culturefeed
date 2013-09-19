@@ -30,7 +30,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed_search_ui.module:98
-msgid "Change Culture Feed Search UI settings like display, filters, …"
+msgid "Change CultureFeed Search UI settings like display, filters, …"
 msgstr ""
 "Verander de instellingen van de CultureFeed Search UI zoals weergave, "
 "filters,..."
@@ -68,7 +68,7 @@ msgid "Culturefeed search"
 msgstr ""
 
 #: culturefeed_search_ui.module:97
-msgid "Culture Feed Search UI"
+msgid "CultureFeed Search UI"
 msgstr ""
 
 #: culturefeed_search_ui.info:0

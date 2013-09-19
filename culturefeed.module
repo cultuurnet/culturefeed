@@ -28,9 +28,19 @@ function culturefeed_init() {
  * Implements hook_menu().
  */
 function culturefeed_menu() {
-  $items['admin/config/services/culturefeed'] = array(
-    'title' => 'Culture Feed',
-    'description' => 'Change Culture Feed API setting like API Appliction key, location, ...',
+  $items['admin/config/culturefeed'] = array(
+    'title' => 'CultureFeed',
+    'description' => 'Settings related to CultureFeed.',
+    'position' => 'right',
+    'weight' => 0,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  $items['admin/config/culturefeed/api-settings'] = array(
+    'title' => 'CultureFeed',
+    'description' => 'Change CultureFeed API setting like API Appliction key, location, ...',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_admin_settings'),
     'access arguments' => array('administer site configuration'),

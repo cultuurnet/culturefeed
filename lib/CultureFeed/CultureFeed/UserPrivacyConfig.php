@@ -115,7 +115,7 @@ class CultureFeed_UserPrivacyConfig {
    * Convert a CultureFeed_UserPrivacyConfig object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
-   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   *   Associative array representing the object. For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.

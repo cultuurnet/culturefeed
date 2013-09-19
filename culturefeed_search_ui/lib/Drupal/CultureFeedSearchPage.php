@@ -58,6 +58,12 @@ class CultureFeedSearchPage {
   protected $parameters = array();
 
   /**
+   * The group value to send to the service.
+   * @var string|boolean
+   */
+  protected $group = TRUE;
+
+  /**
    * Query to search on.
    * @var array
    *   An array containing search strings. The respective values will be treated
@@ -303,6 +309,22 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Get the group value.
+   * @return mixed boolean|string
+   */
+  public function getGroup() {
+    return $this->group;
+  }
+
+  /**
+   * Group value to set.
+   * @param boolean|string $group
+   */
+  public function setGroup($group) {
+    $this->group = $group;
+  }
+
+  /**
    * Initializes the search with data from the URL query parameters.
    */
   public function initialize() {
@@ -470,8 +492,8 @@ class CultureFeedSearchPage {
     // Add items / page.
     $this->parameters[] = new Parameter\Rows($this->resultsPerPage);
 
-    // Add grouping so returned events are not duplicate.
-    $this->parameters[] = new Parameter\Group();
+    // Add grouping so returned data is not duplicate.
+    $this->parameters[] = new Parameter\Group($this->group);
 
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');

@@ -61,7 +61,7 @@ function culturefeed_devel_menu() {
 
   $items = array();
   $items['admin/config/development/culturefeed'] = array(
-    'title' => 'Culture Feed Devel',
+    'title' => 'CultureFeed Devel',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_devel_admin_settings_form'),
     'access arguments' => array('administer site configuration'),

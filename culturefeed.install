@@ -113,7 +113,7 @@ function culturefeed_requirements($phase) {
     // Raise warning if CultureFeed key has not been set yet.
     $requirements['culturefeed_api_application_key']['title'] = $t('CultureFeed Application Key');
     if (trim(variable_get('culturefeed_api_application_key', '')) == '') {
-      $requirements['culturefeed_api_application_key']['description'] = $t('Your CultureFeed Application key has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_application_key']['description'] = $t('Your CultureFeed Application key has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed')));
       $requirements['culturefeed_api_application_key']['severity'] = REQUIREMENT_ERROR;
       $requirements['culturefeed_api_application_key']['value'] = $t('Not configured');
     }
@@ -124,7 +124,7 @@ function culturefeed_requirements($phase) {
     // Raise warning if CultureFeed shared secret has not been set yet.
     $requirements['culturefeed_api_shared_secret']['title'] = $t('CultureFeed Shared Secret');
     if (trim(variable_get('culturefeed_api_shared_secret', '')) == '') {
-      $requirements['culturefeed_api_shared_secret']['description'] = $t('Your CultureFeed Shared Secret has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_shared_secret']['description'] = $t('Your CultureFeed Shared Secret has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed')));
       $requirements['culturefeed_api_shared_secret']['severity'] = REQUIREMENT_ERROR;
       $requirements['culturefeed_api_shared_secret']['value'] = $t('Not configured');
     }
@@ -135,7 +135,7 @@ function culturefeed_requirements($phase) {
     // Raise warning if CultureFeed location has not been set yet.
     $requirements['culturefeed_api_location']['title'] = $t('CultureFeed location');
     if (trim(variable_get('culturefeed_api_location')) == '') {
-      $requirements['culturefeed_api_location']['description'] = $t('The location of the CultureFeed has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/services/culturefeed')));
+      $requirements['culturefeed_api_location']['description'] = $t('The location of the CultureFeed has not been set yet. Please configure its settings from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed')));
       $requirements['culturefeed_api_location']['severity'] = REQUIREMENT_ERROR;
       $requirements['culturefeed_api_location']['value'] = $t('Not configured');
     }

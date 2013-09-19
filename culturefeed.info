@@ -98,5 +98,5 @@ files[] = lib/CultureFeed/CultureFeed/Messages/Message.php
 files[] = lib/CultureFeed/CultureFeed/Log/RequestLog.php
 files[] = lib/CultureFeed/CultureFeed/Log/Request.php
 
-configure = admin/config/services/culturefeed
+configure = admin/config/culturefeed/culturefeed
 

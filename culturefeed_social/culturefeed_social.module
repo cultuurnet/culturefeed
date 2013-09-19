@@ -28,7 +28,7 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['admin/config/services/culturefeed_social'] = array(
+  $items['admin/config/culturefeed/social'] = array(
     'title' => 'CultureFeed Social',
     'description' => 'Change CultureFeed Social settings',
     'page callback' => 'drupal_get_form',

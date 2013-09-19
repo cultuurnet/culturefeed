@@ -20,7 +20,7 @@ function culturefeed_search_admin_settings() {
   $form['culturefeed_search_api_application_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Application key'),
-    '#description' => t('Your Culture Feed Search Application key.'),
+    '#description' => t('Your CultureFeed Search Application key.'),
     '#default_value' => variable_get('culturefeed_search_api_application_key', ''),
     '#size' => 40,
     '#maxlength' => 40,
@@ -29,7 +29,7 @@ function culturefeed_search_admin_settings() {
   $form['culturefeed_search_api_shared_secret'] = array(
     '#type' => 'textfield',
     '#title' => t('Shared secret'),
-    '#description' => t('Your Culture Feed Search Shared Secret.'),
+    '#description' => t('Your CultureFeed Search Shared Secret.'),
     '#default_value' => variable_get('culturefeed_search_api_shared_secret', ''),
     '#size' => 40,
     '#maxlength' => 40,

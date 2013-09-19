@@ -60,7 +60,7 @@ function culturefeed_mailing_menu() {
   );
 
   // Configuration pages.
-  $items['admin/config/services/culturefeed-mailing'] = array(
+  $items['admin/config/culturefeed/mailing'] = array(
     'title' => 'CultureFeed Mailing',
     'description' => 'CultureFeed Mailing settings',
     'page callback' => 'drupal_get_form',

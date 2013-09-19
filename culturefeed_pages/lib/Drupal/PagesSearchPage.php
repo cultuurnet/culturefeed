@@ -56,8 +56,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Add items / page.
     $this->parameters[] = new Parameter\Rows($this->resultsPerPage);
 
-    // Add grouping so returned events are not duplicate.
-    $this->parameters[] = new Parameter\Group();
+    // Add grouping so returned data is not duplicate.
+    $this->parameters[] = new Parameter\Group($this->group);
 
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');

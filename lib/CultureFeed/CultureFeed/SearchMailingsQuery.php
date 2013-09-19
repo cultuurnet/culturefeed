@@ -29,7 +29,7 @@ class CultureFeed_SearchMailingsQuery {
    * Convert a CultureFeed_SearchMailingsQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array
-   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   *   Associative array representing the object. For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData() {
 

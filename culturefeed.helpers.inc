@@ -22,7 +22,7 @@ function culturefeed_is_culturefeed_user($uid = NULL) {
 }
 
 /**
- * Fetch a unique username for the given Culture Feed user id.
+ * Fetch a unique username for the given CultureFeed user id.
  */
 function culturefeed_unique_username($cf_uid, $nick) {
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
@@ -52,17 +52,17 @@ function culturefeed_create_user($cf_account) {
 
   // Use a database transaction, as we need to handle what follows as a unit of work.
   $txn = db_transaction();
-  
+
   try {
-    
+
     // If no CultureFeed user was passed, we can't create the user.
     if (!$cf_account || empty($cf_account->nick)) {
       return FALSE;
     }
-    
+
     // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
     $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
-  
+
     // Create the user account.
     $url = parse_url($GLOBALS['base_url']);
     $account = user_save(
@@ -78,15 +78,15 @@ function culturefeed_create_user($cf_account) {
         'mail' => '',
       )
     );
-    
-    // Save the mapping between Culture Feed User ID and Drupal user id.
+
+    // Save the mapping between CultureFeed User ID and Drupal user id.
     db_insert('culturefeed_user')
       ->fields(array(
       'uid' => $account->uid,
       'cf_uid' => $cf_account->id,
       ))
       ->execute();
-    
+
     // Save the fact that this is an external account for culturefeed.
     user_set_authmaps($account, array('authname_culturefeed' => $account->name));
   }
@@ -94,9 +94,9 @@ function culturefeed_create_user($cf_account) {
     $txn->rollback();
     throw $e;
   }
-  
+
   return $account;
-  
+
 }
 
 function culturefeed_get_uid_for_cf_uid($cf_uid, $nick) {

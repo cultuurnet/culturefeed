@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Classes to work with CultuurNet's Culture Feed API.
+ * Classes to work with CultuurNet's CultureFeed API.
  */
 
 /**
- * The main class to communicate with the Culture Feed API.
+ * The main class to communicate with the CultureFeed API.
  *
  * Provides calls and helper functions to set up OAuth authorization.
  * Provides calls to fetch objects (users, activities, ...) from the API.
@@ -1544,7 +1544,7 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
-   * Get the URL to force a logout of the user on the Culture Feed provider.
+   * Get the URL to force a logout of the user on the CultureFeed provider.
    *
    * @param string $destination
    *   (optional) The URL of the page to redirect the user back to after the logout has been handled on the provider.

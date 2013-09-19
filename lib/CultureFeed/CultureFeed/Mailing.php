@@ -187,7 +187,7 @@ class CultureFeed_Mailing {
    * Convert a CultureFeed_Mailing object to an array that can be used as data in POST requests that expect mailing data.
    *
    * @return array
-   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   *   Associative array representing the object. For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData() {
 

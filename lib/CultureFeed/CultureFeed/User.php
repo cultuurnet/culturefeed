@@ -253,7 +253,7 @@ class CultureFeed_User {
    * Convert a CultureFeed_User object to an array that can be used as data in POST requests that expect user info.
    *
    * @return array
-   *   Associative array representing the object. For documentation of the structure, check the Culture Feed API documentation.
+   *   Associative array representing the object. For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData($fields = array()) {
     // For most properties we can rely on get_object_vars.

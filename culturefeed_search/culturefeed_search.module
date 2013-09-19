@@ -18,9 +18,9 @@ module_load_include('inc', 'culturefeed_search', 'includes/helpers');
  */
 function culturefeed_search_menu() {
 
-  $items['admin/config/services/culturefeed_search'] = array(
-    'title' => 'Culture Feed Search',
-    'description' => 'Change Culture Feed Search API setting like API Appliction key, location, ...',
+  $items['admin/config/culturefeed/search'] = array(
+    'title' => 'CultureFeed Search',
+    'description' => 'Change CultureFeed Search API setting like API Appliction key, location, ...',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_search_admin_settings'),
     'access arguments' => array('administer site configuration'),

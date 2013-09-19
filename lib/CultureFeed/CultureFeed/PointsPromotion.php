@@ -110,7 +110,7 @@ class CultureFeed_PointsPromotion {
    *
    * @return array
    *   Associative array representing the PointsPromotion object.
-   *   For documentation of the structure, check the Culture Feed API documentation.
+   *   For documentation of the structure, check the CultureFeed API documentation.
    */
   public function toPostData() {
     // For most properties we can rely on get_object_vars.
