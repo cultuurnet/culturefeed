@@ -370,6 +370,9 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
   $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
   $config = CultureFeedActivityConfigBase::loadByType($activity->type);
+  if (!$config) {
+    return;
+  }
 
   $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
 
@@ -390,6 +393,9 @@ function theme_culturefeed_userpoints_ui_points_lost_message($variables) {
   $total_points_message = format_plural($total_points, '@count punt', '@count punten');
 
   $config = CultureFeedActivityConfigBase::loadByType($activity->type);
+  if (!$config) {
+    return;
+  }
 
   $message = '<p>' . t('You lost') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
 

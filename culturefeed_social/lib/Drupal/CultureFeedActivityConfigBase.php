@@ -117,6 +117,10 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityMediaVideo();
       break;
 
+      case CultureFeed_Activity::TYPE_PAGE_CREATED:
+        $config = new CultureFeedActivityConfigPageCreated();
+        break;
+
       default:
         return NULL;
 

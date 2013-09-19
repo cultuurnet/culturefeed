@@ -22,5 +22,6 @@ files[] = lib/Drupal/CultureFeedActivityConfigNewEvent.php
 files[] = lib/Drupal/CultureFeedActivityConfigReview.php
 files[] = lib/Drupal/CultureFeedActivityConfigMediaPhoto.php
 files[] = lib/Drupal/CultureFeedActivityConfigMediaVideo.php
+files[] = lib/Drupal/CultureFeedActivityConfigPageCreated.php
 
 dependencies[] = culturefeed_search

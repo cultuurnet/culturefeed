@@ -848,6 +848,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
  */
 function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) {
 
+  $form_state['redirect'] = '';
   $page = $form_state['page'];
 
   // Send request to remove a page.
@@ -863,19 +864,33 @@ function culturefeed_pages_remove_page_confirm_form_submit($form, &$form_state) 
     if (!empty($cf_user->pageMemberships)) {
       foreach ($cf_user->pageMemberships as $key => $membership) {
         if ($membership->page->getId() != $page->getId()) {
-          culturefeed_pages_set_active_page($page);
+          culturefeed_pages_set_active_page($membership->page);
           break;
         }
       }
     }
-
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    form_set_error('', t('There was an error while deleting the page.'));
+    return;
   }
 
-  $form_state['redirect'] = '';
+  // Also remove the activity for it.
+  try {
+
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->max = 1;
+    $query->type = CultureFeed_Activity::TYPE_PAGE_CREATED;
+    $query->userId = $cf_user->id;
+    $query->nodeId = $page->getId();
+    $activities = DrupalCultureFeed::searchActivities($query);
+    if ($activities && $activities->total > 0) {
+      DrupalCultureFeed::deleteActivity($activities->objects[0]->id);
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
 
 }
 
