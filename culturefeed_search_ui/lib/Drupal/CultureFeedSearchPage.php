@@ -570,7 +570,7 @@ class CultureFeedSearchPage {
           $build['pager-container']['pager'] = array(
             '#type' => 'link',
             '#title' => t('More results'),
-            '#href' => strpos('nojs', $_GET['q']) === FALSE ? $_GET['q'] . '/nojs' : $_GET['q'],
+            '#href' => strpos($_GET['q'], 'nojs') === FALSE ? $_GET['q'] . '/nojs' : $_GET['q'],
             '#options' => array('query' => $params),
             '#ajax' => array(),
             '#attributes' => array(
