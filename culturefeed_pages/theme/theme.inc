@@ -180,8 +180,8 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
     $coordinates = $address->getGeoInformation();
     if ($coordinates) {
       $variables['coordinates'] = array(
-        'lat' => $coordinates->getXCoordinate(),
-        'lng' => $coordinates->getYCoordinate(),
+        'lat' => $coordinates->getYCoordinate(),
+        'lng' => $coordinates->getXCoordinate(),
       );
     }
 

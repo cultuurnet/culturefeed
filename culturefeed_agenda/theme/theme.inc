@@ -339,8 +339,8 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       $coordinates = $address->getPhysicalAddress()->getGeoInformation();
       if ($coordinates) {
         $variables['coordinates'] = array(
-          'lat' => $coordinates->getXCoordinate(),
-          'lng' => $coordinates->getYCoordinate(),
+          'lat' => $coordinates->getYCoordinate(),
+          'lng' => $coordinates->getXCoordinate(),
         );
       }
     }
