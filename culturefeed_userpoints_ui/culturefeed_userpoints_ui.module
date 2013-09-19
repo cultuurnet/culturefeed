@@ -456,7 +456,7 @@ function culturefeed_userpoints_ui_culturefeed_social_page_undo_ajax_commmands_a
         $points_left = CultureFeedUserpointsWishlist::getPointsLeft($cf_account->points);
         $points_earned = CultureFeedUserpointsWishlist::getRealPoints($activity->points);
 
-        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left + $points_earned));
+        $commands[] = ajax_command_invoke('.userpoints-points-left', 'html', array($points_left));
         $commands[] = ajax_command_invoke('.userpoints-points-new', 'html', array('<span class="label label-important"><i class="icon-bell-alt"></i> - ' . $points_earned));
       }
     }
