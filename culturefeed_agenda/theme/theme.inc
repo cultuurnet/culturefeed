@@ -522,7 +522,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
     $regions = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
     if ($regions) {
       foreach ($regions as $region) {
-        
+
         if (isset($provinces[$region->getId()])) {
 
           // Make sure tab exists.

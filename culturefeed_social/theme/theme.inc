@@ -109,7 +109,6 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list(&$variabl
   $object = $variables['object'];
   $activities = $variables['activities'];
   $accounts = $variables['accounts'];
-
   $variables['url'] = url(culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language())));
 
   $list = array();
@@ -138,6 +137,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   $accounts = $variables['accounts'];
   $destination = drupal_get_destination();
   $cf_user = NULL;
+
   if (culturefeed_is_culturefeed_user()) {
     try {
       $cf_user = DrupalCultureFeed::getLoggedInUser();
@@ -150,6 +150,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   // Variables for one list item.
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
   $author_url = 'user/' . $variables['uid'];
+
   $variables['picture'] = l($picture, $author_url, array('html' => TRUE));
   $variables['date'] = format_date($activity->creationDate, 'small');
 

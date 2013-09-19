@@ -115,7 +115,7 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_filter_culturefeed_search_datetype',
     ),
   );
-  $data['cdb_items']['datetype'] = array(
+  $data['cdb_items']['date'] = array(
     'title' => t('Date'),
     'help' => t('Perform a search on a date'),
     'filter' => array(
@@ -125,8 +125,6 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_sort_culturefeed_search_date',
     ),
   );
-
-  // @todo Filter on permanent activity.
 
   $data['cdb_items']['recommend_sort'] = array(
     'title' => t('Total recommend'),
