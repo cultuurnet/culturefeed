@@ -557,7 +557,7 @@ class CultureFeedSearchPage {
 
         $params = drupal_get_query_parameters();
         $rest = $this->result->getTotalCount() - (($this->pageNumber - 1) * $this->resultsPerPage);
-        $params['page'] = $this->pageNumber + 1;
+        $params['page'] = $this->pageNumber;
 
         $build['pager-container'] =  array(
           '#type' => 'container',

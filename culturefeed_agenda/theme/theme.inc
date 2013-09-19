@@ -516,10 +516,13 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
   );
   foreach ($items as $item) {
 
+    $region_found = FALSE;
+
     // Get all flanders regions, and check if a province was set.
     $regions = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
     if ($regions) {
       foreach ($regions as $region) {
+        dsm($region->getId(), $region->getName());
         if (isset($provinces[$region->getId()])) {
 
           // Make sure tab exists.
@@ -532,11 +535,13 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
 
           $tabs[$region->getId()]['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
 
+          $region_found = TRUE;
         }
       }
     }
+
     // Events without region.
-    else {
+    if (!$region_found) {
       $other['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
     }
 
