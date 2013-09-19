@@ -141,7 +141,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       ),
     );
 
-    drupal_add_html_head($element, 'nofollow');
+    drupal_add_html_head($element, 'robots');
   }
 
 }

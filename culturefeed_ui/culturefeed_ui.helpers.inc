@@ -6,6 +6,7 @@
 function culturefeed_ui_set_canonical_and_noindex() {
   $canonical = FALSE;
   $noindex = FALSE;
+  $nofollow = FALSE;
 
   if (arg(0) == 'culturefeed') {
     if (arg(1) == 'activities' && arg(2) == 'recent') {
@@ -16,17 +17,22 @@ function culturefeed_ui_set_canonical_and_noindex() {
     }
   }
 
+  if (arg(0) == 'review') {
+    $noindex = TRUE;
+    $nofollow = TRUE;
+  }
+
   // Add the "noindex, follow" meta tag if needed.
   if ($noindex) {
     $element = array(
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'robots',
-        'content' => 'noindex, follow',
+        'content' => 'noindex, ' . ($nofollow ? 'nofollow' : 'follow'),
       ),
     );
 
-    drupal_add_html_head($element, 'nofollow');
+    drupal_add_html_head($element, 'robots');
   }
 
   // Add the rel="canonical" tag if needed.
