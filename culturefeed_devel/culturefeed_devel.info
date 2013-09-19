@@ -3,5 +3,5 @@ description = Enables query logging for culturefeed requests. Only search reques
 package = CultureFeed
 version = VERSION
 core = 7.x
-configure = admin/config/development/devel
+configure = admin/config/development/culturefeed
 dependencies[] = culturefeed_search

@@ -13,7 +13,9 @@ define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 100);
  * Implementation of hook_boot(). Runs even for cached pages.
  */
 function culturefeed_devel_boot() {
-  drupal_register_shutdown_function('culturefeed_devel_shutdown');
+  if (variable_get('culturefeed_devel_log_slow_request', FALSE) || variable_get('culturefeed_devel_show_requests', TRUE)) {
+    drupal_register_shutdown_function('culturefeed_devel_shutdown');
+  }
 }
 
 /**
@@ -77,7 +79,6 @@ function culturefeed_devel_menu() {
  */
 function culturefeed_devel_shutdown() {
 
-
   // Search api requests.
   $requests = \CultuurNet\Auth\Guzzle\Log\RequestLog::getInstance()->getRequests();
 
@@ -87,12 +88,14 @@ function culturefeed_devel_shutdown() {
 
   $max_time = variable_get('culturefeed_devel_slow_request', CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST);
 
-  foreach ($requests as $request) {
-    if ($request->getTime() > $max_time) {
-      watchdog('culturefeed_devel', t('Slow query on api: @query. Time taken: @time ms', array(
-        '@query' => urldecode($request->getUrl()),
-        '@time' => $request->getTime(),
-      )));
+  if (variable_get('culturefeed_devel_log_slow_request', FALSE)) {
+    foreach ($requests as $request) {
+      if ($request->getTime() > $max_time) {
+        watchdog('culturefeed_devel', t('Slow query on api: @query. Time taken: @time ms', array(
+          '@query' => urldecode($request->getUrl()),
+          '@time' => $request->getTime(),
+        )));
+      }
     }
   }
 
