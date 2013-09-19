@@ -45,7 +45,7 @@ function _culturefeed_search_ui_get_active_search_page() {
   foreach ($searchable_types as $key => $type) {
 
     // Check if this is the current page.
-    if ($type['path'] == $_GET['q']) {
+    if ($type['path'] == $_GET['q'] || $type['path'] . '/nojs' == $_GET['q']) {
 
       // If this page has active facets in the info definition. Check if all the facets matches.
       if (!empty($type['active_facets']) && !empty($query['facet'])) {
