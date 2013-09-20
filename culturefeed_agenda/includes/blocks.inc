@@ -127,14 +127,14 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $options = array('' => t('All categories'));
     $categories = culturefeed_search_get_categories_by_domain($domain_id);
-    foreach ($categories as $category) {
-      $options[$category] = $category;
+    foreach ($categories as $id => $category) {
+      $options[$id] = $category;
     }
 
     $form['category'] = array(
       '#type' => 'select',
       '#options' => $options,
-      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_name'][0]) ? $_GET['facet']['category_' . $domain_id . '_name'][0] : NULL,
+      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
     );
 
     $form_state['#domain_id'] = $domain_id;
@@ -208,7 +208,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     unset($query['facet']['category_' . $form_state['#domain_id'] . '_name']);
     // Activate the category facet.
     if (!empty($form_state['values']['category'])) {
-      $query['facet']['category_' . $form_state['#domain_id'] . '_name'][0] = $form_state['values']['category'];
+      $query['facet']['category_' . $form_state['#domain_id'] . '_id'][0] = $form_state['values']['category'];
     }
   }
 
