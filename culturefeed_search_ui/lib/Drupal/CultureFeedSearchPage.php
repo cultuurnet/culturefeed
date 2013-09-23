@@ -68,16 +68,7 @@ class CultureFeedSearchPage {
    * @var array
    *   An array containing search strings. The respective values will be treated
    *   as required search terms, joined with "AND". If a single value contains
-   *   multiple words separated by spaces, these will be treated as "OR".
-   *   For example if you want to do search for "(blue OR red) AND (shoe OR
-   *   sandal)" you can pass the following array:
-   *   @code
-   *   $query = array('blue red', 'shoe sandal');
-   *   @endcode
-   *   Using "OR" and "AND" inside the search terms is also permitted:
-   *   @code
-   *   $query = array('blue OR red', 'shoe AND leather');
-   *   @endcode
+   *   multiple words separated by spaces, these will be treated as "AND".
    */
   protected $query = array();
 
@@ -226,6 +217,7 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
+    $term = str_replace(' ',' AND ', $term);
     $this->query[] = $term;
     return $this->query;
   }
