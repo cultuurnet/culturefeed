@@ -255,7 +255,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['main_picture'] = $picture->getHLink();
       }
       // if main is not set use first image as main picture
-      else {
+      elseif (isset($variables['pictures'][0])) {
         $variables['main_picture'] = $variables['pictures'][0];
       }
       // we don't want the main picture to show twice
@@ -385,7 +385,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   elseif ($total_relations == 1) {
 
     try {
-      $event = culturefeed_agenda_event_load($production->relations[0]->getCdbid());
+      $event = culturefeed_agenda_event_load($relations[key($relations)]->getCdbid());
       $variables['event'] = $event;
       $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($event_detail) {
