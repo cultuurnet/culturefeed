@@ -217,7 +217,7 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
-    $term = str_replace(' ',' AND ', $term);
+    $term = str_replace(' ',' AND ', trim($term));
     $this->query[] = $term;
     return $this->query;
   }
