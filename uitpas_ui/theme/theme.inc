@@ -223,8 +223,8 @@ function uitpas_ui_preprocess_uitpas_ui_advantage(&$vars) {
     $pictures[] = theme_image(array('path' => $picture . '?width=180', 'attributes' => array()));;
   }
   $vars['pictures'] = $pictures;
-  $vars['description1'] = $advantage->description1;
-  $vars['description2'] = $advantage->description2;
+  $vars['description1'] = nl2br($advantage->description1);
+  $vars['description2'] = nl2br($advantage->description2);
   $location = array();
   foreach ($advantage->counters as $counter) {
     $location[] = $counter->name;
@@ -328,8 +328,8 @@ function uitpas_ui_preprocess_uitpas_ui_promotion(&$vars) {
     $pictures[] = theme_image(array('path' => $picture . '?width=180', 'attributes' => array()));;
   }
   $vars['pictures'] = $pictures;
-  $vars['description1'] = $promotion->description1;
-  $vars['description2'] = $promotion->description2;
+  $vars['description1'] = nl2br($promotion->description1);
+  $vars['description2'] = nl2br($promotion->description2);
   $location = array();
   foreach ($promotion->counters as $counter) {
     $location[] = $counter->name;
