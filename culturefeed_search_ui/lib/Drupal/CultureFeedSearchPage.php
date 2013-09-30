@@ -455,7 +455,7 @@ class CultureFeedSearchPage {
 
     // If no search terms have been given, match on everything.
     if (empty($query)) {
-      $query[] = '*:*';
+      $query[] = ':';
     }
 
     // String required search terms together with 'AND'.
