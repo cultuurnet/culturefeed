@@ -362,7 +362,7 @@ function culturefeed_pages_block_related_activities($page) {
   }
 
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query(':');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('page_related_actitivities_total_items', 5));
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();

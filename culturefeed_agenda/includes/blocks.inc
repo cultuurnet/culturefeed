@@ -17,7 +17,7 @@ function culturefeed_agenda_block_related_activities() {
 
   $total_items = variable_get('agenda_related_activities_total_items', 5);
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query(':');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   // 1 extra then requested, because it's possible that current event is in the result.
   $parameters[] = new \CultuurNet\Search\Parameter\Rows($total_items + 1);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
@@ -235,7 +235,7 @@ function culturefeed_agenda_block_actor_program() {
   }
 
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query(':');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
