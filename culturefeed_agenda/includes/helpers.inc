@@ -214,6 +214,9 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     if ($location_info->getLabel()) {
       $location['title'] = $location_info->getLabel();
     }
+    if ($event->getCdbid()) {
+      $location['cdbid_event'] = $event->getCdbid();
+    }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($actor_detail) {
