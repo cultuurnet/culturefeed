@@ -53,7 +53,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
     $permissions = $page->getPermissions();
-    $variables['become_member_link'] = l('Word lid', 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
+    $variables['become_member_link'] = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
   }
 
   // Local storage of the followers for the current user.
