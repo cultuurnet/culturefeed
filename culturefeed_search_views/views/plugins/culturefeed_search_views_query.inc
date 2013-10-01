@@ -72,7 +72,7 @@ class culturefeed_search_views_query extends views_plugin_query {
 
     // Make sure there is at least 1 q=
     if (!$this->has_query_search) {
-      $this->parameters[] = new Parameter\Query(':');
+      $this->parameters[] = new Parameter\Query('*:*');
     }
 
     $searchService = culturefeed_get_search_service();
