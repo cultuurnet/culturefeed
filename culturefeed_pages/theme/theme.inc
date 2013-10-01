@@ -156,9 +156,11 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
+  
+  $logged_in = $variables['logged_in'];
 
-  // Add join link if not a member yet.
-  if (!culturefeed_pages_is_user_member_of_page($page->getId()) && $page->getPermissions()->allowMembers) {
+  // Add join link if user is logged in and not a member yet.
+  if (!culturefeed_pages_is_user_member_of_page($page->getId()) && $page->getPermissions()->allowMembers && $logged_in) {
     $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
     $variables['become_member_link'] = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
