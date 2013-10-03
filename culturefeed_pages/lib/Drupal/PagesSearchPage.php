@@ -59,13 +59,13 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
     // Add grouping so returned data is not duplicate.
     $this->parameters[] = new Parameter\Group($this->group);
 
-    // Always add spellcheck.
-    $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
-    if (isset($this->query[0])) {
+    // Add spellcheck if needed
+    if (!empty($this->query[0])) {
+      $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
       $this->parameters[] = new Parameter\Parameter('spellcheckQuery', $this->query[0]);
     }
     else {
-      $this->parameters[] = new Parameter\Parameter('spellcheckQuery', '');
+      $this->parameters[] = new Parameter\Parameter('spellcheck', 'false');
     }
 
     drupal_alter('culturefeed_search_page_query', $this);
