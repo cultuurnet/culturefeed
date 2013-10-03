@@ -69,7 +69,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         break;
 
       default:
-        $this->parameters[] = new Parameter\Sort($params['sort'], Parameter\Sort::DIRECTION_DESC);
+        $this->parameters[] = new Parameter\Sort($params['sort'], Parameter\Sort::DIRECTION_ASC);
         break;
     }
 
