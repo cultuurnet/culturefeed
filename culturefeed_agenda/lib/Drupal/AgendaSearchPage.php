@@ -64,6 +64,14 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       case 'agefrom':
         $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
       break;
+      
+      case 'recommend_count':
+        $this->parameters[] = new Parameter\Sort('recommend_count', Parameter\Sort::DIRECTION_DESC);
+      break;
+      
+      case 'comment_count':
+        $this->parameters[] = new Parameter\Sort('comment_count', Parameter\Sort::DIRECTION_DESC);
+      break;
 
       case 'relevancy':
         break;
