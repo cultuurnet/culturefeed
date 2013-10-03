@@ -61,6 +61,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
+    $this->parameters[] = new Parameter\Parameter('spellcheckQuery', $this->query[0]);
 
     drupal_alter('culturefeed_search_page_query', $this);
 
