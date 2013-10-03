@@ -489,7 +489,12 @@ class CultureFeedSearchPage {
 
     // Always add spellcheck.
     $this->parameters[] = new Parameter\Parameter('spellcheck', 'true');
-    $this->parameters[] = new Parameter\Parameter('spellcheckQuery', $this->query[0]);
+    if (isset($this->query[0])) {
+      $this->parameters[] = new Parameter\Parameter('spellcheckQuery', $this->query[0]);
+    }
+    else {
+      $this->parameters[] = new Parameter\Parameter('spellcheckQuery', '');
+    }
 
     drupal_alter('culturefeed_search_page_query', $this);
 
