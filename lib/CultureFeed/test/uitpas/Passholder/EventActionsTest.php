@@ -28,7 +28,9 @@ class CultureFeed_Uitpas_Passholder_EventActionsTest extends PHPUnit_Framework_T
     $this->assertEquals('Anne', $event_actions->passholder->firstName);
     $this->assertEquals(9, $event_actions->passholder->points);
     $this->assertEquals('0930000150316', $event_actions->passholder->uitpasNumber);
+    $this->assertEquals('0930000150316', $event_actions->passholder->currentCard->uitpasNumber);
     $this->assertEquals(TRUE, $event_actions->passholder->kansenStatuut);
+    $this->assertEquals(TRUE, $event_actions->passholder->currentCard->kansenpas);
     $this->assertEquals(FALSE, $event_actions->passholder->kansenStatuutExpired);
 
     $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_EventCheckin', $event_actions->eventCheckin);
