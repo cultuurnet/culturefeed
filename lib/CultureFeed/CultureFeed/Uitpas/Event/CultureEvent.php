@@ -6,6 +6,8 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
 
   const CHECKIN_CONSTRAINT_REASON_INVALID_DATE_TIME = 'INVALID_DATE_TIME';
 
+  const BUY_CONSTRAINT_REASON_MAXIMUM_REACHED = 'MAXIMUM_REACHED';
+
   /**
    * The identification of the event
    *

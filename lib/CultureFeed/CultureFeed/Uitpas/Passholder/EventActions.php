@@ -38,9 +38,11 @@ class CultureFeed_Uitpas_Passholder_EventActions {
   public static function createFromXML(CultureFeed_SimpleXMLElement $xml) {
     $eventActions = new self();
 
-    watchdog('eventActions', check_plain($xml->asXML()));
-    //$eventActions->event = CultureFeed_Uitpas_Event_CultureEvent::createFromXML($xml->xpath('eventCheckin', FALSE));
     $eventActions->passholder = CultureFeed_Uitpas_Passholder::createFromXML($xml->xpath('passHolder', FALSE));
+    $eventActions->passholder->uitpasNumber = $xml->xpath('passHolder/uitpasNumber', FALSE);;
+    $eventActions->passholder->currentCard->uitpasNumber = $eventActions->passholder->uitpasNumber;
+    $eventActions->passholder->currentCard->kansenpas = $eventActions->passholder->kansenStatuut;
+
     $eventActions->welcomeAdvantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('welcomeAdvantages', FALSE), 'welcomeAdvantage');
     $eventActions->pointsPromotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('pointsPromotions', FALSE), 'pointsPromotion');
 
@@ -71,7 +73,7 @@ class CultureFeed_Uitpas_Passholder_EventActions {
     }
 
     $event->checkinAllowed = $this->eventCheckin->checkinAllowed;
-    $event->checkinConstraintReason = $this->eventCheckin->checkinReason;
+    $event->checkinConstraintReason = $this->eventCheckin->checkinConstraintReason;
     $event->numberOfPoints = $this->eventCheckin->numberOfPoints;
 
     return $event;

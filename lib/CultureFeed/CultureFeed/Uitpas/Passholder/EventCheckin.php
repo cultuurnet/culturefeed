@@ -22,7 +22,7 @@ class CultureFeed_Uitpas_Passholder_EventCheckin {
   /**
    * @var string
    */
-  public $checkinReason;
+  public $checkinConstraintReason;
 
   /**
    * @param CultureFeed_SimpleXMLElement $xml
@@ -34,7 +34,7 @@ class CultureFeed_Uitpas_Passholder_EventCheckin {
     $eventCheckin->checkinAllowed = $xml->xpath_bool('checkinAllowed');
     $eventCheckin->numberOfPoints = $xml->xpath_int('numberOfPoints');
     $eventCheckin->cdbid = $xml->xpath_str('cdbid');
-    $eventCheckin->checkinReason = $xml->xpath_str('checkinReason');
+    $eventCheckin->checkinConstraintReason = $xml->xpath_str('checkinConstraintReason');
 
     return $eventCheckin;
   }
