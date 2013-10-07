@@ -64,7 +64,7 @@ class CultureFeed_Uitpas_Passholder_EventActions {
   public function getPartialEvent() {
     $event = new CultureFeed_Uitpas_Event_CultureEvent();
 
-    $event->cdbid = $this->eventBuyTicket->cdbid;
+    $event->cdbid = $this->eventCheckin->cdbid;
 
     if ($this->eventBuyTicket) {
       $event->buyConstraintReason = $this->eventBuyTicket->buyConstraintReason;
