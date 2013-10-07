@@ -62,6 +62,6 @@
     <?php endif; ?>
   </dl>
 
-  <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
+  <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
 
 </div>
