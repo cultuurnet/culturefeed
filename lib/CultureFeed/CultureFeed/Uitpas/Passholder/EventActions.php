@@ -39,7 +39,7 @@ class CultureFeed_Uitpas_Passholder_EventActions {
     $eventActions = new self();
 
     $eventActions->passholder = CultureFeed_Uitpas_Passholder::createFromXML($xml->xpath('passHolder', FALSE));
-    $eventActions->passholder->uitpasNumber = $xml->xpath('passHolder/uitpasNumber', FALSE);;
+    $eventActions->passholder->uitpasNumber = $xml->xpath_str('passHolder/uitpasNumber', FALSE);
     $eventActions->passholder->currentCard->uitpasNumber = $eventActions->passholder->uitpasNumber;
     $eventActions->passholder->currentCard->kansenpas = $eventActions->passholder->kansenStatuut;
 
