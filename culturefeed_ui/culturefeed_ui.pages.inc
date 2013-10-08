@@ -283,6 +283,7 @@ function culturefeed_ui_page_profile_edit_form() {
     '#type' => 'textarea',
     '#title' => t('Biography'),
     '#default_value' => $cf_account->bio,
+    '#description' => t('Maximum 250 characters'),
   );
   $form['bioPrivacy'] = array(
     '#type' => 'checkbox',
