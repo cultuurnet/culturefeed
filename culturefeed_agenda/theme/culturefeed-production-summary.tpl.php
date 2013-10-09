@@ -48,9 +48,7 @@
     <dd><?php print $when; ?></dd>
     <?php endif; ?>
 
-    <?php
-      if (!empty($themes)):
-    ?>
+    <?php if (!empty($themes)): ?>
     <dt><?php print t('Theme'); ?></dt>
       <dd>
       <ul>
@@ -60,6 +58,12 @@
       </ul>
       </dd>
     <?php endif; ?>
+
+    <?php if (!empty($keywords)): ?>
+    <dt><?php print t('Keywords'); ?></dt>
+    <dd><?php print $keywords; ?></dd>
+    <?php endif; ?>
+
   </dl>
 
   <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>

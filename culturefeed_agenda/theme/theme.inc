@@ -211,7 +211,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
-  $variables['keywords'] = $cdb_item->getKeywords();
+  $keywords = $cdb_item->getKeywords();
+  $variables['keywords'] = '';
+  if ($keywords) {
+    $variables['keywords'] = implode(', ', $keywords);
+  }
 
 }
 
