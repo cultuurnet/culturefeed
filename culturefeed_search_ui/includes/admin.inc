@@ -37,8 +37,8 @@ function culturefeed_search_ui_admin_settings() {
   $form['culturefeed_search_group'] = array(
     '#type' => 'textfield',
     '#title' => t('Group'),
-    '#description' => t('Group description'),
-    '#default_value' => variable_get('culturefeed_search_group', TRUE),
+    '#description' => t('The data is now fully denormalized so that 1 document = 1 time-based event. So you get the same event multiple times per opening day or hour. To group the results per event, the group = event parameter can be used. To group multiple events per production you can use group=event_production.'),
+    '#default_value' => variable_get('culturefeed_search_group', 'event'),
   );
 
   return system_settings_form($form);

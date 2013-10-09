@@ -472,6 +472,7 @@ function culturefeed_search_ui_search_active_filters_block() {
       $search_query = array();
       $suggestions = array();
       foreach ($suggestions_keys as $suggestion) {
+        $suggestion = str_replace(' AND ',' ',$suggestion);
         $search_query['search'] = $suggestion;
         $suggestions[$suggestion] = url(current_path(), array('query' => $search_query));
       }

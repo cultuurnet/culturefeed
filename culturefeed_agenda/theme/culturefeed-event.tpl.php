@@ -97,6 +97,11 @@
     </dd>
   <?php endif; ?>
 
+  <?php if (!empty($keywords)): ?>
+  <dt><?php print t('Keywords'); ?></dt>
+  <dd><?php print $keywords; ?></dd>
+  <?php endif; ?>
+
   <?php if (!empty($price)): ?>
   <dt><?php print t('Price'); ?></dt>
   <dd><?php print $price; ?><?php print $price_description; ?></dd>

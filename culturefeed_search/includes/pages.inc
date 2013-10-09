@@ -24,7 +24,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $title = $suggestion->getTitle();
-          if ($type == 'actor') {
+          if (isset($type) && $type == 'actor') {
             $title .= ' ' . $suggestion->getLocation() . ' ' . $suggestion->getZipCode();
           }
           $matches[$title] = check_plain($title);
