@@ -158,8 +158,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    if ($xml->events && $xml->events->event) {
-      $eventXml = $xml->events->event;
+    if ($xml->event) {
+      $eventXml = $xml->event;
       return CultureFeed_Cdb_Item_Event::parseFromCdbXml($eventXml);
     }
     
@@ -240,8 +240,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    if ($xml->productions && $xml->productions->production) {
-      $productionXml = $xml->productions->production;
+    if ($xml->production) {
+      $productionXml = $xml->production;
       return CultureFeed_Cdb_Item_Production::parseFromCdbXml($productionXml);
     }
     
@@ -315,8 +315,8 @@ class CultureFeed_EntryApi implements CultureFeed_EntryApi_IEntryApi {
       throw new CultureFeed_ParseException($result);
     }
 
-    if ($xml->actors && $xml->actors->actor) {
-      $productionXml = $xml->actors->actor;
+    if ($xml->actor) {
+      $actorXml = $xml->actor;
       return CultureFeed_Cdb_Item_Actor::parseFromCdbXml($actorXml);
     }
     
