@@ -71,6 +71,11 @@
     </dd>
   <?php endif; ?>
 
+  <?php if (!empty($keywords)): ?>
+  <dt><?php print t('Keywords'); ?></dt>
+  <dd><?php print $keywords; ?></dd>
+  <?php endif; ?>
+
   <?php if (!empty($links)): ?>
   <dt><?php print t('Links'); ?></dt>
   <dd>
