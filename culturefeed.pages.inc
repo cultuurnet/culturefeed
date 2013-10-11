@@ -33,7 +33,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   }
 
   // Add the language parameter.
-  $options['query']['lang'] = culturefeed_search_get_preferred_language();
+  $options['query']['lang'] = culturefeed_get_preferred_language();
 
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
 
@@ -118,12 +118,12 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       if (!isset($application_key)) {
         $application_key = variable_get('culturefeed_api_application_key', '');
       }
-      
+
       db_delete('culturefeed_token')
       ->condition('cf_uid', $token['userId'])
       ->condition('application_key', $application_key)
       ->execute();
-    
+
       db_insert('culturefeed_token')
       ->fields(array(
       'cf_uid' => $token['userId'],
@@ -133,7 +133,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       ))
       ->execute();
     }
-    
+
     if ($account) {
 
       global $user;

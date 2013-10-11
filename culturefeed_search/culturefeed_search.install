@@ -65,8 +65,7 @@ function culturefeed_search_schema() {
         'description' => 'Parent of the term.',
         'type' => 'varchar',
         'length' => 150,
-        'not null' => TRUE,
-        'default' => '',
+        'default' => NULL
       ),
       'slug' => array(
         'description' => 'Slug of the term name.',
@@ -75,11 +74,36 @@ function culturefeed_search_schema() {
         'not null' => TRUE,
         'default' => ''
       ),
+      'p1' => array(
+        'description' => 'The highest parent id',
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => NULL
+      ),
+      'p2' => array(
+        'description' => 'The second highest parent id',
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => NULL
+      ),
+      'p3' => array(
+        'description' => 'The thirth highest parent id',
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => NULL
+      ),
+      'p4' => array(
+        'description' => 'The fourth highest parent id',
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => NULL
+      ),
     ),
     'indexes' => array(
       'did' => array('did'),
       'tid' => array('tid'),
       'slug' => array('slug'),
+      'parents' => array('p1', 'p2', 'p3', 'p4'),
     ),
   );
 
@@ -188,5 +212,12 @@ function culturefeed_search_update_7005() {
  */
 function culturefeed_search_update_7006() {
   variable_del('culturefeed_search_debug_mode');
+}
+
+/**
+ * Re-creates the culturefeed_search_terms table so it contains parent columns.
+ */
+function culturefeed_search_update_7007() {
+  culturefeed_search_update_7003();
 }
 

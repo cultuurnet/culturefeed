@@ -529,15 +529,17 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
 
         if (isset($provinces[$region->getId()])) {
 
+          $province = $provinces[$region->getId()];
+
           // Make sure tab exists.
-          if (!isset($tabs[$region->getId()])) {
-            $tabs[$region->getId()] = array(
-              'name' => $region->getName(),
-              'class' => culturefeed_search_slug($region->getName),
+          if (!isset($tabs[$province->province_id])) {
+            $tabs[$province->province_id] = array(
+              'name' => $province->province_name,
+              'class' => culturefeed_search_slug($province->province_name),
             );
           }
 
-          $tabs[$region->getId()]['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
+          $tabs[$province->province_id]['children'][] = culturefeed_agenda_get_production_program_data_for_item($item);
 
           $region_found = TRUE;
         }
@@ -554,7 +556,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
   if (count($other['children']) > 0) {
     $tabs['other'] = $other;
   }
-
+  
   $variables['tabs'] = $tabs;
 
 }

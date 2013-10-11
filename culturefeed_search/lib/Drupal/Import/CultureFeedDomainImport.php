@@ -14,8 +14,7 @@ class CultureFeedDomainImport {
    * Guzzle http client.
    * @var \Guzzle\Http\Client
    */
-  private $client;
-
+  protected $client;
   public $logMessages = array();
 
   /**
@@ -29,12 +28,17 @@ class CultureFeedDomainImport {
 
       // Domains.
       $body = $this->client->get('domain')->send()->getBody(TRUE);
-      $this->importDomains(new SimpleXMLElement($body));
+      $domains = $this->importDomains(new SimpleXMLElement($body));
 
-      // Terms.
-      $body = $this->client->get('term')->send()->getBody(TRUE);
-      $this->importTerms(new SimpleXMLElement($body));
+      // Clear them first.
+      db_query('TRUNCATE {culturefeed_search_terms}');
 
+      // Import terms for every domain.
+      foreach ($domains as $did) {
+        $body = $this->client->get('domain/' . $did . '/classification')->send()->getBody(TRUE);
+        $xmlElement = new SimpleXMLElement($body);
+        $this->importTerms($xmlElement->categorisation->term);
+      }
     }
     catch (ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_domain_import', $e);
@@ -47,6 +51,7 @@ class CultureFeedDomainImport {
    */
   private function importDomains($xmlElement) {
 
+    $domains = array();
     // Clear them first.
     db_query('TRUNCATE {culturefeed_search_domains}');
 
@@ -65,34 +70,78 @@ class CultureFeedDomainImport {
         'code' => 'success'
       );
 
+      $domains[] = $record['did'];
     }
 
+    return $domains;
   }
 
   /**
-   * Import all the terms.
+   * Import all the terms with given pids as parents.
    */
-  private function importTerms($xmlElement) {
+  private function importTerms($TermsElement, $pids = array()) {
 
-    // Clear them first.
-    db_query('TRUNCATE {culturefeed_search_terms}');
+    $parents = array();
 
-    foreach ($xmlElement->categorisation->term as $term) {
+    foreach ($TermsElement as $term) {
 
       $termAttributes = $term->attributes();
+
+      // If it has children, also import them.
+      if (isset($term->term)) {
+        $child_pids = $pids;
+        $child_pids['p' . (count($pids) + 1)] = (string) $termAttributes['id'];
+        $this->importTerms($term->term, $child_pids);
+      }
+
       $parentId = trim((string) $termAttributes['parentid']);
+      $parents[(string) $termAttributes['id']] = $parentId;
+
       $record = array(
         'tid' => (string) $termAttributes['id'],
         'language' => LANGUAGE_NONE,
         'name' => (string) $termAttributes['label'],
         'did' => (string) $termAttributes['domain'],
-        'parent' => empty($parentId) ? NULL : $parentId,
+        'parent' => empty($parentId) ? $parentId : NULL,
         'slug' => culturefeed_search_slug((string) $termAttributes['label'], 128),
       );
 
+      $record += $pids;
+
+      // Get all the parent ids (p1, p2, p3...)
+      /* if (!empty($parentId)) {
+        $parentWasTerm = TRUE;
+        $currTerm = $term;
+        $termParents = array();
+
+        // Loop through parents untill we find a non-term node.
+        while ($parentWasTerm) {
+
+        // Get parent of current term, and check if it's also a term.
+        $parent_node = $currTerm->xpath('parent::*');
+        $parent = $parent_node[0];
+        if (!$parent) {
+        break;
+        }
+
+        if ($parent->getName() == 'term') {
+        $termParents[] = (string) $parent->attributes()->id;
+        $currTerm = $parent;
+        }
+        else {
+        $parentWasTerm = FALSE;
+        }
+        }
+
+        foreach ($termParents as $i => $id) {
+        $record['p' . ($i + 1)] = $id;
+        }
+
+        } */
+
       // Always save label as undefined language so we can fallback.
       $this->logMessages[] = array(
-        'message' => 'Imported term ' . $record['name'] . ' ' . $parentId,
+        'message' => 'Imported term ' . $record['name'] . ' ' . $parentId . ' for domain ' . $record['did'],
         'code' => 'success'
       );
       drupal_write_record('culturefeed_search_terms', $record);

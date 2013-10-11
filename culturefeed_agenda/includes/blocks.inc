@@ -316,8 +316,33 @@ function culturefeed_agenda_block_production_program() {
     return;
   }
 
-  $provinces = culturefeed_search_get_flandersregion_categories('=');
+  $region_ids = array();
 
+  $items = $result->getItems();
+  // Get all flanders regions, so we can query the p1's of them.
+  foreach ($items as $item) {
+    $regions = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
+    foreach ($regions as $region) {
+      $region_ids[] = $region->getId();
+    }
+  }
+
+  $preferred_language = culturefeed_search_get_preferred_language();
+  $query = db_select('culturefeed_search_terms', 't');
+  $query->innerJoin('culturefeed_search_terms', 'province', 'province.tid = t.p1');
+  $query->condition('t.tid', $region_ids);
+  $query->condition('t.language', $preferred_language);
+  $query->condition('province.language', $preferred_language);
+  $query->addField('province', 'name', 'province_name');
+  $query->addField('province', 'tid', 'province_id');
+  $query->addField('t', 'tid', 'tid');
+
+  $query_result = $query->execute();
+  $provinces = array();
+  foreach ($query_result as $row) {
+    $provinces[$row->tid] = $row;
+  }
+  
   $block['subject'] = t('Agenda');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',

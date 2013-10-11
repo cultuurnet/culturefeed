@@ -230,3 +230,31 @@ function culturefeed_get_content_type($type) {
   return CultureFeed_Activity::CONTENT_TYPE_NODE;
 }
 
+/**
+ * Get the preferred language of current cf user.
+ */
+function culturefeed_get_preferred_language() {
+
+  static $preferredLanguage = FALSE;
+  global $language;
+
+  if (!$preferredLanguage) {
+
+    // Defaults to site language.
+    $preferredLanguage = $language->language;
+
+    // Try catching the preferred language from the user.
+    try {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+      if (!empty($cf_account->preferredLanguage)) {
+        $preferredLanguage = $cf_account->preferredLanguage;
+      }
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_search', $e);
+      return $language->language;
+    }
+  }
+
+  return $preferredLanguage;
+}

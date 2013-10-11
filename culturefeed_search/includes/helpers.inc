@@ -494,33 +494,29 @@ function culturefeed_search_get_educationlevel_categories($conditions = array())
 /**
  * Retrieves a list of categories for the flandersregion domain.
  *
- * @param string $parent_operator
- *   Indicates what operator should be used to load the regions. Can be '', != or =.
- *   = means, load all the regions without a parent.
- *   != means load all the regions that have a parent.
- *   If false, only subelements will be fetched.
  * @param $conditions
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
  *
  */
-function culturefeed_search_get_flandersregion_categories($parent_operator = '', $conditions = array()) {
+function culturefeed_search_get_flandersregion_categories($conditions = array()) {
 
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
   $query->condition('cst.language', culturefeed_search_get_preferred_language());
 
-  if (!empty($parent_operator)) {
-    $query->condition('cst.parent', '', $parent_operator);
-  }
-
-  if (!empty($conditions['tid'])) {
+  if (!empty($conditions)) {
     foreach ($conditions as $field => $value) {
       if (is_array($value)) {
         $query->condition($field, $value, 'IN');
       }
       else {
-        $query->condition($field, $value);
+        if ($value === NULL) {
+          $query->isNull($field);
+        }
+        else {
+          $query->condition($field, $value);
+        }
       }
     }
   }
@@ -668,29 +664,14 @@ function culturefeed_search_get_city_by_slug($slug) {
  * Returns the preferred language of the user.
  */
 function culturefeed_search_get_preferred_language() {
-  static $preferredLanguage = FALSE;
-  global $language;
 
-  if (!$preferredLanguage) {
-
-    // Defaults to site language.
-    $preferredLanguage = $language->language;
-
-    // Try catching the preferred language from the user.
-    try {
-      $cf_account = DrupalCultureFeed::getLoggedInUser();
-      if (!empty($cf_account->preferredLanguage)) {
-        $preferredLanguage = $cf_account->preferredLanguage;
-      }
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_search', $e);
-      return $language->language;
-    }
-
+  // If culturefeed is enabled, we can use the user his language.
+  if (module_exists('culturefeed')) {
+    return culturefeed_get_preferred_language();
   }
 
-  return $preferredLanguage;
+  // Otherwise use the drupal language.
+  return $GLOBALS['language']->language;
 }
 
 /**
