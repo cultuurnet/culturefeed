@@ -42,7 +42,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
   }
 
   drupal_json_output($matches);
-  
+
 }
 
 /**
@@ -76,7 +76,7 @@ function culturefeed_search_region_suggestion_autocomplete_page($search_string) 
  * Page callback for the city suggestions autocomplete.
  */
 function culturefeed_search_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE) {
-die('ok');
+
   $matches = array();
 
   if ($search_string) {
