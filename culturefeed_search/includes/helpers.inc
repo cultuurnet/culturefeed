@@ -746,3 +746,38 @@ function culturefeed_search_get_term_translation($tid) {
   }
 
 }
+
+/**
+ * Translate the items of a facet.
+ */
+function culturefeed_search_translate_facet(&$facet_items) {
+
+  $tids = array();
+  // Construct array of ids to query all translations at once.
+  foreach ($facet_items as $facet_item) {
+    $tids[] = $facet_item->getValue();
+    // Add the subitems from this facet item.
+    if ($facet_item->hasSubItems()) {
+      $sub_items = $facet_item->getSubItems();
+      foreach ($sub_items as $sub_item) {
+        $tids[] = $sub_item->getValue();
+      }
+    }
+  }
+
+  // Translate all the facets.
+  culturefeed_search_term_translations($tids);
+
+  // Loop through again to translate.
+  foreach ($facet_items as $facet_item) {
+    $facet_item->setLabel(culturefeed_search_get_term_translation($facet_item->getValue()));
+    // Add the subitems from this facet item.
+    if ($facet_item->hasSubItems()) {
+      $sub_items = $facet_item->getSubItems();
+      foreach ($sub_items as $sub_item) {
+        $sub_item->setLabel(culturefeed_search_get_term_translation($sub_item->getValue()));
+      }
+    }
+  }
+}
+
