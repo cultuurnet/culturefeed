@@ -118,6 +118,12 @@ function culturefeed_search_form_system_performance_settings_alter(&$form, $form
     '#default_value' => variable_get('culturefeed_search_cache_enabled', FALSE),
   );
 
+  $form['culturefeed_search_cache']['culturefeed_search_cache_flush'] = array(
+    '#type' => 'submit',
+    '#value' => t('Flush the Culturefeed search cache'),
+    '#submit' => array('culturefeed_search_cache_flush_submit'),
+  );
+
   $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
 
 }
@@ -129,4 +135,5 @@ function culturefeed_search_form_system_performance_settings_alter(&$form, $form
  */
 function culturefeed_search_cache_flush_submit($form, $form_state) {
   _culturefeed_search_flush_caches();
+
 }
