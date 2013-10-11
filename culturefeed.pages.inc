@@ -32,9 +32,6 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $options['query']['dob'] = $_GET['dob'];
   }
 
-  // Add the language parameter.
-  $options['query']['lang'] = culturefeed_get_preferred_language();
-
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
 
   // Fetch the request token.
@@ -68,7 +65,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   }
 
   // Fetch the authorisation url...
-  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via);
+  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via, culturefeed_search_get_preferred_language());
 
   // ... and redirect the user to it.
   drupal_goto($auth_url);

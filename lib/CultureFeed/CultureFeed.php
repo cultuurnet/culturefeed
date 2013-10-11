@@ -188,10 +188,12 @@ class CultureFeed implements ICultureFeed {
    *   (optional) Boolean indicating wether the authorization step can be skipped.
    * @param string $via
    *   (optional) Type of social network used to authorize the user.
+   * @param string $language
+   *   (optional) Language to use on the login screen.
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '') {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '', $language = '') {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
@@ -212,6 +214,10 @@ class CultureFeed implements ICultureFeed {
 
     if (!empty($via)) {
       $query['via'] = $via;
+    }
+
+    if (!empty($language)) {
+      $query['lang'] = $language;
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);

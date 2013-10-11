@@ -8,7 +8,7 @@ interface ICultureFeed {
 
   public function getRequestToken($callback = '');
 
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '');
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '', $language = '');
 
   public function getAccessToken($oauth_verifier);
 
