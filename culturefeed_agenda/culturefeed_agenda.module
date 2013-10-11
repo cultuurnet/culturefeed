@@ -458,13 +458,26 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
   // Only check on agenda pages.
   if (arg(0, $path) == 'agenda') {
 
-    // A known search page, no need to alter.
+    // Always check if we need to alter the theme.
+    if (isset($_GET['theme'])) {
+      $category = culturefeed_search_get_category_by_slug($_GET['theme']);
+
+      if ($category) {
+        $_GET['facet']['category_theme_id'][] = $category->tid;
+        $_REQUEST['facet']['category_theme_id'][] = $category->tid;
+      }
+      unset($_GET['theme']);
+      unset($_REQUEST['theme']);
+
+    }
+
+    // A known search page, no need to alter the path.
     $search_page = _culturefeed_search_ui_get_active_search_page();
     if ($search_page) {
       return;
     }
 
-    // If we are on a detail page, no need to alter.
+    // If we are on a detail page, no need to alter the path.
     $object = culturefeed_search_get_active_object();
     if ($object) {
       return;
@@ -507,18 +520,6 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
         $rewrite = TRUE;
       }
 
-    }
-
-    // Check if we need to alter on theme.
-    if (isset($_GET['theme'])) {
-      $category = culturefeed_search_get_category_by_slug($_GET['theme']);
-      if ($category) {
-        $_GET['facet']['category_theme_id'][] = $category->tid;
-        $_REQUEST['facet']['category_theme_id'][] = $category->tid;
-      }
-      unset($_GET['theme']);
-      unset($_REQUEST['theme']);
-      $rewrite = TRUE;
     }
 
     // When rewrite flag is set, change the path.
