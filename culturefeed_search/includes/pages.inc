@@ -42,9 +42,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
   }
 
   drupal_json_output($matches);
-
-  // Cache if possible per request.
-  drupal_page_footer();
+  
 }
 
 /**
@@ -72,15 +70,13 @@ function culturefeed_search_region_suggestion_autocomplete_page($search_string) 
 
   drupal_json_output($matches);
 
-  // Cache if possible per request.
-  drupal_page_footer();
 }
 
 /**
  * Page callback for the city suggestions autocomplete.
  */
 function culturefeed_search_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE) {
-
+die('ok');
   $matches = array();
 
   if ($search_string) {
@@ -95,6 +91,4 @@ function culturefeed_search_city_suggestion_autocomplete_page($search_string, $i
 
   drupal_json_output($matches);
 
-  // Cache if possible per request.
-  drupal_page_footer();
 }

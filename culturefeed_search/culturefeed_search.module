@@ -83,6 +83,19 @@ function culturefeed_search_flush_caches() {
 }
 
 /**
+ * Clears all cache for culturefeed search results and related activity.
+ */
+function _culturefeed_search_flush_caches() {
+
+  // Flush search page results.
+  cache_clear_all('culturefeed:results:search', 'cache_culturefeed_search', TRUE);
+
+  // Flush search results.
+  cache_clear_all('culturefeed:pages:', 'cache_culturefeed', TRUE);
+  cache_clear_all('culturefeed:results:', 'cache_culturefeed', TRUE);
+}
+
+/**
  * Implements hook_form_alter().
  */
 function culturefeed_search_form_system_performance_settings_alter(&$form, $form_state) {
@@ -109,3 +122,11 @@ function culturefeed_search_form_system_performance_settings_alter(&$form, $form
 
 }
 
+/**
+ * Submit handler to flush the culturefeed search cache.
+ * @param type $form
+ * @param type $form_state
+ */
+function culturefeed_search_cache_flush_submit($form, $form_state) {
+  _culturefeed_search_flush_caches();
+}

@@ -15,8 +15,10 @@ function culturefeed_search_drush_help($section) {
       return dt("Import all Culturefeed Search domains and terms");
     case 'culturefeed_search:culturefeed-search-import-cities':
       return dt("Import all Culturefeed Search cities");
-      case 'culturefeed_search:culturefeed-search-import-cnapi-headings':
-        return dt("Import all cnapi headings to be used for 301 redirects from old cnapi urls");
+    case 'culturefeed_search:culturefeed-search-import-cnapi-headings':
+      return dt("Import all cnapi headings to be used for 301 redirects from old cnapi urls");
+    case 'culturefeed_search:culturefeed-search-cache-clear':
+      return dt("Clear all culturefeed search cache");
   }
 
 }
@@ -36,6 +38,10 @@ function culturefeed_search_drush_command() {
   $items['culturefeed-search-import-cnapi-headings'] = array(
     'description' => 'Import all old cnapi headings.',
     'aliases' => array('csicnapi'),
+  );
+  $items['culturefeed-search-cache-clear'] = array(
+    'description' => 'Clear all culturefeed search cache.',
+    'aliases' => array('cs-cc'),
   );
   return $items;
 }
@@ -88,4 +94,11 @@ function drush_culturefeed_search_import_cnapi_headings() {
 
   drush_log('Cnapi headings are now imported', 'success');
 
+}
+
+/**
+ * Clears all culturefeed search cache.
+ */
+function drush_culturefeed_search_cache_clear() {
+  _culturefeed_search_flush_caches();
 }
