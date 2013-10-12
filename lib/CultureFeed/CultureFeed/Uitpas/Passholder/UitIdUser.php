@@ -18,8 +18,12 @@ class CultureFeed_Uitpas_Passholder_UitIdUser extends CultureFeed_Uitpas_ValueOb
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $user = new CultureFeed_Uitpas_Passholder_UitIdUser();
-    $user->id = $object->xpath_str('ns2:id');
-    $user->nick = $object->xpath_str('ns2:nick');
+
+    $object->registerXPathNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns');
+    $object->registerXPathNamespace('foaf', 'http://xmlns.com/foaf/0.1/');
+
+    $user->id = $object->xpath_str('rdf:id');
+    $user->nick = $object->xpath_str('foaf:nick');
 
     return $user;
   }
