@@ -578,7 +578,7 @@ function culturefeed_pages_user_login(&$edit, $account) {
       if (isset($account->data['culturefeed_pages_id'])) {
         $preferred_page = culturefeed_pages_page_load($account->data['culturefeed_pages_id']);
         // Check if this page was not deleted.
-        if ($preferred_page->isVisible()) {
+        if ($preferred_page && $preferred_page->isVisible()) {
           $page = $preferred_page;
         }
       }
