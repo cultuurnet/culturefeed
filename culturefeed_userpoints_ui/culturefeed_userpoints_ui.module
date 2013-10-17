@@ -302,7 +302,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $cf_account = $params['cf_account'];
       $language = $message['language'];
 
-      $message['subject'] .= t('Request a promotion | request by') . ' ' . $cf_account->nick;
+      $message['subject'] .= t('Promotion request by') . ' ' . $cf_account->nick;
 
       $variables = array();
       $variables['@code'] = $cf_account->id;

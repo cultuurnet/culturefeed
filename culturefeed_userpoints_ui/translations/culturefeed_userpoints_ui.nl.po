@@ -55,8 +55,8 @@ msgid "More promotions"
 msgstr "Meer voordelen"
 
 #: culturefeed_userpoints_ui.module:316
-msgid "Request a promotion | request by"
-msgstr "Aanvraag tot ontvangen voordeel | aanvraag door"
+msgid "Promotion request by"
+msgstr "Aanvraag geschenk door"
 
 #: culturefeed_userpoints_ui.module:328
 msgid "amount"
