@@ -1,7 +1,15 @@
-<div class="options">
-  <ul>
-    <li><?php print $link_login ?></li>
-    <li><?php print $link_register ?></li>
-    <li><?php print $link_login_facebook ?></li>
-  </ul>
+<?php
+/**
+ * @file
+ * Template file for the culturefeed ui login box.
+ */
+
+/**
+ * @var string $link_login
+ * @var string $link_register
+ * @var string $link_login_facebook
+ */
+?>
+<div class="culturefeed-ui culturefeed-login">
+  <?php print $link_login ?>
 </div>
