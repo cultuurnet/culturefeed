@@ -472,7 +472,7 @@ msgstr "Meer info over UiTiD"
 
 #: culturefeed_ui.preprocess.inc:145
 msgid "Log in"
-msgstr "Inloggen"
+msgstr "Aanmelden"
 
 #: culturefeed_ui.preprocess.inc:146
 msgid "Sign up"
