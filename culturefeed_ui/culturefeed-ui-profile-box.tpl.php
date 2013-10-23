@@ -8,8 +8,8 @@
  * @var string $picture
  * @var string $nick
  * @var string $link
- * @var string $dropdown_items
- * @var string $main_items
+ * @var array $dropdown_items
+ * @var array $main_items
  * @var string $logout
  */
 ?>
