@@ -67,9 +67,7 @@ abstract class DrupalCultureFeedBase {
       return NULL;
     }
 
-    $user = static::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
-
-    static::$logged_in_user[$application_key] = $user;
+    static::$logged_in_user[$application_key] = static::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
 
     return static::$logged_in_user[$application_key];
   }
