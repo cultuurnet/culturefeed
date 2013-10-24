@@ -631,7 +631,7 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
     drupal_set_message(format_string(t('Your !comment has been sent.'), array('!comment' => $goto_link)));
 
     // Clear the cache.
-    _culturefeed_search_flush_caches();
+    _culturefeed_search_flush_caches(TRUE);
 
     // Follow updates.
     if (!empty($form_state['values']['update_optin'])) {
