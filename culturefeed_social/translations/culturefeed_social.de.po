@@ -1,0 +1,684 @@
+# $Id$
+#
+# German translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_social.module: n/a
+#  includes/blocks.inc: n/a
+#  culturefeed_social.info: n/a
+#  includes/admin.inc: n/a
+#  includes/pages.inc: n/a
+#  lib/Drupal/CultureFeedActivityConfigComment.php: n/a
+#  theme/culturefeed-social-comment-list.tpl.php: n/a
+#  theme/theme.inc: n/a
+#  lib/Drupal/CultureFeedActivityConfigDetail.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigView.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigFacebook.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigMail.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigNewEvent.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigPrint.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigRecommend.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigReview.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigTwitter.php: n/a
+#  theme/culturefeed-social-activity-summary.tpl.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigFollow.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigGo.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigLike.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigMediaPhoto.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigMediaVideo.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigPageAdmin.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigPageMember.php: n/a
+#  theme/culturefeed-social-comment-list-item.tpl.php: n/a
+#  theme/culturefeed-social-user-notifications-page.tpl.php: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-10-24 12:26+0200\n"
+"PO-Revision-Date: 2013-10-24 12:26+0200\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: German <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: culturefeed_social.module:42
+msgid "Administer actions"
+msgstr ""
+
+#: culturefeed_social.module:51
+msgid "Undo action"
+msgstr ""
+
+#: culturefeed_social.module:61;71
+msgid "Abuse form"
+msgstr ""
+
+#: culturefeed_social.module:81
+msgid "Edit privacy settings"
+msgstr ""
+
+#: culturefeed_social.module:91
+msgid "Unfollow node"
+msgstr ""
+
+#: culturefeed_social.module:102
+msgid "Perform action"
+msgstr ""
+
+#: culturefeed_social.module:164 includes/blocks.inc:268
+msgid "My notifications"
+msgstr ""
+
+#: culturefeed_social.module:174
+msgid "Notifications"
+msgstr ""
+
+#: culturefeed_social.module:283
+msgid "Culturefeed social: recent site activities"
+msgstr ""
+
+#: culturefeed_social.module:288
+msgid "Culturefeed social: user activities"
+msgstr ""
+
+#: culturefeed_social.module:293
+msgid "Culturefeed social: recommended by"
+msgstr ""
+
+#: culturefeed_social.module:298
+msgid "Culturefeed social: comments"
+msgstr ""
+
+#: culturefeed_social.module:304
+msgid "Culturefeed social: my notifications (on user profile)"
+msgstr ""
+
+#: culturefeed_social.module:310
+msgid "Culturefeed social: summary of my activities (on user profile)"
+msgstr ""
+
+#: culturefeed_social.module:315
+msgid "Culturefeed social: summary of loggedin users activities"
+msgstr ""
+
+#: culturefeed_social.module:370
+msgid "Actions"
+msgstr ""
+
+#: culturefeed_social.module:372
+msgid "Set which user actions are visible to others on your profile page."
+msgstr ""
+
+#: culturefeed_social.module:446
+msgid "Filter events on"
+msgstr ""
+
+#: culturefeed_social.module:464
+msgid "Filter"
+msgstr ""
+
+#: culturefeed_social.module:530
+msgid "Remove from list"
+msgstr ""
+
+#: culturefeed_social.module:531
+msgid "You're currently receiving updates of new comments. <br/>!link to get no more posts."
+msgstr ""
+
+#: culturefeed_social.module:542
+msgid "Receive email about new comments"
+msgstr ""
+
+#: culturefeed_social.module:559;714
+msgid "Submit"
+msgstr ""
+
+#: culturefeed_social.module:602
+msgid "Due to technical problems it is currently not possible to send your message. Do not hesitate to directly contact via @site"
+msgstr ""
+
+#: culturefeed_social.module:605
+msgid "Your response should not exceed 1000 characters."
+msgstr ""
+
+#: culturefeed_social.module:630
+msgid "Your !comment has been sent."
+msgstr ""
+
+#: culturefeed_social.module:682
+msgid "Inappropriate response"
+msgstr ""
+
+#: culturefeed_social.module:683
+msgid "Please tell us why you think this is an inappropriate response"
+msgstr ""
+
+#: culturefeed_social.module:699
+msgid "Send message as"
+msgstr ""
+
+#: culturefeed_social.module:759
+msgid "Something went wrong while sending"
+msgstr ""
+
+#: culturefeed_social.module:773
+msgid "Message sent"
+msgstr ""
+
+#: culturefeed_social.module:32 culturefeed_social.info:0
+msgid "CultureFeed Social"
+msgstr ""
+
+#: culturefeed_social.module:33
+msgid "Change CultureFeed Social settings"
+msgstr ""
+
+#: culturefeed_social.info:0
+msgid "CultureFeed Social adds the ability to perform social actions (for example: like, comments, follow, ...) on culturefeed items like events, productions, pages..."
+msgstr ""
+
+#: culturefeed_social.info:0
+msgid "CultureFeed"
+msgstr ""
+
+#: includes/admin.inc:22
+msgid "Visible filters on activity lists"
+msgstr ""
+
+#: includes/admin.inc:29
+msgid "Enable notifications"
+msgstr ""
+
+#: includes/admin.inc:35
+msgid "Report as abuse messages destination uid (Drupal)"
+msgstr ""
+
+#: includes/admin.inc:37
+msgid "Report as abuse messages will be sent to this account.\n    Only if no destination page was available. Otherwise the message will be sent to all the admins of the page"
+msgstr ""
+
+#: includes/blocks.inc:37;118
+msgid "Recent actions"
+msgstr ""
+
+#: includes/blocks.inc:70
+msgid "This user didn't perform any actions yet"
+msgstr ""
+
+#: includes/blocks.inc:82
+msgid "Manage your actions"
+msgstr ""
+
+#: includes/blocks.inc:113
+msgid "Read previous messages"
+msgstr ""
+
+#: includes/blocks.inc:251
+msgid "Comments"
+msgstr ""
+
+#: includes/blocks.inc:269
+msgid "You have no notifications"
+msgstr ""
+
+#: includes/blocks.inc:285
+msgid "View all notifications"
+msgstr ""
+
+#: includes/pages.inc:62
+msgid "No activities found"
+msgstr ""
+
+#: includes/pages.inc:106
+msgid "View profile"
+msgstr ""
+
+#: includes/pages.inc:135;242;245;270
+msgid "Remove"
+msgstr ""
+
+#: includes/pages.inc:143;436
+msgid "Private"
+msgstr ""
+
+#: includes/pages.inc:143;436
+msgid "Public"
+msgstr ""
+
+#: includes/pages.inc:145;438
+msgid "Make public"
+msgstr ""
+
+#: includes/pages.inc:145;438
+msgid "Make private"
+msgstr ""
+
+#: includes/pages.inc:160
+msgid "ago <br />on"
+msgstr ""
+
+#: includes/pages.inc:169
+msgid "Page"
+msgstr ""
+
+#: includes/pages.inc:169
+msgid "Action"
+msgstr ""
+
+#: includes/pages.inc:169
+msgid "Time and publication channel"
+msgstr ""
+
+#: includes/pages.inc:169
+msgid "Status"
+msgstr ""
+
+#: includes/pages.inc:171
+msgid "You didn't perform any actions yet."
+msgstr ""
+
+#: includes/pages.inc:259
+msgid "Are you sure you want to delete your @action permanently"
+msgstr ""
+
+#: includes/pages.inc:276
+msgid "Cancel"
+msgstr ""
+
+#: includes/pages.inc:333;372;472
+msgid "An unexpected error has occurred."
+msgstr ""
+
+#: includes/pages.inc:404;410
+msgid "You will no longer receive updates of new comments"
+msgstr ""
+
+#: includes/pages.inc:572
+msgid "Action could not be undone."
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:22
+msgid "Reply by"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:23
+msgid "Undo"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:24 theme/culturefeed-social-comment-list.tpl.php:11
+msgid "Post a comment"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:25
+msgid "Be the first to post a comment"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:26
+msgid "Show all users who posted a comment"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:29
+msgid "has replied to"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:31
+msgid "Comment"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:32 theme/theme.inc:216
+msgid "Reply"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:33
+msgid "You must be logged in to post a comment"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:34
+msgid "Reply as"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:35
+msgid "posted a comment on"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:21 lib/Drupal/CultureFeedActivityConfigView.php:22
+msgid "Viewed by"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:22 lib/Drupal/CultureFeedActivityConfigFacebook.php:26 lib/Drupal/CultureFeedActivityConfigMail.php:22 lib/Drupal/CultureFeedActivityConfigNewEvent.php:15 lib/Drupal/CultureFeedActivityConfigPrint.php:24 lib/Drupal/CultureFeedActivityConfigRecommend.php:31 lib/Drupal/CultureFeedActivityConfigReview.php:18 lib/Drupal/CultureFeedActivityConfigTwitter.php:26 lib/Drupal/CultureFeedActivityConfigView.php:23
+msgid "has"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:23
+msgid "seen"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:24 lib/Drupal/CultureFeedActivityConfigView.php:25
+msgid "Viewed"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:23;24 lib/Drupal/CultureFeedActivityConfigTwitter.php:23;24
+msgid "Share"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:25 lib/Drupal/CultureFeedActivityConfigTwitter.php:25
+msgid "Shared by"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:27
+msgid "shared on Facebook"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:28
+msgid "Share on Facebook"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:29 lib/Drupal/CultureFeedActivityConfigTwitter.php:29
+msgid "Successfully shared"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:30 theme/culturefeed-social-activity-summary.tpl.php:37
+msgid "comments"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:31 lib/Drupal/CultureFeedActivityConfigTwitter.php:30
+msgid "shared"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:17
+msgid "Follow this page"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:18
+msgid "Unfollow"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:19
+msgid "I follow this page"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:20
+msgid "Be the first to follow this page"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:21
+msgid "Show all users who follow this page"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:24
+msgid "follows"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:25
+msgid "Follow"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:26
+msgid "You must be logged in to follow a page"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:18;19
+msgid "Attend"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:20
+msgid "Not attending"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:21
+msgid "will be attending"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:22;24
+msgid "Will be attending"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:23
+msgid "You must be logged in to indicate that you will be  attending"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:23
+msgid "Like this"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:24;33
+msgid "Like"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:25
+msgid "Unlike"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:26
+msgid "I Like"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:27
+msgid "Be the first to like this"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:28
+msgid "Show all users who likes this"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:31
+msgid "likes"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:32
+msgid "this"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigLike.php:34
+msgid "You must be logged in to like this item"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMail.php:23
+msgid "sent"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMail.php:24
+msgid "E-mails"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaPhoto.php:20
+msgid "has added a new picture"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaPhoto.php:21
+msgid "Picture added to"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaPhoto.php:22;23
+msgid "Add a picture"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaPhoto.php:24
+msgid "picture"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:20
+msgid "has added a new video"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:21
+msgid "Video added to"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:22;23
+msgid "Add a video"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigMediaVideo.php:24
+msgid "video"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:16
+msgid "added"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPageAdmin.php:17
+msgid "became administrator of"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPageAdmin.php:18
+msgid "Page administrator"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPageMember.php:17
+msgid "became member of"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPageMember.php:18
+msgid "Membership"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPrint.php:23
+msgid "Printed by"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPrint.php:25
+msgid "printed"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigPrint.php:26
+msgid "Printed"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:23
+msgid "Recommended by"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:24
+msgid "Recommended activity"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:25
+msgid "Undo recommend"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:26
+msgid "Also recommend"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:27
+msgid "Be the first to recommend"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:28
+msgid "View all users who recommend this"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:32;35
+msgid "recommended"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:33
+msgid "Recommend"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigRecommend.php:34
+msgid "You must be logged in to recommend this item"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:19
+msgid "wrote a review"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:20
+msgid "review"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:21
+msgid "Reviews"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:22
+msgid "Write a review"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:23
+msgid "Be the first to write a review"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigReview.php:24
+msgid "Reviews for"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigTwitter.php:27
+msgid "shared on Twitter"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigTwitter.php:28
+msgid "Share on Twitter"
+msgstr ""
+
+#: lib/Drupal/CultureFeedActivityConfigView.php:24
+msgid "viewed"
+msgstr ""
+
+#: theme/culturefeed-social-activity-summary.tpl.php:31
+msgid "My activities"
+msgstr ""
+
+#: theme/culturefeed-social-activity-summary.tpl.php:34
+msgid "recommended activities"
+msgstr ""
+
+#: theme/culturefeed-social-activity-summary.tpl.php:35
+msgid "recommended books"
+msgstr ""
+
+#: theme/culturefeed-social-activity-summary.tpl.php:36
+msgid "pages I follow"
+msgstr ""
+
+#: theme/culturefeed-social-comment-list-item.tpl.php:17
+msgid "Posted by"
+msgstr ""
+
+#: theme/culturefeed-social-comment-list-item.tpl.php:17
+msgid "on"
+msgstr ""
+
+#: theme/culturefeed-social-user-notifications-page.tpl.php:7
+msgid "You have no new notifications"
+msgstr ""
+
+#: theme/culturefeed-social-user-notifications-page.tpl.php:15
+msgid "Previously read messages"
+msgstr ""
+
+#: theme/culturefeed-social-user-notifications-page.tpl.php:4
+msgid "@count new notification"
+msgid_plural "@count new notifications"
+msgstr[0] ""
+msgstr[1] ""
+
+#: theme/theme.inc:57
+msgid "Today at"
+msgstr ""
+
+#: theme/theme.inc:57;60;63
+msgid "hour"
+msgstr ""
+
+#: theme/theme.inc:60
+msgid "Yesterday at"
+msgstr ""
+
+#: theme/theme.inc:95;158
+msgid "from"
+msgstr ""
+
+#: theme/theme.inc:201
+msgid "Delete"
+msgstr ""
+
+#: theme/theme.inc:245
+msgid "Report as inappropriate"
+msgstr ""
+
