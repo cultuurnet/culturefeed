@@ -623,11 +623,15 @@ function culturefeed_social_base_comment_form_submit($form, $form_state) {
 
   if (!empty($form_state['activity_result'])) {
 
+    // Send a message to the user.
     $goto_link = l($config->action, culturefeed_social_detail_path($object->getType(), $object->getId(), $object->getTitle(culturefeed_search_get_preferred_language())), array(
       'absolute' => TRUE,
       'fragment' => 'activity-' . $form_state['activity_result']->id,
     ));
     drupal_set_message(format_string(t('Your !comment has been sent.'), array('!comment' => $goto_link)));
+
+    // Clear the cache.
+    _culturefeed_search_flush_caches();
 
     // Follow updates.
     if (!empty($form_state['values']['update_optin'])) {

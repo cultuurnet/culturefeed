@@ -89,6 +89,7 @@ function _culturefeed_search_flush_caches() {
 
   // Flush search page results.
   cache_clear_all('culturefeed:results:search', 'cache_culturefeed_search', TRUE);
+  cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
 
   // Flush search results.
   cache_clear_all('culturefeed:pages:', 'cache_culturefeed', TRUE);
