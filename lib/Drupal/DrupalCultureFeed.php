@@ -37,11 +37,46 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function getUser($id, $private = FALSE) {
     if ($private) {
-      return self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
+      $user = self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
     }
     else {
-      return self::getConsumerInstance()->getUser($id, FALSE, FALSE);
+      $user = self::getConsumerInstance()->getUser($id, FALSE, FALSE);
     }
+    self::setAvailableCategories($user);
+    return $user;
+  }
+
+  /**
+   * Sets the actor types available in current scope.
+   * @param CultureFeed_User $user
+   */
+  protected static function setAvailableCategories(CultureFeed_User $user) {
+
+    $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+    $pageMemberships = $user->pageMemberships;
+
+    if (!empty($pageMemberships)) {
+      foreach ($user->pageMemberships as $key => $membership) {
+        // Get the categories for this page.
+        $membershipPage = $membership->page;
+        $cf_pages = self::getConsumerInstance()->pages();
+        $page = $cf_pages->getPage($membershipPage->getId());
+        $categories = $page->getCategories();
+
+        // Set a flag to indicate this page can be used.
+        $use = FALSE;
+        foreach ($categories as $categoryId) {
+          if (in_array($categoryId, $actortypes)) {
+            $use = TRUE;
+          }
+        }
+        if (!$use) {
+          unset($user->pageMemberships[$key]);
+        }
+      }
+    }
+
   }
 
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
