@@ -394,8 +394,34 @@ class CultureFeedSearchPage {
 
     }
 
-    // Add the location facet.
-    if (!empty($params['location'])) {
+    // Add the location facet. Only use the location if a distance is set.
+    // all other cases will search for a category Id of the type flandersregion
+    // or workingregion.
+    if (!empty($params['regId']) && !isset($params['distance'])) {
+
+      $regFilter = array();
+      $regFilter[] = $params['regId'];
+
+      if (!empty($params['wregIds'])) {
+        $regFilter[] = array_shift($params['wregIds']);
+
+        $wregFilters = array();
+        foreach ($params['wregIds'] as $wregId) {
+          $wregFilters[] = $wregId;
+        }
+      }
+
+      $regFilterQuery = '(';
+      $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
+      if (!empty($wregFilters)) {
+        //$regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
+        $regFilterQuery .= ' OR category_id:(' . implode(' OR ', $wregFilters) . ')';
+      }
+      $regFilterQuery .= ')';
+      $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
+
+    }
+    elseif (!empty($params['location'])) {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);

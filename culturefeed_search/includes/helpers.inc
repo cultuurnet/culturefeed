@@ -522,7 +522,7 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
       }
     }
   }
-  
+
   print "<pre>".print_r($query, TRUE)."</pre>";
   $result = $query->execute();
   $categories = array();
@@ -634,6 +634,10 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
   $query->range(0, 1);
   $query->addField('ct', 'tid');
   $query->addField('ct', 'name');
+  $query->addField('ct', 'p1');
+  $query->addField('ct', 'p2');
+  $query->addField('ct', 'p3');
+  $query->addField('ct', 'p4');
   if (!empty($domain)) {
     $query->condition('did', $domain);
   }
@@ -646,7 +650,8 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
  * Get a city by slug.
  */
 function culturefeed_search_get_city_by_slug($slug) {
-  return db_query('SELECT name, zip FROM {culturefeed_search_cities} WHERE slug = :slug', array(':slug' => $slug))->fetchObject();
+  return db_query('SELECT name, zip FROM {culturefeed_search_cities}
+    WHERE slug = :slug', array(':slug' => $slug))->fetchObject();
 }
 
 /**
