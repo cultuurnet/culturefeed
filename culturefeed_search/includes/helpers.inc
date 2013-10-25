@@ -547,7 +547,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
   $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
-  $query->condition('name', '%(' . db_like($search_string) . ')', 'NOT LIKE');
+  $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
   $query->range(0, 20);
 
   if ($provinces_only) {
