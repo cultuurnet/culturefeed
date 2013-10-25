@@ -34,11 +34,11 @@ class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
   protected $proxy_password;
 
   /**
-   * Connection timeout (defaults to 20 seconds).
+   * Connection timeout (defaults to 10 seconds).
    *
    * @var integer
    */
-  protected $timeout = 20;
+  protected $timeout = 10;
 
   /**
    * Should we log requests or not.
