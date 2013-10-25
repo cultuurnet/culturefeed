@@ -414,6 +414,11 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
 
     }
 
+    // Always unset wregIds and regId.
+    if (isset($options['query']['regId'])) {
+      unset($options['query']['regId']);
+    }
+
     // Make sure we leave no empty query data.
     // This one is needed, otherwise you can end with following url: agenda/sportactiviteit?&theme=fitness-gymnastiek-dans-en-vechtsport
     if (!empty($options['query'])) {
