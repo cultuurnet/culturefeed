@@ -500,8 +500,6 @@ function culturefeed_search_get_educationlevel_categories($conditions = array())
  */
 function culturefeed_search_get_flandersregion_categories($conditions = array()) {
 
-  print "<pre>".print_r($conditions, TRUE)."</pre>";
-
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', 'flandersregion');
@@ -523,7 +521,6 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
     }
   }
 
-  print "<pre>".print_r($query, TRUE)."</pre>";
   $result = $query->execute();
   $categories = array();
   foreach ($result as $row) {
@@ -548,7 +545,9 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
   $query->fields('cst', array('tid', 'name'));
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
+  $query->condition('language', 'und');
   $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+  $query->condition('name', '%(' . db_like($search_string) . ')', 'NOT LIKE');
   $query->range(0, 20);
 
   if ($provinces_only) {
@@ -559,6 +558,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
   $query->orderBy('parent', 'ASC');
 
   $result = $query->execute();
+  
   $suggestions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
