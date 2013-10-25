@@ -415,7 +415,6 @@ class CultureFeedSearchPage {
       $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
       if (!empty($wregFilters)) {
         $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
-        //$regFilterQuery .= ' OR category_id:(' . implode(' OR ', $wregFilters) . ')';
       }
       $regFilterQuery .= ')';
       $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
