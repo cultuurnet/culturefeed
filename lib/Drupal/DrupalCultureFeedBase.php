@@ -69,6 +69,7 @@ abstract class DrupalCultureFeedBase {
 
     static::$logged_in_user[$application_key] = static::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
     self::setAvailableCategories(static::$logged_in_user[$application_key]);
+
     return static::$logged_in_user[$application_key];
   }
 
@@ -103,6 +104,29 @@ abstract class DrupalCultureFeedBase {
       }
     }
 
+    $pageFollowing = $user->following;
+
+    if (!empty($pageFollowing)) {
+      foreach ($user->following as $key => $following) {
+        // Get the categories for this page.
+        $followingPage = $following->page;
+        $cf_pages = self::getConsumerInstance()->pages();
+        $page = $cf_pages->getPage($followingPage->getId());
+        $categories = $page->getCategories();
+
+        // Set a flag to indicate this page can be used.
+        $use = FALSE;
+        foreach ($categories as $categoryId) {
+          if (in_array($categoryId, $actortypes)) {
+            $use = TRUE;
+          }
+        }
+        if (!$use) {
+          unset($user->following[$key]);
+        }
+      }
+    }
+
   }
 
   /**
@@ -132,7 +156,6 @@ abstract class DrupalCultureFeedBase {
     }
 
     $token = $account->tokens[$application_key];
-
     static::$user_instance[$application_key] = static::getInstance($token->token, $token->secret, $application_key, $shared_secret);
 
     return static::$user_instance[$application_key];
