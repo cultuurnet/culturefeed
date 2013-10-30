@@ -79,31 +79,29 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
       $form_state['values']['link'] = $link;
 
     }
-    catch (Exception $e) {
+    catch (CultureFeed_Exception $e) {
 
-      if ($e->error_code == 'INVALID_DOB') {
+      switch ($e->error_code) {
+        case 'INVALID_DOB':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_invalid_dob', t('Invalid date of birth.'));
+          form_set_error('dob', $error);
+          break;
 
-        $error = variable_get('culturefeed_uitpas_user_register_validation_invalid_dob', t('Invalid date of birth.'));
-        form_set_error('dob', $error);
+        case 'PARSE_INVALID_UITPASNUMBER':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_parse_invalid_uitpasnumber', t('Invalid uitpas number.'));
+          form_set_error('number', $error);
+          break;
 
+        case 'USER_ALREADY_ACTIVATED':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_user_already_activated', t('User already activated.'));
+          form_set_error('number', $error);
+          break;
       }
-
-      if ($e->error_code == 'PARSE_INVALID_UITPASNUMBER') {
-
-        $error = variable_get('culturefeed_uitpas_user_register_validation_parse_invalid_uitpasnumber', t('Invalid uitpas number.'));
-        form_set_error('number', $error);
-
-      }
-
-      if ($e->error_code == 'USER_ALREADY_ACTIVATED') {
-
-        $error = variable_get('culturefeed_uitpas_user_register_validation_user_already_activated', t('User already activated.'));
-        form_set_error('number', $error);
-
-      }
-
     }
-
+    catch (Exception $e) {
+      form_error($form, t('We are unable to process your request at this moment. Please try again later.'));
+      watchdog_exception('culturefeed_uitpas_user_register_form_validate', $e);
+    }
   }
 
 }
