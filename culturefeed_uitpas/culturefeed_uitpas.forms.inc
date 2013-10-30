@@ -35,7 +35,7 @@ function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user)
   if ($_GET['q'] != 'register_uitpas' && !$uitpas_user->user) {
 
     $args = array('@url' => url('culturefeed/oauth/connect'));
-    $form['#suffix'] = t('Allready registered ?  <a href="@url">Apply here</a>.', $args);
+    $form['#suffix'] = t('Already registered ?  <a href="@url">Apply here</a>.', $args);
 
   }
 
