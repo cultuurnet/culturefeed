@@ -534,12 +534,11 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
 /**
  * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_flandersregion_suggestions($search_string, $provinces_only = FALSE) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE) {
 
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
-
 
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
@@ -548,11 +547,12 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $prov
   $query->condition('language', 'und');
   $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
-  $query->range(0, 20);
-
-  if ($provinces_only) {
-    $query->condition('parent', '');
+  if(!$include_regions) {
+    $query->isNotNull('p1');
+    $query->isNotNull('p2');
+    $query->isNotNull('p3');
   }
+  $query->range(0, 20);
 
   // Order by parent, so that provinces appear at top of list.
   $query->orderBy('parent', 'ASC');
@@ -578,11 +578,9 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
 
   $suggestions = array();
 
-  if ($include_regions) {
-    $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, FALSE);
-    foreach ($region_suggestions as $region) {
-      $suggestions[$region] = $region;
-    }
+  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions);
+  foreach ($region_suggestions as $region) {
+    $suggestions[$region] = $region;
   }
 
   return $suggestions;
