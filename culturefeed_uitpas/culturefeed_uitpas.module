@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * @file
+ * Module file for Culturefeed uitpas.
+ */
+
+require_once 'culturefeed_uitpas.blocks.inc';
+require_once 'culturefeed_uitpas.forms.inc';
+require_once 'culturefeed_uitpas.helpers.inc';
+require_once 'culturefeed_uitpas.theme.inc';
