@@ -105,6 +105,11 @@ abstract class DrupalCultureFeedBase {
     return static::$user_instance[$application_key];
   }
 
+  /**
+   * @param string $application_key
+   * @param string $shared_secret
+   * @return ICultureFeed
+   */
   public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
       $application_key = variable_get('culturefeed_api_application_key', '');
