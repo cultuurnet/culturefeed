@@ -12,5 +12,5 @@
 ?>
 <div class="promotions_highlight">
   <?php print $promotions; ?>
-  <div class="more"><?php print $more; ?>
+  <div class="more"><?php print $more; ?></div>
 </div>
