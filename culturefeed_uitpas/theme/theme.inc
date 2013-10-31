@@ -37,7 +37,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
   );
 
   $vars['promotions'] = theme_table($table);
-  $vars['more'] = l(t('Show all promotions'), 'advantages_promotions');
+  $more_text = variable_get('culturefeed_uitpas_promotions_highlight_more_link_text', t('Show all promotions'));
+  $vars['more'] = l($more_text, 'advantages_promotions');
 
 }
 
@@ -69,7 +70,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
 
     $singular = "<strong>!name</strong> saved 1 point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
     $plural = "<strong>!name</strong> saved !points points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
-    $image = ($action->depiction) ? $action->depiction : variable_get_value('culturefeed_uitpas_user_default_image');
+    $image = ($action->depiction) ? $action->depiction : variable_get('culturefeed_uitpas_user_default_image');
     if ($image) {
       $image = theme_image(array('path' => $image, 'attributes' => array()));
     }

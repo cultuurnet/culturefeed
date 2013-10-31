@@ -42,6 +42,11 @@ function culturefeed_uitpas_block_configure($delta = '') {
         '#title' => t('Number of promotions to display'),
         '#default_value' => variable_get('culturefeed_uitpas_promotions_highlight_max', 5),
       );
+      $form['more_link_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('More link text'),
+        '#default_value' => variable_get('culturefeed_uitpas_promotions_highlight_more_link_text', t('Show all promotions')),
+      );
       break;
 
     case 'uitpas_recent_actions':
@@ -67,6 +72,7 @@ function culturefeed_uitpas_block_save($delta = '', $edit = array()) {
 
     case 'uitpas_promotions_highlight':
       variable_set('culturefeed_uitpas_promotions_highlight_max', $edit['max']);
+      variable_set('culturefeed_uitpas_promotions_highlight_more_link_text', $edit['more_link_text']);
       break;
 
     case 'uitpas_recent_actions':
@@ -87,23 +93,7 @@ function culturefeed_uitpas_block_view($delta = '') {
   switch ($delta) {
 
     case 'uitpas_promotions_highlight':
-      $promotions = array();
-      try {
-        $cf = DrupalCultureFeed::getConsumerInstance();
-        $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-        $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END;
-        $query->max = variable_get('culturefeed_uitpas_promotions_highlight_max', 5);
-        $query->cashingPeriodBegin = time();
-        $query->unexpired = TRUE;
-        $result = $cf->uitpas()->getPromotionPoints($query);
-        if ($result->total) {
-          $promotions = $result->objects;
-        }
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_uitpas_block_promotions_highlight', $e);
-      }
-
+      $promotions = culturefeed_uitpas_get_promotions_highlight();
       if (count($promotions)) {
 
         $block['subject'] = t("Spotlight promotions");
@@ -116,24 +106,7 @@ function culturefeed_uitpas_block_view($delta = '') {
       break;
 
     case 'uitpas_recent_actions':
-      $actions = array();
-      try {
-
-        $cf = DrupalCultureFeed::getConsumerInstance();
-        $query = new CultureFeed_SearchActivitiesQuery();
-        $query->type = CultureFeed_Activity::TYPE_UITPAS;
-        $query->private = FALSE;
-        $query->max = variable_get('culturefeed_uitpas_recent_actions_max', 5);
-        $result = $cf->searchActivities($query);
-        if ($result->total) {
-          $actions = $result->objects;
-        }
-
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_uitpas_block_recent_actions', $e);
-      }
-
+      $actions = culturefeed_uitpas_get_recent_actions();
       if (count($actions)) {
 
         $block['subject'] = t('Recent actions');
