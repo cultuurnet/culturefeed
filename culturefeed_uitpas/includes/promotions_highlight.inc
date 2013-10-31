@@ -19,6 +19,9 @@ function culturefeed_uitpas_promotions_highlight_get() {
     $query->max = variable_get('culturefeed_uitpas_promotions_highlight_max', 5);
     $query->cashingPeriodBegin = time();
     $query->unexpired = TRUE;
+    if (variable_get('culturefeed_uitpas_feature_implemented_in_spotlight', FALSE)) {
+      $query->inSpotlight = TRUE;
+    }
     $result = $cf->uitpas()->getPromotionPoints($query);
     if ($result->total) {
       $promotions = $result->objects;
