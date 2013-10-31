@@ -37,24 +37,18 @@ function culturefeed_uitpas_block_configure($delta = '') {
   switch ($delta) {
 
     case 'uitpas_promotions_highlight':
-      $form['max'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Number of promotions to display'),
-        '#default_value' => variable_get('culturefeed_uitpas_promotions_highlight_max', 5),
-      );
-      $form['more_link_text'] = array(
-        '#type' => 'textfield',
-        '#title' => t('More link text'),
-        '#default_value' => variable_get('culturefeed_uitpas_promotions_highlight_more_link_text', t('Show all promotions')),
-      );
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');
+      culturefeed_uitpas_promotions_highlights_settings_get($form);
       break;
 
     case 'uitpas_recent_actions':
-      $form['max'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Number of actions to display'),
-        '#default_value' => variable_get('culturefeed_uitpas_recent_actions_max', 5),
-      );
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/recent_actions');
+      culturefeed_uitpas_recent_actions_settings_get($form);
+      break;
+
+    case 'uitpas_user_register':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
+      culturefeed_uitpas_user_register_settings_get($form);
       break;
 
   }
@@ -71,12 +65,18 @@ function culturefeed_uitpas_block_save($delta = '', $edit = array()) {
   switch ($delta) {
 
     case 'uitpas_promotions_highlight':
-      variable_set('culturefeed_uitpas_promotions_highlight_max', $edit['max']);
-      variable_set('culturefeed_uitpas_promotions_highlight_more_link_text', $edit['more_link_text']);
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');
+      culturefeed_uitpas_promotions_highlights_settings_save($edit);
       break;
 
     case 'uitpas_recent_actions':
-      variable_set('culturefeed_uitpas_recent_actions_max', $edit['max']);
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/recent_actions');
+      culturefeed_uitpas_recent_actions_settings_save($edit);
+      break;
+
+    case 'uitpas_user_register':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
+      culturefeed_uitpas_user_register_settings_save($edit);
       break;
 
   }
@@ -93,38 +93,35 @@ function culturefeed_uitpas_block_view($delta = '') {
   switch ($delta) {
 
     case 'uitpas_promotions_highlight':
-      $promotions = culturefeed_uitpas_get_promotions_highlight();
-      if (count($promotions)) {
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');
+      $content = culturefeed_uitpas_promotions_highlight_get();
+      if ($content) {
 
         $block['subject'] = t("Spotlight promotions");
-        $block['content'] = array(
-          '#theme' => 'culturefeed_uitpas_promotions_highlight',
-          '#promotions' => $promotions,
-        );
+        $block['content'] = $content;
 
       }
       break;
 
     case 'uitpas_recent_actions':
-      $actions = culturefeed_uitpas_get_recent_actions();
-      if (count($actions)) {
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/recent_actions');
+      $content = culturefeed_uitpas_recent_actions_get();
+      if ($content) {
 
         $block['subject'] = t('Recent actions');
-        $block['content'] = array(
-          '#theme' => 'culturefeed_uitpas_recent_actions',
-          '#actions' => $actions,
-        );
+        $block['content'] = $content;
 
       }
       break;
 
     case 'uitpas_user_register':
-      $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-      if (!user_is_logged_in() || !$uitpas_user->passholder) {
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
+      $content = culturefeed_uitpas_user_register_get();
 
-        $block['subject'] = t('Already own an Uitpas ?');
-        $form = drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
-        $block['content'] = $form;
+      if ($content) {
+
+        $block['subject'] = t('Already own an UiTPAS ?');
+        $block['content'] = $content;
 
       }
       break;
