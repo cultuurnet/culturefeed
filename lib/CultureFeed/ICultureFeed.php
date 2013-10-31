@@ -116,6 +116,9 @@ interface ICultureFeed {
 
   public function updateServiceConsumer(CultureFeed_Consumer $consumer);
 
+  /**
+   * @return CultureFeed_Uitpas
+   */
   public function uitpas();
 
   public function getClient();

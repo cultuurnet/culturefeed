@@ -11,29 +11,24 @@
 function culturefeed_uitpas_get_uitpas_user() {
 
   $uitpas_user = new stdClass();
+  $uitpas_user->user = NULL;
+  $uitpas_user->passholder = NULL;
 
   try {
-
     if (DrupalCultureFeed::isCultureFeedUser()) {
-
       $uitpas_user->user = DrupalCultureFeed::getLoggedInUser();
       $uitpas_user->cf = DrupalCultureFeed::getLoggedInUserInstance();
-      try {
+
+      if ($uitpas_user->user) {
         $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
       }
-      catch (Exception $e) {
-        $uitpas_user->passholder = FALSE;
-      }
-
     }
-
   }
   catch (Exception $e) {
-    watchdog_exception('culturefeed_uitpas_helper_uitpas_user', $e);
+    watchdog_exception('culturefeed_uitpas_get_uitpas_user', $e);
   }
 
   return $uitpas_user;
-
 }
 
 /**
