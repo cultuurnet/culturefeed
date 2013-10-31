@@ -19,6 +19,10 @@ function culturefeed_uitpas_promotions_highlight_get() {
     $query->max = variable_get('culturefeed_uitpas_promotions_highlight_max', 5);
     $query->cashingPeriodBegin = time();
     $query->unexpired = TRUE;
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    if ($card_system_id) {
+      $query->owningCardSystemId = $card_system_id;
+    }
     if (variable_get('culturefeed_uitpas_feature_implemented_in_spotlight', FALSE)) {
       $query->inSpotlight = TRUE;
     }

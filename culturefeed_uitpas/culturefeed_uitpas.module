@@ -9,3 +9,21 @@ require_once 'culturefeed_uitpas.blocks.inc';
 require_once 'culturefeed_uitpas.forms.inc';
 require_once 'culturefeed_uitpas.helpers.inc';
 require_once 'culturefeed_uitpas.theme.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_uitpas_menu() {
+  $items = array();
+
+  $items['admin/config/culturefeed/uitpas'] = array(
+    'title' => 'UiTPAS',
+    'description' => 'Change UiTPAS setting like the card system, ...',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_uitpas_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'culturefeed_uitpas.admin.inc',
+  );
+
+  return $items;
+}
