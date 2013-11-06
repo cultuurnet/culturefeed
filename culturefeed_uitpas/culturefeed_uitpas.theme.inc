@@ -17,7 +17,7 @@ function culturefeed_uitpas_theme() {
         'passholder' => NULL,
         'advantages' => array(),
         'promotions' => array(),
-        'coming_promotions' => array(),
+        'upcoming_promotions' => array(),
       ),
       'template' => 'culturefeed-uitpas-my-uitpas-summary',
       'file' => 'theme.inc',

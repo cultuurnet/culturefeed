@@ -25,7 +25,7 @@
   <h3><?php print $promotions_title; ?></h3>
     <?php print $promotions; ?>
   </div>
-  <?php if ($coming_promotions): ?>
+  <?php if ($upcoming_promotions): ?>
   <div class="upcoming_promotions">
     <h3><?php print $upcoming_promotions_title; ?></h3>
     <?php print $upcoming_promotions; ?>

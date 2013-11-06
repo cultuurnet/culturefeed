@@ -71,7 +71,7 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_uitpas_my_uitpas_summary_coming_promotions', $e);
+      watchdog_exception('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions', $e);
     }
 
     return array(
