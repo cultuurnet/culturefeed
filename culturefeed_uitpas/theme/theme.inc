@@ -6,6 +6,105 @@
  */
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_advantages().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
+
+  $advantages = $vars['advantages'];
+  $promotions = $vars['promotions'];
+  $upcoming_promotions = $vars['upcoming_promotions'];
+
+  $base_table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+
+  // Promotions.
+  $header = array(
+    array('data' => t('Trade-in options'), 'colspan' => 2),
+    array('data' => t('valid till')),
+  );
+  $rows = array();
+  if (count($promotions)) {
+
+    foreach ($promotions as $promotion) {
+
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $promotion->points));
+      $points = format_plural($promotion->points, $singular, $plural);
+      $rows[] = array(
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $vars['promotions'] = theme_table($table);
+
+  // Upcoming promotions.
+  $header = array(
+    array('data' => t('Coming trade-in options'), 'colspan' => 2),
+    array('data' => t('valid till')),
+  );
+  $rows = array();
+  if (count($upcoming_promotions)) {
+
+    foreach ($upcoming_promotions as $promotion) {
+
+      $singular = t('1 point');
+      $plural = t('!points points', array('!points' => $promotion->points));
+      $points = format_plural($promotion->points, $singular, $plural);
+      $rows[] = array(
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $vars['upcoming_promotions'] = theme_table($table);
+
+  // Advantages.
+  $header = array(
+    array('data' => t('Advantages')),
+    array('data' => t('valid till')),
+  );
+  $rows = array();
+  if (count($advantages)) {
+
+    foreach ($advantages as $advantage) {
+
+      $rows[] = array(
+        l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $vars['advantages'] = theme_table($table);
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_promotions_highlight().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&$vars) {
