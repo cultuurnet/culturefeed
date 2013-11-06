@@ -50,6 +50,13 @@ function culturefeed_uitpas_recent_actions_settings_get(&$form) {
     '#default_value' => variable_get('culturefeed_uitpas_recent_actions_max', 5),
   );
 
+  $form['default_image'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Default image'),
+    '#default_value' => variable_get('culturefeed_uitpas_user_default_image', ''),
+    '#description' => t('Use full url or an absolute path.')
+  );
+
 }
 
 /**
@@ -58,5 +65,6 @@ function culturefeed_uitpas_recent_actions_settings_get(&$form) {
 function culturefeed_uitpas_recent_actions_settings_save($values) {
 
   variable_set('culturefeed_uitpas_recent_actions_max', $values['max']);
+  variable_set('culturefeed_uitpas_user_default_image', $values['default_image']);
 
 }
