@@ -6,6 +6,54 @@
  */
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_actions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars) {
+
+  $actions = $vars['activons'];
+  $actions_total = $vars['actions_total'];
+  $actions_pager_element = $vars['actions_pager_element'];
+
+  $base_table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+
+  $base_pager = array('tags' => array(), 'parameters' => array());
+
+  // Actions.
+  $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
+  $rows = array();
+  if (count($actions)) {
+
+    foreach ($actions as $action) {
+
+      $singular = '!points point';
+      $plural = '!points points';
+      $rows[] = array(
+        date('j/m/Y', $action->creationDate),
+        $action->nodeTitle,
+        $action->location,
+        format_plural($action->points, $singular, $plural, array('!points' => $action->points)),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
+  }
+
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => $actions_pager_element, 'quantity' => $actions_total);
+  $vars['actions'] = theme_table($table) . theme_pager($pager);
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_promotions_highlight().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&$vars) {
