@@ -54,7 +54,7 @@ function culturefeed_uitpas_recent_actions_settings_get(&$form) {
     '#type' => 'textfield',
     '#title' => t('Default image'),
     '#default_value' => variable_get('culturefeed_uitpas_user_default_image', ''),
-    '#description' => t('Use full url or an absolute path.')
+    '#description' => t('Use full url or an absolute path.'),
   );
 
 }
