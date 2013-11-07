@@ -37,7 +37,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($advantages as $advantage) {
     $links['links'][] = array(
       'title' => $advantage->title,
-      'href' => uitpas_ui_helpers_link_object('advantage', $advantage),
+      'href' => '<front>', /*uitpas_ui_helpers_link_object('advantage', $advantage),*/
     );
   }
   $vars['advantages'] = theme_links($links);
@@ -52,7 +52,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($promotions as $promotion) {
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
-      'href' => '</front>', /*uitpas_ui_helpers_link_object('promotion', $promotion),*/
+      'href' => '<front>', /*uitpas_ui_helpers_link_object('promotion', $promotion),*/
     );
   }
   $vars['promotions'] = theme_links($links);
