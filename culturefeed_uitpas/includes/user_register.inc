@@ -104,7 +104,7 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
           break;
 
         case 'PARSE_INVALID_UITPASNUMBER':
-          $error = variable_get('culturefeed_uitpas_user_register_validation_parse_invalid_uitpasnumber', t('Invalid uitpas number.'));
+          $error = variable_get('culturefeed_uitpas_user_register_validation_parse_invalid_uitpasnumber', t('Invalid UiTPAS number.'));
           form_set_error('number', $error);
           break;
 
@@ -112,6 +112,30 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
           $error = variable_get('culturefeed_uitpas_user_register_validation_user_already_activated', t('User already activated.'));
           form_set_error('number', $error);
           break;
+
+        case 'MISSING_REQUIRED_FIELDS':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_user_missing_required_fields', t('Missing required fields.'));
+          form_error($form, $error);
+          break;
+
+        case 'PARSE_INVALID_DATE':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_parse_invalid_date', t('Invalid date.'));
+          form_set_error('dob', $error);
+          break;
+
+        case 'UNKNOWN_UITPASNUMBER':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_unknown_uitpasnumber', t('Unknown UiTPAS number.'));
+          form_set_error('number', $error);
+          break;
+
+        case 'ACTION_FAILED':
+          $error = variable_get('culturefeed_uitpas_user_register_validation_action_failed', t('Action failed.'));
+          form_error($form, $error);
+          break;
+
+        default:
+          form_error($form, t('We are unable to process your request at this moment. Please try again later.'));
+          watchdog(__FUNCTION__, 'Unexpected error code when validating UiTPAS: @code', array('@code' => $e->error_code), WATCHDOG_WARNING);
       }
     }
     catch (Exception $e) {
