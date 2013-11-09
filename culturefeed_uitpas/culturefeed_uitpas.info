@@ -4,3 +4,5 @@ package = CultureFeed
 core = 7.x
 dependencies[] = culturefeed
 configure = admin/config/culturefeed/uitpas
+
+files[] = views/plugins/culturefeed_uitpas_promotions_query.inc
