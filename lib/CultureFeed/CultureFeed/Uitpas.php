@@ -179,13 +179,12 @@ interface CultureFeed_Uitpas {
   /**
    * Get the activitation link for a passholder which is not activated online yet.
    *
-   * @param string $uitpas_number
-   * @param DateTime $date_of_birth
+   * @param CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data
    * @param mixed $destination_callback
    *
    * @return string
    */
-  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL);
+  public function getPassholderActivationLink(CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data, $destination_callback = NULL);
 
   /**
    * Constructs an activation link,

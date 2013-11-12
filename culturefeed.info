@@ -64,6 +64,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/Query/SearchEventsOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/Query/SearchTicketSalesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CultureEvent.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/UitIdUser.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/ActivationData.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/SearchPassholdersOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/SearchPromotionPointsOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Query/SearchCashedInPromotionPointsOptions.php
