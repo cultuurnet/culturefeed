@@ -79,7 +79,19 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
       );
       $callback_url = url('culturefeed/oauth/authorize', $callback_options);
 
-      $link = $cf->uitpas()->getPassholderActivationLink($number, $dob, function () use ($cf, $callback_url) {
+      $cardsystem_id = variable_get('culturefeed_uitpas_cardsystem_id');
+
+      if (!$cardsystem_id) {
+        form_error($form, t('The card system id must be set in the settings of the CultureFeed UiTPAS module.'));
+        return;
+      }
+
+      $activation_data = new CultureFeed_Uitpas_Passholder_Query_ActivationData();
+      $activation_data->uitpasNumber = $number;
+      $activation_data->dob = $dob;
+      $activation_data->cardSystemId = $cardsystem_id;
+
+      $link = $cf->uitpas()->getPassholderActivationLink($activation_data, function () use ($cf, $callback_url) {
 
         $token = $cf->getRequestToken($callback_url);
 
