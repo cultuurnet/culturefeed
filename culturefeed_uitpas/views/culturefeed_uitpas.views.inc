@@ -46,7 +46,7 @@ function culturefeed_uitpas_views_data() {
     'title' => t('ID'),
     'help' => t('The promotion ID.'),
     'field' => array(
-      'handler' => 'views_handler_field_numeric',
+      'handler' => 'views_handler_field',
       'click sortable' => TRUE,
     ),
   );
@@ -66,6 +66,33 @@ function culturefeed_uitpas_views_data() {
     'field' => array(
       'handler' => 'views_handler_field_numeric',
       'click sortable' => TRUE,
+    ),
+  );
+
+  $data['uitpas_promotions']['cashinstate'] = array(
+    'title' => t('Cashin state'),
+    'help' => t('The cashin state of the promotion.'),
+    'field' => array(
+      'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+  );
+
+  $data['uitpas_promotions']['unexpired'] = array(
+    'title' => t('Unexpired'),
+    'help' => t('If the promotion is not expired yet.'),
+    'filter' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_filter_boolean',
+      'label' => t('Unexpired'),
+    ),
+  );
+
+  $data['uitpas_promotions']['owningcardsystemid'] = array(
+    'title' => t('Owning card system'),
+    'help' => t('The card system owning the promotion.'),
+    'filter' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_filter_card_system_id',
+      'filter_property' => 'owningCardSystemId',
     ),
   );
 
