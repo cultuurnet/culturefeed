@@ -63,6 +63,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
 function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form_state) {
 
   try {
+
     $uitpas_user = $form_state['values']['uitpas_user'];
     $cf = $form_state['values']['cf'];
 
@@ -116,11 +117,10 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
 }
 
 /**
- * Saves settings for recent actions.
+ * Saves settings for registration confirmation.
+ * 
+ * Not needed for the moment as settings are saved via the 
+ * system_settings_form on admin/config/culturefeed/uitpas.
  */
 function culturefeed_uitpas_registration_confirmation_settings_save($values) {
-
-  /* Not needed for the moment as settings are saved via the 
-   * system_settings_form on admin/config/culturefeed/uitpas */;
-
 }
