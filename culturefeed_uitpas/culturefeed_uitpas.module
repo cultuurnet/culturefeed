@@ -14,21 +14,10 @@ require_once 'culturefeed_uitpas.theme.inc';
 /**
  * Module implements hook_culturefeed_login_redirect_destination_alter().
  */
-function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination, $account) {
+function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
-  object_log('destination', $destination);
-  object_log('account', $account);
-
-  try {
-
-    if (isset($account->culturefeed_uid)) {
-      $cf = DrupalCultureFeed::getLoggedInUserInstance();
-      $cf->uitpas()->getPassholderByUser($account->culturefeed_uid);
-    }
-
-  }
-  catch (Exception $e) {
-    $destination = 'registration_confirmation';
+  if (isset($_GET['isnewpassholder'])) {
+    drupal_goto('registration_confirmation');
   }
 
 }

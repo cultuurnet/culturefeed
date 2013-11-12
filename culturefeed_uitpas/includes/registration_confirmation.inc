@@ -40,7 +40,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
 
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Make my UITPAS actions available for others'),
+    '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', 'Make my UiTPAS actions available for others'),
     '#default_value' => 1,
   );
 
@@ -80,9 +80,47 @@ function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form
   }
   catch (Exception $e) {
 
-    watchdog_exception('uitpas_ui_content_type_registered_form', $e);
+    watchdog_exception('culturefeed_uitpas_registration_confirmation', $e);
     drupal_set_message(t('An error occured.'), 'error');
 
   }
+
+}
+
+/**
+ * Returns form elements for registration confirmation settings.
+ */
+function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
+
+  $form['registration_confirmation'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('UiTPAS registration confirmation settings'),
+    '#collapsible' => TRUE,
+  );
+  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Page title'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
+  );
+  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_intro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Intro text'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro'),
+  );
+  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Actions label'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', 'Make my UiTPAS actions available for others'),
+  );
+
+}
+
+/**
+ * Saves settings for recent actions.
+ */
+function culturefeed_uitpas_registration_confirmation_settings_save($values) {
+
+  /* Not needed for the moment as settings are saved via the 
+   * system_settings_form on admin/config/culturefeed/uitpas */;
 
 }
