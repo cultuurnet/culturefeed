@@ -96,5 +96,14 @@ function culturefeed_uitpas_views_data() {
     ),
   );
 
+  $data['uitpas_promotions']['applicablecardsystemid'] = array(
+    'title' => t('Applicable card system'),
+    'help' => t('The card system the promotion is applicable to.'),
+    'filter' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_filter_card_system_id',
+      'filter_property' => 'applicableCardSystemId',
+    ),
+  );
+
   return $data;
 }
