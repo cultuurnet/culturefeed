@@ -10,3 +10,25 @@ require_once 'culturefeed_uitpas.forms.inc';
 require_once 'culturefeed_uitpas.helpers.inc';
 require_once 'culturefeed_uitpas.menu.inc';
 require_once 'culturefeed_uitpas.theme.inc';
+
+/**
+ * Module implements hook_culturefeed_login_redirect_destination_alter().
+ */
+function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination, $account) {
+
+  object_log('destination', $destination);
+  object_log('account', $account);
+
+  try {
+
+    if (isset($account->culturefeed_uid)) {
+      $cf = DrupalCultureFeed::getLoggedInUserInstance();
+      $cf->uitpas()->getPassholderByUser($account->culturefeed_uid);
+    }
+
+  }
+  catch (Exception $e) {
+    $destination = 'registration_confirmation';
+  }
+
+}

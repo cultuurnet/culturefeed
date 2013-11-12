@@ -146,7 +146,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         else {
 
           $destination = '';
-          drupal_alter('culturefeed_login_redirect_destination', $destination);
+          drupal_alter('culturefeed_login_redirect_destination', $destination, $acount);
 
           if (!empty($destination)) {
             $action = 'window.opener.location.href="' . url($destination, array('absolute' => TRUE)) . '";';
@@ -175,7 +175,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         }
         else {
           $destination = '';
-          $destination = drupal_alter('culturefeed_login_redirect_destination', $destination);
+          $destination = drupal_alter('culturefeed_login_redirect_destination', $destination, $account);
           drupal_goto($destination);
         }
       }
