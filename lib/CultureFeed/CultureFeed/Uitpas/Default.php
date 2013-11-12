@@ -610,17 +610,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the activitation link for a passholder which is not activated online yet.
-   *
-   * @param string $uitpas_number
-   * @param DateTime $date_of_birth
-   * @param mixed $destination_callback
+   * {@inheritdoc}
    */
-  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL) {
-    $path = "uitpas/passholder/{$uitpas_number}/activation";
+  public function getPassholderActivationLink(CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data, $destination_callback = NULL) {
+    $path = "uitpas/passholder/{$activation_data->uitpasNumber}/activation";
 
     $params = array(
-      'dob' => $date_of_birth->format('Y-m-d'),
+      'dob' => $activation_data->dob->format('Y-m-d'),
+      'cardSystemId' => $activation_data->cardSystemId,
     );
 
     $result = $this->oauth_client->consumerGetAsXml($path, $params);
