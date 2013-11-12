@@ -11,7 +11,7 @@
 function culturefeed_uitpas_promotion_details_get($promotion, $slug) {
 
   if ($slug != culturefeed_search_slug($promotion->title)) {
-    drupal_goto('promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id);
+    drupal_goto('promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id, array(), 301);
   }
 
   return array(
