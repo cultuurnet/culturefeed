@@ -12,5 +12,5 @@ function culturefeed_uitpas_install() {
   // on the backend.
   // Once a feature gets implemented on the backend, toggle the variable here
   // to TRUE to enable it in this module as well.
-  variable_set('culturefeed_uitpas_feature_implemented_in_spotlight', FALSE);
+  variable_set('culturefeed_uitpas_feature_implemented_in_spotlight', TRUE);
 }
