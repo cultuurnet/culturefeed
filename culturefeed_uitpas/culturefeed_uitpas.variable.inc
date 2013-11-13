@@ -11,6 +11,14 @@
 function culturefeed_uitpas_variable_info() {
 
   return array(
+    'culturefeed_uitpas_advantages_promotions_info' => array(
+      'title' => t('Culturefeed uitpas: advantages promotions: info'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_advantages_promotions_title' => array(
+      'title' => t('Culturefeed uitpas: advantages promotions: title'),
+      'localize' => TRUE,
+    ),
     'culturefeed_uitpas_promotions_highlight_more_link_text' => array(
       'title' => t('Culturefeed uitpas: promotions highlight: more link text'),
       'localize' => TRUE,

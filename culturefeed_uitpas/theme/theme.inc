@@ -6,6 +6,81 @@
  */
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_advantages_promotions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
+
+  $advantages = $vars['advantages'];
+  $advantages_total = $vars['advantages_total'];
+  $promotions = $vars['promotions'];
+  $promotions_total = $vars['promotions_total'];
+
+  $base_table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $base_pager = array('tags' => array(), 'parameters' => array());
+
+  // Advantages.
+  $header = array(t('Welcome advantages'), t('valid till'));
+  $rows = array();
+  if (count($advantages)) {
+
+    foreach ($advantages as $advantage) {
+
+      $rows[] = array(
+        l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 2));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => 0, 'quantity' => $advantages_total);
+  $vars['advantages'] = theme_table($table) . theme_pager($pager);
+
+  // Promotions.
+  $header = array(
+    array('data' => t('Promotions'), 'colspan' => 2),
+    t('valid till'),
+  );
+  $rows = array();
+  if (count($promotions)) {
+
+    foreach ($promotions as $promotion) {
+
+      $singular = '%points point';
+      $plural = '%points points';
+      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
+      $rows[] = array(
+        array('data' => $points, 'class' => array('uitpas_ui_points')),
+        l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
+  }
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => 1, 'quantity' => $promotions_total);
+  $vars['promotions'] = theme_table($table) . theme_pager($pager);
+
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_advantages_promotions_info');
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_promotions_highlight().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&$vars) {

@@ -19,6 +19,12 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('administer site configuration'),
       'file' => 'culturefeed_uitpas.admin.inc',
     ),
+    'advantages_promotions' => array(
+      'title' => variable_get('culturefeed_uitpas_advantages_promotions_title', 'UiTPAS advantages'),
+      'page callback' => 'culturefeed_uitpas_advantages_promotions_get',
+      'file' => 'includes/advantages_promotions.inc',
+      'access arguments' => array('access content'),
+    ),
     'registration_confirmation' => array(
       'title' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
       'page callback' => 'culturefeed_uitpas_registration_confirmation_get',
