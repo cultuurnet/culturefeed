@@ -162,6 +162,14 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
 
 
   protected function manipulatePostData(&$data) {
+    if (isset($data['inSpotlight'])) {
+      $data['inSpotlight'] = $data['inSpotlight'] ? "true" : "false";
+    }
+
+    if (isset($data['unexpired'])) {
+      $data['unexpired'] = $data['unexpired'] ? "true" : "false";
+    }
+
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
     }
