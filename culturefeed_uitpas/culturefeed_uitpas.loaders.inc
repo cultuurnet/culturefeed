@@ -12,9 +12,9 @@ function uitpas_advantage_load($id) {
 
   try {
 
-      $cf = DrupalCultureFeed::getConsumerInstance();
-      $advantages = array($cf->uitpas()->getWelcomeAdvantage($id));
-      return $advantages[0];
+    $cf = DrupalCultureFeed::getConsumerInstance();
+    $advantages = array($cf->uitpas()->getWelcomeAdvantage($id));
+    return $advantages[0];
 
   }
   catch (Exception $e) {

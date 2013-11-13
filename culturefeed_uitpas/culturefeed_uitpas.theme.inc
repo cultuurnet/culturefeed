@@ -12,7 +12,7 @@ function culturefeed_uitpas_theme() {
 
   return array(
     'culturefeed_uitpas_advantage' => array(
-      'variables' => array('promotion' => NULL),
+      'variables' => array('advantage' => NULL),
       'template' => 'culturefeed-uitpas-advantage',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',

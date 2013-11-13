@@ -5,18 +5,20 @@
  * Culturefeed uitpas preprocess functions.
  */
 
- /**
+/**
  * Implements hook_preprocess_culturefeed_uitpas_advantage().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   $advantage = $vars['advantage'];
+
+  // Period.
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
 
     $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
     if ($advantage->cashingPeriodEnd) {
-      $period = t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
+      $period .= ' ' . t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
 
@@ -29,7 +31,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
 
-  // Availability
+  // Availability.
   $valid_for_cities = $advantage->validForCities;
   asort($valid_for_cities);
   $list = array(
@@ -49,6 +51,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   $promotion = $vars['promotion'];
 
+  // Points.
   $singular = 'Needed points: !points point';
   $plural = 'Needed points: !points points';
   $vars['points'] = format_plural($promotion->points, $singular, $plural, array('!points' => $promotion->points));
