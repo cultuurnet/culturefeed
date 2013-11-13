@@ -171,7 +171,12 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
    * Gender of the passholder who checked in.
    * @var string
    */
-  public $gender;  
+  public $gender;
+
+  /**
+   * @var integer[]
+   */
+  public $organiserCardSystems;
 
   /**
    * Instantiates a new checkin activity object based on the passed XML representation.
@@ -206,6 +211,12 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
     $checkin->eventLocationLat = $object->xpath_float('eventLocationLat');
     $checkin->eventLocationLon = $object->xpath_float('eventLocationLon');
     $checkin->gender = $object->xpath_str('gender');
+
+    $organiserCardSystems = $object->xpath('organiserCardSystems/organiserCardSystem');
+
+    foreach ($organiserCardSystems as $organiserCardSystemId) {
+      $checkin->organiserCardSystems[] = (int) dom_import_simplexml($organiserCardSystemId)->textContent;
+    }
 
     return $checkin;
   }
