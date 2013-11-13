@@ -16,7 +16,10 @@ function culturefeed_uitpas_recent_actions_get() {
     $cf = DrupalCultureFeed::getConsumerInstance();
     $query = new CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions();
     $query->max = variable_get('culturefeed_uitpas_recent_actions_max', 5);
-    $query->organiserCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    if ($card_system_id) {
+      $query->organiserCardSystemId = $card_system_id;
+    }
     $result = $cf->uitpas()->searchCheckins($query, NULL, CultureFeed_Uitpas::CONSUMER_REQUEST);
     if ($result->total) {
       $actions = $result->objects;
