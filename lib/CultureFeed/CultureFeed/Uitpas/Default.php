@@ -751,18 +751,23 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Search for checkins
-   *
-   * @param CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query The query
+   * {@inheritdoc}
    */
-  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL) {
+  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL, $method = CultureFeed_Uitpas::USER_ACCESS_TOKEN) {
     $data = $query->toPostData();
 
     if ($consumer_key_counter) {
       $data['balieConsumerKey'] = $consumer_key_counter;
     }
 
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchCheckins', $data);
+    $path = 'uitpas/cultureevent/searchCheckins';
+
+    if ($method == CultureFeed_Uitpas::USER_ACCESS_TOKEN) {
+      $result = $this->oauth_client->authenticatedGetAsXml($path, $data);
+    }
+    else {
+      $result = $this->oauth_client->consumerGetAsXml($path, $data);
+    }
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
