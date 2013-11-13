@@ -121,6 +121,13 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
    */
   public $unitsTaken;
 
+  /**
+   * If the promotion should be highlighted or not.
+   *
+   * @var boolean
+   */
+  public $inSpotlight;
+
   /*
    * The cash-in state of the welcome advantage
    *
@@ -138,6 +145,7 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $promotion = new CultureFeed_Uitpas_Passholder_PointsPromotion();
     $promotion->id = $object->xpath_int('id');
+    $promotion->inSpotlight = $object->xpath_bool('inSpotlight');
     $promotion->title = $object->xpath_str('title');
     $promotion->description1 = $object->xpath_str('description1');
     $promotion->description2 = $object->xpath_str('description2');   
