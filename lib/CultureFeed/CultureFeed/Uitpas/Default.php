@@ -617,7 +617,6 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $params = array(
       'dob' => $activation_data->dob->format('Y-m-d'),
-      'cardSystemId' => $activation_data->cardSystemId,
     );
 
     $result = $this->oauth_client->consumerGetAsXml($path, $params);

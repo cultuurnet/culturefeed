@@ -89,7 +89,6 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
       $activation_data = new CultureFeed_Uitpas_Passholder_Query_ActivationData();
       $activation_data->uitpasNumber = $number;
       $activation_data->dob = $dob;
-      $activation_data->cardSystemId = $cardsystem_id;
 
       $link = $cf->uitpas()->getPassholderActivationLink($activation_data, function () use ($cf, $callback_url) {
 

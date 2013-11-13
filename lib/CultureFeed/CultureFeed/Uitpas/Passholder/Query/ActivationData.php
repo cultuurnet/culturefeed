@@ -15,9 +15,4 @@ class CultureFeed_Uitpas_Passholder_Query_ActivationData extends CultureFeed_Uit
    */
   public $dob;
 
-  /**
-   * @var integer
-   */
-  public $cardSystemId;
-
 }
