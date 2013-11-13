@@ -236,6 +236,8 @@ interface CultureFeed_Uitpas {
    * @param string $consumer_key_counter Optional consumer key of the counter.
    * @param string $method The OAuth request method, either consumer request or
    *   user request.
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL, $method = CultureFeed_Uitpas::USER_ACCESS_TOKEN);
 
