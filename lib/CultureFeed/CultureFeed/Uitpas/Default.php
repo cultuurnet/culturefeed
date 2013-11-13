@@ -804,7 +804,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $checkins = array();
-    $objects = $xml->xpath('/response/checkinActivities/checkinActivitiy');
+    $objects = $xml->xpath('/response/checkinActivities/checkinActivity');
     $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
