@@ -17,7 +17,7 @@ require_once 'culturefeed_uitpas.theme.inc';
 function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
   if (isset($_GET['isnewpassholder'])) {
-    drupal_goto('registration_confirmation');
+    $destination = 'registration_confirmation';
   }
 
 }
