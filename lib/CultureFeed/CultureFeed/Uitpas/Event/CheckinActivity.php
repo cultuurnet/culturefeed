@@ -112,7 +112,7 @@ class CultureFeed_Uitpas_Event_CheckinActivity extends CultureFeed_Uitpas_ValueO
    *
    * @var string
    */
-  public $organizer;
+  public $organiser;
 
   /**
    * The location of the participant that's checking in to an event
