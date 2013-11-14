@@ -213,6 +213,8 @@ abstract class DrupalCultureFeedBase {
       $http_client = $http_client_factory->createHttpClient();
     }
 
+    $http_client->setTimeout(variable_get('culturefeed_http_client_timeout', 10));
+
     if ($http_client instanceof CultureFeed_ProxySupportingClient) {
       $uri = @parse_url($endpoint);
       $proxy_server = variable_get('proxy_server', '');
