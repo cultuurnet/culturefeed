@@ -16,7 +16,7 @@ function culturefeed_uitpas_theme() {
         'uitpas_user' => NULL,
         'passholder' => NULL,
       ),
-      'template' => 'culturefeed-uitpas-profile',
+      'template' => 'culturefeed-uitpas-profile-details',
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     ),
