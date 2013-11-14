@@ -9,8 +9,8 @@ module_load_include('inc', 'culturefeed_search_ui', 'includes/helpers');
 /**
  * Constants to define the available pager types.
  */
-define("CULTUREFEED_SEARCH_UI_PAGER_NORMAL", 0);
-define("CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL", 1);
+define("CULTUREFEED_SEARCH_UI_PAGER_NORMAL", 1);
+define("CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL", 0);
 
 define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 
