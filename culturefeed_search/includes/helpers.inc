@@ -430,7 +430,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
 
   // Skip first level event types. (specific for UIV).
   if ($domain == 'eventtype') {
-    $query->condition('cst.parent', '', '!=');
+    $query->condition('cst.p1', '', '!=');
   }
 
   // Add extra conditions.
