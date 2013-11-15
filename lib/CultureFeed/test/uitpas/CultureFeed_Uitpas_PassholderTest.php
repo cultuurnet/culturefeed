@@ -94,5 +94,20 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('ACTIVE', $cardsystemSpecific->currentCard->status);
     $this->assertEquals('1000001500601', $cardsystemSpecific->currentCard->uitpasNumber);
     $this->assertNull($cardsystemSpecific->currentCard->city);
+
+    $this->assertEquals('BRUSSEL', $passholder->city);
+    //$this->assertEquals(, $passholder->dateOfBirth);
+    $this->assertEquals('Frontend', $passholder->firstName);
+    $this->assertEquals('FEMALE', $passholder->gender);
+    //$this->assertEquals('', $passholder->inszNumberHash);
+    $this->assertEquals('Tester', $passholder->name);
+    //$this->assertEquals(2, $passholder->numberOfCheckins);
+    $this->assertEquals(10, $passholder->points);
+    $this->assertEquals(1060, $passholder->postalCode);
+    $this->assertEquals('3456548c761dfbf68bb4474e69ac8a67', $passholder->registrationBalieConsumerKey);
+    $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_UitIdUser', $passholder->uitIdUser);
+
+    $this->assertEquals('a81b1741-5e97-4eee-ab30-a71865fc266a', $passholder->uitIdUser->id);
+    $this->assertEquals('Frontend Tester', $passholder->uitIdUser->nick);
   }
 }
