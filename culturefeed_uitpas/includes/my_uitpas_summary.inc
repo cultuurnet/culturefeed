@@ -70,6 +70,9 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
       $query->minPoints = $passholder->points + 1;
       $query->max = 2;
       $query->cashingPeriodBegin = time();
+      if ($card_system_id) {
+        $query->owningCardSystemId = $card_system_id;
+      }
       $query->unexpired = TRUE;
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
