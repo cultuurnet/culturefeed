@@ -10,9 +10,15 @@
  */
 function culturefeed_uitpas_profile_advantages_get() {
 
-  $uitpas_user = culturefeed_uitpas_get_uitpas_user(); object_log('uitpas_user', $uitpas_user);
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
+
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    $uitpas_number = 0;
+    if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
+      $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    }
 
     $advantages = array();
     $promotions = array();
@@ -22,7 +28,7 @@ function culturefeed_uitpas_profile_advantages_get() {
     try {
 
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $uitpas_user->passholder->uitpasNumber;
+      $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
       $result = $uitpas_user->cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
@@ -38,7 +44,7 @@ function culturefeed_uitpas_profile_advantages_get() {
     try {
 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpasNumber = $uitpas_user->passholder->uitpasNumber;
+      $query->uitpasNumber = $uitpas_number;
       $query->maxPoints = $uitpas_user->passholder->points;
       $query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
@@ -58,7 +64,7 @@ function culturefeed_uitpas_profile_advantages_get() {
     try {
 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpasNumber = $uitpas_user->passholder->uitpasNumber;
+      $query->uitpasNumber = $uitpas_number;
       $query->minPoints = $uitpas_user->passholder->points + 1;
       $query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
@@ -77,7 +83,7 @@ function culturefeed_uitpas_profile_advantages_get() {
     // Title.
     $block = new stdClass();
     $singular = t('My advantages (1 point saved)');
-    $plural = t('My advantages (!points points saved)', array('!points' => $passholder->points));
+    $plural = t('My advantages (!points points saved)', array('!points' => $uitpas_user->passholder->points));
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
     return array(
