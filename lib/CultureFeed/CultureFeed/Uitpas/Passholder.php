@@ -130,13 +130,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $placeOfBirth;
 
   /**
-   * The UitPas number of the passholder. (Required)
-   *
-   * @var string
-   */
-  public $uitpasNumber;
-
-  /**
    * The price the passholder pays for his UitPas.
    *
    * @var string
@@ -178,15 +171,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var CultureFeed_Uitpas_Passholder_UitIdUser
    */
   public $uitIdUser;
-
-  /**
-   * The current card
-   *
-   * @var CultureFeed_Uitpas_Passholder_Card
-   * @deprecated Use currentCard property of cardSystemSpecific property
-   *   instead.
-   */
-  public $currentCard;
 
   /**
    * True if the uitpas has been blocked
@@ -234,7 +218,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   /**
    * Card system specific information of the passholder.
    *
-   * @var CultureFeed_Uitpas_Passholder_CardSystemSpecific
+   * @var CultureFeed_Uitpas_Passholder_CardSystemSpecific[]
    */
   public $cardSystemSpecific;
 
@@ -263,7 +247,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     }
 
     $readOnlyProperties = array(
-      'currentCard',
       'cardSystemSpecific',
       'uitIdUser',
       'postDataEmptyPropertiesToKeep',
@@ -309,17 +292,17 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->kansenStatuutExpired = $object->xpath_bool('kansenStatuutExpired');
     $passholder->kansenStatuutInGracePeriod = $object->xpath_bool('kansenStatuutInGracePeriod');
     $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
-    $passholder->cardSystemSpecific = CultureFeed_Uitpas_Passholder_CardSystemSpecific::createFromXML($object->xpath('cardSystemSpecific', false));
 
-    // For backwards compatibility.
-    $passholder->currentCard = $passholder->cardSystemSpecific->currentCard;
+    foreach ($object->xpath('cardSystemSpecific') as $cardSystemSpecific) {
+      $cardSystemId = $cardSystemSpecific->xpath_int('cardSystem/id', FALSE);
+      $passholder->cardSystemSpecific[$cardSystemId] = CultureFeed_Uitpas_Passholder_CardSystemSpecific::createFromXML($cardSystemSpecific);
+    }
 
     $passholder->blocked = $object->xpath_bool('blocked');
     $passholder->verified = $object->xpath_bool('verified');
     //$passholder->memberships = $object->xpath_bool('memberships');
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
-    $passholder->uitpasNumber = $object->xpath_str('cardSystemSpecific/currentCard/uitpasNumber/uitpasNumber');
     $passholder->moreInfo = $object->xpath_str('moreInfo');
     $passholder->schoolConsumerKey = $object->xpath_str('schoolConsumerKey');
     $passholder->picture = $object->xpath_str('picture');
