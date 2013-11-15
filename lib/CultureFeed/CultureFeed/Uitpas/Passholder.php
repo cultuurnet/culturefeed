@@ -229,6 +229,23 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    */
   protected $postDataEmptyPropertiesToKeep = array();
 
+  /**
+   * How many times the passholder checked in somewhere.
+   *
+   * @var integer
+   */
+  public $numberOfCheckins;
+
+  /**
+   * Hash of the INSZ number.
+   *
+   * @var string
+   */
+  public $inszNumberHash;
+
+  /**
+   * {@inheritdoc}
+   */
   protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
       $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
@@ -250,6 +267,7 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       'cardSystemSpecific',
       'uitIdUser',
       'postDataEmptyPropertiesToKeep',
+      'numberOfCheckins',
     );
 
     if (isset($this->uitIdUser)) {
@@ -300,7 +318,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
 
     $passholder->blocked = $object->xpath_bool('blocked');
     $passholder->verified = $object->xpath_bool('verified');
-    //$passholder->memberships = $object->xpath_bool('memberships');
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
     $passholder->moreInfo = $object->xpath_str('moreInfo');
@@ -308,11 +325,13 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->picture = $object->xpath_str('picture');
 
     foreach ($object->xpath('memberships/membership') as $membership) {
-      $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
+      $passholder->memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
     }
-    if (isset($memberships)) {
-      $passholder->memberships = $memberships;
-    }
+
+    $passholder->numberOfCheckins = $object->xpath_int('numberOfCheckins');
+
+    $passholder->inszNumberHash = $object->xpath_str('inszNumberHash');
+
     return $passholder;
   }
 
