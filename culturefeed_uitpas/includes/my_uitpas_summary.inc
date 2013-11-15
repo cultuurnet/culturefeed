@@ -23,12 +23,17 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
     $promotions = array();
     $upcoming_promotions = array();
 
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+
     // Welcome advantages.
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $passholder->uitpasNumber;
       $query->cashedIn = FALSE;
       $query->max = 2;
+      if ($card_system_id) {
+        $query->owningCardSystemId = $card_system_id;
+      }
       $result = $cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       if ($result->total) {
         $advantages = $result->objects;
@@ -46,6 +51,9 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_DESC;
       $query->max = 4;
+      if ($card_system_id) {
+        $query->owningCardSystemId = $card_system_id;
+      }
       $query->unexpired = TRUE;
       $result = $cf->uitpas()->getPromotionPoints($query);
       if ($result->total) {
