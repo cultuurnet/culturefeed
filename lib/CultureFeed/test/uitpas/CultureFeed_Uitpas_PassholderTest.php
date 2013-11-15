@@ -67,4 +67,32 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
 
     $this->assertArrayNotHasKey('schoolConsumerKey', $postData);
   }
+
+  public function testCreateFromXML() {
+    $xml = file_get_contents(dirname(__FILE__) . '/data/passholder.xml');
+    $simple_xml = new CultureFeed_SimpleXMLElement($xml);
+
+    $passholder = CultureFeed_Uitpas_Passholder::createFromXML($simple_xml);
+
+    $this->assertInstanceOf('CultureFeed_Uitpas_Passholder', $passholder);
+
+    $this->assertInternalType('array', $passholder->cardSystemSpecific);
+    $this->assertCount(2, $passholder->cardSystemSpecific);
+
+    $keys = array_keys($passholder->cardSystemSpecific);
+    $this->assertEquals(array(4,6), $keys);
+
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_CardSystemSpecific', $passholder->cardSystemSpecific);
+
+    $cardsystemSpecific = $passholder->cardSystemSpecific[4];
+    $this->assertNull($cardsystemSpecific->currentCard);
+
+    $cardsystemSpecific = $passholder->cardSystemSpecific[6];
+    $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_Card', $cardsystemSpecific->currentCard);
+
+    $this->assertEquals(FALSE, $cardsystemSpecific->currentCard->kansenpas);
+    $this->assertEquals('ACTIVE', $cardsystemSpecific->currentCard->status);
+    $this->assertEquals('1000001500601', $cardsystemSpecific->currentCard->uitpasNumber);
+    $this->assertNull($cardsystemSpecific->currentCard->city);
+  }
 }
