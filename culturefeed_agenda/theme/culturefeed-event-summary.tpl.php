@@ -66,6 +66,11 @@
     <dd><?php print $keywords; ?></dd>
     <?php endif; ?>
 
+    <?php if (!empty($perfomers)): ?>
+    <dt><?php print t('With'); ?></dt>
+    <dd><?php print $perfomers; ?></dd>
+    <?php endif; ?>
+
   </dl>
 
   <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
