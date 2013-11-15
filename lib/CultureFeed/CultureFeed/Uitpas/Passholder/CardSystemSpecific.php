@@ -12,7 +12,10 @@ class CultureFeed_Uitpas_Passholder_CardSystemSpecific {
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $cardSystemSpecific = new self();
-    $cardSystemSpecific->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard', false));
+    $currentCard = $object->xpath('currentCard', false);
+    if ($currentCard instanceof CultureFeed_SimpleXMLElement) {
+      $cardSystemSpecific->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($currentCard);
+    }
 
     return $cardSystemSpecific;
   }
