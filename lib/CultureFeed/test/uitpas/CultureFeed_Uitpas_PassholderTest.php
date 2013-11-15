@@ -96,12 +96,14 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
     $this->assertNull($cardsystemSpecific->currentCard->city);
 
     $this->assertEquals('BRUSSEL', $passholder->city);
-    //$this->assertEquals(, $passholder->dateOfBirth);
+    $this->assertEquals(378691200, $passholder->dateOfBirth);
     $this->assertEquals('Frontend', $passholder->firstName);
     $this->assertEquals('FEMALE', $passholder->gender);
-    //$this->assertEquals('', $passholder->inszNumberHash);
+    $this->assertEquals('62cb6cc2a58d1b23d85b5993894c2fcd2d55ed01c0f6ff1f4f0ee87ac2b83dd9', $passholder->inszNumberHash);
+    $this->assertInternalType('array', $passholder->memberships);
+    $this->assertCount(0, $passholder->memberships);
     $this->assertEquals('Tester', $passholder->name);
-    //$this->assertEquals(2, $passholder->numberOfCheckins);
+    $this->assertEquals(2, $passholder->numberOfCheckins);
     $this->assertEquals(10, $passholder->points);
     $this->assertEquals(1060, $passholder->postalCode);
     $this->assertEquals('3456548c761dfbf68bb4474e69ac8a67', $passholder->registrationBalieConsumerKey);
@@ -109,5 +111,6 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals('a81b1741-5e97-4eee-ab30-a71865fc266a', $passholder->uitIdUser->id);
     $this->assertEquals('Frontend Tester', $passholder->uitIdUser->nick);
+    $this->assertEquals(FALSE, $passholder->verified);
   }
 }
