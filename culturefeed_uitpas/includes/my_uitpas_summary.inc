@@ -16,6 +16,7 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $user = $uitpas_user->user;
+    /** @var CultureFeed_Uitpas_Passholder $passholder **/
     $passholder = $uitpas_user->passholder;
     $cf = $uitpas_user->cf;
 
@@ -28,7 +29,12 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
     // Welcome advantages.
     try {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
-      $query->uitpas_number = $passholder->uitpasNumber;
+      $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+      if ($card_system_id &&
+          isset($passholder->cardSystemSpecific[$card_system_id]) &&
+          isset($passholder->cardSystemSpecific[$card_system_id]->currentCard)) {
+        $query->uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+      }
       $query->cashedIn = FALSE;
       $query->max = 2;
       if ($card_system_id) {
