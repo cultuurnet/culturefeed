@@ -1,0 +1,9 @@
+language: php
+php:
+  - 5.4
+  - 5.3
+script: phpunit --bootstrap=lib/CultureFeed/test/bootstrap.php
+notifications:
+  email:
+    recipients:
+      - kristof@2dotstwice.be
