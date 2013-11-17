@@ -7,3 +7,5 @@ notifications:
   email:
     recipients:
       - kristof@2dotstwice.be
+      - hans@2dotstwice.be
+      - sven.houtmeyers@cultuurnet.be
