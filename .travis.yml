@@ -2,7 +2,7 @@ language: php
 php:
   - 5.4
   - 5.3
-script: phpunit --bootstrap=lib/CultureFeed/test/bootstrap.php
+script: phpunit --bootstrap=lib/CultureFeed/test/bootstrap.php lib/CultureFeed/test
 notifications:
   email:
     recipients:
