@@ -12,6 +12,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   $advantage = $vars['advantage'];
 
+  // Image.
+  $vars['image'] = '';
+  if (isset($advantage->pictures[0])) {
+    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+  }
+
   // Period.
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
@@ -41,6 +47,18 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     'items' => $valid_for_cities,
   );
   $vars['available'] = theme_item_list($list);
+
+  // Description1.
+  $vars['description1'] = '';
+  if ($advantage->description1) {
+    $vars['description1'] = $advantage->description1;
+  }
+
+  // Description2.
+  $vars['description2'] = '';
+  if ($advantage->description2) {
+    $vars['description2'] = $advantage->description2;
+  }
 
 }
 

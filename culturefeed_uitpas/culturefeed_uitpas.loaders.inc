@@ -21,6 +21,8 @@ function uitpas_advantage_load($id) {
     watchdog_exception('culturefeed_uitpas_uitpas_advantage', $e);
   }
 
+  return FALSE;
+
 }
 
 /**
