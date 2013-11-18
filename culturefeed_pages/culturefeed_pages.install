@@ -25,3 +25,12 @@ function culturefeed_pages_update_7002() {
   ->fields(array('cache' => DRUPAL_CACHE_PER_PAGE))
   ->execute();
 }
+
+/**
+ * Set variable default to all actor types available.
+ */
+function culturefeed_pages_update_7003() {
+  module_load_include('module', 'culturefeed_search');
+  $actortypes = culturefeed_search_get_actortype_categories();
+  variable_set('culturefeed_pages_actor_types', array_keys($actortypes));
+}

@@ -172,6 +172,8 @@ function template_preprocess_culturefeed_ui_profile_box(&$variables) {
     }
   }
 
+  $variables['logout'] = l(t('Log out'), 'user/logout');
+
 }
 
 /**
