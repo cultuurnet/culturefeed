@@ -13,9 +13,9 @@ function culturefeed_uitpas_theme() {
   return array(
     'culturefeed_uitpas_profile_actions' => array(
       'variables' => array(
-        'activities' => array(),
-        'activites_total' => 0,
-        'activites_pager_element' => 0,
+        'actions' => array(),
+        'actions_total' => 0,
+        'actions_pager_element' => 0,
       ),
       'template' => 'culturefeed-uitpas-profile-actions',
       'file' => 'theme.inc',

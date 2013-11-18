@@ -15,7 +15,7 @@ function culturefeed_uitpas_profile_actions_get() {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $actions = array();
-    $actions_max = variable_get('culturefeed_uitpas_profile_advantages_advantages_max', 20);
+    $actions_max = variable_get('culturefeed_uitpas_profile_actions_actions_max', 20);
     $actions_pager_element = 0;
     $actions_page = pager_find_page($actions_pager_element);
     $actions_total = 0;
@@ -23,10 +23,10 @@ function culturefeed_uitpas_profile_actions_get() {
     try {
 
       $query = new CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions();
-      $query->uid = $uitpas_user->id;
+      $query->uid = $uitpas_user->passholder->uitIdUser->id;
       $query->start = $actions_page * $actions_max;
       $query->max = $actions_max;
-      $result = $cf->uitpas()->searchCheckins($query);
+      $result = $uitpas_user->cf->uitpas()->searchCheckins($query);
       if ($result->total) {
 
         $actions = $result->objects;

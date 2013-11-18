@@ -10,7 +10,7 @@
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars) {
 
-  $actions = $vars['activons'];
+  $actions = $vars['actions'];
   $actions_total = $vars['actions_total'];
   $actions_pager_element = $vars['actions_pager_element'];
 
