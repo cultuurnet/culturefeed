@@ -37,11 +37,13 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function getUser($id, $private = FALSE) {
     if ($private) {
-      return self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
+      $user = self::getLoggedInUserInstance()->getUser($id, TRUE, TRUE);
     }
     else {
-      return self::getConsumerInstance()->getUser($id, FALSE, FALSE);
+      $user = self::getConsumerInstance()->getUser($id, FALSE, FALSE);
     }
+    parent::setAvailableCategories($user);
+    return $user;
   }
 
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {

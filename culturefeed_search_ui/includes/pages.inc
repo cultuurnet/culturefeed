@@ -23,12 +23,13 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
   if ($name == "submitted") {
     return "";
   }
+  $ajax = $request_type == 'ajax';
 
   try {
 
     $conf = culturefeed_get_searchable_type($name);
     $page = culturefeed_get_search_page($conf);
-    $ajax = $request_type == 'ajax';
+
     if ($ajax) {
       $page->setFullPage(FALSE);
     }

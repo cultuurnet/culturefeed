@@ -237,7 +237,6 @@ function culturefeed_ui_block_mbox_confirmation_reminder_view() {
 
 function culturefeed_ui_block_my_uitid_view() {
   try {
-
     $account = DrupalCultureFeed::getLoggedInUser();
     if (!$account) {
       return;
