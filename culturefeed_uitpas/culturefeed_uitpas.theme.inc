@@ -14,8 +14,14 @@ function culturefeed_uitpas_theme() {
     'culturefeed_uitpas_profile_advantages' => array(
       'variables' => array(
         'advantages' => array(),
+        'advantages_total' => 0,
+        'advantages_pager_element' => 0,
         'promotions' => array(),
+        'promotions_total' => 0,
+        'promotions_pager_element' => 0,
         'upcoming_promotions' => array(),
+        'upcoming_promotions_total' => 0,
+        'upcoming_promotions_pager_element' => 0,
       ),
       'template' => 'culturefeed-uitpas-profile-advantages',
       'file' => 'theme.inc',

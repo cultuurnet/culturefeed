@@ -15,5 +15,8 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id'),
   );
 
+  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_advantages');
+  culturefeed_uitpas_profile_advantages_settings_get($form);
+
   return system_settings_form($form);
 }
