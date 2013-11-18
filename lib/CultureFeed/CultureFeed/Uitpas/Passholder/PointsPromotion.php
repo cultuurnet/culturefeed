@@ -128,6 +128,16 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
    */
   public $cashInState;
 
+  /**
+   * @var CultureFeed_Uitpas_CardSystem Card system owning the promotion
+   */
+  public $owningCardSystem;
+
+  /**
+   * @var CultureFeed_Uitpas_CardSystem[] Card systems the promotion applies to
+   */
+  public $applicableCardSystems = array();
+
   const CASHIN_POSSIBLE = 'POSSIBLE';
   const CASHIN_NOT_POSSIBLE_DATE_CONSTRAINT = 'NOT_POSSIBLE_DATE_CONSTRAINT';
   const CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT = 'NOT_POSSIBLE_VOLUME_CONSTRAINT';
@@ -160,6 +170,16 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $periodConstraint = $object->xpath('periodConstraint', FALSE);
     if (!empty($periodConstraint)) {
       $promotion->periodConstraint = CultureFeed_Uitpas_Passholder_PeriodConstraint::createFromXml($periodConstraint);
+    }
+
+    $owningCardSystem = $object->xpath('owningCardSystem', FALSE);
+    if ($owningCardSystem instanceof CultureFeed_SimpleXMLElement) {
+      $promotion->owningCardSystem = CultureFeed_Uitpas_CardSystem::createFromXml($owningCardSystem);
+    }
+
+    $applicableCardSystems = $object->xpath('applicableCardSystems/cardsystem');
+    foreach ($applicableCardSystems as $applicableCardSystem) {
+      $promotion->applicableCardSystems[] = CultureFeed_Uitpas_CardSystem::createFromXml($applicableCardSystem);
     }
 
     return $promotion;
