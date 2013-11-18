@@ -21,4 +21,6 @@ function uitpas_promotion_load($id) {
     watchdog_exception('culturefeed_uitpas_uitpas_promotion', $e);
   }
 
+  return FALSE;
+
 }

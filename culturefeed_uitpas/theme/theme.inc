@@ -12,6 +12,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   $promotion = $vars['promotion'];
 
+  // Image.
+  $vars['image'] = '';
+  if (isset($promotion->pictures[0])) {
+    $vars['image'] = theme_image(array('path' => $promotion->pictures[0], 'attributes' => array()));
+  }
+
+  // Points.
   $singular = 'Needed points: !points point';
   $plural = 'Needed points: !points points';
   $vars['points'] = format_plural($promotion->points, $singular, $plural, array('!points' => $promotion->points));
@@ -33,10 +40,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
 
-  // Available
-  /*$location_options = variable_get_value('culturefeed_uitpas_locations');
-  $location_options = array_map('trim', explode("\n", $location_options));
-  $valid_for_cities = array_intersect($location_options, $promotion->validForCities);*/
+  // Available.
   $valid_for_cities = $promotion->validForCities;
   asort($valid_for_cities);
   $list = array(
@@ -46,6 +50,18 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     'items' => $valid_for_cities,
   );
   $vars['available'] = theme_item_list($list);
+
+  // Description1.
+  $vars['description1'] = '';
+  if ($promotion->description1) {
+    $vars['description1'] = $promotion->description1;
+  }
+
+  // Description2.
+  $vars['description2'] = '';
+  if ($promotion->description2) {
+    $vars['description2'] = $promotion->description2;
+  }
 
 }
 
