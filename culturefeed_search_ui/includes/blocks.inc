@@ -301,7 +301,7 @@ function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
 }
 
 /**
- * Block callback to show the date facet.
+ * Block callback to show the city facet.
  */
 function culturefeed_search_ui_block_city_facet() {
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
@@ -447,6 +447,101 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
   $form_state['redirect'] = array(
     $_GET['q'],
     array('query' => $query)
+  );
+
+}
+
+/**
+ * Block callback to show the city only facet.
+ */
+function culturefeed_search_ui_block_city_only_facet() {
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $culturefeedSearchResult = culturefeed_get_search_result();
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  if ($culturefeedSearchResult->getTotalCount() == 0) {
+    return;
+  }
+
+  $build = array();
+
+  // Show facet layout for location.
+  if (!empty($_GET['location'])) {
+
+    // Build facet for location.
+    $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
+
+    // Make a result item for location search.
+    global $pager_total_items;
+    $items = array(
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
+    );
+
+    $build = array();
+    $build[] = array(
+      '#theme' => 'culturefeed_search_facet',
+      '#facet' => $facet,
+      '#items' => $items,
+    );
+
+  }
+
+  $build['form'] = drupal_get_form('culturefeed_search_ui_city_only_facet_form');
+
+  return array(
+    'subject' => t('Where'),
+    'content' => $build,
+  );
+
+}
+
+/**
+ * Show the additional form for the where facet.
+ */
+function culturefeed_search_ui_city_only_facet_form() {
+
+  $form = array();
+
+  $form['#attributes']['class'][] = 'append-button';
+
+  $form['location'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Where'),
+    '#title_display' => 'invisible',
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+    '#attributes' => array('placeholder' => t('Zipcode or city')),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit the where facet form.
+ */
+function culturefeed_search_ui_city_only_facet_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location'));
+
+  if (!empty($form_state['values']['location'])) {
+    $query['location'] = $form_state['values']['location'];
+  }
+
+  $form_state['redirect'] = array(
+      $_GET['q'],
+      array('query' => $query)
   );
 
 }

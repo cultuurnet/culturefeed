@@ -414,6 +414,11 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
 
     }
 
+    // Always unset wregIds and regId.
+    if (isset($options['query']['regId'])) {
+      unset($options['query']['regId']);
+    }
+
     // Make sure we leave no empty query data.
     // This one is needed, otherwise you can end with following url: agenda/sportactiviteit?&theme=fitness-gymnastiek-dans-en-vechtsport
     if (!empty($options['query'])) {
@@ -501,9 +506,14 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
       $city_parts = explode('-', $city_slug);
       // Slug contains postal. Search city.
       if (is_numeric($city_parts[0])) {
-        $city = culturefeed_search_get_city_by_slug($city_slug);
+        /*$city = culturefeed_search_get_city_by_slug($city_slug);
         if ($city) {
           $location = $city->zip . ' ' . $city->name;
+        }*/
+        $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
+        if ($flanders_region) {
+          $location = $flanders_region->name;
+          $regId = $flanders_region->tid;
         }
       }
       // No postal, search flanders region.
@@ -517,6 +527,12 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
       if (!empty($location)) {
         $_GET['location'] = $location;
         $_REQUEST['location'] = $location;
+        $rewrite = TRUE;
+      }
+
+      if (!empty($regId)) {
+        $_GET['regId'] = $regId;
+        $_REQUEST['regId'] = $regId;
         $rewrite = TRUE;
       }
 

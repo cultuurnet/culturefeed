@@ -68,8 +68,65 @@ abstract class DrupalCultureFeedBase {
     }
 
     static::$logged_in_user[$application_key] = static::getLoggedInUserInstance($application_key, $shared_secret)->getUser(self::getLoggedInUserId(), TRUE, TRUE);
+    self::setAvailableCategories(static::$logged_in_user[$application_key]);
 
     return static::$logged_in_user[$application_key];
+  }
+
+  /**
+   * Sets the actor types available in current scope.
+   * @param CultureFeed_User $user
+   */
+  protected static function setAvailableCategories(CultureFeed_User $user) {
+
+    $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+    $pageMemberships = $user->pageMemberships;
+
+    if (!empty($pageMemberships)) {
+      foreach ($user->pageMemberships as $key => $membership) {
+        // Get the categories for this page.
+        $membershipPage = $membership->page;
+        $cf_pages = self::getConsumerInstance()->pages();
+        $page = $cf_pages->getPage($membershipPage->getId());
+        $categories = $page->getCategories();
+
+        // Set a flag to indicate this page can be used.
+        $use = FALSE;
+        foreach ($categories as $categoryId) {
+          if (in_array($categoryId, $actortypes)) {
+            $use = TRUE;
+          }
+        }
+        if (!$use) {
+          unset($user->pageMemberships[$key]);
+        }
+      }
+    }
+
+    $pageFollowing = $user->following;
+
+    if (!empty($pageFollowing)) {
+      foreach ($user->following as $key => $following) {
+        // Get the categories for this page.
+        $followingPage = $following->page;
+        $cf_pages = self::getConsumerInstance()->pages();
+        $page = $cf_pages->getPage($followingPage->getId());
+        $categories = $page->getCategories();
+
+        // Set a flag to indicate this page can be used.
+        $use = FALSE;
+        foreach ($categories as $categoryId) {
+          if (in_array($categoryId, $actortypes)) {
+            $use = TRUE;
+          }
+        }
+        if (!$use) {
+          unset($user->following[$key]);
+        }
+      }
+    }
+
   }
 
   /**
@@ -99,7 +156,6 @@ abstract class DrupalCultureFeedBase {
     }
 
     $token = $account->tokens[$application_key];
-
     static::$user_instance[$application_key] = static::getInstance($token->token, $token->secret, $application_key, $shared_secret);
 
     return static::$user_instance[$application_key];
