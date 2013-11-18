@@ -394,15 +394,47 @@ class CultureFeedSearchPage {
 
     }
 
-    // Add the location facet.
-    if (!empty($params['location'])) {
+    // Add the location facet. Only use the location if a distance is set.
+    // all other cases will search for a category Id of the type flandersregion
+    // or workingregion.
+    if (!empty($params['regId']) && !isset($params['distance'])) {
+
+      $regFilter = array();
+      $regFilter[] = $params['regId'];
+
+      if (!empty($params['wregIds'])) {
+        $regFilter[] = array_shift($params['wregIds']);
+
+        $wregFilters = array();
+        foreach ($params['wregIds'] as $wregId) {
+          $wregFilters[] = $wregId;
+        }
+      }
+
+      $regFilterQuery = '(';
+      $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
+      if (!empty($wregFilters)) {
+        $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
+      }
+      $regFilterQuery .= ')';
+      $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
+
+    }
+    elseif (!empty($params['location'])) {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
       if (is_numeric($city_parts[0])) {
-        $distance = isset($params['distance']) ? $params['distance'] : '0.00001';
-
-        $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+        $distance = isset($params['distance']) ? $params['distance'] : FALSE;
+        
+        // If category_actortype_id we assume that we search on pages (on day we have to fix)
+        if (isset($params['facet']['category_actortype_id'])) {
+          $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+        }
+        else {
+          $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+        } 
+        
       }
       else {
         $location = '"' . str_replace('"', '\"', $params['location']) . '"';
