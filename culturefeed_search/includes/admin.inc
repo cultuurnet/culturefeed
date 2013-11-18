@@ -13,7 +13,7 @@ function culturefeed_search_admin_settings() {
   $form['culturefeed_search_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('Search API location'),
-    '#description' => t('The URL where the CultureFeed Search API resides. End with a slash. Example: http://test.uitid.be/uitid/rest/searchv2/'),
+    '#description' => t('The URL where the CultureFeed Search API resides. End with a slash. Example: http://test.uitid.be/culturefeed/rest/searchv2/ (acceptance) or http://www.uitid.be/uitid/rest/searchv2/ (production)'),
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
