@@ -26,11 +26,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Period.
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
+
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
     if ($promotion->cashingPeriodEnd) {
       $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
+
   }
 
   // Location.
@@ -49,6 +51,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Available.
   $vars['available'] = '';
   if (count($promotion->validForCities)) {
+
     $valid_for_cities = $promotion->validForCities;
     asort($valid_for_cities);
     $list = array(
@@ -58,6 +61,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
       'items' => $valid_for_cities,
     );
     $vars['available'] = theme_item_list($list);
+
   }
 
   // Description1.
