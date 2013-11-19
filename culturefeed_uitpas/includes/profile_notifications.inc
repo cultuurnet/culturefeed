@@ -26,7 +26,7 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
 
   $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-  $uitpas_number = 0;
+
   $current_card = NULL;
   if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
     $current_card = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard;
