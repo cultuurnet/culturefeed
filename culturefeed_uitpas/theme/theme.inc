@@ -40,16 +40,25 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
 
+  // Provider.
+  $vars['provider'] = '';
+  if (isset($promotion->owningCardSystem->name)) {
+    $vars['provider'] = t('Provided by !provider', array('!provider' => $promotion->owningCardSystem->name));
+  }
+
   // Available.
-  $valid_for_cities = $promotion->validForCities;
-  asort($valid_for_cities);
-  $list = array(
-    'title' => t('Valid for inhabitants of'),
-    'attributes' => array(),
-    'type' => 'ul',
-    'items' => $valid_for_cities,
-  );
-  $vars['available'] = theme_item_list($list);
+  $vars['available'] = '';
+  if (count($promotion->validForCities)) {
+    $valid_for_cities = $promotion->validForCities;
+    asort($valid_for_cities);
+    $list = array(
+      'title' => t('Only available for'),
+      'attributes' => array(),
+      'type' => 'ul',
+      'items' => $valid_for_cities,
+    );
+    $vars['available'] = theme_item_list($list);
+  }
 
   // Description1.
   $vars['description1'] = '';
