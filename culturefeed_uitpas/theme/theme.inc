@@ -37,7 +37,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($advantages as $advantage) {
     $links['links'][] = array(
       'title' => $advantage->title,
-      'href' => '<front>', /*uitpas_ui_helpers_link_object('advantage', $advantage),*/
+      'href' => 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id
     );
   }
   $vars['advantages'] = theme_links($links);
@@ -52,7 +52,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($promotions as $promotion) {
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
-      'href' => '<front>', /*uitpas_ui_helpers_link_object('promotion', $promotion),*/
+      'href' => 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id,
     );
   }
   $vars['promotions'] = theme_links($links);
@@ -67,13 +67,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($upcoming_promotions as $promotion) {
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
-      'href' => '<front>', /*uitpas_ui_helpers_link_object('promotion', $promotion),*/
+      'href' => 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id,
     );
   }
   $vars['upcoming_promotions'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
   // All promotions.
-  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_my_uitpas_summary_more_link_text', t('Show all my promotions')), 'myprofile/advantages');
+  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_my_uitpas_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
 
 }
 
