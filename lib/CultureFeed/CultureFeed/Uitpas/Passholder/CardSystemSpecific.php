@@ -15,9 +15,9 @@ class CultureFeed_Uitpas_Passholder_CardSystemSpecific {
     $currentCard = $object->xpath('currentCard', false);
     if ($currentCard instanceof CultureFeed_SimpleXMLElement) {
       $cardSystemSpecific->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($currentCard);
+      $cardSystemSpecific->currentCard->emailPreference = $object->xpath_str('emailPreference');
+      $cardSystemSpecific->currentCard->smsPreference = $object->xpath_str('smsPreference');
     }
-    $cardSystemSpecific->currentCard->emailPreference = $object->xpath_str('emailPreference');
-    $cardSystemSpecific->currentCard->smsPreference = $object->xpath_str('smsPreference');
 
     return $cardSystemSpecific;
   }
