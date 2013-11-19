@@ -74,7 +74,7 @@ function culturefeed_uitpas_user_register_form_validate(&$form, &$form_state) {
     try {
 
       $callback_options = array(
-        'query' => array('closepopup' => 'true', 'isnewpassholder' => 'true'),
+        'query' => array('isnewpassholder' => 'true'),
         'absolute' => TRUE,
       );
       $callback_url = url('culturefeed/oauth/authorize', $callback_options);
