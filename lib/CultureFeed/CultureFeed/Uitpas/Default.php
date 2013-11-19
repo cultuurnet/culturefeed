@@ -521,12 +521,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Update a passholder's card system preferences.
-   *
-   * @param CultureFeed_Uitpas_Passholder_CardsystemPreferences $preferences The passholder's card preferences to update.
-   *        The card system preferences are identified by user id and card system id. Only fields that are set will be updated.
+   * {@inheritdoc}
    */
-  public function updatePassholderCardsystemPreferences(CultureFeed_Uitpas_Passholder_CardsystemPreferences $preferences) {
+  public function updatePassholderCardSystemPreferences(CultureFeed_Uitpas_Passholder_CardSystemPreferences $preferences) {
 
     $data = $preferences->toPostData();
     $result = $this->oauth_client->authenticatedPostAsXml('uitpas/passholder/' . $preferences->id . '/' . $preferences->cardSystemId, $data);

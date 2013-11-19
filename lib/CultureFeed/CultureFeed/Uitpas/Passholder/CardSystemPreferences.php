@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_Passholder_CardsystemPreferences extends CultureFeed_Uitpas_ValueObject {
+class CultureFeed_Uitpas_Passholder_CardSystemPreferences extends CultureFeed_Uitpas_ValueObject {
 
   const EMAIL_NO_MAILS = 'NO_MAILS';
   const EMAIL_NOTIFICATION_MAILS = 'NOTIFICATION_MAILS';
@@ -40,7 +40,7 @@ class CultureFeed_Uitpas_Passholder_CardsystemPreferences extends CultureFeed_Ui
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
-    $cardsystemPreferences = new CultureFeed_Uitpas_Passholder_CardsystemPreferences();
+    $cardsystemPreferences = new CultureFeed_Uitpas_Passholder_CardSystemPreferences();
     $cardsystemPreferences->id = $object->xpath_str('id');
     $cardsystemPreferences->cardSystemId = $object->xpath_int('cardSystemId');
     $cardsystemPreferences->emailPreference = $object->xpath_str('emailPreference');

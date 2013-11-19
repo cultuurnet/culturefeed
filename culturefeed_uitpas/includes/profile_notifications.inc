@@ -145,7 +145,7 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
     }
 
     // Preferences.
-    $preferences = new CultureFeed_Uitpas_Passholder_CardsystemPreferences();
+    $preferences = new CultureFeed_Uitpas_Passholder_CardSystemPreferences();
     $preferences->id = $uitpas_user->user->id;
     $preferences->cardSystemId = $card_system_id;
 
@@ -169,7 +169,7 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
     $preferences->smsPreference = $sms_preference;
 
     try {
-      $uitpas_user->cf->uitpas()->updatePassholderCardsystemPreferences($preferences);
+      $uitpas_user->cf->uitpas()->updatePassholderCardSystemPreferences($preferences);
     }
     catch (Exception $e) {
 
