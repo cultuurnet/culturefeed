@@ -8,10 +8,11 @@
     var $nearby_checkbox = $('#culturefeed-agenda-search-block-form').find('input[name="nearby"]');
     if (navigator.geolocation) {
       
-     $nearby_checkbox.bind('change', function() {
-       
-       if (this.checked) {
-         Drupal.CultureFeed.geolocate('#current-location', 'input[id="geolocate-coordinates"]', 'input[id="geolocate-city"]');        
+      $nearby_checkbox.bind('change', function() {
+      
+        if (this.checked) {
+          $('#current-location').html('<span class="searching-location"></span>');
+          Drupal.CultureFeed.geolocate('#current-location', 'input[id="geolocate-coordinates"]', 'input[id="geolocate-city"]');        
        }
        
      });

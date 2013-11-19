@@ -309,6 +309,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@givenName'] = $values['givenName'];
       $variables['@familyName'] = $values['familyName'];
       $variables['@street'] = $values['street'];
+      $variables['@zip'] = $values['zip'];
       $variables['@city'] = $values['city'];
       $variables['@mbox'] = $values['mbox'];
 
@@ -331,7 +332,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
         Contact:
           - @givenName @familyName
           - @street
-          - @city
+          - @zip @city
           - @mbox
 
         Admin:
