@@ -27,9 +27,20 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
 
   $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
 
+  $card_system_specific = NULL;
   $current_card = NULL;
-  if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
-    $current_card = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard;
+
+  /* @var CultureFeed_Uitpas_Passholder $passholder */
+  $passholder = $uitpas_user->passholder;
+
+  if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
+    $card_system_specific = $passholder->cardSystemSpecific[$card_system_id];
+  }
+  else {
+    // No known card system specific data. Initialize one with defaults.
+    $card_system_specific = new CultureFeed_Uitpas_Passholder_CardSystemSpecific();
+    $card_system_specific->emailPreference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
+    $card_system_specific->smsPreference = CultureFeed_Uitpas_Passholder::SMS_NO_SMS;
   }
 
   $form['uitpas_user'] = array(
@@ -42,23 +53,23 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
   $form['email_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via e-mail'),
-    '#default_value' => ($current_card && $current_card->emailPreference == CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS) ? 1 : 0,
+    '#default_value' => ($card_system_specific->emailPreference == CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS) ? 1 : 0,
   );
   $form['email'] = array(
     '#type' => 'textfield',
     '#title' => t('to e-mail address'),
-    '#default_value' => ($uitpas_user->passholder->email) ? $uitpas_user->passholder->email : $uitpas_user->user->mbox,
+    '#default_value' => ($passholder->email) ? $passholder->email : $uitpas_user->user->mbox,
     '#required' => TRUE,
   );
   $form['sms_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via sms'),
-    '#default_value' => ($current_card && $current_card->smsPreference == CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS) ? 1 : 0,
+    '#default_value' => ($card_system_specific->smsPreference == CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS) ? 1 : 0,
   );
   $form['mobile'] = array(
     '#type' => 'textfield',
     '#title' => t('to mobile number'),
-    '#default_value' => $uitpas_user->passholder->gsm,
+    '#default_value' => $passholder->gsm,
     '#states' => array(
       'required' => array(
         ':input[name="sms_notifications"]' => array('checked' => TRUE),
