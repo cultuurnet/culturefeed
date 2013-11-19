@@ -151,6 +151,14 @@ interface CultureFeed_Uitpas {
   public function updatePassholder(CultureFeed_Uitpas_Passholder $passholder);
 
   /**
+   * Update a passholder's card system preferences.
+   *
+   * @param CultureFeed_Uitpas_Passholder_CardsystemPreferences $preferences The passholder's card preferences to update.
+   *        The card system preferences are identified by user id and card system id. Only fields that are set will be updated.
+   */
+  public function updatePassholderCardsystemPreferences(CultureFeed_Uitpas_Passholder_CardsystemPreferences $preferences);
+
+  /**
    * Block a UitPas.
    *
    * @param string $uitpas_number The UitPas number
