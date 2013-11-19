@@ -12,6 +12,24 @@ function culturefeed_uitpas_profile_advantages_get() {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
+  $advantages = array();
+  $advantages_max = variable_get('culturefeed_uitpas_profile_advantages_advantages_max', 20);
+  $advantages_pager_element = 0;
+  $advantages_page = pager_find_page($advantages_pager_element);
+  $advantages_total = 0;
+
+  $promotions = array();
+  $promotions_max = 20; //variable_get('culturefeed_uitpas_profile_advantages_promotions_max', 20);
+  $promotions_pager_element = 1;
+  $promotions_page = pager_find_page($promotions_pager_element);
+  $promotions_total = 0;
+
+  $upcoming_promotions = array();
+  $upcoming_promotions_max = variable_get('culturefeed_uitpas_profile_advantages_upcoming_promotions_max', 20);
+  $upcoming_promotions_pager_element = 2;
+  $upcoming_promotions_page = pager_find_page($upcoming_promotions_pager_element);
+  $upcoming_promotions_total = 0;
+
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
@@ -19,24 +37,6 @@ function culturefeed_uitpas_profile_advantages_get() {
     if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
       $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
     }
-
-    $advantages = array();
-    $advantages_max = variable_get('culturefeed_uitpas_profile_advantages_advantages_max', 20);
-    $advantages_pager_element = 0;
-    $advantages_page = pager_find_page($advantages_pager_element);
-    $advantages_total = 0;
-
-    $promotions = array();
-    $promotions_max = variable_get('culturefeed_uitpas_profile_advantages_promotions_max', 20);
-    $promotions_pager_element = 1;
-    $promotions_page = pager_find_page($promotions_pager_element);
-    $promotions_total = 0;
-
-    $upcoming_promotions = array();
-    $upcoming_promotions_max = variable_get('culturefeed_uitpas_profile_advantages_upcoming_promotions_max', 20);
-    $upcoming_promotions_pager_element = 2;
-    $upcoming_promotions_page = pager_find_page($upcoming_promotions_pager_element);
-    $upcoming_promotions_total = 0;
 
     // Welcome advantages.
     try {
@@ -113,25 +113,24 @@ function culturefeed_uitpas_profile_advantages_get() {
     }
 
     // Title.
-    $block = new stdClass();
     $singular = t('My advantages (1 point saved)');
     $plural = t('My advantages (!points points saved)', array('!points' => $uitpas_user->passholder->points));
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
-    return array(
-      '#theme' => 'culturefeed_uitpas_profile_advantages',
-      '#advantages' => $advantages,
-      '#advantages_total' => $advantages_total,
-      '#advantages_pager_element' => $advantages_pager_element,
-      '#promotions' => $promotions,
-      '#promotions_total' => $promotions_total,
-      '#promotions_pager_element' => $promotions_pager_element,
-      '#upcoming_promotions' => $upcoming_promotions,
-      '#upcoming_promotions_total' => $upcoming_promotions_total,
-      '#upcoming_promotions_pager_element' => $upcoming_promotions_pager_element,
-    );
-
   }
+
+  return array(
+    '#theme' => 'culturefeed_uitpas_profile_advantages',
+    '#advantages' => $advantages,
+    '#advantages_total' => $advantages_total,
+    '#advantages_pager_element' => $advantages_pager_element,
+    '#promotions' => $promotions,
+    '#promotions_total' => $promotions_total,
+    '#promotions_pager_element' => $promotions_pager_element,
+    '#upcoming_promotions' => $upcoming_promotions,
+    '#upcoming_promotions_total' => $upcoming_promotions_total,
+    '#upcoming_promotions_pager_element' => $upcoming_promotions_pager_element,
+  );
 
 }
 
