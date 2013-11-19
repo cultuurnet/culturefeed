@@ -19,6 +19,13 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('administer site configuration'),
       'file' => 'culturefeed_uitpas.admin.inc',
     ),
+    'culturefeed/profile/uitpas/notifications' => array(
+      'title' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_title', t('My notifications')),
+      'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
+      'page callback' => 'culturefeed_uitpas_profile_notifications_get',
+      'access callback' => 'culturefeed_is_culturefeed_user',
+      'file' => 'includes/profile_notifications.inc',
+    ),
     'registration_confirmation' => array(
       'title' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
       'page callback' => 'culturefeed_uitpas_registration_confirmation_get',
