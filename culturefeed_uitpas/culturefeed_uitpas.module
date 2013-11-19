@@ -17,7 +17,14 @@ require_once 'culturefeed_uitpas.theme.inc';
 function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
   if (isset($_GET['isnewpassholder'])) {
-    $destination = 'registration_confirmation';
+
+    // We can't use the correct hook implementation here since UiTPAS doesn't
+    // use a popup window and the the destination in culturefeed_oauth_authorize
+    // (culturefeed.pages.inc) is set as 'window.opener...'
+    // So we do a drupal_goto() instead.
+    // $destination = 'registration_confirmation';
+    drupal_goto('registration_confirmation');
+
   }
 
 }
