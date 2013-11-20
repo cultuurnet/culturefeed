@@ -25,22 +25,17 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
 
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-
-  $card_system_specific = NULL;
   $current_card = NULL;
+  $card_system = $uitpas_user->card_system;
 
   /* @var CultureFeed_Uitpas_Passholder $passholder */
   $passholder = $uitpas_user->passholder;
 
-  if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
-    $card_system_specific = $passholder->cardSystemSpecific[$card_system_id];
-  }
-  else {
+  if (!$card_system) {
     // No known card system specific data. Initialize one with defaults.
-    $card_system_specific = new CultureFeed_Uitpas_Passholder_CardSystemSpecific();
-    $card_system_specific->emailPreference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
-    $card_system_specific->smsPreference = CultureFeed_Uitpas_Passholder::SMS_NO_SMS;
+    $card_system = new CultureFeed_Uitpas_Passholder_CardSystemSpecific();
+    $card_system->emailPreference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
+    $card_system->smsPreference = CultureFeed_Uitpas_Passholder::SMS_NO_SMS;
   }
 
   $form['uitpas_user'] = array(
@@ -53,7 +48,7 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
   $form['email_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via e-mail'),
-    '#default_value' => ($card_system_specific->emailPreference == CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS) ? 1 : 0,
+    '#default_value' => ($card_system->emailPreference == CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS) ? 1 : 0,
   );
   $form['email'] = array(
     '#type' => 'textfield',
@@ -64,7 +59,7 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
   $form['sms_notifications'] = array(
     '#type' => 'checkbox',
     '#title' => t('via sms'),
-    '#default_value' => ($card_system_specific->smsPreference == CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS) ? 1 : 0,
+    '#default_value' => ($card_system->smsPreference == CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NOTIFICATION_SMS) ? 1 : 0,
   );
   $form['mobile'] = array(
     '#type' => 'textfield',
@@ -105,11 +100,11 @@ function culturefeed_uitpas_profile_notifications_form_validate(&$form, &$form_s
 function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_state) {
 
   $uitpas_user = $form_state['values']['uitpas_user'];
+  $card_system = $uitpas_user->card_system;
 
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
   $uitpas_number = 0;
-  if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
-    $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+  if ($card_system && isset($card_system->currentCard->uitpasNumber)) {
+    $uitpas_number = $card_system->currentCard->uitpasNumber;
   }
 
   $error = FALSE;
@@ -147,24 +142,24 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
     // Preferences.
     $preferences = new CultureFeed_Uitpas_Passholder_CardSystemPreferences();
     $preferences->id = $uitpas_user->user->id;
-    $preferences->cardSystemId = $card_system_id;
+    $preferences->cardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
 
     // Email preference.
     if ($form_state['values']['email_notifications']) {
-      $email_preference = CultureFeed_Uitpas_Passholder::EMAIL_NOTIFICATION_MAILS;
+      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS;
     }
     else {
-      $email_preference = CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS;
+      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NO_MAILS;
     }
 
     $preferences->emailPreference = $email_preference;
 
     // SMS preference.
     if ($form_state['values']['sms_notifications']) {
-      $sms_preference = CultureFeed_Uitpas_Passholder::SMS_NOTIFICATION_SMS;
+      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NOTIFICATION_SMS;
     }
     else {
-      $sms_preference = CultureFeed_Uitpas_Passholder::SMS_NO_SMS;
+      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NO_SMS;
     }
     $preferences->smsPreference = $sms_preference;
 
@@ -181,7 +176,7 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
   }
 
   if ($error) {
-    drupal_set_message(t('An error occured.'), 'error');
+    drupal_set_message(t('An error occurred.'), 'error');
   }
   else {
     drupal_set_message(t('Your changes have been saved.'));
