@@ -16,8 +16,7 @@ function culturefeed_uitpas_profile_details_get() {
 
     return array(
       '#theme' => 'culturefeed_uitpas_profile_details',
-      '#uitpas_user' => $uitpas_user->user,
-      '#passholder' => $uitpas_user->passholder,
+      '#uitpas_user' => $uitpas_user,
     );
 
   }

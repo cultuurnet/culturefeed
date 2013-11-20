@@ -13,19 +13,19 @@ function culturefeed_uitpas_culturefeed_ui_profile_menu() {
   return array(
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages')),
-      'url' => 'culturefeed/profile/advantages',
+      'url' => 'culturefeed/profile/uitpas/advantages',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
       'weight' => -12,
     ),
     'actions' => array(
       'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('User history')),
-      'url' => 'culturefeed/profile/actions',
+      'url' => 'culturefeed/profile/uitpas/actions',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),
       'weight' => -11,
     ),
     'notifications' => array(
       'title' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_title', t('My notifications')),
-      'url' => 'culturefeed/profile/notifications',
+      'url' => 'culturefeed/profile/uitpas/notifications',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
       'weight' => -10,
     ),

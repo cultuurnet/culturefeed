@@ -11,7 +11,8 @@
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars) {
 
   $uitpas_user = $vars['uitpas_user'];
-  $passholder = $vars['passholder'];
+  $passholder = $uitpas_user->passholder;
+  $card_system = $uitpas_user->card_system;
 
   // Details.
   $vars['uitpas_number'] = '<label>' . t('UITpas number') . ':</label> ' . $passholder->uitpasNumber;
