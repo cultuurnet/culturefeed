@@ -59,6 +59,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
 
     // Subject.
     $subject = $action->nodeTitle;
+    $url = 'agenda/e/' . culturefeed_search_slug($action->nodeTitle) . '/' . $action->nodeId;
+    $subject = l($action->nodeTitle, $url);
     // Args.
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
