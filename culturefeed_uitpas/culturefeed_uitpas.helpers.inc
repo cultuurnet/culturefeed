@@ -29,7 +29,7 @@ function culturefeed_uitpas_get_uitpas_user() {
 
           $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
           if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
-            $uitpas_user->card_system = $passholder->cardSystemSpecific[$card_system_id];
+            $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
           }
 
         }
