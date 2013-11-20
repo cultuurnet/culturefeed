@@ -323,20 +323,20 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@url_admin'] = url('http://www.uitid.be/uitid/rest/dashboard/grantedpointspromotions', array('absolute' => TRUE));
       $variables['@promotion'] = implode("\n", $promotions);
 
-      $message['body'][] = format_string(t('Culturefeed User ID:
-        @code
+      $message['body'][] = format_string(t('UiTiD User ID:
+@code
 
-        Promotion:
-          @promotion
+Promotion request:
+@promotion
 
-        Contact:
-          - @givenName @familyName
-          - @street
-          - @zip @city
-          - @mbox
+Address:
+- @givenName @familyName
+- @street
+- @zip @city
+- @mbox
 
-        Admin:
-          @url_admin '), $variables);
+Manage requests:
+@url_admin'), $variables);
 
     break;
 
