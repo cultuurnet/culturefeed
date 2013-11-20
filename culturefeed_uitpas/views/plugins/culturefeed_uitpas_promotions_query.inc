@@ -24,10 +24,34 @@ class culturefeed_uitpas_promotions_query extends views_plugin_query {
   /**
    * {@inheritdoc}
    */
+  function build(&$view) {
+
+    // Store the view in the object to be able to use it later.
+    $this->view = $view;
+
+    // Initialise the pager.
+    $view->init_pager();
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   function execute(&$view) {
 
     $cf = DrupalCultureFeed::getConsumerInstance();
+
+    $max = $this->pager->get_items_per_page();
+    $page = $this->pager->get_current_page();
+    $offset = $this->pager->get_offset();
+
+    $this->object->max = $this->pager->get_items_per_page();
+    $this->object->start = ($page * $max) + $offset;
+
     $promotions_result = $cf->uitpas()->getPromotionPoints($this->object);
+
+    $this->pager->total_items = $promotions_result->total;
+    $this->pager->update_page_info();
 
     $view->result = array();
     foreach ($promotions_result->objects as $promotion) {
@@ -42,6 +66,7 @@ class culturefeed_uitpas_promotions_query extends views_plugin_query {
       // Views does not handle mixed case field names well, so lowercase everything.
       $view->result[] = (object) $promotion_properties;
     }
+
   }
 
   function add_field($table, $field, $alias = '', $params = array()) {

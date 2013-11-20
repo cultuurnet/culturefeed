@@ -19,6 +19,7 @@ function culturefeed_uitpas_views_plugins() {
     'title' => t('Culturefeed UiTPAS promotions query'),
     'help' => t('Query on UiTPAS promotions.'),
     'handler' => 'culturefeed_uitpas_promotions_query',
+    'use pager' => TRUE,
   );
 
   return $plugins;
