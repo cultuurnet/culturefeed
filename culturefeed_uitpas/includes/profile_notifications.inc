@@ -149,7 +149,7 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
       $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_ALL_MAILS;
     }
     else {
-      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS_MAILS;
+      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS;
     }
 
     $preferences->emailPreference = $email_preference;
