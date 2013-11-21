@@ -124,3 +124,10 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
  */
 function culturefeed_uitpas_registration_confirmation_settings_save($values) {
 }
+
+/**
+ * Title callback for the registration confirmation page.
+ */
+function culturefeed_uitpas_registration_confirmation_title() {
+  return variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS');
+}
