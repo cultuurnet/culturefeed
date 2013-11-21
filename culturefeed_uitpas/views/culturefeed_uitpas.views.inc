@@ -113,9 +113,26 @@ function culturefeed_uitpas_views_data() {
     ),
   );
 
+  $data['uitpas_promotions']['cashing_period_begin'] = array(
+    'title' => t('Cashing period begin'),
+    'help' => t("The start of the promotion's cashing period."),
+    'field' => array(
+      'handler' => 'views_handler_field_date',
+      'real field' => 'cashingperiodbegin',
+    ),
+    'filter' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_filter_date',
+      'real field' => 'cashingPeriodBegin',
+    ),
+  );
+
   $data['uitpas_promotions']['cashing_period_end'] = array(
     'title' => t('Cashing period end'),
     'help' => t("The end of the promotion's cashing period."),
+    'field' => array(
+      'handler' => 'views_handler_field_date',
+      'real field' => 'cashingperiodend',
+    ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
       'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END,

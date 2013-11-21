@@ -8,4 +8,5 @@ configure = admin/config/culturefeed/uitpas
 files[] = views/plugins/culturefeed_uitpas_promotions_query.inc
 files[] = views/handlers/culturefeed_uitpas_views_handler_filter_boolean.inc
 files[] = views/handlers/culturefeed_uitpas_views_handler_filter_card_system_id.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_filter_date.inc
 files[] = views/handlers/culturefeed_uitpas_views_handler_sort.inc
