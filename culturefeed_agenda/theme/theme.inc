@@ -574,8 +574,14 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
  */
 function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
+  $title_parts = array();
   $description_parts = array();
-  if (!empty($variables['location'])) {
+
+  if (!empty($variables['title'])) {
+    $title_parts[] = $variables['title'];
+  }
+  if (!empty($variables['location']) && !empty($variables['location']['city'])) {
+    $title_parts[] = $variables['location']['city'];
     $description_parts[] = t('Location: @location', array('@location' => $variables['location']['title'] . ', ' . $variables['location']['city']));
   }
   if (!empty($variables['when'])) {
@@ -590,7 +596,11 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   if (!empty($variables['tickets'])) {
     $description_parts[] = t('Order your tickets');
   }
-  // Add meta description field.
+
+  // Add meta title tag.
+  drupal_set_title(implode(' | ', $title_parts));
+
+  // Add meta description tag.
   drupal_add_html_head(array(
     '#tag' => 'meta',
     '#attributes' => array(
@@ -607,13 +617,28 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
  */
 function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
 
+  $title_parts = array();
   $description_parts = array();
+
+  if (!empty($variables['title'])) {
+    $title_parts[] = $variables['title'];
+  }
   if (!empty($variables['location']) && !empty($variables['location']['street'])) {
-    $description_parts[] = t('Address: @location', array('@location' => $variables['location']['street'] . ', ' . $variables['location']['zip'] . ' ' . $variables['location']['city']));
+    $location = $variables['location']['street'];
+    if (!empty($variables['location']['street'])) {
+      $title_parts[] = $variables['location']['city'];
+      if (!empty($variables['location']['zip'])) {
+         $location .= ', ' . $variables['location']['zip'] . ' ' . $variables['location']['city'];
+      }
+    }
+    $description_parts[] = t('Address: @location', array('@location' =>  $location));
   }
   if (!empty($variables['contact']) && !empty($variables['contact']['phone'])) {
     $description_parts[] = t('Phone number: @number', array('@number' => $variables['contact']['phone']));
   }
+
+  // Add meta title tag.
+  drupal_set_title(implode(' | ', $title_parts));
 
   // Add meta description field.
   drupal_add_html_head(array(
