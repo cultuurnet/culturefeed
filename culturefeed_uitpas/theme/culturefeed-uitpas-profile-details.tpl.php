@@ -8,7 +8,6 @@
  * - $uitpas_number.
  * - $intro.
  * - $intro.
- * - $national_identification_number.
  * - $first_name.
  * - $last_name.
  * - $dob.
@@ -37,7 +36,6 @@
     <?php if ($intro): ?>
     <div class="intro"><?php print $intro; ?></div>
     <?php endif; ?>
-    <div><?php print $national_identification_number; ?></div>
     <div><?php print $first_name; ?></div>
     <div><?php print $last_name; ?></div>
     <div><?php print $dob; ?></div>
