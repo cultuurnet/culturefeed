@@ -21,7 +21,7 @@ class CultureFeed_Uitpas_CardSystem
    * @return CultureFeed_Uitpas_CardSystem
    */
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-        $card_system = new self();
+        $card_system = new static();
 
         $card_system->id = $object->xpath_int('id');
         $card_system->name = $object->xpath_str('name');

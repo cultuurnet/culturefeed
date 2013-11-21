@@ -44,6 +44,19 @@ class CultureFeed_Uitpas_BalieAPITest extends PHPUnit_Framework_TestCase {
     $this->assertContainsOnly('CultureFeed_Uitpas_Counter_EmployeeCardSystem', $counter->cardSystems);
     $this->assertCount(1, $counter->cardSystems);
 
+    /* @var CultureFeed_Uitpas_Counter_EmployeeCardSystem $card_system */
     $card_system = reset($counter->cardSystems);
+
+    $this->assertEquals(1, $card_system->id);
+    $this->assertEquals('HELA', $card_system->name);
+    $this->assertInternalType('array', $card_system->groups);
+    $this->assertCount(1, $card_system->groups);
+    $this->assertContainsOnly('string', $card_system->groups);
+    $this->assertEquals('Niet-geauthorizeerde registratie balies', reset($card_system->groups));
+
+    $this->assertInternalType('array', $card_system->permissions);
+    $this->assertCount(1, $card_system->permissions);
+    $this->assertContainsOnly('string', $card_system->permissions);
+    $this->assertEquals('registratie', reset($card_system->permissions));
   }
 } 

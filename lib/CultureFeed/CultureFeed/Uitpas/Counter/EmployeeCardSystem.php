@@ -6,7 +6,7 @@
 /**
  * Card system info enriched with data for a specific employee.
  */
-class CultureFeed_Uitpas_Counter_EmployeeCardSystem extends CultureFeed_CardSystem {
+class CultureFeed_Uitpas_Counter_EmployeeCardSystem extends CultureFeed_Uitpas_CardSystem {
 
   /**
    * The permissions of the member in the card system.
@@ -22,8 +22,8 @@ class CultureFeed_Uitpas_Counter_EmployeeCardSystem extends CultureFeed_CardSyst
    */
   public $groups;
 
-  public function createFromXml(CultureFeed_SimpleXMLElement $object) {
-    $instance = new static();
+  public static function createFromXml(CultureFeed_SimpleXMLElement $object) {
+    $instance = parent::createFromXML($object);
 
     foreach ($object->xpath('permissions/permission') as $permission) {
       $instance->permissions[] = (string) $permission;
@@ -32,5 +32,7 @@ class CultureFeed_Uitpas_Counter_EmployeeCardSystem extends CultureFeed_CardSyst
     foreach ($object->xpath('groups/group') as $group) {
       $instance->groups[] = (string) $group;
     }
+
+    return $instance;
   }
 }
