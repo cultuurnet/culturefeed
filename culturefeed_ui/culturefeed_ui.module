@@ -375,7 +375,13 @@ function culturefeed_ui_user_view($account) {
     '#theme' => 'culturefeed_ui_profile',
     '#user' => $cf_account,
   );
+}
 
+/**
+ * Implements hook_user_view_alter().
+ */
+function culturefeed_ui_user_view_alter(&$build) {
+  unset($build['summary']);
 }
 
 /**
