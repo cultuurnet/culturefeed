@@ -59,7 +59,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
 
   }
   else {
-    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 5));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => $promotions_pager_element, 'quantity' => $promotions_total);
@@ -92,7 +92,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
 
   }
   else {
-    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 5));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => $upcoming_promotions_pager_element, 'quantity' => $upcoming_promotions_total);
@@ -121,7 +121,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
 
   }
   else {
-    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 3));
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
   }
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   /*$pager = $base_pager + array('element' => $advantages_pager_element, 'quantity' => $advantage_total);*/
