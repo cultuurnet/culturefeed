@@ -36,9 +36,8 @@ function culturefeed_uitpas_views_data() {
       'field' => 'id',
       'title' => t('UiTPAS promotions'),
       'query class' => 'culturefeed_uitpas_promotions_query',
-      // @todo Check what this does!
       'defaults' => array(
-        'field' => 'id',
+        'field' => 'title',
       ),
     ),
   );
@@ -59,6 +58,10 @@ function culturefeed_uitpas_views_data() {
       'handler' => 'views_handler_field',
       'click sortable' => TRUE,
     ),
+    'sort' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_sort',
+      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_TITLE,
+    ),
   );
 
   $data['uitpas_promotions']['points'] = array(
@@ -67,6 +70,10 @@ function culturefeed_uitpas_views_data() {
     'field' => array(
       'handler' => 'views_handler_field_numeric',
       'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_sort',
+      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS,
     ),
   );
 
@@ -106,5 +113,24 @@ function culturefeed_uitpas_views_data() {
     ),
   );
 
+  $data['uitpas_promotions']['cashing_period_end'] = array(
+    'title' => t('Cashing period end'),
+    'help' => t("The end of the promotion's cashing period."),
+    'sort' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_sort',
+      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END,
+    ),
+  );
+
+  $data['uitpas_promotions']['creation_date'] = array(
+    'title' => t('Creation date'),
+    'help' => t("The creation date of the promotion."),
+    'sort' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_sort',
+      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CREATION_DATE,
+    ),
+  );
+
   return $data;
+
 }
