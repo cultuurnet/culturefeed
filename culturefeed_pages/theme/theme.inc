@@ -135,6 +135,8 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
 
   }
 
+  _culturefeed_pages_preprocess_page_metatags($variables);
+
 }
 
 /**
@@ -156,7 +158,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
-  
+
   $logged_in = $variables['logged_in'];
 
   // Add join link if user is logged in and not a member yet.
@@ -531,4 +533,36 @@ function theme_culturefeed_pages_unfollow_success_message($variables) {
  */
 function theme_culturefeed_pages_follow_login_required_message($variables) {
   return l('Pagina volgen', 'cultuurkuur/login', array('query' => drupal_get_destination()));
+}
+
+/**
+ * Helper preprocessor to add meta description tag.
+ * @param type $variables
+ */
+function _culturefeed_pages_preprocess_page_metatags(&$variables) {
+
+  $description_parts = array();
+  if (!empty($variables['address']) && !empty($variables['address']['street'])) {
+    $location = $variables['address']['street'];
+    if (!empty($variables['address']['zip'])) {
+      $location .= ', ' . $variables['address']['zip'];
+    }
+    if (!empty($variables['address']['city'])) {
+      $location .= ' ' . $variables['address']['city'];
+    }
+    $description_parts[] = t('Address: @location', array('@location' => $location));
+  }
+  if (!empty($variables['contact']) && !empty($variables['contact']['tel'])) {
+    $description_parts[] = t('Phone number: @number', array('@number' => $variables['contact']['tel']));
+  }
+
+  // Add meta description field.
+  drupal_add_html_head(array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'description',
+      'content' => implode(' - ', $description_parts),
+    ),
+  ), 'meta_description');
+
 }
