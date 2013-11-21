@@ -17,7 +17,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   // Details.
   $vars['uitpas_number'] = '<label>' . t('UITpas number') . ':</label> ' . $card_system->currentCard->uitpasNumber;
   $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
-  $vars['national_identification_number'] = '<label>' . t('National identification number') . ':</label> ' . $passholder->inszNumber;
   $vars['first_name'] = '<label>' . t('First name') . ':</label> ' . $passholder->firstName;
   $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
   $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
