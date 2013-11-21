@@ -11,6 +11,15 @@
 function culturefeed_uitpas_theme() {
 
   return array(
+    'culturefeed_uitpas_promotion_image' => array(
+      'variables' => array(
+        'path' => NULL,
+        'maxheight' => 120,
+        'maxwidth' => 120,
+      ),
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    ),
     'culturefeed_uitpas_promotions_highlight' => array(
       'variables' => array('promotions' => array()),
       'template' => 'culturefeed-uitpas-promotions-highlight',

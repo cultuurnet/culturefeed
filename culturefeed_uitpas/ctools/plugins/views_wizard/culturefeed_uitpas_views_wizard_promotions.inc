@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Views wizard plugin for UiTPAS Promotions.
+ */
+
 $plugin = array(
   'name' => 'uitpas_promotions',
   'base_table' => 'uitpas_promotions',

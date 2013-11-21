@@ -10,16 +10,6 @@ class culturefeed_uitpas_views_handler_field_title extends views_handler_field {
   /**
    * {@inheritdoc}
    */
-  function init(&$view, &$options) {
-
-    parent::init($view, $options);
-    $this->additional_fields['id'] = array('field' => 'id');
-
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   function option_definition() {
 
     $options = parent::option_definition();
