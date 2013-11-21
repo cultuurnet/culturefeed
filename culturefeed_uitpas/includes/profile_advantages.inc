@@ -44,17 +44,12 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
-      /* $query->start = $advantages_page * $advantages_max;
-      $query->max = $advantages_max; */
+      $query->start = $advantages_page * $advantages_max;
+      $query->max = $advantages_max;
       $result = $uitpas_user->cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
-      if ($result->total) {
-
-        $advantages = $result->objects;
-        $advantages_page = pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
-        $advantages_total = $result->total;
-
-      }
-
+      $advantages = $result->objects;
+      $advantages_page = pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
+      $advantages_total = $result->total;
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_uitpas_profile_advantages_advantages', $e);
@@ -73,13 +68,9 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query->start = $promotions_page * $promotions_max;
       $query->max = $promotions_max;
       $result = $uitpas_user->cf->uitpas()->getPromotionPoints($query);
-      if ($result->total) {
-
-        $promotions = $result->objects;
-        $promotions_page = pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
-        $promotions_total = $result->total;
-
-      }
+      $promotions = $result->objects;
+      $promotions_page = pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
+      $promotions_total = $result->total;
 
     }
     catch (Exception $e) {
@@ -99,14 +90,9 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query->start = $upcoming_promotions_page * $upcoming_promotions_max;
       $query->max = $upcoming_promotions_max;
       $result = $uitpas_user->cf->uitpas()->getPromotionPoints($query);
-      if ($result->total) {
-
-        $upcoming_promotions = $result->objects;
-        $upcoming_promotions_page = pager_default_initialize($result->total, $upcoming_promotions_max, $upcoming_promotions_pager_element);
-        $upcoming_promotions_total = $result->total;
-
-      }
-
+      $upcoming_promotions = $result->objects;
+      $upcoming_promotions_page = pager_default_initialize($result->total, $upcoming_promotions_max, $upcoming_promotions_pager_element);
+      $upcoming_promotions_total = $result->total;
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_uitpas_profile_advantages_upcoming_promotions', $e);
