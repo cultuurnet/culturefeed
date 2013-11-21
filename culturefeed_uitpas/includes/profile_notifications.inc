@@ -146,20 +146,20 @@ function culturefeed_uitpas_profile_notifications_form_submit(&$form, &$form_sta
 
     // Email preference.
     if ($form_state['values']['email_notifications']) {
-      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS;
+      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_ALL_MAILS;
     }
     else {
-      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NO_MAILS;
+      $email_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_NOTIFICATION_MAILS_MAILS;
     }
 
     $preferences->emailPreference = $email_preference;
 
     // SMS preference.
     if ($form_state['values']['sms_notifications']) {
-      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NOTIFICATION_SMS;
+      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_ALL_SMS;
     }
     else {
-      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NO_SMS;
+      $sms_preference = CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_NOTIFICATION_SMS;
     }
     $preferences->smsPreference = $sms_preference;
 
