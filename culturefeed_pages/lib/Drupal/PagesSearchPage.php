@@ -111,4 +111,49 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
   }
 
+  /**
+   * Gets a page description for all pages.
+   *
+   * Only type aanbod UiT domein, theme and location need to be prepared for search engines.
+   *
+   * @see culturefeed_search_ui_search_page()
+   *
+   * @return string
+   *   Description for this type of page.
+   */
+  public function getPageDescription() {
+
+    $message = "";
+
+    $query = drupal_get_query_parameters(NULL, array('q'));
+
+    if (empty($query)) {
+      $message = t("A summary of all pages on @site", array('@site' => variable_get('site_name', '')));
+    }
+    else {
+      $message = t("A summary of all pages on @site", array('@site' => variable_get('site_name', '')));
+
+      if (!empty($query['regId'])) {
+        $term = culturefeed_search_get_term_translation($query['regId']);
+        $message .= t(" in @region", array('@region' => $term));
+      }
+      elseif (!empty($query['location'])) {
+        $message .= t(" in @region", array('@region' => $query['location']));
+      }
+
+      if (!empty($query['facet']['category_eventtype_id'][0])) {
+        $term = culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]);
+        $message .= t(" of the type @type", array('@type' => $term));
+      }
+
+      if (!empty($query['facet']['category_theme_id'][0])) {
+        $term = culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]);
+        $message .= t(" with theme @theme", array('@theme' => $term));
+      }
+
+    }
+
+    return $message;
+  }
+
 }
