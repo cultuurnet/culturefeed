@@ -39,6 +39,11 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     ),
+    'culturefeed_uitpas_promotion_image' => array(
+      'variables' => array('path' => NULL),
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    ),
   );
 
 }

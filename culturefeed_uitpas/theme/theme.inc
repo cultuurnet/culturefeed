@@ -6,6 +6,15 @@
  */
 
 /**
+ * Theme function.
+ */
+function theme_culturefeed_uitpas_promotion_picture($vars) {
+  $vars['path'] .= '?maxheight=120&maxwidth=120';
+
+  return theme('image', $vars);
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_profile_advantages().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
@@ -47,8 +56,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
+      $picture = '';
+      if (isset($promotion->pictures[0])) {
+        $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $promotion->pictures[0], 'attributes' => array()));
+      }
+
       $rows[] = array(
-        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0], 'attributes' => array())) : '',
+        $picture,
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
@@ -80,8 +94,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
       $singular = t('1 point');
       $plural = t('!points points', array('!points' => $promotion->points));
       $points = format_plural($promotion->points, $singular, $plural);
+      $picture = '';
+      if (isset($promotion->pictures[0])) {
+        $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $promotion->pictures[0], 'attributes' => array()));
+      }
+
       $rows[] = array(
-        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0], 'attributes' => array())) : '',
+        $picture,
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
@@ -110,8 +129,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
 
     foreach ($advantages as $advantage) {
 
+      $picture = '';
+      if (isset($advantage->pictures[0])) {
+        $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $advantage->pictures[0], 'attributes' => array()));
+      }
+
       $rows[] = array(
-        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0], 'attributes' => array())) : '',
+        $picture,
         l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
         ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
         ($advantage->description1) ? $advantage->description1 : '',
