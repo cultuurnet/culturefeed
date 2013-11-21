@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <balies>
+        <balie>
+            <id>11</id>
+            <consumerKey>5c9c73d3-e82f-e7b3-44161e6e3802e64f</consumerKey>
+            <name>'t Gasthuys - Stedelijk Museum Aalst</name>
+            <role>admin</role>
+            <actorId>5c9c73d3-e82f-e7b3-44161e6e3802e64f</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                    </permissions>
+                    <groups>
+                        <group>Niet-geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>25</id>
+            <consumerKey>68eb4173347a03967a54a0debdaead57</consumerKey>
+            <name>Aalst - SecO - Instituut St.-Vincentius a Paulo </name>
+            <role>admin</role>
+            <actorId>14889cfc-e452-44ee-a0f3-01b8e3bcdfad</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>13</id>
+            <consumerKey>31413BDF-DFC7-7A9F-10403618C2816E44</consumerKey>
+            <name>CC De Werf </name>
+            <role>admin</role>
+            <actorId>31413BDF-DFC7-7A9F-10403618C2816E44</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>8</id>
+                    <name>NieuwSysteemNovember2013</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+                <cardSystem>
+                    <id>5</id>
+                    <name>PieterSysteem</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>44</id>
+            <consumerKey>6f4f41af2ee82f491d779e1ab8464055</consumerKey>
+            <name>Charlottes testbalie</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>4</id>
+                    <name>Testsysteem Charlotte</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>testgroup</group>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>testgroup</group>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>27</id>
+            <consumerKey>1d56d3df-3413-466f-9c5c-5a8bccfeb3c0</consumerKey>
+            <name>Cirk!</name>
+            <role>admin</role>
+            <actorId>1d56d3df-3413-466f-9c5c-5a8bccfeb3c0</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>26</id>
+            <consumerKey>84abec5eb9d8ffc43c9c65b0f5f4df8d</consumerKey>
+            <name>CultuurNet Vlaanderen</name>
+            <role>admin</role>
+            <actorId></actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>17</id>
+            <consumerKey>8ed4e1f5-80de-44f5-b659-48054a01dfb5</consumerKey>
+            <name>Jeugdhuis Leeuwerik</name>
+            <role>admin</role>
+            <actorId>8ed4e1f5-80de-44f5-b659-48054a01dfb5</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>18</id>
+            <consumerKey>ba1da78b-d143-43ef-8829-00302697d4c4</consumerKey>
+            <name>JOC Rechteroever</name>
+            <role>admin</role>
+            <actorId>ba1da78b-d143-43ef-8829-00302697d4c4</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>10</id>
+            <consumerKey>cad22a20fa67b12ac1306b49755a2f7e</consumerKey>
+            <name>Mensen voor mensen</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>16</id>
+            <consumerKey>4037EEBC-0603-A3C3-399C4B5A2FC39789</consumerKey>
+            <name>MURZIM v.z.w. Aalsterse Vereniging voor Sterrenkunde</name>
+            <role>admin</role>
+            <actorId>4037EEBC-0603-A3C3-399C4B5A2FC39789</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>12</id>
+            <consumerKey>7b3d9697-fd79-7de9-5fa4d6eb9ea1726d</consumerKey>
+            <name>Openbare Bibliotheek Lede</name>
+            <role>admin</role>
+            <actorId>7b3d9697-fd79-7de9-5fa4d6eb9ea1726d</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>15</id>
+            <consumerKey>e549e0a8c0717b5463236f2ba4a32c1b</consumerKey>
+            <name>Registratie balie Haaltert</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>8</id>
+            <consumerKey>ffd22a20fefeb12ac1306b49755a2fee</consumerKey>
+            <name>School1</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>9</id>
+            <consumerKey>fed22a20fefeb12ac1306b49755a2fef</consumerKey>
+            <name>School2</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>14</id>
+            <consumerKey>5d21cc8a5fc8ef108afe42353d9d0640</consumerKey>
+            <name>Scouts Haaltert</name>
+            <role>admin</role>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>19</id>
+            <consumerKey>6AE81576-C056-3031-A573CB66187800BF</consumerKey>
+            <name>Stella Matutina College - Lede</name>
+            <role>admin</role>
+            <actorId>6AE81576-C056-3031-A573CB66187800BF</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>57</id>
+            <consumerKey>8828b26b25dc4185f94681dae5e4718c</consumerKey>
+            <name>TestBalie201310-3</name>
+            <role>member</role>
+            <actorId>TestBalie201310-3</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>5</id>
+                    <name>PieterSysteem</name>
+                    <permissions>
+                        <permission>registratie</permission>
+                        <permission>kansenstatuut toekennen</permission>
+                    </permissions>
+                    <groups>
+                        <group>Geauthorizeerde registratie balies</group>
+                    </groups>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+        <balie>
+            <id>32</id>
+            <consumerKey>53dc0f9e-6883-45f3-8697-09705f057c05</consumerKey>
+            <name>testschool uitpas</name>
+            <role>admin</role>
+            <actorId>53dc0f9e-6883-45f3-8697-09705f057c05</actorId>
+            <cardSystems>
+                <cardSystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                    <permissions/>
+                    <groups/>
+                </cardSystem>
+            </cardSystems>
+        </balie>
+    </balies>
+</response>

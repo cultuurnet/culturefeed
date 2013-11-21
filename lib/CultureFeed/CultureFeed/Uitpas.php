@@ -276,6 +276,8 @@ interface CultureFeed_Uitpas {
    * Search for counters for a given member
    *
    * @param string $uid The Culturefeed user ID
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchCountersForMember($uid);
 

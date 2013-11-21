@@ -1017,9 +1017,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Search for counters for a given member
-   *
-   * @param string $uid The Culturefeed user ID
+   * {@inheritdoc}
    */
   public function searchCountersForMember($uid) {
     $data = array(

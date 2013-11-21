@@ -31,40 +31,27 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
   public $role;
 
   /**
-   * The permissions of the member in the counter
-   *
-   * @var array
+   * @var string
    */
-  public $permissions = array();
+  public $actorId;
 
   /**
-   * The groups of the memeber in the counter.
-   *
-   *  @var array
+   * @var CulturFeed_Uitpas_Counter_EmployeeCardSystem
    */
-  public $groups;
+  public $cardSystems = array();
 
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-
-      //watchdog( 'balie' , "<pre>" . print_r($object, true) . "</pre>" );
-
-
     $counter = new CultureFeed_Uitpas_Counter_Employee();
     $counter->id = $object->xpath_str('id');
     $counter->consumerKey = $object->xpath_str('consumerKey');
     $counter->name = $object->xpath_str('name');
     $counter->role = $object->xpath_str('role');
+    $counter->actorId = $object->xpath_str('actorId');
 
-    foreach ($object->xpath('permissions/permission') as $permission) {
-      $counter->permissions[] = (string) $permission;
+    foreach ($object->xpath('cardSystems/cardSystem') as $card_system) {
+      $counter->cardSystems[] = CultureFeed_Uitpas_Counter_EmployeeCardSystem::createFromXml($card_system);
     }
-
-    foreach ($object->xpath('groups/group') as $group) {
-      $counter->groups[] = (string) $group;
-    }
-
-
 
     return $counter;
   }
