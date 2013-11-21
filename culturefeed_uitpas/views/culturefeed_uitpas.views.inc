@@ -55,8 +55,8 @@ function culturefeed_uitpas_views_data() {
     'title' => t('Title'),
     'help' => t('The promotion title.'),
     'field' => array(
-      'handler' => 'views_handler_field',
-      'click sortable' => TRUE,
+      'handler' => 'culturefeed_uitpas_views_handler_field_title',
+      'base_path' => 'promotion',
     ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
@@ -69,7 +69,6 @@ function culturefeed_uitpas_views_data() {
     'help' => t('The points necessary to make use of the promotion.'),
     'field' => array(
       'handler' => 'views_handler_field_numeric',
-      'click sortable' => TRUE,
     ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
@@ -145,6 +144,34 @@ function culturefeed_uitpas_views_data() {
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
       'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CREATION_DATE,
+    ),
+  );
+
+  $data['uitpas_promotions']['description_1'] = array(
+    'title' => t('Description 1'),
+    'help' => t('The description (1) of the promotion.'),
+    'field' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_field_markup',
+      'real field' => 'description1',
+      'format' => 'full_html',
+    ),
+  );
+
+  $data['uitpas_promotions']['description_2'] = array(
+    'title' => t('Description 2'),
+    'help' => t('The description (2) of the promotion.'),
+    'field' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_field_markup',
+      'real field' => 'description2',
+    ),
+  );
+
+  $data['uitpas_promotions']['image'] = array(
+    'title' => t('Image'),
+    'help' => t('The images of the promotion.'),
+    'field' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_field_image',
+      'real field' => 'pictures',
     ),
   );
 

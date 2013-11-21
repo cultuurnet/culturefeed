@@ -29,6 +29,13 @@ function culturefeed_uitpas_menu() {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function culturefeed_uitpas_ctools_plugin_directory($module, $plugin) {
+  return 'ctools/plugins/' . $plugin;
+}
+
+/**
  * Implements hook_views_api().
  */
 function culturefeed_uitpas_views_api() {
