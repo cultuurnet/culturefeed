@@ -553,10 +553,10 @@ msgstr ""
 "instellingen."
 
 #: includes/pages.inc:799
-msgid "By deleting a page, the page will no longer appear in search results, but it will not remove your contact info."
+msgid "By deleting a page, the page will no longer appear in search results and all contact info will be removed."
 msgstr ""
 "Door een pagina te verwijderen, zal de pagina niet meer verschijnen in "
-"de zoekresultaten en worden al je contactgegevens niet verwijderd."
+"de zoekresultaten en worden al je contactgegevens verwijderd."
 
 #: includes/pages.inc:800
 msgid "Members of this page, and activities in the name of this page will not be deleted."
