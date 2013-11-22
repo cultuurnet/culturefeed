@@ -51,6 +51,17 @@ function culturefeed_userpoints_ui_exchange_page() {
 
     $build = array();
 
+    if (!culturefeed_is_culturefeed_user()) {
+
+      $build['message'] = array(
+        '#theme' => 'culturefeed_ui_connect_hover',
+        '#url' => $_GET['q'],
+      );
+      
+      return $build;
+
+    }
+
     $form = drupal_get_form('culturefeed_userpoints_ui_exchange_form', $cf_account);
 
     $js_setting = array(
