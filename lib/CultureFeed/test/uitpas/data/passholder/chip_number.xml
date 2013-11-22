@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <response>
+    <cardSystem>
+        <id>6</id>
+        <name>Testsysteem Paspartoe</name>
+    </cardSystem>
+    <status>ACTIVE</status>
     <uitpasNumber>0930011111208</uitpasNumber>
 </response>

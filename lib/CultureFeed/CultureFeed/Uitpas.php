@@ -172,7 +172,7 @@ interface CultureFeed_Uitpas {
    * @param string $chip_number The chipnumber of the UitPas
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
    *
-   * @return CultureFeed_Uitpas_Passholder
+   * @return CultureFeed_Uitpas_CardInfo
    */
   public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
 

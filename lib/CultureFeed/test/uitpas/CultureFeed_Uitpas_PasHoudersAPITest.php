@@ -276,8 +276,13 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
              ->will($this->returnValue($chip_xml));
 
     $cf = new CultureFeed($oauth_client_stub);
-    $passholder = $cf->uitpas()->getPassholderForChipNumber(self::CHIP_NUMBER, self::CONSUMER_KEY_COUNTER);
+    $card = $cf->uitpas()->getPassholderForChipNumber(self::CHIP_NUMBER, self::CONSUMER_KEY_COUNTER);
 
-    $this->assertEquals(self::UITPAS_NUMBER, $passholder);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardInfo', $card);
+    $this->assertEquals(self::UITPAS_NUMBER, $card->uitpasNumber);
+    $this->assertEquals('ACTIVE', $card->status);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $card->cardSystem);
+    $this->assertEquals(6, $card->cardSystem->id);
+    $this->assertEquals('Testsysteem Paspartoe', $card->cardSystem->name);
   }
 }

@@ -583,10 +583,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get a passholder based on the UitPas chip number.
-   *
-   * @param string $chip_number The chipnumber of the UitPas
-   * @param string $service_consumer_counter The consumer key of the counter from where the request originates
+   * {@inheritdoc}
    */
   public function getPassholderForChipNumber($chip_number, $service_consumer_counter = NULL) {
     $data = array(
@@ -606,7 +603,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    return $xml->xpath_str('/response/uitpasNumber');
+    $card = CultureFeed_Uitpas_CardInfo::createFromXML($xml->xpath('/response', FALSE));
+    return $card;
   }
 
   /**
