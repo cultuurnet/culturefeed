@@ -16,12 +16,17 @@ class CultureFeed_Uitpas_Association {
    */
   public $name;
 
+  /**
+   * @param CultureFeed_SimpleXMLElement $object
+   *
+   * @return static
+   */
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-    $distribution_key = new CultureFeed_Uitpas_Association();
-    $distribution_key->id = $object->xpath_int('id');
-    $distribution_key->name = $object->xpath_str('name');
+    $instance = new static();
+    $instance->id = $object->xpath_int('id');
+    $instance->name = $object->xpath_str('name');
 
-    return $distribution_key;
+    return $instance;
   }
 
 }
