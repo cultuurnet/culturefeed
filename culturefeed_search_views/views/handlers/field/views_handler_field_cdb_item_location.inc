@@ -67,7 +67,7 @@ class views_handler_field_cdb_item_location extends views_handler_field {
       else {
 
         try {
-          $event = culturefeed_agenda_event_load($cdb_item->relations[0]->getCdbid());
+          $event = culturefeed_agenda_event_load(current($relations)->getCdbid());
           $location = culturefeed_agenda_get_location_of_event($event->getEntity());
 
         }

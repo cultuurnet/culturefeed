@@ -20,7 +20,7 @@ class views_handler_sort_culturefeed_search_date extends views_handler_sort_cult
   function option_definition() {
 
     $options = parent::option_definition();
-    $options['direction'] = array('default' => 'asc');
+    $options['order'] = array('default' => 'asc');
 
     return $options;
 
