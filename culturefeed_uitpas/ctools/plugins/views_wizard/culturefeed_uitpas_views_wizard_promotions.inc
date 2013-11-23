@@ -8,8 +8,6 @@ $plugin = array(
     'class' => 'CulturefeedUitpasPromotionsViewsWizard',
   ),
   'title' => t('UiTPAS Promotions'),
-  'available_sorts' => array(
-    //'points:DESC' => t('Points'),
-  ),
-  ''
+  'available_sorts' => array(),
+  'displays' => array('page', 'block'),
 );

@@ -1,23 +1,21 @@
 <?php
+// @codingStandardsIgnoreFile
+
+/**
+ * @file
+ */
 
 class CulturefeedUitpasPromotionsViewsWizard extends ViewsUiBaseViewsWizard {
 
-  protected function default_display_options($form, $form_state) {dpm($form_state);
+  /**
+   * {@inheritdoc}
+   */
+  protected function default_display_options($form, $form_state) {
 
     $display_options = parent::default_display_options($form, $form_state);
 
     // Remove the default fields, since we are customizing them here.
     unset($display_options['fields']);
-
-    $display_options['style_plugin'] = 'table';
-
-    $display_options['pager']['type'] = 'some';
-    $display_options['pager']['options']['items_per_page'] = '10';
-    $display_options['pager']['options']['offset'] = '0';
-
-    $display_options['style_options']['override'] = 1;
-    $display_options['style_options']['sticky'] = 0;
-    $display_options['style_options']['empty_table'] = 0;
 
     /* Field: UiTPAS promotions: Image */
     $display_options['fields']['image']['id'] = 'image';
@@ -77,6 +75,63 @@ class CulturefeedUitpasPromotionsViewsWizard extends ViewsUiBaseViewsWizard {
     $display_options['filters']['cashing_period_begin']['group'] = 1;
 
     return $display_options;
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function alter_display_options(&$display_options, $form, $form_state) {
+
+    // Page.
+    if (isset($display_options['page'])) {
+
+      $display_options['page']['pager']['type'] = 'some';
+      $display_options['page']['pager']['options']['items_per_page'] = 5;
+      $display_options['page']['style_plugin'] = 'table';
+      $display_options['page']['row_plugin'] = 'fields';
+
+    }
+
+    if (isset($display_options['block'])) {
+
+      $display_options['block']['pager']['type'] = FALSE;
+      $display_options['block']['pager']['options']['items_per_page'] = 5;
+      $display_options['block']['style_plugin'] = 'table';
+      $display_options['block']['row_plugin'] = 'fields';
+
+      if (isset($display_options['page'])) {
+        $display_options['defaults']['fields'] = FALSE;
+      }
+      unset($display_options['block']['fields']['description_1']);
+      unset($display_options['block']['fields']['description_2']);
+      unset($display_options['block']['fields']['cashing_period_end']);
+
+    }
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function build_form($form, &$form_state) {
+
+    $form = parent::build_form($form, $form_state);
+
+    $form['displays']['show']['sort']['#access'] = FALSE;
+
+    // Page.
+    $form['displays']['page']['options']['style']['#access'] = FALSE;
+    $form['displays']['page']['options']['items_per_page']['#access'] = FALSE;
+    $form['displays']['page']['options']['pager']['#access'] = FALSE;
+
+    // Block.
+    $form['displays']['block']['create']['#default_value'] = TRUE;
+    $form['displays']['block']['options']['style']['#access'] = FALSE;
+    $form['displays']['block']['options']['items_per_page']['#access'] = FALSE;
+    $form['displays']['block']['options']['pager']['#access'] = FALSE;
+
+    return $form;
 
   }
 
