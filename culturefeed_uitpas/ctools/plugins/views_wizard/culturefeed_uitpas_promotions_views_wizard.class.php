@@ -22,6 +22,8 @@ class CulturefeedUitpasPromotionsViewsWizard extends ViewsUiBaseViewsWizard {
     $display_options['fields']['image']['table'] = 'uitpas_promotions';
     $display_options['fields']['image']['field'] = 'image';
     $display_options['fields']['image']['label'] = '';
+    $display_options['fields']['image']['maxheight'] = '200';
+    $display_options['fields']['image']['maxwidth'] = '200';
 
     /* Field: UiTPAS promotions: Title */
     $display_options['fields']['title']['id'] = 'title';
@@ -60,6 +62,7 @@ class CulturefeedUitpasPromotionsViewsWizard extends ViewsUiBaseViewsWizard {
     $display_options['sorts']['points']['id'] = 'points';
     $display_options['sorts']['points']['table'] = 'uitpas_promotions';
     $display_options['sorts']['points']['field'] = 'points';
+    $display_options['sorts']['points']['order'] = 'DESC';
 
     /* Filter criterion: UiTPAS promotions: Unexpired */
     $display_options['filters']['unexpired']['id'] = 'unexpired';
@@ -83,26 +86,35 @@ class CulturefeedUitpasPromotionsViewsWizard extends ViewsUiBaseViewsWizard {
    */
   protected function alter_display_options(&$display_options, $form, $form_state) {
 
+    $display_options['default']['pager']['type'] = 'full';
+    $display_options['default']['pager']['options']['items_per_page'] = 10;
+
     // Page.
     if (isset($display_options['page'])) {
 
-      $display_options['page']['pager']['type'] = 'some';
-      $display_options['page']['pager']['options']['items_per_page'] = 5;
       $display_options['page']['style_plugin'] = 'table';
       $display_options['page']['row_plugin'] = 'fields';
 
     }
 
+    // Block.
     if (isset($display_options['block'])) {
 
-      $display_options['block']['pager']['type'] = FALSE;
+      if (isset($display_options['page'])) {
+
+        $display_options['block']['defaults']['fields'] = FALSE;
+        $display_options['block']['defaults']['pager'] = FALSE;
+
+      }
+
+      $display_options['block']['pager']['type'] = 'some';
       $display_options['block']['pager']['options']['items_per_page'] = 5;
       $display_options['block']['style_plugin'] = 'table';
       $display_options['block']['row_plugin'] = 'fields';
 
-      if (isset($display_options['page'])) {
-        $display_options['defaults']['fields'] = FALSE;
-      }
+      $display_options['block']['fields'] = $display_options['default']['fields'];
+      unset($display_options['block']['fields']['image']['maxheight']);
+      unset($display_options['block']['fields']['image']['maxwidth']);
       unset($display_options['block']['fields']['description_1']);
       unset($display_options['block']['fields']['description_2']);
       unset($display_options['block']['fields']['cashing_period_end']);

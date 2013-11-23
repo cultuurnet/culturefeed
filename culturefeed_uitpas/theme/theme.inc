@@ -6,9 +6,9 @@
  */
 
 /**
- * Theme function.
+ * Theme function for UiTPAS promotion image.
  */
-function theme_culturefeed_uitpas_promotion_picture($vars) {
+function theme_culturefeed_uitpas_promotion_image($vars) {
 
   $vars['path'] .= '?maxheight=' . $vars['maxheight'] . '&maxwidth=' . $vars['maxwidth'];
 
