@@ -11,6 +11,7 @@
 function culturefeed_uitpas_event_details_advantages_get() {
 
   $item = menu_get_object('culturefeed_agenda_event', 3);
+  $event = NULL;
 
   if ($item) {
 
@@ -22,7 +23,12 @@ function culturefeed_uitpas_event_details_advantages_get() {
 
     $cf = DrupalCultureFeed::getConsumerInstance();
     $result = $cf->uitpas()->searchEvents($query);
-    /*dpm($result);*/
+
+    if ($result->total) {
+      $event = $result->objects[0];
+    }
+
+    //dpm($event);
 
   }
 

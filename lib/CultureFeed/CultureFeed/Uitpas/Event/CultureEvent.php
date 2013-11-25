@@ -181,10 +181,16 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
    */
   public $numberOfPoints;
 
-  /*
+  /**
    * The number of months grace period for buy tickets.
    */
   public $gracePeriodMonths;
+
+  /**
+   * The crdsystems.
+   */
+
+  public $cardSystems;
 
   /**
    * Modify an array of data for posting.
@@ -245,6 +251,11 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
     $event->numberOfPoints = $object->xpath_int('numberOfPoints');
     $event->gracePeriodMonths = $object->xpath_int('gracePeriodMonths');
+
+    $event->cardSystems = array();
+    foreach ($object->xpath('cardSystems/cardSytem') as $cardSystem) {
+      $event->cardSystems[] = CultureFeed_Uitpas_CardSystem::createFromXML($cardSystem, FALSE);
+    }
 
     return $event;
   }

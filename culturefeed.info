@@ -55,6 +55,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Device.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchPointsOfSaleOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchCounterOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Distributionkey/Condition.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Promotion/Query/WelcomeAdvantagesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/TicketSale.php
