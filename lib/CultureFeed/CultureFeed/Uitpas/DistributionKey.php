@@ -19,7 +19,7 @@ class CultureFeed_Uitpas_DistributionKey {
   /**
    * Conditions.
    *
-   * @var array
+   * @var CultureFeed_Uitpas_DistributionKey_Condition[]
    */
   public $conditions;
 

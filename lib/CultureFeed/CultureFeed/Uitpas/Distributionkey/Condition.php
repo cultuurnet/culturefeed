@@ -2,6 +2,14 @@
 
 class CultureFeed_Uitpas_DistributionKey_Condition extends CultureFeed_Uitpas_ValueObject {
 
+  const DEFINITION_KANSARM = 'KANSARM';
+
+  const DEFINITION_PRICE = 'PRICE';
+
+  const OPERATOR_IN = 'IN';
+
+  const OPERATOR_LESS_THAN = 'LESS_THAN';
+
   /**
    * @var string The definition of the condition.
    */

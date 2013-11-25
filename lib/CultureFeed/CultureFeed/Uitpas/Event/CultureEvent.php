@@ -187,7 +187,9 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
   public $gracePeriodMonths;
 
   /**
-   * The crdsystems.
+   * The cardsystems.
+   *
+   * @var CultureFeed_Uitpas_CardSystem[]
    */
 
   public $cardSystems;

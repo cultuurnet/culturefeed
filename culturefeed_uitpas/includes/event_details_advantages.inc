@@ -20,31 +20,36 @@ function culturefeed_uitpas_event_details_advantages_get() {
   $item = menu_get_object('culturefeed_agenda_event', 3);
   $event = culturefeed_uitpas_get_uitpas_event($item);
 
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+  $puntsparen = ($event->numberOfPoints > 0.00);
+
+  $kansentarief = FALSE;
   foreach ($event->cardSystems as $card_system) {
-
-    if ($card_system->id == $card_system_id) {
-
-      foreach ($card_system->distributionKeys as $distribution_key) {
-
-        foreach ($distribution_key->conditions as $condition) {
-
-          // @TODO define constants.
-          if ($condition->definition == 'SAME_REGION' && $condition->operator == 'EQUALS' && $condition->value == 'true') {
-            // @TODO get passholder info?
-            $item_list['items'][] = t('pasholders uit !city');
-          }
-
+    foreach ($card_system->distributionKeys as $key) {
+      foreach ($key->conditions as $condition) {
+        if ($condition->definition == $condition::DEFINITION_KANSARM) {
+          $kansentarief = TRUE;
+          break 3;
         }
-
       }
-
     }
+  }
 
+  if ($puntsparen) {
+    $item_list['items'][] = array(
+      'data' => t('Collect points'),
+      'class' => array('uitpas_collect_points'),
+    );
+  }
+
+  if ($kansentarief) {
+    $item_list['items'][] = array(
+      'data' => t('Discount at underpriviliged tariff'),
+      'class' => array('uitpas_underpriviliged_tariff'),
+    );
   }
 
   if (count($item_list['items'])) {
-    return theme_item_list($item_list);
+    return theme('item_list', $item_list);
   }
 
 }

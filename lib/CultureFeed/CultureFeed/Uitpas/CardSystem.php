@@ -16,7 +16,7 @@ class CultureFeed_Uitpas_CardSystem
     public $name;
 
   /**
-   * @var array Distributionkeys.
+   * @var CultureFeed_Uitpas_DistributionKey[] Distributionkeys.
    */
   public $distributionKeys = array();
 

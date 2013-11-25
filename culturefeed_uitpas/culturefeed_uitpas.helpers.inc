@@ -36,6 +36,7 @@ function culturefeed_uitpas_get_uitpas_user() {
  *
  * @param CultuurNet\Search\ActivityStatsExtendedEntity $item
  *   A Cultuurent event item.
+ * @return CultureFeed_Uitpas_Event_CultureEvent
  */
 function culturefeed_uitpas_get_uitpas_event($item) {
 
