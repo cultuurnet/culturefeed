@@ -239,6 +239,9 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->price = $object->xpath_float('price');
     $event->tariff = $object->xpath_float('tariff');
     $event->title = $object->xpath_str('title');
+
+    $object->registerXPathNamespace('cdb', CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+
     $event->calendar = CultureFeed_Uitpas_Calendar::createFromXML($object->xpath('cdb:calendar', false));
     $event->numberOfPoints = $object->xpath_int('numberOfPoints');
     $event->gracePeriodMonths = $object->xpath_int('gracePeriodMonths');
