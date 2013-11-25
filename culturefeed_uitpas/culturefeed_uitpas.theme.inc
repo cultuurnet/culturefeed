@@ -26,6 +26,8 @@ function culturefeed_uitpas_theme() {
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
       ),
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-advantages-promotions',
     ),
     'culturefeed_uitpas_profile_summary' => array(
@@ -37,6 +39,8 @@ function culturefeed_uitpas_theme() {
         'upcoming_promotions' => array(),
       ),
       'template' => 'culturefeed-uitpas-profile-summary',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     ),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),
