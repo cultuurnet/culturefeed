@@ -37,6 +37,11 @@ class CultureFeed_Uitpas_DistributionKey {
    */
   public $automatic;
 
+  /**
+   * @var boolean
+   */
+  public $sameRegion;
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
     $distribution_key = new CultureFeed_Uitpas_DistributionKey();
@@ -49,6 +54,7 @@ class CultureFeed_Uitpas_DistributionKey {
     }
     $distribution_key->tariff = $object->xpath_str('tariff');
     $distribution_key->automatic = $object->xpath_bool('automatic');
+    $distribution_key->sameRegion = $object->xpath_bool('sameRegion');
 
     return $distribution_key;
   }
