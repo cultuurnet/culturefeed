@@ -6,6 +6,74 @@
  */
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_advantage().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
+
+  $advantage = $vars['advantage'];
+
+  // Image.
+  $vars['image'] = '';
+  if (isset($advantage->pictures[0])) {
+    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+  }
+
+  // Period.
+  $vars['period'] = '';
+  if ($advantage->cashingPeriodBegin) {
+
+    $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
+    if ($advantage->cashingPeriodEnd) {
+      $period .= ' ' . t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
+    }
+    $vars['period'] = $period;
+
+  }
+
+  // Location.
+  $location = array();
+  foreach ($advantage->counters as $counter) {
+    $location[] = $counter->name;
+  }
+  $vars['location'] = t('At') . " " . implode(', ', $location);
+
+  // Provider.
+  $vars['provider'] = '';
+  if (isset($advantage->owningCardSystem->name)) {
+    $vars['provider'] = t('Provided by !provider', array('!provider' => $advantage->owningCardSystem->name));
+  }
+
+  // Availability.
+  $vars['available'] = '';
+  if (count($advantage->validForCities)) {
+
+    $valid_for_cities = $advantage->validForCities;
+    asort($valid_for_cities);
+    $list = array(
+      'title' => t('Only available for'),
+      'attributes' => array(),
+      'type' => 'ul',
+      'items' => $valid_for_cities,
+    );
+    $vars['available'] = theme_item_list($list);
+
+  }
+
+  // Description1.
+  $vars['description1'] = '';
+  if ($advantage->description1) {
+    $vars['description1'] = $advantage->description1;
+  }
+
+  // Description2.
+  $vars['description2'] = '';
+  if ($advantage->description2) {
+    $vars['description2'] = $advantage->description2;
+  }
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_advantages_promotions().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
@@ -111,7 +179,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 /**
  * Implements hook_preprocess_culturefeed_uitpas_my_uitpas_summary().
  */
-function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$vars) {
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars) {
 
   $uitpas_user = $vars['uitpas_user'];
   $passholder = $vars['passholder'];
@@ -140,7 +208,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_my_uitpas_summary(&$va
   foreach ($advantages as $advantage) {
     $links['links'][] = array(
       'title' => $advantage->title,
-      'href' => 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id
+      'href' => 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id,
     );
   }
   $vars['advantages'] = theme_links($links);

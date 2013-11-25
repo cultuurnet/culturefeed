@@ -2,11 +2,10 @@
 
 /**
  * @file
- * Default theme implementation to display culturefeed uitpas promotion.
+ * Default theme implementation to display culturefeed uitpas advantage details.
  *
  * Available variables:
- * - $points: The number of points.
- * - $image
+ * - $image.
  * - $period: The period.
  * - $location: The location.
  * - $provider: The provider.
@@ -15,11 +14,10 @@
  * - $description2.
  */
 ?>
-<div class="promotion_details">
+<div class="advantage_details">
   <?php if ($image): ?>
   <div class="image"><?php print $image; ?></div>
   <?php endif; ?>
-  <div class="points"><?php print $points; ?></div>
   <?php if ($period): ?>
   <div class="period"><?php print $period; ?></div>
   <?php endif; ?>

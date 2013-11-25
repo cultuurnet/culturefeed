@@ -11,6 +11,12 @@
 function culturefeed_uitpas_theme() {
 
   return array(
+    'culturefeed_uitpas_advantage' => array(
+      'variables' => array('advantage' => NULL),
+      'template' => 'culturefeed-uitpas-advantage',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    ),
     'culturefeed_uitpas_advantages_promotions' => array(
       'variables' => array(
         'advantages' => array(),
@@ -22,7 +28,7 @@ function culturefeed_uitpas_theme() {
       ),
       'template' => 'culturefeed-uitpas-advantages-promotions',
     ),
-    'culturefeed_uitpas_my_uitpas_summary' => array(
+    'culturefeed_uitpas_profile_summary' => array(
       'variables' => array(
         'uitpas_user' => NULL,
         'passholder' => NULL,
@@ -30,7 +36,7 @@ function culturefeed_uitpas_theme() {
         'promotions' => array(),
         'upcoming_promotions' => array(),
       ),
-      'template' => 'culturefeed-uitpas-my-uitpas-summary',
+      'template' => 'culturefeed-uitpas-profile-summary',
     ),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),

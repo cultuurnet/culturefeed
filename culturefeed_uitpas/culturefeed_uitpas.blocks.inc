@@ -11,8 +11,8 @@
 function culturefeed_uitpas_block_info() {
 
   return array(
-    'uitpas_my_uitpas_summary' => array(
-      'info' => t('Culturefeed uitpas: my uitpas (summary)'),
+    'uitpas_profile_summary' => array(
+      'info' => t('Culturefeed uitpas: profile (summary)'),
       'cache' => DRUPAL_NO_CACHE,
     ),
     'uitpas_promotions_highlight' => array(
@@ -40,9 +40,9 @@ function culturefeed_uitpas_block_configure($delta = '') {
 
   switch ($delta) {
 
-    case 'uitpas_my_uitpas_summary':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/my_uitpas_summary');
-      culturefeed_uitpas_my_uitpas_summary_settings_get($form);
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      culturefeed_uitpas_profile_summary_settings_get($form);
       break;
 
     case 'uitpas_promotions_highlight':
@@ -73,9 +73,9 @@ function culturefeed_uitpas_block_save($delta = '', $edit = array()) {
 
   switch ($delta) {
 
-    case 'uitpas_my_uitpas_summary':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/my_uitpas_summary');
-      culturefeed_uitpas_my_uitpas_summary_settings_save($edit);
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      culturefeed_uitpas_profile_summary_settings_save($edit);
       break;
 
     case 'uitpas_promotions_highlight':
@@ -106,9 +106,9 @@ function culturefeed_uitpas_block_view($delta = '') {
 
   switch ($delta) {
 
-    case 'uitpas_my_uitpas_summary':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/my_uitpas_summary');
-      $content = culturefeed_uitpas_my_uitpas_summary_get();
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      $content = culturefeed_uitpas_profile_summary_get();
       if ($content) {
 
         $block['subject'] = t("My UiTPAS");

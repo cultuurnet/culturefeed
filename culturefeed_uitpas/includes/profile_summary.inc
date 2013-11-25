@@ -10,13 +10,12 @@
  */
 function culturefeed_uitpas_my_uitpas_summary_get() {
 
-  $summary = array();
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $user = $uitpas_user->user;
-    /** @var CultureFeed_Uitpas_Passholder $passholder **/
+    // @var CultureFeed_Uitpas_Passholder $passholder.
     $passholder = $uitpas_user->passholder;
     $cf = $uitpas_user->cf;
 
