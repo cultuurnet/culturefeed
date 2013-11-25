@@ -63,3 +63,12 @@ function culturefeed_uitpas_theme() {
   );
 
 }
+
+/**
+ * Preprocess function for culturefeed_agenda_event.
+ */
+function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
+
+  //dpm($vars['item']);
+
+}

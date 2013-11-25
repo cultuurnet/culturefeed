@@ -11,6 +11,10 @@
 function culturefeed_uitpas_block_info() {
 
   return array(
+    'uitpas_event_details_advantages' => array(
+      'info' => t('Culturefeed uitpas: event details advantages'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
     'uitpas_profile_summary' => array(
       'info' => t('Culturefeed uitpas: profile (summary)'),
       'cache' => DRUPAL_NO_CACHE,
@@ -105,6 +109,17 @@ function culturefeed_uitpas_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
+
+    case 'uitpas_event_details_advantages':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+      $content = culturefeed_uitpas_event_details_advantages_get();
+      if ($content) {
+
+        $block['subject'] = t("UiTPAS Advantages");
+        $block['content'] = $content;
+
+      }
+      break;
 
     case 'uitpas_profile_summary':
       module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
