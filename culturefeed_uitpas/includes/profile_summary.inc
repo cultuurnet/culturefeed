@@ -45,7 +45,7 @@ function culturefeed_uitpas_profile_summary_get() {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_uitpas_my_uitpas_summary_welcome_advantages', $e);
+      watchdog_exception('culturefeed_uitpas_profile_summary_welcome_advantages', $e);
     }
 
     // Promotions.
@@ -66,7 +66,7 @@ function culturefeed_uitpas_profile_summary_get() {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_uitpas_my_uitpas_summary_promotions', $e);
+      watchdog_exception('culturefeed_uitpas_profile_summary_promotions', $e);
     }
 
     // Upcoming promotions.
@@ -87,11 +87,11 @@ function culturefeed_uitpas_profile_summary_get() {
       }
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions', $e);
+      watchdog_exception('culturefeed_uitpas_profile_summary_upcoming_promotions', $e);
     }
 
     return array(
-      '#theme' => 'culturefeed_uitpas_my_uitpas_summary',
+      '#theme' => 'culturefeed_uitpas_profile_summary',
       '#uitpas_user' => $user,
       '#passholder' => $passholder,
       '#advantages' => $advantages,
@@ -111,17 +111,17 @@ function culturefeed_uitpas_profile_summary_settings_get(&$form) {
   $form['promotions_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title for the promotions'),
-    '#default_value' => variable_get('culturefeed_uitpas_my_uitpas_summary_promotions_title', t('Your UiTPAS advantages')),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_summary_promotions_title', t('Your UiTPAS advantages')),
   );
   $form['upcoming_promotions_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title for the upcoming promotions'),
-    '#default_value' => variable_get('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions_title', t('Just a few points more for')),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_summary_upcoming_promotions_title', t('Just a few points more for')),
   );
   $form['more_link_text'] = array(
     '#type' => 'textfield',
     '#title' => t('More link text'),
-    '#default_value' => variable_get('culturefeed_uitpas_my_uitpas_summary_more_link_text', t('Show all my promotions')),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')),
   );
 
 }
@@ -131,8 +131,8 @@ function culturefeed_uitpas_profile_summary_settings_get(&$form) {
  */
 function culturefeed_uitpas_profile_summary_settings_save($values) {
 
-  variable_set('culturefeed_uitpas_my_uitpas_summary_promotions_title', $values['promotions_title']);
-  variable_set('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions_title', $values['upcoming_promotions_title']);
-  variable_set('culturefeed_uitpas_my_uitpas_summary_more_link_text', $values['more_link_text']);
+  variable_set('culturefeed_uitpas_profile_summary_promotions_title', $values['promotions_title']);
+  variable_set('culturefeed_uitpas_profile_summary_upcoming_promotions_title', $values['upcoming_promotions_title']);
+  variable_set('culturefeed_uitpas_profile_summary_more_link_text', $values['more_link_text']);
 
 }

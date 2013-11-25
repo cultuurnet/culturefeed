@@ -15,7 +15,7 @@
  * - $all_promotions: all promotions link.
  */
 ?>
-<div class="my_uitpas_summary">
+<div class="profile_summary">
   <div class="details">
     <?php if ($image): ?><div class="image"><?php print $image; ?></div><?php endif; ?>
     <div class="name"><?php print $name; ?></div>

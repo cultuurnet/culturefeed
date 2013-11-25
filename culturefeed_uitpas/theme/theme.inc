@@ -214,7 +214,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $vars['advantages'] = theme_links($links);
 
   // Promotions.
-  $vars['promotions_title'] = variable_get('culturefeed_uitpas_my_uitpas_summary_promotions_title', t('Your UiTPAS advantages'));
+  $vars['promotions_title'] = variable_get('culturefeed_uitpas_profile_summary_promotions_title', t('Your UiTPAS advantages'));
   $links = array(
     'links' => array(),
     'heading' => array(),
@@ -229,7 +229,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $vars['promotions'] = theme_links($links);
 
   // Upcoming promotions.
-  $vars['upcoming_promotions_title'] = variable_get('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions_title', t('Just a few points more for'));
+  $vars['upcoming_promotions_title'] = variable_get('culturefeed_uitpas_profile_summary_upcoming_promotions_title', t('Just a few points more for'));
   $links = array(
     'links' => array(),
     'heading' => array(),
@@ -244,7 +244,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $vars['upcoming_promotions'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
   // All promotions.
-  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_my_uitpas_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
+  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
 
 }
 
