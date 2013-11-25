@@ -135,6 +135,18 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
    */
   public $unitsTaken;
 
+  /**
+   * @var CultureFeed_Uitpas_CardSystem Card system owning the welcome advantage
+   */
+  public $owningCardSystem;
+
+  /**
+   * @var CultureFeed_Uitpas_CardSystem[] Card systems the welcome advantage
+   * applies to
+   */
+  public $applicableCardSystems = array();
+
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $welcome_advantage = new CultureFeed_Uitpas_Passholder_WelcomeAdvantage();
     $welcome_advantage->id = $object->xpath_int('id');
@@ -159,6 +171,16 @@ class CultureFeed_Uitpas_Passholder_WelcomeAdvantage extends CultureFeed_Uitpas_
     $welcome_advantage->validForCities = $object->xpath_str('validForCities/city', true);
     $welcome_advantage->maxAvailableUnits = $object->xpath_int('maxAvailableUnits');
     $welcome_advantage->unitsTaken = $object->xpath_int('unitsTaken');
+
+    $owningCardSystem = $object->xpath('owningCardSystem', FALSE);
+    if ($owningCardSystem instanceof CultureFeed_SimpleXMLElement) {
+      $welcome_advantage->owningCardSystem = CultureFeed_Uitpas_CardSystem::createFromXml($owningCardSystem);
+    }
+
+    $applicableCardSystems = $object->xpath('applicableCardSystems/cardsystem');
+    foreach ($applicableCardSystems as $applicableCardSystem) {
+      $welcome_advantage->applicableCardSystems[] = CultureFeed_Uitpas_CardSystem::createFromXml($applicableCardSystem);
+    }
 
     return $welcome_advantage;
   }

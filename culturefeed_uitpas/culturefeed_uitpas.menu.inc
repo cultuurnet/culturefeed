@@ -24,6 +24,15 @@ function culturefeed_uitpas_menu() {
       'page callback' => 'culturefeed_uitpas_advantages_promotions_get',
       'file' => 'includes/advantages_promotions.inc',
       'access arguments' => array('access content'),
+      ),
+    'promotion/%/%uitpas_promotion' => array(
+      'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
+      'title arguments' => array(2),
+      'description' => 'Details for an UiTPAS promotion.',
+      'page callback' => 'culturefeed_uitpas_promotion_details_get',
+      'page arguments' => array(2, 1),
+      'access arguments' => array('access content'),
+      'file' => 'includes/promotion_details.inc',
     ),
     'registration_confirmation' => array(
       'title' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
