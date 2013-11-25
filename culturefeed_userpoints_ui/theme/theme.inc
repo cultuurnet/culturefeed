@@ -123,7 +123,7 @@ function culturefeed_userpoints_ui_preprocess_culturefeed_userpoints_ui_promotio
   $promotion_id = $pointsPromotion->id;
 
   $variables['link'] = l($pointsPromotion->title, 'userpoints/promotion/' . $promotion_id);
-
+  $variables['item_url'] = url('userpoints/promotion/' . $pointsPromotion->id);
   $variables['add_link'] = '';
   $variables['remove_link'] = '';
   $variables['select_list'] = '';
