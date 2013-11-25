@@ -69,6 +69,46 @@ function culturefeed_uitpas_theme() {
  */
 function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
-  //dpm($vars['item']);
+  $event = culturefeed_uitpas_get_uitpas_event($vars['item']);
+
+  if ($event) {
+
+    $prices = array();
+
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    foreach ($event->cardSystems as $card_system) {
+
+      if ($card_system->id == $card_system_id) {
+
+        foreach ($card_system->distributionKeys as $distribution_key) {
+
+          foreach ($distribution_key->conditions as $condition) {
+
+            // @TODO define constants.
+            if ($condition->definition == 'PRICE') {
+
+              $price = $event->price;
+
+              if ($condition->operator == 'LESS_THAN' && (float) $price < (float) $condition->value) {
+
+                $prices[] = 'test price';
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+    if (count($prices)) {
+      $vars['price'] = implode('<br />', $prices);
+    }
+
+  }
 
 }

@@ -30,3 +30,34 @@ function culturefeed_uitpas_get_uitpas_user() {
 
   return $uitpas_user;
 }
+
+/**
+ * Returns a Culturefeed uitpas event object.
+ *
+ * @param CultuurNet\Search\ActivityStatsExtendedEntity $item
+ *   A Cultuurent event item.
+ */
+function culturefeed_uitpas_get_uitpas_event($item) {
+
+  $event = NULL;
+
+  if ($item) {
+
+    $cdb_item = $item->getEntity();
+    $cdbid = $cdb_item->getCdbid();
+
+    $query = new CultureFeed_Uitpas_Event_Query_SearchEventsOptions();
+    $query->cdbid = $cdbid;
+
+    $cf = DrupalCultureFeed::getConsumerInstance();
+    $result = $cf->uitpas()->searchEvents($query);
+
+    if ($result->total) {
+      $event = $result->objects[0];
+    }
+
+  }
+
+  return $event;
+
+}
