@@ -28,7 +28,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
       $event = $result->objects[0];
     }
 
-    //dpm($event);
+    dpm($event);
 
   }
 
