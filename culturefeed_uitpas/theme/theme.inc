@@ -177,7 +177,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 }
 
 /**
- * Implements hook_preprocess_culturefeed_uitpas_my_uitpas_summary().
+ * Implements hook_preprocess_culturefeed_uitpas_profile_summary().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars) {
 

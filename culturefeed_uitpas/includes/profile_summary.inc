@@ -6,9 +6,9 @@
  */
 
 /**
- * Returns my uitpas summary.
+ * Returns my uitpas profile (summary).
  */
-function culturefeed_uitpas_my_uitpas_summary_get() {
+function culturefeed_uitpas_profile_summary_get() {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
@@ -104,9 +104,9 @@ function culturefeed_uitpas_my_uitpas_summary_get() {
 }
 
 /**
- * Returns form elements for my uitpas summary settings.
+ * Returns form elements for profile summary settings.
  */
-function culturefeed_uitpas_my_uitpas_summary_settings_get(&$form) {
+function culturefeed_uitpas_profile_summary_settings_get(&$form) {
 
   $form['promotions_title'] = array(
     '#type' => 'textfield',
@@ -129,7 +129,7 @@ function culturefeed_uitpas_my_uitpas_summary_settings_get(&$form) {
 /**
  * Saves settings for my uitpas summary.
  */
-function culturefeed_uitpas_my_uitpas_summary_settings_save($values) {
+function culturefeed_uitpas_profile_summary_settings_save($values) {
 
   variable_set('culturefeed_uitpas_my_uitpas_summary_promotions_title', $values['promotions_title']);
   variable_set('culturefeed_uitpas_my_uitpas_summary_upcoming_promotions_title', $values['upcoming_promotions_title']);
