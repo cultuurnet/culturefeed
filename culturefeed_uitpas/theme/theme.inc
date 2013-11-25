@@ -97,8 +97,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 
   // Advantages.
   $header = array(
-    '',
-    t('Welcome advantages'),
+    array('data' => t('Welcome advantages'), 'colspan' => 2),
     t('Valid till'),
     t('Description'),
     t('Counters'),
@@ -133,8 +132,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 
   // Promotions.
   $header = array(
-    '',
-    array('data' => t('Promotions'), 'colspan' => 2),
+    array('data' => t('Promotions'), 'colspan' => 3),
     t('Valid till'),
     t('Description'),
     t('Counters'),
