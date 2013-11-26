@@ -1,0 +1,301 @@
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_mailing.admin.inc: n/a
+#  culturefeed_mailing.pages.inc: n/a
+#  culturefeed_mailing.blocks.inc: n/a
+#  culturefeed_mailing.helpers.inc: n/a
+#  culturefeed_mailing.module: n/a
+#  culturefeed_mailing.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-07-23 17:41+0200\n"
+"PO-Revision-Date: 2013-11-05 15:17+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_mailing.admin.inc:21
+msgid "None"
+msgstr "Aucun"
+
+#: culturefeed_mailing.admin.inc:29 culturefeed_mailing.pages.inc:249
+msgid "Mailing list"
+msgstr "Liste de mailing"
+
+#: culturefeed_mailing.admin.inc:36
+msgid "Optional mailing list"
+msgstr "Liste mailing optionnelle"
+
+#: culturefeed_mailing.admin.inc:43
+msgid "Newsletter block description"
+msgstr "Bloc réservé à la description du bulletin d'information"
+
+#: culturefeed_mailing.admin.inc:44
+msgid "Description displayed in the form as block"
+msgstr "La description est indiquée sous forme de bloc dans le formulaire"
+
+#: culturefeed_mailing.admin.inc:50
+msgid "Optional newsletter description"
+msgstr "Description optionnelle du bulletin d'information"
+
+#: culturefeed_mailing.admin.inc:51
+msgid "Description displayed beside the checkbox for an optional registration"
+msgstr "La description qui apparaît près de la case relative à une inscription optionnelle"
+
+#: culturefeed_mailing.admin.inc:57
+msgid "Subscribed message"
+msgstr "Message d'accompagnement de l'inscription"
+
+#: culturefeed_mailing.admin.inc:58
+msgid "Message after a successfull subscription"
+msgstr "Message apparaissant après l'inscription réussie"
+
+#: culturefeed_mailing.admin.inc:59
+msgid "Successfully subscribed to our newsletter"
+msgstr "Vous êtes correctement inscrit à notre bulletin d'information"
+
+#: culturefeed_mailing.blocks.inc:30
+msgid "Newsletter"
+msgstr "Bulletin d'information"
+
+#: culturefeed_mailing.helpers.inc:28
+msgid "subscribed"
+msgstr "inscrit"
+
+#: culturefeed_mailing.helpers.inc:28
+msgid "not subscribed"
+msgstr "non inscrit"
+
+#: culturefeed_mailing.helpers.inc:31
+msgid "Unsubscribe"
+msgstr "Désinscrire"
+
+#: culturefeed_mailing.helpers.inc:31 culturefeed_mailing.pages.inc:127
+#: culturefeed_mailing.module:240
+msgid "Subscribe"
+msgstr "Inscrire"
+
+#: culturefeed_mailing.pages.inc:48
+msgid "Error occurred"
+msgstr "Une erreur s'est produite"
+
+#: culturefeed_mailing.pages.inc:75
+msgid "Email address"
+msgstr "Adresse de courrier électronique"
+
+#: culturefeed_mailing.pages.inc:85
+msgid "Zipcode"
+msgstr "Code postal"
+
+#: culturefeed_mailing.pages.inc:95
+msgid "First name"
+msgstr "Prénom"
+
+#: culturefeed_mailing.pages.inc:105
+msgid "Family name"
+msgstr "Nom"
+
+#: culturefeed_mailing.pages.inc:122
+msgid "Privacy statement"
+msgstr "Déclaration de vie privée"
+
+#: culturefeed_mailing.pages.inc:169
+msgid "An error occurred while subscribing, please try again later."
+msgstr "Une erreur s'est produite durant le processus d'inscription. Veuillez réessayer ultérieurement. "
+
+#: culturefeed_mailing.pages.inc:179
+msgid "You have successfully subscribed to our newsletter"
+msgstr "Vous êtes correctement inscrit(e) à notre bulletin d'information"
+
+#: culturefeed_mailing.pages.inc:198
+msgid "edit"
+msgstr "modifier"
+
+#: culturefeed_mailing.pages.inc:205
+msgid "delete"
+msgstr "supprimer"
+
+#: culturefeed_mailing.pages.inc:212;491
+msgid "send test mail"
+msgstr "envoyer un courrier test"
+
+#: culturefeed_mailing.pages.inc:249;315
+msgid "Subject"
+msgstr "Sujet"
+
+#: culturefeed_mailing.pages.inc:249;307
+msgid "From address"
+msgstr "De l'adresse"
+
+#: culturefeed_mailing.pages.inc:249
+msgid "Actions"
+msgstr "Actions"
+
+#: culturefeed_mailing.pages.inc:251
+msgid "No mailinglists yet"
+msgstr "Aucune liste de mailing n'a été créée"
+
+#: culturefeed_mailing.pages.inc:267
+msgid "Are you sure you want to delete %title?"
+msgstr "Êtes-vous sûr de vouloir supprimer %titre ?"
+
+#: culturefeed_mailing.pages.inc:269
+msgid "This action cannot be undone."
+msgstr "Cette opération ne peut être annulée."
+
+#: culturefeed_mailing.pages.inc:270
+msgid "Delete"
+msgstr "Supprimer"
+
+#: culturefeed_mailing.pages.inc:271
+msgid "Cancel"
+msgstr "Annuler"
+
+#: culturefeed_mailing.pages.inc:286
+msgid "Error occurred while deleting the mailing"
+msgstr "Une erreur s'est produite durant le processus de suppression du mailing."
+
+#: culturefeed_mailing.pages.inc:299
+msgid "Title"
+msgstr "Titre"
+
+#: culturefeed_mailing.pages.inc:331
+msgid "Frequency"
+msgstr "Fréquence"
+
+#: culturefeed_mailing.pages.inc:339
+msgid "Search Query"
+msgstr "Recherche"
+
+#: culturefeed_mailing.pages.inc:347
+msgid "Recommendation Query"
+msgstr "Recherche recommandée"
+
+#: culturefeed_mailing.pages.inc:355
+msgid "Template"
+msgstr "Template"
+
+#: culturefeed_mailing.pages.inc:363
+msgid "Block 1"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:370
+msgid "Block 2"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:377
+msgid "Block 3"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:384
+msgid "Block 4"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:391
+msgid "Block 5"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:398
+msgid "Block 6"
+msgstr ""
+
+#: culturefeed_mailing.pages.inc:410
+msgid "Submit"
+msgstr "Introduire"
+
+#: culturefeed_mailing.pages.inc:440
+msgid "Mailing list updated"
+msgstr "Les modifications apportées à la liste de mailing ont été enregistrées"
+
+#: culturefeed_mailing.pages.inc:444
+msgid "Could not update mailing list"
+msgstr "Les modifications apportées à la liste de mailing n'ont pu être enregistrées."
+
+#: culturefeed_mailing.pages.inc:467
+msgid "New mailing list created"
+msgstr "Créer une nouvelle liste de mailing"
+
+#: culturefeed_mailing.pages.inc:471
+msgid "Could not save new mailing list"
+msgstr "Les modifications apportées à la nouvelle liste de mailing n'ont pu être enregistrées."
+
+#: culturefeed_mailing.pages.inc:503
+msgid "Test mail sent"
+msgstr "Le courrier de test a été envoyé."
+
+#: culturefeed_mailing.pages.inc:507
+msgid "Mail could not be sent"
+msgstr "Le courrier n'a pu être envoyé."
+
+#: culturefeed_mailing.module:15
+msgid "Subscribe to mailings"
+msgstr "Inscrivez-vous"
+
+#: culturefeed_mailing.module:16
+msgid "Allows the user to subscribe to mailings"
+msgstr "Autoriser l'utilisateur à s'inscrire à une liste de mailing"
+
+#: culturefeed_mailing.module:39
+msgid "Subscribe to our newsletter"
+msgstr "Inscrivez-vous au bulletin d'information"
+
+#: culturefeed_mailing.module:47
+msgid "Subscribed to our newsletter"
+msgstr "Vous êtes inscrit au bulletin d'information"
+
+#: culturefeed_mailing.module:55
+msgid "Emails"
+msgstr "Courriers électroniques"
+
+#: culturefeed_mailing.module:64 culturefeed_mailing.info:0
+msgid "CultureFeed Mailing"
+msgstr "Mailing CultureFeed"
+
+#: culturefeed_mailing.module:65
+msgid "CultureFeed Mailing settings"
+msgstr "Réglages Mailing CultureFeed"
+
+#: culturefeed_mailing.module:75
+msgid "Mailing lists"
+msgstr "Listes de mailing"
+
+#: culturefeed_mailing.module:84;94;112
+msgid "Add mailing list"
+msgstr "Ajouter une liste de mailing"
+
+#: culturefeed_mailing.module:103
+msgid "Test mailing list"
+msgstr "Tester liste de mailing"
+
+#: culturefeed_mailing.module:159
+msgid "Culturefeed mailings: Newsletter opt-in"
+msgstr ""
+
+#: culturefeed_mailing.module:164
+msgid "Culturefeed mailings: Newsletter form"
+msgstr ""
+
+#: culturefeed_mailing.module:201
+msgid "Manage newsletters you can subscribe to"
+msgstr "Gérer les bulletins d'information auxquels vous pouvez vous inscrire"
+
+#: culturefeed_mailing.module:233
+msgid "Email address"
+msgstr "Adresse de courrier électronique"
+
+#: culturefeed_mailing.info:0
+msgid "Creates a tool to subscribe to and construct mailings on CultureFeed"
+msgstr "Crée un outil permettant de vous inscrire à des mailings CultureFeed."
+
+#: culturefeed_mailing.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"
+
