@@ -141,14 +141,9 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
         $message .= t(" in @region", array('@region' => $query['location']));
       }
 
-      if (!empty($query['facet']['category_eventtype_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]);
+      if (!empty($query['facet']['category_actortype_id'][0])) {
+        $term = culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]);
         $message .= t(" of the type @type", array('@type' => $term));
-      }
-
-      if (!empty($query['facet']['category_theme_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]);
-        $message .= t(" with theme @theme", array('@theme' => $term));
       }
 
     }
