@@ -585,16 +585,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   /**
    * {@inheritdoc}
    */
-  public function getPassholderForChipNumber($chip_number, $service_consumer_counter = NULL) {
-    $data = array(
-      'chipNumber' => $chip_number,
-    );
+  public function getCard(CultureFeed_Uitpas_CardInfoQuery $card_query) {
+    $data = $card_query->toPostData();
 
-    if ($service_consumer_counter) {
-      $data['balieConsumerKey'] = $service_consumer_counter;
-    }
-
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/uitpasNumber', $data);
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/card', $data);
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);

@@ -167,14 +167,12 @@ interface CultureFeed_Uitpas {
   public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
-   * Get a passholder based on the UitPas chip number.
+   * Get info regarding a UiTPAS card based on chipNumber of uitpasNumber.
    *
-   * @param string $chip_number The chipnumber of the UitPas
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
-   *
+   * @param CultureFeed_Uitpas_CardInfoQuery $card_query
    * @return CultureFeed_Uitpas_CardInfo
    */
-  public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
+  public function getCard(CultureFeed_Uitpas_CardInfoQuery $card_query);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet.

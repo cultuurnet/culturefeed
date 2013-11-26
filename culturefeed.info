@@ -46,6 +46,7 @@ files[] = lib/CultureFeed/CultureFeed/SearchMailingsQuery.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Calendar.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/CardInfo.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/CardInfoQuery.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/CardSystem.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Response.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Association.php
