@@ -51,6 +51,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/CardSystem.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Response.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Association.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Employee.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/EmployeeCardSystem.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Member.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/CardCounter.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Device.php
