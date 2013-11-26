@@ -550,13 +550,13 @@ function _culturefeed_pages_preprocess_page_metatags(&$variables) {
   if (!empty($variables['address'])) {
     $location = '';
     if (!empty($variables['address']['street'])) {
-      $location .= $variables['address']['street'];
-      if (!empty($variables['address']['zip'])) {
-        $location .= ', ' . $variables['address']['zip'];
-      }
-      if (!empty($variables['address']['city'])) {
-        $location .= ' ' . $variables['address']['city'];
-      }
+      $location .= $variables['address']['street'] . ', ';
+    }
+    if (!empty($variables['address']['zip'])) {
+      $location .= $variables['address']['zip'];
+    }
+    if (!empty($variables['address']['city'])) {
+      $location .= ' ' . $variables['address']['city'];
     }
     if (!empty($variables['address']['city'])) {
       $title_parts[] = $variables['address']['city'];
