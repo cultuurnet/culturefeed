@@ -24,6 +24,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 
   $base_pager = array('tags' => array(), 'parameters' => array());
 
+  // Intro
+  $vars['intro'] = variable_get('culturefeed_uitpas_profile_actions_intro');
+
   // Actions.
   $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
   $rows = array();

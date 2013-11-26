@@ -60,6 +60,12 @@ function culturefeed_uitpas_profile_actions_settings_get(&$form) {
     '#type' => 'fieldset',
     '#title' => t('UiTPAS profile actions settings'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['profile_actions']['culturefeed_uitpas_profile_actions_intro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Intro'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_actions_intro'),
   );
   $form['profile_actions']['culturefeed_uitpas_profile_actions_actions_max'] = array(
     '#type' => 'textfield',
