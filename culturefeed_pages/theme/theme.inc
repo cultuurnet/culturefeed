@@ -566,6 +566,9 @@ function _culturefeed_pages_preprocess_page_metatags(&$variables) {
   if (!empty($variables['contact']) && !empty($variables['contact']['tel'])) {
     $description_parts[] = t('Phone number: @number', array('@number' => $variables['contact']['tel']));
   }
+  if (!empty($variables['description'])) {
+    $description_parts[] = strip_tags($variables['description']);
+  }
 
   // Add meta title tag.
   drupal_set_title(implode(' | ', $title_parts));
