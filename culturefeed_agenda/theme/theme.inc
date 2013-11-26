@@ -591,7 +591,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $description_parts[] = t('Organisation: @organisation', array('@organisation' => $variables['organiser']['title']));
   }
   if (!empty($variables['price'])) {
-    $description_parts[] = t('Price € @price', array('@price' => $variables['price']));
+    $description_parts[] = t('Price: € @price', array('@price' => str_replace('&euro; ' , '' , $variables['price'])));
   }
   if (!empty($variables['tickets'])) {
     $description_parts[] = t('Order your tickets');
