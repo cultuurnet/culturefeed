@@ -30,6 +30,9 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("LOSS_THEFT", $prices->objects[0]->reason);
     $this->assertEquals(FALSE, $prices->objects[0]->kansenStatuut);
     $this->assertEquals(20.5, $prices->objects[0]->price);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $prices->objects[0]->cardSystem);
+    $this->assertEquals(5, $prices->objects[0]->cardSystem->id);
+    $this->assertEquals('Test', $prices->objects[0]->cardSystem->name);
   }
 
   public function testCreatePassholder() {
