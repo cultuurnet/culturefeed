@@ -16,7 +16,7 @@ class CultureFeed_Uitpas_Counter_EmployeeCardSystem extends CultureFeed_Uitpas_C
   public $permissions = array();
 
   /**
-   * The groups of the memeber in the card system.
+   * The groups of the member in the card system.
    *
    *  @var array
    */
