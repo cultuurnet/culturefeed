@@ -255,7 +255,7 @@ class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObje
     $event->gracePeriodMonths = $object->xpath_int('gracePeriodMonths');
 
     $event->cardSystems = array();
-    foreach ($object->xpath('cardSystems/cardSytem') as $cardSystem) {
+    foreach ($object->xpath('cardSystems/cardSystem') as $cardSystem) {
       $event->cardSystems[] = CultureFeed_Uitpas_CardSystem::createFromXML($cardSystem, FALSE);
     }
 
