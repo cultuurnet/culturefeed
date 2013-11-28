@@ -175,6 +175,57 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 }
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_actions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars) {
+
+  $actions = $vars['actions'];
+  $actions_total = $vars['actions_total'];
+  $actions_pager_element = $vars['actions_pager_element'];
+
+  $base_table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+
+  $base_pager = array('tags' => array(), 'parameters' => array());
+
+  // Intro.
+  $vars['intro'] = variable_get('culturefeed_uitpas_profile_actions_intro');
+
+  // Actions.
+  $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
+  $rows = array();
+  if (count($actions)) {
+
+    foreach ($actions as $action) {
+
+      $singular = '!points point';
+      $plural = '!points points';
+      $rows[] = array(
+        date('j/m/Y', $action->creationDate),
+        $action->nodeTitle,
+        $action->location,
+        format_plural($action->points, $singular, $plural, array('!points' => $action->points)),
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
+  }
+
+  $table = $base_table + array('header' => $header, 'rows' => $rows);
+  $pager = $base_pager + array('element' => $actions_pager_element, 'quantity' => $actions_total);
+  $vars['actions'] = theme_table($table) . theme_pager($pager);
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_profile_advantages().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
@@ -313,9 +364,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
   else {
     $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
   }
+
   $table = $base_table + array('header' => $header, 'rows' => $rows);
-  /*$pager = $base_pager + array('element' => $advantages_pager_element, 'quantity' => $advantage_total);*/
-  $vars['advantages'] = theme_table($table); /* . theme_pager($pager);*/
+  $pager = $base_pager + array('element' => $advantages_pager_element, 'quantity' => $advantages_total);
+  $vars['advantages'] = theme_table($table) . theme_pager($pager);
 
 }
 
@@ -595,7 +647,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  * Theme function.
  */
 function theme_culturefeed_uitpas_promotion_image($vars) {
+
   $vars['path'] .= '?maxheight=120&maxwidth=120';
 
   return theme('image', $vars);
+
 }

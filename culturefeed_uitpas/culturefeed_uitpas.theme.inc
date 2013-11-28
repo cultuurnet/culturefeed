@@ -30,6 +30,16 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-advantages-promotions',
     ),
+    'culturefeed_uitpas_profile_actions' => array(
+      'variables' => array(
+        'actions' => array(),
+        'actions_total' => 0,
+        'actions_pager_element' => 0,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-profile-actions',
+    ),
     'culturefeed_uitpas_profile_advantages' => array(
       'variables' => array(
         'advantages' => array(),
@@ -42,9 +52,9 @@ function culturefeed_uitpas_theme() {
         'upcoming_promotions_total' => 0,
         'upcoming_promotions_pager_element' => 0,
       ),
-      'template' => 'culturefeed-uitpas-profile-advantages',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-profile-advantages',
     ),
     'culturefeed_uitpas_profile_details' => array(
       'variables' => array(
@@ -75,20 +85,20 @@ function culturefeed_uitpas_theme() {
     ),
     'culturefeed_uitpas_promotions_highlight' => array(
       'variables' => array('promotions' => array()),
-      'template' => 'culturefeed-uitpas-promotions-highlight',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-promotions-highlight',
     ),
     'culturefeed_uitpas_recent_actions' => array(
       'variables' => array('actions' => array()),
-      'template' => 'culturefeed-uitpas-recent-actions',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-recent-actions',
     ),
     'culturefeed_uitpas_promotion_image' => array(
       'variables' => array('path' => NULL),
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
     ),
   );
 
