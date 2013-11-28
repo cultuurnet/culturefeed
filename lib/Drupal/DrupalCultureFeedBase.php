@@ -13,6 +13,11 @@ abstract class DrupalCultureFeedBase {
 
   protected static $logged_in_user;
 
+  /**
+   * @var CultureFeed_HttpClientFactory
+   */
+  protected static $httpClientFactory;
+
 
   public static function isCacheEnabled() {
     return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
@@ -191,27 +196,54 @@ abstract class DrupalCultureFeedBase {
 
     $oauth_client->setEndpoint($endpoint);
 
-    $http_client = new CultureFeed_DefaultHttpClient();
+    $http_client_factory = static::getHttpClientFactory();
+    if (!$http_client_factory) {
+      $http_client = new CultureFeed_DefaultHttpClient();
 
-    // Enable the logging.
-    if (module_exists('culturefeed_devel')) {
-      $http_client->enableLogging();
+      // Enable the logging.
+      // We only do this when the default HTTP client is used, because
+      // the HttpClient interface does not have a enableLogging() method
+      // and a logger is actually something that should be injected through
+      // dependency injection.
+      if (module_exists('culturefeed_devel')) {
+        $http_client->enableLogging();
+      }
+    }
+    else {
+      $http_client = $http_client_factory->createHttpClient();
     }
 
-    $uri = @parse_url($endpoint);
-    $proxy_server = variable_get('proxy_server', '');
-    if ($proxy_server && _drupal_http_use_proxy($uri['host'])) {
+    $http_client->setTimeout(variable_get('culturefeed_http_client_timeout', 10));
 
-      $http_client->setProxyServer($proxy_server);
-      $http_client->setProxyPort(variable_get('proxy_port', 8080));
-      $http_client->setProxyUsername(variable_get('proxy_username', ''));
-      $http_client->setProxyPassword(variable_get('proxy_password', ''));
+    if ($http_client instanceof CultureFeed_ProxySupportingClient) {
+      $uri = @parse_url($endpoint);
+      $proxy_server = variable_get('proxy_server', '');
+      if ($proxy_server && _drupal_http_use_proxy($uri['host'])) {
 
+        $http_client->setProxyServer($proxy_server);
+        $http_client->setProxyPort(variable_get('proxy_port', 8080));
+        $http_client->setProxyUsername(variable_get('proxy_username', ''));
+        $http_client->setProxyPassword(variable_get('proxy_password', ''));
+      }
     }
 
     $oauth_client->setHttpClient($http_client);
 
     return $oauth_client;
+  }
+
+  /**
+   * @return null|CultureFeed_HttpClientFactory
+   */
+  public static function getHttpClientFactory() {
+    return static::$httpClientFactory;
+  }
+
+  /**
+   * @param CultureFeed_HttpClientFactory $http_client_factory
+   */
+  public static function setHttpClientFactory(CultureFeed_HttpClientFactory $http_client_factory) {
+    static::$httpClientFactory = $http_client_factory;
   }
 
 }
