@@ -17,7 +17,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
   culturefeed_uitpas_profile_notifications_settings_get($form);
-  
+
   // Settings for advantages promotions.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/advantages_promotions');
   culturefeed_uitpas_advantages_promotions_settings_get($form);

@@ -24,8 +24,14 @@ class CultureFeed_Uitpas_Passholder_CardSystemSpecific {
    */
   public $smsPreference;
 
+  /**
+   * @var CultureFeed_Uitpas_CardSystem
+   */
+  public $cardSystem;
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $cardSystemSpecific = new self();
+    $cardSystemSpecific->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXml($object->xpath('cardSystem', false));
     $currentCard = $object->xpath('currentCard', false);
     if ($currentCard instanceof CultureFeed_SimpleXMLElement) {
       $cardSystemSpecific->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($currentCard);
