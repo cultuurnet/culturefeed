@@ -119,6 +119,8 @@ interface CultureFeed_Uitpas {
    * Get the redeem options
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query);
 

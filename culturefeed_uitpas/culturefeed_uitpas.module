@@ -23,3 +23,20 @@ function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$desti
   }
 
 }
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function culturefeed_uitpas_ctools_plugin_directory($module, $plugin) {
+  return 'ctools/plugins/' . $plugin;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_uitpas_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/views',
+  );
+}

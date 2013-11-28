@@ -271,8 +271,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
       $picture = '';
       if (isset($promotion->pictures[0])) {
+
         $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $promotion->pictures[0], 'attributes' => array()));
         $picture = l($picture, $promotion_path, array('html' => TRUE));
+
       }
 
       $rows[] = array(
@@ -311,8 +313,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
       $picture = '';
       if (isset($promotion->pictures[0])) {
+
         $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $promotion->pictures[0], 'attributes' => array()));
         $picture = l($picture, $promotion_path, array('html' => TRUE));
+
       }
 
       $rows[] = array(
@@ -329,6 +333,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
   else {
     $rows[] = array(array('data' => t('No results found.'), 'colspan' => 5));
   }
+
   $table = $base_table + array('header' => $header, 'rows' => $rows);
   $pager = $base_pager + array('element' => $upcoming_promotions_pager_element, 'quantity' => $upcoming_promotions_total);
   $vars['upcoming_promotions'] = theme_table($table) . theme_pager($pager);
@@ -344,10 +349,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
   if (count($advantages)) {
 
     foreach ($advantages as $advantage) {
+
       $advantage_path = 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id;
       $picture = '';
       if (isset($advantage->pictures[0])) {
+
         $picture = theme('culturefeed_uitpas_promotion_image', array('path' => $advantage->pictures[0], 'attributes' => array()));
+
         $picture = l($picture, $advantage_path, array('html' => TRUE));
       }
 
@@ -447,10 +455,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     'attributes' => array(),
   );
   foreach ($advantages as $advantage) {
+
     $links['links'][] = array(
       'title' => $advantage->title,
       'href' => 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id,
     );
+
   }
   $vars['advantages'] = theme_links($links);
 
@@ -462,10 +472,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     'attributes' => array(),
   );
   foreach ($promotions as $promotion) {
+
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
       'href' => 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id,
     );
+
   }
   $vars['promotions'] = theme_links($links);
 
@@ -477,10 +489,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     'attributes' => array(),
   );
   foreach ($upcoming_promotions as $promotion) {
+
     $links['links'][] = array(
       'title' => $promotion->title . ' (' . t('!points points', array('!points' => $promotion->points)) . ')',
       'href' => 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id,
     );
+
   }
   $vars['upcoming_promotions'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
@@ -616,9 +630,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
   foreach ($actions as $action) {
 
     // Subject.
-    $subject = $action->nodeTitle;
     $url = 'agenda/e/' . culturefeed_search_slug($action->nodeTitle) . '/' . $action->nodeId;
     $subject = l($action->nodeTitle, $url);
+
     // Args.
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
@@ -648,8 +662,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  */
 function theme_culturefeed_uitpas_promotion_image($vars) {
 
-  $vars['path'] .= '?maxheight=120&maxwidth=120';
-
+  $vars['path'] .= '?maxheight=' . $vars['maxheight'] . '&maxwidth=' . $vars['maxwidth'];
   return theme('image', $vars);
 
 }

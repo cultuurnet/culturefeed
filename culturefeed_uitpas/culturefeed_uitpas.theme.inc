@@ -83,6 +83,15 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-promotion',
     ),
+    'culturefeed_uitpas_promotion_image' => array(
+      'variables' => array(
+        'path' => NULL,
+        'maxheight' => 120,
+        'maxwidth' => 120,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+    ),
     'culturefeed_uitpas_promotions_highlight' => array(
       'variables' => array('promotions' => array()),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
@@ -95,11 +104,7 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-recent-actions',
     ),
-    'culturefeed_uitpas_promotion_image' => array(
-      'variables' => array('path' => NULL),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-    ),
+
   );
 
 }
