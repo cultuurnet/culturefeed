@@ -94,6 +94,15 @@ function culturefeed_uitpas_views_data() {
     ),
   );
 
+  $data['uitpas_promotions']['inSpotlight'] = array(
+    'title' => t('In spotlight'),
+    'help' => t('If the promotion is in the spotlight.'),
+    'filter' => array(
+      'handler' => 'culturefeed_uitpas_views_handler_filter_boolean',
+      'label' => t('In spotlight'),
+    ),
+  );
+
   $data['uitpas_promotions']['owningcardsystemid'] = array(
     'title' => t('Owning card system'),
     'help' => t('The card system owning the promotion.'),
