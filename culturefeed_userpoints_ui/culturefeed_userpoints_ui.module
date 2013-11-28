@@ -22,7 +22,8 @@ function culturefeed_userpoints_ui_menu() {
     'title callback' => FALSE,
     'description' => 'Exchange your userpoints',
     'page callback' => 'culturefeed_userpoints_ui_exchange_page',
-    'access callback' => 'culturefeed_is_culturefeed_user',
+    'access arguments' => array('access content'),
+    //'access callback' => 'culturefeed_is_culturefeed_user',
     'file' => 'includes/pages.inc',
   );
 
@@ -309,6 +310,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@givenName'] = $values['givenName'];
       $variables['@familyName'] = $values['familyName'];
       $variables['@street'] = $values['street'];
+      $variables['@zip'] = $values['zip'];
       $variables['@city'] = $values['city'];
       $variables['@mbox'] = $values['mbox'];
 
@@ -322,20 +324,20 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
       $variables['@url_admin'] = url('http://www.uitid.be/uitid/rest/dashboard/grantedpointspromotions', array('absolute' => TRUE));
       $variables['@promotion'] = implode("\n", $promotions);
 
-      $message['body'][] = format_string(t('Culturefeed User ID:
-        @code
+      $message['body'][] = format_string(t('UiTiD User ID:
+@code
 
-        Promotion:
-          @promotion
+Promotion request:
+@promotion
 
-        Contact:
-          - @givenName @familyName
-          - @street
-          - @city
-          - @mbox
+Address:
+- @givenName @familyName
+- @street
+- @zip @city
+- @mbox
 
-        Admin:
-          @url_admin '), $variables);
+Manage requests:
+@url_admin'), $variables);
 
     break;
 

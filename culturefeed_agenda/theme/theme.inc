@@ -38,6 +38,8 @@ function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
   _culturefeed_agenda_preprocess_actor($variables);
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
+  _culturefeed_agenda_preprocess_actor_page_metatags($variables);
+
 }
 
 /**
@@ -69,9 +71,12 @@ function culturefeed_agenda_preprocess_culturefeed_event_short_summary(&$variabl
  * @see culturefeed-event.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
+
   _culturefeed_agenda_preprocess_agenda($variables);
   _culturefeed_agenda_preprocess_event($variables);
   _culturefeed_agenda_preprocess_agenda_detail($variables);
+
+  _culturefeed_agenda_preprocess_event_production_metatags($variables);
 }
 
 /**
@@ -106,6 +111,8 @@ function culturefeed_agenda_preprocess_culturefeed_production(&$variables) {
   _culturefeed_agenda_preprocess_agenda($variables);
   _culturefeed_agenda_preprocess_production($variables);
   _culturefeed_agenda_preprocess_agenda_detail($variables);
+
+  _culturefeed_agenda_preprocess_event_production_metatags($variables);
 }
 
 /**
@@ -132,7 +139,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
     $variables['tickets'] = array();
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow')));
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
     }
 
     // Performers
@@ -291,7 +298,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // clean up link text
     $link_text = str_replace('http://', '', $link);
     $link_text = str_replace('https://', '', $link_text);
-    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
+    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link);
   }
 
 }
@@ -556,7 +563,89 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_production_program(&$v
   if (count($other['children']) > 0) {
     $tabs['other'] = $other;
   }
-  
+
   $variables['tabs'] = $tabs;
 
+}
+
+/**
+ * Helper function to create a meta description tag for events and productions.
+ * @param type $variables
+ */
+function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
+
+  $title_parts = array();
+  $description_parts = array();
+
+  if (!empty($variables['title'])) {
+    $title_parts[] = $variables['title'];
+  }
+  if (!empty($variables['location']) && !empty($variables['location']['city'])) {
+    $title_parts[] = $variables['location']['city'];
+    $description_parts[] = t('Location: @location', array('@location' => $variables['location']['title'] . ', ' . $variables['location']['city']));
+  }
+  if (!empty($variables['when'])) {
+    $description_parts[] = t('When: @when', array('@when' => $variables['when']));
+  }
+  if (!empty($variables['organiser'])) {
+    $description_parts[] = t('Organisation: @organisation', array('@organisation' => $variables['organiser']['title']));
+  }
+  if (!empty($variables['price'])) {
+    $description_parts[] = t('Price: € @price', array('@price' => str_replace('&euro; ' , '' , $variables['price'])));
+  }
+  if (!empty($variables['tickets'])) {
+    $description_parts[] = t('Order your tickets');
+  }
+
+  // Add meta title tag.
+  drupal_set_title(implode(' | ', $title_parts));
+
+  // Add meta description tag.
+  drupal_add_html_head(array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'description',
+      'content' => implode(' - ', $description_parts),
+    ),
+  ), 'meta_description');
+
+}
+
+/**
+ * Helper function to create a meta description tag for actors and pages.
+ * @param type $variables
+ */
+function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
+
+  $title_parts = array();
+  $description_parts = array();
+
+  if (!empty($variables['title'])) {
+    $title_parts[] = $variables['title'];
+  }
+  if (!empty($variables['location']) && !empty($variables['location']['street'])) {
+    $location = $variables['location']['street'];
+    if (!empty($variables['location']['street'])) {
+      $title_parts[] = $variables['location']['city'];
+      if (!empty($variables['location']['zip'])) {
+         $location .= ', ' . $variables['location']['zip'] . ' ' . $variables['location']['city'];
+      }
+    }
+    $description_parts[] = t('Address: @location', array('@location' =>  $location));
+  }
+  if (!empty($variables['contact']) && !empty($variables['contact']['phone'])) {
+    $description_parts[] = t('Phone number: @number', array('@number' => $variables['contact']['phone']));
+  }
+
+  // Add meta title tag.
+  drupal_set_title(implode(' | ', $title_parts));
+
+  // Add meta description field.
+  drupal_add_html_head(array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'description',
+      'content' => implode(' - ', $description_parts),
+    ),
+  ), 'meta_description');
 }
