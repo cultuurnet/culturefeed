@@ -8,7 +8,7 @@
 /**
  * Theme function.
  */
-function theme_culturefeed_uitpas_promotion_picture($vars) {
+function theme_culturefeed_uitpas_promotion_image($vars) {
   $vars['path'] .= '?maxheight=120&maxwidth=120';
 
   return theme('image', $vars);
@@ -23,6 +23,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
   $advantages_total = $vars['advantages_total'];
   $advantages_pager_element = $vars['advantages_pager_element'];
 
+  /** @var CultureFeed_PointsPromotion[] $promotions */
   $promotions = $vars['promotions'];
   $promotions_total = $vars['promotions_total'];
   $promotions_pager_element = $vars['promotions_pager_element'];
