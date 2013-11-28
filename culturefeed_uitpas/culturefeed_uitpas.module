@@ -12,3 +12,14 @@ require_once 'culturefeed_uitpas.loaders.inc';
 require_once 'culturefeed_uitpas.menu.inc';
 require_once 'culturefeed_uitpas.profile.inc';
 require_once 'culturefeed_uitpas.theme.inc';
+
+/**
+ * Module implements hook_culturefeed_login_redirect_destination_alter().
+ */
+function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
+
+  if (isset($_GET['isnewpassholder'])) {
+    $destination = 'registration_confirmation';
+  }
+
+}
