@@ -187,13 +187,12 @@ interface CultureFeed_Uitpas {
   /**
    * Get the activitation link for a passholder which is not activated online yet.
    *
-   * @param string $uitpas_number
-   * @param DateTime $date_of_birth
+   * @param CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data
    * @param mixed $destination_callback
    *
    * @return string
    */
-  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL);
+  public function getPassholderActivationLink(CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data, $destination_callback = NULL);
 
   /**
    * Constructs an activation link,
@@ -242,8 +241,13 @@ interface CultureFeed_Uitpas {
    * Search for checkins
    *
    * @param CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query The query
+   * @param string $consumer_key_counter Optional consumer key of the counter.
+   * @param string $method The OAuth request method, either consumer request or
+   *   user request.
+   *
+   * @return CultureFeed_ResultSet
    */
-  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL);
+  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL, $method = CultureFeed_Uitpas::USER_ACCESS_TOKEN);
 
   /**
    * Search for Uitpas events

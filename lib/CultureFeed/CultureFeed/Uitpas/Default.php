@@ -629,17 +629,13 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the activitation link for a passholder which is not activated online yet.
-   *
-   * @param string $uitpas_number
-   * @param DateTime $date_of_birth
-   * @param mixed $destination_callback
+   * {@inheritdoc}
    */
-  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL) {
-    $path = "uitpas/passholder/{$uitpas_number}/activation";
+  public function getPassholderActivationLink(CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data, $destination_callback = NULL) {
+    $path = "uitpas/passholder/{$activation_data->uitpasNumber}/activation";
 
     $params = array(
-      'dob' => $date_of_birth->format('Y-m-d'),
+      'dob' => $activation_data->dob->format('Y-m-d'),
     );
 
     $result = $this->oauth_client->consumerGetAsXml($path, $params);
@@ -773,18 +769,23 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Search for checkins
-   *
-   * @param CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query The query
+   * {@inheritdoc}
    */
-  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL) {
+  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL, $method = CultureFeed_Uitpas::USER_ACCESS_TOKEN) {
     $data = $query->toPostData();
 
     if ($consumer_key_counter) {
       $data['balieConsumerKey'] = $consumer_key_counter;
     }
 
-    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/cultureevent/searchCheckins', $data);
+    $path = 'uitpas/cultureevent/searchCheckins';
+
+    if ($method == CultureFeed_Uitpas::USER_ACCESS_TOKEN) {
+      $result = $this->oauth_client->authenticatedGetAsXml($path, $data);
+    }
+    else {
+      $result = $this->oauth_client->consumerGetAsXml($path, $data);
+    }
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -794,7 +795,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $checkins = array();
-    $objects = $xml->xpath('/response/checkinActivities/checkinActivitiy');
+    $objects = $xml->xpath('/response/checkinActivities/checkinActivity');
     $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {
@@ -821,7 +822,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $checkins = array();
-    $objects = $xml->xpath('/response/checkinActivities/checkinActivitiy');
+    $objects = $xml->xpath('/response/checkinActivities/checkinActivity');
     $total = $xml->xpath_int('/response/total');
 
     foreach ($objects as $object) {

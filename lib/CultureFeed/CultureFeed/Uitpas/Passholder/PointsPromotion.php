@@ -121,12 +121,29 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
    */
   public $unitsTaken;
 
+  /**
+   * If the promotion should be highlighted or not.
+   *
+   * @var boolean
+   */
+  public $inSpotlight;
+
   /*
    * The cash-in state of the welcome advantage
    *
    * @var string
    */
   public $cashInState;
+
+  /**
+   * @var CultureFeed_Uitpas_CardSystem Card system owning the promotion
+   */
+  public $owningCardSystem;
+
+  /**
+   * @var CultureFeed_Uitpas_CardSystem[] Card systems the promotion applies to
+   */
+  public $applicableCardSystems = array();
 
   const CASHIN_POSSIBLE = 'POSSIBLE';
   const CASHIN_NOT_POSSIBLE_DATE_CONSTRAINT = 'NOT_POSSIBLE_DATE_CONSTRAINT';
@@ -138,6 +155,7 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $promotion = new CultureFeed_Uitpas_Passholder_PointsPromotion();
     $promotion->id = $object->xpath_int('id');
+    $promotion->inSpotlight = $object->xpath_bool('inSpotlight');
     $promotion->title = $object->xpath_str('title');
     $promotion->description1 = $object->xpath_str('description1');
     $promotion->description2 = $object->xpath_str('description2');   
@@ -160,6 +178,16 @@ class CultureFeed_Uitpas_Passholder_PointsPromotion extends CultureFeed_Uitpas_V
     $periodConstraint = $object->xpath('periodConstraint', FALSE);
     if (!empty($periodConstraint)) {
       $promotion->periodConstraint = CultureFeed_Uitpas_Passholder_PeriodConstraint::createFromXml($periodConstraint);
+    }
+
+    $owningCardSystem = $object->xpath('owningCardSystem', FALSE);
+    if ($owningCardSystem instanceof CultureFeed_SimpleXMLElement) {
+      $promotion->owningCardSystem = CultureFeed_Uitpas_CardSystem::createFromXml($owningCardSystem);
+    }
+
+    $applicableCardSystems = $object->xpath('applicableCardSystems/cardsystem');
+    foreach ($applicableCardSystems as $applicableCardSystem) {
+      $promotion->applicableCardSystems[] = CultureFeed_Uitpas_CardSystem::createFromXml($applicableCardSystem);
     }
 
     return $promotion;

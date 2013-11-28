@@ -3,4 +3,6 @@ description = Provides Uitpas UI elements
 package = CultureFeed
 core = 7.x
 dependencies[] = culturefeed
+dependencies[] = culturefeed_agenda
+dependencies[] = culturefeed_search
 configure = admin/config/culturefeed/uitpas

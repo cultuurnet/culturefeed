@@ -155,23 +155,50 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, count($promotions));
     $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_PointsPromotion', $promotions);
 
-    // If the mapping of 1 object is correct, all objects are correctly mapped
-    $this->assertEquals(7, $promotions[0]->id);
-    $this->assertEquals(5, $promotions[0]->points);
-    $this->assertEquals('Gratis stickers', $promotions[0]->title);
-    $this->assertEquals(false, $promotions[0]->cashedIn);
-    $this->assertEquals(1323945210, $promotions[0]->creationDate);
-    $this->assertEquals(1262304000, $promotions[0]->cashingPeriodBegin);
-    $this->assertEquals(1451606399, $promotions[0]->cashingPeriodEnd);
-    $this->assertEquals(array('Aalst', 'Erpe_Mere', 'Haaltert'), $promotions[0]->validForCities);
-    $this->assertEquals(2, $promotions[0]->maxAvailableUnits);
-    $this->assertEquals(2, $promotions[0]->unitsTaken);
+    /** @var CultureFeed_Uitpas_Passholder_PointsPromotion $promotion **/
+    $promotion = reset($promotions);
 
-    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_Counter', $promotions[0]->counters);
-    $this->assertEquals(3, $promotions[0]->counters[0]->id);
-    $this->assertEquals("De Werf", $promotions[0]->counters[0]->name);
-    $this->assertEquals(2, $promotions[0]->counters[1]->id);
-    $this->assertEquals("Scouts Aalst", $promotions[0]->counters[1]->name);
+    // If the mapping of 1 object is correct, all objects are correctly mapped
+    $this->assertEquals(7, $promotion->id);
+    $this->assertEquals(5, $promotion->points);
+    $this->assertEquals('Gratis stickers', $promotion->title);
+    $this->assertEquals(false, $promotion->cashedIn);
+    $this->assertEquals(1323945210, $promotion->creationDate);
+    $this->assertEquals(1262304000, $promotion->cashingPeriodBegin);
+    $this->assertEquals(1451606399, $promotion->cashingPeriodEnd);
+    $this->assertEquals(array('Aalst', 'Erpe_Mere', 'Haaltert'), $promotion->validForCities);
+    $this->assertEquals(2, $promotion->maxAvailableUnits);
+    $this->assertEquals(2, $promotion->unitsTaken);
+
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_Counter', $promotion->counters);
+    $this->assertEquals(3, $promotion->counters[0]->id);
+    $this->assertEquals("De Werf", $promotion->counters[0]->name);
+    $this->assertEquals(2, $promotion->counters[1]->id);
+    $this->assertEquals("Scouts Aalst", $promotion->counters[1]->name);
+
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $promotion->owningCardSystem);
+    $this->assertEquals(1, $promotion->owningCardSystem->id);
+    $this->assertEquals('HELA', $promotion->owningCardSystem->name);
+
+    $this->assertInternalType('array', $promotion->applicableCardSystems);
+    $this->assertCount(2, $promotion->applicableCardSystems);
+    $this->assertContainsOnly('Culturefeed_Uitpas_CardSystem', $promotion->applicableCardSystems);
+
+    /** @var CultureFeed_Uitpas_CardSystem $applicableCardSystem */
+    $applicableCardSystem = reset($promotion->applicableCardSystems);
+    $this->assertEquals(1, $applicableCardSystem->id);
+    $this->assertEquals('HELA', $applicableCardSystem->name);
+
+    $applicableCardSystem = next($promotion->applicableCardSystems);
+    $this->assertEquals(3, $applicableCardSystem->id);
+    $this->assertEquals('Test cardsystem', $applicableCardSystem->name);
+
+    $promotion = next($promotions);
+
+    $this->assertInternalType('array', $promotion->applicableCardSystems);
+    $this->assertCount(0, $promotion->applicableCardSystems);
+
+    $this->assertNull($promotion->owningCardSystem);
   }
 
   public function testCashInPromotionPoints() {
