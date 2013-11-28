@@ -45,6 +45,20 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
    */
   public $cashedIn;
 
+  /**
+   * Maximum number of results. Default: 20
+   *
+   * @var integer
+   */
+  public $max = 20;
+
+  /**
+   * Results offset. Default: 0
+   *
+   * @var integer
+   */
+  public $start = 0;
+
   protected function manipulatePostData(&$data) {
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
