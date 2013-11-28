@@ -30,6 +30,22 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-advantages-promotions',
     ),
+    'culturefeed_uitpas_profile_advantages' => array(
+      'variables' => array(
+        'advantages' => array(),
+        'advantages_total' => 0,
+        'advantages_pager_element' => 0,
+        'promotions' => array(),
+        'promotions_total' => 0,
+        'promotions_pager_element' => 0,
+        'upcoming_promotions' => array(),
+        'upcoming_promotions_total' => 0,
+        'upcoming_promotions_pager_element' => 0,
+      ),
+      'template' => 'culturefeed-uitpas-profile-advantages',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    ),
     'culturefeed_uitpas_profile_details' => array(
       'variables' => array(
         'uitpas_user' => NULL,
@@ -66,6 +82,11 @@ function culturefeed_uitpas_theme() {
     'culturefeed_uitpas_recent_actions' => array(
       'variables' => array('actions' => array()),
       'template' => 'culturefeed-uitpas-recent-actions',
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    ),
+    'culturefeed_uitpas_promotion_image' => array(
+      'variables' => array('path' => NULL),
       'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     ),

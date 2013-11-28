@@ -34,6 +34,13 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/advantages_promotions.inc',
       'access arguments' => array('access content'),
     ),
+    'culturefeed/profile/uitpas/advantages' => array(
+      'title callback' => 'culturefeed_uitpas_profile_advantages_title',
+      'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
+      'page callback' => 'culturefeed_uitpas_profile_advantages_get',
+      'access callback' => 'culturefeed_is_culturefeed_user',
+      'file' => 'includes/profile_advantages.inc',
+    ),
     'promotion/%/%uitpas_promotion' => array(
       'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
       'title arguments' => array(2),
