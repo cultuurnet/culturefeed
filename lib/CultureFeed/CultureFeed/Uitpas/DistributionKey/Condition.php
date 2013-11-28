@@ -10,6 +10,10 @@ class CultureFeed_Uitpas_DistributionKey_Condition extends CultureFeed_Uitpas_Va
 
   const OPERATOR_LESS_THAN = 'LESS_THAN';
 
+  const VALUE_MY_CARDSYSTEM = 'MY_CARDSYSTEM';
+
+  const VALUE_AT_LEAST_ONE_CARDSYSTEM = 'AT_LEAST_ONE_CARDSYSTEM';
+
   /**
    * @var string The definition of the condition.
    */

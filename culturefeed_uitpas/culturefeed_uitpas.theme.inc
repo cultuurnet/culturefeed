@@ -75,26 +75,18 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
     $prices = array();
 
-    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     foreach ($event->cardSystems as $card_system) {
+      foreach ($card_system->distributionKeys as $key) {
+        foreach ($key->conditions as $condition) {
 
-      if ($card_system->id == $card_system_id) {
+          if ($condition->definition == $condition::DEFINITION_KANSARM) {
 
-        foreach ($card_system->distributionKeys as $distribution_key) {
+            if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
+              $prices[] = t('Opportunities tariff with !system: !tariff', array('!system' => $card_system->name, '!tariff' => $key->tariff));
+            }
 
-          foreach ($distribution_key->conditions as $condition) {
-
-            // @TODO define constants.
-            if ($condition->definition == 'PRICE') {
-
-              $price = $event->price;
-
-              if ($condition->operator == 'LESS_THAN' && (float) $price < (float) $condition->value) {
-
-                $prices[] = 'test price';
-
-              }
-
+            if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
+              $prices[] = t('Opportunities tariff for pass holders uit other region: !tariff', array('!tariff' => $key->tariff));
             }
 
           }
