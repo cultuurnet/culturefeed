@@ -13,9 +13,9 @@ function culturefeed_uitpas_theme() {
   return array(
     'culturefeed_uitpas_advantage' => array(
       'variables' => array('advantage' => NULL),
-      'template' => 'culturefeed-uitpas-advantage',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-advantage',
     ),
     'culturefeed_uitpas_advantages_promotions' => array(
       'variables' => array(
@@ -26,9 +26,18 @@ function culturefeed_uitpas_theme() {
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
       ),
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-advantages-promotions',
+    ),
+    'culturefeed_uitpas_profile_details' => array(
+      'variables' => array(
+        'uitpas_user' => NULL,
+        'passholder' => NULL,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-profile-details',
     ),
     'culturefeed_uitpas_profile_summary' => array(
       'variables' => array(
@@ -38,15 +47,15 @@ function culturefeed_uitpas_theme() {
         'promotions' => array(),
         'upcoming_promotions' => array(),
       ),
-      'template' => 'culturefeed-uitpas-profile-summary',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-profile-summary',
     ),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),
-      'template' => 'culturefeed-uitpas-promotion',
-      'file' => 'theme.inc',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-promotion',
     ),
     'culturefeed_uitpas_promotions_highlight' => array(
       'variables' => array('promotions' => array()),

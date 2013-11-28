@@ -5,4 +5,5 @@ core = 7.x
 dependencies[] = culturefeed
 dependencies[] = culturefeed_agenda
 dependencies[] = culturefeed_search
+dependencies[] = culturefeed_ui
 configure = admin/config/culturefeed/uitpas

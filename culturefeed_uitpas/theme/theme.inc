@@ -175,6 +175,52 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 }
 
 /**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_details().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars) {
+
+  $uitpas_user = $vars['uitpas_user'];
+  $passholder = $uitpas_user->passholder;
+  $card_system = $uitpas_user->card_system;
+
+  // Details.
+  $vars['uitpas_number'] = isset($card_system) ? '<label>' . t('UITpas number') . ':</label> ' . $card_system->currentCard->uitpasNumber : NULL;
+  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
+  $vars['first_name'] = '<label>' . t('First name') . ':</label> ' . $passholder->firstName;
+  $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
+  $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
+  $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
+  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . t(($passholder->gender == 'MALE') ? 'Male' : 'Female');
+  $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
+  $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
+  $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
+  $vars['bus'] = '<label>' . t('Bus') . ':</label> ' . $passholder->box;
+  $vars['zip'] = '<label>' . t('Zip') . ':</label> ' . $passholder->postalCode;
+  $vars['city'] = '<label>' . t('City') . ':</label> ' . $passholder->city;
+  $vars['tel'] = '<label>' . t('Telephone') . ':</label> ' . $passholder->telephone;
+  $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
+  $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
+  $vars['status_title'] = t('Status');
+  $vars['kansen_statuut'] = $passholder->kansenStatuut;
+  $vars['kansen_statuut_valid_end_date'] = (time() < $passholder->kansenStatuutEndDate);
+  $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $passholder->kansenStatuutEndDate)));
+  $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
+  if (count($passholder->memberships)) {
+    $memberships = array();
+    foreach ($passholder->memberships as $membership) {
+      $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
+      $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+    }
+    $vars['memberships'] = implode('<br />', $memberships);
+  }
+  else {
+    $vars['memberships'] = '';
+  }
+  $vars['outro'] = variable_get('culturefeed_uitpas_profile_details_outro');
+
+}
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_profile_summary().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars) {
@@ -192,7 +238,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     $vars['image'] = '';
   }
 
-  $vars['name'] = l($uitpas_user->nick, 'myprofile/details');
+  $vars['name'] = l($uitpas_user->nick, 'user');
   $singular = t('1 point saved');
   $plural = t('%points points saved', array('%points' => $passholder->points));
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
