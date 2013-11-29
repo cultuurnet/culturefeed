@@ -108,3 +108,44 @@ function culturefeed_uitpas_theme() {
   );
 
 }
+
+/**
+ * Preprocess function for culturefeed_agenda_event.
+ */
+function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
+
+  $event = culturefeed_uitpas_get_uitpas_event($vars['item']);
+
+  if ($event) {
+
+    $prices = array();
+
+    foreach ($event->cardSystems as $card_system) {
+      foreach ($card_system->distributionKeys as $key) {
+        foreach ($key->conditions as $condition) {
+
+          if ($condition->definition == $condition::DEFINITION_KANSARM) {
+
+            if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
+              $prices[] = t('Opportunities tariff with !system: !tariff', array('!system' => $card_system->name, '!tariff' => $key->tariff));
+            }
+
+            if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
+              $prices[] = t('Opportunities tariff for pass holders uit other region: !tariff', array('!tariff' => $key->tariff));
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+    if (count($prices)) {
+      $vars['price'] = implode('<br />', array_unique($prices));
+    }
+
+  }
+
+}

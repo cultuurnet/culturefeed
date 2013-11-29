@@ -25,6 +25,8 @@ class CultureFeed_Uitpas_Calendar {
   }
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+    $object->registerXPathNamespace('cdb', CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+
     $calendar = new CultureFeed_Uitpas_Calendar();
 
     foreach ($object->xpath('cdb:periods/cdb:period') as $timeObject) {
