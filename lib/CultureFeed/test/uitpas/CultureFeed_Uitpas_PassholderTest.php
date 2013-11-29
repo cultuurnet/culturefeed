@@ -85,9 +85,14 @@ class CultureFeed_Uitpas_PassholderTest extends PHPUnit_Framework_TestCase {
     $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_CardSystemSpecific', $passholder->cardSystemSpecific);
 
     $cardsystemSpecific = $passholder->cardSystemSpecific[4];
+    $this->assertEquals(CultureFeed_Uitpas_Passholder::EMAIL_ALL_MAILS, $cardsystemSpecific->emailPreference);
+    $this->assertEquals(CultureFeed_Uitpas_Passholder::SMS_NO_SMS, $cardsystemSpecific->smsPreference);
     $this->assertNull($cardsystemSpecific->currentCard);
 
     $cardsystemSpecific = $passholder->cardSystemSpecific[6];
+    $this->assertEquals(CultureFeed_Uitpas_Passholder::EMAIL_NO_MAILS, $cardsystemSpecific->emailPreference);
+    $this->assertEquals(CultureFeed_Uitpas_Passholder::SMS_ALL_SMS, $cardsystemSpecific->smsPreference);
+
     $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_Card', $cardsystemSpecific->currentCard);
 
     $this->assertEquals(FALSE, $cardsystemSpecific->currentCard->kansenpas);

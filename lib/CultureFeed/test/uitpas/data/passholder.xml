@@ -25,11 +25,11 @@
                 <uitpasNumber>1000001500601</uitpasNumber>
             </uitpasNumber>
         </currentCard>
-        <emailPreference>ALL_MAILS</emailPreference>
+        <emailPreference>NO_MAILS</emailPreference>
         <kansenStatuutExpired>false</kansenStatuutExpired>
         <kansenStatuutInGracePeriod>false</kansenStatuutInGracePeriod>
         <lastActivationMailNumber>0</lastActivationMailNumber>
-        <smsPreference>NO_SMS</smsPreference>
+        <smsPreference>ALL_SMS</smsPreference>
         <status>ACTIVE</status>
     </cardSystemSpecific>
     <city>BRUSSEL</city>

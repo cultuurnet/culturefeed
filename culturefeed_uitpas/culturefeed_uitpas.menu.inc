@@ -48,6 +48,13 @@ function culturefeed_uitpas_menu() {
       'access callback' => 'culturefeed_is_culturefeed_user',
       'file' => 'includes/profile_advantages.inc',
     ),
+    'culturefeed/profile/uitpas/notifications' => array(
+      'title callback' => 'culturefeed_uitpas_profile_notifications_title',
+      'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
+      'page callback' => 'culturefeed_uitpas_profile_notifications_get',
+      'access callback' => 'culturefeed_is_culturefeed_user',
+      'file' => 'includes/profile_notifications.inc',
+    ),
     'promotion/%/%uitpas_promotion' => array(
       'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
       'title arguments' => array(2),

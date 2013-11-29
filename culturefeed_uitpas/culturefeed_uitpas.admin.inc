@@ -31,6 +31,10 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_details');
   culturefeed_uitpas_profile_details_settings_get($form);
 
+  // Profile notifications.
+  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
+  culturefeed_uitpas_profile_notifications_settings_get($form);
+
   // Registration confirmation.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/registration_confirmation');
   culturefeed_uitpas_registration_confirmation_settings_get($form);
