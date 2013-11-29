@@ -68,7 +68,6 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   public function search($parameters = array()) {
 
     DrupalCultureFeedSearchService::addLanguageParameter($parameters);
-
     $items = $this->service->search($parameters);
     DrupalCultureFeedSearchService::translateCategories($items);
 

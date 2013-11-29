@@ -809,7 +809,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>' . t('By deleting a page, the page will no longer appear in search results, but it will not remove your contact info.') . '</p>
+      <p>' . t('By deleting a page, the page will no longer appear in search results and all contact info will be removed.') . '</p>
       <p>' . t('Members of this page, and activities in the name of this page will not be deleted.') . '</p>
       <p><strong>' . t('Are you sure?') . '</strong></p>',
   );

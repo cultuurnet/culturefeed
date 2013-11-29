@@ -255,7 +255,7 @@ function culturefeed_search_ui_block_info() {
     'info' => t('Culturefeed search: facet where'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['facet-city-only'] = array(
     'info' => t('Culturefeed search: facet where - search only on cities and zipcodes'),
     'cache' => DRUPAL_NO_CACHE,
@@ -311,7 +311,7 @@ function culturefeed_search_ui_block_view($delta) {
     case 'facet-city':
       $block = culturefeed_search_ui_block_city_facet();
     break;
-    
+
     case 'facet-city-only':
       $block = culturefeed_search_ui_block_city_only_facet();
     break;

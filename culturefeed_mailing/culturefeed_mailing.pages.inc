@@ -340,7 +340,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     '#title' => t('Search Query'),
     '#default_value' => $list ? $list->searchQuery : '',
     '#size' => 60,
-    '#maxlength' => 128,
+    '#maxlength' => 999,
   );
 
   $form['recommendation_query'] = array(

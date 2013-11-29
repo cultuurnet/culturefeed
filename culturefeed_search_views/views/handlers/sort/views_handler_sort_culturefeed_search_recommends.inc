@@ -4,7 +4,7 @@
  * @class
  * Handler class for sorting on recommend count.
  */
-class views_handler_sort_culturefeed_search_recommends extends views_handler_sort {
+class views_handler_sort_culturefeed_search_recommends extends views_handler_sort_culturefeed_search_base {
 
   /**
    * @see views_handler::init()
