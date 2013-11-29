@@ -426,15 +426,15 @@ class CultureFeedSearchPage {
       $city_parts = explode(' ', $params['location']);
       if (is_numeric($city_parts[0])) {
         $distance = isset($params['distance']) ? $params['distance'] : FALSE;
-        
+
         // If category_actortype_id we assume that we search on pages (on day we have to fix)
         if (isset($params['facet']['category_actortype_id'])) {
           $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
         }
         else {
           $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
-        } 
-        
+        }
+
       }
       else {
         $location = '"' . str_replace('"', '\"', $params['location']) . '"';
@@ -683,6 +683,20 @@ class CultureFeedSearchPage {
       return implode(', ', $labels);
     }
 
+  }
+
+  /**
+   * Gets a page description for all pages.
+   *
+   * Only type aanbod UiT domein, theme and location need to be prepared for search engines.
+   *
+   * @see culturefeed_search_ui_search_page()
+   *
+   * @return string
+   *   Description for this type of page.
+   */
+  public function getPageDescription() {
+    return "";
   }
 
   /**

@@ -41,5 +41,13 @@ function culturefeed_admin_settings() {
     '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
   );
 
+  $form['culturefeed_http_client_timeout'] = array(
+    '#type' => 'textfield',
+    '#title' => t('HTTP client timeout'),
+    '#description' => t('Timeout on requests by the HTTP client.'),
+    '#default_value' => variable_get('culturefeed_http_client_timeout', 10),
+    '#field_suffix' => t('seconds'),
+  );
+
   return system_settings_form($form);
 }

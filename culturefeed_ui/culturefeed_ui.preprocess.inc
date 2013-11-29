@@ -142,11 +142,11 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
  */
 function template_preprocess_culturefeed_ui_anonymous_profile_box(&$variables) {
 
-  $variables['link_login'] = l(t('Log in'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
-  $variables['link_register'] = l(t('Sign up'), 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination()));
+  $variables['link_login'] = l(t('Log in'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect'), 'rel' => 'nofollow'), 'query' => drupal_get_destination()));
+  $variables['link_register'] = l(t('Sign up'), 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect'), 'rel' => 'nofollow'), 'query' => drupal_get_destination()));
   $query = drupal_get_destination();
   $query['via'] = 'facebook';
-  $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
+  $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook'), 'rel' => 'nofollow'), 'query' => $query));
 
 }
 
@@ -369,16 +369,16 @@ function template_preprocess_culturefeed_ui_connect(&$variables) {
 
   $query['destination'] = isset($variables['url']) ? $variables['url'] : $_GET['q'];
   $query['via'] = 'facebook';
-  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $query));
+  $variables['link_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook'), 'rel' => 'nofollow'), 'query' => $query));
 
   $query['via'] = 'twitter';
-  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-twitter')), 'query' => $query));
+  $variables['link_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-twitter'), 'rel' => 'nofollow'), 'query' => $query));
 
   $query['via'] = 'google';
-  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google')), 'query' => $query));
+  $variables['link_google'] = l('Google', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-google'), 'rel' => 'nofollow'), 'query' => $query));
 
   unset($query['via']);
-  $variables['link_email'] = l(t('your email'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email')), 'query' => $query));
+  $variables['link_email'] = l(t('your email'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-email'), 'rel' => 'nofollow'), 'query' => $query));
 
 }
 

@@ -83,7 +83,6 @@ class culturefeed_search_views_query extends views_plugin_query {
     $view->total_rows = $result->getTotalCount();
     $this->pager->total_items = $result->getTotalCount();
     $this->pager->update_page_info();
-
     $view->execute_time = microtime() - $start;
 
   }
@@ -125,6 +124,5 @@ class culturefeed_search_views_query extends views_plugin_query {
   function add_where($group, $operator, $value) {
     $this->where[$group]['conditions'][$operator][] = $value;
   }
-
 
 }

@@ -3,7 +3,7 @@
 /**
  * Class to represent a basic HTTP request.
  */
-class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient {
+class CultureFeed_DefaultHttpClient implements CultureFeed_HttpClient, CultureFeed_ProxySupportingClient {
 
   /**
    * Proxy server URI.
