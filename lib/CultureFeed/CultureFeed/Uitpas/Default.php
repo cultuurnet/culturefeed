@@ -119,16 +119,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $prices = array();
 
-    /** @var CultureFeed_SimpleXMLElement[] $objects */
-    $objects = $xml->xpath('/response/cardSystems/cardSystem');
-    foreach ($objects as $card_system_xml) {
-      $card_system = CultureFeed_Uitpas_CardSystem::createFromXML($card_system_xml);
-
-      foreach ($card_system_xml->xpath('uitpasPrices/uitpasPrice') as $price_xml) {
-        $price = CultureFeed_Uitpas_Passholder_UitpasPrice::createFromXML($price_xml);
-        $price->cardSystem = $card_system;
-        $prices[] = $price;
-      }
+    foreach ($xml->xpath('uitpasPrices/uitpasPrice') as $price_xml) {
+      $prices[] = CultureFeed_Uitpas_Passholder_UitpasPrice::createFromXML($price_xml);
     }
 
     $total = count($prices);

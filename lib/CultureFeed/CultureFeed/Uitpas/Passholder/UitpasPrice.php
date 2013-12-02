@@ -85,6 +85,7 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
       }
     }
 
+    $price->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXML($object->xpath('cardSystem', FALSE));
 
     return $price;
   }
