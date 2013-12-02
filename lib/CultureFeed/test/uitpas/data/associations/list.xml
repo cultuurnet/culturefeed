@@ -4,10 +4,18 @@
         <association>
             <id>1</id>
             <name>CJP</name>
+            <cardSystem>
+                <id>6</id>
+                <name>Testsysteem Paspartoe</name>
+            </cardSystem>
         </association>
         <association>
             <id>2</id>
             <name>Okra</name>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
         </association>
     </associations>
     <total>2</total>

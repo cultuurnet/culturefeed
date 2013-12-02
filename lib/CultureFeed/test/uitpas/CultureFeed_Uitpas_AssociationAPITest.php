@@ -22,24 +22,30 @@ class CultureFeed_Uitpas_AssociationAPITest extends PHPUnit_Framework_TestCase {
 
     $cf = new CultureFeed($oauth_client_stub);
 
-    $associations = $cf->uitpas()->getAssociations($balie_consumer_key);
+    $result = $cf->uitpas()->getAssociations($balie_consumer_key);
 
-    $this->assertInstanceOf('CultureFeed_ResultSet', $associations);
-    $this->assertEquals(2, $associations->total);
+    $this->assertInstanceOf('CultureFeed_ResultSet', $result);
+    $this->assertEquals(2, $result->total);
 
-    $this->assertInternalType('array', $associations->objects);
-    $this->assertCount(2, $associations->objects);
-    $this->assertContainsOnly('CultureFeed_Uitpas_Association', $associations->objects);
+    $this->assertInternalType('array', $result->objects);
+    $this->assertCount(2, $result->objects);
+    $this->assertContainsOnly('CultureFeed_Uitpas_Association', $result->objects);
 
     /* @var CultureFeed_Uitpas_Association $association */
-    $association = reset($associations->objects);
+    $association = reset($result->objects);
 
     $this->assertEquals(1, $association->id);
     $this->assertEquals('CJP', $association->name);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $association->cardSystem);
+    $this->assertEquals(6, $association->cardSystem->id);
+    $this->assertEquals('Testsysteem Paspartoe', $association->cardSystem->name);
 
-    $association = next($associations->objects);
+    $association = next($result->objects);
 
     $this->assertEquals(2, $association->id);
     $this->assertEquals('Okra', $association->name);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $association->cardSystem);
+    $this->assertEquals(1, $association->cardSystem->id);
+    $this->assertEquals('HELA', $association->cardSystem->name);
   }
 } 

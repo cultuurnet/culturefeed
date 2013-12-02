@@ -30,9 +30,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the associations.
-   *
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   * {@inheritdoc}
    */
   public function getAssociations($consumer_key_counter = NULL) {
     $data = array();
