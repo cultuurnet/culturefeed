@@ -36,7 +36,7 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
   public $actorId;
 
   /**
-   * @var CulturFeed_Uitpas_Counter_EmployeeCardSystem
+   * @var CultureFeed_Uitpas_Counter_EmployeeCardSystem[]
    */
   public $cardSystems = array();
 
