@@ -3,18 +3,19 @@
 class CultureFeed_Uitpas_PassholderException extends Exception {
 
   /**
-   * @var array
+   * @var CultureFeed_Uitpas_CardInfo[]
    */
   public $cardSystemLinks;
 
   /**
    * @param string $code.
    * @param CultureFeed_SimpleXMLElement $xml
+   *
+   * @return self
    */
   public static function createFromXML($code, $xml) {
 
-    $exception = new static();
-    parent::__construct($code);
+    $exception = new static($code);
 
     if ($code == 'INSZ_ALREADY_USED') {
 
