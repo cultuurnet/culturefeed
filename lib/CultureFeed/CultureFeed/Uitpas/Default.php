@@ -325,6 +325,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    * Get the welcome advantages for a passholder.
    *
    * @param CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query The query
+   *
+   * @return CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet
    */
   public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query) {
     $data = $query->toPostData();
@@ -337,15 +339,17 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $advantages = array();
-    $objects = $xml->xpath('/promotions/promotion');
-    $total = count($objects);
-
-    foreach ($objects as $object) {
-      $advantages[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($object);
+    // Can not use CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createfromXML() here
+    // because the response format is not consistent.
+    // It lacks a 'total' element for example.
+    $promotion_elements = $xml->xpath('promotion');
+    foreach ($promotion_elements as $promotion_element) {
+      $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($promotion_element);
     }
+    $total = count($promotions);
 
-    return new CultureFeed_ResultSet($total, $advantages);
+    $advantages = new CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet($total, $promotions);
+    return $advantages;
   }
 
   /**
@@ -416,15 +420,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotions = array();
-    $objects = $xml->xpath('/response/promotions/promotion');
-    $total = $xml->xpath_int('/response/total');
+    $promotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('/response', false));
 
-    foreach ($objects as $object) {
-      $promotions[] = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($object);
-    }
-
-    return new CultureFeed_ResultSet($total, $promotions);
+    return $promotions;
   }
 
   public function getCashedInPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchCashedInPromotionPointsOptions $query) {
@@ -476,6 +474,22 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     $promotion = CultureFeed_Uitpas_Passholder_PointsPromotion::createFromXML($xml->xpath('/promotionTO', false));
     return $promotion;
+  }
+
+  public function getPassholderEventActions(CultureFeed_Uitpas_Passholder_Query_EventActions $query) {
+    $data = $query->toPostData();
+
+    $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/eventActions', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $eventActions = CultureFeed_Uitpas_Passholder_EventActions::createFromXML($xml);
+    return $eventActions;
   }
 
   /**
@@ -588,15 +602,8 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
-    $promotions = array();
-    $objects = $xml->xpath('/response/promotions/promotion');
-    $total = $xml->xpath_int('/response/total');
-
-    foreach ($objects as $object) {
-      $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($object);
-    }
-
-    return new CultureFeed_ResultSet($total, $promotions);
+    $promotions = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('/response', false));
+    return $promotions;
   }
 
   /**

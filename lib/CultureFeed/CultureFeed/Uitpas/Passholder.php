@@ -309,11 +309,14 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
     $passholder->kansenStatuutExpired = $object->xpath_bool('kansenStatuutExpired');
     $passholder->kansenStatuutInGracePeriod = $object->xpath_bool('kansenStatuutInGracePeriod');
-    $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
 
     foreach ($object->xpath('cardSystemSpecific') as $cardSystemSpecific) {
       $cardSystemId = $cardSystemSpecific->xpath_int('cardSystem/id', FALSE);
       $passholder->cardSystemSpecific[$cardSystemId] = CultureFeed_Uitpas_Passholder_CardSystemSpecific::createFromXML($cardSystemSpecific);
+    }
+
+    if ($object->xpath('uitIdUser', false) instanceof SimpleXMLElement) {
+      $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
     }
 
     $passholder->blocked = $object->xpath_bool('blocked');
