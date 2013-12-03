@@ -39,9 +39,20 @@ class CultureFeed_Uitpas_Passholder_EventActions {
     $eventActions = new self();
 
     $eventActions->passholder = CultureFeed_Uitpas_Passholder::createFromXML($xml->xpath('passHolder', FALSE));
-    $eventActions->passholder->uitpasNumber = $xml->xpath_str('passHolder/uitpasNumber', FALSE);
-    $eventActions->passholder->currentCard->uitpasNumber = $eventActions->passholder->uitpasNumber;
-    $eventActions->passholder->currentCard->kansenpas = $eventActions->passholder->kansenStatuut;
+
+    // Hopefully temporary workaround for DECUPAS-34
+    foreach ($xml->xpath('passHolder/CardSystemSpecificSettings/CardSystemSpecificSetting') as $cardsystem_xml) {
+      $card_system = new CultureFeed_Uitpas_Passholder_CardSystemSpecific();
+      $card_system->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXML($cardsystem_xml->xpath('cardSystemTO', FALSE));
+      $card_system->currentCard = new CultureFeed_Uitpas_Passholder_Card();
+      $card_system->currentCard->uitpasNumber = $cardsystem_xml->xpath_str('uitpasNumber');
+      $card_system->emailPreference = $cardsystem_xml->xpath_str('emailPreference');
+      $card_system->smsPreference = $cardsystem_xml->xpath_str('smsPreference');
+      $card_system->kansenStatuut = $cardsystem_xml->xpath_bool('kansenStatuut');
+      $card_system->kansenStatuutExpired = $cardsystem_xml->xpath_bool('kansenStatuutExpired');
+
+      $eventActions->passholder->cardSystemSpecific[] = $card_system;
+    }
 
     $eventActions->welcomeAdvantages = CultureFeed_Uitpas_Passholder_WelcomeAdvantageResultSet::createFromXML($xml->xpath('welcomeAdvantages', FALSE), 'welcomeAdvantage');
     $eventActions->pointsPromotions = CultureFeed_Uitpas_Passholder_PointsPromotionResultSet::createFromXML($xml->xpath('pointsPromotions', FALSE), 'pointsPromotion');
