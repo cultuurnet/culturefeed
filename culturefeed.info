@@ -30,6 +30,7 @@ files[] = lib/CultureFeed/CultureFeed/Location.php
 files[] = lib/CultureFeed/CultureFeed/OnlineAccount.php
 files[] = lib/CultureFeed/CultureFeed/ParseException.php
 files[] = lib/CultureFeed/CultureFeed/Preferences.php
+files[] = lib/CultureFeed/CultureFeed/ProxySupportingClient.php
 files[] = lib/CultureFeed/CultureFeed/Recommendation.php
 files[] = lib/CultureFeed/CultureFeed/RecommendationItem.php
 files[] = lib/CultureFeed/CultureFeed/RecommendationsQuery.php
