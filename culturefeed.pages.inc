@@ -175,7 +175,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         }
         else {
           $destination = '';
-          $destination = drupal_alter('culturefeed_login_redirect_destination', $destination);
+          drupal_alter('culturefeed_login_redirect_destination', $destination);
           drupal_goto($destination);
         }
       }

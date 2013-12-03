@@ -84,6 +84,7 @@ function culturefeed_uitpas_advantages_promotions_settings_get(&$form) {
     '#type' => 'fieldset',
     '#title' => t('UiTPAS advantages promotions settings'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['advantages_promotions']['culturefeed_uitpas_advantages_promotions_title'] = array(
     '#type' => 'textfield',

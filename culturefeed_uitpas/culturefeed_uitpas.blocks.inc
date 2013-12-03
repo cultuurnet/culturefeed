@@ -11,6 +11,14 @@
 function culturefeed_uitpas_block_info() {
 
   return array(
+    'uitpas_event_details_advantages' => array(
+      'info' => t('Culturefeed uitpas: event details advantages'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+    'uitpas_profile_summary' => array(
+      'info' => t('Culturefeed uitpas: profile (summary)'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
     'uitpas_promotions_highlight' => array(
       'info' => t('Culturefeed uitpas: promotions highlight'),
       'cache' => DRUPAL_NO_CACHE,
@@ -35,6 +43,11 @@ function culturefeed_uitpas_block_configure($delta = '') {
   $form = array();
 
   switch ($delta) {
+
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      culturefeed_uitpas_profile_summary_settings_get($form);
+      break;
 
     case 'uitpas_promotions_highlight':
       module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');
@@ -64,6 +77,11 @@ function culturefeed_uitpas_block_save($delta = '', $edit = array()) {
 
   switch ($delta) {
 
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      culturefeed_uitpas_profile_summary_settings_save($edit);
+      break;
+
     case 'uitpas_promotions_highlight':
       module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');
       culturefeed_uitpas_promotions_highlights_settings_save($edit);
@@ -91,6 +109,28 @@ function culturefeed_uitpas_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
+
+    case 'uitpas_event_details_advantages':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+      $content = culturefeed_uitpas_event_details_advantages_get();
+      if ($content) {
+
+        $block['subject'] = t("UiTPAS Advantages");
+        $block['content'] = $content;
+
+      }
+      break;
+
+    case 'uitpas_profile_summary':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_summary');
+      $content = culturefeed_uitpas_profile_summary_get();
+      if ($content) {
+
+        $block['subject'] = t("My UiTPAS");
+        $block['content'] = $content;
+
+      }
+      break;
 
     case 'uitpas_promotions_highlight':
       module_load_include('inc', 'culturefeed_uitpas', 'includes/promotions_highlight');

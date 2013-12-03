@@ -45,6 +45,38 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
    */
   public $cashedIn;
 
+  /**
+<<<<<<< HEAD
+   * Id of a CardSystem owning the welcome advantages.
+   * @var string
+   */
+  public $owningCardSystemId;
+
+  /**
+   * Filters the welcome advantages based on their spotlight status.
+   * @var boolean
+   */
+  public $inSpotlight;
+
+  /**
+   * Id of a CardSystem to which the welcome advantages are applicable.
+   * @var string
+   */
+  public $applicableCardSystemId;
+
+  /** Maximum number of results. Default: 20
+   *
+   * @var integer
+   */
+  public $max = 20;
+
+  /**
+   * Results offset. Default: 0
+   *
+   * @var integer
+   */
+  public $start = 0;
+
   protected function manipulatePostData(&$data) {
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
@@ -56,6 +88,10 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
 
     if (isset($data['cashedIn'])) {
       $data['cashedIn'] = $data['cashedIn'] ? 'true' : 'false';
+    }
+
+    if (isset($data['inSpotlight'])) {
+      $data['inSpotlight'] = $data['inSpotlight'] ? 'true' : 'false';
     }
   }
 }

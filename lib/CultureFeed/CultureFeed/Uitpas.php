@@ -121,6 +121,8 @@ interface CultureFeed_Uitpas {
    * Get the redeem options
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query);
 
@@ -151,6 +153,14 @@ interface CultureFeed_Uitpas {
    * 		The passholder is identified by ID. Only fields that are set will be updated.
    */
   public function updatePassholder(CultureFeed_Uitpas_Passholder $passholder);
+
+  /**
+   * Update a passholder's card system preferences.
+   *
+   * @param CultureFeed_Uitpas_Passholder_CardSystemPreferences $preferences The passholder's card preferences to update.
+   *        The card system preferences are identified by user id and card system id. Only fields that are set will be updated.
+   */
+  public function updatePassholderCardSystemPreferences(CultureFeed_Uitpas_Passholder_CardSystemPreferences $preferences);
 
   /**
    * Block a UitPas.

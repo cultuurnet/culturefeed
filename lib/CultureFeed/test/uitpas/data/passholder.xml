@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<passHolder xmlns:ns2="http://www.w3.org/1999/02/22-rdf-syntax-ns"
+            xmlns:ns3="http://xmlns.com/foaf/0.1/">
+    <cardSystemSpecific>
+        <cardSystem>
+            <id>4</id>
+            <name>Testsysteem Charlotte</name>
+        </cardSystem>
+        <emailPreference>ALL_MAILS</emailPreference>
+        <kansenStatuutExpired>false</kansenStatuutExpired>
+        <kansenStatuutInGracePeriod>false</kansenStatuutInGracePeriod>
+        <lastActivationMailNumber>0</lastActivationMailNumber>
+        <smsPreference>NO_SMS</smsPreference>
+        <status>ACTIVE</status>
+    </cardSystemSpecific>
+    <cardSystemSpecific>
+        <cardSystem>
+            <id>6</id>
+            <name>Testsysteem Paspartoe</name>
+        </cardSystem>
+        <currentCard>
+            <kansenpas>false</kansenpas>
+            <status>ACTIVE</status>
+            <uitpasNumber>
+                <uitpasNumber>1000001500601</uitpasNumber>
+            </uitpasNumber>
+        </currentCard>
+        <emailPreference>NO_MAILS</emailPreference>
+        <kansenStatuutExpired>false</kansenStatuutExpired>
+        <kansenStatuutInGracePeriod>false</kansenStatuutInGracePeriod>
+        <lastActivationMailNumber>0</lastActivationMailNumber>
+        <smsPreference>ALL_SMS</smsPreference>
+        <status>ACTIVE</status>
+    </cardSystemSpecific>
+    <city>BRUSSEL</city>
+    <dateOfBirth>1982-01-01T01:00:00+01:00</dateOfBirth>
+    <firstName>Frontend</firstName>
+    <gender>FEMALE</gender>
+    <inszNumberHash>
+        62cb6cc2a58d1b23d85b5993894c2fcd2d55ed01c0f6ff1f4f0ee87ac2b83dd9
+    </inszNumberHash>
+    <memberships/>
+    <name>Tester</name>
+    <numberOfCheckins>2</numberOfCheckins>
+    <points>10.000</points>
+    <postalCode>1060</postalCode>
+    <registrationBalieConsumerKey>3456548c761dfbf68bb4474e69ac8a67
+    </registrationBalieConsumerKey>
+    <uitIdUser>
+        <ns2:id>a81b1741-5e97-4eee-ab30-a71865fc266a</ns2:id>
+        <ns3:nick>Frontend Tester</ns3:nick>
+    </uitIdUser>
+    <verified>false</verified>
+</passHolder>
