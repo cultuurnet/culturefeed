@@ -143,6 +143,14 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
       throw new CultureFeed_ParseException($result);
     }
 
+    $code = $xml->xpath_str('/response/code');
+    if ($code == 'INSZ_ALREADY_USED') {
+
+      $exception = new CultureFeed_Uitpas_PassholderException::createFromXML($code, $xml);
+      throw $exception;
+
+    }
+
     return $xml->xpath_str('/response/message');
   }
 

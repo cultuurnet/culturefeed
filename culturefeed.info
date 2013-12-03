@@ -64,6 +64,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey/Condition.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Promotion/Query/WelcomeAdvantagesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/PassholderException.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/TicketSale.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CheckinConstraint.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Event/CheckinActivity.php
