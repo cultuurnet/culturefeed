@@ -392,4 +392,13 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
       }
     }
   }
+
+  /**
+   * @param integer $id
+   *
+   * @return bool
+   */
+  public function inCardSystem($id) {
+    return array_key_exists($id, $this->cardSystemSpecific);
+  }
 }
