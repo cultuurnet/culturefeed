@@ -50,10 +50,20 @@ class CultureFeed_Uitpas_Counter_Employee extends CultureFeed_Uitpas_ValueObject
     $counter->actorId = $object->xpath_str('actorId');
 
     foreach ($object->xpath('cardSystems/cardSystem') as $card_system) {
-      $counter->cardSystems[] = CultureFeed_Uitpas_Counter_EmployeeCardSystem::createFromXml($card_system);
+      $cardSystem = CultureFeed_Uitpas_Counter_EmployeeCardSystem::createFromXml($card_system);
+      $counter->cardSystems[$cardSystem->id] = $cardSystem;
     }
 
     return $counter;
+  }
+
+  /**
+   * @param integer $id
+   *
+   * @return boolean
+   */
+  public function inCardSystem($id) {
+    return array_key_exists($id, $this->cardSystems);
   }
 
 }
