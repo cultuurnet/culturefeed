@@ -1,6 +1,6 @@
 <?php
 
-class CultureFeed_Uitpas_PassholderException extends Exception {
+class CultureFeed_Uitpas_PassholderException extends CultureFeed_Exception {
 
   /**
    * @var CultureFeed_Uitpas_CardInfo[]
@@ -15,7 +15,8 @@ class CultureFeed_Uitpas_PassholderException extends Exception {
    */
   public static function createFromXML($code, $xml) {
 
-    $exception = new static($code);
+    $message = $xml->xpath_str('/response/message');
+    $exception = new static($message, $code);
 
     if ($code == 'INSZ_ALREADY_USED') {
 
@@ -25,6 +26,8 @@ class CultureFeed_Uitpas_PassholderException extends Exception {
       }
 
     }
+
+    return $exception;
 
   }
 
