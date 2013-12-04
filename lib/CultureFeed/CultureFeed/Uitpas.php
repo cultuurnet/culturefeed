@@ -88,6 +88,8 @@ interface CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
    * @param string $method The request method
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 

@@ -296,10 +296,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Search for passholders.
-   *
-   * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
-   * @param string $method The request method
+   * {@inheritdoc}
    */
   public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST) {
     $data = $query->toPostData();
