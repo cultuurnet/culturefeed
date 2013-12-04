@@ -24,6 +24,7 @@ class CultureFeed_Uitpas_PassholderException extends CultureFeed_Exception {
       foreach ($xml->xpath('cardSystemLinks/cardSystemLink') as $cardSystemLink) {
         $exception->cardSystemLinks[] = CultureFeed_Uitpas_CardInfo::createFromXml($cardSystemLink, FALSE);
       }
+      $exception->userId = $xml->xpath_str('/response/userId');
 
     }
 
