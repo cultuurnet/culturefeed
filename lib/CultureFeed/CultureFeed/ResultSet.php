@@ -29,7 +29,7 @@ class CultureFeed_ResultSet {
    * @param array $objects
    *   The objects in the slice.
    */
-  public function __construct($total, $objects) {
+  public function __construct($total = 0, $objects = array()) {
     $this->total = $total;
     $this->objects = $objects;
   }
