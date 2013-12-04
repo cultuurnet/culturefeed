@@ -8,6 +8,11 @@ class CultureFeed_Uitpas_PassholderException extends CultureFeed_Exception {
   public $cardSystemLinks;
 
   /**
+   * @var string
+   */
+  public $userId;
+
+  /**
    * @param string $code.
    * @param CultureFeed_SimpleXMLElement $xml
    *
