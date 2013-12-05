@@ -27,13 +27,16 @@ class CultureFeed_Uitpas_Passholder_EventActionsTest extends PHPUnit_Framework_T
     $this->assertEquals('Hendrickx', $event_actions->passholder->name);
     $this->assertEquals('Anne', $event_actions->passholder->firstName);
     $this->assertEquals(9, $event_actions->passholder->points);
-    $this->assertInternalType('string', $event_actions->passholder->uitpasNumber);
-    $this->assertEquals('0930000150316', $event_actions->passholder->uitpasNumber);
-    $this->assertInternalType('string', $event_actions->passholder->currentCard->uitpasNumber);
-    $this->assertEquals('0930000150316', $event_actions->passholder->currentCard->uitpasNumber);
-    $this->assertEquals(TRUE, $event_actions->passholder->kansenStatuut);
-    $this->assertEquals(TRUE, $event_actions->passholder->currentCard->kansenpas);
-    $this->assertEquals(FALSE, $event_actions->passholder->kansenStatuutExpired);
+
+    /* @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $card_system_specific */
+    $card_system_specific = reset($event_actions->passholder->cardSystemSpecific);
+
+    $this->assertInternalType('string', $card_system_specific->currentCard->uitpasNumber);
+    $this->assertEquals('0930000150316', $card_system_specific->currentCard->uitpasNumber);
+    $this->assertEquals('ACTIVE', $card_system_specific->currentCard->status);
+    $this->assertEquals(TRUE, $card_system_specific->kansenStatuut);
+    $this->assertEquals(TRUE, $card_system_specific->currentCard->kansenpas);
+    $this->assertEquals(FALSE, $card_system_specific->kansenStatuutExpired);
 
     $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_EventCheckin', $event_actions->eventCheckin);
     $this->assertEquals('27f1e25a-1ba6-4a43-96de-0c6f99b508f3', $event_actions->eventCheckin->cdbid);
