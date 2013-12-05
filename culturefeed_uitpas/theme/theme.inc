@@ -644,9 +644,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
 
     $singular = "<strong>!name</strong> saved 1 point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
     $plural = "<strong>!name</strong> saved !points points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
-    $image = ($action->depiction) ? $action->depiction : variable_get('culturefeed_uitpas_user_default_image');
+    $image = ($action->depiction) ? $action->depiction . '?maxwidth=50&maxheight=50&crop=auto' : variable_get('culturefeed_uitpas_user_default_image');
     if ($image) {
-      $image = theme_image(array('path' => $image, 'attributes' => array()));
+      $image = theme_image(array('path' => $image, 'attributes' => array('class' => 'thumbnail')));
     }
 
     $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);
