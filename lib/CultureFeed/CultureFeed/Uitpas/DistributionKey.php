@@ -42,6 +42,11 @@ class CultureFeed_Uitpas_DistributionKey {
    */
   public $sameRegion;
 
+  /**
+   * @var CultureFeed_Uitpas_CardSystem
+   */
+  public $cardSystem;
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
     $distribution_key = new CultureFeed_Uitpas_DistributionKey();

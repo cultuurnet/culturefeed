@@ -60,10 +60,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the distribution keys for a given organizer.
-   *
-   * @param string $cdbid The CDBID of the given organizer
-   * @return CultureFeed_ResultSet The set of distribution keys
+   * {@inheritdoc}
    */
   public function getDistributionKeysForOrganizer($cdbid) {
     $result = $this->oauth_client->consumerGetAsXML('uitpas/distributionkey/organiser/' . $cdbid, array());
@@ -75,13 +72,20 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $distribution_keys = array();
-    $objects = $xml->xpath('/response/distributionkeys/distributionKey');
-    $total = count($objects);
 
-    foreach ($objects as $object) {
-      $distribution_keys[] = CultureFeed_Uitpas_DistributionKey::createFromXML($object);
+    foreach ($xml->xpath('/response/cardSystems/cardSystem') as $cardSystemXml) {
+      $cardSystem = CultureFeed_Uitpas_CardSystem::createFromXML($cardSystemXml);
+
+      $objects = $cardSystemXml->xpath('distributionKeys/distributionKey');
+
+      foreach ($objects as $object) {
+        $distributionKey = CultureFeed_Uitpas_DistributionKey::createFromXML($object);
+        $distributionKey->cardSystem = $cardSystem;
+        $distribution_keys[] = $distributionKey;
+      }
     }
 
+    $total = count($distribution_keys);
     return new CultureFeed_ResultSet($total, $distribution_keys);
   }
 

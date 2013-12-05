@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <response>
-    <distributionkeys>
-        <distributionKey>
+    <cardSystems>
+        <cardSystem>
+            <distributionKeys>
+                <distributionKey>
+                    <global>false</global>
+                    <id>35</id>
+                    <name>School - Halve Dag - €1,50</name>
+                </distributionKey>
+                <distributionKey>
+                    <global>false</global>
+                    <id>36</id>
+                    <name>School - hele dag €3</name>
+                </distributionKey>
+                <distributionKey>
+                    <global>false</global>
+                    <id>37</id>
+                    <name>School - hele dag vanaf 20 euro</name>
+                </distributionKey>
+                <distributionKey>
+                    <global>false</global>
+                    <id>38</id>
+                    <name>School - Meerdaags 25%</name>
+                </distributionKey>
+                <distributionKey>
+                    <global>false</global>
+                    <id>39</id>
+                    <name>School - Meerdaags vanaf 200 euro</name>
+                </distributionKey>
+                <distributionKey>
+                    <global>false</global>
+                    <id>40</id>
+                    <name>School - Zwemmen</name>
+                </distributionKey>
+            </distributionKeys>
             <id>1</id>
-            <name>Standaard verdeelsleutel</name>
-        </distributionKey>
-        <distributionKey>
-            <id>2</id>
-            <name>Test verdeelsleutel - TK421</name>
-        </distributionKey>
-    </distributionkeys>
+            <name>HELA</name>
+        </cardSystem>
+    </cardSystems>
 </response>

@@ -21,14 +21,24 @@ class CultureFeed_Uitpas_DistributionKeyTest extends PHPUnit_Framework_TestCase 
     $this->assertInstanceOf('CultureFeed_ResultSet', $data);
 
     $this->assertContainsOnly('CultureFeed_Uitpas_DistributionKey', $data->objects);
-    $this->assertCount(2, $data->objects);
-    $this->assertEquals(2, $data->total);
+    $this->assertCount(6, $data->objects);
+    $this->assertEquals(6, $data->total);
 
-    $this->assertEquals("Standaard verdeelsleutel", $data->objects[0]->name);
-    $this->assertEquals("Test verdeelsleutel - TK421", $data->objects[1]->name);
-    $this->assertEquals("1", $data->objects[0]->id);
-    $this->assertEquals("2", $data->objects[1]->id);
+    /* @var CultureFeed_Uitpas_DistributionKey $key */
+    $key = reset($data->objects);
 
+    $this->assertEquals(35, $key->id);
+    $this->assertEquals("School - Halve Dag - €1,50", $key->name);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $key->cardSystem);
+    $this->assertEquals(1, $key->cardSystem->id);
+    $this->assertEquals('HELA', $key->cardSystem->name);
 
+    $key = next($data->objects);
+
+    $this->assertEquals(36, $key->id);
+    $this->assertEquals("School - hele dag €3", $key->name);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $key->cardSystem);
+    $this->assertEquals(1, $key->cardSystem->id);
+    $this->assertEquals('HELA', $key->cardSystem->name);
   }
 }
