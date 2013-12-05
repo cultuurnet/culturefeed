@@ -201,8 +201,9 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uid
    * @param string $activation_code
+   * @param string $destination_
    */
-  public function constructPassHolderActivationLink($uid, $activation_code, $destination_callback = NULL);
+  public function constructPassHolderActivationLink($uid, $activation_code, $destination = NULL);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet,
