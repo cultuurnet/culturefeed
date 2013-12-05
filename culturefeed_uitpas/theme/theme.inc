@@ -395,7 +395,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
   $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
   $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
-  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . t(($passholder->gender == 'MALE') ? 'Male' : 'Female');
+  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . ($passholder->gender == 'MALE') ? t('Male') : t('Female');
   $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
   $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
   $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
