@@ -113,11 +113,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
       }
 
       $rows[] = array(
-        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0], 'attributes' => array())) : '',
         l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
         ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
         ($advantage->description1) ? $advantage->description1 : '',
         implode(', ', $counters),
+        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
       );
 
     }
@@ -151,12 +151,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
       $plural = '%points points';
       $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
       $rows[] = array(
-        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0], 'attributes' => array())) : '',
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
         ($promotion->description1) ? $promotion->description1 : '',
         implode(', ', $counters),
+        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
       );
 
     }
