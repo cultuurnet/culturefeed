@@ -1,5 +1,3 @@
-# DOC in DEV #
-
 # Backwards compatibility #
 
 This section contains information regarding possible backwards compatibility breaks, and
