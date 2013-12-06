@@ -57,14 +57,14 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
     }
 
     // Otherwise, sort alphabetically.
-    return strcasecmp($a->cardSystem->name, $b->cardSystem->name);
+    return strcasecmp(culturefeed_uitpas_cardsystem_name($a->cardSystem), culturefeed_uitpas_cardsystem_name($b->cardSystem));
   };
   uasort($card_system_specific_list, $sort);
 
   foreach ($card_system_specific_list as $card_system_id => $card_system_specific) {
     $form['notifications'][$card_system_id] = array(
       '#type' => 'fieldset',
-      '#title' => check_plain($card_system_specific->cardSystem->name),
+      '#title' => check_plain(culturefeed_uitpas_cardsystem_name($card_system_specific->cardSystem)),
     );
 
     $form['notifications'][$card_system_id]['email'] = array(

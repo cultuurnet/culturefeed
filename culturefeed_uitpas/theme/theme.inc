@@ -40,7 +40,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   // Provider.
   $vars['provider'] = '';
   if (isset($advantage->owningCardSystem->name)) {
-    $vars['provider'] = t('Provided by !provider', array('!provider' => $advantage->owningCardSystem->name));
+    $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($advantage->owningCardSystem)));
   }
 
   // Availability.
@@ -543,7 +543,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Provider.
   $vars['provider'] = '';
   if (isset($promotion->owningCardSystem->name)) {
-    $vars['provider'] = t('Provided by !provider', array('!provider' => $promotion->owningCardSystem->name));
+    $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($promotion->owningCardSystem)));
   }
 
   // Available.
