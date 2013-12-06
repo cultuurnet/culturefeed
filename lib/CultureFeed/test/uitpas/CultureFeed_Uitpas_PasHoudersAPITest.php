@@ -291,4 +291,75 @@ class CultureFeed_Uitpas_PasHoudersAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(6, $card->cardSystem->id);
     $this->assertEquals('Testsysteem Paspartoe', $card->cardSystem->name);
   }
+
+  public function testSearch() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $search_xml = file_get_contents(dirname(__FILE__) . '/data/passholder/search.xml');
+
+    $oauth_client_stub
+      ->expects($this->any())
+      ->method('consumerGetAsXml')
+      ->with('uitpas/passholder/search', array('sort' => 'creationDate'))
+      ->will($this->returnValue($search_xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+
+    $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
+
+    $results = $cf->uitpas()->searchPassholders($query);
+
+    $this->assertInstanceOf('CultureFeed_ResultSet', $results);
+
+    $this->assertEquals(1851, $results->total);
+
+    $this->assertInternalType('array', $results->objects);
+    $this->assertCount(10, $results->objects);
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder', $results->objects);
+
+    /** @var CultureFeed_Uitpas_Passholder $passholder */
+    $passholder = reset($results->objects);
+
+    $this->assertInternalType('array', $passholder->cardSystemSpecific);
+    $this->assertCount(1, $passholder->cardSystemSpecific);
+    $this->assertContainsOnly('CultureFeed_Uitpas_Passholder_CardSystemSpecific', $passholder->cardSystemSpecific);
+
+    /** @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $cardSystemSpecific */
+    $cardSystemSpecific = reset($passholder->cardSystemSpecific);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardSystemSpecific->cardSystem);
+    $this->assertEquals('HELA', $cardSystemSpecific->cardSystem->name);
+    $this->assertEquals(1, $cardSystemSpecific->cardSystem->id);
+    $this->assertInstanceOf('CultureFeed_Uitpas_Passholder_Card', $cardSystemSpecific->currentCard);
+    $this->assertEquals(TRUE, $cardSystemSpecific->currentCard->kansenpas);
+    $this->assertEquals('ACTIVE', $cardSystemSpecific->currentCard->status);
+    $this->assertEquals('0942000000125', $cardSystemSpecific->currentCard->uitpasNumber);
+    $this->assertEquals('ALL_MAILS', $cardSystemSpecific->emailPreference);
+    $this->assertEquals(TRUE, $cardSystemSpecific->kansenStatuut);
+    $this->assertEquals(1388530799, $cardSystemSpecific->kansenStatuutEndDate);
+    $this->assertEquals(FALSE, $cardSystemSpecific->kansenStatuutExpired);
+    $this->assertEquals(FALSE, $cardSystemSpecific->kansenStatuutInGracePeriod);
+    $this->assertEquals('NO_SMS', $cardSystemSpecific->smsPreference);
+    $this->assertEquals('ACTIVE', $cardSystemSpecific->status);
+
+    $this->assertEquals('AALST', $passholder->city);
+    $this->assertEquals(1151452800, $passholder->dateOfBirth);
+    $this->assertEquals('tadug', $passholder->firstName);
+    $this->assertEquals('MALE', $passholder->gender);
+    $this->assertEquals('0475/51.87.60', $passholder->gsm);
+    $this->assertInternalType('array', $passholder->memberships);
+    $this->assertCount(0, $passholder->memberships);
+    $this->assertEquals("Nieuwe aanvraag\r OCMW Ja\r Via MvM", $passholder->moreInfo);
+
+    $this->assertEquals('celab', $passholder->name);
+    $this->assertEquals('Belg', $passholder->nationality);
+    $this->assertEquals(0, $passholder->numberOfCheckins);
+    $this->assertEquals('Aalst', $passholder->placeOfBirth);
+    $this->assertEquals(3.000, $passholder->points);
+    $this->assertEquals(9300, $passholder->postalCode);
+
+    $this->assertEquals('b95d1bcf-533d-45ac-afcd-e015cfe86c84', $passholder->registrationBalieConsumerKey);
+    $this->assertEquals('0717a28c-78be-40fc-9ad1-25bc45252f3a', $passholder->schoolConsumerKey);
+    $this->assertEquals('opubi 73', $passholder->street);
+    $this->assertEquals(FALSE, $passholder->verified);
+  }
 }
