@@ -513,7 +513,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Image.
   $vars['image'] = '';
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $promotion->pictures[0], 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
   }
 
   // Points.
