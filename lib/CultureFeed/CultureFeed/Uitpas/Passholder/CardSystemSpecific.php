@@ -39,6 +39,25 @@ class CultureFeed_Uitpas_Passholder_CardSystemSpecific {
    */
   public $kansenStatuutExpired;
 
+  /**
+   * @var int
+   */
+  public $kansenStatuutEndDate;
+
+  /**
+   * @var bool
+   */
+  public $kansenStatuutInGracePeriod;
+
+  /**
+   * @var string
+   */
+  public $status;
+
+  /**
+   * @param CultureFeed_SimpleXMLElement $object
+   * @return CultureFeed_Uitpas_Passholder_CardSystemSpecific
+   */
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
     $cardSystemSpecific = new self();
     $cardSystemSpecific->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXml($object->xpath('cardSystem', false));
@@ -52,6 +71,10 @@ class CultureFeed_Uitpas_Passholder_CardSystemSpecific {
 
     $cardSystemSpecific->kansenStatuut = $object->xpath_bool('kansenStatuut');
     $cardSystemSpecific->kansenStatuutExpired = $object->xpath_bool('kansenStatuutExpired');
+    $cardSystemSpecific->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
+    $cardSystemSpecific->kansenStatuutInGracePeriod = $object->xpath_bool('kansenStatuutInGracePeriod');
+
+    $cardSystemSpecific->status = $object->xpath_str('status');
 
     return $cardSystemSpecific;
   }
