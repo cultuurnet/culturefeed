@@ -839,9 +839,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }  
 
   /**
-   * Search for Uitpas events
-   *
-   * @param CultureFeed_Uitpas_SearchEventsQuery $query The query
+   * {@inheritdoc}
    */
   public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query) {
     $data = $query->toPostData();

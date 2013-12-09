@@ -256,7 +256,9 @@ interface CultureFeed_Uitpas {
   /**
    * Search for Uitpas events
    *
-   * @param CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query The query
+   * @param CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query);
 
