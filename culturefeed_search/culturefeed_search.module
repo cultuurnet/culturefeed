@@ -31,7 +31,7 @@ function culturefeed_search_menu() {
   $items['autocomplete/culturefeed/suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(3, NULL),
+    'page arguments' => array(3, FALSE, NULL),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -40,7 +40,7 @@ function culturefeed_search_menu() {
   $items['autocomplete/culturefeed/actor-suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(3, 'actor'),
+    'page arguments' => array(3, FALSE, 'actor'),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
