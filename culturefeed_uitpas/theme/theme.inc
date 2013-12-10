@@ -615,6 +615,92 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 }
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_register_where().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars) {
+
+  $table = array(
+    'header' => array(),
+    'rows' => array(),
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+
+  if (count($vars['pos'])) {
+
+    foreach ($vars['pos'] as $pos) {
+
+      $path = '';
+      $details = "<div class=\"pos_details\">";
+      $times = '-';
+
+      if (isset($vars['actors'][$pos->id])) {
+
+        $actor = $vars['actors'][$pos->id];
+        $address = $actor['contactinfo']['address'];
+        $details .= "<div class=\"pos_address\">";
+        if (isset($address['street'])) {
+          $details .= $address['street'] . ' ' . $address['housenr'] . "<br />";
+        }
+        $details .= $address['zipcode'] . ' ' . $address['city'];
+        $details .= "</div>";
+        if (isset($actor['detail']['nl']['calendarsummary'])) {
+          $times = $actor['detail']['nl']['calendarsummary'];
+        }
+        $path = uitpas_ui_helpers_link_object('actor', $actor);
+
+      }
+
+      elseif ($pos->street || $pos->city) {
+
+        $details .= "<div class=\"pos_address\">";
+        if ($pos->street) {
+          $details .= $pos->street . ' ' . $pos->number . "<br />";
+        }
+        $details .= $pos->postalCode . ' ' .  $pos->city;
+        $details .= "</div>";
+
+      }
+
+      // Description.
+      $title = ($path) ? l($pos->name, $path) : $pos->name;
+      $description = "<div class=\"pos_name\">" . $title . "</div>";
+      $description .= $details;
+      if ($path) {
+
+        $more = t('More info and contact information');
+        $link = l($more, $path);
+        $description .= "<div class=\"uitpas_pos_more\">" . $link . "</div>";
+
+      }
+      $description .= "</div>";
+
+      $table['rows'][] = array($description, $times);
+
+    }
+
+  }
+  else {
+    $table['rows'][] = array(array('data' => t('No results found.'), 'colspan' => 2));
+  }
+
+  $pager = array(
+    'tags' => array(),
+    'parameters' => array(),
+    'element' => $vars['pos_pager_element'],
+    'quantity' => $vars['pos_total'],
+  );
+
+  $vars['pos'] = theme_table($table) . theme_pager($pager);
+  $vars['info'] = variable_get('culturefeed_uitpas_register_where_info');
+  dpm($vars);
+}
+
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_recent_actions().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars) {

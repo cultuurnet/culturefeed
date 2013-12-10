@@ -231,6 +231,7 @@ function culturefeed_uitpas_profile_notifications_settings_get(&$form) {
     '#type' => 'fieldset',
     '#title' => t('UiTPAS profile notifications settings'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['profile_notifications']['culturefeed_uitpas_profile_notifications_intro'] = array(
     '#type' => 'textarea',

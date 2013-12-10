@@ -63,6 +63,14 @@ function culturefeed_uitpas_variable_info() {
       'title' => t('Culturefeed uitpas: promotions highlight: more link text'),
       'localize' => TRUE,
     ),
+    'culturefeed_uitpas_register_where_title' => array(
+      'title' => t('Culturefeed uitpas: register where: title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_info' => array(
+      'title' => t('Culturefeed uitpas: register where: info'),
+      'localize' => TRUE,
+    ),
     'culturefeed_uitpas_registration_confirmation_actions_label' => array(
       'title' => t('Culturefeed uitpas: registration confirmation: actions label'),
       'localize' => TRUE,

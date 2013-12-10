@@ -129,6 +129,7 @@ function culturefeed_uitpas_profile_advantages_settings_get(&$form) {
     '#type' => 'fieldset',
     '#title' => t('UiTPAS profile advantages settings'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['profile_advantages']['culturefeed_uitpas_profile_advantages_advantages_max'] = array(
     '#type' => 'textfield',
