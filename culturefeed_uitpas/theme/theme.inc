@@ -40,7 +40,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   // Provider.
   $vars['provider'] = '';
   if (isset($advantage->owningCardSystem->name)) {
-    $vars['provider'] = t('Provided by !provider', array('!provider' => $advantage->owningCardSystem->name));
+    $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($advantage->owningCardSystem)));
   }
 
   // Availability.
@@ -113,11 +113,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
       }
 
       $rows[] = array(
-        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0], 'attributes' => array())) : '',
         l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
         ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
         ($advantage->description1) ? $advantage->description1 : '',
         implode(', ', $counters),
+        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
       );
 
     }
@@ -151,12 +151,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
       $plural = '%points points';
       $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
       $rows[] = array(
-        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0], 'attributes' => array())) : '',
         array('data' => $points, 'class' => array('uitpas_ui_points')),
         l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
         ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
         ($promotion->description1) ? $promotion->description1 : '',
         implode(', ', $counters),
+        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
       );
 
     }
@@ -395,7 +395,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
   $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
   $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
-  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . t(($passholder->gender == 'MALE') ? 'Male' : 'Female');
+  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . ($passholder->gender == 'MALE') ? t('Male') : t('Female');
   $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
   $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
   $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
@@ -513,7 +513,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Image.
   $vars['image'] = '';
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $promotion->pictures[0], 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
   }
 
   // Points.
@@ -543,7 +543,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Provider.
   $vars['provider'] = '';
   if (isset($promotion->owningCardSystem->name)) {
-    $vars['provider'] = t('Provided by !provider', array('!provider' => $promotion->owningCardSystem->name));
+    $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($promotion->owningCardSystem)));
   }
 
   // Available.
@@ -644,9 +644,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
 
     $singular = "<strong>!name</strong> saved 1 point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
     $plural = "<strong>!name</strong> saved !points points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
-    $image = ($action->depiction) ? $action->depiction : variable_get('culturefeed_uitpas_user_default_image');
+    $image = ($action->depiction) ? $action->depiction . '?maxwidth=50&maxheight=50&crop=auto' : variable_get('culturefeed_uitpas_user_default_image');
     if ($image) {
-      $image = theme_image(array('path' => $image, 'attributes' => array()));
+      $image = theme_image(array('path' => $image, 'attributes' => array('class' => 'thumbnail')));
     }
 
     $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);

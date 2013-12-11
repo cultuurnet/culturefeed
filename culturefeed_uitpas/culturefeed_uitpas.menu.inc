@@ -70,6 +70,13 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/registration_confirmation.inc',
       'access callback' => TRUE,
     ),
+    'activate/%/%' => array(
+      'title' => 'Activate',
+      'page callback' => 'culturefeed_uitpas_activate',
+      'page arguments' => array(1, 2),
+      'access callback' => TRUE,
+      'file' => 'includes/activate.inc',
+    ),
   );
 
 }

@@ -663,16 +663,15 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * (non-PHPdoc)
-   * @see CultureFeed_Uitpas::constructPassHolderActivationLink()
+   * {@inheritdoc}
    */
-  public function constructPassHolderActivationLink($uid, $activation_code, $destination_callback = NULL) {
+  public function constructPassHolderActivationLink($uid, $activation_code, $destination = NULL) {
     $path = "uitpas/activate/{$uid}/{$activation_code}";
 
     $query = array();
 
-    if ($destination_callback) {
-      $query['destination'] = call_user_func($destination_callback);
+    if ($destination) {
+      $query['destination'] = $destination;
     }
 
     $link = $this->oauth_client->getUrl($path, $query);

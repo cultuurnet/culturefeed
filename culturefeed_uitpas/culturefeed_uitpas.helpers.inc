@@ -79,3 +79,23 @@ function culturefeed_uitpas_get_uitpas_event($item) {
   return $event;
 
 }
+
+/**
+ * Get the name of the card system for display purposes.
+ *
+ * This is a legacy wrapper: cards in the HELA card system were called 'UiTPAS',
+ * so we need to display 'UiTPAS' for them instead of 'HELA'.
+ *
+ * @param CultureFeed_Uitpas_CardSystem $cardsystem
+ *   The card system
+ *
+ * @return string
+ *   The name of the card system
+ */
+function culturefeed_uitpas_cardsystem_name(CultureFeed_Uitpas_CardSystem $cardsystem) {
+  if ($cardsystem->name == 'HELA') {
+    return 'UiTPAS';
+  }
+
+  return $cardsystem->name;
+}
