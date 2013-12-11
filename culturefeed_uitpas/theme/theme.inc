@@ -78,96 +78,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
 
-  $advantages = $vars['advantages'];
-  $advantages_total = $vars['advantages_total'];
-  $advantages_pager_element = $vars['advantages_pager_element'];
-
-  $promotions = $vars['promotions'];
-  $promotions_total = $vars['promotions_total'];
-  $promotions_pager_element = $vars['promotions_pager_element'];
-
-  $base_table = array(
-    'attributes' => array(),
-    'caption' => '',
-    'colgroups' => array(),
-    'sticky' => '',
-    'empty' => '',
-  );
-  $base_pager = array('tags' => array(), 'parameters' => array());
-
   // Advantages.
-  $header = array(
-    array('data' => t('Welcome advantages'), 'colspan' => 2),
-    t('Valid till'),
-    t('Description'),
-    t('Counters'),
-  );
-  $rows = array();
-  if (count($advantages)) {
-
-    foreach ($advantages as $advantage) {
-
-      $counters = array();
-      foreach ($advantage->counters as $counter) {
-        $counters[] = $counter->name;
-      }
-
-      $rows[] = array(
-        l($advantage->title, 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
-        ($advantage->description1) ? $advantage->description1 : '',
-        implode(', ', $counters),
-        (isset($advantage->pictures[0])) ? theme_image(array('path' => $advantage->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
-      );
-
-    }
-
-  }
-  else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 2));
-  }
-  $table = $base_table + array('header' => $header, 'rows' => $rows);
-  $pager = $base_pager + array('element' => $advantages_pager_element, 'quantity' => $advantages_total);
-  $vars['advantages'] = theme_table($table) . theme_pager($pager);
+  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
 
   // Promotions.
-  $header = array(
-    array('data' => t('Promotions'), 'colspan' => 3),
-    t('Valid till'),
-    t('Description'),
-    t('Counters'),
-  );
-  $rows = array();
-  if (count($promotions)) {
-
-    foreach ($promotions as $promotion) {
-
-      $counters = array();
-      foreach ($promotion->counters as $counter) {
-        $counters[] = $counter->name;
-      }
-
-      $singular = '%points point';
-      $plural = '%points points';
-      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
-      $rows[] = array(
-        array('data' => $points, 'class' => array('uitpas_ui_points')),
-        l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
-        ($promotion->description1) ? $promotion->description1 : '',
-        implode(', ', $counters),
-        (isset($promotion->pictures[0])) ? theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=100&maxheight=100', 'attributes' => array())) : '',
-      );
-
-    }
-
-  }
-  else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 3));
-  }
-  $table = $base_table + array('header' => $header, 'rows' => $rows);
-  $pager = $base_pager + array('element' => $promotions_pager_element, 'quantity' => $promotions_total);
-  $vars['promotions'] = theme_table($table) . theme_pager($pager);
+  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_advantages_promotions_info');
@@ -183,15 +98,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   $actions_total = $vars['actions_total'];
   $actions_pager_element = $vars['actions_pager_element'];
 
-  $base_table = array(
+  $table = array(
     'attributes' => array(),
     'caption' => '',
     'colgroups' => array(),
     'sticky' => '',
     'empty' => '',
   );
-
-  $base_pager = array('tags' => array(), 'parameters' => array());
+  $pager = array('tags' => array(), 'parameters' => array());
 
   // Intro.
   $vars['intro'] = variable_get('culturefeed_uitpas_profile_actions_intro');
@@ -219,9 +133,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
     $rows[] = array(array('data' => t('No results found.'), 'colspan' => 4));
   }
 
-  $table = $base_table + array('header' => $header, 'rows' => $rows);
-  $pager = $base_pager + array('element' => $actions_pager_element, 'quantity' => $actions_total);
-  $vars['actions'] = theme_table($table) . theme_pager($pager);
+  $table += array('header' => $header, 'rows' => $rows);
+  $pager += array('element' => $actions_pager_element, 'quantity' => $actions_total);
+
+  $vars['actions_table'] = theme_table($table) . theme_pager($pager);
 
 }
 
@@ -462,7 +377,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     );
 
   }
-  $vars['advantages'] = theme_links($links);
+  $vars['advantages_links'] = theme_links($links);
 
   // Promotions.
   $vars['promotions_title'] = variable_get('culturefeed_uitpas_profile_summary_promotions_title', t('Your UiTPAS advantages'));
@@ -479,7 +394,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     );
 
   }
-  $vars['promotions'] = theme_links($links);
+  $vars['promotions_links'] = theme_links($links);
 
   // Upcoming promotions.
   $vars['upcoming_promotions_title'] = variable_get('culturefeed_uitpas_profile_summary_upcoming_promotions_title', t('Just a few points more for'));
@@ -496,7 +411,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
     );
 
   }
-  $vars['upcoming_promotions'] = (count($upcoming_promotions)) ? theme_links($links) : '';
+  $vars['upcoming_promotions_links'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
   // All promotions.
   $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
@@ -576,6 +491,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
 }
 
+
 /**
  * Implements hook_preprocess_culturefeed_uitpas_promotions_highlight().
  */
@@ -608,7 +524,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
     'empty' => '',
   );
 
-  $vars['promotions'] = theme_table($table);
+  $vars['promotions_table'] = theme_table($table);
   $more_text = variable_get('culturefeed_uitpas_promotions_highlight_more_link_text', t('Show all promotions'));
   $vars['more'] = l($more_text, 'advantages_promotions');
 
@@ -653,16 +569,198 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
 
   }
 
-  $vars['actions'] = theme_item_list($list);
+  $vars['actions_list'] = theme_item_list($list);
 
 }
 
 /**
- * Theme function.
+ * Returns HTML for UiTPAS advantages.
+ *
+ * @param array $vars
+ *   An associative array.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_uitpas_advantages(&$vars) {
+
+  // @codingStandardsIgnoreStart
+  /** @var CultureFeed_Uitpas_Passholder_WelcomeAdvantage[] $advantages */
+  // @codingStandardsIgnoreEnd
+  $advantages = $vars['advantages'];
+  $advantages_total = $vars['advantages_total'];
+  $advantages_pager_element = $vars['advantages_pager_element'];
+
+  $table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $pager = array('tags' => array(), 'parameters' => array());
+
+  $header = array(
+    t('Welcome advantages'),
+    t('Valid till'),
+    t('Description'),
+    t('Counters'),
+    '',
+  );
+  $rows = array();
+
+  if (count($advantages)) {
+
+    foreach ($advantages as $advantage) {
+
+      $advantage_path = 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id;
+
+      // Counters.
+      $counters = array();
+      foreach ($advantage->counters as $counter) {
+        $counters[] = $counter->name;
+      }
+
+      // Picture.
+      $picture = '';
+      if (isset($advantage->pictures[0])) {
+
+        $picture = theme('culturefeed_uitpas_promotion_image', array(
+          'path' => $advantage->pictures[0],
+          'maxwidth' => 100,
+          'maxheight' => 100,
+          'attributes' => array(),
+        ));
+        $picture = l($picture, $advantage_path, array('html' => TRUE));
+
+      }
+
+      // Rows.
+      $rows[] = array(
+        l($advantage->title, $advantage_path),
+        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
+        ($advantage->description1) ? $advantage->description1 : '',
+        implode(', ', $counters),
+        $picture,
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 5));
+  }
+
+  $table += array('header' => $header, 'rows' => $rows);
+  $pager += array('element' => $advantages_pager_element, 'quantity' => $advantages_total);
+
+  return theme_table($table) . theme_pager($pager);
+
+}
+
+/**
+ * Returns HTML for an UiTPAS promotion image.
+ *
+ * @param array $vars
+ *   An associative array.
+ *
+ * @return string
+ *   The HTML.
  */
 function theme_culturefeed_uitpas_promotion_image($vars) {
 
   $vars['path'] .= '?maxheight=' . $vars['maxheight'] . '&maxwidth=' . $vars['maxwidth'];
   return theme('image', $vars);
+
+}
+
+/**
+ * Returns HTML for UiTPAS promotions.
+ *
+ * @param array $vars
+ *   An associative array.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_uitpas_promotions(&$vars) {
+
+  // @codingStandardsIgnoreStart
+  /** @var CultureFeed_Uitpas_Passholder_PointsPromotion[] $promotions */
+  // @codingStandardsIgnoreEnd
+  $promotions = $vars['promotions'];
+  $promotions_total = $vars['promotions_total'];
+  $promotions_pager_element = $vars['promotions_pager_element'];
+
+  $table = array(
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+  $pager = array('tags' => array(), 'parameters' => array());
+
+  $header = array(
+    array('data' => t('Promotions'), 'colspan' => 2),
+    t('Valid till'),
+    t('Description'),
+    t('Counters'),
+    '',
+  );
+  $rows = array();
+
+  if (count($promotions)) {
+
+    foreach ($promotions as $promotion) {
+
+      $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
+
+      // Points
+      $singular = '%points point';
+      $plural = '%points points';
+      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
+
+      // Counters.
+      $counters = array();
+      foreach ($promotion->counters as $counter) {
+        $counters[] = $counter->name;
+      }
+
+      // Picture.
+      $picture = '';
+      if (isset($promotion->pictures[0])) {
+
+        $picture = theme('culturefeed_uitpas_promotion_image', array(
+          'path' => $promotion->pictures[0],
+          'maxwidth' => 100,
+          'maxheight' => 100,
+          'attributes' => array(),
+        ));
+        $picture = l($picture, $promotion_path, array('html' => TRUE));
+
+      }
+
+      // Rows.
+      $rows[] = array(
+        array('data' => $points, 'class' => array('points')),
+        l($promotion->title, $promotion_path),
+        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
+        ($promotion->description1) ? $promotion->description1 : '',
+        implode(', ', $counters),
+        $picture,
+      );
+
+    }
+
+  }
+  else {
+    $rows[] = array(array('data' => t('No results found'), 'colspan' => 6));
+  }
+
+  $table += array('header' => $header, 'rows' => $rows);
+  $pager += array('element' => $promotions_pager_element, 'quantity' => $promotions_total);
+
+  return theme_table($table) . theme_pager($pager);
 
 }

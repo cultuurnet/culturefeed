@@ -5,9 +5,9 @@
  * Default theme implementation to display culturefeed uitpas recent actions.
  *
  * Available variables:
- * - $actions: The list of actions.
+ * - $actions_list: The list of actions.
  */
 ?>
 <div class="recent-actions">
-  <div class="list"><?php print $actions; ?></div>
+  <div class="list"><?php print $actions_list; ?></div>
 </div>

@@ -36,7 +36,7 @@ function culturefeed_uitpas_advantages_promotions_get() {
       $query->applicableCardSystemId = $card_system_id;
     }
     $result = $cf->uitpas()->searchWelcomeAdvantages($query);
-    $advantages_page = pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
+    pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
     $advantages = $result->objects;
     $advantages_total = $result->total;
 
@@ -54,7 +54,7 @@ function culturefeed_uitpas_advantages_promotions_get() {
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
     $result = $cf->uitpas()->getPromotionPoints($query);
-    $promotions_page = pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
+    pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
     $promotions = $result->objects;
     $promotions_total = $result->total;
 

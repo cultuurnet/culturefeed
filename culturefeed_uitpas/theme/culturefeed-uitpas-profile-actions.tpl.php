@@ -6,7 +6,7 @@
  *
  * Available variables:
  * - $intro: Intro text.
- * - $actions: The list of actions.
+ * - $actions_table: The list of actions.
  */
 ?>
 <div class="profile_actions">
@@ -15,5 +15,5 @@
   <?php print $intro; ?>
   </div>
   <?php endif; ?>
-  <?php print $actions; ?>
+  <?php print $actions_table; ?>
 </div>
