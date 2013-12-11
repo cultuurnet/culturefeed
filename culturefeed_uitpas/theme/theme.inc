@@ -633,52 +633,46 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
     foreach ($vars['pos'] as $pos) {
 
-      $path = '';
-      $details = "<div class=\"pos_details\">";
-      $times = '-';
+      $address = array();
 
       if (isset($vars['actors'][$pos->id])) {
 
-        $actor = $vars['actors'][$pos->id];
-        $address = $actor['contactinfo']['address'];
-        $details .= "<div class=\"pos_address\">";
-        if (isset($address['street'])) {
-          $details .= $address['street'] . ' ' . $address['housenr'] . "<br />";
+        // @codingStandardsIgnoreStart
+        /** @var CultureFeed_Cdb_Item_Actor $actor */
+        // @codingStandardsIgnoreEnd
+        $actor = $vars['actors'][$pos->id]->getEntity();
+        $contact_info = $actor->getContactInfo();
+        // @codingStandardsIgnoreStart
+        /** @var CultureFeed_Cdb_Data_Address[] $addresses */
+        // @codingStandardsIgnoreEnd
+        $addresses = $contact_info->getAddresses();
+        if ($addresses[0]) {
+
+          if ($addresses[0]->getPhysicalAddress()->getZip()) {
+            $address[] = $addresses[0]->getPhysicalAddress()->getZip();
+          }
+          if ($addresses[0]->getPhysicalAddress()->getCity()) {
+            $address[] = $addresses[0]->getPhysicalAddress()->getCity();
+          }
         }
-        $details .= $address['zipcode'] . ' ' . $address['city'];
-        $details .= "</div>";
-        if (isset($actor['detail']['nl']['calendarsummary'])) {
-          $times = $actor['detail']['nl']['calendarsummary'];
-        }
-        $path = uitpas_ui_helpers_link_object('actor', $actor);
 
       }
 
-      elseif ($pos->street || $pos->city) {
+      elseif ($pos->city && !count($address)) {
 
-        $details .= "<div class=\"pos_address\">";
-        if ($pos->street) {
-          $details .= $pos->street . ' ' . $pos->number . "<br />";
+        if ($pos->postalCode) {
+          $address[] = $pos->postalCode;
         }
-        $details .= $pos->postalCode . ' ' .  $pos->city;
-        $details .= "</div>";
+        if ($pos->city) {
+          $address[] = $pos->city;
+        }
 
       }
 
-      // Description.
-      $title = ($path) ? l($pos->name, $path) : $pos->name;
-      $description = "<div class=\"pos_name\">" . $title . "</div>";
-      $description .= $details;
-      if ($path) {
-
-        $more = t('More info and contact information');
-        $link = l($more, $path);
-        $description .= "<div class=\"uitpas_pos_more\">" . $link . "</div>";
-
-      }
-      $description .= "</div>";
-
-      $table['rows'][] = array($description, $times);
+      $table['rows'][] = array(
+        l($pos->name, 'agenda/a/' . culturefeed_search_slug($pos->name) . '/' . $pos->id),
+        implode(' ', $address),
+      );
 
     }
 
@@ -694,9 +688,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
     'quantity' => $vars['pos_total'],
   );
 
-  $vars['pos'] = theme_table($table) . theme_pager($pager);
-  $vars['info'] = variable_get('culturefeed_uitpas_register_where_info');
-  dpm($vars);
+  $vars['intro'] = variable_get('culturefeed_uitpas_register_where_intro');
+  $vars['pos_table'] = theme_table($table) . theme_pager($pager);
+  $vars['outro'] = variable_get('culturefeed_uitpas_register_where_outro');
+
 }
 
 

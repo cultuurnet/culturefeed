@@ -5,11 +5,15 @@
  * Default theme implementation to display culturefeed uitpas register where.
  *
  * Available variables:
+ * - $intro: Intro.
+ * - $filters: Filter form.
  * - $pos: Points of sale.
- * - $info: Info.
+ * - $outro: Outro.
  */
 ?>
 <div class="register_where">
-  <div class="register_where_pos"><?php print $pos; ?></div>
-  <div class=register_where_info"><?php print $info; ?></div>
+  <div class="intro"><?php print $intro; ?></div>
+  <div class="filters"><?php print $filters; ?></div>
+  <div class="pos_table"><?php print $pos_table; ?></div>
+  <div class="outro"><?php print $outro; ?></div>
 </div>

@@ -40,7 +40,7 @@ function culturefeed_uitpas_get_uitpas_event($item) {
 }
 
 /**
- * Returns a Culturefeed uitpas event object.
+ * Returns a Culturefeed uitpas location.
  *
  * @return string
  *   An UiTPAS location.
@@ -48,7 +48,7 @@ function culturefeed_uitpas_get_uitpas_event($item) {
 function culturefeed_uitpas_get_uitpas_location() {
 
   $location = '';
-  $locations = variable_get('culturefeed_uitpas_locations');
+  $locations = variable_get('culturefeed_uitpas_locations', array());
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
@@ -67,7 +67,7 @@ function culturefeed_uitpas_get_uitpas_location() {
     $location = $_GET['uitpas_location'];
   }
 
-  if (!isset($locations[$location])) {
+  if (!in_array($location, $locations)) {
     $location = 'all';
   }
 

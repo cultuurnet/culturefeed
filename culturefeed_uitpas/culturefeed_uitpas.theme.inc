@@ -109,6 +109,7 @@ function culturefeed_uitpas_theme() {
         'pos' => array(),
         'pos_total' => 0,
         'pos_pager_element' => 0,
+        'filters' => array(),
         'actors' => array(),
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
