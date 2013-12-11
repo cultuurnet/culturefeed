@@ -89,7 +89,12 @@ function culturefeed_uitpas_register_where_settings_get(&$form) {
   $form['register_where']['culturefeed_uitpas_register_where_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_title', t('Register your UITPAS')),
+    '#default_value' => variable_get('culturefeed_uitpas_register_where_title', t('Register your UiTPAS')),
+  );
+  $form['register_where']['culturefeed_uitpas_register_where_filters_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Filters title'),
+    '#default_value' => variable_get('culturefeed_uitpas_register_where_filters_title', t('Registration counters')),
   );
   $form['register_where']['culturefeed_uitpas_register_where_intro'] = array(
     '#type' => 'textarea',
@@ -114,7 +119,7 @@ function culturefeed_uitpas_register_where_settings_get(&$form) {
  */
 function culturefeed_uitpas_register_where_title() {
 
-  return variable_get('culturefeed_uitpas_register_where_title', t('Register your UITPAS'));
+  return variable_get('culturefeed_uitpas_register_where_title', t('Register your UiTPAS'));
 
 }
 
@@ -127,6 +132,23 @@ function culturefeed_uitpas_register_where_filter_form($form, $form_state) {
   $location = culturefeed_uitpas_get_uitpas_location();
 
   $options = array('all' => t('All')) + drupal_map_assoc($locations);
+
+  $title = variable_get('culturefeed_uitpas_register_where_filters_title');
+  if ($title) {
+
+    $form['title'] = array(
+      '#type' => 'markup',
+      '#markup' => $title,
+    );
+
+  }
+
+  $form['location'] = array(
+    '#type' => 'select',
+    '#title' => t('City'),
+    '#options' => $options,
+    '#default_value' => $location,
+  );
 
   $form['location'] = array(
     '#type' => 'select',

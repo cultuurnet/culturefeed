@@ -67,8 +67,16 @@ function culturefeed_uitpas_variable_info() {
       'title' => t('Culturefeed uitpas: register where: title'),
       'localize' => TRUE,
     ),
-    'culturefeed_uitpas_register_where_info' => array(
-      'title' => t('Culturefeed uitpas: register where: info'),
+    'culturefeed_uitpas_register_where_filters_title' => array(
+      'title' => t('Culturefeed uitpas: register where: filters title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_intro' => array(
+      'title' => t('Culturefeed uitpas: register where: intro'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_outro' => array(
+      'title' => t('Culturefeed uitpas: register where: outro'),
       'localize' => TRUE,
     ),
     'culturefeed_uitpas_registration_confirmation_actions_label' => array(
