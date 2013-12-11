@@ -103,6 +103,7 @@ function culturefeed_uitpas_theme() {
     ),
     'culturefeed_uitpas_promotions' => array(
       'variables' => array(
+        'title' => t('Promotions'),
         'promotions' => array(),
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
