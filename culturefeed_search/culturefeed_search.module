@@ -5,7 +5,7 @@
  */
 
 // Default API location. Can be overriden in settings form.
-define('CULTUREFEED_SEARCH_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/searchv2/');
+define('CULTUREFEED_SEARCH_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
 // Default proximity search range.
