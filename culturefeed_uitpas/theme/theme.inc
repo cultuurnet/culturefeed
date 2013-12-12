@@ -117,13 +117,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 
     foreach ($actions as $action) {
 
-      $singular = '!points point';
-      $plural = '!points points';
+      $singular = '@count point';
+      $plural = '@count points';
       $rows[] = array(
         date('j/m/Y', $action->creationDate),
         $action->nodeTitle,
         $action->location,
-        format_plural($action->points, $singular, $plural, array('!points' => $action->points)),
+        format_plural($action->points, $singular, $plural),
       );
 
     }
@@ -238,8 +238,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   }
 
   $vars['name'] = l($uitpas_user->nick, 'user');
-  $singular = t('1 point saved');
-  $plural = t('%points points saved', array('%points' => $passholder->points));
+  $singular = '@count point saved';
+  $plural = '@count points saved';
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
 
   // Advantages.
@@ -311,9 +311,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
   // Points.
-  $singular = 'Needed points: !points point';
-  $plural = 'Needed points: !points points';
-  $vars['points'] = format_plural($promotion->points, $singular, $plural, array('!points' => $promotion->points));
+  $singular = 'Needed points: @count point';
+  $plural = 'Needed points: @count points';
+  $vars['points'] = format_plural($promotion->points, $singular, $plural);
 
   // Period.
   $vars['period'] = '';
@@ -381,11 +381,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 
   foreach ($promotions as $promotion) {
 
-    $singular = '%points point';
-    $plural = '%points points';
+    $singular = '@count point';
+    $plural = '@count points';
     $rows[] = array(
       array(
-        'data' => format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points)),
+        'data' => format_plural($promotion->points, $singular, $plural),
         'class' => array('points'),
       ),
       l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
@@ -431,14 +431,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
     // Args.
     $args = array(
       '!name' => ($action->nick) ? $action->nick : t('Anonymous'),
-      '!points' => $action->points,
       '!location' => $action->createdVia,
       '!time_ago' => format_interval(time() - $action->creationDate, 1),
       '!subject' => $subject,
     );
 
-    $singular = "<strong>!name</strong> saved 1 point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
-    $plural = "<strong>!name</strong> saved !points points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
+    $singular = "<strong>!name</strong> saved @count point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
+    $plural = "<strong>!name</strong> saved @count points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
     $image = ($action->depiction) ? $action->depiction . '?maxwidth=50&maxheight=50&crop=auto' : variable_get('culturefeed_uitpas_user_default_image');
     if ($image) {
       $image = theme_image(array('path' => $image, 'attributes' => array('class' => 'thumbnail')));
@@ -596,9 +595,9 @@ function theme_culturefeed_uitpas_promotions(&$vars) {
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
 
       // Points
-      $singular = '%points point';
-      $plural = '%points points';
-      $points = format_plural($promotion->points, $singular, $plural, array('%points' => $promotion->points));
+      $singular = '@count point';
+      $plural = '@count points';
+      $points = format_plural($promotion->points, $singular, $plural);
 
       // Counters.
       $counters = array();

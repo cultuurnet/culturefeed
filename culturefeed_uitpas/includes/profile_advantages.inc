@@ -91,7 +91,7 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query->max = $upcoming_promotions_max;
       $result = $uitpas_user->cf->uitpas()->getPromotionPoints($query);
       $upcoming_promotions = $result->objects;
-      $upcoming_promotions_page = pager_default_initialize($result->total, $upcoming_promotions_max, $upcoming_promotions_pager_element);
+      pager_default_initialize($result->total, $upcoming_promotions_max, $upcoming_promotions_pager_element);
       $upcoming_promotions_total = $result->total;
     }
     catch (Exception $e) {
@@ -99,8 +99,8 @@ function culturefeed_uitpas_profile_advantages_get() {
     }
 
     // Title.
-    $singular = t('My advantages (1 point saved)');
-    $plural = t('My advantages (!points points saved)', array('!points' => $uitpas_user->passholder->points));
+    $singular = 'My advantages (1 point saved)';
+    $plural = 'My advantages (@count points saved)';
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
   }
