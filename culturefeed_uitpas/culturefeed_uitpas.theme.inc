@@ -123,6 +123,18 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-recent-actions',
     ),
+    'culturefeed_uitpas_register_where' => array(
+      'variables' => array(
+        'pos' => array(),
+        'pos_total' => 0,
+        'pos_pager_element' => 0,
+        'filters' => array(),
+        'actors' => array(),
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-register-where',
+    ),
 
   );
 

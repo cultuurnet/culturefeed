@@ -58,4 +58,29 @@ class CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions extends Culture
    */
   public $max;
 
+  /**
+   * The card system id.
+   *
+   * @var integer
+   */
+  public $cardSystemId;
+
+  /**
+   * If TRUE, only search for visible counters
+   *
+   * @var boolean
+   */
+  public $visible;
+
+  protected function manipulatePostData(&$data) {
+
+    if (isset($data['pointOfSale'])) {
+      $data['pointOfSale'] = ($data['pointOfSale'] ? "true" : "false");
+    }
+    if (isset($data['visible'])) {
+      $data['visible'] = ($data['visible'] ? "true" : "false");
+    }
+
+  }
+
 }

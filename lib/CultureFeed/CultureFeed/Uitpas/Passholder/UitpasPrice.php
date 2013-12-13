@@ -42,6 +42,11 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
    */
   public $ageRange;
 
+  /**
+   * @var CultureFeed_Uitpas_CardSystem
+   */
+  public $cardSystem;
+
   public function __construct() {
     $this->ageRange = new CultureFeed_Uitpas_Passholder_AgeRange();
   }
@@ -80,6 +85,7 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
       }
     }
 
+    $price->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXML($object->xpath('cardSystem', FALSE));
 
     return $price;
   }

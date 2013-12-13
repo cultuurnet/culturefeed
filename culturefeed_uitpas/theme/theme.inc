@@ -410,6 +410,87 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 }
 
 /**
+ * Implements hook_preprocess_culturefeed_uitpas_register_where().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars) {
+
+  $table = array(
+    'header' => array(),
+    'rows' => array(),
+    'attributes' => array(),
+    'caption' => '',
+    'colgroups' => array(),
+    'sticky' => '',
+    'empty' => '',
+  );
+
+  if (count($vars['pos'])) {
+
+    foreach ($vars['pos'] as $pos) {
+
+      $address = array();
+
+      if (isset($vars['actors'][$pos->id])) {
+
+        // @codingStandardsIgnoreStart
+        /** @var CultureFeed_Cdb_Item_Actor $actor */
+        // @codingStandardsIgnoreEnd
+        $actor = $vars['actors'][$pos->id]->getEntity();
+        $contact_info = $actor->getContactInfo();
+        // @codingStandardsIgnoreStart
+        /** @var CultureFeed_Cdb_Data_Address[] $addresses */
+        // @codingStandardsIgnoreEnd
+        $addresses = $contact_info->getAddresses();
+        if ($addresses[0]) {
+
+          if ($addresses[0]->getPhysicalAddress()->getZip()) {
+            $address[] = $addresses[0]->getPhysicalAddress()->getZip();
+          }
+          if ($addresses[0]->getPhysicalAddress()->getCity()) {
+            $address[] = $addresses[0]->getPhysicalAddress()->getCity();
+          }
+        }
+
+      }
+
+      elseif ($pos->city && !count($address)) {
+
+        if ($pos->postalCode) {
+          $address[] = $pos->postalCode;
+        }
+        if ($pos->city) {
+          $address[] = $pos->city;
+        }
+
+      }
+
+      $table['rows'][] = array(
+        l($pos->name, 'agenda/a/' . culturefeed_search_slug($pos->name) . '/' . $pos->id),
+        implode(' ', $address),
+      );
+
+    }
+
+  }
+  else {
+    $table['rows'][] = array(array('data' => t('No results found.'), 'colspan' => 2));
+  }
+
+  $pager = array(
+    'tags' => array(),
+    'parameters' => array(),
+    'element' => $vars['pos_pager_element'],
+    'quantity' => $vars['pos_total'],
+  );
+
+  $vars['intro'] = variable_get('culturefeed_uitpas_register_where_intro');
+  $vars['pos_table'] = theme_table($table) . theme_pager($pager);
+  $vars['outro'] = variable_get('culturefeed_uitpas_register_where_outro');
+
+}
+
+
+/**
  * Implements hook_preprocess_culturefeed_uitpas_recent_actions().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars) {
@@ -594,7 +675,7 @@ function theme_culturefeed_uitpas_promotions(&$vars) {
 
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
 
-      // Points
+      // Points.
       $singular = '@count point';
       $plural = '@count points';
       $points = format_plural($promotion->points, $singular, $plural);

@@ -12,6 +12,8 @@ interface CultureFeed_Uitpas {
    * Get the associations.
    *
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getAssociations($consumer_key_counter = NULL);
 
@@ -86,6 +88,8 @@ interface CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
    * @param string $method The request method
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
@@ -177,14 +181,12 @@ interface CultureFeed_Uitpas {
   public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
-   * Get a passholder based on the UitPas chip number.
+   * Get info regarding a UiTPAS card based on chipNumber of uitpasNumber.
    *
-   * @param string $chip_number The chipnumber of the UitPas
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
-   *
-   * @return CultureFeed_Uitpas_Passholder
+   * @param CultureFeed_Uitpas_CardInfoQuery $card_query
+   * @return CultureFeed_Uitpas_CardInfo
    */
-  public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
+  public function getCard(CultureFeed_Uitpas_CardInfoQuery $card_query);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet.
@@ -255,7 +257,9 @@ interface CultureFeed_Uitpas {
   /**
    * Search for Uitpas events
    *
-   * @param CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query The query
+   * @param CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query);
 
@@ -287,6 +291,8 @@ interface CultureFeed_Uitpas {
    * Search for counters for a given member
    *
    * @param string $uid The Culturefeed user ID
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchCountersForMember($uid);
 

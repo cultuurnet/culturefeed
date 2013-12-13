@@ -57,6 +57,11 @@ class CultureFeed_Uitpas_Counter_Query_SearchCounterOptions extends CultureFeed_
    * @var integer
    */
   public $max;
+
+  /**
+   * @var integer
+   */
+  public $cardSystemId;
   
   protected function manipulatePostData(&$data) {
     if (isset($data['school'])) {

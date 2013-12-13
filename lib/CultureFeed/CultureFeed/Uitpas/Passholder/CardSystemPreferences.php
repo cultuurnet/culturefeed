@@ -38,6 +38,28 @@ class CultureFeed_Uitpas_Passholder_CardSystemPreferences extends CultureFeed_Ui
    */
   public $smsPreference;
 
+  /**
+   * End date kansenstatuut.
+   *
+   * @var integer
+   */
+  public $kansenStatuutEndDate;
+
+  /**
+   * The consumer key of the counter from where the request originates
+   *
+   * @var string
+   */
+  public $balieConsumerKey;
+
+  protected function manipulatePostData(&$data) {
+
+    if (isset($data['kansenStatuutEndDate'])) {
+      $data['kansenStatuutEndDate'] = date('Y-m-d', $data['kansenStatuutEndDate']);
+    }
+
+  }
+
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
 
     $cardsystemPreferences = new CultureFeed_Uitpas_Passholder_CardSystemPreferences();
@@ -45,6 +67,7 @@ class CultureFeed_Uitpas_Passholder_CardSystemPreferences extends CultureFeed_Ui
     $cardsystemPreferences->cardSystemId = $object->xpath_int('cardSystemId');
     $cardsystemPreferences->emailPreference = $object->xpath_str('emailPreference');
     $cardsystemPreferences->smsPreference = $object->xpath_str('smsPreference');
+    $cardsystemPreferences->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
 
     return $cardsystemPreferences;
   }

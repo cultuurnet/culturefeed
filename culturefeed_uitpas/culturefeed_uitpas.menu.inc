@@ -64,6 +64,12 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('access content'),
       'file' => 'includes/promotion_details.inc',
     ),
+    'register_where' => array(
+      'title callback' => 'culturefeed_uitpas_register_where_title',
+      'page callback' => 'culturefeed_uitpas_register_where_get',
+      'file' => 'includes/register_where.inc',
+      'access callback' => TRUE,
+    ),
     'registration_confirmation' => array(
       'title callback' => 'culturefeed_uitpas_registration_confirmation_title',
       'page callback' => 'culturefeed_uitpas_registration_confirmation_get',

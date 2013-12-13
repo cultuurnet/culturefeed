@@ -16,12 +16,25 @@ class CultureFeed_Uitpas_Association {
    */
   public $name;
 
-  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
-    $distribution_key = new CultureFeed_Uitpas_Association();
-    $distribution_key->id = $object->xpath_int('id');
-    $distribution_key->name = $object->xpath_str('name');
+  /**
+   * Card system the association belongs to.
+   *
+   * @var CultureFeed_Uitpas_CardSystem
+   */
+  public $cardSystem;
 
-    return $distribution_key;
+  /**
+   * @param CultureFeed_SimpleXMLElement $object
+   *
+   * @return static
+   */
+  public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+    $instance = new static();
+    $instance->id = $object->xpath_int('id');
+    $instance->name = $object->xpath_str('name');
+    $instance->cardSystem = CultureFeed_Uitpas_CardSystem::createFromXML($object->xpath('cardSystem', FALSE));
+
+    return $instance;
   }
 
 }

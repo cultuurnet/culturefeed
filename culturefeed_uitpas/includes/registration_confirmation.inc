@@ -97,6 +97,7 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
     '#type' => 'fieldset',
     '#title' => t('UiTPAS registration confirmation settings'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_title'] = array(
     '#type' => 'textfield',
