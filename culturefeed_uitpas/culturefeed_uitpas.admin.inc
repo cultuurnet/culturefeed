@@ -26,11 +26,20 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
+  $locations = variable_get('culturefeed_uitpas_locations');
+  if (!$locations) {
+    $locations = array();
+  }
+  /*if (!is_array($locations)) {
+    $locations = array($locations);
+  }*/
+
   $form['locations']['culturefeed_uitpas_locations'] = array(
     '#type' => 'textarea',
     '#title' => t('Locations'),
     '#value_callback' => 'culturefeed_uitpas_locations_value_callback',
-    '#default_value' => implode("\r\n", variable_get('culturefeed_uitpas_locations', array())),
+    '#default_value' => implode("\r\n", $locations),
   );
 
   // Profile actions.

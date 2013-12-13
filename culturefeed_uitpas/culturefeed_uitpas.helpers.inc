@@ -49,6 +49,9 @@ function culturefeed_uitpas_get_uitpas_location() {
 
   $location = '';
   $locations = variable_get('culturefeed_uitpas_locations', array());
+  if (!$locations) {
+    $locations = array();
+  }
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
