@@ -33,8 +33,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-12-13 09:35+0100\n"
-"PO-Revision-Date: 2013-12-13 09:39+0100\n"
+"POT-Creation-Date: 2013-12-13 10:13+0100\n"
+"PO-Revision-Date: 2013-12-13 10:14+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -607,6 +607,18 @@ msgstr "Kansentarief"
 msgid "!points points"
 msgstr "!points punten"
 
+#: theme/theme.inc:314;315
+msgid "Needed points"
+msgstr "Waarde"
+
+#: theme/theme.inc:314;439
+msgid "point"
+msgstr "punt"
+
+#: theme/theme.inc:315;440
+msgid "points"
+msgstr "punten"
+
 #: theme/theme.inc:433
 msgid "Anonymous"
 msgstr "Anoniem"
@@ -615,10 +627,6 @@ msgstr "Anoniem"
 msgid "saved"
 msgstr "spaarde"
 
-#: theme/theme.inc:439
-msgid "point"
-msgstr "punt"
-
 #: theme/theme.inc:439;440
 msgid "at"
 msgstr "bij"
@@ -626,10 +634,6 @@ msgstr "bij"
 #: theme/theme.inc:439;440
 msgid "ago"
 msgstr "geleden"
-
-#: theme/theme.inc:440
-msgid "points"
-msgstr "punten"
 
 #: theme/theme.inc:482
 msgid "Welcome advantages"
