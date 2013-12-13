@@ -33,8 +33,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-12-06 14:27+0100\n"
-"PO-Revision-Date: 2013-12-06 16:14+0100\n"
+"POT-Creation-Date: 2013-12-13 09:35+0100\n"
+"PO-Revision-Date: 2013-12-13 09:39+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -120,12 +120,16 @@ msgstr "Gebruikersgeschiedenis"
 msgid "My notifications"
 msgstr "Mijn meldingen"
 
-#: culturefeed_uitpas.theme.inc:130
-msgid "Opportunities tariff with !system: !tariff"
-msgstr "Kansentarief voor !system: !tariff"
+#: culturefeed_uitpas.theme.inc:106
+msgid "Promotions"
+msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:134
-msgid "Opportunities tariff for pass holders uit other region: !tariff"
+#: culturefeed_uitpas.theme.inc:149
+msgid "Opportunities tariff with @system: !tariff"
+msgstr "Kansentarief voor @system: !tariff"
+
+#: culturefeed_uitpas.theme.inc:153
+msgid "Opportunities tariff for pass holders from another region: !tariff"
 msgstr ""
 "Kansentarief voor UiTPAS gebruikers uit een andere stad of gemeente: !tariff"
 
@@ -272,14 +276,6 @@ msgstr "Inleiding"
 msgid "Number of actions to display"
 msgstr "Aantal weer te geven acties"
 
-#: includes/profile_advantages.inc:102
-msgid "My advantages (1 point saved)"
-msgstr "Mijn voordelen (1 punt)"
-
-#: includes/profile_advantages.inc:103
-msgid "My advantages (!points points saved)"
-msgstr "Mijn voordelen (!points punten)"
-
 #: includes/profile_advantages.inc:130
 msgid "UiTPAS profile advantages settings"
 msgstr "UiTPAS voordeelinstellingen"
@@ -366,7 +362,7 @@ msgstr "UiTPAS meldinginstellingen"
 msgid "Title for the promotions"
 msgstr "Voordelen"
 
-#: includes/profile_summary.inc:114 theme/theme.inc:468
+#: includes/profile_summary.inc:114 theme/theme.inc:262
 msgid "Your UiTPAS advantages"
 msgstr "Jouw UiTPAS voordelen"
 
@@ -374,7 +370,7 @@ msgstr "Jouw UiTPAS voordelen"
 msgid "Title for the upcoming promotions"
 msgstr "Wordt verwacht"
 
-#: includes/profile_summary.inc:119 theme/theme.inc:485
+#: includes/profile_summary.inc:119 theme/theme.inc:279
 msgid "Just a few points more for"
 msgstr "Nog enkele punten sparen ..."
 
@@ -382,11 +378,11 @@ msgstr "Nog enkele punten sparen ..."
 msgid "More link text"
 msgstr "Meer informatie"
 
-#: includes/profile_summary.inc:124 theme/theme.inc:502
+#: includes/profile_summary.inc:124 theme/theme.inc:296
 msgid "Show all my promotions"
 msgstr "Toon al mijn UiTPAS voordelen"
 
-#: includes/promotions_highlight.inc:63 theme/theme.inc:612
+#: includes/promotions_highlight.inc:63 theme/theme.inc:407
 msgid "Show all promotions"
 msgstr "Toon alle UiTPAS voordelen"
 
@@ -428,7 +424,7 @@ msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."
 msgid "UiTPAS number"
 msgstr "UiTPAS nummer"
 
-#: includes/user_register.inc:40 theme/theme.inc:396
+#: includes/user_register.inc:40 theme/theme.inc:184
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
@@ -487,181 +483,177 @@ msgstr "UiTPAS registreren"
 msgid "Apply text"
 msgstr "Meld je aan"
 
-#: theme/theme.inc:25;528
+#: theme/theme.inc:25;322
 msgid "From !date"
 msgstr "Van !date"
 
-#: theme/theme.inc:27;530
+#: theme/theme.inc:27;324
 msgid "to !date"
 msgstr "tot !date"
 
-#: theme/theme.inc:38;541
+#: theme/theme.inc:38;335
 msgid "At"
 msgstr "Bij"
 
-#: theme/theme.inc:43;546
-msgid "Provided by !provider"
-msgstr "Aangeboden door !provider"
+#: theme/theme.inc:43;340
+msgid "Provided by @provider"
+msgstr "Aangeboden door @provider"
 
-#: theme/theme.inc:53;556
+#: theme/theme.inc:53;350
 msgid "Only available for"
 msgstr "Enkel geldig voor"
 
-#: theme/theme.inc:100
-msgid "Welcome advantages"
-msgstr "Welkomstvoordelen"
-
-#: theme/theme.inc:101;136;260;302;345
-msgid "Valid till"
-msgstr "Geldig tot"
-
-#: theme/theme.inc:102;137;261;303;346
-msgid "Description"
-msgstr "Beschrijving"
-
-#: theme/theme.inc:103;138
-msgid "Counters"
-msgstr "Inruilen bij"
-
-#: theme/theme.inc:117;156;284;326;365
-msgid "end of stock"
-msgstr "Zolang voorraad strekt"
-
-#: theme/theme.inc:127;166
-msgid "No results found"
-msgstr "Geen resultaten gevonden"
-
-#: theme/theme.inc:135
-msgid "Promotions"
-msgstr "Voordelen"
-
-#: theme/theme.inc:200
+#: theme/theme.inc:114
 msgid "Date"
 msgstr "Datum"
 
-#: theme/theme.inc:200
+#: theme/theme.inc:114
 msgid "Activity name"
 msgstr "Activiteit"
 
-#: theme/theme.inc:200
+#: theme/theme.inc:114
 msgid "Location"
 msgstr "Locatie"
 
-#: theme/theme.inc:200 views/culturefeed_uitpas.views.inc:68
+#: theme/theme.inc:114 views/culturefeed_uitpas.views.inc:68
 msgid "Points"
 msgstr "Punten"
 
-#: theme/theme.inc:219;292;334;373
+#: theme/theme.inc:133
 msgid "No results found."
 msgstr "Geen resultaten gevonden."
 
-#: theme/theme.inc:259
-msgid "Trade-in options"
-msgstr "Ruilopties"
+#: theme/theme.inc:153
+msgid "Upcoming promotions"
+msgstr "Weldra beschikbare voordelen"
 
-#: theme/theme.inc:268;310
-msgid "1 point"
-msgstr "1 punt"
-
-#: theme/theme.inc:269;311;477;494
-msgid "!points points"
-msgstr "!points punten"
-
-#: theme/theme.inc:301
-msgid "Coming trade-in options"
-msgstr "Wordt verwacht"
-
-#: theme/theme.inc:344
-msgid "Advantages"
-msgstr "Voordelen"
-
-#: theme/theme.inc:392
+#: theme/theme.inc:180
 msgid "UITpas number"
 msgstr "UiTPAS nummer"
 
-#: theme/theme.inc:394
+#: theme/theme.inc:182
 msgid "First name"
 msgstr "Voornaam"
 
-#: theme/theme.inc:395
+#: theme/theme.inc:183
 msgid "Name"
 msgstr "Naam"
 
-#: theme/theme.inc:397
+#: theme/theme.inc:185
 msgid "Place of birth"
 msgstr "Geboorteplaats"
 
-#: theme/theme.inc:398
+#: theme/theme.inc:186
 msgid "Gender"
 msgstr "Geslacht"
 
-#: theme/theme.inc:398
+#: theme/theme.inc:186
 msgid "Male"
 msgstr "Man"
 
-#: theme/theme.inc:398
+#: theme/theme.inc:186
 msgid "Female"
 msgstr "Vrouw"
 
-#: theme/theme.inc:399
+#: theme/theme.inc:187
 msgid "Nationality"
 msgstr "Nationaliteit"
 
-#: theme/theme.inc:400
+#: theme/theme.inc:188
 msgid "Street"
 msgstr "Straat"
 
-#: theme/theme.inc:401
+#: theme/theme.inc:189
 msgid "Nr"
 msgstr "Nummer"
 
-#: theme/theme.inc:402
+#: theme/theme.inc:190
 msgid "Bus"
 msgstr "Bus"
 
-#: theme/theme.inc:403
+#: theme/theme.inc:191
 msgid "Zip"
 msgstr "Postcode"
 
-#: theme/theme.inc:404
+#: theme/theme.inc:192
 msgid "City"
 msgstr "Stad of gemeente"
 
-#: theme/theme.inc:405
+#: theme/theme.inc:193
 msgid "Telephone"
 msgstr "Telefoon"
 
-#: theme/theme.inc:406
+#: theme/theme.inc:194
 msgid "Mobile"
 msgstr "Mobiel"
 
-#: theme/theme.inc:407
+#: theme/theme.inc:195
 msgid "Email"
 msgstr "E-mail"
 
-#: theme/theme.inc:408
+#: theme/theme.inc:196
 msgid "Status"
 msgstr "Status"
 
-#: theme/theme.inc:411;416
+#: theme/theme.inc:199;207
 msgid "valid till !date"
 msgstr "Geldig tot !date"
 
-#: theme/theme.inc:412
+#: theme/theme.inc:200
 msgid "Opportunity status"
 msgstr "Kansentarief"
 
-#: theme/theme.inc:447
-msgid "1 point saved"
-msgstr "1 punt gespaard"
+#: theme/theme.inc:271;288
+msgid "!points points"
+msgstr "!points punten"
 
-#: theme/theme.inc:448
-msgid "%points points saved"
-msgstr "%points punten gespaard"
-
-#: theme/theme.inc:638
+#: theme/theme.inc:433
 msgid "Anonymous"
 msgstr "Anoniem"
+
+#: theme/theme.inc:439;440
+msgid "saved"
+msgstr "spaarde"
+
+#: theme/theme.inc:439
+msgid "point"
+msgstr "punt"
+
+#: theme/theme.inc:439;440
+msgid "at"
+msgstr "bij"
+
+#: theme/theme.inc:439;440
+msgid "ago"
+msgstr "geleden"
+
+#: theme/theme.inc:440
+msgid "points"
+msgstr "punten"
+
+#: theme/theme.inc:482
+msgid "Welcome advantages"
+msgstr "Welkomstvoordelen"
+
+#: theme/theme.inc:483;584
+msgid "Valid till"
+msgstr "Geldig tot"
+
+#: theme/theme.inc:484;585
+msgid "Description"
+msgstr "Beschrijving"
+
+#: theme/theme.inc:485;586
+msgid "Counters"
+msgstr "Omruilen bij"
+
+#: theme/theme.inc:519;626
+msgid "end of stock"
+msgstr "Zolang voorraad strekt"
+
+#: theme/theme.inc:529;636
+msgid "No results found"
+msgstr "Geen resultaten gevonden"
 
 #: views/culturefeed_uitpas.views.inc:19
 msgid "Culturefeed UiTPAS promotions query"
@@ -693,15 +685,15 @@ msgstr "Voordeel titel"
 
 #: views/culturefeed_uitpas.views.inc:69
 msgid "The points necessary to make use of the promotion."
-msgstr "Inruilwaarde."
+msgstr "Omruilwaarde."
 
 #: views/culturefeed_uitpas.views.inc:80
 msgid "Cashin state"
-msgstr "Inruilstatus"
+msgstr "Omruilstatus"
 
 #: views/culturefeed_uitpas.views.inc:81
 msgid "The cashin state of the promotion."
-msgstr "Inruilstatus voordeel"
+msgstr "Omruilstatus voordeel"
 
 #: views/culturefeed_uitpas.views.inc:89;93
 msgid "Unexpired"
@@ -737,19 +729,19 @@ msgstr "Voordeel geldig voor [kaartsysteem]"
 
 #: views/culturefeed_uitpas.views.inc:125
 msgid "Cashing period begin"
-msgstr "Inruilen mogelijk vanaf"
+msgstr "Omruilen mogelijk vanaf"
 
 #: views/culturefeed_uitpas.views.inc:126
 msgid "The start of the promotion's cashing period."
-msgstr "Inruilen mogelijk vanaf"
+msgstr "Omruilen mogelijk vanaf"
 
 #: views/culturefeed_uitpas.views.inc:138
 msgid "Cashing period end"
-msgstr "Inruilen mogelijk tot"
+msgstr "Omruilen mogelijk tot"
 
 #: views/culturefeed_uitpas.views.inc:139
 msgid "The end of the promotion's cashing period."
-msgstr "Inruilen mogelijk tot"
+msgstr "Omruilen mogelijk tot"
 
 #: views/culturefeed_uitpas.views.inc:151
 msgid "Creation date"
