@@ -238,8 +238,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   }
 
   $vars['name'] = l($uitpas_user->nick, 'user');
-  $singular = '@count point saved';
-  $plural = '@count points saved';
+  $singular = '@count ' . t('point');
+  $plural = '@count ' . t('points');
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
 
   // Advantages.
