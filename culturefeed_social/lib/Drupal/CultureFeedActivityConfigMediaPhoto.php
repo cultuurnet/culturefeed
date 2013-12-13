@@ -22,6 +22,7 @@ class CultureFeedActivityMediaPhoto extends CultureFeedActivityConfigBase {
     $this->titleDo = t('Add a picture');
     $this->titleDoFirst = t('Add a picture');
     $this->action = t('picture');
+    $this->label = t('Picture added');
   }
 
 }
