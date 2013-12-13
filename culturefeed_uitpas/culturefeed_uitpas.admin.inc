@@ -31,9 +31,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   if (!$locations) {
     $locations = array();
   }
-  /*if (!is_array($locations)) {
-    $locations = array($locations);
-  }*/
 
   $form['locations']['culturefeed_uitpas_locations'] = array(
     '#type' => 'textarea',
