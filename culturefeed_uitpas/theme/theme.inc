@@ -231,7 +231,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $upcoming_promotions = $vars['upcoming_promotions'];
 
   if (isset($uitpas_user->depiction)) {
-    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction . '?maxwidth=50&amp;maxheight=50&amp;crop=auto', 'attributes' => array()));
   }
   else {
     $vars['image'] = '';
