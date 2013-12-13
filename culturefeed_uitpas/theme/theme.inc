@@ -231,15 +231,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $upcoming_promotions = $vars['upcoming_promotions'];
 
   if (isset($uitpas_user->depiction)) {
-    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction, 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $uitpas_user->depiction . '?maxwidth=50&amp;maxheight=50&amp;crop=auto', 'attributes' => array()));
   }
   else {
     $vars['image'] = '';
   }
 
   $vars['name'] = l($uitpas_user->nick, 'user');
-  $singular = '@count point saved';
-  $plural = '@count points saved';
+  $singular = '@count ' . t('point');
+  $plural = '@count ' . t('points');
   $vars['points'] = format_plural($passholder->points, $singular, $plural);
 
   // Advantages.
@@ -311,8 +311,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
   // Points.
-  $singular = 'Needed points: @count point';
-  $plural = 'Needed points: @count points';
+  $singular = t('Needed points') . ': @count ' . t('point');
+  $plural = t('Needed points') . ': @count ' . t('points');
   $vars['points'] = format_plural($promotion->points, $singular, $plural);
 
   // Period.
@@ -517,8 +517,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
       '!subject' => $subject,
     );
 
-    $singular = "<strong>!name</strong> saved @count point at !subject, <span class=\"time-ago\">!time_ago ago</span>";
-    $plural = "<strong>!name</strong> saved @count points at !subject, <span class=\"time-ago\">!time_ago ago</span>";
+    $singular = "<strong>!name</strong> " .  t('saved') . " @count " . t('point') . " " . t('at') . " !subject, <span class=\"time-ago\"> !time_ago " .  t('ago') . "</span>";
+    $plural = "<strong>!name</strong> " .  t('saved') . " @count " . t('points') . " " . t('at') . " !subject, <span class=\"time-ago\"> !time_ago " .  t('ago') . "</span>";
     $image = ($action->depiction) ? $action->depiction . '?maxwidth=50&maxheight=50&crop=auto' : variable_get('culturefeed_uitpas_user_default_image');
     if ($image) {
       $image = theme_image(array('path' => $image, 'attributes' => array('class' => 'thumbnail')));
