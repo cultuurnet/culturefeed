@@ -63,6 +63,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchPointsOfSaleOpt
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter/Query/SearchCounterOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Counter.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/DistributionKey/Condition.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Error.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Promotion/Query/WelcomeAdvantagesOptions.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/PassholderException.php
