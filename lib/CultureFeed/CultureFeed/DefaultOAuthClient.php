@@ -356,6 +356,8 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
           $e = new CultureFeed_Exception($exception_message, $code);
         }
 
+        $e->setUserFriendlyMessage($message);
+
         throw $e;
       }
       throw new CultureFeed_HttpException($response->response . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data . ' HTTP HEADERS: ' . implode(',' , $http_headers), $response->code);
