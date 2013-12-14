@@ -47,6 +47,14 @@ function culturefeed_uitpas_variable_info() {
       'title' => t('Culturefeed uitpas: profile details: menu: notifications description'),
       'localize' => TRUE,
     ),
+    'culturefeed_uitpas_profile_details_title' => array(
+      'title' => t('Culturefeed uitpas: profile details: title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_profile_details_uitpas_number' => array(
+      'title' => t('Culturefeed uitpas: profile details: uitpas number'),
+      'localize' => TRUE,
+    ),
     'culturefeed_uitpas_profile_details_intro' => array(
       'title' => t('Culturefeed uitpas: profile details: intro'),
       'localize' => TRUE,

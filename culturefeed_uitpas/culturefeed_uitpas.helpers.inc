@@ -149,6 +149,7 @@ function culturefeed_uitpas_get_uitpas_user() {
  * Check if the current user is a UiTPAS passholder.
  *
  * @return bool
+ *   Boolean.
  */
 function culturefeed_uitpas_is_passholder() {
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();

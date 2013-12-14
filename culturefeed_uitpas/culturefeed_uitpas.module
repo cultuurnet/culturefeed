@@ -40,3 +40,18 @@ function culturefeed_uitpas_views_api() {
     'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/views',
   );
 }
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function culturefeed_uitpas_module_implements_alter(&$implementations, $hook) {
+
+  if ($hook == 'user_view') {
+
+    $group = $implementations['culturefeed_uitpas'];
+    unset($implementations['culturefeed_uitpas']);
+    $implementations['culturefeed_uitpas'] = $group;
+
+  }
+
+}

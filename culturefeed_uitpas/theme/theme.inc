@@ -177,13 +177,28 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $card_system = $uitpas_user->card_system;
 
   // Details.
-  $vars['uitpas_number'] = isset($card_system) ? '<label>' . t('UITpas number') . ':</label> ' . $card_system->currentCard->uitpasNumber : NULL;
+  $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
+  $uitpas_numbers = array(
+    'items' => array(),
+    'type' => 'ul',
+    'attributes' => array(),
+    'title' => '',
+  );
+  foreach ($passholder->cardSystemSpecific as $card_system_specific) {
+
+    if ($card_system_specific->currentCard->uitpasNumber) {
+      $uitpas_numbers['items'][] = $card_system_specific->currentCard->uitpasNumber . ' (' . $card_system_specific->cardSystem->name . ')';
+    }
+
+  }
+  $vars['uitpas_numbers'] = '<label>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</label> ' . theme_item_list($uitpas_numbers);
   $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
   $vars['first_name'] = '<label>' . t('First name') . ':</label> ' . $passholder->firstName;
   $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
   $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
   $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
-  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . ($passholder->gender == 'MALE') ? t('Male') : t('Female');
+  $gender = ($passholder->gender == 'MALE') ? t('Male') : t('Female');
+  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . $gender;
   $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
   $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
   $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
@@ -193,11 +208,16 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['tel'] = '<label>' . t('Telephone') . ':</label> ' . $passholder->telephone;
   $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
   $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
-  $vars['status_title'] = t('Status');
-  $vars['kansen_statuut'] = $card_system->kansenStatuut;
-  $vars['kansen_statuut_valid_end_date'] = (time() < $card_system->kansenStatuutEndDate);
-  $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $card_system->kansenStatuutEndDate)));
-  $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
+
+  if ($card_system) {
+
+    $vars['status_title'] = t('Status');
+    $vars['kansen_statuut'] = $card_system->kansenStatuut;
+    $vars['kansen_statuut_valid_end_date'] = (time() < $card_system->kansenStatuutEndDate);
+    $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $card_system->kansenStatuutEndDate)));
+    $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
+
+  }
 
   if (count($passholder->memberships)) {
 
