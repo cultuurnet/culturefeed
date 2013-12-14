@@ -104,27 +104,32 @@ function culturefeed_uitpas_get_uitpas_location() {
  * Returns a culterfeed uitpas user object.
  */
 function culturefeed_uitpas_get_uitpas_user() {
+  $uitpas_user = &drupal_static(__FUNCTION__);
 
-  $uitpas_user = new stdClass();
-  $uitpas_user->user = NULL;
-  $uitpas_user->passholder = NULL;
-  $uitpas_user->card_system = NULL;
+  if (!$uitpas_user) {
 
-  try {
+    $uitpas_user = new stdClass();
+    $uitpas_user->user = NULL;
+    $uitpas_user->passholder = NULL;
+    $uitpas_user->card_system = NULL;
 
-    if (DrupalCultureFeed::isCultureFeedUser()) {
+    try {
 
-      $uitpas_user->user = DrupalCultureFeed::getLoggedInUser();
-      $uitpas_user->cf = DrupalCultureFeed::getLoggedInUserInstance();
+      if (DrupalCultureFeed::isCultureFeedUser()) {
 
-      if ($uitpas_user->user) {
+        $uitpas_user->user = DrupalCultureFeed::getLoggedInUser();
+        $uitpas_user->cf = DrupalCultureFeed::getLoggedInUserInstance();
 
-        $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
-        if ($uitpas_user->passholder) {
+        if ($uitpas_user->user) {
 
-          $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-          if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
-            $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
+          $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
+          if ($uitpas_user->passholder) {
+
+            $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+            if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
+              $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
+            }
+
           }
 
         }
@@ -132,11 +137,21 @@ function culturefeed_uitpas_get_uitpas_user() {
       }
 
     }
-
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_uitpas_get_uitpas_user', $e);
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_uitpas_get_uitpas_user', $e);
+    }
   }
 
   return $uitpas_user;
+}
+
+/**
+ * Check if the current user is a UiTPAS passholder.
+ *
+ * @return bool
+ */
+function culturefeed_uitpas_is_passholder() {
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+
+  return NULL !== $uitpas_user->passholder;
 }
