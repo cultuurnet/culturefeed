@@ -346,7 +346,17 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
 
       if ($code = $xml->xpath_str('/response/code')) {
         $message = $xml->xpath_str('/response/message');
-        throw new CultureFeed_Exception($message . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data, $code);
+        $exception_message = $message . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data;
+
+        if ($code == CultureFeed_HttpResponse::ERROR_CODE_ACCESS_DENIED) {
+          $e = new CultureFeed_AccessDeniedException($exception_message, $code);
+          $e->requiredPermission = $xml->xpath_str('/response/requiredPermission');
+        }
+        else {
+          $e = new CultureFeed_Exception($exception_message, $code);
+        }
+
+        throw $e;
       }
       throw new CultureFeed_HttpException($response->response . ' URL CALLED: ' . $url . ' POST DATA: ' . $post_data . ' HTTP HEADERS: ' . implode(',' , $http_headers), $response->code);
     }
