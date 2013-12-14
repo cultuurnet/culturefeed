@@ -17,6 +17,8 @@ class CultureFeed_Uitpas_Permission
    */
   const PASSHOLDER_OTHER_CITY_ACTION_CREATE = 'PERMISSION_PASSHOLDER_OTHER_CITY - ACTION_CREATE';
 
+  const PASSHOLDER_ACTION_UPDATE = 'PERMISSION_PASSHOLDER - ACTION_UPDATE';
+
   private function __construct() {}
 
   /**
@@ -25,8 +27,12 @@ class CultureFeed_Uitpas_Permission
    * @param string $path
    *   The path on the API, relative to the UiTPAS subsystem. For example: 'passholder/register'.
    *   Ensure you do not include the 'uitpas' prefix.
+   * @param string $method
+   *  The HTTP method, default 'POST'.
+   *
+   * @return array
    */
-  public static function allRelevantFor($path) {
+  public static function allRelevantFor($path, $method = "POST") {
     $permissions = array();
 
     switch ($path) {
@@ -34,6 +40,9 @@ class CultureFeed_Uitpas_Permission
         $permissions[] = self::PASSHOLDER_OTHER_CITY_ACTION_CREATE;
         break;
 
+      case 'passholder/{uitpasNumber}':
+        $permissions[] = self::PASSHOLDER_ACTION_UPDATE;
+        break;
     }
 
     return $permissions;
