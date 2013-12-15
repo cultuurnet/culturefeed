@@ -85,6 +85,13 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/activate.inc',
       'type' => MENU_CALLBACK,
     ),
+    'register_uitpas' => array(
+      'title callback' => 'culturefeed_uitpas_register_uitpas_title',
+      'page callback' => 'culturefeed_uitpas_user_register_get',
+      'access callback' => TRUE,
+      'file' => 'includes/user_register.inc',
+      'type' => MENU_CALLBACK,
+    ),
   );
 
 }
