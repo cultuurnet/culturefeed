@@ -216,10 +216,3 @@ function culturefeed_uitpas_user_register_settings_save($values) {
   variable_set('culturefeed_uitpas_user_register_apply_text', $values['culturefeed_uitpas_user_register_apply_text']);
 
 }
-
-/**
- * Title callback.
- */
-function culturefeed_uitpas_register_uitpas_title() {
-  return variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'));
-}
