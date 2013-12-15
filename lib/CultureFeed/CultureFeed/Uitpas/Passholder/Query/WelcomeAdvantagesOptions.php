@@ -46,7 +46,6 @@ class CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions extends Cultu
   public $cashedIn;
 
   /**
-<<<<<<< HEAD
    * Id of a CardSystem owning the welcome advantages.
    * @var string
    */
