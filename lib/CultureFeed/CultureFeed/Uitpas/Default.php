@@ -339,6 +339,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query) {
     $data = $query->toPostData();
+    unset($data['uitpas_number']);
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
 
     try {
