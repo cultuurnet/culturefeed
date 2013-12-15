@@ -353,6 +353,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     // because the response format is not consistent.
     // It lacks a 'total' element for example.
     $promotion_elements = $xml->xpath('promotion');
+    $promotions = array();
     foreach ($promotion_elements as $promotion_element) {
       $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($promotion_element);
     }
