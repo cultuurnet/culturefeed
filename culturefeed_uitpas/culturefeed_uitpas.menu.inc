@@ -92,6 +92,13 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/user_register.inc',
       'type' => MENU_CALLBACK,
     ),
+    'culturefeed/uitpas/reminder/toggle' => array(
+      'title' => 'Toggle reminder on and off',
+      'page callback' => 'culturefeed_uitpas_toggle_reminder',
+      'access callback' => 'user_is_logged_in',
+      'file' => 'includes/reminder.inc',
+      'type' => MENU_CALLBACK,
+    ),
   );
 
 }

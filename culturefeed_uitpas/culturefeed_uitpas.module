@@ -59,12 +59,25 @@ function culturefeed_uitpas_module_implements_alter(&$implementations, $hook) {
  * Implements hook_init().
  */
 function culturefeed_uitpas_init() {
-  if (current_path() !== 'register_uitpas' && variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1)) {
+  if (!in_array(current_path(), array('culturefeed/uitpas/reminder/toggle', 'register_uitpas')) &&
+      variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1)) {
+
+    $current_state = isset($_COOKIE['Drupal_visitor_culturefeed_uitpas_reminder']) ? $_COOKIE['Drupal_visitor_culturefeed_uitpas_reminder'] : 'on';
+
+    // Don't do anything when reminder was toggled off with cookie.
+    if ($current_state !== 'on') {
+      return;
+    }
+
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
     if ($uitpas_user->user && !$uitpas_user->passholder) {
-      $message = variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('Je bent succesvol aangemeld, maar je UiTPAS werd nog niet online geregistreerd. Vul <a href="@register_url">de nodige gegevens</a> in om jouw persoonlijke voordelen en puntensaldo te bekijken.'));
-      $message = format_string($message, array('@register_url' => url('register_uitpas')));
+      $message = variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('Je bent succesvol aangemeld, maar je UiTPAS werd nog niet online geregistreerd. Vul <a href="@register_url">de nodige gegevens</a> in om jouw persoonlijke voordelen en puntensaldo te bekijken. <a href="@toggle_url">Toon dit bericht niet opnieuw</a>'));
+      $args = array(
+        '@register_url' => url('register_uitpas'),
+        '@toggle_url' => url('culturefeed/uitpas/reminder/toggle'),
+      );
+      $message = format_string($message, $args);
       drupal_set_message($message, 'warning');
     }
   }
