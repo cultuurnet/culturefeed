@@ -210,7 +210,7 @@ function culturefeed_uitpas_user_register_settings_get(&$form, $include_title = 
  */
 function culturefeed_uitpas_user_register_settings_save($values) {
 
-  variable_set('culturefeed_uitpas_user_register_intro_text', $values['intro_text']);
+  variable_set('culturefeed_uitpas_user_register_intro_text', $values['culturefeed_uitpas_user_register_intro_text']);
   variable_set('culturefeed_uitpas_user_register_number_label', $values['culturefeed_uitpas_user_register_number_label']);
   variable_set('culturefeed_uitpas_user_register_submit_value', $values['culturefeed_uitpas_user_register_submit_value']);
   variable_set('culturefeed_uitpas_user_register_apply_text', $values['culturefeed_uitpas_user_register_apply_text']);
