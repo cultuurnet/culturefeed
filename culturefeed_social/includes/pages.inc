@@ -465,8 +465,7 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
   // No redirect if argument is advanced, noredirect.
-  $redirect = empty($argument);
-
+  $redirect = empty($argument) || $argument == 'redirect';
   if ($redirect) {
     if (empty($activity)) {
       drupal_set_message(t('An unexpected error has occurred.'), 'error');
@@ -565,7 +564,7 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
   // No redirect if argument is advanced, noredirect.
-  $redirect = empty($argument);
+  $redirect = empty($argument) || $argument == 'redirect';
 
   if ($redirect) {
     if (empty($activity)) {

@@ -73,8 +73,8 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
  *
  * @see culturefeed_social_activity_link()
  */
-function culturefeed_social_activity_link_advanced($activity_type, $extended_entity) {
-  return culturefeed_social_activity_link($activity_type, $extended_entity, TRUE);
+function culturefeed_social_activity_link_advanced($activity_type, $extended_entity, $use_ajax = TRUE) {
+  return culturefeed_social_activity_link($activity_type, $extended_entity, TRUE, FALSE, '', '', $use_ajax);
 }
 
 /**
@@ -92,9 +92,11 @@ function culturefeed_social_activity_link_advanced($activity_type, $extended_ent
  *   Title you want to use to override the default config title.
  * @param string $undo_title
  *   Undo title you want to use to override the default config title.
+ * @param $use_ajax
+ *   Use ajax for the link or not.
  * @return string
  */
-function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE, $title = '', $title_undo = '') {
+function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE, $title = '', $title_undo = '', $use_ajax = TRUE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return theme('culturefeed_social_login_required_message', array('activity_type' => $activity_type, 'item' => $extended_entity));
@@ -121,8 +123,6 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
 
   $config = culturefeed_social_activity_get_config($activity_type);
 
-  $user_did_this = FALSE;
-
   // If undo is not allowed. The action is always do.
   $user_did_this = FALSE;
   if ($config->undoAllowed) {
@@ -136,7 +136,10 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
 
   $action = $user_did_this ? 'undo' : 'do';
 
-  if ($advanced) {
+  if (!$use_ajax) {
+    $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/redirect';
+  }
+  elseif ($advanced) {
     $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/advanced';
   }
   else {
@@ -160,10 +163,14 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
     ),
     '#prefix' => '<div id="' . $identifier_wrapper . '" class="' . $action . '-link-wrapper">',
     '#suffix' => '</div>',
-    '#ajax' => array(
-      'wrapper' => $identifier_wrapper,
-    ),
   );
+
+  // If ajax is requested, add ajax action.
+  if ($use_ajax) {
+    $markup[$identifier]['#ajax'] = array(
+      'wrapper' => $identifier_wrapper,
+    );
+  }
 
   if (!empty($title)) {
     $markup[$identifier]['#options']['query']['title'] = $title;

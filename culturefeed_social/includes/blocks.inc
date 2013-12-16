@@ -199,9 +199,9 @@ function culturefeed_social_block_recommended_by($object) {
   // Advanced recommend link.
   $content['recommend-advanced'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object),
+    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE),
   );
-
+  
   $block['subject'] = $config->subject;
   $block['content'] = $content;
 
