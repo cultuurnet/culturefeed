@@ -464,6 +464,9 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
+  $build = array();
+  drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
+
   // No redirect if argument is advanced, noredirect.
   $redirect = empty($argument) || $argument == 'redirect';
   if ($redirect) {
@@ -493,7 +496,6 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
         $action_url .= '/' . $argument;
       }
 
-      $build = array();
       $build[$identifier] = array(
         '#id' => $identifier,
         '#type' => 'link',
@@ -523,10 +525,6 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
       if (isset($_GET['title'])) {
         $build[$identifier]['#options']['query']['title'] = $_GET['title'];
-      }
-
-      if ($argument == 'advanced') {
-        drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
       }
 
       // Add the updated total activities.
@@ -563,6 +561,9 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
+  $build = array();
+  drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
+
   // No redirect if argument is advanced, noredirect.
   $redirect = empty($argument) || $argument == 'redirect';
 
@@ -583,8 +584,6 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
         $action_url .= '/' . $argument;
       }
 
-      $build = array(
-      );
       $build[$identifier] = array(
         '#id' => $identifier,
         '#type' => 'link',
@@ -614,10 +613,6 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
       if (isset($_GET['title'])) {
         $build[$identifier]['#options']['query']['title'] = $_GET['title'];
         $build[$identifier]['#title'] = $_GET['title'];
-      }
-
-      if ($argument == 'advanced') {
-        drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
       }
 
       // Add the updated total activities.
