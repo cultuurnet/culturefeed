@@ -312,23 +312,31 @@ function culturefeed_ui_page_profile_edit_form() {
   return $form;
 }
 
-function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
+/**
+ * Validate the user profile form.
+ */
+function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
+
   $values = $form_state['values'];
 
-  $success = TRUE;
+  // Custom validations first.
+  if (strlen($values['bio']) > 250) {
+    form_set_error('bio', t('The maximum of 250 characters is exceeded'));
+    return;
+  }
 
   // Update profile information.
   $user_update = new CultureFeed_User();
 
-  $user_update->id         = DrupalCultureFeed::getLoggedInUserId();
-  $user_update->givenName  = $values['givenName'];
+  $user_update->id = DrupalCultureFeed::getLoggedInUserId();
+  $user_update->givenName = $values['givenName'];
   $user_update->familyName = $values['familyName'];
-  $user_update->gender     = $values['gender'];
-  $user_update->bio        = $values['bio'];
-  $user_update->street     = $values['street'];
-  $user_update->zip        = $values['zip'];
-  $user_update->city       = $values['city'];
-  $user_update->country    = $values['country'];
+  $user_update->gender = $values['gender'];
+  $user_update->bio = $values['bio'];
+  $user_update->street = $values['street'];
+  $user_update->zip = $values['zip'];
+  $user_update->city = $values['city'];
+  $user_update->country = $values['country'];
   $user_update->preferredLanguage = $values['preferredLanguage'];
 
   if (empty($values['dob'])) {
@@ -340,8 +348,8 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
     if (count($dob_parts) == 3) {
       list($day, $month, $year) = $dob_parts;
 
-      if (is_numeric($day) && is_numeric($month) && is_numeric($year))  {
-        if ($date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year)) {
+      if (is_numeric($day) && is_numeric($month) && is_numeric($year)) {
+        if ($date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year)) {
           $user_update->dob = $date;
         }
       }
@@ -355,9 +363,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred while saving your personal data.'), 'error');
-
-    $success = FALSE;
+    form_set_error('submit', t('Error occurred while saving your personal data.'));
   }
 
   // Upload profile picture.
@@ -372,9 +378,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
-        drupal_set_message(t('Error occurred while saving your picture.'), 'error');
-
-        $success = FALSE;
+        form_set_error('picture', t('Error occurred while saving your picture.'));
       }
     }
   }
@@ -382,27 +386,26 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   // Update field privacy status.
   $privacy_config = new CultureFeed_UserPrivacyConfig();
 
-  $privacy_config->givenName   = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->familyName  = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->gender      = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->givenName = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->familyName = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->gender = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
   $privacy_config->homeAddress = $values['homeAddressPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->dob         = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->bio         = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->dob = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->bio = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
 
   try {
     DrupalCultureFeed::updateUserPrivacy(DrupalCultureFeed::getLoggedInUserId(), $privacy_config);
   }
   catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred while saving your privacy settings.'), 'error');
-
-    $success = FALSE;
+    form_set_error('submit', t('Error occurred while saving your privacy settings.'));
   }
+}
 
-  // Setting status message.
-  if ($success) {
-    drupal_set_message(t('Changes succesfully saved.'));
-  }
+/**
+ * Submit the user profile form.
+ */
+function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
+  drupal_set_message(t('Changes succesfully saved.'));
 }
 
 function culturefeed_ui_page_account_edit() {
