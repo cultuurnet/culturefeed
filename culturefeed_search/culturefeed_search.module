@@ -5,7 +5,7 @@
  */
 
 // Default API location. Can be overriden in settings form.
-define('CULTUREFEED_SEARCH_API_LOCATION', 'http://test.uitid.be/culturefeed/rest/searchv2/');
+define('CULTUREFEED_SEARCH_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
 // Default proximity search range.
@@ -31,7 +31,7 @@ function culturefeed_search_menu() {
   $items['autocomplete/culturefeed/suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(3, NULL),
+    'page arguments' => array(3, FALSE, NULL),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -40,7 +40,7 @@ function culturefeed_search_menu() {
   $items['autocomplete/culturefeed/actor-suggestions'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(3, 'actor'),
+    'page arguments' => array(3, FALSE, 'actor'),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -85,14 +85,11 @@ function culturefeed_search_flush_caches() {
 /**
  * Clears all cache for culturefeed search results and related activity.
  */
-function _culturefeed_search_flush_caches() {
-
-  // Flush search page results.
-  cache_clear_all('culturefeed:results:search', 'cache_culturefeed_search', TRUE);
-
-  // Flush search results.
-  cache_clear_all('culturefeed:pages:', 'cache_culturefeed', TRUE);
-  cache_clear_all('culturefeed:results:', 'cache_culturefeed', TRUE);
+function _culturefeed_search_flush_caches($search_only = FALSE) {
+  cache_clear_all('culturefeed:', 'cache_culturefeed_search', TRUE);
+  if (!$search_only) {
+    cache_clear_all('culturefeed:', 'cache_culturefeed', TRUE);
+  }
 }
 
 /**

@@ -1,0 +1,297 @@
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_search_views.info: n/a
+#  views/culturefeed_search_views.views.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_type.inc: n/a
+#  views/handlers/field/views_handler_field_cdb_item_link.inc: n/a
+#  views/handlers/field/views_handler_field_cdb_item_location.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_city.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_agefrom.inc: n/a
+#  views/handlers/field/views_handler_field_cdb_item_picture.inc: n/a
+#  views/handlers/field/views_handler_field_cdb_item_title.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_category.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_datetype.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_filter_query.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_q.inc: n/a
+#  views/handlers/filter/views_handler_filter_culturefeed_search_in.inc: n/a
+#  views/plugins/culturefeed_search_views_row_cdb.inc: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-07-25 17:33+0200\n"
+"PO-Revision-Date: 2013-11-06 15:28+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_search_views.info:0
+msgid "CultureFeed Search Views"
+msgstr "CultureFeed Search views"
+
+#: culturefeed_search_views.info:0
+msgid "Views integration for culturefeed search"
+msgstr ""
+
+#: culturefeed_search_views.info:0
+msgid "CultureFeed"
+msgstr ""
+
+#: views/culturefeed_search_views.views.inc:13
+msgid "Cdb items"
+msgstr "Éléments UDB"
+
+#: views/culturefeed_search_views.views.inc:16
+msgid "Cdb item"
+msgstr "Élément UDB"
+
+#: views/culturefeed_search_views.views.inc:22
+msgid "Query"
+msgstr "Recherche"
+
+#: views/culturefeed_search_views.views.inc:23
+msgid "Perform a free text search."
+msgstr "Recherche libre."
+
+#: views/culturefeed_search_views.views.inc:33
+msgid "Category: @domain"
+msgstr ""
+
+#: views/culturefeed_search_views.views.inc:34
+msgid "Perform a search on category of this type."
+msgstr "Recherche selon le type."
+
+#: views/culturefeed_search_views.views.inc:43
+#: views/handlers/filter/views_handler_filter_culturefeed_search_type.inc:24
+msgid "Type"
+msgstr "Type"
+
+#: views/culturefeed_search_views.views.inc:44
+msgid "Type of the cdb item"
+msgstr "Type d'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:52
+#: views/handlers/field/views_handler_field_cdb_item_link.inc:26
+#: views/handlers/field/views_handler_field_cdb_item_location.inc:30
+msgid "Title"
+msgstr "Titre"
+
+#: views/culturefeed_search_views.views.inc:53
+msgid "Title of the cdb item"
+msgstr "Titre de l'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:64
+#: views/handlers/field/views_handler_field_cdb_item_location.inc:31
+#: views/handlers/filter/views_handler_filter_culturefeed_search_city.inc:22
+msgid "City"
+msgstr "Ville ou commune"
+
+#: views/culturefeed_search_views.views.inc:65
+msgid "Perform a search on a city."
+msgstr "Chercher selon la ville ou la commune."
+
+#: views/culturefeed_search_views.views.inc:73
+msgid "Location name"
+msgstr "Endroit"
+
+#: views/culturefeed_search_views.views.inc:74
+msgid "Perform a search on the location name."
+msgstr "Chercher selon l'endroit."
+
+#: views/culturefeed_search_views.views.inc:82
+#: views/handlers/filter/views_handler_filter_culturefeed_search_agefrom.inc:24
+msgid "Agefrom"
+msgstr "À partir de l'âge"
+
+#: views/culturefeed_search_views.views.inc:83
+msgid "Perform a search on minimum required age."
+msgstr "Chercher selon un âge minimum."
+
+#: views/culturefeed_search_views.views.inc:94;169
+msgid "Organiser"
+msgstr "Organisateur"
+
+#: views/culturefeed_search_views.views.inc:95
+msgid "Perform a search on organiser name."
+msgstr "Chercher selon l'organisateur."
+
+#: views/culturefeed_search_views.views.inc:103
+msgid "Free event"
+msgstr "Activité gratuite"
+
+#: views/culturefeed_search_views.views.inc:104
+msgid "Perform a search on free events."
+msgstr "Chercher selon les activités gratuites"
+
+#: views/culturefeed_search_views.views.inc:112
+msgid "Date type"
+msgstr "Type de données"
+
+#: views/culturefeed_search_views.views.inc:113
+msgid "Perform a search on a predefined type of date query"
+msgstr "Chercher selon la période"
+
+#: views/culturefeed_search_views.views.inc:119
+msgid "Date"
+msgstr "Date"
+
+#: views/culturefeed_search_views.views.inc:120
+msgid "Perform a search on a date"
+msgstr "Chercher selon une date précise"
+
+#: views/culturefeed_search_views.views.inc:132
+msgid "Total recommend"
+msgstr "Nombre de recommandations"
+
+#: views/culturefeed_search_views.views.inc:133
+msgid "Sort on recommend count."
+msgstr "Trier selon le nombre de recommandations."
+
+#: views/culturefeed_search_views.views.inc:140
+msgid "Total comments"
+msgstr "Nombre total de réactions"
+
+#: views/culturefeed_search_views.views.inc:141
+msgid "Sort on comment count."
+msgstr "Trier selon le nombre de réactions."
+
+#: views/culturefeed_search_views.views.inc:151
+msgid "Calendar summary"
+msgstr "Résumé du calendrier"
+
+#: views/culturefeed_search_views.views.inc:152
+msgid "Summary of the calendar"
+msgstr "Résumé du calendrier"
+
+#: views/culturefeed_search_views.views.inc:160
+msgid "Location"
+msgstr "Emplacement"
+
+#: views/culturefeed_search_views.views.inc:161
+msgid "Location of the cdb item"
+msgstr "Emplacement de l'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:170
+msgid "Organiser of the cdb item"
+msgstr "Organisateur de l'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:178
+msgid "Picture"
+msgstr "Illustration"
+
+#: views/culturefeed_search_views.views.inc:179
+msgid "Picture of the cdb item"
+msgstr "Illustration de l'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:186
+msgid "Link"
+msgstr "Lien"
+
+#: views/culturefeed_search_views.views.inc:187
+msgid "Link to the cdb item"
+msgstr "Lien vers l'élément UDB"
+
+#: views/culturefeed_search_views.views.inc:210
+msgid "Culturefeed Search Query"
+msgstr "CultureFeed Search Query"
+
+#: views/culturefeed_search_views.views.inc:211
+msgid "Query that allows you to search with culturefeed."
+msgstr "Recherche vous permettant de chercher avec CultureFeed."
+
+#: views/culturefeed_search_views.views.inc:218
+msgid "Culturefeed cdb items"
+msgstr "Éléments CultureFeed UDB"
+
+#: views/handlers/field/views_handler_field_cdb_item_link.inc:14
+msgid "Read more"
+msgstr "Lire davantage"
+
+#: views/handlers/field/views_handler_field_cdb_item_location.inc:27
+msgid "Show"
+msgstr "Afficher"
+
+#: views/handlers/field/views_handler_field_cdb_item_location.inc:32
+msgid "Address"
+msgstr "Adresse"
+
+#: views/handlers/field/views_handler_field_cdb_item_picture.inc:27
+msgid "Width"
+msgstr "Largeur"
+
+#: views/handlers/field/views_handler_field_cdb_item_picture.inc:34
+msgid "Height"
+msgstr "Hauteur"
+
+#: views/handlers/field/views_handler_field_cdb_item_title.inc:26
+msgid "Link the title to the detail page"
+msgstr "Relier le titre à la page"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_category.inc:32
+#: views/handlers/filter/views_handler_filter_culturefeed_search_datetype.inc:26
+msgid "Category to filter on"
+msgstr "Catégorie"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:39
+msgid "Start date"
+msgstr "Date de début"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:42;50
+msgid "Format: !date_format"
+msgstr ""
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:47
+msgid "End date"
+msgstr "Date de fin"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:61
+msgid "The entered start date is not in the correct format"
+msgstr "La date de début introduite n'est pas dans un format correct"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:67
+msgid "The entered end date is not in the correct format"
+msgstr "La date de fin introduite n'est pas dans un format correct"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:79
+msgid "Between @start_date and @end_date"
+msgstr "Entrer date de début et date de fin"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_filter_query.inc:24
+#: views/handlers/filter/views_handler_filter_culturefeed_search_q.inc:16
+msgid "Value"
+msgstr "Valeur"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_in.inc:36
+msgid "Contains all selected values"
+msgstr "Contient toutes les valeurs sélectionnées"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_in.inc:38
+msgid "Has value"
+msgstr "Contient valeur"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_in.inc:41
+msgid "Contains at least 1 of the selected values"
+msgstr "Contient au moins une des valeurs sélectionnées"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_in.inc:43
+msgid "Contains value"
+msgstr "Contient valeur"
+
+#: views/plugins/culturefeed_search_views_row_cdb.inc:23
+msgid "View mode"
+msgstr "Mode de visualisation"
+
+#: views/plugins/culturefeed_search_views_row_cdb.inc:34
+msgid "Summary"
+msgstr "Résumé"
+
+#: views/plugins/culturefeed_search_views_row_cdb.inc:35
+msgid "Short summary"
+msgstr "Brève description"

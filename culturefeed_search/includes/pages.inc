@@ -9,7 +9,7 @@ use \Guzzle\Http\Exception;
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL) {
 
   $matches = array();
 
@@ -57,7 +57,7 @@ function culturefeed_search_region_suggestion_autocomplete_page($search_string) 
     try {
 
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_search_get_flandersregion_suggestions($search_string);
+      $suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, TRUE);
       foreach ($suggestions as $key => $suggestion) {
         $matches[$key] = check_plain($suggestion);
       }

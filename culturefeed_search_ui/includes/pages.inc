@@ -23,12 +23,13 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
   if ($name == "submitted") {
     return "";
   }
+  $ajax = $request_type == 'ajax';
 
   try {
 
     $conf = culturefeed_get_searchable_type($name);
     $page = culturefeed_get_search_page($conf);
-    $ajax = $request_type == 'ajax';
+
     if ($ajax) {
       $page->setFullPage(FALSE);
     }
@@ -37,6 +38,19 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     $build = $page->loadPage();
 
     drupal_set_title($page->getPageTitle());
+
+    $description = $page->getPageDescription();
+    if (!empty($description)) {
+      $element = array(
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => 'description',
+          'content' => $description,
+        ),
+      );
+      drupal_add_html_head($element, 'meta_description');
+    }
+
     $active_trail = $page->getActiveTrail();
     if ($active_trail) {
       menu_set_active_trail($active_trail);
@@ -48,7 +62,6 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       drupal_set_breadcrumb($breadcrumb);
 
     }
-
 
   }
   catch (Exception\ClientErrorResponseException $e) {

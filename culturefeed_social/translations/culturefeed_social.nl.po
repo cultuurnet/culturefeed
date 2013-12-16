@@ -50,7 +50,7 @@ msgstr "Voer actie uit"
 
 #: culturefeed_social.module:283
 msgid "Culturefeed social: recent site activities"
-msgstr "Culturefeed social: recente site activiteiten"
+msgstr "Culturefeed social: recente gebeurtenissen"
 
 #: culturefeed_social.module:288
 msgid "Culturefeed social: user activities"
@@ -224,7 +224,7 @@ msgstr ""
 
 #: includes/blocks.inc:37;118
 msgid "Recent actions"
-msgstr "Recente acties"
+msgstr "Recente gebeurtenissen"
 
 #: includes/blocks.inc:70
 msgid "This user didn't perform any actions yet"
@@ -468,7 +468,7 @@ msgstr "Ik ga niet"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:21
 msgid "will be attending"
-msgstr "ik ga"
+msgstr "gaat naar"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:22;24
 msgid "Will be attending"

@@ -16,7 +16,10 @@ function culturefeed_pages_join_page_search() {
 
     try {
 
+      $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
       $parameters = array();
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
       $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
       $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();
@@ -809,7 +812,7 @@ function culturefeed_pages_remove_page_confirm_form($form, &$form_state, $page, 
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
-      <p>' . t('By deleting a page, the page will no longer appear in search results, but it will not remove your contact info.') . '</p>
+      <p>' . t('By deleting a page, the page will no longer appear in search results and all contact info will be removed.') . '</p>
       <p>' . t('Members of this page, and activities in the name of this page will not be deleted.') . '</p>
       <p><strong>' . t('Are you sure?') . '</strong></p>',
   );

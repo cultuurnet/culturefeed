@@ -472,7 +472,7 @@ msgstr "Meer info over UiTiD"
 
 #: culturefeed_ui.preprocess.inc:145
 msgid "Log in"
-msgstr "Inloggen"
+msgstr "Aanmelden"
 
 #: culturefeed_ui.preprocess.inc:146
 msgid "Sign up"
@@ -598,7 +598,7 @@ msgstr ""
 
 #: culturefeed_ui.module:434
 msgid "Logout"
-msgstr "Uitloggen"
+msgstr "Afmelden"
 
 #: culturefeed_ui.module:455
 msgid "CultuurNet User Interface cache"

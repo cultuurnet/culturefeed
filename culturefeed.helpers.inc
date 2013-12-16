@@ -4,7 +4,6 @@
  * Load callback for a culturefeed user.
  */
 function cf_user_load($uid) {
-
   try {
     return DrupalCultureFeed::getUser($uid);
   }

@@ -1,0 +1,274 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_search_ui.module: n/a
+#  culturefeed_search_ui.info: n/a
+#  includes/admin.inc: n/a
+#  includes/blocks.inc: n/a
+#  includes/helpers.inc: n/a
+#  includes/pages.inc: n/a
+#  js/search_ui.js: n/a
+#  lib/Drupal/CultureFeedSearchPage.php: n/a
+#  theme/culturefeed-search-list.tpl.php: n/a
+#  theme/culturefeed-search-page.tpl.php: n/a
+#  theme/culturefeed-search-suggestions.tpl.php: n/a
+#  theme/theme.inc: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-08-13 10:19+0200\n"
+"PO-Revision-Date: 2013-11-06 15:11+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_search_ui.module:98
+msgid "Change Culture Feed Search UI settings like display, filters, ..."
+msgstr ""
+"Modifier les réglages de CultureFeed Search UI tels que l'affichage, les "
+"filtres..."
+
+#: culturefeed_search_ui.module:234
+msgid "Culturefeed search: search events and pages"
+msgstr "Culturefeed search : chercher des activités et des pages"
+
+#: culturefeed_search_ui.module:239
+msgid "Culturefeed search: sort order"
+msgstr "Culturefeed search : trier les résultats"
+
+#: culturefeed_search_ui.module:244
+msgid "Culturefeed search: active filters"
+msgstr "Culturefeed search : filtres actifs"
+
+#: culturefeed_search_ui.module:249
+msgid "Culturefeed search: facet when"
+msgstr "Culturefeed search: facet quand"
+
+#: culturefeed_search_ui.module:254
+msgid "Culturefeed search: facet where"
+msgstr "Culturefeed search: facet où"
+
+#: culturefeed_search_ui.module:262
+msgid "Culturefeed search: facet @label"
+msgstr ""
+
+#: culturefeed_search_ui.module:409
+msgid "Near"
+msgstr "À proximité de"
+
+#: culturefeed_search_ui.module:61
+msgid "Culturefeed search"
+msgstr ""
+
+#: culturefeed_search_ui.module:97
+msgid "Culture Feed Search UI"
+msgstr ""
+
+#: culturefeed_search_ui.info:0
+msgid "CultureFeed Search UI"
+msgstr ""
+
+#: culturefeed_search_ui.info:0
+msgid ""
+"CultureFeed Search UI is the basic framework needed to view search pages "
+"from items. For example agenda/search page from the agenda module."
+msgstr ""
+"CultureFeed Search UI est le cadre de base de la consultation des résultats "
+"et des détails."
+
+#: culturefeed_search_ui.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"
+
+#: includes/admin.inc:15
+msgid "Number of items per page"
+msgstr "Nombre de résultats par page"
+
+#: includes/admin.inc:21
+msgid "Pager type for the search page(s)"
+msgstr "Type de navigation sur la page des résultats"
+
+#: includes/admin.inc:22
+msgid ""
+"The type of pager to use on search pages. This will trigger different "
+"templates as well."
+msgstr ""
+"Type de navigation sur la page des résultats (mise en pages / 'infinite "
+"scroll'). Un modèle différent est utilisé pour chaque type de navigation."
+
+#: includes/admin.inc:24
+msgid "Normal pager with page numbers"
+msgstr "Mise en pages avec numérotation de page et options précécent/suivant."
+
+#: includes/admin.inc:25
+msgid "Pager with button to manually scroll to infinity"
+msgstr ""
+"Mise en pages permettant de télécharger un nombre illimité de résultats "
+"('infinite scroll')."
+
+#: includes/admin.inc:32
+msgid "Redirect old cnapi urls to the new system"
+msgstr "Rediriger les anciens URL (CNAPI) vers les nouveaux URL (SAPI)."
+
+#: includes/admin.inc:33
+msgid ""
+"If enabled, all urls that where used by the cnapi module, will be redirected "
+"to urls for the new search api."
+msgstr ""
+"Si cette option est activée, les anciens URL (CNAPI) seront déviés vers les "
+"nouveaux URL (SAPI)."
+
+#: includes/blocks.inc:31
+msgid "Search in"
+msgstr "Chercher dans"
+
+#: includes/blocks.inc:38
+msgid "Search terms"
+msgstr "Mots-clés"
+
+#: includes/blocks.inc:45
+msgid "Search"
+msgstr "Chercher"
+
+#: includes/blocks.inc:108
+msgid "Sort"
+msgstr "Trier les résultats selon"
+
+#: includes/blocks.inc:116
+msgid "Submit"
+msgstr "Ajouter"
+
+#: includes/blocks.inc:221
+msgid "When"
+msgstr "Quand"
+
+#: includes/blocks.inc:239
+msgid "Choose a date"
+msgstr "Date"
+
+#: includes/blocks.inc:242
+msgid "Or choose a custom date"
+msgstr "Ou choisissez une date"
+
+#: includes/blocks.inc:247;359;407
+msgid "Ok"
+msgstr "Ok"
+
+#: includes/blocks.inc:334;351
+msgid "Where"
+msgstr "Où"
+
+#: includes/blocks.inc:354
+msgid "Zipcode or city"
+msgstr "Code postal ou commune"
+
+#: includes/blocks.inc:400
+msgid "Search nearby"
+msgstr "Chercher à proximité"
+
+#: includes/blocks.inc:266
+msgid "Please enter a valid date"
+msgstr "Veuillez introduire une date valable"
+
+#: includes/blocks.inc:445
+msgid "Remove all filters"
+msgstr "Supprimer tous les filtres"
+
+#: includes/helpers.inc:89
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: includes/helpers.inc:90
+msgid "Next 7 days"
+msgstr "les 7 prochains jours"
+
+#: includes/helpers.inc:91
+msgid "This weekend"
+msgstr "Ce week-end"
+
+#: includes/helpers.inc:92
+msgid "Next weekend"
+msgstr "Le week-end prochain"
+
+#: includes/helpers.inc:93
+msgid "Next 14 days"
+msgstr "Dans les 15 prochains jours"
+
+#: includes/helpers.inc:94
+msgid "Next 30 days"
+msgstr "dans les 30 prochains jours"
+
+#: includes/helpers.inc:95
+msgid "Next 12 months"
+msgstr "Dans les 12 prochains mois"
+
+#: includes/pages.inc:58;62;69
+msgid "There was an error while loading the search results."
+msgstr "Une erreur s'est produite lors du chargement des résultats."
+
+#: js/search_ui.js:0
+msgid "Specific date"
+msgstr "Date spécifique"
+
+#: js/search_ui.js:0
+msgid "Period from/to"
+msgstr "du/au"
+
+#: js/search_ui.js:0
+msgid "Start date"
+msgstr "Date de début"
+
+#: js/search_ui.js:0
+msgid "End date"
+msgstr "Date de fin"
+
+#: js/search_ui.js:0
+msgid "OK"
+msgstr "Ok"
+
+#: lib/Drupal/CultureFeedSearchPage.php:351
+msgid "More results"
+msgstr "Plus de résultats"
+
+#: lib/Drupal/CultureFeedSearchPage.php:362
+msgid "perform a new search."
+msgstr "effectuer une nouvelle recherche."
+
+#: lib/Drupal/CultureFeedSearchPage.php:364
+msgid "There are no more search results."
+msgstr "Il n'y a plus de résultats."
+
+#: lib/Drupal/CultureFeedSearchPage.php:365
+msgid "Refine your search results or"
+msgstr "Affiner votre recherche ou"
+
+#: theme/culturefeed-search-list.tpl.php:16
+msgid "No results found"
+msgstr "Aucun résultat"
+
+#: theme/culturefeed-search-page.tpl.php:11
+msgid "<strong>@count</strong> result found"
+msgid_plural "<strong>@count</strong> results found"
+msgstr[0] "<strong>@count</strong> résultat trouvé"
+msgstr[1] "<strong>@count</strong> résultats trouvés"
+
+#: theme/culturefeed-search-suggestions.tpl.php:8
+msgid "Did you mean"
+msgstr "Vous vouliez dire"
+
+#: theme/theme.inc:186
+msgid "@range from @count result"
+msgid_plural "@range from @count results"
+msgstr[0] "résultat @range de @count"
+msgstr[1] "résultats @range de @count"
+
+#: theme/culturefeed-search-facet-item.tpl.php:15
+msgid "Remove filter"
+msgstr "Supprimer le filtre"

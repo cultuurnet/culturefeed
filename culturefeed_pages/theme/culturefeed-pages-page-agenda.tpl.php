@@ -1,4 +1,4 @@
-<div id="page-agenda-ajax-wrapper-<? print $page->getId(); ?>">
+<div id="page-agenda-ajax-wrapper-<?php print $page->getId(); ?>">
      <?php if ($items): ?>
        <ul>
 <?php foreach ($items as $item) :?>

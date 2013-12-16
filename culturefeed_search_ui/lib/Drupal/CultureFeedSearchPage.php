@@ -320,6 +320,7 @@ class CultureFeedSearchPage {
    * Initializes the search with data from the URL query parameters.
    */
   public function initialize() {
+
     // Only initialize once.
     if (empty($this->facetComponent)) {
       $this->facetComponent = new FacetComponent();
@@ -394,15 +395,47 @@ class CultureFeedSearchPage {
 
     }
 
-    // Add the location facet.
-    if (!empty($params['location'])) {
+    // Add the location facet. Only use the location if a distance is set.
+    // all other cases will search for a category Id of the type flandersregion
+    // or workingregion.
+    if (!empty($params['regId']) && !isset($params['distance'])) {
+
+      $regFilter = array();
+      $regFilter[] = $params['regId'];
+
+      if (!empty($params['wregIds'])) {
+        $regFilter[] = array_shift($params['wregIds']);
+
+        $wregFilters = array();
+        foreach ($params['wregIds'] as $wregId) {
+          $wregFilters[] = $wregId;
+        }
+      }
+
+      $regFilterQuery = '(';
+      $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
+      if (!empty($wregFilters)) {
+        $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
+      }
+      $regFilterQuery .= ')';
+      $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
+
+    }
+    elseif (!empty($params['location'])) {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
       if (is_numeric($city_parts[0])) {
-        $distance = isset($params['distance']) ? $params['distance'] : '0.00001';
+        $distance = isset($params['distance']) ? $params['distance'] : FALSE;
 
-        $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+        // If category_actortype_id we assume that we search on pages (on day we have to fix)
+        if (isset($params['facet']['category_actortype_id'])) {
+          $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+        }
+        else {
+          $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+        }
+
       }
       else {
         $location = '"' . str_replace('"', '\"', $params['location']) . '"';
@@ -651,6 +684,20 @@ class CultureFeedSearchPage {
       return implode(', ', $labels);
     }
 
+  }
+
+  /**
+   * Gets a page description for all pages.
+   *
+   * Only type aanbod UiT domein, theme and location need to be prepared for search engines.
+   *
+   * @see culturefeed_search_ui_search_page()
+   *
+   * @return string
+   *   Description for this type of page.
+   */
+  public function getPageDescription() {
+    return "";
   }
 
   /**

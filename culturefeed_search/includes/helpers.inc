@@ -87,7 +87,7 @@ function culturefeed_search_item_load_by_title($title, $type) {
 
   $search_string = trim($title);
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('title:"' . $search_string . '"');
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $result = culturefeed_get_search_service()->search($parameters);
@@ -430,7 +430,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
 
   // Skip first level event types. (specific for UIV).
   if ($domain == 'eventtype') {
-    $query->condition('cst.parent', '', '!=');
+    $query->condition('cst.p1', '', '!=');
   }
 
   // Add extra conditions.
@@ -520,6 +520,7 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
       }
     }
   }
+
   $result = $query->execute();
   $categories = array();
   foreach ($result as $row) {
@@ -533,28 +534,31 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
 /**
  * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_flandersregion_suggestions($search_string, $provinces_only = FALSE) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE) {
 
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
 
-
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('did', 'flandersregion');
-  $query->condition('language', culturefeed_search_get_preferred_language());
+  //$query->condition('language', culturefeed_search_get_preferred_language());
+  $query->condition('language', 'und');
   $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
-  $query->range(0, 10);
-
-  if ($provinces_only) {
-    $query->condition('parent', '');
+  $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
+  if(!$include_regions) {
+    $query->isNotNull('p1');
+    $query->isNotNull('p2');
+    $query->isNotNull('p3');
   }
+  $query->range(0, 20);
 
   // Order by parent, so that provinces appear at top of list.
   $query->orderBy('parent', 'ASC');
 
   $result = $query->execute();
+  
   $suggestions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
@@ -574,26 +578,9 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
 
   $suggestions = array();
 
-  if ($include_regions && !is_numeric($search_string)) {
-    $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, FALSE);
-    foreach ($region_suggestions as $region) {
-      $suggestions[$region] = $region;
-    }
-  }
-
-  $limit = 10 - count($suggestions);
-
-  /*
-  $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
-      WHERE (zip like :search1) OR (name LIKE :search2 AND name NOT LIKE :search3 ) OR name LIKE :search4 LIMIT " . $limit, array(':search1' => db_like($search_string) . "%", ':search2' => "%" . db_like($search_string) . "%", ':search3' => "%(%" . db_like($search_string) . "%)", ':search4' => "%" . db_like($search_string) . "%(%)"));
-  */
-
-  $result = db_query("SELECT name, zip FROM {culturefeed_search_cities}
-    WHERE (zip like :search) LIMIT " . $limit, array(':search' => db_like($search_string) . "%"));
-
-
-  foreach ($result as $row) {
-    $suggestions[$row->zip . ' ' . $row->name] = $row->name . ' (' . $row->zip . ')';
+  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions);
+  foreach ($region_suggestions as $region) {
+    $suggestions[$region] = $region;
   }
 
   return $suggestions;
@@ -645,6 +632,10 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
   $query->range(0, 1);
   $query->addField('ct', 'tid');
   $query->addField('ct', 'name');
+  $query->addField('ct', 'p1');
+  $query->addField('ct', 'p2');
+  $query->addField('ct', 'p3');
+  $query->addField('ct', 'p4');
   if (!empty($domain)) {
     $query->condition('did', $domain);
   }
@@ -657,7 +648,8 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
  * Get a city by slug.
  */
 function culturefeed_search_get_city_by_slug($slug) {
-  return db_query('SELECT name, zip FROM {culturefeed_search_cities} WHERE slug = :slug', array(':slug' => $slug))->fetchObject();
+  return db_query('SELECT name, zip FROM {culturefeed_search_cities}
+    WHERE slug = :slug', array(':slug' => $slug))->fetchObject();
 }
 
 /**
