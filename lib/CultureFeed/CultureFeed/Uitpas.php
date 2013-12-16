@@ -284,6 +284,10 @@ interface CultureFeed_Uitpas {
 
   public function getMembersForCounter($consumer_key_counter = NULL);
 
+  /**
+   * @param string|null $consumer_key_counter
+   * @return CultureFeed_Uitpas_Counter_CardCounter[]
+   */
   public function getCardCounters($consumer_key_counter = NULL);
 
   /**

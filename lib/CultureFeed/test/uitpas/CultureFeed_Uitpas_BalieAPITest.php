@@ -59,4 +59,57 @@ class CultureFeed_Uitpas_BalieAPITest extends PHPUnit_Framework_TestCase {
     $this->assertContainsOnly('string', $card_system->permissions);
     $this->assertEquals('registratie', reset($card_system->permissions));
   }
+
+  public function testGetCardCounts() {
+    $oauth_client_stub = $this->getMock('CultureFeed_OAuthClient');
+
+    $xml = file_get_contents(dirname(__FILE__) . '/data/balie/countCards.xml');
+
+    $oauth_client_stub
+      ->expects($this->once())
+      ->method('authenticatedGetAsXml')
+      ->with('uitpas/balie/countCards')
+      ->will($this->returnValue($xml));
+
+    $cf = new CultureFeed($oauth_client_stub);
+
+    $cardCounters = $cf->uitpas()->getCardCounters();
+
+    $this->assertInternalType('array', $cardCounters);
+    $this->assertCount(4, $cardCounters);
+
+    /** @var CultureFeed_Uitpas_Counter_CardCounter $cardCounter */
+    $cardCounter = reset($cardCounters);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
+    $this->assertEquals('HELA', $cardCounter->cardSystem->name);
+    $this->assertEquals(1, $cardCounter->cardSystem->id);
+    $this->assertFalse($cardCounter->kansenstatuut);
+    $this->assertEquals('SENT_TO_BALIE', $cardCounter->status);
+    $this->assertEquals(22, $cardCounter->count);
+
+    $cardCounter = next($cardCounters);
+    $cardCounter = reset($cardCounters);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
+    $this->assertEquals('HELA', $cardCounter->cardSystem->name);
+    $this->assertEquals(1, $cardCounter->cardSystem->id);
+    $this->assertTrue($cardCounter->kansenstatuut);
+    $this->assertEquals('SENT_TO_BALIE', $cardCounter->status);
+    $this->assertEquals(33, $cardCounter->count);
+
+    $cardCounter = reset($cardCounters);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
+    $this->assertEquals('HELA', $cardCounter->cardSystem->name);
+    $this->assertEquals(1, $cardCounter->cardSystem->id);
+    $this->assertFalse($cardCounter->kansenstatuut);
+    $this->assertEquals('LOCAL_STOCK', $cardCounter->status);
+    $this->assertEquals(3, $cardCounter->count);
+
+    $cardCounter = reset($cardCounters);
+    $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
+    $this->assertEquals('HELA', $cardCounter->cardSystem->name);
+    $this->assertEquals(1, $cardCounter->cardSystem->id);
+    $this->assertTrue($cardCounter->kansenstatuut);
+    $this->assertEquals('LOCAL_STOCK', $cardCounter->status);
+    $this->assertEquals(4, $cardCounter->count);
+  }
 } 

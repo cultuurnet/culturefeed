@@ -983,6 +983,9 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     $this->oauth_client->authenticatedPost('uitpas/balie/removeMember', $data);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getCardCounters($consumer_key_counter = NULL) {
     $data = array();
 

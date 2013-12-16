@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF­8" standalone="yes"?>
+<response>
+    <counters>
+        <counter>
+            <status>SENT_TO_BALIE</status>
+            <kansenstatuut>false</kansenstatuut>
+            <count>22</count>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
+        </counter>
+        <counter>
+            <status>SENT_TO_BALIE</status>
+            <kansenstatuut>true</kansenstatuut>
+            <count>33</count>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
+        </counter>
+        <counter>
+            <status>LOCAL_STOCK</status>
+            <kansenstatuut>false</kansenstatuut>
+            <count>3</count>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
+        </counter>
+        <counter>
+            <status>LOCAL_STOCK</status>
+            <kansenstatuut>true</kansenstatuut>
+            <count>4</count>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
+        </counter>
+    </counters>
+</response>
