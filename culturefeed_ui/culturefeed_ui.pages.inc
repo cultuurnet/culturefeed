@@ -320,7 +320,7 @@ function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
   $values = $form_state['values'];
 
   // Custom validations first.
-  if (strlen($values['bio']) > 250) {
+  if (drupal_strlen($values['bio']) > 250) {
     form_set_error('bio', t('The maximum of 250 characters is exceeded'));
     return;
   }
