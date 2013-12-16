@@ -720,14 +720,27 @@ function theme_culturefeed_uitpas_promotions(&$vars) {
 
       }
 
+      if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
+        $validness = t('not any longer in stock');
+      }
+      else if ($promotion->cashingPeriodEnd) {
+        $validness = date('j/n/Y', $promotion->cashingPeriodEnd);
+      }
+      else {
+        $validness = t('end of stock');
+      }
+
       // Rows.
       $rows[] = array(
-        array('data' => $points, 'class' => array('points')),
-        l($promotion->title, $promotion_path),
-        ($promotion->cashingPeriodEnd) ? date('j/n/Y', $promotion->cashingPeriodEnd) : t('end of stock'),
-        ($promotion->description1) ? $promotion->description1 : '',
-        implode(', ', $counters),
-        $picture,
+        'class' => array(drupal_clean_css_identifier('cashin-' . drupal_strtolower($promotion->cashInState))),
+        'data' => array(
+          array('data' => $points, 'class' => array('points')),
+          l($promotion->title, $promotion_path),
+          $validness,
+          ($promotion->description1) ? $promotion->description1 : '',
+          implode(', ', $counters),
+          $picture,
+        ),
       );
 
     }

@@ -46,7 +46,11 @@ function culturefeed_uitpas_advantages_promotions_get() {
     $query->max = $promotions_max;
     $query->unexpired = TRUE;
     $query->cashingPeriodBegin = time();
-    $query->cashInState = CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_POSSIBLE;
+    $query->cashInState = array(
+      CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_POSSIBLE,
+      // Also show items that are not any longer in stock.
+      CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT,
+    );
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     if ($card_system_id) {
       $query->applicableCardSystemId = $card_system_id;
