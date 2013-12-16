@@ -209,9 +209,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
   $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
 
+  $vars['status_title'] = t('Status');
+  $vars['kansen_statuut'] = '';
+  $vars['kansen_statuut_valid_end_date'] = '';
+  $vars['status_valid_till'] = '';
+
   if ($card_system) {
 
-    $vars['status_title'] = t('Status');
     $vars['kansen_statuut'] = $card_system->kansenStatuut;
     $vars['kansen_statuut_valid_end_date'] = (time() < $card_system->kansenStatuutEndDate);
     $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $card_system->kansenStatuutEndDate)));
