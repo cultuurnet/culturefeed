@@ -671,3 +671,47 @@ function culturefeed_social_page_notifications($page = NULL) {
   return $build;
 
 }
+
+/**
+ * Page callback: Show a list of the most recent activities.
+ */
+function culturefeed_social_page_recent_activities() {
+
+  $pagelength = CULTUREFEED_SOCIAL_PAGE_ACTIVITIES_RECENT_COUNT;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+  $query->max = $pagelength;
+  $query->start = $page * $pagelength;
+  $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
+
+  pager_default_initialize($activities->total, $pagelength);
+
+  if (empty($activities)) {
+    $content['activities'] = array(
+      '#markup' => t('No activities found.'),
+    );
+  }
+  else {
+    $content['activities'] = array(
+      '#theme' => 'culturefeed_social_user_activity_list',
+      '#activities' => $activities,
+    );
+
+    $content['pager'] = array(
+      '#theme' => 'pager',
+    );
+  }
+
+  return $content;
+}

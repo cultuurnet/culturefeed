@@ -523,6 +523,25 @@ function culturefeed_social_get_activity_count($activity_type, $content_type, $n
 }
 
 /**
+ * Get a list of themed activity summary's.
+ */
+function culturefeed_social_activities_list($activities) {
+  $items = array();
+
+  $accounts = culturefeed_get_uids_for_activities($activities->objects);
+
+  foreach ($activities->objects as $activity) {
+    if (!isset($accounts[$activity->userId])) {
+      continue;
+    }
+
+    $items[] = theme('culturefeed_ui_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+  }
+
+  return $items;
+}
+
+/**
  * Helper function to create a list of activities of the type COMMENT
  *
  * @param misc $object (Culturefeed_Page, Bibnet_Book, ...
