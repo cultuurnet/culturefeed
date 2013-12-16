@@ -60,7 +60,11 @@ function culturefeed_uitpas_advantages_promotions_get() {
 
   }
   catch (Exception $e) {
+
     watchdog_exception('culturefeed_uitpas_advantages_promotions', $e);
+    pager_default_initialize(0, $advantages_max, $advantages_pager_element);
+    pager_default_initialize(0, $promotions_max, $promotions_pager_element);
+
   }
 
   return array(

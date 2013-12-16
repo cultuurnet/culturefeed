@@ -56,7 +56,10 @@ function culturefeed_uitpas_register_where_get() {
 
     }
     catch (Exception $e) {
+
       watchdog_exception('uitpas_ui_content_type_register_where', $e);
+      pager_default_initialize(0, $pos_max, 0);
+
     }
 
   }
