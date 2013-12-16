@@ -68,7 +68,6 @@ function culturefeed_agenda_block_related_activities() {
   try {
 
     $result = culturefeed_get_search_service()->search($parameters);
-
     if ($result->getTotalCount() == 0) {
       return;
     }
@@ -93,7 +92,7 @@ function culturefeed_agenda_block_related_activities() {
 
     // If current activity was not in results. Make sure we show only the request amount.
     if ($count < $total_items) {
-      $items[] = theme('culturefeed_' . $search_result->getType() . '_short_summary', array('item' => $search_result));
+      $items[] = $search_result;
     }
 
     $count++;
@@ -103,11 +102,10 @@ function culturefeed_agenda_block_related_activities() {
   $block = array();
   $block['subject'] = t('Related activities');
   $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#class' => 'related-activities'
+    '#theme' => 'culturefeed_agenda_related_activities',
+    '#results' => $items,
   );
-
+  
   return $block;
 
 }
@@ -342,7 +340,7 @@ function culturefeed_agenda_block_production_program() {
   foreach ($query_result as $row) {
     $provinces[$row->tid] = $row;
   }
-  
+
   $block['subject'] = t('Agenda');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',

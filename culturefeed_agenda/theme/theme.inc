@@ -649,3 +649,17 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
     ),
   ), 'meta_description');
 }
+
+/**
+ * Preprocess the related activities.
+ * @see culturefeed-agenda-related-activities.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$variables) {
+
+  $results = $variables['results'];
+  $variables['items'] = array();
+
+  foreach ($results as $result) {
+    $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
+  }
+}
