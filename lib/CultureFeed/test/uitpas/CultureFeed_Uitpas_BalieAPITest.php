@@ -88,7 +88,6 @@ class CultureFeed_Uitpas_BalieAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(22, $cardCounter->count);
 
     $cardCounter = next($cardCounters);
-    $cardCounter = reset($cardCounters);
     $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
     $this->assertEquals('HELA', $cardCounter->cardSystem->name);
     $this->assertEquals(1, $cardCounter->cardSystem->id);
@@ -96,7 +95,7 @@ class CultureFeed_Uitpas_BalieAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('SENT_TO_BALIE', $cardCounter->status);
     $this->assertEquals(33, $cardCounter->count);
 
-    $cardCounter = reset($cardCounters);
+    $cardCounter = next($cardCounters);
     $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
     $this->assertEquals('HELA', $cardCounter->cardSystem->name);
     $this->assertEquals(1, $cardCounter->cardSystem->id);
@@ -104,7 +103,7 @@ class CultureFeed_Uitpas_BalieAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('LOCAL_STOCK', $cardCounter->status);
     $this->assertEquals(3, $cardCounter->count);
 
-    $cardCounter = reset($cardCounters);
+    $cardCounter = next($cardCounters);
     $this->assertInstanceOf('CultureFeed_Uitpas_CardSystem', $cardCounter->cardSystem);
     $this->assertEquals('HELA', $cardCounter->cardSystem->name);
     $this->assertEquals(1, $cardCounter->cardSystem->id);
