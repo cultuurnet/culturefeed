@@ -205,7 +205,7 @@ function culturefeed_pages_menu() {
   $items['pages/search'] = array(
     'title callback' => 'culturefeed_pages_basic_search_title',
     'page callback' => 'culturefeed_pages_page_basic_search',
-    'access callback' => 'culturefeed_is_culturefeed_user',
+    'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
   );
 
