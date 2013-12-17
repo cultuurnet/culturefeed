@@ -293,11 +293,8 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['city'] = !empty($account->city) ? check_plain($account->city) : '';
 
   // profile
-  $variables['profile_edit_link'] = NULL;
-  if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l(t('Calculate your leisure profile!'), 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
-  }
-  else {
+  if ($account->lifestyleProfile) {
+
     // lifestyleProfile name
     switch ($account->lifestyleProfile) {
       case "AZ":
@@ -312,11 +309,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
       case "FP":
         $variables['profile_name'] = t('Connoisseur');
           break;
-      default:
-        $variables['profile_name'] = t('Leisure profile not calculated yet');
-          break;
     }
-    $variables['profile_refresh_link'] = l(t('Recalculate'), 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
 
   // facebook toggle

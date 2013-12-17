@@ -30,9 +30,6 @@
         <div class="profile-field city"><?php print $city; ?></div>
       <?php endif; ?>
 
-      <?php if ($profile_edit_link): ?>
-        <?php print $profile_edit_link; ?>
-      <?php endif; ?>
   </div>
 <?php else : ?>
 <div class="no-profile"></div>
@@ -58,7 +55,7 @@
 
 <?php if (!empty($memberships)): ?>
 <div class="page-memberships">
-  
+
   <ul>
   <?php foreach ($memberships as $membership) :?>
     <li><?php print $membership; ?></li>
