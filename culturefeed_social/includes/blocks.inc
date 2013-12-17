@@ -32,6 +32,8 @@ function culturefeed_social_block_recent_activities() {
     '#theme' => 'culturefeed_social_user_activity_list',
     '#activities' => $activities,
     '#class' => 'site-activity-list',
+    '#read_more_text' => t('All actions'),
+    '#read_more_url' => 'culturefeed/activities/recent',
   );
 
   $block['subject'] = t('Recent actions');
@@ -201,7 +203,7 @@ function culturefeed_social_block_recommended_by($object) {
     '#type' => 'markup',
     '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE),
   );
-  
+
   $block['subject'] = $config->subject;
   $block['content'] = $content;
 
