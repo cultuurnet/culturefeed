@@ -3,27 +3,35 @@
  * @file
  * Page callback for culturefeed pages.
  */
+use \CultuurNet\Search\Parameter;
 
 /**
- * Page where users can search for a page. And join them.
+ * Page where users can search for a pag and join them.
  */
-function culturefeed_pages_join_page_search() {
+function culturefeed_pages_page_basic_search() {
 
-  $form = drupal_get_form('culturefeed_pages_join_form');
+  $form = drupal_get_form('culturefeed_pages_basic_search_form');
 
   $items = array();
-  if (isset($_GET['page'])) {
+  $total_results = 0;
+  if (isset($_GET['search'])) {
 
     try {
 
+      $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
       $actortypes = variable_get('culturefeed_pages_actor_types', array());
 
       $parameters = array();
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
-      $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
+      $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+      $parameters[] = new Parameter\Query($_GET['search']);
+      $parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
+      $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+      $parameters[] = new Parameter\Rows(CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+
+
       $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();
-
+      $total_results = $result->getTotalCount();
     }
     catch (Exception\ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_pages', $e);
@@ -36,32 +44,42 @@ function culturefeed_pages_join_page_search() {
 
   }
 
-  return array(
-    '#theme' => 'culturefeed_pages_join_page',
+  pager_default_initialize($total_results, CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+
+  $build = array();
+  $build['page'] = array(
+    '#theme' => 'culturefeed_pages_basic_search_page',
     '#form' => $form,
     '#results' => $items,
-    '#search' => isset($_GET['page']) ? $_GET['page'] : NULL,
+    '#total_results' => $total_results,
+    '#search' => isset($_GET['search']) ? $_GET['search'] : NULL,
   );
 
+  $build['pager'] = array(
+    '#theme' => 'pager',
+    '#quantity' => 5
+  );
+
+  return $build;
 }
 
 /**
- * Form callback for the form on the join page.
+ * Form callback for the basic search form.
  */
-function culturefeed_pages_join_form() {
+function culturefeed_pages_basic_search_form() {
 
   $form = array();
 
   $form['page'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name of your page'),
+    '#title' => t('Term'),
     '#autocomplete_path' => 'ajax/culturefeed/pages/page-suggestion',
-    '#default_value' => isset($_GET['page']) ? $_GET['page'] : '',
+    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('OK'),
+    '#value' => t('Search page'),
   );
 
   return $form;
@@ -69,13 +87,13 @@ function culturefeed_pages_join_form() {
 }
 
 /**
- * Submit the pages join form.
+ * Submit the basic search form.
  */
-function culturefeed_pages_join_form_submit($form, &$form_state) {
+function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = array(
     $_GET['q'],
-    array('query' => array('page' => $form_state['values']['page'])),
+    array('query' => array('search' => $form_state['values']['page'])),
   );
 
 }

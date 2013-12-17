@@ -6,24 +6,29 @@
 
 
 /**
- * Preprocess the culturefeed pages join page.
- * @see culturefeed-pages-join-page.tpl.php
+ * Preprocess the culturefeed pages basic search page.
+ * @see culturefeed-pages-basic-search-page.tpl.php
  */
-function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
-
-  $variables['message'] = '';
+function culturefeed_pages_preprocess_culturefeed_pages_basic_search_page(&$variables) {
 
   if (!empty($variables['results'])) {
 
     $variables['items'] = array();
     foreach ($variables['results'] as $item) {
-      $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
+      $variables['items'][] = theme('culturefeed_pages_basic_search_result_item', array('item' => $item));
     }
 
   }
 
+  if ($variables['total_results'] > 0) {
+    $variables['total_results_message'] = t("@total pages found for '@search'", array('@total' => $variables['total_results'], '@search' => $variables['search']));
+  }
+  else {
+    $variables['total_results_message'] = t("No pages found for '@search'", array('@search' => $variables['search']));
+  }
+
   $query = drupal_get_query_parameters();
-  $variables['create_message'] = t('Does your organization or association has no page yet?') . ' ' . l(t('Create a new page'), 'pages/add', array('query' => $query));
+  $variables['create_message'] = l(t('Create your own page'), 'pages/add', array('query' => $query));
 
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
@@ -31,29 +36,24 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
 }
 
 /**
- * Preprocess a culturefeed page join result item.
- * @see culturefeed-pages-join-search-result-item.tpl.php
+ * Preprocess a culturefeed page basic search result item.
+ * @see culturefeed-pages-basic-search-result-item.tpl.php
  */
-function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(&$variables) {
+function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item(&$variables) {
 
   $page = $variables['item']->getEntity();
 
   $variables['title'] = $page->getName();
 
-  $address = $page->getAddress();
-  if ($address) {
-    $variables['location']['street'] = check_plain($address->getStreet());
-    $variables['location']['city'] = check_plain($address->getCity());
-    $variables['location']['country'] = check_plain($address->getCountry());
-  }
+  culturefeed_pages_preprocess_culturefeed_page_summary($variables);
+  $variables['description'] = truncate_utf8($variables['description'], 100, FALSE, TRUE);
 
   drupal_add_library('system', 'drupal.ajax');
 
   $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
 
   if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $permissions = $page->getPermissions();
-    $variables['become_member_link'] = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
+    $variables['become_member_url'] = url('culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
   }
 
   // Local storage of the followers for the current user.
@@ -65,18 +65,19 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(
     }
   }
   if (in_array($page->getId(), $i_follow_pages)) {
-    $variables['follow_link'] = l(t('Unfollow'), 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
+    $variables['follow_url'] = url('culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query));
+    $variables['follow_text'] = t('Unfollow');
   }
   else {
-    $variables['follow_link'] = l(t('Follow page'), 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
+    $variables['follow_url'] = url('culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query));
+    $variables['follow_text'] = t('Follow');
   }
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => 'btn btn-link')));
 
 }
 
 /**
- * Preprocess the variables for the page detail.
- * @see culturefeed-page.tpl.php
+ * Preprocess the variables for the page summary.
+ * @see culturefeed-page-summary.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
 

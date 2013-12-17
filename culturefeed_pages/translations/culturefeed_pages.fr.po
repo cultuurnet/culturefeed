@@ -199,8 +199,8 @@ msgid "Add member as administrator"
 msgstr "Ajouter un membre à la liste des administateurs"
 
 #: culturefeed_pages.module:386 includes/helpers.inc:38 theme/theme.inc:69
-msgid "Follow page"
-msgstr "Suivre la page"
+msgid "Follow"
+msgstr "Suivre"
 
 #: culturefeed_pages.module:396 includes/helpers.inc:35
 msgid "Unfollow page"
@@ -861,14 +861,6 @@ msgstr "Envoyer une demande afin de devenir administrateur"
 #: theme/culturefeed-pages-user-search-result.tpl.php:2
 msgid "No users found"
 msgstr "Aucun utilisateur n'a été trouvé"
-
-#: theme/theme.inc:25
-msgid "Does your organization or association has no page yet?"
-msgstr "Votre organisation ou association ne compte pas encore de page ?"
-
-#: theme/theme.inc:25
-msgid "Create a new page"
-msgstr "Créer une nouvelle page"
 
 #: theme/theme.inc:84
 msgid "More info"

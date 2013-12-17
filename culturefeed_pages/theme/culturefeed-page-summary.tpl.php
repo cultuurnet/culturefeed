@@ -36,6 +36,6 @@
 
   <?php print $description ?>
 
-  <?php print culturefeed_search_detail_l('page', $id, $title, $more_text, array('attributes' => array('class' => 'button'))); ?>
+  <a href="<?php print $url; ?>" class="button"><?php print $more_text; ?></a>
 
 </div>
