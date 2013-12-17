@@ -99,8 +99,9 @@ function culturefeed_devel_shutdown() {
     }
   }
 
-  // Don't add output on ajax / drush requests.
-  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+  // Don't add output on ajax / drush / xml requests.
+  $content_type = drupal_get_http_header('content-type');
+  if (drupal_is_cli() || $content_type == 'text/xml' || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
     return;
   }
 
