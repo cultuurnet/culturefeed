@@ -152,6 +152,10 @@ function culturefeed_social_page_activities($type = NULL) {
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
     $data = l($activity->nodeTitle, $url);
 
+    $wrapper = '
+      <div id="delete-wrapper-' . $activity->id . '" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body outer"></div>
+      </div>';
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
@@ -159,7 +163,7 @@ function culturefeed_social_page_activities($type = NULL) {
         $type_text,
         format_interval(REQUEST_TIME - $activity->creationDate) . ' ' . t('ago <br />on') . ' ' . $activity->createdVia,
         drupal_render($privacy),
-        drupal_render($delete) . '<div id="delete-wrapper-' . $activity->id . '"></div>',
+        drupal_render($delete) . $wrapper,
       ),
     );
   }
