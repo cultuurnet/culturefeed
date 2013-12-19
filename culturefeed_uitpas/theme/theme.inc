@@ -369,14 +369,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   if (count($promotion->validForCities)) {
 
     $valid_for_cities = $promotion->validForCities;
-    asort($valid_for_cities);
-    $list = array(
-      'title' => t('Only available for'),
-      'attributes' => array(),
-      'type' => 'ul',
-      'items' => $valid_for_cities,
-    );
-    $vars['available'] = theme_item_list($list);
+    $vars['available'] = t('Only available for') . " " . implode(', ', $valid_for_cities);
 
   }
 
