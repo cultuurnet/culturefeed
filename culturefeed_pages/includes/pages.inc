@@ -79,7 +79,7 @@ function culturefeed_pages_basic_search_form() {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search page'),
+    '#value' => t('Search'),
   );
 
   return $form;
