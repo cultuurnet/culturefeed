@@ -32,7 +32,7 @@
 
 <div class="profile_uitpas">
 
-  <h2><?php print $uitpas_title; ?></h2>
+  <h3><?php print $uitpas_title; ?></h3>
 
   <p class="uitpas_numbers"><?php print $uitpas_numbers; ?></p>
 
@@ -55,7 +55,6 @@
     <li><?php print $email; ?></li>
   </ul>
 
-  <!--
   <?php if ($kansen_statuut && $kansen_statuut_valid_end_date): ?>
   <div class="status">
     <h3><?php print $status_title; ?></h3>
@@ -65,7 +64,6 @@
     <?php endif; ?>
   </div>
   <?php endif; ?>
-  -->
 
   <?php if ($outro): ?>
   <p><?php print $outro; ?></p>
