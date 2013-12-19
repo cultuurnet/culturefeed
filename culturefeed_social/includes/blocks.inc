@@ -341,6 +341,8 @@ function culturefeed_social_block_my_activity_summary($account) {
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,
+      '#private' => $private,
+      '#account_name' => $account->name,
     );
   }
 

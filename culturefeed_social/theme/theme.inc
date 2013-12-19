@@ -327,6 +327,13 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
 
   }
 
+  if ($variables['private']) {
+    $variables['subject'] = t('My activities');
+  }
+  else {
+    $variables['subject'] = t('Activities of @username', array('@username' => $variables['account_name']));
+  }
+
 }
 
 /**

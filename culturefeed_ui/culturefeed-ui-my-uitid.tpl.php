@@ -66,7 +66,7 @@
 
 <?php if (!empty($following)): ?>
 <div class="following">
-  <?php print t('Pages of which i\'m a member') ?>
+  <?php print ($view_own_page ? t('Pages of which i\'m a member') : t('Pages of which @username is a member', array('@username' => $user->nick))); ?>
   <ul>
   <?php foreach ($following as $following_page) :?>
     <li><?php print $following_page; ?></li>

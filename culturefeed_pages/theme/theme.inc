@@ -446,7 +446,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
 function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variables) {
 
   $build = $variables['build'];
-  $variables['user_url'] = url('user/' . culturefeed_get_uid_for_cf_uid($variables['user']->id, $variables['user']->nick));
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($variables['user']->id, $variables['user']->nick);
+  $variables['user_url'] = url('user/' . $drupal_uid);
 
   if (!empty($build['member_pages'])) {
     $variables['my_pages'] = drupal_render($build['member_pages']);
@@ -458,6 +459,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 
   $variables['search_pages'] = drupal_render($build['search-pages']);
 
+  $variables['view_own_page'] = FALSE;
+  if ($account = menu_get_object('user', 1) && $account->uid == $drupal_uid) {
+    $variables['view_own_page'] = TRUE;
+  }
 }
 
 /**

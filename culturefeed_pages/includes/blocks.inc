@@ -46,7 +46,12 @@ function culturefeed_pages_block_fellow_members($account) {
   }
 
   $block = array();
-  $block['subject'] = t('My colleague\'s');
+  if ($account->uid != $GLOBALS['user']->uid) {
+    $block['subject'] = t('Colleague\'s of @username', array('@username' => $account->name));
+  }
+  else {
+    $block['subject'] = t('My colleague\'s');
+  }
   $block['content'] = $build;
 
   return $block;
@@ -75,7 +80,13 @@ function culturefeed_pages_block_pages_user_follows($account) {
   }
 
   $block = array();
-  $block['subject'] = t('Pages I follow');
+  if ($GLOBALS['user']->uid == $account->uid) {
+    $block['subject'] = t('Pages I follow');
+  }
+  else {
+    $block['subject'] = t('@username follows', array('@username' => $account->name));
+  }
+
   $block['content'] = array(
     '#theme' => 'culturefeed_pages_following_pages_block',
     '#following' => $cf_account->following,

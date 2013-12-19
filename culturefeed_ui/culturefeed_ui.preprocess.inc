@@ -255,8 +255,14 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['contextual_links'] = drupal_render($item_list);
 
   // nick
-  $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+  $url_profile = 'user/' . $drupal_uid;
   $variables['nick'] = l($account->nick, $url_profile);
+
+  $variables['view_own_page'] = FALSE;
+  if ($GLOBALS['user']->uid == $drupal_uid) {
+    $variables['view_own_page'] = TRUE;
+  }
 
   // name
   $name = array();
