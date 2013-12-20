@@ -23,7 +23,7 @@ function culturefeed_pages_page_basic_search() {
 
       // Prepare multiple search terms for better match
       $search_terms = str_replace('-', ' ', $_GET['search']);
-      $search_terms = explode(' ', $search_terms);  
+      $search_terms = explode(' ', $search_terms);
       foreach ($search_terms as $search_term) {
         $search_query[] = '(' . $search_term . ' OR *' . $search_term . '*)' ;
       }
@@ -1172,7 +1172,7 @@ function culturefeed_pages_page_my_pages() {
           $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
         }
 
-        if ($is_page_admin) {
+        if ($is_page_admin || !isset($membership)) {
           $admin_link = l(t('Administer page'), $path);
         }
         else {
@@ -1203,7 +1203,7 @@ function culturefeed_pages_page_my_pages() {
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $build['search-pages'] = culturefeed_pages_join_page_search();
+  $build['search-pages'] = culturefeed_pages_page_basic_search();
 
   return array(
     '#theme' => 'culturefeed_pages_page_my_pages',
