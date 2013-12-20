@@ -398,14 +398,15 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     try {
       $event = culturefeed_agenda_event_load($relations[key($relations)]->getCdbid());
       $variables['event'] = $event;
-      $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-      if ($event_detail) {
-        $variables['when'] = $event_detail->getCalendarSummary();
+      if ($event) {
+        $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+        if ($event_detail) {
+          $variables['when'] = $event_detail->getCalendarSummary();
+        }
+
+        // Add location information from the event.
+        $variables['location'] = culturefeed_agenda_get_location_of_event($event->getEntity());
       }
-
-      // Add location information from the event.
-      $variables['location'] = culturefeed_agenda_get_location_of_event($event->getEntity());
-
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_agenda', $e);
