@@ -25,7 +25,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   $form['culturefeed_uitpas_remind_user_without_uitpas_text'] = array(
     '#type' => 'textarea',
     '#title' => t('The message to show to users without UiTPAS'),
-    '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('Je bent succesvol aangemeld, maar je UiTPAS werd nog niet online geregistreerd. Vul <a href="@register_url">de nodige gegevens</a> in om jouw persoonlijke voordelen en puntensaldo te bekijken. <a href="@toggle_url">Toon dit bericht niet opnieuw.</a>')),
+    '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.')),
     '#description' => check_plain(t('You can use @register_url to insert the registration URL in the message, and @toggle_url to insert the URL to toggle the message off, for example: Go <a href="@register_url">register your UiTPAS</a> now! <a href="@toggle_url">Do not show this message again<a>.')),
     '#states' => array(
       'visible' => array(
