@@ -57,7 +57,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
   // profile
   $variables['profile_edit_link'] = '';
   if (DrupalCultureFeed::getLoggedInUserId() == $account->id) {
-    $variables['profile_edit_link'] = l('Bewerk jouw UiTiD-profiel', 'culturefeed/profile/edit', array('attributes' => array('class' => array('profile-edit-link'))));
+    $variables['profile_edit_link'] = l(t('Edit'), 'culturefeed/profile/edit', array('attributes' => array('class' => array('profile-edit-link'))));
   }
 
   $variables['memberships'] = $account->pageMemberships;
