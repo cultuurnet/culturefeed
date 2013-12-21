@@ -74,7 +74,7 @@ function culturefeed_uitpas_menu() {
       'title callback' => 'culturefeed_uitpas_registration_confirmation_title',
       'page callback' => 'culturefeed_uitpas_registration_confirmation_get',
       'file' => 'includes/registration_confirmation.inc',
-      'access callback' => TRUE,
+      'access callback' => 'culturefeed_is_culturefeed_user',
       'type' => MENU_CALLBACK,
     ),
     'activate/%/%' => array(
