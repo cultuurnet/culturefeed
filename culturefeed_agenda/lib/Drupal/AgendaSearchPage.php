@@ -17,6 +17,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * Initializes the search with data from the URL query parameters.
    */
   public function initialize() {
+
     // Only initialize once.
     if (empty($this->facetComponent)) {
       $this->facetComponent = new Facet\FacetComponent();

@@ -30,6 +30,8 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
         'facet' => array(),
       );
 
+      $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
+
       if (!empty($params['search'])) {
         $this->addQueryTerm($params['search']);
       }

@@ -645,3 +645,5 @@ msgstr "Maakt een standaard user interface voor Culturefeed"
 msgid "CultureFeed"
 msgstr "CultureFeed"
 
+msgid "The maximum of 250 characters is exceeded"
+msgstr "Het maximum aantal van 250 karakters is overschreden"
