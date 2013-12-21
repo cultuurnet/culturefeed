@@ -144,6 +144,15 @@ function culturefeed_search_views_data() {
 
   // Fields.
 
+  // Short Description.
+  $data['cdb_items']['description'] = array(
+    'title' => t('Short Description'),
+    'help' => t('Short Description of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_short_description',
+    ),
+  );
+
   // Calendar summary.
   $data['cdb_items']['when'] = array(
     'title' => t('Calendar summary'),

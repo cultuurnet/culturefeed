@@ -16,7 +16,10 @@ function culturefeed_pages_join_page_search() {
 
     try {
 
+      $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
       $parameters = array();
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
       $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
       $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();

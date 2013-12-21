@@ -17,6 +17,15 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-advantage',
     ),
+    'culturefeed_uitpas_advantages' => array(
+      'variables' => array(
+        'advantages' => array(),
+        'advantages_total' => 0,
+        'advantages_pager_element' => 0,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+    ),
     'culturefeed_uitpas_advantages_promotions' => array(
       'variables' => array(
         'advantages' => array(),
@@ -92,6 +101,16 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
     ),
+    'culturefeed_uitpas_promotions' => array(
+      'variables' => array(
+        'title' => t('Promotions'),
+        'promotions' => array(),
+        'promotions_total' => 0,
+        'promotions_pager_element' => 0,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+    ),
     'culturefeed_uitpas_promotions_highlight' => array(
       'variables' => array('promotions' => array()),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
@@ -103,6 +122,18 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-recent-actions',
+    ),
+    'culturefeed_uitpas_register_where' => array(
+      'variables' => array(
+        'pos' => array(),
+        'pos_total' => 0,
+        'pos_pager_element' => 0,
+        'filters' => array(),
+        'actors' => array(),
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-register-where',
     ),
 
   );
@@ -127,11 +158,11 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
           if ($condition->definition == $condition::DEFINITION_KANSARM) {
 
             if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff with !system: !tariff', array('!system' => $card_system->name, '!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff with @system: !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
             }
 
             if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff for pass holders uit other region: !tariff', array('!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff for pass holders from another region: !tariff', array('!tariff' => $key->tariff));
             }
 
           }

@@ -1,6 +1,5 @@
-# $Id$
 #
-# German translation of Drupal (general)
+# Dutch translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_agenda.module: n/a
@@ -22,274 +21,314 @@
 #  theme/culturefeed-agenda-production-program.tpl.php: n/a
 #  theme/theme.inc: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-10-24 12:17+0200\n"
-"PO-Revision-Date: 2013-10-24 12:17+0200\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: German <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-07-23 13:53+0200\n"
+"PO-Revision-Date: 2013-11-21 16:43+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
-#: culturefeed_agenda.module:137 includes/blocks.inc:321
+#: culturefeed_agenda.module:129 includes/blocks.inc:315
 msgid "Agenda"
-msgstr ""
+msgstr "Agenda"
 
-#: culturefeed_agenda.module:138
+#: culturefeed_agenda.module:130
 msgid "Activities"
-msgstr ""
+msgstr "Aktivitäten"
 
-#: culturefeed_agenda.module:141
+#: culturefeed_agenda.module:133
 msgid "Relevance"
-msgstr ""
+msgstr "Relevanz"
 
-#: culturefeed_agenda.module:142
+#: culturefeed_agenda.module:134
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
-#: culturefeed_agenda.module:143
+#: culturefeed_agenda.module:135
 msgid "Recommended"
-msgstr ""
+msgstr "Anzahl Male empfohlen"
 
-#: culturefeed_agenda.module:144 theme/culturefeed-event.tpl.php:12 theme/culturefeed-production.tpl.php:12
+#: culturefeed_agenda.module:136 theme/culturefeed-event.tpl.php:12
+#: theme/culturefeed-production.tpl.php:12
 msgid "Reactions"
-msgstr ""
+msgstr "Anzahl Reaktionen"
 
-#: culturefeed_agenda.module:160
+#: culturefeed_agenda.module:152
 msgid "Culturefeed agenda: related activities"
 msgstr ""
 
-#: culturefeed_agenda.module:165
+#: culturefeed_agenda.module:157
 msgid "Culturefeed agenda: search events"
 msgstr ""
 
-#: culturefeed_agenda.module:170
+#: culturefeed_agenda.module:162
 msgid "Culturefeed agenda: actor program"
 msgstr ""
 
-#: culturefeed_agenda.module:175
+#: culturefeed_agenda.module:167
 msgid "Culturefeed agenda: production program"
 msgstr ""
 
-#: culturefeed_agenda.module:192;243
+#: culturefeed_agenda.module:184;235
 msgid "None"
+msgstr "Keine"
+
+#: culturefeed_agenda.module:187
+msgid "Category type to search related events"
+msgstr "Kategorie, um relevante Angaben zu suchen"
+
+#: culturefeed_agenda.module:191
+msgid ""
+"The category type to use for searching related activities. Leave empty if "
+"you only want to search on range."
 msgstr ""
+"Die Kategorie, um relevante Angaben zu suchen. Sie können dieses Feld auch "
+"leer lassen."
 
 #: culturefeed_agenda.module:195
-msgid "Category type to search related events"
-msgstr ""
-
-#: culturefeed_agenda.module:199
-msgid "The category type to use for searching related activities. Leave empty if you only want to search on range."
-msgstr ""
-
-#: culturefeed_agenda.module:203
 msgid "Radius to search in km"
-msgstr ""
+msgstr "In einem Umkreis von"
 
-#: culturefeed_agenda.module:206
-msgid "Search on the given radius. Leave empty to skip radius search. Radius search will only be done when viewing an event."
+#: culturefeed_agenda.module:198
+msgid ""
+"Search on the given radius. Leave empty to skip radius search. Radius search "
+"will only be done when viewing an event."
 msgstr ""
+"Nach Umkreis sortieren. Leer lassen, um den Umkreis nicht in die Suche "
+"einzubeziehen. Suche mit Umkreis findet nur statt, wenn Sie sich eine "
+"Aktivität ansehen."
 
-#: culturefeed_agenda.module:210
+#: culturefeed_agenda.module:202
 msgid "Extra filter query for the result set"
-msgstr ""
+msgstr "Ihre Suche verfeinern"
 
-#: culturefeed_agenda.module:213
+#: culturefeed_agenda.module:205
 msgid "Make sure this is a correct solr query. Example title=mytitle"
 msgstr ""
+"Achten Sie darauf, dass die Solr Query stimmt. Zum Beispiel title=mytitle"
 
-#: culturefeed_agenda.module:217
+#: culturefeed_agenda.module:209
 msgid "Sort field"
-msgstr ""
+msgstr "Feld sortieren"
+
+#: culturefeed_agenda.module:212
+msgid "Field to sort on. Example startdate"
+msgstr "Zu sortierendes Feld. Zum Beispiel Anfangsdatum"
+
+#: culturefeed_agenda.module:216
+msgid "Sort direction"
+msgstr "Reihenfolge"
+
+#: culturefeed_agenda.module:219
+msgid "Ascending"
+msgstr "Aufsteigend"
 
 #: culturefeed_agenda.module:220
-msgid "Field to sort on. Example startdate"
-msgstr ""
-
-#: culturefeed_agenda.module:224
-msgid "Sort direction"
-msgstr ""
-
-#: culturefeed_agenda.module:227
-msgid "Ascending"
-msgstr ""
-
-#: culturefeed_agenda.module:228
 msgid "Descending"
-msgstr ""
+msgstr "Absteigend"
 
-#: culturefeed_agenda.module:234
+#: culturefeed_agenda.module:226
 msgid "Items to show"
-msgstr ""
+msgstr "Anzuzeigende Items"
 
-#: culturefeed_agenda.module:247
+#: culturefeed_agenda.module:239
 msgid "Categories to show in the dropdown"
-msgstr ""
+msgstr "Anzuzeigende Kategorien in der Auswahlliste"
 
-#: culturefeed_agenda.module:324
+#: culturefeed_agenda.module:316
 msgid "Near "
-msgstr ""
+msgstr "In der Nähe von"
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed Agenda"
-msgstr ""
+msgstr "CultureFeed Agenda"
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed Agenda makes it possible to view events and productions."
 msgstr ""
+"Mit CultureFeed Agenda können Sie sich Aktivitäten und Aufführungen ansehen."
 
 #: culturefeed_agenda.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "CultureFeed"
 
 #: includes/blocks.inc:104
 msgid "Related activities"
-msgstr ""
+msgstr "Verbundene Aktivitäten"
 
 #: includes/blocks.inc:128
 msgid "All categories"
-msgstr ""
+msgstr "Alle Kategorien"
 
 #: includes/blocks.inc:146
 msgid "Search string"
-msgstr ""
+msgstr "Suche"
 
 #: includes/blocks.inc:154
 msgid "Activities near my current location:"
-msgstr ""
+msgstr "Aktivitäten in der Nähe meines aktuellen Standorts:"
 
 #: includes/blocks.inc:172
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
-#: includes/helpers.inc:299;366 lib/Drupal/AgendaSearchPage.php:85
+#: includes/helpers.inc:295;362 lib/Drupal/AgendaSearchPage.php:88
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
-#: lib/Drupal/AgendaSearchPage.php:136
+#: lib/Drupal/AgendaSearchPage.php:139
 msgid "All activities"
-msgstr ""
+msgstr "Alle Aktivitäten"
 
-#: theme/culturefeed-actor-short-summary.tpl.php:17 theme/culturefeed-actor-summary.tpl.php:17 theme/culturefeed-event-short-summary.tpl.php:21 theme/culturefeed-event-summary.tpl.php:67 theme/culturefeed-production-short-summary.tpl.php:21 theme/culturefeed-production-summary.tpl.php:65
+#: theme/culturefeed-actor-short-summary.tpl.php:17
+#: theme/culturefeed-actor-summary.tpl.php:17
+#: theme/culturefeed-event-short-summary.tpl.php:21
+#: theme/culturefeed-event-summary.tpl.php:67
+#: theme/culturefeed-production-short-summary.tpl.php:21
+#: theme/culturefeed-production-summary.tpl.php:65
 msgid "More info"
-msgstr ""
+msgstr "Mehr Info"
 
 #: theme/culturefeed-actor.tpl.php:14
 msgid "Summarized"
-msgstr ""
+msgstr "Zusammengefasst"
 
-#: theme/culturefeed-actor.tpl.php:19 theme/culturefeed-event-summary.tpl.php:39 theme/culturefeed-event.tpl.php:31 theme/culturefeed-production-summary.tpl.php:42 theme/culturefeed-production.tpl.php:31
+#: theme/culturefeed-actor.tpl.php:19
+#: theme/culturefeed-event-summary.tpl.php:39
+#: theme/culturefeed-event.tpl.php:31
+#: theme/culturefeed-production-summary.tpl.php:42
+#: theme/culturefeed-production.tpl.php:31
 msgid "Where"
-msgstr ""
+msgstr "Wo"
 
-#: theme/culturefeed-actor.tpl.php:34 theme/culturefeed-event.tpl.php:70
+#: theme/culturefeed-actor.tpl.php:34 theme/culturefeed-event.tpl.php:62
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
-#: theme/culturefeed-actor.tpl.php:37 theme/culturefeed-event.tpl.php:73
+#: theme/culturefeed-actor.tpl.php:37 theme/culturefeed-event.tpl.php:65
 msgid "Mail"
-msgstr ""
+msgstr "Mail"
 
-#: theme/culturefeed-actor.tpl.php:40 theme/culturefeed-event.tpl.php:76
+#: theme/culturefeed-actor.tpl.php:40 theme/culturefeed-event.tpl.php:68
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
-#: theme/culturefeed-actor.tpl.php:43 theme/culturefeed-event.tpl.php:79
+#: theme/culturefeed-actor.tpl.php:43 theme/culturefeed-event.tpl.php:71
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
-#: theme/culturefeed-actor.tpl.php:49 theme/culturefeed-event.tpl.php:106 theme/culturefeed-production.tpl.php:75
+#: theme/culturefeed-actor.tpl.php:49 theme/culturefeed-event.tpl.php:98
+#: theme/culturefeed-production.tpl.php:75
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: theme/culturefeed-agenda-actor-program-item.tpl.php:22
 msgid "More details"
-msgstr ""
+msgstr "Mehr Details"
 
 #: theme/culturefeed-agenda-actor-program.tpl.php:14
 msgid "More"
-msgstr ""
+msgstr "Mehr"
 
 #: theme/culturefeed-agenda-production-program.tpl.php:18
 msgid "Show all"
-msgstr ""
+msgstr "Alle anzeigen"
 
-#: theme/culturefeed-event-summary.tpl.php:16 theme/culturefeed-event.tpl.php:15 theme/culturefeed-production-summary.tpl.php:16 theme/culturefeed-production.tpl.php:15
+#: theme/culturefeed-event-summary.tpl.php:16
+#: theme/culturefeed-event.tpl.php:15
+#: theme/culturefeed-production-summary.tpl.php:16
+#: theme/culturefeed-production.tpl.php:15
 msgid "Read reactions"
-msgstr ""
+msgstr "Reaktionen lesen"
 
-#: theme/culturefeed-event-summary.tpl.php:17 theme/culturefeed-event.tpl.php:16 theme/culturefeed-production-summary.tpl.php:17 theme/culturefeed-production.tpl.php:16
+#: theme/culturefeed-event-summary.tpl.php:17
+#: theme/culturefeed-event.tpl.php:16
+#: theme/culturefeed-production-summary.tpl.php:17
+#: theme/culturefeed-production.tpl.php:16
 msgid "Write reaction"
-msgstr ""
+msgstr "Eine Reaktion schreiben"
 
-#: theme/culturefeed-event-summary.tpl.php:20 theme/culturefeed-event.tpl.php:19 theme/culturefeed-production-summary.tpl.php:20 theme/culturefeed-production.tpl.php:19
+#: theme/culturefeed-event-summary.tpl.php:20
+#: theme/culturefeed-event.tpl.php:19
+#: theme/culturefeed-production-summary.tpl.php:20
+#: theme/culturefeed-production.tpl.php:19
 msgid "Be the first to write a review"
-msgstr ""
+msgstr "Als Erster eine Reaktion schreiben"
 
-#: theme/culturefeed-event-summary.tpl.php:24 theme/culturefeed-production-summary.tpl.php:24
+#: theme/culturefeed-event-summary.tpl.php:24
+#: theme/culturefeed-production-summary.tpl.php:24
 msgid "time recommended"
-msgstr ""
+msgstr "Mal empfohlen"
 
-#: theme/culturefeed-event-summary.tpl.php:44 theme/culturefeed-event.tpl.php:54 theme/culturefeed-production-summary.tpl.php:47 theme/culturefeed-production.tpl.php:48
+#: theme/culturefeed-event-summary.tpl.php:44
+#: theme/culturefeed-event.tpl.php:46
+#: theme/culturefeed-production-summary.tpl.php:47
+#: theme/culturefeed-production.tpl.php:48
 msgid "When"
-msgstr ""
+msgstr "Wann"
 
-#: theme/culturefeed-event-summary.tpl.php:49 theme/culturefeed-event.tpl.php:59 theme/culturefeed-production.tpl.php:53
+#: theme/culturefeed-event-summary.tpl.php:49
+#: theme/culturefeed-event.tpl.php:51 theme/culturefeed-production.tpl.php:53
 msgid "Organization"
-msgstr ""
+msgstr "Organisation"
 
-#: theme/culturefeed-event-summary.tpl.php:56 theme/culturefeed-event.tpl.php:23;90 theme/culturefeed-production-summary.tpl.php:54 theme/culturefeed-production.tpl.php:23;64
+#: theme/culturefeed-event-summary.tpl.php:56
+#: theme/culturefeed-event.tpl.php:23;82
+#: theme/culturefeed-production-summary.tpl.php:54
+#: theme/culturefeed-production.tpl.php:23;64
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: theme/culturefeed-event.tpl.php:26 theme/culturefeed-production.tpl.php:26
 msgid "Short description"
-msgstr ""
+msgstr "Kurzbeschreibung"
 
-#: theme/culturefeed-event.tpl.php:85
+#: theme/culturefeed-event.tpl.php:77
 msgid "Age"
-msgstr ""
+msgstr "Alter"
 
-#: theme/culturefeed-event.tpl.php:101
+#: theme/culturefeed-event.tpl.php:93
 msgid "Price"
-msgstr ""
+msgstr "Preis"
 
 #: theme/culturefeed-production-summary.tpl.php:28
 msgid "attendee"
-msgid_plural "attendees"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "Person geht"
+
+#: theme/culturefeed-production-summary.tpl.php:28
+msgid "attendees"
+msgstr "Personen gehen"
 
 #: theme/theme.inc:127
 msgid "free"
-msgstr ""
+msgstr "gratis"
 
 #: theme/theme.inc:135
 msgid "Buy tickets"
-msgstr ""
+msgstr "Tickets bestellen"
 
-#: theme/theme.inc:380
+#: theme/theme.inc:357
 msgid "multiple locations"
-msgstr ""
+msgstr "mehrere Orte"
 
-#: theme/theme.inc:381
+#: theme/theme.inc:358
 msgid "multiple dates"
-msgstr ""
+msgstr "mehrere Termine"
 
-#: theme/theme.inc:415
+#: theme/theme.inc:392
 msgid "on displacement in"
-msgstr ""
+msgstr "unterwegs in"
 
-#: theme/theme.inc:421
+#: theme/theme.inc:398
 msgid "by appointment only"
-msgstr ""
+msgstr "Nur nach Vereinbarung"
 
-#: theme/theme.inc:513
+#: theme/theme.inc:503
 msgid "Other"
-msgstr ""
-
+msgstr "Andere"

@@ -1,130 +1,161 @@
-# $Id$
 #
-# German translation of Drupal (general)
+# Dutch translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_userpoints_ui.module: n/a
 #  theme/culturefeed-userpoints-earned-overview.tpl.php: n/a
-#  theme/culturefeed-userpoints-exchange-confirmation.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-exchange-page.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php: n/a
+#  theme/culturefeed-userpoints-ui-wishlist.tpl.php: n/a
 #  theme/theme.inc: n/a
 #  culturefeed_userpoints_ui.info: n/a
 #  includes/admin.inc: n/a
 #  includes/blocks.inc: n/a
 #  includes/pages.inc: n/a
+#  theme/culturefeed-userpoints-exchange-confirmation.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-detail-page.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-exchange-form.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-my-balance.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-promotions-list.tpl.php: n/a
 #  theme/culturefeed-userpoints-ui-promotions-page.tpl.php: n/a
-#  theme/culturefeed-userpoints-ui-wishlist.tpl.php: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-10-24 12:27+0200\n"
-"PO-Revision-Date: 2013-10-24 12:27+0200\n"
+"POT-Creation-Date: 2013-08-02 09:32+0200\n"
+"PO-Revision-Date: 2013-11-22 09:57+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: German <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed_userpoints_ui.module:109;113;117
 msgid "There was an error while loading the promotion."
-msgstr ""
+msgstr "Beim Laden der Werbeaktion ist ein Fehler aufgetreten."
 
-#: culturefeed_userpoints_ui.module:254
+#: culturefeed_userpoints_ui.module:265
 msgid "Culturefeed Userpoints UI: Your balance"
 msgstr ""
 
-#: culturefeed_userpoints_ui.module:259
+#: culturefeed_userpoints_ui.module:270
 msgid "Culturefeed Userpoints UI: More promotions"
 msgstr ""
 
-#: culturefeed_userpoints_ui.module:277;352
+#: culturefeed_userpoints_ui.module:288;363
 msgid "My points balance"
-msgstr ""
+msgstr "Mein Punkteguthaben"
 
-#: culturefeed_userpoints_ui.module:282
+#: culturefeed_userpoints_ui.module:293
 msgid "More promotions"
-msgstr ""
+msgstr "Mehr Vorteile"
 
-#: culturefeed_userpoints_ui.module:305
+#: culturefeed_userpoints_ui.module:316
 msgid "Request a promotion | request by"
-msgstr ""
+msgstr "Antrag auf Erhalt von Vorteil | Antrag von"
 
-#: culturefeed_userpoints_ui.module:317
+#: culturefeed_userpoints_ui.module:328
 msgid "amount"
-msgstr ""
+msgstr "Anzahl"
 
-#: culturefeed_userpoints_ui.module:317
+#: culturefeed_userpoints_ui.module:328
 msgid "resale value"
-msgstr ""
+msgstr "Tauschwert"
 
-#: culturefeed_userpoints_ui.module:317 theme/culturefeed-userpoints-earned-overview.tpl.php:1 theme/culturefeed-userpoints-exchange-confirmation.tpl.php:1 theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39 theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60
+#: culturefeed_userpoints_ui.module:328
+#: theme/culturefeed-userpoints-earned-overview.tpl.php:1
+#: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
+#: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60
+#: theme/culturefeed-userpoints-ui-wishlist.tpl.php:9
 msgid "points"
-msgstr ""
+msgstr "Punkte"
 
-#: culturefeed_userpoints_ui.module:318
+#: culturefeed_userpoints_ui.module:329
 msgid "View online"
-msgstr ""
+msgstr "Online ansehen"
 
-#: culturefeed_userpoints_ui.module:325
-msgid "Culturefeed User ID:\n        @code\n\n        Promotion:\n          @promotion\n\n        Contact:\n          - @givenName @familyName\n          - @street\n          - @city\n          - @mbox\n\n        Admin:\n          @url_admin "
+#: culturefeed_userpoints_ui.module:336
+msgid ""
+"Culturefeed User ID:\n"
+"        @code\n"
+"\n"
+"        Promotion:\n"
+"          @promotion\n"
+"\n"
+"        Contact:\n"
+"          - @givenName @familyName\n"
+"          - @street\n"
+"          - @city\n"
+"          - @mbox\n"
+"\n"
+"        Admin:\n"
+"          @url_admin "
 msgstr ""
+"CultureFeed User ID:\n"
+" @code\n"
+"\n"
+" Vorteil:\n"
+" @promotion\n"
+"\n"
+" Kontaktangaben:\n"
+" - @givenName @familyName\n"
+" - @street\n"
+" - @city\n"
+" - @mbox\n"
+"\n"
+" Verwaltung:\n"
+" @url_admin"
 
-#: culturefeed_userpoints_ui.module:354
+#: culturefeed_userpoints_ui.module:365
 msgid "See the overview of your earned points"
-msgstr ""
+msgstr "Ihre Punkteübersicht ansehen"
 
-#: culturefeed_userpoints_ui.module:373 theme/theme.inc:323
+#: culturefeed_userpoints_ui.module:383 theme/theme.inc:324
 msgid "Exchange"
-msgstr ""
+msgstr "Eintauschen"
 
-#: culturefeed_userpoints_ui.module:484
+#: culturefeed_userpoints_ui.module:443
 msgid "The promotion has been added to your basket promotion."
-msgstr ""
+msgstr "Der Vorteil wurde Ihrem Werbeaktions-Warenkorb hinzugefügt."
 
-#: culturefeed_userpoints_ui.module:518
+#: culturefeed_userpoints_ui.module:477
 msgid "You do not have enough points"
-msgstr ""
+msgstr "Sie haben nicht genug Punkte"
 
 #: culturefeed_userpoints_ui.module:21
 msgid "Exchange your points"
-msgstr ""
+msgstr "Ihre Punkte eintauschen"
 
 #: culturefeed_userpoints_ui.module:23
 msgid "Exchange your userpoints"
-msgstr ""
+msgstr "Ihre Punkte eintauschen"
 
 #: culturefeed_userpoints_ui.module:30;59
 msgid "Promotions"
-msgstr ""
+msgstr "Vorteile"
 
 #: culturefeed_userpoints_ui.module:32
 msgid "Promotions list"
-msgstr ""
+msgstr "Übersicht der Vorteile"
 
 #: culturefeed_userpoints_ui.module:39
 msgid "Select promotion"
-msgstr ""
+msgstr "Vorteil auswählen"
 
 #: culturefeed_userpoints_ui.module:41
 msgid "Select the promotion to exchange for userpoints."
-msgstr ""
+msgstr "Einen Vorteil auswählen, um Ihre Punkte einzutauschen"
 
 #: culturefeed_userpoints_ui.module:49
 msgid "Deselect promotion"
-msgstr ""
+msgstr "Vorteil aus Auswahl löschen"
 
 #: culturefeed_userpoints_ui.module:51
 msgid "Remove the promotion from the wishlist."
-msgstr ""
+msgstr "Vorteil aus Ihrer Wunschliste löschen"
 
 #: culturefeed_userpoints_ui.module:67
 msgid "Culturefeed Userpoints User Interface"
@@ -133,18 +164,19 @@ msgstr ""
 #: culturefeed_userpoints_ui.module:68
 msgid "All configurations to adjust the behavior of userpoints for this site"
 msgstr ""
+"Alle Änderungen der Konfiguration beeinflussen die Funktionsweise der Punkte"
 
 #: culturefeed_userpoints_ui.module:76
 msgid "Detail"
-msgstr ""
+msgstr "Details"
 
 #: culturefeed_userpoints_ui.module:78
 msgid "Detail of a promotion"
-msgstr ""
+msgstr "Details eines Vorteils"
 
 #: culturefeed_userpoints_ui.module:86
 msgid "Points list"
-msgstr ""
+msgstr "Punkteübersicht"
 
 #: culturefeed_userpoints_ui.info:0
 msgid "CultureFeed Userpoints UI"
@@ -156,231 +188,255 @@ msgstr ""
 
 #: culturefeed_userpoints_ui.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "CultureFeed"
 
 #: includes/admin.inc:10
 msgid "Exchange ratio"
-msgstr ""
+msgstr "Tauschverhältnis"
 
 #: includes/admin.inc:12
-msgid "Exchange ratio to recalculate points for this site. E.g. \"0.03 points is worth 1 point on this site.\""
+msgid ""
+"Exchange ratio to recalculate points for this site. E.g. \"0.03 points is "
+"worth 1 point on this site.\""
 msgstr ""
+"Das Tauschverhältnis, um Punkte für diese Site erneut zu berechnen: z. B. "
+"\"0,03 Punkte sind auf dieser Site 1 Punkt wert"
 
 #: includes/admin.inc:17
 msgid "Destination email when an exchange has been done"
-msgstr ""
+msgstr "Benachrichtigen, wenn ein Tausch stattgefunden hat."
 
 #: includes/blocks.inc:65;69;73 includes/pages.inc:22;26;30;78;82;86
 msgid "There was an error while loading the promotions."
-msgstr ""
+msgstr "Beim Laden der Werbeaktionen ist ein Fehler aufgetreten."
 
 #: includes/pages.inc:126
 msgid "The advantage was removed from your promotions."
-msgstr ""
+msgstr "Der Vorteil wurde aus Ihren Vorteilen gelöscht."
 
 #: includes/pages.inc:202
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: includes/pages.inc:205
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: includes/pages.inc:249
 msgid "Email address"
-msgstr ""
+msgstr "E-Mail-Adresse"
 
 #: includes/pages.inc:256
 msgid "Family name"
-msgstr ""
+msgstr "Name"
 
 #: includes/pages.inc:263
 msgid "First name"
-msgstr ""
+msgstr "Vorname"
 
 #: includes/pages.inc:270
 msgid "Street"
-msgstr ""
+msgstr "Straße und Hausnummer"
 
 #: includes/pages.inc:277
 msgid "Zipcode"
-msgstr ""
+msgstr "Postleitzahl"
 
 #: includes/pages.inc:284
 msgid "City"
-msgstr ""
+msgstr "Wohnort"
 
 #: includes/pages.inc:291
 msgid "Get promotion"
-msgstr ""
+msgstr "Geschenk anfordern"
 
 #: includes/pages.inc:308
 msgid "You must choose at least one promotion."
-msgstr ""
+msgstr "Sie müssen mindestens 1 Werbeaktion auswählen."
 
 #: includes/pages.inc:316
 msgid "You do not have enough points to order this"
-msgstr ""
+msgstr "Sie haben nicht genug Punkte, um dies zu bestellen"
 
 #: includes/pages.inc:331
-msgid "You are not allowed to cashin this promotions because the allowed amount has been exceeded."
+msgid ""
+"You are not allowed to cashin this promotions because the allowed amount has "
+"been exceeded."
 msgstr ""
+"Der Vorteil kann nicht angefordert werden. Die maximal zulässige Anzahl "
+"wurde überschritten."
 
 #: includes/pages.inc:334;340
 msgid "It is not possible to process the order"
-msgstr ""
+msgstr "Die Bestellung kann nicht weitergeleitet werden"
 
 #: includes/pages.inc:371
 msgid "An error occurred while saving your data."
-msgstr ""
+msgstr "Beim Speichern hat etwas nicht geklappt."
 
 #: includes/pages.inc:409;413;417
 msgid "There was an error during the exchange of your promotions."
-msgstr ""
+msgstr "Beim Eintauschen Ihrer Vorteile hat etwas nicht geklappt."
 
 #: includes/pages.inc:433
 msgid "There was an error loading your points list"
-msgstr ""
+msgstr "Beim Laden Ihrer Punkte hat etwas nicht geklappt."
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
-msgid "As an UiTiD user, you can save points by performing actions. Points can be exchanged for one or more gifts."
+msgid ""
+"As an UiTiD user, you can save points by performing actions. Points can be "
+"exchanged for one or more gifts."
 msgstr ""
+"Als UiTiD-Nutzer können Sie Punkte sammeln. Punkte können Sie gegen tolle "
+"Vorteile eintauschen"
 
 #: theme/culturefeed-userpoints-earned-overview.tpl.php:3
 msgid "More info"
-msgstr ""
+msgstr "Mehr Info"
 
 #: theme/culturefeed-userpoints-exchange-confirmation.tpl.php:1
 msgid "Your current points balance"
-msgstr ""
+msgstr "Ihr Punkteguthaben"
 
 #: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
 msgid "Expires"
-msgstr ""
+msgstr "Verfällt"
 
-#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29 theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
+#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
+#: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "unlimited"
-msgstr ""
+msgstr "unbegrenzt"
 
-#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29 theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
+#: theme/culturefeed-userpoints-ui-detail-page.tpl.php:29
+#: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "x in stock"
-msgstr ""
+msgstr "x vorrätig"
 
 #: theme/culturefeed-userpoints-ui-exchange-form.tpl.php:16
 msgid "Enter your details"
-msgstr ""
+msgstr "Tragen Sie Ihre Angaben ein"
 
 #: theme/culturefeed-userpoints-ui-exchange-form.tpl.php:18
-msgid "This information will only be used to send the chosen gift(s) to the address listed below, so it will not be published on this website."
+msgid ""
+"This information will only be used to send the chosen gift(s) to the address "
+"listed below, so it will not be published on this website."
 msgstr ""
+"Diese Informationen werden nur für den Versand Ihres Vorteils genutzt und "
+"sind nicht öffentlich."
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:35
 msgid "Remaining number of points"
-msgstr ""
+msgstr "Restliche Anzahl Punkte"
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
 msgid "You do not have enough points."
-msgstr ""
+msgstr "Sie haben nicht genug Punkte"
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
 msgid "From"
-msgstr ""
+msgstr "Von"
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:39
-msgid "you can redeem your points for tickets, gadgets, coupons, discounts, ... ."
+msgid ""
+"you can redeem your points for tickets, gadgets, coupons, discounts, ... ."
 msgstr ""
+"Ihre Punkte können Sie auch eintauschen gegen Tickets, Gadgets, Gutscheine, "
+"Rabatte..."
 
 #: theme/culturefeed-userpoints-ui-exchange-page.tpl.php:40
-msgid "Not enough points? Do not worry, learn how and how many points you can save each time."
+msgid ""
+"Not enough points? Do not worry, learn how and how many points you can save "
+"each time."
 msgstr ""
+"Nicht genug Punkte? Erfahren Sie, wie und wie viele Punkte Sie jeweils "
+"sammeln können."
 
 #: theme/culturefeed-userpoints-ui-my-balance.tpl.php:26
 msgid "How does everything work?"
-msgstr ""
+msgstr "Wie funktioniert alles?"
 
 #: theme/culturefeed-userpoints-ui-my-balance.tpl.php:27
 msgid "How can I earn extra points?"
-msgstr ""
+msgstr "Wie kann ich zusätzliche Punkte sammeln?"
 
 #: theme/culturefeed-userpoints-ui-my-balance.tpl.php:28
 msgid "Wherefore can I use my points?"
-msgstr ""
+msgstr "Wofür kann ich meine Punkte einsetzen?"
 
 #: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:38
 msgid "Valid from"
-msgstr ""
+msgstr "Gültig ab"
 
 #: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:38
 msgid "till"
-msgstr ""
+msgstr "bis"
 
 #: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:44
 msgid "This promotion is no longer in stock."
-msgstr ""
+msgstr "Dieser Vorteil ist nicht mehr vorrätig."
 
 #: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60
 msgid "You do not have enough points for this promotion."
-msgstr ""
+msgstr "Sie haben nicht genug Punkte für diesen Vorteil."
 
 #: theme/culturefeed-userpoints-ui-promotions-list-item.tpl.php:60
 msgid "How to save extra points?"
-msgstr ""
+msgstr "Wie kann ich zusätzliche Punkte sammeln?"
 
 #: theme/culturefeed-userpoints-ui-promotions-list.tpl.php:26
 msgid "Select one or more gifts"
-msgstr ""
+msgstr "Wählen Sie einen oder mehrere Vorteile aus"
 
 #: theme/culturefeed-userpoints-ui-promotions-page-item.tpl.php:13
 msgid "Valid till"
-msgstr ""
+msgstr "Gültig bis"
 
 #: theme/culturefeed-userpoints-ui-promotions-page.tpl.php:9
 msgid "Collect extra points? That possible ..."
-msgstr ""
+msgstr "Zusätzliche Punkte sammeln? Das ist möglich..."
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:14
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:15
 msgid "Amount"
-msgstr ""
+msgstr "Anzahl"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:16
 msgid "Points"
-msgstr ""
+msgstr "Punkte"
 
-#: theme/culturefeed-userpoints-ui-wishlist.tpl.php:17 theme/theme.inc:144;179
+#: theme/culturefeed-userpoints-ui-wishlist.tpl.php:17 theme/theme.inc:145;180
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: theme/culturefeed-userpoints-ui-wishlist.tpl.php:28
 msgid "You have not selected any items."
-msgstr ""
+msgstr "Sie haben keine Items ausgewählt"
 
-#: theme/theme.inc:195
+#: theme/theme.inc:196
 msgid "Order promotion"
-msgstr ""
+msgstr "Geschenk anfordern"
 
-#: theme/theme.inc:373
+#: theme/theme.inc:371
 msgid "Congratulations! you collected"
-msgstr ""
+msgstr "Es hat geklappt! Sie haben gesammelt"
 
-#: theme/theme.inc:373;393
+#: theme/theme.inc:371
 msgid "with your @action and have now"
-msgstr ""
+msgstr "mit Ihrer @action und Sie haben jetzt"
 
-#: theme/theme.inc:393
-msgid "You lost"
+#: theme/theme.inc:383
+msgid ""
+"Thank you, your points have been exchanged. Your gift will be sent shortly "
+"to the specified address."
 msgstr ""
+"Vielen Dank. Ihr Vorteil wurde angefordert! Schauen Sie in Ihrem Postfach "
+"nach."
 
-#: theme/theme.inc:404
-msgid "Thank you, your points have been exchanged. Your gift will be sent shortly to the specified address."
-msgstr ""
-
-#: theme/theme.inc:338;368;369;388;389
+#: theme/theme.inc:339;368;369
 msgid "@count punt"
 msgid_plural "@count punten"
-msgstr[0] ""
-msgstr[1] ""
-
+msgstr[0] "@count Punkt"
+msgstr[1] "@count Punkte"

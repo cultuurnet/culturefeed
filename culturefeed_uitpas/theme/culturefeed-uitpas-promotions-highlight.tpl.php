@@ -6,11 +6,11 @@
  * highlight.
  *
  * Available variables:
- * - $promotions: The list of promotions.
+ * - $promotions_table: The list of promotions.
  * - $more: Linked url of the full list.
  */
 ?>
 <div class="promotions_highlight">
-  <?php print $promotions; ?>
+  <?php print $promotions_table; ?>
   <div class="more"><?php print $more; ?></div>
 </div>

@@ -22,6 +22,7 @@ class CultureFeedActivityMediaVideo extends CultureFeedActivityConfigBase {
     $this->titleDo = t('Add a video');
     $this->titleDoFirst = t('Add a video');
     $this->action = t('video');
+    $this->label = t('Video added');
   }
 
 }

@@ -339,6 +339,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
    */
   public function getWelcomeAdvantagesForPassholder(CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions $query) {
     $data = $query->toPostData();
+    unset($data['uitpas_number']);
     $result = $this->oauth_client->authenticatedGetAsXml('uitpas/passholder/' . $query->uitpas_number . '/welcomeadvantages', $data);
 
     try {
@@ -352,6 +353,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     // because the response format is not consistent.
     // It lacks a 'total' element for example.
     $promotion_elements = $xml->xpath('promotion');
+    $promotions = array();
     foreach ($promotion_elements as $promotion_element) {
       $promotions[] = CultureFeed_Uitpas_Passholder_WelcomeAdvantage::createFromXML($promotion_element);
     }
@@ -669,16 +671,15 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * (non-PHPdoc)
-   * @see CultureFeed_Uitpas::constructPassHolderActivationLink()
+   * {@inheritdoc}
    */
-  public function constructPassHolderActivationLink($uid, $activation_code, $destination_callback = NULL) {
+  public function constructPassHolderActivationLink($uid, $activation_code, $destination = NULL) {
     $path = "uitpas/activate/{$uid}/{$activation_code}";
 
     $query = array();
 
-    if ($destination_callback) {
-      $query['destination'] = call_user_func($destination_callback);
+    if ($destination) {
+      $query['destination'] = $destination;
     }
 
     $link = $this->oauth_client->getUrl($path, $query);
