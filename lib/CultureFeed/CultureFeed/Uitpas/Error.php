@@ -60,6 +60,12 @@ class CultureFeed_Uitpas_Error
 
   const UNKNOWN_UITPASNUMBER = 'UNKNOWN_UITPASNUMBER';
 
+  const UNKNOWN_BALIE_CONSUMERKEY = 'UNKNOWN_BALIE_CONSUMERKEY';
+
+  const INVALID_PARAMETERS = 'INVALID_PARAMETERS';
+
+  const UNKNOWN_CHIPNUMBER = 'UNKNOWN_CHIPNUMBER';
+
   public static function allRelevantFor($path, $method = 'POST') {
     $errors = array();
 
@@ -105,6 +111,20 @@ class CultureFeed_Uitpas_Error
         $errors[] = self::PARSE_INVALID_GENDER;
         $errors[] = self::PARSE_INVALID_DATE;
         $errors[] = self::PARSE_INVALID_DATE_OF_BIRTH;
+        break;
+
+      case 'uitpas/passholder/eventActions':
+        if ($method == 'GET') {
+          $errors[] = self::UNKNOWN_BALIE_CONSUMERKEY;
+          $errors[] = self::PARSE_INVALID_UITPASNUMBER;
+          $errors[] = self::INVALID_PARAMETERS;
+          $errors[] = self::MISSING_REQUIRED_FIELDS;
+          $errors[] = self::UNKNOWN_UITPASNUMBER;
+          $errors[] = self::UNKNOWN_CHIPNUMBER;
+        }
+        else {
+          // POST not yet implemented.
+        }
         break;
     }
 
