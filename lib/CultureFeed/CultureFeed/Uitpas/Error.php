@@ -66,6 +66,8 @@ class CultureFeed_Uitpas_Error
 
   const UNKNOWN_CHIPNUMBER = 'UNKNOWN_CHIPNUMBER';
 
+  const INVALID_DATE_CONSTRAINTS = 'INVALID_DATE_CONSTRAINTS';
+
   public static function allRelevantFor($path, $method = 'POST') {
     $errors = array();
 
@@ -98,6 +100,8 @@ class CultureFeed_Uitpas_Error
         $errors[] = self::INVALID_NUMBER;
         // Undocumented. Not sure this still applies to passholder/register.
         $errors[] = self::INVALID_CITY_NAME;
+        // Undocumented.
+        $errors[] = self::INVALID_DATE_CONSTRAINTS;
 
         break;
 
