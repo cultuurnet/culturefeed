@@ -121,11 +121,20 @@ class CultureFeed_Uitpas_Error
           $errors[] = self::MISSING_REQUIRED_FIELDS;
           $errors[] = self::UNKNOWN_UITPASNUMBER;
           $errors[] = self::UNKNOWN_CHIPNUMBER;
+          $errors[] = self::INVALID_CARD_STATUS;
         }
         else {
           // POST not yet implemented.
         }
         break;
+
+      case 'uitpas/card':
+        if ($method == 'GET') {
+          $errors[] = self::MISSING_REQUIRED_FIELDS;
+          $errors[] = self::UNKNOWN_CHIPNUMBER;
+        }
+        break;
+
     }
 
     return $errors;
