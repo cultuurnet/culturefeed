@@ -6,7 +6,7 @@
 /**
  * Theme the opening times table.
  */
-function theme_entry_api_ui_opening_times_table($variables) {
+function theme_culturefeed_entry_ui_opening_times_table($variables) {
 
   $container = $variables['element'];
 

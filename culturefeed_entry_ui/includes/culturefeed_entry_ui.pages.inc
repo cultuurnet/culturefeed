@@ -7,7 +7,8 @@
 /**
  * Form callback: Create a new event, or edit an existing.
  */
-function entry_api_ui_event_form($form, $form_state, $event = NULL) {
+function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
+  
 
   $form = array();
   $contact_info = array();
@@ -118,7 +119,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['title'] = array(
     '#type' => 'textfield',
-    '#title' => t('Titel'),
+    '#title' => t('Title'),
     '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
     '#required' => TRUE,
   );
@@ -133,7 +134,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['organiser'] = array(
     '#type' => 'textfield',
-    '#title' => t('Organisation'),
+    '#title' => t('Organization'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => TRUE,
     '#default_value' => $default_organiser,
@@ -143,14 +144,14 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $form['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
-    '#title' => 'Kijken en luisteren',
+    '#title' => t('Kijken en luisteren'),
     '#default_value' => $category_defaults,
   );
 
   $form['what']['doen'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
-    '#title' => 'Doen',
+    '#title' => t('Doen'),
     '#default_value' => $category_defaults,
   );
 
@@ -193,34 +194,34 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $timestamp_count = 0;
   if ($timestamps) {
     foreach ($timestamps as $i => $timestamp) {
-      entry_api_ui_attach_timestamp_elements($form, $i, $timestamp);
+      culturefeed_entry_ui_attach_timestamp_elements($form, $i, $timestamp);
       $timestamp_count++;
     }
   }
   else {
-    entry_api_ui_attach_timestamp_elements($form, 0);
+    culturefeed_entry_ui_attach_timestamp_elements($form, 0);
     $timestamp_count++;
   }
 
   // Add more button was clicked. Check how many extra rows that need to be added.
   if (isset($form_state['#timestamps_needed'])) {
     for (; $timestamp_count < $form_state['#timestamps_needed']; $timestamp_count++) {
-      entry_api_ui_attach_timestamp_elements($form, $timestamp_count);
+      culturefeed_entry_ui_attach_timestamp_elements($form, $timestamp_count);
     }
   }
 
   $form['add_more_timestamps'] = array(
     '#type' => 'submit',
     '#name' => 'timestamps_add_more',
-    '#value' => 'nog een dag toevoegen',
+    '#value' => t('add another day'),
     '#attributes' => array('class' => array('timestamp-add-more-submit')),
     '#ajax' => array(
-      'callback' => 'entry_api_ui_add_more_js',
+      'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'timestamp-ajax-wrapper',
       'effect' => 'fade',
     ),
     '#limit_validation_errors' => array(array('timestamps')),
-    '#submit' => array('entry_api_ui_add_more_submit'),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
     '#states' => array(
       'visible' => array(
         ':input[name=when]' => array(
@@ -246,28 +247,28 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['period_or_permanent']['start_date'] = array(
     '#type' => 'textfield',
-    '#title' => 'Startdatum',
+    '#title' => t('Startdate'),
     '#states' => array(
       'visible' => array(':input[name=when]' => array('value' => 'period')),
     ),
     '#default_value' => $default_start,
-    '#description' => 'Formaat: ' . date('Y-m-d'),
+    '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
   $form['period_or_permanent']['end_date'] = array(
     '#type' => 'textfield',
-    '#title' => 'Einddatum',
+    '#title' => t('Enddate'),
     '#states' => array(
       'visible' => array(':input[name=when]' => array('value' => 'period')),
     ),
     '#default_value' => $default_end,
-    '#description' => 'Formaat: ' . date('Y-m-d'),
+    '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
   $form['period_or_permanent']['all_day'] = array(
     '#type' => 'radios',
-    '#title' => 'Alle dagen open / toegankelijk?',
-    '#options' => array(1 => 'Ja', 0 => 'Nee'),
+    '#title' => t('Open all day?'),
+    '#options' => array(1 => t('Yes'), 0 => t('No')),
     '#default_value' => ($weekscheme == NULL) ? 1 : 0,
   );
 
@@ -278,7 +279,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     ),
     '#prefix' => '<div id="opening-times-ajax-wrapper">',
     '#suffix' => '</div>',
-    '#theme' => 'entry_api_ui_opening_times_table',
+    '#theme' => 'culturefeed_entry_ui_opening_times_table',
   );
 
   // Add opening times information for every day.
@@ -298,19 +299,19 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     $opening_count = 0;
     if ($opening_times) {
       foreach ($opening_times as $i => $opening_time) {
-        entry_api_ui_attach_opening_time_elements($form, $day, $i, $opening_time);
+        culturefeed_entry_ui_attach_opening_time_elements($form, $day, $i, $opening_time);
         $opening_count++;
       }
     }
     else {
-      entry_api_ui_attach_opening_time_elements($form, $day, 0);
+      culturefeed_entry_ui_attach_opening_time_elements($form, $day, 0);
       $opening_count++;
     }
 
     // Add more button was clicked. Check how many extra rows that need to be added.
     if (isset($form_state['#opening_times_needed'])) {
       for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
-        entry_api_ui_attach_opening_time_elements($form, $day, $opening_count);
+        culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
       }
     }
 
@@ -319,15 +320,15 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   $form['period_or_permanent']['add_more_opening_times'] = array(
     '#type' => 'submit',
     '#name' => 'opening_times_add_more',
-    '#value' => 'nog een openingsuur toevoegen',
+    '#value' => t('Add another opening time'),
     '#attributes' => array('class' => array('opening-times-add-more-submit')),
     '#ajax' => array(
-      'callback' => 'entry_api_ui_add_more_js',
+      'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'opening-times-ajax-wrapper',
       'effect' => 'fade',
     ),
     '#limit_validation_errors' => array(array('period_or_permanent')),
-    '#submit' => array('entry_api_ui_add_more_submit'),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
     '#states' => array(
       'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
     ),
@@ -343,56 +344,56 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
   // Add contact type selections.
   if ($contact_info) {
     foreach ($contact_info as $i => $info) {
-      entry_api_ui_attach_contact_info_elements($form, $i, $info);
+      culturefeed_entry_ui_attach_contact_info_elements($form, $i, $info);
       $contacts_count++;
     }
   }
   else {
-    entry_api_ui_attach_contact_info_elements($form, 0);
+    culturefeed_entry_ui_attach_contact_info_elements($form, 0);
     $contacts_count++;
   }
 
   // Add more button was clicked. Check how many extra rows that need to be added.
   if (isset($form_state['#contacts_needed'])) {
     for (; $contacts_count < $form_state['#contacts_needed']; $contacts_count++) {
-      entry_api_ui_attach_contact_info_elements($form, $contacts_count);
+      culturefeed_entry_ui_attach_contact_info_elements($form, $contacts_count);
     }
   }
 
   $form['add_more_contacts'] = array(
     '#type' => 'submit',
     '#name' => 'contacts_add_more',
-    '#value' => 'nog een website, tel, of email toevoegen',
+    '#value' => t('add another website, phone number or email address'),
     '#attributes' => array('class' => array('contacts-add-more-submit')),
     '#ajax' => array(
-      'callback' => 'entry_api_ui_add_more_js',
+      'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'contacts-ajax-wrapper',
       'effect' => 'fade',
     ),
     '#limit_validation_errors' => array(array('contacts')),
-    '#submit' => array('entry_api_ui_add_more_submit'),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
 
   $form['short_description'] = array(
     '#type' => 'textarea',
-    '#title' => 'Korte beschrijving',
+    '#title' => t('Short description'),
     '#default_value' => ($event) ? $event->getDetails()->current()->getShortDescription() : NULL
   );
 
   $form['age_category'] = array(
     '#type' => 'select',
-    '#title' => 'Leeftijd',
+    '#title' => t('Age'),
     '#options' => array(
-      'everyone' => 'Voor iedereen',
-      '1-12' => 'Voor kinderen (tussen 1 en 12 jaar)',
-      '12-18' => 'Voor jongeren (tussen 12 en 18 jaar)',
-      '18+' => 'Voor volwassenen (18+)',
+      'everyone' => t('For children'),
+      '1-12' => t('For children (between 1 and 12 years)'),
+      '12-18' => t('For youth (between 12 and 18 years)'),
+      '18+' => t('For adults (18+)'),
     ),
     '#default_value' => $age_category,
   );
 
   $form['age'] = array(
-    '#title' => 'Vanaf',
+    '#title' => t('From'),
     '#type' => 'textfield',
     '#states' => array(
       'invisible' => array(
@@ -415,22 +416,22 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   $form['fly']['value'] = array(
-    '#markup' => 'Activiteiten voor kinderen krijgen automatisch een vlieg',
+    '#markup' => t('Activities for children will get the \'Fly\' label'),
   );
 
   $form['publication_date'] = array(
     '#type' => 'textfield',
-    '#title' => 'Publicatiedatum',
+    '#title' => t('Publication date'),
     '#default_value' => $publication_date,
-    '#description' => 'Formaat: ' . date('Y-m-d'),
+    '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Save'),
   );
 
-  $form['#attached']['css'][] = drupal_get_path('module', 'entry_api_ui') . '/css/entry_api_ui.css';
+  $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
 
   return $form;
 
@@ -445,7 +446,7 @@ function entry_api_ui_event_form($form, $form_state, $event = NULL) {
  * @param $info
  *   ContactInfo property to be edited.
  */
-function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
+function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
 
   $text = '';
   $type = 'website';
@@ -479,9 +480,9 @@ function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
   $form['contacts'][$i]['type'] = array(
     '#type' => 'select',
     '#options' => array(
-      'website' => 'Website',
-      'phone' => 'Telefoonnummer',
-      'email' => 'E-mailadres',
+      'website' => t('Website'),
+      'phone' => t('Phone number'),
+      'email' => t('E-mail address'),
     ),
     '#default_value' => $type,
   );
@@ -493,7 +494,7 @@ function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
 
   $form['contacts'][$i]['reservation'] = array(
     '#type' => 'checkbox',
-    '#title' => 'voor reservatie',
+    '#title' => t('for reservation'),
     '#default_value' => $reservation,
   );
 
@@ -509,7 +510,7 @@ function entry_api_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
  * @param $timestamp
  *   Timestamp object to edit.
  */
-function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
+function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
 
   $states = array();
   if ($i > 0) {
@@ -524,31 +525,31 @@ function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
 
   $form['timestamps'][$i]['start_date'] = array(
     '#type' => 'textfield',
-    '#title' => 'Startdatum',
+    '#title' => t('Startdate'),
     '#default_value' => ($timestamp) ? $timestamp->getDate() : '',
-    '#description' => 'Formaat: ' . date('Y-m-d'),
+    '#description' => t('Format') . ': ' . date('Y-m-d'),
     '#states' => $states,
   );
 
   $form['timestamps'][$i]['start_time'] = array(
     '#type' => 'textfield',
-    '#title' => 'van',
+    '#title' => t('from'),
     '#default_value' => ($timestamp) ? $timestamp->getStartTime() : '',
-    '#description' => 'Formaat: 12:00:00',
+    '#description' => t('Format') . ': 12:00:00',
     '#states' => $states,
   );
 
   $form['timestamps'][$i]['end_time'] = array(
     '#type' => 'textfield',
-    '#title' => 'tot',
+    '#title' => t('to'),
     '#default_value' => ($timestamp) ? $timestamp->getEndTime() : '',
-    '#description' => 'Formaat: 12:00:00',
+    '#description' => t('Format') . ': 12:00:00',
     '#states' => $states,
   );
 
   $form['timestamps'][$i]['no_end_time'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Geen einduur',
+    '#title' => t('no end hour'),
     '#default_value' => ($timestamp) ? ($timestamp->getEndTime() == '') : FALSE,
     '#states' => $states,
   );
@@ -567,18 +568,18 @@ function entry_api_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
  *   Openingtime information
  *
  */
-function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_time = NULL) {
+function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $opening_time = NULL) {
 
   $form['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
-    '#description' => 'Formaat: 12:00:00',
+    '#description' => t('Format') . ': 12:00:00',
   );
 
   $form['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
-    '#description' => 'Formaat: 12:00:00',
+    '#description' => t('Format') . ': 12:00:00',
   );
 
 }
@@ -586,7 +587,7 @@ function entry_api_ui_attach_opening_time_elements(&$form, $day, $i, $opening_ti
 /**
  * Validate the event form.
  */
-function entry_api_ui_event_form_validate($form, &$form_state) {
+function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
 
   $values = $form_state['values'];
 
@@ -596,13 +597,13 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
       CultureFeed_Cdb_Data_Calendar::validateDate($values['publication_date']);
     }
     catch (Exception $e) {
-      form_set_error('publication_date', 'Gelieve een geldige publicatie datum in te geven');
+      form_set_error('publication_date', t('Please fill in correct publication date'));
     }
   }
 
   // Validate age.
   if ($values['age'] && !is_numeric($values['age'])) {
-    form_set_error('age', 'Gelieve een geldige leeftijd in te voeren');
+    form_set_error('age', t('Please fill in correct age'));
   }
 
   // Validate timestamps.
@@ -632,7 +633,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
         }
       }
       catch (UnexpectedValueException $e) {
-        form_set_error('timestamps][' . $key, 'Gelieve een geldige tijd en datum in te geven.');
+        form_set_error('timestamps][' . $key, t('Please fill in correct date and time'));
       }
     }
   }
@@ -650,7 +651,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_till']);
             }
             catch (Exception $e) {
-              form_set_error('period_or_permanent][opening_times][' . $day . '][' . $key, 'Gelieve een geldige tijd in te geven.');
+              form_set_error('period_or_permanent][opening_times][' . $day . '][' . $key, t('Please fill in correct date'));
             }
           }
 
@@ -672,11 +673,11 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     try {
       $location = culturefeed_search_item_load_by_title($search_string, 'actor');
       if (!$location) {
-        form_set_error('location', 'Gelieve een correcte locatie in te voeren.');
+        form_set_error('location', t('Please select a location'));
       }
     }
     catch (Exception $e) {
-      form_set_error('location', 'Er was een fout bij het valideren van de locatie');
+      form_set_error('location', t('We could not validate the location'));
     }
   }
 
@@ -691,19 +692,19 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
     try {
       $organiser = culturefeed_search_item_load_by_title($search_string, 'actor');
       if (!$organiser) {
-        form_set_error('organiser', 'Gelieve een correcte organisatie in te voeren.');
+        form_set_error('organiser', t('Please select a organization'));
       }
     }
     catch (Exception $e) {
-      watchdog_exception('entry_api_ui', $e);
-      form_set_error('organiser', 'Er was een fout bij het valideren van de organisator');
+      watchdog_exception('culturefeed_entry_ui', $e);
+      form_set_error('organiser', t('We could not validate the organization'));
     }
 
   }
 
   $errors = form_get_errors();
   if (empty($errors)) {
-    _entryapi_ui_event_form_save_event($form, $form_state, $location, $organiser);
+    _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
 
 }
@@ -711,7 +712,7 @@ function entry_api_ui_event_form_validate($form, &$form_state) {
 /**
  * Save the event form to the entity api
  */
-function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $organiser) {
+function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, $location, $organiser) {
 
   $values = $form_state['values'];
 
@@ -734,12 +735,12 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
 
   // Timestamps as calendar.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
-    _entry_api_ui_event_save_timestamps($event, $values);
+    _culturefeed_entry_ui_event_save_timestamps($event, $values);
   }
 
   // Period or permanent as calendar.
   elseif ($values['when'] == 'period' || $values['when'] == 'permanent') {
-    _entry_api_ui_event_save_weekscheme($event, $values);
+    _culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
 
   // Categories.
@@ -819,19 +820,19 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
   try {
 
     if ($update) {
-      DrupalCultureFeed_EntryApi::updateEvent($event);
+      Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
     }
     else {
-      $form_state['#event_id'] = DrupalCultureFeed_EntryApi::createEvent($event);
+      $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event);
     }
 
     $form_state['#update_event'] = $update;
 
   }
   catch (Exception $e) {
-    watchdog_exception('entry_api_ui', $e);
-    form_set_error('', 'Er ging iets fout tijdens het bewaren.');
+    watchdog_exception('culturefeed_entry_ui', $e);
+    form_set_error('', t('An error occurred while saving the event'));
   }
 
 }
@@ -839,7 +840,7 @@ function _entryapi_ui_event_form_save_event($form, &$form_state, $location, $org
 /**
  * Save helper function that creates calendar object for timestamps.
  */
-function _entry_api_ui_event_save_timestamps(&$event, $values) {
+function _culturefeed_entry_ui_event_save_timestamps(&$event, $values) {
 
   $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
 
@@ -867,7 +868,7 @@ function _entry_api_ui_event_save_timestamps(&$event, $values) {
 /**
  * Save helper function that creates calendar object for weekschemes.
  */
-function _entry_api_ui_event_save_weekscheme(&$event, $values) {
+function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 
   $weekscheme = NULL;
   // Construct the weekscheme.
@@ -914,17 +915,15 @@ function _entry_api_ui_event_save_weekscheme(&$event, $values) {
 /**
  * Submit the event form: redirect form and show message.
  */
-function entry_api_ui_event_form_submit($form, &$form_state) {
+function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
 
   if ($form_state['#update_event']) {
     $form_state['redirect'] = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
-    drupal_set_message('De activiteit werd aangepast. Het duurt echter een half uur eer het
-    op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ');
+    drupal_set_message(t('Event successfully created'));
   }
   else {
-    $link_change_event = '<a href="/entryapi/event/' . $form_state['#event_id'] . '/edit">Klik hier om het event aan te passen</a>';
-    drupal_set_message('De activiteit werd toegevoegd. Het duurt echter een half uur eer het
-      op alle kanalen (inclusief UitinVlaanderen) beschikbaar zal zijn. ' . $link_change_event);
+    $link_change_event = '<a href="/culturefeed_entry_ui/event/' . $form_state['#event_id'] . '/edit">' . t('Click here to update') . '</a>';
+    drupal_set_message(t('Event successfully created') . ' ' . $link_change_event);
   }
 
 }
@@ -932,16 +931,16 @@ function entry_api_ui_event_form_submit($form, &$form_state) {
 /**
  * Form callback: delete an event.
  */
-function entry_api_ui_delete_event_form($form, $form_state, $event) {
+function culturefeed_entry_ui_delete_event_form($form, $form_state, $event) {
 
   $form['id'] = array('#type' => 'value', '#value' => $event->getCdbId());
 
   return confirm_form($form,
-    'Bent u zeker dat u dit event wil verwijderen?',
+    t('Are you sure you want to delete the event?'),
     '',
-    'Deze actie kan niet ongedaan worden gemaakt.',
-    'Verwijderen',
-    'Annuleren,'
+    t('This action cannot be undone'),
+    t('Delete'),
+    t('Cancel')
   );
 
 }
@@ -949,16 +948,16 @@ function entry_api_ui_delete_event_form($form, $form_state, $event) {
 /**
  * Submit the delete form.
  */
-function entry_api_ui_delete_event_form_submit($form, &$form_state) {
+function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
 
   try {
-    DrupalCultureFeed_EntryApi::deleteEvent($form_state['values']['id']);
-    drupal_set_message('Het event is succesvol verwijderd');
+    Drupalculturefeed_EntryApi::deleteEvent($form_state['values']['id']);
+    drupal_set_message(t('Event successfully deleted'));
     $form_state['redirect'] = '<front>';
   }
   catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
-    drupal_set_message('Er ging iets fout bij het verwijderen van dit event.', 'error');
+    drupal_set_message(t('An error occurred while deleting the event'), 'error');
   }
 
 }
@@ -966,27 +965,25 @@ function entry_api_ui_delete_event_form_submit($form, &$form_state) {
 /**
  * Form callback: Show the manage tags form for a cdb object.
  */
-function entry_api_ui_edit_tags_form($form, $form_state, $event) {
+function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   $form = array();
   $event_tags = $event->getKeywords();
   $form['#old_tags'] = $event_tags;
 
-  $lifestyle_tags = array();
+  $custom_tags = array();
+  
+  // Todo get options from variable
+  $custom_options = variable_get('culturefeed_entry_ui_custom_tags');
+  
+  echo '<pre>';print_r($custom_options);echo '</pre>';
 
-  $lifestyle_options = array(
-    CultureFeed_User::LIFESTYLE_ONTDEKKER => 'Ontdekker',
-    CultureFeed_User::LIFESTYLE_FIJNPROEVER => 'Fijnproever',
-    CultureFeed_User::LIFESTYLE_ACTIE_ZOEKER => 'Actiezoeker',
-    CultureFeed_User::LIFESTYLE_ACTIEVE_ONTSPANNER => 'Actieve ontspanner',
-  );
-
-  // Filter out lifestyle tags
+  // Filter out custom tags
   if ($event_tags) {
     foreach ($event_tags as $tag) {
-      if (array_key_exists($tag, $lifestyle_options)) {
+      if (array_key_exists($tag, $custom_options)) {
         unset($event_tags[$tag]);
-        $lifestyle_tags[$tag] = $tag;
+        $custom_tags[$tag] = $tag;
       }
     }
   }
@@ -996,12 +993,12 @@ function entry_api_ui_edit_tags_form($form, $form_state, $event) {
 
   $form['#object_id'] = $event->getCdbId();
 
-  if (user_access('manage lifestyle profile tags')) {
-    $form['lifestyle_profile'] = array(
+  if (user_access('manage custom tags')) {
+    $form['custom_tags'] = array(
       '#type' => 'checkboxes',
-      '#options' => $lifestyle_options,
+      '#options' => $custom_options,
       '#title' => 'Leefstijlprofiel',
-      '#default_value' => $lifestyle_tags,
+      '#default_value' => $custom_tags,
     );
   }
 
@@ -1021,14 +1018,14 @@ function entry_api_ui_edit_tags_form($form, $form_state, $event) {
 }
 
 /**
- * Validate the tag form. No lifestyle profiles are allowed as a tag.
+ * Validate the tag form. Check duplicates with custom tags
  */
-function entry_api_ui_edit_tags_form_validate($form, &$form_state) {
+function culturefeed_entry_ui_edit_tags_form_validate($form, &$form_state) {
 
   $tags = explode(';', $form_state['values']['tags']);
   foreach ($tags as $tag) {
-    if (array_key_exists($tag, $form['lifestyle_profile']['#options'])) {
-      form_set_error('tags', $tag . ' is niet toegelaten als tag.');
+    if (array_key_exists($tag, $form['custom_tags']['#options'])) {
+      form_set_error(t('Tag'), $tag . t(' is not permitted because is\'s already a custom tag.'  ));
     }
   }
 
@@ -1037,13 +1034,13 @@ function entry_api_ui_edit_tags_form_validate($form, &$form_state) {
 /**
  * Submit the edit tags form.
  */
-function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
+function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
-  // Merge lifestyle profile tags into all tags.
+  // Merge custom tags into all tags.
   $tags = explode(';', $form_state['values']['tags']);
-  foreach ($form_state['values']['lifestyle_profile'] as $profile) {
-    if ($profile) {
-      $tags[] = $profile;
+  foreach ($form_state['values']['custom_tags'] as $custom_tag) {
+    if ($custom_tag) {
+      $tags[] = $custom_tag;
     }
   }
 
@@ -1065,13 +1062,13 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
     // Add new tags
     $tags = array_filter($tags);
     if ($tags) {
-      DrupalCultureFeed_EntryApi::addTagToEvent($event, $tags);
+      Drupalculturefeed_EntryApi::addTagToEvent($event, $tags);
     }
 
     // Remove old tags
     if ($removed_tags) {
       foreach ($removed_tags as $removed_tag) {
-        DrupalCultureFeed_EntryApi::removeTagFromEvent($event, $removed_tag);
+        Drupalculturefeed_EntryApi::removeTagFromEvent($event, $removed_tag);
       }
     }
 
@@ -1082,7 +1079,7 @@ function entry_api_ui_edit_tags_form_submit($form, &$form_state) {
   }
   catch (Exception $e) {
 
-    if ($e->getCode() == CultureFeed_EntryApi::CODE_KEYWORD_PRIVATE) {
+    if ($e->getCode() == culturefeed_entry_uiApi::CODE_KEYWORD_PRIVATE) {
       drupal_set_message("Je probeerde een tag toe te voegen die niet door iedereen mag
         worden toegevoegd. Indien je dit toch wil toevoegen of andere vragen hier rond
         hebt, mail je best naar 'vragen@uitdatabank.be'");
