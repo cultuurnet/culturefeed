@@ -30,3 +30,4 @@ files[] = views/handlers/field/views_handler_field_cdb_item_organiser.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_picture.inc
 
 dependencies[] = culturefeed_search
+dependencies[] = views
