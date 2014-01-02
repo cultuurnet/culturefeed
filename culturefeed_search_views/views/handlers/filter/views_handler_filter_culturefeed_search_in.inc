@@ -52,6 +52,8 @@ abstract class views_handler_filter_culturefeed_search_in extends views_handler_
    * @see views_handler_filter_in_operator::query()
    */
   function query() {
+  
+    echo '<pre>';print_r($this->value);echo '</pre>';
 
     $values = $this->value;
     array_walk($values, function (&$item) {
