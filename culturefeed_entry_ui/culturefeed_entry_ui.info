@@ -1,5 +1,5 @@
-name = Entry API
-description = CultureFeed Entry API
+name = CultureFeed Entry UI
+description = Multilingual forms to post, update and delete events to UiTDatabank Entry API
 package = CultureFeed
 version = VERSION
 core = 7.x

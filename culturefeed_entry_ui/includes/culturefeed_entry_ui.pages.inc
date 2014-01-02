@@ -144,21 +144,21 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
-    '#title' => t('Kijken en luisteren'),
+    '#title' => 'Kijken en luisteren',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['doen'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
-    '#title' => t('Doen'),
+    '#title' => 'Doen',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
-    '#title' => t('Visit'),
+    '#title' => 'Bezoeken',
     '#default_value' => $category_defaults,
   );
 
