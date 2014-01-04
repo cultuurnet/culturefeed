@@ -22,4 +22,10 @@ interface CultureFeed_HttpClient {
    */
   public function request($url, $http_headers = array(), $method = 'GET', $post_data = '');
 
+  /**
+   * Set the connection timeout.
+   *
+   * @param integer $timeout
+   */
+  public function setTimeout($timeout);
 }

@@ -12,6 +12,8 @@ interface CultureFeed_Uitpas {
    * Get the associations.
    *
    * @param string $consumer_key_counter The consumer key of the counter from where the request originates
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getAssociations($consumer_key_counter = NULL);
 
@@ -86,6 +88,8 @@ interface CultureFeed_Uitpas {
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query The query
    * @param string $method The request method
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchPassholders(CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
@@ -119,6 +123,8 @@ interface CultureFeed_Uitpas {
    * Get the redeem options
    *
    * @param CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getPromotionPoints(CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions $query);
 
@@ -151,6 +157,14 @@ interface CultureFeed_Uitpas {
   public function updatePassholder(CultureFeed_Uitpas_Passholder $passholder);
 
   /**
+   * Update a passholder's card system preferences.
+   *
+   * @param CultureFeed_Uitpas_Passholder_CardSystemPreferences $preferences The passholder's card preferences to update.
+   *        The card system preferences are identified by user id and card system id. Only fields that are set will be updated.
+   */
+  public function updatePassholderCardSystemPreferences(CultureFeed_Uitpas_Passholder_CardSystemPreferences $preferences);
+
+  /**
    * Block a UitPas.
    *
    * @param string $uitpas_number The UitPas number
@@ -167,33 +181,31 @@ interface CultureFeed_Uitpas {
   public function searchWelcomeAdvantages(CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions $query, $method = CultureFeed_Uitpas::CONSUMER_REQUEST);
 
   /**
-   * Get a passholder based on the UitPas chip number.
+   * Get info regarding a UiTPAS card based on chipNumber of uitpasNumber.
    *
-   * @param string $chip_number The chipnumber of the UitPas
-   * @param string $consumer_key_counter The consumer key of the counter from where the request originates
-   *
-   * @return CultureFeed_Uitpas_Passholder
+   * @param CultureFeed_Uitpas_CardInfoQuery $card_query
+   * @return CultureFeed_Uitpas_CardInfo
    */
-  public function getPassholderForChipNumber($chip_number, $consumer_key_counter = NULL);
+  public function getCard(CultureFeed_Uitpas_CardInfoQuery $card_query);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet.
    *
-   * @param string $uitpas_number
-   * @param DateTime $date_of_birth
+   * @param CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data
    * @param mixed $destination_callback
    *
    * @return string
    */
-  public function getPassholderActivationLink($uitpas_number, DateTime $date_of_birth, $destination_callback = NULL);
+  public function getPassholderActivationLink(CultureFeed_Uitpas_Passholder_Query_ActivationData $activation_data, $destination_callback = NULL);
 
   /**
    * Constructs an activation link,
    *
    * @param string $uid
    * @param string $activation_code
+   * @param string $destination_
    */
-  public function constructPassHolderActivationLink($uid, $activation_code, $destination_callback = NULL);
+  public function constructPassHolderActivationLink($uid, $activation_code, $destination = NULL);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet,
@@ -234,13 +246,20 @@ interface CultureFeed_Uitpas {
    * Search for checkins
    *
    * @param CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query The query
+   * @param string $consumer_key_counter Optional consumer key of the counter.
+   * @param string $method The OAuth request method, either consumer request or
+   *   user request.
+   *
+   * @return CultureFeed_ResultSet
    */
-  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL);
+  public function searchCheckins(CultureFeed_Uitpas_Event_Query_SearchCheckinsOptions $query, $consumer_key_counter = NULL, $method = CultureFeed_Uitpas::USER_ACCESS_TOKEN);
 
   /**
    * Search for Uitpas events
    *
-   * @param CultureFeed_Uitpas_Passholder_Query_SearchEventsOptions $query The query
+   * @param CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query The query
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchEvents(CultureFeed_Uitpas_Event_Query_SearchEventsOptions $query);
 
@@ -272,6 +291,8 @@ interface CultureFeed_Uitpas {
    * Search for counters for a given member
    *
    * @param string $uid The Culturefeed user ID
+   *
+   * @return CultureFeed_ResultSet
    */
   public function searchCountersForMember($uid);
 

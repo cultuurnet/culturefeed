@@ -71,6 +71,12 @@ class CultureFeed_SimpleXMLElement extends SimpleXMLElement {
     return strtolower($val) == 'true' ? TRUE : FALSE;
   }
 
+  /**
+   * @param string $path
+   * @param bool $multiple
+   *
+   * @return CultureFeed_SimpleXMLElement|CultureFeed_SimpleXMLElement[]
+   */
   public function xpath($path, $multiple = true) {
     $val = parent::xpath($path);
 

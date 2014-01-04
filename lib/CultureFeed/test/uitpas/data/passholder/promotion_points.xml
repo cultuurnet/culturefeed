@@ -2,6 +2,16 @@
 <response>
     <promotions>
         <promotion>
+            <applicableCardSystems>
+                <cardsystem>
+                    <id>1</id>
+                    <name>HELA</name>
+                </cardsystem>
+                <cardsystem>
+                    <id>3</id>
+                    <name>Test cardsystem</name>
+                </cardsystem>
+            </applicableCardSystems>
             <balies>
                 <balie>
                     <name>De Werf</name>
@@ -14,6 +24,10 @@
             </balies>
             <cashedIn>false</cashedIn>
             <id>7</id>
+            <owningCardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </owningCardSystem>
             <points>5</points>
             <title>Gratis stickers</title>
             <creationDate>2011-12-15T11:33:30.977+01:00</creationDate>

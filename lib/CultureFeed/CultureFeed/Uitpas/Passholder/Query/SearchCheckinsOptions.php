@@ -73,6 +73,13 @@ class CultureFeed_Uitpas_Passholder_Query_SearchCheckinsOptions extends CultureF
   public $start;
 
   /**
+   * Id of the card system of the event organiser.
+   *
+   * @var integer
+   */
+  public $organiserCardSystemId;
+
+  /**
    * Maximum number of results.
    *
    * @var integer

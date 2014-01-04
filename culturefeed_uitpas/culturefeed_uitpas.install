@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Installation routines for CultureFeed UiTPAS.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function culturefeed_uitpas_install() {
+  // Variable toggles to enable/disable features that are not implemented yet
+  // on the backend.
+  // Once a feature gets implemented on the backend, toggle the variable here
+  // to TRUE to enable it in this module as well.
+  variable_set('culturefeed_uitpas_feature_implemented_in_spotlight', TRUE);
+}

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:cdb="http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.1/FINAL" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+    <checkinActivities>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>CC De Werf</createdVia>
+            <creationDate>2013-11-12T14:48Z</creationDate>
+            <depiction>http://media.uitid.be/fis/rest/download/ce126667652776f0e9e55160f12f5478/uiv/default.png</depiction>
+            <id>76faa534-4c3e-4f2e-abe5-10bd0a2e5e14</id>
+            <nick>Frontend Tester</nick>
+            <nodeID>c44d849a-1290-4927-81ac-e782428de887</nodeID>
+            <nodeTitle>test cine palace </nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>a81b1741-5e97-4eee-ab30-a71865fc266a</userId>
+            <firstName>Frontend</firstName>
+            <gender>FEMALE</gender>
+            <kansenStatuut>false</kansenStatuut>
+            <lastName>Tester</lastName>
+            <location>Aalst</location>
+            <organiser>CC De Werf</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>8</organiserCardSystem>
+                <organiserCardSystem>5</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity>Brussel</userHomeCity>
+            <userHomeLocationLat>50.8299126</userHomeLocationLat>
+            <userHomeLocationLon>4.3464309</userHomeLocationLon>
+            <userPoints>10.000</userPoints>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>CC De Werf</createdVia>
+            <creationDate>2013-11-12T09:52Z</creationDate>
+            <depiction>http://media.uitid.be/fis/rest/download/ce126667652776f0e9e55160f12f5478/uiv/default.png</depiction>
+            <id>7f5cf005-2a20-4d87-a55d-9bdfb2959c35</id>
+            <nodeID>27f1e25a-1ba6-4a43-96de-0c6f99b508f3</nodeID>
+            <nodeTitle>testevent uitpas betalend</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>8f62d25d-4865-4e9e-955a-aedd5c748a9a</userId>
+            <eventLocationLat>50.939304</eventLocationLat>
+            <eventLocationLon>4.042009</eventLocationLon>
+            <firstName>Block2</firstName>
+            <kansenStatuut>false</kansenStatuut>
+            <lastName>Pieter</lastName>
+            <location>Aalst</location>
+            <organiser>CC De Werf</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>8</organiserCardSystem>
+                <organiserCardSystem>5</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity>Aalst</userHomeCity>
+            <userHomeLocationLat>50.937793</userHomeLocationLat>
+            <userHomeLocationLon>4.0409133</userHomeLocationLon>
+            <userPoints>10.000</userPoints>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>Stella Matutina College - Lede</createdVia>
+            <creationDate>2013-11-08T10:16Z</creationDate>
+            <id>16540225-e4d7-4665-8910-a6aaa5056a9c</id>
+            <nodeID>31a182c0-bbc9-4bf5-ad29-1199e42650d6</nodeID>
+            <nodeTitle>een UiTpunt sparen op een activiteit van het SMC Lede</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>af4fab15-0161-4e90-bbd1-40c3ecef89e4</userId>
+            <eventLocationLat>50.965639</eventLocationLat>
+            <eventLocationLon>3.983120</eventLocationLon>
+            <kansenStatuut>false</kansenStatuut>
+            <location>Lede</location>
+            <organiser>Stella Matutina College - Lede</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>2</organiserCardSystem>
+                <organiserCardSystem>1</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>BibArt</createdVia>
+            <creationDate>2013-11-07T15:35Z</creationDate>
+            <id>137c0a7f-4037-4d07-8ba8-a547985364e6</id>
+            <nodeID>67de2e54-a2ce-48b1-8255-f0a9f1a2c5cd</nodeID>
+            <nodeTitle>Infoavond voor ouders en leerkrachten van kinderen die leren lezen</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>be727faf-2854-45e4-beaf-483c6faebeb6</userId>
+            <eventLocationLat>3.945084</eventLocationLat>
+            <eventLocationLon>50.921476</eventLocationLon>
+            <kansenStatuut>false</kansenStatuut>
+            <location>Erpe-Mere</location>
+            <organiser>BibArt</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>1</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>BibArt</createdVia>
+            <creationDate>2013-11-07T15:35Z</creationDate>
+            <id>95dcc5af-3925-4299-9681-471711cbe3fb</id>
+            <nodeID>f1c26512-83db-4cc8-9e1e-dd95f18d0d2c</nodeID>
+            <nodeTitle>Infoavond voor ouders en leerkrachten van kinderen die leren lezen</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>be727faf-2854-45e4-beaf-483c6faebeb6</userId>
+            <eventLocationLat>3.944883</eventLocationLat>
+            <eventLocationLon>50.923489</eventLocationLon>
+            <kansenStatuut>false</kansenStatuut>
+            <location>Erpe-Mere</location>
+            <organiser>BibArt</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>1</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>CC De Werf</createdVia>
+            <creationDate>2013-05-29T08:04Z</creationDate>
+            <id>c8eccd07-20b2-45e0-bc79-1d46b6ab2198</id>
+            <nodeID>8dc00fae-c2cb-46d2-9190-2e07fb38fd6a</nodeID>
+            <nodeTitle>HAPPY WEEKEND</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>3d94cc59-3321-4706-8847-f35c1f65868b</userId>
+            <kansenStatuut>false</kansenStatuut>
+            <location>Lede</location>
+            <organiser>CC De Werf</organiser>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>CC De Werf</createdVia>
+            <creationDate>2013-05-29T08:04Z</creationDate>
+            <id>e4aae39d-daf1-418d-b2e8-04e747d957f2</id>
+            <nodeID>8dc00fae-c2cb-46d2-9190-2e07fb38fd6a</nodeID>
+            <nodeTitle>HAPPY WEEKEND</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>cddbd447-2efc-439f-9edd-5f0c6f62dd51</userId>
+            <kansenStatuut>true</kansenStatuut>
+            <location>Lede</location>
+            <organiser>CC De Werf</organiser>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType>event</contentType>
+            <createdVia>CC De Werf</createdVia>
+            <creationDate>2013-05-22T12:48Z</creationDate>
+            <id>6b1e1bf8-6110-4064-8487-fc78d3b6a3c7</id>
+            <nodeID>4968c963-c094-4806-b78b-fee6f338eccd</nodeID>
+            <nodeTitle>cc de werf langlopend</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>f9fda434-d0e7-49b1-8d7a-1a988f32379a</userId>
+            <kansenStatuut>true</kansenStatuut>
+            <location>Aalst</location>
+            <organiser>CC De Werf</organiser>
+            <userHomeCity>Aalst</userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <createdVia>unknown</createdVia>
+            <creationDate>2011-11-29T14:29Z</creationDate>
+            <id>54109cb7-c8b1-49d3-802c-3228644d2b7c</id>
+            <nodeID>33f94deb-5019-4429-9540-faefb0130e2d</nodeID>
+            <points>1.000</points>
+            <private>false</private>
+            <userId>1d668b29-b680-496d-b005-4d3308ce957a</userId>
+            <kansenStatuut>false</kansenStatuut>
+            <location>75002a87-b9ab-45ef-a00a-6f6cac1d545e</location>
+            <organiser>9a007849-e3c6-4091-a681-e1f6cb2f83e3</organiser>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <createdVia>unknown</createdVia>
+            <creationDate>2011-11-29T13:50Z</creationDate>
+            <id>49abfb43-19bd-4bfa-bdaf-f4d6351d534e</id>
+            <nodeID>b763232e-3aab-46da-a47b-170ee44d58ce</nodeID>
+            <nodeTitle>Sagalassos, City of dreams</nodeTitle>
+            <points>1.000</points>
+            <private>false</private>
+            <userId>c35f3f01-a8e0-46b1-8a01-b01725e4e84e</userId>
+            <kansenStatuut>true</kansenStatuut>
+            <location>NOT YET USED</location>
+            <organiser>9a007849-e3c6-4091-a681-e1f6cb2f83e3</organiser>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType></contentType>
+            <createdVia>unknown</createdVia>
+            <creationDate>2011-11-29T13:49Z</creationDate>
+            <depiction></depiction>
+            <id>b8741cef-2782-40d5-97e9-f1cc7432151f</id>
+            <nick></nick>
+            <nodeID>74b25f38-3894-4d1b-bea2-686e523ae7dd</nodeID>
+            <nodeTitle>Jozef Wouters - Detheatermaker - Stadium/Stadion #5</nodeTitle>
+            <points>0.000</points>
+            <private>false</private>
+            <userId>c35f3f01-a8e0-46b1-8a01-b01725e4e84e</userId>
+            <value></value>
+            <cidName></cidName>
+            <eventLocationLat></eventLocationLat>
+            <eventLocationLon></eventLocationLon>
+            <kansenStatuut>true</kansenStatuut>
+            <location>NOT YET USED</location>
+            <organiser>ef81214d-c430-4f30-be4f-fc1bc586b067</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>1</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity></userHomeCity>
+        </checkinActivity>
+        <checkinActivity>
+            <type>12</type>
+            <contentType></contentType>
+            <createdVia>unknown</createdVia>
+            <creationDate>2011-11-29T13:48Z</creationDate>
+            <depiction></depiction>
+            <id>ac3c4ad6-7dbf-431c-a9ab-955a83e07917</id>
+            <nick></nick>
+            <nodeID>9474d25d-b270-4af2-a143-73c50a553c80</nodeID>
+            <nodeTitle>Dies Irae! Kroniek van een reqiuem</nodeTitle>
+            <points>1.000</points>
+            <private>false</private>
+            <userId>c35f3f01-a8e0-46b1-8a01-b01725e4e84e</userId>
+            <value></value>
+            <cidName></cidName>
+            <eventLocationLat></eventLocationLat>
+            <eventLocationLon></eventLocationLon>
+            <kansenStatuut>true</kansenStatuut>
+            <location>NOT YET USED</location>
+            <organiser>9a007849-e3c6-4091-a681-e1f6cb2f83e3</organiser>
+            <organiserCardSystems>
+                <organiserCardSystem>1</organiserCardSystem>
+            </organiserCardSystems>
+            <userHomeCity></userHomeCity>
+        </checkinActivity>
+    </checkinActivities>
+    <total>12</total>
+</response>

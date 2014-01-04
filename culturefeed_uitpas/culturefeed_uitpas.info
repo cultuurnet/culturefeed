@@ -1,0 +1,19 @@
+name = CultureFeed Uitpas
+description = Provides Uitpas UI elements
+package = CultureFeed
+core = 7.x
+dependencies[] = culturefeed
+dependencies[] = culturefeed_agenda
+dependencies[] = culturefeed_search
+dependencies[] = culturefeed_ui
+configure = admin/config/culturefeed/uitpas
+
+files[] = views/plugins/culturefeed_uitpas_promotions_query.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_field_image.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_field_markup.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_field_title.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_filter_boolean.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_filter_card_system_id.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_filter_date.inc
+files[] = views/handlers/culturefeed_uitpas_views_handler_sort.inc
+files[] = ctools/plugins/views_wizard/culturefeed_uitpas_promotions_views_wizard.class.php

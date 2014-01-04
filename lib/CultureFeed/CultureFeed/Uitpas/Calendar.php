@@ -25,9 +25,13 @@ class CultureFeed_Uitpas_Calendar {
   }
 
   public static function createFromXML(CultureFeed_SimpleXMLElement $object) {
+    $object->registerXPathNamespace('cdb', CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+
     $calendar = new CultureFeed_Uitpas_Calendar();
 
     foreach ($object->xpath('cdb:periods/cdb:period') as $timeObject) {
+      $timeObject->registerXPathNamespace('cdb', CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+
       $period = new CultureFeed_Uitpas_Calendar_Period();
       $period->datefrom = $timeObject->xpath_time('cdb:datefrom');
       $period->dateto = $timeObject->xpath_time('cdb:dateto');
@@ -36,6 +40,8 @@ class CultureFeed_Uitpas_Calendar {
     }
     
     foreach ($object->xpath('cdb:timestamps/cdb:timestamp') as $timeObject) {
+      $timeObject->registerXPathNamespace('cdb', CultureFeed_Cdb_Default::CDB_SCHEME_URL);
+
       $timestamp = new CultureFeed_Uitpas_Calendar_Timestamp();
       $timestamp->date = $timeObject->xpath_time('cdb:date');
       $timestamp->timestart = $timeObject->xpath_str('cdb:timestart');

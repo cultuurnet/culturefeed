@@ -142,10 +142,34 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
    */
   public $cashInState = self::FILTER_POSSIBLE;
 
+  /**
+   * Filters the promotions based on their spotlight status.
+   * @var boolean
+   */
+  public $inSpotlight;
 
+  /**
+   * Id of a CardSystem owning the promotions.
+   * @var string
+   */
+  public $owningCardSystemId;
+
+  /**
+   * Id of a CardSystem to which the promotions are applicable.
+   * @var string
+   */
+  public $applicableCardSystemId;
 
 
   protected function manipulatePostData(&$data) {
+    if (isset($data['inSpotlight'])) {
+      $data['inSpotlight'] = $data['inSpotlight'] ? "true" : "false";
+    }
+
+    if (isset($data['unexpired'])) {
+      $data['unexpired'] = $data['unexpired'] ? "true" : "false";
+    }
+
     if (isset($data['cashingPeriodBegin'])) {
       $data['cashingPeriodBegin'] = date('c', $data['cashingPeriodBegin']);
     }

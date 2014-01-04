@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Module file for Culturefeed uitpas.
+ */
+
+require_once 'culturefeed_uitpas.blocks.inc';
+require_once 'culturefeed_uitpas.forms.inc';
+require_once 'culturefeed_uitpas.helpers.inc';
+require_once 'culturefeed_uitpas.loaders.inc';
+require_once 'culturefeed_uitpas.menu.inc';
+require_once 'culturefeed_uitpas.profile.inc';
+require_once 'culturefeed_uitpas.theme.inc';
+
+/**
+ * Module implements hook_culturefeed_login_redirect_destination_alter().
+ */
+function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
+
+  if (isset($_GET['isnewpassholder'])) {
+    $destination = 'registration_confirmation';
+  }
+
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function culturefeed_uitpas_ctools_plugin_directory($module, $plugin) {
+  return 'ctools/plugins/' . $plugin;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_uitpas_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/views',
+  );
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function culturefeed_uitpas_module_implements_alter(&$implementations, $hook) {
+
+  if ($hook == 'user_view') {
+
+    $group = $implementations['culturefeed_uitpas'];
+    unset($implementations['culturefeed_uitpas']);
+    $implementations['culturefeed_uitpas'] = $group;
+
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function culturefeed_uitpas_init() {
+  if (!in_array(current_path(), array('culturefeed/uitpas/reminder/toggle', 'register_uitpas')) &&
+      variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1)) {
+
+    $current_state = isset($_COOKIE['Drupal_visitor_culturefeed_uitpas_reminder']) ? $_COOKIE['Drupal_visitor_culturefeed_uitpas_reminder'] : 'on';
+
+    // Don't do anything when reminder was toggled off with cookie.
+    if ($current_state !== 'on') {
+      return;
+    }
+
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+
+    if ($uitpas_user->user && !$uitpas_user->passholder) {
+      $message = variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.'));
+      $args = array(
+        '@register_url' => url('register_uitpas'),
+        '@toggle_url' => url('culturefeed/uitpas/reminder/toggle'),
+      );
+      $message = format_string($message, $args);
+      drupal_set_message($message, 'warning');
+    }
+  }
+}
+
+
+/**
+ * Title callback.
+ */
+function culturefeed_uitpas_register_uitpas_title() {
+  return variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'));
+}

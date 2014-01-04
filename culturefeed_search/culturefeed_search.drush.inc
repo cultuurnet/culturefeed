@@ -100,5 +100,7 @@ function drush_culturefeed_search_import_cnapi_headings() {
  * Clears all culturefeed search cache.
  */
 function drush_culturefeed_search_cache_clear() {
-  _culturefeed_search_flush_caches();
+  if (is_callable('_culturefeed_search_flush_caches')) {
+    _culturefeed_search_flush_caches();
+  }
 }

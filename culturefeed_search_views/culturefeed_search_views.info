@@ -29,6 +29,8 @@ files[] = views/handlers/field/views_handler_field_cdb_item_calendar_summary.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_location.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_organiser.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_picture.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_short_description.inc
+
 
 dependencies[] = culturefeed_search
 dependencies[] = views

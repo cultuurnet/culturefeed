@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response xmlns:ns2="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:ns3="http://xmlns.com/foaf/0.1/">
+    <passHolder>
+        <cardSystemSpecific>
+            <cardSystem>
+                <id>1</id>
+                <name>HELA</name>
+            </cardSystem>
+            <currentCard>
+                <kansenpas>true</kansenpas>
+                <status>ACTIVE</status>
+                <uitpasNumber>
+                    <uitpasNumber>0930000150316</uitpasNumber>
+                </uitpasNumber>
+            </currentCard>
+            <emailPreference>ALL_MAILS</emailPreference>
+            <kansenStatuut>true</kansenStatuut>
+            <kansenStatuutEndDate>2013-12-31T23:59:59+01:00
+            </kansenStatuutEndDate>
+            <kansenStatuutExpired>false</kansenStatuutExpired>
+            <kansenStatuutInGracePeriod>false</kansenStatuutInGracePeriod>
+            <lastActivationMailNumber>0</lastActivationMailNumber>
+            <smsPreference>NO_SMS</smsPreference>
+            <status>ACTIVE</status>
+        </cardSystemSpecific>
+        <city>HAALTERT</city>
+        <dateOfBirth>1990-12-12T01:00:00+01:00</dateOfBirth>
+        <firstName>Anne</firstName>
+        <gender>FEMALE</gender>
+        <gsm>656565</gsm>
+        <inszNumberHash>
+            12345678
+        </inszNumberHash>
+        <memberships/>
+        <name>Hendrickx</name>
+        <nationality>Congo (Rép. dém.)</nationality>
+        <numberOfCheckins>1</numberOfCheckins>
+        <placeOfBirth>Kinshasa</placeOfBirth>
+        <points>9.000</points>
+        <postalCode>9451</postalCode>
+        <registrationBalieConsumerKey>4a48c707ce52ba1f469259eb8fc4814a
+        </registrationBalieConsumerKey>
+        <street>Somewhere 3</street>
+        <uitIdUser>
+            <ns2:id>16fc936b-e8dd-4b3a-81bb-269b53e479aa</ns2:id>
+        </uitIdUser>
+        <verified>true</verified>
+    </passHolder>
+    <eventCheckin>
+        <cdbid>27f1e25a-1ba6-4a43-96de-0c6f99b508f3</cdbid>
+        <checkinAllowed>false</checkinAllowed>
+        <numberOfPoints>1</numberOfPoints>
+        <checkinConstraintReason>MAXIMUM_REACHED</checkinConstraintReason>
+    </eventCheckin>
+    <eventBuyTicket>
+        <cdbid>27f1e25a-1ba6-4a43-96de-0c6f99b508f3</cdbid>
+        <tariff>15.0</tariff>
+        <price>15.0</price>
+        <title>Kansentarief</title>
+        <buyConstraintReason>MAXIMUM_REACHED</buyConstraintReason>
+    </eventBuyTicket>
+    <welcomeAdvantages>
+        <total>0</total>
+        <promotions/>
+    </welcomeAdvantages>
+    <pointsPromotions>
+        <total>3</total>
+        <promotions>
+            <pointsPromotion>
+                <balies/>
+                <cashedIn>false</cashedIn>
+                <id>15</id>
+                <points>5</points>
+                <title>test UITPAS-395</title>
+                <cashInState>POSSIBLE</cashInState>
+            </pointsPromotion>
+            <pointsPromotion>
+                <balies/>
+                <cashedIn>false</cashedIn>
+                <id>13</id>
+                <points>5</points>
+                <title>Bon akaartweek</title>
+                <cashInState>POSSIBLE</cashInState>
+            </pointsPromotion>
+            <pointsPromotion>
+                <balies/>
+                <cashedIn>false</cashedIn>
+                <id>3</id>
+                <points>1</points>
+                <title>Gratis drankje</title>
+                <cashInState>POSSIBLE</cashInState>
+            </pointsPromotion>
+        </promotions>
+    </pointsPromotions>
+</response>

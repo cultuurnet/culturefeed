@@ -1,33 +1,38 @@
+<div class="profile_uitid">
 
-<?php if ($picture || $name || $gender || $age || $bio || $city) : ?>
-  <?php if ($picture) : ?>
-    <div class="profile-picture">
-      <?php print $picture ?>
+  <h2><?php print $title; ?></h2>
+
+  <?php if ($picture || $name || $gender || $age || $bio || $city) : ?>
+    <?php if ($picture) : ?>
+      <div class="profile-picture">
+        <?php print $picture ?>
+      </div>
+    <?php endif; ?>
+  
+    <div class="profile-fields">
+        <?php if ($name) : ?>
+          <div class="profile-field name"><?php print $name ?></div>
+        <?php endif; ?>
+      
+        <?php if ($gender) : ?>
+          <div class="profile-field gender"><?php print $gender ?></div>
+        <?php endif; ?>
+      
+        <?php if ($age) : ?>
+          <div class="profile-field age"><?php print $age?> jaar</div>
+        <?php endif; ?>
+      
+        <?php if ($bio) : ?>
+          <div class="profile-field bio"><?php print $bio ?></div>
+        <?php endif; ?>
+      
+        <?php if ($city) : ?>
+          <div class="profile-field city"><?php print $city ?></div>
+        <?php endif; ?>
     </div>
+  <?php else : ?>
+  <div class="no-profile"></div>
   <?php endif; ?>
+  <div class="clearfix"></div>
 
-  <div class="profile-fields">
-      <?php if ($name) : ?>
-        <div class="profile-field name"><?php print $name ?></div>
-      <?php endif; ?>
-
-      <?php if ($gender) : ?>
-        <div class="profile-field gender"><?php print $gender ?></div>
-      <?php endif; ?>
-
-      <?php if ($age) : ?>
-        <div class="profile-field age"><?php print $age?> jaar</div>
-      <?php endif; ?>
-
-      <?php if ($bio) : ?>
-        <div class="profile-field bio"><?php print $bio ?></div>
-      <?php endif; ?>
-
-      <?php if ($city) : ?>
-        <div class="profile-field city"><?php print $city ?></div>
-      <?php endif; ?>
-  </div>
-<?php else : ?>
-<div class="no-profile"></div>
-<?php endif; ?>
-<div class="clearfix"></div>
+</div>

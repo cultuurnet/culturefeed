@@ -118,7 +118,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $form = array();
 
   // Always submit to front, so that searches on a 404 would work.
-  $form['#action'] = url('<front>');
+  // $form['#action'] = url('<front>');
 
   $domain_id = variable_get('agenda_search_block_domain_id');
   if (!empty($domain_id)) {

@@ -130,13 +130,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $placeOfBirth;
 
   /**
-   * The UitPas number of the passholder. (Required)
-   *
-   * @var string
-   */
-  public $uitpasNumber;
-
-  /**
    * The price the passholder pays for his UitPas.
    *
    * @var string
@@ -178,13 +171,6 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
    * @var CultureFeed_Uitpas_Passholder_UitIdUser
    */
   public $uitIdUser;
-
-  /**
-   * The current card
-   *
-   * @var CultureFeed_Uitpas_Passholder_Card
-   */
-  public $currentCard;
 
   /**
    * True if the uitpas has been blocked
@@ -230,12 +216,36 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
   public $picture;
 
   /**
+   * Card system specific information of the passholder.
+   *
+   * @var CultureFeed_Uitpas_Passholder_CardSystemSpecific[]
+   */
+  public $cardSystemSpecific;
+
+  /**
    * Empty properties to keep when converting to POST data.
    *
    * @var array
    */
   protected $postDataEmptyPropertiesToKeep = array();
 
+  /**
+   * How many times the passholder checked in somewhere.
+   *
+   * @var integer
+   */
+  public $numberOfCheckins;
+
+  /**
+   * Hash of the INSZ number.
+   *
+   * @var string
+   */
+  public $inszNumberHash;
+
+  /**
+   * {@inheritdoc}
+   */
   protected function manipulatePostData(&$data) {
     if (isset($data['dateOfBirth'])) {
       $data['dateOfBirth'] = date('Y-m-d', $data['dateOfBirth']);
@@ -254,9 +264,10 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     }
 
     $readOnlyProperties = array(
-      'currentCard',
+      'cardSystemSpecific',
       'uitIdUser',
       'postDataEmptyPropertiesToKeep',
+      'numberOfCheckins',
     );
 
     if (isset($this->uitIdUser)) {
@@ -298,24 +309,32 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
     $passholder->kansenStatuutEndDate = $object->xpath_time('kansenStatuutEndDate');
     $passholder->kansenStatuutExpired = $object->xpath_bool('kansenStatuutExpired');
     $passholder->kansenStatuutInGracePeriod = $object->xpath_bool('kansenStatuutInGracePeriod');
-    $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
-    $passholder->currentCard = CultureFeed_Uitpas_Passholder_Card::createFromXML($object->xpath('currentCard', false));
+
+    foreach ($object->xpath('cardSystemSpecific') as $cardSystemSpecific) {
+      $cardSystemId = $cardSystemSpecific->xpath_int('cardSystem/id', FALSE);
+      $passholder->cardSystemSpecific[$cardSystemId] = CultureFeed_Uitpas_Passholder_CardSystemSpecific::createFromXML($cardSystemSpecific);
+    }
+
+    if ($object->xpath('uitIdUser', false) instanceof SimpleXMLElement) {
+      $passholder->uitIdUser = CultureFeed_Uitpas_Passholder_UitIdUser::createFromXML($object->xpath('uitIdUser', false));
+    }
+
     $passholder->blocked = $object->xpath_bool('blocked');
     $passholder->verified = $object->xpath_bool('verified');
-    //$passholder->memberships = $object->xpath_bool('memberships');
     $passholder->registrationBalieConsumerKey = $object->xpath_str('registrationBalieConsumerKey');
     $passholder->points = $object->xpath_int('points');
-    $passholder->uitpasNumber = $object->xpath_str('currentCard/uitpasNumber/uitpasNumber');
     $passholder->moreInfo = $object->xpath_str('moreInfo');
     $passholder->schoolConsumerKey = $object->xpath_str('schoolConsumerKey');
     $passholder->picture = $object->xpath_str('picture');
 
     foreach ($object->xpath('memberships/membership') as $membership) {
-      $memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
+      $passholder->memberships[] = CultureFeed_Uitpas_Passholder_Membership::createFromXML($membership);
     }
-    if (isset($memberships)) {
-      $passholder->memberships = $memberships;
-    }
+
+    $passholder->numberOfCheckins = $object->xpath_int('numberOfCheckins');
+
+    $passholder->inszNumberHash = $object->xpath_str('inszNumberHash');
+
     return $passholder;
   }
 
@@ -372,5 +391,14 @@ class CultureFeed_Uitpas_Passholder extends CultureFeed_Uitpas_ValueObject {
         unset($this->postDataEmptyPropertiesToKeep[$key]);
       }
     }
+  }
+
+  /**
+   * @param integer $id
+   *
+   * @return bool
+   */
+  public function inCardSystem($id) {
+    return array_key_exists($id, $this->cardSystemSpecific);
   }
 }
