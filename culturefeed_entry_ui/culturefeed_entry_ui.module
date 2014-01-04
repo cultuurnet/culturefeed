@@ -254,3 +254,16 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
   }
 
 }
+
+/**
+ * Get the language preferred for input on the Entry API.
+ */
+function culturefeed_entry_ui_get_preferred_language() {
+  $language = variable_get('culturefeed_entry_ui_preferred_language', '');
+
+  if (!$language) {
+    $language = culturefeed_search_get_preferred_language();
+  }
+
+  return $language;
+}

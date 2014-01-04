@@ -772,7 +772,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if (!empty($values['short_description'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  $detail->setLanguage(culturefeed_search_get_preferred_language());
+  $detail->setLanguage(culturefeed_entry_ui_get_preferred_language());
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
