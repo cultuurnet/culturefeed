@@ -719,7 +719,7 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
  * @param CultuurNet\Search\ActivityStatsExtendedEntity $organiser
  *   The organiser of the event.
  */
-function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location, CultuurNet\Search\ActivityStatsExtendedEntity $organiser) {
+function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
   $values = $form_state['values'];
 
