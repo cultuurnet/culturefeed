@@ -1,5 +1,6 @@
 <?php
 /**
+ * @file
  * Theming functions for entry api ui.
  */
 

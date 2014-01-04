@@ -1032,7 +1032,7 @@ function culturefeed_entry_ui_edit_tags_form_validate($form, &$form_state) {
   $tags = explode(';', $form_state['values']['tags']);
   foreach ($tags as $tag) {
     if (array_key_exists($tag, $form['custom_tags']['#options'])) {
-      form_set_error(t('Tag @tag is not permitted because is\'s already a custom tag.' ));
+      form_set_error(t("Tag @tag is not permitted because it's already a custom tag.", array('@tag' => $tag)));
     }
   }
 
@@ -1066,13 +1066,13 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
   try {
 
-    // Add new tags
+    // Add new tags.
     $tags = array_filter($tags);
     if ($tags) {
       Drupalculturefeed_EntryApi::addTagToEvent($event, $tags);
     }
 
-    // Remove old tags
+    // Remove old tags.
     if ($removed_tags) {
       foreach ($removed_tags as $removed_tag) {
         Drupalculturefeed_EntryApi::removeTagFromEvent($event, $removed_tag);
