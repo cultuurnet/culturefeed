@@ -1,9 +1,13 @@
 <?php
+/**
+ * @file
+ * Hook implementations of CultureFeed Entry UI.
+ */
 
 // Category ids needed.
-define('ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID', '0.100.0.0.0');
-define('ENTRY_API_DOEN_CAT_ID', '0.100.1.0.0');
-define('ENTRY_API_BEZOEKEN_CAT_ID', '0.100.2.0.0');
+define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN', '0.100.0.0.0');
+define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN', '0.100.1.0.0');
+define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN', '0.100.2.0.0');
 
 /**
  * Implements hook_permission().
@@ -85,7 +89,7 @@ function culturefeed_entry_ui_menu() {
     'access arguments' => array('delete culturefeed events'),
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
-  
+
   $items['admin/config/culturefeed/entry_ui'] = array(
     'title' => 'CultureFeed Entry UI',
     'description' => 'All configurations to entry api for this site',
@@ -213,15 +217,15 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 
     case 'timestamps_add_more':
       $form_state['#timestamps_needed'] = count(element_children($form['timestamps'])) + 1;
-    break;
+      break;
 
     case 'contacts_add_more':
       $form_state['#contacts_needed'] = count(element_children($form['contacts'])) + 1;
-    break;
+      break;
 
     case 'opening_times_add_more':
       $form_state['#opening_times_needed'] = count(element_children($form['period_or_permanent']['opening_times']['monday'])) + 1;
-    break;
+      break;
 
   }
 
@@ -231,6 +235,7 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 
 /**
  * Ajax form callback: Add a new row.
+ *
  * Return the element that was set in the submit.
  */
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
@@ -239,15 +244,12 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
     case 'timestamps_add_more':
       return $form['timestamps'];
-    break;
 
     case 'contacts_add_more':
       return $form['contacts'];
-    break;
 
     case 'opening_times_add_more':
       return $form['period_or_permanent']['opening_times'];
-    break;
 
   }
 

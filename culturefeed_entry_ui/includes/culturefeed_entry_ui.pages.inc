@@ -8,7 +8,6 @@
  * Form callback: Create a new event, or edit an existing.
  */
 function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
-  
 
   $form = array();
   $contact_info = array();
@@ -96,7 +95,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $form_state['#opening_times_needed'] = $opening_times_needed;
     }
 
-    // Default age
+    // Default age.
     $age = $event->getAgeFrom();
     if ($age) {
 
@@ -112,11 +111,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     }
 
-
   }
 
   // Build the form.
-
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -143,21 +140,21 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['what'] = array('#type' => 'container');
   $form['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN)),
     '#title' => 'Kijken en luisteren',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['doen'] = array(
     '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN)),
     '#title' => 'Doen',
     '#default_value' => $category_defaults,
   );
 
   $form['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => ENTRY_API_KIJKEN_EN_LUISTEREN_CAT_ID)),
+    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN)),
     '#title' => 'Bezoeken',
     '#default_value' => $category_defaults,
   );
@@ -203,7 +200,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $timestamp_count++;
   }
 
-  // Add more button was clicked. Check how many extra rows that need to be added.
+  // Add more button was clicked. Check how many extra rows need to be added.
   if (isset($form_state['#timestamps_needed'])) {
     for (; $timestamp_count < $form_state['#timestamps_needed']; $timestamp_count++) {
       culturefeed_entry_ui_attach_timestamp_elements($form, $timestamp_count);
@@ -231,7 +228,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  // Period / permanent elements
+  // Period / permanent elements.
   $form['period_or_permanent'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -308,7 +305,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $opening_count++;
     }
 
-    // Add more button was clicked. Check how many extra rows that need to be added.
+    // Add more button was clicked. Check how many extra rows need to be added.
     if (isset($form_state['#opening_times_needed'])) {
       for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
         culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
@@ -353,7 +350,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $contacts_count++;
   }
 
-  // Add more button was clicked. Check how many extra rows that need to be added.
+  // Add more button was clicked. Check how many extra rows need to be added.
   if (isset($form_state['#contacts_needed'])) {
     for (; $contacts_count < $form_state['#contacts_needed']; $contacts_count++) {
       culturefeed_entry_ui_attach_contact_info_elements($form, $contacts_count);
@@ -377,7 +374,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#default_value' => ($event) ? $event->getDetails()->current()->getShortDescription() : NULL
+    '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
   );
 
   $form['age_category'] = array(
@@ -416,7 +413,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   $form['fly']['value'] = array(
-    '#markup' => t('Activities for children will get the \'Fly\' label'),
+    '#markup' => t("Activities for children will get the 'Fly' label"),
   );
 
   $form['publication_date'] = array(
@@ -439,11 +436,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
 /**
  * Attach a new contact info element. This contains 3 form elements.
+ *
  * @param array $form
  *   Form to extend.
  * @param int $i
  *   Index for the elements.
- * @param $info
+ * @param mixed $info
  *   ContactInfo property to be edited.
  */
 function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
@@ -460,19 +458,19 @@ function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = N
         $text = $info->getMailAddress();
         $type = 'email';
         $reservation = $info->isForReservations();
-      break;
+        break;
 
       case 'CultureFeed_Cdb_Data_Phone':
         $text = $info->getNumber();
         $type = 'phone';
         $reservation = $info->isForReservations();
-      break;
+        break;
 
       case 'CultureFeed_Cdb_Data_Url':
         $text = $info->getUrl();
         $type = 'url';
         $reservation = $info->isForReservations();
-      break;
+        break;
 
     }
   }
@@ -507,14 +505,14 @@ function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = N
  *   Form to extend.
  * @param int $i
  *   Index for the elements.
- * @param $timestamp
+ * @param CultureFeed_Cdb_Data_Calendar_Timestamp $timestamp
  *   Timestamp object to edit.
  */
-function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, $timestamp = NULL) {
+function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_Cdb_Data_Calendar_Timestamp $timestamp = NULL) {
 
   $states = array();
   if ($i > 0) {
-    $states =  array(
+    $states = array(
       'visible' => array(
         ':input[name=when]' => array(
           array('value' => 'multiple_days'),
@@ -558,15 +556,15 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, $timestamp =
 
 /**
  * Attach opening time elements for a day.
- * @param $form
+ *
+ * @param array $form
  *   Form to attach to.
- * @param $day
- *   Day to attach.
- * @param $i
+ * @param string $day
+ *   English name of the day to attach, for example 'monday'.
+ * @param int $i
  *   Index to set.
  * @param CultureFeed_Cdb_Data_Calendar_OpeningTime $opening_time
  *   Openingtime information
- *
  */
 function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $opening_time = NULL) {
 
@@ -710,9 +708,18 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
 }
 
 /**
- * Save the event form to the entity api
+ * Save the event form to the entity api.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ * @param CultuurNet\Search\ActivityStatsExtendedEntity $location
+ *   The location of the event.
+ * @param CultuurNet\Search\ActivityStatsExtendedEntity $organiser
+ *   The organiser of the event.
  */
-function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, $location, $organiser) {
+function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location, CultuurNet\Search\ActivityStatsExtendedEntity $organiser) {
 
   $values = $form_state['values'];
 
@@ -725,12 +732,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, $lo
     $event = new CultureFeed_Cdb_Item_Event();
   }
 
-  // Publication date
+  // Publication date.
   if ($values['publication_date']) {
     $event->setPublicationDate($values['publication_date']);
   }
 
-  // Age
+  // Age.
   $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
 
   // Timestamps as calendar.
@@ -773,13 +780,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, $lo
 
   // Location / Address.
   $addresses = $location->getEntity()->getContactInfo()->getAddresses();
+  /* @var CultureFeed_Cdb_Data_Address $address */
   $address = $addresses[0];
 
-  // Event location
-  $cdbLocation = new CultureFeed_Cdb_Data_Location($address);
-  $cdbLocation->setLabel($values['location']);
-  $cdbLocation->setCdbid($location->getId());
-  $event->setLocation($cdbLocation);
+  // Event location.
+  $cdb_location = new CultureFeed_Cdb_Data_Location($address);
+  $cdb_location->setLabel($values['location']);
+  $cdb_location->setCdbid($location->getId());
+  $event->setLocation($cdb_location);
 
   // Event organiser.
   $organiser_object = new CultureFeed_Cdb_Data_Organiser();
@@ -799,19 +807,18 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, $lo
 
         case 'website':
           $contact_object->addUrl(new CultureFeed_Cdb_Data_Url($contact['text'], FALSE, $contact['reservation']));
-        break;
+          break;
 
         case 'email':
           $contact_object->addMail(new CultureFeed_Cdb_Data_Mail($contact['text'], FALSE, $contact['reservation']));
-        break;
+          break;
 
         case 'phone':
           $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
-        break;
+          break;
 
       }
     }
-
 
   }
 
@@ -972,13 +979,13 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   $form['#old_tags'] = $event_tags;
 
   $custom_tags = array();
-  
-  // Todo get options from variable
+
+  // @todo Get options from variable.
   $custom_options = variable_get('culturefeed_entry_ui_custom_tags');
-  
+
   echo '<pre>';print_r($custom_options);echo '</pre>';
 
-  // Filter out custom tags
+  // Filter out custom tags.
   if ($event_tags) {
     foreach ($event_tags as $tag) {
       if (array_key_exists($tag, $custom_options)) {
@@ -1018,14 +1025,14 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 }
 
 /**
- * Validate the tag form. Check duplicates with custom tags
+ * Validate the tag form. Check duplicates with custom tags.
  */
 function culturefeed_entry_ui_edit_tags_form_validate($form, &$form_state) {
 
   $tags = explode(';', $form_state['values']['tags']);
   foreach ($tags as $tag) {
     if (array_key_exists($tag, $form['custom_tags']['#options'])) {
-      form_set_error(t('Tag'), $tag . t(' is not permitted because is\'s already a custom tag.'  ));
+      form_set_error(t('Tag @tag is not permitted because is\'s already a custom tag.' ));
     }
   }
 

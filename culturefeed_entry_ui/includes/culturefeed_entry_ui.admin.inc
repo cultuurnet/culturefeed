@@ -1,9 +1,13 @@
 <?php
 /**
+ * @file
  * Settings file for culturefeed entry ui.
  */
 
-function culturefeed_entry_ui_settings_form($form, $form_state = array()) {
+/**
+ * Callback for the CultureFeed Entry UI settings form.
+ */
+function culturefeed_entry_ui_settings_form($form, &$form_state) {
 
   $form['culturefeed_entry_ui_custom_tags'] = array(
     '#type' => 'textarea',
