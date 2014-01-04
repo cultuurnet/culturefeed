@@ -34,3 +34,22 @@ function culturefeed_pages_update_7003() {
   $actortypes = culturefeed_search_get_actortype_categories();
   variable_set('culturefeed_pages_actor_types', array_keys($actortypes));
 }
+
+/**
+ * Remove empty actor type values in variable.
+ */
+function culturefeed_pages_update_7004() {
+
+  $actor_types = variable_get('culturefeed_pages_actor_types', array());
+  if ($actor_types) {
+
+    // Remove empty values. If this results in an empty array, delete the variable.
+    $actor_types = array_filter($actor_types);
+    if ($actor_types) {
+      variable_set('culturefeed_pages_actor_types', $actor_types);
+    }
+    else {
+      variable_del('culturefeed_pages_actor_types');
+    }
+  }
+}

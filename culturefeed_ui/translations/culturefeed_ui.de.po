@@ -532,10 +532,6 @@ msgstr "Aktionen verwalten"
 msgid "Edit account"
 msgstr "Konto bearbeiten"
 
-#: culturefeed_ui.preprocess.inc:296
-msgid "Calculate your leisure profile!"
-msgstr "Ihr Freizeitprofil berechnen"
-
 #: culturefeed_ui.preprocess.inc:302
 msgid "Action searcher"
 msgstr "Action-Sucher"
@@ -551,14 +547,6 @@ msgstr "Entdecker"
 #: culturefeed_ui.preprocess.inc:311
 msgid "Connoisseur"
 msgstr "Feinschmecker"
-
-#: culturefeed_ui.preprocess.inc:314
-msgid "Leisure profile not calculated yet"
-msgstr "Profil noch nicht berechnet"
-
-#: culturefeed_ui.preprocess.inc:317
-msgid "Recalculate"
-msgstr "Erneut berechnen"
 
 #: culturefeed_ui.preprocess.inc:379
 msgid "your email"

@@ -16,6 +16,8 @@ define('CULTUREFEED_ACTORTYPE_ORGANISATION', '8.11.0.0.0');
  */
 define('CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT', 50);
 
+define('CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE', 20);
+
 /**
  * Url to the edit page of an event inside uitdatabank.
  */
@@ -30,22 +32,23 @@ function culturefeed_pages_theme() {
 
   return array(
 
-    'culturefeed_pages_join_page' => array(
+    'culturefeed_pages_basic_search_page' => array(
       'variables' => array(
         'form' => NULL,
         'results' => array(),
+        'total_results' => 0,
         'search' => '',
       ),
       'path' => $path,
       'file' => 'theme.inc',
-      'template' => 'culturefeed-pages-join-page',
+      'template' => 'culturefeed-pages-basic-search-page',
     ),
 
-    'culturefeed_pages_join_search_result_item' => array(
+    'culturefeed_pages_basic_search_result_item' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
-      'template' => 'culturefeed-pages-join-search-result-item',
+      'template' => 'culturefeed-pages-basic-search-result-item',
     ),
 
     'culturefeed_page' => array(
@@ -199,10 +202,10 @@ function culturefeed_pages_menu() {
 
   $items = array();
 
-  $items['pages/join'] = array(
-    'title callback' => 'culturefeed_pages_join_title',
-    'page callback' => 'culturefeed_pages_join_page_search',
-    'access callback' => 'culturefeed_is_culturefeed_user',
+  $items['pages/search'] = array(
+    'title callback' => 'culturefeed_pages_basic_search_title',
+    'page callback' => 'culturefeed_pages_page_basic_search',
+    'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
   );
 
@@ -655,7 +658,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
     }
     else {
       $items['my-page']['children'] = array(
-        array('data' => l(t('Search your page'), 'pages/join')),
+        array('data' => l(t('Search your page'), 'pages/search')),
       );
     }
 
@@ -682,7 +685,7 @@ function culturefeed_pages_culturefeed_ui_profile_box_dropdown_items(CultureFeed
   // Provide the user with interesting pages so they can login as Page.
   else {
     $items['my-page']['children'] = array(
-      array('data' => l(t('Search your page'), 'pages/join')),
+      array('data' => l(t('Search your page'), 'pages/search')),
     );
   }
 
@@ -792,9 +795,9 @@ function culturefeed_pages_page_load($id) {
 }
 
 /**
- * Title callback for the join page.
+ * Title callback for the join search page.
  */
-function culturefeed_pages_join_title() {
+function culturefeed_pages_basic_search_title() {
   return format_string(t('Your page in @sitename'), array('@sitename' => variable_get('site_name')));
 }
 

@@ -10,7 +10,7 @@
   </div>
 <?php endif; ?>
 
-<h2><?php print t('Pages I follow'); ?></h2>
+<h2><?php print ($view_own_page ? t('Pages I follow') : t('@username follows', array('@username' => $user->nick))); ?></h2>
 <?php if (!empty($i_follow)): ?>
   <?php print $i_follow; ?>
 <?php else: ?>

@@ -1,9 +1,6 @@
 <div class="profile_uitid">
 
   <h2><?php print $title; ?></h2>
-  <?php if ($profile_edit_link) : ?>
-    <?php print $profile_edit_link ?>
-  <?php endif; ?>
 
   <?php if ($picture || $name || $gender || $age || $bio || $city) : ?>
     <?php if ($picture) : ?>

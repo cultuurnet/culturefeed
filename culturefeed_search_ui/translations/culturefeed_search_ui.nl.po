@@ -12,6 +12,7 @@
 #  js/search_ui.js: n/a
 #  lib/Drupal/CultureFeedSearchPage.php: n/a
 #  theme/culturefeed-search-list.tpl.php: n/a
+#  theme/culturefeed-search-facet-item.tpl.php: n/a
 #  theme/culturefeed-search-page.tpl.php: n/a
 #  theme/culturefeed-search-suggestions.tpl.php: n/a
 #  theme/theme.inc: n/a
@@ -19,47 +20,56 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-08-13 10:19+0200\n"
-"PO-Revision-Date: 2013-08-13 10:43+0100\n"
+"POT-Creation-Date: 2013-12-23 15:51+0100\n"
+"PO-Revision-Date: 2013-12-23 15:54+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"Language: nl\n"
+"X-Generator: Poedit 1.6.3\n"
 
-#: culturefeed_search_ui.module:98
+#: culturefeed_search_ui.module:99
 msgid "Change CultureFeed Search UI settings like display, filters, …"
 msgstr ""
 "Verander de instellingen van de CultureFeed Search UI zoals weergave, "
 "filters,..."
 
-#: culturefeed_search_ui.module:234
+#: culturefeed_search_ui.module:235
 msgid "Culturefeed search: search events and pages"
 msgstr "Culturefeed search: zoek activiteiten en pagina's"
 
-#: culturefeed_search_ui.module:239
+#: culturefeed_search_ui.module:240
 msgid "Culturefeed search: sort order"
 msgstr "Culturefeed search: zoekresultaten sorteren"
 
-#: culturefeed_search_ui.module:244
+#: culturefeed_search_ui.module:245
 msgid "Culturefeed search: active filters"
 msgstr "Culturefeed search: actieve filters"
 
-#: culturefeed_search_ui.module:249
+#: culturefeed_search_ui.module:250
 msgid "Culturefeed search: facet when"
 msgstr "Culturefeed search: facet wanneer"
 
-#: culturefeed_search_ui.module:254
+#: culturefeed_search_ui.module:255
 msgid "Culturefeed search: facet where"
 msgstr "Culturefeed search: facet waar"
 
-#: culturefeed_search_ui.module:262
+#: culturefeed_search_ui.module:260
+msgid "Culturefeed search: facet where - search only on cities and zipcodes"
+msgstr ""
+
+#: culturefeed_search_ui.module:268
 msgid "Culturefeed search: facet @label"
 msgstr ""
 
-#: culturefeed_search_ui.module:409
+#: culturefeed_search_ui.module:303
+msgid "You searched for:"
+msgstr "Je zocht op:"
+
+#: culturefeed_search_ui.module:418
 msgid "Near"
 msgstr "In de buurt van"
 
@@ -67,11 +77,7 @@ msgstr "In de buurt van"
 msgid "Culturefeed search"
 msgstr ""
 
-#: culturefeed_search_ui.module:97
-msgid "CultureFeed Search UI"
-msgstr ""
-
-#: culturefeed_search_ui.info:0
+#: culturefeed_search_ui.module:98 culturefeed_search_ui.info:0
 msgid "CultureFeed Search UI"
 msgstr ""
 
@@ -125,59 +131,75 @@ msgstr ""
 "Wanneer ingeschakeld zullen alle oude URL's (CNAPI), omgeleid worden naar "
 "nieuwe URL's (SAPI)."
 
-#: includes/blocks.inc:31
+#: includes/admin.inc:39
+msgid "Group"
+msgstr "Groep"
+
+#: includes/admin.inc:40
+msgid ""
+"The data is now fully denormalized so that 1 document = 1 time-based event. "
+"So you get the same event multiple times per opening day or hour. To group "
+"the results per event, the group = event parameter can be used. To group "
+"multiple events per production you can use group=event_production."
+msgstr ""
+
+#: includes/blocks.inc:29
 msgid "Search in"
 msgstr "Zoek in"
 
-#: includes/blocks.inc:38
+#: includes/blocks.inc:36
 msgid "Search terms"
 msgstr "Trefwoorden"
 
-#: includes/blocks.inc:45
+#: includes/blocks.inc:43
 msgid "Search"
 msgstr "Zoeken"
 
-#: includes/blocks.inc:108
+#: includes/blocks.inc:106
 msgid "Sort"
 msgstr "Sorteer resultaten op"
 
-#: includes/blocks.inc:116
+#: includes/blocks.inc:114
 msgid "Submit"
 msgstr "Voeg toe"
 
-#: includes/blocks.inc:221
+#: includes/blocks.inc:222
 msgid "When"
 msgstr "Wanneer"
 
-#: includes/blocks.inc:239
+#: includes/blocks.inc:240
 msgid "Choose a date"
 msgstr "Datum"
 
-#: includes/blocks.inc:242
+#: includes/blocks.inc:243
 msgid "Or choose a custom date"
 msgstr "Of kies zelf een datum"
 
-#: includes/blocks.inc:247;359;407
+#: includes/blocks.inc:248;382;430;524
 msgid "Ok"
 msgstr "Ok"
 
-#: includes/blocks.inc:334;351
-msgid "Where"
-msgstr "Waar"
+#: includes/blocks.inc:265
+msgid "till"
+msgstr "tot"
 
-#: includes/blocks.inc:354
-msgid "Zipcode or city"
-msgstr "Postcode of gemeente"
-
-#: includes/blocks.inc:400
-msgid "Search nearby"
-msgstr "Zoek in de buurt"
-
-#: includes/blocks.inc:266
+#: includes/blocks.inc:269;274
 msgid "Please enter a valid date"
 msgstr "Gelieve een geldige datum in te voeren"
 
-#: includes/blocks.inc:445
+#: includes/blocks.inc:357;374;499;516
+msgid "Where"
+msgstr "Waar"
+
+#: includes/blocks.inc:377;519
+msgid "Zipcode or city"
+msgstr "Postcode of gemeente"
+
+#: includes/blocks.inc:423
+msgid "Search nearby"
+msgstr "Zoek in de buurt"
+
+#: includes/blocks.inc:563
 msgid "Remove all filters"
 msgstr "Alle filters verwijderen"
 
@@ -209,7 +231,7 @@ msgstr "Volgende 30 dagen"
 msgid "Next 12 months"
 msgstr "Volgende 12 maanden"
 
-#: includes/pages.inc:58;62;69
+#: includes/pages.inc:69;73;77;84
 msgid "There was an error while loading the search results."
 msgstr "Er is een fout opgetreden bij het laden van de zoekresultaten."
 
@@ -233,25 +255,32 @@ msgstr "Einddatum"
 msgid "OK"
 msgstr "Ok"
 
-#: lib/Drupal/CultureFeedSearchPage.php:351
+#: lib/Drupal/CultureFeedSearchPage.php:603
 msgid "More results"
 msgstr "Meer resultaten"
 
-#: lib/Drupal/CultureFeedSearchPage.php:362
+#: lib/Drupal/CultureFeedSearchPage.php:614
+#: theme/culturefeed-search-list.tpl.php:14
 msgid "perform a new search."
 msgstr "voer een nieuwe zoekopdracht uit."
 
-#: lib/Drupal/CultureFeedSearchPage.php:364
+#: lib/Drupal/CultureFeedSearchPage.php:616
+#: theme/culturefeed-search-list.tpl.php:19
 msgid "There are no more search results."
 msgstr "Er zijn geen zoekresultaten meer."
 
-#: lib/Drupal/CultureFeedSearchPage.php:365
+#: lib/Drupal/CultureFeedSearchPage.php:617
+#: theme/culturefeed-search-list.tpl.php:19
 msgid "Refine your search results or"
 msgstr "Verfijn jouw zoekopdracht of"
 
-#: theme/culturefeed-search-list.tpl.php:16
-msgid "No results found"
-msgstr "Geen resultaten gevonden"
+#: lib/Drupal/CultureFeedSearchPage.php:680
+msgid "page"
+msgstr "pagina"
+
+#: theme/culturefeed-search-facet-item.tpl.php:15
+msgid "Remove filter"
+msgstr "Verwijder filter"
 
 #: theme/culturefeed-search-page.tpl.php:11
 msgid "<strong>@count</strong> result found"
@@ -268,7 +297,3 @@ msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count resultaat"
 msgstr[1] "@range van @count resultaten"
-
-#: theme/culturefeed-search-facet-item.tpl.php:15
-msgid "Remove filter"
-msgstr "Verwijder filter"

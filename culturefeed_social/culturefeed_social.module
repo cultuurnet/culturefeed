@@ -14,6 +14,7 @@ define('CULTUREFEED_SOCIAL_PAGE_USER_ACTIVITIES_COUNT', 20);
 define('CULTUREFEED_SOCIAL_PAGE_NOTIFICATIONS_COUNT', 50);
 define('CULTUREFEED_SOCIAL_BLOCK_NOTIFICATIONS_COUNT', 5);
 define('CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT', 10);
+define('CULTUREFEED_SOCIAL_PAGE_ACTIVITIES_RECENT_COUNT', 20);
 
 /**
  * Implements hook_menu().
@@ -157,6 +158,14 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/activities/recent'] = array(
+    'title arguments' => array('Most recent actions'),
+    'page callback' => 'culturefeed_social_page_recent_activities',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Notifications
   if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
     $items['culturefeed/notifications'] = array(
@@ -259,6 +268,8 @@ function culturefeed_social_theme() {
     'culturefeed_social_activity_summary' => array(
       'variables' => array(
         'totals' => NULL,
+        'private' => NULL,
+        'account_name' => NULL,
       ),
       'template' => 'culturefeed-social-activity-summary',
       'path' => $path,

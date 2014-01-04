@@ -30,9 +30,6 @@
         <div class="profile-field city"><?php print $city; ?></div>
       <?php endif; ?>
 
-      <?php if ($profile_edit_link): ?>
-        <?php print $profile_edit_link; ?>
-      <?php endif; ?>
   </div>
 <?php else : ?>
 <div class="no-profile"></div>
@@ -58,7 +55,7 @@
 
 <?php if (!empty($memberships)): ?>
 <div class="page-memberships">
-  
+
   <ul>
   <?php foreach ($memberships as $membership) :?>
     <li><?php print $membership; ?></li>
@@ -69,7 +66,7 @@
 
 <?php if (!empty($following)): ?>
 <div class="following">
-  <?php print t('Pages of which i\'m a member') ?>
+  <?php print ($view_own_page ? t('Pages of which i\'m a member') : t('Pages of which @username is a member', array('@username' => $user->nick))); ?>
   <ul>
   <?php foreach ($following as $following_page) :?>
     <li><?php print $following_page; ?></li>

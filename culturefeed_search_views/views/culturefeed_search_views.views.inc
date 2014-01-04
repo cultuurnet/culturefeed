@@ -26,6 +26,15 @@ function culturefeed_search_views_data() {
     ),
   );
 
+  // Filter on group.
+  $data['cdb_items']['group'] = array(
+    'title' => t('Group'),
+    'help' => t('Add a group filter'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_group',
+    ),
+  );
+
   // Add filter on category per category type.
   $domains = culturefeed_search_get_domains();
   foreach ($domains as $did => $label) {
@@ -65,6 +74,15 @@ function culturefeed_search_views_data() {
     'help' => t('Perform a search on a city.'),
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_city',
+    ),
+  );
+  
+  // Created by field.
+  $data['cdb_items']['createdby'] = array(
+    'title' => t('Created by'),
+    'help' => t('Perform a search created by certain user'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_createdby',
     ),
   );
 
@@ -126,22 +144,6 @@ function culturefeed_search_views_data() {
     ),
   );
 
-  $data['cdb_items']['recommend_sort'] = array(
-    'title' => t('Total recommend'),
-    'help' => t('Sort on recommend count.'),
-    'sort' => array(
-      'handler' => 'views_handler_sort_culturefeed_search_recommends',
-    ),
-  );
-
-  $data['cdb_items']['comment_sort'] = array(
-    'title' => t('Total comments'),
-    'help' => t('Sort on comment count.'),
-    'sort' => array(
-      'handler' => 'views_handler_sort_culturefeed_search_comments',
-    ),
-  );
-
   // Fields.
 
   // Short Description.
@@ -194,6 +196,23 @@ function culturefeed_search_views_data() {
     'help' => t('Link to the cdb item'),
     'field' => array(
       'handler' => 'views_handler_field_cdb_item_link',
+    ),
+  );
+
+  // Sorts
+  $data['cdb_items']['recommend_sort'] = array(
+    'title' => t('Total recommend'),
+    'help' => t('Sort on recommend count.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_recommends',
+    ),
+  );
+
+  $data['cdb_items']['comment_sort'] = array(
+    'title' => t('Total comments'),
+    'help' => t('Sort on comment count.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_comments',
     ),
   );
 
