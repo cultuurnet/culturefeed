@@ -233,8 +233,7 @@ function culturefeed_get_content_type($type) {
  * Get the preferred language of current cf user.
  */
 function culturefeed_get_preferred_language() {
-
-  static $preferredLanguage = FALSE;
+  $preferredLanguage = &drupal_static(__FUNCTION__, FALSE);
   global $language;
 
   if (!$preferredLanguage) {
