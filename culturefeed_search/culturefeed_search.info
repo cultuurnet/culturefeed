@@ -4,8 +4,6 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
-dependencies[] = culturefeed
-
 files[] = lib/Drupal/Import/CultureFeedDomainImport.php
 files[] = lib/Drupal/Import/CultureFeedCityImport.php
 files[] = lib/Drupal/Import/CnapiHeadingImport.php
