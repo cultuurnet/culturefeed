@@ -114,52 +114,53 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Build the form.
-  $form['title'] = array(
+  
+  
+  // Basic.
+  $form['basic'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Basic info'),
+  );
+  
+  $form['basic']['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
     '#required' => TRUE,
   );
-
-  $form['location'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Location'),
-    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => TRUE,
-    '#default_value' => $default_location,
-  );
-
-  $form['organiser'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Organization'),
-    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => TRUE,
-    '#default_value' => $default_organiser,
-  );
-
-  $form['what'] = array('#type' => 'container');
-  $form['what']['kijken_en_luisteren'] = array(
+  
+  $form['basic']['what'] = array('#type' => 'container');
+  $form['basic']['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN)),
     '#title' => 'Kijken en luisteren',
     '#default_value' => $category_defaults,
   );
 
-  $form['what']['doen'] = array(
+  $form['basic']['what']['doen'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN)),
     '#title' => 'Doen',
     '#default_value' => $category_defaults,
   );
 
-  $form['what']['bezoeken'] = array(
+  $form['basic']['what']['bezoeken'] = array(
     '#type' => 'checkboxes',
     '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN)),
     '#title' => 'Bezoeken',
     '#default_value' => $category_defaults,
   );
 
-  $form['when'] = array(
+
+  $form['basic']['basic']['location'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Location'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+    '#required' => TRUE,
+    '#default_value' => $default_location,
+  );
+  
+  $form['basic']['when'] = array(
     '#type' => 'radios',
     '#title' => t('When'),
     '#options' => array(
@@ -172,7 +173,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   // Timestamp elements. Used for: one day or multiple days.
-  $form['timestamps'] = array(
+  $form['basic']['timestamps'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
     '#prefix' => '<div id="timestamp-ajax-wrapper">',
@@ -207,7 +208,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['add_more_timestamps'] = array(
+  $form['basic']['add_more_timestamps'] = array(
     '#type' => 'submit',
     '#name' => 'timestamps_add_more',
     '#value' => t('add another day'),
@@ -229,7 +230,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   // Period / permanent elements.
-  $form['period_or_permanent'] = array(
+  $form['basic']['period_or_permanent'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
     '#states' => array(
@@ -242,7 +243,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  $form['period_or_permanent']['start_date'] = array(
+  $form['basic']['period_or_permanent']['start_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Startdate'),
     '#states' => array(
@@ -252,7 +253,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
-  $form['period_or_permanent']['end_date'] = array(
+  $form['basic']['period_or_permanent']['end_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Enddate'),
     '#states' => array(
@@ -262,14 +263,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
-  $form['period_or_permanent']['all_day'] = array(
+  $form['basic']['period_or_permanent']['all_day'] = array(
     '#type' => 'radios',
     '#title' => t('Open all day?'),
     '#options' => array(1 => t('Yes'), 0 => t('No')),
     '#default_value' => ($weekscheme == NULL) ? 1 : 0,
   );
 
-  $form['period_or_permanent']['opening_times'] = array(
+  $form['basic']['period_or_permanent']['opening_times'] = array(
     '#type' => 'container',
     '#states' => array(
       'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
@@ -282,7 +283,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   // Add opening times information for every day.
   foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
 
-    $form['period_or_permanent']['opening_times'][$day] = array(
+    $form['basic']['period_or_permanent']['opening_times'][$day] = array(
       '#tree' => TRUE,
       '#type' => 'fieldset',
       '#title' => $day_labels[$day],
@@ -314,7 +315,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   }
 
-  $form['period_or_permanent']['add_more_opening_times'] = array(
+  $form['basic']['period_or_permanent']['add_more_opening_times'] = array(
     '#type' => 'submit',
     '#name' => 'opening_times_add_more',
     '#value' => t('Add another opening time'),
@@ -331,7 +332,80 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  $form['contacts'] = array(
+  
+  $form['extra'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Extra info'),
+  );
+  
+  $form['extra']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+    '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
+  );
+  // Long description todo
+  
+  // Keywords todo
+  
+  // Tags todo
+  
+  // Links todo
+  
+  // Photo todo
+  
+  // Price todo
+  
+  // Organiser add label (organisatie niet gevonden)
+  $form['extra']['organiser'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Organization'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+    '#required' => TRUE,
+    '#default_value' => $default_organiser,
+  );
+  
+  $form['extra']['age_category'] = array(
+    '#type' => 'select',
+    '#title' => t('Age'),
+    '#options' => array(
+      'everyone' => t('For children'),
+      '1-12' => t('For children (between 1 and 12 years)'),
+      '12-18' => t('For youth (between 12 and 18 years)'),
+      '18+' => t('For adults (18+)'),
+    ),
+    '#default_value' => $age_category,
+  );
+
+  $form['extra']['age'] = array(
+    '#title' => t('From'),
+    '#type' => 'textfield',
+    '#states' => array(
+      'invisible' => array(
+        ':input[name=age_category]' => array(
+          array('value' => 'everyone'),
+        ),
+      ),
+    ),
+    '#default_value' => $age,
+  );
+
+  $form['extra']['fly'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name=age_category]' => array(
+          array('value' => '1-12'),
+        ),
+      ),
+    ),
+  );
+  $form['extra']['fly']['value'] = array(
+    '#markup' => t("Activities for children will get the 'Fly' label"),
+  );
+
+  // Start vertical tabs
+
+  $form['extra']['contacts'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
     '#prefix' => '<div id="contacts-ajax-wrapper">',
@@ -357,7 +431,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['add_more_contacts'] = array(
+  $form['extra']['add_more_contacts'] = array(
     '#type' => 'submit',
     '#name' => 'contacts_add_more',
     '#value' => t('add another website, phone number or email address'),
@@ -370,58 +444,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('contacts')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
+  
+  // Performers todo
+  
+  // Admission and event language todo
+  
+  // Translations todo
 
-  $form['short_description'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
-  );
-
-  $form['age_category'] = array(
-    '#type' => 'select',
-    '#title' => t('Age'),
-    '#options' => array(
-      'everyone' => t('For children'),
-      '1-12' => t('For children (between 1 and 12 years)'),
-      '12-18' => t('For youth (between 12 and 18 years)'),
-      '18+' => t('For adults (18+)'),
-    ),
-    '#default_value' => $age_category,
-  );
-
-  $form['age'] = array(
-    '#title' => t('From'),
-    '#type' => 'textfield',
-    '#states' => array(
-      'invisible' => array(
-        ':input[name=age_category]' => array(
-          array('value' => 'everyone'),
-        ),
-      ),
-    ),
-    '#default_value' => $age,
-  );
-
-  $form['fly'] = array(
-    '#type' => 'container',
-    '#states' => array(
-      'visible' => array(
-        ':input[name=age_category]' => array(
-          array('value' => '1-12'),
-        ),
-      ),
-    ),
-  );
-  $form['fly']['value'] = array(
-    '#markup' => t("Activities for children will get the 'Fly' label"),
-  );
-
-  $form['publication_date'] = array(
+  $form['extra']['publication_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Publication date'),
     '#default_value' => $publication_date,
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
+  // Private todo
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -475,7 +511,7 @@ function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = N
     }
   }
 
-  $form['contacts'][$i]['type'] = array(
+  $form['extra']['contacts'][$i]['type'] = array(
     '#type' => 'select',
     '#options' => array(
       'website' => t('Website'),
@@ -485,12 +521,12 @@ function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = N
     '#default_value' => $type,
   );
 
-  $form['contacts'][$i]['text'] = array(
+  $form['extra']['contacts'][$i]['text'] = array(
     '#type' => 'textfield',
     '#default_value' => $text,
   );
 
-  $form['contacts'][$i]['reservation'] = array(
+  $form['extra']['contacts'][$i]['reservation'] = array(
     '#type' => 'checkbox',
     '#title' => t('for reservation'),
     '#default_value' => $reservation,
@@ -521,7 +557,7 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_
     );
   }
 
-  $form['timestamps'][$i]['start_date'] = array(
+  $form['basic']['timestamps'][$i]['start_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Startdate'),
     '#default_value' => ($timestamp) ? $timestamp->getDate() : '',
@@ -529,7 +565,7 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_
     '#states' => $states,
   );
 
-  $form['timestamps'][$i]['start_time'] = array(
+  $form['basic']['timestamps'][$i]['start_time'] = array(
     '#type' => 'textfield',
     '#title' => t('from'),
     '#default_value' => ($timestamp) ? $timestamp->getStartTime() : '',
@@ -537,7 +573,7 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_
     '#states' => $states,
   );
 
-  $form['timestamps'][$i]['end_time'] = array(
+  $form['basic']['timestamps'][$i]['end_time'] = array(
     '#type' => 'textfield',
     '#title' => t('to'),
     '#default_value' => ($timestamp) ? $timestamp->getEndTime() : '',
@@ -545,7 +581,7 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_
     '#states' => $states,
   );
 
-  $form['timestamps'][$i]['no_end_time'] = array(
+  $form['basic']['timestamps'][$i]['no_end_time'] = array(
     '#type' => 'checkbox',
     '#title' => t('no end hour'),
     '#default_value' => ($timestamp) ? ($timestamp->getEndTime() == '') : FALSE,
@@ -568,13 +604,13 @@ function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_
  */
 function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $opening_time = NULL) {
 
-  $form['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
+  $form['basic']['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
     '#description' => t('Format') . ': 12:00:00',
   );
 
-  $form['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
+  $form['basic']['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
     '#description' => t('Format') . ': 12:00:00',
