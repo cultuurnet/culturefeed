@@ -9,3 +9,5 @@ files[] = lib/Drupal/Import/CultureFeedCityImport.php
 files[] = lib/Drupal/Import/CnapiHeadingImport.php
 files[] = lib/Drupal/DrupalCultureFeedSearchService.php
 files[] = lib/Drupal/DrupalCultureFeedSearchService_Cache.php
+files[] = lib/Drupal/DrupalNodeExtendedEntity.php
+files[] = lib/Drupal/GenericContentExtendedEntity.php
