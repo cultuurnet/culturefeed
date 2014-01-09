@@ -115,7 +115,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Build the form.
   
-  
   // Basic.
   $form['basic'] = array(
     '#type' => 'fieldset',
@@ -332,7 +331,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  
+  // Extra.
   $form['extra'] = array(
     '#type' => 'fieldset',
     '#title' => t('Extra info'),
