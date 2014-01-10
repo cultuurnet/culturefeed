@@ -401,3 +401,18 @@ function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
 function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
   template_preprocess_culturefeed_ui_connect($variables);
 }
+
+/**
+ * Preprocess variables for culturefeed-ui-page-account-edit.tpl.php.
+ *
+ * @see culturefeed-ui-page-account-edit.tpl.php
+ */
+function template_preprocess_culturefeed_ui_page_account_edit(&$variables) {
+
+  $account_form = drupal_get_form('culturefeed_ui_page_account_edit_form');
+  $variables['account'] = render($account_form);
+
+  $online_accounts = culturefeed_ui_online_accounts();
+  $variables['online_accounts'] = render($online_accounts);
+
+}

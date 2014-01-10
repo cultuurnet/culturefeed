@@ -408,23 +408,13 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   drupal_set_message(t('Changes succesfully saved.'));
 }
 
+/**
+ * Page callback to theme the account page.
+ * @return type
+ */
 function culturefeed_ui_page_account_edit() {
   return array(
-    'account' => array(
-      '#prefix' => '<div id="account-edit-form">',
-      drupal_get_form('culturefeed_ui_page_account_edit_form'),
-      '#suffix' => '</div><hr />',
-    ),
-    'online_accounts' => array(
-      '#prefix' => '<div id="online-accounts"><h3>' . t('Connected accounts') . '</h3>',
-      culturefeed_ui_online_accounts(),
-      '#suffix' => '</div><hr />',
-    ),
-    'consumers' => array(
-      '#prefix' => '<div id="manage-consumers"><h3>' . t('Connected applications') . '</h3>',
-      '#markup' => t('Manage all ') . l(t('websites and applications'), 'culturefeed/serviceconsumers') . t(' who uses your UiTiD profile.'),
-      '#suffix' => '</div>',
-    )
+    '#theme' => 'culturefeed_ui_page_account_edit',
   );
 }
 
