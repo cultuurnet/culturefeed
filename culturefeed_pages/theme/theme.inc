@@ -71,7 +71,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item
   // Anonymous user.
   $variables['logged_in'] = !empty($cf_user);
   $variables['following'] = FALSE;
-  if (!$cf_user) {
+  if (empty($cf_user)) {
     $variables['follow_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
     $variables['member_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_BECOME_MEMBER));
   }
