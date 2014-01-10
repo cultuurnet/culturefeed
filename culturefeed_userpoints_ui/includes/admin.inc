@@ -121,7 +121,14 @@ function culturefeed_userpoints_ui_settings_form($form, $form_state = array()) {
     '#title' => t('Points for recommending an activity'),
     '#default_value' => variable_get('culturefeed_userpoints_ui_exchange_recommend', '0'),
     '#description' => t('This value is only used as a variable for text, labels, ... . Points management is managed through the UiTiD admin and the corresponding channel / service consumer. Visit www.uitid.be/uitid/rest/admin."'),  
-  );      
+  );
+  
+  $form['culturefeed_userpoints_ui_exchange_recommend_review'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Points when recommending a review'),
+    '#default_value' => variable_get('culturefeed_userpoints_ui_exchange_recommend_review', '0'),
+    '#description' => t('This value is only used as a variable for text, labels, ... . Points management is managed through the UiTiD admin and the corresponding channel / service consumer. Visit www.uitid.be/uitid/rest/admin."'),  
+  );         
   
   $form['culturefeed_userpoints_ui_exchange_connect_channel'] = array(
     '#type' => 'textfield',
