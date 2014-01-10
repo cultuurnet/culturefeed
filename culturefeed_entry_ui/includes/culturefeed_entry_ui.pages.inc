@@ -155,6 +155,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+      
     '#required' => TRUE,
 
     '#default_value' => $default_location,
