@@ -459,10 +459,6 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 
   $variables['search_pages'] = drupal_render($build['search-pages']);
 
-  $variables['view_own_page'] = FALSE;
-  if ($account = menu_get_object('user', 1) && $account->uid == $drupal_uid) {
-    $variables['view_own_page'] = TRUE;
-  }
 }
 
 /**
