@@ -301,6 +301,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link);
   }
 
+  if (module_exists('culturefeed_social')) {
+    $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
+  }
 }
 
 /**
