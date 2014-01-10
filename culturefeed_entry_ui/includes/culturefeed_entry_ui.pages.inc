@@ -114,20 +114,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Build the form.
-  
+
   // Basic.
   $form['basic'] = array(
     '#type' => 'fieldset',
     '#title' => t('Basic info'),
   );
-  
+
   $form['basic']['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
     '#required' => TRUE,
   );
-  
+
   $form['basic']['what'] = array('#type' => 'container');
   $form['basic']['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
@@ -158,7 +158,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => TRUE,
     '#default_value' => $default_location,
   );
-  
+
   $form['basic']['when'] = array(
     '#type' => 'radios',
     '#title' => t('When'),
@@ -336,24 +336,24 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'fieldset',
     '#title' => t('Extra info'),
   );
-  
+
   $form['extra']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
     '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
   );
   // Long description todo
-  
+
   // Keywords todo
-  
+
   // Tags todo
-  
+
   // Links todo
-  
+
   // Photo todo
-  
+
   // Price todo
-  
+
   // Organiser add label (organisatie niet gevonden)
   $form['extra']['organiser'] = array(
     '#type' => 'textfield',
@@ -362,7 +362,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => TRUE,
     '#default_value' => $default_organiser,
   );
-  
+
   $form['extra']['age_category'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
@@ -443,11 +443,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('contacts')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-  
+
   // Performers todo
-  
+
   // Admission and event language todo
-  
+
   // Translations todo
 
   $form['extra']['publication_date'] = array(
@@ -461,6 +461,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#validate' => array('culturefeed_entry_ui_event_save_validate'),
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
@@ -620,7 +621,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 /**
  * Validate the event form.
  */
-function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
+function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
 
