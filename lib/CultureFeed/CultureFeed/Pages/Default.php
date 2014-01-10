@@ -47,6 +47,18 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   const ACTION_NOT_ALLOWED = 'ACTION_NOT_ALLOWED';
 
   /**
+   * Key for follow action
+   * @var string
+   */
+  const ACTION_FOLLOW = 'follow';
+
+  /**
+   * Key for become member action
+   * @var string
+   */
+  const ACTION_BECOME_MEMBER = 'become_member';
+
+  /**
    * CultureFeed object to make CultureFeed core requests.
    * @var ICultureFeed
    */
