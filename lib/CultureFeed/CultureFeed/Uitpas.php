@@ -234,6 +234,15 @@ interface CultureFeed_Uitpas {
   public function registerUitpas(CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query);
 
   /**
+   * Registers an existing passholder in a new cardsystem.
+   *
+   * @param string $passholderId
+   * @param CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions $query
+   * @return CultureFeed_Uitpas_Passholder
+   */
+  public function registerPassholderInCardSystem($passholderId, CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions $query);
+
+  /**
    * Cancel a ticket sale for a passholder
    *
    * @param string $uitpas_number The UitPas number
