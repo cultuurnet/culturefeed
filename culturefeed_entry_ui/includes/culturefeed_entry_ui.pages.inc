@@ -150,18 +150,51 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $category_defaults,
   );
 
-
   $form['basic']['basic']['location'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => TRUE,
-
-
-      //
     '#default_value' => $default_location,
   );
-  
+
+  $form['basic']['basic']['location_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Location Title'),
+    '#required' => TRUE,
+  );
+
+  $form['basic']['basic']['street'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Street'),
+    '#required' => TRUE,
+  );
+
+  $form['basic']['basic']['house_number'] = array(
+    '#type' => 'textfield',
+    '#title' => t('House Number'),
+    '#required' => TRUE,
+  );
+
+  $form['basic']['basic']['zip_code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip Code'),
+    '#required' => TRUE,
+  );
+
+  $form['basic']['basic']['city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestions',
+    '#required' => TRUE,
+  );
+
+  $form['basic']['basic']['Country'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Country'),
+    '#required' => TRUE,
+  );
+
   $form['basic']['when'] = array(
     '#type' => 'radios',
     '#title' => t('When'),
@@ -362,7 +395,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => t('Organization'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => TRUE,
+    '#required' => FALSE,
     '#default_value' => $default_organiser,
   );
   
