@@ -12,6 +12,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form = array();
   $contact_info = array();
   $link_info = array();
+  $performers_info = array();
   $price_trigger = FALSE;
   $category_defaults = array();
   $default_location = '';
@@ -458,7 +459,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
-    '#description' => t('I agree to the copyright terms.'),
+    '#title' => t('I agree to the copyright terms.'),
   );
 
   // Price  
@@ -494,7 +495,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['price']['free'] = array(
     '#type' => 'checkbox',
     '#name' => 'price_free',
-    '#description' => t('Free event'),
+    '#title' => t('Free event'),
     '#states' => array(
       'invisible' => array(
         'input[name="price_amount"]' => array('filled' => TRUE)
@@ -620,21 +621,235 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#markup' => t("Activities for children will get the 'Fly' label"),
   );
 
-  // Start vertical tabs
+  /*// Start vertical tabs
+  $form['vertical_tabs'] = array(
+    '#type' => 'vertical_tabs',
+  );*/
+  
+  // Contact
+  $form['extra']['contacts'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Contacts'),
+    '#group' => 'vertical_tabs',
+    '#prefix' => '<div id="contacts-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $contact_count = 0;
+  // Add performer type.
+  if ($contact_info) {
+    foreach ($contact_info as $i => $info) {
+      culturefeed_entry_ui_attach_contacts_elements($form, $i, $info);
+      $contact_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_contacts_elements($form, 0);
+    $contact_count++;
+  }
+
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#contacts_needed'])) {
+    for (; $contact_count < $form_state['#contacts_needed']; $contact_count++) {
+      culturefeed_entry_ui_attach_contacts_elements($form, $contact_count);
+    }
+  }
+
+  $form['extra']['contacts']['add_more_contacts'] = array(
+    '#type' => 'submit',
+    '#name' => 'contacts_add_more',
+    '#value' => t('+ add another contact'),
+    '#attributes' => array('class' => array('btn-link')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'contacts-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('contacts')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
+  
+
 
   // Performers todo
+  $form['extra']['performers'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Performers'),
+    '#group' => 'vertical_tabs',
+    '#prefix' => '<div id="performers-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $performers_count = 0;
+  // Add performer type.
+  if ($performers_info) {
+    foreach ($performers_info as $i => $info) {
+      culturefeed_entry_ui_attach_performers_elements($form, $i, $info);
+      $performers_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_performers_elements($form, 0);
+    $performers_count++;
+  }
+
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#performers_needed'])) {
+    for (; $performers_count < $form_state['#performers_needed']; $performers_count++) {
+      culturefeed_entry_ui_attach_performers_elements($form, $performers_count);
+    }
+  }
+
+  $form['extra']['performers']['add_more_performers'] = array(
+    '#type' => 'submit',
+    '#name' => 'performers_add_more',
+    '#value' => t('+ add another performer'),
+    '#attributes' => array('class' => array('btn-link')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'performers-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('performers')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
 
   // Admission and event language todo
+  $form['extra']['target_group'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Target group'),
+    '#group' => 'vertical_tabs',
+  );
+  
+  $form['extra']['target_group']['entrance'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Entrance'),
+    '#description' => t('Only for members'),
+  );
+  
+  $form['extra']['target_group']['spoken'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="spoken-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['extra']['target_group']['spoken']['spoken_language'] = array(
+    '#type' => 'select',
+    '#title' => t('Language'),
+    '#options' => array(
+      0 => t('Spoken'),
+      1 => t('Dubbed'),
+      2 => t('Subtitled'),
+    ),
+  );
+  
+  $form['extra']['target_group']['spoken']['in_language'] = array(
+    '#type' => 'select',
+    '#title' => t('in'),
+    '#options' => array(
+      0 => t('English'),
+      1 => t('Spanish'),
+      2 => t('Dutch'),
+      3 => t('German'),
+      4 => t('French'),
+    ),
+  );
+  
+  // translations
+  $form['extra']['translations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Translations'),
+    '#group' => 'vertical_tabs',
+  );
+  
+  /* english */
+  $form['extra']['translations']['english'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('English'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form['extra']['translations']['english']['language'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Language'),
+  );
+  
+  $form['extra']['translations']['english']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+  );
+  
+  $form['extra']['translations']['english']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+  );
+  
+  /* french */
+  $form['extra']['translations']['french'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('French'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form['extra']['translations']['french']['language'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Language'),
+  );
+  
+  $form['extra']['translations']['french']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+  );
+  
+  $form['extra']['translations']['french']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+  );
+  
+  /* german */
+  $form['extra']['translations']['german'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('German'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form['extra']['translations']['german']['language'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Language'),
+  );
+  
+  $form['extra']['translations']['german']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+  );
+  
+  $form['extra']['translations']['german']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+  );
 
-  // Translations todo
-
+  //Publication & Private
   $form['extra']['publication_date'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Publication'),
+    '#group' => 'vertical_tabs',
+  );
+
+  $form['extra']['publication_date']['date'] = array(
     '#type' => 'textfield',
     '#title' => t('Publication date'),
     '#default_value' => $publication_date,
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
-  // Private todo
+  
+  $form['extra']['publication_date']['private'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Public'),
+  );
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -645,6 +860,60 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
   //dsm($form);
   return $form;
+
+}
+
+/**
+ * Attach a new contact element. 
+ *
+ */
+function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL) {
+
+  $text = '';
+
+  $form['extra']['contacts'][$i]['channel'] = array(
+    '#type' => 'select',
+    '#title' => t('Channel'),
+    '#display_title' => FALSE,
+    '#options' => array(
+      0 => t('Email'),
+      1 => t('Phone'),
+    ),
+    '#attributes' => array('class' => array('channel-field')),
+  );
+
+  $form['extra']['contacts'][$i]['channel_input'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Input'),
+    '#display_title' => FALSE,
+    '#default_value' => $text,
+    '#attributes' => array('class' => array('channel-input-field')),
+  );
+
+}
+
+/**
+ * Attach a new performer element. 
+ *
+ */
+function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NULL) {
+
+  $text = '';
+
+  $form['extra']['performers'][$i]['performer'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Performer'),
+    '#display_title' => FALSE,
+    '#default_value' => $text,
+    '#attributes' => array('class' => array('performer-field')),
+  );
+
+  $form['extra']['performers'][$i]['role'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Role'),
+    '#default_value' => $text,
+    '#attributes' => array('class' => array('role-field')),
+  );
 
 }
 
@@ -666,7 +935,7 @@ function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL
 
   $form['extra']['links'][$i]['reservation'] = array(
     '#type' => 'checkbox',
-    '#description' => t('for reservation'),
+    '#title' => t('for reservation'),
     '#default_value' => $reservation,
     '#attributes' => array('class' => array('reservation-checkbox')),
   );
