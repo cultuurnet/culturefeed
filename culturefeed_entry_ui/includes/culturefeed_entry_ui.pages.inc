@@ -359,8 +359,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['description']['add_long_description'] = array(
     '#type' => 'submit',
     '#name' => 'ld_add_more',
-    '#value' => t('add long description'),
-    '#attributes' => array('class' => array('ld-add-more-submit')),
+    '#value' => t('+ add long description'),
+    '#attributes' => array('class' => array('btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'description-ajax-wrapper',
@@ -373,7 +373,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   if (isset($form_state['#ld_needed'])) {
   $form['extra']['description']['long_description'] = array(
-    '#type' => 'textarea',
+    '#type' => 'text_format',
     '#title' => t('Long description'),
     '#rows' => 10,
   );
@@ -418,8 +418,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['add_more_links'] = array(
     '#type' => 'submit',
     '#name' => 'links_add_more',
-    '#value' => t('add another link'),
-    '#attributes' => array('class' => array('links-add-more-submit')),
+    '#value' => t('+ add another link'),
+    '#attributes' => array('class' => array('btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'links-ajax-wrapper',
@@ -441,8 +441,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['photo']['placeholder'] = array (
     '#type' => 'textfield',
-    '#value' => 'Hier komt de foto uploader',
     '#title' => t('Image'),
+    '#attributes' => array(
+      'placeholder' => array(
+        'placeholder for file uploader'
+      ),
+    ),
   );
   
   
@@ -463,12 +467,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
     '#prefix' => '<div id="price-ajax-wrapper">',
     '#suffix' => '</div>',
+    '#title' => t('Price'),
   );
   
   $form['extra']['price']['amount'] = array(
     '#type' => 'textfield',
     '#name' => 'price_amount',
     '#title' => t('Price'),
+    //'#prefix' => '<span class="price-prefix">€</span>',
+    '#attributes' => array(
+      'class' => array(
+        'price-amount'
+      ),
+      'placeholder' => array(
+        '€'
+      ),
+    ),
+    '#size' => 15,
     '#states' => array(
       'visible' => array(
         'input[name="price_free"]' => array('checked' => FALSE)
@@ -491,8 +506,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['price']['add_extra_info'] = array(
     '#type' => 'submit',
     '#name' => 'price_add_more',
-    '#value' => t('add price info'),
-    '#attributes' => array('class' => array('price-add-more-submit')),
+    '#value' => t('+ add price info'),
+    '#attributes' => array(
+      'class' => array(
+        'btn-link'),
+      'style' => array(
+        'display:block; clear:left;'),
+      ),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'price-ajax-wrapper',
@@ -535,11 +555,30 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => TRUE,
     '#default_value' => $default_organiser,
   );
-
+  
+  if (!isset($form_state['#actor_needed'])) {
+  $form['extra']['organiser']['add_new_actor'] = array(
+    '#type' => 'submit',
+    '#name' => 'actor_add_more',
+    '#value' => t('Organization not found'),
+    '#attributes' => array('class' => array('btn-link')),
+    //'#attributes' => array('class' => array('organiser-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'organiser-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('price')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
+  }
+  
+  if (isset($form_state['#actor_needed'])) {
   $form['extra']['organiser']['new_actor'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name'),
+    '#title' => t('Name new organiser'),
   );
+  }
   
   //age
   $form['extra']['age_category'] = array(
@@ -604,7 +643,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
-  dsm($form);
+  //dsm($form);
   return $form;
 
 }
@@ -622,12 +661,14 @@ function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL
     '#type' => 'textfield',
     '#title' => t('Link'),
     '#default_value' => $text,
+    '#attributes' => array('class' => array('link-field')),
   );
 
   $form['extra']['links'][$i]['reservation'] = array(
     '#type' => 'checkbox',
     '#description' => t('for reservation'),
     '#default_value' => $reservation,
+    '#attributes' => array('class' => array('reservation-checkbox')),
   );
 
 }

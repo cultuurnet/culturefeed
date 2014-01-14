@@ -228,12 +228,15 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       break;
     
     case 'ld_add_more':
-      $form_state['storage']['extra']['description']['long_description'] = 1;
       $form_state['#ld_needed'] = TRUE;
       break;
     
     case 'price_add_more':
       $form_state['#price_needed'] = TRUE;
+      break;
+      
+    case 'actor_add_more':
+      $form_state['#actor_needed'] = TRUE;
       break;
 
   }
@@ -265,6 +268,9 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
     case 'ld_add_more':
       return $form['extra']['description'];
+      
+    case 'actor_add_more':
+      return $form['extra']['organiser'];
   }
 
 }
