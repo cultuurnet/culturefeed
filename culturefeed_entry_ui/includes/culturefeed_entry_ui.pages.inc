@@ -114,7 +114,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Build the form.
-
+  
   // Basic.
   $form['basic'] = array(
     '#type' => 'fieldset',
@@ -158,8 +158,53 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => TRUE,
     '#default_value' => $default_location,
   );
+  
+  // Date  
+  $form['basic']['when']['datetimes'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="datetimes-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $datetimes = array();
+  $datetime_count = 0;
+  // Add contact type selections.
+  if ($datetimes) {
+    foreach ($datetimes as $i => $info) {
+      culturefeed_entry_ui_attach_datetimes_elements($form, $i, $info);
+      $datetime_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_datetimes_elements($form, 0);
+    $datetime_count++;
+  } 
+  
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#datetimes_needed'])) {
 
-  $form['basic']['when'] = array(
+    for (; $datetime_count < $form_state['#datetimes_needed']; $datetime_count++) {
+      culturefeed_entry_ui_attach_datetimes_elements($form, $datetime_count);
+    }
+  }
+
+  $form['basic']['when']['add_more_datetimes'] = array(
+    '#type' => 'submit',
+    '#name' => 'datetimes_add_more',
+    '#value' => t('Add date'),
+    '#attributes' => array('class' => array('datetimes-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'datetimes-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('datetimes')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );  
+
+  /*
+
+  $form['basic']['when_selector'] = array(
     '#type' => 'radios',
     '#title' => t('When'),
     '#options' => array(
@@ -330,6 +375,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
     ),
   );
+  */
 
   // Extra.
   $form['extra'] = array(
@@ -465,10 +511,49 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
-  dsm($form);
   return $form;
 
 }
+
+/**
+ * Attach a new contact info element. This contains 3 form elements.
+ *
+ * @param array $form
+ *   Form to extend.
+ * @param int $i
+ *   Index for the elements.
+ * @param mixed $info
+ *   ContactInfo property to be edited.
+ */
+function culturefeed_entry_ui_attach_datetimes_elements(&$form, $i, $info = NULL) {
+  
+  $date = '';
+  $time = '';
+  
+  //TODO if info than fill in $date and $time
+  
+
+  $form['basic']['when']['datetimes'][$i]['date'] = array(
+    '#type' => 'textfield',
+    '#default_value' => $date,
+    '#description' => t('Format') . ': ' . date('Y-m-d'),
+  );
+  
+  if  ($i == 0) {
+    $form['basic']['when']['datetimes'][$i]['date']['#required'] = TRUE;
+    $form['basic']['when']['datetimes'][$i]['date']['#title'] = t('Date'); 
+  }
+
+  $form['basic']['when']['datetimes'][$i]['time'] = array(
+    '#type' => 'textfield',
+    '#default_value' => $time,
+    '#description' => t('Format') . ': 00:00',
+  );
+
+
+}
+
+
 
 /**
  * Attach a new contact info element. This contains 3 form elements.
