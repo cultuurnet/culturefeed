@@ -355,11 +355,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   
   //Long Description
-  
-  $form_state['storage']['extra']['description']['long_description'] =
-    isset($form_state['storage']['extra']['description']['long_description']) ? $form_state['storage']['extra']['description']['long_description'] : 0;
-  
-  if ($form_state['storage']['extra']['description']['long_description'] < 1) {
+  if (!isset($form_state['#ld_needed'])) {
   $form['extra']['description']['add_long_description'] = array(
     '#type' => 'submit',
     '#name' => 'ld_add_more',
@@ -367,7 +363,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#attributes' => array('class' => array('ld-add-more-submit')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'ld-ajax-wrapper',
+      'wrapper' => 'description-ajax-wrapper',
       'effect' => 'fade',
     ),
     '#limit_validation_errors' => array(array('ld')),
@@ -375,15 +371,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   }
   
-  if ($form_state['storage']['extra']['description']['long_description']) {
+  if (isset($form_state['#ld_needed'])) {
   $form['extra']['description']['long_description'] = array(
-    '#type' => 'text_format',
+    '#type' => 'textarea',
     '#title' => t('Long description'),
     '#rows' => 10,
   );
   }
-  
-  $form_state['storage']['extra']['description']['long_description']++;
 
   // Tags todo
   $form['extra']['keywords'] = array(
@@ -451,9 +445,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Image'),
   );
   
-  /*
   
-  $form['extra']['photo']['upload'] = array(
+  
+  /*$form['extra']['photo']['upload'] = array(
     '#type' => 'file',
     '#title' => t('Image'),
   );*/
@@ -463,11 +457,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#description' => t('I agree to the copyright terms.'),
   );
 
-  // Price todo
-  $form_state['storage']['extra']['price']['extra_info'] =
-    isset($form_state['storage']['extra']['price']['extra_info']) ? $form_state['storage']['extra']['price']['extra_info'] : 0;
-
-  
+  // Price  
   $form['extra']['price'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -497,7 +487,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   
-  if ($form_state['storage']['extra']['price']['extra_info'] < 1) {
+  if (!isset($form_state['#price_needed'])) {
   $form['extra']['price']['add_extra_info'] = array(
     '#type' => 'submit',
     '#name' => 'price_add_more',
@@ -518,7 +508,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   }
   
-  if ($form_state['storage']['extra']['price']['extra_info']) {
+  if (isset($form_state['#price_needed'])) {
   $form['extra']['price']['extra_info'] = array(
     '#type' => 'textarea',
     '#title' => t('Extra price info'),
@@ -529,8 +519,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   }
-  
-  $form_state['storage']['extra']['price']['extra_info']++;
 
   // Organiser add label (organisatie niet gevonden)
   $form['extra']['organiser'] = array(
