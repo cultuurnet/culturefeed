@@ -114,20 +114,22 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Build the form.
-  
+
   // Basic.
   $form['basic'] = array(
     '#type' => 'fieldset',
     '#title' => t('Basic info'),
   );
-  
+
   $form['basic']['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
+    '#default_value' => ($event) ? $event->getDetails()
+        ->getDetailByLanguage(culturefeed_search_get_preferred_language())
+        ->getTitle() : NULL,
     '#required' => TRUE,
   );
-  
+
   $form['basic']['what'] = array('#type' => 'container');
   $form['basic']['what']['kijken_en_luisteren'] = array(
     '#type' => 'checkboxes',
@@ -154,45 +156,55 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => TRUE,
+    '#required' => FALSE,
     '#default_value' => $default_location,
   );
 
   $form['basic']['basic']['location_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Location Title'),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
   $form['basic']['basic']['street'] = array(
     '#type' => 'textfield',
     '#title' => t('Street'),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
   $form['basic']['basic']['house_number'] = array(
     '#type' => 'textfield',
     '#title' => t('House Number'),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
   $form['basic']['basic']['zip_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip Code'),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
+  //TODO: city suggestions don't work
   $form['basic']['basic']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestions',
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
-  $form['basic']['basic']['Country'] = array(
-    '#type' => 'textfield',
+  //TODO: _country_get_predefined_list gets errors
+  $form['basic']['basic']['country'] = array(
+    '#type' => 'select',
     '#title' => t('Country'),
-    '#required' => TRUE,
+    '#options' => array(
+      'AN' => t('Netherlands Antilles'),
+      'BE' => t('Belgium'),
+      'FR' => t('France'),
+      'DE' => t('Germany'),
+      'NL' => t('Netherlands'),
+    ),
+    '#default_value' => 'BE',
+    '#required' => FALSE,
   );
 
   $form['basic']['when'] = array(
@@ -372,24 +384,25 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'fieldset',
     '#title' => t('Extra info'),
   );
-  
+
   $form['extra']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
+    '#default_value' => $event ? $event->getDetails()->current()
+        ->getShortDescription() : NULL,
   );
   // Long description todo
-  
+
   // Keywords todo
-  
+
   // Tags todo
-  
+
   // Links todo
-  
+
   // Photo todo
-  
+
   // Price todo
-  
+
   // Organiser add label (organisatie niet gevonden)
   $form['extra']['organiser'] = array(
     '#type' => 'textfield',
@@ -398,7 +411,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => FALSE,
     '#default_value' => $default_organiser,
   );
-  
+
   $form['extra']['age_category'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
@@ -479,11 +492,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('contacts')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-  
+
   // Performers todo
-  
+
   // Admission and event language todo
-  
+
   // Translations todo
 
   $form['extra']['publication_date'] = array(
@@ -497,10 +510,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#validate' => array('culturefeed_entry_ui_event_save_validate'),
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
-
+  dsm($form);
   return $form;
 
 }
@@ -656,7 +670,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 /**
  * Validate the event form.
  */
-function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
+function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
 
@@ -664,8 +678,7 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
   if ($values['publication_date']) {
     try {
       CultureFeed_Cdb_Data_Calendar::validateDate($values['publication_date']);
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       form_set_error('publication_date', t('Please fill in correct publication date'));
     }
   }
@@ -700,8 +713,7 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
         if (!empty($timestamp['start_time'])) {
           CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['start_time']);
         }
-      }
-      catch (UnexpectedValueException $e) {
+      } catch (UnexpectedValueException $e) {
         form_set_error('timestamps][' . $key, t('Please fill in correct date and time'));
       }
     }
@@ -718,8 +730,7 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
             try {
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_from']);
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_till']);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
               form_set_error('period_or_permanent][opening_times][' . $day . '][' . $key, t('Please fill in correct date'));
             }
           }
@@ -744,10 +755,27 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
       if (!$location) {
         form_set_error('location', t('Please select a location'));
       }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       form_set_error('location', t('We could not validate the location'));
     }
+  }
+  else {
+    if (empty($values['location_title'])) {
+      form_set_error('location_title', t('A title is required for a custom location'));
+    }
+    if (empty($values['street'])) {
+      form_set_error('street', t('A street is required for a custom location'));
+    }
+    if (empty($values['house_number'])) {
+      form_set_error('street', t('A house number is required for a custom location'));
+    }
+    if (empty($values['zip_code'])) {
+      form_set_error('zip_code', t('A zip code is required for a custom location'));
+    }
+    if (empty($values['city'])) {
+      form_set_error('city', t('A city is required for a custom location'));
+    }
+    $location = NULL;
   }
 
   // Validate organiser.
@@ -763,17 +791,19 @@ function culturefeed_entry_ui_event_form_validate($form, &$form_state) {
       if (!$organiser) {
         form_set_error('organiser', t('Please select a organization'));
       }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       watchdog_exception('culturefeed_entry_ui', $e);
       form_set_error('organiser', t('We could not validate the organization'));
     }
-
+  }
+  else {
+    $organiser = NULL;
   }
 
   $errors = form_get_errors();
   if (empty($errors)) {
     _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
+
   }
 
 }
@@ -821,13 +851,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     _culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
 
-  // Categories.
+  // Categories TODO:Remove Hard coded values
   $category_values = $values['kijken_en_luisteren'];
-  $category_values += $values['doen'];
-  $category_values += $values['bezoeken'];
-  $category_options = $form['what']['kijken_en_luisteren']['#options'];
-  $category_options += $form['what']['doen']['#options'];
-  $category_options += $form['what']['bezoeken']['#options'];
+  //$category_values += $values['doen'];
+  //$category_values += $values['bezoeken'];
+  $category_options = array();
+  $category_options['0.50.4.0.0'] = 'Concert'; // $form['what']['kijken_en_luisteren']['#options'];
+  //$category_options += $form['what']['doen']['#options'];
+  //$category_options += $form['what']['bezoeken']['#options'];
 
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_values as $key => $value) {
@@ -849,22 +880,43 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $details->add($detail);
   $event->setDetails($details);
 
-  // Location / Address.
-  $addresses = $location->getEntity()->getContactInfo()->getAddresses();
-  /* @var CultureFeed_Cdb_Data_Address $address */
-  $address = $addresses[0];
+  // Asset Location / Address.
+  if ($location) {
+    $addresses = $location->getEntity()->getContactInfo()->getAddresses();
+    /* @var CultureFeed_Cdb_Data_Address $address */
+    $address = $addresses[0];
 
-  // Event location.
-  $cdb_location = new CultureFeed_Cdb_Data_Location($address);
-  $cdb_location->setLabel($values['location']);
-  $cdb_location->setCdbid($location->getId());
-  $event->setLocation($cdb_location);
+    // Event location.
+    $cdb_location = new CultureFeed_Cdb_Data_Location($address);
+    $cdb_location->setLabel($values['location']);
+    $cdb_location->setCdbid($location->getId());
+
+    $event->setLocation($cdb_location);
+  }
+  else {
+    $address = new CultureFeed_Cdb_Data_Address();
+    $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
+    $physical_address->setStreet($values['street']);
+    $physical_address->setHouseNumber($values['house_number']);
+    $physical_address->setCity($values['city']);
+    $physical_address->setZip($values['city']);
+    $physical_address->setCountry($values['country']);
+    $address->setLabel($values['location_title']);
+    $address->setPhysicalAddress($physical_address);
+    $address->setLabel($values['location_title']);
+
+    $cdb_location = new CultureFeed_Cdb_Data_Location($address);
+    $cdb_location->setLabel("dfd");
+    $event->setLocation($cdb_location);
+  }
 
   // Event organiser.
-  $organiser_object = new CultureFeed_Cdb_Data_Organiser();
-  $organiser_object->setLabel($values['organiser']);
-  $organiser_object->setCdbid($organiser->getId());
-  $event->setOrganiser($organiser_object);
+  if ($organiser) {
+    $organiser_object = new CultureFeed_Cdb_Data_Organiser();
+    $organiser_object->setLabel($values['organiser']);
+    $organiser_object->setCdbid($organiser->getId());
+    $event->setOrganiser($organiser_object);
+  }
 
   // Contact info.
   $physical_address = $address->getPhysicalAddress();
@@ -896,7 +948,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $event->setContactInfo($contact_object);
 
   try {
-
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
@@ -907,8 +958,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
     $form_state['#update_event'] = $update;
 
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     watchdog_exception('culturefeed_entry_ui', $e);
     form_set_error('', t('An error occurred while saving the event'));
   }
@@ -1032,8 +1082,7 @@ function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
     Drupalculturefeed_EntryApi::deleteEvent($form_state['values']['id']);
     drupal_set_message(t('Event successfully deleted'));
     $form_state['redirect'] = '<front>';
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
     drupal_set_message(t('An error occurred while deleting the event'), 'error');
   }
@@ -1054,7 +1103,9 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   // @todo Get options from variable.
   $custom_options = variable_get('culturefeed_entry_ui_custom_tags');
 
-  echo '<pre>';print_r($custom_options);echo '</pre>';
+  echo '<pre>';
+  print_r($custom_options);
+  echo '</pre>';
 
   // Filter out custom tags.
   if ($event_tags) {
@@ -1154,8 +1205,7 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
       aanpassingen op al onze kanalen (inclusief UitinVlaanderen onder de tab 'Weergeven'
       beschikbaar zullen zijn.");
 
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
 
     if ($e->getCode() == culturefeed_entry_uiApi::CODE_KEYWORD_PRIVATE) {
       drupal_set_message("Je probeerde een tag toe te voegen die niet door iedereen mag
