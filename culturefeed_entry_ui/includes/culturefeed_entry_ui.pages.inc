@@ -11,6 +11,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
   $contact_info = array();
+  $link_info = array();
+  $price_trigger = FALSE;
   $category_defaults = array();
   $default_location = '';
   $default_organiser = '';
@@ -336,26 +338,209 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'fieldset',
     '#title' => t('Extra info'),
   );
+  
+  $form['extra']['description'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="description-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Description'),
+  );
 
-  $form['extra']['short_description'] = array(
+  $form['extra']['description']['short_description'] = array(
     '#type' => 'textarea',
+    '#name' => 'short_description',
     '#title' => t('Short description'),
     '#default_value' => $event ? $event->getDetails()->current()->getShortDescription() : NULL,
   );
-  // Long description todo
-
-  // Keywords todo
+  
+  //Long Description
+  
+  $form_state['storage']['extra']['description']['long_description'] =
+    isset($form_state['storage']['extra']['description']['long_description']) ? $form_state['storage']['extra']['description']['long_description'] : 0;
+  
+  if ($form_state['storage']['extra']['description']['long_description'] < 1) {
+  $form['extra']['description']['add_long_description'] = array(
+    '#type' => 'submit',
+    '#name' => 'ld_add_more',
+    '#value' => t('add long description'),
+    '#attributes' => array('class' => array('ld-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'ld-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('ld')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
+  }
+  
+  if ($form_state['storage']['extra']['description']['long_description']) {
+  $form['extra']['description']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+    '#rows' => 10,
+  );
+  }
+  
+  $form_state['storage']['extra']['description']['long_description']++;
 
   // Tags todo
+  $form['extra']['keywords'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Tags'),
+    '#description' => t('Add multiple tags seperated by a ","'),
+  );
+  
+  // Links
+  $form['extra']['links'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="links-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Links'),
+  );
+  
+  $links_count = 0;
+  // Add contact type selections.
+  if ($link_info) {
+    foreach ($link_info as $i => $info) {
+      culturefeed_entry_ui_attach_link_info_elements($form, $i, $info);
+      $links_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_link_info_elements($form, 0);
+    $links_count++;
+  }
 
-  // Links todo
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#links_needed'])) {
+    for (; $links_count < $form_state['#links_needed']; $links_count++) {
+      culturefeed_entry_ui_attach_link_info_elements($form, $links_count);
+    }
+  }
 
-  // Photo todo
+  $form['extra']['add_more_links'] = array(
+    '#type' => 'submit',
+    '#name' => 'links_add_more',
+    '#value' => t('add another link'),
+    '#attributes' => array('class' => array('links-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'links-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('links')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
+
+  //Photo
+  $form['extra']['photo'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="photo-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Image'),
+    
+  );
+  
+  $form['extra']['photo']['placeholder'] = array (
+    '#type' => 'textfield',
+    '#value' => 'Hier komt de foto uploader',
+    '#title' => t('Image'),
+  );
+  
+  /*
+  
+  $form['extra']['photo']['upload'] = array(
+    '#type' => 'file',
+    '#title' => t('Image'),
+  );*/
+  
+  $form['extra']['photo']['copyrights'] = array(
+    '#type' => 'checkbox',
+    '#description' => t('I agree to the copyright terms.'),
+  );
 
   // Price todo
+  $form_state['storage']['extra']['price']['extra_info'] =
+    isset($form_state['storage']['extra']['price']['extra_info']) ? $form_state['storage']['extra']['price']['extra_info'] : 0;
+
+  
+  $form['extra']['price'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="price-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['extra']['price']['amount'] = array(
+    '#type' => 'textfield',
+    '#name' => 'price_amount',
+    '#title' => t('Price'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="price_free"]' => array('checked' => FALSE)
+      ),
+    ),
+  );
+  
+  $form['extra']['price']['free'] = array(
+    '#type' => 'checkbox',
+    '#name' => 'price_free',
+    '#description' => t('Free event'),
+    '#states' => array(
+      'invisible' => array(
+        'input[name="price_amount"]' => array('filled' => TRUE)
+      ),
+    ),
+  );
+  
+  if ($form_state['storage']['extra']['price']['extra_info'] < 1) {
+  $form['extra']['price']['add_extra_info'] = array(
+    '#type' => 'submit',
+    '#name' => 'price_add_more',
+    '#value' => t('add price info'),
+    '#attributes' => array('class' => array('price-add-more-submit')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'price-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('price')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="price_amount"]' => array('filled' => TRUE)
+      ),
+    ),
+  );
+  }
+  
+  if ($form_state['storage']['extra']['price']['extra_info']) {
+  $form['extra']['price']['extra_info'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Extra price info'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="price_free"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+  }
+  
+  $form_state['storage']['extra']['price']['extra_info']++;
 
   // Organiser add label (organisatie niet gevonden)
   $form['extra']['organiser'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="organiser-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['extra']['organiser']['actor'] = array(
     '#type' => 'textfield',
     '#title' => t('Organization'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
@@ -363,6 +548,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $default_organiser,
   );
 
+  $form['extra']['organiser']['new_actor'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+  );
+  
+  //age
   $form['extra']['age_category'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
@@ -404,46 +595,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Start vertical tabs
 
-  $form['extra']['contacts'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="contacts-ajax-wrapper">',
-    '#suffix' => '</div>',
-  );
-  $contacts_count = 0;
-  // Add contact type selections.
-  if ($contact_info) {
-    foreach ($contact_info as $i => $info) {
-      culturefeed_entry_ui_attach_contact_info_elements($form, $i, $info);
-      $contacts_count++;
-    }
-  }
-  else {
-    culturefeed_entry_ui_attach_contact_info_elements($form, 0);
-    $contacts_count++;
-  }
-
-  // Add more button was clicked. Check how many extra rows need to be added.
-  if (isset($form_state['#contacts_needed'])) {
-    for (; $contacts_count < $form_state['#contacts_needed']; $contacts_count++) {
-      culturefeed_entry_ui_attach_contact_info_elements($form, $contacts_count);
-    }
-  }
-
-  $form['extra']['add_more_contacts'] = array(
-    '#type' => 'submit',
-    '#name' => 'contacts_add_more',
-    '#value' => t('add another website, phone number or email address'),
-    '#attributes' => array('class' => array('contacts-add-more-submit')),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'contacts-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-    '#limit_validation_errors' => array(array('contacts')),
-    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-  );
-
   // Performers todo
 
   // Admission and event language todo
@@ -471,64 +622,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 }
 
 /**
- * Attach a new contact info element. This contains 3 form elements.
+ * Attach a new link element. 
  *
- * @param array $form
- *   Form to extend.
- * @param int $i
- *   Index for the elements.
- * @param mixed $info
- *   ContactInfo property to be edited.
  */
-function culturefeed_entry_ui_attach_contact_info_elements(&$form, $i, $info = NULL) {
+function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL) {
 
   $text = '';
-  $type = 'website';
   $reservation = FALSE;
 
-  // Fill in correct default data.
-  if ($info) {
-    switch (get_class($info)) {
-
-      case 'CultureFeed_Cdb_Data_Mail':
-        $text = $info->getMailAddress();
-        $type = 'email';
-        $reservation = $info->isForReservations();
-        break;
-
-      case 'CultureFeed_Cdb_Data_Phone':
-        $text = $info->getNumber();
-        $type = 'phone';
-        $reservation = $info->isForReservations();
-        break;
-
-      case 'CultureFeed_Cdb_Data_Url':
-        $text = $info->getUrl();
-        $type = 'url';
-        $reservation = $info->isForReservations();
-        break;
-
-    }
-  }
-
-  $form['extra']['contacts'][$i]['type'] = array(
-    '#type' => 'select',
-    '#options' => array(
-      'website' => t('Website'),
-      'phone' => t('Phone number'),
-      'email' => t('E-mail address'),
-    ),
-    '#default_value' => $type,
-  );
-
-  $form['extra']['contacts'][$i]['text'] = array(
+  $form['extra']['links'][$i]['URL'] = array(
     '#type' => 'textfield',
+    '#title' => t('Link'),
     '#default_value' => $text,
   );
 
-  $form['extra']['contacts'][$i]['reservation'] = array(
+  $form['extra']['links'][$i]['reservation'] = array(
     '#type' => 'checkbox',
-    '#title' => t('for reservation'),
+    '#description' => t('for reservation'),
     '#default_value' => $reservation,
   );
 
