@@ -223,7 +223,7 @@ abstract class DrupalCultureFeedBase {
     if ($http_client instanceof CultureFeed_ProxySupportingClient) {
       $uri = @parse_url($endpoint);
       $proxy_server = variable_get('proxy_server', '');
-      if ($proxy_server && _drupal_http_use_proxy($uri['host'])) {
+      if ($proxy_server && (!is_callable('_drupal_http_use_proxy') || _drupal_http_use_proxy($uri['host']))) {
 
         $http_client->setProxyServer($proxy_server);
         $http_client->setProxyPort(variable_get('proxy_port', 8080));
