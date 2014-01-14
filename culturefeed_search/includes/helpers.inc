@@ -428,15 +428,20 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', $domain);
 
-  // Skip first level event types. (specific for UIV).
-  if ($domain == 'eventtype') {
-    $query->condition('cst.p1', '', '!=');
+  // Add parent condition.
+  if (!empty($conditions['parent'])) {
+    $db_or = db_or();
+    $db_or->condition('p1', $conditions['parent'], '=');
+    $db_or->condition('p2', $conditions['parent'], '=');
+    $db_or->condition('p3', $conditions['parent'], '=');
+    $db_or->condition('p4', $conditions['parent'], '=');
+    $query->condition($db_or);
   }
 
   // Add extra conditions.
   if (!empty($conditions['tid'])) {
     foreach ($conditions as $field => $value) {
-      $query->condition($field, $value);
+      $query->condition($field, $value, '=');
     }
   }
 
