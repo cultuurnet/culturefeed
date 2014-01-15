@@ -223,13 +223,32 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       $form_state['#timestamps_needed'] = count(element_children($form['basic']['timestamps'])) + 1;
       break;
 
-    case 'contacts_add_more':
-      $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts'])) + 1;
+    case 'links_add_more':
+      $form_state['#links_needed'] = count(element_children($form['extra']['links'])) + 1;
       break;
 
     case 'opening_times_add_more':
       $form_state['#opening_times_needed'] = count(element_children($form['basic']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
+    
+    case 'ld_add_more':
+      $form_state['#ld_needed'] = TRUE;
+      break;
+    
+    case 'price_add_more':
+      $form_state['#price_needed'] = TRUE;
+      break;
+      
+    case 'actor_add_more':
+      $form_state['#actor_needed'] = TRUE;
+      break;
+      
+    case 'performers_add_more':
+      $form_state['#performers_needed'] = count(element_children($form['extra']['performers']));
+      break;
+    
+    case 'contacts_add_more':
+      $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']));
 
   }
 
@@ -252,11 +271,26 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
 
-    case 'contacts_add_more':
-      return $form['extra']['contacts'];
+    case 'links_add_more':
+      return $form['extra']['links'];
 
     case 'opening_times_add_more':
       return $form['basic']['period_or_permanent']['opening_times'];
+      
+    case 'price_add_more':
+      return $form['extra']['price'];
+      
+    case 'ld_add_more':
+      return $form['extra']['description'];
+      
+    case 'actor_add_more':
+      return $form['extra']['organiser'];
+    
+    case 'performers_add_more':
+      return $form['extra']['performers'];
+      
+    case 'contacts_add_more':
+      return $form['extra']['contacts'];
   }
 
 }

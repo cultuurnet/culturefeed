@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+.link-field {
+  float: left;
+}
+
+input.form-checkbox {
+  float: left;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.price-prefix {
+  float: left;
+  margin-right: 5px;
+  margin-top: 24px;
+}
+
+.price-amount {
+  float: left;
+  margin-bottom: 15px;
+}
+
+.form-type-textarea {
+  clear: left;
+}
+
+.price-add-more-subit {
+  clear: left;
+  width: 100%;
+}
