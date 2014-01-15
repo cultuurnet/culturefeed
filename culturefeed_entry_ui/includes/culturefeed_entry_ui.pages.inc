@@ -15,6 +15,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $performers_info = array();
   $price_trigger = FALSE;
   $category_defaults = array();
+  $eventtype_default = '';
   $default_location = '';
   $default_organiser = '';
   $publication_date = '';
@@ -49,8 +50,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     // Default categories.
     if ($event && ($categories = $event->getCategories())) {
+    
       foreach ($categories as $category) {
         $category_defaults[] = $category->getId();
+        if($category->getType() == 'eventtype') {
+          $eventtype_default = $category->getId();
+        }
+        
       }
     }
 
@@ -153,6 +159,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $form['basic']['what'][$cluster_id][$type_name] = array(
         '#type' => 'radio',
         '#title' => $type_name,
+        '#return_value' => $type_id,
+        '#default_value' => $eventtype_default,
         '#parents' => array('what'),
       );
     }  
@@ -194,21 +202,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['basic']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
-    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestions',
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#required' => FALSE,
   );
-
-  //TODO: _country_get_predefined_list gets errors
+ 
   $form['basic']['basic']['country'] = array(
     '#type' => 'select',
     '#title' => t('Country'),
-    '#options' => array(
-      'AN' => t('Netherlands Antilles'),
-      'BE' => t('Belgium'),
-      'FR' => t('France'),
-      'DE' => t('Germany'),
-      'NL' => t('Netherlands'),
-    ),
+    '#options' => country_get_list(),
     '#default_value' => 'BE',
     '#required' => FALSE,
   );
