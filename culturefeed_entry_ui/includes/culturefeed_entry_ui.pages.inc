@@ -228,8 +228,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => 'BE',
     '#required' => FALSE,
   );
-
-  $form['basic']['when'] = array(
   
   // Date  
   $form['basic']['when']['datetimes'] = array(
