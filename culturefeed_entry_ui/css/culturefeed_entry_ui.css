@@ -1,5 +1,21 @@
 @CHARSET "UTF-8";
 
+#basic-wrapper .form-item {
+  float: left;
+}
+
+.form-item-basic-street, .form-item-basic-zip-code, .form-item-basic-country {
+  clear: left;
+}
+
+.form-item-basic-house-number, .form-item-basic-city {
+  margin-left: 30px;
+}
+
+#datetimes-ajax-wrapper {
+  clear: left;
+}
+
 .link-field {
   float: left;
 }

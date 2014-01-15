@@ -157,6 +157,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       );
     }  
   }
+  
+  $form['basic']['basic'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="basic-wrapper">',
+    '#suffix' => '</div>',
+  );
 
   $form['basic']['basic']['location'] = array(
     '#type' => 'textfield',
@@ -164,30 +171,35 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
     '#default_value' => $default_location,
+    '#size' => 80,
   );
 
   $form['basic']['basic']['location_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Location Title'),
     '#required' => FALSE,
+    '#size' => 80,
   );
 
   $form['basic']['basic']['street'] = array(
     '#type' => 'textfield',
     '#title' => t('Street'),
     '#required' => FALSE,
+    '#size' => 60,
   );
 
   $form['basic']['basic']['house_number'] = array(
     '#type' => 'textfield',
     '#title' => t('House Number'),
     '#required' => FALSE,
+    '#size' => 10,
   );
 
   $form['basic']['basic']['zip_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip Code'),
     '#required' => FALSE,
+    '#size' => 10,
   );
 
   //TODO: city suggestions don't work
@@ -196,6 +208,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('City'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestions',
     '#required' => FALSE,
+    '#size' => 60,
   );
 
   //TODO: _country_get_predefined_list gets errors
