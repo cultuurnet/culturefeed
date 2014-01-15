@@ -246,7 +246,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'submit',
     '#name' => 'datetimes_add_more',
     '#value' => t('+ add date'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'datetimes-ajax-wrapper',
@@ -458,7 +458,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'submit',
     '#name' => 'ld_add_more',
     '#value' => t('+ add long description'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'description-ajax-wrapper',
@@ -517,7 +517,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'submit',
     '#name' => 'links_add_more',
     '#value' => t('+ add another link'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'links-ajax-wrapper',
@@ -537,7 +537,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     
   );
   
-  $form['extra']['photo']['placeholder'] = array (
+  /*$form['extra']['photo']['placeholder'] = array (
     '#type' => 'textfield',
     '#title' => t('Image'),
     '#attributes' => array(
@@ -545,18 +545,25 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'placeholder for file uploader'
       ),
     ),
-  );
-  
-  
-  
-  /*$form['extra']['photo']['upload'] = array(
-    '#type' => 'file',
-    '#title' => t('Image'),
   );*/
+  
+  
+  
+  $form['extra']['photo']['upload'] = array(
+    '#type' => 'file',
+    '#title' => t('Image upload'),
+    '#description' => t('Allowed extensions: gif png jpg jpeg'),
+    '#upload_location' => 'public://uploads/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+      // Pass the maximum file size in bytes
+      'file_validate_size' => array(1024*1024*1024),
+    ),
+  );
   
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
-    '#title' => t('I agree to the copyright terms.'),
+    '#title' => t('I agree to the <a href="#">general conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image through UiTdatabank.'),
   );
 
   // Price  
@@ -589,6 +596,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   
+  if (!isset($form_state['#price_needed'])) {
   $form['extra']['price']['free'] = array(
     '#type' => 'checkbox',
     '#name' => 'price_free',
@@ -600,14 +608,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
   
-  if (!isset($form_state['#price_needed'])) {
   $form['extra']['price']['add_extra_info'] = array(
     '#type' => 'submit',
     '#name' => 'price_add_more',
     '#value' => t('+ add price info'),
     '#attributes' => array(
       'class' => array(
-        'btn-link'),
+        'add-more-link btn-link'),
       'style' => array(
         'display:block; clear:left;'),
       ),
@@ -648,7 +655,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['organiser']['actor'] = array(
     '#type' => 'textfield',
-    '#title' => t('Organization'),
+    '#title' => t('Organisation'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
     '#default_value' => $default_organiser,
@@ -658,8 +665,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['organiser']['add_new_actor'] = array(
     '#type' => 'submit',
     '#name' => 'actor_add_more',
-    '#value' => t('Organization not found'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#value' => t('Organisation not found, add organisation'),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     //'#attributes' => array('class' => array('organiser-add-more-submit')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -718,19 +725,26 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#markup' => t("Activities for children will get the 'Fly' label"),
   );
 
-  /*// Start vertical tabs
-  $form['vertical_tabs'] = array(
+  // Start vertical tabs
+  $form['extra']['vertical_tabs'] = array(
     '#type' => 'vertical_tabs',
-  );*/
+  );
   
   // Contact
   $form['extra']['contacts'] = array(
     '#type' => 'fieldset',
     '#title' => t('Contacts'),
     '#group' => 'vertical_tabs',
+  );
+  
+  $form['extra']['contacts']['wrapper'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
     '#prefix' => '<div id="contacts-ajax-wrapper">',
     '#suffix' => '</div>',
   );
+  
+  // => ADD CONTAINER FOR AJAX WRAPPER!!!
   
   $contact_count = 0;
   // Add performer type.
@@ -752,11 +766,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['extra']['contacts']['add_more_contacts'] = array(
+  $form['extra']['contacts']['wrapper']['add_more_contacts'] = array(
     '#type' => 'submit',
     '#name' => 'contacts_add_more',
     '#value' => t('+ add another contact'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'contacts-ajax-wrapper',
@@ -771,6 +785,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'fieldset',
     '#title' => t('Performers'),
     '#group' => 'vertical_tabs',
+  );
+  
+  $form['extra']['performers']['wrapper'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
     '#prefix' => '<div id="performers-ajax-wrapper">',
     '#suffix' => '</div>',
   );
@@ -795,11 +814,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['extra']['performers']['add_more_performers'] = array(
+  $form['extra']['performers']['wrapper']['add_more_performers'] = array(
     '#type' => 'submit',
     '#name' => 'performers_add_more',
     '#value' => t('+ add another performer'),
-    '#attributes' => array('class' => array('btn-link')),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'performers-ajax-wrapper',
@@ -868,7 +887,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['translations']['english']['language'] = array(
     '#type' => 'textfield',
-    '#title' => t('Language'),
+    '#title' => t('Title'),
   );
   
   $form['extra']['translations']['english']['short_description'] = array(
@@ -891,7 +910,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['translations']['french']['language'] = array(
     '#type' => 'textfield',
-    '#title' => t('Language'),
+    '#title' => t('Title'),
   );
   
   $form['extra']['translations']['french']['short_description'] = array(
@@ -914,7 +933,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   $form['extra']['translations']['german']['language'] = array(
     '#type' => 'textfield',
-    '#title' => t('Language'),
+    '#title' => t('Title'),
   );
   
   $form['extra']['translations']['german']['short_description'] = array(
@@ -933,15 +952,22 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Publication'),
     '#group' => 'vertical_tabs',
   );
+  
+  $form['extra']['publication_date']['wrapper'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="pub-date-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
 
-  $form['extra']['publication_date'] = array(
+  $form['extra']['publication_date']['wrapper']['date'] = array(
     '#type' => 'textfield',
     '#title' => t('Publication date'),
     '#default_value' => $publication_date,
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
   
-  $form['extra']['private'] = array(
+  $form['extra']['publication_date']['wrapper']['private'] = array(
     '#type' => 'checkbox',
     '#title' => t('Public'),
   );
@@ -1000,10 +1026,10 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
 
   $text = '';
 
-  $form['extra']['contacts'][$i]['channel'] = array(
+  $form['extra']['contacts']['wrapper'][$i]['channel'] = array(
     '#type' => 'select',
-    '#title' => t('Channel'),
-    '#display_title' => FALSE,
+    '#title' => t('Contact'),
+    '#title_display' => 'invisible',
     '#options' => array(
       0 => t('Email'),
       1 => t('Phone'),
@@ -1011,10 +1037,10 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
     '#attributes' => array('class' => array('channel-field')),
   );
 
-  $form['extra']['contacts'][$i]['channel_input'] = array(
+  $form['extra']['contacts']['wrapper'][$i]['channel_input'] = array(
     '#type' => 'textfield',
     '#title' => t('Input'),
-    '#display_title' => FALSE,
+    '#title_display' => 'invisible',
     '#default_value' => $text,
     '#attributes' => array('class' => array('channel-input-field')),
   );
@@ -1029,7 +1055,7 @@ function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NUL
 
   $text = '';
 
-  $form['extra']['performers'][$i]['performer'] = array(
+  $form['extra']['performers']['wrapper'][$i]['performer'] = array(
     '#type' => 'textfield',
     '#title' => t('Performer'),
     '#display_title' => FALSE,
@@ -1037,7 +1063,7 @@ function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NUL
     '#attributes' => array('class' => array('performer-field')),
   );
 
-  $form['extra']['performers'][$i]['role'] = array(
+  $form['extra']['performers']['wrapper'][$i]['role'] = array(
     '#type' => 'textfield',
     '#title' => t('Role'),
     '#default_value' => $text,

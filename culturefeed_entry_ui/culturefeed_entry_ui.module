@@ -48,7 +48,6 @@ function culturefeed_entry_ui_theme() {
       'render element' => 'element',
     ),
   );
-
 }
 
 /**
@@ -244,11 +243,11 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       break;
       
     case 'performers_add_more':
-      $form_state['#performers_needed'] = count(element_children($form['extra']['performers']));
+      $form_state['#performers_needed'] = count(element_children($form['extra']['performers']['wrapper']));
       break;
     
     case 'contacts_add_more':
-      $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']));
+      $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']['wrapper']));
 
   }
 
@@ -287,10 +286,10 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       return $form['extra']['organiser'];
     
     case 'performers_add_more':
-      return $form['extra']['performers'];
+      return $form['extra']['performers']['wrapper'];
       
     case 'contacts_add_more':
-      return $form['extra']['contacts'];
+      return $form['extra']['contacts']['wrapper'];
   }
 
 }
