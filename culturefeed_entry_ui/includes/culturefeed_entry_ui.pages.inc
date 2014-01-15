@@ -1459,9 +1459,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   
     }
   }
-
-  $event->setContactInfo($contact_object);
   */
+  
+  $event->setContactInfo($contact_object);
+  
   
   try {
 
