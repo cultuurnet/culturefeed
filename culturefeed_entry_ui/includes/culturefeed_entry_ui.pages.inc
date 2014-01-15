@@ -1262,12 +1262,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if (empty($values['street'])) {
-      form_set_error('street', t('A street is required for a custom location'));
-    }
-    if (empty($values['house_number'])) {
-      form_set_error('street', t('A house number is required for a custom location'));
-    }
     if (empty($values['zip_code'])) {
       form_set_error('zip_code', t('A zip code is required for a custom location'));
     }
