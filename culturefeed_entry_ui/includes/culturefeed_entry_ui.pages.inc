@@ -155,24 +155,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#title' => $type_name,
         '#parents' => array('what'),
       );
-  
-    }
-  
+    }  
   }
-
-  $form['basic']['what']['doen'] = array(
-    '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN)),
-    '#title' => 'Doen',
-    '#default_value' => $category_defaults,
-  );
-
-  $form['basic']['what']['bezoeken'] = array(
-    '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN)),
-    '#title' => 'Bezoeken',
-    '#default_value' => $category_defaults,
-  );
 
   $form['basic']['basic']['location'] = array(
     '#type' => 'textfield',
@@ -261,8 +245,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['when']['add_more_datetimes'] = array(
     '#type' => 'submit',
     '#name' => 'datetimes_add_more',
-    '#value' => t('Add date'),
-    '#attributes' => array('class' => array('datetimes-add-more-submit')),
+    '#value' => t('+ add date'),
+    '#attributes' => array('class' => array('btn-link')),
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'datetimes-ajax-wrapper',
@@ -950,14 +934,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#group' => 'vertical_tabs',
   );
 
-  $form['extra']['publication_date']['date'] = array(
+  $form['extra']['publication_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Publication date'),
     '#default_value' => $publication_date,
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
   
-  $form['extra']['publication_date']['private'] = array(
+  $form['extra']['private'] = array(
     '#type' => 'checkbox',
     '#title' => t('Public'),
   );
@@ -975,7 +959,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 }
 
 /**
- * Attach a new contact element. 
+ * Attach a new datetime element. 
  *
  */
 function culturefeed_entry_ui_attach_datetimes_elements(&$form, $i, $info = NULL) {
@@ -1192,8 +1176,14 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if ($values['age'] && !is_numeric($values['age'])) {
     form_set_error('age', t('Please fill in correct age'));
   }
+  
+  // Validate datetime
+  // TODO CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['start_date']);
+  
+  
 
   // Validate timestamps.
+  /*
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
 
     // Only one timestamp saved for one day.
@@ -1247,6 +1237,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
 
   }
+  */
 
   // Validate location.
   if (!empty($values['location'])) {
@@ -1287,7 +1278,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate organiser.
-  if (!empty($values['organiser'])) {
+  if (!empty($values['organiser']['actor'])) {
 
     $organiser_label = $search_string = $values['organiser'];
     if (preg_match("|-|", $organiser_label)) {
@@ -1349,6 +1340,17 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Age.
   $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
+  
+  // Datetimes as calendar.
+  if ($values['datetimes']) {
+    _culturefeed_entry_ui_event_save_timestamps($event, $values);
+  }
+  
+  /*
+  // Datetimes as calendar.
+  if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
+    _culturefeed_entry_ui_event_save_timestamps($event, $values);
+  }
 
   // Timestamps as calendar.
   if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
@@ -1359,9 +1361,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   elseif ($values['when'] == 'period' || $values['when'] == 'permanent') {
     _culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
+  */
 
   // Categories TODO:Remove Hard coded values
-  $category_values = $values['kijken_en_luisteren'];
   //$category_values += $values['doen'];
   //$category_values += $values['bezoeken'];
   $category_options = array();
@@ -1370,9 +1372,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   //$category_options += $form['what']['bezoeken']['#options'];
 
   $categories = new CultureFeed_Cdb_Data_CategoryList();
-  foreach ($category_values as $key => $value) {
+  foreach ($category_options as $key => $value) {
     if ($value) {
-      $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $value, $category_options[$value]));
+      $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value));
     }
   }
   $event->setCategories($categories);
@@ -1431,31 +1433,36 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $physical_address = $address->getPhysicalAddress();
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
   $contact_object->addAddress(new CultureFeed_Cdb_Data_Address($physical_address));
-
-  foreach ($values['contacts'] as $contact) {
-
-    if (!empty($contact['text'])) {
-      switch ($contact['type']) {
-
-        case 'website':
-          $contact_object->addUrl(new CultureFeed_Cdb_Data_Url($contact['text'], FALSE, $contact['reservation']));
-          break;
-
-        case 'email':
-          $contact_object->addMail(new CultureFeed_Cdb_Data_Mail($contact['text'], FALSE, $contact['reservation']));
-          break;
-
-        case 'phone':
-          $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
-          break;
-
+  
+  /*
+  // TODO replace $values['contacts']
+  if($values['contacts']) {
+    foreach ($values['contacts'] as $contact) {
+  
+      if (!empty($contact['text'])) {
+        switch ($contact['type']) {
+  
+          case 'website':
+            $contact_object->addUrl(new CultureFeed_Cdb_Data_Url($contact['text'], FALSE, $contact['reservation']));
+            break;
+  
+          case 'email':
+            $contact_object->addMail(new CultureFeed_Cdb_Data_Mail($contact['text'], FALSE, $contact['reservation']));
+            break;
+  
+          case 'phone':
+            $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
+            break;
+  
+        }
       }
+  
     }
-
   }
 
   $event->setContactInfo($contact_object);
-
+  */
+  
   try {
 
     if ($update) {
@@ -1483,19 +1490,16 @@ function _culturefeed_entry_ui_event_save_timestamps(&$event, $values) {
 
   $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
 
-  foreach ($values['timestamps'] as $timestamp) {
+  foreach ($values['datetimes'] as $timestamp) {
 
     // Empty start dates are ignored.
-    if (empty($timestamp['start_date'])) {
+    if (empty($timestamp['date'])) {
       continue;
     }
 
-    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['start_date']);
-    if (!empty($timestamp['end_time'])) {
-      $timestamp_object->setEndTime($timestamp['end_time']);
-    }
-    if (!empty($timestamp['start_time'])) {
-      $timestamp_object->setStartTime($timestamp['start_time']);
+    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['date']);
+    if (!empty($timestamp['time'])) {
+      $timestamp_object->setStartTime($timestamp['time']);
     }
     $calendar->add($timestamp_object);
   }
@@ -1562,7 +1566,7 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
   }
   else {
     $link_change_event = '<a href="/culturefeed_entry_ui/event/' . $form_state['#event_id'] . '/edit">' . t('Click here to update') . '</a>';
-    drupal_set_message(t('Event successfully created') . ' ' . $link_change_event);
+    drupal_set_message(t('Event ' . $form_state['#event_id'] . ' successfully created') . ' ' . $link_change_event);
   }
 
 }
