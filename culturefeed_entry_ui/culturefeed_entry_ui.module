@@ -248,7 +248,7 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
     
     case 'contacts_add_more':
       $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']['wrapper']));
-
+      
   }
 
   $form_state['rebuild'] = TRUE;

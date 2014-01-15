@@ -550,7 +550,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   
   
   $form['extra']['photo']['upload'] = array(
-    '#type' => 'file',
+    '#type' => 'managed_file',
+    '#name' => 'image_upload',
     '#title' => t('Image upload'),
     '#description' => t('Allowed extensions: gif png jpg jpeg'),
     '#upload_location' => 'public://uploads/',
@@ -559,6 +560,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       // Pass the maximum file size in bytes
       'file_validate_size' => array(1024*1024*1024),
     ),
+    //'#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
   
   $form['extra']['photo']['copyrights'] = array(
