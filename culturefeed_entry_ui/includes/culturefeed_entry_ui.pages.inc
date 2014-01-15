@@ -130,30 +130,35 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => ($event) ? $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle() : NULL,
     '#required' => TRUE,
   );
-
+  
+  // Eventtypes
   $form['basic']['what'] = array('#type' => 'container');
-  $form['basic']['what']['kijken_en_luisteren'] = array(
-    '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN)),
-    '#title' => 'Kijken en luisteren',
-    '#default_value' => $category_defaults,
+  
+  $types = array_merge(
+    array(CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN))),
+    array(CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN))),
+    array(CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN)))
   );
+  
+  foreach ($types as $cluster_id => $cluster_value) {
+   
+    $form['basic']['what'][$cluster_id] = array(
+      '#type' => 'fieldset',
+      '#title' => array_shift(culturefeed_search_get_eventtype_categories(array('tid' => $cluster_id))),
+    );
+    
+    foreach ($cluster_value as $type_id => $type_name ) {
+      $form['basic']['what'][$cluster_id][$type_name] = array(
+        '#type' => 'radio',
+        '#title' => $type_name,
+        '#parents' => array('what'),
+      );
+  
+    }
+  
+  }
 
-  $form['basic']['what']['doen'] = array(
-    '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN)),
-    '#title' => 'Doen',
-    '#default_value' => $category_defaults,
-  );
-
-  $form['basic']['what']['bezoeken'] = array(
-    '#type' => 'checkboxes',
-    '#options' => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN)),
-    '#title' => 'Bezoeken',
-    '#default_value' => $category_defaults,
-  );
-
-
+  // Location
   $form['basic']['basic']['location'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
