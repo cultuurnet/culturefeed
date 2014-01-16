@@ -36,6 +36,8 @@ interface CultureFeed_Uitpas {
 
   /**
    * Get the price of the UitPas.
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getPrice($consumer_key_counter = NULL);
 

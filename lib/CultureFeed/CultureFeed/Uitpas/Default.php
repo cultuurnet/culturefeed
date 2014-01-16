@@ -101,7 +101,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the price of the UitPas.
+   * {@inheritdoc}
    */
   public function getPrice($consumer_key_counter = NULL) {
     $data = array();

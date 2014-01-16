@@ -30,6 +30,11 @@ class CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions extends Cu
    */
   public $balieConsumerKey;
 
+  /**
+   * @var string
+   */
+  public $voucherNumber;
+
   // @todo Add other properties.
 
   /**

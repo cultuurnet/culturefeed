@@ -100,6 +100,7 @@ files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/CashedInPointsPromotion.
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/PeriodConstraint.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/Membership.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/UitpasPrice.php
+files[] = lib/CultureFeed/CultureFeed/Uitpas/Passholder/VoucherType.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Default.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Calendar/Period.php
 files[] = lib/CultureFeed/CultureFeed/Uitpas/Calendar/Timestamp.php
