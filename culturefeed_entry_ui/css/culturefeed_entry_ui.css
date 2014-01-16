@@ -1,5 +1,21 @@
 @CHARSET "UTF-8";
 
+#basic-wrapper .form-item {
+  float: left;
+}
+
+.form-item-basic-street, .form-item-basic-zip-code, .form-item-basic-country {
+  clear: left;
+}
+
+.form-item-basic-house-number, .form-item-basic-city {
+  margin-left: 30px;
+}
+
+#datetimes-ajax-wrapper {
+  clear: left;
+}
+
 .link-field {
   float: left;
 }
@@ -28,4 +44,41 @@ input.form-checkbox {
 .price-add-more-subit {
   clear: left;
   width: 100%;
+}
+
+input.add-more-link {
+  border:none !important;
+  background: none !important;
+  border-radius: 0 !important;
+  font-weight: normal !important;
+  color: #0071B3 !important;
+  padding: 0px !important;
+  clear: left;
+  display: block;
+}
+
+input.add-more-link:hover {
+  color: #018fe2 !important;
+  text-decoration: underline !important;
+}
+
+/* contacts */
+#contacts-ajax-wrapper .form-type-select {
+  width: 15%;
+  float: left;
+}
+
+#contacts-ajax-wrapper .form-type-textfield input {
+  width: 85%;
+}
+
+#performers-ajax-wrapper .form-type-textfield {
+  float: left;
+  width: 48%;
+  margin-right: 2%;
+}
+
+#spoken-ajax-wrapper .form-type-select {
+  width: 20%;
+  float: left;
 }
