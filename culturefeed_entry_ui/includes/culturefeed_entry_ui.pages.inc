@@ -1400,7 +1400,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   //$category_values += $values['doen'];
   //$category_values += $values['bezoeken'];
   $category_options = array();
-  $category_options[$values['what']] = 'Concert'; // $form['what']['kijken_en_luisteren']['#options'];
+
+  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories()[$values['what']];
+  var_dump($category_options);
   //$category_options += $form['what']['doen']['#options'];
   //$category_options += $form['what']['bezoeken']['#options'];
 
