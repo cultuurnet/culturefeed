@@ -47,6 +47,14 @@ function culturefeed_uitpas_variable_info() {
       'title' => t('Culturefeed uitpas: profile details: menu: notifications description'),
       'localize' => TRUE,
     ),
+    'culturefeed_uitpas_profile_details_title' => array(
+      'title' => t('Culturefeed uitpas: profile details: title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_profile_details_uitpas_number' => array(
+      'title' => t('Culturefeed uitpas: profile details: uitpas number'),
+      'localize' => TRUE,
+    ),
     'culturefeed_uitpas_profile_details_intro' => array(
       'title' => t('Culturefeed uitpas: profile details: intro'),
       'localize' => TRUE,
@@ -61,6 +69,22 @@ function culturefeed_uitpas_variable_info() {
     ),
     'culturefeed_uitpas_promotions_highlight_more_link_text' => array(
       'title' => t('Culturefeed uitpas: promotions highlight: more link text'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_title' => array(
+      'title' => t('Culturefeed uitpas: register where: title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_filters_title' => array(
+      'title' => t('Culturefeed uitpas: register where: filters title'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_intro' => array(
+      'title' => t('Culturefeed uitpas: register where: intro'),
+      'localize' => TRUE,
+    ),
+    'culturefeed_uitpas_register_where_outro' => array(
+      'title' => t('Culturefeed uitpas: register where: outro'),
       'localize' => TRUE,
     ),
     'culturefeed_uitpas_registration_confirmation_actions_label' => array(

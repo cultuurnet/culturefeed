@@ -87,7 +87,7 @@ function culturefeed_search_item_load_by_title($title, $type) {
 
   $search_string = trim($title);
   $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('title:' . $search_string);
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('title:"' . $search_string . '"');
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $result = culturefeed_get_search_service()->search($parameters);

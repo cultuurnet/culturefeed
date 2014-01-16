@@ -172,24 +172,32 @@ function culturefeed_uitpas_user_register_form_process_year($element) {
 /**
  * Returns form elements for user register settings.
  */
-function culturefeed_uitpas_user_register_settings_get(&$form) {
+function culturefeed_uitpas_user_register_settings_get(&$form, $include_title = FALSE) {
 
-  $form['intro_text'] = array(
+  if ($include_title) {
+    $form['culturefeed_uitpas_user_register_confirmation_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title for the registration page'),
+      '#default_value' => variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'))
+    );
+  }
+
+  $form['culturefeed_uitpas_user_register_intro_text'] = array(
     '#type' => 'textarea',
     '#title' => t('Intro text'),
     '#default_value' => variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.')),
   );
-  $form['number_label'] = array(
+  $form['culturefeed_uitpas_user_register_number_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Label for UiTPAS number field'),
     '#default_value' => variable_get('culturefeed_uitpas_user_register_number_label', t('UiTPAS number')),
   );
-  $form['submit_value'] = array(
+  $form['culturefeed_uitpas_user_register_submit_value'] = array(
     '#type' => 'textfield',
     '#title' => t('Value for the submit button'),
     '#default_value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Continue')),
   );
-  $form['apply_text'] = array(
+  $form['culturefeed_uitpas_user_register_apply_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Apply text'),
     '#default_value' => variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered ?  <a href="@url">Apply here</a>.')),
@@ -202,9 +210,9 @@ function culturefeed_uitpas_user_register_settings_get(&$form) {
  */
 function culturefeed_uitpas_user_register_settings_save($values) {
 
-  variable_set('culturefeed_uitpas_user_register_intro_text', $values['intro_text']);
-  variable_set('culturefeed_uitpas_user_register_number_label', $values['number_label']);
-  variable_set('culturefeed_uitpas_user_register_submit_value', $values['submit_value']);
-  variable_set('culturefeed_uitpas_user_register_apply_text', $values['apply_text']);
+  variable_set('culturefeed_uitpas_user_register_intro_text', $values['culturefeed_uitpas_user_register_intro_text']);
+  variable_set('culturefeed_uitpas_user_register_number_label', $values['culturefeed_uitpas_user_register_number_label']);
+  variable_set('culturefeed_uitpas_user_register_submit_value', $values['culturefeed_uitpas_user_register_submit_value']);
+  variable_set('culturefeed_uitpas_user_register_apply_text', $values['culturefeed_uitpas_user_register_apply_text']);
 
 }

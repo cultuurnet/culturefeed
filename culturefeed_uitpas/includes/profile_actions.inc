@@ -30,14 +30,17 @@ function culturefeed_uitpas_profile_actions_get() {
       if ($result->total) {
 
         $actions = $result->objects;
-        $actions_page = pager_default_initialize($result->total, $actions_max, $actions_pager_element);
+        pager_default_initialize($result->total, $actions_max, $actions_pager_element);
         $actions_total = $result->total;
 
       }
 
     }
     catch (Exception $e) {
+
       watchdog_exception('uitpas_ui_content_type_user_profile_promotions_cashed_in', $e);
+      pager_default_initialize(0, $actions_max, $actions_pager_element);
+
     }
 
   }

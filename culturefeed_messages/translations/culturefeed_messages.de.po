@@ -1,6 +1,6 @@
 # $Id$
 #
-# German translation of Drupal (general)
+# Dutch translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_messages.module: n/a
@@ -10,30 +10,30 @@
 #  theme/culturefeed-messages-message-list.tpl.php: n/a
 #  theme/culturefeed-messages-thread.tpl.php: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-10-24 12:21+0200\n"
-"PO-Revision-Date: 2013-10-24 12:21+0200\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: German <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-07-24 10:25+0200\n"
+"PO-Revision-Date: 2013-11-21 16:47+0100\n"
+"Last-Translator: Frontend CultuurNet <frontend@cultuurnet.be>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #: culturefeed_messages.module:106;163;286
 msgid "My messages"
-msgstr ""
+msgstr "Meine Nachrichten"
 
 #: culturefeed_messages.module:116 includes/pages.inc:238
 msgid "Delete message"
-msgstr ""
+msgstr "Nachricht löschen"
 
 #: culturefeed_messages.module:128;139;150;172;270
 msgid "Messages"
-msgstr ""
+msgstr "Nachrichten"
 
 #: culturefeed_messages.module:192
 msgid "Culturefeed messages: user inbox"
@@ -45,121 +45,129 @@ msgstr ""
 
 #: culturefeed_messages.module:272;288
 msgid "Read and reply to your messages"
-msgstr ""
+msgstr "Ihre Nachrichten lesen und beantworten"
 
 #: culturefeed_messages.info:0
 msgid "CultureFeed Messages"
-msgstr ""
+msgstr "CultureFeed Nachrichten"
 
 #: culturefeed_messages.info:0
 msgid "CultureFeed Messages adds the ability to send messages to other users."
 msgstr ""
+"Mit CultureFeed Nachrichten können Sie anderen Nutzern Nachrichten senden."
 
 #: culturefeed_messages.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "CultureFeed"
 
 #: includes/pages.inc:20 theme/theme.inc:15
 msgid "You have no messages"
-msgstr ""
+msgstr "Sie haben keine Nachrichten"
 
 #: includes/pages.inc:29
 msgid "Something went wrong while getting your message."
-msgstr ""
+msgstr "Beim Abholen Ihrer Nachrichten hat etwas nicht geklappt."
 
 #: includes/pages.inc:52 theme/culturefeed-messages-message-list.tpl.php:3
 msgid "New message"
-msgstr ""
+msgstr "Neue Nachricht"
 
 #: includes/pages.inc:88
 msgid "Send new message to:"
-msgstr ""
+msgstr "Eine neue Nachricht senden an:"
 
 #: includes/pages.inc:90
 msgid "all administrators of my page"
-msgstr ""
+msgstr "alle Administratoren meiner Seite"
 
 #: includes/pages.inc:91
 msgid "all members of my page"
-msgstr ""
+msgstr "alle Mitglieder meiner Seite"
 
 #: includes/pages.inc:106
 msgid "Reply"
-msgstr ""
+msgstr "Reaktion"
 
 #: includes/pages.inc:113
 msgid "Subject"
-msgstr ""
+msgstr "Betreff"
 
 #: includes/pages.inc:118
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 #: includes/pages.inc:133
 msgid "Send message as"
-msgstr ""
+msgstr "Verschicken als"
 
 #: includes/pages.inc:147
 msgid "Send"
-msgstr ""
+msgstr "Versenden"
 
 #: includes/pages.inc:190
 msgid "Something went wrong while sending your message."
-msgstr ""
+msgstr "Beim Versenden Ihrer Nachrichten hat etwas nicht geklappt."
 
 #: includes/pages.inc:201
 msgid "Message send"
-msgstr ""
+msgstr "Nachricht verschickt"
 
 #: includes/pages.inc:251
 msgid "This action cannot be undone"
-msgstr ""
+msgstr "Diese Aktion können Sie nicht rückgängig machen"
 
 #: includes/pages.inc:252
 msgid "Are you sure you want to delete this message?"
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie diese Nachricht löschen möchten?"
 
 #: includes/pages.inc:263
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: includes/pages.inc:269
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: includes/pages.inc:292
 msgid "Message  \"@message\" is deleted."
-msgstr ""
+msgstr "Nachricht \"@message\" wurde gelöscht."
 
 #: includes/pages.inc:296
 msgid "Something went wrong while deleting your message."
-msgstr ""
+msgstr "Beim Löschen Ihrer Nachricht hat etwas nicht geklappt."
 
 #: theme/culturefeed-messages-thread.tpl.php:2
 msgid "@count message"
-msgid_plural "@count messages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "@count Nachricht"
 
-#: theme/theme.inc:141
+#: theme/culturefeed-messages-thread.tpl.php:2
+msgid "@count messages"
+msgstr "@count Nachrichten"
+
+#: theme/theme.inc:110
 msgid "Delete conversation"
-msgstr ""
+msgstr "Unterhaltung löschen"
 
-#: theme/theme.inc:294
-msgid "Today at"
-msgstr ""
+#: theme/theme.inc:237
+msgid "van"
+msgstr "von"
 
-#: theme/theme.inc:294;297;300
-msgid "hour"
-msgstr ""
-
-#: theme/theme.inc:297
-msgid "Yesterday at"
-msgstr ""
-
-#: theme/theme.inc:289
+#: theme/theme.inc:252
 msgid "@count minute ago"
-msgid_plural "@count minutes ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "vor @count Minute"
 
+#: theme/theme.inc:252
+msgid "@count minutes ago"
+msgstr "vor @count Minuten"
+
+#: theme/theme.inc:258
+msgid "Yesterday at"
+msgstr "Gestern um"
+
+#: theme/theme.inc:258;261;264
+msgid "hour"
+msgstr "Uhr"
+
+#: theme/theme.inc:261
+msgid "Today at"
+msgstr "Heute um"

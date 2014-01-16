@@ -36,6 +36,8 @@ interface CultureFeed_Uitpas {
 
   /**
    * Get the price of the UitPas.
+   *
+   * @return CultureFeed_ResultSet
    */
   public function getPrice($consumer_key_counter = NULL);
 
@@ -203,8 +205,9 @@ interface CultureFeed_Uitpas {
    *
    * @param string $uid
    * @param string $activation_code
+   * @param string $destination_
    */
-  public function constructPassHolderActivationLink($uid, $activation_code, $destination_callback = NULL);
+  public function constructPassHolderActivationLink($uid, $activation_code, $destination = NULL);
 
   /**
    * Get the activitation link for a passholder which is not activated online yet,
@@ -231,6 +234,15 @@ interface CultureFeed_Uitpas {
    * @param CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query The query
    */
   public function registerUitpas(CultureFeed_Uitpas_Passholder_Query_RegisterUitpasOptions $query);
+
+  /**
+   * Registers an existing passholder in a new cardsystem.
+   *
+   * @param string $passholderId
+   * @param CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions $query
+   * @return CultureFeed_Uitpas_Passholder
+   */
+  public function registerPassholderInCardSystem($passholderId, CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions $query);
 
   /**
    * Cancel a ticket sale for a passholder

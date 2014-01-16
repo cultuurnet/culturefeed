@@ -64,6 +64,16 @@ function culturefeed_uitpas_profile_details_settings_get(&$form) {
     '#title' => t('Menu: notifications description'),
     '#default_value' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
   );
+  $form['profile_details']['culturefeed_uitpas_profile_details_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('UiTPAS Title'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS')),
+  );
+  $form['profile_details']['culturefeed_uitpas_profile_details_uitpas_number'] = array(
+    '#type' => 'textfield',
+    '#title' => t('UiTPAS Number (label)'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')),
+  );
   $form['profile_details']['culturefeed_uitpas_profile_details_intro'] = array(
     '#type' => 'textarea',
     '#title' => t('Intro'),

@@ -166,7 +166,7 @@ function culturefeed_ui_block_profile_menu_is_visible() {
   if (arg(0) == 'user') {
     $account = menu_get_object('user');
     global $user;
-    if ($account->uid != $user->uid) {
+    if (!$account || $account->uid != $user->uid) {
       return FALSE;
     }
   }

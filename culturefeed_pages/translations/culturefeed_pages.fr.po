@@ -1,11 +1,10 @@
-# $Id$
 #
-# French translation of Drupal (general)
+# Dutch translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_pages.module: n/a
-#  includes/pages.inc: n/a
 #  includes/blocks.inc: n/a
+#  includes/pages.inc: n/a
 #  theme/culturefeed-page.tpl.php: n/a
 #  includes/members.inc: n/a
 #  includes/helpers.inc: n/a
@@ -24,810 +23,895 @@
 #  theme/culturefeed-pages-request-admin-membership-block.tpl.php: n/a
 #  theme/culturefeed-pages-user-search-result.tpl.php: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-10-24 12:22+0200\n"
-"PO-Revision-Date: 2013-10-24 12:22+0200\n"
+"POT-Creation-Date: 2013-08-02 09:32+0200\n"
+"PO-Revision-Date: 2013-11-06 13:17+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: French <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n>1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
 
-#: culturefeed_pages.module:210
-msgid "Create your own page"
-msgstr ""
-
-#: culturefeed_pages.module:229
-msgid "Edit page"
-msgstr ""
-
-#: culturefeed_pages.module:242
-msgid "Delete page"
-msgstr ""
-
-#: culturefeed_pages.module:253
-msgid "Publish page"
-msgstr ""
-
-#: culturefeed_pages.module:264;692 includes/pages.inc:658
-msgid "Settings"
-msgstr ""
-
-#: culturefeed_pages.module:275;704 includes/blocks.inc:294
-msgid "Activities"
-msgstr ""
-
-#: culturefeed_pages.module:286;297 theme/culturefeed-page.tpl.php:15
-msgid "Members"
-msgstr ""
-
-#: culturefeed_pages.module:308
-msgid "Delete member"
-msgstr ""
-
-#: culturefeed_pages.module:319 includes/members.inc:345
-msgid "Add member"
-msgstr ""
-
-#: culturefeed_pages.module:330
-msgid "Application for administrator of the page"
-msgstr ""
-
-#: culturefeed_pages.module:340
-msgid "Remove myself as a member"
-msgstr ""
-
-#: culturefeed_pages.module:350
-msgid "Add member as administrator"
-msgstr ""
-
-#: culturefeed_pages.module:361;652
-msgid "Change active page"
-msgstr ""
-
-#: culturefeed_pages.module:387 includes/helpers.inc:38 theme/theme.inc:71
-msgid "Follow page"
-msgstr ""
-
-#: culturefeed_pages.module:397 includes/helpers.inc:35
-msgid "Unfollow page"
-msgstr ""
-
-#: culturefeed_pages.module:407;720 includes/pages.inc:119
-msgid "My pages"
-msgstr ""
-
-#: culturefeed_pages.module:434
+#: culturefeed_pages.module:425
 msgid "Culturefeed pages: fellow members from user"
 msgstr ""
 
-#: culturefeed_pages.module:439
+#: culturefeed_pages.module:430
 msgid "Culturefeed pages: pages i'm following"
 msgstr ""
 
-#: culturefeed_pages.module:444
+#: culturefeed_pages.module:435
 msgid "Culturefeed pages: page options"
 msgstr ""
 
-#: culturefeed_pages.module:449
+#: culturefeed_pages.module:440
 msgid "Culturefeed pages: request to become admin member"
 msgstr ""
 
-#: culturefeed_pages.module:454
+#: culturefeed_pages.module:445
 msgid "Culturefeed pages: page admin menu"
 msgstr ""
 
-#: culturefeed_pages.module:459
+#: culturefeed_pages.module:450
 msgid "Culturefeed pages: followers"
 msgstr ""
 
-#: culturefeed_pages.module:465
+#: culturefeed_pages.module:456
 msgid "Culturefeed pages: page timeline"
 msgstr ""
 
-#: culturefeed_pages.module:472
+#: culturefeed_pages.module:463
 msgid "Culturefeed pages: page agenda"
 msgstr ""
 
-#: culturefeed_pages.module:490
-msgid "Items to show per page"
-msgstr ""
+#: culturefeed_pages.module:481
+msgid "Items to show"
+msgstr "Eléments à afficher"
 
-#: culturefeed_pages.module:614
+#: culturefeed_pages.module:605
 msgid "My page"
-msgstr ""
+msgstr "Ma page"
 
-#: culturefeed_pages.module:622 includes/blocks.inc:142;172
+#: culturefeed_pages.module:613 includes/blocks.inc:139;169
 msgid "Manage pages"
-msgstr ""
+msgstr "Gérer mes pages"
 
-#: culturefeed_pages.module:644;671
+#: culturefeed_pages.module:635;662
 msgid "Search your page"
-msgstr ""
+msgstr "Chercher votre page"
 
-#: culturefeed_pages.module:686
+#: culturefeed_pages.module:643;360
+msgid "Change active page"
+msgstr "Modifier la page active"
+
+#: culturefeed_pages.module:677
 msgid "Change settings"
-msgstr ""
+msgstr "Modifier les données"
 
-#: culturefeed_pages.module:688
+#: culturefeed_pages.module:679
 msgid "Edit contact info, photos, description, website,..."
-msgstr ""
+msgstr "Modifier les coordonnées, les photos, la description, le site web…"
 
-#: culturefeed_pages.module:694
+#: culturefeed_pages.module:683;263 includes/pages.inc:649
+msgid "Settings"
+msgstr "Réglages"
+
+#: culturefeed_pages.module:685
 msgid "Allow users to follow your page, write comments, suggest activities,..."
 msgstr ""
+"Autoriser des utilisateurs à suivre votre page, écrire des commentaires, "
+"recommander des activités…"
 
-#: culturefeed_pages.module:698
+#: culturefeed_pages.module:689
 msgid "Members & roles"
-msgstr ""
+msgstr "Membres & rôles"
 
-#: culturefeed_pages.module:700
+#: culturefeed_pages.module:691
 msgid "Manage members and access rights"
-msgstr ""
+msgstr "Gérer les membres et les droits d'accès"
 
-#: culturefeed_pages.module:706
+#: culturefeed_pages.module:695;274 includes/blocks.inc:291
+msgid "Activities"
+msgstr "Activités"
+
+#: culturefeed_pages.module:697
 msgid "Manage your activities and reactions"
-msgstr ""
+msgstr "Gérer vos activités et vos réactions"
 
-#: culturefeed_pages.module:722
+#: culturefeed_pages.module:711;406 includes/pages.inc:119
+msgid "My pages"
+msgstr "Mes pages"
+
+#: culturefeed_pages.module:713
 msgid "Manage the pages where you're member off or that you follow"
-msgstr ""
+msgstr "Gérer les pages dont vous êtes membres et que vous suivez"
 
-#: culturefeed_pages.module:736;737
+#: culturefeed_pages.module:727;728
 msgid "Pages"
-msgstr ""
+msgstr "Pages"
 
-#: culturefeed_pages.module:741
+#: culturefeed_pages.module:732
 msgid "Relevancy"
-msgstr ""
+msgstr "Pertinence"
 
-#: culturefeed_pages.module:742
+#: culturefeed_pages.module:733
 msgid "Alphabetical"
-msgstr ""
+msgstr "Alphabétique"
 
-#: culturefeed_pages.module:743
+#: culturefeed_pages.module:734
 msgid "Number of members"
-msgstr ""
+msgstr "Nombre de membres"
 
-#: culturefeed_pages.module:744
+#: culturefeed_pages.module:735
 msgid "Number of followers"
-msgstr ""
+msgstr "Nombre de personnes que vous suivent"
 
-#: culturefeed_pages.module:784
+#: culturefeed_pages.module:775
 msgid "Your page in @sitename"
-msgstr ""
+msgstr "Votre page sur @sitename"
 
-#: culturefeed_pages.module:847
+#: culturefeed_pages.module:838
 msgid "from"
-msgstr ""
+msgstr "de"
+
+#: culturefeed_pages.module:210
+msgid "Create your own page"
+msgstr "Créer votre propre page"
+
+#: culturefeed_pages.module:228
+msgid "Edit page"
+msgstr "Modifier la page"
+
+#: culturefeed_pages.module:241
+msgid "Delete page"
+msgstr "Supprimer la page"
+
+#: culturefeed_pages.module:252
+msgid "Publish page"
+msgstr "Publier la page"
+
+#: culturefeed_pages.module:285;296 theme/culturefeed-page.tpl.php:15
+msgid "Members"
+msgstr "Membres"
+
+#: culturefeed_pages.module:307
+msgid "Delete member"
+msgstr "Supprimer le membre"
+
+#: culturefeed_pages.module:318 includes/members.inc:345
+msgid "Add member"
+msgstr "Ajouter un membre"
+
+#: culturefeed_pages.module:329
+msgid "Application for administrator of the page"
+msgstr "Demander à devenir administrateur de page"
+
+#: culturefeed_pages.module:339
+msgid "Remove myself as a member"
+msgstr "Me supprimer en tant que membre"
+
+#: culturefeed_pages.module:349
+msgid "Add member as administrator"
+msgstr "Ajouter un membre à la liste des administateurs"
+
+#: culturefeed_pages.module:386 includes/helpers.inc:38 theme/theme.inc:69
+msgid "Follow page"
+msgstr "Suivre la page"
+
+#: culturefeed_pages.module:396 includes/helpers.inc:35
+msgid "Unfollow page"
+msgstr "Ne plus suivre la page"
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed Pages"
-msgstr ""
+msgstr "Pages CultureFeed"
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed Pages makes it possible to view / manage pages."
 msgstr ""
+"Les pages CultureFeed vous permettent de gérer et de consulter des pages."
 
 #: culturefeed_pages.info:0
 msgid "CultureFeed"
-msgstr ""
+msgstr "CultureFeed"
 
 #: includes/blocks.inc:49
 msgid "My colleague's"
-msgstr ""
+msgstr "Mes collègues"
 
 #: includes/blocks.inc:78 theme/culturefeed-pages-page-my-page.tpl.php:13
 msgid "Pages I follow"
-msgstr ""
+msgstr "Les pages que je suis"
 
-#: includes/blocks.inc:251
+#: includes/blocks.inc:248
 msgid "Timeline"
-msgstr ""
+msgstr "Ligne du temps"
 
-#: includes/blocks.inc:349
+#: includes/blocks.inc:342
 msgid "Page followers"
-msgstr ""
+msgstr "Suivre cette page"
 
-#: includes/blocks.inc:440
+#: includes/blocks.inc:433
 msgid "Related activities"
-msgstr ""
+msgstr "Activités liées"
 
 #: includes/helpers.inc:201
 msgid "Home"
-msgstr ""
+msgstr "Accueil"
 
-#: includes/members.inc:38 includes/pages.inc:515;651 theme/theme.inc:73
+#: includes/members.inc:38 includes/pages.inc:506;642 theme/theme.inc:71
 msgid "View page"
-msgstr ""
+msgstr "Consulter la page"
 
 #: includes/members.inc:48
 msgid "Please enter at least 3 characters"
-msgstr ""
+msgstr "Veuillez indiquer au minimum 3 caractères"
 
-#: includes/members.inc:66 includes/pages.inc:242
+#: includes/members.inc:66 includes/pages.inc:239
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: includes/members.inc:67
 msgid "Function"
-msgstr ""
+msgstr "Fonction"
 
 #: includes/members.inc:68
 msgid "Role"
-msgstr ""
+msgstr "Rôle"
 
-#: includes/members.inc:69 includes/pages.inc:1105
+#: includes/members.inc:69 includes/pages.inc:1096
 msgid "Member since"
-msgstr ""
+msgstr "Membre depuis"
 
 #: includes/members.inc:93
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: includes/members.inc:103
 msgid "Delete as member"
-msgstr ""
+msgstr "Supprimer en tant que membre"
 
 #: includes/members.inc:115
 msgid "Cancel changes"
-msgstr ""
+msgstr "Annuler les opérations"
 
 #: includes/members.inc:129
 msgid "No content available."
-msgstr ""
+msgstr "Aucun contenu disponible."
 
-#: includes/members.inc:177 includes/pages.inc:373;693
+#: includes/members.inc:177 includes/pages.inc:370;684
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: includes/members.inc:189
 msgid "Remove administrator"
-msgstr ""
+msgstr "Supprimer en tant qu'administrateur"
 
 #: includes/members.inc:189
 msgid "Make administrator"
-msgstr ""
+msgstr "Créer un administrateur"
 
 #: includes/members.inc:255
-msgid "Something went wrong while saving. Please try again or contact an administrator."
+msgid ""
+"Something went wrong while saving. Please try again or contact an "
+"administrator."
 msgstr ""
+"Une erreur s'est produite au cours de l'enregistrement. Veuillez réessayer "
+"ou contacter un administrateur."
 
 #: includes/members.inc:266
 msgid "Membership changed"
-msgstr ""
+msgstr "L'affiliation a été modifiée"
 
 #: includes/members.inc:277
 msgid "Search users"
-msgstr ""
+msgstr "Chercher des utilisateurs"
 
 #: includes/members.inc:284
 msgid "Search"
-msgstr ""
+msgstr "Chercher"
 
 #: includes/members.inc:359
 msgid "Sure you want to add @nick as a member?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir ajouter @nick en tant que membre ?"
 
 #: includes/members.inc:370
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
-#: includes/members.inc:376;497 includes/pages.inc:829;920
+#: includes/members.inc:376;497 includes/pages.inc:820;911
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: includes/members.inc:404
 msgid "@nick is member of @page now."
-msgstr ""
+msgstr "@nick est désormais membre de @page."
 
 #: includes/members.inc:409
-msgid "There was an error while saving. Please try again, or contact an administrator."
+msgid ""
+"There was an error while saving. Please try again, or contact an "
+"administrator."
 msgstr ""
+"Une erreur s'est produite au cours de l'ajout. Veuillez réessayer ou "
+"contacter un administrateur."
 
 #: includes/members.inc:458
 msgid "Remove member"
-msgstr ""
+msgstr "Supprimer le membre"
 
 #: includes/members.inc:473
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Cette action ne peut être supprimée."
 
 #: includes/members.inc:477
 msgid "Are you sure you want to remove yourself as a member?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir vous supprimer en tant que membre ?"
 
 #: includes/members.inc:480
 msgid "Are you sure you want to remove this member?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer ce membre ?"
 
 #: includes/members.inc:491
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: includes/members.inc:529
 msgid "There was an error while removing the member."
-msgstr ""
+msgstr "Une erreur s'est produite lors de la suppression du membre."
 
 #: includes/members.inc:541
 msgid "You are not longer a member of @page."
-msgstr ""
+msgstr "Vous n'êtes plus membre de @page."
 
 #: includes/members.inc:547
 msgid "User @nick is removed as member of page @page."
-msgstr ""
+msgstr "L'utilisateur @nick a été supprimé en tant que membre de @page."
 
 #: includes/members.inc:576
 msgid "Request to become an administrator"
-msgstr ""
+msgstr "Demander à devenir administrateur"
 
 #: includes/members.inc:587
 msgid "Your request to become an administrator of this page is sent"
 msgstr ""
+"Votre demande destinée à devenir administrateur de cette page a été envoyée"
 
 #: includes/members.inc:620
 msgid "!username wants to be an administrator of !page."
-msgstr ""
+msgstr "!username veut devenir membre de !page."
 
 #: includes/members.inc:629 includes/pages.inc:61
 msgid "OK"
-msgstr ""
+msgstr "Ok"
 
 #: includes/members.inc:652
 msgid "!username successfully added as administrator of page !page."
 msgstr ""
+"!username a été correctement ajouté en tant qu'administrateur de !page."
 
 #: includes/pages.inc:27;31
 msgid "There was an error while loading the search results."
 msgstr ""
+"Une erreur s'est produite durant le chargement des résultats de la recherche."
 
 #: includes/pages.inc:54
 msgid "Name of your page"
-msgstr ""
+msgstr "Nom de votre page"
 
 #: includes/pages.inc:119
-msgid "You are now a member of <strong>@page.</strong><br />Manage your membership of this and other pages with"
+msgid ""
+"You are now a member of <strong>@page.</strong><br />Manage your membership "
+"of this and other pages with"
 msgstr ""
+"Vous êtes désormais membre de <strong>@page.</strong><br />Gérer votre "
+"affiliation à cette page et à d'autres pages via"
 
 #: includes/pages.inc:134
-msgid "It is not allowed to join @page as a member. Please contact the administrator of the page to become a member."
+msgid ""
+"It is not allowed to join @page as a member. Please contact the "
+"administrator of the page to become a member."
 msgstr ""
+"Vous n'êtes pas autorisé à devenir membre de la page @page. Veuillez "
+"contacter un administrateur si vous souhaitez tout de même devenir membre."
 
 #: includes/pages.inc:137;184
 msgid "You could not be added to @page."
-msgstr ""
+msgstr "Vous ne pouviez pas être ajouté à @page."
 
-#: includes/pages.inc:249
+#: includes/pages.inc:246
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
-#: includes/pages.inc:257
+#: includes/pages.inc:254
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
-#: includes/pages.inc:258
+#: includes/pages.inc:255
 msgid "Maximum 400 characters"
-msgstr ""
+msgstr "Maximum 400 caractères"
 
-#: includes/pages.inc:268 theme/culturefeed-page-summary.tpl.php:32 theme/culturefeed-page.tpl.php:36
+#: includes/pages.inc:265 theme/culturefeed-page-summary.tpl.php:32
+#: theme/culturefeed-page.tpl.php:36
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
-#: includes/pages.inc:294
+#: includes/pages.inc:291
 msgid "Phone"
-msgstr ""
+msgstr "Téléphone"
 
-#: includes/pages.inc:301
+#: includes/pages.inc:298
 msgid "Email address"
-msgstr ""
+msgstr "Adresse de courrier électronique"
 
-#: includes/pages.inc:308 theme/culturefeed-page.tpl.php:50
+#: includes/pages.inc:305 theme/culturefeed-page.tpl.php:50
 msgid "Website"
-msgstr ""
+msgstr "Site web"
 
-#: includes/pages.inc:315
+#: includes/pages.inc:312
 msgid "Other websites"
-msgstr ""
+msgstr "Autres sites web"
 
-#: includes/pages.inc:324
+#: includes/pages.inc:321
 msgid "Ticketing"
-msgstr ""
+msgstr "Tickets"
 
-#: includes/pages.inc:330
+#: includes/pages.inc:327
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
-#: includes/pages.inc:336
+#: includes/pages.inc:333
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
-#: includes/pages.inc:342
+#: includes/pages.inc:339
 msgid "Google+"
-msgstr ""
+msgstr "Google+"
 
-#: includes/pages.inc:348
+#: includes/pages.inc:345
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
-#: includes/pages.inc:354
+#: includes/pages.inc:351
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
-#: includes/pages.inc:360
+#: includes/pages.inc:357
 msgid "Picture or logo"
-msgstr ""
+msgstr "Image ou logo"
 
-#: includes/pages.inc:399
+#: includes/pages.inc:396
 msgid "Title is required"
-msgstr ""
+msgstr "Le champ réservé au titre ne peut être vide"
 
-#: includes/pages.inc:404
+#: includes/pages.inc:401
 msgid "The maximum is 400 characters"
-msgstr ""
+msgstr "Le nombre maximum est fixé à 400 charactères"
 
-#: includes/pages.inc:457
+#: includes/pages.inc:448
 msgid "Page \"@page\" has been created."
-msgstr ""
+msgstr "La page \"@page\" a été créée."
 
-#: includes/pages.inc:461
+#: includes/pages.inc:452
 msgid "There was an error while creating the page."
-msgstr ""
+msgstr "Une erreur s'est produite lors de la création de cette page."
 
-#: includes/pages.inc:481;629
+#: includes/pages.inc:472;620
 msgid "An error occurred when uploading your image."
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement de votre illustration."
 
-#: includes/pages.inc:560
+#: includes/pages.inc:551
 msgid "Select another photo"
-msgstr ""
+msgstr "Sélectionner une autre photo"
 
-#: includes/pages.inc:564
+#: includes/pages.inc:555
 msgid "Remove photo"
-msgstr ""
+msgstr "Supprimer la photo"
 
-#: includes/pages.inc:595
+#: includes/pages.inc:586
 msgid "Page \"@page\" is updated."
-msgstr ""
+msgstr "La page \"@page\" a été modifiée."
 
-#: includes/pages.inc:599
+#: includes/pages.inc:590
 msgid "There was an error while updating the page."
-msgstr ""
+msgstr "Une erreur s'est produite lors de la modification de cette page."
 
-#: includes/pages.inc:672
+#: includes/pages.inc:663
 msgid "follow my page"
-msgstr ""
+msgstr "suivre ma page"
 
-#: includes/pages.inc:673
+#: includes/pages.inc:664
 msgid "This allows users to stay informed of any updates on this page."
 msgstr ""
+"Les utilisateurs peuvent ainsi rester informés des mises à jour de cette "
+"page."
 
-#: includes/pages.inc:679
+#: includes/pages.inc:670
 msgid "become a member of my page"
-msgstr ""
+msgstr "devenir membre de ma page"
 
-#: includes/pages.inc:680
-msgid "In this way, your page can also be accessed via the profiles, comments and reactions of all colleagues who are active on this site."
+#: includes/pages.inc:671
+msgid ""
+"In this way, your page can also be accessed via the profiles, comments and "
+"reactions of all colleagues who are active on this site."
 msgstr ""
+"Votre page est ainsi également accessible via les profils, réactions et "
+"commentaires des collègues actifs sur ce site."
 
-#: includes/pages.inc:686
+#: includes/pages.inc:677
 msgid "write comments about my activities"
-msgstr ""
+msgstr "Écrire des commentaires à propos de mes activités"
 
-#: includes/pages.inc:687
-msgid "Only for organizations that provide activities and have entered via <a href=\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
+#: includes/pages.inc:678
+msgid ""
+"Only for organizations that provide activities and have entered via <a href="
+"\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
 msgstr ""
+"Uniquement pour les organisations qui organisent et ont ajouté des activités "
+"via <a href=\"http://www.UiTdatabank.be\">www.UiTdatabank.be</a>."
 
-#: includes/pages.inc:699;794
+#: includes/pages.inc:690;785
 msgid "Remove page"
-msgstr ""
+msgstr "Supprimer la page"
 
-#: includes/pages.inc:752
+#: includes/pages.inc:743
 msgid "Page settings has been saved."
-msgstr ""
+msgstr "Les réglages de la page ont été sauvegardés."
 
-#: includes/pages.inc:756
+#: includes/pages.inc:747
 msgid "There was an error while saving the settings page."
 msgstr ""
+"Une erreur s'est produite durant l'enregistrement de la page des réglages."
 
-#: includes/pages.inc:808
-msgid "By deleting a page, the page will no longer appear in search results, but it will not remove your contact info."
+#: includes/pages.inc:799
+msgid ""
+"By deleting a page, the page will no longer appear in search results, but it "
+"will not remove your contact info."
 msgstr ""
+"Lorsqu'une page est supprimée, celle-ci n'apparaît plus dans les résultats "
+"de la recherche et l'ensemble de vos contacts ne sont pas supprimés."
 
-#: includes/pages.inc:809
-msgid "Members of this page, and activities in the name of this page will not be deleted."
+#: includes/pages.inc:800
+msgid ""
+"Members of this page, and activities in the name of this page will not be "
+"deleted."
 msgstr ""
+"Les membres de cette page et les activités en son nom ne sont pas supprimés."
 
-#: includes/pages.inc:810;909
+#: includes/pages.inc:801;900
 msgid "Are you sure?"
-msgstr ""
+msgstr "Êtes-vous sûr ?"
 
-#: includes/pages.inc:821
+#: includes/pages.inc:812
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
-#: includes/pages.inc:854
+#: includes/pages.inc:845
 msgid "Page \"@page\" is deleted."
-msgstr ""
+msgstr "La page \"@page\" a été supprimée."
 
-#: includes/pages.inc:871
+#: includes/pages.inc:862
 msgid "There was an error while deleting the page."
-msgstr ""
+msgstr "Une erreur s'est produite lors de la suppression de la page."
 
-#: includes/pages.inc:907
+#: includes/pages.inc:898
 msgid "By publishing a page, the page will re-appear in the search results."
 msgstr ""
+"Lorsqu'une page est publiée, celle-ci apparaît de nouveau dans les résultats."
 
-#: includes/pages.inc:908
-msgid "Members of this page, and activities in the name of this page will be recreated."
-msgstr ""
+#: includes/pages.inc:899
+msgid ""
+"Members of this page, and activities in the name of this page will be "
+"recreated."
+msgstr "Les membres de cette page et les activités en son nom réapparaissent."
 
-#: includes/pages.inc:914
+#: includes/pages.inc:905
 msgid "Publish"
-msgstr ""
+msgstr "Publier"
 
-#: includes/pages.inc:942
+#: includes/pages.inc:933
 msgid "Page \"@page\" is recreated."
-msgstr ""
+msgstr "La page \"@page\" a été restaurée."
 
-#: includes/pages.inc:946
+#: includes/pages.inc:937
 msgid "There was an error while recreating the page."
-msgstr ""
+msgstr "Une erreur s'est produite durant la restauration de la page."
 
-#: includes/pages.inc:980 theme/theme.inc:408
+#: includes/pages.inc:971 theme/theme.inc:406
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
-#: includes/pages.inc:984 theme/theme.inc:409
+#: includes/pages.inc:975 theme/theme.inc:407
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
-#: includes/pages.inc:988 theme/theme.inc:410
+#: includes/pages.inc:979 theme/theme.inc:408
 msgid "Reactions"
-msgstr ""
+msgstr "Réactions"
 
-#: includes/pages.inc:1014
+#: includes/pages.inc:1005
 msgid "There was an error while loading the activities."
-msgstr ""
+msgstr "Une erreur s'est produite durant le chargement des activités."
 
-#: includes/pages.inc:1050;1128
+#: includes/pages.inc:1041;1119
 msgid "Administer page"
-msgstr ""
+msgstr "Gèrer la page"
 
-#: includes/pages.inc:1069
+#: includes/pages.inc:1060
 msgid "Become an administrator"
-msgstr ""
+msgstr "Devenir administrateur"
 
-#: includes/pages.inc:1070
+#: includes/pages.inc:1061
 msgid "This is a request sent to the administrator of this page."
-msgstr ""
+msgstr "Une demande envoyée à l'administrateur de cette page."
 
-#: includes/pages.inc:1076
+#: includes/pages.inc:1067
 msgid "Not possible to remove"
-msgstr ""
+msgstr "Suppression impossible"
 
-#: includes/pages.inc:1076
-msgid "You're the only administrator of this page. You can not remove yourself as a member"
+#: includes/pages.inc:1067
+msgid ""
+"You're the only administrator of this page. You can not remove yourself as a "
+"member"
 msgstr ""
+"Vous êtes le seul administrateur de cette page. Vous ne pouvez pas vous "
+"supprimer en tant que membre"
 
-#: includes/pages.inc:1105;1147
+#: includes/pages.inc:1096;1138
 msgid "Page"
-msgstr ""
+msgstr "Page"
 
-#: includes/pages.inc:1121 theme/theme.inc:68
+#: includes/pages.inc:1112 theme/theme.inc:66
 msgid "Unfollow"
-msgstr ""
+msgstr "Ne plus suivre"
 
-#: includes/pages.inc:1122
+#: includes/pages.inc:1113
 msgid "You are a member of this page"
-msgstr ""
+msgstr "Vous êtes membre de cette page"
 
-#: includes/pages.inc:1124 theme/culturefeed-pages-fellow-members-block.tpl.php:24 theme/theme.inc:163;512
+#: includes/pages.inc:1115
+#: theme/culturefeed-pages-fellow-members-block.tpl.php:24
+#: theme/theme.inc:161;496
 msgid "Become a member"
-msgstr ""
+msgstr "Devenez membre"
 
-#: includes/pages.inc:1131 theme/theme.inc:433
+#: includes/pages.inc:1122 theme/theme.inc:431
 msgid "Send request to become administrator"
-msgstr ""
+msgstr "Envoyer une demande afin de devenir membre"
 
-#: includes/pages.inc:1147
+#: includes/pages.inc:1138
 msgid "Following since"
-msgstr ""
+msgstr "Suivi depuis"
 
 #: theme/culturefeed-page-invisible.tpl.php:1
 msgid "The content of this page was removed by the administrator of the page."
-msgstr ""
+msgstr "Le contenu de cette page a été supprimé par son administrateur."
 
 #: theme/culturefeed-page-summary.tpl.php:16
 msgid "View members"
-msgstr ""
+msgstr "Consulter la liste des membres"
+
+#: theme/culturefeed-page-summary.tpl.php:20
+msgid "<span>@count</span> follower"
+msgstr "<span>@count</span> personne qui suit"
+
+#: theme/culturefeed-page-summary.tpl.php:20
+msgid "<span>@count</span> followers"
+msgstr "<span>@count</span> personnes qui suivent"
 
 #: theme/culturefeed-page-summary.tpl.php:15
 msgid "<span class=\"members\">@count</span> member"
 msgid_plural "<span class=\"members\">@count</span> members"
-msgstr[0] ""
-msgstr[1] ""
-
-#: theme/culturefeed-page-summary.tpl.php:20
-msgid "<span>@count</span> follower"
-msgid_plural "<span>@count</span> followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<span class=\"members\">@count</span> membre"
+msgstr[1] "<span class=\"members\">@count</span> membres"
 
 #: theme/culturefeed-page.tpl.php:43
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #: theme/culturefeed-page.tpl.php:45
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:20
 msgid "Your page has published no activities yet."
-msgstr ""
+msgstr "Votre page ne compte pas encore d'activités"
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:21
 msgid "Add new activities."
-msgstr ""
+msgstr "Ajouter une nouvelle activité"
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:26
 msgid "Latest notifications"
-msgstr ""
+msgstr "Derniers messages"
 
 #: theme/culturefeed-pages-block-admin-options.tpl.php:36
-msgid "You are <strong> manager</strong> on this page, but <strong>not logged in</strong> as this page. Do you want to continue working as <strong>this page</strong>?"
+msgid ""
+"You are <strong> manager</strong> on this page, but <strong>not logged in</"
+"strong> as this page. Do you want to continue working as <strong>this page</"
+"strong>?"
 msgstr ""
+"Vous êtes <strong>administrateur</strong> de cette page, mais vous "
+"<strong>n'êtes pas inscrit</strong> à cette page. Souhaitez-vous "
+"<strong>continuer sur cette page</strong> ?"
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:14
-msgid "This list shows only the activities that are currently online. You can find past or unpublished activities on <a href=\"http://www.uitdatabank.be\"> UiT database </ a>."
+msgid ""
+"This list shows only the activities that are currently online. You can find "
+"past or unpublished activities on <a href=\"http://www.uitdatabank.be\"> UiT "
+"database </ a>."
 msgstr ""
+"Les activités se trouvant en ligne actuellement apparaissent uniquement sur "
+"cette liste. Vous pouvez consulter les dernières activités ou celles qui "
+"n'ont pas été publiées via <a href=\"http://www.uitdatabank.be"
+"\">Uitdatabank</a>."
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:18
 msgid "Add a new activity"
-msgstr ""
+msgstr "Ajouter une nouvelle activité"
 
 #: theme/culturefeed-pages-events-admin-page.tpl.php:20
-msgid "Add new activities with the UiTdatabank. You can sign in with the same account and add activities immediately. <a href=\"http://www.uitdatabank.be/\">Add new activity</a>."
+msgid ""
+"Add new activities with the UiTdatabank. You can sign in with the same "
+"account and add activities immediately. <a href=\"http://www.uitdatabank.be/"
+"\">Add new activity</a>."
 msgstr ""
+"Vous pouvez procéder via Uitdatabank. Vous pouvez vous y inscrire avec le "
+"même compte afin de démarrer immédiatement. <a href=\"http://www.uitdatabank."
+"be/\">Ajouter une nouvelle activité</a>."
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:17
 msgid "is at the moment the only member of the page"
-msgstr ""
+msgstr "est actuellement le seul membre de la page"
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:21
 msgid "You are a member of"
-msgstr ""
+msgstr "Vous êtes membre de"
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "Are you a colleague of"
-msgstr ""
+msgstr "Vous êtes un collègue de"
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "of"
-msgstr ""
+msgstr "de"
 
 #: theme/culturefeed-pages-followers-block.tpl.php:20
 msgid "This page has no followers yet."
-msgstr ""
+msgstr "Aucune personne ne suit actuellement cette page."
 
 #: theme/culturefeed-pages-join-page.tpl.php:9
 msgid "There doesn't exists a page of"
-msgstr ""
+msgstr "pour l'instant, il n'existe pas de page sur"
 
 #: theme/culturefeed-pages-join-page.tpl.php:10
 msgid "on"
-msgstr ""
+msgstr "le"
 
 #: theme/culturefeed-pages-join-search-result-item.tpl.php:9
 msgid "You are already a member"
-msgstr ""
+msgstr "Vous êtes déjà membre"
 
 #: theme/culturefeed-pages-join-search-result-item.tpl.php:15
 msgid "You follow this page"
-msgstr ""
+msgstr "Vous suivez cette page"
 
-#: theme/culturefeed-pages-page-agenda.tpl.php:16
+#: theme/culturefeed-pages-page-agenda.tpl.php:11
 msgid "You page has published no activities yet."
-msgstr ""
+msgstr "Aucune activité n'a été publiée sur votre page."
 
-#: theme/culturefeed-pages-page-agenda.tpl.php:17
-msgid "Add new activities on <a href=\"http://www.uitdatabank.be\">www.uitdatabank.be</a>."
+#: theme/culturefeed-pages-page-agenda.tpl.php:12
+msgid ""
+"Add new activities on <a href=\"http://www.uitdatabank.be\">www.uitdatabank."
+"be</a>."
 msgstr ""
+"Ajouter de nouvelles activités via <a href=\"http://www.uitdatabank.be\">www."
+"uitdatabank.be</a>."
 
-#: theme/culturefeed-pages-page-my-page.tpl.php:2 theme/theme.inc:363
+#: theme/culturefeed-pages-page-my-page.tpl.php:2 theme/theme.inc:361
 msgid "View profile"
-msgstr ""
+msgstr "Consulter le profil"
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:5
 msgid "Pages where I am a member of"
-msgstr ""
+msgstr "Les pages dont je suis membre"
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:9
-msgid "<strong>You are not a member of any page.</strong> <br/> Search (or create) the page of your employer and become a member. If you create a new page, you automatically become a member and administrator of the page."
+msgid ""
+"<strong>You are not a member of any page.</strong> <br/> Search (or create) "
+"the page of your employer and become a member. If you create a new page, you "
+"automatically become a member and administrator of the page."
 msgstr ""
+"<strong>Vous n'êtes affilié à aucune page.</strong><br />Cherchez (ou créez) "
+"la page de votre employeur et affiliez-vous. Lorsque vous créez une nouvelle "
+"page, vous en devenez automatiquement membre et administrateur."
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:17
-msgid "<strong> You follow no pages. </strong> <br/> Find and follow pages that interest you and receive a notification when there are relevant updates."
+msgid ""
+"<strong> You follow no pages. </strong> <br/> Find and follow pages that "
+"interest you and receive a notification when there are relevant updates."
 msgstr ""
+"<strong>Vous ne suivez aucune page.</strong><br />Cherchez et suivez les "
+"pages qui vous intéressent et recevez un message en cas de mises à jour "
+"intéressantes."
 
 #: theme/culturefeed-pages-page-my-page.tpl.php:20
 msgid "Search new pages:"
-msgstr ""
+msgstr "Chercher de nouvelles pages :"
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:9
 msgid "Mistake seen?"
-msgstr ""
+msgstr "Une erreur a été identifiée ?"
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:10
-msgid "This page has no administrator. As an administrator, you can change the information on this page and manage the members."
+msgid ""
+"This page has no administrator. As an administrator, you can change the "
+"information on this page and manage the members."
 msgstr ""
+"Cette page ne compte pas d'administrateur. En tant qu'administrateur, vous "
+"pouvez modifier les informations sur cette page et gérer les membres."
 
 #: theme/culturefeed-pages-request-admin-membership-block.tpl.php:11
 msgid "Send application to become an administrator"
-msgstr ""
+msgstr "Envoyer une demande afin de devenir administrateur"
 
 #: theme/culturefeed-pages-user-search-result.tpl.php:2
 msgid "No users found"
-msgstr ""
+msgstr "Aucun utilisateur n'a été trouvé"
 
-#: theme/theme.inc:26
+#: theme/theme.inc:25
 msgid "Does your organization or association has no page yet?"
-msgstr ""
+msgstr "Votre organisation ou association ne compte pas encore de page ?"
 
-#: theme/theme.inc:26
+#: theme/theme.inc:25
 msgid "Create a new page"
-msgstr ""
+msgstr "Créer une nouvelle page"
 
-#: theme/theme.inc:86
+#: theme/theme.inc:84
 msgid "More info"
-msgstr ""
+msgstr "Plus d'infos"
 
-#: theme/theme.inc:292
+#: theme/theme.inc:290
 msgid "Login as"
-msgstr ""
+msgstr "S'identifier en tant que"
 
-#: theme/theme.inc:311
+#: theme/theme.inc:309
 msgid "View all notifications"
-msgstr ""
+msgstr "Consulter l'ensemble des messages"
 
-#: theme/theme.inc:316
+#: theme/theme.inc:314
 msgid "Your page has no notifications yet"
-msgstr ""
+msgstr "Votre page ne compte pas encore de commentaires"
 
-#: theme/theme.inc:365
+#: theme/theme.inc:363
 msgid "Add as a member"
-msgstr ""
+msgstr "Ajouter en tant que membre"
+
+#: theme/theme.inc:393
+msgid "No reactions yet"
+msgstr "Pas encore de réactions"
 
 #: theme/theme.inc:395
-msgid "No reactions yet"
-msgstr ""
-
-#: theme/theme.inc:397
 msgid "Edit in the UiTdatabank"
-msgstr ""
+msgstr "Modifier dans UiTdatabank"
 
-#: theme/theme.inc:468
-msgid "More activities"
-msgstr ""
+#: theme/theme.inc:492
+msgid "You are following this page now"
+msgstr "Vous suivez actuellement cette page"
+
+#: theme/theme.inc:495
+msgid "Want to join this page?"
+msgstr "Vous désirez devenir membre de cette page ?"
 
 #: theme/theme.inc:508
-msgid "You are following this page now"
-msgstr ""
-
-#: theme/theme.inc:511
-msgid "Want to join this page?"
-msgstr ""
-
-#: theme/theme.inc:524
 msgid "You are no longer following this page anymore"
-msgstr ""
+msgstr "Vous ne suivez plus cette page"
 
-#: theme/theme.inc:392
+#: theme/theme.inc:390
 msgid "@count reaction"
 msgid_plural "@count reactions"
-msgstr[0] ""
-msgstr[1] ""
-
+msgstr[0] "@count réaction"
+msgstr[1] "@count réactions"

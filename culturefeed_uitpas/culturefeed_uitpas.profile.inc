@@ -10,6 +10,10 @@
  */
 function culturefeed_uitpas_culturefeed_ui_profile_menu() {
 
+  if (!culturefeed_uitpas_is_passholder()) {
+    return array();
+  }
+
   return array(
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages')),

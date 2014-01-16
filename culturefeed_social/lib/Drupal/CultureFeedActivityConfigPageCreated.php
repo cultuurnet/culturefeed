@@ -15,8 +15,7 @@ class CultureFeedActivityConfigPageCreated extends CultureFeedActivityConfigBase
     );
 
     $this->action = t('page');
-    $this->viewPrefix = t('has');
-    $this->viewSuffix = t('created');
+    $this->viewPrefix = t('has created a page');
     $this->label = t('Page created');
   }
 

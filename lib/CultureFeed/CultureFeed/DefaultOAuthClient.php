@@ -17,7 +17,7 @@ class CultureFeed_DefaultOAuthClient implements CultureFeed_OAuthClient {
    *
    * @var string
    */
-  protected $endpoint = 'http://test.UiTiD.be/culturefeed/rest/';
+  protected $endpoint = 'http://acc.uitid.be/uitid/rest/';
 
   /**
    * Signature method for signing OAuth requests.
