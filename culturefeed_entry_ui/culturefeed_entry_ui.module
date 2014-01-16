@@ -214,8 +214,8 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'datetimes_add_more':
-      $form_state['#datetimes_needed'] = count(element_children($form['basic']['when']['datetimes'])) + 1;
+    case 'begindates_add_more':
+      $form_state['#begindates_needed'] = count(element_children($form['basic']['when']['datetimes'])) + 1;
       break;
 
     case 'timestamps_add_more':
@@ -264,7 +264,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'datetimes_add_more':
+    case 'begindates_add_more':
       return $form['basic']['when']['datetimes'];
 
     case 'timestamps_add_more':

@@ -234,31 +234,40 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="datetimes-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-  $datetimes = array();
-  $datetime_count = 0;
-  // Add contact type selections.
-  if ($datetimes) {
-    foreach ($datetimes as $i => $info) {
-      culturefeed_entry_ui_attach_datetimes_elements($form, $i, $info);
-      $datetime_count++;
+  $begindates = array();
+  $begindate_count = 0;
+
+  if ($begindates) {
+    foreach ($begindates as $i => $info) {
+      culturefeed_entry_ui_attach_begindate_elements($form, $i, $info);
+      
+      //ajax callback om te kijken of dit element wel geplaatst mag worden!!!
+      culturefeed_entry_ui_attach_enddate_elements($form, $i, $info);
+      $begindate_count++;
     }
   }
   else {
-    culturefeed_entry_ui_attach_datetimes_elements($form, 0);
-    $datetime_count++;
+    culturefeed_entry_ui_attach_begindate_elements($form, 0);
+    
+    culturefeed_entry_ui_attach_enddate_elements($form, 0);
+    
+    $begindate_count++;
   } 
   
   // Add more button was clicked. Check how many extra rows need to be added.
-  if (isset($form_state['#datetimes_needed'])) {
+  if (isset($form_state['#begindates_needed'])) {
 
-    for (; $datetime_count < $form_state['#datetimes_needed']; $datetime_count++) {
-      culturefeed_entry_ui_attach_datetimes_elements($form, $datetime_count);
+    for (; $begindate_count < $form_state['#begindates_needed']; $begindate_count++) {
+      culturefeed_entry_ui_attach_begindate_elements($form, $begindate_count);
+  
+	  //ajax callback om te kijken of dit element wel geplaatst mag worden!!!
+  	  culturefeed_entry_ui_attach_enddate_elements($form, $begindate_count);
     }
   }
 
   $form['basic']['when']['add_more_datetimes'] = array(
     '#type' => 'submit',
-    '#name' => 'datetimes_add_more',
+    '#name' => 'begindates_add_more',
     '#value' => t('+ add date'),
     '#attributes' => array('class' => array('add-more-link btn-link')),
     '#ajax' => array(
@@ -268,7 +277,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
     '#limit_validation_errors' => array(array('datetimes')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-  );  
+  );
 
   /*
 
@@ -320,7 +329,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['basic']['add_more_timestamps'] = array(
+  /*$form['basic']['add_more_timestamps'] = array(
     '#type' => 'submit',
     '#name' => 'timestamps_add_more',
     '#value' => t('add another day'),
@@ -442,8 +451,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#states' => array(
       'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
     ),
-  );
-  */
+  );*/
+
 
   // Extra.
   $form['extra'] = array(
@@ -495,7 +504,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['keywords'] = array(
     '#type' => 'textfield',
     '#title' => t('Tags'),
-    '#description' => t('Add multiple tags seperated by a ","'),
+    '#description' => t('Add multiple tags seperated by a ";"'),
   );
   
   // Links
@@ -760,8 +769,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
   
-  // => ADD CONTAINER FOR AJAX WRAPPER!!!
-  
   $contact_count = 0;
   // Add performer type.
   if ($contact_info) {
@@ -1004,32 +1011,83 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
  * Attach a new datetime element. 
  *
  */
-function culturefeed_entry_ui_attach_datetimes_elements(&$form, $i, $info = NULL) {
+function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL) {
   
-  $date = '';
-  $time = '';
+  $date = date("Y-m-d");
+  $hour = date("H:i");
+  $format = 'Y-m-d';
   
-  //TODO if info than fill in $date and $time
+  $form['basic']['when']['datetimes'][$i] = array(
+        '#type' => 'container',
+        '#prefix' => '<div id="datetime-child-' . $i .'-ajax-wrapper" class="datetime-child">',
+        '#suffix' => '</div>',
+  );
   
-
-  $form['basic']['when']['datetimes'][$i]['date'] = array(
-    '#type' => 'textfield',
+  $form['basic']['when']['datetimes'][$i]['begin'] = array(
+    '#type' => 'container',
+    '#prefix' => '<div id="datetime-child-'. $i .'-begin-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Start date'),
     '#default_value' => $date,
-    '#description' => t('Format') . ': ' . date('Y-m-d'),
+    '#date_format' => 'Y-m-d',
+    '#attributes' => array('class' => array('start-date')),
   );
   
-  if  ($i == 0) {
-    $form['basic']['when']['datetimes'][$i]['date']['#required'] = TRUE;
-    $form['basic']['when']['datetimes'][$i]['date']['#title'] = t('Date'); 
-  }
-
-  $form['basic']['when']['datetimes'][$i]['time'] = array(
-    '#type' => 'textfield',
-    '#default_value' => $time,
-    '#description' => t('Format') . ': 00:00',
+  $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
+    '#type' => 'date_select',
+    '#name' => 'begin_hour',
+    '#title' => t('Start time'),
+    '#default_value' => $hour,
+    '#date_format' => 'H:i',
+    '#date_increment' => 30,
   );
+  
+  /*$form['basic']['when']['datetimes'][$i] = array(
+    '#type' => 'submit',
+    '#name' => 'enddates_add_more',
+    '#value' => t('+ add end'),
+    '#attributes' => array('class' => array('add-more-link btn-link add-endtime-link')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'datetime-child'. $i .'-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('datetimes')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );*/
 
+}
 
+function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) {
+
+  $date = date("Y-m-d");
+  $hour = date("H:i");
+  $format = 'Y-m-d';
+  
+  $form['basic']['when']['datetimes'][$i]['end'] = array(
+    '#type' => 'container',
+    '#prefix' => '<div id="datetime-child-'. $i .'-end-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('End date'),
+    '#default_value' => $date,
+    '#date_format' => 'Y-m-d',
+  );
+  
+  $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
+    '#type' => 'date_select',
+    '#title' => t('End time'),
+    '#default_value' => $hour,
+    '#date_format' => 'H:i',
+    '#date_increment' => 30,
+  ); 
 }
 
 

@@ -82,3 +82,12 @@ input.add-more-link:hover {
   width: 20%;
   float: left;
 }
+
+#datetimes-ajax-wrapper .container-inline-date, #datetimes-ajax-wrapper .form-item {
+  float: left;
+  clear: none;
+}
+
+.datetime-child {
+  clear: left;
+}
