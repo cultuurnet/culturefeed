@@ -87,6 +87,8 @@ function culturefeed_create_user($cf_account) {
 
     // Save the fact that this is an external account for culturefeed.
     user_set_authmaps($account, array('authname_culturefeed' => $account->name));
+
+    module_invoke_all('culturefeed_user_create', $account, $cf_account);
   }
   catch (Exception $e) {
     $txn->rollback();
