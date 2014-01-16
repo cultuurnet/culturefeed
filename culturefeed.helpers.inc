@@ -44,7 +44,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
 /**
  * Create a new Drupal user account based on a fake Culturefeed User object
  *   $object has only the properties [cf_uid, nick]
- * @param unknown $cf_account
+ * @param CultureFeed_User $cf_account
  * @return boolean|Ambigous <A, boolean, (optional), stdClass>
  */
 function culturefeed_create_user($cf_account) {
