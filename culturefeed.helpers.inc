@@ -63,7 +63,6 @@ function culturefeed_create_user($cf_account) {
     $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
 
     // Create the user account.
-    $url = parse_url($GLOBALS['base_url']);
     $account = user_save(
       drupal_anonymous_user(),
       array(
