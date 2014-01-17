@@ -10,8 +10,8 @@
 function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
-  $contact_info = array();
-  $link_info = array();
+  $default_contacts = array();
+  $default_links = array();
   $performers_info = array();
   $price_trigger = FALSE;
   $category_defaults = array();
@@ -35,6 +35,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   $age = '';
   $age_category = 'everyone';
+  $default_short_description = '';
+  $default_long_description = '';
+  $keywords = '';
+  $default_links = array();
+  $default_links_reservation = array();
+  $default_price = '';
+  $default_free_price = 0;
+  $default_price_description = '';
+  $phone_contacts = array();
+  $mail_contacts = array();
 
   // Load all default values.
   if ($event) {
@@ -104,21 +114,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   	}
     
     // Default long description
-    $default_long_description = $event_details->getLongDescription();
-    if ($default_long_description) {
+    if ($event_details->getLongDescription()) {
+      $default_long_description = $event_details->getLongDescription();
 	  $form_state['#ld_needed'] = TRUE;
     }
     
     // Default keywords
-    $keywords = $event->getKeywords();
+    if ($event->getKeywords()) {
+      $keywords = $event->getKeywords();
+    }
     
     // Default mails, phones, urls.
     if ($info = $event->getContactInfo()) {
-      //$contact_info = $info->getMails();
-      //$contact_info = array_merge($contact_info, $info->getPhones());
-      //$contact_info = array_merge($contact_info, $info->getUrls());
-      $default_links = array();
-      $default_links_reservation = array();
       foreach ($info->getUrls() as $default_link ) {
         $default_links[] = $default_link->getUrl();
         $default_links_reservation[] = $default_link->isForReservations();
@@ -162,9 +169,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if ($info = $event->getContactInfo()) {
       $phone_info = $info->getPhones();
       $mail_info = $info->getMails();
-      
-      $phone_contacts = array();
-      $mail_contacts = array();
       foreach ($phone_info as $phone_contact) {
         $phone_contacts[] = array('phone', $phone_contact->getNumber());
       }
@@ -174,6 +178,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
       $default_contacts = array_merge($phone_contacts, $mail_contacts);
     }
+    
+    // Default performers
+    
 
   }
 
@@ -1205,6 +1212,7 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
 function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL) {
   
   $options = array(0 => 'Phone', 1 => 'Email');
+  $contact_type = 0;
   
   if ($info[0] == 'phone') {
     $contact_type = 0;
