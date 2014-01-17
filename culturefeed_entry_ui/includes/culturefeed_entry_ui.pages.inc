@@ -202,8 +202,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#required' => FALSE,
     '#size' => 10,
   );
+  
+  $form['basic']['basic']['citywrapper'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="citywrapper-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
 
-  $form['basic']['basic']['zip_code'] = array(
+  $form['basic']['basic']['citywrapper']['zip_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip Code'),
     '#required' => FALSE,
@@ -211,7 +218,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   //TODO: city suggestions don't work
-  $form['basic']['basic']['city'] = array(
+  $form['basic']['basic']['citywrapper']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
@@ -221,10 +228,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['basic']['basic']['country'] = array(
     '#type' => 'select',
+    '#name' => 'country_select',
     '#title' => t('Country'),
     '#options' => country_get_list(),
     '#default_value' => 'BE',
     '#required' => FALSE,
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'citywrapper-ajax-wrapper',
+      'effect' => 'fade',
+    ),
   );
 
   // Date  

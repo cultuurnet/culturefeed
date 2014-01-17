@@ -8,8 +8,16 @@
   clear: left;
 }
 
-.form-item-basic-house-number, .form-item-basic-city {
+.form-item-basic-house-number, .form-item-basic-citywrapper-city {
   margin-left: 30px;
+}
+
+#citywrapper-ajax-wrapper {
+  clear: left;
+}
+
+.form-item-country-select {
+  clear: left;
 }
 
 #datetimes-ajax-wrapper {
