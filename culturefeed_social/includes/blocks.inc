@@ -325,8 +325,8 @@ function culturefeed_social_block_my_activity_summary($account) {
     }
   }
 
-  $private = $account->culturefeed_uid == $GLOBALS['user']->uid ? TRUE : FALSE;
-
+  $view_own_activities = $account->uid == $GLOBALS['user']->uid ? TRUE : FALSE;
+  $private = FALSE;
   try {
     $totals = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
@@ -341,7 +341,7 @@ function culturefeed_social_block_my_activity_summary($account) {
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,
-      '#private' => $private,
+      '#private' => $view_own_activities,
       '#account_name' => $account->name,
     );
   }

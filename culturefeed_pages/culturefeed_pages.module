@@ -185,8 +185,8 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
     ),
 
-    'culturefeed_pages_follow_login_required_message' => array(
-      'variables' => array('page' => NULL),
+    'culturefeed_pages_login_required_message' => array(
+      'variables' => array('page' => NULL, 'action' => ''),
       'path' => $path,
       'file' => 'theme.inc',
     ),

@@ -360,7 +360,6 @@ function culturefeed_preprocess_culturefeed_userpoints_earned_overview(&$variabl
 /**
  * Theme the message when a user earned some points.
  */
-/*
 function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
 
   $activity = $variables['activity'];
@@ -380,7 +379,6 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
   return $message;
 
 }
-*/
 
 /**
  * Theme the message when a user lost some points.
