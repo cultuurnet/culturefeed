@@ -40,13 +40,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   if ($event) {
 
     $form['#event'] = $event;
-
-    // Default mails, phones, urls.
-    if ($info = $event->getContactInfo()) {
-      $contact_info = $info->getMails();
-      $contact_info = array_merge($contact_info, $info->getPhones());
-      $contact_info = array_merge($contact_info, $info->getUrls());
-    }
+    $event_details = $event->getDetails()->current();
 
     // Default categories.
     if ($event && ($categories = $event->getCategories())) {
@@ -103,7 +97,49 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
       $form_state['#opening_times_needed'] = $opening_times_needed;
     }
-
+    
+    // Default short description
+	$default_short_description = $event_details->getShortDescription();
+    
+    // Default long description
+    $default_long_description = $event_details->getLongDescription();
+    if ($default_long_description) {
+	  $form_state['#ld_needed'] = TRUE;
+    }
+    
+    // Default keywords
+    $keywords = $event->getKeywords();
+    
+    // Default mails, phones, urls.
+    if ($info = $event->getContactInfo()) {
+      //$contact_info = $info->getMails();
+      //$contact_info = array_merge($contact_info, $info->getPhones());
+      //$contact_info = array_merge($contact_info, $info->getUrls());
+      $default_links = array();
+      $default_links_reservation = array();
+      foreach ($info->getUrls() as $default_link ) {
+        $default_links[] = $default_link->getUrl();
+        $default_links_reservation[] = $default_link->isForReservations();
+      }
+    }
+    
+    // Default image
+    $default_image = $event_details->getMedia();
+    
+    // Default price.
+    if ($price = $event_details->getPrice()) {
+      $default_price = $price->getValue();
+      $default_free_price = 0;
+      $default_price_description = $price->getDescription();
+      if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
+        $default_price = '';
+	    $default_free_price = 1;
+      }
+      if ($default_price_description != '') {
+        $form_state['#price_needed'] = TRUE;
+      }
+    }
+    
     // Default age.
     $age = $event->getAgeFrom();
     if ($age) {
@@ -118,6 +154,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $age = '18+';
       }
 
+    }
+    
+    // Default contact info
+    if ($info = $event->getContactInfo()) {
+      $phone_info = $info->getPhones();
+      $mail_info = $info->getMails();
+      
+      $phone_contacts = array();
+      $mail_contacts = array();
+      foreach ($phone_info as $phone_contact) {
+        $phone_contacts[] = array('phone', $phone_contact->getNumber());
+      }
+      
+      foreach ($mail_info as $mail_contact) {
+	    $mail_contacts[] = array('E-mail', $mail_contact->getMailAddress());
+      }
+      $default_contacts = array_merge($phone_contacts, $mail_contacts);
     }
 
   }
@@ -485,8 +538,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textarea',
     '#name' => 'short_description',
     '#title' => t('Short description'),
-    '#default_value' => $event ? $event->getDetails()->current()
-        ->getShortDescription() : NULL,
+    '#default_value' => $default_short_description,
   );
 
   //Long Description
@@ -511,6 +563,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'text_format',
       '#title' => t('Long description'),
       '#rows' => 10,
+      '#default_value' => $default_long_description,
     );
   }
 
@@ -519,6 +572,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => t('Tags'),
     '#description' => t('Add multiple tags seperated by a ";"'),
+    '#default_value' => $keywords,
   );
 
   // Links
@@ -530,11 +584,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Links'),
   );
 
-  $links_count = 0;
-  // Add contact type selections.
-  if ($link_info) {
-    foreach ($link_info as $i => $info) {
-      culturefeed_entry_ui_attach_link_info_elements($form, $i, $info);
+  if($default_links) {
+    $links_count = count($default_links);
+  } else {
+    $links_count = 0;
+  }
+  // Add link type selections.
+  if ($default_links) {
+    foreach ($default_links as $i => $info) {
+      culturefeed_entry_ui_attach_link_info_elements($form, $i, $info, $default_links_reservation[$i]);
       $links_count++;
     }
   }
@@ -589,6 +647,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'managed_file',
     '#name' => 'image_upload',
     '#title' => t('Image upload'),
+    //'#default_value' => $default_image,
     '#description' => t('Allowed extensions: gif png jpg jpeg'),
     '#upload_location' => 'public://uploads/',
     '#upload_validators' => array(
@@ -617,7 +676,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#name' => 'price_amount',
     '#title' => t('Price'),
-    //'#prefix' => '<span class="price-prefix">€</span>',
+    '#default_value' => $default_price,
     '#attributes' => array(
       'class' => array(
         'price-amount'
@@ -639,6 +698,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'checkbox',
       '#name' => 'price_free',
       '#title' => t('Free event'),
+      '#default_value' => $default_free_price,
       '#states' => array(
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
@@ -677,6 +737,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['extra']['price']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
+      '#default_value' => $default_price_description,
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
@@ -784,10 +845,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
   
-  $contact_count = 0;
-  // Add performer type.
-  if ($contact_info) {
-    foreach ($contact_info as $i => $info) {
+  if($default_contacts) {
+    $contact_count = count($default_contacts);
+  } else {
+	$contact_count = 0;
+  }
+  // Add contacts type.
+  if ($default_contacts) {
+    foreach ($default_contacts as $i => $info) {
       culturefeed_entry_ui_attach_contacts_elements($form, $i, $info);
       $contact_count++;
     }
@@ -1136,17 +1201,25 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
  *
  */
 function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL) {
-
-  $text = '';
+  
+  $options = array(0 => 'Phone', 1 => 'Email');
+  
+  if ($info[0] == 'phone') {
+    $contact_type = 0;
+  }
+  
+  if ($info[0] == 'E-mail') {
+	$contact_type = 1;
+  }
+  
+  $contact = $info[1];
 
   $form['extra']['contacts']['wrapper'][$i]['channel'] = array(
     '#type' => 'select',
     '#title' => t('Contact'),
     '#title_display' => 'invisible',
-    '#options' => array(
-      0 => t('Email'),
-      1 => t('Phone'),
-    ),
+    '#options' => $options,
+    '#default_value' => $contact_type,
     '#attributes' => array('class' => array('channel-field')),
   );
 
@@ -1154,7 +1227,7 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
     '#type' => 'textfield',
     '#title' => t('Input'),
     '#title_display' => 'invisible',
-    '#default_value' => $text,
+    '#default_value' => $contact,
     '#attributes' => array('class' => array('channel-input-field')),
   );
 
@@ -1189,22 +1262,19 @@ function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NUL
  * Attach a new link element.
  *
  */
-function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL) {
-
-  $text = '';
-  $reservation = FALSE;
+function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL, $reserve = NULL) {
 
   $form['extra']['links'][$i]['URL'] = array(
     '#type' => 'textfield',
     '#title' => t('Link'),
-    '#default_value' => $text,
+    '#default_value' => $info,
     '#attributes' => array('class' => array('link-field')),
   );
 
   $form['extra']['links'][$i]['reservation'] = array(
     '#type' => 'checkbox',
     '#title' => t('for reservation'),
-    '#default_value' => $reservation,
+    '#default_value' => $reserve,
     '#attributes' => array('class' => array('reservation-checkbox')),
   );
 
