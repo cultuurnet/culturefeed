@@ -1046,7 +1046,32 @@ function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL
     '#date_increment' => 30,
   );
   
-  /*$form['basic']['when']['datetimes'][$i] = array(
+  culturefeed_entry_ui_attach_enddate_elements($form, $i, $info);
+  
+  /*$enddates = array();
+  $enddate_count = 0;
+
+  if ($enddates) {
+    foreach ($enddates as $j => $jinfo) {
+      culturefeed_entry_ui_attach_enddate_elements($form, $j, $jinfo);
+      $enddate_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_enddate_elements($form, 0);
+    
+    $enddate_count++;
+  } 
+  
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#enddates_needed'])) {
+
+    for (; $enddate_count < $form_state['#enddates_needed']; $enddate_count++) {
+  	  culturefeed_entry_ui_attach_enddate_elements($form, $enddate_count);
+    }
+  }
+  
+  $form['basic']['when']['datetimes'][$i] = array(
     '#type' => 'submit',
     '#name' => 'enddates_add_more',
     '#value' => t('+ add end'),
