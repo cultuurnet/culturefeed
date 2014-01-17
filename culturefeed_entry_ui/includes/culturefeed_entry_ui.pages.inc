@@ -180,7 +180,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
     
     // Default performers
-    
+    if ($info = $event_details->getPerformers()) {
+      foreach ($info as $performer) {
+	    $performers_info[] = array($performer->getRole(), $performer->getLabel());
+      }
+    }
 
   }
 
@@ -905,8 +909,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="performers-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-
-  $performers_count = 0;
+  
+  if ($performers_info) {
+    $performers_count = count($performers_info);
+  } else {
+	$performers_count = 0;
+  }
   // Add performer type.
   if ($performers_info) {
     foreach ($performers_info as $i => $info) {
@@ -1249,20 +1257,18 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
  */
 function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NULL) {
 
-  $text = '';
-
   $form['extra']['performers']['wrapper'][$i]['performer'] = array(
     '#type' => 'textfield',
     '#title' => t('Performer'),
     '#display_title' => FALSE,
-    '#default_value' => $text,
+    '#default_value' => $info[1],
     '#attributes' => array('class' => array('performer-field')),
   );
 
   $form['extra']['performers']['wrapper'][$i]['role'] = array(
     '#type' => 'textfield',
     '#title' => t('Role'),
-    '#default_value' => $text,
+    '#default_value' => $info[0],
     '#attributes' => array('class' => array('role-field')),
   );
 
