@@ -99,7 +99,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
     
     // Default short description
-	$default_short_description = $event_details->getShortDescription();
+	if ($event_details->getShortDescription()) {
+  	  $default_short_description = $event_details->getShortDescription();
+  	}
     
     // Default long description
     $default_long_description = $event_details->getLongDescription();
