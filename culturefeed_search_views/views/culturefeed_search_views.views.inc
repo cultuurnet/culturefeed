@@ -86,6 +86,16 @@ function culturefeed_search_views_data() {
     ),
   );
 
+  // Created by field.
+  $data['cdb_items']['createdbycurrentuser'] = array(
+    'title' => t('Created by current user'),
+    'help' => t('Perform a search created by current user'),
+    'filter' => array(
+      'handler' =>
+        'views_handler_filter_culturefeed_search_createdbycurrentuser',
+    ),
+  );
+
   // Filter on location name.
   $data['cdb_items']['location_label'] = array(
     'title' => t('Location name'),
