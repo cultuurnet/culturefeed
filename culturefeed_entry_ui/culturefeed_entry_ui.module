@@ -324,14 +324,8 @@ function culturefeed_entry_ui_views_api() {
   );
 }
 
-function culturefeed_entry_ui_edit_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity) {
+function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity, $op) {
   if ($entity->getType() == 'event') {
-    return "culturefeed_entry_ui/event/{$entity->getId()}/edit";
-  }
-}
-
-function culturefeed_entry_ui_tags_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity) {
-  if ($entity->getType() == 'event') {
-    return "culturefeed_entry_ui/event/{$entity->getId()}/tags";
+    return "culturefeed_entry_ui/event/{$entity->getId()}/{$op}";
   }
 }

@@ -14,24 +14,38 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
    * {@inheritdoc}
    */
   function render(ActivityStatsExtendedEntity $extended_entity) {
-
-    $type = $extended_entity->getType();
-
     $links = array();
 
-    $links['view'] = culturefeed_search_detail_l($type, $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()), t('View'));
+    if ($extended_entity->getType() === 'event') {
+      $ops = array(
+        'edit' => array(
+          'permission' => 'edit culturefeed events',
+          'title' => t('Edit'),
+        ),
+        'tags' => array(
+          'permission' => 'manage object tags',
+          'title' => t('Tags'),
+        ),
+        'delete' => array(
+          'permission' => 'delete culturefeed events',
+          'title' => t('Delete'),
+        )
+      );
 
-    $tags_path = culturefeed_entry_ui_tags_path($extended_entity);
-    if ($tags_path && user_access('manage object tags')) {
-      $links['tags'] = l(t('Tags'), $tags_path);
+      foreach ($ops as $op => $op_details) {
+        $path = culturefeed_entry_ui_entity_path($extended_entity, $op);
+        if ($path && user_access($op_details['permission'])) {
+          $links[$op] = l($op_details['title'], $path);
+        }
+      }
     }
 
-    $edit_path = culturefeed_entry_ui_edit_path($extended_entity);
-    if ($edit_path && user_access('edit culturefeed events')) {
-      $links['edit'] = l(t('Edit'), $edit_path);
+    if (!empty($links)) {
+      return theme('item_list', array('items' => $links));
     }
-
-    return theme('item_list', array('items' => $links));
+    else {
+      return '';
+    }
   }
 
 }
