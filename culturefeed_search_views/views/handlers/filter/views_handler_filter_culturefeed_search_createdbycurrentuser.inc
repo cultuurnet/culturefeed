@@ -43,10 +43,6 @@ class views_handler_filter_culturefeed_search_createdbycurrentuser extends
    * Get the value to query.
    */
   function getValue() {
-    global $user;
-
-    return '';
-
     if (culturefeed_is_culturefeed_user()) {
       $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
       return $culturefeed_user->nick;
