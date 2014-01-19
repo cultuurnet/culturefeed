@@ -313,3 +313,25 @@ function culturefeed_entry_ui_get_preferred_language() {
 
   return $language;
 }
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_entry_ui_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module','culturefeed_entry_ui') . '/views',
+  );
+}
+
+function culturefeed_entry_ui_edit_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity) {
+  if ($entity->getType() == 'event') {
+    return "culturefeed_entry_ui/event/{$entity->getId()}/edit";
+  }
+}
+
+function culturefeed_entry_ui_tags_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity) {
+  if ($entity->getType() == 'event') {
+    return "culturefeed_entry_ui/event/{$entity->getId()}/tags";
+  }
+}
