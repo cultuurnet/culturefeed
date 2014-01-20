@@ -296,8 +296,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="basic-wrapper">',
     '#suffix' => '</div>',
   );
-
+  
   $form['basic']['basic']['location'] = array(
+    '#prefix' => '<div id="location-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#type' => 'container',
+  );
+
+  $form['basic']['basic']['location']['actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
@@ -305,6 +311,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $default_location,
     '#size' => 80,
   );
+  
+  $form['basic']['basic']['location']['actor_id'] = array(
+      '#id' => 'actor_id',
+      '#type' => 'hidden',
+      '#default_value' => '',
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'location-ajax-wrapper',
+        'event' => 'eventsearch',
+      ),
+      '#attributes' => array(
+        'id' => 'actor_id',
+      ),
+    );
 
   $form['basic']['basic']['location_title'] = array(
     '#type' => 'textfield',
@@ -1187,6 +1207,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   //dsm($form);
   return $form;
 
