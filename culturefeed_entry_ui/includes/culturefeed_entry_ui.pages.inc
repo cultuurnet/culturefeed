@@ -37,6 +37,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $age_category = 'everyone';
   $default_short_description = '';
   $default_long_description = '';
+  $default_image = '';
+  $is_copyright = FALSE;
   $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
@@ -45,6 +47,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $default_price_description = '';
   $phone_contacts = array();
   $mail_contacts = array();
+  $is_private = FALSE;
+  
+  //language vars
+  $fr_title = '';
+  $fr_short_description = '';
+  $fr_long_description = '';
+  
+  $en_title = '';
+  $en_short_description = '';
+  $en_long_description = '';
+  
+  $de_title = '';
+  $de_short_description = '';
+  $de_long_description = '';
 
   // Load all default values.
   if ($event) {
@@ -122,6 +138,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default keywords
     if ($event->getKeywords()) {
       $keywords = $event->getKeywords();
+      $keywords = implode(';', $keywords);
     }
 
     // Default mails, phones, urls.
@@ -133,8 +150,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default image
-    $default_image = $event_details->getMedia();
-
+    if($get_media = $event_details->getMedia()->byMediaType('photo')){
+      $form_state['#photo_exists'] = TRUE;
+      $default_image = $get_media->current()->getHLink();
+      $copyright_value = $get_media->current()->getCopyright();
+    }
+        
+    if($copyright_value) {
+	  $is_copyright = TRUE;
+    }
+    
     // Default price.
     if ($price = $event_details->getPrice()) {
       $default_price = $price->getValue();
@@ -187,6 +212,35 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
           $performer->getLabel()
         );
       }
+    }
+    
+    // Default Target group
+    if($info = $event->isPrivate()) {
+	  $is_private = $event->isPrivate();
+    }
+    
+    // Default languages
+    if ($fr_info = $event->getDetails()->getDetailByLanguage('fr')){
+      $fr_title = $fr_info ->getTitle();
+      $fr_short_description = $fr_info->getShortDescription();
+      $fr_long_description = $fr_info->getLongDescription();
+    }
+    
+    if ($en_info = $event->getDetails()->getDetailByLanguage('en')){
+      $en_title = $en_info ->getTitle();
+      $en_short_description = $en_info->getShortDescription();
+      $en_long_description = $en_info->getLongDescription();
+    }
+    
+    if ($de_info = $event->getDetails()->getDetailByLanguage('de')){
+      $de_title = $de_info ->getTitle();
+      $de_short_description = $de_info->getShortDescription();
+      $de_long_description = $de_info->getLongDescription();
+    }
+    
+    // Default publication
+    if ($info = $event->getPublicationDate()) {
+	  $publication_date = $event->getPublicationDate();
     }
 
   }
@@ -648,38 +702,54 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="photo-ajax-wrapper">',
     '#suffix' => '</div>',
     '#title' => t('Image'),
-
   );
+  
+  dsm($form_state['#photo_exists']);
 
-  /*$form['extra']['photo']['placeholder'] = array (
-    '#type' => 'textfield',
-    '#title' => t('Image'),
-    '#attributes' => array(
-      'placeholder' => array(
-        'placeholder for file uploader'
+  if(!isset($form_state['#photo_exists'])) {
+    $form['extra']['photo']['upload'] = array(
+      '#type' => 'managed_file',
+      '#name' => 'image_upload',
+      '#title' => t('Image upload'),
+      '#description' => t('Allowed extensions: gif png jpg jpeg'),
+      '#upload_location' => 'public://uploads/',
+      '#upload_validators' => array(
+        'file_validate_extensions' => array('gif png jpg jpeg'),
+        // Pass the maximum file size in bytes
+        'file_validate_size' => array(1024 * 1024 * 1024),
       ),
-    ),
-  );*/
-
-
-  $form['extra']['photo']['upload'] = array(
-    '#type' => 'managed_file',
-    '#name' => 'image_upload',
-    '#title' => t('Image upload'),
-    //'#default_value' => $default_image,
-    '#description' => t('Allowed extensions: gif png jpg jpeg'),
-    '#upload_location' => 'public://uploads/',
-    '#upload_validators' => array(
-      'file_validate_extensions' => array('gif png jpg jpeg'),
-      // Pass the maximum file size in bytes
-      'file_validate_size' => array(1024 * 1024 * 1024),
-    ),
-    //'#submit' => array('culturefeed_entry_ui_add_more_submit'),
-  );
+    );
+    
+  } else {
+    $form['extra']['photo']['photo_exists'] = array(
+      '#type' => 'container',
+      '#prefix' => '<div id="photo-exists-wrapper"><img src="' . $default_image .'" />',
+      '#suffix' => '</div>',
+    );
+    
+    $form['extra']['photo']['photo_remove'] = array(
+      '#type' => 'submit',
+      '#name' => 'photo_remove',
+      '#value' => t('Remove photo'),
+      '#attributes' => array(
+        'style' => array(
+          'display:block; clear:left;'
+        ),
+      ),
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'photo-ajax-wrapper',
+        'effect' => 'fade',
+      ),
+      '#limit_validation_errors' => array(),
+      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+    );
+  }
 
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
     '#title' => t('I agree to the <a href="#">general conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image through UiTdatabank.'),
+    '#default_value' => $is_copyright,
   );
 
   // Price  
@@ -967,6 +1037,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'checkbox',
     '#title' => t('Entrance'),
     '#description' => t('Only for members'),
+    '#default_value' => $is_private,
   );
 
   $form['extra']['target_group']['spoken'] = array(
@@ -1016,19 +1087,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['english']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#name' => 'english_title',
+    '#default_value' => $en_title,
   );
 
   $form['extra']['translations']['english']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#name' => 'english_short_description',
+    '#default_value' => $en_short_description,
   );
 
   $form['extra']['translations']['english']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
-    '#name' => 'english_long_description',
+    '#default_value' => $en_long_description,
   );
 
   /* french */
@@ -1042,19 +1113,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['french']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#name' => 'french_title',
+    '#default_value' => $fr_title,
   );
 
   $form['extra']['translations']['french']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#name' => 'french_short_description',
+    '#default_value' => $fr_short_description,
   );
 
   $form['extra']['translations']['french']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
-    '#name' => 'french_long_description',
+    '#default_value' => $fr_long_description,
   );
 
   /* german */
@@ -1068,19 +1139,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['german']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#name' => 'german_title',
+    '#default_value' => $de_title,
   );
 
   $form['extra']['translations']['german']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#name' => 'german_short_description',
+    '#default_value' => $de_short_description,
   );
 
   $form['extra']['translations']['german']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
-    '#name' => 'german_long_description',
+    '#default_value' => $de_long_description,
   );
 
   //Publication & Private
