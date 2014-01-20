@@ -34,6 +34,11 @@ input.form-checkbox {
   margin-left: 5px;
 }
 
+#photo-ajax-wrapper img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
 .price-prefix {
   float: left;
   margin-right: 5px;
