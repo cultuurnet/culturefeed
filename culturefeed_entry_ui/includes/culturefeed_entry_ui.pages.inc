@@ -1484,10 +1484,10 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['basic']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if (empty($values['basic']['zip_code'])) {
+    if (empty($values['basic']['citywrapper']['zip_code'])) {
       form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
     }
-    if (empty($values['basic']['city'])) {
+    if (empty($values['basic']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
     $location = NULL;
@@ -1538,6 +1538,47 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
   $values = $form_state['values'];
+  $performerList = new CultureFeed_Cdb_Data_PerformerList();
+  $mails = array();
+  $phones = array();
+  $links = array();
+  $performers_count = 0;
+
+
+  foreach ($values['wrapper'] as $extra) {
+    if (is_array($extra)) {
+      // Performer
+      if ($extra['performer'] || $extra['role']) {
+        $performer = new CultureFeed_Cdb_Data_Performer();
+        $performer->setLabel($extra['performer']);
+        $performer->setRole($extra['role']);
+        $performerList->add($performer);
+        $performers_count++;
+      }
+
+      // Contacts
+      if ($extra['channel_input']) {
+
+        switch ($extra['channel']) {
+          case '1':
+            $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
+            array_push($mails, $mail);
+            break;
+          case '0':
+            $phone = new CultureFeed_Cdb_Data_Phone($extra['channel_input'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, FALSE);
+            array_push($phones, $phone);
+            break;
+        }
+      }
+    }
+  }
+
+  foreach ($values['links'] as $link_data) {
+    if ($link_data['URL']) {
+      $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
+      array_push($links, $link);
+    }
+  }
 
   $update = FALSE;
   if (isset($form['#event'])) {
@@ -1549,8 +1590,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  if ($values['publication_date']) {
-    $event->setPublicationDate($values['publication_date']);
+  if ($values['wrapper']['date']) {
+    $event->setPublicationDate($values['wrapper']['date']);
   }
 
   // Age.
@@ -1578,15 +1619,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
   */
 
-  // Categories TODO:Remove Hard coded values
-  //$category_values += $values['doen'];
-  //$category_values += $values['bezoeken'];
+  // Categories
   $category_options = array();
 
-  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories($values['what']);
-  //var_dump($category_options);
-  //$category_options += $form['what']['doen']['#options'];
-  //$category_options += $form['what']['bezoeken']['#options'];
+  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
 
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
@@ -1602,10 +1638,23 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if (!empty($values['short_description'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  if ($values['price_amount']) {
-    $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
-    //$price->setDescription();
+  // Price
+  if ($values['price_free']) {
+    $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
+  }
+  else {
+    if ($values['price_amount']) {
+      $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
+      if ($values['price']['extra_info']) {
+        $price->setDescription($values['price']['extra_info']);
+      }
+      $detail->setPrice($price);
+    }
+  }
+  // Performers
+  if ($performers_count) {
+    $detail->setPerformers($performerList);
   }
   $detail->setLanguage(culturefeed_entry_ui_get_preferred_language());
 
@@ -1631,8 +1680,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
     $physical_address->setStreet($values['basic']['street']);
     $physical_address->setHouseNumber($values['basic']['house_number']);
-    $physical_address->setCity($values['basic']['city']);
-    $physical_address->setZip($values['basic']['zip_code']);
+    $physical_address->setCity($values['basic']['citywrapper']['city']);
+    $physical_address->setZip($values['basic']['citywrapper']['zip_code']);
     $physical_address->setCountry($values['basic']['country']);
     $address->setLabel($values['basic']['location_title']);
     $address->setPhysicalAddress($physical_address);
@@ -1656,32 +1705,15 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
   $contact_object->addAddress(new CultureFeed_Cdb_Data_Address($physical_address));
 
-  /*
-  // TODO replace $values['contacts']
-  if($values['contacts']) {
-    foreach ($values['contacts'] as $contact) {
-  
-      if (!empty($contact['text'])) {
-        switch ($contact['type']) {
-  
-          case 'website':
-            $contact_object->addUrl(new CultureFeed_Cdb_Data_Url($contact['text'], FALSE, $contact['reservation']));
-            break;
-  
-          case 'email':
-            $contact_object->addMail(new CultureFeed_Cdb_Data_Mail($contact['text'], FALSE, $contact['reservation']));
-            break;
-  
-          case 'phone':
-            $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
-            break;
-  
-        }
-      }
-  
-    }
-  }*/
-
+  foreach ($mails as $mail) {
+    $contact_object->addMail($mail);
+  }
+  foreach ($phones as $phone) {
+    $contact_object->addPhone($phone);
+  }
+  foreach ($links as $link) {
+    $contact_object->addUrl($link);
+  }
 
   $event->setContactInfo($contact_object);
 
@@ -1691,11 +1723,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     foreach ($keywords as $keyword) {
       $event->addKeyword($keyword);
     }
-  }
-
-  // Age
-  if ($values['age']) {
-    $event->setAgeFrom($values['age']);
   }
 
   try {
@@ -1726,13 +1753,16 @@ function _culturefeed_entry_ui_event_save_timestamps(&$event, $values) {
   foreach ($values['datetimes'] as $timestamp) {
 
     // Empty start dates are ignored.
-    if (empty($timestamp['date'])) {
+    if (empty($timestamp['begin']['date'])) {
       continue;
     }
 
-    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['date']);
-    if (!empty($timestamp['time'])) {
-      $timestamp_object->setStartTime($timestamp['time']);
+    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['begin']['date']);
+    if (!empty($timestamp['begin']['hour'])) {
+      $timestamp_object->setStartTime($timestamp['begin']['hour'].':00');
+    }
+    if (!empty($timestamp['end']['hour'])) {
+      $timestamp_object->setEndTime($timestamp['end']['hour'].':00');
     }
     $calendar->add($timestamp_object);
   }
