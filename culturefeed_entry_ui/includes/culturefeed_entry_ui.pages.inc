@@ -308,7 +308,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
   );
 
-  $form['basic']['location']['actor']['actor_label'] = array(
+  $form['basic']['location']['actor']['location_actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
@@ -872,7 +872,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
   );
 
-  $form['extra']['organiser']['actor']['actor_label'] = array(
+  $form['extra']['organiser']['actor']['organiser_actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Organisation'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
