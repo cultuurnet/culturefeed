@@ -16,8 +16,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $price_trigger = FALSE;
   $category_defaults = array();
   $eventtype_default = '';
-  $default_location = '';
-  $default_organiser = '';
+  $default_location_label = '';
+  $default_location_id = '';
+  $default_organiser_label = '';
+  $default_organiser_id = ''
   $publication_date = '';
   $when = 'one_day';
   $timestamps = array();
@@ -63,12 +65,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default location.
     if ($location = $event->getLocation()) {
       $address = $location->getAddress()->getPhysicalAddress();
-      $default_location = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
+      $default_location_label = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
+      $default_location_id = $location->getCdbId();
+
     }
 
     // Default organiser.
     if ($organiser = $event->getOrganiser()) {
-      $default_organiser = $organiser->getLabel();
+      $default_organiser_label = $organiser->getLabel();
+      $default_organiser_id = $location->getCdbId();
     }
 
     // Default calendar type, start / end date, weekscheme data.
@@ -185,14 +190,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
-    '#default_value' => $default_location,
+    '#default_value' => $default_location_label,
     '#size' => 80,
   );
   
   $form['basic']['location']['actor']['location_actor_id'] = array(
     '#id' => 'location_actor_id',
     '#type' => 'hidden',
-    '#default_value' => '',
+    '#default_value' => $default_location_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'location-ajax-wrapper',
@@ -711,13 +716,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Organisation'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
-    '#default_value' => $default_organiser,
+    '#default_value' => $default_organiser_label,
   );
   
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
     '#type' => 'hidden',
-    '#default_value' => '',
+    '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'organiser-actor-ajax-wrapper',
