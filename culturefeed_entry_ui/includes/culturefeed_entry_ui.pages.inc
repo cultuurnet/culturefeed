@@ -173,8 +173,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="basic-wrapper">',
     '#suffix' => '</div>',
   );
-
+  
   $form['basic']['basic']['location'] = array(
+    '#prefix' => '<div id="location-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#type' => 'container',
+  );
+
+  $form['basic']['basic']['location']['actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
@@ -182,6 +188,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $default_location,
     '#size' => 80,
   );
+  
+  $form['basic']['basic']['location']['actor_id'] = array(
+      '#id' => 'actor_id',
+      '#type' => 'hidden',
+      '#default_value' => '',
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'location-ajax-wrapper',
+        'event' => 'eventsearch',
+      ),
+      '#attributes' => array(
+        'id' => 'actor_id',
+      ),
+    );
 
   $form['basic']['basic']['location_title'] = array(
     '#type' => 'textfield',
@@ -1486,8 +1506,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   //$category_values += $values['bezoeken'];
   $category_options = array();
 
-  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories()[$values['what']];
-  var_dump($category_options);
+  //$category_options[$values['what']] = culturefeed_search_get_eventtype_categories()[$values['what']];
+  //var_dump($category_options);
   //$category_options += $form['what']['doen']['#options'];
   //$category_options += $form['what']['bezoeken']['#options'];
 

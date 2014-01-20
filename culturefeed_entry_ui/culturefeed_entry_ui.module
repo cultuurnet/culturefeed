@@ -297,6 +297,9 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
     case 'contacts_add_more':
       return $form['extra']['contacts']['wrapper'];
+      
+    case 'basic[location][actor_id]':
+      return $form['basic']['basic']['location'];
   }
 
 }

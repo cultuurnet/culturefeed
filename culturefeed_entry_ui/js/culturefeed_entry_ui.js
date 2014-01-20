@@ -17,10 +17,10 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
       if ($(this.selected).data('autocompleteTitle') != undefined) {
         this.input.value = $(this.selected).data('autocompleteTitle');
-         $('#search_event_id').val($(this.selected).data('autocompleteValue'));
+         $('#actor_id').val($(this.selected).data('autocompleteValue'));
 
          // Trigger eventsearch event to trigger ajax post.
-         var $input = $('#search_event_id');
+         var $input = $('#actor_id');
          $input.trigger('eventsearch');
       }
       else {
