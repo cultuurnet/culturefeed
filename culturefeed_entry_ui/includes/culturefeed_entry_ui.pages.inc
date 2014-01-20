@@ -134,7 +134,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $default_long_description = $event_details->getLongDescription();
 	  $form_state['#ld_needed'] = TRUE;
     }
-    var_dump($event);
     // Default keywords
     if ($event->getKeywords()) {
       $keywords = $event->getKeywords();
