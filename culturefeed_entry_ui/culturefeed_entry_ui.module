@@ -270,8 +270,6 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
-  dsm($form_state['input']['_triggering_element_name']);
-
   switch ($form_state['input']['_triggering_element_name']) {
 
     case 'begindates_add_more':

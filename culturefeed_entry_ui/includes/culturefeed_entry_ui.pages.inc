@@ -19,7 +19,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $default_location_label = '';
   $default_location_id = '';
   $default_organiser_label = '';
-  $default_organiser_id = ''
+  $default_organiser_id = '';
   $publication_date = '';
   $when = 'one_day';
   $timestamps = array();
@@ -728,8 +728,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Image'),
   );
-  
-  dsm($form_state['#photo_exists']);
 
   if(!isset($form_state['#photo_exists'])) {
     $form['extra']['photo']['upload'] = array(
