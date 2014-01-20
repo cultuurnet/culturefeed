@@ -69,6 +69,11 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['fields']['when']['field'] = 'when';
   $handler->display->display_options['fields']['when']['label'] = '';
   $handler->display->display_options['fields']['when']['element_label_colon'] = FALSE;
+  /* Field: UDB items: Last updated */
+  $handler->display->display_options['fields']['lastupdated']['id'] = 'lastupdated';
+  $handler->display->display_options['fields']['lastupdated']['table'] = 'cdb_items';
+  $handler->display->display_options['fields']['lastupdated']['field'] = 'lastupdated';
+  $handler->display->display_options['fields']['lastupdated']['date_format'] = 'short';
   /* Field: UDB items: Operations */
   $handler->display->display_options['fields']['operations']['id'] = 'operations';
   $handler->display->display_options['fields']['operations']['table'] = 'cdb_items';
@@ -99,6 +104,7 @@ function culturefeed_entry_ui_views_default_views() {
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Last updated'),
     t('Block'),
   );
 

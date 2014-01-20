@@ -209,6 +209,14 @@ function culturefeed_search_views_data() {
     ),
   );
 
+  $data['cdb_items']['lastupdated'] = array(
+    'title' => t('Last updated'),
+    'help' => t('Last updated date/time of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_lastupdated',
+    ),
+  );
+
   // Sorts
   $data['cdb_items']['recommend_sort'] = array(
     'title' => t('Total recommend'),
