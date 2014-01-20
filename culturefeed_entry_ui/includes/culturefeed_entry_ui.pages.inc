@@ -167,20 +167,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
   }
 
-  $form['basic']['basic'] = array(
+  $form['basic']['location'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
     '#prefix' => '<div id="basic-wrapper">',
     '#suffix' => '</div>',
   );
   
-  $form['basic']['basic']['location'] = array(
+  $form['basic']['location']['actor'] = array(
     '#prefix' => '<div id="location-ajax-wrapper">',
     '#suffix' => '</div>',
     '#type' => 'container',
   );
 
-  $form['basic']['basic']['location']['actor_label'] = array(
+  $form['basic']['location']['actor']['actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
@@ -189,50 +189,49 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#size' => 80,
   );
   
-  $form['basic']['basic']['location']['actor_id'] = array(
-      '#id' => 'actor_id',
-      '#type' => 'hidden',
-      '#default_value' => '',
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'location-ajax-wrapper',
-        'event' => 'eventsearch',
-      ),
-      '#attributes' => array(
-        'id' => 'actor_id',
-      ),
-    );
+  $form['basic']['location']['actor']['location_actor_id'] = array(
+    '#id' => 'location_actor_id',
+    '#type' => 'hidden',
+    '#default_value' => '',
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'location-ajax-wrapper',
+      'event' => 'location_eventsearch',
+    ),
+    '#attributes' => array(
+      'id' => 'location_actor_id',
+    ),
+  );
 
-  $form['basic']['basic']['location_title'] = array(
+  $form['basic']['location']['location_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Location Title'),
     '#required' => FALSE,
     '#size' => 80,
   );
 
-  $form['basic']['basic']['street'] = array(
+  $form['basic']['location']['street'] = array(
     '#type' => 'textfield',
     '#title' => t('Street'),
     '#required' => FALSE,
     '#size' => 60,
   );
 
-  $form['basic']['basic']['house_number'] = array(
+  $form['basic']['location']['house_number'] = array(
     '#type' => 'textfield',
     '#title' => t('House Number'),
     '#required' => FALSE,
     '#size' => 10,
   );
 
-  $form['basic']['basic']['zip_code'] = array(
+  $form['basic']['location']['zip_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip Code'),
     '#required' => FALSE,
     '#size' => 10,
   );
 
-  //TODO: city suggestions don't work
-  $form['basic']['basic']['city'] = array(
+  $form['basic']['location']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
@@ -240,7 +239,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#size' => 60,
   );
 
-  $form['basic']['basic']['country'] = array(
+  $form['basic']['location']['country'] = array(
     '#type' => 'select',
     '#title' => t('Country'),
     '#options' => country_get_list(),
@@ -700,13 +699,33 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="organiser-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-
+  
   $form['extra']['organiser']['actor'] = array(
+    '#prefix' => '<div id="organiser-actor-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#type' => 'container',
+  );
+
+  $form['extra']['organiser']['actor']['actor_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Organisation'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
     '#default_value' => $default_organiser,
+  );
+  
+  $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
+    '#id' => 'organiser_actor_id',
+    '#type' => 'hidden',
+    '#default_value' => '',
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'organiser-actor-ajax-wrapper',
+      'event' => 'organiser_eventsearch',
+    ),
+    '#attributes' => array(
+      'id' => 'organiser_actor_id',
+    ),
   );
 
   if (!isset($form_state['#actor_needed'])) {

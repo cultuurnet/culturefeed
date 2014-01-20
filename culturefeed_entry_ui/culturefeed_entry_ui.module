@@ -266,6 +266,8 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
+  dsm($form_state['input']['_triggering_element_name']);
+
   switch ($form_state['input']['_triggering_element_name']) {
 
     case 'begindates_add_more':
@@ -298,8 +300,12 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case 'contacts_add_more':
       return $form['extra']['contacts']['wrapper'];
       
-    case 'basic[location][actor_id]':
-      return $form['basic']['basic']['location'];
+    case 'location[actor][location_actor_id]':
+      return $form['basic']['location']['actor'];
+      
+    case 'organiser[actor][location_actor_id]':
+      return $form['extra']['organiser']['actor'];
+       
   }
 
 }

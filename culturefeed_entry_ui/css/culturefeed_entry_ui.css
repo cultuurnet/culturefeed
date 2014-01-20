@@ -4,11 +4,11 @@
   float: left;
 }
 
-.form-item-basic-street, .form-item-basic-zip-code, .form-item-basic-country {
+.form-item-location-street, .form-item-location-zip-code, .form-item-location-country {
   clear: left;
 }
 
-.form-item-basic-house-number, .form-item-basic-city {
+.form-item-location-house-number, .form-item-location-city {
   margin-left: 30px;
 }
 

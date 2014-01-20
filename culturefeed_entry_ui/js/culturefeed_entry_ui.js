@@ -17,11 +17,14 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
       if ($(this.selected).data('autocompleteTitle') != undefined) {
         this.input.value = $(this.selected).data('autocompleteTitle');
-         $('#actor_id').val($(this.selected).data('autocompleteValue'));
+         $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
+         $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
 
          // Trigger eventsearch event to trigger ajax post.
-         var $input = $('#actor_id');
-         $input.trigger('eventsearch');
+         var $input = $('#location_actor_id');
+         var $input = $('#organiser_actor_id');
+         $input.trigger('location_eventsearch');
+         $input.trigger('organiser_eventsearch');
       }
       else {
         this.input.value = $(this.selected).data('autocompleteValue');
