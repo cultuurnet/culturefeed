@@ -1744,6 +1744,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
+  // Members
+  $event->setPrivate($values['entrance']);
 
   // Translations English
   if ($values['english_title'] || $values['english_short_description'] || $values['english_long_description']) {
