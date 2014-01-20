@@ -22,6 +22,11 @@ function culturefeed_init() {
   }
 
   drupal_add_js(array('culturefeed' => array('isCultureFeedUser' => DrupalCultureFeed::isCultureFeedUser())), 'setting');
+
+  // Set noindex metatag when API location points to acceptance.
+  if (culturefeed_acceptance_mode()) {
+    culturefeed_set_noindex_metatag();
+  }
 }
 
 /**

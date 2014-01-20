@@ -257,3 +257,33 @@ function culturefeed_get_preferred_language() {
 
   return $preferredLanguage;
 }
+
+/**
+ * Check if we are connected to acceptance API.
+ */
+function culturefeed_acceptance_mode() {
+
+  // Get culturefeed_api_location
+  $location = variable_get('culturefeed_api_location');
+  if (strpos($location,'www') === false) {
+    return TRUE;
+  }
+
+}
+
+/**
+ * Set the "noindex, follow" meta tag when needed.
+ */
+function culturefeed_set_noindex_metatag() {
+
+  $element = array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'robots',
+      'content' => 'noindex, follow',
+    ),
+  );
+
+  drupal_add_html_head($element, 'robots');
+
+}
