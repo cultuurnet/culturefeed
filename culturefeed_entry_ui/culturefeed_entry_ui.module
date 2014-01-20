@@ -276,6 +276,14 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
+      
+    case 'country_select':
+      if ($form_state['input']['country_select'] == 'BE') {
+        $form['basic']['basic']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
+      } else {
+	    $form['basic']['basic']['citywrapper']['city']['#autocomplete_path'] = '';  
+      }
+      return $form['basic']['basic']['citywrapper'];
 
     case 'links_add_more':
       return $form['extra']['links'];

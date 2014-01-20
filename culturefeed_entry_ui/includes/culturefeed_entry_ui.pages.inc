@@ -10,8 +10,8 @@
 function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
-  $contact_info = array();
-  $link_info = array();
+  $default_contacts = array();
+  $default_links = array();
   $performers_info = array();
   $price_trigger = FALSE;
   $category_defaults = array();
@@ -35,18 +35,22 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   $age = '';
   $age_category = 'everyone';
+  $default_short_description = '';
+  $default_long_description = '';
+  $keywords = '';
+  $default_links = array();
+  $default_links_reservation = array();
+  $default_price = '';
+  $default_free_price = 0;
+  $default_price_description = '';
+  $phone_contacts = array();
+  $mail_contacts = array();
 
   // Load all default values.
   if ($event) {
 
     $form['#event'] = $event;
-
-    // Default mails, phones, urls.
-    if ($info = $event->getContactInfo()) {
-      $contact_info = $info->getMails();
-      $contact_info = array_merge($contact_info, $info->getPhones());
-      $contact_info = array_merge($contact_info, $info->getUrls());
-    }
+    $event_details = $event->getDetails()->current();
 
     // Default categories.
     if ($event && ($categories = $event->getCategories())) {
@@ -104,6 +108,47 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $form_state['#opening_times_needed'] = $opening_times_needed;
     }
 
+    // Default short description
+    if ($event_details->getShortDescription()) {
+      $default_short_description = $event_details->getShortDescription();
+    }
+
+    // Default long description
+    if ($event_details->getLongDescription()) {
+      $default_long_description = $event_details->getLongDescription();
+      $form_state['#ld_needed'] = TRUE;
+    }
+
+    // Default keywords
+    if ($event->getKeywords()) {
+      $keywords = $event->getKeywords();
+    }
+
+    // Default mails, phones, urls.
+    if ($info = $event->getContactInfo()) {
+      foreach ($info->getUrls() as $default_link) {
+        $default_links[] = $default_link->getUrl();
+        $default_links_reservation[] = $default_link->isForReservations();
+      }
+    }
+
+    // Default image
+    $default_image = $event_details->getMedia();
+
+    // Default price.
+    if ($price = $event_details->getPrice()) {
+      $default_price = $price->getValue();
+      $default_free_price = 0;
+      $default_price_description = $price->getDescription();
+      if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
+        $default_price = '';
+        $default_free_price = 1;
+      }
+      if ($default_price_description != '') {
+        $form_state['#price_needed'] = TRUE;
+      }
+    }
+
     // Default age.
     $age = $event->getAgeFrom();
     if ($age) {
@@ -118,6 +163,30 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $age = '18+';
       }
 
+    }
+
+    // Default contact info
+    if ($info = $event->getContactInfo()) {
+      $phone_info = $info->getPhones();
+      $mail_info = $info->getMails();
+      foreach ($phone_info as $phone_contact) {
+        $phone_contacts[] = array('phone', $phone_contact->getNumber());
+      }
+
+      foreach ($mail_info as $mail_contact) {
+        $mail_contacts[] = array('E-mail', $mail_contact->getMailAddress());
+      }
+      $default_contacts = array_merge($phone_contacts, $mail_contacts);
+    }
+
+    // Default performers
+    if ($info = $event_details->getPerformers()) {
+      foreach ($info as $performer) {
+        $performers_info[] = array(
+          $performer->getRole(),
+          $performer->getLabel()
+        );
+      }
     }
 
   }
@@ -204,7 +273,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#size' => 10,
   );
 
-  $form['basic']['basic']['zip_code'] = array(
+  $form['basic']['basic']['citywrapper'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="citywrapper-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+
+  $form['basic']['basic']['citywrapper']['zip_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip Code'),
     '#required' => FALSE,
@@ -212,7 +288,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   //TODO: city suggestions don't work
-  $form['basic']['basic']['city'] = array(
+  $form['basic']['basic']['citywrapper']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
@@ -222,10 +298,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['basic']['basic']['country'] = array(
     '#type' => 'select',
+    '#name' => 'country_select',
     '#title' => t('Country'),
     '#options' => country_get_list(),
     '#default_value' => 'BE',
     '#required' => FALSE,
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'citywrapper-ajax-wrapper',
+      'effect' => 'fade',
+    ),
   );
 
   // Date  
@@ -241,7 +323,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   if ($begindates) {
     foreach ($begindates as $i => $info) {
       culturefeed_entry_ui_attach_begindate_elements($form, $i, $info);
-      
+
       //ajax callback om te kijken of dit element wel geplaatst mag worden!!!
       culturefeed_entry_ui_attach_enddate_elements($form, $i, $info);
       $begindate_count++;
@@ -249,20 +331,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
   else {
     culturefeed_entry_ui_attach_begindate_elements($form, 0);
-    
+
     culturefeed_entry_ui_attach_enddate_elements($form, 0);
-    
+
     $begindate_count++;
-  } 
-  
+  }
+
   // Add more button was clicked. Check how many extra rows need to be added.
   if (isset($form_state['#begindates_needed'])) {
 
     for (; $begindate_count < $form_state['#begindates_needed']; $begindate_count++) {
       culturefeed_entry_ui_attach_begindate_elements($form, $begindate_count);
-  
-	  //ajax callback om te kijken of dit element wel geplaatst mag worden!!!
-  	  culturefeed_entry_ui_attach_enddate_elements($form, $begindate_count);
+
+      //ajax callback om te kijken of dit element wel geplaatst mag worden!!!
+      culturefeed_entry_ui_attach_enddate_elements($form, $begindate_count);
     }
   }
 
@@ -473,8 +555,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textarea',
     '#name' => 'short_description',
     '#title' => t('Short description'),
-    '#default_value' => $event ? $event->getDetails()->current()
-        ->getShortDescription() : NULL,
+    '#default_value' => $default_short_description,
   );
 
   //Long Description
@@ -499,6 +580,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'text_format',
       '#title' => t('Long description'),
       '#rows' => 10,
+      '#default_value' => $default_long_description,
+      '#name' => 'long_description'
     );
   }
 
@@ -507,6 +590,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => t('Tags'),
     '#description' => t('Add multiple tags seperated by a ";"'),
+    '#default_value' => $keywords,
   );
 
   // Links
@@ -518,11 +602,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Links'),
   );
 
-  $links_count = 0;
-  // Add contact type selections.
-  if ($link_info) {
-    foreach ($link_info as $i => $info) {
-      culturefeed_entry_ui_attach_link_info_elements($form, $i, $info);
+  if ($default_links) {
+    $links_count = count($default_links);
+  }
+  else {
+    $links_count = 0;
+  }
+  // Add link type selections.
+  if ($default_links) {
+    foreach ($default_links as $i => $info) {
+      culturefeed_entry_ui_attach_link_info_elements($form, $i, $info, $default_links_reservation[$i]);
       $links_count++;
     }
   }
@@ -577,6 +666,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'managed_file',
     '#name' => 'image_upload',
     '#title' => t('Image upload'),
+    //'#default_value' => $default_image,
     '#description' => t('Allowed extensions: gif png jpg jpeg'),
     '#upload_location' => 'public://uploads/',
     '#upload_validators' => array(
@@ -605,7 +695,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#name' => 'price_amount',
     '#title' => t('Price'),
-    //'#prefix' => '<span class="price-prefix">€</span>',
+    '#default_value' => $default_price,
     '#attributes' => array(
       'class' => array(
         'price-amount'
@@ -627,6 +717,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'checkbox',
       '#name' => 'price_free',
       '#title' => t('Free event'),
+      '#default_value' => $default_free_price,
       '#states' => array(
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
@@ -665,6 +756,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['extra']['price']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
+      '#default_value' => $default_price_description,
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
@@ -771,11 +863,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="contacts-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-  
-  $contact_count = 0;
-  // Add performer type.
-  if ($contact_info) {
-    foreach ($contact_info as $i => $info) {
+
+  if ($default_contacts) {
+    $contact_count = count($default_contacts);
+  }
+  else {
+    $contact_count = 0;
+  }
+  // Add contacts type.
+  if ($default_contacts) {
+    foreach ($default_contacts as $i => $info) {
       culturefeed_entry_ui_attach_contacts_elements($form, $i, $info);
       $contact_count++;
     }
@@ -820,7 +917,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
 
-  $performers_count = 0;
+  if ($performers_info) {
+    $performers_count = count($performers_info);
+  }
+  else {
+    $performers_count = 0;
+  }
   // Add performer type.
   if ($performers_info) {
     foreach ($performers_info as $i => $info) {
@@ -914,16 +1016,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['english']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
+    '#name' => 'english_title',
   );
 
   $form['extra']['translations']['english']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
+    '#name' => 'english_short_description',
   );
 
   $form['extra']['translations']['english']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
+    '#name' => 'english_long_description',
   );
 
   /* french */
@@ -937,16 +1042,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['french']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
+    '#name' => 'french_title',
   );
 
   $form['extra']['translations']['french']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
+    '#name' => 'french_short_description',
   );
 
   $form['extra']['translations']['french']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
+    '#name' => 'french_long_description',
   );
 
   /* german */
@@ -960,16 +1068,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['translations']['german']['language'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
+    '#name' => 'german_title',
   );
 
   $form['extra']['translations']['german']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
+    '#name' => 'german_short_description',
   );
 
   $form['extra']['translations']['german']['long_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Long description'),
+    '#name' => 'german_long_description',
   );
 
   //Publication & Private
@@ -1015,23 +1126,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
  *
  */
 function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL) {
-  
+
   $date = date("Y-m-d");
   $hour = date("H:i");
   $format = 'Y-m-d';
-  
+
   $form['basic']['when']['datetimes'][$i] = array(
-        '#type' => 'container',
-        '#prefix' => '<div id="datetime-child-' . $i .'-ajax-wrapper" class="datetime-child">',
-        '#suffix' => '</div>',
-  );
-  
-  $form['basic']['when']['datetimes'][$i]['begin'] = array(
     '#type' => 'container',
-    '#prefix' => '<div id="datetime-child-'. $i .'-begin-ajax-wrapper">',
+    '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child">',
     '#suffix' => '</div>',
   );
-  
+
+  $form['basic']['when']['datetimes'][$i]['begin'] = array(
+    '#type' => 'container',
+    '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+
   $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
     '#type' => 'date_popup',
     '#title' => t('Start date'),
@@ -1039,7 +1150,7 @@ function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL
     '#date_format' => 'Y-m-d',
     '#attributes' => array('class' => array('start-date')),
   );
-  
+
   $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
     '#type' => 'date_select',
     '#name' => 'begin_hour',
@@ -1048,9 +1159,9 @@ function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL
     '#date_format' => 'H:i',
     '#date_increment' => 30,
   );
-  
+
   culturefeed_entry_ui_attach_enddate_elements($form, $i, $info);
-  
+
   /*$enddates = array();
   $enddate_count = 0;
 
@@ -1095,27 +1206,27 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
   $date = date("Y-m-d");
   $hour = date("H:i");
   $format = 'Y-m-d';
-  
+
   $form['basic']['when']['datetimes'][$i]['end'] = array(
     '#type' => 'container',
-    '#prefix' => '<div id="datetime-child-'. $i .'-end-ajax-wrapper">',
+    '#prefix' => '<div id="datetime-child-' . $i . '-end-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-  
+
   $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
     '#type' => 'date_popup',
     '#title' => t('End date'),
     '#default_value' => $date,
     '#date_format' => 'Y-m-d',
   );
-  
+
   $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
     '#type' => 'date_select',
     '#title' => t('End time'),
     '#default_value' => $hour,
     '#date_format' => 'H:i',
     '#date_increment' => 30,
-  ); 
+  );
 }
 
 
@@ -1125,16 +1236,25 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
  */
 function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL) {
 
-  $text = '';
+  $options = array(0 => 'Phone', 1 => 'Email');
+  $contact_type = 0;
+
+  if ($info[0] == 'phone') {
+    $contact_type = 0;
+  }
+
+  if ($info[0] == 'E-mail') {
+    $contact_type = 1;
+  }
+
+  $contact = $info[1];
 
   $form['extra']['contacts']['wrapper'][$i]['channel'] = array(
     '#type' => 'select',
     '#title' => t('Contact'),
     '#title_display' => 'invisible',
-    '#options' => array(
-      0 => t('Email'),
-      1 => t('Phone'),
-    ),
+    '#options' => $options,
+    '#default_value' => $contact_type,
     '#attributes' => array('class' => array('channel-field')),
   );
 
@@ -1142,7 +1262,7 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
     '#type' => 'textfield',
     '#title' => t('Input'),
     '#title_display' => 'invisible',
-    '#default_value' => $text,
+    '#default_value' => $contact,
     '#attributes' => array('class' => array('channel-input-field')),
   );
 
@@ -1154,20 +1274,18 @@ function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL)
  */
 function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NULL) {
 
-  $text = '';
-
   $form['extra']['performers']['wrapper'][$i]['performer'] = array(
     '#type' => 'textfield',
     '#title' => t('Performer'),
     '#display_title' => FALSE,
-    '#default_value' => $text,
+    '#default_value' => $info[1],
     '#attributes' => array('class' => array('performer-field')),
   );
 
   $form['extra']['performers']['wrapper'][$i]['role'] = array(
     '#type' => 'textfield',
     '#title' => t('Role'),
-    '#default_value' => $text,
+    '#default_value' => $info[0],
     '#attributes' => array('class' => array('role-field')),
   );
 
@@ -1177,22 +1295,19 @@ function culturefeed_entry_ui_attach_performers_elements(&$form, $i, $info = NUL
  * Attach a new link element.
  *
  */
-function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL) {
-
-  $text = '';
-  $reservation = FALSE;
+function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL, $reserve = NULL) {
 
   $form['extra']['links'][$i]['URL'] = array(
     '#type' => 'textfield',
     '#title' => t('Link'),
-    '#default_value' => $text,
+    '#default_value' => $info,
     '#attributes' => array('class' => array('link-field')),
   );
 
   $form['extra']['links'][$i]['reservation'] = array(
     '#type' => 'checkbox',
     '#title' => t('for reservation'),
-    '#default_value' => $reservation,
+    '#default_value' => $reserve,
     '#attributes' => array('class' => array('reservation-checkbox')),
   );
 
@@ -1386,10 +1501,10 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['basic']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if (empty($values['basic']['zip_code'])) {
+    if (empty($values['basic']['citywrapper']['zip_code'])) {
       form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
     }
-    if (empty($values['basic']['city'])) {
+    if (empty($values['basic']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
     $location = NULL;
@@ -1440,6 +1555,47 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
   $values = $form_state['values'];
+  $performerList = new CultureFeed_Cdb_Data_PerformerList();
+  $mails = array();
+  $phones = array();
+  $links = array();
+  $performers_count = 0;
+
+
+  foreach ($values['wrapper'] as $extra) {
+    if (is_array($extra)) {
+      // Performer
+      if ($extra['performer'] || $extra['role']) {
+        $performer = new CultureFeed_Cdb_Data_Performer();
+        $performer->setLabel($extra['performer']);
+        $performer->setRole($extra['role']);
+        $performerList->add($performer);
+        $performers_count++;
+      }
+
+      // Contacts
+      if ($extra['channel_input']) {
+
+        switch ($extra['channel']) {
+          case '0':
+            $phone = new CultureFeed_Cdb_Data_Phone($extra['channel_input'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, FALSE);
+            array_push($phones, $phone);
+            break;
+          case '1':
+            $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
+            array_push($mails, $mail);
+            break;
+        }
+      }
+    }
+  }
+
+  foreach ($values['links'] as $link_data) {
+    if ($link_data['URL']) {
+      $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
+      array_push($links, $link);
+    }
+  }
 
   $update = FALSE;
   if (isset($form['#event'])) {
@@ -1451,8 +1607,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  if ($values['publication_date']) {
-    $event->setPublicationDate($values['publication_date']);
+  if ($values['wrapper']['date']) {
+    $event->setPublicationDate($values['wrapper']['date']);
   }
 
   // Age.
@@ -1480,15 +1636,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
   */
 
-  // Categories TODO:Remove Hard coded values
-  //$category_values += $values['doen'];
-  //$category_values += $values['bezoeken'];
+  // Categories
   $category_options = array();
 
-  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories()[$values['what']];
-  var_dump($category_options);
-  //$category_options += $form['what']['doen']['#options'];
-  //$category_options += $form['what']['bezoeken']['#options'];
+  $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
 
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
@@ -1504,10 +1655,26 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if (!empty($values['short_description'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  if ($values['price_amount']) {
-    $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
-    //$price->setDescription();
+  if (!empty($values['long_description']['value'])) {
+    $detail->setLongDescription($values['long_description']['value']);
+  }
+  // Price
+  if ($values['price_free']) {
+    $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
+  }
+  else {
+    if ($values['price_amount']) {
+      $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
+      if ($values['price']['extra_info']) {
+        $price->setDescription($values['price']['extra_info']);
+      }
+      $detail->setPrice($price);
+    }
+  }
+  // Performers
+  if ($performers_count) {
+    $detail->setPerformers($performerList);
   }
   $detail->setLanguage(culturefeed_entry_ui_get_preferred_language());
 
@@ -1533,8 +1700,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
     $physical_address->setStreet($values['basic']['street']);
     $physical_address->setHouseNumber($values['basic']['house_number']);
-    $physical_address->setCity($values['basic']['city']);
-    $physical_address->setZip($values['basic']['zip_code']);
+    $physical_address->setCity($values['basic']['citywrapper']['city']);
+    $physical_address->setZip($values['basic']['citywrapper']['zip_code']);
     $physical_address->setCountry($values['basic']['country']);
     $address->setLabel($values['basic']['location_title']);
     $address->setPhysicalAddress($physical_address);
@@ -1558,32 +1725,15 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $contact_object = new CultureFeed_Cdb_Data_ContactInfo();
   $contact_object->addAddress(new CultureFeed_Cdb_Data_Address($physical_address));
 
-  /*
-  // TODO replace $values['contacts']
-  if($values['contacts']) {
-    foreach ($values['contacts'] as $contact) {
-  
-      if (!empty($contact['text'])) {
-        switch ($contact['type']) {
-  
-          case 'website':
-            $contact_object->addUrl(new CultureFeed_Cdb_Data_Url($contact['text'], FALSE, $contact['reservation']));
-            break;
-  
-          case 'email':
-            $contact_object->addMail(new CultureFeed_Cdb_Data_Mail($contact['text'], FALSE, $contact['reservation']));
-            break;
-  
-          case 'phone':
-            $contact_object->addPhone(new CultureFeed_Cdb_Data_Phone($contact['text'], CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE, FALSE, $contact['reservation']));
-            break;
-  
-        }
-      }
-  
-    }
-  }*/
-
+  foreach ($mails as $mail) {
+    $contact_object->addMail($mail);
+  }
+  foreach ($phones as $phone) {
+    $contact_object->addPhone($phone);
+  }
+  foreach ($links as $link) {
+    $contact_object->addUrl($link);
+  }
 
   $event->setContactInfo($contact_object);
 
@@ -1595,11 +1745,66 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
-  // Age
-  if ($values['age']) {
-    $event->setAgeFrom($values['age']);
-  }
+  // Members
+  $event->setPrivate($values['entrance']);
 
+  // Translations English
+  if ($values['english_title'] || $values['english_short_description'] || $values['english_long_description']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['english_title']) {
+      $detail->setTitle($values['title']);
+    }
+    if (!empty($values['english_short_description'])) {
+      $detail->setShortDescription($values['english_short_description']);
+    }
+    if (!empty($values['english_long_description'])) {
+      $detail->setShortDescription($values['english_long_description']);
+    }
+
+    $detail->setLanguage("EN");
+
+    $details = new CultureFeed_Cdb_Data_EventDetailList();
+    $details->add($detail);
+  }
+  // Translations French
+  if ($values['french_title'] || $values['french_short_description'] || $values['french_long_description']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['french_title']) {
+      $detail->setTitle($values['title']);
+    }
+    if (!empty($values['french_short_description'])) {
+      $detail->setShortDescription($values['french_short_description']);
+    }
+    if (!empty($values['french_long_description'])) {
+      $detail->setShortDescription($values['french_long_description']);
+    }
+
+    $detail->setLanguage("FR");
+
+    $details = new CultureFeed_Cdb_Data_EventDetailList();
+    $details->add($detail);
+  }
+  // Translations German
+  if ($values['german_title'] || $values['german_short_description'] || $values['german_long_description']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['german_title']) {
+      $detail->setTitle($values['title']);
+    }
+    if (!empty($values['german_short_description'])) {
+      $detail->setShortDescription($values['german_short_description']);
+    }
+    if (!empty($values['german_long_description'])) {
+      $detail->setShortDescription($values['german_long_description']);
+    }
+
+    $detail->setLanguage("DE");
+
+    $details = new CultureFeed_Cdb_Data_EventDetailList();
+    $details->add($detail);
+  }
   try {
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
@@ -1628,13 +1833,16 @@ function _culturefeed_entry_ui_event_save_timestamps(&$event, $values) {
   foreach ($values['datetimes'] as $timestamp) {
 
     // Empty start dates are ignored.
-    if (empty($timestamp['date'])) {
+    if (empty($timestamp['begin']['date'])) {
       continue;
     }
 
-    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['date']);
-    if (!empty($timestamp['time'])) {
-      $timestamp_object->setStartTime($timestamp['time']);
+    $timestamp_object = new CultureFeed_Cdb_Data_Calendar_Timestamp($timestamp['begin']['date']);
+    if (!empty($timestamp['begin']['hour'])) {
+      $timestamp_object->setStartTime($timestamp['begin']['hour'] . ':00');
+    }
+    if (!empty($timestamp['end']['hour'])) {
+      $timestamp_object->setEndTime($timestamp['end']['hour'] . ':00');
     }
     $calendar->add($timestamp_object);
   }
@@ -1855,8 +2063,7 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
       aanpassingen op al onze kanalen (inclusief UitinVlaanderen onder de tab 'Weergeven'
       beschikbaar zullen zijn.");
 
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
 
     if ($e->getCode() == culturefeed_entry_uiApi::CODE_KEYWORD_PRIVATE) {
       drupal_set_message("Je probeerde een tag toe te voegen die niet door iedereen mag
