@@ -157,10 +157,33 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default image
     if($get_media = $event_details->getMedia()->byMediaType('photo')){
       $form_state['#photo_exists'] = TRUE;
-      $default_image = $get_media->current()->getHLink();
       $copyright_value = $get_media->current()->getCopyright();
+      $url = $get_media->current()->getHLink();
+      $filename = $get_media->current()->getFileName();
+
+      // check if file exist
+      $query = new EntityFieldQuery();
+      $result = $query->entityCondition('entity_type', 'file')
+        ->propertyCondition('filename', $filename)
+        ->range(0, 1)
+        ->execute();
+	  // save file
+	  if(empty($result)) {
+        $path = system_retrieve_file($url, 'public://' . $filename, TRUE);
+        $query = new EntityFieldQuery();
+        $result = $query->entityCondition('entity_type', 'file')
+        ->propertyCondition('filename', $filename)
+        ->range(0, 1)
+        ->execute();
+      }
     }
-        
+    
+    // retrieve file
+    $row = array_pop(array_pop($result));
+    $default_image = (file_load($row->fid));
+    
+    var_dump($default_image->fid);
+    
     if($copyright_value) {
 	  $is_copyright = TRUE;
     }
@@ -244,9 +267,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
     
     // Default publication
-    if ($info = $event->getPublicationDate()) {
-	  $publication_date = $event->getPublicationDate();
+    /*if ($info = $event->getAvailableFrom()) {
+	  $publication_date = $event->getAvailableFrom();
     }
+    
+    var_dump($publication_date);*/
 
   }
 
@@ -643,7 +668,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#name' => 'short_description',
     '#rows' => 10,
-    '#default_value' => $default_long_description,
+    '#default_value' => $default_short_description,
   );
 
   $form['extra']['description']['ld'] = array(
@@ -746,11 +771,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Image'),
   );
 
-  if(!isset($form_state['#photo_exists'])) {
+  //if(!isset($form_state['#photo_exists'])) {
     $form['extra']['photo']['upload'] = array(
       '#type' => 'managed_file',
       '#name' => 'image_upload',
       '#title' => t('Image upload'),
+      '#default_value' => isset($default_image->fid) ? $default_image->fid : '',
+      //'#default_value' => $default_image,
       '#description' => t('Allowed extensions: gif png jpg jpeg'),
       '#upload_location' => 'public://uploads/',
       '#upload_validators' => array(
@@ -760,7 +787,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
     
-  } else {
+  /*} else {
     $form['extra']['photo']['photo_exists'] = array(
       '#type' => 'container',
       '#prefix' => '<div id="photo-exists-wrapper"><img src="' . $default_image .'" />',
@@ -784,7 +811,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#limit_validation_errors' => array(),
       '#submit' => array('culturefeed_entry_ui_add_more_submit'),
     );
-  }
+  }*/
 
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
@@ -1543,6 +1570,8 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
+  dsm($values);
+  
   // Validate publication date.
   if ($values['extra']['publication_date']['wrapper']['date']) {
     try {
