@@ -1118,29 +1118,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('performers')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-
-  // Admission and event language todo
-  $form['extra']['target_group'] = array(
+  
+  //language
+  $form['extra']['language'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Target group'),
+    '#title' => t('Language'),
     '#group' => 'vertical_tabs',
   );
 
-  $form['extra']['target_group']['entrance'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Entrance'),
-    '#description' => t('Only for members'),
-    '#default_value' => $is_private,
-  );
-
-  $form['extra']['target_group']['spoken'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="spoken-ajax-wrapper">',
-    '#suffix' => '</div>',
-  );
-
-  $form['extra']['target_group']['spoken']['spoken_language'] = array(
+  $form['extra']['language']['spoken_language'] = array(
     '#type' => 'select',
     '#title' => t('Language'),
     '#options' => array(
@@ -1150,7 +1136,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  $form['extra']['target_group']['spoken']['in_language'] = array(
+  $form['extra']['language']['in_language'] = array(
     '#type' => 'select',
     '#title' => t('in'),
     '#options' => array(
@@ -1160,6 +1146,21 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       3 => t('German'),
       4 => t('French'),
     ),
+  );
+
+  //entrance
+  //$form['extra']['target_group'] = array(
+  $form['extra']['entrance'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Entrance'),
+    '#group' => 'vertical_tabs',
+  );
+
+  $form['extra']['entrance']['members'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Entrance'),
+    '#description' => t('Only for members'),
+    '#default_value' => $is_private,
   );
 
   // translations
