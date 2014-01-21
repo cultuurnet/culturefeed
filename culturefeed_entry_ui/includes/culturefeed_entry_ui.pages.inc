@@ -37,16 +37,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   $age = '';
   $age_category = 'everyone';
-  $default_short_description = '';
-  $default_long_description = '';
+  //$default_short_description = '';
+  //$default_long_description = '';
   $default_image = '';
   $is_copyright = FALSE;
   $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
-  $default_price = '';
-  $default_free_price = 0;
-  $default_price_description = '';
+  //$default_price = '';
+  //$default_free_price = 0;
+  //$default_price_description = '';
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
@@ -166,12 +166,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
     
     // Default price.
-    if ($price = $event_details->getPrice()) {
-      $default_price = $price->getValue();
+    if ($info = $event_details->getPrice()) {
+      $default_price = $info->getValue();
       $default_free_price = 0;
-      $default_price_description = $price->getDescription();
+      $default_price_description = $info->getDescription();
       if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
-        $default_price = '';
+        $default_price = '0';
         $default_free_price = 1;
       }
       if ($default_price_description != '') {
@@ -629,24 +629,41 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-
-  $form['extra']['description']['short_description'] = array(
-    '#type' => 'textarea',
-    '#name' => 'short_description',
+  
+  $form['extra']['description']['sd'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="description-sd-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Description'),
+  );
+  
+  $form['extra']['description']['sd']['short_description'] = array(
+    '#type' => 'text_format',
     '#title' => t('Short description'),
-    '#default_value' => $default_short_description,
+    '#name' => 'short_description',
+    '#rows' => 10,
+    '#default_value' => isset($default_long_description),
+  );
+
+  $form['extra']['description']['ld'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="description-ld-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Description'),
   );
 
   //Long Description
   if (!isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['add_long_description'] = array(
+    $form['extra']['description']['ld']['add_long_description'] = array(
       '#type' => 'submit',
       '#name' => 'ld_add_more',
       '#value' => t('+ add long description'),
       '#attributes' => array('class' => array('add-more-link btn-link')),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'description-ajax-wrapper',
+        'wrapper' => 'description-ld-ajax-wrapper',
         'effect' => 'fade',
       ),
       '#limit_validation_errors' => array(array('ld')),
@@ -655,11 +672,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   if (isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['long_description'] = array(
+    $form['extra']['description']['ld']['long_description'] = array(
       '#type' => 'text_format',
       '#title' => t('Long description'),
       '#rows' => 10,
-      '#default_value' => $default_long_description,
+      '#default_value' => isset($default_long_description),
       '#name' => 'long_description'
     );
   }
@@ -788,7 +805,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#name' => 'price_amount',
     '#title' => t('Price'),
-    '#default_value' => $default_price,
+    '#default_value' => isset($default_price),
     '#attributes' => array(
       'class' => array(
         'price-amount'
@@ -810,7 +827,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'checkbox',
       '#name' => 'price_free',
       '#title' => t('Free event'),
-      '#default_value' => $default_free_price,
+      '#default_value' => isset($default_free_price),
       '#states' => array(
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
@@ -849,7 +866,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['extra']['price']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
-      '#default_value' => $default_price_description,
+      '#default_value' => isset($default_price_description),
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
@@ -1119,7 +1136,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#group' => 'vertical_tabs',
   );
 
-  /* english */
+  //english
   $form['extra']['translations']['english'] = array(
     '#type' => 'fieldset',
     '#title' => t('English'),
@@ -1145,7 +1162,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $en_long_description,
   );
 
-  /* french */
+  //french
   $form['extra']['translations']['french'] = array(
     '#type' => 'fieldset',
     '#title' => t('French'),
@@ -1171,7 +1188,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $fr_long_description,
   );
 
-  /* german */
+  //german
   $form['extra']['translations']['german'] = array(
     '#type' => 'fieldset',
     '#title' => t('German'),
@@ -1519,6 +1536,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
 
+  dsm($values);
   // Validate publication date.
   if ($values['extra']['publication_date']['wrapper']['date']) {
     try {

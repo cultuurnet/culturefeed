@@ -302,7 +302,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       return $form['extra']['price'];
       
     case 'ld_add_more':
-      return $form['extra']['description'];
+      return $form['extra']['description']['ld'];
       
     case 'actor_add_more':
       return $form['extra']['organiser'];
