@@ -30,6 +30,11 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
+  /* Header: UDB items: Create event */
+  $handler->display->display_options['header']['create']['id'] = 'create';
+  $handler->display->display_options['header']['create']['table'] = 'cdb_items';
+  $handler->display->display_options['header']['create']['field'] = 'create';
+  $handler->display->display_options['header']['create']['empty'] = TRUE;
   /* Field: UDB items: Titel */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'cdb_items';

@@ -16,4 +16,11 @@ function culturefeed_entry_ui_views_data_alter(&$data) {
       'handler' => 'views_handler_field_cdb_item_operations',
     ),
   );
+  $data['cdb_items']['create'] = array(
+    'title' => t('Create event'),
+    'help' => t('Link to create event'),
+    'area' => array(
+      'handler' => 'views_handler_area_cdb_item_create',
+    ),
+  );
 }
