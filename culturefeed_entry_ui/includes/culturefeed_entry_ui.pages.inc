@@ -44,9 +44,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
-  //$default_price = '';
-  //$default_free_price = 0;
-  //$default_price_description = '';
+  $default_price = '';
+  $default_free_price = 0;
+  $default_price_description = '';
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
@@ -803,9 +803,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['price']['amount'] = array(
     '#type' => 'textfield',
-    '#name' => 'price_amount',
     '#title' => t('Price'),
-    '#default_value' => isset($default_price),
+    '#default_value' => $default_price,
     '#attributes' => array(
       'class' => array(
         'price-amount'
@@ -821,21 +820,30 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     ),
   );
-
+  
   if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['free'] = array(
       '#type' => 'checkbox',
       '#name' => 'price_free',
       '#title' => t('Free event'),
-      '#default_value' => isset($default_free_price),
+      '#default_value' => $default_free_price,
       '#states' => array(
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
         ),
       ),
     );
-
-    $form['extra']['price']['add_extra_info'] = array(
+  }
+  
+  $form['extra']['price']['extra'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="price-extra-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Price'),
+  );
+  if (!isset($form_state['#price_needed'])) { 
+    $form['extra']['price']['extra']['add_extra_info'] = array(
       '#type' => 'submit',
       '#name' => 'price_add_more',
       '#value' => t('+ add price info'),
@@ -849,7 +857,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'price-ajax-wrapper',
+        'wrapper' => 'price-extra-ajax-wrapper',
         'effect' => 'fade',
       ),
       '#limit_validation_errors' => array(array('price')),
@@ -863,10 +871,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   if (isset($form_state['#price_needed'])) {
-    $form['extra']['price']['extra_info'] = array(
+    $form['extra']['price']['extra']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
-      '#default_value' => isset($default_price_description),
+      '#default_value' => $default_price_description,
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
@@ -1535,8 +1543,6 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-
-  dsm($values);
   // Validate publication date.
   if ($values['extra']['publication_date']['wrapper']['date']) {
     try {
@@ -1785,22 +1791,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  if (!empty($values['short_description'])) {
+  if (!empty($values['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  if (!empty($values['long_description']['value'])) {
+  if (!empty($values['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['long_description']['value']);
   }
   // Price
-  if ($values['price_free']) {
+  if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
   else {
-    if ($values['price_amount']) {
-      $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
-      if ($values['price']['extra_info']) {
-        $price->setDescription($values['price']['extra_info']);
+    if ($values['price']['amount']) {
+      $price = new CultureFeed_Cdb_Data_Price($values['price']['amount']);
+      if ($values['price']['extra']['extra_info']) {
+        $price->setDescription($values['price']['extra']['extra_info']);
       }
       $detail->setPrice($price);
     }

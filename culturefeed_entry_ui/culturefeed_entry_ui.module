@@ -299,7 +299,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       return $form['basic']['period_or_permanent']['opening_times'];
       
     case 'price_add_more':
-      return $form['extra']['price'];
+      return $form['extra']['price']['extra'];
       
     case 'ld_add_more':
       return $form['extra']['description']['ld'];
