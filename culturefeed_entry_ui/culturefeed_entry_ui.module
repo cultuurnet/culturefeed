@@ -286,6 +286,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
         $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
       } else {
 	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';  
+	    $form['basic']['location']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
       }
       return $form['basic']['location']['citywrapper'];
 

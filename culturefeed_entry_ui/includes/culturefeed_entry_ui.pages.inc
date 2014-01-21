@@ -400,7 +400,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#size' => 60,
   );
 
-  $form['basic']['location']['country'] = array(
+  $form['basic']['location']['citywrapper']['country'] = array(
     '#type' => 'select',
     '#name' => 'country_select',
     '#title' => t('Country'),
