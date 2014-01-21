@@ -182,8 +182,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $row = array_pop(array_pop($result));
     $default_image = (file_load($row->fid));
     
-    var_dump($default_image->fid);
-    
     if($copyright_value) {
 	  $is_copyright = TRUE;
     }
