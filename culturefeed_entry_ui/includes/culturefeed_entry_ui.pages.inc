@@ -37,8 +37,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   $age = '';
   $age_category = 'everyone';
-  //$default_short_description = '';
-  //$default_long_description = '';
+  $default_short_description = '';
+  $default_long_description = '';
   $default_image = '';
   $is_copyright = FALSE;
   $keywords = '';
@@ -643,7 +643,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#name' => 'short_description',
     '#rows' => 10,
-    '#default_value' => isset($default_long_description),
+    '#default_value' => $default_long_description,
   );
 
   $form['extra']['description']['ld'] = array(
@@ -676,7 +676,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'text_format',
       '#title' => t('Long description'),
       '#rows' => 10,
-      '#default_value' => isset($default_long_description),
+      '#default_value' => $default_long_description,
       '#name' => 'long_description'
     );
   }
