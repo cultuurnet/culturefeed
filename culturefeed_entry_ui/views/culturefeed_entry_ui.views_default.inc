@@ -35,6 +35,14 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['header']['create']['table'] = 'cdb_items';
   $handler->display->display_options['header']['create']['field'] = 'create';
   $handler->display->display_options['header']['create']['empty'] = TRUE;
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['label'] = 'Notification that no results were found';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = 'Unable to find any events created by you.';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: UDB items: Titel */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'cdb_items';
@@ -109,6 +117,8 @@ function culturefeed_entry_ui_views_default_views() {
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Notification that no results were found'),
+    t('Unable to find any events created by you.'),
     t('Last updated'),
     t('Block'),
   );
