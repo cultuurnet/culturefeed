@@ -1543,10 +1543,10 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  dsm($values);
+  //dsm($values);
   
   // Validate publication date.
-  if ($values['extra']['publication_date']['wrapper']['date']) {
+  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
     try {
       CultureFeed_Cdb_Data_Calendar::validateDate($values['publication_date']);
     } catch (Exception $e) {
@@ -1736,15 +1736,17 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  if ($values['wrapper']['date']) {
-    $event->setPublicationDate($values['wrapper']['date']);
+  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
+    $event->setPublicationDate($values['extra']['publication_date']['wrapper']['date']);
   }
 
   // Age.
-  $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
+  if (isset($values['age'])) {
+    $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
+  }
 
   // Datetimes as calendar.
-  if ($values['datetimes']) {
+  if (isset($values['datetimes'])) {
     _culturefeed_entry_ui_event_save_timestamps($event, $values);
   }
 
@@ -1765,7 +1767,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
   */
 
-  // Categories
+  // Categories.
   $category_options = array();
 
   $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
@@ -1773,7 +1775,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
     if ($value) {
-      $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value));
+      $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
     }
   }
   $event->setCategories($categories);
@@ -1788,14 +1790,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $detail->setLongDescription($values['description']['long_description']['value']);
   }
   // Price
-  if ($values['price']['free']) {
+  if (isset($values['price']['free'])) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
   else {
-    if ($values['price']['amount']) {
+    if (isset($values['price']['amount'])) {
       $price = new CultureFeed_Cdb_Data_Price($values['price']['amount']);
-      if ($values['price']['extra']['extra_info']) {
+      if (isset($values['price']['extra']['extra_info'])) {
         $price->setDescription($values['price']['extra']['extra_info']);
       }
       $detail->setPrice($price);
@@ -1860,7 +1862,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $event->setOrganiser($organiser_object);
   }
   else {
-    if ($values['organiser']['new_actor']) {
+    if (isset($values['organiser']['new_actor'])) {
       $organiser_object = new CultureFeed_Cdb_Data_Organiser();
       $organiser_object->setLabel($values['organiser']['new_actor']);
       $event->setOrganiser($organiser_object);
@@ -1884,17 +1886,20 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $event->setContactInfo($contact_object);
 
-  // Keywords
-  if ($values['keywords']) {
-    $keywords = explode(';', $values['keywords']);
+  // Keywords.
+  if (isset($values['extra']['keywords'])) {
+    $keywords = explode(';', $values['extra']['keywords']);
     foreach ($keywords as $keyword) {
       $event->addKeyword($keyword);
     }
   }
 
-  // Members
-  $event->setPrivate($values['entrance']);
+  // Members.
+  if (isset($values['extra']['entrance'])) {
+    $event->setPrivate($values['entrance']);
+  }
 
+  // Translations English.
   if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
 
     $detail = new CultureFeed_Cdb_Data_EventDetail();
@@ -1913,7 +1918,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $details = new CultureFeed_Cdb_Data_EventDetailList();
     $details->add($detail);
   }
-  // Translations French
+  
+  // Translations French.
   if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
 
     $detail = new CultureFeed_Cdb_Data_EventDetail();
@@ -1932,7 +1938,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $details = new CultureFeed_Cdb_Data_EventDetailList();
     $details->add($detail);
   }
-  // Translations German
+  
+  // Translations German.
   if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
 
     $detail = new CultureFeed_Cdb_Data_EventDetail();
@@ -2107,10 +2114,6 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   // @todo Get options from variable.
   $custom_options = variable_get('culturefeed_entry_ui_custom_tags');
-
-  echo '<pre>';
-  print_r($custom_options);
-  echo '</pre>';
 
   // Filter out custom tags.
   if ($event_tags) {
