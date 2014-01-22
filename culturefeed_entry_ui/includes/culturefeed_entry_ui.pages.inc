@@ -156,22 +156,42 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     // Default image
     if($get_media = $event_details->getMedia()->byMediaType('photo')){
-      $form_state['#photo_exists'] = TRUE;
-      $default_image = $get_media->current()->getHLink();
       $copyright_value = $get_media->current()->getCopyright();
+      $url = $get_media->current()->getHLink();
+      $filename = $get_media->current()->getFileName();
+
+      // check if file exist
+      $query = new EntityFieldQuery();
+      $result = $query->entityCondition('entity_type', 'file')
+        ->propertyCondition('filename', $filename)
+        ->range(0, 1)
+        ->execute();
+	  // save file
+	  if(empty($result)) {
+        $path = system_retrieve_file($url, 'public://' . $filename, TRUE);
+        $query = new EntityFieldQuery();
+        $result = $query->entityCondition('entity_type', 'file')
+        ->propertyCondition('filename', $filename)
+        ->range(0, 1)
+        ->execute();
+      }
     }
-        
+    
+    // retrieve file
+    $row = array_pop(array_pop($result));
+    $default_image = (file_load($row->fid));
+    
     if($copyright_value) {
 	  $is_copyright = TRUE;
     }
     
     // Default price.
-    if ($price = $event_details->getPrice()) {
-      $default_price = $price->getValue();
+    if ($info = $event_details->getPrice()) {
+      $default_price = $info->getValue();
       $default_free_price = 0;
-      $default_price_description = $price->getDescription();
+      $default_price_description = $info->getDescription();
       if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
-        $default_price = '';
+        $default_price = '0';
         $default_free_price = 1;
       }
       if ($default_price_description != '') {
@@ -244,9 +264,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
     
     // Default publication
-    if ($info = $event->getPublicationDate()) {
-	  $publication_date = $event->getPublicationDate();
+    /*if ($info = $event->getAvailableFrom()) {
+	  $publication_date = $event->getAvailableFrom();
     }
+    
+    var_dump($publication_date);*/
 
   }
 
@@ -375,7 +397,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#size' => 60,
   );
 
-  $form['basic']['location']['country'] = array(
+  $form['basic']['location']['citywrapper']['country'] = array(
     '#type' => 'select',
     '#name' => 'country_select',
     '#title' => t('Country'),
@@ -629,24 +651,41 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-
-  $form['extra']['description']['short_description'] = array(
+  
+  $form['extra']['description']['sd'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="description-sd-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Description'),
+  );
+  
+  $form['extra']['description']['sd']['short_description'] = array(
     '#type' => 'textarea',
-    '#name' => 'short_description',
     '#title' => t('Short description'),
+    '#name' => 'short_description',
+    '#rows' => 10,
     '#default_value' => $default_short_description,
+  );
+
+  $form['extra']['description']['ld'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="description-ld-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Description'),
   );
 
   //Long Description
   if (!isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['add_long_description'] = array(
+    $form['extra']['description']['ld']['add_long_description'] = array(
       '#type' => 'submit',
       '#name' => 'ld_add_more',
       '#value' => t('+ add long description'),
       '#attributes' => array('class' => array('add-more-link btn-link')),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'description-ajax-wrapper',
+        'wrapper' => 'description-ld-ajax-wrapper',
         'effect' => 'fade',
       ),
       '#limit_validation_errors' => array(array('ld')),
@@ -655,7 +694,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   if (isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['long_description'] = array(
+    $form['extra']['description']['ld']['long_description'] = array(
       '#type' => 'text_format',
       '#title' => t('Long description'),
       '#rows' => 10,
@@ -729,45 +768,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Image'),
   );
 
-  if(!isset($form_state['#photo_exists'])) {
-    $form['extra']['photo']['upload'] = array(
-      '#type' => 'managed_file',
-      '#name' => 'image_upload',
-      '#title' => t('Image upload'),
-      '#description' => t('Allowed extensions: gif png jpg jpeg'),
-      '#upload_location' => 'public://uploads/',
-      '#upload_validators' => array(
-        'file_validate_extensions' => array('gif png jpg jpeg'),
-        // Pass the maximum file size in bytes
-        'file_validate_size' => array(1024 * 1024 * 1024),
-      ),
-    );
-    
-  } else {
-    $form['extra']['photo']['photo_exists'] = array(
-      '#type' => 'container',
-      '#prefix' => '<div id="photo-exists-wrapper"><img src="' . $default_image .'" />',
-      '#suffix' => '</div>',
-    );
-    
-    $form['extra']['photo']['photo_remove'] = array(
-      '#type' => 'submit',
-      '#name' => 'photo_remove',
-      '#value' => t('Remove photo'),
-      '#attributes' => array(
-        'style' => array(
-          'display:block; clear:left;'
-        ),
-      ),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'photo-ajax-wrapper',
-        'effect' => 'fade',
-      ),
-      '#limit_validation_errors' => array(),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
-  }
+  $form['extra']['photo']['upload'] = array(
+    '#type' => 'managed_file',
+    '#name' => 'image_upload',
+    '#title' => t('Image upload'),
+    '#default_value' => isset($default_image->fid) ? $default_image->fid : '',
+    '#description' => t('Allowed extensions: gif png jpg jpeg'),
+    '#upload_location' => 'public://uploads/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+      // Pass the maximum file size in bytes
+      'file_validate_size' => array(1024 * 1024 * 1024),
+    ),
+  );
 
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
@@ -786,7 +799,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['price']['amount'] = array(
     '#type' => 'textfield',
-    '#name' => 'price_amount',
     '#title' => t('Price'),
     '#default_value' => $default_price,
     '#attributes' => array(
@@ -804,7 +816,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     ),
   );
-
+  
   if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['free'] = array(
       '#type' => 'checkbox',
@@ -817,8 +829,17 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         ),
       ),
     );
-
-    $form['extra']['price']['add_extra_info'] = array(
+  }
+  
+  $form['extra']['price']['extra'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="price-extra-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Price'),
+  );
+  if (!isset($form_state['#price_needed'])) { 
+    $form['extra']['price']['extra']['add_extra_info'] = array(
       '#type' => 'submit',
       '#name' => 'price_add_more',
       '#value' => t('+ add price info'),
@@ -832,7 +853,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'price-ajax-wrapper',
+        'wrapper' => 'price-extra-ajax-wrapper',
         'effect' => 'fade',
       ),
       '#limit_validation_errors' => array(array('price')),
@@ -846,7 +867,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   if (isset($form_state['#price_needed'])) {
-    $form['extra']['price']['extra_info'] = array(
+    $form['extra']['price']['extra']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
       '#default_value' => $default_price_description,
@@ -1068,29 +1089,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('performers')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-
-  // Admission and event language todo
-  $form['extra']['target_group'] = array(
+  
+  //language
+  $form['extra']['language'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Target group'),
+    '#title' => t('Language'),
     '#group' => 'vertical_tabs',
   );
 
-  $form['extra']['target_group']['entrance'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Entrance'),
-    '#description' => t('Only for members'),
-    '#default_value' => $is_private,
-  );
-
-  $form['extra']['target_group']['spoken'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="spoken-ajax-wrapper">',
-    '#suffix' => '</div>',
-  );
-
-  $form['extra']['target_group']['spoken']['spoken_language'] = array(
+  $form['extra']['language']['spoken_language'] = array(
     '#type' => 'select',
     '#title' => t('Language'),
     '#options' => array(
@@ -1100,7 +1107,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  $form['extra']['target_group']['spoken']['in_language'] = array(
+  $form['extra']['language']['in_language'] = array(
     '#type' => 'select',
     '#title' => t('in'),
     '#options' => array(
@@ -1112,6 +1119,21 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
+  //entrance
+  //$form['extra']['target_group'] = array(
+  $form['extra']['entrance'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Entrance'),
+    '#group' => 'vertical_tabs',
+  );
+
+  $form['extra']['entrance']['members'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Entrance'),
+    '#description' => t('Only for members'),
+    '#default_value' => $is_private,
+  );
+
   // translations
   $form['extra']['translations'] = array(
     '#type' => 'fieldset',
@@ -1119,7 +1141,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#group' => 'vertical_tabs',
   );
 
-  /* english */
+  //english
   $form['extra']['translations']['english'] = array(
     '#type' => 'fieldset',
     '#title' => t('English'),
@@ -1145,7 +1167,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $en_long_description,
   );
 
-  /* french */
+  //french
   $form['extra']['translations']['french'] = array(
     '#type' => 'fieldset',
     '#title' => t('French'),
@@ -1171,7 +1193,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#default_value' => $fr_long_description,
   );
 
-  /* german */
+  //german
   $form['extra']['translations']['german'] = array(
     '#type' => 'fieldset',
     '#title' => t('German'),
@@ -1518,7 +1540,8 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-
+  dsm($values);
+  
   // Validate publication date.
   if ($values['extra']['publication_date']['wrapper']['date']) {
     try {
@@ -1767,22 +1790,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  if (!empty($values['short_description'])) {
+  if (!empty($values['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  if (!empty($values['long_description']['value'])) {
+  if (!empty($values['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['long_description']['value']);
   }
   // Price
-  if ($values['price_free']) {
+  if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
   else {
-    if ($values['price_amount']) {
-      $price = new CultureFeed_Cdb_Data_Price($values['price_amount']);
-      if ($values['price']['extra_info']) {
-        $price->setDescription($values['price']['extra_info']);
+    if ($values['price']['amount']) {
+      $price = new CultureFeed_Cdb_Data_Price($values['price']['amount']);
+      if ($values['price']['extra']['extra_info']) {
+        $price->setDescription($values['price']['extra']['extra_info']);
       }
       $detail->setPrice($price);
     }

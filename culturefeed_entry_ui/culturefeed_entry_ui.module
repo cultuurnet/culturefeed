@@ -230,10 +230,6 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       $form_state['#links_needed'] = count(element_children($form['extra']['links'])) + 1;
       break;
 
-    case 'photo_remove':
-      $form_state['#photo_exists'] = 0;
-      break;
-
     case 'opening_times_add_more':
       $form_state['#opening_times_needed'] = count(element_children($form['basic']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
@@ -286,23 +282,21 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
         $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
       } else {
 	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';  
+	    $form['basic']['location']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
       }
       return $form['basic']['location']['citywrapper'];
 
     case 'links_add_more':
       return $form['extra']['links'];
-      
-    case 'photo_remove':
-      return $form['extra']['photo'];
 
     case 'opening_times_add_more':
       return $form['basic']['period_or_permanent']['opening_times'];
       
     case 'price_add_more':
-      return $form['extra']['price'];
+      return $form['extra']['price']['extra'];
       
     case 'ld_add_more':
-      return $form['extra']['description'];
+      return $form['extra']['description']['ld'];
       
     case 'actor_add_more':
       return $form['extra']['organiser'];

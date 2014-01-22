@@ -8,7 +8,7 @@
   clear: left;
 }
 
-.form-item-location-house-number, .form-item-location-city {
+.form-item-location-house-number, .form-item-location-citywrapper-city {
   margin-left: 30px;
 }
 
@@ -91,7 +91,7 @@ input.add-more-link:hover {
   margin-right: 2%;
 }
 
-#spoken-ajax-wrapper .form-type-select {
+#edit-language .form-type-select {
   width: 20%;
   float: left;
 }
