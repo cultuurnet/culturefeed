@@ -1,9 +1,7 @@
 /*styles for jquery ui daterangepicker plugin */
 
 .ui-daterangepickercontain {
-	position: absolute;
 	z-index: 999;
-	left: 35.5px !important;
 }
 .ui-daterangepickercontain .ui-daterangepicker {
 	float: left;
@@ -12,6 +10,8 @@
 	display: inline;
 	background-image: none !important;
 	clear: left;
+	position: absolute;
+	z-index: 9999;
 }
 .ui-daterangepicker ul, .ui-daterangepicker .ranges, .ui-daterangepicker .range-start, .ui-daterangepicker .range-end {
 	float: left;
