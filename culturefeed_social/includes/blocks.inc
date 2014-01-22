@@ -32,6 +32,8 @@ function culturefeed_social_block_recent_activities() {
     '#theme' => 'culturefeed_social_user_activity_list',
     '#activities' => $activities,
     '#class' => 'site-activity-list',
+    '#read_more_text' => t('All actions'),
+    '#read_more_url' => 'culturefeed/activities/recent',
   );
 
   $block['subject'] = t('Recent actions');
@@ -199,7 +201,7 @@ function culturefeed_social_block_recommended_by($object) {
   // Advanced recommend link.
   $content['recommend-advanced'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object),
+    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE),
   );
 
   $block['subject'] = $config->subject;
@@ -323,8 +325,8 @@ function culturefeed_social_block_my_activity_summary($account) {
     }
   }
 
-  $private = $account->culturefeed_uid == $GLOBALS['user']->uid ? TRUE : FALSE;
-
+  $view_own_activities = $account->uid == $GLOBALS['user']->uid ? TRUE : FALSE;
+  $private = FALSE;
   try {
     $totals = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
@@ -339,6 +341,8 @@ function culturefeed_social_block_my_activity_summary($account) {
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,
+      '#private' => $view_own_activities,
+      '#account_name' => $account->name,
     );
   }
 

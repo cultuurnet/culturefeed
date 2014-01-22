@@ -22,5 +22,17 @@ function culturefeed_pages_admin_settings() {
     '#default_value' => $defaults,
   );
 
-  return system_settings_form($form);
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration')
+  );
+
+  return $form;
+}
+
+/**
+ * Save the general settings form.
+ */
+function culturefeed_pages_admin_settings_submit($form, $form_state) {
+  variable_set('culturefeed_pages_actor_types', array_filter($form_state['values']['culturefeed_pages_actor_types']));
 }

@@ -300,7 +300,7 @@ function culturefeed_search_ui_block_view($delta) {
     break;
 
     case 'culturefeed-search-activefilters':
-      $block['subject'] = 'Je zocht op:';
+      $block['subject'] = t('You searched for:');
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
     break;
 

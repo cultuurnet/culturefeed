@@ -15,7 +15,7 @@
 function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_ajax = FALSE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_pages_follow_login_required_message', array('page' => $page));
+    return theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
   }
 
   $is_following = culturefeed_pages_is_user_following_page($page->getId());

@@ -64,6 +64,13 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
+  $theme['culturefeed_agenda_related_activities'] = array(
+    'variables' => array('results' => array()),
+    'template' => 'culturefeed-agenda-related-activities',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
   return $theme;
 
 }

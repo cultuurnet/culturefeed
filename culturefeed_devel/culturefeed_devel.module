@@ -14,6 +14,13 @@ define('CULTUREFEED_DEVEL_DEFAULT_SLOW_REQUEST', 100);
  */
 function culturefeed_devel_boot() {
   if (variable_get('culturefeed_devel_log_slow_request', FALSE) || variable_get('culturefeed_devel_show_requests', TRUE)) {
+
+    // We need user_access() in the shutdown function. make sure it gets loaded.
+    // Also prime the drupal_get_filename() static with user.module's location to
+    // avoid a stray query.
+    drupal_get_filename('module', 'user', 'modules/user/user.module');
+    drupal_load('module', 'user');
+
     drupal_register_shutdown_function('culturefeed_devel_shutdown');
   }
 }
@@ -99,8 +106,9 @@ function culturefeed_devel_shutdown() {
     }
   }
 
-  // Don't add output on ajax / drush requests.
-  if (drupal_is_cli() || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+  // Don't add output on ajax / drush / xml requests.
+  $content_type = drupal_get_http_header('content-type');
+  if (drupal_is_cli() || $content_type == 'text/xml' || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
     return;
   }
 
@@ -131,13 +139,19 @@ function culturefeed_devel_requests_table($requests, $max_time) {
     unset($diff);
   }
 
-  return theme('culturefeed_devel_request_log', array(
-    'header' => $header,
-    'rows' => $rows,
-    'total' => count($requests),
-    'total_time' => $total_time,
-    'max_time' => $max_time,
-  ));
+  // If we are serving a page that was already cached, theme function will not be known.
+  if (function_exists('theme_get_registry') && theme_get_registry()) {
+    return theme('culturefeed_devel_request_log', array(
+      'header' => $header,
+      'rows' => $rows,
+      'total' => count($requests),
+      'total_time' => $total_time,
+      'max_time' => $max_time,
+    ));
+  }
+  else {
+    return '<pre>' . print_r($rows, TRUE) . '</pre>';
+  }
 }
 
 /**

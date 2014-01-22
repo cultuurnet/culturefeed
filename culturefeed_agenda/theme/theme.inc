@@ -301,6 +301,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link);
   }
 
+  if (module_exists('culturefeed_social')) {
+    $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
+  }
 }
 
 /**
@@ -398,14 +401,15 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
     try {
       $event = culturefeed_agenda_event_load($relations[key($relations)]->getCdbid());
       $variables['event'] = $event;
-      $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-      if ($event_detail) {
-        $variables['when'] = $event_detail->getCalendarSummary();
+      if ($event) {
+        $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+        if ($event_detail) {
+          $variables['when'] = $event_detail->getCalendarSummary();
+        }
+
+        // Add location information from the event.
+        $variables['location'] = culturefeed_agenda_get_location_of_event($event->getEntity());
       }
-
-      // Add location information from the event.
-      $variables['location'] = culturefeed_agenda_get_location_of_event($event->getEntity());
-
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_agenda', $e);
@@ -648,4 +652,18 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
       'content' => implode(' - ', $description_parts),
     ),
   ), 'meta_description');
+}
+
+/**
+ * Preprocess the related activities.
+ * @see culturefeed-agenda-related-activities.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$variables) {
+
+  $results = $variables['results'];
+  $variables['items'] = array();
+
+  foreach ($results as $result) {
+    $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
+  }
 }

@@ -6,24 +6,29 @@
 
 
 /**
- * Preprocess the culturefeed pages join page.
- * @see culturefeed-pages-join-page.tpl.php
+ * Preprocess the culturefeed pages basic search page.
+ * @see culturefeed-pages-basic-search-page.tpl.php
  */
-function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
-
-  $variables['message'] = '';
+function culturefeed_pages_preprocess_culturefeed_pages_basic_search_page(&$variables) {
 
   if (!empty($variables['results'])) {
 
     $variables['items'] = array();
     foreach ($variables['results'] as $item) {
-      $variables['items'][] = theme('culturefeed_pages_join_search_result_item', array('item' => $item));
+      $variables['items'][] = theme('culturefeed_pages_basic_search_result_item', array('item' => $item));
     }
 
   }
 
+  if ($variables['total_results'] > 0) {
+    $variables['total_results_message'] = t("@total pages found for '@search'", array('@total' => $variables['total_results'], '@search' => $variables['search']));
+  }
+  else {
+    $variables['total_results_message'] = t("No pages found for '@search'", array('@search' => $variables['search']));
+  }
+
   $query = drupal_get_query_parameters();
-  $variables['create_message'] = t('Does your organization or association has no page yet?') . ' ' . l(t('Create a new page'), 'pages/add', array('query' => $query));
+  $variables['create_message'] = l(t('Create your own page'), 'pages/add', array('query' => $query));
 
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
@@ -31,52 +36,69 @@ function culturefeed_pages_preprocess_culturefeed_pages_join_page(&$variables) {
 }
 
 /**
- * Preprocess a culturefeed page join result item.
- * @see culturefeed-pages-join-search-result-item.tpl.php
+ * Preprocess a culturefeed page basic search result item.
+ * @see culturefeed-pages-basic-search-result-item.tpl.php
  */
-function culturefeed_pages_preprocess_culturefeed_pages_join_search_result_item(&$variables) {
+function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item(&$variables) {
 
   $page = $variables['item']->getEntity();
 
   $variables['title'] = $page->getName();
 
-  $address = $page->getAddress();
-  if ($address) {
-    $variables['location']['street'] = check_plain($address->getStreet());
-    $variables['location']['city'] = check_plain($address->getCity());
-    $variables['location']['country'] = check_plain($address->getCountry());
-  }
+  culturefeed_pages_preprocess_culturefeed_page_summary($variables);
+  $variables['description'] = truncate_utf8($variables['description'], 100, FALSE, TRUE);
 
   drupal_add_library('system', 'drupal.ajax');
 
+  // Local storage of the followers for the current user.
+  $i_follow_pages = array();
+  try {
+
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if ($cf_user && $cf_user->following) {
+      foreach ($cf_user->following as $cfp_follower) {
+        $i_follow_pages[] = $cfp_follower->page->getId();
+      }
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
   $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
 
-  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $permissions = $page->getPermissions();
-    $variables['become_member_link'] = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => 'btn btn-warning btn-block')));
+  // Anonymous user.
+  $variables['logged_in'] = !empty($cf_user);
+  $variables['following'] = FALSE;
+  if (empty($cf_user)) {
+    $variables['follow_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
+    $variables['member_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_BECOME_MEMBER));
   }
+  // Logged in user.
+  else {
 
-  // Local storage of the followers for the current user.
-  $cf_user = DrupalCultureFeed::getLoggedInUser();
-  $i_follow_pages = array();
-  if ($cf_user->following) {
-    foreach ($cf_user->following as $cfp_follower) {
-      $i_follow_pages[] = $cfp_follower->page->getId();
+    // Member link.
+    if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+      $variables['become_member_url'] = url('culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+    }
+
+    // Follow link.
+    if (in_array($page->getId(), $i_follow_pages)) {
+      $variables['following'] = TRUE;
+      $variables['follow_url'] = url('culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query));
+      $variables['follow_text'] = t('Unfollow');
+    }
+    else {
+      $variables['follow_url'] = url('culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query));
+      $variables['follow_text'] = t('Follow');
     }
   }
-  if (in_array($page->getId(), $i_follow_pages)) {
-    $variables['follow_link'] = l(t('Unfollow'), 'culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
-  }
-  else {
-    $variables['follow_link'] = l(t('Follow page'), 'culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query, 'attributes' => array('class' => array('btn', 'btn-link'))));
-  }
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => 'btn btn-link')));
-
 }
 
 /**
- * Preprocess the variables for the page detail.
- * @see culturefeed-page.tpl.php
+ * Preprocess the variables for the page summary.
+ * @see culturefeed-page-summary.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_page_summary(&$variables) {
 
@@ -445,7 +467,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
 function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variables) {
 
   $build = $variables['build'];
-  $variables['user_url'] = url('user/' . culturefeed_get_uid_for_cf_uid($variables['user']->id, $variables['user']->nick));
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($variables['user']->id, $variables['user']->nick);
+  $variables['user_url'] = url('user/' . $drupal_uid);
 
   if (!empty($build['member_pages'])) {
     $variables['my_pages'] = drupal_render($build['member_pages']);
@@ -531,8 +554,16 @@ function theme_culturefeed_pages_unfollow_success_message($variables) {
 /**
  * Theme the message when a user is anonymous, and the follow link would be displayed.
  */
-function theme_culturefeed_pages_follow_login_required_message($variables) {
-  return l('Pagina volgen', 'cultuurkuur/login', array('query' => drupal_get_destination()));
+function theme_culturefeed_pages_login_required_message($variables) {
+
+  if ($variables['action'] == CultureFeed_Pages_Default::ACTION_BECOME_MEMBER) {
+    $message = t('You must be logged in to join this page.');
+  }
+  else {
+    $message = t('You must be logged in to follow this page.');
+  }
+
+  return '<div class="login-required">' . $message . '</div>';
 }
 
 /**
