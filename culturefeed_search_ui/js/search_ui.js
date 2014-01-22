@@ -55,8 +55,9 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
       doneButtonText: Drupal.t('OK'),
       dateFormat: 'd/m/yy',
       earliestDate : Date.parse(),
-      constrainDates : true
-    });
+      constrainDates : true,
+      appendTo: '.form-item-date-range'
+    })
   }
   
   /**
