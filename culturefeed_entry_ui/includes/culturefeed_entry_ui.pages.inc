@@ -156,7 +156,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     // Default image
     if($get_media = $event_details->getMedia()->byMediaType('photo')){
-      $form_state['#photo_exists'] = TRUE;
       $copyright_value = $get_media->current()->getCopyright();
       $url = $get_media->current()->getHLink();
       $filename = $get_media->current()->getFileName();
@@ -769,47 +768,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Image'),
   );
 
-  //if(!isset($form_state['#photo_exists'])) {
-    $form['extra']['photo']['upload'] = array(
-      '#type' => 'managed_file',
-      '#name' => 'image_upload',
-      '#title' => t('Image upload'),
-      '#default_value' => isset($default_image->fid) ? $default_image->fid : '',
-      //'#default_value' => $default_image,
-      '#description' => t('Allowed extensions: gif png jpg jpeg'),
-      '#upload_location' => 'public://uploads/',
-      '#upload_validators' => array(
-        'file_validate_extensions' => array('gif png jpg jpeg'),
-        // Pass the maximum file size in bytes
-        'file_validate_size' => array(1024 * 1024 * 1024),
-      ),
-    );
-    
-  /*} else {
-    $form['extra']['photo']['photo_exists'] = array(
-      '#type' => 'container',
-      '#prefix' => '<div id="photo-exists-wrapper"><img src="' . $default_image .'" />',
-      '#suffix' => '</div>',
-    );
-    
-    $form['extra']['photo']['photo_remove'] = array(
-      '#type' => 'submit',
-      '#name' => 'photo_remove',
-      '#value' => t('Remove photo'),
-      '#attributes' => array(
-        'style' => array(
-          'display:block; clear:left;'
-        ),
-      ),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'photo-ajax-wrapper',
-        'effect' => 'fade',
-      ),
-      '#limit_validation_errors' => array(),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
-  }*/
+  $form['extra']['photo']['upload'] = array(
+    '#type' => 'managed_file',
+    '#name' => 'image_upload',
+    '#title' => t('Image upload'),
+    '#default_value' => isset($default_image->fid) ? $default_image->fid : '',
+    '#description' => t('Allowed extensions: gif png jpg jpeg'),
+    '#upload_location' => 'public://uploads/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+      // Pass the maximum file size in bytes
+      'file_validate_size' => array(1024 * 1024 * 1024),
+    ),
+  );
 
   $form['extra']['photo']['copyrights'] = array(
     '#type' => 'checkbox',
