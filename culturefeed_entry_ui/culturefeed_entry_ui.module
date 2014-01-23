@@ -345,3 +345,13 @@ function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtend
     return "culturefeed_entry_ui/event/{$entity->getId()}/{$op}";
   }
 }
+
+/**
+ * Implements hook_block_info_alter().
+ */
+function culturefeed_entry_ui_block_info_alter(&$blocks, $theme, $code_blocks) {
+  $delta = '4abc71e4bcf51672335a80c2c3b6023e';
+  if (isset($blocks[$delta])) {
+    $block['delta']['region'] = 'sidebar_second';
+  }
+}
