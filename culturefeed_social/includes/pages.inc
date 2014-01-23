@@ -17,6 +17,7 @@ function culturefeed_social_page_ajax_get_activities() {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
   $query->start = $requested_page * CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   if (isset($_GET['culturefeed_uid'])) {
     $query->userId = $_GET['culturefeed_uid'];
@@ -686,6 +687,7 @@ function culturefeed_social_page_recent_activities() {
 
   $query = new CultureFeed_SearchActivitiesQuery();
 
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
   $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
   $query->max = $pagelength;
   $query->start = $page * $pagelength;
