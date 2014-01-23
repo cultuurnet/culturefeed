@@ -264,7 +264,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form = array();
 
   $query = drupal_get_query_parameters();
-  $page_name = !empty($query['page']) ? $query['page'] : '';
+  $page_name = !empty($query['search']) ? $query['search'] : '';
 
   $form['name'] = array(
     '#type' => 'textfield',
