@@ -11,7 +11,7 @@ class views_handler_area_cdb_item_create extends views_handler_area {
   /**
    * {@inheritdoc}
    */
-  function render() {
+  function render($empty = FALSE) {
 
     $links = array();
 

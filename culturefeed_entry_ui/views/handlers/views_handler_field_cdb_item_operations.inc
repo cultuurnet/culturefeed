@@ -13,7 +13,9 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
   /**
    * {@inheritdoc}
    */
-  function render(ActivityStatsExtendedEntity $extended_entity) {
+  function render($values) {
+    /** @var ActivityStatsExtendedEntity $extended_entity */
+    $extended_entity = $values;
     $links = array();
 
     if ($extended_entity->getType() === 'event') {
