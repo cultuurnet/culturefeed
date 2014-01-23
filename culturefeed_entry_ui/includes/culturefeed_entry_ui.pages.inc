@@ -155,7 +155,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default image
-    if($get_media = $event_details->getMedia()->byMediaType('photo')){
+    $photo_media = $event_details->getMedia()->byMediaType('photo');
+    if (count($photo_media) > 0) {
+      $get_media = $photo_media->current();
       $copyright_value = $get_media->current()->getCopyright();
       $url = $get_media->current()->getHLink();
       $filename = $get_media->current()->getFileName();
