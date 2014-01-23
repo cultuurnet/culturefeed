@@ -667,3 +667,72 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
     $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
   }
 }
+
+/**
+ * Implements hook_preprocess_culturefeed_agenda_de_lijn_widget().
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$variables) {
+
+  $address_from = array();
+  $address_to = array();
+
+  $cf_account = NULL;
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+  }
+
+  // Get addres from (user his address)
+  if ($cf_account) {
+    $delijn_str_nr = explode(' ', $cf_account->street);
+    $delijn_nr = array_pop($delijn_str_nr);
+    if (1 === preg_match('#[0-9]#', $delijn_nr)) {
+      $delijn_str = str_replace($delijn_nr, '', $cf_account->street);
+    }
+    else {
+      $delijn_nr = '';
+      $delijn_str = $cf_account->street;
+    }
+    $address_from = array(
+      'city' => $cf_account->city,
+      'street' => $delijn_str,
+      'nr' => $delijn_nr
+    );
+  }
+
+  // Get address to.
+  $cdb_item = $variables['item']->getEntity();
+  switch ($variables['item']->getType()) {
+    case 'actor':
+
+      $contact_info = $cdb_item->getContactInfo();
+      $addresses = $contact_info->getAddresses();
+      if ($addresses) {
+        $physical_address = $addresses[0]->getPhysicalAddress();
+      }
+
+      break;
+
+    case 'event':
+
+      if ($cdb_item->getLocation()) {
+        $physical_address = $cdb_item->getLocation()->getAddress()->getPhysicalAddress();
+      }
+
+      break;
+  }
+
+  if ($physical_address) {
+    $address_to = array(
+      'city' => check_plain($physical_address->getCity()),
+      'street' => check_plain($physical_address->getStreet()),
+      'nr' => check_plain($physical_address->getHouseNumber()),
+    );
+  }
+
+  $settings = array('address_from' => $address_from, 'address_to' => $address_to);
+
+  drupal_add_js(array('delijn' => $settings), 'setting');
+}
