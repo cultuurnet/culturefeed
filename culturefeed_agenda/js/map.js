@@ -38,7 +38,7 @@
       contentString += d.location.zip + ' ' + d.location.city + '<br />';
 
       contentString += '<br />' + Drupal.t('Directions') + ':' +
-              '<form action="javascript:Drupal.CultureFeed.Agenda.getDirections()"><input type="text" size="20" maxlength="40" name="saddr" id="saddr" value="';
+              '<form action="javascript:Drupal.CultureFeed.Agenda.getDirections()"><input type="text" size="20" maxlength="38" name="saddr" id="saddr" value="';
       if (d.to_address) {
         contentString += d.to_address;
       }

@@ -34,7 +34,7 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   $links = array();
   // General links.
   if ($detail) {
-    
+
     foreach ($detail->getMedia() as $media) {
       if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
         $links[] = $media->getHLink();
@@ -192,7 +192,7 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
     }
 
   }
-  
+
   return $locations;
 
 }
@@ -420,4 +420,70 @@ function culturefeed_agenda_set_actor_breadcrumb(\CultuurNet\Search\ActivityStat
 
   menu_set_active_trail($active_trail);
 
+}
+
+/**
+ * Get the render array to show the google map for road description.
+ */
+function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+
+  global $language;
+  module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+  $variables = array(
+    'item' => $item,
+    'title' => $item->getTitle($language->language),
+    'link' => culturefeed_search_detail_l($item->getType(), $item->getId(), $item->getTitle($language->language)),
+  );
+
+  switch ($item->getType()) {
+
+    case 'event':
+      _culturefeed_agenda_preprocess_event($variables);
+      break;
+
+    case 'actor':
+      _culturefeed_agenda_preprocess_actor($variables);
+      break;
+  }
+
+  // Fetch the user info
+  $cf_account = NULL;
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+  }
+
+  if ($cf_account) {
+    $variables['to_address'] = $cf_account->street . ', ' . $cf_account->zip . ' ' . $cf_account->city;
+  }
+
+  drupal_set_breadcrumb(array(l(t('Home'), NULL), $variables['link'], 'Stratenplan'));
+
+  $query = array(
+    'sensor' => 'true',
+    'v' => '3.5',
+    'region' => 'BE',
+    'hl' => $language->language,
+  );
+
+  unset($variables['item']);
+
+  $attached_js = array(
+    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+    drupal_get_path('module', 'culturefeed_agenda') . '/js/map.js',
+  );
+
+  $attached_js[] = array(
+    'type' => 'setting',
+    'data' => array('culturefeed_map' => array('info' => $variables)),
+  );
+
+  return array(
+    '#theme' => 'culturefeed_agenda_travel_map',
+    '#attached' => array(
+      'js' => $attached_js,
+    ),
+  );
 }
