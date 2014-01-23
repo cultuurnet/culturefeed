@@ -60,9 +60,21 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
 
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
 
+  // Sort alphabetically.
+  if ($variables['sort_alphabetically']) {
+    $sorted_facets = array();
+    foreach ($variables['items'] as $facet_item) {
+      $sorted_facets[$facet_item->getLabel()] = $facet_item;
+    }
+    sort($sorted_facets);
+  }
+  else {
+    $sorted_facets = $variables['items'];
+  }
+
   $items = array();
   // Add all the facet items to the build.
-  foreach ($variables['items'] as $facet_item) {
+  foreach ($sorted_facets as $facet_item) {
 
     $sub_item_output = array();
     $has_active_subitem = FALSE;
@@ -72,7 +84,20 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
 
       $sub_items = $facet_item->getSubItems();
 
-      foreach ($sub_items as $sub_item) {
+       // Sort alphabetically.
+      if ($variables['sort_alphabetically']) {
+        $sorted_sub_items = array();
+        foreach ($sub_items as $sub_item) {
+          $sorted_sub_items[$sub_item->getLabel()] = $sub_item;
+        }
+        sort($sorted_sub_items);
+      }
+      else {
+        $sorted_sub_items = $sub_items;
+      }
+
+      // Create link for every sub item.
+      foreach ($sorted_sub_items as $sub_item) {
 
         // If the list has an active subitem. Add class.
         $sub_item_active = in_array($sub_item->getValue(), $active_options);
@@ -160,14 +185,6 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $variables['url'] = url($variables['path'], array('query' => $query, 'absolute' => TRUE));
   $variables['label'] = $facet_item->getLabel();
   $variables['count'] = $facet_item->getTotalResults();
-
-}
-
-/**
- * Preproces a search facet item.
- * @see culturefeed-search-suggestions.tpl.php
- */
-function culturefeed_search_ui_preprocess_culturefeed_search_suggestions(&$variables) {
 
 }
 

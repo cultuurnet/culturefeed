@@ -140,6 +140,7 @@ function culturefeed_search_ui_theme() {
         'title' => NULL,
         'path' => NULL,
         'query' => NULL,
+        'sort_alphabetically' => TRUE,
       ),
       'template' => 'culturefeed-search-facet',
       'path' => $path,
@@ -275,6 +276,39 @@ function culturefeed_search_ui_block_info() {
 }
 
 /**
+ * Implements hook_block_configure().
+ */
+function culturefeed_search_ui_block_configure($delta) {
+
+  $form = array();
+
+  $delta_parts = explode('-', $delta);
+  if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+    $form['sort'] = array(
+      '#type' => 'select',
+      '#title' => t('Sort facet on'),
+      '#options' => array(
+        'alphabetically' => t('Alphabetically'),
+        'total_results' => t('Total results')
+      ),
+      '#default_value' => variable_get('culturefeed_search_sort_' . $delta, 'alphabetically'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_search_ui_block_save($delta, $edit = array()) {
+
+  if (isset($edit['sort'])) {
+    variable_set('culturefeed_search_sort_' . $delta, $edit['sort']);
+  }
+}
+
+/**
  * Implements hook_block_view().
  */
 function culturefeed_search_ui_block_view($delta) {
@@ -320,7 +354,8 @@ function culturefeed_search_ui_block_view($delta) {
 
       $delta_parts = explode('-', $delta);
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1]);
+        $sort = variable_get('culturefeed_search_sort_' . $delta, 'alphabetically');
+        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), ($sort == 'alphabetically'));
       }
 
   }
