@@ -1783,20 +1783,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
+
   if (!empty($values['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
-  if (!empty($values['long_description']['value'])) {
-    $detail->setLongDescription($values['description']['long_description']['value']);
+  if (!empty($values['description']['ld']['long_description']['value'])) {
+    $detail->setLongDescription($values['description']['ld']['long_description']['value']);
   }
+
   // Price
-  if (isset($values['price']['free'])) {
+  if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
   else {
-    if (isset($values['price']['amount'])) {
-      $price = new CultureFeed_Cdb_Data_Price($values['price']['amount']);
+    if ($values['price']['amount']) {
+      $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
       if (isset($values['price']['extra']['extra_info'])) {
         $price->setDescription($values['price']['extra']['extra_info']);
       }
@@ -1838,7 +1840,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $physical_address->setHouseNumber($values['basic']['house_number']);
     $physical_address->setCity($values['location']['citywrapper']['city']);
     $physical_address->setZip($values['location']['citywrapper']['zip_code']);
-    $physical_address->setCountry($values['location']['country']);
+    $physical_address->setCountry($values['location']['citywrapper']['country']);
     $address->setLabel($values['location']['location_title']);
     $address->setPhysicalAddress($physical_address);
     $address->setLabel($values['location']['location_title']);
@@ -1959,7 +1961,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $details->add($detail);
   }
   try {
-
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
