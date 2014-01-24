@@ -30,6 +30,20 @@ function culturefeed_init() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function culturefeed_theme() {
+
+  return array(
+    'culturefeed_authenticated_page' => array(
+      'variables' => array(),
+      'path' => drupal_get_path('module', 'culturefeed') . '/theme',
+      'file' => 'theme.inc',
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function culturefeed_menu() {
@@ -69,6 +83,14 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/authorize'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_authorize',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed.pages.inc',
+  );
+
+  $items['authenticated'] = array(
+    'title' => 'Log in',
+    'page callback' => 'culturefeed_authenticated_action_page',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
