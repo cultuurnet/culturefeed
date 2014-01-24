@@ -3,14 +3,25 @@
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
   Drupal.CultureFeed.Agenda = {};
+  Drupal.CultureFeed.Agenda.mapInitialized = false;
 
+  /**
+   * Open the directions search on google maps.
+   */
   Drupal.CultureFeed.Agenda.getDirections = function() {
     // set the start and end locations
     var saddr = document.getElementById("saddr").value;
     window.open('http://maps.google.be/maps?saddr=' + saddr + '&daddr=' + escape(Drupal.settings.culturefeed_map.info.location.street + ', ' + Drupal.settings.culturefeed_map.info.location.zip + ' ' + Drupal.settings.culturefeed_map.info.location.city) + '&hl=en&z=15', '_blank');
   }
 
+  /**
+   * Initialize the map.
+   */
   Drupal.CultureFeed.Agenda.initializeMap = function() {
+
+    if (Drupal.CultureFeed.Agenda.mapInitialized) {
+      return;
+    }
 
     var d = Drupal.settings.culturefeed_map.info;
     var myOptions = {
@@ -66,13 +77,10 @@
       // Trigger click for default open infowindow
       google.maps.event.trigger(Marker, 'click');
 
+      Drupal.CultureFeed.Agenda.mapInitialized = true;
+
     }
 
   }
-
-  // Place map
-  $(document).ready(function() {
-    google.maps.event.addDomListener(window, 'load', Drupal.CultureFeed.Agenda.initializeMap);
-  })
 
 })(jQuery);

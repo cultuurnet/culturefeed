@@ -480,6 +480,11 @@ function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStat
     'data' => array('culturefeed_map' => array('info' => $variables)),
   );
 
+  $attached_js[] = array(
+    'type' => 'inline',
+    'data' => 'jQuery(document).ready(Drupal.CultureFeed.Agenda.initializeMap);',
+  );
+
   return array(
     '#theme' => 'culturefeed_agenda_travel_map',
     '#attached' => array(
