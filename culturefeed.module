@@ -38,6 +38,7 @@ function culturefeed_theme() {
     'culturefeed_authenticated_page' => array(
       'variables' => array(),
       'path' => drupal_get_path('module', 'culturefeed') . '/theme',
+      'template' => 'culturefeed-authenticated-page',
       'file' => 'theme.inc',
     ),
   );
