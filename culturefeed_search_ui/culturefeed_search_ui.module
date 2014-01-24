@@ -153,6 +153,7 @@ function culturefeed_search_ui_theme() {
         'title' => NULL,
         'path' => NULL,
         'query' => NULL,
+        'sort_alphabetically' => TRUE,
       ),
       'template' => 'culturefeed-search-facet-eventtype',
       'path' => $path,
