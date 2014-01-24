@@ -60,7 +60,8 @@ function culturefeed_pages_page_manage_members(CultureFeed_Cdb_Item_Page $page, 
  */
 function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, CultureFeed_Pages_UserList $user_list, $cf_user = NULL) {
 
-  $uids = culturefeed_get_uids_for_memberships($user_list->memberships);
+  // Get all the uid's in 1 time. Otherwise the theming layer will search it 1 by 1.
+  culturefeed_get_uids_for_memberships($user_list->memberships);
 
   $header = array(
     t('Name'),
@@ -70,6 +71,15 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     '',
     '',
   );
+
+  // Count how many admins.
+  $admins = array();
+  foreach ($user_list->memberships as $member) {
+    if ($member->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+      $admins[] = $member;
+    }
+  }
+  $total_admins = count($admins);
 
   $rows = array();
   foreach ($user_list->memberships as $member) {
@@ -84,33 +94,39 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
 
     $row['name'] = $name;
 
-    // Show edit form or normal data.
+    // Show the user data.
     if (empty($cf_user) || $cf_user->id != $member->user->id) {
 
       $row['function'] = $member->relation;
       switch ($member->role) {
-        case "ADMIN":
-        $role = t('administrator');
+        case CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN:
+          $role = t('administrator');
         break;
-        case "MEMBER":
-        $role = t('member');
+        case CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER:
+        default:
+          $role = t('member');
         break;
       }
       $row['role'] = $role;
       $row['member_since'] = date('d/m/Y H:i', $member->creationDate);
       $row['edit'] = l(t('Edit'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/edit/nojs', array('attributes' => array('class' => 'use-ajax')));
 
-      $delete_options = array(
-        'attributes' => array(
-          'role' => 'button',
-          'data-toggle' => 'modal',
-          'data-target' => '#page_confirm',
-          'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
-        ),
-      );
-      $row['delete'] = l(t('Delete as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
-
+      if ($total_admins == 1 && $member->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+        $row['delete'] = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $page));
+      }
+      else {
+        $delete_options = array(
+          'attributes' => array(
+            'role' => 'button',
+            'data-toggle' => 'modal',
+            'data-target' => '#page_confirm',
+            'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
+          ),
+        );
+        $row['delete'] = l(t('Delete as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
+      }
     }
+    // Show the edit form.
     else {
 
       $form = drupal_get_form('culturefeed_pages_edit_membership_form', $page, $cf_user, $user_list);

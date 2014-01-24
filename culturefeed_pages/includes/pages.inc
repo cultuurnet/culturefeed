@@ -1096,35 +1096,22 @@ function culturefeed_pages_page_my_pages() {
         $admins_of_page = array();
         $path = culturefeed_search_detail_path('page', $membership->page->getId(), $membership->page->getName());
 
+        // We need the full user list of every page, to check if the user is the only admin.
         if ($is_page_admin) {
-
           $admin_link = l(t('Administer page'), $path);
-
-          // We need the full user list of every page, to check if the user is the only admin.
-          try {
-            $admin_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
-          }
-          catch (Exception $e) {
-            watchdog_exception('culturefeed_pages', $e);
-            $admin_list = new CultureFeed_Pages_UserList();
-          }
-
-          foreach ($admin_list->memberships as $admin) {
-            $admins_of_page[$admin->user->id] = $admin->user->id;
-          }
-
+          $admins_of_page = culturefeed_pages_get_admins_of_page($membership->page);
         }
         else {
-
           // Show request admin link.
-          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l(t('Become an administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
-            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => t('This is a request sent to the administrator of this page.')))) . '</div>';
-
+          $admin_link = theme('culturefeed_pages_admin_request_link', array(
+            'page' => $membership->page,
+            'cf_user' => $cf_user,
+          ));
         }
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = '<p class="muted">' . t('Not possible to remove') . ' <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="' . t('You\'re the only administrator of this page. You can not remove yourself as a member') . '"><i class="icon icon-question-sign"></i></span></p>';
+          $member_link = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $membership->page));
         }
         else {
           $delete_options = array(
@@ -1173,13 +1160,6 @@ function culturefeed_pages_page_my_pages() {
         $become_member_link = t('You are a member of this page');
         if (!in_array($followed_page->page->getId(), $membership_page_ids)) {
           $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-        }
-
-        if ($is_page_admin || !isset($membership)) {
-          $admin_link = l(t('Administer page'), $path);
-        }
-        else {
-          $admin_link = l(t('Send request to become administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
         }
 
         $row = array(
