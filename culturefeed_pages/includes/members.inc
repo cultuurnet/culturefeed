@@ -88,7 +88,15 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     if (empty($cf_user) || $cf_user->id != $member->user->id) {
 
       $row['function'] = $member->relation;
-      $row['role'] = $member->role;
+      switch ($member->role) {
+        case "ADMIN":
+        $role = t('administrator');
+        break;
+        case "MEMBER":
+        $role = t('member');
+        break;
+      }
+      $row['role'] = $role;
       $row['member_since'] = date('d/m/Y H:i', $member->creationDate);
       $row['edit'] = l(t('Edit'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/edit/nojs', array('attributes' => array('class' => 'use-ajax')));
 

@@ -875,3 +875,9 @@ msgstr[1] "@count reacties"
 
 msgid "Allowed extensions: jpg, jpeg, gif or png"
 msgstr "Toegelaten formaten: jpg, jpeg, gif of png"
+
+msgid "Administrator"
+msgstr "Beheerder"
+
+msgid "Member"
+msgstr "Lid"
