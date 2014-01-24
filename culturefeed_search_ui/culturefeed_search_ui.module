@@ -293,6 +293,14 @@ function culturefeed_search_ui_block_configure($delta) {
       ),
       '#default_value' => variable_get('culturefeed_search_sort_' . $delta, 'alphabetically'),
     );
+
+    if ($delta == 'facet-theme') {
+      $form['culturefeed-facet-theme-hide'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show the facet only when an eventtype is chosen'),
+        '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
+      );
+    }
   }
 
   return $form;
@@ -305,6 +313,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
   if (isset($edit['sort'])) {
     variable_set('culturefeed_search_sort_' . $delta, $edit['sort']);
+  }
+  if (isset($edit['culturefeed-facet-theme-hide'])) {
+    variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
   }
 }
 
@@ -354,6 +365,14 @@ function culturefeed_search_ui_block_view($delta) {
 
       $delta_parts = explode('-', $delta);
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+
+        // Hide theme facet if no eventtype is chosen.
+        if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', FALSE)) {
+          if (!isset($_GET['facet']['category_umv_id'])) {
+            return $block;
+          }
+        }
+
         $sort = variable_get('culturefeed_search_sort_' . $delta, 'alphabetically');
         $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), ($sort == 'alphabetically'));
       }
