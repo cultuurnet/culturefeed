@@ -387,6 +387,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form['image'] = array(
     '#type' => 'file',
     '#title' => t('Picture or logo'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
     '#size' => 26,
     '#default_value' => '',
     '#weight' => 16,

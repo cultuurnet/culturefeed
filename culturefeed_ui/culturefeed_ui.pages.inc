@@ -221,6 +221,7 @@ function culturefeed_ui_page_profile_edit_form() {
     '#type' => 'file',
     '#size' => 26,
     '#title' => t('Choose picture'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
   );
 
   // Gender.
