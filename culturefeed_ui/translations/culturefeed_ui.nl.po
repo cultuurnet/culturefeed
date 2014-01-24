@@ -635,3 +635,6 @@ msgstr "CultureFeed"
 
 msgid "The maximum of 250 characters is exceeded"
 msgstr "Het maximum aantal van 250 karakters is overschreden"
+
+msgid "Allowed extensions: jpg, jpeg, gif or png"
+msgstr "Toegelaten formaten: jpg, jpeg, gif of png"
