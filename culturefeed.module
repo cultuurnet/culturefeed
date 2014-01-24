@@ -161,3 +161,21 @@ function culturefeed_form_system_performance_settings_alter(&$form, $form_state)
     '#default_value' => variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED),
   );
 }
+
+/**
+ * Process function to expand the file element type with an image preview.
+ */
+function culturefeed_image_file_process($element, &$form_state, $form) {
+  
+  $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
+
+  if ($fid && $element['#file']) {
+    $element['filename'] = array(
+      '#type' => 'markup',
+      '#markup' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $element['#file']->uri)),
+      '#weight' => -10,
+    );
+  }
+
+  return $element;
+}

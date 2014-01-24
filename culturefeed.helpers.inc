@@ -287,3 +287,28 @@ function culturefeed_set_noindex_metatag() {
   drupal_add_html_head($element, 'robots');
 
 }
+
+/**
+ * Store the page image in the drupal files temporary.
+ * @return file object or false if failed.
+ */
+function culturefeed_create_temporary_image($image, $destination) {
+
+  $image_data = file_get_contents($image);
+  file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
+  $uri = file_unmanaged_save_data($image_data, $destination . '/' . drupal_basename($image));
+
+  if (empty($uri)) {
+    return FALSE;
+  }
+
+  global $user;
+  $file = new stdClass();
+  $file->uri = $uri;
+  $file->filename = drupal_basename($uri);
+  $file->filemime = file_get_mimetype($file->uri);
+  $file->uid = $user->uid;
+  $file->status = FALSE;
+
+  return file_save($file);
+}
