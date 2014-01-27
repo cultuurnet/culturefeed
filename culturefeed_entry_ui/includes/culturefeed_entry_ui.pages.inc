@@ -974,10 +974,6 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : 1;
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
 
-  dpm($form_state['#dates_needed']);
-  dpm($triggering_element);
-
-
   for ($i = 0; $i < $date_count; $i++) {
 
     $date = date("Y-m-d H");
@@ -1071,8 +1067,8 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
         '#suffix' => '</div>',
       );
 
-      // Only the first row will allow for the entry of a date.  If the end date is
-      // different from the begin date, nor more rows can be added.  If the end
+      // Only the first row will allow for the entry of a date.  If the end
+      // date is from the begin date, nor more rows can be added.  If the end
       // date is the same as the begin date.  Only time slots can be added.
       if ($i === 0) {
 
@@ -1118,8 +1114,12 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
   // button shouldn't show as multiple periods are not allowed (CFK-93).
   $begin_date = (isset($form_state['values']['datetimes'][0]['begin']['date'])) ? $form_state['values']['datetimes'][0]['begin']['date'] : '';
   $end_date = (isset($form_state['values']['datetimes'][0]['end']['date'])) ? $form_state['values']['datetimes'][0]['end']['date'] : '';
+  $show_add_link = TRUE;
+  if ($begin_date && $end_date && $begin_date != $end_date && $triggering_element != 'datetimes_remove_endtime_0') {
+    $show_add_link = FALSE;
+  }
 
-  if (!isset($form_state['values']['datetimes']) || ($begin_date && !$end_date) || ($begin_date && $end_date && $begin_date == $end_date)) {
+  if ($show_add_link) {
 
     $form['basic']['when']['datetimes']['datetimes_add_child'] = array(
       '#type' => 'submit',
