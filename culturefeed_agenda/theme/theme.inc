@@ -139,7 +139,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
     $variables['tickets'] = array();
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+      $ticket = array();
+      $ticket['text'] = t('Buy tickets');      
+      $ticket['link'] = $link->getHLink();
+      $ticket['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $variables['tickets'][] = $ticket;
     }
 
     // Performers
