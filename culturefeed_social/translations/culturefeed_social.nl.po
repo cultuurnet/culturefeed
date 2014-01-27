@@ -711,3 +711,7 @@ msgstr "Verwijder"
 #: theme/theme.inc:237
 msgid "Report as inappropriate"
 msgstr "Meld als ongepast"
+
+#: culturefeed_social.module:408
+msgid "new notifications"
+msgstr "nieuwe meldingen"

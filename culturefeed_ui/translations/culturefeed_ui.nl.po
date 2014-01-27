@@ -234,6 +234,14 @@ msgstr "Delen via Facebook"
 msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
+#: culturefeed_ui.helpers.inc:163
+msgid "ON"
+msgstr "AAN"
+
+#: culturefeed_ui.helpers.inc:163
+msgid "OFF"
+msgstr "UIT"
+
 #: culturefeed_ui.helpers.inc:164
 msgid "Post my actions to Facebook"
 msgstr "Publiceer mijn acties op Facebook"
