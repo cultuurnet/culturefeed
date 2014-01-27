@@ -83,9 +83,24 @@ input.add-more-link:hover {
   float: left;
 }
 
+/* dates */
+
 #datetimes-ajax-wrapper .container-inline-date, #datetimes-ajax-wrapper .form-item {
   float: left;
   clear: none;
+}
+
+#datetimes-ajax-wrapper .container-inline-date .date-padding {
+  padding: 0;
+}
+
+#datetimes-ajax-wrapper .form-type-date-select .form-type-select[class$=hour] {
+    margin-left: .50em;
+}
+
+#datetimes-ajax-wrapper .datetime-child input.add-more-link {
+  clear: none;
+  float: left;
 }
 
 .datetime-child {
