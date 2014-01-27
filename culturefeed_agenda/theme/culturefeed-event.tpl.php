@@ -81,6 +81,15 @@
     </dd>
   <?php endif; ?>
 
+  <?php if (!empty($reservation)) : ?>
+    <dt><?php print t('Reservation'); ?></dt>
+    <dd>
+    <?php if (!empty($reservation['mail'])) : ?>
+      <?php print t('Mail'); ?>: <?php print $reservation['mail'] ?><br />
+    <?php endif; ?>
+    </dd>
+  <?php endif; ?>
+
   <?php if (!empty($age)): ?>
   <dt><?php print t('Age'); ?></dt>
   <dd><?php print $age; ?></dd>

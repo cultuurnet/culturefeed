@@ -343,6 +343,16 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $variables['contact']['phone'] = implode(', ', $phones);
     $variables['contact']['fax'] = implode(', ', $faxes);
 
+    // Reservation data.
+    $variables['reservation'] = $contact_info->getReservationInfo();
+    $reservation_info = $variables['reservation'];
+    if ($reservation_info['mails']) {
+      foreach ($reservation_info['mails'] as $mail) {
+        $reservation_mails[] = l($mail, 'mailto:' . $mail);
+      }
+    $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+    }
+
     // Coordinates.
     $addresses = $contact_info->getAddresses();
     if ($addresses) {
@@ -355,9 +365,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-
-    // Reservation data.
-    $variables['reservation'] = $contact_info->getReservationInfo();
 
   }
 
