@@ -158,16 +158,20 @@ function _culturefeed_ui_facebook_privacy_toggle() {
   try {
     $online_account = DrupalCultureFeed::getUserOnlineAccount('facebook');
     if ($online_account) {
+      $current_status = array(
+        '#type' => 'markup',
+        '#markup' => '<span class="current-status '  . ($online_account->publishActivities ? 'status-publiek' : 'status-prive') . '"><strong> ' . ($online_account->publishActivities ? t('ON') : t('OFF')) . ' </strong></span>',
+      );
       $publish_link = array(
         '#type' => 'link',
-        '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
+        '#title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on')) . ' ',
         '#href' => 'culturefeed/toggle/privacy/facebook/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
         '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . t('Post my actions to Facebook') . '<div class="tooltip">?</div><div class="tooltip-text">' . t('All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.') . '</div>';
+      $publish_link = t('Post my actions to Facebook') . ' | ' . drupal_render($current_status) . ' | ' . drupal_render($publish_link);
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }
