@@ -349,12 +349,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     // Reservation data.
     $variables['reservation'] = $contact_info->getReservationInfo();
     $reservation_info = $variables['reservation'];
-    if ($reservation_info['mails']) {
-      foreach ($reservation_info['mails'] as $mail) {
-        $reservation_mails[] = l($mail, 'mailto:' . $mail);
+
+      // Reservation mail
+      if (isset($reservation_info['mails'])) {
+        foreach ($reservation_info['mails'] as $mail) {
+          $reservation_mails[] = l($mail, 'mailto:' . $mail);
+        }
+      $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
-    $variables['reservation']['mail'] = implode(', ', $reservation_mails);
-    }
+
+      // Reservation phone
+      if (isset($reservation_info['phone'])) {
+        foreach ($reservation_info['phone'] as $phone) {
+          $reservation_phones[] = $phone;
+        }
+      $variables['reservation']['phone'] = implode(', ', $reservation_phones);
+      }
+
+      // Reservation url
+      if (isset($reservation_info['url'])) {
+        foreach ($reservation_info['url'] as $url) {
+          $reservation_urls[] = l($url, $url);
+        }
+      $variables['reservation']['url'] = implode(', ', $reservation_urls);
+      }
 
     // Coordinates.
     $addresses = $contact_info->getAddresses();
