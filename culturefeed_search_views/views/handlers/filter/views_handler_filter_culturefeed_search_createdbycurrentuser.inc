@@ -44,14 +44,17 @@ class views_handler_filter_culturefeed_search_createdbycurrentuser extends
    */
   function getValue() {
     if (culturefeed_is_culturefeed_user()) {
+      /** @var CultureFeed_User $culturefeed_user */
       $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
-      return $culturefeed_user->nick;
+
+      if ($culturefeed_user->mbox) {
+        return $culturefeed_user->mbox;
+      }
     }
-    else {
-      // Return a string which shouldn't match any nick
-      // so search does not return anything.
-      return '??notavalidnickname??';
-    }
+
+    // Return a string which shouldn't match any createdby value
+    // so search does not return anything.
+    return '??notavalidnickname??';
   }
 
 }
