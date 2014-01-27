@@ -167,7 +167,7 @@ function _culturefeed_ui_facebook_privacy_toggle() {
         '#ajax' => array(),
       );
 
-      $publish_link = drupal_render($publish_link) . t('Post my actions to Facebook') . '<div class="tooltip">?</div><div class="tooltip-text">' . t('All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.</div>');
+      $publish_link = drupal_render($publish_link) . t('Post my actions to Facebook') . '<div class="tooltip">?</div><div class="tooltip-text">' . t('All your UiTiD actions (likes, attends, shares) will be posted automatically to your Facebook timeline.') . '</div>';
 
       return theme('culturefeed_ui_online_account', array('publish_link' => $publish_link));
     }
