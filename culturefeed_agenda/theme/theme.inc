@@ -355,7 +355,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         foreach ($reservation_info['mails'] as $mail) {
           $reservation_mails[] = l($mail, 'mailto:' . $mail);
         }
-      $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+        $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
 
       // Reservation phone
@@ -363,15 +363,18 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         foreach ($reservation_info['phone'] as $phone) {
           $reservation_phones[] = $phone;
         }
-      $variables['reservation']['phone'] = implode(', ', $reservation_phones);
+        $variables['reservation']['phone'] = implode(', ', $reservation_phones);
       }
 
       // Reservation url
       if (isset($reservation_info['url'])) {
         foreach ($reservation_info['url'] as $url) {
-          $reservation_urls[] = l($url, $url);
+          // clean up link text
+          $url_text = str_replace('http://', '', $url);
+          $url_text = str_replace('https://', '', $url_text);
+          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url);
         }
-      $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        $variables['reservation']['url'] = implode(', ', $reservation_urls);
       }
 
     // Coordinates.
