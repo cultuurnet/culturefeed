@@ -357,9 +357,10 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
  * Get all the admins of a given page.
  * @param CultureFeed_Cdb_Item_Page $page
  */
-function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page, $exclude_user = NULL) {
+function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
 
   try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $admin_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
   }
   catch (Exception $e) {
