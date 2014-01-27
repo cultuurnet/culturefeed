@@ -1815,7 +1815,64 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
+
+  // Translations English.
+  if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['english']['language']) {
+      $detail->setTitle($values['english']['language']);
+    }
+    if (!empty($values['english']['short_description'])) {
+      $detail->setShortDescription($values['english']['short_description']);
+    }
+    if (!empty($values['english']['long_description']['value'])) {
+      $detail->setShortDescription($values['english']['long_description']['value']);
+    }
+
+    $detail->setLanguage("en");
+    $details->add($detail);
+  }
+
+  // Translations French.
+  if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['french']['language']) {
+      $detail->setTitle($values['french']['language']);
+    }
+    if (!empty($values['french']['short_description'])) {
+      $detail->setShortDescription($values['french']['short_description']);
+    }
+    if (!empty($values['french']['long_description']['value'])) {
+      $detail->setShortDescription($values['french']['long_description']['value']);
+    }
+
+    $detail->setLanguage("fr");
+    $details->add($detail);
+  }
+
+  // Translations German.
+  if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['german']['language']) {
+      $detail->setTitle($values['title']);
+    }
+    if (!empty($values['german']['short_description'])) {
+      $detail->setShortDescription($values['german']['short_description']);
+    }
+    if (!empty($values['german']['long_description']['value'])) {
+      $detail->setShortDescription($values['german']['long_description']['value']);
+    }
+
+    $detail->setLanguage("de");
+    $details->add($detail);
+  }
+
   $event->setDetails($details);
+
+  dpm($event->getDetails());
 
   // Asset Location / Address.
   if ($location) {
@@ -1903,66 +1960,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $event->setPrivate($values['entrance']);
   }
 
-  // Translations English.
-  if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['english']['language']) {
-      $detail->setTitle($values['english']['language']);
-    }
-    if (!empty($values['english']['short_description'])) {
-      $detail->setShortDescription($values['english']['short_description']);
-    }
-    if (!empty($values['english']['long_description']['value'])) {
-      $detail->setShortDescription($values['english']['long_description']['value']);
-    }
-
-    $detail->setLanguage("en");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
-  
-  // Translations French.
-  if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['french']['language']) {
-      $detail->setTitle($values['french']['language']);
-    }
-    if (!empty($values['french']['short_description'])) {
-      $detail->setShortDescription($values['french']['short_description']);
-    }
-    if (!empty($values['french']['long_description']['value'])) {
-      $detail->setShortDescription($values['french']['long_description']['value']);
-    }
-
-    $detail->setLanguage("fr");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
-  
-  // Translations German.
-  if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['german']['language']) {
-      $detail->setTitle($values['title']);
-    }
-    if (!empty($values['german']['short_description'])) {
-      $detail->setShortDescription($values['german']['short_description']);
-    }
-    if (!empty($values['german']['long_description']['value'])) {
-      $detail->setShortDescription($values['german']['long_description']['value']);
-    }
-
-    $detail->setLanguage("de");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
   try {
+    dpm($event->getDetails()->getDetailByLanguage('fr'));
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
