@@ -220,22 +220,10 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       break;
 
     case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
-      $index = explode('datetimes_remove_child_', $form_state['input']['_triggering_element_name']);
-      $index = $index[1];
-      unset ($form_state['values']['datetimes'][$index]);
-
-      // Reindex the form element in case an item was removed.
-      $datetimes = array();
-      foreach ($form['basic']['when']['datetimes'] as $key => $element) {
-        if (is_numeric($key)) {
-          $datetimes[] = $element;
-        }
-        else {
-          $datetimes[$key] = $element;
-        }
-      }
-      $form['basic']['when']['datetimes'] = $datetimes;
-
+      $remove = explode('datetimes_remove_child_', $form_state['input']['_triggering_element_name']);
+      $remove = $remove[1];
+      unset($form_state['input']['datetimes'][$remove]);
+      $form_state['input']['datetimes'] = array_values($form_state['input']['datetimes']);
       $form_state['#dates_needed']--;
       break;
 
