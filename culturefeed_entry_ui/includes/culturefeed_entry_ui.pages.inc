@@ -50,6 +50,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
+  
+  $form_state['#zip_needed'] = FALSE;
 
   //language vars
   $fr_title = '';
@@ -138,7 +140,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if ($event_details->getLongDescription()) {
       $default_long_description = $event_details->getLongDescription();
       $default_long_description = substr($default_long_description, 0, -169);
-      var_dump($default_long_description);
       $form_state['#ld_needed'] = TRUE;
     }
 
@@ -274,7 +275,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     var_dump($publication_date);*/
 
   }
-
+  
   // Build the form.
 
   // Basic.
@@ -383,12 +384,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="citywrapper-ajax-wrapper">',
     '#suffix' => '</div>',
   );
-
+  
   $form['basic']['location']['citywrapper']['zip_code'] = array(
     '#type' => 'textfield',
-    '#title' => t('Zip Code'),
+    '#title' => '',
+    '#name' => 'zip_code',
     '#required' => FALSE,
     '#size' => 10,
+    '#attributes' => array(
+      'style' => array(
+          'display:none;'
+        ),
+    ),
   );
 
   //TODO: city suggestions don't work
@@ -831,6 +838,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
         ),
+        
       ),
     );
   }
