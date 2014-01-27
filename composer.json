@@ -4,7 +4,6 @@
     "license": "Apache-2.0",
     "require": {
       "cultuurnet/cdb": "2.x-dev"
-      //"cultuurnet/cdb": "dev-feature/CFK-78 as 2.x-dev"
     },
     "autoload": {
         "classmap": ["lib/CultureFeed", "lib/OAuth"]
