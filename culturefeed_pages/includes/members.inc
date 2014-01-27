@@ -82,6 +82,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
   $total_admins = count($admins);
 
   $rows = array();
+  // Create row for every member.
   foreach ($user_list->memberships as $member) {
 
     $row = array();
