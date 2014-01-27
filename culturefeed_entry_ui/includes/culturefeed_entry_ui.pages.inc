@@ -137,6 +137,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default long description
     if ($event_details->getLongDescription()) {
       $default_long_description = $event_details->getLongDescription();
+      $default_long_description = substr($default_long_description, 0, -169);
+      var_dump($default_long_description);
       $form_state['#ld_needed'] = TRUE;
     }
 
@@ -177,14 +179,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         ->range(0, 1)
         ->execute();
       }
-    }
-    
-    // retrieve file
-    $row = array_pop(array_pop($result));
-    $default_image = (file_load($row->fid));
-    
-    if($copyright_value) {
-	  $is_copyright = TRUE;
+      // retrieve file
+      $row = array_pop(array_pop($result));
+      $default_image = (file_load($row->fid));
+      
+      if($copyright_value) {
+	    $is_copyright = TRUE;
+      }
     }
 
     // Default price.
@@ -663,7 +664,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
   
   $form['extra']['description']['sd']['short_description'] = array(
-    '#type' => 'textarea',
+    '#type' => 'text_format',
     '#title' => t('Short description'),
     '#name' => 'short_description',
     '#rows' => 10,
@@ -801,6 +802,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['price']['amount'] = array(
     '#type' => 'textfield',
+    '#name' => 'price_amount',
     '#title' => t('Price'),
     '#default_value' => $default_price,
     '#attributes' => array(
@@ -840,6 +842,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Price'),
   );
+  
   if (!isset($form_state['#price_needed'])) { 
     $form['extra']['price']['extra']['add_extra_info'] = array(
       '#type' => 'submit',
@@ -876,6 +879,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
+        ),
+        'invisible' => array(
+          'input[name="price_amount"]' => array('empty' => TRUE ),
         ),
       ),
     );
@@ -1687,6 +1693,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
   $values = $form_state['values'];
+  dsm($values);
+  
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
@@ -1785,11 +1793,11 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  if (!empty($values['sd']['short_description']['value'])) {
-    $detail->setShortDescription($values['short_description']);
+  if (!empty($values['description']['sd']['short_description']['value'])) {
+    $detail->setShortDescription($values['description']['sd']['short_description']['value']);
   }
-  if (!empty($values['long_description']['value'])) {
-    $detail->setLongDescription($values['description']['long_description']['value']);
+  if (!empty($values['description']['ld']['long_description']['value'])) {
+    $detail->setLongDescription($values['description']['ld']['long_description']['value']);
   }
   // Price
   if (isset($values['price']['free'])) {
@@ -1836,11 +1844,11 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['basic']['street']);
-    $physical_address->setHouseNumber($values['basic']['house_number']);
+    $physical_address->setStreet($values['location']['street']);
+    $physical_address->setHouseNumber($values['location']['house_number']);
     $physical_address->setCity($values['location']['citywrapper']['city']);
     $physical_address->setZip($values['location']['citywrapper']['zip_code']);
-    $physical_address->setCountry($values['location']['country']);
+    $physical_address->setCountry($values['location']['citywrapper']['country']);
     $address->setLabel($values['location']['location_title']);
     $address->setPhysicalAddress($physical_address);
     $address->setLabel($values['location']['location_title']);
