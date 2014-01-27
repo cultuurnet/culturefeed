@@ -578,9 +578,7 @@ function theme_culturefeed_pages_admin_request_link($variables) {
   $output .= l(t('Become an administrator'), 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array(
     'query' => drupal_get_destination(),
     'attributes' => array(
-      'class' => array('use-ajax btn'),
-      'data-toggle' => 'tooltip',
-      'data-original-title' => t('This is a request sent to the administrator of this page.')
+      'class' => array('use-ajax button')
     )
   ));
   $output .= '</div>';
@@ -593,11 +591,7 @@ function theme_culturefeed_pages_admin_request_link($variables) {
  */
 function theme_culturefeed_pages_membership_delete_not_possible($variables) {
 
-  $output = '<p class="muted">';
-  $output .= t('Not possible to remove');
-  $output .= ' <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="' . t('You\'re the only administrator of this page. You can not remove yourself as a member') . '">';
-  $output .= '<i class="icon icon-question-sign"></i>';
-  $output .= '</span></p>';
+  $output = t('Not possible to remove');
 
   return $output;
 }
