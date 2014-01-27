@@ -168,23 +168,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         ->propertyCondition('filename', $filename)
         ->range(0, 1)
         ->execute();
-	  // save file
-	  if(empty($result)) {
+      // save file
+      if (empty($result)) {
         $path = system_retrieve_file($url, 'public://' . $filename, TRUE);
         $query = new EntityFieldQuery();
         $result = $query->entityCondition('entity_type', 'file')
-        ->propertyCondition('filename', $filename)
-        ->range(0, 1)
-        ->execute();
+          ->propertyCondition('filename', $filename)
+          ->range(0, 1)
+          ->execute();
       }
     }
-    
+
     // retrieve file
     $row = array_pop(array_pop($result));
     $default_image = (file_load($row->fid));
-    
-    if($copyright_value) {
-	  $is_copyright = TRUE;
+
+    if ($copyright_value) {
+      $is_copyright = TRUE;
     }
 
     // Default price.
@@ -653,7 +653,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-  
+
   $form['extra']['description']['sd'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -661,7 +661,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-  
+
   $form['extra']['description']['sd']['short_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Short description'),
@@ -818,7 +818,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     ),
   );
-  
+
   if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['free'] = array(
       '#type' => 'checkbox',
@@ -832,7 +832,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
   }
-  
+
   $form['extra']['price']['extra'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -840,7 +840,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Price'),
   );
-  if (!isset($form_state['#price_needed'])) { 
+  if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['extra']['add_extra_info'] = array(
       '#type' => 'submit',
       '#name' => 'price_add_more',
@@ -1091,7 +1091,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('performers')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-  
+
   //language
   $form['extra']['language'] = array(
     '#type' => 'fieldset',
@@ -1546,7 +1546,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
   //dsm($values);
-  
+
   // Validate publication date.
   if (isset($values['extra']['publication_date']['wrapper']['date'])) {
     try {
@@ -1638,8 +1638,10 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if (empty($values['location']['citywrapper']['zip_code'])) {
-      form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+    if ($values['location']['citywrapper']['country'] != 'BE') {
+      if (empty($values['location']['citywrapper']['zip_code'])) {
+        form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+      }
     }
     if (empty($values['location']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
@@ -1872,8 +1874,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $event->setDetails($details);
 
-  dpm($event->getDetails());
-
   // Asset Location / Address.
   if ($location) {
     $addresses = $location->getEntity()->getContactInfo()->getAddresses();
@@ -1897,8 +1897,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
     $physical_address->setStreet($values['basic']['street']);
     $physical_address->setHouseNumber($values['basic']['house_number']);
-    $physical_address->setCity($values['location']['citywrapper']['city']);
-    $physical_address->setZip($values['location']['citywrapper']['zip_code']);
+    if ($values['location']['citywrapper']['country'] == 'BE') {
+      $physical_address->setZip(substr($values['location']['citywrapper']['city'], 0, 4));
+      $physical_address->setCity(substr($values['location']['citywrapper']['city'], 5));
+    }
+    else {
+      $physical_address->setCity($values['location']['citywrapper']['city']);
+      $physical_address->setZip($values['location']['citywrapper']['zip_code']);
+    }
     $physical_address->setCountry($values['location']['citywrapper']['country']);
     $address->setLabel($values['location']['location_title']);
     $address->setPhysicalAddress($physical_address);
@@ -1961,7 +1967,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   try {
-    dpm($event->getDetails()->getDetailByLanguage('fr'));
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
