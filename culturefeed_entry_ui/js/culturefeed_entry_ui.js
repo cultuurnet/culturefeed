@@ -18,11 +18,11 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
                 // TODO: For Debugging this true/false must be replaced
-                if (true) {
+                /*if (true) {
                     $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
                 } else {
                     $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
-                }
+                }*/
 
                 // Trigger eventsearch event to trigger ajax post.
                 var $input = $('#location_actor_id');
