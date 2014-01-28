@@ -946,7 +946,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'select',
     '#title' => t('Age'),
     '#options' => array(
-      'everyone' => t('For children'),
+      'everyone' => t('For everyone'),
       '1-12' => t('For children (between 1 and 12 years)'),
       '12-18' => t('For youth (between 12 and 18 years)'),
       '18+' => t('For adults (18+)'),
@@ -1744,9 +1744,26 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $event->setPublicationDate($values['extra']['publication_date']['wrapper']['date']);
   }
 
-  // Age.
-  if (isset($values['age'])) {
+  // Age
+  if ($values['age']) {
     $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
+  }
+  else {
+    // Age Category
+    switch ($values['age_category']) {
+      case '1-12':
+        $event->setAgeFrom(1);
+        break;
+      case '12-18':
+        $event->setAgeFrom(12);
+        break;
+      case '18+':
+        $event->setAgeFrom(18);
+        break;
+      case 'everyone':
+      default:
+        break;
+    }
   }
 
   // Datetimes as calendar.
