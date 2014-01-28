@@ -1986,6 +1986,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Price
+  if(isset($values['price']['free'])){
+    dpm($values['price']['free']);
+  }
   if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
