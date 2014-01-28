@@ -4,8 +4,12 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 dependencies[] = culturefeed_search
+dependencies[] = culturefeed_search_views
 dependencies[] = culturefeed
 dependencies[] = file
 dependencies[] = date
 dependencies[] = date_api
 dependencies[] = date_popup
+
+files[] = views/handlers/views_handler_field_cdb_item_operations.inc
+files[] = views/handlers/views_handler_area_cdb_item_create.inc

@@ -15,11 +15,12 @@
 <?php endif; ?>
 
 <?php if (!empty($address)): ?>
-  <address> 
+  <address>
   <?php print $address['street'] ?><?php if (!empty($address['city'])): ?><?php print $address['city'] ?><?php endif; ?>
   </address>
 <?php endif; ?>
 
+<?php if ($logged_in): ?>
 <p>
   <?php if (!empty($become_member_url)): ?>
   <a href="<?php print $become_member_url; ?>"><?php print t('Become a member') ?></a>
@@ -27,9 +28,16 @@
 <?php print t('You are already a member'); ?>
 <?php endif; ?>
 -
-<?php if (!empty($follow_url)): ?>
+ <?php if (!$following): ?>
     <a href="<?php print $follow_url; ?>"><?php print $follow_text; ?></a>
 <?php else: ?>
   <?php print t('You follow this page'); ?>
 <?php endif; ?>
 </p>
+<?php else: ?>
+
+  <?php print $member_text; ?>
+  - 
+  <?php print $follow_text; ?>
+
+<?php endif; ?>

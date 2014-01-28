@@ -4,12 +4,20 @@
   float: left;
 }
 
-.form-item-basic-street, .form-item-basic-zip-code, .form-item-basic-country {
+.form-item-location-street, .form-item-location-zip-code, .form-item-location-country {
   clear: left;
 }
 
-.form-item-basic-house-number, .form-item-basic-city {
+.form-item-location-house-number, .form-item-location-citywrapper-city {
   margin-left: 30px;
+}
+
+#citywrapper-ajax-wrapper {
+  clear: left;
+}
+
+.form-item-country-select {
+  clear: left;
 }
 
 #datetimes-ajax-wrapper {
@@ -24,6 +32,11 @@ input.form-checkbox {
   float: left;
   margin-right: 5px;
   margin-left: 5px;
+}
+
+#photo-ajax-wrapper img {
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .price-prefix {
@@ -78,7 +91,7 @@ input.add-more-link:hover {
   margin-right: 2%;
 }
 
-#spoken-ajax-wrapper .form-type-select {
+#edit-language .form-type-select {
   width: 20%;
   float: left;
 }

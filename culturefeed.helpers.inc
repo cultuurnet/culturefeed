@@ -44,7 +44,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
 /**
  * Create a new Drupal user account based on a fake Culturefeed User object
  *   $object has only the properties [cf_uid, nick]
- * @param unknown $cf_account
+ * @param CultureFeed_User $cf_account
  * @return boolean|Ambigous <A, boolean, (optional), stdClass>
  */
 function culturefeed_create_user($cf_account) {
@@ -63,7 +63,6 @@ function culturefeed_create_user($cf_account) {
     $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
 
     // Create the user account.
-    $url = parse_url($GLOBALS['base_url']);
     $account = user_save(
       drupal_anonymous_user(),
       array(
@@ -88,6 +87,8 @@ function culturefeed_create_user($cf_account) {
 
     // Save the fact that this is an external account for culturefeed.
     user_set_authmaps($account, array('authname_culturefeed' => $account->name));
+
+    module_invoke_all('culturefeed_user_create', $account, $cf_account);
   }
   catch (Exception $e) {
     $txn->rollback();

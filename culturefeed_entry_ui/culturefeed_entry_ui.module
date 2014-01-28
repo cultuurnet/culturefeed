@@ -292,6 +292,15 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
+      
+    case 'country_select':
+      if ($form_state['input']['country_select'] == 'BE') {
+        $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
+      } else {
+	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';  
+	    $form['basic']['location']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
+      }
+      return $form['basic']['location']['citywrapper'];
 
     case 'links_add_more':
       return $form['extra']['links'];
@@ -300,10 +309,10 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       return $form['basic']['period_or_permanent']['opening_times'];
       
     case 'price_add_more':
-      return $form['extra']['price'];
+      return $form['extra']['price']['extra'];
       
     case 'ld_add_more':
-      return $form['extra']['description'];
+      return $form['extra']['description']['ld'];
       
     case 'actor_add_more':
       return $form['extra']['organiser'];
@@ -313,6 +322,13 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
     case 'contacts_add_more':
       return $form['extra']['contacts']['wrapper'];
+      
+    case 'location[actor][location_actor_id]':
+      return $form['basic']['location']['actor'];
+      
+    case 'organiser[actor][location_actor_id]':
+      return $form['extra']['organiser']['actor'];
+       
   }
 
 }
@@ -328,4 +344,31 @@ function culturefeed_entry_ui_get_preferred_language() {
   }
 
   return $language;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function culturefeed_entry_ui_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module','culturefeed_entry_ui') . '/views',
+  );
+}
+
+function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity, $op) {
+  if ($entity->getType() == 'event') {
+    return "culturefeed_entry_ui/event/{$entity->getId()}/{$op}";
+  }
+}
+
+/**
+ * Implements hook_block_info_alter().
+ */
+function culturefeed_entry_ui_block_info_alter(&$blocks, $theme, $code_blocks) {
+  $delta = '4abc71e4bcf51672335a80c2c3b6023e';
+  if (isset($blocks[$delta])) {
+    $block[$delta]['region'] = 'sidebar_second';
+    $block[$delta]['status'] = 1;
+  }
 }

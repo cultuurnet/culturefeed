@@ -1,0 +1,43 @@
+<?php
+/**
+ * @file
+ */ 
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_roles_menu() {
+  $items = array();
+
+  $items['admin/config/culturefeed/roles'] = array(
+    'title' => 'Roles',
+    'description' => 'Pre-assign roles',
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_roles_settings_form'),
+    'file' => 'culturefeed_roles.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_culturefeed_user_create().
+ */
+function culturefeed_roles_culturefeed_user_create($account, $cf_account) {
+  $pre_assigned_roles = variable_get('culturefeed_roles', array());
+
+  $original_roles = $account->roles;
+
+  foreach ($pre_assigned_roles as $rid => $uid_string) {
+    $uids = preg_split('/[\r\n]+/', $uid_string);
+
+    if (in_array($cf_account->id, $uids)) {
+      $account->roles[$rid] = $rid;
+    }
+  }
+
+  if ($account->roles != $original_roles) {
+    user_save($account);
+  }
+}
