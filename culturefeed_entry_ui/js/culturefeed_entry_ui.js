@@ -101,10 +101,12 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             if (ul.children().length) {
                 $(this.popup).empty().append(ul).show();
                 $(this.ariaLive).html(Drupal.t('Autocomplete popup'));
+                $('#edit-organiser-add-new-actor').css({ display: 'none' });
             }
             else {
                 $(this.popup).css({ visibility: 'hidden' });
                 this.hidePopup();
+                $('#edit-organiser-add-new-actor').css({ display: 'block' });
             }
         }
     };

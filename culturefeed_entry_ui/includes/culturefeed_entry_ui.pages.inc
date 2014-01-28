@@ -889,6 +889,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
     '#type' => 'hidden',
+    '#name' => 'organiser_actor_id',
     '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -900,12 +901,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  if (!isset($form_state['#actor_needed'])) {
     $form['extra']['organiser']['add_new_actor'] = array(
       '#type' => 'submit',
       '#name' => 'actor_add_more',
       '#value' => t('Organisation not found, add organisation'),
-      '#attributes' => array('class' => array('add-more-link btn-link')),
+      '#attributes' => array(
+        'class' => array('add-more-link btn-link'),
+        'style' => array('display:none'),
+      ),
       //'#attributes' => array('class' => array('organiser-add-more-submit')),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -915,7 +918,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#limit_validation_errors' => array(array('price')),
       '#submit' => array('culturefeed_entry_ui_add_more_submit'),
     );
-  }
 
   if (isset($form_state['#actor_needed'])) {
     $form['extra']['organiser']['new_actor'] = array(

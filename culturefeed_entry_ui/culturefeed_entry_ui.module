@@ -279,6 +279,7 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
+      $form_state['#actor_btn_needed'] = FALSE;
       break;
       
     case 'performers_add_more':
@@ -355,9 +356,8 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case 'location[actor][location_actor_id]':
       return $form['basic']['location']['actor'];
       
-    case 'organiser[actor][location_actor_id]':
+    case 'organiser_actor_id':
       return $form['extra']['organiser']['actor'];
-       
   }
 
 }
