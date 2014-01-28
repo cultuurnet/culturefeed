@@ -183,14 +183,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         ->propertyCondition('filename', $filename)
         ->range(0, 1)
         ->execute();
-	  // save file
-	  if(empty($result)) {
+      // save file
+      if (empty($result)) {
         $path = system_retrieve_file($url, 'public://' . $filename, TRUE);
         $query = new EntityFieldQuery();
         $result = $query->entityCondition('entity_type', 'file')
-        ->propertyCondition('filename', $filename)
-        ->range(0, 1)
-        ->execute();
+          ->propertyCondition('filename', $filename)
+          ->range(0, 1)
+          ->execute();
       }
       // retrieve file
       $row = array_pop(array_pop($result));
@@ -678,7 +678,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-  
+
   $form['extra']['description']['sd'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -686,7 +686,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Description'),
   );
-  
+
   $form['extra']['description']['sd']['short_description'] = array(
     '#type' => 'text_format',
     '#title' => t('Short description'),
@@ -844,7 +844,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     ),
   );
-  
+
   if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['free'] = array(
       '#type' => 'checkbox',
@@ -859,7 +859,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
   }
-  
+
   $form['extra']['price']['extra'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -1122,7 +1122,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#limit_validation_errors' => array(array('performers')),
     '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
-  
+
   //language
   $form['extra']['language'] = array(
     '#type' => 'fieldset',
@@ -1577,7 +1577,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
   //dsm($values);
-  
+
   // Validate publication date.
   if (isset($values['extra']['publication_date']['wrapper']['date'])) {
     try {
@@ -1820,20 +1820,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  if (!empty($values['description']['sd']['short_description']['value'])) {
-    $detail->setShortDescription($values['description']['sd']['short_description']['value']);
+
+  if (!empty($values['sd']['short_description']['value'])) {
+    $detail->setShortDescription($values['short_description']);
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['description']['ld']['long_description']['value']);
   }
+
   // Price
-  if (isset($values['price']['free'])) {
+  if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
   else {
-    if (isset($values['price']['amount'])) {
-      $price = new CultureFeed_Cdb_Data_Price($values['price']['amount']);
+    if ($values['price']['amount']) {
+      $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
       if (isset($values['price']['extra']['extra_info'])) {
         $price->setDescription($values['price']['extra']['extra_info']);
       }
@@ -1848,6 +1850,61 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
+
+  // Translations English.
+  if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['english']['language']) {
+      $detail->setTitle($values['english']['language']);
+    }
+    if (!empty($values['english']['short_description'])) {
+      $detail->setShortDescription($values['english']['short_description']);
+    }
+    if (!empty($values['english']['long_description']['value'])) {
+      $detail->setShortDescription($values['english']['long_description']['value']);
+    }
+
+    $detail->setLanguage("en");
+    $details->add($detail);
+  }
+
+  // Translations French.
+  if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['french']['language']) {
+      $detail->setTitle($values['french']['language']);
+    }
+    if (!empty($values['french']['short_description'])) {
+      $detail->setShortDescription($values['french']['short_description']);
+    }
+    if (!empty($values['french']['long_description']['value'])) {
+      $detail->setShortDescription($values['french']['long_description']['value']);
+    }
+
+    $detail->setLanguage("fr");
+    $details->add($detail);
+  }
+
+  // Translations German.
+  if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['german']['language']) {
+      $detail->setTitle($values['title']);
+    }
+    if (!empty($values['german']['short_description'])) {
+      $detail->setShortDescription($values['german']['short_description']);
+    }
+    if (!empty($values['german']['long_description']['value'])) {
+      $detail->setShortDescription($values['german']['long_description']['value']);
+    }
+
+    $detail->setLanguage("de");
+    $details->add($detail);
+  }
+
   $event->setDetails($details);
 
   // Asset Location / Address.
@@ -1871,10 +1928,16 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['location']['street']);
-    $physical_address->setHouseNumber($values['location']['house_number']);
-    $physical_address->setCity($values['location']['citywrapper']['city']);
-    $physical_address->setZip($values['location']['citywrapper']['zip_code']);
+    $physical_address->setStreet($values['basic']['street']);
+    $physical_address->setHouseNumber($values['basic']['house_number']);
+    if ($values['location']['citywrapper']['country'] == 'BE') {
+      $physical_address->setZip(substr($values['location']['citywrapper']['city'], 0, 4));
+      $physical_address->setCity(substr($values['location']['citywrapper']['city'], 5));
+    }
+    else {
+      $physical_address->setCity($values['location']['citywrapper']['city']);
+      $physical_address->setZip($values['location']['citywrapper']['zip_code']);
+    }
     $physical_address->setCountry($values['location']['citywrapper']['country']);
     $address->setLabel($values['location']['location_title']);
     $address->setPhysicalAddress($physical_address);
@@ -1936,67 +1999,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $event->setPrivate($values['entrance']);
   }
 
-  // Translations English.
-  if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['english']['language']) {
-      $detail->setTitle($values['english']['language']);
-    }
-    if (!empty($values['english']['short_description'])) {
-      $detail->setShortDescription($values['english']['short_description']);
-    }
-    if (!empty($values['english']['long_description']['value'])) {
-      $detail->setShortDescription($values['english']['long_description']['value']);
-    }
-
-    $detail->setLanguage("en");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
-  
-  // Translations French.
-  if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['french']['language']) {
-      $detail->setTitle($values['french']['language']);
-    }
-    if (!empty($values['french']['short_description'])) {
-      $detail->setShortDescription($values['french']['short_description']);
-    }
-    if (!empty($values['french']['long_description']['value'])) {
-      $detail->setShortDescription($values['french']['long_description']['value']);
-    }
-
-    $detail->setLanguage("fr");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
-  
-  // Translations German.
-  if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
-
-    $detail = new CultureFeed_Cdb_Data_EventDetail();
-    if ($values['german']['language']) {
-      $detail->setTitle($values['title']);
-    }
-    if (!empty($values['german']['short_description'])) {
-      $detail->setShortDescription($values['german']['short_description']);
-    }
-    if (!empty($values['german']['long_description']['value'])) {
-      $detail->setShortDescription($values['german']['long_description']['value']);
-    }
-
-    $detail->setLanguage("de");
-
-    $details = new CultureFeed_Cdb_Data_EventDetailList();
-    $details->add($detail);
-  }
   try {
-
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
