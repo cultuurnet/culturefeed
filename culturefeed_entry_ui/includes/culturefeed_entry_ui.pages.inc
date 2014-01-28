@@ -901,23 +901,22 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-    $form['extra']['organiser']['add_new_actor'] = array(
-      '#type' => 'submit',
-      '#name' => 'actor_add_more',
-      '#value' => t('Organisation not found, add organisation'),
-      '#attributes' => array(
-        'class' => array('add-more-link btn-link'),
-        'style' => array('display:none'),
-      ),
-      //'#attributes' => array('class' => array('organiser-add-more-submit')),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'organiser-ajax-wrapper',
-        'effect' => 'fade',
-      ),
-      '#limit_validation_errors' => array(array('price')),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
+  $form['extra']['organiser']['add_new_actor'] = array(
+    '#type' => 'submit',
+    '#name' => 'actor_add_more',
+    '#value' => t('Organisation not found, add organisation'),
+    '#attributes' => array(
+      'class' => array('add-more-link btn-link'),
+      'style' => array('display:none'),
+    ),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'organiser-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+    '#limit_validation_errors' => array(array('price')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+  );
 
   if (isset($form_state['#actor_needed'])) {
     $form['extra']['organiser']['new_actor'] = array(

@@ -279,7 +279,6 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
-      $form_state['#actor_btn_needed'] = FALSE;
       break;
       
     case 'performers_add_more':
