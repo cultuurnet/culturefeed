@@ -286,6 +286,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_add_endtime_') === 0):
     case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_endtime_') === 0):
     case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
+    case 'datetimes[0][begin][date]':
     case 'datetimes[0][end][date]':
     case 'datetimes_add_child':
       return $form['basic']['when']['datetimes'];

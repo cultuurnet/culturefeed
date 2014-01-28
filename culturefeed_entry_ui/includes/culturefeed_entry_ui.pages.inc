@@ -1276,6 +1276,11 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       '#title' => t('Start date'),
       '#default_value' => $date,
       '#date_format' => 'Y-m-d',
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'datetimes-ajax-wrapper',
+        'effect' => 'fade',
+      ),
       '#attributes' => array('class' => array('start-date')),
     );
 
@@ -1332,7 +1337,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       // Only the first row will allow for the entry of a date.  If the end
       // date is from the begin date, nor more rows can be added.  If the end
       // date is the same as the begin date.  Only time slots can be added.
-      if ($i === 0) {
+      if ($i === 0 && $date_count == 1) {
 
         $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
           '#type' => 'date_popup',
