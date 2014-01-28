@@ -297,3 +297,6 @@ msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count resultaat"
 msgstr[1] "@range van @count resultaten"
+
+msgid "Show the facet only when an eventtype is chosen"
+msgstr "Toon de facet enkel wanneer een eventtype is gekozen"

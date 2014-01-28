@@ -264,7 +264,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form = array();
 
   $query = drupal_get_query_parameters();
-  $page_name = !empty($query['page']) ? $query['page'] : '';
+  $page_name = !empty($query['search']) ? $query['search'] : '';
 
   $form['name'] = array(
     '#type' => 'textfield',
@@ -385,11 +385,17 @@ function culturefeed_pages_add_form($form, &$form_state) {
   );
 
   $form['image'] = array(
-    '#type' => 'file',
+    '#type' => 'managed_file',
     '#title' => t('Picture or logo'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
     '#size' => 26,
     '#default_value' => '',
     '#weight' => 16,
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://pages',
   );
 
   $form['visible'] = array(
@@ -500,12 +506,11 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     $form_state['page_title'] = $form_state['values']['name'];
 
     // Upload Page image.
-    if ($_FILES['files']['tmp_name']['image']) {
-      $image_path = $_FILES['files']['tmp_name']['image'];
+    if (!empty($form_state['values']['image'])) {
 
-      $image = file_get_contents($image_path);
-
-      if ($image) {
+      $file = file_load($form_state['values']['image']);
+      if ($file) {
+        $image = file_get_contents(drupal_realpath($file->uri));
         try {
           $cf_pages->addImage($page_id, array('image' => $image));
         }
@@ -584,19 +589,18 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
   // The image.
   $image = $page->getImage();
+  $form_state['#old_image'] = 0;
   if (!empty($image)) {
-    $form['current_image'] = array(
-      '#theme' => 'image',
-      '#path' => $image . "?width=100&height=100",
-      '#weight' => 14,
-    );
+
+    // Create temp file to preview the external image.
+    $file = culturefeed_create_temporary_image($image, file_default_scheme() . '://pages');
+    if ($file) {
+      $form_state['#old_image'] = $file->fid;
+      $form['image']['#default_value'] = $file->fid;
+    }
+
     $form['image']['#title'] = t('Select another photo');
 
-    $form['remove_image'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Remove photo'),
-      '#weight' => 15,
-    );
   }
 
   $form['#validate'] = array(
@@ -638,7 +642,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
     $form_state['page_title'] = $form_state['values']['name'];
 
     // Remove the image if requested.
-    if (!empty($form_state['values']['remove_image'])) {
+    if (empty($form_state['values']['image']) && $form_state['#old_image'] > 0) {
       try {
         $cf_pages->removeImage($uid);
       }
@@ -647,13 +651,12 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
       }
     }
 
-    // Upload Page image.
-    if ($_FILES['files']['tmp_name']['image']) {
-      $image_path = $_FILES['files']['tmp_name']['image'];
+    // Upload new page image.
+    if ($form_state['values']['image'] && $form_state['#old_image'] != $form_state['values']['image']) {
 
-      $image = file_get_contents($image_path);
-
-      if ($image) {
+      $file = file_load($form_state['values']['image']);
+      if ($file) {
+        $image = file_get_contents(drupal_realpath($file->uri));
         try {
           $cf_pages->addImage($uid, array('image' => $image));
         }
@@ -1093,35 +1096,22 @@ function culturefeed_pages_page_my_pages() {
         $admins_of_page = array();
         $path = culturefeed_search_detail_path('page', $membership->page->getId(), $membership->page->getName());
 
+        // We need the full user list of every page, to check if the user is the only admin.
         if ($is_page_admin) {
-
           $admin_link = l(t('Administer page'), $path);
-
-          // We need the full user list of every page, to check if the user is the only admin.
-          try {
-            $admin_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
-          }
-          catch (Exception $e) {
-            watchdog_exception('culturefeed_pages', $e);
-            $admin_list = new CultureFeed_Pages_UserList();
-          }
-
-          foreach ($admin_list->memberships as $admin) {
-            $admins_of_page[$admin->user->id] = $admin->user->id;
-          }
-
+          $admins_of_page = culturefeed_pages_get_admins_of_page($membership->page);
         }
         else {
-
           // Show request admin link.
-          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l(t('Become an administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
-            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => t('This is a request sent to the administrator of this page.')))) . '</div>';
-
+          $admin_link = theme('culturefeed_pages_admin_request_link', array(
+            'page' => $membership->page,
+            'cf_user' => $cf_user,
+          ));
         }
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = '<p class="muted">' . t('Not possible to remove') . ' <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="' . t('You\'re the only administrator of this page. You can not remove yourself as a member') . '"><i class="icon icon-question-sign"></i></span></p>';
+          $member_link = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $membership->page));
         }
         else {
           $delete_options = array(
@@ -1170,13 +1160,6 @@ function culturefeed_pages_page_my_pages() {
         $become_member_link = t('You are a member of this page');
         if (!in_array($followed_page->page->getId(), $membership_page_ids)) {
           $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-        }
-
-        if ($is_page_admin || !isset($membership)) {
-          $admin_link = l(t('Administer page'), $path);
-        }
-        else {
-          $admin_link = l(t('Send request to become administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
         }
 
         $row = array(

@@ -70,7 +70,7 @@
     <dt><?php print t('Contact'); ?></dt>
     <dd>
     <?php if (!empty($contact['mail'])) : ?>
-      <?php print t('Mail'); ?>: <?php print $contact['mail'] ?><br />
+      <?php print $contact['mail'] ?><br />
     <?php endif; ?>
     <?php if (!empty($contact['phone'])) : ?>
       <?php print t('Phone'); ?>: <?php print $contact['phone'] ?><br />
@@ -81,11 +81,22 @@
     </dd>
   <?php endif; ?>
 
-  <?php if (!empty($reservation)) : ?>
+  <?php if (!empty($reservation) || !empty($tickets)) : ?>
     <dt><?php print t('Reservation'); ?></dt>
     <dd>
+    <?php if (!empty($tickets)) : ?>
+      <?php foreach ($tickets as $ticket): ?>
+        <?php print l($ticket['text'], $ticket['link'], array('attributes' => array('class' => 'reservation-link button'))) . '<br />'; ?>
+      <?php endforeach; ?>
+    <?php endif; ?>
     <?php if (!empty($reservation['mail'])) : ?>
-      <?php print t('Mail'); ?>: <?php print $reservation['mail'] ?><br />
+      <?php print $reservation['mail'] ?><br />
+    <?php endif; ?>
+    <?php if (!empty($reservation['url'])) : ?>
+      <?php print $reservation['url'] ?><br />
+    <?php endif; ?>
+    <?php if (!empty($reservation['phone'])) : ?>
+      <?php print t('Phone'); ?>: <?php print $reservation['phone'] ?><br />
     <?php endif; ?>
     </dd>
   <?php endif; ?>

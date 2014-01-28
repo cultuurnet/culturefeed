@@ -15,7 +15,7 @@
 function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_ajax = FALSE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_pages_follow_login_required_message', array('page' => $page));
+    return theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
   }
 
   $is_following = culturefeed_pages_is_user_following_page($page->getId());
@@ -354,30 +354,23 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
 }
 
 /**
- * Get all the members of a given page. If a user is given, exclude him from the list.
+ * Get all the admins of a given page.
  * @param CultureFeed_Cdb_Item_Page $page
- * @param mixed $exclude_user NULL or CultureFeed_User
  */
-function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, $exclude_user = NULL) {
+function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
 
-  $user_list = DrupalCultureFeed::getConsumerInstance()->pages()->getUserList(
-    $page->getId(),
-    array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER),
-    FALSE
-  );
-
-  $memberships = array();
-  if (!empty($user_list->memberships)) {
-    foreach ($user_list->memberships as $user_list_membership) {
-      // Exclude requested.
-      if ($exclude_user && $user_list_membership->user->id == $exclude_user->id) {
-        continue;
-      }
-      $memberships[] = $user_list_membership;
-    }
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $admin_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $admin_list = new CultureFeed_Pages_UserList();
   }
 
-  return $memberships;
+  foreach ($admin_list->memberships as $admin) {
+    $admins_of_page[$admin->user->id] = $admin->user->id;
+  }
 
+  return $admins_of_page;
 }
-

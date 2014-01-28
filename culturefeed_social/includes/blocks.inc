@@ -9,11 +9,10 @@
  */
 function culturefeed_social_block_recent_activities() {
 
-  $consumer_key = variable_get('culturefeed_api_application_key', '');
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT;
   $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
-  $query->consumer = $consumer_key;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -58,6 +57,7 @@ function culturefeed_social_block_user_activities($account) {
   $query->type = array_keys($active_types);
   $query->userId = $account->culturefeed_uid;
   $query->private = FALSE;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -141,6 +141,7 @@ function culturefeed_social_block_recommended_by($object) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
   $query->contentType = $content_type;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   switch ($content_type) {
 
@@ -325,8 +326,8 @@ function culturefeed_social_block_my_activity_summary($account) {
     }
   }
 
-  $private = $account->culturefeed_uid == $GLOBALS['user']->uid ? TRUE : FALSE;
-
+  $view_own_activities = $account->uid == $GLOBALS['user']->uid ? TRUE : FALSE;
+  $private = FALSE;
   try {
     $totals = DrupalCultureFeed::getTotalActivities($account->culturefeed_uid, $types, $private);
   }
@@ -341,7 +342,7 @@ function culturefeed_social_block_my_activity_summary($account) {
     $content = array(
       '#theme' => 'culturefeed_social_activity_summary',
       '#totals' => $totals,
-      '#private' => $private,
+      '#private' => $view_own_activities,
       '#account_name' => $account->name,
     );
   }

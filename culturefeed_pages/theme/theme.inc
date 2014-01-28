@@ -50,29 +50,50 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item
 
   drupal_add_library('system', 'drupal.ajax');
 
+  // Local storage of the followers for the current user.
+  $i_follow_pages = array();
+  try {
+
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if ($cf_user && $cf_user->following) {
+      foreach ($cf_user->following as $cfp_follower) {
+        $i_follow_pages[] = $cfp_follower->page->getId();
+      }
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
   $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()));
 
-  if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
-    $variables['become_member_url'] = url('culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+  // Anonymous user.
+  $variables['logged_in'] = !empty($cf_user);
+  $variables['following'] = FALSE;
+  if (empty($cf_user)) {
+    $variables['follow_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
+    $variables['member_text'] = theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_BECOME_MEMBER));
   }
+  // Logged in user.
+  else {
 
-  // Local storage of the followers for the current user.
-  $cf_user = DrupalCultureFeed::getLoggedInUser();
-  $i_follow_pages = array();
-  if ($cf_user->following) {
-    foreach ($cf_user->following as $cfp_follower) {
-      $i_follow_pages[] = $cfp_follower->page->getId();
+    // Member link.
+    if (!culturefeed_pages_is_user_member_of_page($page->getId())) {
+      $variables['become_member_url'] = url('culturefeed/pages/join/nojs/' . $page->getId(), array('query' => $query));
+    }
+
+    // Follow link.
+    if (in_array($page->getId(), $i_follow_pages)) {
+      $variables['following'] = TRUE;
+      $variables['follow_url'] = url('culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query));
+      $variables['follow_text'] = t('Unfollow');
+    }
+    else {
+      $variables['follow_url'] = url('culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query));
+      $variables['follow_text'] = t('Follow');
     }
   }
-  if (in_array($page->getId(), $i_follow_pages)) {
-    $variables['follow_url'] = url('culturefeed/pages/defollow/nojs/' . $page->getId(), array('query' => $query));
-    $variables['follow_text'] = t('Unfollow');
-  }
-  else {
-    $variables['follow_url'] = url('culturefeed/pages/follow/nojs/' . $page->getId(), array('query' => $query));
-    $variables['follow_text'] = t('Follow');
-  }
-
 }
 
 /**
@@ -459,10 +480,6 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 
   $variables['search_pages'] = drupal_render($build['search-pages']);
 
-  $variables['view_own_page'] = FALSE;
-  if ($account = menu_get_object('user', 1) && $account->uid == $drupal_uid) {
-    $variables['view_own_page'] = TRUE;
-  }
 }
 
 /**
@@ -537,8 +554,46 @@ function theme_culturefeed_pages_unfollow_success_message($variables) {
 /**
  * Theme the message when a user is anonymous, and the follow link would be displayed.
  */
-function theme_culturefeed_pages_follow_login_required_message($variables) {
-  return l('Pagina volgen', 'cultuurkuur/login', array('query' => drupal_get_destination()));
+function theme_culturefeed_pages_login_required_message($variables) {
+
+  if ($variables['action'] == CultureFeed_Pages_Default::ACTION_BECOME_MEMBER) {
+    $message = t('You must be logged in to join this page.');
+  }
+  else {
+    $message = t('You must be logged in to follow this page.');
+  }
+
+  return '<div class="login-required">' . $message . '</div>';
+}
+
+/**
+ * Theme the link to request administratorship for a page.
+ */
+function theme_culturefeed_pages_admin_request_link($variables) {
+
+  $page = $variables['page'];
+  $cf_user = $variables['cf_user'];
+
+  $output = '<div id="request_adminship_link_' . $page->getId() . '_wrapper">';
+  $output .= l(t('Become an administrator'), 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array(
+    'query' => drupal_get_destination(),
+    'attributes' => array(
+      'class' => array('use-ajax button')
+    )
+  ));
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Theme the message shown when a user can not delete his membership.
+ */
+function theme_culturefeed_pages_membership_delete_not_possible($variables) {
+
+  $output = t('Not possible to remove');
+
+  return $output;
 }
 
 /**

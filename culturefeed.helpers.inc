@@ -257,3 +257,58 @@ function culturefeed_get_preferred_language() {
 
   return $preferredLanguage;
 }
+
+/**
+ * Check if we are connected to acceptance API.
+ */
+function culturefeed_acceptance_mode() {
+
+  // Get culturefeed_api_location
+  $location = variable_get('culturefeed_api_location');
+  if (strpos($location,'www') === false) {
+    return TRUE;
+  }
+
+}
+
+/**
+ * Set the "noindex, follow" meta tag when needed.
+ */
+function culturefeed_set_noindex_metatag() {
+
+  $element = array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'robots',
+      'content' => 'noindex, follow',
+    ),
+  );
+
+  drupal_add_html_head($element, 'robots');
+
+}
+
+/**
+ * Store the page image in the drupal files temporary.
+ * @return file object or false if failed.
+ */
+function culturefeed_create_temporary_image($image, $destination) {
+
+  $image_data = file_get_contents($image);
+  file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
+  $uri = file_unmanaged_save_data($image_data, $destination . '/' . drupal_basename($image));
+
+  if (empty($uri)) {
+    return FALSE;
+  }
+
+  global $user;
+  $file = new stdClass();
+  $file->uri = $uri;
+  $file->filename = drupal_basename($uri);
+  $file->filemime = file_get_mimetype($file->uri);
+  $file->uid = $user->uid;
+  $file->status = FALSE;
+
+  return file_save($file);
+}

@@ -31,7 +31,6 @@ function culturefeed_pages_theme() {
   $path = drupal_get_path('module', 'culturefeed_pages') . '/theme';
 
   return array(
-
     'culturefeed_pages_basic_search_page' => array(
       'variables' => array(
         'form' => NULL,
@@ -43,35 +42,30 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-basic-search-page',
     ),
-
     'culturefeed_pages_basic_search_result_item' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-basic-search-result-item',
     ),
-
     'culturefeed_page' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page',
     ),
-
     'culturefeed_page_summary' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page-summary',
     ),
-
     'culturefeed_page_invisible' => array(
       'variables' => array('page' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page-invisible',
     ),
-
     'culturefeed_pages_fellow_members_block' => array(
       'variables' => array(
         'account' => NULL,
@@ -82,7 +76,6 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-fellow-members-block',
     ),
-
     'culturefeed_pages_request_admin_membership_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -92,13 +85,11 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-request-admin-membership-block',
 
     ),
-
     'culturefeed_pages_following_pages_block' => array(
       'variables' => array('following' => array()),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
@@ -111,14 +102,12 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-block-admin-options',
     ),
-
     'culturefeed_pages_page_menu_item' => array(
       'variables' => array('title' => '', 'url' => '', 'description' => ''),
       'template' => 'culturefeed-pages-page-menu-item',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_user_search_result' => array(
       'variables' => array(
         'result' => NULL,
@@ -129,7 +118,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_followers_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -140,14 +128,12 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-followers-block',
     ),
-
     'culturefeed_pages_events_admin_page' => array(
       'variables' => array('results' => array(), 'page' => NULL),
       'template' => 'culturefeed-pages-events-admin-page',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_page_agenda' => array(
       'variables' => array(
         'items' => array(),
@@ -158,7 +144,6 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-agenda',
       'path' => $path,
     ),
-
     'culturefeed_pages_follow_success_message' => array(
       'variables' => array(
         'page' => NULL,
@@ -166,7 +151,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_unfollow_success_message' => array(
       'variables' => array(
         'page' => NULL,
@@ -174,7 +158,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_page_my_pages' => array(
       'variables' => array(
         'build' => array(),
@@ -184,13 +167,21 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-my-page',
       'file' => 'theme.inc',
     ),
-
-    'culturefeed_pages_follow_login_required_message' => array(
+    'culturefeed_pages_login_required_message' => array(
+      'variables' => array('page' => NULL, 'action' => ''),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_pages_admin_request_link' => array(
+      'variables' => array('page' => NULL, 'cf_user' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_pages_membership_delete_not_possible' => array(
       'variables' => array('page' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
   );
 
 }

@@ -11,6 +11,10 @@
  */
 function culturefeed_messages_block_inbox($page = NULL) {
 
+  if (!culturefeed_is_culturefeed_user()) {
+    return;
+  }
+
   try {
     $recipient_page = empty($page) ? NULL : $page->getId();
     $messages = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessages($recipient_page);
@@ -19,7 +23,7 @@ function culturefeed_messages_block_inbox($page = NULL) {
     watchdog_exception('culturefeed_messages', $e);
     return;
   }
-  
+
   $block['subject'] = 'Inbox';
   $block['content'] = array(
     '#theme' => 'culturefeed_messages_message_list',

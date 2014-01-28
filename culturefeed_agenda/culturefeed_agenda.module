@@ -71,6 +71,19 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
+  $theme['culturefeed_agenda_de_lijn_widget'] = array(
+    'variables' => array('item' => ''),
+    'template' => 'culturefeed-agenda-delijn-widget',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
+  $theme['culturefeed_agenda_travel_map'] = array(
+    'variables' => array(),
+    'template' => 'culturefeed-agenda-travel-map',
+    'path' => $path,
+  );
+
   return $theme;
 
 }
@@ -108,6 +121,46 @@ function culturefeed_agenda_menu() {
     'title arguments' => array(3),
     'page callback' => 'culturefeed_agenda_detail_page',
     'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['delijn/agenda/a/%/%culturefeed_agenda_actor'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(4),
+    'page callback' => 'culturefeed_agenda_page_de_lijn_widget',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['delijn/agenda/e/%/%culturefeed_agenda_event'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(4),
+    'page callback' => 'culturefeed_agenda_page_de_lijn_widget',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['map/agenda/a/%/%culturefeed_agenda_actor'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(4),
+    'page callback' => 'culturefeed_agenda_page_map',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['map/agenda/e/%/%culturefeed_agenda_event'] = array(
+    'title callback' => 'culturefeed_agenda_detail_title',
+    'title arguments' => array(4),
+    'page callback' => 'culturefeed_agenda_page_map',
+    'page arguments' => array(4),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',

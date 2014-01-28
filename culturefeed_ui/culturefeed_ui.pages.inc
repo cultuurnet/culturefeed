@@ -162,7 +162,7 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto();
 }
 
-function culturefeed_ui_page_profile_edit_form() {
+function culturefeed_ui_page_profile_edit_form($form, &$form_state) {
 
   culturefeed_ui_set_profile_breadcrumb();
 
@@ -208,20 +208,25 @@ function culturefeed_ui_page_profile_edit_form() {
   );
 
   // Picture.
-  $form['#attributes']['enctype'] = 'multipart/form-data';
-
-  $form['current_picture'] = array(
-    '#prefix' => '<div class="current-picture">',
-    '#theme' => 'image',
-    '#path' => $cf_account->depiction . '?maxwidth=50&maxheight=50&crop=auto',
-    '#suffix' => '</div>',
-  );
-
+  $form_state['#old_picture'] = 0;
   $form['picture'] = array(
-    '#type' => 'file',
-    '#size' => 26,
+    '#type' => 'managed_file',
     '#title' => t('Choose picture'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://culturefeed',
   );
+
+  if (!empty($cf_account->depiction)) {
+    $file = culturefeed_create_temporary_image($cf_account->depiction, file_default_scheme() . '://culturefeed');
+    if ($file) {
+      $form_state['#old_picture'] = $file->fid;
+      $form['picture']['#default_value'] = $file->fid;
+    }
+  }
 
   // Gender.
   $form['gender'] = array(
@@ -367,14 +372,13 @@ function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
   }
 
   // Upload profile picture.
-  if ($_FILES['files']['tmp_name']['picture']) {
-    $picture_path = $_FILES['files']['tmp_name']['picture'];
+  if ($form_state['values']['picture'] && $form_state['#old_picture'] != $form_state['values']['picture']) {
 
-    $picture = file_get_contents($picture_path);
-
-    if ($picture) {
+    $file = file_load($form_state['values']['picture']);
+    if ($file) {
+      $image = file_get_contents(drupal_realpath($file->uri));
       try {
-        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $picture);
+        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $image);
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
@@ -408,23 +412,13 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
   drupal_set_message(t('Changes succesfully saved.'));
 }
 
+/**
+ * Page callback to theme the account page.
+ * @return type
+ */
 function culturefeed_ui_page_account_edit() {
   return array(
-    'account' => array(
-      '#prefix' => '<div id="account-edit-form">',
-      drupal_get_form('culturefeed_ui_page_account_edit_form'),
-      '#suffix' => '</div><hr />',
-    ),
-    'online_accounts' => array(
-      '#prefix' => '<div id="online-accounts"><h3>' . t('Connected accounts') . '</h3>',
-      culturefeed_ui_online_accounts(),
-      '#suffix' => '</div><hr />',
-    ),
-    'consumers' => array(
-      '#prefix' => '<div id="manage-consumers"><h3>' . t('Connected applications') . '</h3>',
-      '#markup' => t('Manage all ') . l(t('websites and applications'), 'culturefeed/serviceconsumers') . t(' who uses your UiTiD profile.'),
-      '#suffix' => '</div>',
-    )
+    '#theme' => 'culturefeed_ui_page_account_edit',
   );
 }
 

@@ -56,7 +56,7 @@ function culturefeed_agenda_block_related_activities() {
       $coordinates = $address->getPhysicalAddress()->getGeoInformation();
       if ($coordinates) {
         $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(variable_get('agenda_related_activities_range', 0));
-        $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getXCoordinate(), $coordinates->getYCoordinate());
+        $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getYCoordinate(), $coordinates->getXCoordinate());
         $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
         $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
       }

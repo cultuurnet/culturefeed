@@ -216,9 +216,9 @@ function culturefeed_ui_theme() {
       'variables' => array('account' => NULL, 'like' => NULL, 'goto' => NULL),
       'template' => 'culturefeed-ui-my-uitid',
     ),
-    'culturefeed_ui_something_for_you' => array(
+    'culturefeed_ui_page_account_edit' => array(
       'variables' => array(),
-      'template' => 'culturefeed-ui-something-for-you',
+      'template' => 'culturefeed-ui-page-account-edit',
     ),
   );
 }

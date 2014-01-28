@@ -9,8 +9,6 @@ files[] = lib/Drupal/DrupalCultureFeed.php
 files[] = lib/Drupal/DrupalCultureFeed_EntryApi.php
 files[] = lib/Drupal/DrupalCultureFeed_Cache.php
 files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
-files[] = lib/Drupal/DrupalNodeExtendedEntity.php
-files[] = lib/Drupal/GenericContentExtendedEntity.php
 
 files[] = lib/OAuth/OAuth.php
 files[] = lib/CultureFeed/CultureFeed.php
