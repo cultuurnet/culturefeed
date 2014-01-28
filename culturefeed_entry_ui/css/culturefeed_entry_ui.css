@@ -4,11 +4,17 @@
   float: left;
 }
 
-.form-item-location-street, .form-item-location-zip-code, .form-item-location-country {
+#edit-what fieldset {
+  width: 32.6%;
+  float: left;
+  min-height: 422px;
+}
+
+.form-item-location-street, .form-item-zip-code, .form-item-location-country {
   clear: left;
 }
 
-.form-item-location-house-number, .form-item-location-citywrapper-city {
+.form-item-location-house-number {
   margin-left: 30px;
 }
 
@@ -96,9 +102,24 @@ input.add-more-link:hover {
   float: left;
 }
 
+/* dates */
+
 #datetimes-ajax-wrapper .container-inline-date, #datetimes-ajax-wrapper .form-item {
   float: left;
   clear: none;
+}
+
+#datetimes-ajax-wrapper .container-inline-date .date-padding {
+  padding: 0;
+}
+
+#datetimes-ajax-wrapper .form-type-date-select .form-type-select[class$=hour] {
+    margin-left: .50em;
+}
+
+#datetimes-ajax-wrapper .datetime-child input.add-more-link {
+  clear: none;
+  float: left;
 }
 
 .datetime-child {
