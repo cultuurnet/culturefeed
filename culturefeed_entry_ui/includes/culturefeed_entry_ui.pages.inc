@@ -87,9 +87,21 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default location.
     if ($location = $event->getLocation()) {
       $address = $location->getAddress()->getPhysicalAddress();
-      $default_location_label = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
-      $default_location_id = $location->getCdbId();
-
+      if ($location->getCdbId()) {
+	    $default_location_id = $location->getCdbId();
+	    $default_location_label = $location->getLabel();
+      } 
+      else {
+	    $custom_location_title = $location->getLabel();
+	    $custom_location_street = $address->getStreet();
+	    $custom_location_number = $address->getNumber();
+	    $custom_location_zip = $address->getZip();
+	    $custom_location_city = $address->getCity();
+	    $custom_location_country = $address->getCountry();    
+      }
+      //$address = $location->getAddress()->getPhysicalAddress();
+      //$default_location_label = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
+      //$default_location_id = $location->getCdbId();
     }
 
     // Default organiser.
@@ -339,14 +351,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Location'),
     '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
     '#required' => FALSE,
-    '#default_value' => $default_location_label,
+    '#default_value' => isset($default_location_label) ? $default_location_label : '',
     '#size' => 80,
   );
 
   $form['basic']['location']['actor']['location_actor_id'] = array(
     '#id' => 'location_actor_id',
     '#type' => 'hidden',
-    '#default_value' => $default_location_id,
+    '#default_value' => isset($default_location_id) ? $default_location_id : '',
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
       'wrapper' => 'location-ajax-wrapper',
@@ -360,6 +372,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['location']['location_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Location Title'),
+    '#default_value' => isset($custom_location_title) ? $custom_location_title : '',
     '#required' => FALSE,
     '#size' => 80,
   );
@@ -367,6 +380,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['location']['street'] = array(
     '#type' => 'textfield',
     '#title' => t('Street'),
+    '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
     '#required' => FALSE,
     '#size' => 60,
   );
@@ -374,6 +388,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['location']['house_number'] = array(
     '#type' => 'textfield',
     '#title' => t('House Number'),
+    '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
     '#required' => FALSE,
     '#size' => 10,
   );
@@ -389,6 +404,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#title' => '',
     '#name' => 'zip_code',
+    '#default_value' => isset($custom_location_zip) ? $custom_location_zip : '',
     '#required' => FALSE,
     '#size' => 10,
     '#attributes' => array(
@@ -402,6 +418,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['basic']['location']['citywrapper']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
+    '#default_value' => isset($custom_location_city) ? $custom_location_city : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#required' => FALSE,
     '#size' => 60,
@@ -412,7 +429,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#name' => 'country_select',
     '#title' => t('Country'),
     '#options' => country_get_list(),
-    '#default_value' => 'BE',
+    '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
     '#required' => FALSE,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1652,8 +1669,10 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if (empty($values['location']['citywrapper']['zip_code'])) {
-      form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+    if ($values['location']['citywrapper']['country'] != 'BE') {
+      if (empty($values['location']['citywrapper']['zip_code'])) {
+        form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+      }
     }
     if (empty($values['location']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
