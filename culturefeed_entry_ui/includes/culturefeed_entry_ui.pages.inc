@@ -54,6 +54,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
+
+  $nl_title = '';
+  $nl_short_description = '';
+  $nl_long_description = '';
+
   $fr_title = '';
   $fr_short_description = '';
   $fr_long_description = '';
@@ -1126,6 +1131,33 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#group' => 'vertical_tabs',
   );
 
+  // Dutch
+  $form['extra']['translations']['dutch'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Dutch'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+  );
+
+  $form['extra']['translations']['dutch']['language'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => $nl_title,
+  );
+
+  $form['extra']['translations']['dutch']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+    '#default_value' => $nl_short_description,
+  );
+
+  $form['extra']['translations']['dutch']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+    '#default_value' => $nl_long_description,
+  );
+
   //english
   $form['extra']['translations']['english'] = array(
     '#type' => 'fieldset',
@@ -1913,8 +1945,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
-    $event->setPublicationDate($values['extra']['publication_date']['wrapper']['date']);
+  dpm($values['wrapper']['date']);
+  if (isset($values['wrapper']['date'])) {
+    $event->setPublicationDate($values['wrapper']['date']);
   }
 
   // Age
@@ -1977,7 +2010,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-  dpm($values['sd']);
+
   if (!empty($values['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
@@ -2153,9 +2186,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
-  // Members.
-  if (isset($values['extra']['entrance'])) {
-    $event->setPrivate($values['entrance']);
+  // Members
+  if (isset($values['members'])) {
+    $event->setPrivate(TRUE);
+  }
+
+  // Languages TODO: NOT in cdbXml
+  if(FALSE){
+
   }
 
   try {
