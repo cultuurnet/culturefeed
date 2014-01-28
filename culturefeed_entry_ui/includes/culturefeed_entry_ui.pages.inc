@@ -1977,7 +1977,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Event details.
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
-
+  dpm($values['sd']);
   if (!empty($values['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
@@ -1987,7 +1987,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Price
   if(isset($values['price']['free'])){
-    dpm($values['price']['free']);
   }
   if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
@@ -2022,7 +2021,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $detail->setShortDescription($values['english']['short_description']);
     }
     if (!empty($values['english']['long_description']['value'])) {
-      $detail->setShortDescription($values['english']['long_description']['value']);
+      $detail->setLongDescription($values['english']['long_description']['value']);
     }
 
     $detail->setLanguage("en");
@@ -2040,7 +2039,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $detail->setShortDescription($values['french']['short_description']);
     }
     if (!empty($values['french']['long_description']['value'])) {
-      $detail->setShortDescription($values['french']['long_description']['value']);
+      $detail->setLongDescription($values['french']['long_description']['value']);
     }
 
     $detail->setLanguage("fr");
@@ -2052,13 +2051,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
     $detail = new CultureFeed_Cdb_Data_EventDetail();
     if ($values['german']['language']) {
-      $detail->setTitle($values['title']);
+      $detail->setTitle($values['german']['language']);
     }
     if (!empty($values['german']['short_description'])) {
       $detail->setShortDescription($values['german']['short_description']);
     }
     if (!empty($values['german']['long_description']['value'])) {
-      $detail->setShortDescription($values['german']['long_description']['value']);
+      $detail->setLongDescription($values['german']['long_description']['value']);
     }
 
     $detail->setLanguage("de");
