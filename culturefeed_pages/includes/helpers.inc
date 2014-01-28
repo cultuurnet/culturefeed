@@ -354,6 +354,31 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
 }
 
 /**
+ * Get all the members of a given page. If a user is given, exclude him from the list.
+ * @param CultureFeed_Cdb_Item_Page $page
+ * @param mixed $exclude_user NULL or CultureFeed_User
+ */
+function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, $exclude_user = NULL) {
+
+  $user_list = DrupalCultureFeed::getConsumerInstance()->pages()->getUserList(
+      $page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE
+  );
+
+  $memberships = array();
+  if (!empty($user_list->memberships)) {
+    foreach ($user_list->memberships as $user_list_membership) {
+      // Exclude requested.
+      if ($exclude_user && $user_list_membership->user->id == $exclude_user->id) {
+        continue;
+      }
+      $memberships[] = $user_list_membership;
+    }
+  }
+
+  return $memberships;
+}
+
+/**
  * Get all the admins of a given page.
  * @param CultureFeed_Cdb_Item_Page $page
  */
