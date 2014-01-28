@@ -1758,6 +1758,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   foreach ($values['links'] as $link_data) {
     if ($link_data['URL']) {
+      if (!preg_match("@^https?://@", $link_data['URL'])) {
+	    $link_data['URL'] = 'http://' . $link_data['URL'];
+      }
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
     }
