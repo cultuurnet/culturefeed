@@ -214,10 +214,45 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'begindates_add_more':
-      $form_state['#begindates_needed'] = count(element_children($form['basic']['when']['datetimes'])) + 1;
+    case 'datetimes_add_child':
+      //  No need to add as the the add more button is already counted.
+      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes']));
       break;
-      
+
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
+      $remove = explode('datetimes_remove_child_', $form_state['input']['_triggering_element_name']);
+      $remove = $remove[1];
+
+      // Unset and reindex.
+      unset($form_state['values']['datetimes'][$remove]);
+      $datetimes = array();
+      foreach ($form_state['values']['datetimes'] as $key => $datetime) {
+
+        if (is_numeric($key)) {
+          $datetimes[] = $datetime;
+        }
+        else {
+          $datetimes[$key] = $datetime;
+        }
+
+      }
+      unset($form_state['input']['datetimes'][$remove]);
+      $form_state['input']['datetimes'] = array_values($form_state['input']['datetimes']);
+
+      $form_state['#dates_needed']--;
+      break;
+
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_endtime_') === 0):
+      $remove = explode('datetimes_remove_endtime_', $form_state['input']['_triggering_element_name']);
+      $remove = $remove[1];
+      unset($form_state['values']['datetimes'][$remove]['end']);
+      unset($form_state['input']['datetimes'][$remove]['end']);
+      break;
+
+    case 'begindates_add_more':
+      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes'])) + 1;
+      break;
+
     case 'enddates_add_more':
       $form_state['#enddates_needed'] = count(element_children($form['basic']['when']['datetimes'])) +1;
       break;
@@ -269,9 +304,13 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
   switch ($form_state['input']['_triggering_element_name']) {
 
     case 'begindates_add_more':
-      return $form['basic']['when']['datetimes'];
-      
     case 'enddates_add_more':
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_add_endtime_') === 0):
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_endtime_') === 0):
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
+    case 'datetimes[0][begin][date]':
+    case 'datetimes[0][end][date]':
+    case 'datetimes_add_child':
       return $form['basic']['when']['datetimes'];
 
     case 'timestamps_add_more':
