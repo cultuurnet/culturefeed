@@ -639,10 +639,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['extra']['description']['sd']['short_description'] = array(
-    '#type' => 'text_format',
+    '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#name' => 'short_description',
-    '#rows' => 10,
+    '#rows' => 4,
     '#default_value' => $default_short_description,
   );
 
@@ -1858,7 +1857,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
   $values = $form_state['values'];
-  dsm($values);
+  //dsm($values);
   
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
@@ -1962,7 +1961,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
 
-  if (!empty($values['sd']['short_description']['value'])) {
+  if (!empty($values['description']['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
