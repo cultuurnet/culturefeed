@@ -925,14 +925,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#type' => 'container',
   );
-
-  $form['extra']['organiser']['actor']['organiser_actor_label'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Organisation'),
-    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => FALSE,
-    '#default_value' => $default_organiser_label,
-  );
+  if (!isset($form_state['#actor_needed'])) {
+    $form['extra']['organiser']['actor']['organiser_actor_label'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Organisation'),
+      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+      '#required' => FALSE,
+      '#default_value' => $default_organiser_label,
+    );
+  }
 
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
