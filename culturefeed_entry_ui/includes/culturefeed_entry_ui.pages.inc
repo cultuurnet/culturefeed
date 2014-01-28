@@ -94,7 +94,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       else {
 	    $custom_location_title = $location->getLabel();
 	    $custom_location_street = $address->getStreet();
-	    $custom_location_number = $address->getNumber();
+	    $custom_location_number = $address->getHouseNumber();
 	    $custom_location_zip = $address->getZip();
 	    $custom_location_city = $address->getCity();
 	    $custom_location_country = $address->getCountry();    
@@ -1928,8 +1928,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['basic']['street']);
-    $physical_address->setHouseNumber($values['basic']['house_number']);
+    $physical_address->setStreet($values['location']['street']);
+    $physical_address->setHouseNumber($values['location']['house_number']);
     if ($values['location']['citywrapper']['country'] == 'BE') {
       $physical_address->setZip(substr($values['location']['citywrapper']['city'], 0, 4));
       $physical_address->setCity(substr($values['location']['citywrapper']['city'], 5));
