@@ -6,7 +6,18 @@
 Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
 (function ($) {
-
+  
+  Drupal.behaviors.price = {
+    attach: function (context, settings) {
+    //console.log($('#edit-price-free').value);
+    
+	  if($('#edit-price-free').is(':checked'){
+	    $('#edit-price-amount').input.value = 0;
+	    $('#edit-price-amount').prop('disabled', true);
+	  }
+	}
+  };
+  
     /**
      * Hides the autocomplete suggestions.
      */
@@ -25,20 +36,6 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 				if (this.input.name == 'organiser[actor][organiser_actor_label]') {
 				  $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
 				}
-                  
-                //this.input.value = $(this.selected).data('autocompleteValue');
-                // TODO: For Debugging this true/false must be replaced
-                /*if (true) {
-                    $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
-                } else {
-                    $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
-                }
-
-                // Trigger eventsearch event to trigger ajax post.
-                var $input = $('#location_actor_id');
-                var $input = $('#organiser_actor_id');
-                $input.trigger('location_eventsearch');
-                $input.trigger('organiser_eventsearch');*/
             }
             else {
                 this.input.value = $(this.selected).data('autocompleteValue');
@@ -151,6 +148,5 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             this.input.value = $(node).data('autocompleteValue');
         }
     };
-
 
 })(jQuery);
