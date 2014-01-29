@@ -1048,7 +1048,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   if ($performers_info) {
-    $performers_count = count($performers_info);
+    //$performers_count = count($performers_info);
+    $performers_count = 0;
   }
   else {
     $performers_count = 0;
