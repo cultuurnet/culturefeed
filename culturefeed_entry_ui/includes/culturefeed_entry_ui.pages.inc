@@ -1008,9 +1008,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Add more button was clicked. Check how many extra rows need to be added.
   if (isset($form_state['#contacts_needed'])) {
-    for (; $contact_count < $form_state['#contacts_needed']; $contact_count++) {
+    //for (; $contact_count < $form_state['#contacts_needed']; $contact_count++) {
       culturefeed_entry_ui_attach_contacts_elements($form, $contact_count);
-    }
+    //}
   }
 
   $form['extra']['contacts']['wrapper']['add_more_contacts'] = array(
