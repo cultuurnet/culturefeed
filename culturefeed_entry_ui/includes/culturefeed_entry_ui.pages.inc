@@ -1892,7 +1892,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  //dsm($values);
+  dsm($values);
 
   if ($values['photo']['upload']) {
     $file = file_load($values['photo']['upload']);
@@ -2049,6 +2049,23 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
 
+  // Translations Dutch.
+  if ($values['dutch']['language'] || $values['dutch']['short_description'] || $values['dutch']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['dutch']['language']) {
+      $detail->setTitle($values['dutch']['language']);
+    }
+    if (!empty($values['dutch']['short_description'])) {
+      $detail->setShortDescription($values['dutch']['short_description']);
+    }
+    if (!empty($values['dutch']['long_description']['value'])) {
+      $detail->setLongDescription($values['dutch']['long_description']['value']);
+    }
+
+    $detail->setLanguage("nl");
+    $details->add($detail);
+  }
   // Translations English.
   if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
 
