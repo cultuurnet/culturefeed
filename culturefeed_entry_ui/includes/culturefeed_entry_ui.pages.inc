@@ -161,7 +161,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $keywords = implode(';', $keywords);
     }
 
-    // Default mails, phones, urls.
+    // Default mails, phones, urls
     if ($info = $event->getContactInfo()) {
       foreach ($info->getUrls() as $default_link) {
         $default_links[] = $default_link->getUrl();
@@ -170,38 +170,43 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default image
-    $photo_media = $event_details->getMedia()->byMediaType('photo');
+    $photo_media = $event_details->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    
     if (count($photo_media) > 0) {
-      $get_media = $photo_media->current();
-      $copyright_value = $get_media->current()->getCopyright();
-      $url = $get_media->current()->getHLink();
-      $filename = $get_media->current()->getFileName();
-
-      // check if file exist
+      $main_image = array();
+      foreach ($photo_media as $picture) {   
+        $pictures[] = $picture;
+        if ($picture->isMain()) {
+          $main_image = $picture;
+        }
+      } 
+      // If no main use first image
+      if (empty($main_image)) {
+        $main_image = $pictures[0];
+      }
+      // Check if file exist
       $query = new EntityFieldQuery();
       $result = $query->entityCondition('entity_type', 'file')
-        ->propertyCondition('filename', $filename)
+        ->propertyCondition('filename', $main_image->getFileName())
         ->range(0, 1)
         ->execute();
-      // save file
-      if (empty($result)) {
-        $path = system_retrieve_file($url, 'public://' . $filename, TRUE);
-        $query = new EntityFieldQuery();
-        $result = $query->entityCondition('entity_type', 'file')
-          ->propertyCondition('filename', $filename)
-          ->range(0, 1)
-          ->execute();
-      }
-      // retrieve file
-      $row = array_pop(array_pop($result));
-      $default_image = (file_load($row->fid));
       
-      if($copyright_value) {
-	    $is_copyright = TRUE;
+      // Save file
+      if (empty($result)) {
+        $default_image = system_retrieve_file($main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
+        file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
+      }
+      else {
+        $row = array_pop($result['file']);
+        $default_image = (file_load($row->fid));
+      }
+      
+      if($main_image->getCopyright()) {
+        $is_copyright = TRUE;
       }
     }
 
-    // Default price.
+    // Default price
     if ($info = $event_details->getPrice()) {
       $default_price = $info->getValue();
       $default_free_price = 0;
@@ -215,7 +220,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
     }
 
-    // Default age.
+    // Default age
     $age = $event->getAgeFrom();
     if ($age) {
 
@@ -639,10 +644,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['extra']['description']['sd']['short_description'] = array(
-    '#type' => 'text_format',
+    '#type' => 'textarea',
     '#title' => t('Short description'),
-    '#name' => 'short_description',
-    '#rows' => 10,
+    '#rows' => 4,
     '#default_value' => $default_short_description,
   );
 
@@ -1857,8 +1861,15 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
-  $values = $form_state['values'];
-  dsm($values);
+
+  $values = $form_state['values']; 
+  //dsm($values);
+  
+  if ($values['photo']['upload']) {
+    $file = file_load($values['photo']['upload']);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+  }
   
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
@@ -1962,7 +1973,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
 
-  if (!empty($values['sd']['short_description']['value'])) {
+  if (!empty($values['description']['sd']['short_description']['value'])) {
     $detail->setShortDescription($values['short_description']);
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
@@ -1970,7 +1981,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Price
-  if ($values['price']['free']) {
+  if (isset($values['price']['free'])) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
@@ -2240,7 +2251,7 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
 
   if ($form_state['#update_event']) {
     $form_state['redirect'] = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
-    drupal_set_message(t('Event successfully created'));
+    drupal_set_message(t('Event successfully updated'));
   }
   else {
     $link_change_event = '<a href="/culturefeed_entry_ui/event/' . $form_state['#event_id'] . '/edit">' . t('Click here to update') . '</a>';
