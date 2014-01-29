@@ -1748,7 +1748,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   //dsm($values);
 
   // Validate publication date.
-  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
+  if ($values['wrapper']['date']) {
     try {
       CultureFeed_Cdb_Data_Calendar::validateDate($values['publication_date']);
     } catch (Exception $e) {
@@ -1945,8 +1945,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  dpm($values['wrapper']['date']);
-  if (isset($values['wrapper']['date'])) {
+  if ($values['wrapper']['date']) {
     $event->setPublicationDate($values['wrapper']['date']);
   }
 
