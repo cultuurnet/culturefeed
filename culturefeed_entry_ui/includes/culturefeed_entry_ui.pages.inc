@@ -40,7 +40,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $default_short_description = '';
   $default_long_description = '';
   $default_image = '';
-  $is_copyright = FALSE;
   $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
@@ -204,10 +203,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       else {
         $row = array_pop($result['file']);
         $default_image = (file_load($row->fid));
-      }
-      
-      if($main_image->getCopyright()) {
-        $is_copyright = TRUE;
       }
     }
 
@@ -769,10 +764,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  $form['extra']['photo']['copyrights'] = array(
+  $form['extra']['photo']['copyright'] = array(
     '#type' => 'checkbox',
+    '#default_value' => isset($default_image->fid) ? 1 : 0,
     '#title' => t('I agree to the <a href="#">general conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image through UiTdatabank.'),
-    '#default_value' => $is_copyright,
   );
 
   // Price  
@@ -1750,7 +1745,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  dsm($values);
+  //dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1826,8 +1821,13 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   }
   */
+  
+  // Validate copyright
+  if (!empty($values['photo']['upload']) && $values['photo']['copyright'] != 1) {
+    form_set_error('photo', t('Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank.'));
+  }
 
-  // Validate location.
+  // Validate location
   if (!empty($values['location']['actor']['location_actor_id'])) {
 
     try {
@@ -1893,9 +1893,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
 
-
   $values = $form_state['values']; 
-  //dsm($values);
+  dsm($values);
   
   if ($values['photo']['upload']) {
     $file = file_load($values['photo']['upload']);
@@ -2023,7 +2022,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $detail->setTitle($values['title']);
 
   if (!empty($values['description']['sd']['short_description']['value'])) {
-    $detail->setShortDescription($values['short_description']);
+    $detail->setShortDescription($values['description']['sd']['short_description']['value']);
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['description']['ld']['long_description']['value']);
@@ -2358,13 +2357,13 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   $custom_tags = array();
 
-  // @todo Get options from variable.
-  $custom_options = variable_get('culturefeed_entry_ui_custom_tags');
+  // Get options from variable.
+  $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
 
   // Filter out custom tags.
   if ($event_tags) {
     foreach ($event_tags as $tag) {
-      if (array_key_exists($tag, $custom_options)) {
+      if ($custom_options && array_key_exists($tag, $custom_options)) {
         unset($event_tags[$tag]);
         $custom_tags[$tag] = $tag;
       }
@@ -2376,24 +2375,25 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   $form['#object_id'] = $event->getCdbId();
 
-  if (user_access('manage custom tags')) {
+  if (user_access('manage custom tags') && !empty($custom_options)) {
     $form['custom_tags'] = array(
       '#type' => 'checkboxes',
       '#options' => $custom_options,
-      '#title' => 'Leefstijlprofiel',
+      '#title' => t('Custom tags'),
       '#default_value' => $custom_tags,
     );
   }
 
   $form['tags'] = array(
     '#type' => 'textfield',
-    '#title' => 'Tags',
+    '#title' => t('Tags'),
     '#default_value' => implode(';', $event_tags),
+    '#description' => t('Seperate multiple tags by ;'),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Opslaan',
+    '#value' => t('Submit'),
   );
 
   return $form;
