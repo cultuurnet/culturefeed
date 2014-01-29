@@ -16,7 +16,7 @@ class views_handler_area_cdb_item_create extends views_handler_area {
     $links = array();
 
     if (user_access('create culturefeed events')) {
-      $links['create'] = l(t('Add event'), 'culturefeed_entry_ui/event/add');
+      $links['create'] = l(t('Add event'), 'agenda/e/add');
     }
 
     if (!empty($links)) {

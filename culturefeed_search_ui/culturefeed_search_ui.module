@@ -30,7 +30,7 @@ function culturefeed_search_ui_init() {
       $path = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
     }
 
-    if ($path != current_path()) {
+    if (strpos(current_path(), $path) !== 0) {
       drupal_goto($path, array(), 301);
     }
 

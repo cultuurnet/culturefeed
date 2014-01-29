@@ -57,15 +57,15 @@ function culturefeed_entry_ui_menu() {
 
   $items = array();
 
-  $items['culturefeed_entry_ui/event/%entry_api_event/tags'] = array(
+  $items['agenda/e/%/%culturefeed_agenda_event/tags'] = array(
     'title' => 'Tags',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_ui_edit_tags_form', 2),
+    'page arguments' => array('culturefeed_entry_ui_edit_tags_form', 3),
     'access callback' => 'culturefeed_entry_ui_manage_tags_access',
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
 
-  $items['culturefeed_entry_ui/event/add'] = array(
+  $items['agenda/e/add'] = array(
     'title' => 'Nieuwe activiteit',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_event_form'),
@@ -73,18 +73,18 @@ function culturefeed_entry_ui_menu() {
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
 
-  $items['culturefeed_entry_ui/event/%entry_api_event/edit'] = array(
+  $items['agenda/e/%/%culturefeed_agenda_event/edit'] = array(
     'title' => 'Activiteit aanpassen',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_ui_event_form', 2),
+    'page arguments' => array('culturefeed_entry_ui_event_form', 3),
     'access arguments' => array('edit culturefeed events'),
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
 
-  $items['culturefeed_entry_ui/event/%entry_api_event/delete'] = array(
+  $items['agenda/e/%/%culturefeed_agenda_event/delete'] = array(
     'title' => 'Activiteit verwijderen',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_ui_delete_event_form', 2),
+    'page arguments' => array('culturefeed_entry_ui_delete_event_form', 3),
     'access arguments' => array('delete culturefeed events'),
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
@@ -111,20 +111,24 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   if (arg(0) == 'agenda' && arg(1) == 'e') {
     $id = arg(3);
   }
-  elseif (arg(0) == 'culturefeed_entry_ui' && arg(2) != 'add') {
-    $id = arg(2);
-  }
-
   if (!$id) {
     return;
   }
+
+  $event = culturefeed_search_item_load($id, 'event');
+  $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
+  $request_detail = array(
+    'event' => $id,
+    'title' => $title,
+  );
+  $path = culturefeed_search_detail_path($event->getType(), $id, $title);
 
   $tabs = array();
   // Add a tab for managing the tags.
   if (culturefeed_entry_ui_manage_tags_access()) {
 
     $link = array(
-      'href' => 'culturefeed_entry_ui/event/' . $id . '/tags',
+      'href' => $path . '/tags',
       'localized_options' => array(),
       'title' => t('Tags'),
     );
@@ -137,7 +141,7 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   if (user_access('edit culturefeed events')) {
 
     $link = array(
-      'href' => 'culturefeed_entry_ui/event/' . $id . '/edit',
+      'href' => $path . '/edit',
       'localized_options' => array(),
       'title' => t('Edit'),
     );
@@ -149,13 +153,10 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   // Detail only exists when culturefeed_agenda is enabled.
   if ($tabs && module_exists('culturefeed_agenda')) {
 
-    $event = culturefeed_search_item_load($id, 'event');
-    $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
     $request_detail = array(
       'event' => $id,
       'title' => $title,
     );
-    $path = culturefeed_search_detail_path($event->getType(), $id, $title);
 
     $link = array(
       'href' => $path,
@@ -394,7 +395,9 @@ function culturefeed_entry_ui_views_api() {
 
 function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity, $op) {
   if ($entity->getType() == 'event') {
-    return "culturefeed_entry_ui/event/{$entity->getId()}/{$op}";
+    $event = $event->getEntity();
+    $path = culturefeed_search_detail_path('page', $entity->getId(), $entity->getName());
+    return "{$path}/{$op}";
   }
 }
 

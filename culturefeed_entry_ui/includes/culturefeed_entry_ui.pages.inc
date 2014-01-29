@@ -73,6 +73,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   // Load all default values.
   if ($event) {
 
+    $event = $event->getEntity();
     $form['#event'] = $event;
     $event_details = $event->getDetails()->current();
 
@@ -2403,7 +2404,8 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
     drupal_set_message(t('Event successfully updated'));
   }
   else {
-    $link_change_event = '<a href="/culturefeed_entry_ui/event/' . $form_state['#event_id'] . '/edit">' . t('Click here to update') . '</a>';
+    $path = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']) . '/edit';
+    $link_change_event = '<a href="' . $path . '">' . t('Click here to update') . '</a>';
     drupal_set_message(t('Event ' . $form_state['#event_id'] . ' successfully created') . ' ' . $link_change_event);
   }
 
@@ -2414,6 +2416,7 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_delete_event_form($form, $form_state, $event) {
 
+  $event = $event->getEntity();
   $form['id'] = array('#type' => 'value', '#value' => $event->getCdbId());
 
   return confirm_form($form,
@@ -2448,6 +2451,7 @@ function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
 function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   $form = array();
+  $event = $event->getEntity();
   $event_tags = $event->getKeywords();
   $form['#old_tags'] = $event_tags;
 
