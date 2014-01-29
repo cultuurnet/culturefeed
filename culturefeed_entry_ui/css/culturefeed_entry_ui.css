@@ -5,9 +5,9 @@
 }
 
 #edit-what fieldset {
-  width: 32.6%;
+  width: 32.4%;
   float: left;
-  min-height: 422px;
+  min-height: 431px;
 }
 
 .form-item-location-street, .form-item-zip-code, .form-item-location-country {
