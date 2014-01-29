@@ -2185,8 +2185,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $event->setContactInfo($contact_object);
 
   // Keywords.
-  if (isset($values['extra']['keywords'])) {
-    $keywords = explode(';', $values['extra']['keywords']);
+  if ($values['keywords']) {
+    $keywords = explode(';', $values['keywords']);
     foreach ($keywords as $keyword) {
       $event->addKeyword($keyword);
     }
