@@ -994,11 +994,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   if ($default_contacts) {
-    $contact_count = count($default_contacts);
+    //$contact_count = count($default_contacts);
+    $contact_count = 0;
   }
   else {
     $contact_count = 0;
   }
+  
   // Add contacts type.
   if ($default_contacts) {
     foreach ($default_contacts as $i => $info) {
@@ -1010,12 +1012,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     culturefeed_entry_ui_attach_contacts_elements($form, 0);
     $contact_count++;
   }
-
   // Add more button was clicked. Check how many extra rows need to be added.
   if (isset($form_state['#contacts_needed'])) {
-    //for (; $contact_count < $form_state['#contacts_needed']; $contact_count++) {
+    for (; $contact_count < $form_state['#contacts_needed']; $contact_count++) {
       culturefeed_entry_ui_attach_contacts_elements($form, $contact_count);
-    //}
+    }
   }
 
   $form['extra']['contacts']['wrapper']['add_more_contacts'] = array(
