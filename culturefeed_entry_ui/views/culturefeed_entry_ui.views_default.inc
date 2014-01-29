@@ -94,6 +94,11 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['fields']['operations']['field'] = 'operations';
   $handler->display->display_options['fields']['operations']['label'] = '';
   $handler->display->display_options['fields']['operations']['element_label_colon'] = FALSE;
+  /* Sort criterion: Cdb items: Last updated */
+  $handler->display->display_options['sorts']['lastupdated']['id'] = 'lastupdated';
+  $handler->display->display_options['sorts']['lastupdated']['table'] = 'cdb_items';
+  $handler->display->display_options['sorts']['lastupdated']['field'] = 'lastupdated';
+  $handler->display->display_options['sorts']['lastupdated']['order'] = 'DESC';
   /* Filter criterion: UDB items: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'cdb_items';

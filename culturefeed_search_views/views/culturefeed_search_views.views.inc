@@ -215,6 +215,9 @@ function culturefeed_search_views_data() {
     'field' => array(
       'handler' => 'views_handler_field_cdb_item_lastupdated',
     ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_lastupdated',
+    ),
   );
 
   // Sorts

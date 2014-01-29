@@ -24,6 +24,7 @@ files[] = views/handlers/sort/views_handler_sort_culturefeed_search_date.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_recommends.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_comments.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_agefrom.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_lastupdated.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_title.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_lastupdated.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_link.inc
