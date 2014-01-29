@@ -49,7 +49,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
-  
+
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
@@ -92,16 +92,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if ($location = $event->getLocation()) {
       $address = $location->getAddress()->getPhysicalAddress();
       if ($location->getCdbId()) {
-	    $default_location_id = $location->getCdbId();
-	    $default_location_label = $location->getLabel();
-      } 
+        $default_location_id = $location->getCdbId();
+        $default_location_label = $location->getLabel();
+      }
       else {
-	    $custom_location_title = $location->getLabel();
-	    $custom_location_street = $address->getStreet();
-	    $custom_location_number = $address->getHouseNumber();
-	    $custom_location_zip = $address->getZip();
-	    $custom_location_city = $address->getCity();
-	    $custom_location_country = $address->getCountry();    
+        $custom_location_title = $location->getLabel();
+        $custom_location_street = $address->getStreet();
+        $custom_location_number = $address->getHouseNumber();
+        $custom_location_zip = $address->getZip();
+        $custom_location_city = $address->getCity();
+        $custom_location_country = $address->getCountry();
       }
       //$address = $location->getAddress()->getPhysicalAddress();
       //$default_location_label = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
@@ -281,7 +281,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     var_dump($publication_date);*/
 
   }
-  
+
   // Build the form.
 
   // Basic.
@@ -830,7 +830,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'invisible' => array(
           'input[name="price_amount"]' => array('filled' => TRUE)
         ),
-        
+
       ),
     );
   }
@@ -842,8 +842,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
     '#title' => t('Price'),
   );
-  
-  if (!isset($form_state['#price_needed'])) { 
+
+  if (!isset($form_state['#price_needed'])) {
     $form['extra']['price']['extra']['add_extra_info'] = array(
       '#type' => 'submit',
       '#name' => 'price_add_more',
@@ -881,7 +881,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
           'input[name="price_free"]' => array('checked' => FALSE),
         ),
         'invisible' => array(
-          'input[name="price_amount"]' => array('empty' => TRUE ),
+          'input[name="price_amount"]' => array('empty' => TRUE),
         ),
       ),
     );
@@ -1009,13 +1009,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   if ($default_contacts) {
-    //$contact_count = count($default_contacts);
-    $contact_count = 0;
+    $contact_count = count($default_contacts);
   }
   else {
     $contact_count = 0;
   }
-  
   // Add contacts type.
   if ($default_contacts) {
     foreach ($default_contacts as $i => $info) {
@@ -1063,8 +1061,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   if ($performers_info) {
-    //$performers_count = count($performers_info);
-    $performers_count = 0;
+    $performers_count = count($performers_info);
   }
   else {
     $performers_count = 0;
@@ -1322,13 +1319,13 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
 
     $form['basic']['when']['datetimes'][$i] = array(
       '#type' => 'container',
-      '#prefix' => '<div id="datetime-child-' . $i .'-ajax-wrapper" class="datetime-child clearfix">',
+      '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child clearfix">',
       '#suffix' => '</div>',
     );
 
     $form['basic']['when']['datetimes'][$i]['begin'] = array(
       '#type' => 'container',
-      '#prefix' => '<div id="datetime-child-'. $i .'-begin-ajax-wrapper">',
+      '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
       '#suffix' => '</div>',
     );
 
@@ -1410,7 +1407,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
 
       $form['basic']['when']['datetimes'][$i]['end'] = array(
         '#type' => 'container',
-        '#prefix' => '<div id="datetime-child-'. $i .'-end-ajax-wrapper">',
+        '#prefix' => '<div id="datetime-child-' . $i . '-end-ajax-wrapper">',
         '#suffix' => '</div>',
       );
 
@@ -1767,7 +1764,6 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  //dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1914,6 +1910,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  *   The organiser of the event.
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
+  $values = $form_state['values'];
+  dsm($values);
 
   $values = $form_state['values']; 
   dsm($values);
@@ -1956,7 +1954,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   foreach ($values['links'] as $link_data) {
     if ($link_data['URL']) {
       if (!preg_match("@^https?://@", $link_data['URL'])) {
-	    $link_data['URL'] = 'http://' . $link_data['URL'];
+        $link_data['URL'] = 'http://' . $link_data['URL'];
       }
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
@@ -2092,6 +2090,23 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $details = new CultureFeed_Cdb_Data_EventDetailList();
   $details->add($detail);
 
+  // Translations Dutch.
+  if ($values['dutch']['language'] || $values['dutch']['short_description'] || $values['dutch']['long_description']['value']) {
+
+    $detail = new CultureFeed_Cdb_Data_EventDetail();
+    if ($values['dutch']['language']) {
+      $detail->setTitle($values['dutch']['language']);
+    }
+    if (!empty($values['dutch']['short_description'])) {
+      $detail->setShortDescription($values['dutch']['short_description']);
+    }
+    if (!empty($values['dutch']['long_description']['value'])) {
+      $detail->setLongDescription($values['dutch']['long_description']['value']);
+    }
+
+    $detail->setLanguage("nl");
+    $details->add($detail);
+  }
   // Translations English.
   if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
 
@@ -2228,8 +2243,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $event->setContactInfo($contact_object);
 
   // Keywords.
-  if (isset($values['extra']['keywords'])) {
-    $keywords = explode(';', $values['extra']['keywords']);
+  if ($values['keywords']) {
+    $keywords = explode(';', $values['keywords']);
     foreach ($keywords as $keyword) {
       $event->addKeyword($keyword);
     }
@@ -2240,9 +2255,39 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $event->setPrivate(TRUE);
   }
 
-  // Languages TODO: NOT in cdbXml
-  if(FALSE){
+  // Languages
+  if (TRUE) {
+    switch ($values['spoken_language']) {
+      case 0:
+        $spoken_language = 'spoken';
+        break;
+      case 1:
+        $spoken_language = 'dubbed';
+        break;
+      case 2:
+        $spoken_language = 'subtitles';
+        break;
+    }
 
+    switch ($values['in_language']) {
+      case 0:
+        $in_language = 'English';
+        break;
+      case 1:
+        $in_language = 'Spanish';
+        break;
+      case 2:
+        $in_language = 'Dutch';
+        break;
+      case 3:
+        $in_language = 'German';
+        break;
+      case 4:
+        $in_language = 'French';
+    }
+    $language_list = new CultureFeed_Cdb_Data_LanguageList();
+    $language_list->add(new CultureFeed_Cdb_Data_Language($in_language,$spoken_language));
+    $event->setLanguages($language_list);
   }
 
   try {
