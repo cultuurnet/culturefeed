@@ -141,6 +141,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['search'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Search string'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
