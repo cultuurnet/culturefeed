@@ -351,97 +351,117 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
   );
 
-  $form['basic']['location']['actor']['location_actor_label'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Location'),
-    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
-    '#required' => FALSE,
-    '#default_value' => isset($default_location_label) ? $default_location_label : '',
-    '#size' => 80,
-  );
+  if (!$form_state['#location_needed']) {
+    $form['basic']['location']['actor']['location_actor_label'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Location'),
+      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+      '#required' => FALSE,
+      '#default_value' => isset($default_location_label) ? $default_location_label : '',
+      '#size' => 80,
+    );
 
-  $form['basic']['location']['actor']['location_actor_id'] = array(
-    '#id' => 'location_actor_id',
-    '#type' => 'textfield',
-    '#default_value' => isset($default_location_id) ? $default_location_id : '',
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'location-ajax-wrapper',
-      'event' => 'location_eventsearch',
-    ),
-    '#attributes' => array(
-      'id' => 'location_actor_id',
-    ),
-  );
-
-  $form['basic']['location']['location_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Location Title'),
-    '#default_value' => isset($custom_location_title) ? $custom_location_title : '',
-    '#required' => FALSE,
-    '#size' => 80,
-  );
-
-  $form['basic']['location']['street'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Street'),
-    '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
-    '#required' => FALSE,
-    '#size' => 60,
-  );
-
-  $form['basic']['location']['house_number'] = array(
-    '#type' => 'textfield',
-    '#title' => t('House Number'),
-    '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
-    '#required' => FALSE,
-    '#size' => 10,
-  );
-
-  $form['basic']['location']['citywrapper'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="citywrapper-ajax-wrapper">',
-    '#suffix' => '</div>',
-  );
+    $form['basic']['location']['actor']['location_actor_id'] = array(
+      '#id' => 'location_actor_id',
+      '#type' => 'textfield',
+      '#default_value' => isset($default_location_id) ? $default_location_id : '',
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'location-ajax-wrapper',
+        'event' => 'location_eventsearch',
+      ),
+      '#attributes' => array(
+        'id' => 'location_actor_id',
+      ),
+    );
   
-  $form['basic']['location']['citywrapper']['zip_code'] = array(
-    '#type' => 'textfield',
-    '#title' => '',
-    '#name' => 'zip_code',
-    '#default_value' => isset($custom_location_zip) ? $custom_location_zip : '',
-    '#required' => FALSE,
-    '#size' => 10,
-    '#attributes' => array(
-      'style' => array(
+    $form['basic']['location']['add_new_location'] = array(
+      '#type' => 'submit',
+      '#name' => 'location_add_more',
+      '#value' => t('Location not found, add location'),
+      '#attributes' => array(
+        'class' => array('add-more-link btn-link'),
+        'style' => array('display:none'),
+      ),
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'location-ajax-wrapper',
+        'effect' => 'fade',
+      ),
+      '#limit_validation_errors' => array(array('price')),
+      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+    );
+  }
+
+  if ($form_state['#location_needed']) {
+    $form['basic']['location']['location_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Location Title'),
+      '#default_value' => isset($custom_location_title) ? $custom_location_title : '',
+      '#required' => FALSE,
+      '#size' => 80,
+    );
+
+    $form['basic']['location']['street'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Street'),
+      '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
+      '#required' => FALSE,
+      '#size' => 60,
+    );
+
+    $form['basic']['location']['house_number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('House Number'),
+      '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
+      '#required' => FALSE,
+      '#size' => 10,
+    );
+
+    $form['basic']['location']['citywrapper'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#prefix' => '<div id="citywrapper-ajax-wrapper">',
+      '#suffix' => '</div>',
+    );
+  
+    $form['basic']['location']['citywrapper']['zip_code'] = array(
+      '#type' => 'textfield',
+      '#title' => '',
+      '#name' => 'zip_code',
+      '#default_value' => isset($custom_location_zip) ? $custom_location_zip : '',
+      '#required' => FALSE,
+      '#size' => 10,
+      '#attributes' => array(
+        'style' => array(
           'display:none;'
         ),
-    ),
-  );
+      ),
+    );
 
-  //TODO: city suggestions don't work
-  $form['basic']['location']['citywrapper']['city'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
-    '#default_value' => isset($custom_location_city) ? $custom_location_city : '',
-    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
-    '#required' => FALSE,
-    '#size' => 60,
-  );
+    $form['basic']['location']['citywrapper']['city'] = array(
+      '#type' => 'textfield',
+      '#title' => t('City'),
+      '#default_value' => isset($custom_location_city) ? $custom_location_city : '',
+      '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+      '#required' => FALSE,
+      '#size' => 60,
+    );
 
-  $form['basic']['location']['citywrapper']['country'] = array(
-    '#type' => 'select',
-    '#name' => 'country_select',
-    '#title' => t('Country'),
-    '#options' => country_get_list(),
-    '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
-    '#required' => FALSE,
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'citywrapper-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-  );
+    $form['basic']['location']['citywrapper']['country'] = array(
+      '#type' => 'select',
+      '#name' => 'country_select',
+      '#title' => t('Country'),
+      '#options' => country_get_list(),
+      '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
+      '#required' => FALSE,
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'citywrapper-ajax-wrapper',
+        'effect' => 'fade',
+      ),
+    );
+  }
 
   // Date  
   culturefeed_entry_ui_attach_date_element($form, $form_state);
