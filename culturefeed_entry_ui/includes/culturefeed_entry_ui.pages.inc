@@ -54,6 +54,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
+
+  $nl_title = '';
+  $nl_short_description = '';
+  $nl_long_description = '';
+
   $fr_title = '';
   $fr_short_description = '';
   $fr_long_description = '';
@@ -934,7 +939,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'select',
     '#title' => t('Age'),
     '#options' => array(
-      'everyone' => t('For children'),
+      'everyone' => t('For everyone'),
       '1-12' => t('For children (between 1 and 12 years)'),
       '12-18' => t('For youth (between 12 and 18 years)'),
       '18+' => t('For adults (18+)'),
@@ -1129,6 +1134,33 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'fieldset',
     '#title' => t('Translations'),
     '#group' => 'vertical_tabs',
+  );
+
+  // Dutch
+  $form['extra']['translations']['dutch'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Dutch'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+  );
+
+  $form['extra']['translations']['dutch']['language'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => $nl_title,
+  );
+
+  $form['extra']['translations']['dutch']['short_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Short description'),
+    '#default_value' => $nl_short_description,
+  );
+
+  $form['extra']['translations']['dutch']['long_description'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Long description'),
+    '#default_value' => $nl_long_description,
   );
 
   //english
@@ -1721,7 +1753,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   dsm($values);
 
   // Validate publication date.
-  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
+  if ($values['wrapper']['date']) {
     try {
       CultureFeed_Cdb_Data_Calendar::validateDate($values['publication_date']);
     } catch (Exception $e) {
@@ -1925,13 +1957,30 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Publication date.
-  if (isset($values['extra']['publication_date']['wrapper']['date'])) {
-    $event->setPublicationDate($values['extra']['publication_date']['wrapper']['date']);
+  if ($values['wrapper']['date']) {
+    $event->setPublicationDate($values['wrapper']['date']);
   }
 
-  // Age.
-  if (isset($values['age'])) {
+  // Age
+  if ($values['age']) {
     $event->setAgeFrom(($values['age'] ? $values['age'] : 0));
+  }
+  else {
+    // Age Category
+    switch ($values['age_category']) {
+      case '1-12':
+        $event->setAgeFrom(1);
+        break;
+      case '12-18':
+        $event->setAgeFrom(12);
+        break;
+      case '18+':
+        $event->setAgeFrom(18);
+        break;
+      case 'everyone':
+      default:
+        break;
+    }
   }
 
   // Datetimes as calendar.
@@ -2014,7 +2063,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $detail->setShortDescription($values['english']['short_description']);
     }
     if (!empty($values['english']['long_description']['value'])) {
-      $detail->setShortDescription($values['english']['long_description']['value']);
+      $detail->setLongDescription($values['english']['long_description']['value']);
     }
 
     $detail->setLanguage("en");
@@ -2032,7 +2081,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $detail->setShortDescription($values['french']['short_description']);
     }
     if (!empty($values['french']['long_description']['value'])) {
-      $detail->setShortDescription($values['french']['long_description']['value']);
+      $detail->setLongDescription($values['french']['long_description']['value']);
     }
 
     $detail->setLanguage("fr");
@@ -2044,13 +2093,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
     $detail = new CultureFeed_Cdb_Data_EventDetail();
     if ($values['german']['language']) {
-      $detail->setTitle($values['title']);
+      $detail->setTitle($values['german']['language']);
     }
     if (!empty($values['german']['short_description'])) {
       $detail->setShortDescription($values['german']['short_description']);
     }
     if (!empty($values['german']['long_description']['value'])) {
-      $detail->setShortDescription($values['german']['long_description']['value']);
+      $detail->setLongDescription($values['german']['long_description']['value']);
     }
 
     $detail->setLanguage("de");
@@ -2146,9 +2195,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
-  // Members.
-  if (isset($values['extra']['entrance'])) {
-    $event->setPrivate($values['entrance']);
+  // Members
+  if (isset($values['members'])) {
+    $event->setPrivate(TRUE);
+  }
+
+  // Languages TODO: NOT in cdbXml
+  if(FALSE){
+
   }
 
   try {
