@@ -322,7 +322,8 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
         $form['basic']['location']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:none;'));
         $form['basic']['location']['citywrapper']['zip_code']['#title'] = '';
       } else {
-	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';  
+	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';
+	    $form['basic']['location']['citywrapper']['city']['#value'] = '';  
 	    $form['basic']['location']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
 	    $form['basic']['location']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:block;margin-right:30px;'));
 	    $form['basic']['location']['citywrapper']['zip_code']['#title'] = t('ZIP Code');

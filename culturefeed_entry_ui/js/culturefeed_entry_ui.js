@@ -17,12 +17,15 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             if ($(this.selected).data('autocompleteTitle') != undefined) {
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
-                /*if ($(this).input == $('#edit-location-actor-location-actor-label').input) {
-	              $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
-                }
-                if ($(this).input == $('#edit-organiser-actor-organiser-actor-label').input) {
-	              $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
-                }*/
+                
+                if (this.input.name == 'location[actor][location_actor_label]') {
+				  $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
+				}
+		  
+				if (this.input.name == 'organiser[actor][organiser_actor_label]') {
+				  $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
+				}
+                  
                 //this.input.value = $(this.selected).data('autocompleteValue');
                 // TODO: For Debugging this true/false must be replaced
                 /*if (true) {
@@ -61,7 +64,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     Drupal.jsAC.prototype.found = function (matches) {
         // If no value in the textfield, do not show the popup.
         if (!this.input.value.length) {
-            return false;
+		    return false;
         }
 
         // Prepare matches.
@@ -129,12 +132,14 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         if ($(node).data('autocompleteTitle') != undefined) {
           this.input.value = $(node).data('autocompleteTitle');
           
-          /*if (this.input.name == 'location[actor][location_actor_label]').input) {
-            $('#location_actor_id').val($(node).data('autocompleteValue'));
+          if (this.input.name == 'location[actor][location_actor_label]') {
+		    $('#location_actor_id').val($(node).data('autocompleteValue'));
 		  }
-		  if (this.input.name == 'organiser[actor][organiser_actor_label]').input) {
+		  
+		  if (this.input.name == 'organiser[actor][organiser_actor_label]') {
 		    $('#organiser_actor_id').val($(node).data('autocompleteValue'));
-		  }*/
+		  }
+		  
         }
         else {
             this.input.value = $(node).data('autocompleteValue');
