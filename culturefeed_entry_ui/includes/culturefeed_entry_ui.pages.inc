@@ -188,22 +188,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       if (empty($main_image)) {
         $main_image = $pictures[0];
       }
-      // Check if file exist
-      $query = new EntityFieldQuery();
-      $result = $query->entityCondition('entity_type', 'file')
-        ->propertyCondition('filename', $main_image->getFileName())
-        ->range(0, 1)
-        ->execute();
       
-      // Save file
-      if (empty($result)) {
-        $default_image = system_retrieve_file($main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
-        file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
-      }
-      else {
-        $row = array_pop($result['file']);
-        $default_image = (file_load($row->fid));
-      }
+      $default_image = system_retrieve_file($main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
+      file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
+      $default_image_hlink = $main_image->getHLink();
+      
     }
 
     // Default price
@@ -763,6 +752,17 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       'file_validate_size' => array(1024 * 1024 * 1024),
     ),
   );
+  
+  if (isset($default_image->fid)) {
+    $form['extra']['photo']['current_file'] = array(
+      '#type' => 'hidden',
+      '#value' => $default_image->fid,
+    );
+    $form['extra']['photo']['current_file_hlink'] = array(
+      '#type' => 'hidden',
+      '#value' => $default_image_hlink,
+    );
+  }
 
   $form['extra']['photo']['copyright'] = array(
     '#type' => 'checkbox',
@@ -1896,12 +1896,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $values = $form_state['values']; 
   dsm($values);
   
-  if ($values['photo']['upload']) {
-    $file = file_load($values['photo']['upload']);
-    $file->status = FILE_STATUS_PERMANENT;
-    file_save($file);
-  }
-  
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
@@ -1936,6 +1930,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
+  // Links
   foreach ($values['links'] as $link_data) {
     if ($link_data['URL']) {
       if (!preg_match("@^https?://@", $link_data['URL'])) {
@@ -2026,6 +2021,30 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['description']['ld']['long_description']['value']);
+  }
+  
+    // Photo
+  if ($values['photo']['upload']) {
+    if($values['photo']['upload'] != $values['photo']['current_file']) {
+      // Save to Drupal
+      $drupal_file = file_load($values['photo']['upload']);
+      $drupal_file->status = FILE_STATUS_PERMANENT;
+      file_save($drupal_file);
+      // Add to detail
+      $file = new CultureFeed_Cdb_Data_File();
+      $file->setMediaType($file::MEDIA_TYPE_PHOTO);
+      $file->setHLink(file_create_url($drupal_file->uri));
+      $file->setFilename($drupal_file->filename);
+      $detail->getMedia()->add($file);
+      // Remove old image
+      // Bug on UDB ... will be fixed soon
+      try {
+        Drupalculturefeed_EntryApi::removeLinkFromEvent($event, $values['photo']['current_file_hlink']);
+    
+      } catch (Exception $e) {
+        watchdog_exception('culturefeed_entry_ui', $e);
+      }
+    }   
   }
 
   // Price
@@ -2219,7 +2238,17 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     watchdog_exception('culturefeed_entry_ui', $e);
     form_set_error('', t('An error occurred while saving the event'));
   }
-
+  
+  // Delete files from file system 
+  if($form_state['values']['photo']['upload']) {
+    $file = file_load($form_state['values']['photo']['upload']);
+    file_delete($file);
+  }
+  if($form_state['values']['photo']['current_file']) {
+    $file = file_load($form_state['values']['photo']['current_file']);
+    file_delete($file);
+  }
+  
 }
 
 /**
