@@ -899,7 +899,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
     '#type' => 'textfield',
-    '#name' => 'organiser_actor_id',
     '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1751,7 +1750,6 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1893,8 +1891,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  *   The organiser of the event.
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
-
-
   $values = $form_state['values'];
   //dsm($values);
 
