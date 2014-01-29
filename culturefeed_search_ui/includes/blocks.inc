@@ -237,6 +237,7 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['date_range'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Choose a date'),
     '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
@@ -371,6 +372,7 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
@@ -513,6 +515,7 @@ function culturefeed_search_ui_city_only_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
