@@ -78,7 +78,7 @@ function culturefeed_uitpas_init() {
         '@toggle_url' => url('culturefeed/uitpas/reminder/toggle'),
       );
       $message = format_string($message, $args);
-      drupal_set_message($message, 'warning');
+      drupal_set_message($message, 'warning', FALSE);
     }
   }
 }
