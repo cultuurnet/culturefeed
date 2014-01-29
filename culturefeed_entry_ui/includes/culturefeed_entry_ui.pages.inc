@@ -351,7 +351,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
   );
 
-  if (!$form_state['#location_needed']) {
+  if (!isset($form_state['#location_needed'])) {
     $form['basic']['location']['actor']['location_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Location'),
@@ -393,7 +393,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  if ($form_state['#location_needed']) {
+  if (isset($form_state['#location_needed'])) {
     $form['basic']['location']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
