@@ -17,18 +17,25 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             if ($(this.selected).data('autocompleteTitle') != undefined) {
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
+                /*if ($(this).input == $('#edit-location-actor-location-actor-label').input) {
+	              $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
+                }
+                if ($(this).input == $('#edit-organiser-actor-organiser-actor-label').input) {
+	              $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
+                }*/
+                //this.input.value = $(this.selected).data('autocompleteValue');
                 // TODO: For Debugging this true/false must be replaced
                 /*if (true) {
                     $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
                 } else {
                     $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
-                }*/
+                }
 
                 // Trigger eventsearch event to trigger ajax post.
                 var $input = $('#location_actor_id');
                 var $input = $('#organiser_actor_id');
                 $input.trigger('location_eventsearch');
-                $input.trigger('organiser_eventsearch');
+                $input.trigger('organiser_eventsearch');*/
             }
             else {
                 this.input.value = $(this.selected).data('autocompleteValue');
@@ -90,7 +97,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                         ac.unhighlight(this);
                     })
                     .data('autocompleteTitle', row.title)
-                    .data('autocompleteLocationTitle', 'TEST')
+                    //.data('autocompleteLocationTitle', 'TEST')
                     .data('autocompleteValue', row.key)
                     .appendTo(ul);
             }
@@ -101,12 +108,16 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             if (ul.children().length) {
                 $(this.popup).empty().append(ul).show();
                 $(this.ariaLive).html(Drupal.t('Autocomplete popup'));
-                //$('#edit-organiser-add-new-actor').css({ display: 'none' });
+                if (this.input.name == 'organiser[actor][organiser_actor_label]') {
+                  $('#edit-organiser-add-new-actor').css({ display: 'none' });
+                }
             }
             else {
                 $(this.popup).css({ visibility: 'hidden' });
                 this.hidePopup();
-                //$('#edit-organiser-add-new-actor').css({ display: 'block' });
+                if (this.input.name == 'organiser[actor][organiser_actor_label]') {
+                  $('#edit-organiser-add-new-actor').css({ display: 'block' });
+                }
             }
         }
     };
@@ -116,7 +127,14 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
      */
     Drupal.jsAC.prototype.select = function (node) {
         if ($(node).data('autocompleteTitle') != undefined) {
-            this.input.value = $(node).data('autocompleteTitle');
+          this.input.value = $(node).data('autocompleteTitle');
+          
+          if ($(this).input == $('#edit-location-actor-location-actor-label').input) {
+            $('#location_actor_id').val($(node).data('autocompleteValue'));
+		  }
+		  if ($(this).input == $('#edit-organiser-actor-organiser-actor-label').input) {
+		    $('#organiser_actor_id').val($(node).data('autocompleteValue'));
+		  }
         }
         else {
             this.input.value = $(node).data('autocompleteValue');
