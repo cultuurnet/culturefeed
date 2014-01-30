@@ -211,7 +211,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $default_price = $info->getValue();
       $default_free_price = 0;
       $default_price_description = $info->getDescription();
-      if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
+      if ($default_price == '0.00') {
         $default_price = '0';
         $default_free_price = 1;
       }
@@ -1958,6 +1958,25 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!preg_match("@^https?://@", $link_data['URL'])) {
 	    $link_data['URL'] = 'http://' . $link_data['URL'];
       }
+      $options = drupal_parse_url($link_data['URL']);
+      $url = url($options['path'], $options);
+      
+      if (strpos($url,'flickr')) {
+	    $mediatype = 'flickr';
+      }
+      
+      if (strpos($url,'facebook')) {
+	    $mediatype = 'facebook';
+      }
+      
+      if (strpos($url,'twitter')) {
+	    $mediatype = 'twitter';
+      }
+      
+      if (strpos($url,'youtube')) {
+	    $mediatype = 'youtube';
+      }
+      
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
     }
