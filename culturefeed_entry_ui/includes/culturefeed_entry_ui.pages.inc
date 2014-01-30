@@ -2038,8 +2038,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $detail = new CultureFeed_Cdb_Data_EventDetail();
   $detail->setTitle($values['title']);
 
-  if (!empty($values['description']['sd']['short_description']['value'])) {
-    $detail->setShortDescription($values['description']['sd']['short_description']['value']);
+  if (!empty($values['description']['sd']['short_description'])) {
+    $detail->setShortDescription($values['description']['sd']['short_description']);
   }
   if (!empty($values['description']['ld']['long_description']['value'])) {
     $detail->setLongDescription($values['description']['ld']['long_description']['value']);
