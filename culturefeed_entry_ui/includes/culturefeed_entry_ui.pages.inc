@@ -201,7 +201,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $default_price = $info->getValue();
       $default_free_price = 0;
       $default_price_description = $info->getDescription();
-      if ($default_price == '0.00' || $default_price == '' || $default_price == '0') {
+      if ($default_price == '0.00') {
         $default_price = '0';
         $default_free_price = 1;
       }
@@ -1958,9 +1958,39 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!preg_match("@^https?://@", $link_data['URL'])) {
         $link_data['URL'] = 'http://' . $link_data['URL'];
       }
+      
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
     }
+    
+    /*if ($link_data['URL']) {
+      if (!preg_match("@^https?://@", $link_data['URL'])) {
+	    $link_data['URL'] = 'http://' . $link_data['URL'];
+      }
+      
+      $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE;
+      
+      if (strpos($link_data['URL'],'plus.google.com')) {
+	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS;
+      }
+      
+      if (strpos($link_data['URL'],'facebook.com')) {
+	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK;
+      }
+      
+      if (strpos($link_data['URL'],'twitter.com')) {
+	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER;
+      }
+      
+      if (strpos($link_data['URL'],'youtube.com') || strpos($link_data['URL'],'youtu.be')) {
+	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
+      }
+      
+      $link = new CultureFeed_Cdb_Data_File();
+      $link->setHLink(new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']));
+      $link->setMediaType($mediatype);
+      array_push($links, $link);
+    }*/
   }
 
   $update = FALSE;
