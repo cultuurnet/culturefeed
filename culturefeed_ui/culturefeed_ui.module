@@ -410,13 +410,13 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
     'uitid' => array(
       'title' => t('My account'),
       'url' => 'user/' . $user->uid,
-      'description' => t('How other user will see your account'),
+      'description' => t('How other users will see your account'),
       'weight' => -20,
     ),
     'profile' => array(
       'title' => t('Edit profile'),
       'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, profielfoto,...',
+      'description' => t('Change name, address, profile picture, …'),
       'weight' => -19,
     ),
     'account' => array(

@@ -231,7 +231,7 @@ function culturefeed_ui_page_profile_edit_form($form, &$form_state) {
   // Gender.
   $form['gender'] = array(
     '#type' => 'radios',
-    '#title' => 'Geslacht',
+    '#title' => t('Gender'),
     '#options' => array('male' => t('Male'), 'female' => t('Female')),
     '#default_value' => $cf_account->gender,
   );
