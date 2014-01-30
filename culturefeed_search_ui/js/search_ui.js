@@ -43,7 +43,7 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
   /**
    * Bind the datepicker functionality.
    */
-  Drupal.CulturefeedSearch.bindDatePicker = function() {
+  Drupal.CulturefeedSearch.bindDatePicker = function() {    
     $('#edit-date-range').daterangepicker({
       presetRanges: [],
       presets : {
@@ -55,7 +55,8 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
       doneButtonText: Drupal.t('OK'),
       dateFormat: 'd/m/yy',
       earliestDate : Date.parse(),
-      constrainDates : true
+      constrainDates : true,
+      appendTo: '.form-item-date-range'
     });
   }
   
