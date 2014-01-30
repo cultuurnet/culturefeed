@@ -6,7 +6,33 @@
 Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
 (function ($) {
-
+  
+  Drupal.behaviors.price = {
+    attach: function (context, settings) {
+    
+      $('#edit-price-free').change(function () {
+	    if($("#edit-price-free").attr("checked")==true) {
+          $('#edit-price-amount').val('0');
+          $('#edit-price-amount').attr('disabled','disabled');
+          $('#edit-price-amount').css('color','#ccc');
+          $('#edit-price-extra').css('display','none');
+        }
+        else {
+	      $('#edit-price-amount').val('');
+          $('#edit-price-amount').removeAttr('disabled');
+          $('#edit-price-amount').css('color','#000');
+          $('#edit-price-extra').css('display','block');  
+        }
+      });
+      
+      /*$('#edit-price-amount').change(function () {
+        if($('#edit-price-amount').val() != '0') {
+	      $('#edit-price-free').css('display','none');
+        }
+      });*/
+	}
+  };
+  
     /**
      * Hides the autocomplete suggestions.
      */
@@ -25,20 +51,6 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 				if (this.input.name == 'organiser[actor][organiser_actor_label]') {
 				  $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
 				}
-                  
-                //this.input.value = $(this.selected).data('autocompleteValue');
-                // TODO: For Debugging this true/false must be replaced
-                /*if (true) {
-                    $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
-                } else {
-                    $('#organiser_actor_id').val($(this.selected).data('autocompleteValue'));
-                }
-
-                // Trigger eventsearch event to trigger ajax post.
-                var $input = $('#location_actor_id');
-                var $input = $('#organiser_actor_id');
-                $input.trigger('location_eventsearch');
-                $input.trigger('organiser_eventsearch');*/
             }
             else {
                 this.input.value = $(this.selected).data('autocompleteValue');
@@ -151,6 +163,5 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             this.input.value = $(node).data('autocompleteValue');
         }
     };
-
 
 })(jQuery);

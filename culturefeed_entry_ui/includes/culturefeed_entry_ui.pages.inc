@@ -814,27 +814,22 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     ),
     '#size' => 15,
+  );
+
+  $form['extra']['price']['free'] = array(
+    '#type' => 'checkbox',
+    '#name' => 'price_free',
+    '#title' => t('Free event'),
+    '#default_value' => $default_free_price,
     '#states' => array(
-      'visible' => array(
-        'input[name="price_free"]' => array('checked' => FALSE)
+      'checked' => array(
+        'input[name="price_amount"]' => array('value' => '0'),
+      ),
+      'invisible' => array(
+        'input[name="price_amount"]' => array('filled' => TRUE),
       ),
     ),
   );
-
-  if (!isset($form_state['#price_needed'])) {
-    $form['extra']['price']['free'] = array(
-      '#type' => 'checkbox',
-      '#name' => 'price_free',
-      '#title' => t('Free event'),
-      '#default_value' => $default_free_price,
-      '#states' => array(
-        'invisible' => array(
-          'input[name="price_amount"]' => array('filled' => TRUE)
-        ),
-
-      ),
-    );
-  }
 
   $form['extra']['price']['extra'] = array(
     '#tree' => TRUE,
@@ -866,7 +861,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#submit' => array('culturefeed_entry_ui_add_more_submit'),
       '#states' => array(
         'visible' => array(
-          'input[name="price_amount"]' => array('filled' => TRUE)
+          'input[name="price_amount"]' => array('filled' => TRUE),
         ),
       ),
     );
