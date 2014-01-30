@@ -1958,22 +1958,20 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!preg_match("@^https?://@", $link_data['URL'])) {
 	    $link_data['URL'] = 'http://' . $link_data['URL'];
       }
-      $options = drupal_parse_url($link_data['URL']);
-      $url = url($options['path'], $options);
       
-      if (strpos($url,'flickr')) {
+      if (strpos($link_data['URL'],'flickr.com')) {
 	    $mediatype = 'flickr';
       }
       
-      if (strpos($url,'facebook')) {
+      if (strpos($link_data['URL'],'facebook.com')) {
 	    $mediatype = 'facebook';
       }
       
-      if (strpos($url,'twitter')) {
+      if (strpos($link_data['URL'],'twitter.com')) {
 	    $mediatype = 'twitter';
       }
       
-      if (strpos($url,'youtube')) {
+      if (strpos($link_data['URL'],'youtube.com') || strpos($link_data['URL'],'youtu.be')) {
 	    $mediatype = 'youtube';
       }
       
