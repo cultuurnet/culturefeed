@@ -411,3 +411,8 @@ function culturefeed_entry_ui_block_info_alter(&$blocks, $theme, $code_blocks) {
     $block[$delta]['status'] = 1;
   }
 }
+
+function culturefeed_entry_ui_remove_filter_input(&$form) {
+  $form['format']['#access'] = FALSE;
+  return $form;
+}

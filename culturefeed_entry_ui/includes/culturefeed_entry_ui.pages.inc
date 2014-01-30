@@ -691,7 +691,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#title' => t('Long description'),
       '#rows' => 10,
       '#default_value' => $default_long_description,
-      '#name' => 'long_description'
+      '#name' => 'long_description',
+      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+      '#format' => filter_default_format(),
     );
   }
 
@@ -1171,6 +1173,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'text_format',
     '#title' => t('Long description'),
     '#default_value' => $nl_long_description,
+    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
   );
 
   //english
@@ -1198,6 +1201,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'text_format',
     '#title' => t('Long description'),
     '#default_value' => $en_long_description,
+    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
   );
 
   //french
@@ -1225,6 +1229,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'text_format',
     '#title' => t('Long description'),
     '#default_value' => $fr_long_description,
+    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
   );
 
   //german
@@ -1252,6 +1257,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'text_format',
     '#title' => t('Long description'),
     '#default_value' => $de_long_description,
+    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
   );
 
   //Publication & Private
