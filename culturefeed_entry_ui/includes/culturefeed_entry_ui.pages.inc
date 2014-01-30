@@ -820,6 +820,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#name' => 'price_free',
     '#title' => t('Free event'),
     '#default_value' => $default_free_price,
+    '#states' => array(
+      'checked' => array(
+        'input[name="price_amount"]' => array('value' => '0'),
+      ),
+      'invisible' => array(
+        'input[name="price_amount"]' => array('filled' => TRUE),
+      ),
+    ),
   );
 
   $form['extra']['price']['extra'] = array(
@@ -850,6 +858,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
       '#limit_validation_errors' => array(array('price')),
       '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+      '#states' => array(
+        'visible' => array(
+          'input[name="price_amount"]' => array('filled' => TRUE),
+        ),
+      ),
     );
   }
 
