@@ -212,7 +212,7 @@ function culturefeed_search_ui_library() {
     'website' => 'http://filamentgroup.com/lab/date_range_picker_using_jquery_ui_16_and_jquery_ui_css_framework/',
     'version' => '1',
     'js' => array(
-      $path . '/js/daterangepicker.jQuery.js' => array(),
+      $path . '/js/daterangepicker.jQuery.compressed.js' => array(),
     ),
     'css' => array(
       $path . '/css/ui.daterangepicker.css' => array(),
