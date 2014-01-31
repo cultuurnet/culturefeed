@@ -63,6 +63,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
   $items = array();
   $facets = $variables['items'];
   $sort_values = array();
+  $sort = FALSE;
 
   // Add all the facet items to the build.
   foreach ($facets as $key => $facet_item) {
@@ -70,12 +71,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
     $sub_item_output = array();
     $has_active_subitem = FALSE;
 
-    // Construct unique key for sorting.
-    if ($variables['sort_alphabetically']) {
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
       $sort_values[] = $facet_item->getLabel();
+      $sort = TRUE;
     }
-    else {
+    elseif ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
       $sort_values[] = $facet_item->getTotalResults();
+      $sort = TRUE;
     }
 
     $sub_item_sort_values = array();
@@ -88,10 +90,10 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       foreach ($sub_items as $sub_item_key => $sub_item) {
 
         // Construct unique key for sorting.
-        if ($variables['sort_alphabetically']) {
+        if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
           $sub_item_sort_values[] = $sub_item->getLabel();
         }
-        else {
+        elseif ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
           $sub_item_sort_values[] = $sub_item->getTotalResults();
         }
 
@@ -112,10 +114,12 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       }
 
       // Sort based on the sorting values.
-      array_multisort($sub_item_sort_values, $sub_item_output);
-      if (!$variables['sort_alphabetically']) {
-        $sub_item_output = array_reverse($sub_item_output);
-        $sub_item_sort_values = array_reverse($sub_item_sort_values);
+      if ($sort) {
+        array_multisort($sub_item_sort_values, $sub_item_output);
+        if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+          $sub_item_output = array_reverse($sub_item_output);
+          $sub_item_sort_values = array_reverse($sub_item_sort_values);
+        }
       }
     }
 
@@ -141,9 +145,11 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
   }
 
   // Sort based on the sorting values.
-  array_multisort($sort_values, $items);
-  if (!$variables['sort_alphabetically']) {
-    $items = array_reverse($items);
+  if ($sort) {
+    array_multisort($sort_values, $items);
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+      $items = array_reverse($items);
+    }
   }
 
   $variables['items'] = $items;
@@ -169,9 +175,11 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$v
   }
 
   // Sort based on the sorting values.
-  array_multisort($sort_values, $variables['event_types']);
-  if (!$variables['sort_alphabetically']) {
-    $variables['event_types'] = array_reverse($variables['event_types']);
+  if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY || $variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+    array_multisort($sort_values, $variables['event_types']);
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
+      $variables['event_types'] = array_reverse($variables['event_types']);
+    }
   }
 }
 
