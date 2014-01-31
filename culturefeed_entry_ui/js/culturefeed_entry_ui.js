@@ -126,8 +126,8 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'none' });
                 }
-                if (this.input.name == 'location[actor][location_actor_label]') {
-	              $('#edit-location-add-new-location').css({ display: 'none' });  
+                if (this.input.name == 'actor[location_actor_label]') {
+	              $('#edit-new-add-new-location').css({ display: 'none' });  
                 }
             }
             else {
@@ -136,8 +136,8 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'block' });
                 }
-                if (this.input.name == 'location[actor][location_actor_label]') {
-	              $('#edit-location-add-new-location').css({ display: 'block' });  
+                if (this.input.name == 'actor[location_actor_label]') {
+	              $('#edit-new-add-new-location').css({ display: 'block' });  
                 }
             }
         }

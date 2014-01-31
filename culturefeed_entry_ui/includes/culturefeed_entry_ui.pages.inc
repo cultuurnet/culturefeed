@@ -329,16 +329,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   $form['basic']['location'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="basic-wrapper">',
-    '#suffix' => '</div>',
-  );
-
-  $form['basic']['location']['actor'] = array(
     '#prefix' => '<div id="location-ajax-wrapper">',
     '#suffix' => '</div>',
     '#type' => 'container',
+  );
+
+  $form['basic']['location']['actor'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="known-location-wrapper">',
+    '#suffix' => '</div>',
   );
 
   if (!isset($form_state['#location_needed'])) {
@@ -364,8 +364,17 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'id' => 'location_actor_id',
       ),
     );
+  }
   
-    $form['basic']['location']['add_new_location'] = array(
+  $form['basic']['location']['new'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="new-location-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  if (!isset($form_state['#location_needed'])) {    
+    $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
       '#value' => t('Location not found, add location'),
@@ -378,13 +387,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'wrapper' => 'location-ajax-wrapper',
         'effect' => 'fade',
       ),
-      '#limit_validation_errors' => array(array('price')),
+      '#limit_validation_errors' => array(array('location')),
       '#submit' => array('culturefeed_entry_ui_add_more_submit'),
     );
   }
 
   if (isset($form_state['#location_needed'])) {
-    $form['basic']['location']['location_title'] = array(
+    $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
       '#default_value' => isset($custom_location_title) ? $custom_location_title : '',
@@ -392,7 +401,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 80,
     );
 
-    $form['basic']['location']['street'] = array(
+    $form['basic']['location']['new']['street'] = array(
       '#type' => 'textfield',
       '#title' => t('Street'),
       '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
@@ -400,7 +409,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 60,
     );
 
-    $form['basic']['location']['house_number'] = array(
+    $form['basic']['location']['new']['house_number'] = array(
       '#type' => 'textfield',
       '#title' => t('House Number'),
       '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
@@ -408,14 +417,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 10,
     );
 
-    $form['basic']['location']['citywrapper'] = array(
+    $form['basic']['location']['new']['citywrapper'] = array(
       '#tree' => TRUE,
       '#type' => 'container',
       '#prefix' => '<div id="citywrapper-ajax-wrapper">',
       '#suffix' => '</div>',
     );
   
-    $form['basic']['location']['citywrapper']['zip_code'] = array(
+    $form['basic']['location']['new']['citywrapper']['zip_code'] = array(
       '#type' => 'textfield',
       '#title' => '',
       '#name' => 'zip_code',
@@ -429,7 +438,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
 
-    $form['basic']['location']['citywrapper']['city'] = array(
+    $form['basic']['location']['new']['citywrapper']['city'] = array(
       '#type' => 'textfield',
       '#title' => t('City'),
       '#default_value' => isset($custom_location_city) ? $custom_location_city : '',
@@ -438,7 +447,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 60,
     );
 
-    $form['basic']['location']['citywrapper']['country'] = array(
+    $form['basic']['location']['new']['citywrapper']['country'] = array(
       '#type' => 'select',
       '#name' => 'country_select',
       '#title' => t('Country'),
