@@ -66,7 +66,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/add'] = array(
-    'title' => 'Nieuwe activiteit',
+    'title' => 'New activity',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_event_form'),
     'access arguments' => array('create culturefeed events'),
@@ -74,7 +74,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/%/%culturefeed_agenda_event/edit'] = array(
-    'title' => 'Activiteit aanpassen',
+    'title' => 'Edit activity',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_event_form', 3),
     'access arguments' => array('edit culturefeed events'),
@@ -82,7 +82,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/%/%culturefeed_agenda_event/delete'] = array(
-    'title' => 'Activiteit verwijderen',
+    'title' => 'Delete activity',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_delete_event_form', 3),
     'access arguments' => array('delete culturefeed events'),
@@ -413,6 +413,8 @@ function culturefeed_entry_ui_block_info_alter(&$blocks, $theme, $code_blocks) {
 }
 
 function culturefeed_entry_ui_remove_filter_input(&$form) {
-  $form['format']['#access'] = FALSE;
+
+  unset($form['format']['guidelines']);
+  unset($form['format']['help']);
   return $form;
 }

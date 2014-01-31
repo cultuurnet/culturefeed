@@ -11,7 +11,7 @@ function culturefeed_agenda_block_related_activities() {
 
   // Try to load the agenda detail.
   $item = culturefeed_agenda_get_active_object();
-  if (!$item) {
+  if (!$item || arg(4) == 'edit') {
     return;
   }
 

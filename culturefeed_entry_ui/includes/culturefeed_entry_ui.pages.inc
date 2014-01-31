@@ -947,7 +947,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  //age
+  // Age
   $form['extra']['age_category'] = array(
     '#type' => 'select',
     '#title' => t('Age'),
@@ -1914,9 +1914,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
   dsm($values);
-
-  $values = $form_state['values']; 
-  dsm($values);
   
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
@@ -2075,28 +2072,43 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $detail->setLongDescription($values['description']['ld']['long_description']['value']);
   }
   
-    // Photo
+  // Photo
   if ($values['photo']['upload']) {
-    if($values['photo']['upload'] != $values['photo']['current_file']) {
-      // Save to Drupal
-      $drupal_file = file_load($values['photo']['upload']);
-      $drupal_file->status = FILE_STATUS_PERMANENT;
-      file_save($drupal_file);
-      // Add to detail
-      $file = new CultureFeed_Cdb_Data_File();
-      $file->setMediaType($file::MEDIA_TYPE_PHOTO);
-      $file->setHLink(file_create_url($drupal_file->uri));
-      $file->setFilename($drupal_file->filename);
-      $detail->getMedia()->add($file);
-      // Remove old image
-      // Bug on UDB ... will be fixed soon
+  
+    // Save to Drupal
+    $drupal_file = file_load($values['photo']['upload']);
+    $drupal_file->status = FILE_STATUS_PERMANENT;
+    file_save($drupal_file);
+    file_usage_add($drupal_file, 'culturefeed_entry_ui', 'event', $drupal_file->fid);
+       
+    // Add to detail
+    $file = new CultureFeed_Cdb_Data_File();
+    $file->setMediaType($file::MEDIA_TYPE_PHOTO);
+    switch ($drupal_file->filemime) {
+      case 'image/gif':
+        $file->setFileType($file::FILE_TYPE_GIF);
+        break;
+      case 'image/jpg':
+      case 'image/jpeg':
+        $file->setFileType($file::FILE_TYPE_JPEG);
+        break;
+      case 'image/png':
+        $file->setFileType($file::FILE_TYPE_PNG);
+        break;
+    }
+    $file->setHLink(file_create_url($drupal_file->uri));
+    $file->setFilename($drupal_file->filename);
+    $detail->getMedia()->add($file);
+    // Remove old image
+    // Bug on UDB ... will be fixed soon
+    if (isset($values['photo']['current_file_hlink'])) {
       try {
         Drupalculturefeed_EntryApi::removeLinkFromEvent($event, $values['photo']['current_file_hlink']);
     
       } catch (Exception $e) {
         watchdog_exception('culturefeed_entry_ui', $e);
       }
-    }   
+    }
   }
 
   // Price
@@ -2326,6 +2338,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
+      cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
     }
     else {
       $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event);
@@ -2343,7 +2356,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $file = file_load($form_state['values']['photo']['upload']);
     file_delete($file);
   }
-  if($form_state['values']['photo']['current_file']) {
+  if(isset($form_state['values']['photo']['current_file'])) {
     $file = file_load($form_state['values']['photo']['current_file']);
     file_delete($file);
   }
@@ -2431,7 +2444,7 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
 
   if ($form_state['#update_event']) {
-    $form_state['redirect'] = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
+    $form_state['redirect'] = 'http://'. $_SERVER['HTTP_HOST'] . culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
     drupal_set_message(t('Event successfully updated'));
   }
   else {

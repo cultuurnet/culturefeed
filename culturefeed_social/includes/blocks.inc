@@ -218,7 +218,7 @@ function culturefeed_social_block_recommended_by($object) {
  **/
 function culturefeed_social_block_comments($object) {
 
-  if (!$object || !method_exists($object, 'getType')) {
+  if (!$object || !method_exists($object, 'getType' || arg(4) == 'edit')) {
     return;
   }
 
