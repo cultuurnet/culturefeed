@@ -93,9 +93,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       if ($location->getCdbId()) {
         $default_location_id = $location->getCdbId();
         $default_location_label = $location->getLabel();
-        $form_state['#location_needed'] = TRUE;
+        $form_state['#location_needed'] = FALSE;
       }
       else {
+        $form_state['#location_needed'] = TRUE;
         $custom_location_title = $location->getLabel();
         $custom_location_street = $address->getStreet();
         $custom_location_number = $address->getHouseNumber();
