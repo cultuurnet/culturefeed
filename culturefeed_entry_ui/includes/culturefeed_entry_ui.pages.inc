@@ -1775,6 +1775,8 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
+  
+  dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1857,7 +1859,33 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate location
-  if (!empty($values['location']['actor']['location_actor_id'])) {
+  if (isset($form_state['#location_needed'])) {
+    if (empty($values['new']['location_title'])) {
+      form_set_error('location_title', t('A title is required for a custom location'));
+    }
+    if ($values['new']['citywrapper']['country'] != 'BE') {
+      if (empty($values['location']['new']['citywrapper']['zip_code'])) {
+        form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+      }
+    }
+    if (empty($values['new']['citywrapper']['city'])) {
+      form_set_error('city', t('A city is required for a custom location'));
+    }
+    $location = NULL;
+  }
+  else {
+    try {
+      $location = culturefeed_search_item_load($values['actor']['location_actor_id'], 'actor');
+      if (!$location) {
+        form_set_error('location', t('We could not validate the location'));
+      }
+    } catch (Exception $e) {
+      form_set_error('location', t('We could not validate the location'));
+    }
+  }
+    
+    
+  /*if (!empty($values['location']['actor']['location_actor_id'])) {
 
     try {
       $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
@@ -1881,7 +1909,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
       form_set_error('city', t('A city is required for a custom location'));
     }
     $location = NULL;
-  }
+  }*/
 
   // Validate organiser.
   if (!empty($values['organiser']['actor']['organiser_actor_id'])) {
@@ -2225,23 +2253,23 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['location']['street']);
-    $physical_address->setHouseNumber($values['location']['house_number']);
-    if ($values['location']['citywrapper']['country'] == 'BE') {
-      $physical_address->setZip(substr($values['location']['citywrapper']['city'], 0, 4));
-      $physical_address->setCity(substr($values['location']['citywrapper']['city'], 5));
+    $physical_address->setStreet($values['new']['street']);
+    $physical_address->setHouseNumber($values['new']['house_number']);
+    if ($values['new']['citywrapper']['country'] == 'BE') {
+      $physical_address->setZip(substr($values['new']['citywrapper']['city'], 0, 4));
+      $physical_address->setCity(substr($values['new']['citywrapper']['city'], 5));
     }
     else {
-      $physical_address->setCity($values['location']['citywrapper']['city']);
-      $physical_address->setZip($values['location']['citywrapper']['zip_code']);
+      $physical_address->setCity($values['new']['citywrapper']['city']);
+      $physical_address->setZip($values['new']['citywrapper']['zip_code']);
     }
-    $physical_address->setCountry($values['location']['citywrapper']['country']);
-    $address->setLabel($values['location']['location_title']);
+    $physical_address->setCountry($values['new']['citywrapper']['country']);
+    $address->setLabel($values['new']['location_title']);
     $address->setPhysicalAddress($physical_address);
-    $address->setLabel($values['location']['location_title']);
+    $address->setLabel($values['new']['location_title']);
 
     $cdb_location = new CultureFeed_Cdb_Data_Location($address);
-    $cdb_location->setLabel($values['location']['location_title']);
+    $cdb_location->setLabel($values['new']['location_title']);
     $event->setLocation($cdb_location);
   }
 
