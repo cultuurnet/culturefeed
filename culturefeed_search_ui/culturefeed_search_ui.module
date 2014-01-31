@@ -284,7 +284,7 @@ function culturefeed_search_ui_block_configure($delta) {
   $form = array();
 
   $delta_parts = explode('-', $delta);
-  if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+  if ($delta != 'facet-datetype' && isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
     $form['sort'] = array(
       '#type' => 'select',
       '#title' => t('Sort facet on'),

@@ -143,8 +143,8 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort_alphabetically = TRUE) {
-
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort_alphabetically = FALSE) {
+  
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
