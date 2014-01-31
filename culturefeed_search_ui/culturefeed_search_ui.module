@@ -14,6 +14,9 @@ define("CULTUREFEED_SEARCH_UI_PAGER_INFINITE_SCROLL", 1);
 
 define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 
+define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
+define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
+
 /**
  * Implements hook_init().
  */
@@ -140,7 +143,7 @@ function culturefeed_search_ui_theme() {
         'title' => NULL,
         'path' => NULL,
         'query' => NULL,
-        'sort_alphabetically' => TRUE,
+        'sort' => '',
       ),
       'template' => 'culturefeed-search-facet',
       'path' => $path,
@@ -153,7 +156,7 @@ function culturefeed_search_ui_theme() {
         'title' => NULL,
         'path' => NULL,
         'query' => NULL,
-        'sort_alphabetically' => TRUE,
+        'sort' => '',
       ),
       'template' => 'culturefeed-search-facet-eventtype',
       'path' => $path,
@@ -289,10 +292,11 @@ function culturefeed_search_ui_block_configure($delta) {
       '#type' => 'select',
       '#title' => t('Sort facet on'),
       '#options' => array(
-        'alphabetically' => t('Alphabetically'),
-        'total_results' => t('Total results')
+        '' => t('Default sorting'),
+        CULTUREFEED_SEARCH_SORT_ALPHABETICALLY => t('Alphabetically'),
+        CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS => t('Total results')
       ),
-      '#default_value' => variable_get('culturefeed_search_sort_' . $delta, 'alphabetically'),
+      '#default_value' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
     );
 
     if ($delta == 'facet-theme') {
@@ -374,8 +378,8 @@ function culturefeed_search_ui_block_view($delta) {
           }
         }
 
-        $sort = variable_get('culturefeed_search_sort_' . $delta, 'alphabetically');
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), ($sort == 'alphabetically'));
+        $sort = variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
+        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), $sort);
       }
 
   }
