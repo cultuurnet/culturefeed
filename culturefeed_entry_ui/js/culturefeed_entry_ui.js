@@ -12,7 +12,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     
       $('#edit-price-free').change(function () {
 	    if($("#edit-price-free").attr("checked")==true) {
-          $('#edit-price-amount').val('0');
+          $('#edit-price-amount')val('0');
           $('#edit-price-amount').attr('disabled','disabled');
           $('#edit-price-amount').css('color','#ccc');
           $('#edit-price-extra').css('display','none');
@@ -44,7 +44,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
                 
-                if (this.input.name == 'location[actor][location_actor_label]') {
+                if (this.input.name == 'actor[location_actor_label]') {
 				  $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
 				}
 		  
@@ -126,8 +126,8 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'none' });
                 }
-                if (this.input.name == 'location[actor][location_actor_label]') {
-	              $('#edit-location-add-new-location').css({ display: 'none' });  
+                if (this.input.name == 'actor[location_actor_label]') {
+	              $('#edit-new-add-new-location').css({ display: 'none' });  
                 }
             }
             else {
@@ -136,8 +136,8 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'block' });
                 }
-                if (this.input.name == 'location[actor][location_actor_label]') {
-	              $('#edit-location-add-new-location').css({ display: 'block' });  
+                if (this.input.name == 'actor[location_actor_label]') {
+	              $('#edit-new-add-new-location').css({ display: 'block' });  
                 }
             }
         }
@@ -150,7 +150,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         if ($(node).data('autocompleteTitle') != undefined) {
           this.input.value = $(node).data('autocompleteTitle');
           
-          if (this.input.name == 'location[actor][location_actor_label]') {
+          if (this.input.name == 'actor[location_actor_label]') {
 		    $('#location_actor_id').val($(node).data('autocompleteValue'));
 		  }
 		  

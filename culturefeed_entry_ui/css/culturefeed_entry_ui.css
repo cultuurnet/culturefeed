@@ -10,12 +10,25 @@
   min-height: 431px;
 }
 
-.form-item-location-street, .form-item-zip-code, .form-item-location-country {
+.form-item-new-street, .form-item-location-country {
   clear: left;
 }
 
-.form-item-location-house-number {
-  margin-left: 30px;
+.form-item-new-street {
+  float: left;
+  margin-right: 30px;
+}
+
+.form-item-new-house-number {
+  padding-top: 2px;
+}
+
+.form-item-zip-code {
+  float: left;
+}
+
+.form-item-new-citywrapper-city {
+  padding-top: 2px;
 }
 
 #citywrapper-ajax-wrapper {
