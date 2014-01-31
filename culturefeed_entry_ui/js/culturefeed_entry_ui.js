@@ -12,7 +12,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     
       $('#edit-price-free').change(function () {
 	    if($("#edit-price-free").attr("checked")==true) {
-          $('#edit-price-amount').val('0');
+          $('#edit-price-amount')val('0');
           $('#edit-price-amount').attr('disabled','disabled');
           $('#edit-price-amount').css('color','#ccc');
           $('#edit-price-extra').css('display','none');

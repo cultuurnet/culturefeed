@@ -50,6 +50,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $mail_contacts = array();
   $is_private = FALSE;
 
+  $form_state['#location_needed'] = FALSE;
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
@@ -95,6 +96,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       if ($location->getCdbId()) {
         $default_location_id = $location->getCdbId();
         $default_location_label = $location->getLabel();
+        $form_state['#location_needed'] = TRUE;
       }
       else {
         $custom_location_title = $location->getLabel();
