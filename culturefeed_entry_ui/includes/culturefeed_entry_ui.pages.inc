@@ -2331,7 +2331,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Members
-  if (isset($values['members'])) {
+  if ($values['members']) {
     $event->setPrivate(TRUE);
   }
 
