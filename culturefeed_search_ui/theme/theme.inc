@@ -60,44 +60,40 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
 
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
 
-  // Sort alphabetically.
-  if ($variables['sort_alphabetically']) {
-    $sorted_facets = array();
-    foreach ($variables['items'] as $facet_item) {
-      $sorted_facets[$facet_item->getLabel()] = $facet_item;
-    }
-    sort($sorted_facets);
-  }
-  else {
-    $sorted_facets = $variables['items'];
-  }
-
   $items = array();
+  $facets = $variables['items'];
+  $sort_values = array();
+
   // Add all the facet items to the build.
-  foreach ($sorted_facets as $facet_item) {
+  foreach ($facets as $key => $facet_item) {
 
     $sub_item_output = array();
     $has_active_subitem = FALSE;
 
+    // Construct unique key for sorting.
+    if ($variables['sort_alphabetically']) {
+      $sort_values[] = $facet_item->getLabel();
+    }
+    else {
+      $sort_values[] = $facet_item->getTotalResults();
+    }
+
+    $sub_item_sort_values = array();
     // Add the subitems from this facet item.
     if ($facet_item->hasSubItems()) {
 
       $sub_items = $facet_item->getSubItems();
 
-       // Sort alphabetically.
-      if ($variables['sort_alphabetically']) {
-        $sorted_sub_items = array();
-        foreach ($sub_items as $sub_item) {
-          $sorted_sub_items[$sub_item->getLabel()] = $sub_item;
-        }
-        sort($sorted_sub_items);
-      }
-      else {
-        $sorted_sub_items = $sub_items;
-      }
-
       // Create link for every sub item.
-      foreach ($sorted_sub_items as $sub_item) {
+      foreach ($sub_items as $sub_item_key => $sub_item) {
+
+        // Construct unique key for sorting.
+        if ($variables['sort_alphabetically']) {
+          $sub_item_sort_values[] = $sub_item->getLabel();
+        }
+        else {
+          $sub_item_sort_values[] = $sub_item->getTotalResults();
+        }
 
         // If the list has an active subitem. Add class.
         $sub_item_active = in_array($sub_item->getValue(), $active_options);
@@ -112,6 +108,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'path' => $path,
           'active' => $sub_item_active,
         ));
+
+      }
+
+      // Sort based on the sorting values.
+      array_multisort($sub_item_sort_values, $sub_item_output);
+      if (!$variables['sort_alphabetically']) {
+        $sub_item_output = array_reverse($sub_item_output);
+        $sub_item_sort_values = array_reverse($sub_item_sort_values);
       }
     }
 
@@ -131,8 +135,15 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'output' => $item_output,
       'sub_items' => $sub_item_output,
       'has_active_sub_item' => $has_active_subitem,
+      'subitem_sort_values' => $sub_item_sort_values,
     );
 
+  }
+
+  // Sort based on the sorting values.
+  array_multisort($sort_values, $items);
+  if (!$variables['sort_alphabetically']) {
+    $items = array_reverse($items);
   }
 
   $variables['items'] = $items;
@@ -144,7 +155,24 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
  * @see culturefeed-search-facet.tpl.php
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$variables) {
+
   culturefeed_search_ui_preprocess_culturefeed_search_facet($variables);
+
+  $sort_values = array();
+  foreach ($variables['items'] as $item) {
+    if (!empty($item['sub_items'])) {
+      foreach ($item['sub_items'] as $subitem_key => $sub_item) {
+        $variables['event_types'][] = $sub_item;
+        $sort_values[] = $item['subitem_sort_values'][$subitem_key];
+      }
+    }
+  }
+
+  // Sort based on the sorting values.
+  array_multisort($sort_values, $variables['event_types']);
+  if (!$variables['sort_alphabetically']) {
+    $variables['event_types'] = array_reverse($variables['event_types']);
+  }
 }
 
 /**

@@ -369,7 +369,7 @@ function culturefeed_search_ui_block_view($delta) {
 
         // Hide theme facet if no eventtype is chosen.
         if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', FALSE)) {
-          if (!isset($_GET['facet']['category_umv_id'])) {
+          if (!isset($_GET['facet']['category_eventtype_id'])) {
             return $block;
           }
         }
