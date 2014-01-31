@@ -567,6 +567,36 @@ function theme_culturefeed_pages_login_required_message($variables) {
 }
 
 /**
+ * Theme the link to request administratorship for a page.
+ */
+function theme_culturefeed_pages_admin_request_link($variables) {
+
+  $page = $variables['page'];
+  $cf_user = $variables['cf_user'];
+
+  $output = '<div id="request_adminship_link_' . $page->getId() . '_wrapper">';
+  $output .= l(t('Become an administrator'), 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array(
+    'query' => drupal_get_destination(),
+    'attributes' => array(
+      'class' => array('use-ajax button')
+    )
+  ));
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Theme the message shown when a user can not delete his membership.
+ */
+function theme_culturefeed_pages_membership_delete_not_possible($variables) {
+
+  $output = t('Not possible to remove');
+
+  return $output;
+}
+
+/**
  * Helper preprocessor to add meta description tag.
  * @param type $variables
  */

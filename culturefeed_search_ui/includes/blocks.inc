@@ -143,8 +143,8 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
-
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort_alphabetically = FALSE) {
+  
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
@@ -191,6 +191,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
         '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
         '#facet' => $facet,
         '#items' => $items,
+        '#sort_alphabetically' => $sort_alphabetically,
       ),
     );
   }
@@ -209,7 +210,7 @@ function culturefeed_search_ui_block_date_facet() {
   $build = array();
 
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
-  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items);
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, FALSE);
 
   if (!empty($facet_block)) {
 

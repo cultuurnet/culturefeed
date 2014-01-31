@@ -361,9 +361,7 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
 function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, $exclude_user = NULL) {
 
   $user_list = DrupalCultureFeed::getConsumerInstance()->pages()->getUserList(
-    $page->getId(),
-    array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER),
-    FALSE
+      $page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE
   );
 
   $memberships = array();
@@ -378,6 +376,26 @@ function culturefeed_pages_get_members_of_page(CultureFeed_Cdb_Item_Page $page, 
   }
 
   return $memberships;
-
 }
 
+/**
+ * Get all the admins of a given page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
+
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $admin_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $admin_list = new CultureFeed_Pages_UserList();
+  }
+
+  foreach ($admin_list->memberships as $admin) {
+    $admins_of_page[$admin->user->id] = $admin->user->id;
+  }
+
+  return $admins_of_page;
+}

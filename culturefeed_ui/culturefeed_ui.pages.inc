@@ -162,7 +162,7 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto();
 }
 
-function culturefeed_ui_page_profile_edit_form() {
+function culturefeed_ui_page_profile_edit_form($form, &$form_state) {
 
   culturefeed_ui_set_profile_breadcrumb();
 
@@ -208,25 +208,30 @@ function culturefeed_ui_page_profile_edit_form() {
   );
 
   // Picture.
-  $form['#attributes']['enctype'] = 'multipart/form-data';
-
-  $form['current_picture'] = array(
-    '#prefix' => '<div class="current-picture">',
-    '#theme' => 'image',
-    '#path' => $cf_account->depiction . '?maxwidth=50&maxheight=50&crop=auto',
-    '#suffix' => '</div>',
-  );
-
+  $form_state['#old_picture'] = 0;
   $form['picture'] = array(
-    '#type' => 'file',
-    '#size' => 26,
+    '#type' => 'managed_file',
     '#title' => t('Choose picture'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://culturefeed',
   );
+
+  if (!empty($cf_account->depiction)) {
+    $file = culturefeed_create_temporary_image($cf_account->depiction, file_default_scheme() . '://culturefeed');
+    if ($file) {
+      $form_state['#old_picture'] = $file->fid;
+      $form['picture']['#default_value'] = $file->fid;
+    }
+  }
 
   // Gender.
   $form['gender'] = array(
     '#type' => 'radios',
-    '#title' => 'Geslacht',
+    '#title' => t('Gender'),
     '#options' => array('male' => t('Male'), 'female' => t('Female')),
     '#default_value' => $cf_account->gender,
   );
@@ -367,14 +372,13 @@ function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
   }
 
   // Upload profile picture.
-  if ($_FILES['files']['tmp_name']['picture']) {
-    $picture_path = $_FILES['files']['tmp_name']['picture'];
+  if ($form_state['values']['picture'] && $form_state['#old_picture'] != $form_state['values']['picture']) {
 
-    $picture = file_get_contents($picture_path);
-
-    if ($picture) {
+    $file = file_load($form_state['values']['picture']);
+    if ($file) {
+      $image = file_get_contents(drupal_realpath($file->uri));
       try {
-        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $picture);
+        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $image);
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);

@@ -139,7 +139,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
     $variables['tickets'] = array();
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+      $ticket = array();
+      $ticket['text'] = t('Buy tickets');      
+      $ticket['link'] = $link->getHLink();
+      $ticket['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $variables['tickets'][] = $ticket;
     }
 
     // Performers
@@ -346,6 +350,37 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $variables['contact']['phone'] = implode(', ', $phones);
     $variables['contact']['fax'] = implode(', ', $faxes);
 
+    // Reservation data.
+    $variables['reservation'] = $contact_info->getReservationInfo();
+    $reservation_info = $variables['reservation'];
+
+      // Reservation mail
+      if (isset($reservation_info['mails'])) {
+        foreach ($reservation_info['mails'] as $mail) {
+          $reservation_mails[] = l($mail, 'mailto:' . $mail);
+        }
+        $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+      }
+
+      // Reservation phone
+      if (isset($reservation_info['phone'])) {
+        foreach ($reservation_info['phone'] as $phone) {
+          $reservation_phones[] = $phone;
+        }
+        $variables['reservation']['phone'] = implode(', ', $reservation_phones);
+      }
+
+      // Reservation url
+      if (isset($reservation_info['url'])) {
+        foreach ($reservation_info['url'] as $url) {
+          // clean up link text
+          $url_text = str_replace('http://', '', $url);
+          $url_text = str_replace('https://', '', $url_text);
+          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url);
+        }
+        $variables['reservation']['url'] = implode(', ', $reservation_urls);
+      }
+
     // Coordinates.
     $addresses = $contact_info->getAddresses();
     if ($addresses) {
@@ -358,9 +393,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-
-    // Reservation data.
-    $variables['reservation'] = $contact_info->getReservationInfo();
 
   }
 
@@ -666,4 +698,73 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
   foreach ($results as $result) {
     $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
   }
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_agenda_de_lijn_widget().
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$variables) {
+
+  $address_from = array();
+  $address_to = array();
+
+  $cf_account = NULL;
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+  }
+
+  // Get addres from (user his address)
+  if ($cf_account) {
+    $delijn_str_nr = explode(' ', $cf_account->street);
+    $delijn_nr = array_pop($delijn_str_nr);
+    if (1 === preg_match('#[0-9]#', $delijn_nr)) {
+      $delijn_str = str_replace($delijn_nr, '', $cf_account->street);
+    }
+    else {
+      $delijn_nr = '';
+      $delijn_str = $cf_account->street;
+    }
+    $address_from = array(
+      'city' => $cf_account->city,
+      'street' => $delijn_str,
+      'nr' => $delijn_nr
+    );
+  }
+
+  // Get address to.
+  $cdb_item = $variables['item']->getEntity();
+  switch ($variables['item']->getType()) {
+    case 'actor':
+
+      $contact_info = $cdb_item->getContactInfo();
+      $addresses = $contact_info->getAddresses();
+      if ($addresses) {
+        $physical_address = $addresses[0]->getPhysicalAddress();
+      }
+
+      break;
+
+    case 'event':
+
+      if ($cdb_item->getLocation()) {
+        $physical_address = $cdb_item->getLocation()->getAddress()->getPhysicalAddress();
+      }
+
+      break;
+  }
+
+  if ($physical_address) {
+    $address_to = array(
+      'city' => check_plain($physical_address->getCity()),
+      'street' => check_plain($physical_address->getStreet()),
+      'nr' => check_plain($physical_address->getHouseNumber()),
+    );
+  }
+
+  $settings = array('address_from' => $address_from, 'address_to' => $address_to);
+
+  drupal_add_js(array('delijn' => $settings), 'setting');
 }

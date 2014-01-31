@@ -147,15 +147,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
   // Add the "noindex, follow" meta tag if needed.
   if ($noindex) {
-    $element = array(
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'name' => 'robots',
-        'content' => 'noindex, follow',
-      ),
-    );
-
-    drupal_add_html_head($element, 'robots');
+    culturefeed_set_noindex_metatag();
   }
 
 }

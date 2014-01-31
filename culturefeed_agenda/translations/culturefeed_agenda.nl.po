@@ -330,3 +330,11 @@ msgstr "Enkel op afspraak"
 #: theme/theme.inc:503
 msgid "Other"
 msgstr "Andere"
+
+#: theme/theme.inc
+msgid "Reservations"
+msgstr "Reservaties"
+
+#: theme/theme.inc
+msgid "By"
+msgstr "Met"

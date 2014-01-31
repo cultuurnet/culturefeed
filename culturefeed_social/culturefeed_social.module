@@ -40,7 +40,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activities'] = array(
     'title callback' => FALSE,
-    'title' => t('Administer actions'),
+    'title' => 'Administer actions',
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -49,7 +49,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/delete/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Undo action'),
+    'title' => 'Undo action',
     'page callback' => 'culturefeed_social_page_activity_delete',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -59,7 +59,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/comment/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Abuse form'),
+    'title' => 'Abuse form',
     'page callback' => 'culturefeed_social_page_activity_comment',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -69,7 +69,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/report-abuse/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Abuse form'),
+    'title' => 'Abuse form',
     'page callback' => 'culturefeed_social_page_activity_report_abuse',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -79,7 +79,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/privacy/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Edit privacy settings'),
+    'title' => 'Edit privacy settings',
     'page callback' => 'culturefeed_social_page_activity_privacy',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -89,7 +89,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/node/unfollow/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Unfollow node'),
+    'title' => 'Unfollow node',
     'page callback' => 'culturefeed_social_page_node_unfollow',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -100,7 +100,7 @@ function culturefeed_social_menu() {
   // Activity.
   $items['culturefeed/do/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Perform action'),
+    'title' => 'Perform action',
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -110,7 +110,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => array('Do action'),
+    'title' => 'Do action',
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -120,7 +120,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => array('Do action'),
+    'title' => 'Do action',
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -130,7 +130,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => array('Undo action'),
+    'title' => 'Undo action',
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -140,7 +140,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => array('Undo action'),
+    'title' => 'Undo action',
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -150,7 +150,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => array('Undo action'),
+    'title' => 'Undo action',
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -170,7 +170,7 @@ function culturefeed_social_menu() {
   if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
     $items['culturefeed/notifications'] = array(
       'title callback' => FALSE,
-      'title' => t('My notifications'),
+      'title' => 'My notifications',
       'page callback' => 'culturefeed_social_page_notifications',
       'access callback' => 'culturefeed_is_culturefeed_user',
       'type' => MENU_CALLBACK,
@@ -180,7 +180,7 @@ function culturefeed_social_menu() {
     if (module_exists('culturefeed_pages')) {
       $items['pages/%culturefeed_pages_page/notifications'] = array(
         'title callback' => FALSE,
-        'title' => t('Notifications'),
+        'title' => 'Notifications',
         'page callback' => 'culturefeed_social_page_notifications',
         'page arguments' => array(1),
         'access callback' => 'culturefeed_pages_edit_page_access',
@@ -400,18 +400,28 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
 
     $notification_count = DrupalCultureFeed::getNotificationsCount(DrupalCultureFeed::getLoggedInUserId());
 
-    if (isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW])) {
+    // TODO: move bootstrap specific markup to theme
+    $notification_icon = '<i class="icon-bell"></i>';
+    $notification_class = 'no-new-notifications label label-default';
+    $notification_new_class = 'new-notifications label label-important';
+    $notification_number = $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW];
+    $notification_text = t('new notifications');
+
+    if (isset($notification_number)) {
       $items['notifications'] = array(
-        'data' => l('<span class="label">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
+        'data' => l($notification_icon . ' ' . '<span class="' . $notification_class . '">' . $notification_number . ' ' . $notification_text . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
         'class' => 'notifications',
         'weight' => -20,
       );
-
-      if ($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] > 0) {
-        $items['notifications']['data'] = l('<span class="label label-important">' . $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] . '</span>', 'culturefeed/notifications', array('html' => TRUE));
-        $items['notifications']['class'] .= ' has-new';
-      }
     }
+    if ($notification_number > 0) {
+      $items['notifications'] = array(
+        'data' => l('<span class="' . $notification_new_class . '">' . $notification_icon . ' ' . $notification_number . ' ' . $notification_text . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
+        'class' => 'notifications',
+        'weight' => -20,
+      );
+    }
+
   } catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
   }
@@ -446,7 +456,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
     return;
   }
 
-  $options = array('all' => 'Alles');
+  $options = array('all' => t('Everything'));
   foreach ($activity_filters as $activity_id => $activity_config) {
     $options[$activity_id] = $activity_config->label;
   }
