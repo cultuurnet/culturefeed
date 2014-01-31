@@ -197,18 +197,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default price
-    if ($info = $event_details->getPrice()) {
+    /*if ($info = $event_details->getPrice()) {
       $default_price = $info->getValue();
       $default_free_price = 0;
-      $default_price_description = $info->getDescription();
+      $default_price_description = $info->getDescription();*/
       /*if ($default_price == '0.00') {
         $default_price = '0';
         $default_free_price = 1;
       }*/
-      if ($default_price_description != '') {
+    /*  if ($default_price_description != '') {
         $form_state['#price_needed'] = TRUE;
       }
-    }
+    }*/
 
     // Default age
     $age = $event->getAgeFrom();
@@ -1015,12 +1015,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
 
-  if ($default_contacts) {
-    $contact_count = count($default_contacts);
-  }
-  else {
-    $contact_count = 0;
-  }
+  $contact_count = 0;
   // Add contacts type.
   if ($default_contacts) {
     foreach ($default_contacts as $i => $info) {
@@ -1067,12 +1062,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
 
-  if ($performers_info) {
-    $performers_count = count($performers_info);
-  }
-  else {
-    $performers_count = 0;
-  }
+  
+  $performers_count = 0;
   // Add performer type.
   if ($performers_info) {
     foreach ($performers_info as $i => $info) {
@@ -1949,7 +1940,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  //dsm($values);
+  dsm($values);
   
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
@@ -1960,7 +1951,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
       // Performer
-      if ($extra['performer'] || $extra['role']) {
+      if (isset($extra['performer']) || isset($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
         $performer->setLabel($extra['performer']);
         $performer->setRole($extra['role']);
