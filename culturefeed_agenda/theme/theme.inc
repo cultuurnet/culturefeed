@@ -279,9 +279,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Add thumbnail image.
-  $variables['main_picture'] = '';
-  $variables['pictures'] = array();
   if ($detail) {
 
     // Add videos.
