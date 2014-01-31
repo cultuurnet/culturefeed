@@ -1104,9 +1104,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'select',
     '#title' => t('Language'),
     '#options' => array(
-      0 => t('Spoken'),
-      1 => t('Dubbed'),
-      2 => t('Subtitled'),
+      0 => t(''),
+      1 => t('Spoken'),
+      2 => t('Dubbed'),
+      3 => t('Subtitled'),
     ),
   );
 
@@ -1114,11 +1115,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'select',
     '#title' => t('in'),
     '#options' => array(
-      0 => t('English'),
-      1 => t('Spanish'),
-      2 => t('Dutch'),
-      3 => t('German'),
-      4 => t('French'),
+      0 => t(''),
+      1 => t('English'),
+      2 => t('Spanish'),
+      3 => t('Dutch'),
+      4 => t('German'),
+      5 => t('French'),
     ),
   );
 
