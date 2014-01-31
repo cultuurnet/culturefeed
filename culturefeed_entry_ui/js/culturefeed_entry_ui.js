@@ -10,12 +10,29 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
   Drupal.behaviors.price = {
     attach: function (context, settings) {
     
+      $(window).bind('load', function() {
+        if($("#edit-price-free").attr("checked")==true) {
+          $('#edit-price-amount').val('0');
+          $('#edit-price-amount').attr('disabled','disabled');
+          $('#edit-price-amount').css('color','#ccc');
+          $('#edit-price-extra').css('display','none');
+          $('#edit-price-extra-extra-info').val('');
+        }
+        else {
+	      $('#edit-price-amount').val('');
+          $('#edit-price-amount').removeAttr('disabled');
+          $('#edit-price-amount').css('color','#000');
+          $('#edit-price-extra').css('display','block');  
+        }
+      });
+      
       $('#edit-price-free').change(function () {
 	    if($("#edit-price-free").attr("checked")==true) {
           $('#edit-price-amount').val('0');
           $('#edit-price-amount').attr('disabled','disabled');
           $('#edit-price-amount').css('color','#ccc');
           $('#edit-price-extra').css('display','none');
+          $('#edit-price-extra-extra-info').val('');
         }
         else {
 	      $('#edit-price-amount').val('');

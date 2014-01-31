@@ -832,7 +832,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['price']['free'] = array(
     '#type' => 'checkbox',
-    '#name' => 'price_free',
     '#title' => t('Free event'),
     '#default_value' => isset($default_free_price) ? $default_free_price : 0,
     '#states' => array(
@@ -2142,13 +2141,18 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Price
-  if (!empty($values['price']['amount'])) {
-    print_r('price value not empty');
-    $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
-    if (!empty($values['price']['extra']['extra_info'])) {
-      $price->setDescription($values['price']['extra']['extra_info']);
-    }
+  if (isset($values['price']['free'])) {
+    $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
+  }
+  else {
+    if (!empty($values['price']['amount'])) {
+      $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
+      if (!empty($values['price']['extra']['extra_info'])) {
+        $price->setDescription($values['price']['extra']['extra_info']);
+      }
+      $detail->setPrice($price);
+    }
   }
   
   
