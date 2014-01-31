@@ -160,6 +160,39 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['performers'] = implode(', ', $performer_labels);
       }
     }
+
+    // Pictures
+    $pictures = array();
+    $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    foreach ($photos as $photo) {
+      $pictures[] = $photo->getHLink();
+      if ($photo->isMain()) {
+        $main_picture = $photo->getHLink();
+      }
+    }
+    // Support for deprecated mediatype imageweb
+    $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+    foreach ($images as $image) {
+      $pictures[] = $image->getHLink();
+      if ($image->isMain() && !isset($main_picture)) {
+        $main_picture = $photo->getHLink();
+      }
+    }
+    $variables['pictures'] = $pictures;
+    
+    // If no main picture is set we use first picture
+    if (!isset($main_picture) && count($pictures) > 0) {
+      $variables['main_picture'] = $variables['pictures'][0];
+      // we don't want the main picture to show twice
+      unset($variables['pictures'][0]);
+    }
+    else {
+      $variables['main_picture'] = $main_picture;
+    }
+    
+    // Make sure usage of thumbnail is backwards compatible
+    $variables['thumbnail'] = $variables['main_picture'];
+
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
@@ -234,19 +267,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
  * Helper preprocess function to preprocess the general agenda summary variables.
  */
 function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
-
-  $item = $variables['item'];
-  $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-
-  // Add thumbnail image.
-  if ($detail) {
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    if (count($pictures) > 0) {
-      $variables['thumbnail'] = $pictures->current()->getHLink();
-    }
-  }
-
+  _culturefeed_agenda_preprocess_agenda($variables);
 }
 
 /**
@@ -262,20 +283,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $variables['main_picture'] = '';
   $variables['pictures'] = array();
   if ($detail) {
-
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    foreach ($pictures as $picture) {
-      $variables['pictures'][] = $picture->getHLink();
-      if ($picture->isMain()) {
-        $variables['main_picture'] = $picture->getHLink();
-      }
-      // if main is not set use first image as main picture
-      elseif (isset($variables['pictures'][0])) {
-        $variables['main_picture'] = $variables['pictures'][0];
-      }
-      // we don't want the main picture to show twice
-      unset($variables['pictures'][0]);
-    }
 
     // Add videos.
     $variables['videos'] = array();
