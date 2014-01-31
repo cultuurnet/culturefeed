@@ -395,8 +395,8 @@ function culturefeed_entry_ui_views_api() {
 }
 
 function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity, $op) {
+  $entity = $entity->getEntity();
   if ($entity->getType() == 'event') {
-    $event = $event->getEntity();
     $path = culturefeed_search_detail_path('page', $entity->getId(), $entity->getName());
     return "{$path}/{$op}";
   }
