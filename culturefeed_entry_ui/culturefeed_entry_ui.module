@@ -323,19 +323,19 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
     case 'country_select':
       if ($form_state['input']['country_select'] == 'BE') {
-        $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
-        $form['basic']['location']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:none;'));
-        $form['basic']['location']['citywrapper']['zip_code']['#title'] = '';
+        $form['basic']['location']['new']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
+        $form['basic']['location']['new']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:none;'));
+        $form['basic']['location']['new']['citywrapper']['zip_code']['#title'] = '';
       } else {
-	    $form['basic']['location']['citywrapper']['city']['#autocomplete_path'] = '';
-	    $form['basic']['location']['citywrapper']['city']['#value'] = '';  
-	    $form['basic']['location']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
-	    $form['basic']['location']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:block;margin-right:30px;'));
-	    $form['basic']['location']['citywrapper']['zip_code']['#title'] = t('ZIP Code');
+	    $form['basic']['location']['new']['citywrapper']['city']['#autocomplete_path'] = '';
+	    $form['basic']['location']['new']['citywrapper']['city']['#value'] = '';  
+	    $form['basic']['location']['new']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
+	    $form['basic']['location']['new']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:block;margin-right:30px;'));
+	    $form['basic']['location']['new']['citywrapper']['zip_code']['#title'] = t('ZIP Code');
 	    
       }
-      return $form['basic']['location']['citywrapper'];
-      return $form['basic']['location']['citywrapper']['zip_code'];
+      return $form['basic']['location']['new']['citywrapper'];
+      return $form['basic']['location']['new']['citywrapper']['zip_code'];
 
     case 'links_add_more':
       return $form['extra']['links'];
