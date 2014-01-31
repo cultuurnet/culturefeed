@@ -43,9 +43,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
-  $default_price = '';
-  $default_free_price = 0;
-  $default_price_description = '';
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
@@ -203,10 +200,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $default_price = $info->getValue();
       $default_free_price = 0;
       $default_price_description = $info->getDescription();
-      if ($default_price == '0.00') {
+      /*if ($default_price == '0.00') {
         $default_price = '0';
         $default_free_price = 1;
-      }
+      }*/
       if ($default_price_description != '') {
         $form_state['#price_needed'] = TRUE;
       }
@@ -343,7 +340,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
 
-  if (!isset($form_state['#location_needed'])) {
+  if (!$form_state['#location_needed']) {
     $form['basic']['location']['actor']['location_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Location'),
@@ -375,7 +372,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
   
-  if (!isset($form_state['#location_needed'])) {    
+  if (!$form_state['#location_needed']) {    
     $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
@@ -394,7 +391,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  if (isset($form_state['#location_needed'])) {
+  if ($form_state['#location_needed']) {
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
@@ -817,7 +814,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textfield',
     '#name' => 'price_amount',
     '#title' => t('Price'),
-    '#default_value' => $default_price,
+    '#default_value' => isset($default_price) ? $default_price : '',
     '#attributes' => array(
       'class' => array(
         'price-amount'
@@ -833,7 +830,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'checkbox',
     '#name' => 'price_free',
     '#title' => t('Free event'),
-    '#default_value' => $default_free_price,
+    '#default_value' => isset($default_free_price) ? $default_free_price : 0,
     '#states' => array(
       'checked' => array(
         'input[name="price_amount"]' => array('value' => '0'),
@@ -884,7 +881,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['extra']['price']['extra']['extra_info'] = array(
       '#type' => 'textarea',
       '#title' => t('Extra price info'),
-      '#default_value' => $default_price_description,
+      '#default_value' => isset($default_price_description) ? $default_price_description : '',
       '#states' => array(
         'visible' => array(
           'input[name="price_free"]' => array('checked' => FALSE),
@@ -1860,7 +1857,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate location
-  if (isset($form_state['#location_needed'])) {
+  if ($form_state['#location_needed']) {
     if (empty($values['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
@@ -2150,7 +2147,16 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Price
-  if (isset($values['price']['free'])) {
+  if (isset($values['price']['amount'])) {
+    $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
+    if (isset($values['price']['extra']['extra_info'])) {
+      $price->setDescription($values['price']['extra']['extra_info']);
+    }
+    $detail->setPrice($price);
+  }
+  
+  
+  /*if (isset($values['price']['free'])) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }
@@ -2162,7 +2168,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       }
       $detail->setPrice($price);
     }
-  }
+  }*/
   // Performers
   if ($performers_count) {
     $detail->setPerformers($performerList);
