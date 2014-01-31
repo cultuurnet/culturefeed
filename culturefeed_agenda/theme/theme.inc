@@ -182,14 +182,15 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['pictures'] = $pictures;
     
     // If no main picture is set we use first picture
-    if (!isset($main_picture) && count($pictures) > 0) {
+    if (empty($main_picture) && count($pictures) > 0) {
       $variables['main_picture'] = $variables['pictures'][0];
-      // we don't want the main picture to show twice
-      unset($variables['pictures'][0]);
     }
     else {
       $variables['main_picture'] = $main_picture;
     }
+
+    // we don't want the main picture to show twice
+    unset($variables['pictures'][0]);
     
     // Make sure usage of thumbnail is backwards compatible
     $variables['thumbnail'] = $variables['main_picture'];
