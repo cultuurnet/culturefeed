@@ -1951,7 +1951,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
       // Performer
-      if (isset($extra['performer']) || isset($extra['role'])) {
+      if (!empty($extra['performer']) || !empty($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
         $performer->setLabel($extra['performer']);
         $performer->setRole($extra['role']);
