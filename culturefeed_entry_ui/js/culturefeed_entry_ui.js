@@ -44,7 +44,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
                 
-                if (this.input.name == 'location[actor][location_actor_label]') {
+                if (this.input.name == 'actor[location_actor_label]') {
 				  $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
 				}
 		  
@@ -150,7 +150,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         if ($(node).data('autocompleteTitle') != undefined) {
           this.input.value = $(node).data('autocompleteTitle');
           
-          if (this.input.name == 'location[actor][location_actor_label]') {
+          if (this.input.name == 'actor[location_actor_label]') {
 		    $('#location_actor_id').val($(node).data('autocompleteValue'));
 		  }
 		  
