@@ -1777,8 +1777,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  
-  dsm($values);
+  //dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1952,7 +1951,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  dsm($values);
+  //dsm($values);
   
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
