@@ -395,9 +395,13 @@ function culturefeed_entry_ui_views_api() {
 }
 
 function culturefeed_entry_ui_entity_path(\CultuurNet\Search\ActivityStatsExtendedEntity $entity, $op) {
+
   if ($entity->getType() == 'event') {
-    $event = $event->getEntity();
-    $path = culturefeed_search_detail_path('page', $entity->getId(), $entity->getName());
+    $id = $entity->getId();
+    $entity = $entity->getEntity();
+    $details = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+    $name = $details->getTitle();
+    $path = culturefeed_search_detail_path('event', $id, $name);
     return "{$path}/{$op}";
   }
 }
