@@ -197,18 +197,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default price
-    /*if ($info = $event_details->getPrice()) {
+    if ($info = $event_details->getPrice()) {
       $default_price = $info->getValue();
       $default_free_price = 0;
-      $default_price_description = $info->getDescription();*/
-      /*if ($default_price == '0.00') {
+      $default_price_description = $info->getDescription();
+      if ($default_price == '0.00') {
         $default_price = '0';
         $default_free_price = 1;
-      }*/
-    /*  if ($default_price_description != '') {
+      }
+      if ($default_price_description != '') {
         $form_state['#price_needed'] = TRUE;
       }
-    }*/
+    }
 
     // Default age
     $age = $event->getAgeFrom();
@@ -806,14 +806,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form['extra']['price'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
-    '#prefix' => '<div id="price-ajax-wrapper">',
-    '#suffix' => '</div>',
     '#title' => t('Price'),
   );
 
   $form['extra']['price']['amount'] = array(
     '#type' => 'textfield',
-    '#name' => 'price_amount',
     '#title' => t('Price'),
     '#default_value' => isset($default_price) ? $default_price : '',
     '#attributes' => array(
@@ -2139,9 +2136,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Price
-  if (isset($values['price']['amount'])) {
+  if (!empty($values['price']['amount'])) {
+    print_r('price value not empty');
     $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
-    if (isset($values['price']['extra']['extra_info'])) {
+    if (!empty($values['price']['extra']['extra_info'])) {
       $price->setDescription($values['price']['extra']['extra_info']);
     }
     $detail->setPrice($price);
