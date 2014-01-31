@@ -163,6 +163,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Pictures
     $pictures = array();
+    $main_picture = '';
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     foreach ($photos as $photo) {
       $pictures[] = $photo->getHLink();
