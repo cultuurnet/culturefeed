@@ -47,7 +47,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $mail_contacts = array();
   $is_private = FALSE;
 
-  $form_state['#location_needed'] = FALSE;
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
@@ -333,7 +332,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       );
     }
   }
-
+  
   $form['basic']['location'] = array(
     '#prefix' => '<div id="location-ajax-wrapper">',
     '#suffix' => '</div>',
@@ -347,7 +346,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
 
-  if (!$form_state['#location_needed']) {
+  if (!isset($form_state['#location_needed'])) {
     $form['basic']['location']['actor']['location_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Location'),
@@ -379,7 +378,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#suffix' => '</div>',
   );
   
-  if (!$form_state['#location_needed']) {    
+  if (!isset($form_state['#location_needed'])) {    
     $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
@@ -398,7 +397,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  if ($form_state['#location_needed']) {
+  if (isset($form_state['#location_needed'])) {
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
@@ -1769,7 +1768,6 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  //dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
