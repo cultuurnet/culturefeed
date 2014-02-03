@@ -10,16 +10,16 @@
   min-height: 431px;
 }
 
-.form-item-new-street, .form-item-location-country {
+.form-item-street, .form-item-location-country {
   clear: left;
 }
 
-.form-item-new-street {
+.form-item-street {
   float: left;
   margin-right: 30px;
 }
 
-.form-item-new-house-number {
+.form-item-house-number {
   padding-top: 2px;
 }
 

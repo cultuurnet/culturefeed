@@ -47,6 +47,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $mail_contacts = array();
   $is_private = FALSE;
 
+  if(!isset($form_state['#location_needed'])) {
+    $form_state['#location_needed'] = FALSE;	  
+  }
   $form_state['#zip_needed'] = FALSE;
 
   //language vars
@@ -103,9 +106,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $custom_location_city = $address->getCity();
         $custom_location_country = $address->getCountry();
       }
-      //$address = $location->getAddress()->getPhysicalAddress();
-      //$default_location_label = $location->getLabel() . ' - ' . $address->getZip() . ' ' . $address->getCity();
-      //$default_location_id = $location->getCdbId();
     }
 
     // Default organiser.
@@ -339,14 +339,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
   );
 
-  $form['basic']['location']['actor'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="known-location-wrapper">',
-    '#suffix' => '</div>',
-  );
-
-  if (!isset($form_state['#location_needed'])) {
+  if (!$form_state['#location_needed']) {
+    $form['basic']['location']['actor'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#prefix' => '<div id="known-location-wrapper">',
+      '#suffix' => '</div>',
+    );
+    
     $form['basic']['location']['actor']['location_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Location'),
@@ -358,7 +358,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     $form['basic']['location']['actor']['location_actor_id'] = array(
       '#id' => 'location_actor_id',
-      '#type' => 'textfield',
+      '#type' => 'hidden',
       '#default_value' => isset($default_location_id) ? $default_location_id : '',
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -371,14 +371,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
   
-  $form['basic']['location']['new'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="new-location-wrapper">',
-    '#suffix' => '</div>',
-  );
-  
-  if (!isset($form_state['#location_needed'])) {    
+  if (!$form_state['#location_needed']) {
+    $form['basic']['location']['new'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#prefix' => '<div id="new-location-wrapper">',
+      '#suffix' => '</div>',
+    );
+      
     $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
@@ -397,7 +397,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  if (isset($form_state['#location_needed'])) {
+  if ($form_state['#location_needed']) {
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
@@ -920,7 +920,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
-    '#type' => 'textfield',
+    '#type' => 'hidden',
     '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
