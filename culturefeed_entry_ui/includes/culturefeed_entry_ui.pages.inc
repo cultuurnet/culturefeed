@@ -1152,117 +1152,124 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   // Dutch
-  $form['extra']['translations']['dutch'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Dutch'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#tree' => TRUE,
-  );
+  if (culturefeed_search_get_preferred_language() != 'nl') {
+    $form['extra']['translations']['dutch'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Dutch'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+    );
 
-  $form['extra']['translations']['dutch']['language'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#default_value' => $nl_title,
-  );
+    $form['extra']['translations']['dutch']['language'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#default_value' => $nl_title,
+    );
 
-  $form['extra']['translations']['dutch']['short_description'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#default_value' => $nl_short_description,
-  );
+    $form['extra']['translations']['dutch']['short_description'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Short description'),
+      '#default_value' => $nl_short_description,
+    );
 
-  $form['extra']['translations']['dutch']['long_description'] = array(
-    '#type' => 'text_format',
-    '#title' => t('Long description'),
-    '#default_value' => $nl_long_description,
-    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
-  );
+    $form['extra']['translations']['dutch']['long_description'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Long description'),
+      '#default_value' => $nl_long_description,
+      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+    );
+  }
 
   //english
-  $form['extra']['translations']['english'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('English'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#tree' => TRUE,
-  );
+  if (culturefeed_search_get_preferred_language() != 'en') {
+    $form['extra']['translations']['english'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('English'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+    );
 
-  $form['extra']['translations']['english']['language'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#default_value' => $en_title,
-  );
+    $form['extra']['translations']['english']['language'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#default_value' => $en_title,
+    );
 
-  $form['extra']['translations']['english']['short_description'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#default_value' => $en_short_description,
-  );
+    $form['extra']['translations']['english']['short_description'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Short description'),
+      '#default_value' => $en_short_description,
+    );
 
-  $form['extra']['translations']['english']['long_description'] = array(
-    '#type' => 'text_format',
-    '#title' => t('Long description'),
-    '#default_value' => $en_long_description,
-    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
-  );
+    $form['extra']['translations']['english']['long_description'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Long description'),
+      '#default_value' => $en_long_description,
+      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+    );
+  }
 
   //french
-  $form['extra']['translations']['french'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('French'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#tree' => TRUE,
-  );
+  if (culturefeed_search_get_preferred_language() != 'fr') {
+    $form['extra']['translations']['french'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('French'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+    );
 
-  $form['extra']['translations']['french']['language'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#default_value' => $fr_title,
-  );
+    $form['extra']['translations']['french']['language'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#default_value' => $fr_title,
+    );
 
-  $form['extra']['translations']['french']['short_description'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#default_value' => $fr_short_description,
-  );
+    $form['extra']['translations']['french']['short_description'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Short description'),
+      '#default_value' => $fr_short_description,
+    );
 
-  $form['extra']['translations']['french']['long_description'] = array(
-    '#type' => 'text_format',
-    '#title' => t('Long description'),
-    '#default_value' => $fr_long_description,
-    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
-  );
+    $form['extra']['translations']['french']['long_description'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Long description'),
+      '#default_value' => $fr_long_description,
+      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+    );
+  }
 
   //german
-  $form['extra']['translations']['german'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('German'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#tree' => TRUE,
-  );
+  if (culturefeed_search_get_preferred_language() != 'de') {
+    $form['extra']['translations']['german'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('German'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+    );
 
-  $form['extra']['translations']['german']['language'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#default_value' => $de_title,
-  );
+    $form['extra']['translations']['german']['language'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#default_value' => $de_title,
+    );
 
-  $form['extra']['translations']['german']['short_description'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#default_value' => $de_short_description,
-  );
+    $form['extra']['translations']['german']['short_description'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Short description'),
+      '#default_value' => $de_short_description,
+    );
 
-  $form['extra']['translations']['german']['long_description'] = array(
-    '#type' => 'text_format',
-    '#title' => t('Long description'),
-    '#default_value' => $de_long_description,
-    '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
-  );
-
+    $form['extra']['translations']['german']['long_description'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Long description'),
+      '#default_value' => $de_long_description,
+      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+    );
+  }
   //Publication & Private
   $form['extra']['publication_date'] = array(
     '#type' => 'fieldset',
