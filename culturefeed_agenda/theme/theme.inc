@@ -137,13 +137,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Ticket links.
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
+    
     $variables['tickets'] = array();
+    $variables['ticket_buttons'] = array();
+
     foreach ($ticket_links as $link) {
-      $ticket = array();
-      $ticket['text'] = t('Buy tickets');      
-      $ticket['link'] = $link->getHLink();
-      $ticket['options'] = array('attributes' => array('class' => 'reservation-link button'));
-      $variables['tickets'][] = $ticket;
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+
+      // Provide some themable ticket buttons.
+      $button = array();
+      $button['text'] = t('Buy tickets');      
+      $button['link'] = $link->getHLink();
+      $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $variables['ticket_buttons'][] = $button;
     }
 
     // Performers

@@ -85,9 +85,7 @@
     <dt><?php print t('Reservation'); ?></dt>
     <dd>
     <?php if (!empty($tickets)) : ?>
-      <?php foreach ($tickets as $ticket): ?>
-        <?php print l($ticket['text'], $ticket['link'], array('attributes' => array('class' => 'reservation-link button'))) . '<br />'; ?>
-      <?php endforeach; ?>
+      <?php print implode(', ', $tickets) ?><br />
     <?php endif; ?>
     <?php if (!empty($reservation['mail'])) : ?>
       <?php print $reservation['mail'] ?><br />
