@@ -66,18 +66,9 @@
   </dd>
   <?php endif; ?>
 
-    <dt><?php print t('Contact'); ?></dt>
-    <dd>
-    <?php if (!empty($contact['mail'])) : ?>
-      <?php print $contact['mail'] ?><br />
-    <?php endif; ?>
-    <?php if (!empty($contact['phone'])) : ?>
-      <?php print t('Phone'); ?>: <?php print $contact['phone'] ?><br />
-    <?php endif; ?>
-    <?php if (!empty($contact['fax'])) : ?>
-      <?php print t('Fax'); ?>: <?php print $contact['fax'] ?>
-    <?php endif; ?>
-    </dd>
+  <?php if (!empty($price)): ?>
+  <dt><?php print t('Price'); ?></dt>
+  <dd><?php print $price; ?><?php print $price_description; ?></dd>
   <?php endif; ?>
 
   <?php if (!empty($reservation) || !empty($tickets)) : ?>
@@ -99,6 +90,20 @@
   <?php endif; ?>
 
   <?php if (!empty($contact['mail']) || !empty($contact['phone']) || !empty($contact['fax'])) : ?>
+    <dt><?php print t('Contact'); ?></dt>
+    <dd>
+    <?php if (!empty($contact['mail'])) : ?>
+      <?php print $contact['mail'] ?><br />
+    <?php endif; ?>
+    <?php if (!empty($contact['phone'])) : ?>
+      <?php print t('Phone'); ?>: <?php print $contact['phone'] ?><br />
+    <?php endif; ?>
+    <?php if (!empty($contact['fax'])) : ?>
+      <?php print t('Fax'); ?>: <?php print $contact['fax'] ?>
+    <?php endif; ?>
+    </dd>
+  <?php endif; ?>
+
   <?php if (!empty($age)): ?>
   <dt><?php print t('Age'); ?></dt>
   <dd><?php print $age; ?></dd>
@@ -118,11 +123,6 @@
   <?php if (!empty($keywords)): ?>
   <dt><?php print t('Keywords'); ?></dt>
   <dd><?php print $keywords; ?></dd>
-  <?php endif; ?>
-
-  <?php if (!empty($price)): ?>
-  <dt><?php print t('Price'); ?></dt>
-  <dd><?php print $price; ?><?php print $price_description; ?></dd>
   <?php endif; ?>
 
   <?php if (!empty($links)): ?>
