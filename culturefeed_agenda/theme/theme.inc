@@ -162,7 +162,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
 
     // Pictures
+    $main_picture = '';
     $pictures = array();
+
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     foreach ($photos as $photo) {
       $pictures[] = $photo->getHLink();
@@ -170,25 +172,28 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture = $photo->getHLink();
       }
     }
+
     // Support for deprecated mediatype imageweb
     $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
     foreach ($images as $image) {
       $pictures[] = $image->getHLink();
-      if ($image->isMain() && !isset($main_picture)) {
+      if ($image->isMain() && empty($main_picture)) {
         $main_picture = $photo->getHLink();
       }
     }
-    $variables['pictures'] = $pictures;
-    
+
     // If no main picture is set we use first picture
-    if (!isset($main_picture) && count($pictures) > 0) {
-      $variables['main_picture'] = $variables['pictures'][0];
-      // we don't want the main picture to show twice
-      unset($variables['pictures'][0]);
+    if (empty($main_picture) && count($pictures) > 0) {
+      $main_picture = $pictures[0];
     }
-    else {
-      $variables['main_picture'] = $main_picture;
+      
+    // we don't want the main picture to show twice
+    if (!empty($main_picture)) {
+      unset($pictures[0]);
     }
+
+    $variables['main_picture'] = $main_picture;
+    $variables['pictures'] = $pictures;
     
     // Make sure usage of thumbnail is backwards compatible
     $variables['thumbnail'] = $variables['main_picture'];
