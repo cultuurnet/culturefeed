@@ -66,7 +66,6 @@
   </dd>
   <?php endif; ?>
 
-  <?php if (!empty($contact)) : ?>
     <dt><?php print t('Contact'); ?></dt>
     <dd>
     <?php if (!empty($contact['mail'])) : ?>
@@ -99,6 +98,7 @@
     </dd>
   <?php endif; ?>
 
+  <?php if (!empty($contact['mail']) || !empty($contact['phone']) || !empty($contact['fax'])) : ?>
   <?php if (!empty($age)): ?>
   <dt><?php print t('Age'); ?></dt>
   <dd><?php print $age; ?></dd>
