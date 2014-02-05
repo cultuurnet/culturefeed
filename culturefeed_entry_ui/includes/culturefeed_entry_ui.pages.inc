@@ -2607,8 +2607,10 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   $custom_tags = array();
 
   // Get options from variable.
-  $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
-
+  if (variable_get('culturefeed_entry_ui_custom_tags')) {
+    $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
+  }
+  
   // Filter out custom tags.
   if ($event_tags) {
     foreach ($event_tags as $tag) {
