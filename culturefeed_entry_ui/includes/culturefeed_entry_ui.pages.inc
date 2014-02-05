@@ -1355,7 +1355,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       '#type' => 'date_popup',
       '#date_label_position' => 'none',
       '#title' => t('Start date'),
-      '#default_value' => $date,
+      '#default_value' => '',
       '#date_format' => 'Y-m-d',
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1368,7 +1368,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
     $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
       '#type' => 'date_select',
       '#name' => 'begin_hour',
-      '#default_value' => $date,
+      '#default_value' => '',
       '#date_format' => 'H:i',
       '#date_increment' => 30,
     );
@@ -1424,7 +1424,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
           '#type' => 'date_popup',
           '#title' => t('End date'),
           '#date_label_position' => 'none',
-          '#default_value' => $date,
+          '#default_value' => '',
           '#date_format' => 'Y-m-d',
           '#ajax' => array(
             'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1436,7 +1436,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
 
       $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
         '#type' => 'date_select',
-        '#default_value' => $date,
+        '#default_value' => '',
         '#date_format' => 'H:i',
         '#date_increment' => 30,
       );
@@ -1512,7 +1512,7 @@ function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL
   $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
     '#type' => 'date_popup',
     '#title' => t('Start date'),
-    '#default_value' => $date,
+    '#default_value' => '',
     '#date_format' => 'Y-m-d',
     '#attributes' => array('class' => array('start-date')),
   );
@@ -1521,7 +1521,7 @@ function culturefeed_entry_ui_attach_begindate_elements(&$form, $i, $info = NULL
     '#type' => 'date_select',
     '#name' => 'begin_hour',
     '#title' => t('Start time'),
-    '#default_value' => $hour,
+    '#default_value' => '',
     '#date_format' => 'H:i',
     '#date_increment' => 30,
   );
@@ -1582,14 +1582,14 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
   $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
     '#type' => 'date_popup',
     '#title' => t('End date'),
-    '#default_value' => $date,
+    '#default_value' => '',
     '#date_format' => 'Y-m-d',
   );
 
   $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
     '#type' => 'date_select',
     '#title' => t('End time'),
-    '#default_value' => $hour,
+    '#default_value' => '',
     '#date_format' => 'H:i',
     '#date_increment' => 30,
   );
@@ -1768,6 +1768,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
+  dsm($values);
 
   // Validate publication date.
   if ($values['wrapper']['date']) {
@@ -1848,6 +1849,11 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (!empty($values['photo']['upload']) && $values['photo']['copyright'] != 1) {
     form_set_error('photo', t('Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank.'));
   }
+  
+  //Validate categories
+  if (empty($values['what'])) {
+    form_set_error('what', t('A category is required.'));
+  }
 
   // Validate location
   if ($form_state['#location_needed']) {
@@ -1866,13 +1872,22 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
   else {
     try {
-      $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
-      if (!$location) {
-        form_set_error('location', t('We could not validate the location'));
+      if ($values['location']['actor']['location_actor_label'] == '') {
+	    form_set_error('location', t('A location is required.'));
+      }
+      else {
+        $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
+        if (!$location) {
+          form_set_error('location', t('We could not validate the location'));
+        }
       }
     } catch (Exception $e) {
       form_set_error('location', t('We could not validate the location'));
     }
+  }
+  
+  if (empty($values['datetimes'][0]['begin']['date'])) {
+    form_set_error('datetimes', t('A date is required.'));
   }
     
     
