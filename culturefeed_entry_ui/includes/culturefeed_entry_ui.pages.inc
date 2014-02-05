@@ -132,7 +132,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
       $timestamps = $calendar;
     }
-
     // Set the total opening times needed. This need to be equal for every day.
     if (!isset($form_state['#opening_times_needed'])) {
       $opening_times_needed = 1;
@@ -337,6 +336,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#prefix' => '<div id="location-ajax-wrapper">',
     '#suffix' => '</div>',
     '#type' => 'container',
+    '#tree' => TRUE,
   );
 
   if (!$form_state['#location_needed']) {
@@ -358,7 +358,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     $form['basic']['location']['actor']['location_actor_id'] = array(
       '#id' => 'location_actor_id',
-      '#type' => 'hidden',
+      '#type' => 'textfield',
       '#default_value' => isset($default_location_id) ? $default_location_id : '',
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -371,14 +371,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
   
-  if (!$form_state['#location_needed']) {
-    $form['basic']['location']['new'] = array(
-      '#tree' => TRUE,
-      '#type' => 'container',
-      '#prefix' => '<div id="new-location-wrapper">',
-      '#suffix' => '</div>',
-    );
-      
+  $form['basic']['location']['new'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="new-location-wrapper">',
+    '#suffix' => '</div>',
+  );
+    
+  if (!$form_state['#location_needed']) {  
     $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
@@ -728,12 +728,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Links'),
   );
 
-  if ($default_links) {
+  /*if ($default_links) {
     $links_count = count($default_links);
   }
-  else {
+  else {*/
     $links_count = 0;
-  }
+  //}
   // Add link type selections.
   if ($default_links) {
     foreach ($default_links as $i => $info) {
@@ -920,7 +920,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
-    '#type' => 'hidden',
+    '#type' => 'textfield',
     '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1851,22 +1851,22 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   // Validate location
   if ($form_state['#location_needed']) {
-    if (empty($values['new']['location_title'])) {
+    if (empty($values['location']['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if ($values['new']['citywrapper']['country'] != 'BE') {
+    if ($values['location']['new']['citywrapper']['country'] != 'BE') {
       if (empty($values['location']['new']['citywrapper']['zip_code'])) {
         form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
       }
     }
-    if (empty($values['new']['citywrapper']['city'])) {
+    if (empty($values['location']['new']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
     $location = NULL;
   }
   else {
     try {
-      $location = culturefeed_search_item_load($values['actor']['location_actor_id'], 'actor');
+      $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
       if (!$location) {
         form_set_error('location', t('We could not validate the location'));
       }
@@ -2271,23 +2271,23 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['new']['street']);
-    $physical_address->setHouseNumber($values['new']['house_number']);
-    if ($values['new']['citywrapper']['country'] == 'BE') {
-      $physical_address->setZip(substr($values['new']['citywrapper']['city'], 0, 4));
-      $physical_address->setCity(substr($values['new']['citywrapper']['city'], 5));
+    $physical_address->setStreet($values['location']['new']['street']);
+    $physical_address->setHouseNumber($values['location']['new']['house_number']);
+    if ($values['location']['new']['citywrapper']['country'] == 'BE') {
+      $physical_address->setZip(substr($values['location']['new']['citywrapper']['city'], 0, 4));
+      $physical_address->setCity(substr($values['location']['new']['citywrapper']['city'], 5));
     }
     else {
-      $physical_address->setCity($values['new']['citywrapper']['city']);
-      $physical_address->setZip($values['new']['citywrapper']['zip_code']);
+      $physical_address->setCity($values['location']['new']['citywrapper']['city']);
+      $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
     }
-    $physical_address->setCountry($values['new']['citywrapper']['country']);
-    $address->setLabel($values['new']['location_title']);
+    $physical_address->setCountry($values['location']['new']['citywrapper']['country']);
+    $address->setLabel($values['location']['new']['location_title']);
     $address->setPhysicalAddress($physical_address);
-    $address->setLabel($values['new']['location_title']);
+    $address->setLabel($values['location']['new']['location_title']);
 
     $cdb_location = new CultureFeed_Cdb_Data_Location($address);
-    $cdb_location->setLabel($values['new']['location_title']);
+    $cdb_location->setLabel($values['location']['new']['location_title']);
     $event->setLocation($cdb_location);
   }
 

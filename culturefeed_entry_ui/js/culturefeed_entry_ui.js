@@ -41,6 +41,18 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
           $('#edit-price-extra').css('display','block');  
         }
       });
+      
+      $('#edit-location-actor-location-actor-label').change(function() {
+        if($('#edit-location-actor-location-actor-label').val('')) {
+	      $('#location_actor_id').val('');
+        }
+      });
+      
+      $('#edit-organiser-actor-organiser-actor-label').change(function() {
+        if($('#edit-organiser-actor-organiser-actor-label').val('')) {
+	      $('#organiser_actor_id').val('');
+        }
+      });
 	}
   };
   
@@ -137,8 +149,8 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'none' });
                 }
-                if (this.input.name == 'actor[location_actor_label]') {
-	              $('#edit-new-add-new-location').css({ display: 'none' });  
+                if (this.input.name == 'location[actor][location_actor_label]') {
+	              $('#edit-location-new-add-new-location').css({ display: 'none' });  
                 }
             }
             else {
@@ -146,9 +158,11 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
                 this.hidePopup();
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                   $('#edit-organiser-add-new-actor').css({ display: 'block' });
+                  $('#organiser_actor_id').val('');
                 }
-                if (this.input.name == 'actor[location_actor_label]') {
-	              $('#edit-new-add-new-location').css({ display: 'block' });  
+                if (this.input.name == 'location[actor][location_actor_label]') {
+	              $('#edit-location-new-add-new-location').css({ display: 'block' });
+	              $('#location_actor_id').val('');  
                 }
             }
         }
@@ -161,7 +175,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         if ($(node).data('autocompleteTitle') != undefined) {
           this.input.value = $(node).data('autocompleteTitle');
           
-          if (this.input.name == 'actor[location_actor_label]') {
+          if (this.input.name == 'location[actor][location_actor_label]') {
 		    $('#location_actor_id').val($(node).data('autocompleteValue'));
 		  }
 		  

@@ -350,7 +350,7 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       return $form['extra']['description']['ld'];
     
     case 'location_add_more':
-      $form['basic']['location']['add_new_location']['#attributes'] = array('style' => array('display:none;'));
+      //$form['basic']['location']['add_new_location']['#attributes'] = array('style' => array('display:none;'));
       return $form['basic']['location'];
       
     case 'actor_add_more':
