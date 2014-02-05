@@ -1201,7 +1201,7 @@ function culturefeed_ui_page_account_edit_form() {
     '#value' => 'Opslaan',
   );
 
-  $destination = url('culturefeed/account/edit', array('absolute' => TRUE, 'query' => array('closepopup' => 'true')));
+  $destination = url('culturefeed/account/edit', array('absolute' => TRUE));
 
   $url = DrupalCultureFeed::getUrlChangePassword($cf_account->id, $destination);
 
