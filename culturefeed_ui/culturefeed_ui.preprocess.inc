@@ -246,11 +246,16 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $account = $variables['account'];
 
   // contextual links
-  $contextual_links = array(
-    l(t('Edit profile'), 'culturefeed/profile/edit'),
-    l(t('Manage actions'), 'culturefeed/activities'),
-    l(t('Edit account'), 'culturefeed/account/edit'),
-  );
+  $contextual_links = array();
+
+  $contextual_links[] = l(t('Edit profile'), 'culturefeed/profile/edit');
+
+  if (module_exists('culturefeed_social')) {
+    $contextual_links[] = l(t('Manage actions'), 'culturefeed/activities');
+  }
+
+  $contextual_links[] = l(t('Edit account'), 'culturefeed/account/edit');
+
   $item_list = array(
     '#theme' => 'item_list',
     '#items' => $contextual_links,

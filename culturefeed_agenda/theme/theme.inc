@@ -137,13 +137,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Ticket links.
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
+    
     $variables['tickets'] = array();
+    $variables['ticket_buttons'] = array();
+
     foreach ($ticket_links as $link) {
-      $ticket = array();
-      $ticket['text'] = t('Buy tickets');      
-      $ticket['link'] = $link->getHLink();
-      $ticket['options'] = array('attributes' => array('class' => 'reservation-link button'));
-      $variables['tickets'][] = $ticket;
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+
+      // Provide some themable ticket buttons.
+      $button = array();
+      $button['text'] = t('Buy tickets');      
+      $button['link'] = $link->getHLink();
+      $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $variables['ticket_buttons'][] = $button;
     }
 
     // Performers
@@ -160,6 +166,44 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['performers'] = implode(', ', $performer_labels);
       }
     }
+
+    // Pictures
+    $main_picture = '';
+    $pictures = array();
+
+    $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    foreach ($photos as $photo) {
+      $pictures[] = $photo->getHLink();
+      if ($photo->isMain()) {
+        $main_picture = $photo->getHLink();
+      }
+    }
+
+    // Support for deprecated mediatype imageweb
+    $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+    foreach ($images as $image) {
+      $pictures[] = $image->getHLink();
+      if ($image->isMain() && empty($main_picture)) {
+        $main_picture = $photo->getHLink();
+      }
+    }
+
+    // If no main picture is set we use first picture
+    if (empty($main_picture) && count($pictures) > 0) {
+      $main_picture = $pictures[0];
+    }
+      
+    // we don't want the main picture to show twice
+    if (!empty($main_picture)) {
+      unset($pictures[0]);
+    }
+
+    $variables['main_picture'] = $main_picture;
+    $variables['pictures'] = $pictures;
+    
+    // Make sure usage of thumbnail is backwards compatible
+    $variables['thumbnail'] = $variables['main_picture'];
+
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
@@ -234,19 +278,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
  * Helper preprocess function to preprocess the general agenda summary variables.
  */
 function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
-
-  $item = $variables['item'];
-  $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-
-  // Add thumbnail image.
-  if ($detail) {
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    if (count($pictures) > 0) {
-      $variables['thumbnail'] = $pictures->current()->getHLink();
-    }
-  }
-
+  _culturefeed_agenda_preprocess_agenda($variables);
 }
 
 /**
@@ -258,24 +290,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Add thumbnail image.
-  $variables['main_picture'] = '';
-  $variables['pictures'] = array();
   if ($detail) {
-
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    foreach ($pictures as $picture) {
-      $variables['pictures'][] = $picture->getHLink();
-      if ($picture->isMain()) {
-        $variables['main_picture'] = $picture->getHLink();
-      }
-      // if main is not set use first image as main picture
-      elseif (isset($variables['pictures'][0])) {
-        $variables['main_picture'] = $variables['pictures'][0];
-      }
-      // we don't want the main picture to show twice
-      unset($variables['pictures'][0]);
-    }
 
     // Add videos.
     $variables['videos'] = array();

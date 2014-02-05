@@ -142,9 +142,11 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  *   Domain id where this facet belongs to. This is used to show the title
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
+ * @param $sort
+ *   Type of sorting. Can be default (empty), alphabetically, or total_results
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort_alphabetically = FALSE) {
-  
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort = '') {
+
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
   if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
@@ -191,7 +193,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
         '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
         '#facet' => $facet,
         '#items' => $items,
-        '#sort_alphabetically' => $sort_alphabetically,
+        '#sort' => $sort,
       ),
     );
   }
@@ -210,8 +212,7 @@ function culturefeed_search_ui_block_date_facet() {
   $build = array();
 
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
-  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, FALSE);
-
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, '');
   if (!empty($facet_block)) {
 
     $build = array();
