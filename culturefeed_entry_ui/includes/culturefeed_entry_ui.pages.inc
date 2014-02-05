@@ -1924,6 +1924,15 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
     $location = NULL;
   }*/
+  
+  // Validate Links
+  foreach ($values['links'] as $link_data) {
+    if(!empty($link_data['URL'])) {
+      if(!valid_url($link_data['URL'], TRUE)) {
+	    form_set_error('links', t('Not a valid URL'));
+      }
+    }
+  }
 
   // Validate organiser.
   if (!empty($values['organiser']['actor']['organiser_actor_id'])) {
@@ -1941,6 +1950,21 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
   else {
     $organiser = NULL;
+  }
+  
+  foreach ($values['wrapper'] as $extra) {
+    if (is_array($extra)) {
+      
+      // Contacts
+      if (!empty($extra['channel_input'])) {
+        //if mail is selected
+        if($extra['channel'] == 1 ) {
+          if (!valid_email_address($extra['channel_input'])) {
+            form_set_error('channel_input', t('Not a valid email address'));
+          }
+        }
+      }
+    }
   }
 
   $errors = form_get_errors();
@@ -2003,10 +2027,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Links
   foreach ($values['links'] as $link_data) {
     if ($link_data['URL']) {
-      if (!preg_match("@^https?://@", $link_data['URL'])) {
-        $link_data['URL'] = 'http://' . $link_data['URL'];
-      }
-
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
     }
