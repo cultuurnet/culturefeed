@@ -72,7 +72,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Load all default values.
   if ($event) {
-
     $event = $event->getEntity();
     $form['#event'] = $event;
     $event_details = $event->getDetails()->current();
@@ -115,23 +114,26 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
     // Default calendar type, start / end date, weekscheme data.
-    $calendar = $event->getCalendar();
-    $calendar_class = get_class($calendar);
-    if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
-      $when = 'period';
-      $period = $calendar->current();
-      $default_start = $period->getDateFrom();
-      $default_end = $period->getDateTo();
-      $weekscheme = $period->getWeekScheme();
+    if ($calendar = $event->getCalendar()) {
+
+      $calendar_class = get_class($calendar);
+      if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+        $when = 'period';
+        $period = $calendar->current();
+        $default_start = $period->getDateFrom();
+        $default_end = $period->getDateTo();
+        $weekscheme = $period->getWeekScheme();
+      }
+      elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
+        $when = 'permanent';
+        $weekscheme = $calendar->getWeekScheme();
+      }
+      elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+        $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
+        //$form_state['#dates_needed'] = iterator_count($calendar);
+      }
     }
-    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
-      $when = 'permanent';
-      $weekscheme = $calendar->getWeekScheme();
-    }
-    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
-      $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
-      $timestamps = $calendar;
-    }
+    
     // Set the total opening times needed. This need to be equal for every day.
     if (!isset($form_state['#opening_times_needed'])) {
       $opening_times_needed = 1;
@@ -1104,29 +1106,45 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Language'),
     '#group' => 'vertical_tabs',
   );
-
-  $form['extra']['language']['spoken_language'] = array(
-    '#type' => 'select',
-    '#title' => t('Language'),
-    '#options' => array(
-      0 => t(''),
-      1 => t('Spoken'),
-      2 => t('Dubbed'),
-      3 => t('Subtitled'),
-    ),
+  
+  $form['extra']['language']['wrapper'] = array(
+    '#type' => 'container',
+    '#prefix' => '<div id="languages-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#tree' => TRUE,
   );
-
-  $form['extra']['language']['in_language'] = array(
-    '#type' => 'select',
-    '#title' => t('in'),
-    '#options' => array(
-      0 => t(''),
-      1 => t('English'),
-      2 => t('Spanish'),
-      3 => t('Dutch'),
-      4 => t('German'),
-      5 => t('French'),
+  
+  $language_count = 0;
+  // Add language
+  if ($language_count) {
+    foreach ($language_count as $i => $info) {
+	  culturefeed_entry_ui_attach_language_elements($form, $i, $info);
+	  $language_count++;
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_language_elements($form, 0);
+  }
+  
+  // Add more button was clicked. Check how many rows need to be added.
+  if (isset($form_state['#languages_needed'])) {
+    for (; $language_count < $form_state['#languages_needed']; $language_count++) {
+	  culturefeed_entry_ui_attach_language_elements($form, $language_count);
+    }
+  }
+  
+  $form['extra']['language']['wrapper']['add_more_languages'] = array(
+    '#type' => 'submit',
+    '#name' => 'languages_add_more',
+    '#value' => t('+ add more language info'),
+    '#attributes' => array('class' => array('add-more-link btn-link')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'languages-ajax-wrapper',
+      'effect' => 'fade',
     ),
+    '#limit_validation_errors' => array(array('languages')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
 
   //entrance
@@ -1304,7 +1322,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
-  //dsm($form);
   return $form;
 
 }
@@ -1604,6 +1621,44 @@ function culturefeed_entry_ui_attach_enddate_elements(&$form, $i, $info = NULL) 
 }
 
 /**
+ * Attach a new language element.
+ *
+ */
+function culturefeed_entry_ui_attach_language_elements(&$form, $i, $info = NULL) {
+
+  $form['extra']['language']['wrapper'][$i] = array(
+    '#type' => 'container',
+    '#tree' => TRUE,
+    '#prefix' => '<div class="language-item-wrapper">',
+    '#suffix' => '</div>',
+  );
+  
+  $form['extra']['language']['wrapper'][$i]['spoken_language'] = array(
+    '#type' => 'select',
+    '#title' => t('Language'),
+    '#options' => array(
+      0 => t(''),
+      1 => t('Spoken'),
+      2 => t('Dubbed'),
+      3 => t('Subtitled'),
+    ),
+  );
+
+  $form['extra']['language']['wrapper'][$i]['in_language'] = array(
+    '#type' => 'select',
+    '#title' => t('in'),
+    '#options' => array(
+      0 => t(''),
+      1 => t('English'),
+      2 => t('Spanish'),
+      3 => t('Dutch'),
+      4 => t('German'),
+      5 => t('French'),
+    ),
+  );
+}
+
+/**
  * Attach a new contact element.
  *
  */
@@ -1777,7 +1832,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
   dsm($values);
-
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -1897,6 +1951,16 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (empty($values['datetimes'][0]['begin']['date'])) {
     form_set_error('datetimes', t('A date is required.'));
   }
+  else {
+    for ($i = 0; $i < count($values['datetimes']); $i++) {
+      if (isset($values['datetimes'][$i]['begin']['date']) > isset($values['datetimes'][$i]['end']['date'])) {
+	    form_set_error('datetimes', t('Date field is invalid'));
+      }
+      if (isset($values['datetimes'][$i]['begin']['date']) == isset($values['datetimes'][$i]['end']['date']) && isset($values['datetimes'][$i]['begin']['hour']) > isset($values['datetimes'][$i]['end']['hour'])) {
+	    form_set_error('datetimes', t('Date field is invalid'));
+      }
+    }
+  }
     
     
   /*if (!empty($values['location']['actor']['location_actor_id'])) {
@@ -1988,13 +2052,13 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  dsm($values);
 
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
   $links = array();
   $performers_count = 0;
+  $language_list = new CultureFeed_Cdb_Data_LanguageList();
 
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
@@ -2008,7 +2072,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       }
 
       // Contacts
-      if ($extra['channel_input']) {
+      if (isset($extra['channel_input'])) {
 
         switch ($extra['channel']) {
           case '0':
@@ -2020,6 +2084,38 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             array_push($mails, $mail);
             break;
         }
+      }
+      
+      if (isset($extra['spoken_language']) && isset($extra['in_language'])) {
+	    switch ($extra['spoken_language']) {
+		  case 1:
+            $spoken_language = 'spoken';
+            break;
+          case 2:
+            $spoken_language = 'dubbed';
+            break;
+          case 3:
+            $spoken_language = 'subtitles';
+            break;  
+	    }
+	    
+	    switch ($extra['in_language']) {
+		  case 1:
+            $in_language = 'English';
+            break;
+          case 2:
+            $in_language = 'Spanish';
+            break;
+          case 3:
+            $in_language = 'Dutch';
+           break;
+          case 4:
+            $in_language = 'German';
+            break;
+          case 5:
+            $in_language = 'French';    
+	    }
+        $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
       }
     }
   }
@@ -2215,6 +2311,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if ($performers_count) {
     $detail->setPerformers($performerList);
   }
+  
   $detail->setLanguage(culturefeed_entry_ui_get_preferred_language());
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
@@ -2393,41 +2490,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if ($values['members']) {
     $event->setPrivate(TRUE);
   }
-
-  // Languages
-  if (TRUE) {
-    switch ($values['spoken_language']) {
-      case 0:
-        $spoken_language = 'spoken';
-        break;
-      case 1:
-        $spoken_language = 'dubbed';
-        break;
-      case 2:
-        $spoken_language = 'subtitles';
-        break;
-    }
-
-    switch ($values['in_language']) {
-      case 0:
-        $in_language = 'English';
-        break;
-      case 1:
-        $in_language = 'Spanish';
-        break;
-      case 2:
-        $in_language = 'Dutch';
-        break;
-      case 3:
-        $in_language = 'German';
-        break;
-      case 4:
-        $in_language = 'French';
-    }
-    $language_list = new CultureFeed_Cdb_Data_LanguageList();
-    $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
+  
+  //if ($language_list) {
     $event->setLanguages($language_list);
-  }
+  //}
 
   try {
     if ($update) {

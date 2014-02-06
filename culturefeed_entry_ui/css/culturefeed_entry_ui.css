@@ -110,6 +110,10 @@ input.add-more-link:hover {
   margin-right: 2%;
 }
 
+.language-item-wrapper {
+  clear: left;
+}
+
 #edit-language .form-type-select {
   width: 20%;
   float: left;

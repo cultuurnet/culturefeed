@@ -292,6 +292,11 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
     
     case 'contacts_add_more':
       $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']['wrapper']));
+      break;
+      
+    case 'languages_add_more':
+      $form_state['#languages_needed'] = count(element_children($form['extra']['language']['wrapper']));
+      break;
       
   }
 
@@ -361,6 +366,9 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
     case 'contacts_add_more':
       return $form['extra']['contacts']['wrapper'];
+    
+    case 'languages_add_more':
+      return $form['extra']['language']['wrapper'];
       
     case 'location[actor][location_actor_id]':
       return $form['basic']['location']['actor'];
