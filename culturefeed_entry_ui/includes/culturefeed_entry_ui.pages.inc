@@ -1953,11 +1953,30 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
   else {
     for ($i = 0; $i < count($values['datetimes']); $i++) {
-      if (isset($values['datetimes'][$i]['begin']['date']) > isset($values['datetimes'][$i]['end']['date'])) {
-	    form_set_error('datetimes', t('Date field is invalid'));
+      if(isset($values['datetimes'][$i]['begin']['date'])){
+        $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
       }
-      if (isset($values['datetimes'][$i]['begin']['date']) == isset($values['datetimes'][$i]['end']['date']) && isset($values['datetimes'][$i]['begin']['hour']) > isset($values['datetimes'][$i]['end']['hour'])) {
-	    form_set_error('datetimes', t('Date field is invalid'));
+      if(isset($values['datetimes'][$i]['end']['date'])) {
+        $enddate = strtotime($values['datetimes'][$i]['end']['date']);
+      } 
+      if(isset($values['datetimes'][$i]['begin']['hour'])) {
+        $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
+      }
+      if(isset($values['datetimes'][$i]['end']['hour'])) {
+        $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
+      }
+      
+      if (isset($enddate)){
+        if ($begindate > $enddate) {
+	      form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
+        }
+        if ($begintime > $endtime) {
+	      form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+        }
+      } else {
+	    if ($begintime > $endtime) {
+		  form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+	    }
       }
     }
   }
