@@ -52,8 +52,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
   $form_state['#zip_needed'] = FALSE;
 
-  //language vars
-
+  // Language vars
   $nl_title = '';
   $nl_short_description = '';
   $nl_long_description = '';
@@ -117,6 +116,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if ($calendar = $event->getCalendar()) {
 
       $calendar_class = get_class($calendar);
+      
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
         $when = 'period';
         $period = $calendar->current();
@@ -130,7 +130,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
         $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
-        //$form_state['#dates_needed'] = iterator_count($calendar);
+        $form_state['#dates_needed'] = iterator_count($calendar);
+        
+        $calendar_items = array();
+        
+        foreach ($calendar as $calendar_item) { 
+          $calendar_items[] = $calendar_item;
+        }
+        
       }
     }
     
@@ -471,7 +478,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Date  
-  culturefeed_entry_ui_attach_date_element($form, $form_state);
+  culturefeed_entry_ui_attach_date_element($form, $form_state, $calendar);
 
   /*
 
@@ -1329,7 +1336,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 /**
  * Attach a new date elements
  */
-function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
+function culturefeed_entry_ui_attach_date_element(&$form, &$form_state, $calendar) {
 
   $form['basic']['when']['datetimes'] = array(
     '#tree' => TRUE,
@@ -1341,6 +1348,8 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
 
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : 1;
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
+  
+  $calendar->rewind();
 
   for ($i = 0; $i < $date_count; $i++) {
 
@@ -1381,11 +1390,12 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
 
     }
 
+    $start_date = $calendar->current()->getDate();
     $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
       '#type' => 'date_popup',
       '#date_label_position' => 'none',
       '#title' => t('Start date'),
-      '#default_value' => '',
+      '#default_value' => (isset($start_date)) ? $start_date : '',
       '#date_format' => 'Y-m-d',
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1394,13 +1404,15 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       ),
       '#attributes' => array('class' => array('start-date')),
     );
+    
 
     if (!$period) {
 
+      $start_time = $calendar->current()->getStartTime();        
       $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
         '#type' => 'date_select',
         '#name' => 'begin_hour',
-        '#default_value' => '',
+        '#default_value' => (isset($start_time)) ? $calendar->current()->getDate() . ' ' . $start_time : '',
         '#date_format' => 'H:i',
         '#date_increment' => 30,
       );
@@ -1455,6 +1467,9 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       // added.
       if ($i === 0 && $date_count == 1) {
 
+
+        // TODO $calendar->current()->getDate()
+        
         $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
           '#type' => 'date_popup',
           '#title' => t('End date'),
@@ -1471,10 +1486,11 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       }
 
       if (!$period) {
-
+      
+        $end_time = $calendar->current()->getEndTime(); 
         $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
           '#type' => 'date_select',
-          '#default_value' => '',
+          '#default_value' => (isset($end_time)) ? $calendar->current()->getDate() . ' ' . $end_time : '',
           '#date_format' => 'H:i',
           '#date_increment' => 30,
         );
@@ -1495,6 +1511,7 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       );
 
     }
+    $calendar->next();
 
   }
 
