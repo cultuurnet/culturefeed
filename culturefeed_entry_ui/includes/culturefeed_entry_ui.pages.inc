@@ -1345,6 +1345,11 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
   for ($i = 0; $i < $date_count; $i++) {
 
     $date = date("Y-m-d H");
+    $period = (
+      isset($form_state['values']['datetimes'][$i]['begin']['date']) && isset($form_state['values']['datetimes'][$i]['end']['date']) &&
+      $form_state['values']['datetimes'][$i]['begin']['date'] != $form_state['values']['datetimes'][$i]['end']['date'] &&
+      $triggering_element != 'datetimes_remove_endtime_' . $i
+    );
 
     $form['basic']['when']['datetimes'][$i] = array(
       '#type' => 'container',
@@ -1390,13 +1395,17 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       '#attributes' => array('class' => array('start-date')),
     );
 
-    $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
-      '#type' => 'date_select',
-      '#name' => 'begin_hour',
-      '#default_value' => '',
-      '#date_format' => 'H:i',
-      '#date_increment' => 30,
-    );
+    if (!$period) {
+
+      $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
+        '#type' => 'date_select',
+        '#name' => 'begin_hour',
+        '#default_value' => '',
+        '#date_format' => 'H:i',
+        '#date_increment' => 30,
+      );
+
+    }
 
     $show_endtime_link = TRUE;
     if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
@@ -1441,8 +1450,9 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
       );
 
       // Only the first row will allow for the entry of a date.  If the end
-      // date is from the begin date, nor more rows can be added.  If the end
-      // date is the same as the begin date.  Only time slots can be added.
+      // date is different from the begin date, nor more rows can be added.  If
+      // the end date is the same as the begin date.  Only time slots can be
+      // added.
       if ($i === 0 && $date_count == 1) {
 
         $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
@@ -1457,14 +1467,19 @@ function culturefeed_entry_ui_attach_date_element(&$form, &$form_state) {
             'effect' => 'fade',
           ),
         );
+
       }
 
-      $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
-        '#type' => 'date_select',
-        '#default_value' => '',
-        '#date_format' => 'H:i',
-        '#date_increment' => 30,
-      );
+      if (!$period) {
+
+        $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
+          '#type' => 'date_select',
+          '#default_value' => '',
+          '#date_format' => 'H:i',
+          '#date_increment' => 30,
+        );
+
+      }
 
       $form['basic']['when']['datetimes'][$i]['end']['datetimes_remove_endtime'] = array(
         '#type' => 'button',
