@@ -176,7 +176,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     // Default image
     $photo_media = $event_details->getMedia()
-      ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+      ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
 
     if (count($photo_media) > 0) {
       $main_image = array();
@@ -2269,7 +2269,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
     // Add to detail
     $file = new CultureFeed_Cdb_Data_File();
-    $file->setMediaType($file::MEDIA_TYPE_PHOTO);
+    $file->setMediaType($file::MEDIA_TYPE_IMAGEWEB);
+    $file->setMain(TRUE);
     switch ($drupal_file->filemime) {
       case 'image/gif':
         $file->setFileType($file::FILE_TYPE_GIF);
