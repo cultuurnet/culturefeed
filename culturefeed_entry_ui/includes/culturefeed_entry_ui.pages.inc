@@ -668,8 +668,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   // button shouldn't show as multiple periods are not allowed (CFK-93).
   $begin_date = (isset($form_state['values']['datetimes'][0]['begin']['date'])) ? $form_state['values']['datetimes'][0]['begin']['date'] : '';
   $end_date = (isset($form_state['values']['datetimes'][0]['end']['date'])) ? $form_state['values']['datetimes'][0]['end']['date'] : '';
+  
   $show_add_link = TRUE;
-  if ($begin_date && $end_date && $begin_date != $end_date && $triggering_element != 'datetimes_remove_endtime_0') {
+  if (($begin_date && $end_date && $begin_date != $end_date && $triggering_element != 'datetimes_remove_endtime_0') || ($when == 'period')) {
     $show_add_link = FALSE;
   }
 
@@ -690,113 +691,92 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
 
   }
-  
-
-  /*
-
-  // Period / permanent elements.
-  $form['basic']['period_or_permanent'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#states' => array(
-      'visible' => array(
-        ':input[name=when]' => array(
-          array('value' => 'period'),
-          array('value' => 'permanent'),
+  else {
+    
+    // TODO put in function cos we need it for permanent as well
+    // Period / permanent elements.
+    $form['basic']['when']['period_or_permanent'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#states' => array(
+        'visible' => array(
+          ':input[name=when]' => array(
+            array('value' => 'period'),
+            array('value' => 'permanent'),
+          ),
         ),
       ),
-    ),
-  );
-
-  $form['basic']['period_or_permanent']['start_date'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Startdate'),
-    '#states' => array(
-      'visible' => array(':input[name=when]' => array('value' => 'period')),
-    ),
-    '#default_value' => $period_start,
-    '#description' => t('Format') . ': ' . date('Y-m-d'),
-  );
-
-  $form['basic']['period_or_permanent']['end_date'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Enddate'),
-    '#states' => array(
-      'visible' => array(':input[name=when]' => array('value' => 'period')),
-    ),
-    '#default_value' => $period_end,
-    '#description' => t('Format') . ': ' . date('Y-m-d'),
-  );
-
-  $form['basic']['period_or_permanent']['all_day'] = array(
-    '#type' => 'radios',
-    '#title' => t('Open all day?'),
-    '#options' => array(1 => t('Yes'), 0 => t('No')),
-    '#default_value' => ($weekscheme == NULL) ? 1 : 0,
-  );
-
-  $form['basic']['period_or_permanent']['opening_times'] = array(
-    '#type' => 'container',
-    '#states' => array(
-      'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
-    ),
-    '#prefix' => '<div id="opening-times-ajax-wrapper">',
-    '#suffix' => '</div>',
-    '#theme' => 'culturefeed_entry_ui_opening_times_table',
-  );
-
-  // Add opening times information for every day.
-  foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
-
-    $form['basic']['period_or_permanent']['opening_times'][$day] = array(
-      '#tree' => TRUE,
-      '#type' => 'fieldset',
-      '#title' => $day_labels[$day],
     );
-
-    $opening_times = array();
-    if ($weekscheme && $data = $weekscheme->getDay($day)) {
-      $opening_times = $data->getOpeningTimes();
-    }
-
-    $opening_count = 0;
-    if ($opening_times) {
-      foreach ($opening_times as $i => $opening_time) {
-        culturefeed_entry_ui_attach_opening_time_elements($form, $day, $i, $opening_time);
+  
+    $form['basic']['when']['period_or_permanent']['all_day'] = array(
+      '#type' => 'radios',
+      '#title' => t('Open all day?'),
+      '#options' => array(1 => t('Yes'), 0 => t('No')),
+      '#default_value' => ($weekscheme == NULL) ? 1 : 0,
+    );
+  
+    $form['basic']['when']['period_or_permanent']['opening_times'] = array(
+      '#type' => 'container',
+      '#states' => array(
+        'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
+      ),
+      '#prefix' => '<div id="opening-times-ajax-wrapper">',
+      '#suffix' => '</div>',
+      '#theme' => 'culturefeed_entry_ui_opening_times_table',
+    );
+  
+    // Add opening times information for every day.
+    foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
+  
+      $form['basic']['when']['period_or_permanent']['opening_times'][$day] = array(
+        '#tree' => TRUE,
+        '#type' => 'fieldset',
+        '#title' => $day_labels[$day],
+      );
+  
+      $opening_times = array();
+      if ($weekscheme && $data = $weekscheme->getDay($day)) {
+        $opening_times = $data->getOpeningTimes();
+      }
+  
+      $opening_count = 0;
+      if ($opening_times) {
+        foreach ($opening_times as $i => $opening_time) {
+          culturefeed_entry_ui_attach_opening_time_elements($form, $day, $i, $opening_time);
+          $opening_count++;
+        }
+      }
+      else {
+        culturefeed_entry_ui_attach_opening_time_elements($form, $day, 0);
         $opening_count++;
       }
-    }
-    else {
-      culturefeed_entry_ui_attach_opening_time_elements($form, $day, 0);
-      $opening_count++;
-    }
-
-    // Add more button was clicked. Check how many extra rows need to be added.
-    if (isset($form_state['#opening_times_needed'])) {
-      for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
-        culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
+  
+      // Add more button was clicked. Check how many extra rows need to be added.
+      if (isset($form_state['#opening_times_needed'])) {
+        for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
+          culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
+        }
       }
+  
     }
-
+  
+    $form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
+      '#type' => 'submit',
+      '#name' => 'opening_times_add_more',
+      '#value' => t('Add another opening time'),
+      '#attributes' => array('class' => array('opening-times-add-more-submit')),
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'opening-times-ajax-wrapper',
+        'effect' => 'fade',
+      ),
+      '#limit_validation_errors' => array(array('period_or_permanent')),
+      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+      '#states' => array(
+        'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
+      ),
+    );
   }
-
-  $form['basic']['period_or_permanent']['add_more_opening_times'] = array(
-    '#type' => 'submit',
-    '#name' => 'opening_times_add_more',
-    '#value' => t('Add another opening time'),
-    '#attributes' => array('class' => array('opening-times-add-more-submit')),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'opening-times-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-    '#limit_validation_errors' => array(array('period_or_permanent')),
-    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    '#states' => array(
-      'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
-    ),
-  );*/
-
 
   // Extra.
   $form['extra'] = array(
@@ -1721,13 +1701,13 @@ function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL
  */
 function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $opening_time = NULL) {
 
-  $form['basic']['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
+  $form['basic']['when']['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
     '#description' => t('Format') . ': 12:00:00',
   );
 
-  $form['basic']['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
+  $form['basic']['when']['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
     '#description' => t('Format') . ': 12:00:00',
@@ -1741,7 +1721,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  dsm($values);
+  //dsm($values);
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -1757,14 +1737,9 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate datetime
-
-
   // Validate timestamps.
-
   if ($values['datetype'] == 'timestamps') {
   
-    
-
     // Only one timestamp saved for one day.
     if (count($values['datetimes']) == 1) {
 
@@ -2128,19 +2103,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   // Datetimes as calendar.
-
   if ($values['datetype'] == 'timestamps') {
     _culturefeed_entry_ui_event_save_timestamps($event, $values);
   }
   
+  // Datetimes as period.
   if ($values['datetype'] == 'period') {
     _culturefeed_entry_ui_event_save_period($event, $values);
   }
 
-  // Period or permanent as calendar.
-  elseif ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
+  // Weekscheme for period or permanent.
+  if ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
     //_culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
+  
+  echo '<pre>';print_r($event);echo '</pre>';
+  exit;
 
   // Categories.
   $category_options = array();
