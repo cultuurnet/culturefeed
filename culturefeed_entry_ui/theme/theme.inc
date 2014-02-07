@@ -31,14 +31,14 @@ function theme_culturefeed_entry_ui_opening_times_table($variables) {
 
   $table_variables = array(
     'header' => array(
-      'open',
+      t('open'),
     ),
     'rows' => $rows,
   );
 
   while ($total_opening_times > 0) {
-    $table_variables['header'][] = 'van';
-    $table_variables['header'][] = 'tot';
+    $table_variables['header'][] = t('from');
+    $table_variables['header'][] = t('to');
     $total_opening_times--;
   }
 

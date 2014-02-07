@@ -27,13 +27,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $period_end = '';
   $weekscheme = NULL;
   $day_labels = array(
-    'monday' => 'ma',
-    'tuesday' => 'di',
-    'wednesday' => 'wo',
-    'thursday' => 'don',
-    'friday' => 'vrij',
-    'saturday' => 'zat',
-    'sunday' => 'zon',
+    'monday' => t('mon'),
+    'tuesday' => t('tue'),
+    'wednesday' => t('wed'),
+    'thursday' => t('thu'),
+    'friday' => t('fri'),
+    'saturday' => t('sat'),
+    'sunday' => t('sun'),
   );
   $age = '';
   $age_category = 'everyone';
@@ -479,7 +479,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'hidden',
     '#value' => $when,
   );
-  
   
   $form['basic']['when']['datetimes'] = array(
     '#tree' => TRUE,
@@ -1751,17 +1750,14 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
       try {
 
         // Empty start dates are ignored.
-        if (empty($timestamp['start_date'])) {
+        if (empty($timestamp['begin']['date'])) {
           continue;
         }
 
-        CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['start_date']);
+        CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['begin']['date']);
 
-        if (!empty($timestamp['end_time'])) {
-          CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['end_time']);
-        }
-        if (!empty($timestamp['start_time'])) {
-          CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['start_time']);
+        if (!empty($timestamp['end'])) {
+          CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['end']['date']);
         }
       }
       catch (UnexpectedValueException $e) {
@@ -2116,9 +2112,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
     //_culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
-  
-  echo '<pre>';print_r($event);echo '</pre>';
-  exit;
 
   // Categories.
   $category_options = array();
