@@ -455,7 +455,6 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   foreach ($result as $row) {
     $categories[$row->tid] = $row->name;
   }
-
   return $categories;
 
 }
@@ -467,6 +466,10 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
  */
 function culturefeed_search_get_eventtype_categories($conditions = array()) {
   return culturefeed_search_get_categories_by_domain('eventtype', $conditions);
+}
+
+function culturefeed_search_get_themetype_categories($conditions = array()) {
+  return culturefeed_search_get_categories_by_domain('theme', $conditions);
 }
 
 /**
