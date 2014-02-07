@@ -380,8 +380,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#default_value' => $eventtype_default,
         '#parents' => array('what'),
       );
+      
+      //$themas = culturefeed_search_get_themetype_categories(array('tid' => $type_id));
+      //dsm($themas);
     }
   }
+  
 
   $form['basic']['location'] = array(
     '#prefix' => '<div id="location-ajax-wrapper">',

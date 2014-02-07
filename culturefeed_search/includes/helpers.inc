@@ -460,7 +460,6 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   foreach ($result as $row) {
     $categories[$row->tid] = $row->name;
   }
-
   return $categories;
 
 }
