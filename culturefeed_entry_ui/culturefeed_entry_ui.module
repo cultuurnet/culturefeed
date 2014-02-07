@@ -303,6 +303,14 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
+  
+    case 'what_radio':
+      if($form_state['input']['what'] == '0.50.4.0.0') {
+	    $form_state['#themes_needed'] = 'concerts';
+      }
+      return $form_state['#themes_needed'];
+      return $form['basic']['what'];
+    break;
 
     case 'begindates_add_more':
     case 'enddates_add_more':

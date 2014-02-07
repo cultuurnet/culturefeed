@@ -45,6 +45,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $mail_contacts = array();
   $is_private = FALSE;
 
+  if (!isset($form_state['#themes_needed'])) {
+    $form_state['#themes_needed'] = '';
+  }
+  
   if (!isset($form_state['#location_needed'])) {
     $form_state['#location_needed'] = FALSE;
   }
@@ -356,7 +360,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   // Eventtypes
-  $form['basic']['what'] = array('#type' => 'container');
+  $form['basic']['what'] = array('#type' => 'container', '#prefix' => '<div id="what-ajax-wrapper">', '#suffix' => '</div>');
 
   $types = array_merge(
     array(CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN))),
@@ -379,12 +383,107 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#return_value' => $type_id,
         '#default_value' => $eventtype_default,
         '#parents' => array('what'),
+        '#ajax' => array(
+          'callback' => 'culturefeed_entry_ui_add_more_js',
+          'wrapper' => 'what-ajax-wrapper',
+          'effect' => 'fade',
+        ),
       );
-      
-      //$themas = culturefeed_search_get_themetype_categories(array('tid' => $type_id));
-      //dsm($themas);
     }
   }
+  
+  switch($form_state['#themes_needed']) {
+    case 'concerts':
+    $themesconcerts = culturefeed_search_get_theme_categories(array('tid_like' => 1.8));
+    $form['basic']['what']['themes']['concerts'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Concerts'),
+    );
+  
+    foreach ($themesconcerts as $theme_id => $theme_name) {
+      $form['basic']['what']['themes']['concerts'][$theme_name] = array(
+        '#type' => 'radio',
+        '#title' => $theme_name,
+        '#return_value' => $theme_id,
+        '#default_value' => '',
+        '#parents' => array('what'),
+      );
+    }
+    break;
+  
+    case 'dance' :
+    $themesdance = culturefeed_search_get_theme_categories(array('tid_like' => 1.9));
+    $form['basic']['what']['themes']['dance'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Dance'),
+    );
+  
+    foreach ($themesdance as $theme_id => $theme_name) {
+      $form['basic']['what']['themes']['dance'][$theme_name] = array(
+        '#type' => 'radio',
+        '#title' => $theme_name,
+        '#return_value' => $theme_id,
+        '#default_value' => '',
+        '#parents' => array('what'),
+      );
+    }
+    break;
+    
+    case 'film':
+    $themesfilm = culturefeed_search_get_theme_categories(array('tid_like' => 1.7));
+    $form['basic']['what']['themes']['film'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Film'),
+    );
+  
+    foreach ($themesfilm as $theme_id => $theme_name) {
+      $form['basic']['what']['themes']['film'][$theme_name] = array(
+        '#type' => 'radio',
+        '#title' => $theme_name,
+        '#return_value' => $theme_id,
+        '#default_value' => '',
+        '#parents' => array('what'),
+      );
+    }
+    break;
+  
+    case 'theatre':
+    $themestheatre = culturefeed_search_get_theme_categories(array('tid_like' => 1.3));
+    $form['basic']['what']['themes']['theatre'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Theatre'),
+    );
+  
+    foreach ($themestheatre as $theme_id => $theme_name) {
+      $form['basic']['what']['themes']['theatre'][$theme_name] = array(
+        '#type' => 'radio',
+        '#title' => $theme_name,
+        '#return_value' => $theme_id,
+        '#default_value' => '',
+        '#parents' => array('what'),
+      );
+    }
+    break;
+    
+    case 'sport':
+    $themessport = culturefeed_search_get_theme_categories(array('tid_like' => 1.51));
+    $form['basic']['what']['themes']['sport'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Sport'),
+    );
+  
+    foreach ($themessport as $theme_id => $theme_name) {
+      $form['basic']['what']['themes']['sport'][$theme_name] = array(
+        '#type' => 'radio',
+        '#title' => $theme_name,
+        '#return_value' => $theme_id,
+        '#default_value' => '',
+        '#parents' => array('what'),
+      );
+    }
+    break;
+  }
+  
   
 
   $form['basic']['location'] = array(
