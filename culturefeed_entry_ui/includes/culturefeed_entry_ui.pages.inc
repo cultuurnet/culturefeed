@@ -129,15 +129,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $weekscheme = $calendar->getWeekScheme();
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
-        $when = iterator_count($calendar) > 1 ? 'multiple_days' : 'one_day';
+        $when = 'timestamps';
         $form_state['#dates_needed'] = iterator_count($calendar);
-        
-        $calendar_items = array();
-        
-        foreach ($calendar as $calendar_item) { 
-          $calendar_items[] = $calendar_item;
-        }
-        
       }
     }
     
@@ -184,7 +177,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default image
     $photo_media = $event_details->getMedia()
       ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
-
+    if(!$photo_media) {
+      $photo_media = $event_details->getMedia()
+      ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    }
+ 
     if (count($photo_media) > 0) {
       $main_image = array();
       foreach ($photo_media as $picture) {
@@ -264,7 +261,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
     }
 
-    // Default Target group
+    // Default target group
     if ($info = $event->isPrivate()) {
       $is_private = $event->isPrivate();
     }
@@ -481,75 +478,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   culturefeed_entry_ui_attach_date_element($form, $form_state, $calendar);
 
   /*
-
-  $form['basic']['when_selector'] = array(
-    '#type' => 'radios',
-    '#title' => t('When'),
-    '#options' => array(
-      'one_day' => t('One single day'),
-      'multiple_days' => t('Multiple days'),
-      'period' => t('Long period'),
-      'permanent' => t('Never ending'),
-    ),
-    '#default_value' => $when,
-  );
-
-  // Timestamp elements. Used for: one day or multiple days.
-  $form['basic']['timestamps'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="timestamp-ajax-wrapper">',
-    '#suffix' => '</div>',
-    '#states' => array(
-      'visible' => array(
-        ':input[name=when]' => array(
-          array('value' => 'one_day'),
-          array('value' => 'multiple_days'),
-        ),
-      ),
-    ),
-  );
-
-  // Add a timestamp row for every existing element.
-  $timestamp_count = 0;
-  if ($timestamps) {
-    foreach ($timestamps as $i => $timestamp) {
-      culturefeed_entry_ui_attach_timestamp_elements($form, $i, $timestamp);
-      $timestamp_count++;
-    }
-  }
-  else {
-    culturefeed_entry_ui_attach_timestamp_elements($form, 0);
-    $timestamp_count++;
-  }
-
-  // Add more button was clicked. Check how many extra rows need to be added.
-  if (isset($form_state['#timestamps_needed'])) {
-    for (; $timestamp_count < $form_state['#timestamps_needed']; $timestamp_count++) {
-      culturefeed_entry_ui_attach_timestamp_elements($form, $timestamp_count);
-    }
-  }
-
-  /*$form['basic']['add_more_timestamps'] = array(
-    '#type' => 'submit',
-    '#name' => 'timestamps_add_more',
-    '#value' => t('add another day'),
-    '#attributes' => array('class' => array('timestamp-add-more-submit')),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'timestamp-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-    '#limit_validation_errors' => array(array('timestamps')),
-    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name=when]' => array(
-          array('value' => 'multiple_days'),
-        ),
-      ),
-    ),
-  );
 
   // Period / permanent elements.
   $form['basic']['period_or_permanent'] = array(
@@ -1773,61 +1701,6 @@ function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL
 
 }
 
-/**
- * Attach a new timestamp element. This contains 3 elements.
- *
- * @param array $form
- *   Form to extend.
- * @param int $i
- *   Index for the elements.
- * @param CultureFeed_Cdb_Data_Calendar_Timestamp $timestamp
- *   Timestamp object to edit.
- */
-function culturefeed_entry_ui_attach_timestamp_elements(&$form, $i, CultureFeed_Cdb_Data_Calendar_Timestamp $timestamp = NULL) {
-
-  $states = array();
-  if ($i > 0) {
-    $states = array(
-      'visible' => array(
-        ':input[name=when]' => array(
-          array('value' => 'multiple_days'),
-        ),
-      ),
-    );
-  }
-
-  $form['basic']['timestamps'][$i]['start_date'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Startdate'),
-    '#default_value' => ($timestamp) ? $timestamp->getDate() : '',
-    '#description' => t('Format') . ': ' . date('Y-m-d'),
-    '#states' => $states,
-  );
-
-  $form['basic']['timestamps'][$i]['start_time'] = array(
-    '#type' => 'textfield',
-    '#title' => t('from'),
-    '#default_value' => ($timestamp) ? $timestamp->getStartTime() : '',
-    '#description' => t('Format') . ': 12:00:00',
-    '#states' => $states,
-  );
-
-  $form['basic']['timestamps'][$i]['end_time'] = array(
-    '#type' => 'textfield',
-    '#title' => t('to'),
-    '#default_value' => ($timestamp) ? $timestamp->getEndTime() : '',
-    '#description' => t('Format') . ': 12:00:00',
-    '#states' => $states,
-  );
-
-  $form['basic']['timestamps'][$i]['no_end_time'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('no end hour'),
-    '#default_value' => ($timestamp) ? ($timestamp->getEndTime() == '') : FALSE,
-    '#states' => $states,
-  );
-
-}
 
 /**
  * Attach opening time elements for a day.
@@ -1884,7 +1757,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   // Validate timestamps.
   /*
-  if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
+  if ($values['when'] == 'timestamps') {
 
     // Only one timestamp saved for one day.
     if ($values['when'] == 'one_day') {
@@ -2250,16 +2123,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
 
   /*
-  // Datetimes as calendar.
-  if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
-    _culturefeed_entry_ui_event_save_timestamps($event, $values);
-  }
-
-  // Timestamps as calendar.
-  if ($values['when'] == 'one_day' || $values['when'] == 'multiple_days') {
-    _culturefeed_entry_ui_event_save_timestamps($event, $values);
-  }
-
   // Period or permanent as calendar.
   elseif ($values['when'] == 'period' || $values['when'] == 'permanent') {
     _culturefeed_entry_ui_event_save_weekscheme($event, $values);
