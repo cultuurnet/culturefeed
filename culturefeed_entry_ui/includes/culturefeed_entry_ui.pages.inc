@@ -2081,7 +2081,11 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             $in_language = 'Engels';
             break;
           case 2:
+<<<<<<< HEAD
             $in_language = 'Spaans'; // zit niet in UDB
+=======
+            $in_language = 'Spaans'; //Zitniet in UDB, dus werkt niet
+>>>>>>> languages
             break;
           case 3:
             $in_language = 'Nederlands';
@@ -2090,7 +2094,11 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             $in_language = 'Duits';
             break;
           case 5:
+<<<<<<< HEAD
             $in_language = 'Frans';    
+=======
+            $in_language = 'Frans';
+>>>>>>> languages
 	    }
 
         $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
