@@ -524,6 +524,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : 1;
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
   // $when can change from datetime to period and vice versa.
+  // TODO: make more readable.
   if ($date_count > 1 ) {
     $when = 'timestamps';
   }
@@ -532,6 +533,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     (!isset($form_state['values']['datetimes'][0]['end']['date']) || $triggering_element == 'datetimes_remove_endtime_' . 0)
   ) {
     $when = 'timestamps';
+  }
+  if (isset($form_state['values']['permanent']) && !$form_state['values']['permanent']) {
+    $when = 'timestamps';
+    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
+    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
+    $calendar->add($timestamp);
   }
   if (
     isset($form_state['values']['datetimes'][0]['begin']['date']) && isset($form_state['values']['datetimes'][0]['end']['date']) &&
@@ -1783,7 +1790,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 /**
  * Validate the event form.
  */
-function culturefeed_entry_ui_event_save_validate($form, &$form_state) {dpm($form_state);
+function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
   // Validate publication date.
@@ -1837,37 +1844,24 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {dpm($for
     else {
 
       for ($i = 0; $i < count($values['datetimes']); $i++) {
+        $begindate = '';
+        $begintime = '';
+        $enddate = '';
+        $endtime = '';
         if (isset($values['datetimes'][$i]['begin']['date'])){
           $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
         }
-        else {
-          $begindate = '';
-        }
         if (isset($values['datetimes'][$i]['begin']['hour'])) {
           $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
-        }
-        else {
-          $begintime = '';
         }
         if (isset($values['datetimes'][$i]['end'])) {
           if (isset($values['datetimes'][$i]['end']['date'])) {
             $enddate = strtotime($values['datetimes'][$i]['end']['date']);
           }
-          else {
-            $enddate = '';
-          }
           if(isset($values['datetimes'][$i]['end']['hour'])) {
             $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
           }
-          else {
-            $endtime = '';
-          }
         }
-        else {
-          $enddate = '';
-          $endtime = '';
-        }
-
 
         if ($enddate){
           if ($begindate > $enddate) {
