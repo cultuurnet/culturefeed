@@ -130,7 +130,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
         $when = 'timestamps';
-        $form_state['#dates_needed'] = iterator_count($calendar);
+        if (!$form_state['submitted']) $form_state['#dates_needed'] = iterator_count($calendar);
       }
     }
     
@@ -562,7 +562,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     
     if ($when != 'period') {
 
-      $start_time = ($form_state['submitted']) ? '' :  $calendar->current()->getFromDate() . ' ' . $calendar->current()->getStartTime();
+      $start_time = ($form_state['submitted']) ? '' :  $calendar->current()->getDate() . ' ' . $calendar->current()->getStartTime();
       $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
         '#type' => 'date_select',
         '#name' => 'begin_hour',
@@ -642,10 +642,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       if ($when != 'period') {
       
-        $end_time = $calendar->current()->getEndTime();
+        $end_time = (!$form_state['submitted']) ? $calendar->current()->getDate() . ' ' . $calendar->current()->getEndTime() : '';
         $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
           '#type' => 'date_select',
-          '#default_value' => (isset($end_time)) ? $calendar->current()->getDate() . ' ' . $end_time : '',
+          '#default_value' => $end_time,
           '#date_format' => 'H:i',
           '#date_increment' => 30,
         );
