@@ -179,12 +179,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
     }
 
-    // Support for deprecated mediatype imageweb
+    // Support for mediatype imageweb
     $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
     foreach ($images as $image) {
       $pictures[] = $image->getHLink();
       if ($image->isMain() && empty($main_picture)) {
-        $main_picture = $photo->getHLink();
+        $main_picture = $image->getHLink();
       }
     }
 

@@ -2008,6 +2008,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
+      dpm($extra);
       // Performer
       if (!empty($extra['performer']) || !empty($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
@@ -2031,8 +2032,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             break;
         }
       }
-      
-      if (isset($extra['spoken_language']) && isset($extra['in_language'])) {
+
+      if (!empty($extra['spoken_language']) && !empty($extra['in_language'])) {
 	    switch ($extra['spoken_language']) {
 		  case 1:
             $spoken_language = 'spoken';
@@ -2061,10 +2062,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
           case 5:
             $in_language = 'French';    
 	    }
+
         $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
       }
     }
   }
+
 
   // Links
   foreach ($values['links'] as $link_data) {
@@ -2433,6 +2436,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   
   //if ($language_list) {
     $event->setLanguages($language_list);
+
   //}
 
   try {
