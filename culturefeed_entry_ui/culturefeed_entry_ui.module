@@ -304,13 +304,31 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
   
-    case 'what_radio':
-      if($form_state['input']['what'] == '0.50.4.0.0') {
-	    $form_state['#themes_needed'] = 'concerts';
+    case 'what':
+      switch ($form_state['input']['what']) {
+	    case '0.50.4.0.0':
+	      $form_state['#themes_needed'] = 'concerts';
+	    break;
+	    
+	    case '0.54.0.0.0':
+	      $form_state['#themes_needed'] = 'dance';
+	    break;
+	    
+	    case '0.50.6.0.0':
+	      $form_state['#themes_needed'] = 'film';
+	    break;
+	    
+	    case '0.55.0.0.0':
+	      $form_state['#themes_needed'] = 'theatre';
+	    break;
+	    
+	    case '0.19.0.0.0':
+	      $form_state['#themes_needed'] = 'sport';
+	    break;
       }
+      
       return $form_state['#themes_needed'];
-      return $form['basic']['what'];
-    break;
+      return $form['basic']['what']['themes'];
 
     case 'begindates_add_more':
     case 'enddates_add_more':
