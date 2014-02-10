@@ -321,7 +321,8 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case 'datetimes[0][begin][date]':
     case 'datetimes[0][end][date]':
     case 'datetimes_add_child':
-      return $form['basic']['when']['datetimes'];
+    case 'permanent':
+      return $form['basic']['when'];
 
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
