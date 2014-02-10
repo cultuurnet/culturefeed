@@ -71,6 +71,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Load all default values.
   if ($event) {
+    /** @var CultureFeed_Cdb_Item_Event $event */
     $event = $event->getEntity();
     $form['#event'] = $event;
     $event_details = $event->getDetails()->current();
@@ -78,6 +79,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default categories.
     if ($event && ($categories = $event->getCategories())) {
 
+      /** @var CultureFeed_Cdb_Data_Category $category */
       foreach ($categories as $category) {
         $category_defaults[] = $category->getId();
         if ($category->getType() == 'eventtype') {
