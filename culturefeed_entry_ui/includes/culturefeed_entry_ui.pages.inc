@@ -482,6 +482,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         );
       }
     break;
+    
+    default:
+    break;
   }
     
   $form['basic']['location'] = array(
