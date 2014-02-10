@@ -43,13 +43,13 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
       });
       
       $('#edit-location-actor-location-actor-label').change(function() {
-        if($('#edit-location-actor-location-actor-label').val('')) {
+        if($('#edit-location-actor-location-actor-label').val() == '') {
 	      $('#location_actor_id').val('');
         }
       });
       
       $('#edit-organiser-actor-organiser-actor-label').change(function() {
-        if($('#edit-organiser-actor-organiser-actor-label').val('')) {
+        if($('#edit-organiser-actor-organiser-actor-label').val() == '') {
 	      $('#organiser_actor_id').val('');
         }
       });
