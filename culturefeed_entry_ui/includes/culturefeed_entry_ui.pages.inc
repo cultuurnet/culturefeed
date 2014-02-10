@@ -475,6 +475,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   // Date.
+  $form['basic']['when'] = array(
+    '#type' => 'container',
+    '#prefix' => '<div id="when-ajax-wrapper">',
+    '#suffix' => '</div>',
+  );
+
   $form['basic']['when']['datetimes'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -502,164 +508,201 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   ) {
     $when = 'period';
   }
+  if (isset($form_state['values']['permanent']) && $form_state['values']['permanent']) {
+    $when = 'permanent';
+  }
 
-  $calendar->rewind();
+  // Ensure this is last as datetype can change based on user actions.
+  $form['basic']['when']['datetype'] = array(
+    '#type' => 'hidden',
+    '#value' => $when,
+  );
 
-  for ($i = 0; $i < $date_count; $i++) {
+  if ($when != 'permanent') {
 
-    $form['basic']['when']['datetimes'][$i] = array(
-      '#type' => 'container',
-      '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child clearfix">',
-      '#suffix' => '</div>',
-    );
+    $calendar->rewind();
 
-    $form['basic']['when']['datetimes'][$i]['begin'] = array(
-      '#type' => 'container',
-      '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
-      '#suffix' => '</div>',
-    );
+    for ($i = 0; $i < $date_count; $i++) {
 
-    if ($date_count > 1) {
-
-      $form['basic']['when']['datetimes'][$i]['begin']['datetimes_remove_child'] = array(
-        '#type' => 'submit',
-        '#value' => t('X'),
-        '#name' => 'datetimes_remove_child_' . $i,
-        '#attributes' => array('class' => array('add-more-link btn-link')),
-        '#ajax' => array(
-          'callback' => 'culturefeed_entry_ui_add_more_js',
-          'wrapper' => 'datetimes-ajax-wrapper',
-          'effect' => 'fade',
-        ),
-        '#limit_validation_errors' => array(array('datetimes')),
-        '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-      );
-
-    }
-
-    // Once submitted, we can't depend on $calender->current() as the type
-    // might have changed.
-    if ($when == 'timestamps' && !$form_state['submitted']) {
-      $start_date = $calendar->current()->getDate();
-    }
-    else {
-      $start_date = $period_start;
-    }
-    
-    $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
-      '#type' => 'date_popup',
-      '#date_label_position' => 'none',
-      '#title' => t('Start date'),
-      '#default_value' => (isset($start_date)) ? $start_date : '',
-      '#date_format' => 'Y-m-d',
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'datetimes-ajax-wrapper',
-        'effect' => 'fade',
-      ),
-      '#attributes' => array('class' => array('start-date')),
-    );
-    
-    if ($when != 'period') {
-
-      $start_time = ($form_state['submitted']) ? '' :  $calendar->current()->getDate() . ' ' . $calendar->current()->getStartTime();
-      $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
-        '#type' => 'date_select',
-        '#name' => 'begin_hour',
-        '#default_value' => $start_time,
-        '#date_format' => 'H:i',
-        '#date_increment' => 30,
-      );
-
-    }
-
-    $show_endtime_link = TRUE;
-    if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
-      $show_endtime_link = FALSE;
-    }
-    if ($triggering_element == 'datetimes_add_endtime_' . $i) {
-      $show_endtime_link = FALSE;
-    }
-    if ($when == 'period') {
-      $show_endtime_link = FALSE;
-    }
-
-    if ($show_endtime_link) {
-
-      $form['basic']['when']['datetimes'][$i]['begin']['datetimes_add_endtime'] = array(
-        '#type' => 'submit',
-        '#value' => t('+ add end'),
-        '#name' => 'datetimes_add_endtime_' . $i,
-        '#attributes' => array('class' => array('add-more-link btn-link')),
-        '#ajax' => array(
-          'callback' => 'culturefeed_entry_ui_add_more_js',
-          'wrapper' => 'datetimes-ajax-wrapper',
-          'effect' => 'fade',
-        ),
-        '#limit_validation_errors' => array(array('datetimes')),
-        '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-      );
-
-    }
-
-    // Add end date if required.
-    $show_endtime = FALSE;
-    if (($triggering_element == 'datetimes_add_endtime_' . $i) || ($when == 'period') ) {
-      $show_endtime = TRUE;
-    }
-    if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
-      $show_endtime = TRUE;
-    }
-
-    if ($show_endtime) {
-
-      $form['basic']['when']['datetimes'][$i]['end'] = array(
+      $form['basic']['when']['datetimes'][$i] = array(
         '#type' => 'container',
-        '#prefix' => '<div id="datetime-child-' . $i . '-end-ajax-wrapper">',
+        '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child clearfix">',
         '#suffix' => '</div>',
       );
 
-      // Only the first row will allow for the entry of a date.  If the end
-      // date is different from the begin date, nor more rows can be added.  If
-      // the end date is the same as the begin date.  Only time slots can be
-      // added.
-      if (($i === 0 && $date_count == 1) || $when == 'period') {
-    
-        $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
-          '#type' => 'date_popup',
-          '#title' => t('End date'),
-          '#date_label_position' => 'none',
-          '#default_value' => ($form_state['submitted']) ? '' : $period_end,
-          '#date_format' => 'Y-m-d',
+      $form['basic']['when']['datetimes'][$i]['begin'] = array(
+        '#type' => 'container',
+        '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
+        '#suffix' => '</div>',
+      );
+
+      if ($date_count > 1) {
+
+        $form['basic']['when']['datetimes'][$i]['begin']['datetimes_remove_child'] = array(
+          '#type' => 'submit',
+          '#value' => t('X'),
+          '#name' => 'datetimes_remove_child_' . $i,
+          '#attributes' => array('class' => array('add-more-link btn-link')),
           '#ajax' => array(
             'callback' => 'culturefeed_entry_ui_add_more_js',
-            'wrapper' => 'datetimes-ajax-wrapper',
+            'wrapper' => 'when-ajax-wrapper',
             'effect' => 'fade',
           ),
+          '#limit_validation_errors' => array(array('datetimes')),
+          '#submit' => array('culturefeed_entry_ui_add_more_submit'),
         );
 
       }
 
+      // Once submitted, we can't depend on $calender->current() as the type
+      // might have changed.
+      if ($when == 'timestamps' && !$form_state['submitted']) {
+        $start_date = $calendar->current()->getDate();
+      }
+      else {
+        $start_date = $period_start;
+      }
+
+      $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
+        '#type' => 'date_popup',
+        '#date_label_position' => 'none',
+        '#title' => t('Start date'),
+        '#default_value' => (isset($start_date)) ? $start_date : '',
+        '#date_format' => 'Y-m-d',
+        '#ajax' => array(
+          'callback' => 'culturefeed_entry_ui_add_more_js',
+          'wrapper' => 'when-ajax-wrapper',
+          'effect' => 'fade',
+        ),
+        '#attributes' => array('class' => array('start-date')),
+      );
+
       if ($when != 'period') {
-      
-        $end_time = (!$form_state['submitted']) ? $calendar->current()->getDate() . ' ' . $calendar->current()->getEndTime() : '';
-        $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
+
+        $start_time = ($form_state['submitted']) ? '' :  $calendar->current()->getDate() . ' ' . $calendar->current()->getStartTime();
+        $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
           '#type' => 'date_select',
-          '#default_value' => $end_time,
+          '#name' => 'begin_hour',
+          '#default_value' => $start_time,
           '#date_format' => 'H:i',
           '#date_increment' => 30,
         );
 
       }
 
-      $form['basic']['when']['datetimes'][$i]['end']['datetimes_remove_endtime'] = array(
+      $show_endtime_link = TRUE;
+      if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
+        $show_endtime_link = FALSE;
+      }
+      if ($triggering_element == 'datetimes_add_endtime_' . $i) {
+        $show_endtime_link = FALSE;
+      }
+      if ($when == 'period') {
+        $show_endtime_link = FALSE;
+      }
+
+      if ($show_endtime_link) {
+
+        $form['basic']['when']['datetimes'][$i]['begin']['datetimes_add_endtime'] = array(
+          '#type' => 'submit',
+          '#value' => t('+ add end'),
+          '#name' => 'datetimes_add_endtime_' . $i,
+          '#attributes' => array('class' => array('add-more-link btn-link')),
+          '#ajax' => array(
+            'callback' => 'culturefeed_entry_ui_add_more_js',
+            'wrapper' => 'when-ajax-wrapper',
+            'effect' => 'fade',
+          ),
+          '#limit_validation_errors' => array(array('datetimes')),
+          '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+        );
+
+      }
+
+      // Add end date if required.
+      $show_endtime = FALSE;
+      if (($triggering_element == 'datetimes_add_endtime_' . $i) || ($when == 'period') ) {
+        $show_endtime = TRUE;
+      }
+      if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
+        $show_endtime = TRUE;
+      }
+
+      if ($show_endtime) {
+
+        $form['basic']['when']['datetimes'][$i]['end'] = array(
+          '#type' => 'container',
+          '#prefix' => '<div id="datetime-child-' . $i . '-end-ajax-wrapper">',
+          '#suffix' => '</div>',
+        );
+
+        // Only the first row will allow for the entry of a date.  If the end
+        // date is different from the begin date, nor more rows can be added.  If
+        // the end date is the same as the begin date.  Only time slots can be
+        // added.
+        if (($i === 0 && $date_count == 1) || $when == 'period') {
+
+          $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
+            '#type' => 'date_popup',
+            '#title' => t('End date'),
+            '#date_label_position' => 'none',
+            '#default_value' => ($form_state['submitted']) ? '' : $period_end,
+            '#date_format' => 'Y-m-d',
+            '#ajax' => array(
+              'callback' => 'culturefeed_entry_ui_add_more_js',
+              'wrapper' => 'when-ajax-wrapper',
+              'effect' => 'fade',
+            ),
+          );
+
+        }
+
+        if ($when != 'period') {
+      
+          $end_time = (!$form_state['submitted']) ? $calendar->current()->getDate() . ' ' . $calendar->current()->getEndTime() : '';
+          $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
+            '#type' => 'date_select',
+            '#default_value' => $end_time,
+            '#date_format' => 'H:i',
+            '#date_increment' => 30,
+          );
+
+        }
+
+        $form['basic']['when']['datetimes'][$i]['end']['datetimes_remove_endtime'] = array(
+          '#type' => 'submit',
+          '#value' => t('+ remove end'),
+          '#name' => 'datetimes_remove_endtime_' . $i,
+          '#attributes' => array('class' => array('add-more-link btn-link')),
+          '#ajax' => array(
+            'callback' => 'culturefeed_entry_ui_add_more_js',
+            'wrapper' => 'when-ajax-wrapper',
+            'effect' => 'fade',
+          ),
+          '#limit_validation_errors' => array(array('datetimes')),
+          '#submit' => array('culturefeed_entry_ui_add_more_submit'),
+        );
+
+      }
+      $calendar->next();
+
+    }
+
+    $show_add_link = TRUE;
+    if ($when == 'period') {
+      $show_add_link = FALSE;
+    }
+
+    if ($show_add_link) {
+
+      $form['basic']['when']['datetimes']['datetimes_add_child'] = array(
         '#type' => 'submit',
-        '#value' => t('+ remove end'),
-        '#name' => 'datetimes_remove_endtime_' . $i,
+        '#name' => 'datetimes_add_child',
+        '#value' => t('+ add date'),
         '#attributes' => array('class' => array('add-more-link btn-link')),
         '#ajax' => array(
           'callback' => 'culturefeed_entry_ui_add_more_js',
-          'wrapper' => 'datetimes-ajax-wrapper',
+          'wrapper' => 'when-ajax-wrapper',
           'effect' => 'fade',
         ),
         '#limit_validation_errors' => array(array('datetimes')),
@@ -667,37 +710,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       );
 
     }
-    $calendar->next();
 
   }
 
-  // Check if the end date is different from the begin date. If so the add more
-  // button shouldn't show as multiple periods are not allowed (CFK-93).
-  $begin_date = (isset($form_state['values']['datetimes'][0]['begin']['date'])) ? $form_state['values']['datetimes'][0]['begin']['date'] : '';
-  $end_date = (isset($form_state['values']['datetimes'][0]['end']['date'])) ? $form_state['values']['datetimes'][0]['end']['date'] : '';
-  
-  $show_add_link = TRUE;
-  if ($when == 'period') {
-    $show_add_link = FALSE;
-  }
-
-  if ($show_add_link) {
-
-    $form['basic']['when']['datetimes']['datetimes_add_child'] = array(
-      '#type' => 'submit',
-      '#name' => 'datetimes_add_child',
-      '#value' => t('+ add date'),
-      '#attributes' => array('class' => array('add-more-link btn-link')),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'datetimes-ajax-wrapper',
-        'effect' => 'fade',
-      ),
-      '#limit_validation_errors' => array(array('datetimes')),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
-
-  }
+  $form['basic']['when']['permanent'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => ($when == 'permanent'),
+    '#title' => t('Permanent'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'when-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+  );
 
   if ($when == 'period' || $when == 'permanent') {
     
@@ -785,12 +810,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
   }
-
-  // Ensure this is last as datetype can change based on user actions.
-  $form['basic']['when']['datetype'] = array(
-    '#type' => 'hidden',
-    '#value' => $when,
-  );
 
   // Extra.
   $form['extra'] = array(
@@ -1779,6 +1798,44 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
         form_set_error('datetimes][' . $key, t('Please fill in correct date and time'));
       }
     }
+
+    // Check if this is duplicate for above CultureFeed_Cdb_Data_Calendar::validateTime.
+    if (empty($values['datetimes'][0]['begin']['date'])) {
+      form_set_error('datetimes', t('A date is required.'));
+    }
+    else {
+
+      for ($i = 0; $i < count($values['datetimes']); $i++) {
+        if (isset($values['datetimes'][$i]['begin']['date'])){
+          $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
+        }
+        if (isset($values['datetimes'][$i]['begin']['hour'])) {
+          $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
+        }
+        if (isset($values['datetimes'][$i]['end'])) {
+          if (isset($values['datetimes'][$i]['end']['date'])) {
+            $enddate = strtotime($values['datetimes'][$i]['end']['date']);
+          }
+          if(isset($values['datetimes'][$i]['end']['hour'])) {
+            $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
+          }
+        }
+
+
+        if (isset($enddate)){
+          if ($begindate > $enddate) {
+            form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
+          }
+          if ($begintime > $endtime) {
+            form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+          }
+        } else {
+          if (isset($endtime) && $begintime > $endtime) {
+            form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+          }
+        }
+      }
+    }
   }
 
   if ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
@@ -1845,43 +1902,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
   }
   
-  if (empty($values['datetimes'][0]['begin']['date'])) {
-    form_set_error('datetimes', t('A date is required.'));
-  }
-  else {
-    
-    for ($i = 0; $i < count($values['datetimes']); $i++) {
-      if (isset($values['datetimes'][$i]['begin']['date'])){
-        $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
-      }
-      if (isset($values['datetimes'][$i]['begin']['hour'])) {
-        $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
-      }
-      if (isset($values['datetimes'][$i]['end'])) {
-        if (isset($values['datetimes'][$i]['end']['date'])) {
-          $enddate = strtotime($values['datetimes'][$i]['end']['date']);
-        } 
-        if(isset($values['datetimes'][$i]['end']['hour'])) {
-          $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
-        }      
-      }
-      
-      
-      if (isset($enddate)){
-        if ($begindate > $enddate) {
-          form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
-        }
-        if ($begintime > $endtime) {
-	        form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
-        }
-      } else {
-	      if (isset($endtime) && $begintime > $endtime) {
-		      form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
-	      }
-      }
-    }
-  }
-    
+
     
   /*if (!empty($values['location']['actor']['location_actor_id'])) {
 
