@@ -1,5 +1,35 @@
 @CHARSET "UTF-8";
 
+/*
+ *  give the form elements some space
+ */
+ 
+#location-ajax-wrapper {
+  margin-bottom: 30px;
+}
+
+#description-ajax-wrapper, .form-item-keywords, #edit-add-more-links, #photo-ajax-wrapper, #edit-price, #organiser-ajax-wrapper {
+  padding-bottom: 20px !important;
+  margin-bottom: 0px !important;
+  border-bottom: 1px solid #ccc;
+}
+
+#photo-ajax-wrapper {
+  border-top: 1px solid #ccc;
+}
+
+.form-item-keywords, #links-ajax-wrapper, #photo-ajax-wrapper, #edit-price, #organiser-ajax-wrapper, .form-item-age-category {
+  padding-top: 20px !important;
+}
+
+#edit-add-more-links {
+  margin-top: -10px;
+}
+
+#edit-price-extra {
+  margin-top: -12px;
+}
+
 #basic-wrapper .form-item {
   float: left;
 }
