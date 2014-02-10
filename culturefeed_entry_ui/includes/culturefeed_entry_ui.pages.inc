@@ -133,7 +133,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         //$form_state['#dates_needed'] = iterator_count($calendar);
       }
     }
-    
+
     // Set the total opening times needed. This need to be equal for every day.
     if (!isset($form_state['#opening_times_needed'])) {
       $opening_times_needed = 1;
@@ -373,15 +373,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ),
     );
   }
-  
+
   $form['basic']['location']['new'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
     '#prefix' => '<div id="new-location-wrapper">',
     '#suffix' => '</div>',
   );
-    
-  if (!$form_state['#location_needed']) {  
+
+  if (!$form_state['#location_needed']) {
     $form['basic']['location']['new']['add_new_location'] = array(
       '#type' => 'submit',
       '#name' => 'location_add_more',
@@ -735,7 +735,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $links_count = count($default_links);
   }
   else {*/
-    $links_count = 0;
+  $links_count = 0;
   //}
   // Add link type selections.
   if ($default_links) {
@@ -1106,33 +1106,33 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Language'),
     '#group' => 'vertical_tabs',
   );
-  
+
   $form['extra']['language']['wrapper'] = array(
     '#type' => 'container',
     '#prefix' => '<div id="languages-ajax-wrapper">',
     '#suffix' => '</div>',
     '#tree' => TRUE,
   );
-  
+
   $language_count = 0;
   // Add language
   if ($language_count) {
     foreach ($language_count as $i => $info) {
-	  culturefeed_entry_ui_attach_language_elements($form, $i, $info);
-	  $language_count++;
+      culturefeed_entry_ui_attach_language_elements($form, $i, $info);
+      $language_count++;
     }
   }
   else {
     culturefeed_entry_ui_attach_language_elements($form, 0);
   }
-  
+
   // Add more button was clicked. Check how many rows need to be added.
   if (isset($form_state['#languages_needed'])) {
     for (; $language_count < $form_state['#languages_needed']; $language_count++) {
-	  culturefeed_entry_ui_attach_language_elements($form, $language_count);
+      culturefeed_entry_ui_attach_language_elements($form, $language_count);
     }
   }
-  
+
   $form['extra']['language']['wrapper']['add_more_languages'] = array(
     '#type' => 'submit',
     '#name' => 'languages_add_more',
@@ -1647,7 +1647,7 @@ function culturefeed_entry_ui_attach_language_elements(&$form, $i, $info = NULL)
     '#prefix' => '<div class="language-item-wrapper">',
     '#suffix' => '</div>',
   );
-  
+
   $form['extra']['language']['wrapper'][$i]['spoken_language'] = array(
     '#type' => 'select',
     '#title' => t('Language'),
@@ -1926,7 +1926,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (!empty($values['photo']['upload']) && $values['photo']['copyright'] != 1) {
     form_set_error('photo', t('Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank.'));
   }
-  
+
   //Validate categories
   if (empty($values['what'])) {
     form_set_error('what', t('A category is required.'));
@@ -1950,7 +1950,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   else {
     try {
       if ($values['location']['actor']['location_actor_label'] == '') {
-	    form_set_error('location', t('A location is required.'));
+        form_set_error('location', t('A location is required.'));
       }
       else {
         $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
@@ -1962,41 +1962,42 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
       form_set_error('location', t('We could not validate the location'));
     }
   }
-  
+
   if (empty($values['datetimes'][0]['begin']['date'])) {
     form_set_error('datetimes', t('A date is required.'));
   }
   else {
     for ($i = 0; $i < count($values['datetimes']); $i++) {
-      if(isset($values['datetimes'][$i]['begin']['date'])){
+      if (isset($values['datetimes'][$i]['begin']['date'])) {
         $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
       }
-      if(isset($values['datetimes'][$i]['end']['date'])) {
+      if (isset($values['datetimes'][$i]['end']['date'])) {
         $enddate = strtotime($values['datetimes'][$i]['end']['date']);
-      } 
-      if(isset($values['datetimes'][$i]['begin']['hour'])) {
+      }
+      if (isset($values['datetimes'][$i]['begin']['hour'])) {
         $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
       }
-      if(isset($values['datetimes'][$i]['end']['hour'])) {
+      if (isset($values['datetimes'][$i]['end']['hour'])) {
         $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
       }
-      
-      if (isset($enddate)){
+
+      if (isset($enddate)) {
         if ($begindate > $enddate) {
-	      form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
+          form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
         }
         if ($begintime > $endtime) {
-	      form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+          form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
         }
-      } else {
-	    if ($begintime > $endtime) {
-		  form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
-	    }
+      }
+      else {
+        if ($begintime > $endtime) {
+          form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
+        }
       }
     }
   }
-    
-    
+
+
   /*if (!empty($values['location']['actor']['location_actor_id'])) {
 
     try {
@@ -2022,12 +2023,12 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
     $location = NULL;
   }*/
-  
+
   // Validate Links
   foreach ($values['links'] as $link_data) {
-    if(!empty($link_data['URL'])) {
-      if(!valid_url($link_data['URL'], TRUE)) {
-	    form_set_error('links', t('Not a valid URL'));
+    if (!empty($link_data['URL'])) {
+      if (!valid_url($link_data['URL'], TRUE)) {
+        form_set_error('links', t('Not a valid URL'));
       }
     }
   }
@@ -2049,14 +2050,14 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   else {
     $organiser = NULL;
   }
-  
+
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
-      
+
       // Contacts
       if (!empty($extra['channel_input'])) {
         //if mail is selected
-        if($extra['channel'] == 1 ) {
+        if ($extra['channel'] == 1) {
           if (!valid_email_address($extra['channel_input'])) {
             form_set_error('channel_input', t('Not a valid email address'));
           }
@@ -2091,12 +2092,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $mails = array();
   $phones = array();
   $links = array();
+  $media_links = array();
   $performers_count = 0;
   $language_list = new CultureFeed_Cdb_Data_LanguageList();
 
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
-      dpm($extra);
       // Performer
       if (!empty($extra['performer']) || !empty($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
@@ -2122,8 +2123,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       }
 
       if (!empty($extra['spoken_language']) && !empty($extra['in_language'])) {
-	    switch ($extra['spoken_language']) {
-		  case 1:
+        switch ($extra['spoken_language']) {
+          case 1:
             $spoken_language = 'spoken';
             break;
           case 2:
@@ -2131,11 +2132,11 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             break;
           case 3:
             $spoken_language = 'subtitles';
-            break;  
-	    }
-	    
-	    switch ($extra['in_language']) {
-		  case 1:
+            break;
+        }
+
+        switch ($extra['in_language']) {
+          case 1:
             $in_language = 'Engels';
             break;
           case 2:
@@ -2143,13 +2144,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             break;
           case 3:
             $in_language = 'Nederlands';
-           break;
+            break;
           case 4:
             $in_language = 'Duits';
             break;
           case 5:
             $in_language = 'Frans';
-	    }
+        }
 
         $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
       }
@@ -2162,7 +2163,32 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     if ($link_data['URL']) {
       $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
       array_push($links, $link);
+
+      $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE;
+      if ($link_data['reservation']) {
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS;
+      }
+      if (strpos($link_data['URL'], 'plus.google.com')) {
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS;
+      }
+
+      if (strpos($link_data['URL'], 'facebook.com')) {
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK;
+      }
+
+      if (strpos($link_data['URL'], 'twitter.com')) {
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER;
+      }
+
+      if (strpos($link_data['URL'], 'youtube.com') || strpos($link_data['URL'], 'youtu.be')) {
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
+      }
+      $data_file = new CultureFeed_Cdb_Data_File();
+      $data_file->setHLink(new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']));
+      $data_file->setMediaType($mediatype);
+      array_push($media_links, $data_file);
     }
+
 
     /*if ($link_data['URL']) {
       if (!preg_match("@^https?://@", $link_data['URL'])) {
@@ -2315,6 +2341,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       }
     }
   }
+  dpm($media_links);
+  // Media Links
+  foreach ($media_links as $media_link) {
+    $detail->getMedia()->add($media_link);
+  }
+  dpm($detail->getMedia()->count());
+
 
   // Price
   if (isset($values['price']['free'])) {
@@ -2349,7 +2382,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if ($performers_count) {
     $detail->setPerformers($performerList);
   }
-  
+
   $detail->setLanguage(culturefeed_entry_ui_get_preferred_language());
 
   $details = new CultureFeed_Cdb_Data_EventDetailList();
@@ -2528,9 +2561,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if ($values['members']) {
     $event->setPrivate(TRUE);
   }
-  
+
   //if ($language_list) {
-    $event->setLanguages($language_list);
+  $event->setLanguages($language_list);
 
   //}
 
@@ -2715,7 +2748,7 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   if (variable_get('culturefeed_entry_ui_custom_tags')) {
     $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
   }
-  
+
   // Filter out custom tags.
   if ($event_tags) {
     foreach ($event_tags as $tag) {
