@@ -1783,7 +1783,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 /**
  * Validate the event form.
  */
-function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
+function culturefeed_entry_ui_event_save_validate($form, &$form_state) {dpm($form_state);
 
   $values = $form_state['values'];
   // Validate publication date.
@@ -1840,20 +1840,36 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
         if (isset($values['datetimes'][$i]['begin']['date'])){
           $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
         }
+        else {
+          $begindate = '';
+        }
         if (isset($values['datetimes'][$i]['begin']['hour'])) {
           $begintime = strtotime($values['datetimes'][$i]['begin']['hour']);
+        }
+        else {
+          $begintime = '';
         }
         if (isset($values['datetimes'][$i]['end'])) {
           if (isset($values['datetimes'][$i]['end']['date'])) {
             $enddate = strtotime($values['datetimes'][$i]['end']['date']);
           }
+          else {
+            $enddate = '';
+          }
           if(isset($values['datetimes'][$i]['end']['hour'])) {
             $endtime = strtotime($values['datetimes'][$i]['end']['hour']);
           }
+          else {
+            $endtime = '';
+          }
+        }
+        else {
+          $enddate = '';
+          $endtime = '';
         }
 
 
-        if (isset($enddate)){
+        if ($enddate){
           if ($begindate > $enddate) {
             form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
           }
@@ -1861,7 +1877,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
             form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
           }
         } else {
-          if (isset($endtime) && $begintime > $endtime) {
+          if ($endtime && $begintime > $endtime) {
             form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
           }
         }
