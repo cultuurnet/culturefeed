@@ -319,6 +319,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     var_dump($publication_date);*/
 
   }
+  else {
+    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
+    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
+    $calendar->add($timestamp);
+  }
 
   // Build the form.
 
