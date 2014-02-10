@@ -169,10 +169,36 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default mails, phones, urls
     if ($info = $event->getContactInfo()) {
       foreach ($info->getUrls() as $default_link) {
-        $default_links[] = $default_link->getUrl();
-        $default_links_reservation[] = $default_link->isForReservations();
+        $default_links[$default_link->getUrl()] = $default_link->getUrl();
+        $default_links_reservation[$default_link->getUrl()] = $default_link->isForReservations();
       }
     }
+    
+    // Add links form media
+    $media_links = 
+      $event_details->getMedia()
+      ->byMediaTypes(
+      array(
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
+      )
+    );
+    
+    foreach ($media_links as $media_link) {
+      $default_links[$media_link->getHLink()] = $media_link->getHLink();
+      if ($media_link->getMediaType() == 'reservations') {
+        $default_links_reservation[$media_link->getHLink()] = TRUE;
+      }
+      else {
+        $default_links_reservation[$media_link->getHLink()] = FALSE;
+      }
+    }
+      
+
 
     // Default image
     $photo_media = $event_details->getMedia()
@@ -2002,7 +2028,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
-      dpm($extra);
       // Performer
       if (!empty($extra['performer']) || !empty($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
@@ -2093,12 +2118,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       
       if ($link_data['reservation']) {
         
-        /* Once set we can't remove is, so why adding ...
         // Make reservation link for contact element
         $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
         array_push($links, $link);
-        */
-        
+
         // Make reservation link for media element
         $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS;
       
