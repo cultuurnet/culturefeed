@@ -71,8 +71,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Load all default values.
   if ($event) {
-    /** @var CultureFeed_Cdb_Item_Event $event */
+    /** @var \CultuurNet\Search\ActivityStatsExtendedEntity $event */
     $event = $event->getEntity();
+    /** @var CultureFeed_Cdb_Item_Event $event */
     $form['#event'] = $event;
     $event_details = $event->getDetails()->current();
 
@@ -140,6 +141,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if (!isset($form_state['#opening_times_needed'])) {
       $opening_times_needed = 1;
       foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
+        /** @var CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme */
         if ($weekscheme && $data = $weekscheme->getDay($day)) {
           $opening_times = $data->getOpeningTimes();
           if (count($opening_times) > $opening_times_needed) {
