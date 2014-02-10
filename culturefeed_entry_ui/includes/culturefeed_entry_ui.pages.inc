@@ -11,9 +11,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
   $default_contacts = array();
-  $default_links = array();
   $performers_info = array();
-  $price_trigger = FALSE;
   $category_defaults = array();
   $eventtype_default = '';
   $default_location_label = '';
@@ -22,7 +20,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $default_organiser_id = '';
   $publication_date = '';
   $when = 'timestamps';
-  $timestamps = array();
   $period_start = '';
   $period_end = '';
   $weekscheme = NULL;
