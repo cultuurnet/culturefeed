@@ -1820,8 +1820,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
         CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['begin']['date']);
 
-        if (!empty($timestamp['end'])) {
-          CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['end']['date']);
+        if (!empty($timestamp['end']['date'])) {
+          CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['end']['date']);
         }
       }
       catch (UnexpectedValueException $e) {
