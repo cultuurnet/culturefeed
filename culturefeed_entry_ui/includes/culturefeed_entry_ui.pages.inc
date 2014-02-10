@@ -2193,7 +2193,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Weekscheme for period or permanent.
   if ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
-    //_culturefeed_entry_ui_event_save_weekscheme($event, $values);
+    _culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
 
   // Categories.
@@ -2582,7 +2582,7 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 
   if ($values['datetype'] == 'period') {
     $calendar = new CultureFeed_Cdb_Data_Calendar_PeriodList();
-    $period = new CultureFeed_Cdb_Data_Calendar_Period($values['period_or_permanent']['start_date'], $values['period_or_permanent']['end_date']);
+    $period = new CultureFeed_Cdb_Data_Calendar_Period($values['datetimes'][0]['begin']['date'], $values['datetimes'][0]['end']['date']);
     if ($weekscheme) {
       $period->setWeekScheme($weekscheme);
     }
