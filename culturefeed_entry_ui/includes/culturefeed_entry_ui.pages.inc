@@ -396,7 +396,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     $form['basic']['location']['actor']['location_actor_id'] = array(
       '#id' => 'location_actor_id',
-      '#type' => 'textfield',
+      '#type' => 'hidden',
       '#default_value' => isset($default_location_id) ? $default_location_id : '',
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -1117,7 +1117,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form['extra']['organiser']['actor']['organiser_actor_id'] = array(
     '#id' => 'organiser_actor_id',
-    '#type' => 'textfield',
+    '#type' => 'hidden',
     '#default_value' => $default_organiser_id,
     '#ajax' => array(
       'callback' => 'culturefeed_entry_ui_add_more_js',
