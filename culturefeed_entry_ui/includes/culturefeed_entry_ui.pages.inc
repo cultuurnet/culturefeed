@@ -383,7 +383,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#default_value' => $eventtype_default,
         '#parents' => array('what'),
         '#ajax' => array(
-          'callback' => 'culturefeed_entry_ui_add_more_js',
+          'callback' => 'culturefeed_entry_ui_themes_js',
           'wrapper' => 'themes-ajax-wrapper',
         ),
       );
