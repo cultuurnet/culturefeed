@@ -169,10 +169,36 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default mails, phones, urls
     if ($info = $event->getContactInfo()) {
       foreach ($info->getUrls() as $default_link) {
-        $default_links[] = $default_link->getUrl();
-        $default_links_reservation[] = $default_link->isForReservations();
+        $default_links[$default_link->getUrl()] = $default_link->getUrl();
+        $default_links_reservation[$default_link->getUrl()] = $default_link->isForReservations();
       }
     }
+    
+    // Add links form media
+    $media_links = 
+      $event_details->getMedia()
+      ->byMediaTypes(
+      array(
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
+      )
+    );
+    
+    foreach ($media_links as $media_link) {
+      $default_links[$media_link->getHLink()] = $media_link->getHLink();
+      if ($media_link->getMediaType() == 'reservations') {
+        $default_links_reservation[$media_link->getHLink()] = TRUE;
+      }
+      else {
+        $default_links_reservation[$media_link->getHLink()] = FALSE;
+      }
+    }
+      
+
 
     // Default image
     $photo_media = $event_details->getMedia()
@@ -292,6 +318,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     
     var_dump($publication_date);*/
 
+  }
+  else {
+    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
+    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
+    $calendar->add($timestamp);
   }
 
   // Build the form.
@@ -1754,7 +1785,6 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-  //dsm($values);
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -2003,7 +2033,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   foreach ($values['wrapper'] as $extra) {
     if (is_array($extra)) {
-      dpm($extra);
       // Performer
       if (!empty($extra['performer']) || !empty($extra['role'])) {
         $performer = new CultureFeed_Cdb_Data_Performer();
@@ -2065,41 +2094,55 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
 
   // Links
+  $media_links = array();
   foreach ($values['links'] as $link_data) {
-    if ($link_data['URL']) {
-      $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
-      array_push($links, $link);
-    }
 
-    /*if ($link_data['URL']) {
+    if ($link_data['URL']) {
+      
       if (!preg_match("@^https?://@", $link_data['URL'])) {
-	    $link_data['URL'] = 'http://' . $link_data['URL'];
+	      $link_data['URL'] = 'http://' . $link_data['URL'];
       }
       
       $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE;
       
       if (strpos($link_data['URL'],'plus.google.com')) {
-	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS;
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS;
       }
       
       if (strpos($link_data['URL'],'facebook.com')) {
-	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK;
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK;
       }
       
       if (strpos($link_data['URL'],'twitter.com')) {
-	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER;
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER;
       }
       
       if (strpos($link_data['URL'],'youtube.com') || strpos($link_data['URL'],'youtu.be')) {
-	    $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
+      }
+      
+      if ($link_data['reservation']) {
+        
+        // Make reservation link for contact element
+        $link = new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']);
+        array_push($links, $link);
+
+        // Make reservation link for media element
+        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS;
+      
       }
       
       $link = new CultureFeed_Cdb_Data_File();
-      $link->setHLink(new CultureFeed_Cdb_Data_Url($link_data['URL'], FALSE, $link_data['reservation']));
+      $link->setHLink($link_data['URL']);
       $link->setMediaType($mediatype);
-      array_push($links, $link);
-    }*/
+      if ($link_data['reservation']) {
+        $link->setTitle(t('Order tickets'));
+      }
+      array_push($media_links, $link);
+    }
   }
+  
+  
 
   $update = FALSE;
   if (isset($form['#event'])) {
@@ -2215,6 +2258,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       }
     }
   }
+  
+  // Media links
+  if ($media_links) {
+    foreach ($media_links as $media_link) {
+      $detail->getMedia()->add($media_link);
+    }
+  }
+
 
   // Price
   if (isset($values['price']['free'])) {
@@ -2230,7 +2281,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $detail->setPrice($price);
     }
   }
-
 
   /*if (isset($values['price']['free'])) {
     $price = new CultureFeed_Cdb_Data_Price(0);
