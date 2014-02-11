@@ -1175,7 +1175,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['extra']['age'] = array(
-    '#title' => t('From'),
+    '#title' => t('Age from'),
     '#type' => 'textfield',
     '#states' => array(
       'invisible' => array(
@@ -1775,12 +1775,14 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 
   $form['basic']['when']['period_or_permanent']['opening_times'][$day][$i]['open_from'] = array(
     '#type' => 'textfield',
+    '#size' => 12,
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
     '#description' => t('Format') . ': 12:00:00',
   );
 
   $form['basic']['when']['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
+    '#size' => 12,
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
     '#description' => t('Format') . ': 12:00:00',
   );
