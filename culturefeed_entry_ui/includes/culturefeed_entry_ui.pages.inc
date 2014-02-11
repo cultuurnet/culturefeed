@@ -11,9 +11,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
   $default_contacts = array();
-  $default_links = array();
   $performers_info = array();
-  $price_trigger = FALSE;
   $category_defaults = array();
   $eventtype_default = '';
   $default_location_label = '';
@@ -22,7 +20,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $default_organiser_id = '';
   $publication_date = '';
   $when = 'timestamps';
-  $timestamps = array();
   $period_start = '';
   $period_end = '';
   $weekscheme = NULL;
@@ -71,13 +68,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Load all default values.
   if ($event) {
+    /** @var \CultuurNet\Search\ActivityStatsExtendedEntity $event */
     $event = $event->getEntity();
+    /** @var CultureFeed_Cdb_Item_Event $event */
     $form['#event'] = $event;
     $event_details = $event->getDetails()->current();
 
     // Default categories.
     if ($event && ($categories = $event->getCategories())) {
 
+      /** @var CultureFeed_Cdb_Data_Category $category */
       foreach ($categories as $category) {
         $category_defaults[] = $category->getId();
         if ($category->getType() == 'eventtype') {
@@ -138,6 +138,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     if (!isset($form_state['#opening_times_needed'])) {
       $opening_times_needed = 1;
       foreach (CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays as $day) {
+        /** @var CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme */
         if ($weekscheme && $data = $weekscheme->getDay($day)) {
           $opening_times = $data->getOpeningTimes();
           if (count($opening_times) > $opening_times_needed) {
@@ -523,6 +524,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : 1;
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
   // $when can change from datetime to period and vice versa.
+  // TODO: make more readable.
   if ($date_count > 1 ) {
     $when = 'timestamps';
   }
@@ -531,6 +533,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     (!isset($form_state['values']['datetimes'][0]['end']['date']) || $triggering_element == 'datetimes_remove_endtime_' . 0)
   ) {
     $when = 'timestamps';
+  }
+  if (isset($form_state['values']['permanent']) && !$form_state['values']['permanent']) {
+    $when = 'timestamps';
+    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
+    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
+    $calendar->add($timestamp);
   }
   if (
     isset($form_state['values']['datetimes'][0]['begin']['date']) && isset($form_state['values']['datetimes'][0]['end']['date']) &&
@@ -1820,8 +1828,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
         CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['begin']['date']);
 
-        if (!empty($timestamp['end'])) {
-          CultureFeed_Cdb_Data_Calendar::validateTime($timestamp['end']['date']);
+        if (!empty($timestamp['end']['date'])) {
+          CultureFeed_Cdb_Data_Calendar::validateDate($timestamp['end']['date']);
         }
       }
       catch (UnexpectedValueException $e) {
@@ -1836,6 +1844,10 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     else {
 
       for ($i = 0; $i < count($values['datetimes']); $i++) {
+        $begindate = '';
+        $begintime = '';
+        $enddate = '';
+        $endtime = '';
         if (isset($values['datetimes'][$i]['begin']['date'])){
           $begindate = strtotime($values['datetimes'][$i]['begin']['date']);
         }
@@ -1851,8 +1863,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
           }
         }
 
-
-        if (isset($enddate)){
+        if ($enddate){
           if ($begindate > $enddate) {
             form_set_error('datetimes', t('Date field is invalid. The end date is earlier than the beginning date.'));
           }
@@ -1860,7 +1871,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
             form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
           }
         } else {
-          if (isset($endtime) && $begintime > $endtime) {
+          if ($endtime && $begintime > $endtime) {
             form_set_error('datetimes', t('Date field is invalid. The end time is earlier than the beginning time.'));
           }
         }
@@ -2192,7 +2203,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Weekscheme for period or permanent.
   if ($values['datetype'] == 'period' || $values['datetype'] == 'permanent') {
-    //_culturefeed_entry_ui_event_save_weekscheme($event, $values);
+    _culturefeed_entry_ui_event_save_weekscheme($event, $values);
   }
 
   // Categories.
@@ -2581,7 +2592,7 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 
   if ($values['datetype'] == 'period') {
     $calendar = new CultureFeed_Cdb_Data_Calendar_PeriodList();
-    $period = new CultureFeed_Cdb_Data_Calendar_Period($values['period_or_permanent']['start_date'], $values['period_or_permanent']['end_date']);
+    $period = new CultureFeed_Cdb_Data_Calendar_Period($values['datetimes'][0]['begin']['date'], $values['datetimes'][0]['end']['date']);
     if ($weekscheme) {
       $period->setWeekScheme($weekscheme);
     }
