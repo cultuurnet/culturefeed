@@ -835,8 +835,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
       '#type' => 'submit',
       '#name' => 'opening_times_add_more',
-      '#value' => t('Add another opening time'),
-      '#attributes' => array('class' => array('opening-times-add-more-submit')),
+      '#value' => t('+ add another opening time'),
+      '#attributes' => array('class' => array('opening-times-add-more-submit add-more-link btn-link')),
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
         'wrapper' => 'opening-times-ajax-wrapper',
@@ -1913,7 +1913,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate location
-  if ($form_state['#location_needed']) {
+  if (isset($form_state['#location_needed']) && $form_state['#location_needed']) {
     if (empty($values['location']['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
