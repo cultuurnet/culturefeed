@@ -305,14 +305,11 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 }
 
 /**
- * Ajax form callback: Add a new row.
+ * Ajax form callback: Add themes for certain categories.
  *
- * Return the element that was set in the submit.
  */
-function culturefeed_entry_ui_add_more_js($form, $form_state) {
-
+function culturefeed_entry_ui_themes_js($form, $form_state) {
   switch ($form_state['input']['_triggering_element_name']) {
-  
     case 'what':
       switch ($form_state['input']['what']) {
 	    case '0.50.4.0.0':
@@ -338,6 +335,17 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
       
       return $form_state['#themes_needed'];
       return $form['basic']['what']['themes'];
+    }
+}
+
+/**
+ * Ajax form callback: Add a new row.
+ *
+ * Return the element that was set in the submit.
+ */
+function culturefeed_entry_ui_add_more_js($form, $form_state) {
+
+  switch ($form_state['input']['_triggering_element_name']) {
 
     case 'begindates_add_more':
     case 'enddates_add_more':
