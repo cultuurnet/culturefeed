@@ -14,6 +14,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $performers_info = array();
   $category_defaults = array();
   $eventtype_default = '';
+  $themetype_default = '';
   $default_location_label = '';
   $default_location_id = '';
   $default_organiser_label = '';
@@ -87,6 +88,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $category_defaults[] = $category->getId();
         if ($category->getType() == 'eventtype') {
           $eventtype_default = $category->getId();
+        }
+        
+        if ($category->getType() == 'theme') {
+	      $themetype_default = $category->getId();
         }
 
       }
@@ -404,7 +409,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'radio',
       '#title' => $theme_name,
       '#return_value' => $theme_id,
-      '#default_value' => '',
+      '#default_value' => $themetype_default,
       '#parents' => array('themes'),
     );
   }
@@ -425,7 +430,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'radio',
       '#title' => $theme_name,
       '#return_value' => $theme_id,
-      '#default_value' => '',
+      '#default_value' => $themetype_default,
       '#parents' => array('themes'),
     );
   }
@@ -446,7 +451,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'radio',
       '#title' => $theme_name,
       '#return_value' => $theme_id,
-      '#default_value' => '',
+      '#default_value' => $themetype_default,
       '#parents' => array('themes'),
     );
   }
@@ -470,7 +475,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'radio',
       '#title' => $theme_name,
       '#return_value' => $theme_id,
-      '#default_value' => '',
+      '#default_value' => $themetype_default,
       '#parents' => array('themes'),
     );
   }
@@ -492,7 +497,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'radio',
       '#title' => $theme_name,
       '#return_value' => $theme_id,
-      '#default_value' => '',
+      '#default_value' => $themetype_default,
       '#parents' => array('themes'),
     );
   }
