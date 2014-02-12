@@ -543,7 +543,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ($date_count > 1) ||
     (isset($form_state['values']['datetimes'][0]['begin']['date']) &&
     (!isset($form_state['values']['datetimes'][0]['end']['date']) || $triggering_element == 'datetimes_remove_end_' . 0)) ||
-    (isset($form_state['values']['permanent']) && !$form_state['values']['permanent'])
+    (isset($form_state['values']['permanent']) && !$form_state['values']['permanent']) ||
+    (isset($form_state['values']['datetimes'][0]['begin']))
   ) {
     $when = 'timestamps';
   }
