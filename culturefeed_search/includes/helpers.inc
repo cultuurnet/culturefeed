@@ -486,6 +486,16 @@ function culturefeed_search_get_theme_categories($conditions = array()) {
 
 
 /**
+ * Retrieves a list of categories for the theme domain.
+ * @param $conditions
+ *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
+ */
+function culturefeed_search_get_theme_categories($conditions = array()) {
+  return culturefeed_search_get_categories_by_domain('theme', $conditions);
+}
+
+
+/**
  * Get all available actortypes.
  * @param $conditions
  *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
