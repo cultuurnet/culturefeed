@@ -127,6 +127,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       $calendar_class = get_class($calendar);
       $calendar->rewind();
+      $today = time();
       
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
         $when = 'period';
@@ -147,12 +148,15 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         for ($i = 0; $i < $timestamps_count; $i++) {
 
           $timestamp = $calendar->current();
+          $date = $timestamp->getDate();
 
-          $timestamps[$i] = array(
-            'date' => $timestamp->getDate(),
-            'begintime' => $timestamp->getStartTime(),
-            'endtime' => $timestamp->getEndTime(),
-          );
+          if (strtotime($date) >= $today) {
+            $timestamps[$i] = array(
+              'date' => $date,
+              'begintime' => $timestamp->getStartTime(),
+              'endtime' => $timestamp->getEndTime(),
+            );
+          }
 
           $calendar->next();
 
@@ -645,12 +649,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Dates'),
   );
 
-  $form['basic']['when']['datetimes'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#attributes' => array('class' => array('when-datetimes')),
-  );
-
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : (count($timestamps) ? count($timestamps) : 1);
 
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
@@ -685,7 +683,24 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#value' => $when,
   );
 
+  $form['basic']['when']['permanent'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => ($when == 'permanent'),
+    '#title' => t('Permanent'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'when-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+  );
+
   if ($when != 'permanent') {
+
+    $form['basic']['when']['datetimes'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#attributes' => array('class' => array('when-datetimes')),
+    );
 
     for ($i = 0; $i < $date_count; $i++) {
 
@@ -862,17 +877,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
   }
-
-  $form['basic']['when']['permanent'] = array(
-    '#type' => 'checkbox',
-    '#default_value' => ($when == 'permanent'),
-    '#title' => t('Permanent'),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'when-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-  );
 
   if ($when == 'period' || $when == 'permanent') {
     
