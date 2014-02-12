@@ -40,6 +40,10 @@
   min-height: 431px;
 }
 
+#location-ajax-wrapper {
+  clear: left;
+}
+
 .form-item-street, .form-item-location-country {
   clear: left;
 }
