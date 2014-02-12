@@ -825,7 +825,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
 
-    $form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
+    /*$form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
       '#type' => 'submit',
       '#name' => 'opening_times_add_more',
       '#value' => t('+ add another opening time'),
@@ -840,7 +840,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#states' => array(
         'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
       ),
-    );
+    );*/
   }
 
   // Extra.
