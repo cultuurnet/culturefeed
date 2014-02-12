@@ -447,7 +447,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#title' => $theme_name,
       '#return_value' => $theme_id,
       '#default_value' => '',
-      '#parents' => array('what'),
+      '#parents' => array('themes'),
     );
   }
   
@@ -468,7 +468,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#title' => $theme_name,
       '#return_value' => $theme_id,
       '#default_value' => '',
-      '#parents' => array('what'),
+      '#parents' => array('themes'),
     );
   }
   
@@ -489,7 +489,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#title' => $theme_name,
       '#return_value' => $theme_id,
       '#default_value' => '',
-      '#parents' => array('what'),
+      '#parents' => array('themes'),
     );
   }
     
@@ -1898,6 +1898,10 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
+<<<<<<< HEAD
+=======
+  //dsm($values);
+>>>>>>> added values in safe function
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -2139,7 +2143,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-
+  dsm($values);
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
@@ -2323,11 +2327,17 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $category_options = array();
 
   $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
-
+  $theme_options[$values['themes']] = culturefeed_search_get_theme_categories(array('tid_like' => $values['themes']));
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
     if ($value) {
       $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
+    }
+  }
+  
+  foreach ($theme_options as $key => $value) {
+    if($value) {
+	  $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
     }
   }
   $event->setCategories($categories);
