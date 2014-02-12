@@ -403,7 +403,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
   
-  $themestheatre = culturefeed_search_get_theme_categories(array('tid_like' => 1.3));
+  $themestheatre = culturefeed_search_get_theme_categories(array('tid_like' => '1.3.'));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '0.52.0')));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '1.4.')));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '1.5.')));
   $form['basic']['what']['themes']['theatre'] = array(
     '#type' => 'fieldset',
     '#title' => t('Theatre'),
@@ -424,7 +427,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
   
-  $themessport = culturefeed_search_get_theme_categories(array('tid_like' => 1.51));
+  $themessport = culturefeed_search_get_theme_categories(array('tid_like' => '1.51'));
+  $themessport = array_merge($themessport, culturefeed_search_get_theme_categories(array('tid_like' => '1.58.8')));
   $form['basic']['what']['themes']['sport'] = array(
     '#type' => 'fieldset',
     '#title' => t('Sport'),
