@@ -1907,10 +1907,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
-<<<<<<< HEAD
-=======
   //dsm($values);
->>>>>>> added values in safe function
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -2204,11 +2201,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             $in_language = 'Engels';
             break;
           case 2:
-<<<<<<< HEAD
-            $in_language = 'Spaans'; // zit niet in UDB
-=======
-            $in_language = 'Spaans'; //Zitniet in UDB, dus werkt niet
->>>>>>> languages
+            $in_language = 'Spaans'; //Zit niet in UDB, dus werkt niet
             break;
           case 3:
             $in_language = 'Nederlands';
@@ -2217,11 +2210,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             $in_language = 'Duits';
             break;
           case 5:
-<<<<<<< HEAD
-            $in_language = 'Frans';    
-=======
             $in_language = 'Frans';
->>>>>>> languages
 	    }
 
         $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
