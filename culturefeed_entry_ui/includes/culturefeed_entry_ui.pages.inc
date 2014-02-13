@@ -2329,7 +2329,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $category_options = array();
 
   $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
-  $theme_options[$values['themes']] = culturefeed_search_get_theme_categories(array('tid_like' => $values['themes']));
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
     if ($value) {
@@ -2337,11 +2336,15 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
   
-  foreach ($theme_options as $key => $value) {
-    if($value) {
-	  $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
+  if (isset($values['themes'])) {
+    $theme_options[$values['themes']] = culturefeed_search_get_theme_categories(array('tid_like' => $values['themes']));
+    foreach ($theme_options as $key => $value) {
+      if($value) {
+	    $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
+      }
     }
   }
+  
   $event->setCategories($categories);
 
   // Event details.
