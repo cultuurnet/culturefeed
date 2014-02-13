@@ -14,12 +14,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $performers_info = array();
   $category_defaults = array();
   $eventtype_default = '';
+  $themetype_default = '';
   $default_location_label = '';
   $default_location_id = '';
   $default_organiser_label = '';
   $default_organiser_id = '';
   $publication_date = '';
   $when = 'timestamps';
+  $timestamps = array();
   $period_start = '';
   $period_end = '';
   $weekscheme = NULL;
@@ -44,6 +46,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $mail_contacts = array();
   $is_private = FALSE;
 
+  if (!isset($form_state['#themes_needed'])) {
+    $form_state['#themes_needed'] = '';
+  }
+  
   if (!isset($form_state['#location_needed'])) {
     $form_state['#location_needed'] = FALSE;
   }
@@ -83,6 +89,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         if ($category->getType() == 'eventtype') {
           $eventtype_default = $category->getId();
         }
+        
+        if ($category->getType() == 'theme') {
+	      $themetype_default = $category->getId();
+        }
 
       }
     }
@@ -117,6 +127,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       $calendar_class = get_class($calendar);
       $calendar->rewind();
+      $today = time();
       
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
         $when = 'period';
@@ -129,8 +140,27 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $weekscheme = $calendar->getWeekScheme();
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+
         $when = 'timestamps';
-        if (!$form_state['submitted']) $form_state['#dates_needed'] = iterator_count($calendar);
+        $timestamps_count = iterator_count($calendar);
+        $calendar->rewind();
+
+        for ($i = 0; $i < $timestamps_count; $i++) {
+
+          $timestamp = $calendar->current();
+          $date = $timestamp->getDate();
+
+          if (strtotime($date) >= $today) {
+            $timestamps[$i] = array(
+              'date' => $date,
+              'begintime' => $timestamp->getStartTime(),
+              'endtime' => $timestamp->getEndTime(),
+            );
+          }
+
+          $calendar->next();
+
+        }
       }
     }
     
@@ -319,11 +349,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     var_dump($publication_date);*/
 
   }
-  else {
-    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
-    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
-    $calendar->add($timestamp);
-  }
 
   // Build the form.
 
@@ -343,7 +368,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   // Eventtypes
-  $form['basic']['what'] = array('#type' => 'container');
+  $form['basic']['what'] = array('#type' => 'container', '#prefix' => '<div id="what-ajax-wrapper">', '#suffix' => '</div>');
 
   $types = array_merge(
     array(CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN => culturefeed_search_get_eventtype_categories(array('parent' => CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN))),
@@ -358,7 +383,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'fieldset',
       '#title' => $cluster_name[$cluster_id],
     );
-
     foreach ($cluster_value as $type_id => $type_name) {
       $form['basic']['what'][$cluster_id][$type_name] = array(
         '#type' => 'radio',
@@ -369,7 +393,118 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       );
     }
   }
-
+  
+  $form['basic']['what']['themes'] = array('#type' => 'container', '#prefix' => '<div id="themes-ajax-wrapper">', '#suffix' => '</div>', '#tree' => TRUE);
+  
+  $themesconcerts = culturefeed_search_get_theme_categories(array('tid_like' => 1.8));
+  $form['basic']['what']['themes']['concerts'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Concerts'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="what"]' => array('value' => '0.50.4.0.0'),
+      ),
+    ),
+  );
+  
+  foreach ($themesconcerts as $theme_id => $theme_name) {
+    $form['basic']['what']['themes']['concerts'][$theme_name] = array(
+      '#type' => 'radio',
+      '#title' => $theme_name,
+      '#return_value' => $theme_id,
+      '#default_value' => $themetype_default,
+      '#parents' => array('themes'),
+    );
+  }
+  
+  $themesdance = culturefeed_search_get_theme_categories(array('tid_like' => 1.9));
+  $form['basic']['what']['themes']['dance'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Dance'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="what"]' => array('value' => '0.54.0.0.0'),
+      ),
+    ),
+  );
+  
+  foreach ($themesdance as $theme_id => $theme_name) {
+    $form['basic']['what']['themes']['dance'][$theme_name] = array(
+      '#type' => 'radio',
+      '#title' => $theme_name,
+      '#return_value' => $theme_id,
+      '#default_value' => $themetype_default,
+      '#parents' => array('themes'),
+    );
+  }
+  
+  $themesfilm = culturefeed_search_get_theme_categories(array('tid_like' => 1.7));
+  $form['basic']['what']['themes']['film'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Film'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="what"]' => array('value' => '0.50.6.0.0'),
+      ),
+    ),
+  );
+  
+  foreach ($themesfilm as $theme_id => $theme_name) {
+    $form['basic']['what']['themes']['film'][$theme_name] = array(
+      '#type' => 'radio',
+      '#title' => $theme_name,
+      '#return_value' => $theme_id,
+      '#default_value' => $themetype_default,
+      '#parents' => array('themes'),
+    );
+  }
+  
+  $themestheatre = culturefeed_search_get_theme_categories(array('tid_like' => '1.3.'));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '0.52.0')));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '1.4.')));
+  $themestheatre = array_merge($themestheatre, culturefeed_search_get_theme_categories(array('tid_like' => '1.5.')));
+  $form['basic']['what']['themes']['theatre'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Theatre'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="what"]' => array('value' => '0.55.0.0.0'),
+      ),
+    ),
+  );
+  
+  foreach ($themestheatre as $theme_id => $theme_name) {
+    $form['basic']['what']['themes']['theatre'][$theme_name] = array(
+      '#type' => 'radio',
+      '#title' => $theme_name,
+      '#return_value' => $theme_id,
+      '#default_value' => $themetype_default,
+      '#parents' => array('themes'),
+    );
+  }
+  
+  $themessport = culturefeed_search_get_theme_categories(array('tid_like' => '1.51'));
+  $themessport = array_merge($themessport, culturefeed_search_get_theme_categories(array('tid_like' => '1.58.8')));
+  $form['basic']['what']['themes']['sport'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Sport'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="what"]' => array('value' => '0.19.0.0.0'),
+      ),
+    ),
+  );
+  
+  foreach ($themessport as $theme_id => $theme_name) {
+    $form['basic']['what']['themes']['sport'][$theme_name] = array(
+      '#type' => 'radio',
+      '#title' => $theme_name,
+      '#return_value' => $theme_id,
+      '#default_value' => $themetype_default,
+      '#parents' => array('themes'),
+    );
+  }
+    
   $form['basic']['location'] = array(
     '#prefix' => '<div id="location-ajax-wrapper">',
     '#suffix' => '</div>',
@@ -510,70 +645,79 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'container',
     '#prefix' => '<div id="when-ajax-wrapper">',
     '#suffix' => '</div>',
-  );
-
-  $form['basic']['when']['datetimes'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
     '#title' => t('Dates'),
-    '#prefix' => '<div id="datetimes-ajax-wrapper">',
-    '#suffix' => '</div>',
   );
 
-  $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : 1;
+  $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : (count($timestamps) ? count($timestamps) : 1);
+
   $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
+
   // $when can change from datetime to period and vice versa.
-  // TODO: make more readable.
-  if ($date_count > 1 ) {
-    $when = 'timestamps';
-  }
+
+  // Is it a timestamp ?
   if (
-    isset($form_state['values']['datetimes'][0]['begin']['date']) &&
-    (!isset($form_state['values']['datetimes'][0]['end']['date']) || $triggering_element == 'datetimes_remove_endtime_' . 0)
+    ($date_count > 1) ||
+    (isset($form_state['values']['datetimes'][0]['begin']['date']) &&
+    (!isset($form_state['values']['datetimes'][0]['end']['date']) || $triggering_element == 'datetimes_remove_end_' . 0)) ||
+    (isset($form_state['values']['permanent']) && !$form_state['values']['permanent']) ||
+    (isset($form_state['values']['datetimes'][0]['begin']))
   ) {
     $when = 'timestamps';
   }
-  if (isset($form_state['values']['permanent']) && !$form_state['values']['permanent']) {
-    $when = 'timestamps';
-    $calendar = new CultureFeed_Cdb_Data_Calendar_TimestampList();
-    $timestamp = new CultureFeed_Cdb_Data_Calendar_Timestamp(date('Y-m-d'));
-    $calendar->add($timestamp);
-  }
+  // Is it a period ?
   if (
-    isset($form_state['values']['datetimes'][0]['begin']['date']) && isset($form_state['values']['datetimes'][0]['end']['date']) &&
+    (isset($form_state['values']['datetimes'][0]['begin']['date']) && isset($form_state['values']['datetimes'][0]['end']['date']) &&
     $form_state['values']['datetimes'][0]['begin']['date'] != $form_state['values']['datetimes'][0]['end']['date'] &&
-    $triggering_element != 'datetimes_remove_endtime_' . 0
+    $triggering_element != 'datetimes_remove_end_' . 0)
   ) {
     $when = 'period';
   }
+  // Is it permanent
   if (isset($form_state['values']['permanent']) && $form_state['values']['permanent']) {
     $when = 'permanent';
   }
 
-  // Ensure this is last as datetype can change based on user actions.
   $form['basic']['when']['datetype'] = array(
     '#type' => 'hidden',
     '#value' => $when,
   );
 
+  $form['basic']['when']['permanent'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => ($when == 'permanent'),
+    '#title' => t('Permanent'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'when-ajax-wrapper',
+      'effect' => 'fade',
+    ),
+  );
+
   if ($when != 'permanent') {
 
-    $calendar->rewind();
+    $form['basic']['when']['datetimes'] = array(
+      '#tree' => TRUE,
+      '#type' => 'container',
+      '#attributes' => array('class' => array('when-datetimes')),
+    );
 
     for ($i = 0; $i < $date_count; $i++) {
 
+      // Timestamps / Period wrapper.
       $form['basic']['when']['datetimes'][$i] = array(
         '#type' => 'container',
         '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child clearfix">',
         '#suffix' => '</div>',
       );
 
+      // Timestamps / Period begin wrapper.
       $form['basic']['when']['datetimes'][$i]['begin'] = array(
         '#type' => 'container',
         '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
         '#suffix' => '</div>',
       );
 
+      // Remove timestamp.
       if ($date_count > 1) {
 
         $form['basic']['when']['datetimes'][$i]['begin']['datetimes_remove_child'] = array(
@@ -592,20 +736,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       }
 
-      // Once submitted, we can't depend on $calender->current() as the type
-      // might have changed.
-      if ($when == 'timestamps' && !$form_state['submitted']) {
-        $start_date = $calendar->current()->getDate();
-      }
-      else {
-        $start_date = $period_start;
-      }
+      // Timestamp / Period begin date.
+      $begin_date = ($when == 'timestamps') ? (isset($timestamps[$i]['date']) ? $timestamps[$i]['date'] : '') : $period_start;
 
       $form['basic']['when']['datetimes'][$i]['begin']['date'] = array(
         '#type' => 'date_popup',
         '#date_label_position' => 'none',
         '#title' => t('Start date'),
-        '#default_value' => (isset($start_date)) ? $start_date : '',
+        '#default_value' => (!$triggering_element) ? $begin_date : '',
         '#date_format' => 'Y-m-d',
         '#ajax' => array(
           'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -615,36 +753,41 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#attributes' => array('class' => array('start-date')),
       );
 
-      if ($when != 'period') {
+      // Timestamp begin hour.
+      if ($when == 'timestamps') {
 
-        $start_time = ($form_state['submitted']) ? '' :  $calendar->current()->getDate() . ' ' . $calendar->current()->getStartTime();
+        $begin_time = isset($timestamps[$i]['begintime']) ? $timestamps[$i]['date'] . ' ' . $timestamps[$i]['begintime'] : '';
+
         $form['basic']['when']['datetimes'][$i]['begin']['hour'] = array(
           '#type' => 'date_select',
           '#name' => 'begin_hour',
-          '#default_value' => $start_time,
+          '#default_value' => (!$triggering_element) ? $begin_time : '',
           '#date_format' => 'H:i',
           '#date_increment' => 30,
         );
 
       }
 
-      $show_endtime_link = TRUE;
-      if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
-        $show_endtime_link = FALSE;
-      }
-      if ($triggering_element == 'datetimes_add_endtime_' . $i) {
-        $show_endtime_link = FALSE;
-      }
-      if ($when == 'period') {
-        $show_endtime_link = FALSE;
-      }
+      // Check if the date has an end.
+      // First check if we are dealing with a period.
+      // Next check if we are in the initial form build and a timestamp
+      // endtime exists.
+      // Next check if there is a submitted end.
+      // Next check if a new end is being added.
+      $has_end = (
+        ($when == 'period') ||
+        (!$triggering_element && isset($timestamps[$i]['endtime'])) ||
+        (isset($form_state['values']['datetimes'][$i]['end'])) ||
+        ($triggering_element == 'datetimes_add_end_' . $i)
+      );
 
-      if ($show_endtime_link) {
+      // Timestamp / Period add end.
+      if (!$has_end) {
 
-        $form['basic']['when']['datetimes'][$i]['begin']['datetimes_add_endtime'] = array(
+        $form['basic']['when']['datetimes'][$i]['begin']['datetimes_add_end'] = array(
           '#type' => 'submit',
           '#value' => t('+ add end'),
-          '#name' => 'datetimes_add_endtime_' . $i,
+          '#name' => 'datetimes_add_end_' . $i,
           '#attributes' => array('class' => array('add-more-link btn-link')),
           '#ajax' => array(
             'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -657,16 +800,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       }
 
-      // Add end date if required.
-      $show_endtime = FALSE;
-      if (($triggering_element == 'datetimes_add_endtime_' . $i) || ($when == 'period') ) {
-        $show_endtime = TRUE;
-      }
-      if (isset($form_state['values']['datetimes'][$i]['end']) && $triggering_element != 'datetimes_remove_endtime_' . $i) {
-        $show_endtime = TRUE;
-      }
-
-      if ($show_endtime) {
+      // Timestamp / Period end wrapper.
+      if ($has_end) {
 
         $form['basic']['when']['datetimes'][$i]['end'] = array(
           '#type' => 'container',
@@ -674,17 +809,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
           '#suffix' => '</div>',
         );
 
-        // Only the first row will allow for the entry of a date.  If the end
-        // date is different from the begin date, nor more rows can be added.  If
-        // the end date is the same as the begin date.  Only time slots can be
-        // added.
-        if (($i === 0 && $date_count == 1) || $when == 'period') {
+        if ($when == 'period' || ($date_count == 1 && !isset($form_state['values']['datetimes'][$i]['end']['date']))) {
 
           $form['basic']['when']['datetimes'][$i]['end']['date'] = array(
             '#type' => 'date_popup',
             '#title' => t('End date'),
             '#date_label_position' => 'none',
-            '#default_value' => ($form_state['submitted']) ? '' : $period_end,
+            '#default_value' => (!$triggering_element) ? $period_end : '',
             '#date_format' => 'Y-m-d',
             '#ajax' => array(
               'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -695,22 +826,23 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
         }
 
-        if ($when != 'period') {
-      
-          $end_time = (!$form_state['submitted']) ? $calendar->current()->getDate() . ' ' . $calendar->current()->getEndTime() : '';
+        if ($when == 'timestamps') {
+
+          $end_time = isset($timestamps[$i]['endtime']) ? $timestamps[$i]['date'] . ' ' . $timestamps[$i]['endtime'] : '';
+
           $form['basic']['when']['datetimes'][$i]['end']['hour'] = array(
             '#type' => 'date_select',
-            '#default_value' => $end_time,
+            '#default_value' => (!$triggering_element) ? $end_time : '',
             '#date_format' => 'H:i',
             '#date_increment' => 30,
           );
 
         }
 
-        $form['basic']['when']['datetimes'][$i]['end']['datetimes_remove_endtime'] = array(
+        $form['basic']['when']['datetimes'][$i]['end']['datetimes_remove_end'] = array(
           '#type' => 'submit',
           '#value' => t('+ remove end'),
-          '#name' => 'datetimes_remove_endtime_' . $i,
+          '#name' => 'datetimes_remove_end_' . $i,
           '#attributes' => array('class' => array('add-more-link btn-link')),
           '#ajax' => array(
             'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -722,16 +854,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         );
 
       }
-      $calendar->next();
 
     }
 
-    $show_add_link = TRUE;
-    if ($when == 'period') {
-      $show_add_link = FALSE;
-    }
-
-    if ($show_add_link) {
+    if ($when == 'timestamps') {
 
       $form['basic']['when']['datetimes']['datetimes_add_child'] = array(
         '#type' => 'submit',
@@ -750,17 +876,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
   }
-
-  $form['basic']['when']['permanent'] = array(
-    '#type' => 'checkbox',
-    '#default_value' => ($when == 'permanent'),
-    '#title' => t('Permanent'),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'when-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-  );
 
   if ($when == 'period' || $when == 'permanent') {
     
@@ -822,16 +937,17 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $opening_count++;
       }
   
-      // Add more button was clicked. Check how many extra rows need to be added.
-      if (isset($form_state['#opening_times_needed'])) {
-        for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
-          culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
-        }
-      }
-  
     }
-  
-    $form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
+
+    // Add more button was clicked. Check how many extra rows need to be added.
+    if (isset($form_state['#opening_times_needed'])) {
+      for (; $opening_count < $form_state['#opening_times_needed']; $opening_count++) {
+        culturefeed_entry_ui_attach_opening_time_elements($form, $day, $opening_count);
+      }
+    }
+
+
+    /*$form['basic']['when']['period_or_permanent']['add_more_opening_times'] = array(
       '#type' => 'submit',
       '#name' => 'opening_times_add_more',
       '#value' => t('+ add another opening time'),
@@ -846,7 +962,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#states' => array(
         'visible' => array(':input[name="period_or_permanent[all_day]"]' => array('value' => '0')),
       ),
-    );
+    );*/
   }
 
   // Extra.
@@ -1794,6 +1910,7 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   $values = $form_state['values'];
+  //dsm($values);
   // Validate publication date.
   if ($values['wrapper']['date']) {
     try {
@@ -2035,7 +2152,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-
+  dsm($values);
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
@@ -2084,19 +2201,19 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 	    
 	    switch ($extra['in_language']) {
 		  case 1:
-            $in_language = 'English';
+            $in_language = 'Engels';
             break;
           case 2:
-            $in_language = 'Spanish';
+            $in_language = 'Spaans'; //Zit niet in UDB, dus werkt niet
             break;
           case 3:
-            $in_language = 'Dutch';
+            $in_language = 'Nederlands';
            break;
           case 4:
-            $in_language = 'German';
+            $in_language = 'Duits';
             break;
           case 5:
-            $in_language = 'French';    
+            $in_language = 'Frans';
 	    }
 
         $language_list->add(new CultureFeed_Cdb_Data_Language($in_language, $spoken_language));
@@ -2211,13 +2328,22 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $category_options = array();
 
   $category_options[$values['what']] = culturefeed_search_get_eventtype_categories(array('tid' => $values['what']));
-
   $categories = new CultureFeed_Cdb_Data_CategoryList();
   foreach ($category_options as $key => $value) {
     if ($value) {
       $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
     }
   }
+  
+  if (isset($values['themes'])) {
+    $theme_options[$values['themes']] = culturefeed_search_get_theme_categories(array('tid_like' => $values['themes']));
+    foreach ($theme_options as $key => $value) {
+      if($value) {
+	    $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
+      }
+    }
+  }
+  
   $event->setCategories($categories);
 
   // Event details.
@@ -2282,7 +2408,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
 
   // Price
-  if (isset($values['price']['free'])) {
+  if ($values['price']['free']) {
     $price = new CultureFeed_Cdb_Data_Price(0);
     $detail->setPrice($price);
   }

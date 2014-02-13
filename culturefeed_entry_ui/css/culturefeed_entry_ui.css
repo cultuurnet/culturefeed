@@ -40,6 +40,10 @@
   min-height: 431px;
 }
 
+#location-ajax-wrapper {
+  clear: left;
+}
+
 .form-item-street, .form-item-location-country {
   clear: left;
 }
@@ -69,7 +73,7 @@
   clear: left;
 }
 
-#datetimes-ajax-wrapper {
+#when-ajax-wrapper {
   clear: left;
 }
 
@@ -151,20 +155,20 @@ input.add-more-link:hover {
 
 /* dates */
 
-#datetimes-ajax-wrapper .container-inline-date, #datetimes-ajax-wrapper .form-item {
+.when-datetimes .container-inline-date, .when-datetimes .form-item {
   float: left;
   clear: none;
 }
 
-#datetimes-ajax-wrapper .container-inline-date .date-padding {
+.when-datetimes .container-inline-date .date-padding {
   padding: 0;
 }
 
-#datetimes-ajax-wrapper .form-type-date-select .form-type-select[class$=hour] {
+.when-datetimes .form-type-date-select .form-type-select[class$=hour] {
     margin-left: .50em;
 }
 
-#datetimes-ajax-wrapper .datetime-child input.add-more-link {
+.when-datetimes .datetime-child input.add-more-link {
   clear: none;
   float: left;
 }

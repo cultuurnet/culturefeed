@@ -474,7 +474,6 @@ function culturefeed_search_get_eventtype_categories($conditions = array()) {
   return culturefeed_search_get_categories_by_domain('eventtype', $conditions);
 }
 
-
 /**
  * Retrieves a list of categories for the theme domain.
  * @param $conditions
@@ -483,7 +482,6 @@ function culturefeed_search_get_eventtype_categories($conditions = array()) {
 function culturefeed_search_get_theme_categories($conditions = array()) {
   return culturefeed_search_get_categories_by_domain('theme', $conditions);
 }
-
 
 /**
  * Get all available actortypes.
