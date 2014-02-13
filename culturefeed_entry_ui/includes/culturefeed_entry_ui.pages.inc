@@ -211,6 +211,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       ->byMediaTypes(
       array(
         CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE,
+        CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE,
         CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS,
         CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK,
         CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
@@ -218,9 +219,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
       )
     );
-    
     foreach ($media_links as $media_link) {
       $default_links[$media_link->getHLink()] = $media_link->getHLink();
+      dsm($media_link->getHLink());
       if ($media_link->getMediaType() == 'reservations') {
         $default_links_reservation[$media_link->getHLink()] = TRUE;
       }
