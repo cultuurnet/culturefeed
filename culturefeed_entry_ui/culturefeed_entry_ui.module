@@ -136,9 +136,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
 
   }
-
+  
+  $account = DrupalCultureFeed::getLoggedInAccount();
+  
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events')) {
+  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == cf_user_load($account->culturefeed_uid)->mbox)) {
 
     $link = array(
       'href' => $path . '/edit',
@@ -237,29 +239,18 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
         }
 
       }
+      $form_state['values']['datetimes'] = $datetimes;
       unset($form_state['input']['datetimes'][$remove]);
       $form_state['input']['datetimes'] = array_values($form_state['input']['datetimes']);
-
-      $form_state['#dates_needed']--;
+      // Don't forget to count the add more button.
+      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes'])) - 2;
       break;
 
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_endtime_') === 0):
-      $remove = explode('datetimes_remove_endtime_', $form_state['input']['_triggering_element_name']);
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_end_') === 0):
+      $remove = explode('datetimes_remove_end_', $form_state['input']['_triggering_element_name']);
       $remove = $remove[1];
       unset($form_state['values']['datetimes'][$remove]['end']);
       unset($form_state['input']['datetimes'][$remove]['end']);
-      break;
-
-    case 'begindates_add_more':
-      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes'])) + 1;
-      break;
-
-    case 'enddates_add_more':
-      $form_state['#enddates_needed'] = count(element_children($form['basic']['when']['datetimes'])) +1;
-      break;
-
-    case 'timestamps_add_more':
-      $form_state['#timestamps_needed'] = count(element_children($form['basic']['timestamps'])) + 1;
       break;
 
     case 'links_add_more':
@@ -267,7 +258,7 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       break;
 
     case 'opening_times_add_more':
-      $form_state['#opening_times_needed'] = count(element_children($form['basic']['period_or_permanent']['opening_times']['monday'])) + 1;
+      $form_state['#opening_times_needed'] = count(element_children($form['basic']['when']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
     
     case 'ld_add_more':
@@ -315,13 +306,14 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
     case 'begindates_add_more':
     case 'enddates_add_more':
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_add_endtime_') === 0):
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_endtime_') === 0):
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_add_end_') === 0):
+    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_end_') === 0):
     case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
     case 'datetimes[0][begin][date]':
     case 'datetimes[0][end][date]':
     case 'datetimes_add_child':
-      return $form['basic']['when']['datetimes'];
+    case 'permanent':
+      return $form['basic']['when'];
 
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
