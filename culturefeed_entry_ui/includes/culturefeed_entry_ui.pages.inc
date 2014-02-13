@@ -12,6 +12,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $form = array();
   $default_contacts = array();
   $performers_info = array();
+  $languages_info = array();
   $category_defaults = array();
   $eventtype_default = '';
   $themetype_default = '';
@@ -187,7 +188,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     // Default long description
     if ($event_details->getLongDescription()) {
       $default_long_description = $event_details->getLongDescription();
-      $default_long_description = substr($default_long_description, 0, -169);
+      $source_text = '/<p class="uiv-source">(.*)<\/p>/';
+      $default_long_description = preg_replace($source_text, '', $default_long_description);
+      //$default_long_description = substr($default_long_description, 0, -169);
       $form_state['#ld_needed'] = TRUE;
     }
 
@@ -1823,7 +1826,7 @@ function culturefeed_entry_ui_attach_language_elements(&$form, $i, $info = NULL)
     '#options' => array(
       0 => t(''),
       1 => t('English'),
-      2 => t('Spanish'),
+      //2 => t('Spanish'),
       3 => t('Dutch'),
       4 => t('German'),
       5 => t('French'),
