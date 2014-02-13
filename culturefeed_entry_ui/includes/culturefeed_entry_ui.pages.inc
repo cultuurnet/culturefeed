@@ -1620,10 +1620,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['extra']['publication_date']['wrapper']['date'] = array(
-    '#type' => 'textfield',
+    '#type' => 'date_popup',
     '#title' => t('Publication date'),
     '#default_value' => $publication_date,
-    '#description' => t('Format') . ': ' . date('Y-m-d'),
+    //'#description' => t('Format') . ': ' . date('Y-m-d'),
+    '#date_format' => 'Y-m-d',
   );
 
   $form['extra']['publication_date']['wrapper']['private'] = array(
@@ -2422,19 +2423,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
   }
 
-  /*if (isset($values['price']['free'])) {
-    $price = new CultureFeed_Cdb_Data_Price(0);
-    $detail->setPrice($price);
-  }
-  else {
-    if ($values['price']['amount']) {
-      $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
-      if (isset($values['price']['extra']['extra_info'])) {
-        $price->setDescription($values['price']['extra']['extra_info']);
-      }
-      $detail->setPrice($price);
-    }
-  }*/
   // Performers
   if ($performers_count) {
     $detail->setPerformers($performerList);
