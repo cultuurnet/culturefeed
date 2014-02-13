@@ -2809,7 +2809,7 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   // Filter out custom tags.
   if ($event_tags) {
     foreach ($event_tags as $tag) {
-      if ($custom_options && array_key_exists($tag, $custom_options)) {
+      if (isset($custom_options) && array_key_exists($tag, $custom_options)) {
         unset($event_tags[$tag]);
         $custom_tags[$tag] = $tag;
       }
