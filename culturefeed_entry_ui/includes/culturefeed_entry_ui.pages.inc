@@ -198,20 +198,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $default_links_reservation[$media_link->getHLink()] = FALSE;
       }
     }
-      
-
-
+    
     // Default image
     $photo_media = $event_details->getMedia()
-      ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
-    if(!$photo_media) {
-      $photo_media = $event_details->getMedia()
-      ->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    }
+      ->byMediaTypes(array(
+      CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB,
+      CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO,
+      )  
+    );
  
     if (count($photo_media) > 0) {
       $main_image = array();
       foreach ($photo_media as $picture) {
+        
         $pictures[] = $picture;
         if ($picture->isMain()) {
           $main_image = $picture;
@@ -2238,6 +2237,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     // Save to Drupal
     $drupal_file = file_load($values['photo']['upload']);
     $drupal_file->status = FILE_STATUS_PERMANENT;
+    
     file_save($drupal_file);
     file_usage_add($drupal_file, 'culturefeed_entry_ui', 'event', $drupal_file->fid);
 
@@ -2259,6 +2259,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
     $file->setHLink(file_create_url($drupal_file->uri));
     $file->setFilename($drupal_file->filename);
+    
     $detail->getMedia()->add($file);
     // Remove old image
     // Bug on UDB ... will be fixed soon
