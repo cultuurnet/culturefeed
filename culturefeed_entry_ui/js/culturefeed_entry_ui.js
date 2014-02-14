@@ -19,7 +19,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
           $('#edit-price-extra-extra-info').val('');
         }
         else {
-	      $('#edit-price-amount').val('');
+	      //$('#edit-price-amount').val('');
           $('#edit-price-amount').removeAttr('disabled');
           $('#edit-price-amount').css('color','#000');
           $('#edit-price-extra').css('display','block');  
