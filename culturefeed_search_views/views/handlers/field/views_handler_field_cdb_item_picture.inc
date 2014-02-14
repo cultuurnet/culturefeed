@@ -13,6 +13,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
 
     $options['width'] = array('default' => 100);
     $options['height'] = array('default' => 100);
+    $options['link'] = array('default' => FALSE);
 
     return $options;
   }
@@ -34,6 +35,12 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       '#title' => t('Height'),
       '#default_value' => isset($this->options['height']) ? $this->options['height'] : '',
       '#required' => TRUE,
+    );
+
+    $form['link'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Link the picture to the detail page'),
+      '#default_value' => isset($this->options['link']) ? $this->options['link'] : FALSE,
     );
 
     parent::options_form($form, $form_state);
@@ -65,7 +72,15 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
     }
 
     if (!empty($main_picture)) {
-      return theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+      $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+
+      if ($this->options['link']) {
+        $path = culturefeed_search_detail_path($extended_entity->getType(), $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()));
+        return l($image, $path, array('html' => TRUE, ));
+      }
+      else {
+        return $image;
+      }
     }
 
   }

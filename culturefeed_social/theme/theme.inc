@@ -49,7 +49,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   // Check if the activity happened today.
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60 * 60)) {
-    $variables['date'] = format_interval($time_ago) . ' geleden.';
+    $variables['date'] = format_interval($time_ago) . ' ' . t('ago') . '.';
   }
   else {
 
