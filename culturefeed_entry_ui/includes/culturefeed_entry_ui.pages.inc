@@ -291,7 +291,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $age_category = '12-18';
       }
       else {
-        $age = '18+';
+        $age_category = '18+';
       }
 
     }
