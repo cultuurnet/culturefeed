@@ -1638,10 +1638,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#description' => t('Format') . ': ' . date('Y-m-d'),
   );
 
-  $form['extra']['publication_date']['wrapper']['private'] = array(
+  /*$form['extra']['publication_date']['wrapper']['private'] = array(
     '#type' => 'checkbox',
     '#title' => t('Public'),
-  );
+  );*/
 
   $form['submit'] = array(
     '#type' => 'submit',
