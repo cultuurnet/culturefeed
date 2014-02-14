@@ -132,6 +132,7 @@ input.add-more-link:hover {
 #contacts-ajax-wrapper .form-type-select {
   width: 20%;
   float: left;
+  clear: left;
 }
 
 #contacts-ajax-wrapper .form-type-textfield input {
