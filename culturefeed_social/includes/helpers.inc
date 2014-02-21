@@ -98,10 +98,6 @@ function culturefeed_social_activity_link_advanced($activity_type, $extended_ent
  */
 function culturefeed_social_activity_link($activity_type, $extended_entity, $advanced = FALSE, $add_count = FALSE, $title = '', $title_undo = '', $use_ajax = TRUE) {
 
-  if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_social_login_required_message', array('activity_type' => $activity_type, 'item' => $extended_entity));
-  }
-
   if (method_exists($extended_entity, 'getId')) {
     $id = $extended_entity->getId();
     $activity_content_type = culturefeed_get_content_type($extended_entity->getType());
@@ -122,28 +118,40 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
   $identifier_wrapper = drupal_html_id('activity-wrapper-' . $activity_type);
 
   $config = culturefeed_social_activity_get_config($activity_type);
-
-  // If undo is not allowed. The action is always do.
   $user_did_this = FALSE;
-  if ($config->undoAllowed) {
-    try {
-      $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $activity_node_id, $activity_content_type);
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_social', $e);
-    }
-  }
 
-  $action = $user_did_this ? 'undo' : 'do';
-
-  if (!$use_ajax) {
-    $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/redirect';
-  }
-  elseif ($advanced) {
-    $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/advanced';
+  // Anonymous user: redirect him to landing page.
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    $action = 'do';
+    $action_url = 'authenticated';
+    $destination = 'culturefeed/do/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/redirect';
+    $use_ajax = FALSE;
   }
   else {
-    $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/noredirect';
+
+    // If undo is not allowed. The action is always do.
+    if ($config->undoAllowed) {
+      try {
+        $user_did_this = DrupalCultureFeed::userDidActivity($activity_type, $activity_node_id, $activity_content_type);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_social', $e);
+      }
+    }
+
+    $action = $user_did_this ? 'undo' : 'do';
+
+    if (!$use_ajax) {
+      $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/redirect';
+    }
+    elseif ($advanced) {
+      $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/advanced';
+    }
+    else {
+      $action_url = 'culturefeed/' . $action . '/' . $config->type . '/' . $activity_content_type . '/' . urlencode($id) . '/noredirect';
+    }
+
+    $destination = url($path, array('query' => $current_query));
   }
 
   $markup = array();
@@ -157,7 +165,7 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
     ),
     '#options' => array(
       'query' => array(
-        'destination' => url($path, array('query' => $current_query)),
+        'destination' => $destination,
         'add_count' => $add_count,
       ),
     ),
