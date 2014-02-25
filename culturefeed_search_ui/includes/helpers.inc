@@ -186,3 +186,4 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
   }
 
 }
+
