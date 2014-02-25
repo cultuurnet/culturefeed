@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Template file for one culturefeed search facet.
+ * * Template file for one culturefeed search facet of an event type.
  */
 
 /**
