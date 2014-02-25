@@ -509,17 +509,18 @@ function culturefeed_social_get_activity_node_id($activity_content_type, $extend
  *   Type of activity to get the count for.
  * @param $content_type
  *   Type of content to get the count for.
- * @param $node_id
- *   Node ID to get the count for.
+ * @param mixed $node_ids
+ *   Node ID's to get the count for. Can be array or string.
  */
-function culturefeed_social_get_activity_count($activity_type, $content_type, $node_id) {
+function culturefeed_social_get_activity_count($activity_type, $content_type, $node_ids) {
 
   try {
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->contentType = $content_type;
-    $query->nodeId = $node_id;
+    $query->nodeId = $node_ids;
     $query->type = $activity_type;
     $activities = DrupalCultureFeed::searchActivities($query);
+
     return $activities->total;
   }
   catch (Exception $e) {
