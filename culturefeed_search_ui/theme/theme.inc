@@ -177,7 +177,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$v
   // Sort based on the sorting values.
   if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY || $variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
     array_multisort($sort_values, $variables['event_types']);
-    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
       $variables['event_types'] = array_reverse($variables['event_types']);
     }
   }

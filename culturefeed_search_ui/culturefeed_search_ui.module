@@ -33,9 +33,8 @@ function culturefeed_search_ui_init() {
       $path = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
     }
 
-    if ($path != current_path()) {
-      $params = drupal_get_query_parameters();
-      drupal_goto($path, array('query' => array($params)), 301);
+    if (strpos(current_path(), $path) !== 0) {
+      drupal_goto($path, array(), 301);
     }
 
   }
@@ -267,6 +266,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['filter-form'] = array(
+    'info' => t('Culturefeed search: Filter form'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
@@ -308,6 +312,18 @@ function culturefeed_search_ui_block_configure($delta) {
       );
     }
   }
+  elseif ($delta == 'filter-form') {
+
+    $form['culturefeed-search-filter-form'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Possible filters'),
+      '#options' => array(
+        'free-only' => t('Free only'),
+        'no-courses-workshops' => t('No courses and workshops'),
+        'for-toddlers' => t('For toddlers'),
+      ),
+    );
+  }
 
   return $form;
 }
@@ -322,6 +338,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   }
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
+  }
+  if (isset($edit['culturefeed-search-filter-form'])) {
+    variable_set('culturefeed_search_form_active_filters', array_filter($edit['culturefeed-search-filter-form']));
   }
 }
 
@@ -367,6 +386,20 @@ function culturefeed_search_ui_block_view($delta) {
       $block = culturefeed_search_ui_block_city_only_facet();
     break;
 
+    case 'filter-form':
+
+      $search_result = culturefeed_get_search_result();
+      if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
+        return;
+      }
+
+      $active_filters = variable_get('culturefeed_search_form_active_filters', array());
+      if (!empty($active_filters)) {
+        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
+      }
+
+      break;
+
     default:
 
       $delta_parts = explode('-', $delta);
@@ -387,6 +420,26 @@ function culturefeed_search_ui_block_view($delta) {
 
   return $block;
 
+}
+
+/**
+ * Implements hook_culturefeed_search_page_query_alter().
+ */
+function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
+
+  // Check for form filters that are triggered by the filter form block.
+  if (!empty($_GET['free-only'])) {
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('free', TRUE));
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('price:0'));
+  }
+  if (!empty($_GET['no-courses-workshops'])) {
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('exclude', 'workshops'));
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('!category_id:0.3.1.0.0'));
+  }
+  if (!empty($_GET['for-toddlers'])) {
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('doelpubliek', 'kleuters'));
+    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('agefrom:(3 OR 4 OR 5)'));
+  }
 }
 
 /**
@@ -499,131 +552,38 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     );
   }
 
+  // Check if form filters are selected.
+  if (!empty($query['free-only'])) {
+    $search_query = $query;
+    unset($search_query['free-only']);
+    $url = url($path, array('query' => $search_query));
+    $build['free-only'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => t('Free only'),
+      '#url' => $url
+    );
+  }
+  if (!empty($query['no-courses-workshops'])) {
+    $search_query = $query;
+    unset($search_query['no-courses-workshops']);
+    $url = url($path, array('query' => $search_query));
+    $build['no-courses-workshops'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => t('No courses and workshops'),
+      '#url' => $url
+    );
+  }
+  if (!empty($query['for-toddlers'])) {
+    $search_query = $query;
+    unset($search_query['for-toddlers']);
+    $url = url($path, array('query' => $search_query));
+    $build['for-toddlers'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => t('For toddlers'),
+      '#url' => $url
+    );
+  }
+
   return $build;
 }
 
-/**
- * Load all searchable types.
- * This wil invoke a hook. Modules can define following stuff.
- *  return array(
- *   'activiteiten' => array(
- *     'path' => 'agenda/search',
- *     'page_title' => 'Agenda',
- *     'search_title' => 'Activiteiten',
- *     'class_name' => 'CultureFeedAgendaPage',
- *       'sort_options' => array(
- *       'relevancy' => 'Relevantie',
- *       'date' => 'Datum',
- *       'recommends' => 'Aantal keer aangeraden',
- *       'comments' => 'Aantal reacties',
- *     ),
- *     'active_facets' => array('category_actortype_name' => array('Organisator(en)')),  => optional
- *   ),
- * );
- */
-function culturefeed_get_searchable_types() {
-
-  $options = drupal_static('culturefeed_searchable_types');
-  if ($options !== NULL) {
-    return $options;
-  }
-
-  // Get all searchable page types.
-  $options = module_invoke_all('culturefeed_search_page_info');
-
-  foreach ($options as $key => $data) {
-    if (!isset($data['class_name'])) {
-      $options[$key]['class_name'] = 'CultureFeedSearchPage';
-    }
-  }
-
-  // Make sure you can alter the searchable data per site.
-  drupal_alter('culturefeed_search_page_info', $options);
-
-  return $options;
-}
-
-/**
- * Load a searchable type.
- * @param String $name
- * @return Array searchable type.
- */
-function culturefeed_get_searchable_type($name) {
-  $options = culturefeed_get_searchable_types();
-  return isset($options[$name]) ? $options[$name] : NULL;
-}
-
-/**
- * Returns a searchable type by path.
- *
- * @param string $path
- *   An optional menu path. Defaults to the current path.
- *
- * @return array
- *   The requested searchable type, or FALSE if no searchable type matches the
- *   path.
- */
-function culturefeed_get_searchable_type_by_path($path = '') {
-  if (!$path) {
-    $menu_item = menu_get_item();
-    $path = $menu_item['path'];
-  }
-  foreach (culturefeed_get_searchable_types() as $name => $type) {
-    if ($type['path'] == $path) {
-      return $type;
-    }
-  }
-  return FALSE;
-}
-
-/**
- * Returns an instance of a search page.
- *
- * @param array $search_type
- *   A searchable type, as supplied by hook_culturefeed_searchable_types().
- *
- * @return CultureFeedSearchPage
- *   An instance of the requested search page.
- */
-function culturefeed_get_search_page($search_type) {
-  $pages = &drupal_static(__FUNCTION__);
-  $class_name = $search_type['class_name'];
-  if (!isset($pages[$class_name])) {
-    $pages[$class_name] = new $search_type['class_name']();
-    $pages[$class_name]->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
-    $pages[$class_name]->setDefaultSort($search_type['sort_default']);
-    $pages[$class_name]->setGroup(variable_get('culturefeed_search_group', TRUE));
-    $pages[$class_name]->initialize();
-  }
-  return $pages[$class_name];
-}
-
-/**
- * Returns the search facets for the current page.
- *
- * @return \CultuurNet\Search\Component\Facet\FacetComponent
- *   The search facets for the current page or FALSE if the current page is not
- *   a search page.
- */
-function culturefeed_get_facet_component() {
-  if ($type = culturefeed_get_searchable_type_by_path()) {
-    $page = culturefeed_get_search_page($type);
-    return $page->getFacetComponent();
-  }
-  return FALSE;
-}
-
-/**
- * Returns the search result for the current page.
- *
- * @return \CultuurNet\Search\SearchResult
- *   The search result for the current page or FALSE if the current page is not
- *   a search page.
- */
-function culturefeed_get_search_result() {
-  if ($type = culturefeed_get_searchable_type_by_path()) {
-    $page = culturefeed_get_search_page($type);
-    return $page->getSearchResult();
-  }
-  return FALSE;
-}

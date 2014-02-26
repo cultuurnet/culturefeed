@@ -23,11 +23,16 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
       $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
-          $title = $suggestion->getTitle();
-          if (isset($type) && $type == 'actor') {
-            $title .= ' ' . $suggestion->getLocation() . ' ' . $suggestion->getZipCode();
+          $title = $location_title = check_plain($suggestion->getTitle());
+          $location = $suggestion->getLocation();
+          if (!empty($location)) {
+            $location_title .= ' - <small class="muted">(' . $location . ')<small>';
           }
-          $matches[$title] = check_plain($title);
+          $object = new stdClass();
+          $object->title = $title;
+          $object->key = $suggestion->getCdbId();
+          $object->locationTitle = $location_title;
+          $matches[$suggestion->getCdbId()] = $object;
         }
       }
 

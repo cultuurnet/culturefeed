@@ -239,6 +239,7 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['date_range'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Choose a date'),
     '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
@@ -373,6 +374,7 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
@@ -515,6 +517,7 @@ function culturefeed_search_ui_city_only_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
@@ -587,4 +590,75 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   return $build;
 
+}
+
+/**
+ * Show the filter form for the search ui.
+ */
+function culturefeed_search_ui_block_filter_form() {
+
+  $active_filters = variable_get('culturefeed_search_form_active_filters', array());
+
+  $form = array();
+  if (!empty($active_filters['free-only'])) {
+    $form['free-only'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Free only'),
+      '#default_value' => !empty($_GET['free-only'])
+    );
+  }
+
+  if (!empty($active_filters['no-courses-workshops'])) {
+    $form['no-courses-workshops'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('No courses and workshops'),
+      '#default_value' => !empty($_GET['no-courses-workshops'])
+    );
+  }
+
+  if (!empty($active_filters['for-toddlers'])) {
+    $form['for-toddlers'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('For toddlers'),
+      '#default_value' => !empty($_GET['for-toddlers'])
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Filter')
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the filter form.
+ */
+function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array(
+    'q',
+    'page',
+    'free-only',
+    'no-courses-workshops',
+    'for-toddlers'
+  ));
+
+  if (!empty($form_state['values']['free-only'])) {
+    $query['free-only'] = TRUE;
+  }
+
+  if (!empty($form_state['values']['no-courses-workshops'])) {
+    $query['no-courses-workshops'] = TRUE;
+  }
+
+  if (!empty($form_state['values']['for-toddlers'])) {
+    $query['for-toddlers'] = TRUE;
+  }
+
+  $form_state['redirect'] = array(
+    $_GET['q'],
+    array('query' => $query)
+  );
 }

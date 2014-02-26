@@ -68,7 +68,7 @@
 
   <?php if (!empty($price)): ?>
   <dt><?php print t('Price'); ?></dt>
-  <dd><?php print $price; ?><?php print $price_description; ?></dd>
+  <dd><?php print $price . ' '; ?><?php print $price_description; ?></dd>
   <?php endif; ?>
 
   <?php if (!empty($reservation) || !empty($tickets)) : ?>

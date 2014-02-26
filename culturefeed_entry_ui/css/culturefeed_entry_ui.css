@@ -1,0 +1,186 @@
+@CHARSET "UTF-8";
+
+/*
+ *  give the form elements some space
+ */
+ 
+#location-ajax-wrapper {
+  margin-bottom: 30px;
+}
+
+#description-ajax-wrapper, .form-item-keywords, #edit-add-more-links, #photo-ajax-wrapper, #edit-price, #organiser-ajax-wrapper {
+  padding-bottom: 20px !important;
+  margin-bottom: 0px !important;
+  border-bottom: 1px solid #ccc;
+}
+
+#photo-ajax-wrapper {
+  border-top: 1px solid #ccc;
+}
+
+.form-item-keywords, #links-ajax-wrapper, #photo-ajax-wrapper, #edit-price, #organiser-ajax-wrapper, .form-item-age-category {
+  padding-top: 20px !important;
+}
+
+#edit-add-more-links {
+  margin-top: -10px;
+}
+
+#edit-price-extra {
+  margin-top: -12px;
+}
+
+#basic-wrapper .form-item {
+  float: left;
+}
+
+#edit-what fieldset {
+  width: 32.4%;
+  float: left;
+  min-height: 431px;
+}
+
+#location-ajax-wrapper {
+  clear: left;
+}
+
+.form-item-street, .form-item-location-country {
+  clear: left;
+}
+
+.form-item-street {
+  float: left;
+  margin-right: 30px;
+}
+
+.form-item-house-number {
+  padding-top: 2px;
+}
+
+.form-item-zip-code {
+  float: left;
+}
+
+.form-item-new-citywrapper-city {
+  padding-top: 2px;
+}
+
+#citywrapper-ajax-wrapper {
+  clear: left;
+}
+
+.form-item-country-select {
+  clear: left;
+}
+
+#when-ajax-wrapper {
+  clear: left;
+}
+
+.link-field {
+  float: left;
+}
+
+input.form-checkbox {
+  float: left;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+#photo-ajax-wrapper img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.price-prefix {
+  float: left;
+  margin-right: 5px;
+  margin-top: 24px;
+}
+
+.price-amount {
+  float: left;
+  margin-bottom: 15px;
+}
+
+.form-type-textarea {
+  clear: left;
+}
+
+.price-add-more-subit {
+  clear: left;
+  width: 100%;
+}
+
+input.add-more-link {
+  border:none !important;
+  background: none !important;
+  border-radius: 0 !important;
+  font-weight: normal !important;
+  color: #0071B3 !important;
+  padding: 0px !important;
+  clear: left;
+  display: block;
+}
+
+input.add-more-link:hover {
+  color: #018fe2 !important;
+  text-decoration: underline !important;
+}
+
+/* contacts */
+#contacts-ajax-wrapper .form-type-select {
+  width: 20%;
+  float: left;
+  clear: left;
+}
+
+#contacts-ajax-wrapper .form-type-textfield input {
+  width: 80%;
+}
+
+#performers-ajax-wrapper .form-type-textfield {
+  float: left;
+  width: 48%;
+  margin-right: 2%;
+}
+
+.language-item-wrapper {
+  clear: left;
+}
+
+#edit-language .form-type-select {
+  width: 35%;
+  float: left;
+}
+
+/* dates */
+
+.when-datetimes .container-inline-date, .when-datetimes .form-item {
+  float: left;
+  clear: none;
+}
+
+.when-datetimes .container-inline-date .date-padding {
+  padding: 0;
+}
+
+.when-datetimes .form-type-date-select .form-type-select[class$=hour] {
+    margin-left: .50em;
+}
+
+.when-datetimes .datetime-child input.add-more-link {
+  clear: none;
+  float: left;
+}
+
+.datetime-child {
+  clear: left;
+}
+
+/* https://drupal.org/node/222380 */
+.form-item input[type="checkbox"].error,
+.form-item input[type="radio"].error {
+    outline: 2px solid red;
+    border: none;
+}
