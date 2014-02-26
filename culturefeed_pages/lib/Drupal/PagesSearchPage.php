@@ -24,7 +24,7 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
       // Retrieve search parameters and add some defaults.
       $params = drupal_get_query_parameters();
       $params += array(
-        'sort' => 'relevancy',
+        'sort' => \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW,
         'page' => 0,
         'search' => '',
         'facet' => array(),
