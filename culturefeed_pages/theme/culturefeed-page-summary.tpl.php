@@ -10,14 +10,14 @@
   <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
 
   <div class="activity-wrapper">
+    <?php if ($follower_count > 0): ?>
+      <div class="count-followers"><?php print format_plural($follower_count, '<span>@count</span> follower', '<span>@count</span> followers'); ?></div>
+    <?php endif; ?>
     <?php if ($member_count > 0): ?>
     <div class="members-wrapper">
         <?php print format_plural($member_count, '<span class="members">@count</span> member', '<span class="members">@count</span> members'); ?>
         <a href="<?php print $url ?>#members"><?php print t('View members'); ?></a>
     </div>
-    <?php endif; ?>
-    <?php if ($follower_count > 0): ?>
-      <div class="count-followers"><?php print format_plural($follower_count, '<span>@count</span> follower', '<span>@count</span> followers'); ?></div>
     <?php endif; ?>
   </div>
 

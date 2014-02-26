@@ -744,12 +744,11 @@ function culturefeed_pages_culturefeed_search_page_info() {
       'page_title' => t('Pages'),
       'search_title' => t('Pages'),
       'class_name' => 'CultureFeedPagesSearchPage',
-      'sort_default' => 'relevancy',
+      'sort_default' => \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW,
       'sort_options' => array(
-        'relevancy' => t('Relevancy'),
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
         'title' => t('Alphabetical'),
         \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => t('Number of members'),
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
       ),
     ),
   );
