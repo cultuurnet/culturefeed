@@ -312,3 +312,27 @@ function culturefeed_get_search_result() {
   }
   return FALSE;
 }
+
+/**
+ * Return the default options for the filter form.
+ */
+function culturefeed_search_ui_default_filter_options() {
+
+  return array(
+    array(
+      'title' => 'Free only',
+      'query-string' => 'free-only',
+      'api-filter-query' => 'price:0'
+    ),
+    array(
+      'title' => 'No courses and workshops',
+      'query-string' => 'no-courses-workshops',
+      'api-filter-query' => '!category_id:0.3.1.0.0'
+    ),
+    array(
+      'title' => 'For toddlers',
+      'query-string' => 'for-toddlers',
+      'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
+    ),
+  );
+}

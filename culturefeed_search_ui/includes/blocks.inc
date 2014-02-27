@@ -597,30 +597,16 @@ function culturefeed_search_ui_search_active_filters_block() {
  */
 function culturefeed_search_ui_block_filter_form() {
 
-  $active_filters = variable_get('culturefeed_search_form_active_filters', array());
+  $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
 
   $form = array();
-  if (!empty($active_filters['free-only'])) {
-    $form['free-only'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Free only'),
-      '#default_value' => !empty($_GET['free-only'])
-    );
-  }
+  $form['filter-options'] = array();
 
-  if (!empty($active_filters['no-courses-workshops'])) {
-    $form['no-courses-workshops'] = array(
+  foreach ($options as $option) {
+    $form['filter-options'][$option['query-string']] = array(
       '#type' => 'checkbox',
-      '#title' => t('No courses and workshops'),
-      '#default_value' => !empty($_GET['no-courses-workshops'])
-    );
-  }
-
-  if (!empty($active_filters['for-toddlers'])) {
-    $form['for-toddlers'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('For toddlers'),
-      '#default_value' => !empty($_GET['for-toddlers'])
+      '#title' => t($option['title']),
+      '#default_value' => !empty($_GET[$option['query-string']])
     );
   }
 
@@ -637,24 +623,13 @@ function culturefeed_search_ui_block_filter_form() {
  */
 function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
 
-  $query = drupal_get_query_parameters(NULL, array(
-    'q',
-    'page',
-    'free-only',
-    'no-courses-workshops',
-    'for-toddlers'
-  ));
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
 
-  if (!empty($form_state['values']['free-only'])) {
-    $query['free-only'] = TRUE;
-  }
-
-  if (!empty($form_state['values']['no-courses-workshops'])) {
-    $query['no-courses-workshops'] = TRUE;
-  }
-
-  if (!empty($form_state['values']['for-toddlers'])) {
-    $query['for-toddlers'] = TRUE;
+  foreach ($form['filter-options'] as $key => $option) {
+    unset($query[$key]);
+    if (!empty($form_state['values'][$key])) {
+      $query[$key] = TRUE;
+    }
   }
 
   $form_state['redirect'] = array(

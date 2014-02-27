@@ -199,7 +199,11 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_search_ui_admin_filter_form_options' => array(
+      'render element' => 'element',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -314,15 +318,35 @@ function culturefeed_search_ui_block_configure($delta) {
   }
   elseif ($delta == 'filter-form') {
 
-    $form['culturefeed-search-filter-form'] = array(
-      '#type' => 'checkboxes',
+    $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+    $form['culturefeed-search-filter-options'] = array(
+      '#type' => 'fieldset',
       '#title' => t('Possible filters'),
-      '#options' => array(
-        'free-only' => t('Free only'),
-        'no-courses-workshops' => t('No courses and workshops'),
-        'for-toddlers' => t('For toddlers'),
-      ),
+      '#theme' => 'culturefeed_search_ui_admin_filter_form_options',
+      '#description' => t('<p>Define the different filter options you want.<br />Example:<ul><li>Human name: No courses and workshops</li><li>Query string: no-courses-workshops</li><li>Filter query for API: !category_id:0.3.1.0.0</li></p>'),
+      '#tree' => TRUE,
     );
+
+    for ($i = 0; $i < 10; $i++) {
+
+      $form['culturefeed-search-filter-options'][$i]['title'] = array(
+        '#title' => t('Human name'),
+        '#type' => 'textfield',
+        '#default_value' => isset($options[$i]['title']) ? $options[$i]['title'] : ''
+      );
+
+      $form['culturefeed-search-filter-options'][$i]['query-string'] = array(
+        '#title' => t('Querystring for url'),
+        '#type' => 'textfield',
+        '#default_value' => isset($options[$i]['query-string']) ? $options[$i]['query-string'] : ''
+      );
+
+      $form['culturefeed-search-filter-options'][$i]['api-filter-query'] = array(
+        '#title' => t('Filterquery for API'),
+        '#type' => 'textfield',
+        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
+      );
+    }
   }
 
   return $form;
@@ -339,8 +363,16 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
   }
-  if (isset($edit['culturefeed-search-filter-form'])) {
-    variable_set('culturefeed_search_form_active_filters', array_filter($edit['culturefeed-search-filter-form']));
+  if (isset($edit['culturefeed-search-filter-options'])) {
+
+    $options = array();
+    foreach ($edit['culturefeed-search-filter-options'] as $option) {
+      if (!empty($option['title']) && !empty($option['query-string']) && !empty($option['api-filter-query'])) {
+        $options[] = $option;
+      }
+    }
+
+    variable_set('culturefeed_search_filter_options', $options);
   }
 }
 
@@ -427,18 +459,11 @@ function culturefeed_search_ui_block_view($delta) {
  */
 function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
 
-  // Check for form filters that are triggered by the filter form block.
-  if (!empty($_GET['free-only'])) {
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('free', TRUE));
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('price:0'));
-  }
-  if (!empty($_GET['no-courses-workshops'])) {
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('exclude', 'workshops'));
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('!category_id:0.3.1.0.0'));
-  }
-  if (!empty($_GET['for-toddlers'])) {
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\Parameter('doelpubliek', 'kleuters'));
-    $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery('agefrom:(3 OR 4 OR 5)'));
+  $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+  foreach ($filter_options as $option) {
+    if (!empty($_GET[$option['query-string']])) {
+      $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery($option['api-filter-query']));
+    }
   }
 }
 
@@ -553,37 +578,19 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if form filters are selected.
-  if (!empty($query['free-only'])) {
-    $search_query = $query;
-    unset($search_query['free-only']);
-    $url = url($path, array('query' => $search_query));
-    $build['free-only'] = array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => t('Free only'),
-      '#url' => $url
-    );
-  }
-  if (!empty($query['no-courses-workshops'])) {
-    $search_query = $query;
-    unset($search_query['no-courses-workshops']);
-    $url = url($path, array('query' => $search_query));
-    $build['no-courses-workshops'] = array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => t('No courses and workshops'),
-      '#url' => $url
-    );
-  }
-  if (!empty($query['for-toddlers'])) {
-    $search_query = $query;
-    unset($search_query['for-toddlers']);
-    $url = url($path, array('query' => $search_query));
-    $build['for-toddlers'] = array(
-      '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => t('For toddlers'),
-      '#url' => $url
-    );
+  $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+  foreach ($filter_options as $option) {
+    if (!empty($query[$option['query-string']])) {
+      $search_query = $query;
+      unset($search_query[$option['query-string']]);
+      $url = url($path, array('query' => $search_query));
+      $build['free-only'] = array(
+        '#theme' => 'culturefeed_search_active_filters_item',
+        '#label' => t($option['title']),
+        '#url' => $url
+      );
+    }
   }
 
   return $build;
 }
-

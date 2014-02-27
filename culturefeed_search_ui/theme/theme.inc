@@ -241,3 +241,35 @@ function theme_culturefeed_search_pager_summary($variables) {
   return '<div class="pager-summary">' . $pager_summary . '</div>';
 
 }
+
+/**
+ * Theme the admin form for creating custom filters.
+ */
+function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
+
+  $container = $variables['element'];
+
+  $rows = array();
+  foreach (element_children($container) as $key) {
+
+    $row = array();
+    foreach (element_children($container[$key]) as $child_key) {
+      $container[$key][$child_key]['#attributes']['placeholder'] = $container[$key][$child_key]['#title'];
+      unset($container[$key][$child_key]['#title']);
+      $row[] = drupal_render($container[$key][$child_key]);
+    }
+
+    $rows[] = $row;
+  }
+
+  $table_variables = array(
+    'header' => array(
+      t('Human name'),
+      t('Querystring for drupal url'),
+      t('Filterquery for API')
+    ),
+    'rows' => $rows,
+  );
+
+  return theme('table', $table_variables);
+}
