@@ -128,6 +128,16 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-followers-block',
     ),
+    'culturefeed_pages_members_block' => array(
+      'variables' => array(
+        'page' => NULL,
+        'members' => array(),
+        'num_members' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-members-block',
+    ),
     'culturefeed_pages_events_admin_page' => array(
       'variables' => array('results' => array(), 'page' => NULL),
       'template' => 'culturefeed-pages-events-admin-page',
@@ -462,6 +472,11 @@ function culturefeed_pages_block_info() {
     'info' => t('Culturefeed pages: followers'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  
+  $blocks['members'] = array(
+    'info' => t('Culturefeed pages: members'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
@@ -545,6 +560,10 @@ function culturefeed_pages_block_view($delta) {
     case 'followers':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
+    
+    case 'members':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_members($page);
 
     case 'page-agenda':
       $page = menu_get_object('culturefeed_pages_page', 3);

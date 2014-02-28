@@ -1157,9 +1157,9 @@ function culturefeed_pages_page_my_pages() {
         $path = culturefeed_search_detail_path('page', $followed_page->page->getId(), $followed_page->page->getName());
 
         $follow_link = l(t('Unfollow'), 'culturefeed/pages/defollow/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
-        $become_member_link = t('You are a member of this page');
+        $become_member_link = t('You are an employee of this page');
         if (!in_array($followed_page->page->getId(), $membership_page_ids)) {
-          $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
+          $become_member_link = l(t('Become an employee'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
         }
 
         $row = array(

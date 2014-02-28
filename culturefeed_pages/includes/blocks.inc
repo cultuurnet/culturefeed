@@ -364,6 +364,47 @@ function culturefeed_pages_block_followers($page) {
 }
 
 /**
+ * Returns a block with members of a certain type of content.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_block_members($page) {
+  
+  if (empty($page) || !($page instanceof CultureFeed_Cdb_Item_Page)) {
+    return;
+  }
+
+  $account = DrupalCultureFeed::getLoggedInAccount();
+
+  if (empty($account->culturefeed_uid)) {
+    return;
+  }
+  
+  $member_list = NULL;
+  try {
+    $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
+    $member_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
+  
+  $build = array();
+
+  $build['items_list'] = array(
+    '#theme' => 'culturefeed_pages_members_block',
+    '#page' => $page,
+    '#members' => $member_list->memberships,
+    '#num_members' => count($member_list->memberships),
+  );
+  
+  $block['subject'] = t('Employees');
+  $block['content'] = $build;
+
+  return $block;
+}
+
+/**
  * Block callback to show the related activities of a page.
  */
 function culturefeed_pages_block_related_activities($page) {
