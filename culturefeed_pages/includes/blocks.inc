@@ -330,11 +330,11 @@ function culturefeed_pages_block_followers($page) {
     return;
   }
 
-  $account = DrupalCultureFeed::getLoggedInAccount();
+  /*$account = DrupalCultureFeed::getLoggedInAccount();
 
   if (empty($account->culturefeed_uid)) {
     return;
-  }
+  }*/
 
   $user_list = NULL;
   try {
@@ -373,11 +373,11 @@ function culturefeed_pages_block_members($page) {
     return;
   }
 
-  $account = DrupalCultureFeed::getLoggedInAccount();
+  /*$account = DrupalCultureFeed::getLoggedInAccount();
 
   if (empty($account->culturefeed_uid)) {
     return;
-  }
+  }*/
   
   $member_list = NULL;
   try {
