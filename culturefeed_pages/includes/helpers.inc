@@ -68,10 +68,10 @@ function culturefeed_pages_member_link(CultureFeed_Cdb_Item_Page $page, $use_aja
   }
 
   if ($is_member) {
-    return l(t('I don\'t work here'), 'pages/' . $page->getId() . '/membership/delete/nojs', $options);
+    return l(t('Remove membership'), 'pages/' . $page->getId() . '/membership/delete/nojs', $options);
   }
   elseif ($page->getPermissions()->allowFollowers) {
-    return l(t('I work here'), 'culturefeed/pages/join/nojs/' . $page->getId(), $options);
+    return l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), $options);
   }
 
 }
