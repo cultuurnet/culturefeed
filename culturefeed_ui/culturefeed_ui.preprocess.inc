@@ -260,6 +260,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     '#theme' => 'item_list',
     '#items' => $contextual_links,
   );
+  $variables['contextual_links_array'] = $contextual_links;
   $variables['contextual_links'] = drupal_render($item_list);
 
   // nick
