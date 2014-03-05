@@ -330,12 +330,6 @@ function culturefeed_pages_block_followers($page) {
     return;
   }
 
-  $account = DrupalCultureFeed::getLoggedInAccount();
-
-  if (empty($account->culturefeed_uid)) {
-    return;
-  }
-
   $user_list = NULL;
   try {
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
@@ -370,12 +364,6 @@ function culturefeed_pages_block_followers($page) {
 function culturefeed_pages_block_members($page) {
   
   if (empty($page) || !($page instanceof CultureFeed_Cdb_Item_Page)) {
-    return;
-  }
-
-  $account = DrupalCultureFeed::getLoggedInAccount();
-
-  if (empty($account->culturefeed_uid)) {
     return;
   }
   
