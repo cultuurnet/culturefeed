@@ -398,7 +398,7 @@ function culturefeed_pages_block_members($page) {
     '#num_members' => count($member_list->memberships),
   );
   
-  $block['subject'] = t('Employees');
+  $block['subject'] = t('Members');
   $block['content'] = $build;
 
   return $block;

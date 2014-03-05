@@ -17,7 +17,7 @@
     </ul>
 
   <?php else: ?>
-    <p><?php print t('This page has no employees yet.'); ?></p>
+    <p><?php print t('This page has no members yet.'); ?></p>
   <?php endif; ?>
 
   <?php
