@@ -54,7 +54,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
   /**
    * Add the sorting parameters for the agenda searches.
    */
-  private function addSort($params) {
+  protected function addSort($params) {
 
     switch ($params['sort']) {
 
@@ -186,7 +186,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
    * We do this before rendering, because data for by example the recommend link would generate 20 requests.
    * This way we can lower this to only 1 request.
    */
-  private function warmupCache() {
+  protected function warmupCache() {
 
     $this->translateFacets();
     $this->prepareSlugs();

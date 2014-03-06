@@ -186,3 +186,21 @@ function culturefeed_oauth_authorize($application_key = NULL) {
 
   exit();
 }
+
+/**
+ * Check if the user is authenticated. If he is redirect to destination.
+ */
+function culturefeed_authenticated_action_page() {
+
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+    $query = array();
+    if (!empty($_GET['query'])) {
+      parse_str($_GET['query'], $query);
+    }
+
+    $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : '';
+    drupal_goto($redirect, array('query' => $query));
+  }
+
+  return array('#theme' => 'culturefeed_authenticated_page');
+}

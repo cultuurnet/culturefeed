@@ -1,10 +1,12 @@
-
 <?php if (!empty($add_new_url)): ?>
-  <a href="<?php print $add_new_url; ?>"><?php print t('New message'); ?></a>
+<h2><?php print t('Inbox'); ?></h2>
+<p><a href="<?php print $add_new_url; ?>"> + <?php print t('New message'); ?></a></p>
 <?php endif; ?>
+  
+<div class="messages">
 
-<ul class="messages">
-<?php foreach ($items as $item): ?>
-  <li class="<?php print $item['class'] ?>"><?php print $item['data'] ?></li>
-<?php endforeach; ?>
-</ul>
+  <?php foreach ($items as $item): ?>
+    <?php print $item['data'] ?>
+  <?php endforeach; ?>
+  
+</div>

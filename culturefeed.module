@@ -30,6 +30,21 @@ function culturefeed_init() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function culturefeed_theme() {
+
+  return array(
+    'culturefeed_authenticated_page' => array(
+      'variables' => array(),
+      'path' => drupal_get_path('module', 'culturefeed') . '/theme',
+      'template' => 'culturefeed-authenticated-page',
+      'file' => 'theme.inc',
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function culturefeed_menu() {
@@ -69,6 +84,14 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/authorize'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_authorize',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed.pages.inc',
+  );
+
+  $items['authenticated'] = array(
+    'title' => 'Log in',
+    'page callback' => 'culturefeed_authenticated_action_page',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
@@ -137,4 +160,22 @@ function culturefeed_form_system_performance_settings_alter(&$form, $form_state)
     '#title' => t('Cache API requests'),
     '#default_value' => variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED),
   );
+}
+
+/**
+ * Process function to expand the file element type with an image preview.
+ */
+function culturefeed_image_file_process($element, &$form_state, $form) {
+  
+  $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
+
+  if ($fid && $element['#file']) {
+    $element['filename'] = array(
+      '#type' => 'markup',
+      '#markup' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $element['#file']->uri)),
+      '#weight' => -10,
+    );
+  }
+
+  return $element;
 }

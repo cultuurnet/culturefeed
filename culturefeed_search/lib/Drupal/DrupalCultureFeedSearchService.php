@@ -33,6 +33,8 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
     $endpoint = variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION);
     $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
 
+    module_invoke_all('culturefeed_search_service_created', $service);
+
     if (module_exists('culturefeed_devel')) {
       $service->enableLogging();
     }
@@ -52,7 +54,7 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    * getClient().
    *
    * @param ConsumerCredentials $consumerCredentials
-   * @return Ambigous <CultureFeed, DrupalCultureFeed_Cache>
+   * @return self
    */
   public static function getClient(ConsumerCredentials $consumerCredentials) {
     if (!self::$searchService) {

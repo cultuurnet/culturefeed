@@ -31,7 +31,6 @@ function culturefeed_pages_theme() {
   $path = drupal_get_path('module', 'culturefeed_pages') . '/theme';
 
   return array(
-
     'culturefeed_pages_basic_search_page' => array(
       'variables' => array(
         'form' => NULL,
@@ -43,35 +42,30 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-basic-search-page',
     ),
-
     'culturefeed_pages_basic_search_result_item' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-basic-search-result-item',
     ),
-
     'culturefeed_page' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page',
     ),
-
     'culturefeed_page_summary' => array(
       'variables' => array('item' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page-summary',
     ),
-
     'culturefeed_page_invisible' => array(
       'variables' => array('page' => NULL),
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-page-invisible',
     ),
-
     'culturefeed_pages_fellow_members_block' => array(
       'variables' => array(
         'account' => NULL,
@@ -82,7 +76,6 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-fellow-members-block',
     ),
-
     'culturefeed_pages_request_admin_membership_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -92,13 +85,11 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-request-admin-membership-block',
 
     ),
-
     'culturefeed_pages_following_pages_block' => array(
       'variables' => array('following' => array()),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_block_admin_options' => array(
       'variables' => array(
         'admin_menu' => NULL,
@@ -111,14 +102,12 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-block-admin-options',
     ),
-
     'culturefeed_pages_page_menu_item' => array(
       'variables' => array('title' => '', 'url' => '', 'description' => ''),
       'template' => 'culturefeed-pages-page-menu-item',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_user_search_result' => array(
       'variables' => array(
         'result' => NULL,
@@ -129,7 +118,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_followers_block' => array(
       'variables' => array(
         'page' => NULL,
@@ -140,14 +128,22 @@ function culturefeed_pages_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-followers-block',
     ),
-
+    'culturefeed_pages_members_block' => array(
+      'variables' => array(
+        'page' => NULL,
+        'members' => array(),
+        'num_members' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-members-block',
+    ),
     'culturefeed_pages_events_admin_page' => array(
       'variables' => array('results' => array(), 'page' => NULL),
       'template' => 'culturefeed-pages-events-admin-page',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_page_agenda' => array(
       'variables' => array(
         'items' => array(),
@@ -158,7 +154,6 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-agenda',
       'path' => $path,
     ),
-
     'culturefeed_pages_follow_success_message' => array(
       'variables' => array(
         'page' => NULL,
@@ -166,7 +161,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_unfollow_success_message' => array(
       'variables' => array(
         'page' => NULL,
@@ -174,7 +168,6 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_page_my_pages' => array(
       'variables' => array(
         'build' => array(),
@@ -184,13 +177,21 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-my-page',
       'file' => 'theme.inc',
     ),
-
     'culturefeed_pages_login_required_message' => array(
       'variables' => array('page' => NULL, 'action' => ''),
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_pages_admin_request_link' => array(
+      'variables' => array('page' => NULL, 'cf_user' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_pages_membership_delete_not_possible' => array(
+      'variables' => array('page' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -471,6 +472,11 @@ function culturefeed_pages_block_info() {
     'info' => t('Culturefeed pages: followers'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  
+  $blocks['members'] = array(
+    'info' => t('Culturefeed pages: members'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
@@ -554,6 +560,10 @@ function culturefeed_pages_block_view($delta) {
     case 'followers':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
+    
+    case 'members':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_members($page);
 
     case 'page-agenda':
       $page = menu_get_object('culturefeed_pages_page', 3);
@@ -753,12 +763,11 @@ function culturefeed_pages_culturefeed_search_page_info() {
       'page_title' => t('Pages'),
       'search_title' => t('Pages'),
       'class_name' => 'CultureFeedPagesSearchPage',
-      'sort_default' => 'relevancy',
+      'sort_default' => \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW,
       'sort_options' => array(
-        'relevancy' => t('Relevancy'),
+        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
         'title' => t('Alphabetical'),
         \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => t('Number of members'),
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
       ),
     ),
   );

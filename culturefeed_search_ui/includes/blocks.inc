@@ -142,8 +142,10 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  *   Domain id where this facet belongs to. This is used to show the title
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
+ * @param $sort
+ *   Type of sorting. Can be default (empty), alphabetically, or total_results
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array()) {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort = '') {
 
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
@@ -191,6 +193,7 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
         '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
         '#facet' => $facet,
         '#items' => $items,
+        '#sort' => $sort,
       ),
     );
   }
@@ -209,8 +212,7 @@ function culturefeed_search_ui_block_date_facet() {
   $build = array();
 
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
-  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items);
-
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, '');
   if (!empty($facet_block)) {
 
     $build = array();
@@ -237,6 +239,7 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['date_range'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Choose a date'),
     '#title_display' => 'invisible',
     '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
@@ -371,6 +374,7 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
@@ -513,6 +517,7 @@ function culturefeed_search_ui_city_only_facet_form() {
 
   $form['location'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
@@ -585,4 +590,50 @@ function culturefeed_search_ui_search_active_filters_block() {
 
   return $build;
 
+}
+
+/**
+ * Show the filter form for the search ui.
+ */
+function culturefeed_search_ui_block_filter_form() {
+
+  $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+
+  $form = array();
+  $form['filter-options'] = array();
+
+  foreach ($options as $option) {
+    $form['filter-options'][$option['query-string']] = array(
+      '#type' => 'checkbox',
+      '#title' => t($option['title']),
+      '#default_value' => !empty($_GET[$option['query-string']])
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Filter')
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the filter form.
+ */
+function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+  foreach ($form['filter-options'] as $key => $option) {
+    unset($query[$key]);
+    if (!empty($form_state['values'][$key])) {
+      $query[$key] = TRUE;
+    }
+  }
+
+  $form_state['redirect'] = array(
+    $_GET['q'],
+    array('query' => $query)
+  );
 }

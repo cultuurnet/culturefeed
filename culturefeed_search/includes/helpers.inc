@@ -428,15 +428,27 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', $domain);
 
-  // Skip first level event types. (specific for UIV).
-  if ($domain == 'eventtype') {
-    $query->condition('cst.p1', '', '!=');
+  // Add parent condition.
+  if (!empty($conditions['parent'])) {
+    $db_or = db_or();
+    $db_or->condition('p1', $conditions['parent'], '=');
+    $db_or->condition('p2', $conditions['parent'], '=');
+    $db_or->condition('p3', $conditions['parent'], '=');
+    $db_or->condition('p4', $conditions['parent'], '=');
+    $query->condition($db_or);
   }
 
   // Add extra conditions.
+  /* This is causing error on /agenda/pages search => logged in CF-214
   if (!empty($conditions['tid'])) {
     foreach ($conditions as $field => $value) {
-      $query->condition($field, $value);
+      $query->condition($field, $value, '=');
+    }
+  }
+  */
+  if (!empty($conditions['tid_like'])) {
+    foreach ($conditions as $field => $value) {
+      $query->condition('tid', $value . '%', 'like');
     }
   }
 
@@ -462,6 +474,15 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
  */
 function culturefeed_search_get_eventtype_categories($conditions = array()) {
   return culturefeed_search_get_categories_by_domain('eventtype', $conditions);
+}
+
+/**
+ * Retrieves a list of categories for the theme domain.
+ * @param $conditions
+ *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
+ */
+function culturefeed_search_get_theme_categories($conditions = array()) {
+  return culturefeed_search_get_categories_by_domain('theme', $conditions);
 }
 
 /**
@@ -569,10 +590,10 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
 }
 
 /**
- * Retrieves a list of flanders regions as suggestion.
+ * Retrieves a list of cities as suggestion.
  * @param string $search_string String to search for.
  * @param bool $include_regions
- *   Include also the regions in the suggestions, or not.
+ *   Include also the cities in the suggestions, or not.
  */
 function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
 
@@ -584,6 +605,47 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
   }
 
   return $suggestions;
+
+}
+
+
+/**
+ * Retrieves a list of categories for the workingregion domain.
+ *
+ * @param $conditions
+ *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
+ *
+ */
+function culturefeed_search_get_workingregion_categories($conditions = array()) {
+
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name'));
+  $query->condition('cst.did', 'workingregion');
+  $query->condition('cst.language', culturefeed_search_get_preferred_language());
+
+  if (!empty($conditions)) {
+    foreach ($conditions as $field => $value) {
+      if (is_array($value)) {
+        $query->condition($field, $value, 'IN');
+      }
+      else {
+        if ($value === NULL) {
+          $query->isNull($field);
+        }
+        else {
+          $query->condition($field, $value);
+        }
+      }
+    }
+  }
+
+  $result = $query->execute();
+  $categories = array();
+  foreach ($result as $row) {
+    $categories[$row->tid] = $row->name;
+  }
+
+  return $categories;
 
 }
 

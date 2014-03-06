@@ -61,18 +61,41 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
   $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
 
   $items = array();
+  $facets = $variables['items'];
+  $sort_values = array();
+  $sort = FALSE;
+
   // Add all the facet items to the build.
-  foreach ($variables['items'] as $facet_item) {
+  foreach ($facets as $key => $facet_item) {
 
     $sub_item_output = array();
     $has_active_subitem = FALSE;
 
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
+      $sort_values[] = $facet_item->getLabel();
+      $sort = TRUE;
+    }
+    elseif ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+      $sort_values[] = $facet_item->getTotalResults();
+      $sort = TRUE;
+    }
+
+    $sub_item_sort_values = array();
     // Add the subitems from this facet item.
     if ($facet_item->hasSubItems()) {
 
       $sub_items = $facet_item->getSubItems();
 
-      foreach ($sub_items as $sub_item) {
+      // Create link for every sub item.
+      foreach ($sub_items as $sub_item_key => $sub_item) {
+
+        // Construct unique key for sorting.
+        if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
+          $sub_item_sort_values[] = $sub_item->getLabel();
+        }
+        elseif ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+          $sub_item_sort_values[] = $sub_item->getTotalResults();
+        }
 
         // If the list has an active subitem. Add class.
         $sub_item_active = in_array($sub_item->getValue(), $active_options);
@@ -87,6 +110,16 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'path' => $path,
           'active' => $sub_item_active,
         ));
+
+      }
+
+      // Sort based on the sorting values.
+      if ($sort) {
+        array_multisort($sub_item_sort_values, $sub_item_output);
+        if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+          $sub_item_output = array_reverse($sub_item_output);
+          $sub_item_sort_values = array_reverse($sub_item_sort_values);
+        }
       }
     }
 
@@ -106,8 +139,17 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'output' => $item_output,
       'sub_items' => $sub_item_output,
       'has_active_sub_item' => $has_active_subitem,
+      'subitem_sort_values' => $sub_item_sort_values,
     );
 
+  }
+
+  // Sort based on the sorting values.
+  if ($sort) {
+    array_multisort($sort_values, $items);
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+      $items = array_reverse($items);
+    }
   }
 
   $variables['items'] = $items;
@@ -119,7 +161,26 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
  * @see culturefeed-search-facet.tpl.php
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$variables) {
+
   culturefeed_search_ui_preprocess_culturefeed_search_facet($variables);
+
+  $sort_values = array();
+  foreach ($variables['items'] as $item) {
+    if (!empty($item['sub_items'])) {
+      foreach ($item['sub_items'] as $subitem_key => $sub_item) {
+        $variables['event_types'][] = $sub_item;
+        $sort_values[] = $item['subitem_sort_values'][$subitem_key];
+      }
+    }
+  }
+
+  // Sort based on the sorting values.
+  if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY || $variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+    array_multisort($sort_values, $variables['event_types']);
+    if ($variables['sort'] == CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS) {
+      $variables['event_types'] = array_reverse($variables['event_types']);
+    }
+  }
 }
 
 /**
@@ -164,14 +225,6 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 }
 
 /**
- * Preproces a search facet item.
- * @see culturefeed-search-suggestions.tpl.php
- */
-function culturefeed_search_ui_preprocess_culturefeed_search_suggestions(&$variables) {
-
-}
-
-/**
  * Theme the pager summary for a search result.
  */
 function theme_culturefeed_search_pager_summary($variables) {
@@ -187,4 +240,36 @@ function theme_culturefeed_search_pager_summary($variables) {
 
   return '<div class="pager-summary">' . $pager_summary . '</div>';
 
+}
+
+/**
+ * Theme the admin form for creating custom filters.
+ */
+function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
+
+  $container = $variables['element'];
+
+  $rows = array();
+  foreach (element_children($container) as $key) {
+
+    $row = array();
+    foreach (element_children($container[$key]) as $child_key) {
+      $container[$key][$child_key]['#attributes']['placeholder'] = $container[$key][$child_key]['#title'];
+      unset($container[$key][$child_key]['#title']);
+      $row[] = drupal_render($container[$key][$child_key]);
+    }
+
+    $rows[] = $row;
+  }
+
+  $table_variables = array(
+    'header' => array(
+      t('Human name'),
+      t('Querystring for drupal url'),
+      t('Filterquery for API')
+    ),
+    'rows' => $rows,
+  );
+
+  return theme('table', $table_variables);
 }

@@ -137,9 +137,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Ticket links.
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
+    
     $variables['tickets'] = array();
+    $variables['ticket_buttons'] = array();
+
     foreach ($ticket_links as $link) {
       $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+
+      // Provide some themable ticket buttons.
+      $button = array();
+      $button['text'] = t('Buy tickets');      
+      $button['link'] = $link->getHLink();
+      $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $variables['ticket_buttons'][] = $button;
     }
 
     // Performers
@@ -156,6 +166,44 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['performers'] = implode(', ', $performer_labels);
       }
     }
+
+    // Pictures
+    $main_picture = '';
+    $pictures = array();
+
+    $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    foreach ($photos as $photo) {
+      $pictures[] = $photo->getHLink();
+      if ($photo->isMain()) {
+        $main_picture = $photo->getHLink();
+      }
+    }
+
+    // Support for mediatype imageweb
+    $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+    foreach ($images as $image) {
+      $pictures[] = $image->getHLink();
+      if ($image->isMain() && empty($main_picture)) {
+        $main_picture = $image->getHLink();
+      }
+    }
+
+    // If no main picture is set we use first picture
+    if (empty($main_picture) && count($pictures) > 0) {
+      $main_picture = $pictures[0];
+    }
+      
+    // we don't want the main picture to show twice
+    if (!empty($main_picture)) {
+      unset($pictures[0]);
+    }
+
+    $variables['main_picture'] = $main_picture;
+    $variables['pictures'] = $pictures;
+    
+    // Make sure usage of thumbnail is backwards compatible
+    $variables['thumbnail'] = $variables['main_picture'];
+
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
@@ -230,19 +278,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
  * Helper preprocess function to preprocess the general agenda summary variables.
  */
 function _culturefeed_agenda_preprocess_agenda_summary(&$variables) {
-
-  $item = $variables['item'];
-  $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-
-  // Add thumbnail image.
-  if ($detail) {
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    if (count($pictures) > 0) {
-      $variables['thumbnail'] = $pictures->current()->getHLink();
-    }
-  }
-
+  _culturefeed_agenda_preprocess_agenda($variables);
 }
 
 /**
@@ -254,24 +290,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Add thumbnail image.
-  $variables['main_picture'] = '';
-  $variables['pictures'] = array();
   if ($detail) {
-
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    foreach ($pictures as $picture) {
-      $variables['pictures'][] = $picture->getHLink();
-      if ($picture->isMain()) {
-        $variables['main_picture'] = $picture->getHLink();
-      }
-      // if main is not set use first image as main picture
-      elseif (isset($variables['pictures'][0])) {
-        $variables['main_picture'] = $variables['pictures'][0];
-      }
-      // we don't want the main picture to show twice
-      unset($variables['pictures'][0]);
-    }
 
     // Add videos.
     $variables['videos'] = array();
@@ -346,6 +365,37 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $variables['contact']['phone'] = implode(', ', $phones);
     $variables['contact']['fax'] = implode(', ', $faxes);
 
+    // Reservation data.
+    $variables['reservation'] = $contact_info->getReservationInfo();
+    $reservation_info = $variables['reservation'];
+
+      // Reservation mail
+      if (isset($reservation_info['mails'])) {
+        foreach ($reservation_info['mails'] as $mail) {
+          $reservation_mails[] = l($mail, 'mailto:' . $mail);
+        }
+        $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+      }
+
+      // Reservation phone
+      if (isset($reservation_info['phone'])) {
+        foreach ($reservation_info['phone'] as $phone) {
+          $reservation_phones[] = $phone;
+        }
+        $variables['reservation']['phone'] = implode(', ', $reservation_phones);
+      }
+
+      // Reservation url
+      if (isset($reservation_info['url'])) {
+        foreach ($reservation_info['url'] as $url) {
+          // clean up link text
+          $url_text = str_replace('http://', '', $url);
+          $url_text = str_replace('https://', '', $url_text);
+          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url);
+        }
+        $variables['reservation']['url'] = implode(', ', $reservation_urls);
+      }
+
     // Coordinates.
     $addresses = $contact_info->getAddresses();
     if ($addresses) {
@@ -358,9 +408,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-
-    // Reservation data.
-    $variables['reservation'] = $contact_info->getReservationInfo();
 
   }
 
@@ -666,4 +713,73 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
   foreach ($results as $result) {
     $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
   }
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_agenda_de_lijn_widget().
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$variables) {
+
+  $address_from = array();
+  $address_to = array();
+
+  $cf_account = NULL;
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+  }
+
+  // Get addres from (user his address)
+  if ($cf_account) {
+    $delijn_str_nr = explode(' ', $cf_account->street);
+    $delijn_nr = array_pop($delijn_str_nr);
+    if (1 === preg_match('#[0-9]#', $delijn_nr)) {
+      $delijn_str = str_replace($delijn_nr, '', $cf_account->street);
+    }
+    else {
+      $delijn_nr = '';
+      $delijn_str = $cf_account->street;
+    }
+    $address_from = array(
+      'city' => $cf_account->city,
+      'street' => $delijn_str,
+      'nr' => $delijn_nr
+    );
+  }
+
+  // Get address to.
+  $cdb_item = $variables['item']->getEntity();
+  switch ($variables['item']->getType()) {
+    case 'actor':
+
+      $contact_info = $cdb_item->getContactInfo();
+      $addresses = $contact_info->getAddresses();
+      if ($addresses) {
+        $physical_address = $addresses[0]->getPhysicalAddress();
+      }
+
+      break;
+
+    case 'event':
+
+      if ($cdb_item->getLocation()) {
+        $physical_address = $cdb_item->getLocation()->getAddress()->getPhysicalAddress();
+      }
+
+      break;
+  }
+
+  if ($physical_address) {
+    $address_to = array(
+      'city' => check_plain($physical_address->getCity()),
+      'street' => check_plain($physical_address->getStreet()),
+      'nr' => check_plain($physical_address->getHouseNumber()),
+    );
+  }
+
+  $settings = array('address_from' => $address_from, 'address_to' => $address_to);
+
+  drupal_add_js(array('delijn' => $settings), 'setting');
 }

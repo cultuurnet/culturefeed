@@ -1,0 +1,6 @@
+name = CultureFeed Roles
+description = Pre-assign roles to UiTID users that have not logged in yet
+core = 7.x
+dependencies[] = culturefeed
+
+configure = admin/config/culturefeed/roles

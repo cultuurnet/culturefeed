@@ -49,7 +49,7 @@ class CultureFeedSearchPage {
    * Default sort key.
    * @var String
    */
-  protected $defaultSortKey = 'relevancy';
+  protected $defaultSortKey = \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW;
 
   /**
    * List of input parameters to be given to the search.

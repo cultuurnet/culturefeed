@@ -9,11 +9,10 @@
  */
 function culturefeed_social_block_recent_activities() {
 
-  $consumer_key = variable_get('culturefeed_api_application_key', '');
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT;
   $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
-  $query->consumer = $consumer_key;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -58,6 +57,7 @@ function culturefeed_social_block_user_activities($account) {
   $query->type = array_keys($active_types);
   $query->userId = $account->culturefeed_uid;
   $query->private = FALSE;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
@@ -141,6 +141,7 @@ function culturefeed_social_block_recommended_by($object) {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
   $query->contentType = $content_type;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   switch ($content_type) {
 
@@ -218,7 +219,7 @@ function culturefeed_social_block_recommended_by($object) {
  **/
 function culturefeed_social_block_comments($object) {
 
-  if (!$object || !method_exists($object, 'getType')) {
+  if (!$object || !method_exists($object, 'getType' || arg(4) == 'edit' || arg(4) == 'tags')) {
     return;
   }
 
