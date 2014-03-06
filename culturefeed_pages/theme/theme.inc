@@ -307,6 +307,41 @@ function culturefeed_pages_preprocess_culturefeed_pages_followers_block(&$variab
 
 }
 
+/**
+ * Theme 1 members block.
+ * @param $variables
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_members_block(&$variables) {
+
+  $page = $variables['page'];
+  $variables['title'] = $page->getName();
+
+  $uids = culturefeed_get_uids_for_memberships($variables['members']);
+
+  $members = array();
+  foreach ($variables['members'] as $cf_member) {
+
+    // If user was not found in drupal, don't show it.
+    if (!isset($uids[$cf_member->user->id])) {
+      continue;
+    }
+
+    $member = array();
+    $member['url'] = url('user/' . $uids[$cf_member->user->id]);
+    $member['name'] = check_plain($cf_member->user->nick);
+    $member['picture'] = check_plain($cf_member->user->depiction);
+    $member['relation'] = check_plain($cf_member->relation);
+    $member['role'] = check_plain($cf_member->role);
+
+    $members[] = $member;
+
+  }
+
+  $variables['members'] = $members;
+  $variables['member_link'] = culturefeed_pages_member_link($page);
+
+}
+
 
 /**
  * Preprocess the variables for the page administration options.

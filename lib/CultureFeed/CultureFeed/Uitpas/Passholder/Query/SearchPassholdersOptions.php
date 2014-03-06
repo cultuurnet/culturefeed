@@ -206,6 +206,10 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions extends Cultu
       }
     }
 
+    if (isset($data['kansenStatuut'])) {
+      $data['kansenStatuut'] = $data['kansenStatuut'] ? 'true' : 'false';
+    }
+
     if (isset($data['kansenStatuutBegin'])) {
       $data['kansenStatuutBegin'] = date('Y-m-d', $data['kansenStatuutBegin']);
     }

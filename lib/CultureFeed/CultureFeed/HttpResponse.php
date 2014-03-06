@@ -19,6 +19,8 @@ class CultureFeed_HttpResponse {
    */
   public $response;
 
+  const ERROR_CODE_ACCESS_DENIED = 'ACCESS_DENIED';
+
   /**
    * Constructor for a new CultureFeed_OAuthResponse instance.
    *

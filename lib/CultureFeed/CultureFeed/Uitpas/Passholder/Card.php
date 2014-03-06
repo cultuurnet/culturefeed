@@ -3,6 +3,7 @@
 class CultureFeed_Uitpas_Passholder_Card extends CultureFeed_Uitpas_ValueObject {
 
   const STATUS_STOCK = 'STOCK';
+  const STATUS_LOCAL_STOCK = 'LOCAL_STOCK';
   const STATUS_ACTIVE = 'ACTIVE';
   const STATUS_BLOCKED = 'BLOCKED';
 

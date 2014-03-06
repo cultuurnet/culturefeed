@@ -34,4 +34,11 @@ class CultureFeed_Uitpas_CardInfo {
 
     return $instance;
   }
+
+  /**
+   * @return bool
+   */
+  public function kansenStatuut() {
+    return '1' == substr($this->uitpasNumber, -2, 1);
+  }
 }
