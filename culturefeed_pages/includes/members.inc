@@ -609,7 +609,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $message = '<div class="alert alert-success">' . t('Your request to become an administrator of this page is sent') . '</div>';
+  $message = t('Your request to become an administrator of this page is sent');
 
   if ($type == 'ajax') {
     $commands = array();

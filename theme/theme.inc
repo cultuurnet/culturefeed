@@ -12,9 +12,9 @@
 function culturefeed_preprocess_culturefeed_authenticated_page(&$variables) {
 
   $cf_query = drupal_get_query_parameters($_GET, array('q'));
-  $cf_query['via'] = 'facebook';
 
-  $variables['login_facebook'] = l(t('Login with Facebook'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => array('via' => 'facebook')));
+  $cf_query['via'] = 'facebook';
+  $variables['login_facebook'] = l(t('Login with Facebook'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook')), 'query' => $cf_query));
 
   $cf_query['via'] = 'twitter';
   $variables['login_twitter'] = l('Twitter', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-twitter'), 'rel' => 'nofollow'), 'query' => $cf_query));
