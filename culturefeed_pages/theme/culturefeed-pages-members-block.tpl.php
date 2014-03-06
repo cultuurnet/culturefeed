@@ -3,7 +3,7 @@
 
   <?php if (!empty($members)): ?>
 
-    <div class="membered-times"><?php print $num_followers ?> x</div>
+    <div class="membered-times"><?php print $num_members ?> x</div>
 
     <ul>
     <?php foreach ($members as $member): ?>
@@ -22,11 +22,11 @@
 
   <?php
   /**
-   * .follow-PAGEID is used to refresh that part of the html. You can use it
+   * .member-PAGEID is used to refresh that part of the html. You can use it
    * freely as you want. E.g. wrap the text above in it or not.
    */
    ?>
-  <div class="follow-<?php print $page->getId() ?>">
+  <div class="member-<?php print $page->getId() ?>">
     <?php print $member_link ?>
   </div>
 
