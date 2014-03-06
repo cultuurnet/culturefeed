@@ -47,6 +47,11 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
    */
   public $cardSystem;
 
+  /**
+   * @var CultureFeed_Uitpas_Passholder_VoucherType
+   */
+  public $voucherType;
+
   public function __construct() {
     $this->ageRange = new CultureFeed_Uitpas_Passholder_AgeRange();
   }

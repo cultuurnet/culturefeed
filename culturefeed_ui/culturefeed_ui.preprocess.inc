@@ -254,12 +254,21 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
     $contextual_links[] = l(t('Manage actions'), 'culturefeed/activities');
   }
 
+  if (module_exists('culturefeed_messages')) {
+    $contextual_links[] = l(t('My messages'), 'culturefeed/messages');
+  }
+
+  if (module_exists('culturefeed_pages')) {
+    $contextual_links[] = l(t('My pages'), 'culturefeed/pages');
+  }
+
   $contextual_links[] = l(t('Edit account'), 'culturefeed/account/edit');
 
   $item_list = array(
     '#theme' => 'item_list',
     '#items' => $contextual_links,
   );
+  $variables['contextual_links_array'] = $contextual_links;
   $variables['contextual_links'] = drupal_render($item_list);
 
   // nick

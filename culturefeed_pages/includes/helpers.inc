@@ -41,6 +41,42 @@ function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_aja
 }
 
 /**
+ * Get the correct member url for current user.
+ * If he already is a member, it will return a become no member link, otherwise a become member.
+ * @param Culturefeed_Cdb_Item_Page $page
+ *   Page to become member / become no member.
+ * @param $use_ajax
+ *   Should the member link use ajax or not.
+ */
+function culturefeed_pages_member_link(CultureFeed_Cdb_Item_Page $page, $use_ajax = FALSE) {
+
+  if (!DrupalCultureFeed::isCultureFeedUser()) {
+    return theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
+  }
+
+  $is_member = culturefeed_pages_is_user_member_of_page($page->getId());
+
+  $options = array(
+    'query' => array(
+      'destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName())
+    ),
+  );
+
+  if ($use_ajax) {
+    drupal_add_library('system', 'drupal.ajax');
+    $options['attributes'] = array('class' => array('use-ajax'));
+  }
+
+  if ($is_member) {
+    return l(t('Remove membership'), 'pages/' . $page->getId() . '/membership/delete/nojs', $options);
+  }
+  elseif ($page->getPermissions()->allowFollowers) {
+    return l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), $options);
+  }
+
+}
+
+/**
  * Is the current user member of a given page.
  * @return bool
  */

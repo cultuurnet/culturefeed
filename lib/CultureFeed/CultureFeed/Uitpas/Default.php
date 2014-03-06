@@ -101,7 +101,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   /**
-   * Get the price of the UitPas.
+   * {@inheritdoc}
    */
   public function getPrice($consumer_key_counter = NULL) {
     $data = array();
@@ -719,6 +719,29 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return $xml->xpath_str('/response/message');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function registerPassholderInCardSystem(
+    $passholderId,
+    CultureFeed_Uitpas_Passholder_Query_RegisterInCardSystemOptions $query
+  ) {
+    $data = $query->toPostData();
+    $result = $this->oauth_client->authenticatedPostAsXml("uitpas/passholder/{$passholderId}/register", $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $object = $xml->xpath('/passHolder', false);
+
+    return CultureFeed_Uitpas_Passholder::createFromXml($object);
+  }
+
 
   /**
    * Register a ticket sale for a passholder

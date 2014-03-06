@@ -155,7 +155,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
       foreach ($card_system->distributionKeys as $key) {
         foreach ($key->conditions as $condition) {
 
-          if ($condition->definition == $condition::DEFINITION_KANSARM) {
+          if ($condition->definition == $condition::DEFINITION_KANSARM && $key->tariff > 0) {
 
             if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
               $prices[] = t('Opportunities tariff with @system: !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
