@@ -294,6 +294,15 @@ function culturefeed_set_noindex_metatag() {
  */
 function culturefeed_create_temporary_image($image, $destination) {
 
+  if (strpos($image, 'http') === false) {
+    if (isset($_SERVER['HTTPS'])) { 
+      $image = 'https:' . $image;
+    } 
+    else {
+      $image = 'http:' . $image;
+    }
+  }
+  
   $image_data = file_get_contents($image);
   file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
   $uri = file_unmanaged_save_data($image_data, $destination . '/' . drupal_basename($image));
