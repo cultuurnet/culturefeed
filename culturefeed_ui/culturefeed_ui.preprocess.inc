@@ -246,11 +246,16 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $account = $variables['account'];
 
   // contextual links
-  $contextual_links = array(
-    l(t('Edit profile'), 'culturefeed/profile/edit'),
-    l(t('Manage actions'), 'culturefeed/activities'),
-    l(t('Edit account'), 'culturefeed/account/edit'),
-  );
+  $contextual_links = array();
+
+  $contextual_links[] = l(t('Edit profile'), 'culturefeed/profile/edit');
+
+  if (module_exists('culturefeed_social')) {
+    $contextual_links[] = l(t('Manage actions'), 'culturefeed/activities');
+  }
+
+  $contextual_links[] = l(t('Edit account'), 'culturefeed/account/edit');
+
   $item_list = array(
     '#theme' => 'item_list',
     '#items' => $contextual_links,
@@ -258,8 +263,14 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['contextual_links'] = drupal_render($item_list);
 
   // nick
-  $url_profile = 'user/' . culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+  $drupal_uid = culturefeed_get_uid_for_cf_uid($variables['account']->id, $variables['account']->nick);
+  $url_profile = 'user/' . $drupal_uid;
   $variables['nick'] = l($account->nick, $url_profile);
+
+  $variables['view_own_page'] = FALSE;
+  if ($GLOBALS['user']->uid == $drupal_uid) {
+    $variables['view_own_page'] = TRUE;
+  }
 
   // name
   $name = array();
@@ -296,11 +307,8 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $variables['city'] = !empty($account->city) ? check_plain($account->city) : '';
 
   // profile
-  $variables['profile_edit_link'] = NULL;
-  if (!$account->lifestyleProfile) {
-    $variables['profile_edit_link'] = l(t('Calculate your leisure profile!'), 'uitid/game', array('attributes' => array('class' => array('profile-edit-link cta'))));
-  }
-  else {
+  if ($account->lifestyleProfile) {
+
     // lifestyleProfile name
     switch ($account->lifestyleProfile) {
       case "AZ":
@@ -315,11 +323,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
       case "FP":
         $variables['profile_name'] = t('Connoisseur');
           break;
-      default:
-        $variables['profile_name'] = t('Leisure profile not calculated yet');
-          break;
     }
-    $variables['profile_refresh_link'] = l(t('Recalculate'), 'uitid/game', array('attributes' => array('class' => array('profile-refresh-link'))));
   }
 
   // facebook toggle
@@ -401,4 +405,19 @@ function template_preprocess_culturefeed_ui_connect_hover(&$variables) {
  */
 function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
   template_preprocess_culturefeed_ui_connect($variables);
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-page-account-edit.tpl.php.
+ *
+ * @see culturefeed-ui-page-account-edit.tpl.php
+ */
+function template_preprocess_culturefeed_ui_page_account_edit(&$variables) {
+
+  $account_form = drupal_get_form('culturefeed_ui_page_account_edit_form');
+  $variables['account'] = render($account_form);
+
+  $online_accounts = culturefeed_ui_online_accounts();
+  $variables['online_accounts'] = render($online_accounts);
+
 }

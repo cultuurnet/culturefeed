@@ -3,27 +3,43 @@
  * @file
  * Page callback for culturefeed pages.
  */
+use \CultuurNet\Search\Parameter;
 
 /**
- * Page where users can search for a page. And join them.
+ * Page where users can search for a pag and join them.
  */
-function culturefeed_pages_join_page_search() {
+function culturefeed_pages_page_basic_search() {
 
-  $form = drupal_get_form('culturefeed_pages_join_form');
+  $form = drupal_get_form('culturefeed_pages_basic_search_form');
 
   $items = array();
-  if (isset($_GET['page'])) {
+  $total_results = 0;
+  if (isset($_GET['search'])) {
 
     try {
 
+      $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
       $actortypes = variable_get('culturefeed_pages_actor_types', array());
 
+      // Prepare multiple search terms for better match
+      $search_terms = str_replace('-', ' ', $_GET['search']);
+      $search_terms = explode(' ', $search_terms);
+      foreach ($search_terms as $search_term) {
+        $search_query[] = '(' . $search_term . ' OR *' . $search_term . '*)' ;
+      }
+      $search_query = implode(' AND ', $search_query);
+
       $parameters = array();
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
-      $parameters[] = new \CultuurNet\Search\Parameter\Query($_GET['page']);
+      $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+      $parameters[] = new Parameter\Query($search_query);
+      $parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
+      $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+      $parameters[] = new Parameter\Rows(CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+
+
       $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();
-
+      $total_results = $result->getTotalCount();
     }
     catch (Exception\ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_pages', $e);
@@ -36,32 +52,42 @@ function culturefeed_pages_join_page_search() {
 
   }
 
-  return array(
-    '#theme' => 'culturefeed_pages_join_page',
+  pager_default_initialize($total_results, CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+
+  $build = array();
+  $build['page'] = array(
+    '#theme' => 'culturefeed_pages_basic_search_page',
     '#form' => $form,
     '#results' => $items,
-    '#search' => isset($_GET['page']) ? $_GET['page'] : NULL,
+    '#total_results' => $total_results,
+    '#search' => isset($_GET['search']) ? $_GET['search'] : NULL,
   );
 
+  $build['pager'] = array(
+    '#theme' => 'pager',
+    '#quantity' => 5
+  );
+
+  return $build;
 }
 
 /**
- * Form callback for the form on the join page.
+ * Form callback for the basic search form.
  */
-function culturefeed_pages_join_form() {
+function culturefeed_pages_basic_search_form() {
 
   $form = array();
 
   $form['page'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name of your page'),
+    '#title' => t('Term'),
     '#autocomplete_path' => 'ajax/culturefeed/pages/page-suggestion',
-    '#default_value' => isset($_GET['page']) ? $_GET['page'] : '',
+    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('OK'),
+    '#value' => t('Search'),
   );
 
   return $form;
@@ -69,13 +95,13 @@ function culturefeed_pages_join_form() {
 }
 
 /**
- * Submit the pages join form.
+ * Submit the basic search form.
  */
-function culturefeed_pages_join_form_submit($form, &$form_state) {
+function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = array(
     $_GET['q'],
-    array('query' => array('page' => $form_state['values']['page'])),
+    array('query' => array('search' => $form_state['values']['page'])),
   );
 
 }
@@ -238,7 +264,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
   $form = array();
 
   $query = drupal_get_query_parameters();
-  $page_name = !empty($query['page']) ? $query['page'] : '';
+  $page_name = !empty($query['search']) ? $query['search'] : '';
 
   $form['name'] = array(
     '#type' => 'textfield',
@@ -359,11 +385,17 @@ function culturefeed_pages_add_form($form, &$form_state) {
   );
 
   $form['image'] = array(
-    '#type' => 'file',
+    '#type' => 'managed_file',
     '#title' => t('Picture or logo'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
     '#size' => 26,
     '#default_value' => '',
     '#weight' => 16,
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://pages',
   );
 
   $form['visible'] = array(
@@ -474,12 +506,11 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     $form_state['page_title'] = $form_state['values']['name'];
 
     // Upload Page image.
-    if ($_FILES['files']['tmp_name']['image']) {
-      $image_path = $_FILES['files']['tmp_name']['image'];
+    if (!empty($form_state['values']['image'])) {
 
-      $image = file_get_contents($image_path);
-
-      if ($image) {
+      $file = file_load($form_state['values']['image']);
+      if ($file) {
+        $image = file_get_contents(drupal_realpath($file->uri));
         try {
           $cf_pages->addImage($page_id, array('image' => $image));
         }
@@ -558,19 +589,18 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
   // The image.
   $image = $page->getImage();
+  $form_state['#old_image'] = 0;
   if (!empty($image)) {
-    $form['current_image'] = array(
-      '#theme' => 'image',
-      '#path' => $image . "?width=100&height=100",
-      '#weight' => 14,
-    );
+
+    // Create temp file to preview the external image.
+    $file = culturefeed_create_temporary_image($image, file_default_scheme() . '://pages');
+    if ($file) {
+      $form_state['#old_image'] = $file->fid;
+      $form['image']['#default_value'] = $file->fid;
+    }
+
     $form['image']['#title'] = t('Select another photo');
 
-    $form['remove_image'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Remove photo'),
-      '#weight' => 15,
-    );
   }
 
   $form['#validate'] = array(
@@ -612,7 +642,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
     $form_state['page_title'] = $form_state['values']['name'];
 
     // Remove the image if requested.
-    if (!empty($form_state['values']['remove_image'])) {
+    if (empty($form_state['values']['image']) && $form_state['#old_image'] > 0) {
       try {
         $cf_pages->removeImage($uid);
       }
@@ -621,13 +651,12 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
       }
     }
 
-    // Upload Page image.
-    if ($_FILES['files']['tmp_name']['image']) {
-      $image_path = $_FILES['files']['tmp_name']['image'];
+    // Upload new page image.
+    if ($form_state['values']['image'] && $form_state['#old_image'] != $form_state['values']['image']) {
 
-      $image = file_get_contents($image_path);
-
-      if ($image) {
+      $file = file_load($form_state['values']['image']);
+      if ($file) {
+        $image = file_get_contents(drupal_realpath($file->uri));
         try {
           $cf_pages->addImage($uid, array('image' => $image));
         }
@@ -1067,35 +1096,22 @@ function culturefeed_pages_page_my_pages() {
         $admins_of_page = array();
         $path = culturefeed_search_detail_path('page', $membership->page->getId(), $membership->page->getName());
 
+        // We need the full user list of every page, to check if the user is the only admin.
         if ($is_page_admin) {
-
           $admin_link = l(t('Administer page'), $path);
-
-          // We need the full user list of every page, to check if the user is the only admin.
-          try {
-            $admin_list = $cf_pages->getUserList($membership->page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
-          }
-          catch (Exception $e) {
-            watchdog_exception('culturefeed_pages', $e);
-            $admin_list = new CultureFeed_Pages_UserList();
-          }
-
-          foreach ($admin_list->memberships as $admin) {
-            $admins_of_page[$admin->user->id] = $admin->user->id;
-          }
-
+          $admins_of_page = culturefeed_pages_get_admins_of_page($membership->page);
         }
         else {
-
           // Show request admin link.
-          $admin_link = '<div id="request_adminship_link_' . $membership->page->getId() . '_wrapper">' . l(t('Become an administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs',
-            array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax btn'), 'data-toggle' => 'tooltip', 'data-original-title' => t('This is a request sent to the administrator of this page.')))) . '</div>';
-
+          $admin_link = theme('culturefeed_pages_admin_request_link', array(
+            'page' => $membership->page,
+            'cf_user' => $cf_user,
+          ));
         }
 
         // If user is only admin, he can't delete his membership.
         if ($is_page_admin && count($admins_of_page) == 1) {
-          $member_link = '<p class="muted">' . t('Not possible to remove') . ' <span href="#" data-toggle="tooltip" data-placement="top" title data-original-title="' . t('You\'re the only administrator of this page. You can not remove yourself as a member') . '"><i class="icon icon-question-sign"></i></span></p>';
+          $member_link = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $membership->page));
         }
         else {
           $delete_options = array(
@@ -1146,13 +1162,6 @@ function culturefeed_pages_page_my_pages() {
           $become_member_link = l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $followed_page->page->getId(), array('attributes' => array('class' => array('use-ajax'))));
         }
 
-        if ($is_page_admin) {
-          $admin_link = l(t('Administer page'), $path);
-        }
-        else {
-          $admin_link = l(t('Send request to become administrator'), 'pages/' . $membership->page->getId() . '/membership/request-admin/' . $cf_user->id . '/nojs', array('query' => drupal_get_destination()));
-        }
-
         $row = array(
           l($followed_page->page->getName(), $path),
           format_date($followed_page->creationDate, 'custom', 'd/m/Y H:i'),
@@ -1177,7 +1186,7 @@ function culturefeed_pages_page_my_pages() {
     watchdog_exception('culturefeed_pages', $e);
   }
 
-  $build['search-pages'] = culturefeed_pages_join_page_search();
+  $build['search-pages'] = culturefeed_pages_page_basic_search();
 
   return array(
     '#theme' => 'culturefeed_pages_page_my_pages',

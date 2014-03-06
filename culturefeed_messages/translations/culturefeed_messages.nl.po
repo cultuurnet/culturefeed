@@ -170,3 +170,7 @@ msgstr "uur"
 #: theme/theme.inc:261
 msgid "Today at"
 msgstr "Vandaag om"
+
+#: culturefeed_messages.module:243
+msgid "new messages"
+msgstr "nieuwe berichten"

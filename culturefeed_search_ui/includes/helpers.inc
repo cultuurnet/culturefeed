@@ -112,7 +112,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
   }
   else {
 
-    // No index can only be FALSE, if user is filtering on event type.
+    // No index is FALSE, if user is filtering on event type.
     if (isset($query['facet']['category_eventtype_id'])) {
 
       $facets = $query['facet'];
@@ -120,10 +120,24 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($facets['category_theme_id']);
 
       unset($query['location']);
+      unset($query['regId']);
       unset($query['facet']);
 
-      // If theme_id was the only extra facet / parameters, set noindex to false.
+      // If theme_id and/or regId was the only extra facet / parameters, set noindex to false.
       if (count($facets) == 0 && count($query) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
+    // No index is FALSE, if user is filtering on region Id without additional facets.
+    elseif ((isset($query['regId']) || isset($query['location'])) && !isset($query['facet'])) {
+
+      unset($query['location']);
+      unset($query['regId']);
+
+      // If regId was the only filter set noindex to false.
+      if (count($query) == 0) {
         $noindex = FALSE;
       }
 
@@ -133,15 +147,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
   // Add the "noindex, follow" meta tag if needed.
   if ($noindex) {
-    $element = array(
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'name' => 'robots',
-        'content' => 'noindex, follow',
-      ),
-    );
-
-    drupal_add_html_head($element, 'robots');
+    culturefeed_set_noindex_metatag();
   }
 
 }

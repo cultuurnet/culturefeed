@@ -17,6 +17,7 @@ function culturefeed_social_page_ajax_get_activities() {
   $query = new CultureFeed_SearchActivitiesQuery();
   $query->max = CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
   $query->start = $requested_page * CULTUREFEED_SOCIAL_BLOCK_USER_ACTIVITIES_COUNT;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
 
   if (isset($_GET['culturefeed_uid'])) {
     $query->userId = $_GET['culturefeed_uid'];
@@ -152,6 +153,10 @@ function culturefeed_social_page_activities($type = NULL) {
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
     $data = l($activity->nodeTitle, $url);
 
+    $wrapper = '
+      <div id="delete-wrapper-' . $activity->id . '" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body outer"></div>
+      </div>';
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
@@ -159,7 +164,7 @@ function culturefeed_social_page_activities($type = NULL) {
         $type_text,
         format_interval(REQUEST_TIME - $activity->creationDate) . ' ' . t('ago <br />on') . ' ' . $activity->createdVia,
         drupal_render($privacy),
-        drupal_render($delete) . '<div id="delete-wrapper-' . $activity->id . '"></div>',
+        drupal_render($delete) . $wrapper,
       ),
     );
   }
@@ -464,9 +469,11 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
-  // No redirect if argument is advanced, noredirect.
-  $redirect = empty($argument);
+  $build = array();
+  drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
 
+  // No redirect if argument is advanced, noredirect.
+  $redirect = empty($argument) || $argument == 'redirect';
   if ($redirect) {
     if (empty($activity)) {
       drupal_set_message(t('An unexpected error has occurred.'), 'error');
@@ -494,7 +501,6 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
         $action_url .= '/' . $argument;
       }
 
-      $build = array();
       $build[$identifier] = array(
         '#id' => $identifier,
         '#type' => 'link',
@@ -524,10 +530,6 @@ function culturefeed_social_page_do($activity_type, $content_type, $node_id, $ar
 
       if (isset($_GET['title'])) {
         $build[$identifier]['#options']['query']['title'] = $_GET['title'];
-      }
-
-      if ($argument == 'advanced') {
-        drupal_alter('culturefeed_social_page_do', $activity, $config, $build);
       }
 
       // Add the updated total activities.
@@ -564,8 +566,11 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
   $identifier = drupal_html_id('activity-element');
   $identifier_wrapper = drupal_html_id('activity-wrapper');
 
+  $build = array();
+  drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
+
   // No redirect if argument is advanced, noredirect.
-  $redirect = empty($argument);
+  $redirect = empty($argument) || $argument == 'redirect';
 
   if ($redirect) {
     if (empty($activity)) {
@@ -584,8 +589,6 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
         $action_url .= '/' . $argument;
       }
 
-      $build = array(
-      );
       $build[$identifier] = array(
         '#id' => $identifier,
         '#type' => 'link',
@@ -615,10 +618,6 @@ function culturefeed_social_page_undo($activity_type, $content_type, $node_id, $
       if (isset($_GET['title'])) {
         $build[$identifier]['#options']['query']['title'] = $_GET['title'];
         $build[$identifier]['#title'] = $_GET['title'];
-      }
-
-      if ($argument == 'advanced') {
-        drupal_alter('culturefeed_social_page_undo', $activity, $config, $build);
       }
 
       // Add the updated total activities.
@@ -676,4 +675,49 @@ function culturefeed_social_page_notifications($page = NULL) {
 
   return $build;
 
+}
+
+/**
+ * Page callback: Show a list of the most recent activities.
+ */
+function culturefeed_social_page_recent_activities() {
+
+  $pagelength = CULTUREFEED_SOCIAL_PAGE_ACTIVITIES_RECENT_COUNT;
+  $page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->contentType = CultureFeed_Activity::CONTENT_TYPE_EVENT;
+  $query->max = $pagelength;
+  $query->start = $page * $pagelength;
+  $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    drupal_set_message('Er is een fout opgetreden.', 'error');
+    return;
+  }
+
+  pager_default_initialize($activities->total, $pagelength);
+
+  if (empty($activities)) {
+    $content['activities'] = array(
+      '#markup' => t('No activities found.'),
+    );
+  }
+  else {
+    $content['activities'] = array(
+      '#theme' => 'culturefeed_social_user_activity_list',
+      '#activities' => $activities,
+    );
+
+    $content['pager'] = array(
+      '#theme' => 'pager',
+    );
+  }
+
+  return $content;
 }

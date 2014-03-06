@@ -11,7 +11,7 @@ function culturefeed_agenda_block_related_activities() {
 
   // Try to load the agenda detail.
   $item = culturefeed_agenda_get_active_object();
-  if (!$item) {
+  if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
     return;
   }
 
@@ -56,7 +56,7 @@ function culturefeed_agenda_block_related_activities() {
       $coordinates = $address->getPhysicalAddress()->getGeoInformation();
       if ($coordinates) {
         $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(variable_get('agenda_related_activities_range', 0));
-        $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getXCoordinate(), $coordinates->getYCoordinate());
+        $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getYCoordinate(), $coordinates->getXCoordinate());
         $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
         $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
       }
@@ -68,7 +68,6 @@ function culturefeed_agenda_block_related_activities() {
   try {
 
     $result = culturefeed_get_search_service()->search($parameters);
-
     if ($result->getTotalCount() == 0) {
       return;
     }
@@ -93,7 +92,7 @@ function culturefeed_agenda_block_related_activities() {
 
     // If current activity was not in results. Make sure we show only the request amount.
     if ($count < $total_items) {
-      $items[] = theme('culturefeed_' . $search_result->getType() . '_short_summary', array('item' => $search_result));
+      $items[] = $search_result;
     }
 
     $count++;
@@ -103,11 +102,10 @@ function culturefeed_agenda_block_related_activities() {
   $block = array();
   $block['subject'] = t('Related activities');
   $block['content'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#class' => 'related-activities'
+    '#theme' => 'culturefeed_agenda_related_activities',
+    '#results' => $items,
   );
-
+  
   return $block;
 
 }
@@ -143,6 +141,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['search'] = array(
     '#type' => 'textfield',
+    '#size' => 28,
     '#title' => t('Search string'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
     '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
@@ -342,7 +341,7 @@ function culturefeed_agenda_block_production_program() {
   foreach ($query_result as $row) {
     $provinces[$row->tid] = $row;
   }
-  
+
   $block['subject'] = t('Agenda');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',

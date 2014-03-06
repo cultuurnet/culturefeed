@@ -1,0 +1,31 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  theme/theme.inc: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-08-02 09:32+0200\n"
+"PO-Revision-Date: 2013-08-02 09:32+0200\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "To continue you have to be logged on with your UiTiD."
+msgstr "Om verder te gaan moet je aangemeld zijn met je UiTiD."
+
+msgid "Or via"
+msgstr "Of via"
+
+msgid "or"
+msgstr "of"
+
+msgid "Don't have an UiTiD? Create a !new_account."
+msgstr "Nog geen UiTiD? Maak snel een !new_account aan."

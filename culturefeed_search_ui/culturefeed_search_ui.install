@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Install / update file for culturefeed_search_ui.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function culturefeed_search_ui_uninstall() {
+
+  $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
+  foreach ($domains as $domain) {
+    variable_del('culturefeed_search_sort_' . 'facet-' . $domain->did);
+  }
+}

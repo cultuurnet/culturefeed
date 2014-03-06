@@ -216,9 +216,9 @@ function culturefeed_ui_theme() {
       'variables' => array('account' => NULL, 'like' => NULL, 'goto' => NULL),
       'template' => 'culturefeed-ui-my-uitid',
     ),
-    'culturefeed_ui_something_for_you' => array(
+    'culturefeed_ui_page_account_edit' => array(
       'variables' => array(),
-      'template' => 'culturefeed-ui-something-for-you',
+      'template' => 'culturefeed-ui-page-account-edit',
     ),
   );
 }
@@ -410,13 +410,13 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
     'uitid' => array(
       'title' => t('My account'),
       'url' => 'user/' . $user->uid,
-      'description' => t('How other user will see your account'),
+      'description' => t('How other users will see your account'),
       'weight' => -20,
     ),
     'profile' => array(
       'title' => t('Edit profile'),
       'url' => 'culturefeed/profile/edit',
-      'description' => 'Wijzig naam, adres, profielfoto,...',
+      'description' => t('Change name, address, profile picture, …'),
       'weight' => -19,
     ),
     'account' => array(

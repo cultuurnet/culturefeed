@@ -49,7 +49,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   // Check if the activity happened today.
   $time_ago = $_SERVER['REQUEST_TIME'] - $date;
   if ($time_ago < (60 * 60 * 60)) {
-    $variables['date'] = format_interval($time_ago) . ' geleden.';
+    $variables['date'] = format_interval($time_ago) . ' ' . t('ago') . '.';
   }
   else {
 
@@ -325,6 +325,13 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
     $variables['pages_total_' . $atype] = $total_per_content_type['pages'];
     $variables['activities_total_' . $atype] = $total_per_content_type['activities'];
 
+  }
+
+  if ($variables['private']) {
+    $variables['subject'] = t('My activities');
+  }
+  else {
+    $variables['subject'] = t('Activities of @username', array('@username' => $variables['account_name']));
   }
 
 }
