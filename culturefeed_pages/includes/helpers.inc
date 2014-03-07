@@ -51,7 +51,7 @@ function culturefeed_pages_follow_link(CultureFeed_Cdb_Item_Page $page, $use_aja
 function culturefeed_pages_member_link(CultureFeed_Cdb_Item_Page $page, $use_ajax = FALSE) {
 
   if (!DrupalCultureFeed::isCultureFeedUser()) {
-    return theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_FOLLOW));
+    return theme('culturefeed_pages_login_required_message', array('page' => $page, 'action' => CultureFeed_Pages_Default::ACTION_BECOME_MEMBER));
   }
 
   $is_member = culturefeed_pages_is_user_member_of_page($page->getId());
@@ -70,7 +70,7 @@ function culturefeed_pages_member_link(CultureFeed_Cdb_Item_Page $page, $use_aja
   if ($is_member) {
     return l(t('Remove membership'), 'pages/' . $page->getId() . '/membership/delete/nojs', $options);
   }
-  elseif ($page->getPermissions()->allowFollowers) {
+  elseif ($page->getPermissions()->allowMembers) {
     return l(t('Become a member'), 'culturefeed/pages/join/nojs/' . $page->getId(), $options);
   }
 
