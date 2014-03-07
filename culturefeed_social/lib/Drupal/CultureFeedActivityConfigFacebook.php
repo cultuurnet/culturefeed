@@ -27,7 +27,7 @@ class CultureFeedActivityConfigFacebook extends CultureFeedActivityConfigBase {
     $this->viewSuffix = t('shared on Facebook');
     $this->label = t('Share on Facebook');
     $this->undoNotAllowedMessage = t('Successfully shared');
-    $this->action = t('comments');
+    $this->action = t('share');
     $this->pointsOverviewSuffix = t('shared on Facebook');
 
   }

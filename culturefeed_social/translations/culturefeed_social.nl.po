@@ -275,6 +275,10 @@ msgstr "Bekijk profiel"
 msgid "Remove"
 msgstr "Verwijderen"
 
+#: includes/pages.inc:250
+msgid "Remove action"
+msgstr "Actie verwijderen"
+
 #: includes/pages.inc:144;441
 msgid "Private"
 msgstr "Privé"
@@ -318,6 +322,10 @@ msgstr "Je hebt nog geen acties uitgevoerd"
 #: includes/pages.inc:264
 msgid "Are you sure you want to delete your @action permanently"
 msgstr "Ben je zeker dat je jouw @action definitief wil verwijderen"
+
+#: includes/pages.inc:264
+msgid "Are you sure you want to delete this action permanently"
+msgstr "Ben je zeker dat je deze actie definitief wil verwijderen"
 
 #: includes/pages.inc:281
 msgid "Cancel"
