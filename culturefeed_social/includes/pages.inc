@@ -247,7 +247,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
 <h6>' . t('Remove') . ' ' . $config->action . ' </h6></div>';
   }
   else {
-    drupal_set_title(t('Remove') . ' ' . $config->action . '?');
+    drupal_set_title(($config->action ? t('Remove') . ' ' . $config->action : t('Remove action')) . '?');
   }
 
   $destination = drupal_get_destination();

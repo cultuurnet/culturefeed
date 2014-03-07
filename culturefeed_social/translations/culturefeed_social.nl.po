@@ -275,6 +275,10 @@ msgstr "Bekijk profiel"
 msgid "Remove"
 msgstr "Verwijderen"
 
+#: includes/pages.inc:250
+msgid "Remove action"
+msgstr "Actie verwijderen"
+
 #: includes/pages.inc:144;441
 msgid "Private"
 msgstr "Privé"
