@@ -1122,7 +1122,7 @@ function culturefeed_pages_page_my_pages() {
               'data-remote' => url('pages/' . $membership->page->getId() . '/membership/delete/ajax'),
             ),
           );
-          $member_link = l('Verwijder mij als lid', 'pages/' . $membership->page->getId() . '/membership/delete/nojs', $delete_options);
+          $member_link = l(t('Remove membership'), 'pages/' . $membership->page->getId() . '/membership/delete/nojs', $delete_options);
         }
 
         $row = array(
