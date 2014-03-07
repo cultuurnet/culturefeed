@@ -29,7 +29,7 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->viewPrefix = t('has replied to');
     $this->viewSuffix = '';
     $this->label = t('Comment');
-    $this->action = t('Reply');
+    $this->action = t('comment');
     $this->loginRequiredMessage = t('You must be logged in to post a comment');
     $this->onBehalfOfMessage = t('Reply as');
     $this->pointsOverviewPrefix = t('Posted a comment on');
