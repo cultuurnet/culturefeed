@@ -319,6 +319,10 @@ msgstr "Je hebt nog geen acties uitgevoerd"
 msgid "Are you sure you want to delete your @action permanently"
 msgstr "Ben je zeker dat je jouw @action definitief wil verwijderen"
 
+#: includes/pages.inc:264
+msgid "Are you sure you want to delete this action permanently"
+msgstr "Ben je zeker dat je deze actie definitief wil verwijderen"
+
 #: includes/pages.inc:281
 msgid "Cancel"
 msgstr "Annuleren"

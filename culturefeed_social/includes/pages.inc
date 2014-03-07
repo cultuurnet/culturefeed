@@ -261,7 +261,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   );
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
-    '#markup' => '<p>' . t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) . '?</p>',
+    '#markup' => '<p>' . ($config->action ? t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) : t('Are you sure you want to delete this action permanently')) . '?</p>',
   );
 
   $form['footer_wrapper'] = array(
