@@ -807,7 +807,7 @@ function culturefeed_pages_page_load($id) {
  * Title callback for the join search page.
  */
 function culturefeed_pages_basic_search_title() {
-  return format_string(t('Your page in @sitename'), array('@sitename' => variable_get('site_name')));
+  return format_string(t('Your page on @sitename'), array('@sitename' => variable_get('site_name')));
 }
 
 /**
