@@ -148,6 +148,23 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
     $result = $this->realCultureFeedPages->removeImage($id);
     $this->cacheClear('page:' . $id);
   }
+  
+  /**
+   * @see CultureFeed_Pages::addCover()
+   */
+  public function addCover($id, array $params) {
+    $result = $this->realCultureFeedPages->addCover($id, $params);
+    $this->cacheClear('page:' . $id);
+    return $result;
+  }
+
+  /**
+   * @see CultureFeed_Pages::removeCover()
+   */
+  public function removeCover($id) {
+    $result = $this->realCultureFeedPages->removeCover($id);
+    $this->cacheClear('page:' . $id);
+  }
 
   /**
    * @see CultureFeed_Pages::changePermissions()

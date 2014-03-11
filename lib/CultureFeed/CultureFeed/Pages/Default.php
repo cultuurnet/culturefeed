@@ -32,6 +32,20 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    * @var string
    */
   const IMAGE_REMOVED = 'IMAGE_REMOVED';
+  
+  /**
+   * Status code when a cover upload was successful
+   * Invalid codes: [ACTION_FAILED]
+   * @var string
+   */
+  const COVER_UPLOADED = 'COVER_UPLOADED';
+
+  /**
+   * Status code when a cover was succesfully removed.
+   * Invalid codes: [ACTION_FAILED]
+   * @var string
+   */
+  const COVER_REMOVED = 'COVER_REMOVED';
 
   /**
    * Status code when a page was successfully updated.
@@ -162,6 +176,25 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   public function removeImage($id) {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
+  }
+  
+  /**
+   * @see CultureFeed_Pages::addCover()
+   */
+  public function addCover($id, array $params) {
+
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/uploadCover', $params, TRUE, TRUE);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::COVER_UPLOADED);
+
+    return $xmlElement->xpath_str('uid');
+  }
+
+  /**
+   * @see CultureFeed_Pages::removeCover()
+   */
+  public function removeCover($id) {
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/cover/remove');
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::COVER_REMOVED);
   }
 
   /**

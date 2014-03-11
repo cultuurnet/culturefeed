@@ -397,6 +397,27 @@ function culturefeed_pages_add_form($form, &$form_state) {
     ),
     '#upload_location' => 'public://pages',
   );
+  
+  $form['cover'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Cover'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+    '#size' => 26,
+    '#default_value' => '',
+    '#weight' => 17,
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://pages',
+  );
+  
+  $form['tagline'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Tagline'),
+    '#default_value' => '',
+    '#weight' => 18,
+  );
 
   $form['visible'] = array(
     '#type' => 'hidden',
@@ -520,6 +541,22 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
       }
     }
+    
+    // Upload Page cover.
+    if (!empty($form_state['values']['cover'])) {
+
+      $file_cover = file_load($form_state['values']['cover']);
+      if ($file_cover) {
+        $cover = file_get_contents(drupal_realpath($file_cover->uri));
+        try {
+          $cf_pages->addCover($page_id, array('image' => $cover));
+        }
+        catch (Exception $e) {
+          watchdog_exception('culturefeed_pages', $e);
+          drupal_set_message(t('An error occurred when uploading your cover.'), 'error');
+        }
+      }
+    }
 
   }
 
@@ -602,6 +639,27 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['image']['#title'] = t('Select another photo');
 
   }
+  
+  // The cover.
+  $cover = $page->getCover();
+  $form_state['#old_cover'] = 0;
+  if (!empty($cover)) {
+    
+    // Creat temp file to preview the external cover.
+    $file_cover = culturefeed_create_temporary_image($cover, file_default_scheme() . '://pages');
+    if ($file_cover) {
+      $form_state['#old_cover'] = $file_cover->fid;
+      $form['cover']['#default_value'] = $file_cover->fid;
+    }
+
+    $form['cover']['#title'] = t('Select another cover');
+  }
+  
+  // Tagline
+  $tagline = $page->getTagline();
+  if (!empty($tagline)) {
+    $form['tagline']['#default_value'] = isset($tagline) ? $tagline : '';
+  }
 
   $form['#validate'] = array(
     'culturefeed_pages_add_arguments_prepare',
@@ -663,6 +721,32 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
           drupal_set_message(t('An error occurred when uploading your image.'), 'error');
+        }
+      }
+    }
+    
+    // Remove the cover if requested.
+    if (empty($form_state['values']['cover']) && $form_state['#old_cover'] > 0) {
+      try {
+        $cf_pages->removeCover($uid);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_pages', $e);
+      }
+    }
+    
+    // Upload new page cover.
+    if ($form_state['values']['cover'] && $form_state['#old_cover'] != $form_state['values']['cover']) {
+
+      $file_cover = file_load($form_state['values']['cover']);
+      if ($file_cover) {
+        $cover = file_get_contents(drupal_realpath($file_cover->uri));
+        try {
+          $cf_pages->addCover($uid, array('image' => $cover));
+        }
+        catch (Exception $e) {
+          watchdog_exception('culturefeed_pages', $e);
+          drupal_set_message(t('An error occurred when uploading/editing your cover.'), 'error');
         }
       }
     }
