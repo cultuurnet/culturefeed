@@ -11,14 +11,15 @@
 function culturefeed_uitpas_activity_preferences_form($form, $form_state) {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-  // @codingStandardsIgnoreStart
-  /** @var CultureFeed_Preferences $preferences */
-  // @codingStandardsIgnoreEnd
-  $preferences = $uitpas_user->cf->getUserPreferences($uitpas_user->user->id);
-  $activity_preferences = $preferences->activityPrivacyPreferences;
-  $publish_actions = (isset($activity_preferences[CultureFeed_Activity::TYPE_UITPAS]->private) && !$activity_preferences[CultureFeed_Activity::TYPE_UITPAS]->private);
 
   if ($uitpas_user->user) {
+
+    // @codingStandardsIgnoreStart
+    /** @var CultureFeed_Preferences $preferences */
+    // @codingStandardsIgnoreEnd
+    $preferences = $uitpas_user->cf->getUserPreferences($uitpas_user->user->id);
+    $activity_preferences = $preferences->activityPrivacyPreferences;
+    $publish_actions = (isset($activity_preferences[CultureFeed_Activity::TYPE_UITPAS]->private) && !$activity_preferences[CultureFeed_Activity::TYPE_UITPAS]->private);
 
     $form['uitpas_user'] = array(
       '#type' => 'value',
