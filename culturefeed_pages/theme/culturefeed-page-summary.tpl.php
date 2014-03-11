@@ -5,37 +5,52 @@
  */
 ?>
 
-<div class="page-teaser">
+<hr />  
 
-  <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
+   <h3><a href="<?php print $url ?>"><?php print $title; ?> <?php if (!empty($address)): ?>- <?php print $address['city']; ?><?php endif; ?></a></h3>
 
-  <div class="activity-wrapper">
     <?php if ($follower_count > 0): ?>
-      <div class="count-followers"><?php print format_plural($follower_count, '<span>@count</span> follower', '<span>@count</span> followers'); ?></div>
+    <?php print format_plural($follower_count, '@count' . ' ' .   t('follower'), '@count' . ' ' .  t('followers')); ?>
     <?php endif; ?>
+    
     <?php if ($member_count > 0): ?>
-    <div class="members-wrapper">
-        <?php print format_plural($member_count, '<span class="members">@count</span> member', '<span class="members">@count</span> members'); ?>
-        <a href="<?php print $url ?>#members"><?php print t('View members'); ?></a>
-    </div>
+    - <?php print format_plural($member_count, '@count' . ' ' .   t('member'), '@count' . ' ' . t('members')); ?>
     <?php endif; ?>
-  </div>
+  
+    
+    <?php if ($logged_in): ?>
 
-  <div class="image">
-    <?php if (!empty($image)): ?>
-    <img src="<?php print $image; ?>?width=160&height=120&crop=auto" />
+      <?php if (!$following): ?>
+        <a href="<?php print $follow_url; ?>"><small><?php print $follow_text; ?></small></a>
+      <?php else: ?>
+        <small><?php print t('You follow this page'); ?></small>
+      <?php endif; ?>
+      </p>
+    <?php else: ?>
+      <p><small><?php print $follow_text; ?></small></p>
     <?php endif; ?>
-  </div>
+     
+    <p><?php print $description ?></p>
 
-  <dl class="clearfix">
-    <?php if (!empty($address)): ?>
-    <dt><?php print t('Address'); ?></dt>
-    <dd><?php print $address['street'] . $address['city'] . ' ' . $address['zip']; ?></dd>
-    <?php endif; ?>
-  </dl>
+    <p><a href="<?php print $url; ?>"><?php print $more_text; ?></a></p>
+  
 
-  <?php print $description ?>
 
-  <a href="<?php print $url; ?>" class="button"><?php print $more_text; ?></a>
 
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
