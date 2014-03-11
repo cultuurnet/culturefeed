@@ -11,6 +11,4 @@
   <?php print format_plural($results_found, '<strong>@count</strong> result found', '<strong>@count</strong> results found'); ?>
 </p>
 
-<hr />
-
 <?php print $content; ?>
