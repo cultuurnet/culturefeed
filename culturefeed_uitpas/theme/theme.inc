@@ -140,6 +140,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 
   $vars['actions_table'] = theme_table($table) . theme('pager', $pager);
 
+  // Publish actions form.
+  $form = drupal_get_form('culturefeed_uitpas_activity_preferences_form');
+  $vars['activity_preferences_form'] = drupal_render($form);
+
 }
 
 /**
@@ -544,6 +548,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
     $list['items'][] = $image . format_plural($action->points, $singular, $plural, $args);
 
   }
+
+  // Publish actions form.
+  $form = drupal_get_form('culturefeed_uitpas_activity_preferences_form');
+  $vars['activity_preferences_form'] = drupal_render($form);
 
   $vars['actions_list'] = theme_item_list($list);
 

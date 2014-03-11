@@ -5,10 +5,14 @@
  * Default theme implementation to display culturefeed uitpas profile actions.
  *
  * Available variables:
+ * - $actions_form: Form to set publishing of actions.
  * - $intro: Intro text.
  * - $actions_table: The list of actions.
  */
 ?>
+<div class="activity-preferences-form">
+  <?php print $activity_preferences_form; ?>
+</div>
 <div class="profile_actions">
   <?php if ($intro): ?>
   <div class="intro">
