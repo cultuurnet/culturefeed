@@ -294,25 +294,22 @@ function culturefeed_pages_add_form($form, &$form_state) {
 
   $form['street'] = array(
     '#type' => 'textfield',
-    '#title' => t('Address'),
+    '#title' => t('Street and number'),
     '#default_value' => '',
-    '#attributes' => array('placeholder' => 'straat en huisnummer'),
     '#weight' => 1,
   );
 
   $form['zip'] = array(
     '#type' => 'textfield',
-    '#title' => '',
+    '#title' => t('Zipcode'),
     '#default_value' => '',
-    '#attributes' => array('placeholder' => 'postcode'),
     '#weight' => 2,
   );
 
   $form['city'] = array(
     '#type' => 'textfield',
-    '#title' => '',
+    '#title' => t('City'),
     '#default_value' => '',
-    '#attributes' => array('placeholder' => 'gemeente'),
     '#weight' => 3,
   );
 
