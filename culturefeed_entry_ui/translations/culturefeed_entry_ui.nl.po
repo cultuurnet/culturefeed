@@ -14,64 +14,72 @@
 #  views/culturefeed_entry_ui.views_default.inc: n/a
 #  views/handlers/views_handler_area_cdb_item_create.inc: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-03-10 16:40+0100\n"
-"PO-Revision-Date: 2014-03-10 16:40+0100\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-03-11 09:21+0100\n"
+"Last-Translator: Stan Vertessen <stan@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: nl\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: culturefeed_entry_ui.module:18
 msgid "Manage object tags"
-msgstr ""
+msgstr "Beheer object tags"
 
 #: culturefeed_entry_ui.module:19
-msgid "Manage all the tags from the objects on culturefeed (events, actors, ...)."
+msgid ""
+"Manage all the tags from the objects on culturefeed (events, actors, ...)."
 msgstr ""
+"Beheer alle tags van objecten op culture feed (activiteiten, actoren ...)."
 
 #: culturefeed_entry_ui.module:22
 msgid "Manage custom tags"
 msgstr ""
 
 #: culturefeed_entry_ui.module:23
-msgid "Manage custom tags from the objects on culturefeed (events, actors, ...) managed on the admin section."
+msgid ""
+"Manage custom tags from the objects on culturefeed (events, actors, ...) "
+"managed on the admin section."
 msgstr ""
 
 #: culturefeed_entry_ui.module:26
 msgid "Create events"
-msgstr ""
+msgstr "Maak activiteiten aan"
 
 #: culturefeed_entry_ui.module:27
 msgid "Create new events through the entity api."
-msgstr ""
+msgstr "Maak activiteiten aan via Entry API"
 
 #: culturefeed_entry_ui.module:30
 msgid "Edit events"
-msgstr ""
+msgstr "Pas activiteiten aan"
 
 #: culturefeed_entry_ui.module:31
 msgid "Edit events through the entity api."
-msgstr ""
+msgstr "Pas activiteiten aan via Entry API"
 
 #: culturefeed_entry_ui.module:34
 msgid "Delete events"
-msgstr ""
+msgstr "Verwijder activiteiten"
 
 #: culturefeed_entry_ui.module:35
 msgid "Delete events through the entity api."
-msgstr ""
+msgstr "Verwijder activiteiten via Entry API"
 
-#: culturefeed_entry_ui.module:133;61 includes/culturefeed_entry_ui.pages.inc:1058;2866 views/handlers/views_handler_field_cdb_item_operations.inc:29
+#: culturefeed_entry_ui.module:133;61
+#: includes/culturefeed_entry_ui.pages.inc:1058;2866
+#: views/handlers/views_handler_field_cdb_item_operations.inc:29
 msgid "Tags"
 msgstr "Labels"
 
-#: culturefeed_entry_ui.module:148 views/handlers/views_handler_field_cdb_item_operations.inc:25
+#: culturefeed_entry_ui.module:148
+#: views/handlers/views_handler_field_cdb_item_operations.inc:25
 msgid "Edit"
 msgstr "Bewerken"
 
@@ -81,31 +89,34 @@ msgstr "Weergeven"
 
 #: culturefeed_entry_ui.module:331
 msgid "ZIP Code"
-msgstr ""
+msgstr "Postcode"
 
 #: culturefeed_entry_ui.module:69
 msgid "New activity"
-msgstr ""
+msgstr "Maak nieuwe activiteit aan"
 
 #: culturefeed_entry_ui.module:77
 msgid "Edit activity"
-msgstr ""
+msgstr "Pas activiteit aan"
 
 #: culturefeed_entry_ui.module:85
 msgid "Delete activity"
-msgstr ""
+msgstr "Verwijder activiteit"
 
 #: culturefeed_entry_ui.module:93 culturefeed_entry_ui.info:0
 msgid "CultureFeed Entry UI"
-msgstr ""
+msgstr "CultureFeed Entry UI"
 
 #: culturefeed_entry_ui.module:94
 msgid "All configurations to entry api for this site"
 msgstr ""
 
 #: culturefeed_entry_ui.info:0
-msgid "Multilingual forms to post, update and delete events to UiTDatabank Entry API"
+msgid ""
+"Multilingual forms to post, update and delete events to UiTDatabank Entry API"
 msgstr ""
+"Meertalig invoerformulier om activiteiten aan te maken, aan te passen en "
+"verwijderen in UiTdatabank via Entry API"
 
 #: culturefeed_entry_ui.info:0
 msgid "CultureFeed"
@@ -116,10 +127,15 @@ msgid "Preferred language"
 msgstr "Voorkeur taal"
 
 #: includes/culturefeed_entry_ui.admin.inc:23
-msgid "Use the preferred language of the UiTID user, with the Drupal UI language as fallback"
+msgid ""
+"Use the preferred language of the UiTID user, with the Drupal UI language as "
+"fallback"
 msgstr ""
+"Gebruik de voorkeurstaal van de UiTiD gebruiker, met de Drupal UI taal als "
+"backup"
 
-#: includes/culturefeed_entry_ui.admin.inc:30 includes/culturefeed_entry_ui.pages.inc:2859
+#: includes/culturefeed_entry_ui.admin.inc:30
+#: includes/culturefeed_entry_ui.pages.inc:2859
 msgid "Custom tags"
 msgstr ""
 
@@ -129,35 +145,35 @@ msgstr ""
 
 #: includes/culturefeed_entry_ui.pages.inc:30
 msgid "mon"
-msgstr ""
+msgstr "ma"
 
 #: includes/culturefeed_entry_ui.pages.inc:31
 msgid "tue"
-msgstr ""
+msgstr "di"
 
 #: includes/culturefeed_entry_ui.pages.inc:32
 msgid "wed"
-msgstr ""
+msgstr "woe"
 
 #: includes/culturefeed_entry_ui.pages.inc:33
 msgid "thu"
-msgstr ""
+msgstr "don"
 
 #: includes/culturefeed_entry_ui.pages.inc:34
 msgid "fri"
-msgstr ""
+msgstr "vrij"
 
 #: includes/culturefeed_entry_ui.pages.inc:35
 msgid "sat"
-msgstr ""
+msgstr "zat"
 
 #: includes/culturefeed_entry_ui.pages.inc:36
 msgid "sun"
-msgstr ""
+msgstr "zon"
 
 #: includes/culturefeed_entry_ui.pages.inc:370
 msgid "Basic info"
-msgstr ""
+msgstr "Basisgegevens"
 
 #: includes/culturefeed_entry_ui.pages.inc:375;1522;1552;1582;1612
 msgid "Title"
@@ -165,23 +181,23 @@ msgstr "Titel"
 
 #: includes/culturefeed_entry_ui.pages.inc:423
 msgid "Concerts"
-msgstr ""
+msgstr "Concerten"
 
 #: includes/culturefeed_entry_ui.pages.inc:444
 msgid "Dance"
-msgstr ""
+msgstr "Dansvoorstelling"
 
 #: includes/culturefeed_entry_ui.pages.inc:465
 msgid "Film"
-msgstr ""
+msgstr "Film"
 
 #: includes/culturefeed_entry_ui.pages.inc:489
 msgid "Theatre"
-msgstr ""
+msgstr "Theatervoorstelling"
 
 #: includes/culturefeed_entry_ui.pages.inc:511
 msgid "Sport"
-msgstr ""
+msgstr "Sport"
 
 #: includes/culturefeed_entry_ui.pages.inc:546
 msgid "Location"
@@ -189,19 +205,19 @@ msgstr "Locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:579
 msgid "Location not found, add location"
-msgstr ""
+msgstr "Locatie niet gevonden, voeg locatie toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:597
 msgid "Location Title"
-msgstr ""
+msgstr "Naam locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:605
 msgid "Street"
-msgstr ""
+msgstr "Straat"
 
 #: includes/culturefeed_entry_ui.pages.inc:613
 msgid "House Number"
-msgstr ""
+msgstr "Huisnummer"
 
 #: includes/culturefeed_entry_ui.pages.inc:642
 msgid "City"
@@ -217,11 +233,11 @@ msgstr "Datums"
 
 #: includes/culturefeed_entry_ui.pages.inc:709
 msgid "Permanent"
-msgstr ""
+msgstr "Permanent"
 
 #: includes/culturefeed_entry_ui.pages.inc:746
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: includes/culturefeed_entry_ui.pages.inc:766;1693
 msgid "Start date"
@@ -229,7 +245,7 @@ msgstr "Begindatum"
 
 #: includes/culturefeed_entry_ui.pages.inc:810
 msgid "+ add end"
-msgstr ""
+msgstr "+ voeg einduur toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:837;1763
 msgid "End date"
@@ -237,15 +253,15 @@ msgstr "Einddatum"
 
 #: includes/culturefeed_entry_ui.pages.inc:865
 msgid "+ remove end"
-msgstr ""
+msgstr "+ verwijder einduur"
 
 #: includes/culturefeed_entry_ui.pages.inc:886
 msgid "+ add date"
-msgstr ""
+msgstr "+ voeg datum toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:920
 msgid "Open all day?"
-msgstr ""
+msgstr "Alle dagen open?"
 
 #: includes/culturefeed_entry_ui.pages.inc:921
 msgid "Yes"
@@ -257,7 +273,7 @@ msgstr "Nee"
 
 #: includes/culturefeed_entry_ui.pages.inc:992
 msgid "Extra info"
-msgstr ""
+msgstr "Extra info"
 
 #: includes/culturefeed_entry_ui.pages.inc:1000;1008;1023
 msgid "Description"
@@ -269,15 +285,15 @@ msgstr "Korte omschrijving"
 
 #: includes/culturefeed_entry_ui.pages.inc:1031
 msgid "+ add long description"
-msgstr ""
+msgstr "+ voeg lange beschrijving toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1046;1534;1564;1594;1624
 msgid "Long description"
-msgstr ""
+msgstr "Lange beschrijving"
 
 #: includes/culturefeed_entry_ui.pages.inc:1059
 msgid "Add multiple tags seperated by a \";\""
-msgstr ""
+msgstr "Voeg meerdere trefwoorden toe, gescheiden met een \";\""
 
 #: includes/culturefeed_entry_ui.pages.inc:1069
 msgid "Links"
@@ -285,7 +301,7 @@ msgstr "Links"
 
 #: includes/culturefeed_entry_ui.pages.inc:1100
 msgid "+ add another link"
-msgstr ""
+msgstr "+ voeg een link toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1117
 msgid "Image"
@@ -293,15 +309,21 @@ msgstr "Afbeelding"
 
 #: includes/culturefeed_entry_ui.pages.inc:1123
 msgid "Image upload"
-msgstr ""
+msgstr "Afbeelding opladen"
 
 #: includes/culturefeed_entry_ui.pages.inc:1125
 msgid "Allowed extensions: gif png jpg jpeg"
-msgstr ""
+msgstr "Ondersteunde bestandsformaten: gif, png, jpg, jpeg"
 
 #: includes/culturefeed_entry_ui.pages.inc:1148
-msgid "I agree to the <a href=\"#\">general conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image through UiTdatabank."
+msgid ""
+"I agree to the <a href=\"#\">general conditions of UiTdatabank</a> and I "
+"declare that I have the necessary rights or permissions to distribute the "
+"image through UiTdatabank."
 msgstr ""
+"Ik ga akkoord met de <a href=\"#\">algemene voorwaarden van UiTdatabank</a> "
+"en verklaar dat ik beschik over de nodige rechten om de afbeelding te "
+"verspreiden via UiTdatabank"
 
 #: includes/culturefeed_entry_ui.pages.inc:1155;1160;1192
 msgid "Price"
@@ -313,23 +335,23 @@ msgstr "Gratis activiteit"
 
 #: includes/culturefeed_entry_ui.pages.inc:1199
 msgid "+ add price info"
-msgstr ""
+msgstr "+ voeg prijsinformatie toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1226
 msgid "Extra price info"
-msgstr ""
+msgstr "Extra prijsinformatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1255
 msgid "Organisation"
-msgstr ""
+msgstr "Organisatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1279
 msgid "Organisation not found, add organisation"
-msgstr ""
+msgstr "Organisatie niet gevonden, voeg organisatie toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1296
 msgid "Name new organiser"
-msgstr ""
+msgstr "Naam nieuwe organisatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1303
 msgid "Age"
@@ -337,43 +359,43 @@ msgstr "Leeftijd"
 
 #: includes/culturefeed_entry_ui.pages.inc:1305
 msgid "For everyone"
-msgstr ""
+msgstr "Voor iedereen"
 
 #: includes/culturefeed_entry_ui.pages.inc:1306
 msgid "For children (between 1 and 12 years)"
-msgstr ""
+msgstr "Voor kinderen (tussen 1 en 12 jaar)"
 
 #: includes/culturefeed_entry_ui.pages.inc:1307
 msgid "For youth (between 12 and 18 years)"
-msgstr ""
+msgstr "Voor jongeren (tussen 12 en 18 jaar)"
 
 #: includes/culturefeed_entry_ui.pages.inc:1308
 msgid "For adults (18+)"
-msgstr ""
+msgstr "Voor volwassenen (18+)"
 
 #: includes/culturefeed_entry_ui.pages.inc:1314
 msgid "Age from"
-msgstr ""
+msgstr "Vanaf"
 
 #: includes/culturefeed_entry_ui.pages.inc:1337
 msgid "Activities for children will get the 'Fly' label"
-msgstr ""
+msgstr "Activiteiten voor kinderen krijgen automatisch het 'Vlieg'-label"
 
 #: includes/culturefeed_entry_ui.pages.inc:1348
 msgid "Contacts"
-msgstr ""
+msgstr "Contacten"
 
 #: includes/culturefeed_entry_ui.pages.inc:1381
 msgid "+ add another contact"
-msgstr ""
+msgstr "+ voeg nog een contact toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1395
 msgid "Performers"
-msgstr ""
+msgstr "Uitvoerders"
 
 #: includes/culturefeed_entry_ui.pages.inc:1430
 msgid "+ add another performer"
-msgstr ""
+msgstr "+ voeg nog een uitvoerder toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1444;1823
 msgid "Language"
@@ -381,19 +403,19 @@ msgstr "Taal"
 
 #: includes/culturefeed_entry_ui.pages.inc:1477
 msgid "+ add more language info"
-msgstr ""
+msgstr "+ voeg meer taalinformatie toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:1492;1498
 msgid "Entrance"
-msgstr ""
+msgstr "Inkom"
 
 #: includes/culturefeed_entry_ui.pages.inc:1499
 msgid "Only for members"
-msgstr ""
+msgstr "Enkel voor leden"
 
 #: includes/culturefeed_entry_ui.pages.inc:1506
 msgid "Translations"
-msgstr ""
+msgstr "Vertalingen"
 
 #: includes/culturefeed_entry_ui.pages.inc:1514;1840
 msgid "Dutch"
@@ -413,11 +435,11 @@ msgstr "Duits"
 
 #: includes/culturefeed_entry_ui.pages.inc:1632
 msgid "Publication"
-msgstr ""
+msgstr "Gepubliceerd"
 
 #: includes/culturefeed_entry_ui.pages.inc:1645
 msgid "Publication date"
-msgstr ""
+msgstr "Publicatiedatum"
 
 #: includes/culturefeed_entry_ui.pages.inc:1658
 msgid "Save"
@@ -425,27 +447,27 @@ msgstr "Opslaan"
 
 #: includes/culturefeed_entry_ui.pages.inc:1702
 msgid "Start time"
-msgstr ""
+msgstr "Starttijd"
 
 #: includes/culturefeed_entry_ui.pages.inc:1770
 msgid "End time"
-msgstr ""
+msgstr "Eindtijd"
 
 #: includes/culturefeed_entry_ui.pages.inc:1826
 msgid "Spoken"
-msgstr ""
+msgstr "Gesproken"
 
 #: includes/culturefeed_entry_ui.pages.inc:1827
 msgid "Dubbed"
-msgstr ""
+msgstr "Gedubd"
 
 #: includes/culturefeed_entry_ui.pages.inc:1828
 msgid "Subtitled"
-msgstr ""
+msgstr "Ondertiteld"
 
 #: includes/culturefeed_entry_ui.pages.inc:1835
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #: includes/culturefeed_entry_ui.pages.inc:1869
 msgid "Contact"
@@ -457,7 +479,7 @@ msgstr ""
 
 #: includes/culturefeed_entry_ui.pages.inc:1894
 msgid "Performer"
-msgstr ""
+msgstr "Uitvoerder"
 
 #: includes/culturefeed_entry_ui.pages.inc:1902
 msgid "Role"
@@ -469,7 +491,7 @@ msgstr "Link"
 
 #: includes/culturefeed_entry_ui.pages.inc:1924
 msgid "for reservation"
-msgstr ""
+msgstr "voor reservatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1950;1957
 msgid "Format"
@@ -477,93 +499,100 @@ msgstr "Formaat"
 
 #: includes/culturefeed_entry_ui.pages.inc:1971
 msgid "Please fill in correct age"
-msgstr ""
+msgstr "Geef de juiste leeftijd op"
 
 #: includes/culturefeed_entry_ui.pages.inc:1999
 msgid "Please fill in correct date and time"
-msgstr ""
+msgstr "Geef de juiste datum en tijdstip op"
 
 #: includes/culturefeed_entry_ui.pages.inc:2005
 msgid "A date is required."
-msgstr ""
+msgstr "Een datum is verplicht."
 
 #: includes/culturefeed_entry_ui.pages.inc:2031
 msgid "Date field is invalid. The end date is earlier than the beginning date."
-msgstr ""
+msgstr "Ingevoerde datum niet correct: einddatum valt voor de begindatum"
 
 #: includes/culturefeed_entry_ui.pages.inc:2034;2039
 msgid "Date field is invalid. The end time is earlier than the beginning time."
-msgstr ""
+msgstr "Ingevoerde datum niet correct: einduur valt voor beginuur"
 
 #: includes/culturefeed_entry_ui.pages.inc:2058
 msgid "Please fill in correct date"
-msgstr ""
+msgstr "Voer correcte datum in"
 
 #: includes/culturefeed_entry_ui.pages.inc:2070
-msgid "Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank."
+msgid ""
+"Please agree to the general conditions of UiTdatabank and declare that you "
+"have the necessary rights or permissions to distribute the image through "
+"UiTdatabank."
 msgstr ""
+"Geef aan dat je akkoord gaat met de algemene voorwaarden van UiTdatabank en "
+"dat je over de nodige rechten of toestemmingen beschikt om de afbeelding te "
+"verspreiden via UiTdatabank."
 
 #: includes/culturefeed_entry_ui.pages.inc:2075
 msgid "A category is required."
-msgstr ""
+msgstr "Een categorie is verplicht"
 
 #: includes/culturefeed_entry_ui.pages.inc:2081
 msgid "A title is required for a custom location"
-msgstr ""
+msgstr "Een titel is verplicht voor een nieuwe locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:2085
 msgid "A zip code is required for a custom location"
-msgstr ""
+msgstr "Een postcode is verplicht voor een nieuwe locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:2089
 msgid "A city is required for a custom location"
-msgstr ""
+msgstr "Een stad is verplicht voor een nieuwe locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:2096
 msgid "A location is required."
-msgstr ""
+msgstr "Een locatie is verplicht"
 
 #: includes/culturefeed_entry_ui.pages.inc:2101;2105
 msgid "We could not validate the location"
-msgstr ""
+msgstr "We kunnen de locatie niet bevestigen"
 
 #: includes/culturefeed_entry_ui.pages.inc:2140
 msgid "Not a valid URL"
-msgstr ""
+msgstr "Geen geldige URL"
 
 #: includes/culturefeed_entry_ui.pages.inc:2151;2155
 msgid "We could not validate the organization"
-msgstr ""
+msgstr "We kunnen de organisatie niet bevestigen"
 
 #: includes/culturefeed_entry_ui.pages.inc:2171
 msgid "Not a valid email address"
-msgstr ""
+msgstr "Geen geldig emailadres"
 
 #: includes/culturefeed_entry_ui.pages.inc:2312
 msgid "Order tickets"
-msgstr ""
+msgstr "Bestel tickets"
 
 #: includes/culturefeed_entry_ui.pages.inc:2672
 msgid "An error occurred while saving the event"
-msgstr ""
+msgstr "Er is een fout opgetreden tijdens het opslaan van de activiteit"
 
 #: includes/culturefeed_entry_ui.pages.inc:2779
 msgid "Event successfully updated"
-msgstr ""
+msgstr "Activiteit werd aangepast"
 
 #: includes/culturefeed_entry_ui.pages.inc:2783
 msgid "Click here to update"
-msgstr ""
+msgstr "Klik hier om aan te passen"
 
 #: includes/culturefeed_entry_ui.pages.inc:2798
 msgid "Are you sure you want to delete the event?"
-msgstr ""
+msgstr "Ben je zeker dat je de activiteit wil verwijderen?"
 
 #: includes/culturefeed_entry_ui.pages.inc:2800
 msgid "This action cannot be undone"
-msgstr ""
+msgstr "Deze actie kan niet ongedaan gemaakt worden"
 
-#: includes/culturefeed_entry_ui.pages.inc:2801 views/handlers/views_handler_field_cdb_item_operations.inc:33
+#: includes/culturefeed_entry_ui.pages.inc:2801
+#: views/handlers/views_handler_field_cdb_item_operations.inc:33
 msgid "Delete"
 msgstr "Verwijder"
 
@@ -573,15 +602,15 @@ msgstr "Annuleren"
 
 #: includes/culturefeed_entry_ui.pages.inc:2814
 msgid "Event successfully deleted"
-msgstr ""
+msgstr "Activiteit werd verwijderd"
 
 #: includes/culturefeed_entry_ui.pages.inc:2818
 msgid "An error occurred while deleting the event"
-msgstr ""
+msgstr "Er is een fout opgetreden tijdens het verwijderen van de activiteit"
 
 #: includes/culturefeed_entry_ui.pages.inc:2868
 msgid "Seperate multiple tags by ;"
-msgstr ""
+msgstr "Scheid meerdere trefwoorden met ;"
 
 #: includes/culturefeed_entry_ui.pages.inc:2873
 msgid "Submit"
@@ -590,6 +619,7 @@ msgstr "Voeg toe"
 #: includes/culturefeed_entry_ui.pages.inc:2888
 msgid "Tag @tag is not permitted because it's already a custom tag."
 msgstr ""
+"Trefwoord @tag is niet toegelaten aangezien het al een bestaande marker is."
 
 #: js/culturefeed_entry_ui.js:0
 msgid "Autocomplete popup"
@@ -605,7 +635,7 @@ msgstr "van"
 
 #: theme/theme.inc:41
 msgid "to"
-msgstr ""
+msgstr "tot"
 
 #: views/culturefeed_entry_ui.views.inc:13
 msgid "Operations"
@@ -613,15 +643,15 @@ msgstr "Bewerkingen"
 
 #: views/culturefeed_entry_ui.views.inc:14
 msgid "Links to operations that can be performed"
-msgstr ""
+msgstr "Link naar mogelijke handelingen"
 
 #: views/culturefeed_entry_ui.views.inc:20
 msgid "Create event"
-msgstr ""
+msgstr "Maak activiteit aan"
 
 #: views/culturefeed_entry_ui.views.inc:21
 msgid "Link to create event"
-msgstr ""
+msgstr "Link om activiteit aan te maken"
 
 #: views/culturefeed_entry_ui.views_default.inc:118
 msgid "Master"
@@ -629,15 +659,15 @@ msgstr ""
 
 #: views/culturefeed_entry_ui.views_default.inc:119
 msgid "Events created by me"
-msgstr ""
+msgstr "Mijn activiteiten"
 
 #: views/culturefeed_entry_ui.views_default.inc:120
 msgid "more"
-msgstr ""
+msgstr "meer"
 
 #: views/culturefeed_entry_ui.views_default.inc:121
 msgid "Apply"
-msgstr ""
+msgstr "Pas toe"
 
 #: views/culturefeed_entry_ui.views_default.inc:122
 msgid "Reset"
@@ -645,23 +675,23 @@ msgstr "Opnieuw instellen"
 
 #: views/culturefeed_entry_ui.views_default.inc:123
 msgid "Sort by"
-msgstr ""
+msgstr "Sorteer op"
 
 #: views/culturefeed_entry_ui.views_default.inc:124
 msgid "Asc"
-msgstr ""
+msgstr "Stijgend"
 
 #: views/culturefeed_entry_ui.views_default.inc:125
 msgid "Desc"
-msgstr ""
+msgstr "Dalend"
 
 #: views/culturefeed_entry_ui.views_default.inc:126
 msgid "Notification that no results were found"
-msgstr ""
+msgstr "Melding dat er geen resultaten werden gevonden"
 
 #: views/culturefeed_entry_ui.views_default.inc:127
 msgid "Unable to find any events created by you."
-msgstr ""
+msgstr "Er werden geen activiteiten gevonden die door jou aangemaakt werden"
 
 #: views/culturefeed_entry_ui.views_default.inc:128
 msgid "Last updated"
@@ -673,5 +703,4 @@ msgstr "Blok"
 
 #: views/handlers/views_handler_area_cdb_item_create.inc:19
 msgid "Add event"
-msgstr ""
-
+msgstr "Voeg activiteit toe"

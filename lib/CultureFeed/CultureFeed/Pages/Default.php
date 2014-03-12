@@ -163,6 +163,25 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
   }
+  
+  /**
+   * @see CultureFeed_Pages::addCover()
+   */
+  public function addCover($id, array $params) {
+
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/uploadCover', $params, TRUE, TRUE);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_UPLOADED);
+
+    return $xmlElement->xpath_str('uid');
+  }
+
+  /**
+   * @see CultureFeed_Pages::removeCover()
+   */
+  public function removeCover($id) {
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/cover/remove');
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
+  }
 
   /**
    * Implements CultureFeed_Pages::changePermissions()
