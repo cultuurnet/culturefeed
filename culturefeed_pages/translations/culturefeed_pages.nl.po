@@ -664,6 +664,10 @@ msgstr "Word lid"
 msgid "Send request to become administrator"
 msgstr "Stuur aanvraag om beheerder te worden"
 
+#: includes/pages.inc:1125
+msgid "Remove membership"
+msgstr "Verwijder mij als lid"
+
 #: includes/pages.inc:1138
 msgid "Following since"
 msgstr "Volgend sinds"

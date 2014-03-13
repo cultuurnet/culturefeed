@@ -719,13 +719,16 @@ function culturefeed_search_get_city_by_slug($slug) {
  */
 function culturefeed_search_get_preferred_language() {
 
+  // Use the drupal language.
+  return $GLOBALS['language']->language;
+  
+  // TODO make a setting of this...
   // If culturefeed is enabled, we can use the user his language.
   if (module_exists('culturefeed')) {
     return culturefeed_get_preferred_language();
   }
 
-  // Otherwise use the drupal language.
-  return $GLOBALS['language']->language;
+  
 }
 
 /**

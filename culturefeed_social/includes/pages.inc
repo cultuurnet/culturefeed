@@ -247,7 +247,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
 <h6>' . t('Remove') . ' ' . $config->action . ' </h6></div>';
   }
   else {
-    drupal_set_title(t('Remove') . ' ' . $config->action . '?');
+    drupal_set_title(($config->action ? t('Remove') . ' ' . $config->action : t('Remove action')) . '?');
   }
 
   $destination = drupal_get_destination();
@@ -261,7 +261,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   );
   $form['body_wrapper']['page_remove_confirm'] = array(
     '#type' => 'markup',
-    '#markup' => '<p>' . t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) . '?</p>',
+    '#markup' => '<p>' . ($config->action ? t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) : t('Are you sure you want to delete this action permanently')) . '?</p>',
   );
 
   $form['footer_wrapper'] = array(
@@ -697,7 +697,7 @@ function culturefeed_social_page_recent_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message('Error occurred', 'error');
     return;
   }
 
