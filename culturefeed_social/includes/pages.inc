@@ -697,7 +697,7 @@ function culturefeed_social_page_recent_activities() {
     $activities = DrupalCultureFeed::searchActivities($query);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden.', 'error');
+    drupal_set_message('Error occurred', 'error');
     return;
   }
 
