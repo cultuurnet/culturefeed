@@ -47,7 +47,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
  * @param CultureFeed_User $cf_account
  * @return boolean|Ambigous <A, boolean, (optional), stdClass>
  */
-function culturefeed_create_user($cf_account) {
+function culturefeed_create_user($cf_account, $user = NULL) {
 
   // Use a database transaction, as we need to handle what follows as a unit of work.
   $txn = db_transaction();
@@ -58,13 +58,11 @@ function culturefeed_create_user($cf_account) {
     if (!$cf_account || empty($cf_account->nick)) {
       return FALSE;
     }
-
-    // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
-    $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
-
-    global $user;
     
-    if (!$user->uid) {
+    if (!$user && !$user->uid) {
+      // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
+      $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
+    
       // Create the user account.
       $account = user_save(
         drupal_anonymous_user(),
