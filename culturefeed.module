@@ -179,3 +179,25 @@ function culturefeed_image_file_process($element, &$form_state, $form) {
 
   return $element;
 }
+
+/**
+ * Implements hook_page_build().
+ */
+function culturefeed_page_build(&$page) {
+  // Add Google Tag Manager
+  $container_id = 'GTM-WPZSG2';
+
+  $snippet = '<!-- Google Tag Manager -->';
+  $snippet .= '<noscript><iframe src="//www.googletagmanager.com/ns.html?id=' . $container_id . '"';
+  $snippet .= 'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
+  $snippet .= '<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':';
+  $snippet .= 'new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],';
+  $snippet .= 'j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=';
+  $snippet .= '\'//www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);';
+  $snippet .= '})(window,document,\'script\',\'dataLayer\',\'' . $container_id . '\');</script>';
+  $snippet .= '<!-- End Google Tag Manager -->';
+
+  $page['page_top']['google_tag_manager'] = array(
+    '#markup' => $snippet,
+  );
+}
