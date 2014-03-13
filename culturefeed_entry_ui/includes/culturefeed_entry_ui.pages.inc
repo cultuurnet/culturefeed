@@ -2932,19 +2932,15 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
       }
     }
 
-    drupal_set_message("De tags werden aangepast. Het duurt echter een half uur eer deze
-      aanpassingen op al onze kanalen (inclusief UitinVlaanderen onder de tab 'Weergeven'
-      beschikbaar zullen zijn.");
+    drupal_set_message(t('The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the "View" tab'));
 
   } catch (Exception $e) {
 
     if ($e->getCode() == culturefeed_entry_uiApi::CODE_KEYWORD_PRIVATE) {
-      drupal_set_message("Je probeerde een tag toe te voegen die niet door iedereen mag
-        worden toegevoegd. Indien je dit toch wil toevoegen of andere vragen hier rond
-        hebt, mail je best naar 'vragen@uitdatabank.be'");
+      drupal_set_message(t('You tried to add a tag that should not be added by anyone. If you still wish to add this or have other questions about this, please email to "vragen@uitdatabank.be".'));
     }
     else {
-      drupal_set_message('Er ging iets fout tijdens het bewaren.');
+      drupal_set_message(t('Error occured while saving the tags'));
     }
 
     watchdog_exception(WATCHDOG_ERROR, $e);

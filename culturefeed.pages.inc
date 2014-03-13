@@ -39,14 +39,14 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $token = $cf->getRequestToken($callback_url);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
     watchdog_exception('culturefeed', $e);
 
     drupal_goto('<front>');
   }
 
   if (!$token) {
-    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
     drupal_goto('<front>');
   }
 
@@ -94,7 +94,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'], $application_key, $shared_secret)->getUser($token['userId']);
     }
     catch (Exception $e) {
-      drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+      drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
       watchdog_exception('culturefeed', $e);
 
       drupal_goto();
