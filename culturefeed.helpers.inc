@@ -62,20 +62,28 @@ function culturefeed_create_user($cf_account) {
     // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
     $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
 
-    // Create the user account.
-    $account = user_save(
-      drupal_anonymous_user(),
-      array(
-        'name' => $unique_nick,
-        'pass' => '', // We save an empty password (don't generate a random one) because this is much more performant.
-        'init' => $unique_nick,
-        'roles' => array(),
-        'status' => 1,
-        'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
-        'access' => REQUEST_TIME,
-        'mail' => '',
-      )
-    );
+    global $user;
+    
+    if (!$user->uid) {
+      // Create the user account.
+      $account = user_save(
+        drupal_anonymous_user(),
+        array(
+          'name' => $unique_nick,
+          'pass' => '', // We save an empty password (don't generate a random one) because this is much more performant.
+          'init' => $unique_nick,
+          'roles' => array(),
+          'status' => 1,
+          'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
+          'access' => REQUEST_TIME,
+          'mail' => '',
+        )
+      );
+    }
+    else {
+      // User is already Drupaluser, so map his Drupal and CultureFeed account
+      $account = $user;   
+    }
 
     // Save the mapping between CultureFeed User ID and Drupal user id.
     db_insert('culturefeed_user')
