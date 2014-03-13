@@ -59,7 +59,12 @@ function culturefeed_create_user($cf_account, $user = NULL) {
       return FALSE;
     }
     
-    if (!$user && !$user->uid) {
+    if (isset($user->uid) && $user->uid) {
+      // User is already Drupaluser, so map his Drupal and CultureFeed account
+      $account = $user; 
+    }
+    else {
+
       // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
       $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
     
@@ -77,10 +82,6 @@ function culturefeed_create_user($cf_account, $user = NULL) {
           'mail' => '',
         )
       );
-    }
-    else {
-      // User is already Drupaluser, so map his Drupal and CultureFeed account
-      $account = $user;   
     }
 
     // Save the mapping between CultureFeed User ID and Drupal user id.
