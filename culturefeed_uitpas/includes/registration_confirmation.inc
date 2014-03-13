@@ -40,7 +40,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
 
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
-    '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', 'Make my UiTPAS actions available for others'),
+    '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
     '#default_value' => 1,
   );
 
@@ -112,7 +112,7 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Actions label'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', 'Make my UiTPAS actions available for others'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
   );
 
 }

@@ -28,7 +28,7 @@ function culturefeed_uitpas_activity_preferences_form($form, $form_state) {
 
     $form['publish_actions'] = array(
       '#type' => 'checkbox',
-      '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', 'Make my UiTPAS actions available for others'),
+      '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
       '#default_value' => $publish_actions,
     );
 
