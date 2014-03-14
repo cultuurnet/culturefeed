@@ -427,7 +427,8 @@ function culturefeed_search_ui_block_view($delta) {
       }
 
       $active_filters = variable_get('culturefeed_search_form_active_filters', array());
-      if (!empty($active_filters)) {
+      $filter_options = variable_get('culturefeed_search_filter_options', array());
+      if (!empty($filter_options)) {
         $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
       }
 
