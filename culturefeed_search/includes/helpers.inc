@@ -439,16 +439,17 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   }
 
   // Add extra conditions.
-  /* This is causing error on /agenda/pages search => logged in CF-214
   if (!empty($conditions['tid'])) {
     foreach ($conditions as $field => $value) {
-      $query->condition($field, $value, '=');
-    }
-  }
-  */
-  if (!empty($conditions['tid_like'])) {
-    foreach ($conditions as $field => $value) {
-      $query->condition('tid', $value . '%', 'like');
+      if (is_array($value)) {
+        $db_or = db_or();
+        foreach ($value as $tid) {
+          $db_or->condition($field, $tid, '=');   
+        }
+        $query->condition($db_or);
+      } else {
+        $query->condition($field, $value, '=');
+      }
     }
   }
 
