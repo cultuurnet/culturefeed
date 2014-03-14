@@ -270,7 +270,28 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Name'),
     '#default_value' => $page_name,
+    '#weight' => -7,
+  );
+  
+  $form['tagline'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Baseline'),
+    '#default_value' => '',
+    '#weight' => -6,
+  );
+  
+  $form['cover'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Cover Photo'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+    '#size' => 26,
+    '#default_value' => '',
     '#weight' => -5,
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://pages',
   );
 
   $form['categoryId'] = array(
@@ -393,27 +414,6 @@ function culturefeed_pages_add_form($form, &$form_state) {
       'file_validate_extensions' => array('jpg jpeg png gif'),
     ),
     '#upload_location' => 'public://pages',
-  );
-  
-  $form['cover'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('Cover'),
-    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
-    '#size' => 26,
-    '#default_value' => '',
-    '#weight' => 17,
-    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array('jpg jpeg png gif'),
-    ),
-    '#upload_location' => 'public://pages',
-  );
-  
-  $form['tagline'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tagline'),
-    '#default_value' => '',
-    '#weight' => 18,
   );
 
   $form['visible'] = array(
