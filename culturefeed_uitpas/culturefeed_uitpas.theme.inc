@@ -146,10 +146,15 @@ function culturefeed_uitpas_theme() {
 function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
   $event = culturefeed_uitpas_get_uitpas_event($vars['item']);
+  $price = $vars['price'];
 
   if ($event) {
 
     $prices = array();
+    
+    if ($price) {
+      $prices[] = $price;
+    }
 
     foreach ($event->cardSystems as $card_system) {
       foreach ($card_system->distributionKeys as $key) {
