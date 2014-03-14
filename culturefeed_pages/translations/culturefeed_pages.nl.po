@@ -885,3 +885,15 @@ msgstr "Beheerder"
 
 msgid "Member"
 msgstr "Lid"
+
+#: includes/pages.inc
+msgid "Baseline"
+msgstr "Slogan"
+
+#: includes/pages.inc
+msgid "Cover Photo"
+msgstr "Omslagfoto"
+
+#: includes/pages.inc
+msgid "Select another cover"
+msgstr "Selecteer andere omslagfoto"
