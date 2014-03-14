@@ -452,6 +452,12 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
       }
     }
   }
+  
+  if (!empty($conditions['tid_like'])) {
+    foreach ($conditions as $field => $value) {
+      $query->condition('tid', $value . '%', 'like');
+    }
+  }
 
   if (empty($conditions['language'])) {
     $conditions['language'] = culturefeed_search_get_preferred_language();
