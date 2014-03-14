@@ -1,6 +1,6 @@
 # $Id$
 #
-# Dutch translation of Drupal (general)
+# French translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed.admin.inc: n/a
@@ -10,27 +10,25 @@
 #  culturefeed.info: n/a
 #  culturefeed.install: n/a
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-03-13 12:34+0100\n"
-"PO-Revision-Date: 2014-03-13 12:36+0100\n"
-"Last-Translator: Sven Houtmeyers <sven@cultuurnet.be>\n"
-"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-03-13 12:34+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
 
 #: culturefeed.admin.inc:17
 msgid "API location"
 msgstr ""
 
 #: culturefeed.admin.inc:18
-msgid ""
-"The URL where the CultureFeed API resides. End with a slash. Example: http://"
-"acc.uitid.be/uitid/rest/"
+msgid "The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/"
 msgstr ""
 
 #: culturefeed.admin.inc:23
@@ -54,9 +52,7 @@ msgid "Entry API path"
 msgstr ""
 
 #: culturefeed.admin.inc:40
-msgid ""
-"The path where the CultureFeed Entry API resides. End with a slash. Example: "
-"entry/test.rest.uitdatabank.be/api/v2/"
+msgid "The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/"
 msgstr ""
 
 #: culturefeed.admin.inc:46
@@ -81,17 +77,14 @@ msgstr ""
 
 #: culturefeed.pages.inc:42;49;97
 msgid "An error occurred while logging in. Please try again later."
-msgstr "Er is een fout opgetreden bij het inloggen. Probeer later opnieuw."
+msgstr ""
 
 #: culturefeed.module:154
 msgid "CultureFeed cache"
 msgstr ""
 
 #: culturefeed.module:156
-msgid ""
-"Enabling the CultureFeed cache will cache some parsed results of requests to "
-"the CultureFeed API. This will reduce the number of requests made directly "
-"to the API service."
+msgid "Enabling the CultureFeed cache will cache some parsed results of requests to the CultureFeed API. This will reduce the number of requests made directly to the API service."
 msgstr ""
 
 #: culturefeed.module:160
@@ -116,7 +109,7 @@ msgstr ""
 
 #: culturefeed.module:93
 msgid "Log in"
-msgstr "Aanmelden"
+msgstr "S'identifier"
 
 #: culturefeed.install:10;32
 msgid "Tokens and secrets from users."
@@ -142,54 +135,47 @@ msgstr ""
 msgid "CultureFeed OAuth secret."
 msgstr ""
 
-#: (duplicate) culturefeed.install:104
+#: (duplicate) culturefeed.install:104 
 msgid "cURL"
-msgstr "cURL"
-
-#: (duplicate) culturefeed.install:105
-msgid "Enabled"
-msgstr "Ingeschakeld"
-
-#: (duplicate) culturefeed.install:105
-msgid "Not found"
-msgstr "Niet gevonden"
-
-#: (duplicate) culturefeed.install:109
-msgid ""
-"CultureFeed could not be installed because the PHP <a href=\"@curl_url"
-"\">cURL</a> library is not available."
 msgstr ""
 
-#: (duplicate) culturefeed.install:114
+#: (duplicate) culturefeed.install:105 
+msgid "Enabled"
+msgstr ""
+
+#: (duplicate) culturefeed.install:105 
+msgid "Not found"
+msgstr ""
+
+#: (duplicate) culturefeed.install:109 
+msgid "CultureFeed could not be installed because the PHP <a href=\"@curl_url\">cURL</a> library is not available."
+msgstr ""
+
+#: (duplicate) culturefeed.install:114 
 msgid "CultureFeed Application Key"
 msgstr ""
 
-#: (duplicate) culturefeed.install:116
-msgid ""
-"Your CultureFeed Application key has not been set yet. Please configure its "
-"settings from the <a href=\"@url\">CultureFeed settings page</a>."
+#: (duplicate) culturefeed.install:116 
+msgid "Your CultureFeed Application key has not been set yet. Please configure its settings from the <a href=\"@url\">CultureFeed settings page</a>."
 msgstr ""
 
-#: (duplicate) culturefeed.install:118 ;129 ;140
+#: (duplicate) culturefeed.install:118 ;129 ;140 
 msgid "Not configured"
 msgstr ""
 
-#: (duplicate) culturefeed.install:125
+#: (duplicate) culturefeed.install:125 
 msgid "CultureFeed Shared Secret"
 msgstr ""
 
-#: (duplicate) culturefeed.install:127
-msgid ""
-"Your CultureFeed Shared Secret has not been set yet. Please configure its "
-"settings from the <a href=\"@url\">CultureFeed settings page</a>."
+#: (duplicate) culturefeed.install:127 
+msgid "Your CultureFeed Shared Secret has not been set yet. Please configure its settings from the <a href=\"@url\">CultureFeed settings page</a>."
 msgstr ""
 
-#: (duplicate) culturefeed.install:136
+#: (duplicate) culturefeed.install:136 
 msgid "CultureFeed location"
 msgstr ""
 
-#: (duplicate) culturefeed.install:138
-msgid ""
-"The location of the CultureFeed has not been set yet. Please configure its "
-"settings from the <a href=\"@url\">CultureFeed settings page</a>."
+#: (duplicate) culturefeed.install:138 
+msgid "The location of the CultureFeed has not been set yet. Please configure its settings from the <a href=\"@url\">CultureFeed settings page</a>."
 msgstr ""
+

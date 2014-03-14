@@ -15,7 +15,7 @@ function culturefeed_agenda_block_related_activities() {
     return;
   }
 
-  $total_items = variable_get('agenda_related_activities_total_items', 5);
+  $total_items = variable_get('agenda_related_activities_total_items', 3);
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   // 1 extra then requested, because it's possible that current event is in the result.

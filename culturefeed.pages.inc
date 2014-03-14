@@ -39,14 +39,14 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $token = $cf->getRequestToken($callback_url);
   }
   catch (Exception $e) {
-    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
     watchdog_exception('culturefeed', $e);
 
     drupal_goto('<front>');
   }
 
   if (!$token) {
-    drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+    drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
     drupal_goto('<front>');
   }
 
@@ -94,7 +94,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'], $application_key, $shared_secret)->getUser($token['userId']);
     }
     catch (Exception $e) {
-      drupal_set_message('Er is een fout opgetreden bij het inloggen. Probeer later opnieuw.', 'error');
+      drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
       watchdog_exception('culturefeed', $e);
 
       drupal_goto();
@@ -102,11 +102,22 @@ function culturefeed_oauth_authorize($application_key = NULL) {
 
     // Check if the user is already known in our system.
     $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $token['userId']))->fetchField();
+    
+    global $user;
     if (!$uid) {
-      $account = culturefeed_create_user($cf_account);
+      $account = culturefeed_create_user($cf_account, $user);
     }
     else {
+      // If the drupal user already exist we update the reference in the culturefeed_user table
+      if ($user->uid && $user->uid != $uid) {
+        $query = db_update('culturefeed_user')
+          ->condition('cf_uid', $cf_account->id)
+          ->fields(array('uid' => $user->uid))
+          ->execute();
+        $uid = $user->uid;
+      }
       $account = user_load($uid);
+      
     }
 
     // If a token was passed, save it after deleting a possible previous entry.
