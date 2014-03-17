@@ -334,6 +334,18 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     '#default_value' => $list ? $list->frequency : '',
     '#required' => TRUE,
   );
+  
+  $form['date'] = array(
+    '#type' => 'textfield',
+    '#title' => t('select a date'),
+    '#default_value' => date('Y/m/d'),
+    '#date_format' => 'Y/m/d',
+    '#states' => array(
+      'required' => array(
+        ':input[name=frequency]' => array('value' => 'Once'),
+      ),
+    ),
+  );
 
   $form['search_query'] = array(
     '#type' => 'textfield',
@@ -428,6 +440,7 @@ function culturefeed_mailing_lists_form_submit($form, &$form_state) {
       $mailing->subject = $form_state['values']['subject'];
       $mailing->fromAddress = $form_state['values']['from_address'];
       $mailing->frequency = $form_state['values']['frequency'];
+      $mailing->scheduledDate = $form_state['values']['date'];
       $mailing->template = $form_state['values']['template'];
       $mailing->block1 = $form_state['values']['block_1'];
       $mailing->block2 = $form_state['values']['block_2'];
@@ -454,6 +467,7 @@ function culturefeed_mailing_lists_form_submit($form, &$form_state) {
       $mailing->subject = $form_state['values']['subject'];
       $mailing->fromAddress = $form_state['values']['from_address'];
       $mailing->frequency = $form_state['values']['frequency'];
+      $mailing->scheduledDate = $form_state['values']['date'];
       $mailing->template = $form_state['values']['template'];
       $mailing->block1 = $form_state['values']['block_1'];
       $mailing->block2 = $form_state['values']['block_2'];
