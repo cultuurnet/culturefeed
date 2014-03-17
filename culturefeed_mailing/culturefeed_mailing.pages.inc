@@ -335,16 +335,15 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     '#required' => TRUE,
   );
   
+  $scheduleddate = $list->scheduledDate;
+  
   $form['date'] = array(
     '#type' => 'textfield',
-    '#title' => t('select a date'),
-    '#default_value' => date('Y/m/d'),
-    '#date_format' => 'Y/m/d',
-    '#states' => array(
-      'required' => array(
-        ':input[name=frequency]' => array('value' => 'Once'),
-      ),
-    ),
+    '#title' => t('Scheduled date'),
+    '#description' => 'YYYY-MM-DD (only for frequency ONCE)',
+    '#default_value' => $scheduleddate ? substr($scheduleddate, 0, 10) : date('Y-m-d'),
+    '#date_format' => 'Y-m-d',
+    '#required' => TRUE,
   );
 
   $form['search_query'] = array(
