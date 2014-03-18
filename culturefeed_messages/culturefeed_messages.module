@@ -24,6 +24,7 @@ function culturefeed_messages_theme() {
     'culturefeed_messages_message_list_item'=> array(
       'variables' => array(
         'message' => NULL,
+        'class_name' => NULL,
       ),
       'template' => 'culturefeed-messages-message-list-item',
       'path' => $path,
@@ -248,7 +249,6 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
       'class' => 'notifications',
       'weight' => -20,
     );
-
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_messages', $e);

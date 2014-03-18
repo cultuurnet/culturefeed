@@ -23,22 +23,28 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
       $active_message = arg(2);
     }
 
+
+    $selected_id = 0;
+    foreach ($variables['messages']->objects as $i => $message) {
+      if ($message->id == $active_message) {
+        $selected_id = $i;
+      }
+    }
+
     foreach ($variables['messages']->objects as $i => $message) {
 
       $class = 'message';
-      if ($message->id == $active_message) {
+      $class_name = '';
+      if ($i == $selected_id) {
         $class .= ' active';
+        $class_name = 'active';
       }
 
       $items[] =  array(
-        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message)),
+        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message, 'class_name' => $class_name)),
         'class' => $class,
       );
 
-    }
-
-    if (empty($active_message)) {
-      $items[0]['class'] .= ' active';
     }
 
   }
@@ -64,6 +70,12 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list_item(
 
   _culturefeed_messages_preprocess_message($variables);
   _culturefeed_messages_preprocess_message_recipients($variables);
+
+  $classes = array('message', 'message-' . $variables['status']);
+  if (!empty($variables['class_name'])) {
+    $classes[] = $variables['class_name'];
+  }
+  $variables['class_names'] = implode(" ", $classes);
 
   if (arg(0) == 'pages') {
     $variables['url'] = url('pages/' . arg(1) . '/messages/' . $variables['message']->id);
