@@ -86,9 +86,9 @@ function culturefeed_messages_theme() {
       'file' => 'theme.inc',
     ),
     'culturefeed_messages_new_message_form' => array(
-      'template' => 'culturefeed-messages-message-form',
-      'path' => $path,
+      'template' => 'culturefeed-messages-new-message-form',
       'render element' => 'form',
+      'path' => $path,
     ),
     'culturefeed_messages_total_messages_profile_box_item' => array(
       'variables' => array('total' => 0),

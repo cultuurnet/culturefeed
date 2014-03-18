@@ -152,8 +152,6 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
     '#value' => t('Send'),
   );
 
-  $form['#theme'] = 'culturefeed_messages_new_message_form';
-
   return $form;
 
 }
