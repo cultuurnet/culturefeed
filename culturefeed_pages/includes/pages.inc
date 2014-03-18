@@ -633,7 +633,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
       $form['image']['#default_value'] = $file->fid;
     }
 
-    $form['image']['#title'] = t('Select another photo');
+    $form['image']['#title'] = t('Select another Image or Logo');
 
   }
   
@@ -649,10 +649,10 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
       $form['cover']['#default_value'] = $file_cover->fid;
     }
 
-    $form['cover']['#title'] = t('Select another cover');
+    $form['cover']['#title'] = t('Select another Cover Photo');
   }
   
-  // Tagline
+  // Baseline
   $tagline = $page->getTagline();
   if (!empty($tagline)) {
     $form['tagline']['#default_value'] = isset($tagline) ? $tagline : '';
