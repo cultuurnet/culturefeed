@@ -90,6 +90,11 @@ function culturefeed_messages_theme() {
       'path' => $path,
       'render element' => 'form',
     ),
+    'culturefeed_messages_total_messages_profile_box_item' => array(
+      'variables' => array('total' => 0),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -235,28 +240,14 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
   try {
 
     $message_count = DrupalCultureFeed::getLoggedInUserInstance()->messages()->getMessageCount();
-    
-    // TODO: move bootstrap specific markup to theme
-    $message_icon = '<i class="icon-envelope"></i>';
-    $message_class = 'no-new-messages label label-default';
-    $message_new_class = 'new-messages label label-important';
-    $message_number = $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD];
-    $message_text = t('new messages');
 
-    if (!empty($message_number)) {
-      $items['messages'] = array(
-        'data' => l('<span class="' . $message_new_class . '">' . $message_icon . ' ' . $message_number . ' ' . $message_text  . '</span>', 'culturefeed/messages', array('html' => TRUE)),
-        'class' => 'messages',
-        'weight' => -20,
-      );
-    }
-    else {
-      $items['messages'] = array(
-        'data' => l($message_icon . ' ' . '<span class="' . $message_class . '">' . $message_number . ' ' . $message_text . '</span>', 'culturefeed/messages', array('html' => TRUE)),
-        'class' => 'messages',
-        'weight' => -20,
-      );
-    }
+    $items['messages'] = array(
+      'data' => theme('culturefeed_messages_total_messages_profile_box_item', array(
+        'total' => isset($message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD]) ? $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] : 0,
+      )),
+      'class' => 'notifications',
+      'weight' => -20,
+    );
 
   }
   catch (Exception $e) {

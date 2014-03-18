@@ -346,3 +346,10 @@ function theme_culturefeed_social_login_required_message($variables) {
   return '<div class="login-required">' . $config->loginRequiredMessage . '</div>';
 
 }
+
+/**
+ * Theme the notifications profile box item.
+ */
+function theme_culturefeed_social_profile_box_item_notifications($variables) {
+  return l(format_plural($variables['total'], '@count new notification', '@count new notifications'), 'culturefeed/notifications');
+}
