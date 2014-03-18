@@ -111,14 +111,16 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 
   if (!empty($thread->recipientPage)) {
     $variables['recipient_page'] = check_plain($thread->recipientPage->getName());
-    $variables['recipient'] = t('!name of !page', array('!name' => $variables['recipient_links'], '!page' => $variables['recipient_page']));
+    $variables['recipient_page_link'] = culturefeed_search_detail_l('page', $thread->recipientPage->getId(), $thread->recipientPage->getName());
+    $variables['recipient'] = t('!name of !page', array('!name' => $variables['recipient_links'], '!page' => $variables['recipient_page_link']));
   }
 
   $variables['sender_link'] = $sender_link;
   $variables['sender'] = check_plain($thread->sender->nick);
   if (!empty($thread->senderPage)) {
     $variables['sender_page'] = check_plain($thread->senderPage->getName());
-    $variables['sender'] = t('!name of !page', array('!name' => $variables['sender_link'], '!page' => $variables['sender_page']));
+    $variables['sender_page_link'] = culturefeed_search_detail_l('page', $thread->senderPage->getId(), $thread->senderPage->getName());
+    $variables['sender'] = t('!name of !page', array('!name' => $variables['sender_link'], '!page' => $variables['sender_page_link']));
   }
 
   $variables['messages'] = array();
