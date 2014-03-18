@@ -2175,6 +2175,25 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
   }
 
+  // Validate translations
+  $available_translations = array(
+    'de' => 'german',
+    'en' => 'english',
+    'fr' => 'french',
+    'nl' => 'dutch',
+  );
+
+  foreach ($available_translations as $key => $language) {
+    if (culturefeed_search_get_preferred_language() != $key) {
+      if ($values[$language]['short_description'] || $values[$language]['long_description']['value']) {
+        if (!$values[$language]['language']) {
+          dpm($values);
+          form_set_error('channel_input', t('If you translate something, you should also translate the title.'));
+        }
+      }
+    }
+  }
+
   $errors = form_get_errors();
   if (empty($errors)) {
     _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
