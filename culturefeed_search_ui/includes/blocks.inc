@@ -456,6 +456,79 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
 }
 
 /**
+ * Block callback to show the Age Range facet.
+ */
+function culturefeed_search_ui_block_age_range_facet() {
+
+  $facet_component = culturefeed_get_facet_component();
+  if (!$facet_component instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $facets = $facet_component->getFacets();
+  if (!isset($facets['agefrom'])) {
+    return;
+  }
+
+  $facet = $facets['agefrom'];
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $active_age = 0;
+  if (isset($query['min_age'])) {
+    $active_age = (int)$query['min_age'];
+    unset($query['min_age']);
+  }
+
+  $counts = array();
+  // Calculate the different age facets.
+  $all_items = $facet->getResult()->getItems();
+  foreach ($all_items as $item) {
+
+    $age = $item->getValue();
+
+    // Loop from 1 till the age and always count the value to that age.
+    // This is done because agefrom 8 is also agefrom 6. As 8 is higher then 6.
+    if ($age > 0 && $age < 12) {
+      for ($i = 1; $i <= $age ; $i++) {
+        $counts[$i] = isset($counts[$i]) ? $counts[$i] + $item->getTotalResults() : $item->getTotalResults();
+      }
+    }
+
+  }
+
+  $requested_facets = array(
+    3 => 'Vanaf 3 jaar',
+    6 => 'Vanaf 6 jaar',
+    9 => 'Vanaf 9 jaar',
+  );
+
+  $items = array();
+  foreach ($requested_facets as $age => $label) {
+    if (isset($counts[$age]) && $active_age <= $age) {
+      $facet_count = ' <small class="muted">(' . $counts[$age] . ')</small>';
+      if ($age === $active_age) {
+        $items[] = '<span class="facet-label active">' . $label . $facet_count . '<span class="facet-remove" title="Verwijder filter">' . l('<i class="icon-remove text-red pull-right icon-large"></i>', $_GET['q'], array('query' => $query, 'html' => TRUE)) . '</span> </span>';
+      }
+      else {
+        $search_query = $query;
+        $search_query['min_age'] = $age;
+        $items[] = '<span class="facet-label">' . l($label, $_GET['q'], array('query' => $search_query)) . '</span>' . $facet_count;
+      }
+    }
+  }
+
+  if (!empty($items)) {
+    return array(
+      'subject' => 'Leeftijd',
+      'content' => array(
+        '#theme' => 'item_list',
+        '#items' => $items,
+        '#attributes' => array('class' => 'age-field-facet facet-search facet-level-1'),
+      ),
+    );
+  }
+}
+
+/**
  * Block callback to show the city only facet.
  */
 function culturefeed_search_ui_block_city_only_facet() {

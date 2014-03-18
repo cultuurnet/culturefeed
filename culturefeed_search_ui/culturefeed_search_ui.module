@@ -271,6 +271,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-age-range'] = array(
+    'info' => t('Facet: Age range'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   $blocks['filter-form'] = array(
     'info' => t('Culturefeed search: Filter form'),
     'cache' => DRUPAL_NO_CACHE,
@@ -417,6 +422,10 @@ function culturefeed_search_ui_block_view($delta) {
 
     case 'facet-city-only':
       $block = culturefeed_search_ui_block_city_only_facet();
+    break;
+
+    case 'facet-age-range':
+      $block = culturefeed_search_ui_block_age_range_facet();
     break;
 
     case 'filter-form':
