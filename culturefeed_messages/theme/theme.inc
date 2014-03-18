@@ -90,6 +90,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 
   // Build link to profile of every recipient.
   $variables['recipient_links'] = '';
+  $variables['recipient'] = '';
   if (!empty($recipients)) {
 
     $accounts = culturefeed_get_uids_for_cf_uids($recipients);
@@ -105,17 +106,19 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 
     }
     $variables['recipient_links'] = implode(', ', $recipient_links);
-
+    $variables['recipient'] = $variables['recipient_links'];
   }
 
   if (!empty($thread->recipientPage)) {
-      $variables['recipient_page'] =  check_plain($thread->recipientPage->getName());
+    $variables['recipient_page'] = check_plain($thread->recipientPage->getName());
+    $variables['recipient'] = t('!name of !page', array('!name' => $variables['recipient_links'], '!page' => $variables['recipient_page']));
   }
 
-  $variables['sender'] = check_plain($thread->sender->nick);
   $variables['sender_link'] = $sender_link;
+  $variables['sender'] = check_plain($thread->sender->nick);
   if (!empty($thread->senderPage)) {
     $variables['sender_page'] = check_plain($thread->senderPage->getName());
+    $variables['sender'] = t('!name of !page', array('!name' => $variables['sender_link'], '!page' => $variables['sender_page']));
   }
 
   $variables['messages'] = array();
