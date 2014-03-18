@@ -560,6 +560,10 @@ msgstr "Inleiding"
 msgid "Actions label"
 msgstr "Tekstlabel om UiTPAS acties zichtbaar te maken voor andere gebruikers"
 
+#: culturefeed_uitpas.forms.inc:31 includes/registration_confirmation.inc:43;115
+msgid "Make my UiTPAS actions available for others"
+msgstr ""
+
 #: includes/user_register.inc:29;188
 msgid ""
 "Register here, so you can follow your UiTPAS advantages and points balance "
