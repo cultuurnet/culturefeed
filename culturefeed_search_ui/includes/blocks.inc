@@ -496,9 +496,10 @@ function culturefeed_search_ui_block_age_range_facet() {
   }
 
   $requested_facets = array(
-    3 => 'Vanaf 3 jaar',
-    6 => 'Vanaf 6 jaar',
-    9 => 'Vanaf 9 jaar',
+    3 => '0-3 jaar',//&fq=(agefrom:[0 TO 3])+OR+(!agefrom:*+TO+*)
+    6 => '4-6 jaar',//&fq=(agefrom:[4 TO 6])+OR+(!agefrom:*+TO+*)
+    9 => '7-9 jaar',//&fq=(agefrom:[7 TO 9])+OR+(!agefrom:*+TO+*)
+    11 => '10-11 jaar',//&fq=(agefrom:[10 TO 11])+OR+(!agefrom:*+TO+*)
   );
 
   $items = array();

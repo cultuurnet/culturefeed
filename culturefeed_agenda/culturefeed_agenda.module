@@ -209,6 +209,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'sort_options' => array(
         'relevancy' => t('Relevance'),
         'date' => t('Date'),
+        'agefrom' => t('Age'),
         'recommend_count' => t('Recommended'),
         'comment_count' => t('Reactions'),
       ),
