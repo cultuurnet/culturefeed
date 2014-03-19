@@ -772,7 +772,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   // General information.
   $form['basic'] = array(
     '#type' => 'markup',
-    '#markup' => '<h2>' . t('Settings') . '</h2>',
+    '#markup' => '<h2>' . t('Features') . '</h2>',
     '#weight' => -20,
   );
 
@@ -786,28 +786,28 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   $form['allow_followers'] = array(
     '#type' => 'checkbox',
-    '#title' => t('follow my page'),
-    '#description' => t('This allows users to stay informed of any updates on this page.'),
+    '#title' => t('Allow users to follow my page'),
+    '#description' => t('Followers receive a notification when your page is updated, so that they stay informed of new activities, threads, ...'),
     '#default_value' => !empty($permissions->allowFollowers),
   );
 
   $form['allow_members'] = array(
     '#type' => 'checkbox',
-    '#title' => t('become a member of my page'),
-    '#description' => t('In this way, your page can also be accessed via the profiles, comments and reactions of all colleagues who are active on this site.'),
+    '#title' => t('Allow users to request membership'),
+    '#description' => t('Members can, depending on the roles or rights, collaborate to maintain and update your page. Furthermore, page memberships are added to user profiles and can be used as an alias to add comments.'),
     '#default_value' => !empty($permissions->allowMembers),
   );
 
   $form['allow_comments'] = array(
     '#type' => 'checkbox',
-    '#title' => t('write comments about my activities'),
-    '#description' => t('Only for organizations that provide activities and have entered via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.'),
+    '#title' => t('Allow users to add comments to my activities'),
+    '#description' => t('Only available for organizations who added their activities via www.uitdatabank.be.'),
     '#default_value' => !empty($permissions->allowComments),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => t('Update'),
   );
 
   if ($page->isVisible()) {
