@@ -584,7 +584,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // Link to the detail page.
   $form['detail_link'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => array('view-link')))),
+    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page')),
     '#weight' => -25,
   );
 
