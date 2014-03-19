@@ -450,12 +450,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
       $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
-        $row['comment_count'] = l(format_plural($comment_count, '@count reaction', '@count reactions'), $path, array('fragment' => 'lees'));
+        $row['comment_count'] = l(format_plural($comment_count, '@count comment', '@count comments'), $path, array('fragment' => t('Read comments')));
       }
       else {
-        $row['comment_count'] = t('No reactions yet');
+        $row['comment_count'] = t('No comments');
       }
-      $row['edit_url'] = l(t('Edit in the UiTdatabank'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
+      $row['edit_url'] = l(t('Edit via UiTdatabank.be'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
 
@@ -475,8 +475,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
 
   }
 
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), 'Bekijk pagina');
-
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
+  
+      $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
+  
 }
 
 /**
