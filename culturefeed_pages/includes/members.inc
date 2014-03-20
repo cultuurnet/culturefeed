@@ -124,7 +124,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
             'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
           ),
         );
-        $row['delete'] = l(t('Delete as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
+        $row['delete'] = l(t('Remove as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
       }
     }
     // Show the edit form.
@@ -298,15 +298,21 @@ function culturefeed_pages_edit_membership_form_submit(&$form, &$form_state) {
 function culturefeed_pages_search_user_form() {
 
   $form = array();
+  
+  $form['title'] = array(
+    '#markup' => t('Add new members'),
+    '#weight' => -999,
+  );
+  
   $form['search'] = array(
-    '#title' => t('Search users'),
+    '#title' => t('Keyword'),
     '#type' => 'textfield',
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search'),
+    '#value' => t('Search User'),
   );
 
   return $form;

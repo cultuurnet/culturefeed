@@ -5,77 +5,73 @@
   <?php print $contextual_links; ?>
 </div>
 
-  <?php if ($picture): ?>
-    <div class="profile-picture">
-      <?php print $picture; ?>
-    </div>
-  <?php endif; ?>
-
-  <div class="profile-fields">
-      <?php if ($name) : ?>
-        <div class="profile-field name"><?php print $name; ?></div>
-      <?php elseif ($nick) : ?>
-        <div class="profile-field nick"><?php print $nick; ?></div>
-      <?php endif; ?>
-
-      <?php if ($gender): ?>
-        <div class="profile-field gender"><?php print $gender; ?></div>
-      <?php endif; ?>
-
-      <?php if ($age): ?>
-        <div class="profile-field dob"><?php print $age; ?></div>
-      <?php endif; ?>
-
-      <?php if ($city): ?>
-        <div class="profile-field city"><?php print $city; ?></div>
-      <?php endif; ?>
-
-  </div>
-<?php else : ?>
-<div class="no-profile"></div>
+<?php if ($picture): ?>
+    <?php print $picture; ?>
 <?php endif; ?>
-<div class="clearfix"></div>
 
-<div class="aantal-acties">
-  <?php print t('Amount of actions') ?>
-  <div class="tooltip">?</div>
-  <div class="tooltip-text"><?php print t('The more items you like or events you attend, the more tips will have a personal touch') ?></div>
-</div>
+<ul>
+<?php if ($name) : ?>
+  <li><?php print $name; ?></li>
+<?php elseif ($nick) : ?>
+  <li><?php print $nick; ?></li>
+<?php endif; ?>
+
+<?php if ($gender): ?>
+  <li><?php print $gender; ?></li>
+<?php endif; ?>
+
+<?php if ($age): ?>
+  <li><?php print $age; ?></li>
+<?php endif; ?>
+
+<?php if ($city): ?>
+ <li><?php print $city; ?></li>
+<?php endif; ?>
+</ul>
+
+<?php else : ?>
+
+<?php endif; ?>
+
+<hr />
+
+<h3><?php print t('My actions') ?></h3>
+<p><?php print t('The more items you like or events you attend, the more tips will have a personal touch') ?></p>
+
+<ul>
+
 <?php if ($like): ?>
-  <div class="total-likes">
-    <span class="number"><?php print $like; ?> x</span> <span><?php print t('likes') ?></span>
-  </div>
+<li><?php print $like; ?> x <?php print t('likes') ?></li>
 <?php endif; ?>
 
 <?php if ($goto): ?>
-  <div class="total-goto">
-    <span class="number"><?php print $goto; ?> x</span> <span><?php print t('attends') ?></span>
-  </div>
+<li><?php print $goto; ?> x <?php print t('attends') ?></li>
 <?php endif; ?>
 
 <?php if (!empty($memberships)): ?>
-<div class="page-memberships">
-
-  <ul>
+<li>
+  <?php print ($view_own_page ? t('Pages of which i\'m a member') : t('Pages of which @username is a member', array('@username' => $user->nick))); ?>  <ul>
   <?php foreach ($memberships as $membership) :?>
     <li><?php print $membership; ?></li>
   <?php endforeach; ?>
   </ul>
-</div>
+</li>
 <?php endif; ?>
 
 <?php if (!empty($following)): ?>
-<div class="following">
-  <?php print ($view_own_page ? t('Pages of which i\'m a member') : t('Pages of which @username is a member', array('@username' => $user->nick))); ?>
+
+<li>
+<?php print t('Pages I follow') ?>
   <ul>
   <?php foreach ($following as $following_page) :?>
     <li><?php print $following_page; ?></li>
   <?php endforeach; ?>
   </ul>
-</div>
+</li>
 <?php endif; ?>
+</ul>
 
-<div class="clearfix"></div>
+<hr />
 
 <?php if ($facebook_privacy_toggle): ?>
   <?php print $facebook_privacy_toggle; ?>

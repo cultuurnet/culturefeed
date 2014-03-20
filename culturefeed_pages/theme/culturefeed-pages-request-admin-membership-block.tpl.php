@@ -6,8 +6,5 @@
  *   - $link : ajax link
  */
 ?>
-<h3><?php print t('Mistake seen?'); ?></h3>
-<p><?php print t('This page has no administrator. As an administrator, you can change the information on this page and manage the members.'); ?></p>
-<a href="<?php print $url ?>"><?php print t('Send application to become an administrator'); ?></a>
-
-<?php print $link ?>
+<p><strong><?php print t('Report a bug'); ?></strong></p>
+<p><?php print t('This page currently has no administrator. As an administrator, you can update page details, layout and manage members.'); ?> <?php print $link ?></p>
