@@ -478,43 +478,47 @@ function culturefeed_search_ui_block_age_range_facet() {
     unset($query['min_age']);
   }
 
+  $requested_facets = culturefeed_search_ui_get_age_range_facet_options();
   $counts = array();
+  foreach (array_keys($requested_facets) as $key) {
+    $counts[$key] = 0;
+  }
+  if ($active_age > 0) {
+    $counts = array($active_age => 0);
+  }
+
   // Calculate the different age facets.
   $all_items = $facet->getResult()->getItems();
   foreach ($all_items as $item) {
-
     $age = $item->getValue();
-
-    // Loop from 1 till the age and always count the value to that age.
-    // This is done because agefrom 8 is also agefrom 6. As 8 is higher then 6.
-    if ($age > 0 && $age < 12) {
-      for ($i = 1; $i <= $age ; $i++) {
-        $counts[$i] = isset($counts[$i]) ? $counts[$i] + $item->getTotalResults() : $item->getTotalResults();
-      }
+    if ($age >= 0 && $age <= 3) {
+      $counts[3] += $item->getTotalResults();
     }
-
+    elseif ($age >= 4 && $age <= 6) {
+      $counts[6] += $item->getTotalResults();
+    }
+    elseif ($age >= 7 && $age <= 9) {
+      $counts[9] += $item->getTotalResults();
+    }
+    elseif ($age >= 10 && $age <= 11) {
+      $counts[11] += $item->getTotalResults();
+    }
   }
 
-  $requested_facets = array(
-    3 => '0-3 jaar',//&fq=(agefrom:[0 TO 3])+OR+(!agefrom:*+TO+*)
-    6 => '4-6 jaar',//&fq=(agefrom:[4 TO 6])+OR+(!agefrom:*+TO+*)
-    9 => '7-9 jaar',//&fq=(agefrom:[7 TO 9])+OR+(!agefrom:*+TO+*)
-    11 => '10-11 jaar',//&fq=(agefrom:[10 TO 11])+OR+(!agefrom:*+TO+*)
-  );
-
   $items = array();
-  foreach ($requested_facets as $age => $label) {
-    if (isset($counts[$age]) && $active_age <= $age) {
+  foreach ($requested_facets as $age => $data) {
+    $label = $data['name'];
+    if ($active_age > 0 && $active_age === $age) {
       $facet_count = ' <small class="muted">(' . $counts[$age] . ')</small>';
-      if ($age === $active_age) {
-        $items[] = '<span class="facet-label active">' . $label . $facet_count . '<span class="facet-remove" title="Verwijder filter">' . l('<i class="icon-remove text-red pull-right icon-large"></i>', $_GET['q'], array('query' => $query, 'html' => TRUE)) . '</span> </span>';
-      }
-      else {
-        $search_query = $query;
-        $search_query['min_age'] = $age;
-        $items[] = '<span class="facet-label">' . l($label, $_GET['q'], array('query' => $search_query)) . '</span>' . $facet_count;
-      }
+      $items[] = '<span class="facet-label active">' . $label . $facet_count . '<span class="facet-remove" title="Verwijder filter">' . l('<i class="icon-remove text-red pull-right icon-large"></i>', $_GET['q'], array('query' => $query, 'html' => TRUE)) . '</span> </span>';
     }
+    elseif (!empty($counts[$age])) {
+      $facet_count = ' <small class="muted">(' . $counts[$age] . ')</small>';
+      $search_query = $query;
+      $search_query['min_age'] = $age;
+      $items[] = '<span class="facet-label">' . l($label, $_GET['q'], array('query' => $search_query)) . '</span>' . $facet_count;
+    }
+
   }
 
   if (!empty($items)) {

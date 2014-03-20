@@ -98,6 +98,30 @@ function culturefeed_search_ui_get_date_facet_options() {
 }
 
 /**
+ * Get the allowed age range facet options.
+ */
+function culturefeed_search_ui_get_age_range_facet_options() {
+  return array(
+    3 => array(
+      'name' => '0-3 year',
+      'query' => '(agefrom:[0 TO 3])',
+    ),
+    6 => array(
+      'name' => '4-6 year',
+      'query' => '(agefrom:[4 TO 6])',
+    ),
+    9 => array(
+      'name' => '7-9 year',
+      'query' => '(agefrom:[7 TO 9])',
+    ),
+    11 => array(
+      'name' => '10-11 year',
+      'query' => '(agefrom:[10 TO 11])',
+    ),
+  );
+}
+
+/**
  * Set the correct metatags for search pages.
  */
 function culturefeed_search_ui_set_noindex_metatag() {
