@@ -478,6 +478,16 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   	}
   }
 
+  if (!empty($post['zip'])) { 
+    $flandersregions = culturefeed_search_get_categories_by_domain('flandersregion', array('name_like' => $post['zip'], 'language' => 'und'));
+  }
+  
+  $flandersregions = array_keys($flandersregions);
+  $post['categoryId'] = array($post['categoryId']);
+  
+  foreach ($flandersregions as $flandersregion) {
+    $post['categoryId'][] = $flandersregion;
+  } 
   $form_state['post_params'] = $post;
 
 }
