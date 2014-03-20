@@ -422,8 +422,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     $result = array();
     $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
+    $result['profile_url'] =  url('user/' . $accounts[$object->id]); 
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
-    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l(t('Add as a member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
+    $result['add_link'] = in_array($object->id, $members) ? t('Member') : l(t('Add as member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
 
   }
@@ -493,7 +494,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
 
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
-  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send a request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
 }
 
