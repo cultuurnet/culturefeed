@@ -128,7 +128,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       $calendar_class = get_class($calendar);
       $calendar->rewind();
-      $today = time();
+      $today = strtotime(date('Y-m-d') . ' 00:00:00');
 
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
         $when = 'period';
@@ -145,18 +145,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $when = 'timestamps';
         $timestamps_count = iterator_count($calendar);
         $calendar->rewind();
-
+        $current_timestamp=0;
         for ($i = 0; $i < $timestamps_count; $i++) {
 
           $timestamp = $calendar->current();
           $date = $timestamp->getDate();
 
           if (strtotime($date) >= $today) {
-            $timestamps[$i] = array(
+            $timestamps[$current_timestamp] = array(
               'date' => $date,
               'begintime' => $timestamp->getStartTime(),
               'endtime' => $timestamp->getEndTime(),
             );
+            $current_timestamp++;
           }
 
           $calendar->next();
@@ -2187,7 +2188,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (culturefeed_search_get_preferred_language() != $key) {
       if ($values[$language]['short_description'] || $values[$language]['long_description']['value']) {
         if (!$values[$language]['language']) {
-          dpm($values);
           form_set_error('channel_input', t('If you translate something, you should also translate the title.'));
         }
       }
@@ -2346,7 +2346,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Publication date.
   if ($values['wrapper']['date']) {
-    dpm($values['wrapper']['date']);
     $event->setAvailableFrom($values['wrapper']['date'].'T00:00:00');
   }
 
