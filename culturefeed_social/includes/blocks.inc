@@ -173,7 +173,7 @@ function culturefeed_social_block_recommended_by($object) {
 
     $content['times'] = array(
       '#type' => 'markup',
-      '#markup' => '<div class="recommended-times">' . $activities->total . ' x</div>',
+      '#markup' => '<div class="recommended-times count-number pull-right"><span class="badge">' . $activities->total . '</span></div>',
     );
 
     $user_objects = array();
@@ -192,7 +192,7 @@ function culturefeed_social_block_recommended_by($object) {
       $content['list'] = array(
         '#theme' => 'item_list',
         '#items' => $items,
-        '#attributes' => array('class' => 'user-list'),
+        '#attributes' => array('class' => 'user-list list-unstyled list-inline'),
       );
 
     }
