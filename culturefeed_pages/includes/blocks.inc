@@ -217,7 +217,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     );
   }
 
-  $admin_menu = theme('item_list', array('items' => $items));
+  $admin_menu = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'dropdown-menu')));
 
   return $admin_menu;
 
