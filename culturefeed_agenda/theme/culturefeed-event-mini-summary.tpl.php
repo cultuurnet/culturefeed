@@ -14,7 +14,7 @@
 <?php if (isset($location['city'])): ?>
 <?php print $location['city']; ?>
 <?php endif;?>
-<?php if ($when): ?>
+<?php if (isset($when)): ?>
 , <?php print $when; ?>
 <?php endif;?>
 </p>
