@@ -40,7 +40,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activities'] = array(
     'title callback' => FALSE,
-    'title' => 'Administer actions',
+    'title' => t('Administer actions'),
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
