@@ -1305,7 +1305,7 @@ function culturefeed_social_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page
   $search_results = $result->getItems();
   $items = array();
   foreach ($search_results as $search_result) {
-    $items[] = theme('culturefeed_' . $search_result->getType() . '_summary', array('item' => $search_result));
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_mini_summary', array('item' => $search_result));
   }
 
   $build = array();

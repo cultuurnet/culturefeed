@@ -33,7 +33,13 @@ function culturefeed_agenda_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     );
-
+    
+    $theme['culturefeed_' . $type . '_mini_summary'] = array(
+      'variables' => array('item' => NULL),
+      'template' => 'culturefeed-' . $type . '-mini-summary',
+      'path' => $path,
+      'file' => 'theme.inc',
+    );
     $theme['culturefeed_' . $type] = array(
       'variables' => array('item' => NULL),
       'template' => 'culturefeed-' . $type,
