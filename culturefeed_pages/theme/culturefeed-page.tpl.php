@@ -1,3 +1,9 @@
+<?php if ($baseline): ?>
+<p>
+  <?php print $baseline ?>
+</p>
+<?php endif; ?>
+
 <?php if ($description): ?>
 <p>
   <?php print $description ?>
