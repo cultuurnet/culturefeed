@@ -119,7 +119,6 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
     $form['subject']['#access'] = FALSE;
     $form_state['reply_to'] = $object->id;
     $form_state['message_type'] = $object->type;
-    $send_as_option = FALSE;
   }
 
   // Add select to choose the 'send as'.
@@ -133,13 +132,25 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
         foreach ($cf_user->pageMemberships as $membership) {
           $send_as_options[$membership->page->getId()] = $membership->page->getName();
         }
-
-        $form['send_as'] = array(
-          '#title' => t('Send message as'),
-          '#type' => 'select',
-          '#options' => $send_as_options,
-          '#default_value' => culturefeed_pages_get_active_page_id(),
-        );
+        
+        if ($object instanceof CultureFeed_Messages_Message) {
+              $form['send_as'] = array(
+                '#title' => t('Send message as'),
+                '#type' => 'select',
+                '#options' => $send_as_options,
+                '#default_value' => culturefeed_pages_get_active_page_id(),
+                '#attributes' => array('disabled' => 'disabled')
+              );
+        }
+  
+        else {
+          $form['send_as'] = array(
+            '#title' => t('Send message as'),
+            '#type' => 'select',
+            '#options' => $send_as_options,
+            '#default_value' => culturefeed_pages_get_active_page_id(),
+          );
+        }
       }
     }
     catch (Exception $e) {
