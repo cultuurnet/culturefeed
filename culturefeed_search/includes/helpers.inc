@@ -441,9 +441,11 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   // Add extra conditions.
   if (!empty($conditions['tid'])) {
     if (is_array($conditions['tid'])) {
+      $db_or = db_or();
       foreach ($conditions['tid'] as $field => $value) {
-        $query->condition('tid', $value, '=');
+        $db_or->condition('tid', $value, '=');
       }
+      $query->condition($db_or);
     }
     else {
       $query->condition('tid', $conditions['tid'], '=');
@@ -452,9 +454,11 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   
   if (!empty($conditions['tid_like'])) {
     if (is_array($conditions['tid_like'])) {
+      $db_or = db_or();
       foreach ($conditions['tid_like'] as $field => $value) {
-        $query->condition('tid', $value . '%', 'like');
+        $db_or->condition('tid', $value . '%', 'like');
       }
+      $query->condition($db_or);
     }
     else {
       $query->condition('tid', $conditions['tid_like'] . '%', 'like');
@@ -463,9 +467,11 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   
   if (!empty($conditions['name_like'])) {
     if (is_array($conditions['name_like'])) {
+      $db_or = db_or();
       foreach ($conditions['name_like'] as $field => $value) {
         $query->condition('name', $value . '%', 'like');
       }
+      $query->condition($db_or);
     }
     else {
       $query->condition('name', $conditions['name_like'] . '%', 'like');
