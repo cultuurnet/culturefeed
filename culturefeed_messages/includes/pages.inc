@@ -115,7 +115,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   // If object is a message. We are sending a reply.
   elseif ($object instanceof CultureFeed_Messages_Message) {
     $form['title']['#markup'] = t('Reply');
-    $form['subject']['#value'] = $object->subject;
+    $form['subject']['#value'] = 'RE:' . ' ' . $object->subject;
     $form['subject']['#access'] = FALSE;
     $form_state['reply_to'] = $object->id;
     $form_state['message_type'] = $object->type;
