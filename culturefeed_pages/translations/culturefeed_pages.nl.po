@@ -664,6 +664,9 @@ msgstr "Word lid"
 msgid "Send request to become administrator"
 msgstr "Stuur aanvraag om beheerder te worden"
 
+msgid "Send request"
+msgstr "Stuur aanvraag"
+
 #: includes/pages.inc:1125
 msgid "Remove membership"
 msgstr "Verwijder mij als lid"
@@ -897,3 +900,6 @@ msgstr "Omslagfoto"
 #: includes/pages.inc
 msgid "Select another cover"
 msgstr "Selecteer andere omslagfoto"
+
+msgid "This page currently has no administrator. As an administrator, you can update page details, layout and manage members."
+msgstr "Deze pagina heeft nog geen beheerder. Als beheerder kan je info op deze pagina wijzigen en de leden beheren."
