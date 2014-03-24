@@ -341,6 +341,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_members_block(&$variable
 
   $variables['members'] = $members;
   $variables['member_link'] = culturefeed_pages_member_link($page);
+  $variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
 
 }
 
