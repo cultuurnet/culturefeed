@@ -182,6 +182,15 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
   $variables['baseline'] = $page->getTagline();
   $variables['cover'] = $page->getCover();
+  $variables['page_hascover'] = false;
+  
+  if (!empty($variables['cover'])) {
+    $variables['page_hascover'] = true;
+  }
+  
+  foreach ($variables['links'] as &$link) {
+    $link = ereg_replace("(https?)://", "", $link);
+  }
 
   $logged_in = $variables['logged_in'];
 
