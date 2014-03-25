@@ -217,7 +217,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     );
   }
 
-  $admin_menu = theme('item_list', array('items' => $items));
+  $admin_menu = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'dropdown-menu', 'role' => 'menu')));
 
   return $admin_menu;
 
@@ -298,7 +298,7 @@ function culturefeed_pages_block_page_agenda($page) {
   $search_results = $result->getItems();
   $items = array();
   foreach ($search_results as $search_result) {
-    $items[] = theme('culturefeed_' . $search_result->getType() . '_summary', array('item' => $search_result));
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_mini_summary', array('item' => $search_result));
   }
 
   $block = array();

@@ -1,21 +1,16 @@
 <div id="page-agenda-ajax-wrapper-<?php print $page->getId(); ?>">
-     <?php if ($items): ?>
-       <ul>
-<?php foreach ($items as $item) :?>
-          <li><?php print $item; ?></li>
+<?php if ($items): ?>
+  <?php foreach ($items as $item) :?>
+    <?php print $item; ?>
 <?php endforeach; ?>
-</ul>
 
-  <?php if (!empty($read_more)): ?>
-    <?php print $read_more; ?>
-  <?php endif; ?>
+<?php if (!empty($read_more)): ?>
+  <?php print $read_more; ?>
+<?php endif; ?>
 
 <?php elseif ($is_admin) :?>
+  <h5><?php print t('Your page has currently no published activities.'); ?></h5>
+  <p><?php print t('Add a new activity via <a href="http://www.uitdatabank.be">www.uitdatabank.be</a>.'); ?></p>
+<?php endif; ?>
 
-<div>
-  <h3><?php print t('You page has published no activities yet.'); ?></h3>
-  <p><?php print t('Add new activities on <a href="http://www.uitdatabank.be">www.uitdatabank.be</a>.'); ?>
-</div>
-
-          <?php endif; ?>
 </div>

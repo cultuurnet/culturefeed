@@ -51,6 +51,16 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   $form = array();
   $form['title'] = array('#markup' => t('New message'));
 
+  $form['subject'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Subject'),
+  );
+
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+  );
+
   // If empty object. Load active page. This form needs a page.
   if (empty($object)) {
     $object = culturefeed_pages_get_active_page();
@@ -59,6 +69,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
     }
   }
 
+  $send_as_option = TRUE;
   // If we are on a page. Options are to members or to admins.
   if ($object instanceof CultureFeed_Cdb_Item_Page) {
 
@@ -103,51 +114,54 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   }
   // If object is a message. We are sending a reply.
   elseif ($object instanceof CultureFeed_Messages_Message) {
-    $form['title'] = array('#markup' => t('Reply'));
+    $form['title']['#markup'] = t('Reply');
+    $form['subject']['#value'] = 'RE:' . ' ' . $object->subject;
+    $form['subject']['#access'] = FALSE;
     $form_state['reply_to'] = $object->id;
     $form_state['message_type'] = $object->type;
   }
 
-  $form['subject'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Subject'),
-  );
-
-  $form['message'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Message'),
-  );
-
   // Add select to choose the 'send as'.
-  try {
+  if ($send_as_option) {
+    try {
 
-    $cf_user = DrupalCultureFeed::getLoggedInUser();
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
 
-    if (!empty($cf_user->pageMemberships)) {
-      $send_as_options = array();
-      foreach ($cf_user->pageMemberships as $membership) {
-        $send_as_options[$membership->page->getId()] = $membership->page->getName();
+      if (!empty($cf_user->pageMemberships)) {
+        $send_as_options = array();
+        foreach ($cf_user->pageMemberships as $membership) {
+          $send_as_options[$membership->page->getId()] = $membership->page->getName();
+        }
+        
+        if ($object instanceof CultureFeed_Messages_Message) {
+              $form['send_as'] = array(
+                '#title' => t('Send message as'),
+                '#type' => 'select',
+                '#options' => $send_as_options,
+                '#default_value' => culturefeed_pages_get_active_page_id(),
+                '#attributes' => array('disabled' => 'disabled')
+              );
+        }
+  
+        else {
+          $form['send_as'] = array(
+            '#title' => t('Send message as'),
+            '#type' => 'select',
+            '#options' => $send_as_options,
+            '#default_value' => culturefeed_pages_get_active_page_id(),
+          );
+        }
       }
-
-      $form['send_as'] = array(
-        '#title' => t('Send message as'),
-        '#type' => 'select',
-        '#options' => $send_as_options,
-        '#default_value' => culturefeed_pages_get_active_page_id(),
-      );
     }
-
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_messages', $e);
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_messages', $e);
+    }
   }
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Send'),
   );
-
-  $form['#theme'] = 'culturefeed_messages_new_message_form';
 
   return $form;
 
@@ -166,6 +180,13 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
 
   if (!empty($form_state['values']['send_as'])) {
     $params['senderPage'] = $form_state['values']['send_as'];
+  }
+  // Replies always use current page.
+  else {
+    $curr_page = culturefeed_pages_get_active_page_id();
+    if ($curr_page) {
+      $params['senderPage'] = $curr_page;
+    }
   }
 
   // Check if we are sending to a page.

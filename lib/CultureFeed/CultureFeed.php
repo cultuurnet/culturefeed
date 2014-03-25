@@ -193,7 +193,7 @@ class CultureFeed implements ICultureFeed {
    * @return string
    *   The URL of the authorization page.
    */
-  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '', $language = '') {
+  public function getUrlAuthorize($token, $callback = '', $type = CultureFeed::AUTHORIZE_TYPE_REGULAR, $skip_confirmation = FALSE, $skip_authorization = FALSE, $via = '', $language = '', $consumerKey = '') {
     $query = array('oauth_token' => $token['oauth_token']);
 
     if (!empty($callback)) {
@@ -218,6 +218,10 @@ class CultureFeed implements ICultureFeed {
 
     if (!empty($language)) {
       $query['lang'] = $language;
+    }
+    
+    if (!empty($consumerKey)) {
+      $query['consumerKey'] = $consumerKey;
     }
 
     return $this->oauth_client->getUrl('auth/authorize', $query);
@@ -2043,6 +2047,7 @@ class CultureFeed implements ICultureFeed {
     $mailing->consumerKey           = $element->xpath_str('serviceConsumerKey');
     $mailing->subject               = $element->xpath_str('subject');
     $mailing->frequency             = $element->xpath_str('frequency');
+    $mailing->scheduledDate         = $element->xpath_str('scheduledDate');
     $mailing->fromAddress           = $element->xpath_str('fromAddress');
     $mailing->startDay              = $element->xpath_int('startDay');
     $mailing->startDayOfWeek        = $element->xpath_int('startDayOfWeek');

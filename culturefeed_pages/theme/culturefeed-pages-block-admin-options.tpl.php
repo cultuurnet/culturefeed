@@ -14,26 +14,20 @@
 
 <?php if ($logged_in_as_page_admin): ?>
 
-  <div>
-  <?php if (!$has_activities): ?>
-    <div class="alert">
-      <?php print t('Your page has published no activities yet.'); ?>
-      <a href="http://www.uitdatabank.be"><?php print t('Add new activities.'); ?></a>
-    </div>
+<?php if (!$has_activities): ?>
+  <p><?php print t('Your page currently has no published activities.'); ?> <a href="http://www.uitdatabank.be"><?php print t('Add an activity via UiTdatabank.be'); ?></a></p>
   <?php endif; ?>
 
   <?php if (!empty($notifications)): ?>
-  <h2><?php print t('Latest notifications'); ?></h2>
-  <?php print $notifications; ?>
+  <p><strong><?php print t('Latest notifications'); ?></strong>
+  <div>
+    <?php print $notifications; ?>
+  </div>
   <?php endif; ?>
-  </div>
-  <div class="admin-menu">
-    <?php print $admin_menu; ?>
-  </div>
+  
+  <?php print $admin_menu; ?>
 
 <?php else: ?>
-  <div class="alert">
-    <p><?php print t('You are <strong> manager</strong> on this page, but <strong>not logged in</strong> as this page. Do you want to continue working as <strong>this page</strong>?'); ?></p>
-    <?php print $switch_link; ?>
-  </div>
+  <p><?php print t('You have <strong>administrator privileges</strong> for this page. In order to make any changes, please <strong>change your active page</strong>:'); ?> <?php print $switch_link; ?></p>
+  
 <?php endif; ?>

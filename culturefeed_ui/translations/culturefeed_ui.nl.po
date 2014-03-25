@@ -684,3 +684,9 @@ msgstr "Maakt een standaard user interface voor Culturefeed"
 #: culturefeed_ui.info:0
 msgid "CultureFeed"
 msgstr "CultureFeed"
+
+msgid "About me"
+msgstr "Over mij"
+
+msgid "Manage websites and applications"
+msgstr "Beheer websites en applicaties"

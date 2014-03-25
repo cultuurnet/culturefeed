@@ -65,7 +65,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   }
 
   // Fetch the authorisation url...
-  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via, culturefeed_get_preferred_language());
+  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via, culturefeed_get_preferred_language(), variable_get('culturefeed_api_application_key', ''));
 
   // ... and redirect the user to it.
   drupal_goto($auth_url);
@@ -102,11 +102,22 @@ function culturefeed_oauth_authorize($application_key = NULL) {
 
     // Check if the user is already known in our system.
     $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $token['userId']))->fetchField();
+    
+    global $user;
     if (!$uid) {
-      $account = culturefeed_create_user($cf_account);
+      $account = culturefeed_create_user($cf_account, $user);
     }
     else {
+      // If the drupal user already exist we update the reference in the culturefeed_user table
+      if ($user->uid && $user->uid != $uid) {
+        $query = db_update('culturefeed_user')
+          ->condition('cf_uid', $cf_account->id)
+          ->fields(array('uid' => $user->uid))
+          ->execute();
+        $uid = $user->uid;
+      }
       $account = user_load($uid);
+      
     }
 
     // If a token was passed, save it after deleting a possible previous entry.

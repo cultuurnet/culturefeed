@@ -47,7 +47,7 @@ function culturefeed_unique_username($cf_uid, $nick) {
  * @param CultureFeed_User $cf_account
  * @return boolean|Ambigous <A, boolean, (optional), stdClass>
  */
-function culturefeed_create_user($cf_account) {
+function culturefeed_create_user($cf_account, $user = NULL) {
 
   // Use a database transaction, as we need to handle what follows as a unit of work.
   $txn = db_transaction();
@@ -58,24 +58,31 @@ function culturefeed_create_user($cf_account) {
     if (!$cf_account || empty($cf_account->nick)) {
       return FALSE;
     }
+    
+    if (isset($user->uid) && $user->uid) {
+      // User is already Drupaluser, so map his Drupal and CultureFeed account
+      $account = $user; 
+    }
+    else {
 
-    // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
-    $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
-
-    // Create the user account.
-    $account = user_save(
-      drupal_anonymous_user(),
-      array(
-        'name' => $unique_nick,
-        'pass' => '', // We save an empty password (don't generate a random one) because this is much more performant.
-        'init' => $unique_nick,
-        'roles' => array(),
-        'status' => 1,
-        'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
-        'access' => REQUEST_TIME,
-        'mail' => '',
-      )
-    );
+      // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
+      $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
+    
+      // Create the user account.
+      $account = user_save(
+        drupal_anonymous_user(),
+        array(
+          'name' => $unique_nick,
+          'pass' => '', // We save an empty password (don't generate a random one) because this is much more performant.
+          'init' => $unique_nick,
+          'roles' => array(),
+          'status' => 1,
+          'timezone' => variable_get('date_default_timezone', date_default_timezone_get()),
+          'access' => REQUEST_TIME,
+          'mail' => '',
+        )
+      );
+    }
 
     // Save the mapping between CultureFeed User ID and Drupal user id.
     db_insert('culturefeed_user')

@@ -40,7 +40,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activities'] = array(
     'title callback' => FALSE,
-    'title' => 'Administer actions',
+    'title' => t('Administer actions'),
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -280,6 +280,11 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_social_profile_box_item_notifications' => array(
+      'variables' => array('total' => 0),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 }
 
@@ -399,28 +404,13 @@ function culturefeed_social_culturefeed_ui_profile_box_main_items() {
   try {
 
     $notification_count = DrupalCultureFeed::getNotificationsCount(DrupalCultureFeed::getLoggedInUserId());
-
-    // TODO: move bootstrap specific markup to theme
-    $notification_icon = '<i class="icon-bell"></i>';
-    $notification_class = 'no-new-notifications label label-default';
-    $notification_new_class = 'new-notifications label label-important';
-    $notification_number = $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW];
-    $notification_text = t('new notifications');
-
-    if (isset($notification_number)) {
-      $items['notifications'] = array(
-        'data' => l($notification_icon . ' ' . '<span class="' . $notification_class . '">' . $notification_number . ' ' . $notification_text . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
-        'class' => 'notifications',
-        'weight' => -20,
-      );
-    }
-    if ($notification_number > 0) {
-      $items['notifications'] = array(
-        'data' => l('<span class="' . $notification_new_class . '">' . $notification_icon . ' ' . $notification_number . ' ' . $notification_text . '</span>', 'culturefeed/notifications', array('html' => TRUE)),
-        'class' => 'notifications',
-        'weight' => -20,
-      );
-    }
+    $items['notifications'] = array(
+      'data' => theme('culturefeed_social_profile_box_item_notifications', array(
+        'total' => isset($notification_count[Culturefeed::NOTIFICATION_TYPE_NEW]) ? $notification_count[Culturefeed::NOTIFICATION_TYPE_NEW] : 0,
+      )),
+      'class' => 'notifications',
+      'weight' => -20,
+    );
 
   } catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);

@@ -74,6 +74,12 @@ class CultureFeed_Mailing {
    * @var string
    */
   public $frequency;
+  
+  /**
+    * Date for frequency once.
+    * @var date
+    */
+  public $scheduledDate;
 
   /**
    * From addres used for the mailing object.

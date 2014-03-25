@@ -180,6 +180,17 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
+  $variables['baseline'] = $page->getTagline();
+  $variables['cover'] = $page->getCover();
+  $variables['page_hascover'] = false;
+  
+  if (!empty($variables['cover'])) {
+    $variables['page_hascover'] = true;
+  }
+  
+  foreach ($variables['links'] as &$link) {
+    $link = ereg_replace("(https?)://", "", $link);
+  }
 
   $logged_in = $variables['logged_in'];
 
@@ -339,6 +350,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_members_block(&$variable
 
   $variables['members'] = $members;
   $variables['member_link'] = culturefeed_pages_member_link($page);
+  $variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
 
 }
 
@@ -422,8 +434,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     $result = array();
     $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
+    $result['profile_url'] =  url('user/' . $accounts[$object->id]); 
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
-    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l(t('Add as a member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
+    $result['add_link'] = in_array($object->id, $members) ? t('Member') : l(t('Add as member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
 
   }
@@ -450,12 +463,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
       $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
-        $row['comment_count'] = l(format_plural($comment_count, '@count reaction', '@count reactions'), $path, array('fragment' => 'lees'));
+        $row['comment_count'] = l(format_plural($comment_count, '@count comment', '@count comments'), $path, array('fragment' => t('Read comments')));
       }
       else {
-        $row['comment_count'] = t('No reactions yet');
+        $row['comment_count'] = t('No comments');
       }
-      $row['edit_url'] = l(t('Edit in the UiTdatabank'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
+      $row['edit_url'] = l(t('Edit via UiTdatabank.be'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
 
@@ -475,8 +488,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
 
   }
 
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), 'Bekijk pagina');
-
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
+  
+      $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
+  
 }
 
 /**
@@ -491,7 +506,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
 
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
-  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send a request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
 }
 

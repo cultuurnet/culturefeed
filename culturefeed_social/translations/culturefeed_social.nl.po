@@ -771,3 +771,159 @@ msgstr "Mijn activiteiten"
 #: theme/theme.inc:334
 msgid "Activities of @username"
 msgstr "Activiteiten van @username"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:22
+msgid "Reply by"
+msgstr "Beantwoorden door"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:23
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:24
+msgid "Post a comment"
+msgstr "Post een reactie"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:25
+msgid "Be the first to post a comment"
+msgstr "Post als eerste een reactie"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:26
+msgid "Show all users who posted a comment"
+msgstr "Laat all gebruikers zien die een reactie geplaatst hebben"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:29
+msgid "has replied to"
+msgstr "heeft geantwoord op"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:31
+msgid "Comment"
+msgstr "Reactie"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:32
+msgid "comment"
+msgstr "reactie"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:33
+msgid "You must be logged in to post a comment"
+msgstr "Je moet ingelogd zijn om een reactie te plaatsen"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:34
+msgid "Reply as"
+msgstr "Antwoord als"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:35
+msgid "Posted a comment on"
+msgstr "Heeft een reactie geplaatst op"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:21
+msgid "Viewed by"
+msgstr "Gezien door"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:22
+msgid "has"
+msgstr "heeft"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:23
+msgid "seen"
+msgstr "gezien"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:24
+msgid "Viewed"
+msgstr "Bekeken"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:23
+msgid "Share"
+msgstr "Delen"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:24
+msgid "Share"
+msgstr "Delen"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:25
+msgid "Shared by"
+msgstr "Gedeeld door"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:26
+msgid "has"
+msgstr "heeft"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:27
+msgid "shared on Facebook"
+msgstr "gedeeld op Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:28
+msgid "Share on Facebook"
+msgstr "Delen op Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:29
+msgid "Successfully shared"
+msgstr "Met succes gedeeld"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:30
+msgid "share"
+msgstr "delen"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:31
+msgid "shared on Facebook"
+msgstr "gedeeld op Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:17
+msgid "Follow this page"
+msgstr "Volg deze pagina"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:18
+msgid "Unfollow"
+msgstr "Niet meer volgen"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:19
+msgid "I follow this page"
+msgstr "Ik volg deze pagina"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:20
+msgid "Be the first to follow this page"
+msgstr "Word de eerste die deze pagina volgt"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:21
+msgid "Show all users who follow this page"
+msgstr "Laat alle gebruikers zien die deze pagina volgen"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:24
+msgid "follows"
+msgstr "volgt"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:25
+msgid "Follow"
+msgstr "Volg"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:26
+msgid "You must be logged in to follow a page"
+msgstr "Je moet ingelogd zijn om een pagina te kunnen volgen"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:18
+msgid "Attend"
+msgstr "Ik ga hier naartoe"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:19
+msgid "Attend"
+msgstr "Ik ga hier naartoe"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:20
+msgid "Not attending"
+msgstr "Ik ga hier niet naartoe"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:21
+msgid "will be attending"
+msgstr "gaat naar"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:22
+msgid "Will be attending"
+msgstr "Gaat naar"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:23
+msgid "You must be logged in to indicate that you will be  attending"
+msgstr "Je moet ingelogd zijn om aan te geven of je gaat"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:24
+msgid "Will be attending"
+msgstr "Gaat naar"

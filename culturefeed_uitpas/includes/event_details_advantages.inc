@@ -63,13 +63,21 @@ function culturefeed_uitpas_event_details_advantages_get() {
       $query->unexpired = TRUE;
       $result = $cf->uitpas()->getPromotionPoints($query);
 
-      if ($result->total) {
+      if ($result->total && $event->locationId) {
 
         $item_list['items'][] = array(
-          'data' => l(t('Show advantages at this location'), 'agenda/a/' . culturefeed_search_slug($event->locationName) . '/' . $event->locationId),
+          'data' => l(t('Show advantages at') . ' ' .  $event->locationName , 'agenda/a/' . culturefeed_search_slug($event->locationName) . '/' . $event->locationId),
           'class' => array('uitpas_has_promotion'),
         );
 
+      }
+      
+      else {
+        
+        $item_list['items'][] = array(
+          'data' => l(t('Show advantages at') . ' ' .  $event->organiserName , 'agenda/a/' . culturefeed_search_slug($event->organiserName) . '/' . $event->organiserId),
+          'class' => array('uitpas_has_promotion'),
+        );
       }
 
     }

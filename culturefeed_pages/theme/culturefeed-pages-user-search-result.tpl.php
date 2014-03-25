@@ -1,5 +1,5 @@
 <?php if ($total == 0) : ?>
-<div class="no-results"><?php print t('No users found'); ?></div>
+<p><?php print t('No users found'); ?></p>
 <?php else: ?>
 
   <ul>

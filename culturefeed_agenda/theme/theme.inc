@@ -67,6 +67,18 @@ function culturefeed_agenda_preprocess_culturefeed_event_short_summary(&$variabl
 }
 
 /**
+ * Preprocess the variables for the event mini summary.
+ * @see culturefeed-event-mini-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_event_mini_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_event($variables);
+
+}
+
+/**
  * Preprocess the variables for the event detail.
  * @see culturefeed-event.tpl.php
  */
@@ -96,6 +108,18 @@ function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variable
  * @see culturefeed-production-short-summary.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_production_short_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_production($variables);
+
+}
+
+/**
+ * Preprocess the variables for the production mini summary.
+ * @see culturefeed-production-mini-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_production_mini_summary(&$variables) {
 
   _culturefeed_agenda_preprocess_agenda($variables);
   _culturefeed_agenda_preprocess_agenda_summary($variables);

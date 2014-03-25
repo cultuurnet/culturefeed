@@ -23,22 +23,28 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list(&$var
       $active_message = arg(2);
     }
 
+
+    $selected_id = 0;
+    foreach ($variables['messages']->objects as $i => $message) {
+      if ($message->id == $active_message) {
+        $selected_id = $i;
+      }
+    }
+
     foreach ($variables['messages']->objects as $i => $message) {
 
       $class = 'message';
-      if ($message->id == $active_message) {
+      $class_name = '';
+      if ($i == $selected_id) {
         $class .= ' active';
+        $class_name = 'active';
       }
 
       $items[] =  array(
-        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message)),
+        'data' => theme('culturefeed_messages_message_list_item', array('message' => $message, 'class_name' => $class_name)),
         'class' => $class,
       );
 
-    }
-
-    if (empty($active_message)) {
-      $items[0]['class'] .= ' active';
     }
 
   }
@@ -65,6 +71,12 @@ function culturefeed_messages_preprocess_culturefeed_messages_message_list_item(
   _culturefeed_messages_preprocess_message($variables);
   _culturefeed_messages_preprocess_message_recipients($variables);
 
+  $classes = array('message', 'message-' . $variables['status']);
+  if (!empty($variables['class_name'])) {
+    $classes[] = $variables['class_name'];
+  }
+  $variables['class_names'] = implode(" ", $classes);
+
   if (arg(0) == 'pages') {
     $variables['url'] = url('pages/' . arg(1) . '/messages/' . $variables['message']->id);
   }
@@ -90,6 +102,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 
   // Build link to profile of every recipient.
   $variables['recipient_links'] = '';
+  $variables['recipient'] = '';
   if (!empty($recipients)) {
 
     $accounts = culturefeed_get_uids_for_cf_uids($recipients);
@@ -105,17 +118,21 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
 
     }
     $variables['recipient_links'] = implode(', ', $recipient_links);
-
+    $variables['recipient'] = $variables['recipient_links'];
   }
 
   if (!empty($thread->recipientPage)) {
-      $variables['recipient_page'] =  check_plain($thread->recipientPage->getName());
+    $variables['recipient_page'] = check_plain($thread->recipientPage->getName());
+    $variables['recipient_page_link'] = culturefeed_search_detail_l('page', $thread->recipientPage->getId(), $thread->recipientPage->getName());
+    $variables['recipient'] = t('!name of !page', array('!name' => $variables['recipient_links'], '!page' => $variables['recipient_page_link']));
   }
 
-  $variables['sender'] = check_plain($thread->sender->nick);
   $variables['sender_link'] = $sender_link;
+  $variables['sender'] = check_plain($thread->sender->nick);
   if (!empty($thread->senderPage)) {
     $variables['sender_page'] = check_plain($thread->senderPage->getName());
+    $variables['sender_page_link'] = culturefeed_search_detail_l('page', $thread->senderPage->getId(), $thread->senderPage->getName());
+    $variables['sender'] = t('!name of !page', array('!name' => $variables['sender_link'], '!page' => $variables['sender_page_link']));
   }
 
   $variables['messages'] = array();
@@ -301,4 +318,11 @@ function _culturefeed_messages_preprocess_message(&$variables) {
     }
 
   }
+}
+
+/**
+ * Theme the total messages profile box item.
+ */
+function theme_culturefeed_messages_total_messages_profile_box_item($variables) {
+  return l(format_plural($variables['total'], '@count new message', '@count new messages'), 'culturefeed/messages');
 }

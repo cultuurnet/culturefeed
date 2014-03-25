@@ -148,9 +148,9 @@ msgstr "@count Nachrichten"
 msgid "Delete conversation"
 msgstr "Unterhaltung löschen"
 
-#: theme/theme.inc:237
-msgid "van"
-msgstr "von"
+#: theme/theme.inc:114;121
+msgid "!name of !page"
+msgstr "!name von !page"
 
 #: theme/theme.inc:252
 msgid "@count minute ago"
@@ -171,3 +171,9 @@ msgstr "Uhr"
 #: theme/theme.inc:261
 msgid "Today at"
 msgstr "Heute um"
+
+#: theme/theme.inc:313
+msgid "@count new message"
+msgid_plural "@count new messages"
+msgstr[0] "@count neue Nachricht"
+msgstr[1] "@count neueu Nachrichten"

@@ -710,27 +710,27 @@ function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Ite
 
   return array(
     'info' => array(
-      'title' => t('Change settings'),
+      'title' => t('Details & Layout'),
       'url' => 'pages/' . $page->getId() . '/edit',
-      'description' => t('Edit contact info, photos, description, website,...'),
+      'description' => t('Manage page information, contact details, layout ... .'),
       'weight' => -20,
     ),
     'settings' => array(
-      'title' => t('Settings'),
+      'title' => t('Features'),
       'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => t('Allow users to follow your page, write comments, suggest activities,...'),
+      'description' => t('Allow users to follow your page, request membership, add comments, ... .'),
       'weight' => -19,
     ),
     'members' => array(
-      'title' => t('Members & roles'),
+      'title' => t('Members, Rights & Roles'),
       'url' => 'pages/' . $page->getId() . '/members/nojs',
-      'description' => t('Manage members and access rights'),
+      'description' => t('Manage members, roles and rights.'),
       'weight' => -18,
     ),
     'activities' => array(
       'title' => t('Activities'),
       'url' => 'pages/' . $page->getId() . '/events',
-      'description' => t('Manage your activities and reactions'),
+      'description' => t('Manage your activities and comments.'),
       'weight' => -17,
     ),
   );

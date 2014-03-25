@@ -128,7 +128,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
       $calendar_class = get_class($calendar);
       $calendar->rewind();
-      $today = time();
+      $today = strtotime(date('Y-m-d') . ' 00:00:00');
 
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
         $when = 'period';
@@ -145,18 +145,19 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $when = 'timestamps';
         $timestamps_count = iterator_count($calendar);
         $calendar->rewind();
-
+        $current_timestamp = 0;
         for ($i = 0; $i < $timestamps_count; $i++) {
 
           $timestamp = $calendar->current();
           $date = $timestamp->getDate();
 
           if (strtotime($date) >= $today) {
-            $timestamps[$i] = array(
+            $timestamps[$current_timestamp] = array(
               'date' => $date,
               'begintime' => $timestamp->getStartTime(),
               'endtime' => $timestamp->getEndTime(),
             );
+            $current_timestamp++;
           }
 
           $calendar->next();
@@ -319,14 +320,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         );
       }
     }
-    
+
     if ($info = $event->getLanguages()) {
-	  foreach ($info as $language) {
-	    $languages_info[] = array(
-	      $language->getType(),
-	      $language->getLanguage(),
-	    );
-	  }
+      foreach ($info as $language) {
+        $languages_info[] = array(
+          $language->getType(),
+          $language->getLanguage(),
+        );
+      }
     }
 
     // Default target group
@@ -1456,8 +1457,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   // Add language
   if ($languages_info) {
     foreach ($languages_info as $i => $info) {
-	  culturefeed_entry_ui_attach_language_elements($form, $i, $info);
-	  $language_count++;
+      culturefeed_entry_ui_attach_language_elements($form, $i, $info);
+      $language_count++;
     }
   }
   else {
@@ -1782,33 +1783,45 @@ function culturefeed_entry_ui_attach_language_elements(&$form, $i, $info = NULL)
   if ($info[0] == 'spoken') {
     $medium = 1;
   }
-  else if ($info[0] == 'dubbed') {
-    $medium = 2;
-  }
-  else if ($info[0] == 'subtitles') {
-    $medium = 3;
-  }
   else {
-    $medium = 0;
+    if ($info[0] == 'dubbed') {
+      $medium = 2;
+    }
+    else {
+      if ($info[0] == 'subtitles') {
+        $medium = 3;
+      }
+      else {
+        $medium = 0;
+      }
+    }
   }
-  
+
   if ($info[1] == 'Engels') {
     $lang = 1;
   }
-  else if ($info[1] == 'Spaans') {
-    $lang = 2;
-  }
-  else if ($info[1] == 'Nederlands') {
-    $lang = 3;
-  }
-  else if ($info[1] == 'Duits') {
-    $lang = 4;
-  }
-  else if ($info[1] == 'Frans') {
-    $lang = 5;
-  }
   else {
-    $lang = 0;
+    if ($info[1] == 'Spaans') {
+      $lang = 2;
+    }
+    else {
+      if ($info[1] == 'Nederlands') {
+        $lang = 3;
+      }
+      else {
+        if ($info[1] == 'Duits') {
+          $lang = 4;
+        }
+        else {
+          if ($info[1] == 'Frans') {
+            $lang = 5;
+          }
+          else {
+            $lang = 0;
+          }
+        }
+      }
+    }
   }
 
   $form['extra']['language']['wrapper'][$i] = array(
@@ -2175,6 +2188,24 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     }
   }
 
+  // Validate translations
+  $available_translations = array(
+    'de' => 'german',
+    'en' => 'english',
+    'fr' => 'french',
+    'nl' => 'dutch',
+  );
+
+  foreach ($available_translations as $key => $language) {
+    if (culturefeed_search_get_preferred_language() != $key) {
+      if ($values[$language]['short_description'] || $values[$language]['long_description']['value']) {
+        if (!$values[$language]['language']) {
+          form_set_error('channel_input', t('If you translate something, you should also translate the title.'));
+        }
+      }
+    }
+  }
+
   $errors = form_get_errors();
   if (empty($errors)) {
     _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
@@ -2327,8 +2358,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Publication date.
   if ($values['wrapper']['date']) {
-    dpm($values['wrapper']['date']);
-    $event->setAvailableFrom($values['wrapper']['date'].'T00:00:00');
+    $event->setAvailableFrom($values['wrapper']['date'] . 'T00:00:00');
   }
 
   // Age
