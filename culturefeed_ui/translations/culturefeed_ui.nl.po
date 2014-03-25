@@ -690,3 +690,6 @@ msgstr "Over mij"
 
 msgid "Manage websites and applications"
 msgstr "Beheer websites en applicaties"
+
+msgid "Member of"
+msgstr "Lid van"
