@@ -182,11 +182,6 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
   $variables['baseline'] = $page->getTagline();
   $variables['cover'] = $page->getCover();
-  $variables['page_hascover'] = false;
-  
-  if (!empty($variables['cover'])) {
-    $variables['page_hascover'] = true;
-  }
   
   foreach ($variables['links'] as &$link) {
     $link = ereg_replace("(https?)://", "", $link);
@@ -231,6 +226,13 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   }
   if ($page->getEmail()) {
     $variables['contact']['mail'] = check_plain($page->getEmail());
+  }
+  
+  // Check if page has activities
+  $variables['has_activities'] = FALSE;
+  if (module_exists('culturefeed_agenda')) {
+    $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+    $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
   }
 
 }
