@@ -690,9 +690,6 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
   // Send request to add a page.
   try {
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
-    
-    echo '<pre>';print_r($form_state['post_params']);echo '</pre>';
-    exit;
     $uid = $cf_pages->updatePage($uid, $form_state['post_params']);
     drupal_set_message(format_string(t('Page "@page" is updated.'), array('@page' => $form_state['values']['name'])));
   }
