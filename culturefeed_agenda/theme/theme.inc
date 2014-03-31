@@ -214,22 +214,24 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     
     // If no image we get image from eventdetails language=nl
     if (empty($pictures)) {
-    
+
       $detail_nl = $cdb_item->getDetails()->getDetailByLanguage('nl');
-      $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-      foreach ($photos as $photo) {
-        $pictures[] = $photo->getHLink();
-        if ($photo->isMain()) {
-          $main_picture = $photo->getHLink();
+      if (!empty($detail_nl)) {
+        $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+        foreach ($photos as $photo) {
+          $pictures[] = $photo->getHLink();
+          if ($photo->isMain()) {
+            $main_picture = $photo->getHLink();
+          }
         }
-      }
   
-      // Support for mediatype imageweb
-      $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
-      foreach ($images as $image) {
-        $pictures[] = $image->getHLink();
-        if ($image->isMain() && empty($main_picture)) {
-          $main_picture = $image->getHLink();
+        // Support for mediatype imageweb
+        $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+        foreach ($images as $image) {
+          $pictures[] = $image->getHLink();
+          if ($image->isMain() && empty($main_picture)) {
+            $main_picture = $image->getHLink();
+          }
         }
       }
     }
