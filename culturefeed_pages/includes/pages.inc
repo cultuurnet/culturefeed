@@ -293,11 +293,17 @@ function culturefeed_pages_add_form($form, &$form_state) {
     ),
     '#upload_location' => 'public://pages',
   );
+  
+  $actortypes = culturefeed_search_get_actortype_categories();
+  $available_actortypes = variable_get('culturefeed_pages_actor_types', array());
+  $options = empty($available_actortypes) ? $actortypes : array_intersect_key($actortypes, $available_actortypes);
 
   $form['categoryId'] = array(
     '#type' => 'select',
     '#title' => t('Type'),
-    '#options' => culturefeed_search_get_actortype_categories(),
+    '#options' => $options,
+    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first 
+    // '#multiple' => TRUE,
     '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
     '#weight' => -4,
   );
@@ -478,16 +484,6 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   	}
   }
 
-  if (!empty($post['zip'])) { 
-    $flandersregions = culturefeed_search_get_categories_by_domain('flandersregion', array('name_like' => $post['zip'], 'language' => 'und'));
-  }
-  
-  $flandersregions = array_keys($flandersregions);
-  $post['categoryId'] = array($post['categoryId']);
-  
-  foreach ($flandersregions as $flandersregion) {
-    $post['categoryId'][] = $flandersregion;
-  } 
   $form_state['post_params'] = $post;
 
 }
@@ -576,8 +572,8 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
 
-  // Redirect the user to the created page detail.
-  drupal_goto(culturefeed_search_detail_path('page', $form_state['page_id'], $form_state['page_title']));
+  // Redirect the user to the created page detail.  
+  drupal_goto('pages/switch/' . $form_state['page_id']);
 
 }
 
@@ -606,6 +602,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
   $form['name']['#default_value'] = $page->getName();
   $form['description']['#default_value'] = $page->getDescription();
+  $form['categoryId']['#default_value'] = $page->getCategories();
 
   // Address.
   $address = $page->getAddress();

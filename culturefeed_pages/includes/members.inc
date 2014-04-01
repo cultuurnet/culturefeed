@@ -605,7 +605,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
       'role' => CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN,
       'type' => 'requestadmin',
       'subject' => t('Request to become an administrator'),
-      'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user->id, array('absolute' => TRUE)) . '"}',
+      'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user, array('absolute' => TRUE)) . '"}',
     );
 
     $messages->sendMessage($data);

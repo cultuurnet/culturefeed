@@ -133,13 +133,11 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
           $send_as_options[$membership->page->getId()] = $membership->page->getName();
         }
         
+        // Always use recipientPage as senderPage in replies
         if ($object instanceof CultureFeed_Messages_Message) {
               $form['send_as'] = array(
-                '#title' => t('Send message as'),
-                '#type' => 'select',
-                '#options' => $send_as_options,
-                '#default_value' => culturefeed_pages_get_active_page_id(),
-                '#attributes' => array('disabled' => 'disabled')
+                '#type' => 'hidden',
+                '#default_value' => $object->recipientPage->getId(),
               );
         }
   
@@ -181,7 +179,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
   if (!empty($form_state['values']['send_as'])) {
     $params['senderPage'] = $form_state['values']['send_as'];
   }
-  // Replies always use current page.
+  // New messages always use current page as default.
   else {
     $curr_page = culturefeed_pages_get_active_page_id();
     if ($curr_page) {

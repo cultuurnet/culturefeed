@@ -206,6 +206,7 @@ function culturefeed_ui_block_profile_menu_view() {
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array('class' => 'dropdown-menu', 'role' => 'menu'),
   );
 
   return $block;

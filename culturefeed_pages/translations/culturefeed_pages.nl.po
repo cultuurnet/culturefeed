@@ -707,6 +707,10 @@ msgstr "Contact"
 msgid "or"
 msgstr "of"
 
+#: theme/culturefeed-page.tpl.php
+msgid "Show members"
+msgstr "Toon leden"
+
 #: theme/culturefeed-pages-block-admin-options.tpl.php:20
 msgid "Your page has published no activities yet."
 msgstr "Je pagina heeft nog geen activiteiten"
