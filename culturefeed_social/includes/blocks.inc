@@ -168,13 +168,11 @@ function culturefeed_social_block_recommended_by($object) {
   }
 
   $content = array();
+  $content['#theme'] = 'culturefeed_social_block_recommended_by';
 
   if ($activities->total > 0) {
 
-    $content['times'] = array(
-      '#type' => 'markup',
-      '#markup' => '<div class="recommended-times count-number pull-right"><span class="badge">' . $activities->total . '</span></div>',
-    );
+    $content['#activities_total'] = $activities->total;
 
     $user_objects = array();
     foreach ($activities->objects as $activity_object) {
@@ -186,24 +184,13 @@ function culturefeed_social_block_recommended_by($object) {
     }
 
     if (count($user_objects) > 0) {
-
-      $items = _culturefeed_ui_users_list($user_objects);
-
-      $content['list'] = array(
-        '#theme' => 'item_list',
-        '#items' => $items,
-        '#attributes' => array('class' => 'user-list list-unstyled list-inline'),
-      );
-
+      $content['#list'] = _culturefeed_ui_users_list($user_objects);
     }
 
   }
 
   // Advanced recommend link.
-  $content['recommend-advanced'] = array(
-    '#type' => 'markup',
-    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE),
-  );
+  $content['#recommend_advanced'] = culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE);
 
   $block['subject'] = $config->subject;
   $block['content'] = $content;
