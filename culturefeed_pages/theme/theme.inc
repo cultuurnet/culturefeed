@@ -548,6 +548,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
   }
   
   $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
+ 
+  $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
+  
 }
 
 /**
