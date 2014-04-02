@@ -522,13 +522,13 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
         $regions[] = check_plain($region->getName());
       }
 
-      $variables['location']['title'] = t('on displacement in');
+      $variables['location']['title'] = t('on location in');
       $variables['regions'] = $regions;
 
     }
     // No regions.
     else {
-      $variables['location']['title'] = t('by appointment only');
+      $variables['location']['title'] = t('by appointment');
     }
 
   }
