@@ -59,7 +59,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/comment/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Abuse form',
+    'title' => t('Abuse form'),
     'page callback' => 'culturefeed_social_page_activity_comment',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -69,7 +69,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/report-abuse/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Abuse form',
+    'title' => t('Abuse form'),
     'page callback' => 'culturefeed_social_page_activity_report_abuse',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
