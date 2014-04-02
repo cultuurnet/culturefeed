@@ -546,6 +546,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
     $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
     $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
   }
+  
+  $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
 }
 
 /**
