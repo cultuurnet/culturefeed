@@ -681,28 +681,30 @@ function culturefeed_search_get_workingregion_categories($conditions = array()) 
 function culturefeed_search_get_educationlevel_categories_tree() {
 
   $query = db_select('culturefeed_search_terms', 'cst');
-  $query->fields('cst', array('tid', 'name', 'parent'));
+  $query->fields('cst', array('tid', 'name', 'p1'));
   $query->condition('cst.did', 'educationlevel');
   $result = $query->execute();
 
   // Prepare the result.
   $rows = array();
   foreach ($result as $row) {
-    $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+    $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'p1' => $row->p1);
   }
+  
+  // We know educationlevel only has two levels ...
 
   $categories = array();
   // First level.
   foreach ($rows as $row) {
-    if (empty($row->parent)) {
-      $categories[$row->tid] = (object) array('tid' => $row->tid, 'parent' => $row->parent, 'name' => $row->name, 'children' => array());
+    if (empty($row->p1)) {
+      $categories[$row->tid] = (object) array('tid' => $row->tid, 'p1' => $row->p1, 'name' => $row->name, 'children' => array());
     }
   }
 
   // Second level.
   foreach ($rows as $row) {
-    if (!empty($row->parent) && isset($categories[$row->parent])) {
-      $categories[$row->parent]->children[$row->tid] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+    if (!empty($row->p1) && isset($categories[$row->p1])) {
+      $categories[$row->p1]->children[$row->tid] = (object) array('tid' => $row->tid, 'name' => $row->name, 'p1' => $row->p1);
     }
   }
 
