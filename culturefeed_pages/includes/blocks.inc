@@ -541,7 +541,6 @@ function culturefeed_pages_block_nearby_pages($page) {
     watchdog_exception('cultuurkuur', $e);
     return;
   }
-
   $more_query['facet'] = array();
   //$more_query['facet']['category_actortype_id'][0] = $context_id;
 
@@ -550,11 +549,10 @@ function culturefeed_pages_block_nearby_pages($page) {
   $block['content'] = array(
     '#class' => 'nearby-pages',
     '#theme' => 'culturefeed_pages_nearby_pages',
-    //'#items' => $items,
     '#results' => $result->getItems(),
     '#show_more' => $show_more_link,
     '#more_text' => t('More nearby pages'),
-    //'#more_url' => url('agenda/pages', array('query' => $more_query)),
+    '#more_url' => url('agenda/pages', array('query' => $more_query)),
   );
 
   return $block;
