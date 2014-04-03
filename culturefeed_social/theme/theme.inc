@@ -148,7 +148,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   }
 
   // Variables for one list item.
-  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
+  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=75&maxheight=75&crop=auto'));
   $author_url = 'user/' . $variables['uid'];
 
   $variables['picture'] = l($picture, $author_url, array('html' => TRUE));
@@ -182,6 +182,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
   }
 
   $variables['comment_link'] = '';
+  $variables['comment_url'] = '';
   $variables['delete_link'] = '';
   $variables['abuse_link'] = '';
 
@@ -218,11 +219,14 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
         'attributes' => $attributes,
         'query' => $destination,
       ));
+      
+     $variables['comment_url'] = url($comment_url . '/nojs', array('attributes' => $attributes, 'query' => $destination));      
+            
     }
     else {
 
       if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
-        $variables['delete_link'] = l('&times;', $remove_path . '/nojs', array(
+        $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,
           'html' => TRUE,

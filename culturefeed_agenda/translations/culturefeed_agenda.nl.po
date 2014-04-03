@@ -320,12 +320,12 @@ msgid "multiple dates"
 msgstr "meerdere data"
 
 #: theme/theme.inc:392
-msgid "on displacement in"
-msgstr "op verplaatsing in"
+msgid "on location in"
+msgstr "op locatie in"
 
 #: theme/theme.inc:398
-msgid "by appointment only"
-msgstr "Enkel op afspraak"
+msgid "by appointment"
+msgstr "op afspraak"
 
 #: theme/theme.inc:503
 msgid "Other"

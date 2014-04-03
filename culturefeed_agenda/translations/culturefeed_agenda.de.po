@@ -322,12 +322,12 @@ msgid "multiple dates"
 msgstr "mehrere Termine"
 
 #: theme/theme.inc:392
-msgid "on displacement in"
+msgid "on location in"
 msgstr "unterwegs in"
 
 #: theme/theme.inc:398
-msgid "by appointment only"
-msgstr "Nur nach Vereinbarung"
+msgid "by appointment"
+msgstr "nach Vereinbarung"
 
 #: theme/theme.inc:503
 msgid "Other"

@@ -546,6 +546,11 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
     $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
     $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
   }
+  
+  $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
+ 
+  $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
+  
 }
 
 /**
@@ -694,5 +699,20 @@ function _culturefeed_pages_preprocess_page_metatags(&$variables) {
       'content' => implode(' - ', $description_parts),
     ),
   ), 'meta_description');
+
+}
+
+/**
+ * Preprocess a related items block.
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables) {
+
+  global $language;
+  // Render the results.
+  $items = array();
+  foreach ($variables['results'] as $search_result) {
+    $items[] = culturefeed_search_detail_l($search_result->getType(), $search_result->getId(), $search_result->getTitle($language->language));
+  }
+  $variables['items'] = $items;
 
 }
