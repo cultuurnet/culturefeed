@@ -272,14 +272,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => $page_name,
     '#weight' => -7,
   );
-  
+
   $form['tagline'] = array(
     '#type' => 'textfield',
     '#title' => t('Baseline'),
     '#default_value' => '',
     '#weight' => -6,
   );
-  
+
   $form['cover'] = array(
     '#type' => 'managed_file',
     '#title' => t('Cover Photo'),
@@ -293,7 +293,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     ),
     '#upload_location' => 'public://pages',
   );
-  
+
   $actortypes = culturefeed_search_get_actortype_categories();
   $available_actortypes = variable_get('culturefeed_pages_actor_types', array());
   $options = empty($available_actortypes) ? $actortypes : array_intersect_key($actortypes, $available_actortypes);
@@ -302,7 +302,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#type' => 'select',
     '#title' => t('Type'),
     '#options' => $options,
-    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first 
+    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first
     // '#multiple' => TRUE,
     '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
     '#weight' => -4,
@@ -544,7 +544,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Upload Page cover.
     if (!empty($form_state['values']['cover'])) {
 
@@ -572,7 +572,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
 
-  // Redirect the user to the created page detail.  
+  // Redirect the user to the created page detail.
   drupal_goto('pages/switch/' . $form_state['page_id']);
 
 }
@@ -643,12 +643,12 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['image']['#title'] = t('Select another Image or Logo');
 
   }
-  
+
   // The cover.
   $cover = $page->getCover();
   $form_state['#old_cover'] = 0;
   if (!empty($cover)) {
-    
+
     // Creat temp file to preview the external cover.
     $file_cover = culturefeed_create_temporary_image($cover, file_default_scheme() . '://pages');
     if ($file_cover) {
@@ -658,7 +658,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
     $form['cover']['#title'] = t('Select another Cover Photo');
   }
-  
+
   // Baseline
   $tagline = $page->getTagline();
   if (!empty($tagline)) {
@@ -728,7 +728,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Remove the cover if requested.
     if (empty($form_state['values']['cover']) && $form_state['#old_cover'] > 0) {
       try {
@@ -738,7 +738,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         watchdog_exception('culturefeed_pages', $e);
       }
     }
-    
+
     // Upload new page cover.
     if ($form_state['values']['cover'] && $form_state['#old_cover'] != $form_state['values']['cover']) {
 
@@ -1157,6 +1157,128 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
 
   return $build;
 
+}
+
+/**
+ * Page callback to show an admin overview that contains all the news
+ * for given page.
+ */
+function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
+
+  $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->max = CULTUREFEED_PAGES_ADMIN_NEWS_COUNT;
+  $query->start = $curr_page * $query->max;
+  $query->type = CultureFeed_Activity::TYPE_NEWS;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
+
+  // Execute search and show results.
+  $build = array();
+  try {
+
+    $result = DrupalCultureFeed::searchActivities($query);
+    pager_default_initialize($result->total, CULTUREFEED_PAGES_ADMIN_NEWS_COUNT);
+
+    $build['page'] = array(
+      '#theme' => 'culturefeed_pages_news_admin_page',
+      '#results' => $result->objects,
+      '#page' => $page,
+    );
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $build['error'] = array('#markup' => t('There was an error while loading the activities.'));
+  }
+
+  culturefeed_pages_set_page_breadcrumb($page);
+
+  return $build;
+}
+
+/**
+ * Form callback to add a news item.
+ */
+function culturefeed_pages_add_news_form($form, &$form_state, CultureFeed_Cdb_Item_Page $page) {
+
+  $form = array();
+
+  $form_state['page'] = $page;
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#required' => TRUE,
+  );
+
+  $form['body'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Body'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate the news form. Create the activity.
+ */
+function culturefeed_pages_add_news_form_validate($form, $form_state) {
+
+  $activity = new CultureFeed_Activity();
+  $activity->type = CultureFeed_Activity::TYPE_NEWS;
+  $activity->userId = DrupalCultureFeed::getLoggedInUserId();
+  $activity->contentType = 'page';
+  $activity->nodeId = $form_state['page']->getId();
+  $activity->nodeTitle = $form_state['page']->getName();
+
+  $value = new stdClass();
+  $value->title = $form_state['values']['title'];
+  $value->body = $form_state['values']['body'];
+  $activity->value = json_encode($value);
+
+  try {
+    DrupalCultureFeed::createActivity($activity);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    form_set_error('', t('There was an error while creating the news item'));
+  }
+}
+
+/**
+ * Submit the 'add news' form, redirect to overview.
+ */
+function culturefeed_pages_add_news_form_submit($form, &$form_state) {
+  drupal_set_message(t('The news item %title was created', array('%title' => $form_state['values']['title'])));
+  $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/news';
+}
+
+/**
+ * Form callback to show a confirmation form for deleting a news item.
+ */
+function culturefeed_pages_delete_news_form() {
+  $form['#node'] = $node;
+  // Always provide entity id in the same form key as in the entity edit form.
+  $form['nid'] = array('#type' => 'value', '#value' => $node->nid);
+  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $node->title)), 'node/' . $node->nid, t('This action cannot be undone.'), t('Delete'), t('Cancel')
+  );
+}
+
+/**
+ * Submit the confirmation form. Delete the news item.
+ */
+function culturefeed_pages_delete_news_form_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    drupal_set_message(t('News item %title has been deleted.', array('%title' => $node->title)));
+  }
+
+  $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/news';
 }
 
 /**

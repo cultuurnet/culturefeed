@@ -182,7 +182,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
   $variables['baseline'] = $page->getTagline();
   $variables['cover'] = $page->getCover();
-  
+
   foreach ($variables['links'] as &$link) {
     $link = ereg_replace("(https?)://", "", $link);
   }
@@ -227,7 +227,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   if ($page->getEmail()) {
     $variables['contact']['mail'] = check_plain($page->getEmail());
   }
-  
+
   // Check if page has activities
   $variables['has_activities'] = FALSE;
   if (module_exists('culturefeed_agenda')) {
@@ -436,7 +436,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     $result = array();
     $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
-    $result['profile_url'] =  url('user/' . $accounts[$object->id]); 
+    $result['profile_url'] =  url('user/' . $accounts[$object->id]);
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
     $result['add_link'] = in_array($object->id, $members) ? t('Member') : l(t('Add as member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
@@ -491,10 +491,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
   }
 
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
-  
+
       $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
-  
-}
+
+    }
 
 /**
  * Preprocess the variables for the block to become admin member.
@@ -546,11 +546,11 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
     $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
     $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
   }
-  
+
   $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
- 
+
   $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
-  
+
 }
 
 /**
@@ -712,7 +712,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
   $items = array();
   foreach ($variables['results'] as $key => $search_result) {
     $entity = $search_result->getEntity();
-    
+
     $image = $entity->getImage();
     if (empty($image)) {
       $image = '/profiles/culturefeed_kickstart/themes/culturefeed_bootstrap/img/no-thumbnail.gif';
@@ -723,4 +723,37 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
     $items[$key]['location'] = $location;
   }
   $variables['items'] = $items;
+}
+
+/**
+ * Preprocess the culturefeed pages news admin page.
+ * @see culturefeed-pages-news-admin-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variables) {
+
+  $rows = array();
+  $page_id = $variables['page']->getId();
+
+  foreach ($variables['results'] as $activity) {
+
+    // Use node title as default.
+    $title = $activity->nodeTitle;
+
+    // Real title is stored in the json.
+    $content = json_decode($activity->value);
+    if ($content && !empty($content->title)) {
+      $title = $content->title;
+    }
+
+    $row = array();
+    $row['title'] = $title;
+    $row['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i');
+    $row['delete_url'] = url('pages/' . $page_id . '/news/delete/' . $activity->id);
+
+    $rows[] = $row;
+  }
+
+  $variables['items'] = $rows;
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), t('View page'));
+  $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), $variables['page']->getName());
 }
