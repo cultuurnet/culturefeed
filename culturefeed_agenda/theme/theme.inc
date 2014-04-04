@@ -514,7 +514,9 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   // If no event, check if this productions is in regions.
   else {
 
+    // Check for regions
     $region_data = $production->getCategories()->getCategoriesByType('flandersregion');
+    
     if ($region_data) {
 
       $regions = array();
@@ -526,8 +528,24 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
       $variables['regions'] = $regions;
 
     }
-    // No regions.
-    else {
+
+    // Check for workingregions
+    $workingregion_data = $production->getCategories()->getCategoriesByType('workingregion');
+    
+    if ($workingregion_data) {
+
+      $workingregions = array();
+      foreach ($workingregion_data as $workingregion) {
+        $workingregions[] = check_plain($workingregion->getName());
+      }
+
+      $variables['location']['title'] = t('on location in');
+      $variables['workingregions'] = $workingregions;
+
+    }
+
+    // No regions or workingregions.
+    if (!($region_data) && !($workingregion_data)) {
       $variables['location']['title'] = t('by appointment');
     }
 
