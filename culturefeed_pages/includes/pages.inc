@@ -272,14 +272,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => $page_name,
     '#weight' => -7,
   );
-  
+
   $form['tagline'] = array(
     '#type' => 'textfield',
     '#title' => t('Baseline'),
     '#default_value' => '',
     '#weight' => -6,
   );
-  
+
   $form['cover'] = array(
     '#type' => 'managed_file',
     '#title' => t('Cover Photo'),
@@ -293,7 +293,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     ),
     '#upload_location' => 'public://pages',
   );
-  
+
   $actortypes = culturefeed_search_get_actortype_categories();
   $available_actortypes = variable_get('culturefeed_pages_actor_types', array());
   $options = empty($available_actortypes) ? $actortypes : array_intersect_key($actortypes, $available_actortypes);
@@ -302,7 +302,7 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#type' => 'select',
     '#title' => t('Type'),
     '#options' => $options,
-    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first 
+    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first
     // '#multiple' => TRUE,
     '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
     '#weight' => -4,
@@ -456,12 +456,10 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   // Basic validation.
   if (empty($form_state['values']['name'])) {
     form_set_error('name', t('Title is required'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   if (strlen($form_state['values']['description']) > 400) {
     form_set_error('description', t('The maximum is 400 characters'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   // Add the post params to the form so other modules can add their params.
@@ -496,7 +494,8 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
 function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
   // If a previous validation function failed, don't send the request.
-  if (!empty($form_state['#validation_failed'])) {
+  $errors = form_get_errors();
+  if ($errors) {
     return;
   }
 
@@ -544,7 +543,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Upload Page cover.
     if (!empty($form_state['values']['cover'])) {
 
@@ -562,7 +561,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     }
 
   }
-
+  
 }
 
 /**
@@ -571,8 +570,8 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
-
-  // Redirect the user to the created page detail.  
+  dsm($form_state);
+  // Redirect the user to the created page detail.
   drupal_goto('pages/switch/' . $form_state['page_id']);
 
 }
@@ -643,12 +642,12 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['image']['#title'] = t('Select another Image or Logo');
 
   }
-  
+
   // The cover.
   $cover = $page->getCover();
   $form_state['#old_cover'] = 0;
   if (!empty($cover)) {
-    
+
     // Creat temp file to preview the external cover.
     $file_cover = culturefeed_create_temporary_image($cover, file_default_scheme() . '://pages');
     if ($file_cover) {
@@ -658,7 +657,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
     $form['cover']['#title'] = t('Select another Cover Photo');
   }
-  
+
   // Baseline
   $tagline = $page->getTagline();
   if (!empty($tagline)) {
@@ -728,7 +727,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Remove the cover if requested.
     if (empty($form_state['values']['cover']) && $form_state['#old_cover'] > 0) {
       try {
@@ -738,7 +737,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         watchdog_exception('culturefeed_pages', $e);
       }
     }
-    
+
     // Upload new page cover.
     if ($form_state['values']['cover'] && $form_state['#old_cover'] != $form_state['values']['cover']) {
 
