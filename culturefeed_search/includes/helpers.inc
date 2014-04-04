@@ -635,10 +635,13 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
 function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
 
   $suggestions = array();
+  $parts = array_reverse(explode(",", $search_string));
+  $search_string = trim(array_shift($parts));
+  $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
 
   $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions);
   foreach ($region_suggestions as $region) {
-    $suggestions[$region] = $region;
+    $suggestions[$old_parts . $region] = $region;
   }
 
   return $suggestions;
