@@ -184,7 +184,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['cover'] = $page->getCover();
   
   foreach ($variables['links'] as &$link) {
-    $link = preg_replace("(https?)://", "", $link);
+    $link = preg_replace('#^http://|^https://#', "", $link);
   }
 
   $logged_in = $variables['logged_in'];
