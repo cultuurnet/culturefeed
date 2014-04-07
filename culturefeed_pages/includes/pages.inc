@@ -1211,6 +1211,19 @@ function culturefeed_pages_add_news_form($form, &$form_state, CultureFeed_Cdb_It
     '#required' => TRUE,
   );
 
+  $form['image'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Image'),
+    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+    '#size' => 26,
+    '#default_value' => '',
+    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg png gif'),
+    ),
+    '#upload_location' => 'public://news',
+  );
+
   $form['body'] = array(
     '#type' => 'textarea',
     '#title' => t('Body'),
@@ -1230,6 +1243,12 @@ function culturefeed_pages_add_news_form($form, &$form_state, CultureFeed_Cdb_It
  */
 function culturefeed_pages_add_news_form_validate($form, $form_state) {
 
+  // Don't create if other validations had errors.
+  $errors = form_get_errors();
+  if ($errors) {
+    return;
+  }
+
   $activity = new CultureFeed_Activity();
   $activity->type = CultureFeed_Activity::TYPE_NEWS;
   $activity->userId = DrupalCultureFeed::getLoggedInUserId();
@@ -1240,6 +1259,12 @@ function culturefeed_pages_add_news_form_validate($form, $form_state) {
   $value = new stdClass();
   $value->title = $form_state['values']['title'];
   $value->body = $form_state['values']['body'];
+
+  if (!empty($form_state['values']['image'])) {
+    $file = file_load($form_state['values']['image']);
+    $value->image = file_create_url($file->uri);
+  }
+
   $activity->value = json_encode($value);
 
   try {
@@ -1249,6 +1274,7 @@ function culturefeed_pages_add_news_form_validate($form, $form_state) {
     watchdog_exception('culturefeed_pages', $e);
     form_set_error('', t('There was an error while creating the news item'));
   }
+
 }
 
 /**
