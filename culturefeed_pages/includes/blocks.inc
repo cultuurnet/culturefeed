@@ -288,7 +288,6 @@ function culturefeed_pages_block_page_agenda($page) {
   $max_results = variable_get('pages_block_agenda_total_items', 5);
 
   // Execute search and show results.
-  $build = array();
   $result = culturefeed_pages_get_activities_from_page($page, $max_results);
   if (!$result || $result->getTotalCount() == 0) {
     return;
@@ -362,11 +361,11 @@ function culturefeed_pages_block_followers($page) {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_block_members($page) {
-  
+
   if (empty($page) || !($page instanceof CultureFeed_Cdb_Item_Page)) {
     return;
   }
-  
+
   $member_list = NULL;
   try {
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
@@ -376,7 +375,7 @@ function culturefeed_pages_block_members($page) {
     watchdog_exception('culturefeed_pages', $e);
     return;
   }
-  
+
   $build = array();
 
   $build['items_list'] = array(
@@ -385,7 +384,7 @@ function culturefeed_pages_block_members($page) {
     '#members' => $member_list->memberships,
     '#num_members' => count($member_list->memberships),
   );
-  
+
   $block['subject'] = t('Members');
   $block['content'] = $build;
 
@@ -489,7 +488,7 @@ function culturefeed_pages_block_related_activities($page) {
 }
 
 function culturefeed_pages_block_nearby_pages($page) {
-  
+
   if (empty($page)) {
     return;
   }
@@ -529,7 +528,7 @@ function culturefeed_pages_block_nearby_pages($page) {
 
     $searchService = culturefeed_get_search_service();
     $result = $searchService->searchPages($parameters);
-    
+
     if ($result->getTotalCount() == 0) {
       return;
     }

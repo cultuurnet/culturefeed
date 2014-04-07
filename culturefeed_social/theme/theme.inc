@@ -11,6 +11,7 @@
 function culturefeed_social_preprocess_culturefeed_social_user_activity_list(&$variables) {
 
   $activities = $variables['activities'];
+
   $items = array();
 
   $accounts = culturefeed_get_uids_for_activities($activities->objects);
@@ -219,9 +220,9 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
         'attributes' => $attributes,
         'query' => $destination,
       ));
-      
-     $variables['comment_url'] = url($comment_url . '/nojs', array('attributes' => $attributes, 'query' => $destination));      
-            
+
+     $variables['comment_url'] = url($comment_url . '/nojs', array('attributes' => $attributes, 'query' => $destination));
+
     }
     else {
 
