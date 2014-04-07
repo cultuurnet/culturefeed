@@ -121,6 +121,10 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityConfigPageCreated();
         break;
 
+      case CultureFeed_Activity::TYPE_NEWS:
+        $config = new CultureFeedActivityConfigNews();
+        break;
+
       default:
         return NULL;
 

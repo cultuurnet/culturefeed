@@ -222,6 +222,15 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_social_user_activity_summary_with_teaser' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'uid' => 0,
+      ),
+      'template' => 'culturefeed-social-user-activity-summary-with-teaser',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_social_comment_form' => array(
       'template' => 'culturefeed-social-comment-form',
       'render element' => 'form',
