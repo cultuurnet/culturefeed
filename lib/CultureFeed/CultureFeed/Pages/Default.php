@@ -163,7 +163,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
   }
-  
+
   /**
    * @see CultureFeed_Pages::addCover()
    */

@@ -246,6 +246,13 @@ class CultureFeed_Activity {
   public $userpointsUserId;
 
   /**
+   * The details of the content where the activity is occurred. Currently only
+   * for contentType == Event.
+   * @var ActivityEventDetails
+   */
+  public $contentDetails;
+
+  /**
    * Helper method to get a string value for an ID.
    *
    * Requests to the /activities api will use the Integer values while requests

@@ -184,7 +184,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['cover'] = $page->getCover();
 
   foreach ($variables['links'] as &$link) {
-    $link = ereg_replace("(https?)://", "", $link);
+    $link = preg_replace("(https?)://", "", $link);
   }
 
   $logged_in = $variables['logged_in'];
@@ -352,7 +352,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_members_block(&$variable
 
   $variables['members'] = $members;
   $variables['member_link'] = culturefeed_pages_member_link($page);
-  $variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
+  //$variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
+  $variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId());
 
 }
 
