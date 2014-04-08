@@ -19,6 +19,24 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE,
     );
 
+    $link = array(
+      '#theme' => 'link',
+      '#path' => 'culturefeed/oauth/connect',
+      '#text' => t("logged in"),
+      '#options' => array(
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => array(
+            'culturefeedconnect'
+          ),
+          'rel' => 'nofollow'
+        ),
+        'query' => array(
+          'destination' => current_path(),
+        ),
+      ),
+    );
+
     $this->subject = t('Reply by');
     $this->subjectUndo = t('Undo');
     $this->titleDo = t('Post a comment');
@@ -30,7 +48,9 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->viewSuffix = '';
     $this->label = t('Comment');
     $this->action = t('comment');
-    $this->loginRequiredMessage = t('You must be logged in to post a comment');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to post a comment', array(
+              '!sign_in_link' => drupal_render($link),
+            ));
     $this->onBehalfOfMessage = t('Reply as');
     $this->pointsOverviewPrefix = t('Posted a comment on');
 
