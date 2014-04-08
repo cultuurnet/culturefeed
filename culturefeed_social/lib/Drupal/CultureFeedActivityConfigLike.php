@@ -31,7 +31,9 @@ class CultureFeedActivityConfigLike extends CultureFeedActivityConfigBase {
     $this->viewPrefix = t('likes');
     $this->viewSuffix = t('this');
     $this->label = t('Like');
-    $this->loginRequiredMessage = t('You must be logged in to like this item');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to like this item', array(
+              '!sign_in_link' => drupal_render($this->loginMessageLink),
+            ));
     $this->pointsOverviewSuffix = t('liked');
 
   }

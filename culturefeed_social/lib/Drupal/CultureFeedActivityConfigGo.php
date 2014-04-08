@@ -20,7 +20,9 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
     $this->subjectUndo = t('Not attending');
     $this->viewPrefix = t('will be attending');
     $this->label = t('Will be attending');
-    $this->loginRequiredMessage = t('You must be logged in to indicate that you will be  attending');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to indicate that you will be attending', array(
+              '!sign_in_link' => drupal_render($this->loginMessageLink),
+            ));
     $this->pointsOverviewPrefix = t('Will be attending');
 
   }

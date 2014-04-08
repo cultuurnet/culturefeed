@@ -31,7 +31,9 @@ class CultureFeedActivityConfigRecommend extends CultureFeedActivityConfigBase {
     $this->viewPrefix = t('has');
     $this->viewSuffix = t('recommended');
     $this->label = t('Recommend');
-    $this->loginRequiredMessage = t('You must be logged in to recommend this item');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to recommend this item', array(
+              '!sign_in_link' => drupal_render($this->loginMessageLink),
+            ));    
     $this->pointsOverviewSuffix = t('recommended');
   }
 
