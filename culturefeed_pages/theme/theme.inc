@@ -758,3 +758,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variab
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), t('View page'));
   $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), $variables['page']->getName());
 }
+
+/**
+ * Preprocess the page timeline block.
+ * @see culturefeed-pages-block-page-timeline.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_block_page_timeline(&$variables) {
+
+  $variables['activities'] = theme('culturefeed_social_user_activity_list', array('activities' => $variables['time_line']));
+  $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($variables['page']->getId());
+  $variables['page_id'] = $variables['page']->getId();
+}

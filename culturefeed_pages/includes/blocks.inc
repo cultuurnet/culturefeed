@@ -261,8 +261,9 @@ function culturefeed_pages_block_page_timeline($page) {
   $block = array();
   $block['subject'] = t('Timeline');
   $block['content'] = array(
-    '#theme' => 'culturefeed_social_user_activity_list',
-    '#activities' => $time_line,
+    '#theme' => 'culturefeed_pages_block_page_timeline',
+    '#time_line' => $time_line,
+    '#page' => $page,
   );
 
   return $block;
