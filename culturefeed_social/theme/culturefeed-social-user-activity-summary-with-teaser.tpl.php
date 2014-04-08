@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Template file for the culturefeed social user activity summary item.
+ * Template file for the culturefeed social user activity summary item (with a teaser).
  */
 
 /**

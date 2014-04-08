@@ -1980,13 +1980,13 @@ class CultureFeed implements ICultureFeed {
         $event_objects = $object->xpath('eventDetails');
         foreach ($event_objects as $event_object) {
           $activity->contentDetails = new ActivityEventDetails();
-          $activity->contentDetails->title = $object->xpath_str('title');
-          $activity->contentDetails->calendar = $object->xpath_str('calendar');
-          $activity->contentDetails->cdbId = $object->xpath_str('cdbid');
-          $activity->contentDetails->description = $object->xpath_str('description');
-          $activity->contentDetails->location = $object->xpath_str('location');
-          $activity->contentDetails->thumbnail = $object->xpath_str('thumbnail');
-          $activity->contentDetails->type = $object->xpath_str('type');
+          $activity->contentDetails->title = $event_object->xpath_str('title');
+          $activity->contentDetails->calendar = $event_object->xpath_str('calendar');
+          $activity->contentDetails->cdbId = $event_object->xpath_str('cdbid');
+          $activity->contentDetails->description = $event_object->xpath_str('description');
+          $activity->contentDetails->location = $event_object->xpath_str('location');
+          $activity->contentDetails->thumbnail = $event_object->xpath_str('thumbnail');
+          $activity->contentDetails->type = $event_object->xpath_str('type');
         }
       }
 

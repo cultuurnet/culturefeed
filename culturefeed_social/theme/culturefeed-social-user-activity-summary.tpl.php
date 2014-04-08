@@ -11,6 +11,7 @@
  * @var string $link
  * @var string $suffix
  * @var string $date
+ * @var string $teaser (shows the details of the event)
  */
 ?>
 
@@ -27,3 +28,7 @@
 <?php endif; ?>.<br />
 
 <?php print $date ?>
+
+<?php if($teaser): ?>
+  <?php print $teaser; ?>
+<?php endif; ?>

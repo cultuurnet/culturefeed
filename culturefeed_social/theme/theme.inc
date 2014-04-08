@@ -102,6 +102,10 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
     $variables['nick'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
+  if (!empty($activity->contentDetails)) {
+    $variables['teaser'] = theme('culturefeed_social_user_activity_event_details', array('activity' => $activity, 'uid' => $variables['uid']));
+  }
+
 }
 
 /**
@@ -109,6 +113,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
  * @see culturefeed-social-user-activity-summary.tpl.php
  */
 function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_with_teaser(&$variables) {
+
   culturefeed_social_preprocess_culturefeed_social_user_activity_summary($variables);
 
   $activity = $variables['activity'];
@@ -137,6 +142,21 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_
       $variables['teaser_image'] = $content->image;
     }
   }
+}
+
+/**
+ * Preprocess function for the event detail of activity summary.
+ * @see culturefeed-social-user-activity-event-details.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_user_activity_event_details(&$variables) {
+
+  $details = $variables['activity']->contentDetails;
+
+  $variables['title'] = $details->title;
+  $variables['image'] = $details->thumbnail;
+  $variables['body'] = $details->description;
+  $variables['link'] = l($details->title, culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_EVENT, $details->cdbId, $details->title));
+
 }
 
 /**
