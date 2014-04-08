@@ -30,7 +30,9 @@ class CultureFeedActivityConfigComment extends CultureFeedActivityConfigBase {
     $this->viewSuffix = '';
     $this->label = t('Comment');
     $this->action = t('comment');
-    $this->loginRequiredMessage = t('You must be logged in to post a comment');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to post a comment', array(
+              '!sign_in_link' => drupal_render($this->loginMessageLink),
+            ));
     $this->onBehalfOfMessage = t('Reply as');
     $this->pointsOverviewPrefix = t('Posted a comment on');
 

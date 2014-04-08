@@ -27,6 +27,7 @@ class CultureFeedActivityConfigBase {
   public $pointsOverviewPrefix = '';
   public $pointsOverviewSuffix = '';
 
+  protected $loginMessageLink = '';
   protected static $configs = array();
 
   /**
@@ -35,6 +36,24 @@ class CultureFeedActivityConfigBase {
   public function __construct() {
     $this->nodeTypes = array_keys(node_type_get_types());
     $this->allowedTypes = array('event');
+
+    $this->loginMessageLink = array(
+      '#theme' => 'link',
+      '#path' => 'culturefeed/oauth/connect',
+      '#text' => t("logged in"),
+      '#options' => array(
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => array(
+            'culturefeedconnect'
+          ),
+          'rel' => 'nofollow'
+        ),
+        'query' => array(
+          'destination' => current_path(),
+        ),
+      ),
+    );
   }
 
   /**
