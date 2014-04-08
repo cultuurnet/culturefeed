@@ -561,7 +561,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
     }
 
   }
-  
+
 }
 
 /**
@@ -570,7 +570,6 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
-  dsm($form_state);
   // Redirect the user to the created page detail.
   drupal_goto('pages/switch/' . $form_state['page_id']);
 
