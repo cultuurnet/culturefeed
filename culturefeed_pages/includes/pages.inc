@@ -234,10 +234,16 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 
     try {
 
+      $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+      $parameters = array();
+      $parameters[] = new Parameter\FilterQuery('category_actortype_id' . ':(' . implode(' OR ', $actortypes) . ')');
+
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'), FALSE, $parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
+          $page = culturefeed_pages_page_load($suggestion->getCdbid());
           $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
         }
 
