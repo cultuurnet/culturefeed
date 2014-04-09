@@ -235,6 +235,27 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
     $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
   }
 
+  // Check if current user already follows this page
+  $i_follow_pages = array();
+  try {
+
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if ($cf_user && $cf_user->following) {
+      foreach ($cf_user->following as $cfp_follower) {
+        $i_follow_pages[] = $cfp_follower->page->getId();
+      }
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  $variables['following'] = FALSE;
+  if (!empty($cf_user) && in_array($page->getId(), $i_follow_pages)) {
+    $variables['following'] = TRUE;
+  }
+
 }
 
 /**
