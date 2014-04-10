@@ -58,16 +58,16 @@ function culturefeed_create_user($cf_account, $user = NULL) {
     if (!$cf_account || empty($cf_account->nick)) {
       return FALSE;
     }
-    
+
     if (isset($user->uid) && $user->uid) {
       // User is already Drupaluser, so map his Drupal and CultureFeed account
-      $account = $user; 
+      $account = $user;
     }
     else {
 
       // Find a unique nick based on the given nick. In case the nick is not used yet, the passed nick will be used. Else the nick will be suffixed with an underscore and counter (example nick_12).
       $unique_nick = culturefeed_unique_username($cf_account->id, $cf_account->nick);
-    
+
       // Create the user account.
       $account = user_save(
         drupal_anonymous_user(),
@@ -302,14 +302,14 @@ function culturefeed_set_noindex_metatag() {
 function culturefeed_create_temporary_image($image, $destination) {
 
   if (strpos($image, 'http') === false) {
-    if (isset($_SERVER['HTTPS'])) { 
+    if (isset($_SERVER['HTTPS'])) {
       $image = 'https:' . $image;
-    } 
+    }
     else {
       $image = 'http:' . $image;
     }
   }
-  
+
   $image_data = file_get_contents($image);
   file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
   $uri = file_unmanaged_save_data($image_data, $destination . '/' . drupal_basename($image));

@@ -1291,7 +1291,7 @@ function culturefeed_pages_page_my_pages() {
 /**
  * Ajax callback to get the agenda of a page.
  */
-function culturefeed_social_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page) {
+function culturefeed_pages_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page) {
 
   $requested_page = isset($_GET['page']) ? $_GET['page'] : 0;
   $max_results = variable_get('pages_block_agenda_total_items', 5) * ($requested_page + 1);
@@ -1325,3 +1325,4 @@ function culturefeed_social_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page
 
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 }
+
