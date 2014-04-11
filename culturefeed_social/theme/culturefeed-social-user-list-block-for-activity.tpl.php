@@ -13,7 +13,7 @@
 <?php if ($activities_total > 0) : ?>
   <div class="recommended-times count-number pull-right"><span class="badge"><?php print $activities_total; ?></span></div>
 
-  <?php print theme('item_list', array('items' => $lists, 'attributes' => array('class' => 'user-list list-unstyled list-inline'))); ?>
+  <?php print theme('item_list', array('items' => $list, 'attributes' => array('class' => 'user-list list-unstyled list-inline'))); ?>
 <?php endif; ?>
 
-<?php print $recommend_advanced; ?>
+<?php print $activity_link; ?>
