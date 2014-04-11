@@ -220,6 +220,12 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_pages_page_suggestion_list_item' => array(
+      'variables' => array('item' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-page-suggestion-list-item',
+    ),
   );
 
 }

@@ -554,6 +554,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
 }
 
 /**
+ * Preprocess the variables for a suggestion list item.
+ * @see
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_suggestion_list_item(&$variables) {
+  _culturefeed_pages_preprocess_culturefeed_page($variables);
+}
+
+/**
  * Theme the overview of pages that a user follows in a block.
  */
 function theme_culturefeed_pages_following_pages_block($variables) {

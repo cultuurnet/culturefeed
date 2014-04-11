@@ -9,7 +9,7 @@
 <?php if (!empty($suggestions)): ?>
   <ul>
     <?php foreach ($suggestions as $suggestion): ?>
-    <li><?php print theme('culturefeed_page_summary', array('item' => $suggestion)); ?></li>
-    <?php endforeach; ?>
+            <li><?php print theme('culturefeed_pages_page_suggestion_list_item', array('item' => $suggestion)); ?></li>
+      <?php endforeach; ?>
   </ul>
 <?php endif; ?>

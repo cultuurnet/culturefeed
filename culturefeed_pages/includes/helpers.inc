@@ -455,7 +455,7 @@ function culturefeed_pages_get_page_suggestions_list() {
       watchdog_exception('culturefeed_pages', $e);
     }
   }
-  dsm($_COOKIE['culturefeed_pages_suggestions_city']);
+
   $parameters = array();
 
   // Add custom query.
@@ -473,7 +473,6 @@ function culturefeed_pages_get_page_suggestions_list() {
     }
     else {
       $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
-      dsm($city);
     }
   }
 
