@@ -3,18 +3,18 @@
 <?php endif; ?>
 
 <?php foreach ($items as $item): ?>
-  <div class="row nearby-pages-row">
-    <div class="col-xs-3">
-      <img src="<?php print $item['image'] ?>" class="img-responsive" />
+  <div class="nearby-pages-row">
+    <div>
+      <img src="<?php print $item['image'] ?>" width="50" height="50" />
     </div>
-    <div class="col-xs-9">
+    <div>
       <?php print $item['link']; ?><br />
-      <small class="text-muted"><?php print $item['location']; ?></small>
+      <small><?php print $item['location']; ?></small>
     </div>
   </div>
-  <hr class="small" />
+  <hr />
 <?php endforeach; ?>
 
 <?php if ($show_more): ?>
-  <div class="text-right"><a href="<?php print $more_url ?>"><?php print $more_text; ?></a></div>
+  <div><a href="<?php print $more_url ?>"><?php print $more_text; ?></a></div>
 <?php endif; ?>
