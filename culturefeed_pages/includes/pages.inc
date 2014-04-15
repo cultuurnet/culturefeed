@@ -750,7 +750,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
       if ($file_cover) {
         $cover = file_get_contents(drupal_realpath($file_cover->uri));
         try {
-          $cf_pages->addCover($uid, array('image' => $cover));
+          $cf_pages->addCover($uid, array('cover' => $cover));
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
