@@ -238,14 +238,7 @@ function culturefeed_agenda_block_actor_program() {
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
-
-  // Add search on the different agenda connections for the actor.
-  $id_search = array(
-    'performer_cdbid' => $item->getId(),
-    'location_cdbid' => $item->getId(),
-    'organiser_cdbid' => $item->getId(),
-  );
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery(implode(' OR ', $id_search));
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('"' . $item->getId() . '"');
 
   try {
 
