@@ -11,9 +11,9 @@
 ?>
 
 <?php if ($activities_total > 0) : ?>
-  <div class="recommended-times count-number pull-right"><span class="badge"><?php print $activities_total; ?></span></div>
+<p><?php print $activities_total; ?></p>
 
-  <?php print theme('item_list', array('items' => $list, 'attributes' => array('class' => 'user-list list-unstyled list-inline'))); ?>
+<?php print theme('item_list', array('items' => $list)); ?>
 <?php endif; ?>
 
-<?php print $activity_link; ?>
+<p><?php print $activity_link; ?></p>
