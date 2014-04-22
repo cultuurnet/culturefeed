@@ -170,7 +170,11 @@ msgstr "Acties beheren"
 msgid "Undo action"
 msgstr "Ongedaan maken"
 
-#: culturefeed_social.module:62;72
+#: culturefeed_social.module:62
+msgid "Leave your !comment"
+msgstr "Plaats jouw !comment"
+
+#: culturefeed_social.module:72
 msgid "Abuse form"
 msgstr "Meldformulier voor ongepaste reacties"
 

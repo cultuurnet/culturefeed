@@ -59,7 +59,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/comment/%/%'] = array(
     'title callback' => FALSE,
-    'title' => t('Abuse form'),
+    'title' => t('Leave your comment'),
     'page callback' => 'culturefeed_social_page_activity_comment',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
