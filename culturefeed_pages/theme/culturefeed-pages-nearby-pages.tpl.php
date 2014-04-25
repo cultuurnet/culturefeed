@@ -4,15 +4,17 @@
 
 <?php foreach ($items as $item): ?>
   <div class="nearby-pages-row">
-    <div>
-      <img src="<?php print $item['image'] ?>" width="50" height="50" />
-    </div>
+    <?php if ($item['image']): ?>
+      <div>
+        <img src="<?php print $item['image'] ?>?width=50&height=50&crop=auto" width="50" height="50" />
+      </div>
+    <?php endif; ?>
     <div>
       <?php print $item['link']; ?><br />
       <small><?php print $item['location']; ?></small>
     </div>
   </div>
-  <hr />
+  <br />
 <?php endforeach; ?>
 
 <?php if ($show_more): ?>
