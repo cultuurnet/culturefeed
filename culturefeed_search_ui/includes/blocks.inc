@@ -330,7 +330,7 @@ function culturefeed_search_ui_block_city_facet() {
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
     $label = $_GET['location'];
     if (isset($_GET['distance'])) {
-      $label .= ' +' . $_GET['distance'] . ' km';
+      $label .= ' + ' . $_GET['distance'] . ' km';
     }
 
     // Make a result item for location search.
@@ -415,7 +415,7 @@ function culturefeed_search_ui_proximity_distance_form() {
 
   $options = array('' => '');
   for ($i = 10; $i <= 50; $i += 10) {
-    $options[$i] = '+' . $i . ' km';
+    $options[$i] = '+ ' . $i . ' km';
   }
 
   $form = array();
@@ -424,15 +424,16 @@ function culturefeed_search_ui_proximity_distance_form() {
 
   $form['distance'] = array(
     '#type' => 'select',
-    '#title' => t('Search nearby'),
     '#options' => $options,
     '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Ok'),
+    '#value' => t('Change radius'),
   );
+  
+  $form['new_search']['#markup'] = '<p><label>' . t('Choose another location') . '</label></p>';
 
   return $form;
 
