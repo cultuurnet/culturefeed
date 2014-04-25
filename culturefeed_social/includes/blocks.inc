@@ -125,94 +125,6 @@ function culturefeed_social_block_user_activities($account) {
 }
 
 /**
- * Block callback to render the users who have recommended the page.
- * @param misc $object
- * @return array
- */
-function culturefeed_social_block_recommended_by($object) {
-
-  if (!$object || !method_exists($object, 'getType')) {
-    return;
-  }
-
-  $config = culturefeed_social_activity_get_config(CultureFeed_Activity::TYPE_RECOMMEND);
-  $content_type = culturefeed_get_content_type($object->getType());
-
-  $query = new CultureFeed_SearchActivitiesQuery();
-  $query->type = CultureFeed_Activity::TYPE_RECOMMEND;
-  $query->contentType = $content_type;
-  $query->consumer = variable_get('culturefeed_api_application_key', '');
-
-  switch ($content_type) {
-
-    case CultureFeed_Activity::CONTENT_TYPE_BOOK:
-      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
-      $id = $object->getId();
-      $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
-    break;
-
-    case CultureFeed_Activity::CONTENT_TYPE_EVENT:
-    	case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
-      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
-      $id = $object->getId();
-      $query->nodeId = $id;
-    break;
-  }
-
-  try {
-  	$activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-  	watchdog_exception('culturefeed_social', $e);
-  	return;
-  }
-
-  $content = array();
-
-  if ($activities->total > 0) {
-
-    $content['times'] = array(
-      '#type' => 'markup',
-      '#markup' => '<div class="recommended-times count-number pull-right"><span class="badge">' . $activities->total . '</span></div>',
-    );
-
-    $user_objects = array();
-    foreach ($activities->objects as $activity_object) {
-      $user_object = new stdClass();
-      $user_object->nick = $activity_object->nick;
-      $user_object->id = $activity_object->userId;
-      $user_object->depiction = $activity_object->depiction;
-      $user_objects[] = $user_object;
-    }
-
-    if (count($user_objects) > 0) {
-
-      $items = _culturefeed_ui_users_list($user_objects);
-
-      $content['list'] = array(
-        '#theme' => 'item_list',
-        '#items' => $items,
-        '#attributes' => array('class' => 'user-list list-unstyled list-inline'),
-      );
-
-    }
-
-  }
-
-  // Advanced recommend link.
-  $content['recommend-advanced'] = array(
-    '#type' => 'markup',
-    '#markup' => culturefeed_social_activity_link_advanced(CultureFeed_Activity::TYPE_RECOMMEND, $object, FALSE),
-  );
-
-  $block['subject'] = $config->subject;
-  $block['content'] = $content;
-
-  return $block;
-
-}
-
-/**
  * Block callback to render the comments on an item.
  * @param misc $object
  * @return array
@@ -352,4 +264,79 @@ function culturefeed_social_block_my_activity_summary($account) {
 
   return $block;
 
+}
+
+/**
+ * Return a block build of users that did an activity of a given type on a given object.
+ * @param $object
+ *   Cdb item to build the activity list for.
+ * @param string $activity_type
+ *   Type activity to show a list for.
+ */
+function culturefeed_social_user_list_block_for_activity($object, $activity_type) {
+
+  if (!$object || !method_exists($object, 'getType')) {
+    return;
+  }
+
+  $config = culturefeed_social_activity_get_config($activity_type);
+  $content_type = culturefeed_get_content_type($object->getType());
+
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->type = $activity_type;
+  $query->contentType = $content_type;
+  $query->consumer = variable_get('culturefeed_api_application_key', '');
+
+  switch ($content_type) {
+
+    case CultureFeed_Activity::CONTENT_TYPE_BOOK:
+      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
+      $id = $object->getId();
+      $query->nodeId = url(culturefeed_social_detail_path($content_type, $id, $node_title), array('absolute' => TRUE));
+      break;
+
+    case CultureFeed_Activity::CONTENT_TYPE_EVENT:
+    case CultureFeed_Activity::CONTENT_TYPE_PRODUCTION:
+      $node_title = $object->getTitle(culturefeed_search_get_preferred_language());
+      $id = $object->getId();
+      $query->nodeId = $id;
+      break;
+  }
+
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+    return;
+  }
+
+  $content = array();
+  $content['#theme'] = 'culturefeed_social_user_list_block_for_activity';
+
+  if ($activities->total > 0) {
+
+    $content['#activities_total'] = $activities->total;
+
+    $user_objects = array();
+    foreach ($activities->objects as $activity_object) {
+      $user_object = new stdClass();
+      $user_object->nick = $activity_object->nick;
+      $user_object->id = $activity_object->userId;
+      $user_object->depiction = $activity_object->depiction;
+      $user_objects[] = $user_object;
+    }
+
+    if (count($user_objects) > 0) {
+      $content['#list'] = _culturefeed_ui_users_list($user_objects);
+    }
+  }
+
+  // Advanced activity link.
+  $content['#activity_link'] = culturefeed_social_activity_link_advanced($activity_type, $object, FALSE);
+
+  $block['subject'] = $config->subject;
+  $block['content'] = $content;
+
+  return $block;
 }
