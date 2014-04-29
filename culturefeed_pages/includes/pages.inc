@@ -234,10 +234,16 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 
     try {
 
+      $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+      $parameters = array();
+      $parameters[] = new Parameter\FilterQuery('category_actortype_id' . ':(' . implode(' OR ', $actortypes) . ')');
+
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'), FALSE, $parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
+          $page = culturefeed_pages_page_load($suggestion->getCdbid());
           $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
         }
 
@@ -456,12 +462,10 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   // Basic validation.
   if (empty($form_state['values']['name'])) {
     form_set_error('name', t('Title is required'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   if (strlen($form_state['values']['description']) > 400) {
     form_set_error('description', t('The maximum is 400 characters'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   // Add the post params to the form so other modules can add their params.
@@ -496,7 +500,8 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
 function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
   // If a previous validation function failed, don't send the request.
-  if (!empty($form_state['#validation_failed'])) {
+  $errors = form_get_errors();
+  if ($errors) {
     return;
   }
 

@@ -147,15 +147,7 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
     }
   }
 
-  $delete_options = array(
-    'attributes' => array(
-      'role' => 'button',
-      'data-toggle' => 'modal',
-      'data-target' => '#thread-delete-confirm',
-      'data-remote' => url('culturefeed/messages/' . $thread->id . '/delete/ajax'),
-    ),
-  );
-  $variables['delete_link'] = l(t('Delete conversation'), 'culturefeed/messages/' . $thread->id . '/delete/nojs', $delete_options);
+  $variables['delete_link'] = l(t('Delete conversation'), 'culturefeed/messages/' . $thread->id . '/delete/nojs');
 
   $variables['subject'] = $thread->subject;
 

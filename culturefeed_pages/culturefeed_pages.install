@@ -5,6 +5,20 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function culturefeed_pages_intall() {
+
+  // Make sure domains are imported.
+  $import = new CultureFeedDomainImport();
+  $import->import();
+
+  // Run update to set all actortypes as default.
+  culturefeed_pages_update_7003();
+  
+}
+
+/**
  * Change block cache settings for 'admin options block'.
  */
 function culturefeed_pages_update_7001() {
