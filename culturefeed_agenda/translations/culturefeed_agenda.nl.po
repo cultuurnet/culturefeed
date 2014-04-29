@@ -338,3 +338,7 @@ msgstr "Reservaties"
 #: theme/theme.inc
 msgid "By"
 msgstr "Met"
+
+#: theme/culturefeed-event-summary.tpl.php:70
+msgid "With"
+msgstr "Wie"
