@@ -1293,11 +1293,20 @@ function culturefeed_pages_add_news_form_submit($form, &$form_state) {
 /**
  * Form callback to show a confirmation form for deleting a news item.
  */
-function culturefeed_pages_delete_news_form() {
-  $form['#node'] = $node;
-  // Always provide entity id in the same form key as in the entity edit form.
-  $form['nid'] = array('#type' => 'value', '#value' => $node->nid);
-  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $node->title)), 'node/' . $node->nid, t('This action cannot be undone.'), t('Delete'), t('Cancel')
+function culturefeed_pages_delete_news_form($form, &$form_state, $page, $news_item) {
+
+  // Real title is stored in the json.
+  $title = $news_item->nodeTitle;
+  $content = json_decode($news_item->value);
+  if ($content && !empty($content->title)) {
+    $title = $content->title;
+  }
+
+  $form_state['news'] = $news_item;
+  $form_state['title'] = $title;
+  $form_state['page'] = $page;
+
+  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $title)), 'pages/' . $page->getId() . '/news', t('This action cannot be undone.'), t('Delete'), t('Cancel')
   );
 }
 
@@ -1305,11 +1314,21 @@ function culturefeed_pages_delete_news_form() {
  * Submit the confirmation form. Delete the news item.
  */
 function culturefeed_pages_delete_news_form_submit($form, &$form_state) {
+
   if ($form_state['values']['confirm']) {
-    drupal_set_message(t('News item %title has been deleted.', array('%title' => $node->title)));
+
+    try {
+      DrupalCultureFeed::deleteActivity($form_state['news']->id);
+      $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/news';
+      drupal_set_message(t('News item %title has been deleted.', array('%title' => $form_state['title'])));
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('There was an error while deleting your news item.', array('%title' => $form_state['title'])));
+      watchdog_exception('culturefeed_pages', $e);
+    }
+
   }
 
-  $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/news';
 }
 
 /**

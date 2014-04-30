@@ -163,6 +163,22 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
   }
 
+  public static function loadActivity($activity_id) {
+
+    try {
+
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->activityId = $activity_id;
+
+      $result = DrupalCultureFeed::searchActivities($query);
+      
+      return current($result->objects);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+  }
+
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
     if ($query->private) {
       $data = self::getLoggedInUserInstance()->searchActivities($query);

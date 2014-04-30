@@ -333,10 +333,10 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/news/delete/%'] = array(
+  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_news_item'] = array(
     'title' => 'Delete news item',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_pages_delete_news_form', 4),
+    'page arguments' => array('culturefeed_pages_delete_news_form', 1, 4),
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
@@ -912,7 +912,7 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_edit_page_access($page) {
-  
+
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
 
   // Calculate the number of pages where the current user is ADMIN.
@@ -1018,4 +1018,12 @@ function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$for
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
   }
+}
+
+/**
+ * Load callback for a news item of a page.
+ */
+function culturefeed_news_item_load($news_item_id) {
+  $news_item = DrupalCultureFeed::loadActivity($news_item_id);
+  return empty($news_item) ? FALSE : $news_item;
 }

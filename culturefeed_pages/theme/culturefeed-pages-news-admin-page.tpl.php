@@ -16,7 +16,7 @@
         <tr>
           <td><?php print $item['title']; ?></td>
           <td><?php print $item['date']; ?></td>
-          <td><?php print l(t('Delete'), $item['delete_url']); ?><td>
+          <td><a href="<?php print $item['delete_url'] ?>"><?php print t('Delete') ?></a><td>
         </tr>
         <?php endforeach; ?>
       </tbody>
