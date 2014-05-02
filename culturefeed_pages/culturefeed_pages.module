@@ -208,6 +208,12 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_pages_block_page_timeline' => array(
+      'variables' => array('filter_form' => NULL, '', 'activities' => array()),
+      'path' => $path,
+      'template' => 'culturefeed-pages-block-page-timeline',
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -488,12 +494,12 @@ function culturefeed_pages_block_info() {
     'info' => t('Culturefeed pages: followers'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['members'] = array(
     'info' => t('Culturefeed pages: members'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['nearby-pages'] = array(
     'info' => t('Culturefeed pages: nearby pages'),
     'cache' => DRUPAL_NO_CACHE,
@@ -502,7 +508,7 @@ function culturefeed_pages_block_info() {
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
       'info' => t("Culturefeed pages: page timeline"),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'cache' => DRUPAL_NO_CACHE,
     );
   }
 
@@ -581,11 +587,11 @@ function culturefeed_pages_block_view($delta) {
     case 'followers':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
-    
+
     case 'members':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_members($page);
-      
+
     case 'nearby-pages':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_nearby_pages($page);
@@ -970,4 +976,64 @@ function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$for
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
   }
+}
+
+/**
+ * Show a filter form for the timeline.
+ */
+function culturefeed_pages_timeline_filter_form($form, $form_state, $default_filter, $page_id) {
+
+  culturefeed_social_get_activity_filter_options();
+
+  $options = array(
+    'all' => t('All'),
+    CultureFeed_Activity::TYPE_RECOMMEND => t('Recommend'),
+    CultureFeed_Activity::TYPE_REVIEW => t('Review'),
+    CultureFeed_Activity::TYPE_PAGE_MEMBER => t('Membership'),
+    CultureFeed_Activity::TYPE_FOLLOW => t('Follow'),
+  );
+
+  $form['filter'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#title' => t('Filter timeline on'),
+    '#default_value' => $default_filter,
+    '#ajax' => array(
+      'callback' => 'culturefeed_pages_ajax_timeline_filter',
+    ),
+  );
+
+  $form['page_id'] = array(
+    '#type' => 'hidden',
+    '#value' => $page_id,
+  );
+
+  return $form;
+}
+
+/**
+ * Ajax callback, filter the timeline filter.
+ */
+function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
+
+  try {
+    $type = $form_state['values']['filter'] == 'all' ? NULL : $form_state['values']['filter'];
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($form_state['values']['page_id'], NULL, $type);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
+
+  if ($time_line->total == 0) {
+    $activities = t('No activities found');
+  }
+  else {
+    $activities = theme('culturefeed_social_user_activity_list', array('activities' => $time_line));
+  }
+
+  $commands = array();
+  $commands[] = ajax_command_html('#timeline', $activities);
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
