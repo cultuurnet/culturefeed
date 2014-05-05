@@ -111,6 +111,15 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['admin/content/mailing-lists/send/%culturefeed_mailing'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array(t('Activate mailing list')),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_mailing_send_list_form', 4),
+    'access arguments' => array('manage mailing lists'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   $items['admin/content/mailing-lists/delete/%culturefeed_mailing'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array(t('Add mailing list')),
