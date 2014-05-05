@@ -11,7 +11,11 @@
 
 <?php print $recommend_link; ?>
 
-<?php print t('Summarized'); ?> - <?php print $shortdescription; ?><br/>
+<?php if (!empty($shortdescription)) : ?>
+  <p>
+    <?php print $shortdescription; ?>
+  </p>
+<?php endif; ?>
 
 <dl class="clearfix">
 

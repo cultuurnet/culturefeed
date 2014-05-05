@@ -737,9 +737,6 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
     $entity = $search_result->getEntity();
     
     $image = $entity->getImage();
-    if (empty($image)) {
-      $image = $base_url . '/sites/all/themes/custom/culturefeed_bootstrap/img/no-thumbnail.gif';
-    }
     $location = $entity->getAddress()->getCity();
     $items[$key]['link'] = culturefeed_search_detail_l($search_result->getType(), $search_result->getId(), $search_result->getTitle($language->language));
     $items[$key]['image'] = $image;
