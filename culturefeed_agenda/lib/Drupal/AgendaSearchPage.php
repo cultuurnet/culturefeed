@@ -59,8 +59,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     switch ($params['sort']) {
 
       case 'date':
-        $this->parameters[] = new Parameter\Sort('startdate', Parameter\Sort::DIRECTION_ASC);
-        break;
+        $this->parameters[] = new Parameter\Sort('permanent asc,startdateday asc,weight', Parameter\Sort::DIRECTION_DESC);
+      break;
 
       case 'agefrom':
         $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
