@@ -120,6 +120,15 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['admin/content/mailing-lists/disable/%culturefeed_mailing'] = array(
+    'title callback' => 'culturefeed_ui_default_title_callback',
+    'title arguments' => array(t('Disable scheduled sending')),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_mailing_disable_list_form', 4),
+    'access arguments' => array('manage mailing lists'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   $items['admin/content/mailing-lists/delete/%culturefeed_mailing'] = array(
     'title callback' => 'culturefeed_ui_default_title_callback',
     'title arguments' => array(t('Add mailing list')),
