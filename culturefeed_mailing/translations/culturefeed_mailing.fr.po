@@ -243,6 +243,14 @@ msgstr "Inscrivez-vous"
 msgid "Allows the user to subscribe to mailings"
 msgstr "Autoriser l'utilisateur à s'inscrire à une liste de mailing"
 
+#: culturefeed_mailing.module:19
+msgid "Manage mailing lists"
+msgstr ""
+
+#: culturefeed_mailing.module:20
+msgid "Allows the user to manage mailing lists & templates"
+msgstr ""
+
 #: culturefeed_mailing.module:39
 msgid "Subscribe to our newsletter"
 msgstr "Inscrivez-vous au bulletin d'information"

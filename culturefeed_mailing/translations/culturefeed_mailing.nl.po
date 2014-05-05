@@ -248,6 +248,14 @@ msgstr "Schrijf je in "
 msgid "Allows the user to subscribe to mailings"
 msgstr "Sta gebruiker toe zich in te schrijven op een mailing list"
 
+#: culturefeed_mailing.module:19
+msgid "Manage mailing lists"
+msgstr "Beheer mailing lists"
+
+#: culturefeed_mailing.module:20
+msgid "Allows the user to manage mailing lists & templates"
+msgstr "Sta gebruiker toe om mailing lists & templates te beheren"
+
 #: culturefeed_mailing.module:39
 msgid "Subscribe to our newsletter"
 msgstr "Inschrijven op de nieuwsbrief"
