@@ -1,4 +1,3 @@
-<?php if (count($tabs) > 1): ?>
 <div>
   <?php foreach ($tabs as $tabId => $tab): ?>
   <div>
@@ -22,4 +21,3 @@
   </div>
   <?php endforeach; ?>
 </div>
-<?php endif; ?>
