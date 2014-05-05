@@ -339,7 +339,7 @@ function _culturefeed_social_undo($activity_type, $type, $node_id) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
   }
-  return array();
+  //return array();
 }
 
 /**

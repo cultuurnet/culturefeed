@@ -70,6 +70,22 @@ interface CultureFeed_Pages {
   public function removeImage($id);
 
   /**
+   * Add cover to an existing page.
+   * @param string $id
+   *   Id of the page.
+   * @param array $params
+   *   Params to create the cover for the page.
+   */
+  public function addCover($id, array $params);
+
+  /**
+   * Remove a cover of the existing page.
+   * @param string $id
+   *   Id of the page.
+   */
+  public function removeCover($id);
+
+  /**
    * Change the permissions for a page.
    * @param Integer $id
    *   The page ID of the page to remove (set invisible).

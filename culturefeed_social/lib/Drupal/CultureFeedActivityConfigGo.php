@@ -15,6 +15,7 @@ class CultureFeedActivityConfigGo extends CultureFeedActivityConfigBase {
       CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
     );
 
+    $this->subject = t('Attend this');
     $this->titleDo = t('Attend');
     $this->titleDoFirst = t('Attend');
     $this->subjectUndo = t('Not attending');

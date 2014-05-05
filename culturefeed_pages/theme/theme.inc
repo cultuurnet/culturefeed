@@ -730,15 +730,13 @@ function _culturefeed_pages_preprocess_page_metatags(&$variables) {
 function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables) {
 
   global $language;
+  global $base_url;
   // Render the results.
   $items = array();
   foreach ($variables['results'] as $key => $search_result) {
     $entity = $search_result->getEntity();
     
     $image = $entity->getImage();
-    if (empty($image)) {
-      $image = '/profiles/culturefeed_kickstart/themes/culturefeed_bootstrap/img/no-thumbnail.gif';
-    }
     $location = $entity->getAddress()->getCity();
     $items[$key]['link'] = culturefeed_search_detail_l($search_result->getType(), $search_result->getId(), $search_result->getTitle($language->language));
     $items[$key]['image'] = $image;
