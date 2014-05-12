@@ -458,6 +458,97 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
 
   }
+  
+  // Calendar.
+  if ($calendar = $event->getCalendar()) {
+
+    $calendar_class = get_class($calendar);
+    $calendar->rewind();
+
+    if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+      
+      $variables['when'] = array(
+        'type' => 'period',
+        'period_start' => $calendar->current()->getDateFrom(),
+        'period_end' => $calendar->current()->getDateTo(),
+      );
+
+      if ($calendar->current()->getWeekScheme()) {
+        foreach ($calendar->current()->getWeekScheme()->getDays() as $day) {  
+          $variables['when']['weekscheme'][$day->getDayName()] = array(
+            'type' => $day->getOpenType(),
+          );
+          if ($day->getOpenType() == 'open') {
+            $i = 0;
+            foreach($day->getOpeningTimes() as $openingtime) {
+              $variables['when']['weekscheme'][$day->getDayName()]['openingtimes'][$i]['from'] = $openingtime->getOpenFrom();
+              if ($openingtime->getOpenTill()) {
+                $variables['when']['weekscheme'][$day->getDayName()]['openingtimes'][$i]['till'] = $openingtime->getOpenTill();
+              }
+              $i++;
+            }
+          }
+        }
+      }
+       
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
+      $variables['when'] = array(
+        'type' => 'permanent',
+      );
+      
+      if ($calendar->getWeekScheme()) {
+        foreach ($calendar->getWeekScheme()->getDays() as $day) {  
+          $variables['when']['weekscheme'][$day->getDayName()] = array(
+            'type' => $day->getOpenType(),
+          );
+          if ($day->getOpenType() == 'open') {
+            $i = 0;
+            foreach($day->getOpeningTimes() as $openingtime) {
+              $variables['when']['weekscheme'][$day->getDayName()]['openingtimes'][$i]['from'] = $openingtime->getOpenFrom();
+              if ($openingtime->getOpenTill()) {
+                $variables['when']['weekscheme'][$day->getDayName()]['openingtimes'][$i]['till'] = $openingtime->getOpenTill();
+              }
+              $i++;
+            }
+          }
+        }
+      }
+      
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+      $variables['when'] = array(
+        'type' => 'timestamps',
+      );
+      
+      $timestamps_count = iterator_count($calendar);
+      $calendar->rewind();
+      $current_timestamp = 0;
+      for ($i = 0; $i < $timestamps_count; $i++) {
+
+        $timestamp = $calendar->current();
+        $date = $timestamp->getDate();
+
+        $variables['when']['timestamps'][$current_timestamp] = array(
+          'date' => $date,
+          'begintime' => $timestamp->getStartTime(),
+        );
+        if ($timestamp->getEndTime()) {
+          $variables['when']['timestamps'][$current_timestamp]['endtime'] = $timestamp->getEndTime();
+        }
+        
+        $current_timestamp++;
+
+        $calendar->next();
+
+      }
+      
+      
+    }
+  }
+  
+  echo '<pre>';print_r($variables['when']);echo '</pre>';
+
 
   if ($event_detail) {
 
