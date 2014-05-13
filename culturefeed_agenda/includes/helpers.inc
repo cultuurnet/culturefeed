@@ -492,3 +492,64 @@ function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStat
     ),
   );
 }
+
+
+/**
+ * Parse weekscheme from object to array
+ */
+function culturefeed_agenda_parse_weekscheme(CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme) {
+
+  $weekscheme_array = array();
+  
+  foreach ($weekscheme->getDays() as $day) {  
+    $weekscheme_array[$day->getDayName()] = array(
+      'type' => $day->getOpenType(),
+    );
+    if ($day->getOpenType() == 'open') {
+      $i = 0;
+      foreach($day->getOpeningTimes() as $openingtime) {
+        $weekscheme_array[$day->getDayName()]['openingtimes'][$i]['from'] = $openingtime->getOpenFrom();
+        if ($openingtime->getOpenTill()) {
+          $weekscheme_array[$day->getDayName()]['openingtimes'][$i]['till'] = $openingtime->getOpenTill();
+        }
+        $i++;
+      }
+    }
+  }
+  return $weekscheme_array;
+}
+
+
+/**
+ * Parse timestamps from object (CultureFeed_Cdb_Data_Calendar_TimestampList or CultureFeed_Cdb_Data_Calendar_Exceptions) to array
+ */
+function culturefeed_agenda_parse_timestamps($timestamps) {
+
+  $timestamps_array = array();
+
+  $timestamps_count = iterator_count($timestamps);
+  $timestamps->rewind();
+  $current_timestamp = 0;
+  for ($i = 0; $i < $timestamps_count; $i++) {
+
+    $timestamp = $timestamps->current();
+    $date = $timestamp->getDate();
+
+    $timestamps_array[$current_timestamp] = array(
+      'date' => $date,
+    );
+    if ($timestamp->getStartTime()) {
+      $timestamps_array[$current_timestamp]['begintime'] = $timestamp->getStartTime();
+    }
+    if ($timestamp->getEndTime()) {
+      $timestamps_array[$current_timestamp]['endtime'] = $timestamp->getEndTime();
+    }
+    if ($timestamp->getOpenType()) {
+      $timestamps_array[$current_timestamp]['type'] = $timestamp->getOpenType();
+    }
+    $current_timestamp++;
+    $timestamps->next();
+
+  }
+  return $timestamps_array;
+}
