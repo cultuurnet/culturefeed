@@ -181,7 +181,6 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
   }
 
   if (!empty($items)) {
-
     $subject = '';
     if (!empty($domain_id)) {
       $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => $domain_id))->fetchField();
@@ -197,7 +196,6 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
       ),
     );
   }
-
 }
 
 /**
@@ -637,4 +635,42 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
     $_GET['q'],
     array('query' => $query)
   );
+}
+
+function culturefeed_search_ui_block_flanderstouristregion_facet() {
+  $sort = variable_get('culturefeed_search_sort_facet-flanderstouristregion', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
+  $highest_level = variable_get('culturefeed_facet_flanderstouristregion_highest_level', 1);
+  $show_subitems = variable_get('culturefeed_facet_flanderstouristregion_show_subitems', FALSE);
+
+
+  // FacetingComponent is set in the page callback.
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $facets = $culturefeedFacetingComponent->getFacets();
+  if (!isset($facets['category_flanderstouristregion_id'])) {
+    return;
+  }
+
+  $facet = $facets['category_flanderstouristregion_id'];
+
+  $items = $facet->getResult()->getItems();
+  culturefeed_search_translate_facet($items);
+  dpm($items, 'the items');
+
+  if (!empty($items)) {
+    $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => 'flanderstouristregion'))->fetchField();
+
+    return array(
+      'subject' => check_plain($subject),
+      'content' => array(
+        '#theme' => 'culturefeed_search_facet',
+        '#facet' => $facet,
+        '#items' => $items,
+        '#sort' => $sort,
+      ),
+    );
+  }
 }

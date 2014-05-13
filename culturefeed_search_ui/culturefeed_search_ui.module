@@ -316,6 +316,24 @@ function culturefeed_search_ui_block_configure($delta) {
         '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
       );
     }
+    if ($delta == 'facet-flanderstouristregion') {
+      $form['culturefeed-facet-flanderstouristregion-highest-level'] = array(
+        '#type' => 'select',
+        '#title' => t('The highest level of region type'),
+        '#options' => array(
+          1 => t('Province'),
+          2 => t('Region'),
+          3 => t('City'),
+        ),
+        '#default_value' => variable_get('culturefeed_facet_flanderstouristregion_highest_level', 1),
+      );
+      $form['culturefeed-facet-flanderstouristregion-show-subitems'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show subitems'),
+        '#description' => t(''),
+        '#default_value' => variable_get('culturefeed_facet_flanderstouristregion_show_subitems', FALSE),
+      );
+    }
   }
   elseif ($delta == 'filter-form') {
 
@@ -375,6 +393,12 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
     variable_set('culturefeed_search_filter_options', $options);
   }
+  if (isset($edit['culturefeed-facet-flanderstouristregion-highest-level'])) {
+    variable_set('culturefeed_facet_flanderstouristregion_highest_level', $edit['culturefeed-facet-flanderstouristregion-highest-level']);
+  }
+  if (isset($edit['culturefeed-facet-flanderstouristregion-show-subitems'])) {
+    variable_set('culturefeed_facet_flanderstouristregion_show_subitems', $edit['culturefeed-facet-flanderstouristregion-show-subitems']);
+  }
 }
 
 /**
@@ -420,7 +444,6 @@ function culturefeed_search_ui_block_view($delta) {
     break;
 
     case 'filter-form':
-
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
         return;
@@ -431,11 +454,14 @@ function culturefeed_search_ui_block_view($delta) {
       if (!empty($filter_options)) {
         $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
       }
+      break;
 
+    case 'facet-flanderstouristregion':
+      $block = culturefeed_search_ui_block_flanderstouristregion_facet();
+      dpm($block, 'the block');
       break;
 
     default:
-
       $delta_parts = explode('-', $delta);
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
 
