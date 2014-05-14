@@ -10,6 +10,7 @@
 
         <a href="<?php print $content['url'] ?>"><?php print $content['title']; ?></a>
         <?php print $content['city']; ?>
+        <?php print $content['venue']; ?>
         <?php print $content['calendar']; ?>
         <?php if (isset($content['all_url'])): ?>
         <a href="<?print $content['all_url']; ?>"><?php print t('Show all'); ?></a>
