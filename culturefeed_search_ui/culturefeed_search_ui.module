@@ -107,6 +107,14 @@ function culturefeed_search_ui_menu() {
     'file' => 'includes/admin.inc',
   );
 
+  $items['autocomplete/culturefeed_ui/city-region-suggestion'] = array(
+    'page callback' => 'culturefeed_search_ui_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, TRUE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
