@@ -370,7 +370,7 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
 
-  $filters = array_filter(array_values(variable_get('culturefeed_facet_city_parents')));
+  $filters = array_filter(array_values(variable_get('culturefeed_facet_city_parents', array())));
 
   $form['#attached']['library'][] = array(
     'system', 'ui.autocomplete',
