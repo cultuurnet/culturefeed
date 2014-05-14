@@ -484,6 +484,8 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
   $relations = $production->getRelations();
   $total_relations = count($relations);
+  $variables['relations'] = $total_relations;
+
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
     $variables['location']['title'] = t('multiple locations');
