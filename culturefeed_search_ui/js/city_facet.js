@@ -2,9 +2,10 @@
 (function ($) {
   Drupal.behaviors.culturefeedSearchUiCityFacet = {
     attach: function (context, settings) {
-      $('.city-facet').autocomplete({
+      $('.city-autocomplete').autocomplete({
         source: function(term, callback) {
-          $.getJSON(Drupal.settings.basePath + 'autocomplete/culturefeed_ui/city-region-suggestion/' + term.term, callback);
+          var filters = $.param({parents: Drupal.settings.culturefeed_search_ui.city_filters});
+          $.getJSON(Drupal.settings.basePath + 'autocomplete/culturefeed_ui/city-region-suggestion/' + term.term + '?' + filters, callback);
         },
         select: function(event, ui) {
           $(this).val(ui.item.value);
