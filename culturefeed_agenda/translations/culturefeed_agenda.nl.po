@@ -176,6 +176,10 @@ msgstr "Activiteiten in de buurt van mijn huidige locatie:"
 msgid "Search"
 msgstr "Zoeken"
 
+#: includes/blocks.inc:349
+msgid "Program"
+msgstr "Programmatie"
+
 #: includes/helpers.inc:295;362 lib/Drupal/AgendaSearchPage.php:88
 msgid "Home"
 msgstr "Home"
