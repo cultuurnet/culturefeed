@@ -346,7 +346,7 @@ function culturefeed_agenda_block_production_program() {
     $provinces[$row->tid] = $row;
   }
 
-  $block['subject'] = t('Program');
+  $block['subject'] = t('Program schedule');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',
     '#items' => $result->getItems(),
