@@ -327,36 +327,58 @@ function culturefeed_search_ui_block_configure($delta) {
 
     if ($delta == 'facet-city') {
 
-      $query = db_select('culturefeed_search_terms', 't');
-      // Get a string to order by parent / child.
-      $query->leftjoin('culturefeed_search_terms', 'p', "p.language = 'und' AND p.tid = t.p1");
-      $query->addExpression("CONCAT_WS(' ', p.name, t.name)", 'sort_string');
-      $query->fields('t', array('tid', 'name'));
-      // Conditions taken from culturefeed_search_get_flandersregion_suggestions.
-      $query->condition('t.language', 'und');
-      $query->condition('t.did', 'flandersregion', '=');
-      // Get only provinces or regions.
-      $and = db_and();
-      $and->isNull('t.p2');
-      $and->isNull('t.p3');
-      $and->isNull('t.p4');
-      $or = db_or();
-      $or->isNotNull('t.parent');
-      $or->condition($and);
-      $query->condition($or);
-      $query->orderBy('sort_string');
-      $query->execute();
-      $options = $query->execute()->fetchAllKeyed();
-
       $form['culturefeed-facet-city-parents'] = array(
-        '#type' => 'checkboxes',
+        '#tree' => TRUE,
         '#title' => t('Limit autocomplete options to selected parents'),
-        '#default_value' => variable_get('culturefeed_facet_city_parents', array()),
-        '#options' => $options,
       );
+      $default_value = variable_get('culturefeed_facet_city_parents', array());
+
+      $base_query = db_select('culturefeed_search_terms', 't');
+      $base_query->fields('t', array('tid', 'name'));
+      // Conditions taken from culturefeed_search_get_flandersregion_suggestions.
+      $base_query->condition('language', 'und');
+      $base_query->condition('did', 'flandersregion', '=');
+      $base_query->orderBy('name');
+      // Get only provinces.
+      $province_query = clone($base_query);
+      $province_query->isNotNull('parent');
+      $province_query->execute();
+      $provinces = $province_query->execute()->fetchAllKeyed();
+
+      foreach ($provinces as $pkey => $province) {
+
+        $form['culturefeed-facet-city-parents'][$pkey] = array(
+          '#type' => 'checkbox',
+          '#title' => '<strong>' . $province . '</strong>',
+          '#default_value' => in_array($pkey, $default_value),
+        );
+
+        // Get only regions.
+        $region_query = clone($base_query);
+        $region_query->isNull('p2');
+        $region_query->isNull('p3');
+        $region_query->isNull('p4');
+        $region_query->condition('p1', $pkey);
+        $region_query->execute();
+        $regions = $region_query->execute()->fetchAllKeyed();
+
+        foreach ($regions as $rkey => $region) {
+
+          $form['culturefeed-facet-city-parents'][$rkey] = array(
+            '#type' => 'checkbox',
+            '#title' => $region,
+            '#attributes' => array('style' => 'margin-left: 20px;'),
+            '#default_value' => in_array($rkey, $default_value),
+          );
+
+        }
+
+      }
+
     }
 
   }
+
   elseif ($delta == 'filter-form') {
 
     $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
@@ -387,15 +409,18 @@ function culturefeed_search_ui_block_configure($delta) {
         '#type' => 'textfield',
         '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
       );
+
     }
+
   }
 
   return $form;
+
 }
 
 /**
- * Implements hook_block_save().
- */
+* Implements hook_block_save().
+*/
 function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
   if (isset($edit['sort'])) {
@@ -405,7 +430,7 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
   }
   if (isset($edit['culturefeed-facet-city-parents'])) {
-    variable_set('culturefeed_facet_city_parents', $edit['culturefeed-facet-city-parents']);
+    variable_set('culturefeed_facet_city_parents', array_keys(array_filter($edit['culturefeed-facet-city-parents'])));
   }
   if (isset($edit['culturefeed-search-filter-options'])) {
 
