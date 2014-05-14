@@ -637,10 +637,10 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
   );
 }
 
-function culturefeed_search_ui_block_flanderstouristregion_facet() {
-  $sort = variable_get('culturefeed_search_sort_facet-flanderstouristregion', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
-  $highest_level = variable_get('culturefeed_facet_flanderstouristregion_highest_level', 1);
-  $show_subitems = variable_get('culturefeed_facet_flanderstouristregion_show_subitems', FALSE);
+function culturefeed_search_ui_block_flandersregion_facet() {
+  $sort = variable_get('culturefeed_search_sort_facet-flandersregion', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
+  $highest_level = variable_get('culturefeed_facet_flandersregion_highest_level', 1);
+  $show_subitems = variable_get('culturefeed_facet_flandersregion_show_subitems', FALSE);
 
 
   // FacetingComponent is set in the page callback.
@@ -650,18 +650,17 @@ function culturefeed_search_ui_block_flanderstouristregion_facet() {
   }
 
   $facets = $culturefeedFacetingComponent->getFacets();
-  if (!isset($facets['category_flanderstouristregion_id'])) {
+  if (!isset($facets['category_flandersregion_id'])) {
     return;
   }
 
-  $facet = $facets['category_flanderstouristregion_id'];
+  $facet = $facets['category_flandersregion_id'];
 
   $items = $facet->getResult()->getItems();
   culturefeed_search_translate_facet($items);
-  dpm($items, 'the items');
 
   if (!empty($items)) {
-    $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => 'flanderstouristregion'))->fetchField();
+    $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => 'flandersregion'))->fetchField();
 
     return array(
       'subject' => check_plain($subject),

@@ -316,8 +316,8 @@ function culturefeed_search_ui_block_configure($delta) {
         '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
       );
     }
-    if ($delta == 'facet-flanderstouristregion') {
-      $form['culturefeed-facet-flanderstouristregion-highest-level'] = array(
+    if ($delta == 'facet-flandersregion') {
+      $form['culturefeed-facet-flandersregion-highest-level'] = array(
         '#type' => 'select',
         '#title' => t('The highest level of region type'),
         '#options' => array(
@@ -325,13 +325,13 @@ function culturefeed_search_ui_block_configure($delta) {
           2 => t('Region'),
           3 => t('City'),
         ),
-        '#default_value' => variable_get('culturefeed_facet_flanderstouristregion_highest_level', 1),
+        '#default_value' => variable_get('culturefeed_facet_flandersregion_highest_level', 1),
       );
-      $form['culturefeed-facet-flanderstouristregion-show-subitems'] = array(
+      $form['culturefeed-facet-flandersregion-show-subitems'] = array(
         '#type' => 'checkbox',
         '#title' => t('Show subitems'),
         '#description' => t(''),
-        '#default_value' => variable_get('culturefeed_facet_flanderstouristregion_show_subitems', FALSE),
+        '#default_value' => variable_get('culturefeed_facet_flandersregion_show_subitems', FALSE),
       );
     }
   }
@@ -393,11 +393,11 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
     variable_set('culturefeed_search_filter_options', $options);
   }
-  if (isset($edit['culturefeed-facet-flanderstouristregion-highest-level'])) {
-    variable_set('culturefeed_facet_flanderstouristregion_highest_level', $edit['culturefeed-facet-flanderstouristregion-highest-level']);
+  if (isset($edit['culturefeed-facet-flandersregion-highest-level'])) {
+    variable_set('culturefeed_facet_flandersregion_highest_level', $edit['culturefeed-facet-flandersregion-highest-level']);
   }
-  if (isset($edit['culturefeed-facet-flanderstouristregion-show-subitems'])) {
-    variable_set('culturefeed_facet_flanderstouristregion_show_subitems', $edit['culturefeed-facet-flanderstouristregion-show-subitems']);
+  if (isset($edit['culturefeed-facet-flandersregion-show-subitems'])) {
+    variable_set('culturefeed_facet_flandersregion_show_subitems', $edit['culturefeed-facet-flandersregion-show-subitems']);
   }
 }
 
@@ -456,9 +456,8 @@ function culturefeed_search_ui_block_view($delta) {
       }
       break;
 
-    case 'facet-flanderstouristregion':
-      $block = culturefeed_search_ui_block_flanderstouristregion_facet();
-      dpm($block, 'the block');
+    case 'facet-flandersregion':
+      $block = culturefeed_search_ui_block_flandersregion_facet();
       break;
 
     default:
