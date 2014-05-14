@@ -316,6 +316,38 @@ function culturefeed_search_ui_block_configure($delta) {
         '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
       );
     }
+
+    if ($delta == 'facet-city') {
+
+      $query = db_select('culturefeed_search_terms', 't');
+      // Get a string to order by parent / child.
+      $query->leftjoin('culturefeed_search_terms', 'p', "p.language = 'und' AND p.tid = t.p1");
+      $query->addExpression("CONCAT_WS(' ', p.name, t.name)", 'sort_string');
+      $query->fields('t', array('tid', 'name'));
+      // Conditions taken from culturefeed_search_get_flandersregion_suggestions.
+      $query->condition('t.language', 'und');
+      $query->condition('t.did', 'flandersregion', '=');
+      // Get only provinces or regions.
+      $and = db_and();
+      $and->isNull('t.p2');
+      $and->isNull('t.p3');
+      $and->isNull('t.p4');
+      $or = db_or();
+      $or->isNotNull('t.parent');
+      $or->condition($and);
+      $query->condition($or);
+      $query->orderBy('sort_string');
+      $query->execute();
+      $options = $query->execute()->fetchAllKeyed();
+
+      $form['culturefeed-facet-city-parents'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Limit autocomplete options to selected parents'),
+        '#default_value' => variable_get('culturefeed_facet_city_parents', array()),
+        '#options' => $options,
+      );
+    }
+
   }
   elseif ($delta == 'filter-form') {
 
@@ -363,6 +395,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   }
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
+  }
+  if (isset($edit['culturefeed-facet-city-parents'])) {
+    variable_set('culturefeed_facet_city_parents', $edit['culturefeed-facet-city-parents']);
   }
   if (isset($edit['culturefeed-search-filter-options'])) {
 
