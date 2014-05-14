@@ -260,6 +260,7 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'url' => culturefeed_search_detail_url($item->getType(), $item->getId(), $detail->getTitle()),
       'calendar' => $detail->getCalendarSummary(),
       'city' => isset($location['city']) ? $location['city'] : '',
+      'venue' => isset($location['title']) ? $location['title'] : '',
     );
 
     // Extend with an url to the actor.
