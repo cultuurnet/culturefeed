@@ -491,17 +491,26 @@ function culturefeed_search_ui_block_age_range_facet() {
   $all_items = $facet->getResult()->getItems();
   foreach ($all_items as $item) {
     $age = $item->getValue();
-    if ($age >= 0 && $age <= 3) {
+    if ($age >= 0 && $age <= 2) {
+      $counts[0] += $item->getTotalResults();
+    }
+    elseif ($age >= 3 && $age <= 5) {
       $counts[3] += $item->getTotalResults();
     }
-    elseif ($age >= 4 && $age <= 6) {
+    elseif ($age >= 6 && $age <= 8) {
       $counts[6] += $item->getTotalResults();
     }
-    elseif ($age >= 7 && $age <= 9) {
+    elseif ($age >= 9 && $age <= 11) {
       $counts[9] += $item->getTotalResults();
     }
-    elseif ($age >= 10 && $age <= 11) {
-      $counts[11] += $item->getTotalResults();
+    elseif ($age >= 12 && $age <= 14) {
+      $counts[12] += $item->getTotalResults();
+    }
+    elseif ($age >= 15 && $age <= 17) {
+      $counts[15] += $item->getTotalResults();
+    }
+    elseif ($age >= 18) {
+      $counts[18] += $item->getTotalResults();
     }
   }
 
