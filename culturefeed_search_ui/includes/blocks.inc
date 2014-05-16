@@ -509,11 +509,11 @@ function culturefeed_search_ui_block_age_range_facet() {
   foreach ($requested_facets as $age => $data) {
     $label = $data['name'];
     if ($active_age > 0 && $active_age === $age) {
-      $facet_count = ' <small class="muted">(' . $counts[$age] . ')</small>';
-      $items[] = '<span class="facet-label active">' . $label . $facet_count . '<span class="facet-remove" title="Verwijder filter">' . l('<i class="icon-remove text-red pull-right icon-large"></i>', $_GET['q'], array('query' => $query, 'html' => TRUE)) . '</span> </span>';
+      $facet_count = ' <span class="facet-count">(' . $counts[$age] . ')</span>';
+      $items[] = '<span class="facet-label active">' . $label . $facet_count . ' ' . l('&times;', $_GET['q'], array('query' => $query, 'html' => TRUE, 'attributes' => array('class' => array('facet-remove'), 'title' => t('Remove filter')))) . '</span>';
     }
     elseif (!empty($counts[$age])) {
-      $facet_count = ' <small class="muted">(' . $counts[$age] . ')</small>';
+      $facet_count = ' <span class="facet-count">(' . $counts[$age] . ')</span>';
       $search_query = $query;
       $search_query['min_age'] = $age;
       $items[] = '<span class="facet-label">' . l($label, $_GET['q'], array('query' => $search_query)) . '</span>' . $facet_count;
