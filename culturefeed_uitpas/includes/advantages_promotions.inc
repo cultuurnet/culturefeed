@@ -30,6 +30,7 @@ function culturefeed_uitpas_advantages_promotions_get() {
     $query = new CultureFeed_Uitpas_Promotion_Query_WelcomeAdvantagesOptions();
     $query->start = $advantages_page * $advantages_max;
     $query->max = $advantages_max;
+    $query->unexpired = TRUE;
     $query->cashingPeriodBegin = time();
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     if ($card_system_id) {
