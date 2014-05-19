@@ -14,6 +14,12 @@
           var autocomplete = $(this).data("autocomplete");
           autocomplete.menu.next();
         },
+        search: function(){
+          $(this).addClass('throbbing');
+        },
+        open: function(){
+          $(this).removeClass('throbbing');
+        },
         autoFocus: true
       }).keydown(function(event) {
         if (event.which == 13) {
