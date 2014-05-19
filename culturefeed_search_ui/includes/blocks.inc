@@ -35,7 +35,6 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#type' => 'textfield',
     '#title' => t('Search terms'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-    '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
   $form['submit'] = array(
