@@ -378,11 +378,6 @@ function culturefeed_search_ui_city_facet_form() {
     'type' => 'file',
   );
 
-  $form['#attached']['css'][] = array(
-    'data' => drupal_get_path('module', 'culturefeed_search_ui') . '/css/ui.autocomplete.css',
-    'type' => 'file',
-  );
-
   $form['location'] = array(
     '#type' => 'textfield',
     '#size' => 28,
