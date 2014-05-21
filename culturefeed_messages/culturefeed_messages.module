@@ -246,7 +246,7 @@ function culturefeed_messages_culturefeed_ui_profile_box_main_items() {
       'data' => theme('culturefeed_messages_total_messages_profile_box_item', array(
         'total' => isset($message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD]) ? $message_count[CultureFeed_Messages_Default::MESSAGE_COUNT_UNREAD] : 0,
       )),
-      'class' => 'notifications',
+      'class' => 'messages',
       'weight' => -20,
     );
   }
