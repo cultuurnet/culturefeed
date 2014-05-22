@@ -247,7 +247,8 @@ function culturefeed_pages_block_page_timeline($page) {
   }
 
   try {
-    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId());
+    $active_types = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId(), NULL, $active_types);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -493,7 +494,7 @@ function culturefeed_pages_block_nearby_pages($page) {
   if (empty($page)) {
     return;
   }
-  
+
   $actortypes = variable_get('culturefeed_pages_actor_types', array());
 
   $parameters = array();
