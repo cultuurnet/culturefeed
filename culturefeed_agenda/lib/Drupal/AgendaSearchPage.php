@@ -33,7 +33,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
 
       if (!empty($params['search'])) {
-        $this->addQueryTerm($params['search']);
+        // Remove / from the start and : from the end of keywords.
+        $this->addQueryTerm(preg_replace("/\/\b|\b:/x", "", $params['search']));
       }
 
       $this->addFacetFilters($params);

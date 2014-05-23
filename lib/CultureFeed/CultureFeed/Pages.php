@@ -174,10 +174,12 @@ interface CultureFeed_Pages {
    *   The page ID where the timeline is requested for.
    * @param string $dateFrom
    *   ISO Date to set the startdate of the timeline. (optional)
+   * @param array $activityTypes
+   *   List of activity types to be shown in the timeline.
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  public function getTimeline($id, $dateFrom = NULL);
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array());
 
   /**
    * Get the notifications for a page.
