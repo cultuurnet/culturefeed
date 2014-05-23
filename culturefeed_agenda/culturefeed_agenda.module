@@ -189,6 +189,14 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['ajax/culturefeed/related-activities/%'] = array(
+    'page callback' => 'culturefeed_agenda_page_ajax_related_activities',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['admin/config/culturefeed/agenda'] = array(
     'title' => 'CultureFeed Agenda',
     'description' => t('Change CultureFeed agenda settings'),

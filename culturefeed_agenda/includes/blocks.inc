@@ -15,99 +15,13 @@ function culturefeed_agenda_block_related_activities() {
     return;
   }
 
-  $total_items = variable_get('agenda_related_activities_total_items', 3);
-  $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
-  // 1 extra then requested, because it's possible that current event is in the result.
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows($total_items + 1);
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-
-  // Add the context filter.
-  $context = variable_get('agenda_related_activities_context');
-  if ($context) {
-
-    $categories = $item->getEntity()->getCategories()->getCategoriesByType($context);
-    if ($categories) {
-      $context_filter = array();
-      foreach ($categories as $category) {
-        $context_filter[] = $category->getId();
-      }
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $context_filter) . ')');
-    }
-
-  }
-
-  // Add the sort.
-  if ($sort_field = variable_get('agenda_related_activities_sort', '')) {
-    $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_field, variable_get('agenda_related_activities_sort_direction', \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC));
-  }
-
-  // Add extra query.
-  if ($filter_query = variable_get('agenda_related_activities_extra_query', '')) {
-    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($filter_query);
-  }
-
-  // Add spatial search.
-  if ($item->getType() == 'event' && variable_get('agenda_related_activities_range', 0)) {
-
-    $address = $item->getEntity()->getLocation()->getAddress();
-    if ($address && $address->getPhysicalAddress()) {
-      $coordinates = $address->getPhysicalAddress()->getGeoInformation();
-      if ($coordinates) {
-        $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(variable_get('agenda_related_activities_range', 0));
-        $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getYCoordinate(), $coordinates->getXCoordinate());
-        $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
-        $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
-      }
-    }
-
-  }
-
-  // Execute search.
-  try {
-
-    $result = culturefeed_get_search_service()->search($parameters);
-    if ($result->getTotalCount() == 0) {
-      return;
-    }
-
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_agenda', $e);
-    return;
-  }
-
-  $search_results = $result->getItems();
-  culturefeed_social_warmup_activities_cache($search_results);
-
-  // Render the results.
-  $items = array();
-  $count = 0;
-  foreach ($search_results as $search_result) {
-
-    // Don't add current activity to the list.
-    if ($search_result->getEntity()->getCdbId() == $item->getEntity()->getCdbid()) {
-      continue;
-    }
-
-    // If current activity was not in results. Make sure we show only the request amount.
-    if ($count < $total_items) {
-      $items[] = $search_result;
-    }
-
-    $count++;
-
-  }
-
-  $block = array();
-  $block['subject'] = t('Related activities');
-  $block['content'] = array(
-    '#theme' => 'culturefeed_agenda_related_activities',
-    '#results' => $items,
+  $config = array(
+    'title' => t('Related activities'),
+    'id' => 'related-activities',
+    'path' => 'ajax/culturefeed/related-activities/' . $item->getId(),
   );
 
-  return $block;
+  return culturefeed_ui_block_ajaxload($config);
 
 }
 
