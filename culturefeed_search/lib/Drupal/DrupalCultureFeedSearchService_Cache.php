@@ -89,6 +89,7 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     $cid = 'search:' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $result = $cache->data;
+      DrupalCultureFeedSearchService::setDetailCache($result);
       return $result;
     }
 
@@ -111,6 +112,7 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     $cid = 'search/page:' . md5(serialize($parameters));
     if ($cache = $this->cacheGet($cid)) {
       $result = $cache->data;
+      DrupalCultureFeedSearchService::setDetailCache($result);
       return $result;
     }
 

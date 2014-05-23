@@ -488,12 +488,12 @@ function culturefeed_pages_block_info() {
     'info' => t('Culturefeed pages: followers'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['members'] = array(
     'info' => t('Culturefeed pages: members'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   $blocks['nearby-pages'] = array(
     'info' => t('Culturefeed pages: nearby pages'),
     'cache' => DRUPAL_NO_CACHE,
@@ -581,11 +581,11 @@ function culturefeed_pages_block_view($delta) {
     case 'followers':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_followers($page);
-    
+
     case 'members':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_members($page);
-      
+
     case 'nearby-pages':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_nearby_pages($page);
@@ -806,8 +806,8 @@ function culturefeed_pages_culturefeed_search_page_info() {
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
-
-  static $pages = array();
+  
+  $pages = &drupal_static('culturefeed_search_items_load', array());
 
   if (isset($pages[$id])) {
     return $pages[$id];
