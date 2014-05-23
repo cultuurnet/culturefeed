@@ -1139,7 +1139,7 @@ class CultureFeed implements ICultureFeed {
    *   ID of the mailing to send.
    */
   public function sendMailing($id) {
-    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/send', array('userId' => $user_id));
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/send');
   }
 
   /**

@@ -35,7 +35,7 @@ function culturefeed_search_ui_init() {
 
     if (strpos(current_path(), $path) !== 0) {
       $params = drupal_get_query_parameters();
-      drupal_goto($path, array('query' => array($params)), 301);
+      drupal_goto($path, array('query' => ($params ? array($params) : NULL)), 301);
     }
 
   }

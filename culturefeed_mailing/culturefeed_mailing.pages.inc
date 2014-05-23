@@ -224,15 +224,31 @@ function culturefeed_mailing_lists_overview() {
         )
       );
 
+      $send = array(
+        '#type' => 'link',
+        '#title' => t('activate'),
+        '#href' => 'admin/content/mailing-lists/send/' . $list->id,
+        '#options' => array('query' => drupal_get_destination(), 'attributes' => array('class' => array('button'))),
+      );
+
+      $disable = array(
+        '#type' => 'link',
+        '#title' => t('deactivate'),
+        '#href' => 'admin/content/mailing-lists/disable/' . $list->id,
+        '#options' => array('query' => drupal_get_destination()),
+      );
+
       $options[$list->id] = $list->name;
       $rows[] = array(
         'id' => 'mailing-list-' . $list->id,
         'data' => array(
           $list->name,
           $list->id,
+          $list->enabled == 0 ? '' : t('ACTIVE'),
           $list->subject,
           $list->fromAddress,
           drupal_render($item_list),
+          $list->enabled == 0 ? drupal_render($send) : drupal_render($disable),
         ),
       );
     }
@@ -246,7 +262,7 @@ function culturefeed_mailing_lists_overview() {
 
   return array(
     '#theme' => 'table',
-    '#header' => array(t('Mailing list'), 'ID', t('Subject'), t('From address'), t('Actions')),
+    '#header' => array(t('Mailing list'), 'ID', 'Status', t('Subject'), t('From address'), t('Actions'), t('Send')),
     '#rows' => $rows,
     '#empty' => t('No mailinglists yet'),
   );
@@ -419,7 +435,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Save'),
   );
 
   return $form;
@@ -519,6 +535,68 @@ function culturefeed_mailing_test_list_form_submit($form, &$form_state) {
   catch (Exception $e) {
     watchdog('culturefeed_mailing', $e->getMessage());
     drupal_set_message(t('Mail could not be sent'));
+  }
+}
+
+
+/**
+ * FAPI callback to activate mail
+ */
+function culturefeed_mailing_send_list_form($form, &$form_state, $list) {
+  $form['id'] = array(
+    '#type' => 'value',
+    '#value' => $list->id,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Activate mail'),
+  );
+  return $form;
+}
+
+
+/**
+ * Submit handler to activate mail
+ */
+function culturefeed_mailing_send_list_form_submit($form, &$form_state) {
+  try {
+    DrupalCultureFeed::sendMailing($form_state['values']['id']);
+    drupal_set_message(t('This mailing is active and will be send on scheduled time'));
+  }
+  catch (Exception $e) {
+    watchdog('culturefeed_mailing', $e->getMessage());
+    drupal_set_message(t('Mailing could not be activated'));
+  }
+}
+
+
+/**
+ * FAPI callback to deactivate mail
+ */
+function culturefeed_mailing_disable_list_form($form, &$form_state, $list) {
+  $form['id'] = array(
+    '#type' => 'value',
+    '#value' => $list->id,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Deactivate scheduling'),
+  );
+  return $form;
+}
+
+
+/**
+ * Submit handler to deactivate mail
+ */
+function culturefeed_mailing_disable_list_form_submit($form, &$form_state) {
+  try {
+    DrupalCultureFeed::disableMailing($form_state['values']['id']);
+    drupal_set_message(t('Scheduling for this mailing is deactivated'));
+  }
+  catch (Exception $e) {
+    watchdog('culturefeed_mailing', $e->getMessage());
+    drupal_set_message(t('Mailing could not be deactivated'));
   }
 }
 

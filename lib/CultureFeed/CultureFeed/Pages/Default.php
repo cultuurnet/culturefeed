@@ -170,7 +170,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
   }
-  
+
   /**
    * @see CultureFeed_Pages::addCover()
    */
@@ -364,11 +364,15 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getTimeline()
    */
-  public function getTimeline($id, $dateFrom = NULL) {
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
 
     $params = array();
     if (!empty($dateFrom)) {
       $params['dateFrom'] = $dateFrom;
+    }
+
+    if (!empty($activityTypes)) {
+      $params['type'] = $activityTypes;
     }
 
     $result = $this->oauth_client->consumerGetAsXml('page/' . $id . '/timeline', $params);
