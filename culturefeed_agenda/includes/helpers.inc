@@ -213,11 +213,13 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     if ($event->getCdbid()) {
       $location['cdbid_event'] = $event->getCdbid();
     }
+    if ($event->getLocation()->getCdbid()) {
+      $location['link'] = culturefeed_search_detail_l('actor', $event->getLocation()->getCdbid(), $location['title']);
+    }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($actor_detail) {
         $location['title'] = check_plain($actor_detail->getTitle());
-        $location['link'] = culturefeed_search_detail_l('actor', $location_info->getActor()->getCdbid(), $location['title']);
       }
     }
 
@@ -278,8 +280,7 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
 
     // If we did not find an organiser. Check if we can link to the location.
     if (!isset($data['all_url']) && isset($location['link'])) {
-      $location_actor = $cdb_item->getLocation()->getActor();
-      $data['all_url'] = culturefeed_search_detail_url('actor', $location_actor->getCdbid(), $location['title']);
+      $data['all_url'] = culturefeed_search_detail_url('actor', $cdb_item->getLocation()->getCdbid(), $location['title']);
     }
 
   }
