@@ -1108,8 +1108,8 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
   // Search on events that have a relation to the page ID.
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('"'.$page->getId().'"');
 
   // Add sorting.
   $sort_field = 'startdate';
