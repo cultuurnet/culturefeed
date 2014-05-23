@@ -8,7 +8,7 @@
  * Block to show the related events from an item.
  */
 function culturefeed_agenda_block_related_activities() {
-  
+
   // Try to load the agenda detail.
   $item = culturefeed_agenda_get_active_object();
   if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
@@ -78,8 +78,9 @@ function culturefeed_agenda_block_related_activities() {
     return;
   }
 
-  global $language;
   $search_results = $result->getItems();
+  culturefeed_social_warmup_activities_cache($search_results);
+
   // Render the results.
   $items = array();
   $count = 0;
