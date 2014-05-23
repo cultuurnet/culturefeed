@@ -8,7 +8,7 @@
  * Block to show the related events from an item.
  */
 function culturefeed_agenda_block_related_activities() {
-
+  
   // Try to load the agenda detail.
   $item = culturefeed_agenda_get_active_object();
   if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
@@ -105,7 +105,7 @@ function culturefeed_agenda_block_related_activities() {
     '#theme' => 'culturefeed_agenda_related_activities',
     '#results' => $items,
   );
-  
+
   return $block;
 
 }
@@ -125,7 +125,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $options = array('' => t('All categories'));
     $categories = culturefeed_search_get_categories_by_domain($domain_id);
-    
+
     if ($domain_id == 'eventtype') {
       $categories_remove = array(
         '0.100.0.0.0' => 'Kijken en luisteren',
@@ -134,12 +134,12 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
         '0.51.0.0.0' => 'Type onbepaald',
       );
       $categories = array_diff_key($categories, $categories_remove);
-    } 
+    }
     foreach ($categories as $id => $category) {
       $options[$id] = $category;
     }
     asort($options);
-    
+
     $form['category'] = array(
       '#type' => 'select',
       '#options' => $options,
@@ -284,46 +284,21 @@ function culturefeed_agenda_block_actor_program() {
  */
 function culturefeed_agenda_block_production_program() {
 
-  $item = culturefeed_agenda_get_active_object();
-  if (!$item || $item->getType() != 'production') {
-    return;
-  }
-
-  $production = $item->getEntity();
-  $relations = $production->getRelations();
-  if (empty($relations)) {
-    return;
-  }
-
-  // Currently we do an extra query to load the event details.
-  // Sven checks if this could be added to the event loading.
-  $cdb_ids = array();
-  foreach ($relations as $relation) {
-    $cdb_ids[] = 'cdbid:' . $relation->getCdbid();
-  }
-
-  $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-
-  try {
-    $result = culturefeed_get_search_service()->search($parameters);
-    if ($result->getTotalCount() == 0) {
-      return;
-    }
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_agenda', $e);
+  $cdb_item = culturefeed_agenda_get_active_object();
+  if (!$cdb_item || $cdb_item->getType() != 'production') {
     return;
   }
 
   $region_ids = array();
+  $items = culturefeed_agenda_load_events_of_production($cdb_item->getEntity());
 
-  $items = $result->getItems();
+  if (empty($items)) {
+    return;
+  }
+
   // Get all flanders regions, so we can query the p1's of them.
-  foreach ($items as $item) {
-    $regions = $item->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
+  foreach ($items as $event) {
+    $regions = $event->getEntity()->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FLANDERS_REGION);
     foreach ($regions as $region) {
       $region_ids[] = $region->getId();
     }
@@ -348,7 +323,7 @@ function culturefeed_agenda_block_production_program() {
   $block['subject'] = t('Program schedule');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',
-    '#items' => $result->getItems(),
+    '#items' => $items,
     '#provinces' => $provinces,
   );
 

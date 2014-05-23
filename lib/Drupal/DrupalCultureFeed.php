@@ -180,6 +180,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
+
     if ($query->private) {
       $data = self::getLoggedInUserInstance()->searchActivities($query);
     }

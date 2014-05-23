@@ -37,7 +37,7 @@ function culturefeed_get_search_service() {
  */
 function culturefeed_search_item_load($cdb_id, $type = '') {
 
-  static $items = array();
+  $items = &drupal_static(__FUNCTION__, array());
 
   if (isset($items[$cdb_id])) {
     return $items[$cdb_id];
@@ -451,7 +451,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
       $query->condition('tid', $conditions['tid'], '=');
     }
   }
-  
+
   if (!empty($conditions['tid_like'])) {
     if (is_array($conditions['tid_like'])) {
       $db_or = db_or();
@@ -464,7 +464,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
       $query->condition('tid', $conditions['tid_like'] . '%', 'like');
     }
   }
-  
+
   if (!empty($conditions['name_like'])) {
     if (is_array($conditions['name_like'])) {
       $db_or = db_or();
@@ -476,7 +476,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
     else {
       $query->condition('name', $conditions['name_like'] . '%', 'like');
     }
-  }  
+  }
 
   if (empty($conditions['language'])) {
     $conditions['language'] = culturefeed_search_get_preferred_language();
@@ -616,7 +616,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->orderBy('parent', 'ASC');
 
   $result = $query->execute();
-  
+
   $suggestions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
@@ -663,7 +663,7 @@ function culturefeed_search_get_educationlevel_categories_tree() {
   foreach ($result as $row) {
     $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'p1' => $row->p1);
   }
-  
+
   // We know educationlevel only has two levels ...
 
   $categories = array();
@@ -722,14 +722,14 @@ function culturefeed_search_get_preferred_language() {
 
   // Use the drupal language.
   return $GLOBALS['language']->language;
-  
+
   // TODO make a setting of this...
   // If culturefeed is enabled, we can use the user his language.
   if (module_exists('culturefeed')) {
     return culturefeed_get_preferred_language();
   }
 
-  
+
 }
 
 /**
