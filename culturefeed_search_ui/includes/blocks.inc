@@ -386,6 +386,12 @@ function culturefeed_search_ui_city_facet_form() {
     '#attributes' => array('class' => array('city-facet', 'form-autocomplete'), 'placeholder' => t('Zipcode or city')),
   );
 
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+    '#attributes' => array('class' => array('element-invisible')),
+  );
+
   return $form;
 
 }
