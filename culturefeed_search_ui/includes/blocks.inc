@@ -483,61 +483,39 @@ function culturefeed_search_ui_block_age_range_facet() {
   foreach (array_keys($requested_items) as $key) {
     $counts[$key] = 0;
   }
-  if ($active_age > 0) {
-    $counts = array($active_age => 0);
-  }
 
   // Calculate the different age facets.
   $all_items = $facet->getResult()->getItems();
   foreach ($all_items as $item) {
     $age = $item->getValue();
     if ($age >= 0 && $age <= 2) {
-      if (!isset($counts[0])) {
-        $counts[0] = 0;
-      }
       $counts[0] += $item->getTotalResults();
     }
     elseif ($age >= 3 && $age <= 5) {
-      if (!isset($counts[3])) {
-        $counts[3] = 0;
-      }
       $counts[3] += $item->getTotalResults();
     }
     elseif ($age >= 6 && $age <= 8) {
-      if (!isset($counts[6])) {
-        $counts[6] = 0;
-      }
       $counts[6] += $item->getTotalResults();
     }
     elseif ($age >= 9 && $age <= 11) {
-      if (!isset($counts[9])) {
-        $counts[9] = 0;
-      }
       $counts[9] += $item->getTotalResults();
     }
     elseif ($age >= 12 && $age <= 14) {
-      if (!isset($counts[12])) {
-        $counts[12] = 0;
-      }
       $counts[12] += $item->getTotalResults();
     }
     elseif ($age >= 15 && $age <= 17) {
-      if (!isset($counts[15])) {
-        $counts[15] = 0;
-      }
       $counts[15] += $item->getTotalResults();
     }
     elseif ($age >= 18) {
-      if (!isset($counts[18])) {
-        $counts[18] = 0;
-      }
       $counts[18] += $item->getTotalResults();
     }
   }
 
   // Create facet item for every count.
   foreach ($requested_items as $age => $data) {
-    $items[] = new \CultuurNet\Search\Component\Facet\FacetResultItem($data['name'], $data['name'], $counts[$age]);
+    if (!empty($counts[$age])) {
+      $items[] = new \CultuurNet\Search\Component\Facet\FacetResultItem($data['name'], $age, $counts[$age]);
+    }
   }
 
   if (!empty($items)) {
