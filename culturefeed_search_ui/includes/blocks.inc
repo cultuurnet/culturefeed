@@ -431,7 +431,7 @@ function culturefeed_search_ui_proximity_distance_form() {
     '#type' => 'submit',
     '#value' => t('Change radius'),
   );
-  
+
   $form['new_search']['#markup'] = '<p><label>' . t('Choose another location') . '</label></p>';
 
   return $form;
@@ -474,13 +474,13 @@ function culturefeed_search_ui_block_age_range_facet() {
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
   $active_age = 0;
   if (isset($query['min_age'])) {
-    $active_age = (int)$query['min_age'];
+    $active_age = (int) $query['min_age'];
     unset($query['min_age']);
   }
 
-  $requested_facets = culturefeed_search_ui_get_age_range_facet_options();
+  $requested_items = culturefeed_search_ui_get_age_range_facet_options();
   $counts = array();
-  foreach (array_keys($requested_facets) as $key) {
+  foreach (array_keys($requested_items) as $key) {
     $counts[$key] = 0;
   }
   if ($active_age > 0) {
@@ -492,51 +492,61 @@ function culturefeed_search_ui_block_age_range_facet() {
   foreach ($all_items as $item) {
     $age = $item->getValue();
     if ($age >= 0 && $age <= 2) {
+      if (!isset($counts[0])) {
+        $counts[0] = 0;
+      }
       $counts[0] += $item->getTotalResults();
     }
     elseif ($age >= 3 && $age <= 5) {
+      if (!isset($counts[3])) {
+        $counts[3] = 0;
+      }
       $counts[3] += $item->getTotalResults();
     }
     elseif ($age >= 6 && $age <= 8) {
+      if (!isset($counts[6])) {
+        $counts[6] = 0;
+      }
       $counts[6] += $item->getTotalResults();
     }
     elseif ($age >= 9 && $age <= 11) {
+      if (!isset($counts[9])) {
+        $counts[9] = 0;
+      }
       $counts[9] += $item->getTotalResults();
     }
     elseif ($age >= 12 && $age <= 14) {
+      if (!isset($counts[12])) {
+        $counts[12] = 0;
+      }
       $counts[12] += $item->getTotalResults();
     }
     elseif ($age >= 15 && $age <= 17) {
+      if (!isset($counts[15])) {
+        $counts[15] = 0;
+      }
       $counts[15] += $item->getTotalResults();
     }
     elseif ($age >= 18) {
+      if (!isset($counts[18])) {
+        $counts[18] = 0;
+      }
       $counts[18] += $item->getTotalResults();
     }
   }
 
-  $items = array();
-  foreach ($requested_facets as $age => $data) {
-    $label = $data['name'];
-    if ($active_age > 0 && $active_age === $age) {
-      $facet_count = ' <span class="facet-count">(' . $counts[$age] . ')</span>';
-      $items[] = '<span class="facet-label active">' . $label . $facet_count . ' ' . l('&times;', $_GET['q'], array('query' => $query, 'html' => TRUE, 'attributes' => array('class' => array('facet-remove'), 'title' => t('Remove filter')))) . '</span>';
-    }
-    elseif (!empty($counts[$age])) {
-      $facet_count = ' <span class="facet-count">(' . $counts[$age] . ')</span>';
-      $search_query = $query;
-      $search_query['min_age'] = $age;
-      $items[] = '<span class="facet-label">' . l($label, $_GET['q'], array('query' => $search_query)) . '</span>' . $facet_count;
-    }
-
+  // Create facet item for every count.
+  foreach ($requested_items as $age => $data) {
+    $items[] = new \CultuurNet\Search\Component\Facet\FacetResultItem($data['name'], $data['name'], $counts[$age]);
   }
 
   if (!empty($items)) {
     return array(
-      'subject' => 'Leeftijd',
+      'subject' => 'Age',
       'content' => array(
-        '#theme' => 'item_list',
+        '#theme' => 'culturefeed_search_facet',
+        '#facet' => $facet,
         '#items' => $items,
-        '#attributes' => array('class' => 'age-field-facet facet-search facet-level-1'),
       ),
     );
   }
