@@ -1831,7 +1831,7 @@ class CultureFeed implements ICultureFeed {
       $categories_element = $membership->xpath('page/categoryIds');
       $categories = array();
       foreach ($categories_element as $category) {
-        $categories[] = (string) $category;
+        $categories[] = $category->xpath_str('categoryId');
       }
       $page->setCategories($categories);
 
@@ -1878,7 +1878,7 @@ class CultureFeed implements ICultureFeed {
       $categories_element = $object->xpath('page/categoryIds');
       $categories = array();
       foreach ($categories_element as $category) {
-        $categories[] = (string) $category;
+        $categories[] = $category->xpath_str('categoryId');
       }
       $page->setCategories($categories);
 
