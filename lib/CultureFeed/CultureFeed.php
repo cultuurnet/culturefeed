@@ -1875,7 +1875,7 @@ class CultureFeed implements ICultureFeed {
       $page->setName($object->xpath_str('name'));
 
       // Set categories
-      $categories_element = $object->xpath('page/categoryIds');
+      $categories_element = $object->xpath('categoryIds');
       $categories = array();
       foreach ($categories_element as $category) {
         $categories[] = $category->xpath_str('categoryId');
