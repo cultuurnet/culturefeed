@@ -1828,10 +1828,10 @@ class CultureFeed implements ICultureFeed {
       $page->setName($membership->xpath_str('page/name'));
 
       // Set categories
-      $categories_element = $membership->xpath('page/categoryIds');
+      $categories_element = $membership->xpath('page/categoryIds/categoryId');
       $categories = array();
       foreach ($categories_element as $category) {
-        $categories[] = $category->xpath_str('categoryId');
+        $categories[] = (string) $category;
       }
       $page->setCategories($categories);
 
@@ -1875,10 +1875,10 @@ class CultureFeed implements ICultureFeed {
       $page->setName($object->xpath_str('name'));
 
       // Set categories
-      $categories_element = $object->xpath('categoryIds');
+      $categories_element = $object->xpath('categoryIds/categoryId');
       $categories = array();
       foreach ($categories_element as $category) {
-        $categories[] = $category->xpath_str('categoryId');
+        $categories[] = (string) $category;
       }
       $page->setCategories($categories);
 
