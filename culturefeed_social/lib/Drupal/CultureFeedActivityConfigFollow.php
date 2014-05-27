@@ -23,7 +23,9 @@ class CultureFeedActivityConfigFollow extends CultureFeedActivityConfigBase {
     $this->linkClassUndo = 'unfollow-link';
     $this->viewPrefix = t('follows');
     $this->label = t('Follow');
-    $this->loginRequiredMessage = t('You must be logged in to follow a page');
+    $this->loginRequiredMessage = t('You must be !sign_in_link to follow a page', array(
+              '!sign_in_link' => drupal_render($this->loginMessageLink),
+            ));
 
   }
 

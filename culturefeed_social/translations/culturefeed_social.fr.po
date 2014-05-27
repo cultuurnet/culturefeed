@@ -320,6 +320,10 @@ msgstr "Vous n'avez pas encore effectué d'actions"
 msgid "Are you sure you want to delete your @action permanently"
 msgstr "Êtes-vous sûr de vouloir supprimer définitivement votre @action ?"
 
+#: includes/pages.inc:264
+msgid "Are you sure you want to delete this action permanently"
+msgstr "Êtes-vous sûr de vouloir supprimer définitivement votre action?"
+
 #: includes/pages.inc:281
 msgid "Cancel"
 msgstr "Annuler"
@@ -764,3 +768,163 @@ msgstr "Mes activités"
 #: theme/theme.inc:334
 msgid "Activities of @username"
 msgstr "Activités de @username"
+
+#: includes/pages.inc:250
+msgid "Remove action"
+msgstr "Supprimer l'action"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:22
+msgid "Reply by"
+msgstr "répondre par"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:23
+msgid "Undo"
+msgstr "Annuler"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:24
+msgid "Post a comment"
+msgstr "Poster un commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:25
+msgid "Be the first to post a comment"
+msgstr "Soyez le premier à poster un commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:26
+msgid "Show all users who posted a comment"
+msgstr "Afficher tous les utilisateurs ayant posté un commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:29
+msgid "has replied to"
+msgstr "a répondu à"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:31
+msgid "Comment"
+msgstr "Commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:32
+msgid "comment"
+msgstr "commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:33
+msgid "You must be logged in to post a comment"
+msgstr "Vous devez être connecté pour poster un commentaire"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:34
+msgid "Reply as"
+msgstr "répond en"
+
+#: lib/Drupal/CultureFeedActivityConfigComment.php:35
+msgid "Posted a comment on"
+msgstr "Posté un commentaire sur"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:21
+msgid "Viewed by"
+msgstr "Vu par"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:22
+msgid "has"
+msgstr "a"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:23
+msgid "seen"
+msgstr "vu"
+
+#: lib/Drupal/CultureFeedActivityConfigDetail.php:24
+msgid "Viewed"
+msgstr "Vu"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:23
+msgid "Share"
+msgstr "Partager"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:24
+msgid "Share"
+msgstr "Partager"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:25
+msgid "Shared by"
+msgstr "Partagé par"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:26
+msgid "has"
+msgstr "a"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:27
+msgid "shared on Facebook"
+msgstr "partagé sur Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:28
+msgid "Share on Facebook"
+msgstr "Partager sur Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:29
+msgid "Successfully shared"
+msgstr "Partagé avec succès"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:30
+msgid "share"
+msgstr "partager"
+
+#: lib/Drupal/CultureFeedActivityConfigFacebook.php:31
+msgid "shared on Facebook"
+msgstr "partagé sur Facebook"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:17
+msgid "Follow this page"
+msgstr "Suivre cette page"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:18
+msgid "Unfollow"
+msgstr "Ne plus suivre"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:19
+msgid "I follow this page"
+msgstr "Je suis cette page"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:20
+msgid "Be the first to follow this page"
+msgstr "Soyez le premier à suivre cette page"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:21
+msgid "Show all users who follow this page"
+msgstr "Afficher tous les utilisateurs qui suivent cette page"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:24
+msgid "follows"
+msgstr "suit"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:25
+msgid "Follow"
+msgstr "Suivre"
+
+#: lib/Drupal/CultureFeedActivityConfigFollow.php:26
+msgid "You must be logged in to follow a page"
+msgstr "Vous devez être connecté pour suivre une page"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:18
+msgid "Attend"
+msgstr "Je participerai"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:19
+msgid "Attend"
+msgstr "Je participerai"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:20
+msgid "Not attending"
+msgstr "Je ne participerai pas"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:21
+msgid "will be attending"
+msgstr "je vais"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:22
+msgid "Will be attending"
+msgstr "Je vais"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:23
+msgid "You must be logged in to indicate that you will be  attending"
+msgstr "Vous devez vous identifier pour indiquer que vous vous y rendez"
+
+#: lib/Drupal/CultureFeedActivityConfigGo.php:24
+msgid "Will be attending"
+msgstr "Je vais"

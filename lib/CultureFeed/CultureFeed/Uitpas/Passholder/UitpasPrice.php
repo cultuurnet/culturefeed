@@ -6,6 +6,8 @@ class CultureFeed_Uitpas_Passholder_UitpasPrice extends CultureFeed_Uitpas_Value
   const REASON_REMOVAL = 'REMOVAL';
   const REASON_LOSS_KANSENSTATUUT = 'LOSS_KANSENSTATUUT';
   const REASON_OBTAIN_KANSENSTATUUT = 'OBTAIN_KANSENSTATUUT';
+  const REASON_CARD_UPGRADE = 'CARD_UPGRADE';
+  const REASON_EXTRA_CARD = 'EXTRA_CARD';
 
   /**
    * The ID of the price

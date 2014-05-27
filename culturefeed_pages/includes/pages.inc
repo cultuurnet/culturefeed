@@ -234,10 +234,16 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
 
     try {
 
+      $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+      $parameters = array();
+      $parameters[] = new Parameter\FilterQuery('category_actortype_id' . ':(' . implode(' OR ', $actortypes) . ')');
+
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'));
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('page'), FALSE, $parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
+          $page = culturefeed_pages_page_load($suggestion->getCdbid());
           $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
         }
 
@@ -272,14 +278,14 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => $page_name,
     '#weight' => -7,
   );
-  
+
   $form['tagline'] = array(
     '#type' => 'textfield',
     '#title' => t('Baseline'),
     '#default_value' => '',
     '#weight' => -6,
   );
-  
+
   $form['cover'] = array(
     '#type' => 'managed_file',
     '#title' => t('Cover Photo'),
@@ -294,10 +300,16 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#upload_location' => 'public://pages',
   );
 
+  $actortypes = culturefeed_search_get_actortype_categories();
+  $available_actortypes = variable_get('culturefeed_pages_actor_types', array());
+  $options = empty($available_actortypes) ? $actortypes : array_intersect_key($actortypes, $available_actortypes);
+
   $form['categoryId'] = array(
     '#type' => 'select',
     '#title' => t('Type'),
-    '#options' => culturefeed_search_get_actortype_categories(),
+    '#options' => $options,
+    // Pages can have multiple actortypes but we need to fix this in addPage and updatePage first
+    // '#multiple' => TRUE,
     '#default_value' => CULTUREFEED_ACTORTYPE_ORGANISATION,
     '#weight' => -4,
   );
@@ -450,12 +462,10 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   // Basic validation.
   if (empty($form_state['values']['name'])) {
     form_set_error('name', t('Title is required'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   if (strlen($form_state['values']['description']) > 400) {
     form_set_error('description', t('The maximum is 400 characters'));
-    $form_state['#validation_failed'] = TRUE;
   }
 
   // Add the post params to the form so other modules can add their params.
@@ -490,7 +500,8 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
 function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
   // If a previous validation function failed, don't send the request.
-  if (!empty($form_state['#validation_failed'])) {
+  $errors = form_get_errors();
+  if ($errors) {
     return;
   }
 
@@ -538,7 +549,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Upload Page cover.
     if (!empty($form_state['values']['cover'])) {
 
@@ -565,9 +576,8 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
  * @param array $form_state
  */
 function culturefeed_pages_add_form_submit(& $form, & $form_state) {
-
   // Redirect the user to the created page detail.
-  drupal_goto(culturefeed_search_detail_path('page', $form_state['page_id'], $form_state['page_title']));
+  drupal_goto('pages/switch/' . $form_state['page_id']);
 
 }
 
@@ -584,7 +594,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
   // Link to the detail page.
   $form['detail_link'] = array(
     '#type' => 'markup',
-    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page'), array('attributes' => array('class' => array('view-link')))),
+    '#markup' => culturefeed_search_detail_l("page", $page->getId(), $page->getName(), t('View page')),
     '#weight' => -25,
   );
 
@@ -596,6 +606,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
   $form['name']['#default_value'] = $page->getName();
   $form['description']['#default_value'] = $page->getDescription();
+  $form['categoryId']['#default_value'] = $page->getCategories();
 
   // Address.
   $address = $page->getAddress();
@@ -636,12 +647,12 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['image']['#title'] = t('Select another Image or Logo');
 
   }
-  
+
   // The cover.
   $cover = $page->getCover();
   $form_state['#old_cover'] = 0;
   if (!empty($cover)) {
-    
+
     // Creat temp file to preview the external cover.
     $file_cover = culturefeed_create_temporary_image($cover, file_default_scheme() . '://pages');
     if ($file_cover) {
@@ -651,7 +662,7 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
 
     $form['cover']['#title'] = t('Select another Cover Photo');
   }
-  
+
   // Baseline
   $tagline = $page->getTagline();
   if (!empty($tagline)) {
@@ -721,7 +732,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         }
       }
     }
-    
+
     // Remove the cover if requested.
     if (empty($form_state['values']['cover']) && $form_state['#old_cover'] > 0) {
       try {
@@ -731,7 +742,7 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
         watchdog_exception('culturefeed_pages', $e);
       }
     }
-    
+
     // Upload new page cover.
     if ($form_state['values']['cover'] && $form_state['#old_cover'] != $form_state['values']['cover']) {
 
@@ -772,7 +783,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   // General information.
   $form['basic'] = array(
     '#type' => 'markup',
-    '#markup' => '<h2>' . t('Settings') . '</h2>',
+    '#markup' => '<h2>' . t('Features') . '</h2>',
     '#weight' => -20,
   );
 
@@ -786,28 +797,28 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
 
   $form['allow_followers'] = array(
     '#type' => 'checkbox',
-    '#title' => t('follow my page'),
-    '#description' => t('This allows users to stay informed of any updates on this page.'),
+    '#title' => t('Allow users to follow my page'),
+    '#description' => t('Followers receive a notification when your page is updated, so that they stay informed of new activities, threads, ...'),
     '#default_value' => !empty($permissions->allowFollowers),
   );
 
   $form['allow_members'] = array(
     '#type' => 'checkbox',
-    '#title' => t('become a member of my page'),
-    '#description' => t('In this way, your page can also be accessed via the profiles, comments and reactions of all colleagues who are active on this site.'),
+    '#title' => t('Allow users to request membership'),
+    '#description' => t('Members can, depending on the roles or rights, collaborate to maintain and update your page. Furthermore, page memberships are added to user profiles and can be used as an alias to add comments.'),
     '#default_value' => !empty($permissions->allowMembers),
   );
 
   $form['allow_comments'] = array(
     '#type' => 'checkbox',
-    '#title' => t('write comments about my activities'),
-    '#description' => t('Only for organizations that provide activities and have entered via <a href="http://www.UiTdatabank.be">www.UiTdatabank.be</a>.'),
+    '#title' => t('Allow users to add comments to my activities'),
+    '#description' => t('Only available for organizations who added their activities via www.uitdatabank.be.'),
     '#default_value' => !empty($permissions->allowComments),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => t('Update'),
   );
 
   if ($page->isVisible()) {
@@ -1097,8 +1108,8 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
   // Search on events that have a relation to the page ID.
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query($page->getId());
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('"'.$page->getId().'"');
 
   // Add sorting.
   $sort_field = 'startdate';
@@ -1295,7 +1306,7 @@ function culturefeed_social_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page
   $search_results = $result->getItems();
   $items = array();
   foreach ($search_results as $search_result) {
-    $items[] = theme('culturefeed_' . $search_result->getType() . '_summary', array('item' => $search_result));
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_mini_summary', array('item' => $search_result));
   }
 
   $build = array();

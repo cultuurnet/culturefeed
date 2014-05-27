@@ -34,6 +34,13 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   const IMAGE_REMOVED = 'IMAGE_REMOVED';
 
   /**
+   * Status code when a cover was succesfully removed.
+   * Invalid codes: [ACTION_FAILED]
+   * @var string
+   */
+  const COVER_REMOVED = 'COVER_REMOVED';
+
+  /**
    * Status code when a page was successfully updated.
    * Invalid codes: [ACCESS_DENIED, MISSING_REQUIRED_FIELDS, UNKNOWN_CATEGORY]
    * @var string
@@ -163,7 +170,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/image/remove');
     $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
   }
-  
+
   /**
    * @see CultureFeed_Pages::addCover()
    */
@@ -180,7 +187,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
    */
   public function removeCover($id) {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/cover/remove');
-    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::IMAGE_REMOVED);
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::COVER_REMOVED);
   }
 
   /**
@@ -357,11 +364,15 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getTimeline()
    */
-  public function getTimeline($id, $dateFrom = NULL) {
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
 
     $params = array();
     if (!empty($dateFrom)) {
       $params['dateFrom'] = $dateFrom;
+    }
+
+    if (!empty($activityTypes)) {
+      $params['type'] = $activityTypes;
     }
 
     $result = $this->oauth_client->consumerGetAsXml('page/' . $id . '/timeline', $params);

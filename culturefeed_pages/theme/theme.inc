@@ -180,6 +180,12 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
+  $variables['baseline'] = $page->getTagline();
+  $variables['cover'] = $page->getCover();
+  
+  foreach ($variables['links'] as &$link) {
+    $link = preg_replace('#^http://|^https://#', "", $link);
+  }
 
   $logged_in = $variables['logged_in'];
 
@@ -220,6 +226,34 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   }
   if ($page->getEmail()) {
     $variables['contact']['mail'] = check_plain($page->getEmail());
+  }
+  
+  // Check if page has activities
+  $variables['has_activities'] = FALSE;
+  if (module_exists('culturefeed_agenda')) {
+    $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
+    $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
+  }
+
+  // Check if current user already follows this page
+  $i_follow_pages = array();
+  try {
+
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+    if ($cf_user && $cf_user->following) {
+      foreach ($cf_user->following as $cfp_follower) {
+        $i_follow_pages[] = $cfp_follower->page->getId();
+      }
+    }
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  $variables['following'] = FALSE;
+  if (!empty($cf_user) && in_array($page->getId(), $i_follow_pages)) {
+    $variables['following'] = TRUE;
   }
 
 }
@@ -339,6 +373,8 @@ function culturefeed_pages_preprocess_culturefeed_pages_members_block(&$variable
 
   $variables['members'] = $members;
   $variables['member_link'] = culturefeed_pages_member_link($page);
+  //$variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId(), array('query' => $query));
+  $variables['member_url'] =  url('culturefeed/pages/join/nojs/' . $variables['page']->getId());
 
 }
 
@@ -422,8 +458,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     $result = array();
     $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
+    $result['profile_url'] =  url('user/' . $accounts[$object->id]); 
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
-    $result['add_link'] = in_array($object->id, $members) ? 'Reeds lid' : l(t('Add as a member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
+    $result['add_link'] = in_array($object->id, $members) ? t('Member') : l(t('Add as member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
 
   }
@@ -450,12 +487,12 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
       $row['date'] = check_plain($detail->getCalendarSummary());
       $comment_count = $result->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
       if ($comment_count) {
-        $row['comment_count'] = l(format_plural($comment_count, '@count reaction', '@count reactions'), $path, array('fragment' => 'lees'));
+        $row['comment_count'] = l(format_plural($comment_count, '@count comment', '@count comments'), $path, array('fragment' => t('Read comments')));
       }
       else {
-        $row['comment_count'] = t('No reactions yet');
+        $row['comment_count'] = t('No comments');
       }
-      $row['edit_url'] = l(t('Edit in the UiTdatabank'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
+      $row['edit_url'] = l(t('Edit via UiTdatabank.be'), CULTUREFEED_PAGES_UITDATABANK_EVENT_URL . $result->getEntity()->getCdbid(), array('attributes' => array('target' => '_blank')));
 
       $rows[] = $row;
 
@@ -475,8 +512,10 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
 
   }
 
-  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), 'Bekijk pagina');
-
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
+  
+      $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
+  
 }
 
 /**
@@ -491,7 +530,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_request_admin_membership
   $path = 'pages/' . $page->getId() . '/membership/request-admin/' . $cf_account_id . '/nojs';
 
   $variables['url'] = url($path, array('query' => drupal_get_destination()));
-  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
+  $variables['link'] = '<span id="request_adminship_link_' . $page->getId() . '_wrapper">' . l(t('Send a request to become administrator'), $path, array('query' => drupal_get_destination(), 'attributes' => array('class' => array('use-ajax')))) . '</span>';
 
 }
 
@@ -529,6 +568,11 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
     $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
     $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
   }
+  
+  $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
+ 
+  $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
+  
 }
 
 /**
@@ -678,4 +722,25 @@ function _culturefeed_pages_preprocess_page_metatags(&$variables) {
     ),
   ), 'meta_description');
 
+}
+
+/**
+ * Preprocess a related items block.
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables) {
+
+  global $language;
+  global $base_url;
+  // Render the results.
+  $items = array();
+  foreach ($variables['results'] as $key => $search_result) {
+    $entity = $search_result->getEntity();
+    
+    $image = $entity->getImage();
+    $location = $entity->getAddress()->getCity();
+    $items[$key]['link'] = culturefeed_search_detail_l($search_result->getType(), $search_result->getId(), $search_result->getTitle($language->language));
+    $items[$key]['image'] = $image;
+    $items[$key]['location'] = $location;
+  }
+  $variables['items'] = $items;
 }

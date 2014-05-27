@@ -70,6 +70,22 @@ interface CultureFeed_Pages {
   public function removeImage($id);
 
   /**
+   * Add cover to an existing page.
+   * @param string $id
+   *   Id of the page.
+   * @param array $params
+   *   Params to create the cover for the page.
+   */
+  public function addCover($id, array $params);
+
+  /**
+   * Remove a cover of the existing page.
+   * @param string $id
+   *   Id of the page.
+   */
+  public function removeCover($id);
+
+  /**
    * Change the permissions for a page.
    * @param Integer $id
    *   The page ID of the page to remove (set invisible).
@@ -158,10 +174,12 @@ interface CultureFeed_Pages {
    *   The page ID where the timeline is requested for.
    * @param string $dateFrom
    *   ISO Date to set the startdate of the timeline. (optional)
+   * @param array $activityTypes
+   *   List of activity types to be shown in the timeline.
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  public function getTimeline($id, $dateFrom = NULL);
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array());
 
   /**
    * Get the notifications for a page.

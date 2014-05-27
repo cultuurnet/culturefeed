@@ -195,6 +195,14 @@ msgstr "Waar"
 msgid "Zipcode or city"
 msgstr "Postcode of gemeente"
 
+#: includes/blocks.inc:433
+msgid "Change radius"
+msgstr "Wijzig straal"
+
+#: includes/blocks.inc:436
+msgid "Choose another location"
+msgstr "Kies andere plaats"
+
 #: includes/blocks.inc:423
 msgid "Search nearby"
 msgstr "Zoek in de buurt"

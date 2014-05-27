@@ -1,3 +1,13 @@
+<?php if ($cover): ?>
+  <img src="<?php print $cover ?>?width=690&height=200&crop=auto" />
+<?php endif; ?>
+
+<?php if ($baseline): ?>
+<p>
+  <?php print $baseline ?>
+</p>
+<?php endif; ?>
+
 <?php if ($description): ?>
 <p>
   <?php print $description ?>
@@ -57,6 +67,10 @@
   </dd>  
 
 </dl>
+
+<?php if ($image): ?>
+  <img src="<?php print $image ?>?maxwidth=240&maxheight=240" />
+<?php endif; ?>
 
 <?php 
 print culturefeed_pages_block_request_admin_membership($item);

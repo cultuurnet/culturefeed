@@ -440,24 +440,43 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
 
   // Add extra conditions.
   if (!empty($conditions['tid'])) {
-    foreach ($conditions as $field => $value) {
-      if (is_array($value)) {
-        $db_or = db_or();
-        foreach ($value as $tid) {
-          $db_or->condition($field, $tid, '=');   
-        }
-        $query->condition($db_or);
-      } else {
-        $query->condition($field, $value, '=');
+    if (is_array($conditions['tid'])) {
+      $db_or = db_or();
+      foreach ($conditions['tid'] as $field => $value) {
+        $db_or->condition('tid', $value, '=');
       }
+      $query->condition($db_or);
+    }
+    else {
+      $query->condition('tid', $conditions['tid'], '=');
     }
   }
   
   if (!empty($conditions['tid_like'])) {
-    foreach ($conditions as $field => $value) {
-      $query->condition('tid', $value . '%', 'like');
+    if (is_array($conditions['tid_like'])) {
+      $db_or = db_or();
+      foreach ($conditions['tid_like'] as $field => $value) {
+        $db_or->condition('tid', $value . '%', 'like');
+      }
+      $query->condition($db_or);
+    }
+    else {
+      $query->condition('tid', $conditions['tid_like'] . '%', 'like');
     }
   }
+  
+  if (!empty($conditions['name_like'])) {
+    if (is_array($conditions['name_like'])) {
+      $db_or = db_or();
+      foreach ($conditions['name_like'] as $field => $value) {
+        $query->condition('name', $value . '%', 'like');
+      }
+      $query->condition($db_or);
+    }
+    else {
+      $query->condition('name', $conditions['name_like'] . '%', 'like');
+    }
+  }  
 
   if (empty($conditions['language'])) {
     $conditions['language'] = culturefeed_search_get_preferred_language();
@@ -517,6 +536,17 @@ function culturefeed_search_get_educationfield_categories($conditions = array())
  */
 function culturefeed_search_get_educationlevel_categories($conditions = array()) {
   return culturefeed_search_get_categories_by_domain('educationlevel', $conditions);
+}
+
+/**
+ * Retrieves a list of categories for the workingregion domain.
+ *
+ * @param $conditions
+ *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
+ *
+ */
+function culturefeed_search_get_workingregion_categories($conditions = array()) {
+ return culturefeed_search_get_categories_by_domain('workingregion', $conditions);
 }
 
 /**
@@ -605,54 +635,16 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
 function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
 
   $suggestions = array();
+  $parts = array_reverse(explode(",", $search_string));
+  $search_string = trim(array_shift($parts));
+  $old_parts = count($parts) > 0 ? (trim(implode(", ", $parts)) . ', ') : '';
 
   $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions);
   foreach ($region_suggestions as $region) {
-    $suggestions[$region] = $region;
+    $suggestions[$old_parts . $region] = $region;
   }
 
   return $suggestions;
-
-}
-
-
-/**
- * Retrieves a list of categories for the workingregion domain.
- *
- * @param $conditions
- *   Keyed array of extra conditions for the query. Ex array('tid' => 12.1.0.0.0)
- *
- */
-function culturefeed_search_get_workingregion_categories($conditions = array()) {
-
-  $query = db_select('culturefeed_search_terms', 'cst');
-  $query->fields('cst', array('tid', 'name'));
-  $query->condition('cst.did', 'workingregion');
-  $query->condition('cst.language', culturefeed_search_get_preferred_language());
-
-  if (!empty($conditions)) {
-    foreach ($conditions as $field => $value) {
-      if (is_array($value)) {
-        $query->condition($field, $value, 'IN');
-      }
-      else {
-        if ($value === NULL) {
-          $query->isNull($field);
-        }
-        else {
-          $query->condition($field, $value);
-        }
-      }
-    }
-  }
-
-  $result = $query->execute();
-  $categories = array();
-  foreach ($result as $row) {
-    $categories[$row->tid] = $row->name;
-  }
-
-  return $categories;
 
 }
 
@@ -662,28 +654,30 @@ function culturefeed_search_get_workingregion_categories($conditions = array()) 
 function culturefeed_search_get_educationlevel_categories_tree() {
 
   $query = db_select('culturefeed_search_terms', 'cst');
-  $query->fields('cst', array('tid', 'name', 'parent'));
+  $query->fields('cst', array('tid', 'name', 'p1'));
   $query->condition('cst.did', 'educationlevel');
   $result = $query->execute();
 
   // Prepare the result.
   $rows = array();
   foreach ($result as $row) {
-    $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+    $rows[] = (object) array('tid' => $row->tid, 'name' => $row->name, 'p1' => $row->p1);
   }
+  
+  // We know educationlevel only has two levels ...
 
   $categories = array();
   // First level.
   foreach ($rows as $row) {
-    if (empty($row->parent)) {
-      $categories[$row->tid] = (object) array('tid' => $row->tid, 'parent' => $row->parent, 'name' => $row->name, 'children' => array());
+    if (empty($row->p1)) {
+      $categories[$row->tid] = (object) array('tid' => $row->tid, 'p1' => $row->p1, 'name' => $row->name, 'children' => array());
     }
   }
 
   // Second level.
   foreach ($rows as $row) {
-    if (!empty($row->parent) && isset($categories[$row->parent])) {
-      $categories[$row->parent]->children[$row->tid] = (object) array('tid' => $row->tid, 'name' => $row->name, 'parent' => $row->parent);
+    if (!empty($row->p1) && isset($categories[$row->p1])) {
+      $categories[$row->p1]->children[$row->tid] = (object) array('tid' => $row->tid, 'name' => $row->name, 'p1' => $row->p1);
     }
   }
 

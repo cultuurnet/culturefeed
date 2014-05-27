@@ -125,10 +125,21 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $options = array('' => t('All categories'));
     $categories = culturefeed_search_get_categories_by_domain($domain_id);
+    
+    if ($domain_id == 'eventtype') {
+      $categories_remove = array(
+        '0.100.0.0.0' => 'Kijken en luisteren',
+        '0.100.1.0.0' => 'Doen',
+        '0.100.2.0.0' => 'Bezoeken',
+        '0.51.0.0.0' => 'Type onbepaald',
+      );
+      $categories = array_diff_key($categories, $categories_remove);
+    } 
     foreach ($categories as $id => $category) {
       $options[$id] = $category;
     }
-
+    asort($options);
+    
     $form['category'] = array(
       '#type' => 'select',
       '#options' => $options,
@@ -144,7 +155,6 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     '#size' => 28,
     '#title' => t('Search string'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-    '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
@@ -238,14 +248,7 @@ function culturefeed_agenda_block_actor_program() {
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
-
-  // Add search on the different agenda connections for the actor.
-  $id_search = array(
-    'performer_cdbid' => $item->getId(),
-    'location_cdbid' => $item->getId(),
-    'organiser_cdbid' => $item->getId(),
-  );
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery(implode(' OR ', $id_search));
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('"' . $item->getId() . '"');
 
   try {
 
@@ -342,7 +345,7 @@ function culturefeed_agenda_block_production_program() {
     $provinces[$row->tid] = $row;
   }
 
-  $block['subject'] = t('Agenda');
+  $block['subject'] = t('Program schedule');
   $block['content'] = array(
     '#theme' => 'culturefeed_agenda_production_program',
     '#items' => $result->getItems(),

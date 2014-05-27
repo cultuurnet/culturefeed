@@ -116,15 +116,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
         $row['delete'] = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $page));
       }
       else {
-        $delete_options = array(
-          'attributes' => array(
-            'role' => 'button',
-            'data-toggle' => 'modal',
-            'data-target' => '#page_confirm',
-            'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
-          ),
-        );
-        $row['delete'] = l(t('Delete as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
+        $row['delete'] = l(t('Remove as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs');
       }
     }
     // Show the edit form.
@@ -154,9 +146,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
     '#empty' => t('No content available.'),
     '#attached' => array('library' => array(array('system', 'drupal.ajax'))),
     '#prefix' => '<div id="manage-members">',
-    '#suffix' => '</div><div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-body outer"></div>
-      </div>',
+    '#suffix' => '</div>',
   );
 
 }
@@ -298,15 +288,21 @@ function culturefeed_pages_edit_membership_form_submit(&$form, &$form_state) {
 function culturefeed_pages_search_user_form() {
 
   $form = array();
+  
+  $form['title'] = array(
+    '#markup' => t('Add new members'),
+    '#weight' => -999,
+  );
+  
   $form['search'] = array(
-    '#title' => t('Search users'),
+    '#title' => t('Keyword'),
     '#type' => 'textfield',
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search'),
+    '#value' => t('Search User'),
   );
 
   return $form;
@@ -367,44 +363,29 @@ function culturefeed_pages_page_add_member(CultureFeed_Cdb_Item_Page $page, Cult
 function culturefeed_pages_add_member_form($form, &$form_state, $page, $user, $request_type) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Add member') . '</h3></div>';
+    $form['#prefix'] = '<h3>' . t('Add member') . '</h3>';
   }
 
   $form_state['page'] = $page;
   $form_state['user'] = $user;
   $form_state['query'] = drupal_get_query_parameters();
 
-  $form['body_wrapper'] = array(
+  $form['add_confirm'] = array(
     '#type' => 'markup',
-    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
-    '#suffix' => '</div>',
-  );
-  $form['body_wrapper']['add_confirm'] = array(
-    '#type' => 'markup',
-    '#markup' => format_string('<p><strong>' . t('Sure you want to add @nick as a member?') . '</strong></p>', array('@nick' => $user->nick)),
+    '#markup' => format_string('<p><strong>' . t('Sure you want to add @nick as a member?') . '</strong></p><hr />', array('@nick' => $user->nick)),
   );
 
-  $form['footer_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="modal-footer">',
-    '#suffix' => '</div>',
-  );
-
-  $form['footer_wrapper']['remove'] = array(
+  $form['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Add'),
-    '#attributes' => array('class' => array('button-add btn btn-primary')),
+    '#attributes' => array('class' => array('button-add')),
   );
 
-  $form['footer_wrapper']['decline'] = array(
+  $form['decline'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
     '#href' => 'pages/' . $page->getId() . '/members/nojs',
-    '#attributes' => array(
-      'data-dismiss' => 'modal',
-      'aria-hidden' => 'true',
-      'class' => array('button-decline close btn')
-    ),
+    '#attributes' => array('class' => array('button-decline')),
   );
 
   return $form;
@@ -480,52 +461,37 @@ function culturefeed_pages_page_delete_member(CultureFeed_Cdb_Item_Page $page, $
 function culturefeed_pages_delete_member_form($form, &$form_state, CultureFeed_Cdb_Item_Page $page, CultureFeed_User $user, $request_type, $my_pages) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Remove member') . '</h3></div>';
+    $form['#prefix'] = '<h3>' . t('Remove member') . '</h3>';
   }
 
   $form_state['page'] = $page;
   $form_state['user'] = $user;
   $form_state['my_pages'] = $my_pages;
 
-  $form['body_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
-    '#suffix' => '</div>',
-  );
-  $form['body_wrapper']['remove_confirm'] = array(
+  $form['remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
       <p>' . t('This action cannot be undone.') . '</p>',
   );
 
   if ($my_pages) {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove yourself as a member?') . '</strong></p>';
+    $form['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove yourself as a member?') . '</strong></p><hr />';
   }
   else {
-    $form['body_wrapper']['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove this member?') . '</strong></p>';
+    $form['remove_confirm']['#markup'] .= '<p><strong>' . t('Are you sure you want to remove this member?') . '</strong></p><hr />';
   }
 
-  $form['footer_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="modal-footer">',
-    '#suffix' => '</div>',
-  );
-
-  $form['footer_wrapper']['remove'] = array(
+  $form['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Remove'),
-    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+    '#attributes' => array('class' => array('button-remove')),
   );
 
-  $form['footer_wrapper']['decline'] = array(
+  $form['decline'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
     '#href' => 'pages/' . $page->getId() . '/configuration',
-    '#attributes' => array(
-      'data-dismiss' => 'modal',
-      'aria-hidden' => 'true',
-      'class' => array('button-decline close btn')
-    ),
+    '#attributes' => array('class' => array('button-decline')),
   );
 
   return $form;
@@ -599,7 +565,7 @@ function culturefeed_pages_page_request_admin_membership($page, $cf_user, $type 
       'role' => CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN,
       'type' => 'requestadmin',
       'subject' => t('Request to become an administrator'),
-      'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user->id, array('absolute' => TRUE)) . '"}',
+      'body' => '{"link":"' . url('pages/' . $page->getId() . '/membership/request-approve/' . $cf_user, array('absolute' => TRUE)) . '"}',
     );
 
     $messages->sendMessage($data);

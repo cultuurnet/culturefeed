@@ -40,7 +40,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activities'] = array(
     'title callback' => FALSE,
-    'title' => 'Administer actions',
+    'title' => t('Administer actions'),
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -59,7 +59,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/comment/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Abuse form',
+    'title' => t('Leave your comment'),
     'page callback' => 'culturefeed_social_page_activity_comment',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -69,7 +69,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/report-abuse/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Abuse form',
+    'title' => t('Abuse form'),
     'page callback' => 'culturefeed_social_page_activity_report_abuse',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -285,6 +285,16 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_social_user_list_block_for_activity' => array(
+      'variables' => array(
+        'activities_total' => NULL,
+        'activity_link' => NULL,
+        'list' => NULL,
+      ),
+      'template' => 'culturefeed-social-user-list-block-for-activity',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 }
 
@@ -306,7 +316,17 @@ function culturefeed_social_block_info() {
   );
 
   $blocks['recommended-by'] = array(
-    'info' => t('Culturefeed social: recommended by'),
+    'info' => t('Culturefeed social: Users who recommended this'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['liked-by'] = array(
+    'info' => t('Culturefeed social: Users who liked this'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['attended-by'] = array(
+    'info' => t('Culturefeed social: Users who will attend this'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -354,7 +374,15 @@ function culturefeed_social_block_view($delta) {
 
     case 'recommended-by':
       $object = culturefeed_search_get_active_object();
-      return culturefeed_social_block_recommended_by($object);
+      return culturefeed_social_user_list_block_for_activity($object, CultureFeed_Activity::TYPE_RECOMMEND);
+
+    case 'liked-by':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_user_list_block_for_activity($object, CultureFeed_Activity::TYPE_LIKE);
+
+    case 'attended-by':
+      $object = culturefeed_search_get_active_object();
+      return culturefeed_social_user_list_block_for_activity($object, CultureFeed_Activity::TYPE_IK_GA);
 
     case 'comments':
       $object = culturefeed_search_get_active_object();

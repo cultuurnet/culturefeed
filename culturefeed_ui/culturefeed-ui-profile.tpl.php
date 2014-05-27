@@ -1,38 +1,35 @@
-<div class="profile_uitid">
-
-  <h2><?php print $title; ?></h2>
-
-  <?php if ($picture || $name || $gender || $age || $bio || $city) : ?>
-    <?php if ($picture) : ?>
-      <div class="profile-picture">
-        <?php print $picture ?>
-      </div>
+<h3><?php print $title; ?></h3>
+<?php if ($picture || $name || $gender || $age || $bio || $city) : ?>
+  <p>
+  <?php if ($picture) : ?>
+    <?php print $picture ?>
+  <?php endif; ?>
+  </p>
+  
+  <ul>
+    <?php if ($name) : ?>
+      <li><?php print $name ?></li>
     <?php endif; ?>
   
-    <div class="profile-fields">
-        <?php if ($name) : ?>
-          <div class="profile-field name"><?php print $name ?></div>
-        <?php endif; ?>
-      
-        <?php if ($gender) : ?>
-          <div class="profile-field gender"><?php print $gender ?></div>
-        <?php endif; ?>
-      
-        <?php if ($age) : ?>
-          <div class="profile-field age"><?php print $age?> jaar</div>
-        <?php endif; ?>
-      
-        <?php if ($bio) : ?>
-          <div class="profile-field bio"><?php print $bio ?></div>
-        <?php endif; ?>
-      
-        <?php if ($city) : ?>
-          <div class="profile-field city"><?php print $city ?></div>
-        <?php endif; ?>
-    </div>
-  <?php else : ?>
-  <div class="no-profile"></div>
-  <?php endif; ?>
-  <div class="clearfix"></div>
+    <?php if ($gender) : ?>
+      <li><?php print $gender ?></li>
+    <?php endif; ?>
+  
+    <?php if ($age) : ?>
+     <li><?php print $age?> jaar</li>
+    <?php endif; ?>
+  
+    <?php if ($bio) : ?>
+     <li><?php print $bio ?></li>
+    <?php endif; ?>
+  
+    <?php if ($city) : ?>
+     <li><?php print $city ?></li>
+    <?php endif; ?>
+  </ul>
+  
+<?php else : ?>
+  <p><?php print t('No profile data available'); ?>. <a href="/culturefeed/profile/edit"><?php print t('Complete your profile'); ?></a></p>
+<?php endif; ?>
 
-</div>
+<hr />

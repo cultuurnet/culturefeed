@@ -35,7 +35,7 @@ function culturefeed_search_ui_init() {
 
     if (strpos(current_path(), $path) !== 0) {
       $params = drupal_get_query_parameters();
-      drupal_goto($path, array('query' => array($params)), 301);
+      drupal_goto($path, array('query' => ($params ? array($params) : NULL)), 301);
     }
 
   }
@@ -595,7 +595,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
     $label = check_plain($query['location']);
     if (!empty($query['distance'])) {
-      $label .= ' +' . check_plain($query['distance']) . ' km';
+      $label .= ' + ' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);
     }
 

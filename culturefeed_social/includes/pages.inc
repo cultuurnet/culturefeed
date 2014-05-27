@@ -243,8 +243,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $config = culturefeed_social_activity_get_config($data->objects[0]->type);
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<h6>' . t('Remove') . ' ' . $config->action . ' </h6></div>';
+    $form['#prefix'] = '<h6>' . t('Remove') . ' ' . $config->action . ' </h6>';
   }
   else {
     drupal_set_title(($config->action ? t('Remove') . ' ' . $config->action : t('Remove action')) . '?');
@@ -254,37 +253,22 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
 
   $form_state['id'] = $id;
 
-  $form['body_wrapper'] = array(
+  $form['page_remove_confirm'] = array(
     '#type' => 'markup',
-    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
-    '#suffix' => '</div>',
-  );
-  $form['body_wrapper']['page_remove_confirm'] = array(
-    '#type' => 'markup',
-    '#markup' => '<p>' . ($config->action ? t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) : t('Are you sure you want to delete this action permanently')) . '?</p>',
+    '#markup' => '<p>' . ($config->action ? t('Are you sure you want to delete your @action permanently', array('@action' => $config->action)) : t('Are you sure you want to delete this action permanently')) . '?</p><hr />',
   );
 
-  $form['footer_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="modal-footer">',
-    '#suffix' => '</div>',
-  );
-
-  $form['footer_wrapper']['remove'] = array(
+  $form['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Remove'),
-    '#attributes' => array('class' => array('btn btn-danger')),
+    '#attributes' => array('class' => array('button-remove')),
   );
 
-  $form['footer_wrapper']['decline'] = array(
+  $form['decline'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
     '#href' => url($destination['destination']),
-    '#attributes' => array(
-      'data-dismiss' => 'modal',
-      'aria-hidden' => 'true',
-      'class' => array('btn btn-link')
-    ),
+    '#attributes' => array('class' => array('button-decline')),
   );
 
   return $form;

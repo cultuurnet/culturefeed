@@ -67,6 +67,18 @@ function culturefeed_agenda_preprocess_culturefeed_event_short_summary(&$variabl
 }
 
 /**
+ * Preprocess the variables for the event mini summary.
+ * @see culturefeed-event-mini-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_event_mini_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_event($variables);
+
+}
+
+/**
  * Preprocess the variables for the event detail.
  * @see culturefeed-event.tpl.php
  */
@@ -96,6 +108,18 @@ function culturefeed_agenda_preprocess_culturefeed_production_summary(&$variable
  * @see culturefeed-production-short-summary.tpl.php
  */
 function culturefeed_agenda_preprocess_culturefeed_production_short_summary(&$variables) {
+
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_agenda_summary($variables);
+  _culturefeed_agenda_preprocess_production($variables);
+
+}
+
+/**
+ * Preprocess the variables for the production mini summary.
+ * @see culturefeed-production-mini-summary.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_production_mini_summary(&$variables) {
 
   _culturefeed_agenda_preprocess_agenda($variables);
   _culturefeed_agenda_preprocess_agenda_summary($variables);
@@ -190,22 +214,24 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     
     // If no image we get image from eventdetails language=nl
     if (empty($pictures)) {
-    
+
       $detail_nl = $cdb_item->getDetails()->getDetailByLanguage('nl');
-      $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-      foreach ($photos as $photo) {
-        $pictures[] = $photo->getHLink();
-        if ($photo->isMain()) {
-          $main_picture = $photo->getHLink();
+      if (!empty($detail_nl)) {
+        $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+        foreach ($photos as $photo) {
+          $pictures[] = $photo->getHLink();
+          if ($photo->isMain()) {
+            $main_picture = $photo->getHLink();
+          }
         }
-      }
   
-      // Support for mediatype imageweb
-      $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
-      foreach ($images as $image) {
-        $pictures[] = $image->getHLink();
-        if ($image->isMain() && empty($main_picture)) {
-          $main_picture = $image->getHLink();
+        // Support for mediatype imageweb
+        $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+        foreach ($images as $image) {
+          $pictures[] = $image->getHLink();
+          if ($image->isMain() && empty($main_picture)) {
+            $main_picture = $image->getHLink();
+          }
         }
       }
     }
@@ -458,6 +484,8 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
   $relations = $production->getRelations();
   $total_relations = count($relations);
+  $variables['relations'] = $total_relations;
+
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
     $variables['location']['title'] = t('multiple locations');
@@ -488,7 +516,9 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   // If no event, check if this productions is in regions.
   else {
 
+    // Check for regions
     $region_data = $production->getCategories()->getCategoriesByType('flandersregion');
+    
     if ($region_data) {
 
       $regions = array();
@@ -496,13 +526,29 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
         $regions[] = check_plain($region->getName());
       }
 
-      $variables['location']['title'] = t('on displacement in');
+      $variables['location']['title'] = t('on location in');
       $variables['regions'] = $regions;
 
     }
-    // No regions.
-    else {
-      $variables['location']['title'] = t('by appointment only');
+
+    // Check for workingregions
+    $workingregion_data = $production->getCategories()->getCategoriesByType('workingregion');
+    
+    if ($workingregion_data) {
+
+      $workingregions = array();
+      foreach ($workingregion_data as $workingregion) {
+        $workingregions[] = check_plain($workingregion->getName());
+      }
+
+      $variables['location']['title'] = t('on location in');
+      $variables['workingregions'] = $workingregions;
+
+    }
+
+    // No regions or workingregions.
+    if (!($region_data) && !($workingregion_data)) {
+      $variables['location']['title'] = t('by appointment');
     }
 
   }

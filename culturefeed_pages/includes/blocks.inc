@@ -217,7 +217,7 @@ function _culturefeed_pages_block_pages_admin_menu(CultureFeed_Cdb_Item_Page $pa
     );
   }
 
-  $admin_menu = theme('item_list', array('items' => $items));
+  $admin_menu = theme('item_list', array('items' => $items, 'attributes' => array('class' => 'dropdown-menu', 'role' => 'menu')));
 
   return $admin_menu;
 
@@ -247,7 +247,8 @@ function culturefeed_pages_block_page_timeline($page) {
   }
 
   try {
-    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId());
+    $active_types = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId(), NULL, $active_types);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -298,7 +299,7 @@ function culturefeed_pages_block_page_agenda($page) {
   $search_results = $result->getItems();
   $items = array();
   foreach ($search_results as $search_result) {
-    $items[] = theme('culturefeed_' . $search_result->getType() . '_summary', array('item' => $search_result));
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_mini_summary', array('item' => $search_result));
   }
 
   $block = array();
@@ -362,11 +363,11 @@ function culturefeed_pages_block_followers($page) {
  * @param CultureFeed_Cdb_Item_Page $page
  */
 function culturefeed_pages_block_members($page) {
-  
+
   if (empty($page) || !($page instanceof CultureFeed_Cdb_Item_Page)) {
     return;
   }
-  
+
   $member_list = NULL;
   try {
     $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
@@ -376,7 +377,7 @@ function culturefeed_pages_block_members($page) {
     watchdog_exception('culturefeed_pages', $e);
     return;
   }
-  
+
   $build = array();
 
   $build['items_list'] = array(
@@ -385,7 +386,7 @@ function culturefeed_pages_block_members($page) {
     '#members' => $member_list->memberships,
     '#num_members' => count($member_list->memberships),
   );
-  
+
   $block['subject'] = t('Members');
   $block['content'] = $build;
 
@@ -482,6 +483,80 @@ function culturefeed_pages_block_related_activities($page) {
     '#theme' => 'item_list',
     '#items' => $items,
     '#class' => 'related-activities'
+  );
+
+  return $block;
+
+}
+
+function culturefeed_pages_block_nearby_pages($page) {
+
+  if (empty($page)) {
+    return;
+  }
+
+  $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_PAGE_NEARBY_PAGES_COUNT);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('!cdbid' . ':' . $page->getId());
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+
+  // If no address information, don't show nearby activities.
+  $address = $page->getAddress();
+  if (!$address) {
+    return;
+  }
+
+  // Add proximity search.
+  $coordinates = $address->getGeoInformation();
+  $zip = $address->getZip();
+  if ($coordinates) {
+    $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_PAGE_NEARBY_PAGES_RANGE);
+    $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->getYCoordinate(), $coordinates->getXCoordinate());
+    $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+
+    $more_query['coordinates'] = $coordinates->getYCoordinate() . ',' . $coordinates->getXCoordinate();
+  }
+
+  // Use zip as fallback for missing coordinates
+  elseif ($zip) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('zipcode' . ':' . $zip);
+    $more_query['location'] = $zip;
+  }
+
+  // Execute search.
+  $show_more_link = FALSE;
+  try {
+
+    $searchService = culturefeed_get_search_service();
+    $result = $searchService->searchPages($parameters);
+
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+
+    $show_more_link = $result->getTotalCount()  > CULTUREFEED_PAGE_NEARBY_PAGES_COUNT;
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('cultuurkuur', $e);
+    return;
+  }
+  $more_query['facet'] = array();
+  //$more_query['facet']['category_actortype_id'][0] = $context_id;
+
+  $block = array();
+  $block['subject'] = t('Nearby Pages');
+  $block['content'] = array(
+    '#class' => 'nearby-pages',
+    '#theme' => 'culturefeed_pages_nearby_pages',
+    '#results' => $result->getItems(),
+    '#show_more' => $show_more_link,
+    '#more_text' => t('More nearby pages'),
+    '#more_url' => url('agenda/pages', array('query' => $more_query)),
   );
 
   return $block;

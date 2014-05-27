@@ -1,3 +1,5 @@
-<h3><?php print $link ?></h3>
-
-<p><?php print $description ?></p>
+<p>
+  <strong><?php print $link ?></strong> 
+  <br />
+  <small><?php print $description ?></small>
+</p>

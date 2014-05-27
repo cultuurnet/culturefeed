@@ -23,6 +23,9 @@ define('CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE', 20);
  */
 define('CULTUREFEED_PAGES_UITDATABANK_EVENT_URL', 'http://www.uitdatabank.be/2/Item/EventDetail/');
 
+define('CULTUREFEED_PAGE_NEARBY_PAGES_RANGE', 15);
+define('CULTUREFEED_PAGE_NEARBY_PAGES_COUNT', 5);
+
 /**
  * Implements hook_theme().
  */
@@ -137,6 +140,19 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-pages-members-block',
+    ),
+    'culturefeed_pages_nearby_pages' => array(
+      'variables' => array(
+        'results' => array(),
+        'results_found' => 0,
+        'show_more' => FALSE,
+        'more_text' => '',
+        'more_url' => '',
+        'tooltip_text' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-nearby-pages',
     ),
     'culturefeed_pages_events_admin_page' => array(
       'variables' => array('results' => array(), 'page' => NULL),
@@ -477,6 +493,11 @@ function culturefeed_pages_block_info() {
     'info' => t('Culturefeed pages: members'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  
+  $blocks['nearby-pages'] = array(
+    'info' => t('Culturefeed pages: nearby pages'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
@@ -564,6 +585,10 @@ function culturefeed_pages_block_view($delta) {
     case 'members':
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_members($page);
+      
+    case 'nearby-pages':
+      $page = menu_get_object('culturefeed_pages_page', 3);
+      return culturefeed_pages_block_nearby_pages($page);
 
     case 'page-agenda':
       $page = menu_get_object('culturefeed_pages_page', 3);
@@ -710,27 +735,27 @@ function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Ite
 
   return array(
     'info' => array(
-      'title' => t('Change settings'),
+      'title' => t('Details & Layout'),
       'url' => 'pages/' . $page->getId() . '/edit',
-      'description' => t('Edit contact info, photos, description, website,...'),
+      'description' => t('Manage page information, contact details, layout ... .'),
       'weight' => -20,
     ),
     'settings' => array(
-      'title' => t('Settings'),
+      'title' => t('Features'),
       'url' => 'pages/' . $page->getId() . '/configuration',
-      'description' => t('Allow users to follow your page, write comments, suggest activities,...'),
+      'description' => t('Allow users to follow your page, request membership, add comments, ... .'),
       'weight' => -19,
     ),
     'members' => array(
-      'title' => t('Members & roles'),
+      'title' => t('Members, Rights & Roles'),
       'url' => 'pages/' . $page->getId() . '/members/nojs',
-      'description' => t('Manage members and access rights'),
+      'description' => t('Manage members, roles and rights.'),
       'weight' => -18,
     ),
     'activities' => array(
       'title' => t('Activities'),
       'url' => 'pages/' . $page->getId() . '/events',
-      'description' => t('Manage your activities and reactions'),
+      'description' => t('Manage your activities and comments.'),
       'weight' => -17,
     ),
   );

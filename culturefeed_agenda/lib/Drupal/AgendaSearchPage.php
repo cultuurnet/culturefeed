@@ -33,7 +33,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
 
       if (!empty($params['search'])) {
-        $this->addQueryTerm($params['search']);
+        // Remove / from the start and : from the end of keywords.
+        $this->addQueryTerm(preg_replace("/\/\b|\b:/x", "", $params['search']));
       }
 
       $this->addFacetFilters($params);
@@ -59,8 +60,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     switch ($params['sort']) {
 
       case 'date':
-        $this->parameters[] = new Parameter\Sort('startdate', Parameter\Sort::DIRECTION_ASC);
-        break;
+        $this->parameters[] = new Parameter\Sort('permanent asc,startdateday asc,weight', Parameter\Sort::DIRECTION_DESC);
+      break;
 
       case 'agefrom':
         $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
@@ -68,6 +69,10 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
       case 'recommend_count':
         $this->parameters[] = new Parameter\Sort('recommend_count', Parameter\Sort::DIRECTION_DESC);
+      break;
+      
+      case 'review_count':
+        $this->parameters[] = new Parameter\Sort('review_count', Parameter\Sort::DIRECTION_DESC);
       break;
 
       case 'comment_count':

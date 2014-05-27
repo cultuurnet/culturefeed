@@ -1,22 +1,18 @@
-<div id="view-page"><?php print $view_page_link; ?></div>
+<h3><?php print t('Activities'); ?></h3>
+<p><?php print $view_page_link; ?></p>
 
 <?php if (!empty($items)): ?>
+
+  <p><?php print t('The <strong>list</strong> below shows all the <strong>activities</strong> that are <strong>currently published</strong> on your page.') ?>
+  <br />
+  <?php print t('Past or unpublished activities can be consulted via <a href="http://www.uitdatabank.be" target="_blank"> UiTdatabank </a>.'); ?></p>
 
   <?php print $items; ?>
 
   <?php print theme('pager') ?>
 
 <?php else: ?>
-  <div class="no-results"></div>
+    <p><?php print t('There are currently no published activities available for your page. Past or unpublished activities can be consulted via <a href="http://www.uitdatabank.be" target="_blank"> UiTdatabank </a>.') ?></p>
 <?php endif; ?>
 
-<div class="info">
-  <?php print t('This list shows only the activities that are currently online. You can find past or unpublished activities on <a href="http://www.uitdatabank.be"> UiT database </ a>.'); ?>
-</div>
-
-<div class="new-event">
-  <h2><?php print t('Add a new activity'); ?></h2>
-  <p>
-    <?php print t('Add new activities with the UiTdatabank. You can sign in with the same account and add activities immediately. <a href="http://www.uitdatabank.be/">Add new activity</a>.'); ?>
-  </p>
-</div>
+<p><a href="http://www.uitdatabank.be" target="_blank"><?php print t('Add a new activity via UiTdatabank'); ?></a> (<?php print t('You can sign in with your current username and password.'); ?>)</p>

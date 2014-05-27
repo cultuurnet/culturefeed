@@ -176,6 +176,13 @@ msgstr "Activiteiten in de buurt van mijn huidige locatie:"
 msgid "Search"
 msgstr "Zoeken"
 
+#: includes/blocks.inc:349
+msgid "Program schedule"
+msgstr "Programmatie"
+
+msgid "Show program schedule"
+msgstr "Toon programmatie"
+
 #: includes/helpers.inc:295;362 lib/Drupal/AgendaSearchPage.php:88
 msgid "Home"
 msgstr "Home"
@@ -320,12 +327,12 @@ msgid "multiple dates"
 msgstr "meerdere data"
 
 #: theme/theme.inc:392
-msgid "on displacement in"
-msgstr "op verplaatsing in"
+msgid "on location in"
+msgstr "op locatie in"
 
 #: theme/theme.inc:398
-msgid "by appointment only"
-msgstr "Enkel op afspraak"
+msgid "by appointment"
+msgstr "op afspraak"
 
 #: theme/theme.inc:503
 msgid "Other"
@@ -338,3 +345,7 @@ msgstr "Reservaties"
 #: theme/theme.inc
 msgid "By"
 msgstr "Met"
+
+#: theme/culturefeed-event-summary.tpl.php:70
+msgid "With"
+msgstr "Wie"

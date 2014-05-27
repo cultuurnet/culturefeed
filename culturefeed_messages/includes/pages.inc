@@ -115,11 +115,10 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
   // If object is a message. We are sending a reply.
   elseif ($object instanceof CultureFeed_Messages_Message) {
     $form['title']['#markup'] = t('Reply');
-    $form['subject']['#value'] = $object->subject;
+    $form['subject']['#value'] = 'RE:' . ' ' . $object->subject;
     $form['subject']['#access'] = FALSE;
     $form_state['reply_to'] = $object->id;
     $form_state['message_type'] = $object->type;
-    $send_as_option = FALSE;
   }
 
   // Add select to choose the 'send as'.
@@ -133,13 +132,23 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
         foreach ($cf_user->pageMemberships as $membership) {
           $send_as_options[$membership->page->getId()] = $membership->page->getName();
         }
-
-        $form['send_as'] = array(
-          '#title' => t('Send message as'),
-          '#type' => 'select',
-          '#options' => $send_as_options,
-          '#default_value' => culturefeed_pages_get_active_page_id(),
-        );
+        
+        // Always use recipientPage as senderPage in replies
+        if ($object instanceof CultureFeed_Messages_Message) {
+              $form['send_as'] = array(
+                '#type' => 'hidden',
+                '#default_value' => $object->recipientPage->getId(),
+              );
+        }
+  
+        else {
+          $form['send_as'] = array(
+            '#title' => t('Send message as'),
+            '#type' => 'select',
+            '#options' => $send_as_options,
+            '#default_value' => culturefeed_pages_get_active_page_id(),
+          );
+        }
       }
     }
     catch (Exception $e) {
@@ -170,7 +179,7 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
   if (!empty($form_state['values']['send_as'])) {
     $params['senderPage'] = $form_state['values']['send_as'];
   }
-  // Replies always use current page.
+  // New messages always use current page as default.
   else {
     $curr_page = culturefeed_pages_get_active_page_id();
     if ($curr_page) {
@@ -245,44 +254,30 @@ function culturefeed_messages_page_delete_message_confirm($message, $request_typ
 function culturefeed_messages_delete_message_confirm_form($form, &$form_state, CultureFeed_Messages_Message $message, $request_type) {
 
   if ($request_type == 'ajax') {
-    $form['#prefix'] = '<div class="modal-header"><h3>' . t('Delete message') . '</h3></div>';
+    $form['#prefix'] = '<h3>' . t('Delete message') . '</h3>';
   }
 
   $form_state['message'] = $message;
 
-  $form['body_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div id="confirm-wrapper" class="modal-body">',
-    '#suffix' => '</div>',
-  );
-  $form['body_wrapper']['page_remove_confirm'] = array(
+  $form['page_remove_confirm'] = array(
     '#type' => 'markup',
     '#markup' => '
       <p>' . t('This action cannot be undone') . '</p>
-      <p><strong>' . t('Are you sure you want to delete this message?') . '</strong></p>',
+      <p><strong>' . t('Are you sure you want to delete this message?') . '</strong></p>
+      <hr />',
   );
 
-  $form['footer_wrapper'] = array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="modal-footer">',
-    '#suffix' => '</div>',
-  );
-
-  $form['footer_wrapper']['remove'] = array(
+  $form['remove'] = array(
     '#type' => 'submit',
     '#value' => t('Delete'),
-    '#attributes' => array('class' => array('button-remove btn btn-warning')),
+    '#attributes' => array('class' => array('button-remove')),
   );
 
-  $form['footer_wrapper']['decline'] = array(
+  $form['decline'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
     '#href' => isset($_GET['destination']) ? $_GET['destination'] : 'culturefeed/messages/' . $message->id,
-    '#attributes' => array(
-      'data-dismiss' => 'modal',
-      'aria-hidden' => 'true',
-      'class' => array('button-decline close btn')
-    ),
+    '#attributes' => array('class' => array('button-decline')),
   );
 
   return $form;

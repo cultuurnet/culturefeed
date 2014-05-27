@@ -148,7 +148,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
     $result = $this->realCultureFeedPages->removeImage($id);
     $this->cacheClear('page:' . $id);
   }
-  
+
   /**
    * @see CultureFeed_Pages::addCover()
    */
@@ -261,15 +261,15 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getTimeline()
    */
-  public function getTimeline($id, $dateFrom = NULL) {
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
 
-    $cid = 'timeline:' . $id . ':' . $dateFrom;
+    $cid = 'timeline:' . $id . ':' . $dateFrom . implode('|', $activityTypes);
 
     if ($cache = $this->cacheGet($cid)) {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeedPages->getTimeline($id, $dateFrom);
+    $data = $this->realCultureFeedPages->getTimeline($id, $dateFrom, $activityTypes);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
