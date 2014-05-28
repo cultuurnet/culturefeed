@@ -369,20 +369,26 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
 
-  $form['#attributes']['class'][] = 'append-button';
+  $form['#attached']['library'][] = array(
+    'system', 'ui.autocomplete',
+  );
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'culturefeed_search_ui') . '/js/city_facet.js',
+    'type' => 'file',
+  );
 
   $form['location'] = array(
     '#type' => 'textfield',
     '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
-    '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
-    '#attributes' => array('placeholder' => t('Zipcode or city')),
+    '#attributes' => array('class' => array('city-facet', 'form-autocomplete'), 'placeholder' => t('Zipcode or city')),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#attributes' => array('class' => array('element-invisible')),
   );
 
   return $form;
