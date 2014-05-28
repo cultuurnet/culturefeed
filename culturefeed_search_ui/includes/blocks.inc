@@ -369,12 +369,19 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
 
+  $filters = array_filter(array_values(variable_get('culturefeed_facet_city_parents', array())));
+
   $form['#attached']['library'][] = array(
     'system', 'ui.autocomplete',
   );
   $form['#attached']['js'][] = array(
     'data' => drupal_get_path('module', 'culturefeed_search_ui') . '/js/city_facet.js',
     'type' => 'file',
+  );
+
+  $form['#attached']['js'][] = array(
+    'data' => array('culturefeed_search_ui' => array('city_filters' => $filters)),
+    'type' => 'setting'
   );
 
   $form['location'] = array(
