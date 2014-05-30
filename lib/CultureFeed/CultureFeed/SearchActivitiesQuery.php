@@ -84,6 +84,12 @@ class CultureFeed_SearchActivitiesQuery {
   public $depth;
 
   /**
+   * Set to TRUE to disable cache for this query.
+   * @var bool
+   */
+  public $skipCache = FALSE;
+
+  /**
    * Convert a CultureFeed_SearchActivitiesQuery object to an array that can be used as data in POST requests that expect search user query info.
    *
    * @return array

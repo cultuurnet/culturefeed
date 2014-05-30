@@ -1177,6 +1177,7 @@ function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
   $query->start = $curr_page * $query->max;
   $query->type = CultureFeed_Activity::TYPE_NEWS;
   $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->skipCache = TRUE;
 
   // Execute search and show results.
   $build = array();
@@ -1257,6 +1258,7 @@ function culturefeed_pages_add_news_form_validate($form, $form_state) {
   $activity = new CultureFeed_Activity();
   $activity->type = CultureFeed_Activity::TYPE_NEWS;
   $activity->userId = DrupalCultureFeed::getLoggedInUserId();
+  $activity->onBehalfOf = $form_state['page']->getId();
   $activity->contentType = 'page';
   $activity->nodeId = $form_state['page']->getId();
   $activity->nodeTitle = $form_state['page']->getName();
