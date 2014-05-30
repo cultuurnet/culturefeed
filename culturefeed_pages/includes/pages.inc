@@ -1169,7 +1169,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
  * for given page.
  */
 function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
-
+    
   $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchActivitiesQuery();

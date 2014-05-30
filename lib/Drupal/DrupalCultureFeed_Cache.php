@@ -149,9 +149,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function createActivity(CultureFeed_Activity $activity) {
+
     $result = $this->realCultureFeed->createActivity($activity);
     $this->cacheClearActivities();
 
+    // Also clear the timelines.
+    cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
 
     return $result;
   }
