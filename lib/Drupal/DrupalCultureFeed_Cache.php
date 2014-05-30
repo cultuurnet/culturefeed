@@ -154,7 +154,9 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheClearActivities();
 
     // Also clear the timelines.
-    cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    if (module_exists('culturefeed_pages')) {
+      cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
 
     return $result;
   }
