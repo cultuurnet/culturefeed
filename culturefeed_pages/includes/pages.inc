@@ -1231,13 +1231,13 @@ function culturefeed_pages_add_news_form($form, &$form_state, CultureFeed_Cdb_It
 
   $form['body'] = array(
     '#type' => 'textarea',
-    '#title' => t('Body'),
+    '#title' => t('Message'),
     '#required' => TRUE,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Publish'),
   );
 
   return $form;

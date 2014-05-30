@@ -3,7 +3,7 @@
 
 <?php if (!empty($items)): ?>
 
-    <table class="table table-striped">
+    <table>
     <thead>
     <tr>
       <th><?php print t('Title') ?></th>
