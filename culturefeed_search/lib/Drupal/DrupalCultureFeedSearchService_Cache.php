@@ -127,7 +127,7 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
   /**
    * @see \CultuurNet\Search\ServiceInterface::searchSuggestions().
    */
-  public function searchSuggestions($search_string, $types = array(), $past = FALSE) {
+  public function searchSuggestions($search_string, $types = array(), $past = FALSE, $extra_parameters = array()) {
 
     $cid = sprintf('suggestions:%s', md5($search_string . implode('|', $types) . $past));
     if ($cache = $this->cacheGet($cid)) {
