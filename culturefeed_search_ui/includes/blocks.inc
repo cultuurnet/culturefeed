@@ -35,7 +35,6 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#type' => 'textfield',
     '#title' => t('Search terms'),
     '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-    '#autocomplete_path' => 'autocomplete/culturefeed/suggestions',
   );
 
   $form['submit'] = array(
@@ -368,20 +367,33 @@ function culturefeed_search_ui_city_facet_form() {
 
   $form = array();
 
-  $form['#attributes']['class'][] = 'append-button';
+  $filters = array_filter(array_values(variable_get('culturefeed_facet_city_parents', array())));
+
+  $form['#attached']['library'][] = array(
+    'system', 'ui.autocomplete',
+  );
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'culturefeed_search_ui') . '/js/city_facet.js',
+    'type' => 'file',
+  );
+
+  $form['#attached']['js'][] = array(
+    'data' => array('culturefeed_search_ui' => array('city_filters' => $filters)),
+    'type' => 'setting'
+  );
 
   $form['location'] = array(
     '#type' => 'textfield',
     '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
-    '#autocomplete_path' => 'autocomplete/culturefeed/city-region-suggestion',
-    '#attributes' => array('placeholder' => t('Zipcode or city')),
+    '#attributes' => array('class' => array('city-facet', 'form-autocomplete'), 'placeholder' => t('Zipcode or city')),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#attributes' => array('class' => array('element-invisible')),
   );
 
   return $form;

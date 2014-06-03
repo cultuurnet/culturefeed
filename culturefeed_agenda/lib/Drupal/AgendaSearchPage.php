@@ -33,7 +33,8 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->pageNumber = empty($params['page']) ? 1 : $params['page'] + 1;
 
       if (!empty($params['search'])) {
-        $this->addQueryTerm($params['search']);
+        // Remove / from the start and : from the end of keywords.
+        $this->addQueryTerm(preg_replace("/\/\b|\b:/x", "", $params['search']));
       }
 
       $this->addFacetFilters($params);
@@ -69,7 +70,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       case 'recommend_count':
         $this->parameters[] = new Parameter\Sort('recommend_count', Parameter\Sort::DIRECTION_DESC);
       break;
-      
+
       case 'review_count':
         $this->parameters[] = new Parameter\Sort('review_count', Parameter\Sort::DIRECTION_DESC);
       break;
@@ -197,7 +198,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     // This part only needs to be done in case culturefeed_social is enabled.
     if (module_exists('culturefeed_social') && culturefeed_is_culturefeed_user()) {
-      $this->prepareSocialStats();
+      culturefeed_social_warmup_activities_cache($this->result->getItems());
     }
   }
 
@@ -239,64 +240,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         }
       }
 
-    }
-
-  }
-
-  /**
-   * Prepare all the social activity stats for this user.
-   */
-  private function prepareSocialStats() {
-    // Do an activity search on all found nodeIds.
-    $items = $this->result->getItems();
-    $nodeIds = array();
-    foreach ($items as $item) {
-      $activity_content_type = culturefeed_get_content_type($item->getType());
-      $nodeIds[] = culturefeed_social_get_activity_node_id($activity_content_type, $item);
-    }
-
-    $userDidActivity = &drupal_static('userDidActivity', array());
-
-    // Get a list of all activities from this user, on the content to show.
-    $userActivities = array();
-    try {
-
-      $userId = DrupalCultureFeed::getLoggedInUserId();
-
-      $query = new CultureFeed_SearchActivitiesQuery();
-      $query->nodeId = $nodeIds;
-      $query->userId = $userId;
-      $query->private = TRUE;
-
-      $activities = DrupalCultureFeed::searchActivities($query);
-      foreach ($activities->objects as $activity) {
-        $userActivities[$activity->nodeId][$activity->contentType][] = $activity;
-      }
-
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_search_ui', $e);
-    }
-
-    // Fill up cache for following content types.
-    $contentTypes = array(
-      CultureFeed_Activity::CONTENT_TYPE_EVENT,
-      CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
-    );
-
-    // Fill up the $userDidActivity variable. This is used in DrupalCulturefeed::userDidActivity().
-    foreach ($nodeIds as $nodeId) {
-      foreach ($contentTypes as $contentType) {
-        // If user did this activitiy. Place it in the correct array.
-        if (isset($userActivities[$nodeId][$contentType])) {
-          $activities = new CultureFeed_ResultSet(count($userActivities[$nodeId][$contentType]), $userActivities[$nodeId][$contentType]);
-        }
-        // Otherwise create an empty result set.
-        else {
-          $activities = new CultureFeed_ResultSet(0, array());
-        }
-        $userDidActivity[$nodeId][$contentType][$userId] = $activities;
-      }
     }
 
   }

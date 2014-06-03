@@ -49,7 +49,7 @@ function culturefeed_uitpas_get_uitpas_event($item) {
     $cf = DrupalCultureFeed::getConsumerInstance();
     $result = $cf->uitpas()->searchEvents($query);
 
-    if ($result->total) {
+    if ($result->total && !empty($result->objects[0])) {
       $event = $result->objects[0];
     }
 

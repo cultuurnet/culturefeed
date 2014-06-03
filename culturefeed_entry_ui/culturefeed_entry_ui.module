@@ -423,3 +423,24 @@ function culturefeed_entry_ui_remove_filter_input(&$form) {
   unset($form['format']['help']);
   return $form;
 }
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_entry_ui_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+  try {
+
+    $items['entry'] = array(
+      'data' => l(t('Add event'),'agenda/e/add'),
+      'class' => 'entry',
+      'weight' => -10,
+    );
+
+  } catch (Exception $e) {
+    watchdog_exception('culturefeed_entry_ui', $e);
+  }
+
+  return $items;
+}
