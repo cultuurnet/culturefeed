@@ -145,6 +145,20 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_search_facet_with_depth_settings' => array(
+      'variables' => array(
+        'facet' => NULL,
+        'items' => array(),
+        'title' => NULL,
+        'path' => NULL,
+        'query' => NULL,
+        'sort' => '',
+        'highest_level' => 1,
+        'show_subitems' => FALSE,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_facet' => array(
       'variables' => array(
         'facet' => NULL,
@@ -174,7 +188,7 @@ function culturefeed_search_ui_theme() {
     'culturefeed_search_facet_item' => array(
       'variables' => array(
         'facet_item' => NULL,
-        'facet' => NULL,
+        'facet_key' => NULL,
         'path' => NULL,
         'query' => NULL,
         'active' => FALSE,
@@ -301,7 +315,6 @@ function culturefeed_search_ui_block_info() {
  * Implements hook_block_configure().
  */
 function culturefeed_search_ui_block_configure($delta) {
-
   $form = array();
 
   $delta_parts = explode('-', $delta);
@@ -316,31 +329,32 @@ function culturefeed_search_ui_block_configure($delta) {
       ),
       '#default_value' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
     );
+    if (variable_get('culturefeed_search_ui_facet_compatibility_mode', 0) === 0) {
+      $form['culturefeed-facet-highest-level'] = array(
+        '#type' => 'select',
+        '#title' => t('Highest facet level'),
+        '#options' => array(
+          1 => t('Level 1'),
+          2 => t('Level 2'),
+          3 => t('Level 3'),
+          4 => t('Level 4'),
+        ),
+        '#description' => t('The highest level of facets to show. Should probably be level 1.'),
+        '#default_value' => variable_get('culturefeed_facet_highest_level_' . $delta, 1),
+      );
+      $form['culturefeed-facet-show-subitems'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show subitems'),
+        '#description' => t('Check this if the facets of lower levels should be shown when a facet option is selected.'),
+        '#default_value' => variable_get('culturefeed_facet_show_subitems_' . $delta, FALSE),
+      );
+    }
 
     if ($delta == 'facet-theme') {
       $form['culturefeed-facet-theme-hide'] = array(
         '#type' => 'checkbox',
         '#title' => t('Show the facet only when an eventtype is chosen'),
         '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
-      );
-    }
-
-    if ($delta == 'facet-flandersregion') {
-      $form['culturefeed-facet-flandersregion-highest-level'] = array(
-        '#type' => 'select',
-        '#title' => t('The highest level of region type'),
-        '#options' => array(
-          1 => t('Province'),
-          2 => t('Region'),
-          3 => t('City'),
-        ),
-        '#default_value' => variable_get('culturefeed_facet_flandersregion_highest_level', 1),
-      );
-      $form['culturefeed-facet-flandersregion-show-subitems'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Show subitems'),
-        '#description' => t(''),
-        '#default_value' => variable_get('culturefeed_facet_flandersregion_show_subitems', FALSE),
       );
     }
 
@@ -434,7 +448,6 @@ function culturefeed_search_ui_block_configure($delta) {
   }
 
   return $form;
-
 }
 
 /**
@@ -462,11 +475,11 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
     variable_set('culturefeed_search_filter_options', $options);
   }
-  if (isset($edit['culturefeed-facet-flandersregion-highest-level'])) {
-    variable_set('culturefeed_facet_flandersregion_highest_level', $edit['culturefeed-facet-flandersregion-highest-level']);
+  if (isset($edit['culturefeed-facet-highest-level'])) {
+    variable_set('culturefeed_facet_highest_level_' . $delta, $edit['culturefeed-facet-highest-level']);
   }
-  if (isset($edit['culturefeed-facet-flandersregion-show-subitems'])) {
-    variable_set('culturefeed_facet_flandersregion_show_subitems', $edit['culturefeed-facet-flandersregion-show-subitems']);
+  if (isset($edit['culturefeed-facet-show-subitems'])) {
+    variable_set('culturefeed_facet_show_subitems_' . $delta, $edit['culturefeed-facet-show-subitems']);
   }
 }
 
@@ -474,7 +487,6 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
  * Implements hook_block_view().
  */
 function culturefeed_search_ui_block_view($delta) {
-
   module_load_include('inc', 'culturefeed_search_ui', 'includes/blocks');
   $block = array();
 
@@ -525,10 +537,6 @@ function culturefeed_search_ui_block_view($delta) {
       }
       break;
 
-    case 'facet-flandersregion':
-      $block = culturefeed_search_ui_block_flandersregion_facet();
-      break;
-
     default:
       $delta_parts = explode('-', $delta);
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
@@ -540,8 +548,12 @@ function culturefeed_search_ui_block_view($delta) {
           }
         }
 
-        $sort = variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), $sort);
+        $block_settings = array(
+          'sort' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
+          'highest_level' => variable_get('culturefeed_facet_highest_level_' . $delta, 1),
+          'show_subitems' => variable_get('culturefeed_facet_show_subitems_' . $delta, FALSE),
+        );
+        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), $block_settings);
       }
 
   }

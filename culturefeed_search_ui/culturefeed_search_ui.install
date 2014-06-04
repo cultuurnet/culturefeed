@@ -15,3 +15,10 @@ function culturefeed_search_ui_uninstall() {
     variable_del('culturefeed_search_sort_' . 'facet-' . $domain->did);
   }
 }
+
+/**
+ * Implements hook_update_N().
+ */
+function culturefeed_search_ui_update_7001() {
+  variable_set('culturefeed_search_ui_facet_compatibility_mode', 1);
+}

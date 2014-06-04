@@ -141,10 +141,10 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  *   Domain id where this facet belongs to. This is used to show the title
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
- * @param $sort
- *   Type of sorting. Can be default (empty), alphabetically, or total_results
+ * @param array $settings
+ *   Array containing setting information (sort, highest level and subitems).
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort = '') {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $settings = array()) {
 
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
@@ -185,13 +185,26 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
       $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => $domain_id))->fetchField();
     }
 
+    // Do we have to use the theming compatibility mode?
+    $theme_function = 'culturefeed_search_facet_with_depth_settings';
+    if (variable_get('culturefeed_search_ui_facet_compatibility_mode', 0) === 1) {
+      if ($domain_id == 'eventtype') {
+        $theme_function = 'culturefeed_search_facet_eventtype';
+      }
+      else {
+        $theme_function = 'culturefeed_search_facet';
+      }
+    }
+
     return array(
       'subject' => check_plain($subject),
       'content' => array(
-        '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
+        '#theme' => $theme_function,
         '#facet' => $facet,
         '#items' => $items,
-        '#sort' => $sort,
+        '#sort' => $settings['sort'],
+        '#highest_level' => $settings['highest_level'],
+        '#show_subitems' => $settings['show_subitems'],
       ),
     );
   }
@@ -206,10 +219,8 @@ function culturefeed_search_ui_block_date_facet() {
     return;
   }
 
-  $build = array();
-
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
-  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, '');
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, array());
   if (!empty($facet_block)) {
 
     $build = array();
@@ -442,7 +453,7 @@ function culturefeed_search_ui_proximity_distance_form() {
     '#type' => 'submit',
     '#value' => t('Change radius'),
   );
-  
+
   $form['new_search']['#markup'] = '<p><label>' . t('Choose another location') . '</label></p>';
 
   return $form;
@@ -647,41 +658,4 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
     $_GET['q'],
     array('query' => $query)
   );
-}
-
-function culturefeed_search_ui_block_flandersregion_facet() {
-  $sort = variable_get('culturefeed_search_sort_facet-flandersregion', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY);
-  $highest_level = variable_get('culturefeed_facet_flandersregion_highest_level', 1);
-  $show_subitems = variable_get('culturefeed_facet_flandersregion_show_subitems', FALSE);
-
-
-  // FacetingComponent is set in the page callback.
-  $culturefeedFacetingComponent = culturefeed_get_facet_component();
-  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
-    return;
-  }
-
-  $facets = $culturefeedFacetingComponent->getFacets();
-  if (!isset($facets['category_flandersregion_id'])) {
-    return;
-  }
-
-  $facet = $facets['category_flandersregion_id'];
-
-  $items = $facet->getResult()->getItems();
-  culturefeed_search_translate_facet($items);
-
-  if (!empty($items)) {
-    $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => 'flandersregion'))->fetchField();
-
-    return array(
-      'subject' => check_plain($subject),
-      'content' => array(
-        '#theme' => 'culturefeed_search_facet',
-        '#facet' => $facet,
-        '#items' => $items,
-        '#sort' => $sort,
-      ),
-    );
-  }
 }
