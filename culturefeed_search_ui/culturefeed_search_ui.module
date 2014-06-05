@@ -329,7 +329,7 @@ function culturefeed_search_ui_block_configure($delta) {
       ),
       '#default_value' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
     );
-    if (variable_get('culturefeed_search_ui_facet_compatibility_mode', 0) === 0) {
+    if (variable_get('culturefeed_search_ui_facet_compatibility_mode', 0) === 0 && $delta != 'facet-city') {
       $form['culturefeed-facet-highest-level'] = array(
         '#type' => 'select',
         '#title' => t('Highest facet level'),
@@ -339,7 +339,7 @@ function culturefeed_search_ui_block_configure($delta) {
           3 => t('Level 3'),
           4 => t('Level 4'),
         ),
-        '#description' => t('The highest level of facets to show. Should probably be level 1.'),
+        '#description' => t('The highest level of facets to show. Should probably be level 1. If the highest level does not exist, the level above it will be used.'),
         '#default_value' => variable_get('culturefeed_facet_highest_level_' . $delta, 1),
       );
       $form['culturefeed-facet-show-subitems'] = array(

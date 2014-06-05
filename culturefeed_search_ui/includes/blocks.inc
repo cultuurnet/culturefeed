@@ -196,17 +196,18 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
       }
     }
 
-    return array(
+    $return = array(
       'subject' => check_plain($subject),
       'content' => array(
         '#theme' => $theme_function,
         '#facet' => $facet,
         '#items' => $items,
-        '#sort' => $settings['sort'],
-        '#highest_level' => $settings['highest_level'],
-        '#show_subitems' => $settings['show_subitems'],
+        '#sort' => (isset($settings['sort'])) ? $settings['sort'] : '',
+        '#highest_level' => (isset($settings['highest_level'])) ? $settings['highest_level'] : '',
+        '#show_subitems' => (isset($settings['show_subitems'])) ? $settings['show_subitems'] : '',
       ),
     );
+    return $return;
   }
 }
 

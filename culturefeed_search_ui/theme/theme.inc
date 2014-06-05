@@ -47,7 +47,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_list(&$vars) {
  *   The markup for the facet block content.
  */
 function theme_culturefeed_search_facet_with_depth_settings($variables) {
-  $facet_items = $variables['items'];
+  // Limit the level and sublevels if needed.
+  $facet_items = _culturefeed_search_ui_limit_facet_levels($variables['items'], $variables['highest_level'], $variables['show_subitems']);
+
   $facet_key = $variables['facet']->getKey();
   $path = empty($variables['path']) ? current_path() : $variables['path'];
 
@@ -64,18 +66,15 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
 
   $active_options = isset($query['facet'][$facet_key]) ? $query['facet'][$facet_key] : array();
 
-  $facet_links = culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort']);
+  $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
+  $facet_links = $facet_links['facet_links'];
 
   // Allow others to alter the complete nested array with links.
   drupal_alter('culturefeed_search_ui_' . $facet_key . '_facet_links', $facet_links);
 
-  // Limit the level and sublevels if needed.
-  $highest_level = $variables['highest_level'];
-  $show_subitems = $variables['show_subitems'];
-
   if (is_array($facet_links)) {
     return theme('item_list', array(
-      'items' => $facet_links['facet_links'],
+      'items' => $facet_links,
       'type' => 'ul',
     ));
   }
@@ -96,16 +95,19 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
  *   The currently used options for the facet type.
  * @param string $sort_type
  *   The way the facet options should be sorted.
+ * @param int $show_subitems
+ *   Whether or not to show the subitems of the highest level.
  *
  * @return array
  *   facet_links: An array of themed links.
  *   has_active_subitem: A boolean indicating if there is an active option.
  */
-function culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $link_path, $query, $active_options, $sort_type) {
+function _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $link_path, $query, $active_options, $sort_type, $show_subitems = 1) {
   $facet_links = array();
   $has_active_subitem = FALSE;
 
   foreach ($facet_items as $facet_item) {
+    $sort = FALSE;
     // Construct unique key for sorting.
     if ($sort_type == CULTUREFEED_SEARCH_SORT_ALPHABETICALLY) {
       $facet_item_sort_values[] = $facet_item->getLabel();
@@ -134,8 +136,8 @@ function culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, 
     );
 
     // Get the subitems if there are any.
-    if ($facet_item->hasSubItems()) {
-      $subitems = culturefeed_search_ui_get_nested_facet_links($facet_item->getSubItems(), $facet_key, $link_path, $query, $active_options, $sort_type);
+    if ($facet_item->hasSubItems() && ($show_subitems == 1)) {
+      $subitems = _culturefeed_search_ui_get_nested_facet_links($facet_item->getSubItems(), $facet_key, $link_path, $query, $active_options, $sort_type);
       $item['children'] = $subitems['facet_links'];
       if ($subitems['has_active_subitem']) {
         $item['class'][] = 'active-parent';
@@ -160,6 +162,59 @@ function culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, 
     'facet_links' => $facet_links,
     'has_active_subitem' => $has_active_subitem,
   );
+}
+
+/**
+ * Helper function that limits the levels of items.
+ *
+ * @param array $facet_items
+ *   The nested facet link items for theme_item_list().
+ * @param int $highest_level
+ *   A number indicating the highest level to be shown.
+ *
+ * @return array
+ *   The altered facet link array, still ok for theme_item_list().
+ */
+function _culturefeed_search_ui_limit_facet_levels($facet_items, $highest_level = 1) {
+  $current_level = 1;
+  $new_items = array();
+
+  // Get the required level.
+  _culturefeed_search_ui_get_required_level($facet_items, $current_level, $highest_level, $new_items);
+
+  return $new_items;
+}
+
+/**
+ * Helper function that removes top levels from the facet links array as needed.
+ *
+ * @param array $facet_items
+ *   The nested array with link items.
+ * @param int $current_level
+ *   The current level of recursiveness.
+ * @param int $highest_level
+ *   The highest level that is required.
+ * @param array $new_items
+ *   An array passed by reference to fill with the required levels.
+ */
+function _culturefeed_search_ui_get_required_level($facet_items, $current_level, $highest_level, &$new_items) {
+  if ($current_level == $highest_level) {
+    $new_items = array_merge($new_items, $facet_items);
+  }
+  else {
+    // We have to go deeper.
+    $we_have_items = FALSE;
+    foreach ($facet_items as $link_item) {
+      if ($link_item->hasSubItems()) {
+        _culturefeed_search_ui_get_required_level($link_item->getSubItems(), ($current_level + 1), $highest_level, $new_items);
+        $we_have_items = TRUE;
+      }
+    }
+    // The highest level doesn't have any items, use the level above it.
+    if (!$we_have_items) {
+      $new_items = array_merge($new_items, $facet_items);
+    }
+  }
 }
 
 /**

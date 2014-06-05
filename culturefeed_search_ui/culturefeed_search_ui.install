@@ -17,7 +17,7 @@ function culturefeed_search_ui_uninstall() {
 }
 
 /**
- * Implements hook_update_N().
+ * Enable the compatibility mode for the facet block markup.
  */
 function culturefeed_search_ui_update_7001() {
   variable_set('culturefeed_search_ui_facet_compatibility_mode', 1);
