@@ -34,7 +34,7 @@
           // We only check from 1.8.7, the version shipped with Drupal.
           var version = $.ui.version;
           var old = ['1.8.7', '1.8.8.', '1.8.9', '1.8.10'];
-          if ($.inArray(version, old) !== false) {
+          if ($.inArray(version, old) >= 0) {
             $(this).data("autocomplete").menu.next(event);
           }
         },
