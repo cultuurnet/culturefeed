@@ -124,7 +124,7 @@ function culturefeed_search_ui_get_age_range_facet_options() {
     ),
     15 => array(
       'name' => '15-17 year',
-      'query' => '(agefrom:[12 TO 14])',
+      'query' => '(agefrom:[15 TO 17])',
     ),
     18 => array(
       'name' => '18+ year',
