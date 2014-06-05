@@ -98,6 +98,42 @@ function culturefeed_search_ui_get_date_facet_options() {
 }
 
 /**
+ * Get the allowed age range facet options.
+ */
+function culturefeed_search_ui_get_age_range_facet_options() {
+  return array(
+    0 => array(
+      'name' => '0-2 year',
+      'query' => '(agefrom:[0 TO 2])',
+    ),
+    3 => array(
+      'name' => '3-5 year',
+      'query' => '(agefrom:[3 TO 5])',
+    ),
+    6 => array(
+      'name' => '6-8 year',
+      'query' => '(agefrom:[6 TO 8])',
+    ),
+    9 => array(
+      'name' => '9-11 year',
+      'query' => '(agefrom:[9 TO 11])',
+    ),
+    12 => array(
+      'name' => '12-14 year',
+      'query' => '(agefrom:[12 TO 14])',
+    ),
+    15 => array(
+      'name' => '15-17 year',
+      'query' => '(agefrom:[12 TO 14])',
+    ),
+    18 => array(
+      'name' => '18+ year',
+      'query' => '(agefrom:[18 TO *])',
+    ),
+  );
+}
+
+/**
  * Set the correct metatags for search pages.
  */
 function culturefeed_search_ui_set_noindex_metatag() {

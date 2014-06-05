@@ -444,7 +444,7 @@ function culturefeed_search_ui_proximity_distance_form() {
     '#type' => 'submit',
     '#value' => t('Change radius'),
   );
-  
+
   $form['new_search']['#markup'] = '<p><label>' . t('Choose another location') . '</label></p>';
 
   return $form;
@@ -466,6 +466,81 @@ function culturefeed_search_ui_proximity_distance_form_submit($form, &$form_stat
     array('query' => $query)
   );
 
+}
+
+/**
+ * Block callback to show the Age Range facet.
+ */
+function culturefeed_search_ui_block_age_range_facet() {
+
+  $facet_component = culturefeed_get_facet_component();
+  if (!$facet_component instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $facets = $facet_component->getFacets();
+  if (!isset($facets['agefrom'])) {
+    return;
+  }
+
+  $facet = $facets['agefrom'];
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+  $active_age = 0;
+  if (isset($query['min_age'])) {
+    $active_age = (int) $query['min_age'];
+    unset($query['min_age']);
+  }
+
+  $requested_items = culturefeed_search_ui_get_age_range_facet_options();
+  $counts = array();
+  foreach (array_keys($requested_items) as $key) {
+    $counts[$key] = 0;
+  }
+
+  // Calculate the different age facets.
+  $all_items = $facet->getResult()->getItems();
+  foreach ($all_items as $item) {
+    $age = $item->getValue();
+    if ($age >= 0 && $age <= 2) {
+      $counts[0] += $item->getTotalResults();
+    }
+    elseif ($age >= 3 && $age <= 5) {
+      $counts[3] += $item->getTotalResults();
+    }
+    elseif ($age >= 6 && $age <= 8) {
+      $counts[6] += $item->getTotalResults();
+    }
+    elseif ($age >= 9 && $age <= 11) {
+      $counts[9] += $item->getTotalResults();
+    }
+    elseif ($age >= 12 && $age <= 14) {
+      $counts[12] += $item->getTotalResults();
+    }
+    elseif ($age >= 15 && $age <= 17) {
+      $counts[15] += $item->getTotalResults();
+    }
+    elseif ($age >= 18) {
+      $counts[18] += $item->getTotalResults();
+    }
+  }
+
+  // Create facet item for every count.
+  foreach ($requested_items as $age => $data) {
+    if (!empty($counts[$age])) {
+      $items[] = new \CultuurNet\Search\Component\Facet\FacetResultItem($data['name'], $age, $counts[$age]);
+    }
+  }
+
+  if (!empty($items)) {
+    return array(
+      'subject' => 'Age',
+      'content' => array(
+        '#theme' => 'culturefeed_search_facet',
+        '#facet' => $facet,
+        '#items' => $items,
+      ),
+    );
+  }
 }
 
 /**
