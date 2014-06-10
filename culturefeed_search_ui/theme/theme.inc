@@ -365,16 +365,25 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$v
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variables) {
   $facet_key = $variables['facet_key'];
+  $is_age_facet = $facet_key == 'agefrom';
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
   // Every filter will reset the current facet.
   // Remove this facet from URL, URL will function as removal URL.
   unset($query['facet'][$facet_key]);
+  if ($is_age_facet) {
+    unset($query['min_age']);
+  }
 
   // When the facet is datetype, we don't want to keep a date range filter..
   if ($facet_key == 'datetype' && isset($query['date_range'])) {
     unset($query['date_range']);
+  }
+
+  // Agefrom facet is active when min_age is given.
+  if ($is_age_facet && isset($_GET['min_age']) && $_GET['min_age'] == $facet_item->getValue()) {
+    $variables['active'] = TRUE;
   }
 
   if ($facet_key == 'location' && isset($_GET['location'])) {
@@ -387,7 +396,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 
   // Add this facet to the URL; the URL will function as additional filter URL.
   if (!$variables['active']) {
-    $query['facet'][$facet_key][] = $facet_item->getValue();
+    // min_age is the key for agefrom.
+    if ($is_age_facet) {
+      $query['min_age'] = $facet_item->getValue();
+    }
+    else {
+      $query['facet'][$facet_key][] = $facet_item->getValue();
+    }
   }
 
   // Remove facet completely if nothing left.
