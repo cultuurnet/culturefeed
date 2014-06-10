@@ -226,6 +226,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
         'agefrom' => t('Age'),
         'recommend_count' => t('Recommended'),
         'comment_count' => t('Reactions'),
+        'weight' => t('Weight'),
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,
