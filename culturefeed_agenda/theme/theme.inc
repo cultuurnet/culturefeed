@@ -154,6 +154,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['shortdescription'] = $detail->getShortDescription();
     $variables['longdescription'] = $detail->getLongDescription();
 
+    // Ad id / title to Drupal settings for easy reference in GTM.
+    drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
+      'events' => array(
+        $item->getId() => $variables['title'],
+      ),
+    ))), 'setting');
+
     if ($detail->getPrice()) {
       $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
       $variables['price_description'] = $detail->getPrice()->getDescription();

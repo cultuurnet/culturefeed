@@ -188,7 +188,25 @@ function culturefeed_page_build(&$page) {
 
   $container_id = variable_get('culturefeed_gtm_container_id', 'GTM-WPZSG2');
 
-  $snippet = '<!-- Google Tag Manager -->';
+  // Set up global variables.
+  $gtm_globals = array('is_loaded' => TRUE);
+  $types = culturefeed_get_searchable_types();
+  $agenda_paths = array();
+  foreach ($types as $type) {
+    if (isset($type['class_name']) && $type['class_name'] == 'CultureFeedAgendaPage' && isset($type['path'])) {
+      $agenda_paths[] = $type['path'];
+    }
+  }
+  $gtm_globals['is_agenda'] = in_array(current_path(), $agenda_paths);
+  $gtm_globals['is_event_detail'] = in_array(current_path(), $agenda_paths);
+
+  // Set the script code.
+  // Add global variables.
+  $snippet = '<script>';
+  $snippet .= 'dataLayer = [' . drupal_json_encode($gtm_globals) . '];';
+  $snippet .= '</script>';
+  // GTM Code.
+  $snippet .= '<!-- Google Tag Manager -->';
   $snippet .= '<noscript><iframe src="//www.googletagmanager.com/ns.html?id=' . $container_id . '"';
   $snippet .= 'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
   $snippet .= '<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':';
