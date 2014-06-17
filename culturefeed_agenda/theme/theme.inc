@@ -173,13 +173,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['ticket_buttons'] = array();
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
       $button['text'] = t('Buy tickets');
       $button['link'] = $link->getHLink();
-      $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
     }
 
@@ -372,7 +372,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // clean up link text
     $link_text = str_replace('http://', '', $link);
     $link_text = str_replace('https://', '', $link_text);
-    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link);
+    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('id' => 'cf-link')));
   }
 
   if (module_exists('culturefeed_social')) {
@@ -402,7 +402,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress());
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -427,7 +427,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail);
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -446,7 +446,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           // clean up link text
           $url_text = str_replace('http://', '', $url);
           $url_text = str_replace('https://', '', $url_text);
-          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url);
+          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
         }
         $variables['reservation']['url'] = implode(', ', $reservation_urls);
       }
