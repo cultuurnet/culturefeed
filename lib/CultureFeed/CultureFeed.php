@@ -858,6 +858,44 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Get the total of activities for a page.
+   *
+   * @param Integer $pageId
+   *   The page Id to get all activities for.
+   * @param string $type_contentType
+   *   Array of unique strings for each combination of activity type and its content type.
+   *   E.g.
+   */
+  public function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+
+    $data = array();
+    $data['type_contentType'] = $type_contentType;
+    $data['pageId'] = $pageId;
+    $data['private'] = $private ? "true" : "false";
+
+    $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $totals = array();
+    $objects = $xml->xpath('/response/total');
+    foreach ($objects as $object) {
+      $total = new stdClass();
+      $total->key        = (string) $object->attributes()->type;
+      $total->value      = (string) $object;
+      $totals[] = $total;
+    }
+
+    return $totals;
+
+  }
+
+  /**
    * Get the timeline of activity points for a user.
    */
   public function getActivityPointsTimeline($userId) {

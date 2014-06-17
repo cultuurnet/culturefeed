@@ -171,7 +171,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
       $query->activityId = $activity_id;
 
       $result = DrupalCultureFeed::searchActivities($query);
-      
+
       return current($result->objects);
     }
     catch (Exception $e) {
@@ -193,6 +193,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
+  }
+
+  public static function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+    return self::getLoggedInUserInstance()->getTotalPageActivities($pageId, $type_contentType, $private);
   }
 
   /**
