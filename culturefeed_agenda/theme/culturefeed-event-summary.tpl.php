@@ -2,34 +2,41 @@
 /**
  * @file
  * Template for the summary of an event.
+ * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking. 
+ * Some day your client will benefit from our aggregated insights & benchmarks too.
+ * See https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-tracking
+ * Thanks!
  */
 ?>
 
 <div class="event-teaser">
 
-  <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
+  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title-' . $cdbid))); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#lees"><?php print t('Read reactions'); ?></a>
-        <a href="<?php print $url ?>#schrijf"><?php print t('Write reaction'); ?></a>
+        <a href="<?php print $url ?>#read" id="cf-review-read-<?php print $cdbid ?>"><?php print t('Read reactions'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Write reaction'); ?></a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#schrijf"><?php print t('Be the first to write a review'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Be the first to write a review'); ?></a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><span><?php print $recommend_count ?></span> <?php print t('time recommended'); ?></div>
     <?php endif; ?>
     <?php print $recommend_link; ?>
+    <?php if ($attend_count > 0): ?>
+      <div class="count-attend"><span><?php print $attend_count ?></span> <?php print format_plural($attend_count, 'attendee', 'attendees') ?></div>
+    <?php endif; ?>
     <?php print $attend_link; ?>
   </div>
 
   <div class="image">
     <?php if (!empty($thumbnail)): ?>
-    <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
+      <?php print culturefeed_search_detail_l('event', $cdbid, $title, '<img src="' . $thumbnail . '?width=160&height=120&crop=auto" />', array('attributes' => array('id' => 'cf-image-' . $cdbid), 'html' => TRUE)); ?>
     <?php endif; ?>
   </div>
 
@@ -45,7 +52,7 @@
     <dd><?php print $when; ?></dd>
     <?php endif; ?>
 
-    <?php if ($organiser): ?>
+    <?php if (!empty($organiser)): ?>
     <dt><?php print t('Organization'); ?></dt>
     <dd><?php print $organiser['title']; ?></dd>
     <?php endif; ?>
@@ -74,9 +81,9 @@
   </dl>
 
   <?php if (!empty($tickets)): ?>
-    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button'))); ?>
+    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
   <?php else: ?>
-    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
+    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
   <?php endif; ?>
 
 </div>

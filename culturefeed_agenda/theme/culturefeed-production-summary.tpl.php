@@ -2,22 +2,26 @@
 /**
  * @file
  * Template for the summary of a production.
+ * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking. 
+ * Some day your client will benefit from our aggregated insights & benchmarks too.
+ * See https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-tracking
+ * Thanks!
  */
 ?>
 
 <div class="event-teaser">
 
-  <h2><a href="<?php print $url ?>"><?php print $title; ?></a></h2>
+  <h2><?php print culturefeed_search_detail_l('production', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title-' . $cdbid))); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#lees"><?php print t('Read reactions'); ?></a>
-        <a href="<?php print $url ?>#schrijf"><?php print t('Write reaction'); ?></a>
+        <a href="<?php print $url ?>#read" id="cf-review-read-<?php print $cdbid ?>"><?php print t('Read reactions'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Write reaction'); ?></a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#schrijf"><?php print t('Be the first to write a review'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Be the first to write a review'); ?></a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
@@ -32,7 +36,7 @@
 
   <div class="image">
     <?php if (!empty($thumbnail)): ?>
-    <img src="<?php print $thumbnail; ?>?width=160&height=120&crop=auto" />
+      <?php print culturefeed_search_detail_l('production', $cdbid, $title, '<img src="' . $thumbnail . '?width=160&height=120&crop=auto" />', array('attributes' => array('id' => 'cf-image-' . $cdbid), 'html' => TRUE)); ?>
     <?php endif; ?>
   </div>
 
@@ -40,12 +44,17 @@
 
     <?php if ($location): ?>
     <dt><?php print t('Where'); ?></dt>
-    <dd><?php print $location['title'] ?></dd>
+    <dd><?php if (!empty($location['title'])): print $location['title']; endif; ?> <?php if (!empty($location['city'])): print $location['city']; endif; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($when)): ?>
     <dt><?php print t('When'); ?></dt>
     <dd><?php print $when; ?></dd>
+    <?php endif; ?>
+
+    <?php if (!empty($organiser)): ?>
+    <dt><?php print t('Organization'); ?></dt>
+    <dd><?php print $organiser['title']; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($themes)): ?>
@@ -72,9 +81,9 @@
   </dl>
 
   <?php if (!empty($tickets)): ?>
-    <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button'))); ?>
+    <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
   <?php else: ?>
-    <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
+    <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
   <?php endif; ?>
 
 </div>
