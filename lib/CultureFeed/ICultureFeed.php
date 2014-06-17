@@ -54,6 +54,8 @@ interface ICultureFeed {
 
   public function getTotalActivities($userId, $type_contentType, $private = FALSE);
 
+  public function getTotalPageActivities($pageId, $type_contentType, $private = FALSE);
+
   public function getActivityPointsTimeline($userId);
 
   public function getActivityPointsPromotion($promotionId);
