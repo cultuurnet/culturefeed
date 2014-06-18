@@ -1169,7 +1169,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
  * for given page.
  */
 function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
-    
+
   $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -1177,6 +1177,7 @@ function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
   $query->start = $curr_page * $query->max;
   $query->type = CultureFeed_Activity::TYPE_NEWS;
   $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->nodeId = $page->getId();
   $query->skipCache = TRUE;
 
   // Execute search and show results.
