@@ -195,14 +195,14 @@ function culturefeed_page_build(&$page) {
   // Set up global variables.
   $gtm_globals = array('is_loaded' => TRUE);
   $types = culturefeed_get_searchable_types();
-  $agenda_paths = array();
+  $agenda_search_paths = array();
   foreach ($types as $type) {
     if (isset($type['class_name']) && $type['class_name'] == 'CultureFeedAgendaPage' && isset($type['path'])) {
-      $agenda_paths[] = $type['path'];
+      $agenda_search_paths[] = $type['path'];
     }
   }
-  $gtm_globals['is_agenda'] = in_array(current_path(), $agenda_paths);
-  $gtm_globals['is_event_detail'] = in_array(current_path(), $agenda_paths);
+  $gtm_globals['is_agenda_search'] = in_array(current_path(), $agenda_search_paths);
+  $gtm_globals['is_event_detail'] = in_array(current_path(), $agenda_search_paths);
 
   // Set the script code.
   // Add global variables.
