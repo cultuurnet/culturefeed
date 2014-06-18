@@ -178,11 +178,13 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     // If cache should be skipped, don't do cache_get.
     if (!$query->skipCache) {
-      $cid = sprintf('activity:activities:%s', md5(serialize($query->toPostData())));
+      return $this->realCultureFeed->searchActivities($query);
+    }
 
-      if ($cache = $this->cacheGet($cid)) {
-        return $cache->data;
-      }
+    $cid = sprintf('activity:activities:%s', md5(serialize($query->toPostData())));
+
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
     }
 
     $data = $this->realCultureFeed->searchActivities($query);
