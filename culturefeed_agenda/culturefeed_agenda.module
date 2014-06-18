@@ -295,7 +295,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#title' => t('Extra filter query for the result set'),
       '#type' => 'textfield',
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
-      '#description' => t('Make sure this is a correct solr query. Example title=mytitle'),
+      '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
 
     $form['agenda_related_activities_sort'] = array(
