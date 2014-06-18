@@ -854,7 +854,7 @@ function culturefeed_pages_culturefeed_search_page_info() {
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
-  
+
   $pages = &drupal_static('culturefeed_search_items_load', array());
 
   if (isset($pages[$id])) {
@@ -914,6 +914,9 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
 function culturefeed_pages_edit_page_access($page) {
 
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  if (empty($cultureFeedUser)) {
+    return FALSE;
+  }
 
   // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {
