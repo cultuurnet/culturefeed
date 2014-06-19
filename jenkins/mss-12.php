@@ -1,9 +1,11 @@
 <?php
 
-$default_theme = 'bartik';;
+locale_add_language('nl');
+$languages = language_list();
+variable_set('language_default', $languages['nl']);
 
 $facets = array(
-  'datetype', 'eventtype', 'theme', /*'city', 'city-only',*/
+  'datetype', 'eventtype', 'theme', 'city', 'city-only',
   'actortype', 'educationfield', 'educationlevel', 'facility',
   'flandersregion', 'flanderstouristregion', 'IPE', 'misc',
   'municipal', 'publicscope', 'targetaudience', 'umv', 'workingregion',
