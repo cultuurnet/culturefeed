@@ -42,28 +42,6 @@ function culturefeed_ui_set_canonical_and_noindex() {
   }
 }
 
-function culturefeed_ui_block_ajaxload($config) {
-  $block['subject'] = $config['title'];
-  $block['content'] = array(
-    '#markup' => '<div id="' . $config['id'] . '">' . t('Loading') . '</div>',
-    '#id' => $config['id'],
-    '#ajax' => array(
-      'event' => 'ajaxload',
-      'path' => $config['path'],
-    ),
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/js/culturefeed_ui.js',
-        array('data' => array(), 'type' => 'setting'),
-      ),
-    ),
-  );
-
-  $block['content'] = ajax_pre_render_element($block['content']);
-
-  return $block;
-}
-
 function culturefeed_ui_is_culturefeed_profile_page() {
   $account = menu_get_object('user');
 

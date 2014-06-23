@@ -18,7 +18,7 @@ class CultureFeed_Uitpas_Error
 
   const EMAIL_ALREADY_USED = 'EMAIL_ALREADY_USED';
 
-  const UNKNOWN_VOUCHER = 'UNKNOWN_VOUCHER ';
+  const UNKNOWN_VOUCHER = 'UNKNOWN_VOUCHER';
 
   const UNKNOWN_CARD = 'UNKNOWN_CARD';
 
