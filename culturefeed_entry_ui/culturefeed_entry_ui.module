@@ -47,6 +47,10 @@ function culturefeed_entry_ui_theme() {
       'file' => 'theme/theme.inc',
       'render element' => 'element',
     ),
+    'culturefeed_entry_ui_when_datetimes_table' => array(
+      'file' => 'theme/theme.inc',
+      'render element' => 'form',
+    ),
   );
 }
 
@@ -443,4 +447,23 @@ function culturefeed_entry_ui_culturefeed_ui_profile_box_main_items() {
   }
 
   return $items;
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function culturefeed_entry_ui_element_info_alter(&$types) {
+  if (isset($types['date_popup'])) {
+    $types['date_popup']['#after_build'][] = 'culturefeed_entry_ui_element_date_popup_after_build';
+  }
+}
+
+/**
+ * Adds a span element for a calendar icon on date popup fields.
+ */
+function culturefeed_entry_ui_element_date_popup_after_build($element, $form_state) {
+  if (isset($element['date'])) {
+    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
+  }
+  return $element;
 }

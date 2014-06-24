@@ -45,3 +45,80 @@ function theme_culturefeed_entry_ui_opening_times_table($variables) {
   return theme('table', $table_variables);
 
 }
+
+function theme_culturefeed_entry_ui_when_datetimes_table(&$variables) {
+
+  $form = $variables['form'];
+  $table = array('rows' => array(), 'attributes' => array('class' => 'when-datetimes-table'));
+
+  // First loop to check how many cells we need.
+  $cell_dates_remove_child = FALSE;
+  $cell_begin_date = FALSE;
+  $cell_begin_hour = FALSE;
+  $cell_datetimes_add_end = FALSE;
+  $cell_end_date = FALSE;
+  $cell_end_hour = FALSE;
+  $cell_datetimes_remove_end = FALSE;
+  foreach (element_children($form) as $element) {
+    if (isset($form[$element]['begin']['datetimes_remove_child'])) {
+      $cell_dates_remove_child = TRUE;
+    }
+    if (isset($form[$element]['begin']['date'])) {
+      $cell_begin_date = TRUE;
+    }
+    if (isset($form[$element]['begin']['hour'])) {
+      $cell_begin_hour = TRUE;
+    }
+    if (isset($form[$element]['begin']['datetimes_add_end'])) {
+      $cell_datetimes_add_end = TRUE;
+    }
+    if (isset($form[$element]['end']['date'])) {
+      $cell_end_date = TRUE;
+    }
+    if (isset($form[$element]['end']['hour'])) {
+      $cell_end_hour = TRUE;
+    }
+    if (isset($form[$element]['end']['datetimes_remove_end'])) {
+      $cell_datetimes_remove_end = TRUE;
+    }
+  }
+
+  // Second loop to set the cells.
+  foreach (element_children($form) as $element) {
+    if ($element !== 'datetimes_add_child') {
+
+      $begin = isset($form[$element]['begin']) ? $form[$element]['begin'] : array();
+      $end = isset($form[$element]['end']) ? $form[$element]['end'] : array();
+
+      $cells = array();
+      if ($cell_dates_remove_child) {
+        $cells[] = isset($begin['datetimes_remove_child']) ? drupal_render($begin['datetimes_remove_child']) : '';
+      }
+      if ($cell_begin_date) {
+        $cells[] = isset($begin['date']) ? drupal_render($begin['date']) : '';
+      }
+      if ($cell_begin_hour) {
+        $cells[] = isset($begin['hour']) ? drupal_render($begin['hour']) : '';
+      }
+      if ($cell_datetimes_add_end) {
+        $cells[] = isset($begin['datetimes_add_end']) ? drupal_render($begin['datetimes_add_end']) : '';
+      }
+      if ($cell_end_date) {
+        $cells[] = isset($end['date']) ? drupal_render($end['date']) : '';
+      }
+      if ($cell_end_hour) {
+        $cells[] = isset($end['hour']) ? drupal_render($end['hour']) : '';
+      }
+      if ($cell_datetimes_remove_end) {
+        $cells[] = isset($end['datetimes_remove_end']) ? drupal_render($end['datetimes_remove_end']) : '';
+      }
+
+      $table['rows'][] = $cells;
+
+    }
+  }
+
+  $output = theme('table', $table);
+  $output .= drupal_render($form['datetimes_add_child']);
+  return $output;
+}
