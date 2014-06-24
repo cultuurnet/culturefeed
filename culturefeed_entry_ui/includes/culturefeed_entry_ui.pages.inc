@@ -664,7 +664,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Date.
   $form['basic']['when'] = array(
-    '#type' => 'container',
+    '#type' => 'fieldset',
     '#prefix' => '<div id="when-ajax-wrapper">',
     '#suffix' => '</div>',
     '#title' => t('Dates'),

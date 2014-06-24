@@ -166,7 +166,7 @@ input.add-more-link:hover {
 }
 
 .when-datetimes-table {
-  width: auto;
+  width: auto !important;
 }
 
 .when-datetimes-table td {
