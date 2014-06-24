@@ -64,15 +64,15 @@ msgid "ZIP Code"
 msgstr "Code postal"
 
 #: 
-msgid "New activity"
+msgid "New event"
 msgstr "Nouvelle activité"
 
 #: 
-msgid "Edit activity"
+msgid "Edit event"
 msgstr "Modifier activité"
 
 #: 
-msgid "Delete activity"
+msgid "Delete event"
 msgstr "Supprimer activité"
 
 #: 
@@ -140,7 +140,7 @@ msgid "Basic info"
 msgstr "Information de base"
 
 #: 
-msgid "Title"
+msgid "Event title"
 msgstr "Titre"
 
 #: 
@@ -200,15 +200,15 @@ msgid "Permanent"
 msgstr "Permanent"
 
 #: 
-msgid "X"
-msgstr "X"
+msgid "remove date"
+msgstr "retirer date"
 
 #: 
-msgid "Start date"
+msgid "Date"
 msgstr "Date de début"
 
 #: 
-msgid "+ add end"
+msgid "+ add end date or time"
 msgstr "+ ajouter fin"
 
 #: 
@@ -216,8 +216,8 @@ msgid "End date"
 msgstr "Date de fin"
 
 #: 
-msgid "+ remove end"
-msgstr "+ retirer fin"
+msgid "remove end date"
+msgstr "retirer fin"
 
 #: 
 msgid "+ add date"
@@ -280,8 +280,8 @@ msgid "Allowed extensions: gif png jpg jpeg"
 msgstr "Extensions autorisées : gif png jpg jpeg"
 
 #: 
-msgid "I agree to the <a href=\"#\">general conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image through UiTdatabank."
-msgstr "Je marque mon accord avec les <a href=\"#\">conditions générales de UiTdatabank</a> et déclare détenir les droits ou autorisations nécessaires pour diffuser l'image via UiTdatabank."
+msgid "I agree to the <a href="http://www.uitdatabank.be/uitportal/legal.aspx">terms & conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image."
+msgstr "Je marque mon accord avec les <a href="http://www.uitdatabank.be/uitportal/legal.aspx">conditions générales</a> et déclare détenir les droits ou autorisations nécessaires pour diffuser l'image."
 
 #: 
 msgid "Price"
@@ -292,23 +292,23 @@ msgid "Free event"
 msgstr "Événement gratuit"
 
 #: 
-msgid "+ add price info"
-msgstr "+ ajouter info prix"
+msgid "+ add conditions & discounts"
+msgstr "+ ajouter tarifs et réductions"
 
 #: 
-msgid "Extra price info"
-msgstr "Info prix supplémentaire"
+msgid "Price conditions & discounts"
+msgstr "Tarifs spéciaux et réductions"
 
 #: 
-msgid "Organisation"
-msgstr "Organisation"
+msgid "Organizer"
+msgstr "Organisateur"
 
 #: 
-msgid "Organisation not found, add organisation"
-msgstr "L'organisation n'a pu être trouvée. Ajouter une organisation"
+msgid "Organizer not found, add organizer"
+msgstr "L'organisateur n'a pu être trouvée. Ajouter une organisateur"
 
 #: 
-msgid "Name new organiser"
+msgid "Name new organizer"
 msgstr "Nom nouvel organisateur"
 
 #: 
@@ -332,20 +332,20 @@ msgid "For adults (18+)"
 msgstr "Pour les adultes (+ de 18 ans)"
 
 #: 
-msgid "Age from"
-msgstr "À partir de"
+msgid "Suitable for ages from"
+msgstr "Convient aux âges dès"
 
 #: 
 msgid "Activities for children will get the 'Fly' label"
 msgstr "Les activités pour les enfants recevront le label \"Fly\""
 
 #: 
-msgid "Contacts"
-msgstr "Contacts"
+msgid "Contact"
+msgstr "Coordonnées"
 
 #: 
-msgid "+ add another contact"
-msgstr "+ ajouter un autre contact"
+msgid "+ add contact option"
+msgstr "+ ajouter des coordonnées"
 
 #: 
 msgid "Performers"
@@ -364,8 +364,12 @@ msgid "+ add more language info"
 msgstr "+ ajouter plus d'informations linguistiques"
 
 #: 
-msgid "Entrance"
-msgstr "Entrée"
+msgid "Access"
+msgstr "Accès"
+
+#: 
+msgid "Open for everyone"
+msgstr "Accessible à tous"
 
 #: 
 msgid "Only for members"
@@ -390,10 +394,6 @@ msgstr "Français"
 #: 
 msgid "German"
 msgstr "Allemand"
-
-#: 
-msgid "Publication"
-msgstr "Publication"
 
 #: 
 msgid "Publication date"
@@ -512,8 +512,8 @@ msgid "Not a valid URL"
 msgstr "Cette URL n'est pas valide"
 
 #: 
-msgid "We could not validate the organization"
-msgstr "L'organisation n'a pas pu être validée"
+msgid "We could not validate the organizer"
+msgstr "L'organisateur n'a pas pu être validée"
 
 #: 
 msgid "Not a valid email address"
