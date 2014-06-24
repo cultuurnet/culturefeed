@@ -400,7 +400,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#title' => $cluster_name[$cluster_id],
     );
     foreach ($cluster_value as $type_id => $type_name) {
-      $form['basic']['what'][$cluster_id][$type_name] = array(
+      $form['basic']['what'][$cluster_id][$type_id] = array(
         '#type' => 'radio',
         '#title' => $type_name,
         '#return_value' => $type_id,
