@@ -1013,6 +1013,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#rows' => 4,
     '#default_value' => $default_short_description,
+    '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
   );
 
   $form['extra']['description']['ld'] = array(
@@ -1524,6 +1525,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $nl_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['dutch']['long_description'] = array(
@@ -1554,6 +1556,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $en_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['english']['long_description'] = array(
@@ -1584,6 +1587,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $fr_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['french']['long_description'] = array(
@@ -1614,6 +1618,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $de_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['german']['long_description'] = array(
