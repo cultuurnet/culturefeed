@@ -339,7 +339,7 @@ function _culturefeed_social_undo($activity_type, $type, $node_id) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
   }
-  return array();
+  //return array();
 }
 
 /**
@@ -621,3 +621,58 @@ function culturefeed_social_comment_actionbox($object, $activity = NULL) {
 
 }
 
+/**
+ * Prepare all the social activity stats for this user.
+ */
+function culturefeed_social_warmup_activities_cache($items) {
+
+  // Do an activity search on all found nodeIds.
+  $nodeIds = array();
+  foreach ($items as $item) {
+    $activity_content_type = culturefeed_get_content_type($item->getType());
+    $nodeIds[] = culturefeed_social_get_activity_node_id($activity_content_type, $item);
+  }
+
+  $userDidActivity = &drupal_static('userDidActivity', array());
+
+  // Get a list of all activities from this user, on the content to show.
+  $userActivities = array();
+  try {
+
+    $userId = DrupalCultureFeed::getLoggedInUserId();
+
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->nodeId = $nodeIds;
+    $query->userId = $userId;
+    $query->private = TRUE;
+
+    $activities = DrupalCultureFeed::searchActivities($query);
+    foreach ($activities->objects as $activity) {
+      $userActivities[$activity->nodeId][$activity->contentType][] = $activity;
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_search_ui', $e);
+  }
+
+  // Fill up cache for following content types.
+  $contentTypes = array(
+    CultureFeed_Activity::CONTENT_TYPE_EVENT,
+    CultureFeed_Activity::CONTENT_TYPE_PRODUCTION,
+  );
+
+  // Fill up the $userDidActivity variable. This is used in DrupalCulturefeed::userDidActivity().
+  foreach ($nodeIds as $nodeId) {
+    foreach ($contentTypes as $contentType) {
+      // If user did this activitiy. Place it in the correct array.
+      if (isset($userActivities[$nodeId][$contentType])) {
+        $activities = new CultureFeed_ResultSet(count($userActivities[$nodeId][$contentType]), $userActivities[$nodeId][$contentType]);
+      }
+      // Otherwise create an empty result set.
+      else {
+        $activities = new CultureFeed_ResultSet(0, array());
+      }
+      $userDidActivity[$nodeId][$contentType][$userId] = $activities;
+    }
+  }
+}

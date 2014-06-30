@@ -161,7 +161,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Ticket links.
     $ticket_links = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS);
-    
+
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
 
@@ -170,7 +170,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
       // Provide some themable ticket buttons.
       $button = array();
-      $button['text'] = t('Buy tickets');      
+      $button['text'] = t('Buy tickets');
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
       $variables['ticket_buttons'][] = $button;
@@ -211,7 +211,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture = $image->getHLink();
       }
     }
-    
+
     // If no image we get image from eventdetails language=nl
     if (empty($pictures)) {
 
@@ -224,7 +224,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
             $main_picture = $photo->getHLink();
           }
         }
-  
+
         // Support for mediatype imageweb
         $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
         foreach ($images as $image) {
@@ -235,12 +235,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         }
       }
     }
-    
+
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
     }
-      
+
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
       unset($pictures[0]);
@@ -248,7 +248,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     $variables['main_picture'] = $main_picture;
     $variables['pictures'] = $pictures;
-    
+
     // Make sure usage of thumbnail is backwards compatible
     $variables['thumbnail'] = $variables['main_picture'];
 
@@ -484,6 +484,8 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
   $relations = $production->getRelations();
   $total_relations = count($relations);
+  $variables['relations'] = $total_relations;
+
   // If a production has multiple events. Show general information.
   if ($total_relations > 1) {
     $variables['location']['title'] = t('multiple locations');
@@ -516,7 +518,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
     // Check for regions
     $region_data = $production->getCategories()->getCategoriesByType('flandersregion');
-    
+
     if ($region_data) {
 
       $regions = array();
@@ -531,7 +533,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
 
     // Check for workingregions
     $workingregion_data = $production->getCategories()->getCategoriesByType('workingregion');
-    
+
     if ($workingregion_data) {
 
       $workingregions = array();

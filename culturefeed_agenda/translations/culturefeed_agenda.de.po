@@ -109,9 +109,9 @@ msgid "Extra filter query for the result set"
 msgstr "Ihre Suche verfeinern"
 
 #: culturefeed_agenda.module:205
-msgid "Make sure this is a correct solr query. Example title=mytitle"
+msgid "Make sure this is a correct solr query. Example title:mytitle"
 msgstr ""
-"Achten Sie darauf, dass die Solr Query stimmt. Zum Beispiel title=mytitle"
+"Achten Sie darauf, dass die Solr Query stimmt. Zum Beispiel title:mytitle"
 
 #: culturefeed_agenda.module:209
 msgid "Sort field"

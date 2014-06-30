@@ -247,7 +247,8 @@ function culturefeed_pages_block_page_timeline($page) {
   }
 
   try {
-    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId());
+    $active_types = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($page->getId(), NULL, $active_types);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -497,10 +498,13 @@ function culturefeed_pages_block_nearby_pages($page) {
     return;
   }
 
+  $actortypes = variable_get('culturefeed_pages_actor_types', array());
+
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_PAGE_NEARBY_PAGES_COUNT);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('!cdbid' . ':' . $page->getId());
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
 
   // If no address information, don't show nearby activities.
   $address = $page->getAddress();

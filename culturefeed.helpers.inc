@@ -328,3 +328,28 @@ function culturefeed_create_temporary_image($image, $destination) {
 
   return file_save($file);
 }
+
+/**
+ * Load a block through ajax.
+ */
+function culturefeed_ui_block_ajaxload($config) {
+  $block['subject'] = $config['title'];
+  $block['content'] = array(
+    '#markup' => '<div id="' . $config['id'] . '">' . t('Loading') . '</div>',
+    '#id' => $config['id'],
+    '#ajax' => array(
+      'event' => 'ajaxload',
+      'path' => $config['path'],
+    ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed') . '/js/culturefeed_ajaxload.js',
+        array('data' => array(), 'type' => 'setting'),
+      ),
+    ),
+  );
+
+  $block['content'] = ajax_pre_render_element($block['content']);
+
+  return $block;
+}

@@ -37,7 +37,7 @@ function culturefeed_get_search_service() {
  */
 function culturefeed_search_item_load($cdb_id, $type = '') {
 
-  static $items = array();
+  $items = &drupal_static(__FUNCTION__, array());
 
   if (isset($items[$cdb_id])) {
     return $items[$cdb_id];
@@ -592,7 +592,7 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
 /**
  * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
 
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
@@ -609,6 +609,13 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
     $query->isNotNull('p1');
     $query->isNotNull('p2');
     $query->isNotNull('p3');
+  }
+  // If parents is set add condition.
+  if (count($parents)) {
+    $or = db_or();
+    $or->condition('p1', $parents, 'IN');
+    $or->condition('p2', $parents, 'IN');
+    $query->condition($or);
   }
   $query->range(0, 20);
 
@@ -632,14 +639,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
  * @param bool $include_regions
  *   Include also the cities in the suggestions, or not.
  */
-function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE) {
+function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
 
   $suggestions = array();
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (trim(implode(", ", $parts)) . ', ') : '';
 
-  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions);
+  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents);
   foreach ($region_suggestions as $region) {
     $suggestions[$old_parts . $region] = $region;
   }

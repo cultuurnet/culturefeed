@@ -35,7 +35,7 @@ function culturefeed_search_ui_init() {
 
     if (strpos(current_path(), $path) !== 0) {
       $params = drupal_get_query_parameters();
-      drupal_goto($path, array('query' => array($params)), 301);
+      drupal_goto($path, array('query' => ($params ? array($params) : NULL)), 301);
     }
 
   }
@@ -107,6 +107,14 @@ function culturefeed_search_ui_menu() {
     'file' => 'includes/admin.inc',
   );
 
+  $items['autocomplete/culturefeed_ui/city-region-suggestion'] = array(
+    'page callback' => 'culturefeed_search_ui_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, TRUE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -170,6 +178,7 @@ function culturefeed_search_ui_theme() {
         'path' => NULL,
         'query' => NULL,
         'active' => FALSE,
+        'has_active_sub_item' => FALSE,
       ),
       'template' => 'culturefeed-search-facet-item',
       'path' => $path,
@@ -271,6 +280,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-age-range'] = array(
+    'info' => t('Facet: Age range'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   $blocks['filter-form'] = array(
     'info' => t('Culturefeed search: Filter form'),
     'cache' => DRUPAL_NO_CACHE,
@@ -316,7 +330,61 @@ function culturefeed_search_ui_block_configure($delta) {
         '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
       );
     }
+
+    if ($delta == 'facet-city') {
+
+      $form['culturefeed-facet-city-parents'] = array(
+        '#tree' => TRUE,
+        '#title' => t('Limit autocomplete options to selected parents'),
+      );
+      $default_value = variable_get('culturefeed_facet_city_parents', array());
+
+      $base_query = db_select('culturefeed_search_terms', 't');
+      $base_query->fields('t', array('tid', 'name'));
+      // Conditions taken from culturefeed_search_get_flandersregion_suggestions.
+      $base_query->condition('language', 'und');
+      $base_query->condition('did', 'flandersregion', '=');
+      $base_query->orderBy('name');
+      // Get only provinces.
+      $province_query = clone($base_query);
+      $province_query->isNotNull('parent');
+      $province_query->execute();
+      $provinces = $province_query->execute()->fetchAllKeyed();
+
+      foreach ($provinces as $pkey => $province) {
+
+        $form['culturefeed-facet-city-parents'][$pkey] = array(
+          '#type' => 'checkbox',
+          '#title' => '<strong>' . $province . '</strong>',
+          '#default_value' => in_array($pkey, $default_value),
+        );
+
+        // Get only regions.
+        $region_query = clone($base_query);
+        $region_query->isNull('p2');
+        $region_query->isNull('p3');
+        $region_query->isNull('p4');
+        $region_query->condition('p1', $pkey);
+        $region_query->execute();
+        $regions = $region_query->execute()->fetchAllKeyed();
+
+        foreach ($regions as $rkey => $region) {
+
+          $form['culturefeed-facet-city-parents'][$rkey] = array(
+            '#type' => 'checkbox',
+            '#title' => $region,
+            '#attributes' => array('style' => 'margin-left: 20px;'),
+            '#default_value' => in_array($rkey, $default_value),
+          );
+
+        }
+
+      }
+
+    }
+
   }
+
   elseif ($delta == 'filter-form') {
 
     $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
@@ -347,15 +415,18 @@ function culturefeed_search_ui_block_configure($delta) {
         '#type' => 'textfield',
         '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
       );
+
     }
+
   }
 
   return $form;
+
 }
 
 /**
- * Implements hook_block_save().
- */
+* Implements hook_block_save().
+*/
 function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
   if (isset($edit['sort'])) {
@@ -363,6 +434,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   }
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
+  }
+  if (isset($edit['culturefeed-facet-city-parents'])) {
+    variable_set('culturefeed_facet_city_parents', array_keys(array_filter($edit['culturefeed-facet-city-parents'])));
   }
   if (isset($edit['culturefeed-search-filter-options'])) {
 
@@ -419,6 +493,10 @@ function culturefeed_search_ui_block_view($delta) {
       $block = culturefeed_search_ui_block_city_only_facet();
     break;
 
+    case 'facet-age-range':
+      $block = culturefeed_search_ui_block_age_range_facet();
+    break;
+
     case 'filter-form':
 
       $search_result = culturefeed_get_search_result();
@@ -467,6 +545,24 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
       $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery($option['api-filter-query']));
     }
   }
+
+  // Add facet on agefrom.
+  $facet_component = culturefeed_get_facet_component();
+  if ($facet_component) {
+    $culturefeedSearchPage->addParameter($facet_component->facetField('agefrom'));
+  }
+
+  // Add min age filter. This is always the requested age and count till 12.
+  if (isset($_GET['min_age']) && is_numeric($_GET['min_age']) && $_GET['min_age'] > -1) {
+
+    $age_range_filters = culturefeed_search_ui_get_age_range_facet_options();
+    if (isset($age_range_filters[$_GET['min_age']])) {
+      $query_string = $age_range_filters[$_GET['min_age']]['query'];
+    }
+
+    $culturefeedSearchPage->addParameter(new \Cultuurnet\Search\Parameter\FilterQuery($query_string));
+  }
+
 }
 
 /**
@@ -568,13 +664,33 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
     $label = check_plain($query['location']);
     if (!empty($query['distance'])) {
-      $label .= ' +' . check_plain($query['distance']) . ' km';
+      $label .= ' + ' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);
     }
 
     $build['location'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
       '#label' => $label,
+      '#url' => $url
+    );
+  }
+
+  // Add min age to active facet filters.
+  if (!empty($query['min_age'])) {
+    $min_age = (int) $query['min_age'];
+    unset($query['min_age']);
+    $url = url($path, array('query' => $query));
+
+    $age_facets = culturefeed_search_ui_get_age_range_facet_options();
+    foreach ($age_facets as $key => $data) {
+      if ($key === $min_age) {
+        $current_age = t($data['name']);
+      }
+    }
+
+    $build['min-age'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => $min_age == 0 ? t('All ages') : $current_age,
       '#url' => $url
     );
   }

@@ -70,18 +70,23 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   public function search($parameters = array()) {
 
     DrupalCultureFeedSearchService::addLanguageParameter($parameters);
-    $items = $this->service->search($parameters);
-    DrupalCultureFeedSearchService::translateCategories($items);
+    $result = $this->service->search($parameters);
+    DrupalCultureFeedSearchService::translateCategories($result);
 
-    return $items;
+    DrupalCultureFeedSearchService::setDetailCache($result);
 
+    return $result;
   }
 
   /**
    * @see \CultuurNet\Search\Service::search().
    */
   public function searchPages($parameters = array()) {
-    return $this->service->searchPages($parameters);
+
+    $result = $this->service->searchPages($parameters);
+    DrupalCultureFeedSearchService::setDetailCache($result);
+
+    return $result;
   }
 
   /**
@@ -127,6 +132,18 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Put found item in static cache of the detail item load.
+   */
+  public static function setDetailCache($result) {
+
+    $static_cache = &drupal_static('culturefeed_search_item_load', array());
+    $items = $result->getItems();
+    foreach ($items as $item) {
+      $static_cache[$item->getId()] = $item;
     }
   }
 

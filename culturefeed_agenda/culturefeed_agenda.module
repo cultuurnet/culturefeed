@@ -33,7 +33,7 @@ function culturefeed_agenda_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     );
-    
+
     $theme['culturefeed_' . $type . '_mini_summary'] = array(
       'variables' => array('item' => NULL),
       'template' => 'culturefeed-' . $type . '-mini-summary',
@@ -189,6 +189,14 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['ajax/culturefeed/related-activities/%'] = array(
+    'page callback' => 'culturefeed_agenda_page_ajax_related_activities',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['admin/config/culturefeed/agenda'] = array(
     'title' => 'CultureFeed Agenda',
     'description' => t('Change CultureFeed agenda settings'),
@@ -215,8 +223,10 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'sort_options' => array(
         'relevancy' => t('Relevance'),
         'date' => t('Date'),
+        'agefrom' => t('Age'),
         'recommend_count' => t('Recommended'),
         'comment_count' => t('Reactions'),
+        'weight' => t('Weight'),
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,
@@ -285,7 +295,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#title' => t('Extra filter query for the result set'),
       '#type' => 'textfield',
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
-      '#description' => t('Make sure this is a correct solr query. Example title=mytitle'),
+      '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
 
     $form['agenda_related_activities_sort'] = array(

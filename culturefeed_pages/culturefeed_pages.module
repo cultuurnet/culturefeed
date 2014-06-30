@@ -851,8 +851,8 @@ function culturefeed_pages_culturefeed_search_page_info() {
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
-
-  static $pages = array();
+  
+  $pages = &drupal_static('culturefeed_search_items_load', array());
 
   if (isset($pages[$id])) {
     return $pages[$id];
