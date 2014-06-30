@@ -104,6 +104,9 @@ function theme_culturefeed_entry_ui_when_datetimes_table(&$variables) {
         $cells[] = isset($begin['datetimes_add_end']) ? drupal_render($begin['datetimes_add_end']) : '';
       }
       if ($cell_end_date) {
+        $add = $cells;
+        $add[] = array();
+        $cells = array();
         $cells[] = isset($end['date']) ? drupal_render($end['date']) : '';
       }
       if ($cell_end_hour) {
@@ -113,6 +116,9 @@ function theme_culturefeed_entry_ui_when_datetimes_table(&$variables) {
         $cells[] = isset($end['datetimes_remove_end']) ? drupal_render($end['datetimes_remove_end']) : '';
       }
 
+      if (isset($add)) {
+        $table['rows'][] = $add;
+      }
       $table['rows'][] = $cells;
 
     }
