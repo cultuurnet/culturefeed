@@ -1657,7 +1657,26 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
-  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
+  global $theme;
+  if ($theme == 'culturefeed_bootstrap') {
+    // Ensure the javascript files are added after the bootstrap js files as
+    // these override the custom entury ui autocomplete js.
+    $form['#attached']['js'][] = array(
+      'data' => drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js',
+      'group' => JS_THEME,
+      'every_page' => FALSE,
+      'weight' => 5,
+    );
+    $form['#attached']['js'][] = array(
+      'data' => drupal_get_path('module', 'culturefeed_entry_ui') . '/js/bootstrap_autocomplete_override.js',
+      'group' => JS_THEME,
+      'every_page' => FALSE,
+      'weight' => 6,
+    );
+  }
+  else {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
+  }
   return $form;
 
 }
