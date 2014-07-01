@@ -47,12 +47,6 @@ function culturefeed_entry_ui_theme() {
       'file' => 'theme/theme.inc',
       'render element' => 'element',
     ),
-    'culturefeed_entry_ui_event_form' => array(
-      'render element' => 'form',
-      'template' => 'culturefeed-entry-ui-event-form',
-      'path' => drupal_get_path('module', 'culturefeed_entry_ui') . '/theme',
-      'file' => 'theme.inc',
-    )
   );
 }
 
@@ -451,3 +445,33 @@ function culturefeed_entry_ui_culturefeed_ui_profile_box_main_items() {
   return $items;
 }
 
+/**
+ * Validation function for some textarea form elements.
+ */
+function culturefeed_entry_ui_validate_textarea_markup($element, &$form_state, $form) {
+  $value = drupal_array_get_nested_value($form_state['values'], $element['#parents'], $key_exists);
+  if ($key_exists) {
+    // Remember the original value.
+    $original_value = $value;
+
+    // Only allow the following tags.
+    $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr');
+    $value = filter_xss($value, $allowed_tags);
+    // Let the user know if we removed any tags.
+    if ($original_value != $value) {
+      drupal_set_message(t(
+        'Some disallowed html tags will be removed in the %field_name field. The allowed tags are %allowed_tags',
+        array(
+          '%field_name' => $element['#title'],
+          '%allowed_tags' => implode(', ', $allowed_tags),
+        )
+      ), 'warning');
+    }
+
+    // Replace newlines by <p> and <br />.
+    $value = _filter_autop($value);
+
+    // Put the altered value back in the form state array.
+    drupal_array_set_nested_value($form_state['values'], $element['#parents'], $value);
+  }
+}

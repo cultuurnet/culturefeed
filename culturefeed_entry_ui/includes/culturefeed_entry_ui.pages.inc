@@ -1013,6 +1013,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#rows' => 4,
     '#default_value' => $default_short_description,
+    '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
   );
 
   $form['extra']['description']['ld'] = array(
@@ -1042,13 +1043,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   if (isset($form_state['#ld_needed'])) {
     $form['extra']['description']['ld']['long_description'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Long description'),
       '#rows' => 10,
       '#default_value' => $default_long_description,
-      '#name' => 'long_description',
-      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
-      '#format' => filter_default_format(),
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
   }
 
@@ -1506,7 +1505,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#group' => 'vertical_tabs',
   );
 
-  // Dutch
+  // Dutch.
   if (culturefeed_search_get_preferred_language() != 'nl') {
     $form['extra']['translations']['dutch'] = array(
       '#type' => 'fieldset',
@@ -1526,17 +1525,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $nl_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['dutch']['long_description'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Long description'),
       '#default_value' => $nl_long_description,
-      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
   }
 
-  //english
+  // English.
   if (culturefeed_search_get_preferred_language() != 'en') {
     $form['extra']['translations']['english'] = array(
       '#type' => 'fieldset',
@@ -1556,17 +1556,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $en_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['english']['long_description'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Long description'),
       '#default_value' => $en_long_description,
-      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
   }
 
-  //french
+  // French.
   if (culturefeed_search_get_preferred_language() != 'fr') {
     $form['extra']['translations']['french'] = array(
       '#type' => 'fieldset',
@@ -1586,17 +1587,18 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $fr_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['french']['long_description'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Long description'),
       '#default_value' => $fr_long_description,
-      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
   }
 
-  //german
+  // German.
   if (culturefeed_search_get_preferred_language() != 'de') {
     $form['extra']['translations']['german'] = array(
       '#type' => 'fieldset',
@@ -1616,13 +1618,14 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#type' => 'textarea',
       '#title' => t('Short description'),
       '#default_value' => $de_short_description,
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
 
     $form['extra']['translations']['german']['long_description'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Long description'),
       '#default_value' => $de_long_description,
-      '#after_build' => array('culturefeed_entry_ui_remove_filter_input'),
+      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
     );
   }
   //Publication & Private
@@ -2213,7 +2216,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
   foreach ($available_translations as $key => $language) {
     if (culturefeed_search_get_preferred_language() != $key) {
-      if ($values[$language]['short_description'] || $values[$language]['long_description']['value']) {
+      if ($values[$language]['short_description'] || $values[$language]['long_description']) {
         if (!$values[$language]['language']) {
           form_set_error('channel_input', t('If you translate something, you should also translate the title.'));
         }
@@ -2442,8 +2445,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if (!empty($values['description']['sd']['short_description'])) {
     $detail->setShortDescription($values['description']['sd']['short_description']);
   }
-  if (!empty($values['description']['ld']['long_description']['value'])) {
-    $detail->setLongDescription($values['description']['ld']['long_description']['value']);
+  if (!empty($values['description']['ld']['long_description'])) {
+    $detail->setLongDescription($values['description']['ld']['long_description']);
   }
 
   // Photo
@@ -2523,7 +2526,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Translations Dutch.
   if (culturefeed_search_get_preferred_language() != 'nl') {
-    if ($values['dutch']['language'] || $values['dutch']['short_description'] || $values['dutch']['long_description']['value']) {
+    if ($values['dutch']['language'] || $values['dutch']['short_description'] || $values['dutch']['long_description']) {
 
       $detail = new CultureFeed_Cdb_Data_EventDetail();
       if ($values['dutch']['language']) {
@@ -2532,8 +2535,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!empty($values['dutch']['short_description'])) {
         $detail->setShortDescription($values['dutch']['short_description']);
       }
-      if (!empty($values['dutch']['long_description']['value'])) {
-        $detail->setLongDescription($values['dutch']['long_description']['value']);
+      if (!empty($values['dutch']['long_description'])) {
+        $detail->setLongDescription($values['dutch']['long_description']);
       }
 
       $detail->setLanguage("nl");
@@ -2543,7 +2546,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Translations English.
   if (culturefeed_search_get_preferred_language() != 'en') {
-    if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']['value']) {
+    if ($values['english']['language'] || $values['english']['short_description'] || $values['english']['long_description']) {
 
       $detail = new CultureFeed_Cdb_Data_EventDetail();
       if ($values['english']['language']) {
@@ -2552,8 +2555,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!empty($values['english']['short_description'])) {
         $detail->setShortDescription($values['english']['short_description']);
       }
-      if (!empty($values['english']['long_description']['value'])) {
-        $detail->setLongDescription($values['english']['long_description']['value']);
+      if (!empty($values['english']['long_description'])) {
+        $detail->setLongDescription($values['english']['long_description']);
       }
 
       $detail->setLanguage("en");
@@ -2563,7 +2566,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Translations French.
   if (culturefeed_search_get_preferred_language() != 'fr') {
-    if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']['value']) {
+    if ($values['french']['language'] || $values['french']['short_description'] || $values['french']['long_description']) {
 
       $detail = new CultureFeed_Cdb_Data_EventDetail();
       if ($values['french']['language']) {
@@ -2572,8 +2575,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!empty($values['french']['short_description'])) {
         $detail->setShortDescription($values['french']['short_description']);
       }
-      if (!empty($values['french']['long_description']['value'])) {
-        $detail->setLongDescription($values['french']['long_description']['value']);
+      if (!empty($values['french']['long_description'])) {
+        $detail->setLongDescription($values['french']['long_description']);
       }
 
       $detail->setLanguage("fr");
@@ -2583,7 +2586,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Translations German.
   if (culturefeed_search_get_preferred_language() != 'de') {
-    if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']['value']) {
+    if ($values['german']['language'] || $values['german']['short_description'] || $values['german']['long_description']) {
 
       $detail = new CultureFeed_Cdb_Data_EventDetail();
       if ($values['german']['language']) {
@@ -2592,8 +2595,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       if (!empty($values['german']['short_description'])) {
         $detail->setShortDescription($values['german']['short_description']);
       }
-      if (!empty($values['german']['long_description']['value'])) {
-        $detail->setLongDescription($values['german']['long_description']['value']);
+      if (!empty($values['german']['long_description'])) {
+        $detail->setLongDescription($values['german']['long_description']);
       }
 
       $detail->setLanguage("de");
