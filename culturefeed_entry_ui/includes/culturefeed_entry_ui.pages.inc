@@ -1969,14 +1969,14 @@ function culturefeed_entry_ui_attach_opening_time_elements(&$form, $day, $i, $op
     '#type' => 'textfield',
     '#size' => 12,
     '#default_value' => $opening_time ? $opening_time->getOpenFrom() : '',
-    '#description' => t('Format') . ': 12:00:00',
+    '#description' => t('Format') . ': 12:00',
   );
 
   $form['basic']['when']['period_or_permanent']['opening_times'][$day][$i]['open_till'] = array(
     '#type' => 'textfield',
     '#size' => 12,
     '#default_value' => $opening_time ? $opening_time->getOpenTill() : '',
-    '#description' => t('Format') . ': 12:00:00',
+    '#description' => t('Format') . ': 12:00',
   );
 
 }
@@ -2073,6 +2073,16 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
         foreach ($opening_times as $key => $opening_time) {
 
           if (!empty($opening_time['open_from']) || !empty($opening_time['open_till'])) {
+            $parents = array('period_or_permanent', 'opening_times', $day, $key);
+            if (substr_count($opening_time['open_from'], ':') == 1) {
+              $opening_time['open_from'] .= ':00';
+              form_set_value(array('#parents' => array_merge($parents, array('open_from'))), $opening_time['open_from'], $form_state);
+            }
+            if (substr_count($opening_time['open_till'], ':') == 1) {
+              $opening_time['open_till'] .= ':00';
+              form_set_value(array('#parents' => array_merge($parents, array('open_till'))), $opening_time['open_till'], $form_state);
+            }
+
             try {
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_from']);
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_till']);
