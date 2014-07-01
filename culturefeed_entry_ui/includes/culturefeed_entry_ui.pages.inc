@@ -2206,7 +2206,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (empty($errors)) {
     _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
-
 }
 
 /**
@@ -2223,7 +2222,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  dsm($values);
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
@@ -2681,6 +2679,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   //}
 
+  $form_state['submit_time'] = time();
   try {
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
@@ -2799,7 +2798,7 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
  * Submit the event form: redirect form and show message.
  */
 function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
-
+  /*
   if ($form_state['#update_event']) {
     $form_state['redirect'] = 'http://' . $_SERVER['HTTP_HOST'] . culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
     drupal_set_message(t('Event successfully updated'));
@@ -2809,7 +2808,21 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
     $link_change_event = '<a href="' . $path . '">' . t('Click here to update') . '</a>';
     drupal_set_message(t('Event ' . $form_state['#event_id'] . ' successfully created') . ' ' . $link_change_event);
   }
+  //*/
+  $batch = array(
+    'title' => t('Saving the event'),
+    'operations' => array(
+      array(
+        'culturefeed_entry_ui_event_form_submission_timeout_batch',
+        array($form_state),
+      ),
+    ),
+    'finished' => 'culturefeed_entry_ui_event_form_submission_timeout_batch_finished',
+    'file' => drupal_get_path('module', 'culturefeed_entry_ui') . '/includes/culturefeed_entry_ui.pages.inc',
+  );
 
+  batch_set($batch);
+  batch_process(culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']));
 }
 
 /**
@@ -2973,4 +2986,45 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
   }
 
+}
+
+
+function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
+  // Depending on the update status try to get the event or
+  /** @var CultureFeed_Cdb_Item_Event $event */
+  $event = Drupalculturefeed_EntryApi::getEvent($form_state['#event_id']);
+  dpm($event, 'the event');
+  $event_updated = FALSE;
+  if ($event && $event instanceof CultureFeed_Cdb_Item_Event) {
+    $context['results']['event_title'] = $form_state['values']['title'];
+    $last_updated_time = strtotime($event->getLastUpdated());
+
+    if ($form_state['#update_event']) {
+      if ($last_updated_time > $form_state['submit_time']) {
+        $event_updated = TRUE;
+        $context['results']['action'] = 'updated';
+      }
+    }
+    else {
+      $event_updated = TRUE;
+      $context['results']['action'] = 'created';
+    }
+  }
+
+  if ($event_updated) {
+    $context['finished'] = 1;
+  }
+  else {
+    $context['finished'] = 0;
+    sleep(1);
+  }
+}
+
+
+function culturefeed_entry_ui_event_form_submission_timeout_batch_finished($success, $results, $operations) {
+  $result_messages = array(
+    'created' => t('The event %title has been created.', array('%title' => check_plain($results['event_title']))),
+    'updated' => t('The event %title has been updated.', array('%title' => check_plain($results['event_title']))),
+  );
+  drupal_set_message($result_messages[$results['action']]);
 }
