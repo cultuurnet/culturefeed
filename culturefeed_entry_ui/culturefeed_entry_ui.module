@@ -47,6 +47,10 @@ function culturefeed_entry_ui_theme() {
       'file' => 'theme/theme.inc',
       'render element' => 'element',
     ),
+    'culturefeed_entry_ui_when_datetimes_table' => array(
+      'file' => 'theme/theme.inc',
+      'render element' => 'form',
+    ),
     'culturefeed_entry_ui_event_form' => array(
       'render element' => 'form',
       'template' => 'culturefeed-entry-ui-event-form',
