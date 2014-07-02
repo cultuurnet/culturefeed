@@ -803,7 +803,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             'wrapper' => 'when-ajax-wrapper',
             'effect' => 'none',
             'progress' => array('type' => 'throbber'),
-            'effect' => 'none',
           ),
           '#limit_validation_errors' => array(array('datetimes')),
           '#submit' => array('culturefeed_entry_ui_add_more_submit'),
@@ -2251,7 +2250,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (empty($errors)) {
     _culturefeed_entry_ui_ui_event_form_save_event($form, $form_state, $location, $organiser);
   }
-
 }
 
 /**
@@ -2725,6 +2723,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   //}
 
+  $form_state['submit_time'] = time();
   try {
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
@@ -2840,20 +2839,23 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 }
 
 /**
- * Submit the event form: redirect form and show message.
+ * Submit the event form, create a batch that waits and redirects.
  */
 function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
+  $batch = array(
+    'title' => t('Saving the event'),
+    'operations' => array(
+      array(
+        'culturefeed_entry_ui_event_form_submission_timeout_batch',
+        array($form_state),
+      ),
+    ),
+    'finished' => 'culturefeed_entry_ui_event_form_submission_timeout_batch_finished',
+    'file' => drupal_get_path('module', 'culturefeed_entry_ui') . '/includes/culturefeed_entry_ui.pages.inc',
+  );
 
-  if ($form_state['#update_event']) {
-    $form_state['redirect'] = 'http://' . $_SERVER['HTTP_HOST'] . culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
-    drupal_set_message(t('Event successfully updated'));
-  }
-  else {
-    $path = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']) . '/edit';
-    $link_change_event = '<a href="' . $path . '">' . t('Click here to update') . '</a>';
-    drupal_set_message(t('Event ' . $form_state['#event_id'] . ' successfully created') . ' ' . $link_change_event);
-  }
-
+  batch_set($batch);
+  batch_process(culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']));
 }
 
 /**
@@ -3035,4 +3037,57 @@ function culturefeed_entry_ui_photo_after_build($element) {
     $element['filename']['#markup'] = $markup;
   }
   return $element;
+}
+
+/*
+ * Batch operation function to wait before redirecting to the event page.
+ *
+ * @param array $form_state
+ *   Contains the information of the submitted event form.
+ * @param array $context
+ *   Contains information about the status of the batch.
+ */
+function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
+  // Use the same function to get the event as used on the event page.
+  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event');
+  $event_updated = FALSE;
+
+  if ($event_search) {
+    $event = $event_search->getEntity();
+    $context['results']['event_title'] = $form_state['values']['title'];
+    // Always compare the date with the correct timezone.
+    $last_updated_time = new DateTime($event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
+
+    // Do additional validation when the event is updated.
+    if ($form_state['#update_event']) {
+      if ($last_updated_time->getTimestamp() >= $form_state['submit_time']) {
+        $event_updated = TRUE;
+        $context['results']['action'] = 'updated';
+      }
+    }
+    else {
+      $event_updated = TRUE;
+      $context['results']['action'] = 'created';
+    }
+  }
+
+  // Stop the batch if the event was found with the search and validated.
+  if ($event_updated) {
+    $context['finished'] = 1;
+  }
+  else {
+    $context['finished'] = 0;
+    sleep(1);
+  }
+}
+
+/**
+ * Finish function for the batch API.
+ */
+function culturefeed_entry_ui_event_form_submission_timeout_batch_finished($success, $results, $operations) {
+  $result_messages = array(
+    'created' => t('The event %title has been created.', array('%title' => check_plain($results['event_title']))),
+    'updated' => t('The event %title has been updated.', array('%title' => check_plain($results['event_title']))),
+  );
+  drupal_set_message($result_messages[$results['action']]);
 }
