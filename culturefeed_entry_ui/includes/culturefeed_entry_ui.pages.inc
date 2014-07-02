@@ -3017,7 +3017,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     $context['results']['event_title'] = $form_state['values']['title'];
     // We get this date in UTC, remove the difference with the server timezone.
     if (function_exists('object_log')) {
-      object_log('', array(
+      object_log('time info at ' . date('c'), array(
         'date Z' => date('Z'),
         'event last updated' => $event->getLastUpdated(),
         'event last updated timestamp' => strtotime($event->getLastUpdated()),
