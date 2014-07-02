@@ -663,7 +663,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   // Date.
   $form['basic']['when'] = array(
-    '#type' => 'container',
+    '#type' => 'fieldset',
     '#prefix' => '<div id="when-ajax-wrapper">',
     '#suffix' => '</div>',
     '#title' => t('Dates'),
@@ -703,23 +703,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#value' => $when,
   );
 
-  $form['basic']['when']['permanent'] = array(
-    '#type' => 'checkbox',
-    '#default_value' => ($when == 'permanent'),
-    '#title' => t('Permanent'),
-    '#ajax' => array(
-      'callback' => 'culturefeed_entry_ui_add_more_js',
-      'wrapper' => 'when-ajax-wrapper',
-      'effect' => 'none',
-    ),
-  );
-
   if ($when != 'permanent') {
 
     $form['basic']['when']['datetimes'] = array(
       '#tree' => TRUE,
       '#type' => 'container',
       '#attributes' => array('class' => array('when-datetimes')),
+      '#theme' => 'culturefeed_entry_ui_when_datetimes_table',
     );
 
     for ($i = 0; $i < $date_count; $i++) {
@@ -727,15 +717,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       // Timestamps / Period wrapper.
       $form['basic']['when']['datetimes'][$i] = array(
         '#type' => 'container',
-        '#prefix' => '<div id="datetime-child-' . $i . '-ajax-wrapper" class="datetime-child clearfix">',
-        '#suffix' => '</div>',
       );
 
       // Timestamps / Period begin wrapper.
       $form['basic']['when']['datetimes'][$i]['begin'] = array(
         '#type' => 'container',
-        '#prefix' => '<div id="datetime-child-' . $i . '-begin-ajax-wrapper">',
-        '#suffix' => '</div>',
       );
 
       // Remove timestamp.
@@ -750,6 +736,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             'callback' => 'culturefeed_entry_ui_add_more_js',
             'wrapper' => 'when-ajax-wrapper',
             'effect' => 'none',
+            'progress' => array('type' => 'throbber'),
           ),
           '#limit_validation_errors' => array(array('datetimes')),
           '#submit' => array('culturefeed_entry_ui_add_more_submit'),
@@ -765,11 +752,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         '#date_label_position' => 'none',
         '#title' => t('Date'),
         '#default_value' => (!$triggering_element) ? $begin_date : '',
-        '#date_format' => 'Y-m-d',
+        '#date_format' => 'd-m-Y',
         '#ajax' => array(
           'callback' => 'culturefeed_entry_ui_add_more_js',
           'wrapper' => 'when-ajax-wrapper',
           'effect' => 'none',
+          'progress' => array('type' => 'throbber'),
         ),
         '#attributes' => array('class' => array('start-date')),
       );
@@ -814,6 +802,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             'callback' => 'culturefeed_entry_ui_add_more_js',
             'wrapper' => 'when-ajax-wrapper',
             'effect' => 'none',
+            'progress' => array('type' => 'throbber'),
+            'effect' => 'none',
           ),
           '#limit_validation_errors' => array(array('datetimes')),
           '#submit' => array('culturefeed_entry_ui_add_more_submit'),
@@ -826,8 +816,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
         $form['basic']['when']['datetimes'][$i]['end'] = array(
           '#type' => 'container',
-          '#prefix' => '<div id="datetime-child-' . $i . '-end-ajax-wrapper">',
-          '#suffix' => '</div>',
         );
 
         if ($when == 'period' || ($date_count == 1 && !isset($form_state['values']['datetimes'][$i]['end']['date']))) {
@@ -837,11 +825,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             '#title' => t('End date'),
             '#date_label_position' => 'none',
             '#default_value' => (!$triggering_element) ? $period_end : '',
-            '#date_format' => 'Y-m-d',
+            '#date_format' => 'd-m-Y',
             '#ajax' => array(
               'callback' => 'culturefeed_entry_ui_add_more_js',
               'wrapper' => 'when-ajax-wrapper',
               'effect' => 'none',
+              'progress' => array('type' => 'throbber'),
             ),
           );
 
@@ -869,6 +858,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             'callback' => 'culturefeed_entry_ui_add_more_js',
             'wrapper' => 'when-ajax-wrapper',
             'effect' => 'none',
+            'progress' => array('type' => 'throbber'),
           ),
           '#limit_validation_errors' => array(array('datetimes')),
           '#submit' => array('culturefeed_entry_ui_add_more_submit'),
@@ -889,6 +879,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
           'callback' => 'culturefeed_entry_ui_add_more_js',
           'wrapper' => 'when-ajax-wrapper',
           'effect' => 'none',
+          'progress' => array('type' => 'throbber'),
+          'effect' => 'none',
         ),
         '#limit_validation_errors' => array(array('datetimes')),
         '#submit' => array('culturefeed_entry_ui_add_more_submit'),
@@ -897,6 +889,25 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     }
 
   }
+
+  $form['basic']['when']['permanent'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => ($when == 'permanent'),
+    '#title' => t('Permanent'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'when-ajax-wrapper',
+      'effect' => 'fade',
+      'progress' => array('type' => 'throbber'),
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="datetimes[0][begin][date][date]"]' => array(
+          array('filled' => FALSE),
+        ),
+      ),
+    ),
+  );
 
   if ($when == 'period' || $when == 'permanent') {
 
@@ -2084,6 +2095,16 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
         foreach ($opening_times as $key => $opening_time) {
 
           if (!empty($opening_time['open_from']) || !empty($opening_time['open_till'])) {
+            $parents = array('period_or_permanent', 'opening_times', $day, $key);
+            if (substr_count($opening_time['open_from'], ':') == 1) {
+              $opening_time['open_from'] .= ':00';
+              form_set_value(array('#parents' => array_merge($parents, array('open_from'))), $opening_time['open_from'], $form_state);
+            }
+            if (substr_count($opening_time['open_till'], ':') == 1) {
+              $opening_time['open_till'] .= ':00';
+              form_set_value(array('#parents' => array_merge($parents, array('open_till'))), $opening_time['open_till'], $form_state);
+            }
+
             try {
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_from']);
               CultureFeed_Cdb_Data_Calendar::validateTime($opening_time['open_till']);
@@ -2247,7 +2268,6 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
  */
 function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, CultuurNet\Search\ActivityStatsExtendedEntity $location = NULL, CultuurNet\Search\ActivityStatsExtendedEntity $organiser = NULL) {
   $values = $form_state['values'];
-  dsm($values);
   $performerList = new CultureFeed_Cdb_Data_PerformerList();
   $mails = array();
   $phones = array();
