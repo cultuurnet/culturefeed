@@ -2795,20 +2795,9 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $values) {
 }
 
 /**
- * Submit the event form: redirect form and show message.
+ * Submit the event form, create a batch that waits and redirects.
  */
 function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
-  /*
-  if ($form_state['#update_event']) {
-    $form_state['redirect'] = 'http://' . $_SERVER['HTTP_HOST'] . culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']);
-    drupal_set_message(t('Event successfully updated'));
-  }
-  else {
-    $path = culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']) . '/edit';
-    $link_change_event = '<a href="' . $path . '">' . t('Click here to update') . '</a>';
-    drupal_set_message(t('Event ' . $form_state['#event_id'] . ' successfully created') . ' ' . $link_change_event);
-  }
-  //*/
   $batch = array(
     'title' => t('Saving the event'),
     'operations' => array(
@@ -2988,17 +2977,26 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
 }
 
-
+/**
+ * Batch operation function to wait before redirecting to the event page.
+ *
+ * @param array $form_state
+ *   Contains the information of the submitted event form.
+ * @param array $context
+ *   Contains information about the status of the batch.
+ */
 function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
-  // Depending on the update status try to get the event or
-  /** @var CultureFeed_Cdb_Item_Event $event */
-  $event = Drupalculturefeed_EntryApi::getEvent($form_state['#event_id']);
-  dpm($event, 'the event');
+  // Use the same function to get the event as used on the event page.
+  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event');
   $event_updated = FALSE;
-  if ($event && $event instanceof CultureFeed_Cdb_Item_Event) {
-    $context['results']['event_title'] = $form_state['values']['title'];
-    $last_updated_time = strtotime($event->getLastUpdated());
 
+  if ($event_search) {
+    $event = $event_search->getEntity();
+    $context['results']['event_title'] = $form_state['values']['title'];
+    // We get this date in UTC, remove the difference with the server timezone.
+    $last_updated_time = strtotime($event->getLastUpdated()) - date('Z');
+
+    // Do additional validation when the event is updated.
     if ($form_state['#update_event']) {
       if ($last_updated_time > $form_state['submit_time']) {
         $event_updated = TRUE;
@@ -3011,6 +3009,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     }
   }
 
+  // Stop the batch if the event was found with the search and validated.
   if ($event_updated) {
     $context['finished'] = 1;
   }
@@ -3020,7 +3019,9 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
   }
 }
 
-
+/**
+ * Finish function for the batch API.
+ */
 function culturefeed_entry_ui_event_form_submission_timeout_batch_finished($success, $results, $operations) {
   $result_messages = array(
     'created' => t('The event %title has been created.', array('%title' => check_plain($results['event_title']))),
