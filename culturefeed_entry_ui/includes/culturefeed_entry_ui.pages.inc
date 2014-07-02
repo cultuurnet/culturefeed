@@ -3016,20 +3016,29 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     $event = $event_search->getEntity();
     $context['results']['event_title'] = $form_state['values']['title'];
     // We get this date in UTC, remove the difference with the server timezone.
+    $default_timezone = date_default_timezone_get();
+    date_default_timezone_set('Europe/Brussels');
+    $timestamp_from_timezone_set = strtotime($event->getLastUpdated());
+    date_default_timezone_set($default_timezone);
+    $dateTime = new DateTime($event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
+    $timestamp_from_datetime = $dateTime->getTimestamp();
     if (function_exists('object_log')) {
       object_log('time info at ' . date('c'), array(
         'date Z' => date('Z'),
         'event last updated' => $event->getLastUpdated(),
-        'event last updated timestamp' => strtotime($event->getLastUpdated()),
+        'event last updated from timezone set Europe/Brussels' => $timestamp_from_timezone_set,
+        'event last updated timestamp met time() parameter' => strtotime($event->getLastUpdated(), time()),
+        'event last updated timestamp from DateTime Europe/Brussels' => $timestamp_from_datetime,
+        'event last updated time from DateTime Europe/Brussels' => date('c', $timestamp_from_datetime),
         'submitted timestamp' => $form_state['submit_time'],
         'submitted time' => date('c', $form_state['submit_time']),
       ));
     }
-    $last_updated_time = strtotime($event->getLastUpdated()) - date('Z');
+    $last_updated_time = strtotime($event->getLastUpdated(), time());
 
     // Do additional validation when the event is updated.
     if ($form_state['#update_event']) {
-      if ($last_updated_time > $form_state['submit_time']) {
+      if ($timestamp_from_datetime > $form_state['submit_time']) {
         $event_updated = TRUE;
         $context['results']['action'] = 'updated';
       }
