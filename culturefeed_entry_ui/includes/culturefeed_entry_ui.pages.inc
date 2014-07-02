@@ -3020,7 +3020,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
 
     // Do additional validation when the event is updated.
     if ($form_state['#update_event']) {
-      if ($last_updated_time->getTimestamp() > $form_state['submit_time']) {
+      if ($last_updated_time->getTimestamp() >= $form_state['submit_time']) {
         $event_updated = TRUE;
         $context['results']['action'] = 'updated';
       }
