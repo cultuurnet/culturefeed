@@ -1130,7 +1130,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       'file_validate_size' => array(1024 * 1024 * 1024),
     ),
     '#after_build' => array('culturefeed_entry_ui_photo_after_build'),
-    '#default_image' => $default_image,
+    '#default_image' => isset($default_image->fid) ? $default_image : FALSE,
   );
 
   if (isset($default_image->fid)) {
@@ -2982,14 +2982,14 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_photo_after_build($element) {
   $image = '';
-  if (isset($element['#value']['fid']) && $element['#value']['fid']) {
-    $image = file_load($element['#value']['fid']);
+  if ($element['#file']) {
+    $image = $element['#file'];
   }
-  if (isset($element['#default_image']) && $element['#default_image']) {
-    $image = file_load($element['#default_image']->fid);
+  if ($element['#default_image']) {
+    $image = $element['#default_image'];
   }
   if ($image) {
-    $markup = theme('image', array('path' => $image->uri, 'width' => 100));
+    $markup = theme('image', array('path' => $image->uri, 'width' => 100, 'attributes' => array('class' => 'photo_thumbnail')));
     $element['filename']['#markup'] = $markup;
   }
   return $element;
