@@ -256,7 +256,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
 
       try {
-        $default_image = system_retrieve_file($main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
+        $default_image = system_retrieve_file('http:' . $main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
         if ($default_image) {
           file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
           $default_image_hlink = $main_image->getHLink();
