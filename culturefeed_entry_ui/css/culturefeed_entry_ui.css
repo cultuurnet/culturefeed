@@ -178,6 +178,12 @@ input.add-more-link:hover {
   clear: left;
 }
 
+/* Photo */
+
+.photo_thumbnail {
+  padding-right: 2px;
+}
+
 /* https://drupal.org/node/222380 */
 .form-item input[type="checkbox"].error,
 .form-item input[type="radio"].error {

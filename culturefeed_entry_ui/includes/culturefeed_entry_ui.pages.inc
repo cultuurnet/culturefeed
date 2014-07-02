@@ -256,7 +256,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       }
 
       try {
-        $default_image = system_retrieve_file($main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
+        $default_image = system_retrieve_file('http:' . $main_image->getHLink(), 'public://uploads/' . $main_image->getFileName(), TRUE);
         if ($default_image) {
           file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
           $default_image_hlink = $main_image->getHLink();
@@ -1128,6 +1128,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       // Pass the maximum file size in bytes
       'file_validate_size' => array(1024 * 1024 * 1024),
     ),
+    '#after_build' => array('culturefeed_entry_ui_photo_after_build'),
+    '#default_image' => isset($default_image->fid) ? $default_image : FALSE,
   );
 
   if (isset($default_image->fid)) {
@@ -2995,4 +2997,22 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
   }
 
+}
+
+/**
+ * Adds thumbnail to photo field.
+ */
+function culturefeed_entry_ui_photo_after_build($element) {
+  $image = '';
+  if ($element['#file']) {
+    $image = $element['#file'];
+  }
+  if ($element['#default_image']) {
+    $image = $element['#default_image'];
+  }
+  if ($image) {
+    $markup = theme('image', array('path' => $image->uri, 'width' => 100, 'attributes' => array('class' => 'photo_thumbnail')));
+    $element['filename']['#markup'] = $markup;
+  }
+  return $element;
 }
