@@ -110,7 +110,7 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
     '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro'),
   );
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Actions label'),
     '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
   );

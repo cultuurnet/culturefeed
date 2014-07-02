@@ -34,7 +34,7 @@
   float: left;
 }
 
-#edit-what fieldset {
+#edit-what > fieldset {
   width: 32.4%;
   float: left;
   min-height: 431px;
