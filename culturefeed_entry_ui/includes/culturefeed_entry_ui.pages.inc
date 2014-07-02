@@ -3016,6 +3016,15 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     $event = $event_search->getEntity();
     $context['results']['event_title'] = $form_state['values']['title'];
     // We get this date in UTC, remove the difference with the server timezone.
+    if (function_exists('object_log')) {
+      object_log('', array(
+        'date Z' => date('Z'),
+        'event last updated' => $event->getLastUpdated(),
+        'event last updated timestamp' => strtotime($event->getLastUpdated()),
+        'submitted timestamp' => $form_state['submit_time'],
+        'submitted time' => date('c', $form_state['submit_time']),
+      ));
+    }
     $last_updated_time = strtotime($event->getLastUpdated()) - date('Z');
 
     // Do additional validation when the event is updated.
