@@ -600,27 +600,25 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 80,
     );
 
-    $form['basic']['location']['new']['street'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Street'),
-      '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
-      '#required' => FALSE,
-      '#size' => 60,
-    );
-
-    $form['basic']['location']['new']['house_number'] = array(
-      '#type' => 'textfield',
-      '#title' => t('House Number'),
-      '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
-      '#required' => FALSE,
-      '#size' => 10,
-    );
-
     $form['basic']['location']['new']['citywrapper'] = array(
       '#tree' => TRUE,
       '#type' => 'container',
       '#prefix' => '<div id="citywrapper-ajax-wrapper">',
       '#suffix' => '</div>',
+    );
+
+    $form['basic']['location']['new']['citywrapper']['country'] = array(
+      '#type' => 'select',
+      '#name' => 'country_select',
+      '#title' => t('Country'),
+      '#options' => country_get_list(),
+      '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
+      '#required' => FALSE,
+      '#ajax' => array(
+        'callback' => 'culturefeed_entry_ui_add_more_js',
+        'wrapper' => 'citywrapper-ajax-wrapper',
+        'effect' => 'none',
+      ),
     );
 
     $form['basic']['location']['new']['citywrapper']['zip_code'] = array(
@@ -646,18 +644,20 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 60,
     );
 
-    $form['basic']['location']['new']['citywrapper']['country'] = array(
-      '#type' => 'select',
-      '#name' => 'country_select',
-      '#title' => t('Country'),
-      '#options' => country_get_list(),
-      '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
+    $form['basic']['location']['new']['street'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Street'),
+      '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
       '#required' => FALSE,
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'citywrapper-ajax-wrapper',
-        'effect' => 'none',
-      ),
+      '#size' => 60,
+    );
+
+    $form['basic']['location']['new']['house_number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('House Number'),
+      '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
+      '#required' => FALSE,
+      '#size' => 10,
     );
   }
 
