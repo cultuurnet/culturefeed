@@ -138,9 +138,11 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_
       }
       $variables['teaser_summary'] = $short_summary;
     }
+
     if (!empty($content->image)) {
-      $variables['teaser_image'] = $content->image;
+      $variables['teaser_image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image');
     }
+
   }
 }
 

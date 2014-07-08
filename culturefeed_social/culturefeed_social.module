@@ -325,6 +325,27 @@ function culturefeed_social_theme() {
 }
 
 /**
+ * Implements hook_image_default_styles().
+ */
+function culturefeed_social_image_default_styles() {
+
+  $styles = array();
+
+  $styles['culturefeed_activity_image'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array('width' => 480, 'height' => 480, 'upscale' => 0),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  return $styles;
+
+}
+
+/**
  * Implements hook_block_info().
  */
 function culturefeed_social_block_info() {
