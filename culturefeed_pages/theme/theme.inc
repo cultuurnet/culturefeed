@@ -579,7 +579,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
  * @see
  */
 function culturefeed_pages_preprocess_culturefeed_pages_page_suggestion_list_item(&$variables) {
-  _culturefeed_pages_preprocess_culturefeed_page($variables);
+  culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item($variables);
 }
 
 /**

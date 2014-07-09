@@ -463,6 +463,9 @@ function culturefeed_pages_get_page_suggestions_list() {
   if (!empty($query)) {
     $parameters[] = new CultuurNet\Search\Parameter\Query($query);
   }
+  else {
+   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*'); 
+  }
 
   // Search on postal / city.
   if (!empty($city)) {
