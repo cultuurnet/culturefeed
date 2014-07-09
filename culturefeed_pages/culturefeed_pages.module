@@ -528,7 +528,7 @@ function culturefeed_pages_block_configure($delta) {
     $form['pages_block_agenda_total_items'] = array(
       '#title' => t('Items to show per page'),
       '#type' => 'textfield',
-      '#default_value' => variable_get('pages_block_agenda_total_items', 5),
+      '#default_value' => variable_get('pages_block_agenda_total_items', 20),
     );
   }
 
@@ -806,7 +806,7 @@ function culturefeed_pages_culturefeed_search_page_info() {
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
-  
+
   $pages = &drupal_static('culturefeed_search_items_load', array());
 
   if (isset($pages[$id])) {

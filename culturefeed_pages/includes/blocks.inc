@@ -286,7 +286,7 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
-  $max_results = variable_get('pages_block_agenda_total_items', 5);
+  $max_results = variable_get('pages_block_agenda_total_items', 20);
 
   // Execute search and show results.
   $build = array();
