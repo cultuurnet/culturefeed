@@ -314,7 +314,7 @@ function culturefeed_pages_block_page_agenda($page) {
   );
 
   if ($result->getTotalCount() > $max_results) {
-    $block['content']['#read_more_path'] = 'culturefeed/ajax/page/agenda/' . $page->getId();
+    $block['content']['#read_more_path'] = 'agenda/search';
   }
 
   return $block;
