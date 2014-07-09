@@ -45,13 +45,7 @@
   <?php print $teaser_title ?>
 
   <?php if($teaser_body): ?>
-    <?php if($teaser_summary): ?>
-    <?php print $teaser_summary ?>
-    <div style="display: none"><?php print $teaser_body ?></div>
-    <?php else: ?>
     <?php print $teaser_body ?>
-    <?php endif; ?>
-
   <?php endif; ?>
 
 <?php endif; ?>

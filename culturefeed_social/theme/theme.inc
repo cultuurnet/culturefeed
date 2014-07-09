@@ -133,8 +133,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_
 
       $short_summary = $content->body;
       if (strlen($content->body) > 250) {
-        $short_summary = truncate_utf8($content->body, 250, TRUE);
-        $short_summary .= ' ' . l(t('Read more'), $_GET['q'], array('short-summary'));
+        $short_summary = truncate_utf8($content->body, 100, TRUE);
       }
       $variables['teaser_summary'] = $short_summary;
     }
