@@ -16,6 +16,7 @@ files[] = lib/CultureFeed/ICultureFeed.php
 files[] = lib/CultureFeed/CultureFeed/AccessDeniedException.php
 files[] = lib/CultureFeed/CultureFeed/Activity.php
 files[] = lib/CultureFeed/CultureFeed/ActivityEventDetails.php
+files[] = lib/CultureFeed/CultureFeed/ActivityProductionDetails.php
 files[] = lib/CultureFeed/CultureFeed/ActivityPrivacyPreference.php
 files[] = lib/CultureFeed/CultureFeed/Consumer.php
 files[] = lib/CultureFeed/CultureFeed/OAuthClient.php

@@ -2031,19 +2031,35 @@ class CultureFeed implements ICultureFeed {
       $activity->parentActivity = $object->xpath_str('parentActivity');
       $activity->status         = $object->xpath_str('status');
 
-      // Parse the event details if there are any.
+      // Parse the event / production details if there are any.
       if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_EVENT) {
-        $event_objects = $object->xpath('eventDetails');
-        foreach ($event_objects as $event_object) {
-          $activity->contentDetails = new ActivityEventDetails();
-          $activity->contentDetails->title = $event_object->xpath_str('title');
-          $activity->contentDetails->calendar = $event_object->xpath_str('calendar');
-          $activity->contentDetails->cdbId = $event_object->xpath_str('cdbid');
-          $activity->contentDetails->description = $event_object->xpath_str('description');
-          $activity->contentDetails->location = $event_object->xpath_str('location');
-          $activity->contentDetails->thumbnail = $event_object->xpath_str('thumbnail');
-          $activity->contentDetails->type = $event_object->xpath_str('type');
+
+        $eventDetails = $object->xpath('eventDetails');
+        if (!empty($eventDetails[0])) {
+          $detail = $eventDetails[0];
+          $activity->contentDetails = new Culturefeed_ActivityEventDetails();
+          $activity->contentDetails->title = $detail->xpath_str('title');
+          $activity->contentDetails->calendar = $detail->xpath_str('calendar');
+          $activity->contentDetails->cdbId = $detail->xpath_str('cdbid');
+          $activity->contentDetails->description = $detail->xpath_str('description');
+          $activity->contentDetails->location = $detail->xpath_str('location');
+          $activity->contentDetails->thumbnail = $detail->xpath_str('thumbnail');
+          $activity->contentDetails->type = $detail->xpath_str('type');
         }
+      }
+      elseif ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_PRODUCTION) {
+
+        $productionDetails = $object->xpath('productionDetails');
+        if (!empty($productionDetails[0])) {
+          $detail = $productionDetails[0];
+          $activity->contentDetails = new Culturefeed_ActivityProductionDetails();
+          $activity->contentDetails->title = $detail->xpath_str('title');
+          $activity->contentDetails->cdbId = $detail->xpath_str('cdbid');
+          $activity->contentDetails->description = $detail->xpath_str('description');
+          $activity->contentDetails->thumbnail = $detail->xpath_str('thumbnail');
+          $activity->contentDetails->type = $detail->xpath_str('type');
+        }
+
       }
 
       $activities[] = $activity;
