@@ -563,7 +563,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables) {
 
   if (!empty($variables['read_more_path'])) {
-    $query = array('cdbid' => $variables['page']->getId());
+    $query = array('organiser' => $variables['page']->getId());
     $variables['read_more'] = l(t('All activities of this organiser'), $variables['read_more_path'], array('query' => $query));
   }
 
