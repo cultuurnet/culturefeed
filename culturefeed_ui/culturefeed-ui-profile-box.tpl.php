@@ -18,6 +18,9 @@
   <ul>
     <li><?php print $picture ?></li>
     <li><?php print $link ?></li>
+    <?php foreach ($main_items as $item): ?>
+      <li<?php if (isset($item['class'])): print ' class="' . $item['class'] . '"' ?> <?php endif;?>><?php print $item['data']; ?></li>
+    <?php endforeach; ?>
     <li><?php print $logout ?></li>
   </ul>
 </div>

@@ -109,8 +109,8 @@ msgid "Extra filter query for the result set"
 msgstr "Verfijn je zoekopdracht"
 
 #: culturefeed_agenda.module:205
-msgid "Make sure this is a correct solr query. Example title=mytitle"
-msgstr "Zorg ervoor dat de solr query juist is. Bijvoorbeeld title=mytitle"
+msgid "Make sure this is a correct solr query. Example title:mytitle"
+msgstr "Zorg ervoor dat de solr query juist is. Bijvoorbeeld title:mytitle"
 
 #: culturefeed_agenda.module:209
 msgid "Sort field"
@@ -175,6 +175,13 @@ msgstr "Activiteiten in de buurt van mijn huidige locatie:"
 #: includes/blocks.inc:172
 msgid "Search"
 msgstr "Zoeken"
+
+#: includes/blocks.inc:349
+msgid "Program schedule"
+msgstr "Programmatie"
+
+msgid "Show program schedule"
+msgstr "Toon programmatie"
 
 #: includes/helpers.inc:295;362 lib/Drupal/AgendaSearchPage.php:88
 msgid "Home"

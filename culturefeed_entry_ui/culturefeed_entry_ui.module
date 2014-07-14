@@ -47,6 +47,16 @@ function culturefeed_entry_ui_theme() {
       'file' => 'theme/theme.inc',
       'render element' => 'element',
     ),
+    'culturefeed_entry_ui_when_datetimes_table' => array(
+      'file' => 'theme/theme.inc',
+      'render element' => 'form',
+    ),
+    'culturefeed_entry_ui_event_form' => array(
+      'render element' => 'form',
+      'template' => 'culturefeed-entry-ui-event-form',
+      'path' => drupal_get_path('module', 'culturefeed_entry_ui') . '/theme',
+      'file' => 'theme.inc',
+    ),
   );
 }
 
@@ -66,7 +76,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/add'] = array(
-    'title' => 'New activity',
+    'title' => 'New event',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_event_form'),
     'access arguments' => array('create culturefeed events'),
@@ -74,7 +84,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/%/%culturefeed_agenda_event/edit'] = array(
-    'title' => 'Edit activity',
+    'title' => 'Edit event',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_event_form', 3),
     'access arguments' => array('edit culturefeed events'),
@@ -82,7 +92,7 @@ function culturefeed_entry_ui_menu() {
   );
 
   $items['agenda/e/%/%culturefeed_agenda_event/delete'] = array(
-    'title' => 'Delete activity',
+    'title' => 'Delete event',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_delete_event_form', 3),
     'access arguments' => array('delete culturefeed events'),
@@ -422,4 +432,75 @@ function culturefeed_entry_ui_remove_filter_input(&$form) {
   unset($form['format']['guidelines']);
   unset($form['format']['help']);
   return $form;
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_entry_ui_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+  try {
+
+    $items['entry'] = array(
+      'data' => l(t('Add event'),'agenda/e/add'),
+      'class' => 'entry',
+      'weight' => -10,
+    );
+
+  } catch (Exception $e) {
+    watchdog_exception('culturefeed_entry_ui', $e);
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function culturefeed_entry_ui_element_info_alter(&$types) {
+  if (isset($types['date_popup'])) {
+    $types['date_popup']['#after_build'][] = 'culturefeed_entry_ui_element_date_popup_after_build';
+  }
+}
+
+/**
+ * Adds a span element for a calendar icon on date popup fields.
+ */
+function culturefeed_entry_ui_element_date_popup_after_build($element, $form_state) {
+  if (isset($element['date'])) {
+    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
+  }
+  return $element;
+}
+
+/**
+ * Validation function for some textarea form elements.
+ */
+function culturefeed_entry_ui_validate_textarea_markup($element, &$form_state, $form) {
+  $value = drupal_array_get_nested_value($form_state['values'], $element['#parents'], $key_exists);
+  if ($key_exists) {
+    // Remember the original value.
+    $original_value = $value;
+
+    // Only allow the following tags.
+    $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr');
+    $value = filter_xss($value, $allowed_tags);
+    // Let the user know if we removed any tags.
+    if ($original_value != $value) {
+      drupal_set_message(t(
+        'Some disallowed html tags will be removed in the %field_name field. The allowed tags are %allowed_tags',
+        array(
+          '%field_name' => $element['#title'],
+          '%allowed_tags' => implode(', ', $allowed_tags),
+        )
+      ), 'warning');
+    }
+
+    // Replace newlines by <p> and <br />.
+    $value = _filter_autop($value);
+
+    // Put the altered value back in the form state array.
+    drupal_array_set_nested_value($form_state['values'], $element['#parents'], $value);
+  }
 }

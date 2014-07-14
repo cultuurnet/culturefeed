@@ -34,7 +34,7 @@
   float: left;
 }
 
-#edit-what fieldset {
+#edit-what > fieldset {
   width: 32.4%;
   float: left;
   min-height: 431px;
@@ -156,26 +156,42 @@ input.add-more-link:hover {
 
 /* dates */
 
-.when-datetimes .container-inline-date, .when-datetimes .form-item {
-  float: left;
-  clear: none;
-}
-
 .when-datetimes .container-inline-date .date-padding {
   padding: 0;
 }
 
-.when-datetimes .form-type-date-select .form-type-select[class$=hour] {
-    margin-left: .50em;
+.when-datetimes input.add-more-link {
+  display: inline-block;
+  vertical-align: middle;
 }
 
-.when-datetimes .datetime-child input.add-more-link {
-  clear: none;
-  float: left;
+.when-datetimes-table {
+  width: auto !important;
 }
 
-.datetime-child {
-  clear: left;
+.when-datetimes-table td {
+  white-space: nowrap;
+  padding: 4px;
+  vertical-align: top;
+}
+
+.when-datetimes-table td .container-inline-date .form-item .form-item {
+  display: inline-block;
+  float: none;
+}
+
+.when-datetimes-table td .container-inline-date .form-item {
+  vertical-align: top;
+}
+
+.when-datetimes-table .ui-icon {
+  display: inline-block;
+}
+
+/* Photo */
+
+.photo_thumbnail {
+  padding-right: 2px;
 }
 
 /* https://drupal.org/node/222380 */

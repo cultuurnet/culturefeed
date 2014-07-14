@@ -219,7 +219,7 @@ class CultureFeed implements ICultureFeed {
     if (!empty($language)) {
       $query['lang'] = $language;
     }
-    
+
     if (!empty($consumerKey)) {
       $query['consumerKey'] = $consumerKey;
     }
@@ -1139,7 +1139,7 @@ class CultureFeed implements ICultureFeed {
    *   ID of the mailing to send.
    */
   public function sendMailing($id) {
-    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/send', array('userId' => $user_id));
+    $this->oauth_client->authenticatedPostAsXml('mailing/' . $id . '/send');
   }
 
   /**
@@ -1811,6 +1811,7 @@ class CultureFeed implements ICultureFeed {
       $user->holdsAccount = $accounts;
     }
 
+    // Add memberships.
     $memberships = $element->xpath('/foaf:person/pageMemberships/pageMembership');
     $user_memberships = array();
     foreach ($memberships as $membership) {
@@ -1826,11 +1827,20 @@ class CultureFeed implements ICultureFeed {
       $page->setId($pageId);
       $page->setName($membership->xpath_str('page/name'));
 
+      // Set categories
+      $categories_element = $membership->xpath('page/categoryIds/categoryId');
+      $categories = array();
+      foreach ($categories_element as $category) {
+        $categories[] = (string) $category;
+      }
+      $page->setCategories($categories);
+
       $user_membership->page          = $page;
 
       $user_membership->role          = $membership->xpath_str('role');
       $user_membership->relation      = $membership->xpath_str('relation');
-      $user_membership->creationDate  = $membership->xpath_time('creationDate');
+      $user_membership->creationDate = $membership->xpath_time('creationDate');
+
 
       $user_memberships[] = $user_membership;
 
@@ -1849,8 +1859,8 @@ class CultureFeed implements ICultureFeed {
 
     }
 
+    // Add following pages.
     $following = $element->xpath('/foaf:person/following/page');
-    $following_pages = array();
     foreach ($following as $object) {
 
       $pageId = $object->xpath_str('uid');
@@ -1863,6 +1873,14 @@ class CultureFeed implements ICultureFeed {
       $page = new CultureFeed_Cdb_Item_Page();
       $page->setId($pageId);
       $page->setName($object->xpath_str('name'));
+
+      // Set categories
+      $categories_element = $object->xpath('categoryIds/categoryId');
+      $categories = array();
+      foreach ($categories_element as $category) {
+        $categories[] = (string) $category;
+      }
+      $page->setCategories($categories);
 
       $follower->page          = $page;
       $follower->user          = $user;
