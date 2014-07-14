@@ -53,6 +53,18 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
   }
 
   /**
+   * {@inheritdoc}
+   */
+  protected function addFacetFilters($params) {
+    parent::addFacetFilters($params);
+
+    if (isset($params['organiser'])) {
+      $this->parameters[] = new Parameter\Query('"' . $params['organiser'] . '"');
+    }
+
+  }
+
+  /**
    * Add the sorting parameters for the agenda searches.
    */
   protected function addSort($params) {
@@ -78,7 +90,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       case 'comment_count':
         $this->parameters[] = new Parameter\Sort('comment_count', Parameter\Sort::DIRECTION_DESC);
       break;
-      
+
       case 'weight':
         $this->parameters[] = new Parameter\Sort('weight', Parameter\Sort::DIRECTION_DESC);
       break;

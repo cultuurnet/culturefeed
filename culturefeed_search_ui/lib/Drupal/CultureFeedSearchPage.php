@@ -464,7 +464,7 @@ class CultureFeedSearchPage {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
         }
         else {
-        
+
           // If wreg we need to add reg (same id's, example 3000 Leuven wreg.638 reg.638)
           foreach ($facetFilter as $facetFilterItem) {
             if (substr($facetFilterItem, 0, 4) == 'wreg') {

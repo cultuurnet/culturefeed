@@ -557,16 +557,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 }
 
 /**
- * Preprocess the variables for my pages overview.
+ * Preprocess the variables for the page activities overview.
  * @see culturefeed-pages-page-agenda.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables) {
 
   if (!empty($variables['read_more_path'])) {
-    drupal_add_library('system', 'drupal.ajax');
-    $query = array();
-    $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
-    $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
+    $query = array('organiser' => $variables['page']->getId());
+    $variables['read_more'] = l(t('All activities of this organiser'), $variables['read_more_path'], array('query' => $query));
   }
 
   $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
