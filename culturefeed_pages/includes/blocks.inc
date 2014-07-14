@@ -259,11 +259,14 @@ function culturefeed_pages_block_page_timeline($page) {
     return;
   }
 
+  $filter_form = drupal_get_form('culturefeed_pages_timeline_filter_form', 'all', $page->getId());
+
   $block = array();
   $block['subject'] = t('Timeline');
   $block['content'] = array(
-    '#theme' => 'culturefeed_social_user_activity_list',
-    '#activities' => $time_line,
+    '#theme' => 'culturefeed_pages_block_page_timeline',
+    '#filter_form' => $filter_form,
+    '#activities' => theme('culturefeed_social_user_activity_list', array('activities' => $time_line)),
   );
 
   return $block;
