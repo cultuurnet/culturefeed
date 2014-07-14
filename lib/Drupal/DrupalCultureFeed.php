@@ -163,6 +163,22 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getConsumerInstance()->searchActivityUsers($nodeId, $type, $contentType, $start, $max);
   }
 
+  public static function loadActivity($activity_id) {
+
+    try {
+
+      $query = new CultureFeed_SearchActivitiesQuery();
+      $query->activityId = $activity_id;
+
+      $result = DrupalCultureFeed::searchActivities($query);
+
+      return current($result->objects);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+  }
+
   public static function searchActivities(CultureFeed_SearchActivitiesQuery $query) {
 
     if ($query->private) {
@@ -177,6 +193,13 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return self::getLoggedInUserInstance()->getTotalActivities($userId, $type_contentType, $private);
+  }
+
+  public static function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+    if (self::isCultureFeedUser()) {
+      return self::getLoggedInUserInstance()->getTotalPageActivities($pageId, $type_contentType, $private);
+    }
+    return self::getConsumerInstance()->getTotalPageActivities($pageId, $type_contentType, FALSE);
   }
 
   /**
