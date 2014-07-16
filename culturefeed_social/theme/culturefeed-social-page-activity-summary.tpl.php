@@ -28,8 +28,6 @@
  */
 ?>
 
-<h4><?php print $subject; ?></h4>
-
 <ul>
   <li><strong><?php print $activities_total_18 ?></strong> <?php print t('followers'); ?></li>
   <li><strong><?php print $activities_total_16 ?></strong> <?php print t('members'); ?></li>
