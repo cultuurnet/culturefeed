@@ -133,10 +133,12 @@ input.add-more-link:hover {
   width: 20%;
   float: left;
   clear: left;
+  margin-top: 0;
+  margin-right: 2%;
 }
 
 #contacts-ajax-wrapper .form-type-textfield input {
-  width: 80%;
+  width: 78%;
 }
 
 #performers-ajax-wrapper .form-type-textfield {
