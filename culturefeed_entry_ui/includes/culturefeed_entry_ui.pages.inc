@@ -2450,7 +2450,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   if (isset($values['themes'])) {
     $theme_options[$values['themes']] = culturefeed_search_get_theme_categories(array('tid_like' => $values['themes']));
     foreach ($theme_options as $key => $value) {
-      if ($value) {
+      if ($value && isset($value[$key])) {
         $categories->add(new CultureFeed_Cdb_Data_Category(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $key, $value[$key]));
       }
     }
