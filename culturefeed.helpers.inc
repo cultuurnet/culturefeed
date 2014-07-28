@@ -360,10 +360,14 @@ function culturefeed_ui_block_ajaxload($config) {
 function culturefeed_external_image_style($image_url, $image_style) {
 
   global $base_url;
+  $curr_url = str_replace('http://', '', $base_url);
+  $image_url_parts = explode('/', str_replace('http://', '', $image_url));
+  $curr_url_parts = explode('/', $curr_url);
+
   $file_directory = variable_get('file_public_path', 'sites/default/files');
 
-  // If this file is original from current host, just use the original path.
-  if (strstr($image_url, $base_url)) {
+  // If this file is original of current host, just use the original path.
+  if ($image_url_parts[0] == $curr_url_parts[0]) {
     $local_uri = trim(str_replace($base_url . '/', '', $image_url), '/');
     $local_uri = str_replace($file_directory . '/', 'public://', $local_uri);
   }

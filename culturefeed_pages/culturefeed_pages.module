@@ -333,7 +333,7 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_news_item'] = array(
+  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_social_news_item'] = array(
     'title' => 'Delete news item',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_delete_news_form', 1, 4),
@@ -544,14 +544,14 @@ function culturefeed_pages_block_info() {
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
       'info' => t("Culturefeed pages: page timeline"),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'cache' => DRUPAL_NO_CACHE,
     );
   }
 
   if (module_exists('culturefeed_agenda')) {
     $blocks['page-agenda'] = array(
       'info' => t('Culturefeed pages: page agenda'),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'cache' => DRUPAL_NO_CACHE,
     );
   }
 
@@ -1023,10 +1023,4 @@ function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$for
   }
 }
 
-/**
- * Load callback for a news item of a page.
- */
-function culturefeed_news_item_load($news_item_id) {
-  $news_item = DrupalCultureFeed::loadActivity($news_item_id);
-  return empty($news_item) ? FALSE : $news_item;
-}
+

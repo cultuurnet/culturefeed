@@ -166,6 +166,17 @@ function culturefeed_social_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  // Detailpages of an activity.
+  $items['news/%/%culturefeed_social_news_item'] = array(
+    'title callback' => 'culturefeed_social_activity_title',
+    'title arguments' => array(2),
+    'page callback' => 'culturefeed_social_page_activity_detail',
+    'page arguments' => array(2, 'news'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Notifications
   if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
     $items['culturefeed/notifications'] = array(
@@ -327,6 +338,12 @@ function culturefeed_social_theme() {
         'list' => NULL,
       ),
       'template' => 'culturefeed-social-user-list-block-for-activity',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_detail_news' => array(
+      'variables' => array('activity' => NULL),
+      'template' => 'culturefeed-social-detail-news',
       'path' => $path,
       'file' => 'theme.inc',
     ),
@@ -879,4 +896,40 @@ function culturefeed_social_base_report_abuse_form_validate($form, &$form_state)
  */
 function culturefeed_social_base_report_abuse_form_submit($form, &$form_state) {
   drupal_set_message(t('Message sent'));
+}
+
+/**
+ * Load callback for a, activity.
+ */
+function culturefeed_social_activity_item_load($activity_id, $type_id) {
+
+  $item = DrupalCultureFeed::loadActivity($activity_id);
+  if (!empty($item)) {
+    return ($item->type == $type_id) ? $item : FALSE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Load callback for a news item of a page.
+ */
+function culturefeed_social_news_item_load($news_item_id) {
+  return culturefeed_social_activity_item_load($news_item_id, CultureFeed_Activity::TYPE_NEWS);
+}
+
+/**
+ * Title callback for detailpages of activities.
+ */
+function culturefeed_social_activity_title($activity) {
+
+  $title = $activity->nodeTitle;
+
+  // Check if the activity was a json.
+  $content = json_decode($activity->value);
+  if (!empty($content) && !empty($content->title)) {
+    $title = $content->title;
+  }
+
+  return $title;
 }

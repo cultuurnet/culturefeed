@@ -468,6 +468,72 @@ function culturefeed_social_preprocess_culturefeed_social_page_activity_summary(
 }
 
 /**
+ * Preprocess the variables for detailpage of a news item.
+ * @see culturefeed-social-detail-news.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variables) {
+
+  $activity = $variables['activity'];
+
+  $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
+  $user_url = 'user/' . $activity->userId;
+
+  $variables['nick'] = l($activity->nick, $user_url);
+
+  // If onbehalf is known, show it only when culturefeed pages is enabled.
+  if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
+    $variables['nick'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
+  }
+
+  $variables['picture'] = l($picture, $user_url, array('html' => TRUE));
+
+  $date = $activity->creationDate;
+  $time_zone  = new DateTimeZone('Europe/Brussels');
+  $last_reply = new DateTime();
+  $last_reply->setTimestamp($date);
+  $last_reply->setTimezone($time_zone);
+
+  // Check if the activity happened today.
+  $time_ago = $_SERVER['REQUEST_TIME'] - $date;
+  if ($time_ago < (60 * 60 * 60)) {
+    $variables['date'] = format_interval($time_ago) . ' ' . t('ago') . '.';
+  }
+  else {
+
+    if ($date >= strtotime("today")) {
+      $variables['date'] = t('Today at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
+    }
+    else if ($date >= strtotime("yesterday")) {
+      $variables['date'] = t('Yesterday at') . ' ' . $last_reply->format('H:i') . ' '  . t('hour');
+    }
+    else {
+      $variables['date'] = format_date($date, 'custom', 'd M \o\m H:i') . ' '  . t('hour');
+    }
+
+  }
+
+  $variables['title'] = '';
+  $variables['body'] = '';
+  $content = json_decode($activity->value);
+  if ($content) {
+
+    if (isset($content->title)) {
+      $variables['title'] = $content->title;
+    }
+
+    if (isset($content->body)) {
+      $variables['body'] = $content->body;
+    }
+
+    if (!empty($content->image)) {
+      $variables['image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image');
+    }
+
+  }
+
+}
+
+/**
  * Theme the login required message when an anonymous user sees a social action.
  */
 function theme_culturefeed_social_login_required_message($variables) {
