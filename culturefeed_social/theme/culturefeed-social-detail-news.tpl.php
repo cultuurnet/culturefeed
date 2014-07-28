@@ -6,6 +6,10 @@
  */
 ?>
 
+<?php if (!empty($page_admin)): ?>
+  <a href="<?php print url('pages/' . $page_id . '/news/add'); ?>"><?php print t('Add a news item') ?></a>
+<?php endif; ?>
+
 <?php print $picture ?>
 <?php print $nick ?>
 

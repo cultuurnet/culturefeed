@@ -531,6 +531,11 @@ function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variable
 
   }
 
+  if ($activity->contentType == 'page') {
+    $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($activity->nodeId);
+    $variables['page_id'] = $activity->nodeId;
+  }
+
 }
 
 /**
