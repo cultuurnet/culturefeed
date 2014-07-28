@@ -104,6 +104,12 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   if (!empty($activity->contentDetails)) {
     $variables['teaser'] = theme('culturefeed_social_user_activity_' . $activity->contentType . '_details', array('activity' => $activity, 'uid' => $variables['uid']));
+
+    if ($activity->type == CultureFeed_Activity::TYPE_COMMENT || $activity->type == CultureFeed_Activity::TYPE_REVIEW) {
+      $variables['summary'] = $activity->value;
+      $variables['short_summary'] = truncate_utf8($activity->value, 100, TRUE);
+    }
+
   }
 
 }

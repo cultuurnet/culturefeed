@@ -102,7 +102,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
 
     // Check if the user is already known in our system.
     $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $token['userId']))->fetchField();
-    
+
     global $user;
     if (!$uid) {
       $account = culturefeed_create_user($cf_account, $user);
@@ -117,7 +117,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
         $uid = $user->uid;
       }
       $account = user_load($uid);
-      
+
     }
 
     // If a token was passed, save it after deleting a possible previous entry.
@@ -210,7 +210,20 @@ function culturefeed_authenticated_action_page() {
     }
 
     $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : '';
+    // Destination always wins in drupal_goto.
+    if (isset($_GET['destination']) && !url_is_external($_GET['destination'])) {
+      $redirect = $_GET['destination'];
+    }
+
+    // Check if the user will have access to the redirect.
+    // If not it will cause endless loop.
+    if (!drupal_valid_path($redirect)) {
+      drupal_set_title(t('Access denied'));
+      return t('You are not authorized to access this page.');
+    }
+
     drupal_goto($redirect, array('query' => $query));
+
   }
 
   return array('#theme' => 'culturefeed_authenticated_page');
