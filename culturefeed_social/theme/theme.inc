@@ -474,6 +474,7 @@ function culturefeed_social_preprocess_culturefeed_social_page_activity_summary(
 function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variables) {
 
   $activity = $variables['activity'];
+  $variables['activity_id'] = $variables['activity']->id;
 
   $picture = theme('image', array('path' => $activity->depiction . '?maxwidth=50&maxheight=50&crop=auto'));
   $user_url = 'user/' . $activity->userId;
@@ -533,6 +534,7 @@ function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variable
 
   if ($activity->contentType == 'page') {
     $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($activity->nodeId);
+    $variables['page_admin'] = true;
     $variables['page_id'] = $activity->nodeId;
   }
 

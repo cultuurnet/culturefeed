@@ -7,7 +7,7 @@
 ?>
 
 <?php if (!empty($page_admin)): ?>
-  <a href="<?php print url('pages/' . $page_id . '/news/add'); ?>"><?php print t('Add a news item') ?></a>
+  <a href="<?php print url('pages/' . $page_id . '/news/delete/' . $activity_id); ?>"><?php print t('Delete news item') ?></a>
 <?php endif; ?>
 
 <?php print $picture ?>
