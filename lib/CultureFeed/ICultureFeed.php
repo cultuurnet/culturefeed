@@ -30,6 +30,8 @@ interface ICultureFeed {
 
   public function uploadUserDepiction($id, $file_data);
 
+  public function removeUserDepiction($id);
+
   public function resendMboxConfirmationForUser($id);
 
   public function updateUserPrivacy($id, CultureFeed_UserPrivacyConfig $privacy_config);

@@ -58,6 +58,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     self::getLoggedInUserInstance()->uploadUserDepiction($id, $file_data);
   }
 
+  public static function removeUserDepiction($id) {
+    self::getLoggedInUserInstance()->removeUserDepiction($id);
+  }
+
   public static function resendMboxConfirmationForUser($id) {
     self::getLoggedInUserInstance()->resendMboxConfirmationForUser($id);
   }

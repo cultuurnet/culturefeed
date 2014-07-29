@@ -124,6 +124,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->realCultureFeed->uploadUserDepiction($id, $file_data);
   }
 
+  public function removeUserDepiction($id) {
+    $this->realCultureFeed->removeUserDepiction($id);
+  }
+
   public function resendMboxConfirmationForUser($id) {
     $this->realCultureFeed->resendMboxConfirmationForUser($id);
   }
