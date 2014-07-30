@@ -72,9 +72,11 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         attach: function(context, setings) {
             $( "input[name^='period_or_permanent[opening_times]']").blur(function() {
                 var string = $(this).val();
-                var seperator = string.split(':').length - 1;
-                if (seperator == 0) {
-                    $(this).val(string + ':00');
+                if (string) {
+                    var seperator = string.split(':').length - 1;
+                    if (seperator == 0) {
+                        $(this).val(string + ':00');
+                    }
                 }
             });
         }

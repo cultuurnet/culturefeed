@@ -783,11 +783,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       // endtime exists.
       // Next check if there is a submitted end.
       // Next check if a new end is being added.
+      // Next check for any non date ajax trigger to avoid losing values.
       $has_end = (
         ($when == 'period') ||
         (!$triggering_element && isset($timestamps[$i]['endtime'])) ||
         (isset($form_state['values']['datetimes'][$i]['end'])) ||
-        ($triggering_element == 'datetimes_add_end_' . $i)
+        ($triggering_element == 'datetimes_add_end_' . $i) ||
+        ($triggering_element && strpos($triggering_element, 'datetimes') !== 0)
       );
 
       // Timestamp / Period add end date or time.
@@ -908,7 +910,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  if ($when == 'period' || $when == 'permanent') {
+  if (($when == 'period' || $when == 'permanent') || ($triggering_element && strpos($triggering_element, 'datetimes') !== 0)) {
 
     // TODO put in function cos we need it for permanent as well
     // Period / permanent elements.
