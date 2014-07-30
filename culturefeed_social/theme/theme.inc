@@ -20,14 +20,7 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_list(&$v
       continue;
     }
 
-    // Special template for the News activity content. Actually news should be a
-    // content type and not an activity.
-    if ($activity->type == CultureFeed_Activity::TYPE_NEWS) {
-      $items[] = theme('culturefeed_social_user_activity_summary_with_teaser', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
-    }
-    else {
-      $items[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
-    }
+    $items[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
   }
 
   $variables['items'] = $items;
@@ -72,13 +65,26 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 
   }
 
-  // Not possible to link when it's an activity on an activity.
-  if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
-    $link = check_plain($activity->nodeTitle);
+  $variables['title'] = $activity->nodeTitle;
+  // News item link to an own detail page.
+  if ($activity->type == CultureFeed_Activity::TYPE_NEWS) {
+
+    $content = json_decode($activity->value);
+    if (!empty($content->title)) {
+      $variables['title'] = $content->title;
+    }
+
+    $link = l($variables['title'], culturefeed_search_detail_path('news', $activity->id, $variables['title']));
   }
   else {
-    $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
-    $link = l($activity->nodeTitle, $url);
+    // Not possible to link when it's an activity on an activity.
+    if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
+      $link = check_plain($activity->nodeTitle);
+    }
+    else {
+      $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
+      $link = l($activity->nodeTitle, $url);
+    }
   }
 
   $type_prefix = '';
@@ -102,23 +108,13 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
     $variables['nick'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
 
-  if (!empty($activity->contentDetails)) {
-    $variables['teaser'] = theme('culturefeed_social_user_activity_' . $activity->contentType . '_details', array('activity' => $activity, 'uid' => $variables['uid']));
-
-    if ($activity->type == CultureFeed_Activity::TYPE_COMMENT || $activity->type == CultureFeed_Activity::TYPE_REVIEW) {
-      $variables['summary'] = $activity->value;
-      $variables['short_summary'] = truncate_utf8($activity->value, 100, TRUE);
-    }
-
-  }
-
 }
 
 /**
- * Preprocess function for the user activity summary.
- * @see culturefeed-social-user-activity-summary.tpl.php
+ * Preprocess function for a user activity wall item.
+ * @see culturefeed-social-user-activity-wall-item.tpl.php
  */
-function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_with_teaser(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_user_activity_wall_item(&$variables) {
 
   culturefeed_social_preprocess_culturefeed_social_user_activity_summary($variables);
 

@@ -224,6 +224,17 @@ function culturefeed_social_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-social-user-activity-list',
     ),
+    'culturefeed_social_user_activity_wall' => array(
+      'variables' => array(
+        'activities' => array(),
+        'class' => NULL,
+        'read_more_url' => NULL,
+        'read_more_text' => NULL,
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-social-user-activity-wall',
+    ),
     'culturefeed_social_user_activity_summary' => array(
       'variables' => array(
         'activity' => NULL,
@@ -233,12 +244,12 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_social_user_activity_summary_with_teaser' => array(
+    'culturefeed_social_user_activity_wall_item' => array(
       'variables' => array(
         'activity' => NULL,
         'uid' => 0,
       ),
-      'template' => 'culturefeed-social-user-activity-summary-with-teaser',
+      'template' => 'culturefeed-social-user-activity-wall-item',
       'path' => $path,
       'file' => 'theme.inc',
     ),
