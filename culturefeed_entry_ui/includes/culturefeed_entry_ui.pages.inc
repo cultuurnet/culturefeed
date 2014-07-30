@@ -2142,11 +2142,11 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location']['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
+    /*if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
       if (empty($values['location']['new']['citywrapper']['zip_code'])) {
         form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
       }
-    }
+    }*/
     if (empty($values['location']['new']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
@@ -2664,7 +2664,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     }
     else {
       $physical_address->setCity($values['location']['new']['citywrapper']['city']);
-      $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
+      if(empty($values['location']['new']['citywrapper']['zip_code'])) {
+        $physical_address->setZip('0000');  
+      }
+      else {
+        $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
+      }
     }
     $physical_address->setCountry($values['location']['new']['citywrapper']['country_select']);
     $address->setLabel($values['location']['new']['location_title']);
