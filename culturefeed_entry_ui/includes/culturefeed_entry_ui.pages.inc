@@ -601,7 +601,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   if ($form_state['#location_needed']) {
 
-    $country = isset($form_state['values']['location']['new']['citywrapper']['country_select']) ? $form_state['values']['location']['new']['citywrapper']['country_select'] : $custom_location_country ? $custom_location_country : 'BE';
+    $country = isset($form_state['values']['location']['new']['citywrapper']['country_select']) && $form_state['values']['location']['new']['citywrapper']['country_select'] ? $form_state['values']['location']['new']['citywrapper']['country_select'] : ($custom_location_country ? $custom_location_country : 'BE');
 
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
