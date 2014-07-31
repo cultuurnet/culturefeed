@@ -7,8 +7,8 @@
 
 <div id="activity-<?php print $activity_id ?>" class="comment-list-item">
 
-  <?php print $content_teaser; ?>
-  <?php print $content; ?>
+  <?php print $summary; ?>
+  <?php print $body; ?>
 
   <?php if (!empty($comment_link)): ?>
     <?php print $comment_link ?>

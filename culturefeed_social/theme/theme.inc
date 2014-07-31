@@ -163,9 +163,12 @@ function culturefeed_social_preprocess_culturefeed_social_event_teaser(&$variabl
   $details = $variables['activity']->contentDetails;
 
   $variables['title'] = $details->title;
+  $variables['type'] = $details->type;
   $variables['image'] = $details->thumbnail;
   $variables['body'] = $details->description;
-  $variables['link'] = l($details->title, culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_EVENT, $details->cdbId, $details->title));
+  $variables['url'] = url(culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_EVENT, $details->cdbId, $details->title));
+  $variables['location'] = $details->location;
+  $variables['cdbid'] = $details->cdbId;
 
 }
 
@@ -178,9 +181,12 @@ function culturefeed_social_preprocess_culturefeed_social_production_teaser(&$va
   $details = $variables['activity']->contentDetails;
 
   $variables['title'] = $details->title;
+  $variables['type'] = $details->type;
   $variables['image'] = $details->thumbnail;
   $variables['body'] = $details->description;
-  $variables['link'] = l($details->title, culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_PRODUCTION, $details->cdbId, $details->title));
+  $variables['url'] = url(culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_PRODUCTION, $details->cdbId, $details->title));
+  $variables['location'] = $details->location;
+  $variables['cdbid'] = $details->cdbId;
 
 }
 
@@ -191,6 +197,7 @@ function culturefeed_social_preprocess_culturefeed_social_production_teaser(&$va
 function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variables) {
 
   $activity = $variables['activity'];
+  $variables['activity_id'] = $activity->id;
   $variables['title'] = $activity->nodeTitle;
   $variables['body'] = '';
   $variables['summary'] = '';
@@ -202,8 +209,6 @@ function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variable
       $variables['title'] = $content->title;
     }
     if (!empty($content->body)) {
-
-      $variables['title'] = $content->body;
 
       $variables['body'] = filter_xss($content->body, array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'h1', 'h2', 'h3', 'p'));
       if (strlen($content->body) > 250) {
@@ -239,9 +244,9 @@ function culturefeed_social_preprocess_culturefeed_social_comment_teaser(&$varia
     }
   }
 
-  $variables['content'] = check_plain(strip_tags($activity->value)); // CultuurNet doesn't want to see html tags converted to plain.
-  $variables['content'] = str_replace("\n", "<br />", $variables['content']);
-  $variables['content_teaser'] = substr($variables['content'], 0, 100);
+  $variables['body'] = check_plain(strip_tags($activity->value)); // CultuurNet doesn't want to see html tags converted to plain.
+  $variables['body'] = str_replace("\n", "<br />", $variables['body']);
+  $variables['summary'] = substr($variables['body'], 0, 100);
 
   $variables['activity_id'] = $activity->id;
 

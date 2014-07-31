@@ -11,4 +11,5 @@
 
 <?php print $link ?>
 
+<?php print $summary; ?>
 <?php print $body ?>
