@@ -211,7 +211,7 @@ function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variable
     if (!empty($content->body)) {
 
       $variables['body'] = filter_xss($content->body, array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'h1', 'h2', 'h3', 'p'));
-      $variables['summary'] = truncate_utf8($content->body, 100, TRUE);
+      $variables['summary'] = truncate_utf8(strip_tags($content->body), 100, FALSE, TRUE);
     }
 
     if (!empty($content->image)) {
@@ -244,7 +244,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_teaser(&$varia
 
   $variables['body'] = check_plain(strip_tags($activity->value)); // CultuurNet doesn't want to see html tags converted to plain.
   $variables['body'] = str_replace("\n", "<br />", $variables['body']);
-  $variables['summary'] = substr($variables['body'], 0, 100);
+  $variables['summary'] = truncate_utf8($variables['body'], 100, FALSE, TRUE);
 
   $variables['activity_id'] = $activity->id;
 
