@@ -653,20 +653,25 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#size' => 60,
     );
 
-    $form['basic']['location']['new']['street'] = array(
+    $form['basic']['location']['new']['citywrapper']['street'] = array(
       '#type' => 'textfield',
-      '#title' => t('Street'),
+      '#title' => ($country == 'BE') ? t('Street') : t('Street and House Number'),
       '#default_value' => $custom_location_street ? $custom_location_street : '',
       '#required' => FALSE,
       '#size' => 60,
     );
 
-    $form['basic']['location']['new']['house_number'] = array(
+    $form['basic']['location']['new']['citywrapper']['house_number'] = array(
       '#type' => 'textfield',
-      '#title' => t('House Number'),
+      '#title' => ($country == 'BE') ? t('House Number') : '',
       '#default_value' => $custom_location_number ? $custom_location_number : '',
       '#required' => FALSE,
       '#size' => 10,
+      '#attributes' => array(
+        'style' => array(
+          ($country == 'BE') ? 'display:block;' : 'display:none;',
+        ),
+      ),
     );
   }
 
@@ -2656,8 +2661,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['location']['new']['street']);
-    $physical_address->setHouseNumber($values['location']['new']['house_number']);
+    $physical_address->setStreet($values['location']['new']['citywrapper']['street']);
+    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
+      $physical_address->setHouseNumber($values['location']['new']['citywrapper']['house_number']);
+    }
+    else {
+      $physical_address->setHouseNumber('');
+    }
     if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
       $physical_address->setZip(substr($values['location']['new']['citywrapper']['city'], 0, 4));
       $physical_address->setCity(substr($values['location']['new']['citywrapper']['city'], 5));
