@@ -390,6 +390,16 @@ function culturefeed_social_image_default_styles() {
     'effects' => array(
       array(
         'name' => 'image_scale',
+        'data' => array('width' => 450, 'height' => 450, 'upscale' => 0),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  $styles['culturefeed_activity_image_teaser'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
         'data' => array('width' => 150, 'height' => 150, 'upscale' => 0),
         'weight' => 0,
       ),

@@ -217,7 +217,7 @@ function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variable
     }
 
     if (!empty($content->image)) {
-      $variables['image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image');
+      $variables['image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image_teaser');
     }
 
   }
