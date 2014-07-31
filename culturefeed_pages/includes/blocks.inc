@@ -101,7 +101,7 @@ function culturefeed_pages_block_pages_user_follows($account) {
  */
 function culturefeed_pages_block_pages_admin_options() {
 
-  $page = menu_get_object('culturefeed_pages_page', 3);
+  $page = culturefeed_pages_get_viewed_page();
 
   if (!$page || !culturefeed_is_culturefeed_user()) {
     return;

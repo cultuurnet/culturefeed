@@ -602,9 +602,9 @@ function culturefeed_social_preprocess_culturefeed_social_page_activity_summary(
 
 /**
  * Preprocess the variables for detailpage of a news item.
- * @see culturefeed-social-detail-news.tpl.php
+ * @see culturefeed-social-news-detail.tpl.php
  */
-function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_news_detail(&$variables) {
 
   $activity = $variables['activity'];
   $variables['activity_id'] = $variables['activity']->id;
@@ -665,10 +665,26 @@ function culturefeed_social_preprocess_culturefeed_social_detail_news(&$variable
 
   }
 
+  // Merge all page variables into the variables. Add page_ as prefix.
   if ($activity->contentType == 'page') {
     $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($activity->nodeId);
     $variables['page_admin'] = true;
     $variables['page_id'] = $activity->nodeId;
+
+    if (module_exists('culturefeed_pages')) {
+      module_load_include('inc', 'culturefeed_pages', 'theme/theme');
+      $page_variables = array();
+      $page = culturefeed_pages_page_load($activity->nodeId);
+      $page_variables['item'] = $page;
+      $page_variables['logged_in'] = DrupalCultureFeed::isCultureFeedUser();
+      _culturefeed_pages_preprocess_culturefeed_page($page_variables);
+
+      foreach ($page_variables as $key => $var) {
+        $variables['page_' . $key] = $var;
+      }
+
+    }
+
   }
 
 }

@@ -767,6 +767,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variab
 
     $row = array();
     $row['title'] = $title;
+    $row['url'] = url(culturefeed_search_detail_path('news', $activity->id, $row['title']));
     $row['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i');
     $row['delete_url'] = url('pages/' . $page_id . '/news/delete/' . $activity->id);
 

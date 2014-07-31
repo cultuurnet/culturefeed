@@ -710,5 +710,5 @@ function culturefeed_social_page_recent_activities() {
  * Page callback: Show the detail of an activity item.
  */
 function culturefeed_social_page_activity_detail($activity, $type) {
-  return theme('culturefeed_social_detail_' . $type, array('activity' => $activity));
+  return theme('culturefeed_social_' . $type . '_detail', array('activity' => $activity));
 }

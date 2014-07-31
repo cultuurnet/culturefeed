@@ -370,9 +370,9 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_social_detail_news' => array(
+    'culturefeed_social_news_detail' => array(
       'variables' => array('activity' => NULL),
-      'template' => 'culturefeed-social-detail-news',
+      'template' => 'culturefeed-social-news-detail',
       'path' => $path,
       'file' => 'theme.inc',
     ),
@@ -518,8 +518,8 @@ function culturefeed_social_block_view($delta) {
       return culturefeed_social_block_my_activity_summary(DrupalCultureFeed::getLoggedInAccount());
 
     case 'page-activity-summary':
-      $object = culturefeed_search_get_active_object();
-      return culturefeed_social_block_page_activity_summary($object);
+      $page = culturefeed_pages_get_viewed_page();
+      return culturefeed_social_block_page_activity_summary($page);
   }
 
   return $block;
