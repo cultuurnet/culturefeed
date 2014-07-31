@@ -211,9 +211,7 @@ function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variable
     if (!empty($content->body)) {
 
       $variables['body'] = filter_xss($content->body, array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'h1', 'h2', 'h3', 'p'));
-      if (strlen($content->body) > 250) {
-        $variables['summary'] = truncate_utf8($content->body, 100, TRUE);
-      }
+      $variables['summary'] = truncate_utf8($content->body, 100, TRUE);
     }
 
     if (!empty($content->image)) {
