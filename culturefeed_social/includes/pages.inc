@@ -694,7 +694,7 @@ function culturefeed_social_page_recent_activities() {
   }
   else {
     $content['activities'] = array(
-      '#theme' => 'culturefeed_social_user_activity_list',
+      '#theme' => 'culturefeed_social_user_activity_wall',
       '#activities' => $activities,
     );
 

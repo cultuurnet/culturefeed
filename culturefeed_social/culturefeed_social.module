@@ -253,21 +253,39 @@ function culturefeed_social_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_social_user_activity_event_details' => array(
+    'culturefeed_social_event_teaser' => array(
       'variables' => array(
         'activity' => NULL,
         'uid' => 0,
       ),
-      'template' => 'culturefeed-social-user-activity-event-details',
+      'template' => 'culturefeed-social-event-teaser',
       'path' => $path,
       'file' => 'theme.inc',
     ),
-    'culturefeed_social_user_activity_production_details' => array(
+    'culturefeed_social_production_teaser' => array(
       'variables' => array(
         'activity' => NULL,
         'uid' => 0,
       ),
-      'template' => 'culturefeed-social-user-activity-production-details',
+      'template' => 'culturefeed-social-production-teaser',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_news_teaser' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'uid' => 0,
+      ),
+      'template' => 'culturefeed-social-news-teaser',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_social_comment_teaser' => array(
+      'variables' => array(
+        'activity' => NULL,
+        'uid' => 0,
+      ),
+      'template' => 'culturefeed-social-comment-teaser',
       'path' => $path,
       'file' => 'theme.inc',
     ),

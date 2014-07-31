@@ -111,6 +111,29 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
 }
 
 /**
+ * Preprocess the user activity wall.
+ * @see culturefeed-social-user-activity-wall.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_user_activity_wall(&$variables) {
+
+  $activities = $variables['activities'];
+  $items = array();
+
+  $accounts = culturefeed_get_uids_for_activities($activities->objects);
+
+  foreach ($activities->objects as $activity) {
+    if (!isset($accounts[$activity->userId])) {
+      continue;
+    }
+
+    $items[] = theme('culturefeed_social_user_activity_wall_item', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+  }
+
+  $variables['items'] = $items;
+
+}
+
+/**
  * Preprocess function for a user activity wall item.
  * @see culturefeed-social-user-activity-wall-item.tpl.php
  */
@@ -120,38 +143,22 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_wall_ite
 
   $activity = $variables['activity'];
 
-  // Real title, body and image is stored in the json.
-  $variables['has_teaser'] = FALSE;
-  $content = json_decode($activity->value);
-  if ($content && isset($content->title)) {
-    $variables['has_teaser'] = TRUE;
+  // Comments / News template wins.
+  if ($activity->type == CultureFeed_Activity::TYPE_NEWS || $activity->type == CultureFeed_Activity::TYPE_COMMENT) {
+     $type = $activity->type == CultureFeed_Activity::TYPE_NEWS ? 'news' :'comment';
+     $variables['teaser'] = theme('culturefeed_social_' . $type . '_teaser', array('activity' => $activity, 'uid' => $variables['uid']));
+   }
+   elseif (!empty($activity->contentDetails)) {
+     $variables['teaser'] = theme('culturefeed_social_' . $activity->contentType . '_teaser', array('activity' => $activity, 'uid' => $variables['uid']));
+   }
 
-    if (!empty($content->title)) {
-      $variables['teaser_title'] = $content->title;
-    }
-    if (!empty($content->body)) {
-
-      $variables['teaser_body'] = $content->body;
-
-      $short_summary = $content->body;
-      if (strlen($content->body) > 250) {
-        $short_summary = truncate_utf8($content->body, 100, TRUE);
-      }
-      $variables['teaser_summary'] = $short_summary;
-    }
-
-    if (!empty($content->image)) {
-      $variables['teaser_image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image');
-    }
-
-  }
 }
 
 /**
- * Preprocess function for the event detail of activity summary.
- * @see culturefeed-social-user-activity-event-details.tpl.php
+ * Preprocess function for an event teaser when shown in a stream.
+ * @see culturefeed-social-event-teaser.tpl.php
  */
-function culturefeed_social_preprocess_culturefeed_social_user_activity_event_details(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_event_teaser(&$variables) {
 
   $details = $variables['activity']->contentDetails;
 
@@ -163,10 +170,10 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_event_de
 }
 
 /**
- * Preprocess function for the production detail of activity summary.
- * @see culturefeed-social-user-activity-production-details.tpl.php
+ * Preprocess function for a production teaser when shown in a stream.
+ * @see culturefeed-social-production-teaser.tpl.php
  */
-function culturefeed_social_preprocess_culturefeed_social_user_activity_production_details(&$variables) {
+function culturefeed_social_preprocess_culturefeed_social_production_teaser(&$variables) {
 
   $details = $variables['activity']->contentDetails;
 
@@ -174,6 +181,133 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_producti
   $variables['image'] = $details->thumbnail;
   $variables['body'] = $details->description;
   $variables['link'] = l($details->title, culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_PRODUCTION, $details->cdbId, $details->title));
+
+}
+
+/**
+ * Preprocess function for a news teaser when shown in a stream.
+ * @see culturefeed-social-news-teaser.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variables) {
+
+  $activity = $variables['activity'];
+  $variables['title'] = $activity->nodeTitle;
+  $variables['body'] = '';
+  $variables['summary'] = '';
+
+  $content = json_decode($activity->value);
+  if ($content && isset($content->title)) {
+
+    if (!empty($content->title)) {
+      $variables['title'] = $content->title;
+    }
+    if (!empty($content->body)) {
+
+      $variables['title'] = $content->body;
+
+      $variables['body'] = filter_xss($content->body, array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'h1', 'h2', 'h3', 'p'));
+      if (strlen($content->body) > 250) {
+        $variables['summary'] = truncate_utf8($content->body, 100, TRUE);
+      }
+    }
+
+    if (!empty($content->image)) {
+      $variables['image'] = culturefeed_external_image_style($content->image, 'culturefeed_activity_image');
+    }
+
+  }
+
+  $variables['link'] = l($variables['title'], culturefeed_search_detail_path('news', $activity->id, $variables['title']));
+
+}
+
+/**
+ * Preprocess function for a comment teaser when shown in a stream.
+ * @see culturefeed-social-comment-teaser.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_comment_teaser(&$variables) {
+
+  $activity = $variables['activity'];
+  $destination = drupal_get_destination();
+
+  if (culturefeed_is_culturefeed_user()) {
+    try {
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_social', $e);
+    }
+  }
+
+  $variables['content'] = check_plain(strip_tags($activity->value)); // CultuurNet doesn't want to see html tags converted to plain.
+  $variables['content'] = str_replace("\n", "<br />", $variables['content']);
+  $variables['content_teaser'] = substr($variables['content'], 0, 100);
+
+  $variables['activity_id'] = $activity->id;
+
+  $variables['comment_link'] = '';
+  $variables['comment_url'] = '';
+  $variables['delete_link'] = '';
+  $variables['abuse_link'] = '';
+
+  if ($cf_user) {
+
+    $remove_path = 'culturefeed/activity/delete/' . $activity->id;
+    $attributes = array(
+      'class' => array('remove-link'/*, 'use-ajax'*/),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#delete-wrapper-' . $activity->id,
+      'data-remote' => url($remove_path . "/ajax", array('query' => $destination)),
+    );
+
+    // Don't allow comments on comment that was on an activity.
+    if ($activity->contentType != CultureFeed_Activity::CONTENT_TYPE_ACTIVITY) {
+
+      if ($cf_user->id == $activity->userId) {
+        $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
+          'attributes' => $attributes,
+          'query' => $destination,
+        ));
+      }
+
+      $comment_url = 'culturefeed/activity/comment/' . $activity->id;
+      $attributes = array(
+        'class' => array('comment-link link-icon'),
+        'role' => 'button',
+        'data-toggle' => 'modal',
+        'data-target' => '#comment-wrapper-' . $activity->id,
+        'data-remote' => url($comment_url . "/ajax", array('query' => $destination)),
+      );
+
+      $variables['comment_link'] = l(t('Reply'), $comment_url . '/nojs', array(
+        'attributes' => $attributes,
+        'query' => $destination,
+      ));
+
+     $variables['comment_url'] = url($comment_url . '/nojs', array('attributes' => $attributes, 'query' => $destination));
+
+    }
+
+  }
+
+  if (module_exists('culturefeed_messages')) {
+
+    $abuse_url = 'culturefeed/activity/report-abuse/' . $activity->id;
+    $attributes = array(
+      'class' => array('comment-abuse-link'),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#abuse-wrapper-' . $activity->id,
+      'data-remote' => url($abuse_url . "/ajax", array('query' => $destination)),
+    );
+
+    $variables['abuse_link'] = l(t('Report as inappropriate'), $abuse_url . '/nojs', array(
+      'attributes' => $attributes,
+      'query' => $destination,
+    ));
+
+  }
 
 }
 
