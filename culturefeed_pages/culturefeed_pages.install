@@ -15,7 +15,7 @@ function culturefeed_pages_intall() {
 
   // Run update to set all actortypes as default.
   culturefeed_pages_update_7003();
-  
+
 }
 
 /**
@@ -66,4 +66,15 @@ function culturefeed_pages_update_7004() {
       variable_del('culturefeed_pages_actor_types');
     }
   }
+}
+
+/**
+ * Change block cache settings for timeline block.
+ */
+function culturefeed_pages_update_7005() {
+  db_update('block')
+      ->condition('module', 'culturefeed_pages')
+      ->condition('delta', 'page-timeline')
+      ->fields(array('cache' => DRUPAL_NO_CACHE))
+      ->execute();
 }
