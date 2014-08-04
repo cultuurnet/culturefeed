@@ -171,6 +171,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $result = $this->realCultureFeed->deleteActivity($id);
     module_invoke_all('culturefeed_social_activity_deleted', $result);
     $this->cacheClearActivities();
+
+    // Also clear the timelines.
+    if (module_exists('culturefeed_pages')) {
+      cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
+
     return $result;
   }
 
