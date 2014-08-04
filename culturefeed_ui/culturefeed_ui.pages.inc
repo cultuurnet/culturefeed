@@ -220,7 +220,8 @@ function culturefeed_ui_page_profile_edit_form($form, &$form_state) {
     '#upload_location' => 'public://culturefeed',
   );
 
-  if (!empty($cf_account->depiction)) {
+  // Check if the depiction is not the default one.
+  if (!empty($cf_account->depiction) && !strstr($cf_account->depiction, '/' . CULTUREFEED_UI_DEFAULT_DEPICTION)) {
     $file = culturefeed_create_temporary_image($cf_account->depiction, file_default_scheme() . '://culturefeed');
     if ($file) {
       $form_state['#old_picture'] = $file->fid;
@@ -369,6 +370,16 @@ function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     form_set_error('submit', t('Error occurred while saving your personal data.'));
+  }
+
+  // Remove the profile picture if requested.
+  if (empty($form_state['values']['picture']) && $form_state['#old_picture'] > 0) {
+    try {
+      DrupalCultureFeed::removeUserDepiction(DrupalCultureFeed::getLoggedInUserId());
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+    }
   }
 
   // Upload profile picture.

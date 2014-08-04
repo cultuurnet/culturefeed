@@ -166,7 +166,7 @@ function culturefeed_form_system_performance_settings_alter(&$form, $form_state)
  * Process function to expand the file element type with an image preview.
  */
 function culturefeed_image_file_process($element, &$form_state, $form) {
-  
+
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
 
   if ($fid && $element['#file']) {
