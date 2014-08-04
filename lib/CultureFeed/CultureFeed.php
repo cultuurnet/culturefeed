@@ -219,7 +219,7 @@ class CultureFeed implements ICultureFeed {
     if (!empty($language)) {
       $query['lang'] = $language;
     }
-    
+
     if (!empty($consumerKey)) {
       $query['consumerKey'] = $consumerKey;
     }
@@ -833,6 +833,44 @@ class CultureFeed implements ICultureFeed {
     $data = array();
     $data['type_contentType'] = $type_contentType;
     $data['userId'] = $userId;
+    $data['private'] = $private ? "true" : "false";
+
+    $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $totals = array();
+    $objects = $xml->xpath('/response/total');
+    foreach ($objects as $object) {
+      $total = new stdClass();
+      $total->key        = (string) $object->attributes()->type;
+      $total->value      = (string) $object;
+      $totals[] = $total;
+    }
+
+    return $totals;
+
+  }
+
+  /**
+   * Get the total of activities for a page.
+   *
+   * @param Integer $pageId
+   *   The page Id to get all activities for.
+   * @param string $type_contentType
+   *   Array of unique strings for each combination of activity type and its content type.
+   *   E.g.
+   */
+  public function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+
+    $data = array();
+    $data['type_contentType'] = $type_contentType;
+    $data['pageId'] = $pageId;
     $data['private'] = $private ? "true" : "false";
 
     $result = $this->oauth_client->consumerGetAsXml('activity/totals', $data);
@@ -1811,6 +1849,7 @@ class CultureFeed implements ICultureFeed {
       $user->holdsAccount = $accounts;
     }
 
+    // Add memberships.
     $memberships = $element->xpath('/foaf:person/pageMemberships/pageMembership');
     $user_memberships = array();
     foreach ($memberships as $membership) {
@@ -1826,11 +1865,20 @@ class CultureFeed implements ICultureFeed {
       $page->setId($pageId);
       $page->setName($membership->xpath_str('page/name'));
 
+      // Set categories
+      $categories_element = $membership->xpath('page/categoryIds/categoryId');
+      $categories = array();
+      foreach ($categories_element as $category) {
+        $categories[] = (string) $category;
+      }
+      $page->setCategories($categories);
+
       $user_membership->page          = $page;
 
       $user_membership->role          = $membership->xpath_str('role');
       $user_membership->relation      = $membership->xpath_str('relation');
-      $user_membership->creationDate  = $membership->xpath_time('creationDate');
+      $user_membership->creationDate = $membership->xpath_time('creationDate');
+
 
       $user_memberships[] = $user_membership;
 
@@ -1849,8 +1897,8 @@ class CultureFeed implements ICultureFeed {
 
     }
 
+    // Add following pages.
     $following = $element->xpath('/foaf:person/following/page');
-    $following_pages = array();
     foreach ($following as $object) {
 
       $pageId = $object->xpath_str('uid');
@@ -1863,6 +1911,14 @@ class CultureFeed implements ICultureFeed {
       $page = new CultureFeed_Cdb_Item_Page();
       $page->setId($pageId);
       $page->setName($object->xpath_str('name'));
+
+      // Set categories
+      $categories_element = $object->xpath('categoryIds/categoryId');
+      $categories = array();
+      foreach ($categories_element as $category) {
+        $categories[] = (string) $category;
+      }
+      $page->setCategories($categories);
 
       $follower->page          = $page;
       $follower->user          = $user;

@@ -98,3 +98,27 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
   }
 
 }
+
+/**
+ * Page callback for the city suggestions autocomplete.
+ *
+ * (using jquery ui autocomplete format).
+ */
+function culturefeed_search_ui_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE) {
+
+  $matches = array();
+
+  if ($search_string) {
+
+    $parents = (isset($_GET['parents']) && !empty($_GET['parents'])) ? $_GET['parents'] : array();
+    // Get the list of suggestions from service.
+    $suggestions = culturefeed_search_get_city_suggestions($search_string, $include_regions, $parents);
+    foreach ($suggestions as $key => $suggestion) {
+      $matches[] = (object) array('value' => $key, 'label' => check_plain($suggestion));
+    }
+
+  }
+
+  drupal_json_output($matches);
+
+}

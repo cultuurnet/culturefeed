@@ -205,6 +205,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
   }
 
+  public function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+    return $this->realCultureFeed->getTotalPageActivities($pageId, $type_contentType, $private);
+  }
+
   /**
    * @see CultureFeed::getActivityPointsTimeline()
    */

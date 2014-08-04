@@ -65,8 +65,24 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 	    }
       });
 	}
+
   };
-  
+
+    Drupal.behaviors.culturefeed_entry_ui_complete_time = {
+        attach: function(context, setings) {
+            $( "input[name^='period_or_permanent[opening_times]']").blur(function() {
+                var string = $(this).val();
+                if (string) {
+                    var seperator = string.split(':').length - 1;
+                    if (seperator == 0) {
+                        $(this).val(string + ':00');
+                    }
+                }
+            });
+        }
+    };
+
+
     /**
      * Hides the autocomplete suggestions.
      */

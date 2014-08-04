@@ -199,7 +199,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
     if ($variables['level'] == 0) {
 
-      if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
+      if ($cf_user->id == $activity->userId || (module_exists('culturefeed_pages') && culturefeed_pages_is_user_admin_of_page($object->getId()))) {
         $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,
@@ -337,6 +337,49 @@ function culturefeed_social_preprocess_culturefeed_social_activity_summary(&$var
   else {
     $variables['subject'] = t('Activities of @username', array('@username' => $variables['account_name']));
   }
+
+}
+
+/**
+ * Preprocess the variables for the summary of activities for a page.
+ * @see culturefeed-social-page-activity-summary.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_page_activity_summary(&$variables) {
+
+  $total_per_type = array();
+
+  foreach ($variables['totals'] as $total) {
+
+    // Conventional totals for each type/content type.
+    list($activity_type, $content_type) = explode("_", $total->key);
+    $variables[$content_type . '_' . $activity_type] = $total->value;
+
+    if (!isset($total_per_type[$activity_type])) {
+      $total_per_type[$activity_type] = array('activities' => 0, 'books' => 0, 'pages' => 0);
+    }
+
+    if (in_array($content_type, array('actor', 'production', 'event'))) {
+      $total_per_type[$activity_type]['activities'] += $total->value;
+    }
+    elseif ($content_type == 'book') {
+      $total_per_type[$activity_type]['books'] = $total->value;
+    }
+    elseif ($content_type == 'page') {
+      $total_per_type[$activity_type]['pages'] = $total->value;
+    }
+
+  }
+
+  foreach ($total_per_type as $atype => $total_per_content_type) {
+
+    $variables['total_' . $atype] = $total_per_content_type['books'] + $total_per_content_type['pages'] + $total_per_content_type['activities'];
+    $variables['books_total_' . $atype] = $total_per_content_type['books'];
+    $variables['pages_total_' . $atype] = $total_per_content_type['pages'];
+    $variables['activities_total_' . $atype] = $total_per_content_type['activities'];
+
+  }
+
+  $variables['subject'] = t('Activities');
 
 }
 
