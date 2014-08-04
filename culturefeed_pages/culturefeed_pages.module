@@ -455,7 +455,6 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-<<<<<<< HEAD
   $items['culturefeed/ajax/page/agenda/%culturefeed_pages_page'] = array(
     'page callback' => 'culturefeed_pages_page_ajax_get_agenda',
     'page arguments' => array(4),
@@ -464,8 +463,6 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-=======
->>>>>>> develop
   $items['admin/config/culturefeed/pages-ui'] = array(
     'title' => 'CultureFeed Pages UI',
     'description' => t('Change CultureFeed Pages UI settings'),
@@ -568,6 +565,7 @@ function culturefeed_pages_block_configure($delta) {
       '#title' => t('Query to use for the suggestions'),
       '#type' => 'textfield',
       '#default_value' => variable_get('pages_block_page_suggestions_query', ''),
+      '#description' => t('Example: <strong>category_id:("8.11.0.0.0”)</strong>'),
     );
     $form['pages_block_page_suggestions_total'] = array(
       '#title' => t('Total of suggestions to show'),
@@ -596,6 +594,7 @@ function culturefeed_pages_block_save($delta, $edit) {
   elseif ($delta == 'page-suggestions') {
     variable_set('pages_block_page_suggestions_query', $edit['pages_block_page_suggestions_query']);
     variable_set('pages_block_page_suggestions_total', $edit['pages_block_page_suggestions_total']);
+    variable_set('pages_block_page_suggestions_distance', $edit['pages_block_page_suggestions_distance']);
   }
 }
 
@@ -1027,7 +1026,6 @@ function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$for
 }
 
 /**
-<<<<<<< HEAD
  * Show a filter form for the page suggestions block.
  */
 function culturefeed_pages_page_suggestions_filter_form() {
@@ -1055,6 +1053,8 @@ function culturefeed_pages_page_suggestions_filter_form() {
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#attributes' => array(
       'placeholder' => t('postal or city'),
+      // This class is used to enable the autosubmit.
+      'class' => array('auto_submit'),
     ),
     '#default_value' => $postal,
   );
@@ -1067,7 +1067,10 @@ function culturefeed_pages_page_suggestions_filter_form() {
     ),
   );
 
-=======
+  return $form;
+}
+
+/**
  * Show a filter form for the timeline.
  */
 function culturefeed_pages_timeline_filter_form($form, $form_state, $default_filter, $page_id) {
@@ -1097,12 +1100,10 @@ function culturefeed_pages_timeline_filter_form($form, $form_state, $default_fil
     '#value' => $page_id,
   );
 
->>>>>>> develop
   return $form;
 }
 
 /**
-<<<<<<< HEAD
  * Submit the ajax filter form for suggestions. Return the new list.
  */
 function culturefeed_pages_page_suggestions_ajax_filter_submit($form, $form_state) {
@@ -1122,7 +1123,9 @@ function culturefeed_pages_page_suggestions_ajax_filter_submit($form, $form_stat
     '#type' => 'ajax',
     '#commands' => $commands,
   );
-=======
+}
+
+/**
  * Ajax callback, filter the timeline filter.
  */
 function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
@@ -1147,5 +1150,5 @@ function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
   $commands[] = ajax_command_html('#timeline', $activities);
 
   return array('#type' => 'ajax', '#commands' => $commands);
->>>>>>> develop
+
 }
