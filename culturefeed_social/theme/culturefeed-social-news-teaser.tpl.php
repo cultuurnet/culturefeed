@@ -9,7 +9,6 @@
     <img src="<?php print $teaser_image ?>" alt="<?php print $teaser_title ?>" />
 <?php endif; ?>
 
-<?php print $link ?>
+<a href="<?php print $url; ?>"><?php print $title; ?></a>
 
 <?php print $summary; ?>
-<?php print $body ?>

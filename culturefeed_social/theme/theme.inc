@@ -220,7 +220,7 @@ function culturefeed_social_preprocess_culturefeed_social_news_teaser(&$variable
 
   }
 
-  $variables['link'] = l($variables['title'], culturefeed_search_detail_path('news', $activity->id, $variables['title']));
+  $variables['url'] = url(culturefeed_search_detail_path('news', $activity->id, $variables['title']));
 
 }
 
