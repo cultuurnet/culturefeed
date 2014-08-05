@@ -1309,7 +1309,7 @@ function culturefeed_pages_delete_news_form($form, &$form_state, $page, $news_it
   $form_state['title'] = $title;
   $form_state['page'] = $page;
 
-  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $title)), 'pages/' . $page->getId() . '/news', t('This action cannot be undone.'), t('Delete'), t('Cancel')
+  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $title)), 'pages/' . $page->getId() . '/news', '<p>' . t('This action cannot be undone.') . '</p>', t('Delete'), t('Cancel')
   );
 }
 
