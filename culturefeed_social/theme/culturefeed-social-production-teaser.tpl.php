@@ -14,8 +14,6 @@
 
 <img width="64" src="<?php print $image ?>" alt="<?php print $title ?>" />
 
-<?php print $title ?>
+<a href="<?php print $url; ?>"><?php print $title ?></a>
 
 <?php print $body ?>
-
-<?php print $link ?>
