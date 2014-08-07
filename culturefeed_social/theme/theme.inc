@@ -253,7 +253,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_teaser(&$varia
   $variables['delete_link'] = '';
   $variables['abuse_link'] = '';
 
-  if ($cf_user) {
+  if (!empty($cf_user)) {
 
     $remove_path = 'culturefeed/activity/delete/' . $activity->id;
     $attributes = array(
