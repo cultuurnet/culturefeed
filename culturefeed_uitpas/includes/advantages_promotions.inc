@@ -52,6 +52,7 @@ function culturefeed_uitpas_advantages_promotions_get() {
       // Also show items that are not any longer in stock.
       CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT,
     );
+    $query->published = TRUE;
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     if ($card_system_id) {
       $query->applicableCardSystemId = $card_system_id;
@@ -62,6 +63,12 @@ function culturefeed_uitpas_advantages_promotions_get() {
     pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
     $promotions = $result->objects;
     $promotions_total = $result->total;
+    
+    foreach($promotions as $key => $promotion) {
+      if($promotion->publicationPeriodBegin != NULL && $promotion->publicationPeriodBegin > time()) {
+        unset($promotions[$key]);
+      }
+    }
 
   }
   catch (Exception $e) {

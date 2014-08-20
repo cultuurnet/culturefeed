@@ -46,7 +46,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item
   $variables['title'] = $page->getName();
 
   culturefeed_pages_preprocess_culturefeed_page_summary($variables);
-  $variables['description'] = truncate_utf8($variables['description'], 100, FALSE, TRUE);
+  $variables['description'] = truncate_utf8($variables['description'], 125, FALSE, TRUE);
 
   drupal_add_library('system', 'drupal.ajax');
 
@@ -174,7 +174,6 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
     $page = $item->getEntity();
   }
 
-
   $variables['title'] = check_plain($page->getName());
   $variables['id'] = $page->getId();
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
@@ -182,7 +181,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['image'] = $page->getImage();
   $variables['baseline'] = $page->getTagline();
   $variables['cover'] = $page->getCover();
-  
+
   foreach ($variables['links'] as &$link) {
     $link = preg_replace('#^http://|^https://#', "", $link);
   }
@@ -227,7 +226,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   if ($page->getEmail()) {
     $variables['contact']['mail'] = check_plain($page->getEmail());
   }
-  
+
   // Check if page has activities
   $variables['has_activities'] = FALSE;
   if (module_exists('culturefeed_agenda')) {
@@ -458,7 +457,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_user_search_result(&$var
     $result = array();
     $result['nick'] = check_plain($object->nick);
     $result['profile_link'] = l(t('View profile'), 'user/' . $accounts[$object->id]);
-    $result['profile_url'] =  url('user/' . $accounts[$object->id]); 
+    $result['profile_url'] =  url('user/' . $accounts[$object->id]);
     $add_options['attributes']['data-remote'] = url('pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/ajax', array('query' => $add_options['query']));
     $result['add_link'] = in_array($object->id, $members) ? t('Member') : l(t('Add as member'), 'pages/' . $variables['page']->getId() . '/membership/add/' . $object->id . '/nojs', $add_options);
     $variables['results'][] = $result;
@@ -513,9 +512,9 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
   }
 
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
-  
+
       $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
-  
+
 }
 
 /**
@@ -557,22 +556,28 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_my_pages(&$variable
 }
 
 /**
- * Preprocess the variables for my pages overview.
+ * Preprocess the variables for the page activities overview.
  * @see culturefeed-pages-page-agenda.tpl.php
  */
 function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables) {
 
   if (!empty($variables['read_more_path'])) {
-    drupal_add_library('system', 'drupal.ajax');
-    $query = array();
-    $query['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
-    $variables['read_more'] = l(t('More activities'), $variables['read_more_path'], array('query' => $query, 'attributes' => array('class' => array('use-ajax'))));
+    $query = array('organiser' => $variables['page']->getId());
+    $variables['read_more'] = l(t('All activities of this organiser'), $variables['read_more_path'], array('query' => $query));
   }
-  
+
   $variables['follow_link'] = culturefeed_pages_follow_link($variables['page']);
- 
+
   $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
-  
+
+}
+
+/**
+ * Preprocess the variables for a suggestion list item.
+ * @see
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_suggestion_list_item(&$variables) {
+  culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item($variables);
 }
 
 /**
@@ -735,7 +740,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
   $items = array();
   foreach ($variables['results'] as $key => $search_result) {
     $entity = $search_result->getEntity();
-    
+
     $image = $entity->getImage();
     $location = $entity->getAddress()->getCity();
     $items[$key]['link'] = culturefeed_search_detail_l($search_result->getType(), $search_result->getId(), $search_result->getTitle($language->language));
@@ -744,3 +749,4 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
   }
   $variables['items'] = $items;
 }
+

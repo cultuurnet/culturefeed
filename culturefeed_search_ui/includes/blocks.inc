@@ -533,7 +533,7 @@ function culturefeed_search_ui_block_age_range_facet() {
 
   if (!empty($items)) {
     return array(
-      'subject' => 'Age',
+      'subject' => t('Age'),
       'content' => array(
         '#theme' => 'culturefeed_search_facet',
         '#facet' => $facet,

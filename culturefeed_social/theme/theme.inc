@@ -199,7 +199,7 @@ function culturefeed_social_preprocess_culturefeed_social_comment_list_item(&$va
 
     if ($variables['level'] == 0) {
 
-      if ($cf_user->id == $activity->userId || culturefeed_pages_is_user_admin_of_page($object->getId())) {
+      if ($cf_user->id == $activity->userId || (module_exists('culturefeed_pages') && culturefeed_pages_is_user_admin_of_page($object->getId()))) {
         $variables['delete_link'] = l(t('Delete'), $remove_path . '/nojs', array(
           'attributes' => $attributes,
           'query' => $destination,

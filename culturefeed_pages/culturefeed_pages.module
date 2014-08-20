@@ -208,6 +208,30 @@ function culturefeed_pages_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_pages_block_page_suggestions' => array(
+      'variables' => array('suggestions' => '', 'filter_form' => NULL),
+      'template' => 'culturefeed-pages-block-page-suggestions',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_pages_page_suggestion_list' => array(
+      'variables' => array('suggestions' => array()),
+      'template' => 'culturefeed-pages-page-suggestion-list',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_pages_page_suggestion_list_item' => array(
+      'variables' => array('item' => NULL),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-pages-page-suggestion-list-item',
+    ),
+    'culturefeed_pages_block_page_timeline' => array(
+      'variables' => array('filter_form' => NULL, '', 'activities' => array()),
+      'path' => $path,
+      'template' => 'culturefeed-pages-block-page-timeline',
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -432,7 +456,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['culturefeed/ajax/page/agenda/%culturefeed_pages_page'] = array(
-    'page callback' => 'culturefeed_social_page_ajax_get_agenda',
+    'page callback' => 'culturefeed_pages_page_ajax_get_agenda',
     'page arguments' => array(4),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -499,10 +523,15 @@ function culturefeed_pages_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['page-suggestions'] = array(
+    'info' => t('Culturefeed pages: page suggestions'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   if (module_exists('culturefeed_social')) {
     $blocks['page-timeline'] = array(
       'info' => t("Culturefeed pages: page timeline"),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'cache' => DRUPAL_NO_CACHE,
     );
   }
 
@@ -528,7 +557,25 @@ function culturefeed_pages_block_configure($delta) {
     $form['pages_block_agenda_total_items'] = array(
       '#title' => t('Items to show per page'),
       '#type' => 'textfield',
-      '#default_value' => variable_get('pages_block_agenda_total_items', 5),
+      '#default_value' => variable_get('pages_block_agenda_total_items', 20),
+    );
+  }
+  elseif ($delta == 'page-suggestions') {
+    $form['pages_block_page_suggestions_query'] = array(
+      '#title' => t('Query to use for the suggestions'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('pages_block_page_suggestions_query', ''),
+      '#description' => t('Example: <strong>category_id:("8.11.0.0.0")</strong>'),
+    );
+    $form['pages_block_page_suggestions_total'] = array(
+      '#title' => t('Total of suggestions to show'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('pages_block_page_suggestions_total', 10),
+    );
+    $form['pages_block_page_suggestions_distance'] = array(
+      '#title' => t('Distance range of suggestions to search'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('pages_block_page_suggestions_distance', 5),
     );
   }
 
@@ -544,7 +591,11 @@ function culturefeed_pages_block_save($delta, $edit) {
   if ($delta == 'page-agenda') {
     variable_set('pages_block_agenda_total_items', $edit['pages_block_agenda_total_items']);
   }
-
+  elseif ($delta == 'page-suggestions') {
+    variable_set('pages_block_page_suggestions_query', $edit['pages_block_page_suggestions_query']);
+    variable_set('pages_block_page_suggestions_total', $edit['pages_block_page_suggestions_total']);
+    variable_set('pages_block_page_suggestions_distance', $edit['pages_block_page_suggestions_distance']);
+  }
 }
 
 /**
@@ -594,6 +645,8 @@ function culturefeed_pages_block_view($delta) {
       $page = menu_get_object('culturefeed_pages_page', 3);
       return culturefeed_pages_block_page_agenda($page);
 
+    case 'page-suggestions':
+      return culturefeed_pages_block_page_suggestions();
   }
 
 }
@@ -806,7 +859,7 @@ function culturefeed_pages_culturefeed_search_page_info() {
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
 function culturefeed_pages_page_load($id) {
-  
+
   $pages = &drupal_static('culturefeed_search_items_load', array());
 
   if (isset($pages[$id])) {
@@ -970,4 +1023,132 @@ function culturefeed_pages_form_culturefeed_social_base_comment_form_alter(&$for
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
   }
+}
+
+/**
+ * Show a filter form for the page suggestions block.
+ */
+function culturefeed_pages_page_suggestions_filter_form() {
+
+  $postal = '';
+  if (!empty($_COOKIE['culturefeed_pages_suggestions_postal'])) {
+    $postal = $_COOKIE['culturefeed_pages_suggestions_postal'];
+  }
+  elseif (culturefeed_is_culturefeed_user()) {
+
+    try {
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+      $postal = $cf_user->zip;
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+  }
+
+  $form = array();
+
+  $form['city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Find pages nearby'),
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+    '#attributes' => array(
+      'placeholder' => t('Zipcode or city'),
+      // This class is used to enable the autosubmit.
+      'class' => array('auto_submit'),
+    ),
+    '#default_value' => $postal,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_pages_page_suggestions_ajax_filter_submit',
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Show a filter form for the timeline.
+ */
+function culturefeed_pages_timeline_filter_form($form, $form_state, $default_filter, $page_id) {
+
+  culturefeed_social_get_activity_filter_options();
+
+  $options = array(
+    'all' => t('All'),
+    CultureFeed_Activity::TYPE_RECOMMEND => t('Recommend'),
+    CultureFeed_Activity::TYPE_REVIEW => t('Review'),
+    CultureFeed_Activity::TYPE_PAGE_MEMBER => t('Membership'),
+    CultureFeed_Activity::TYPE_FOLLOW => t('Follow'),
+  );
+
+  $form['filter'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#title' => t('Filter timeline on'),
+    '#default_value' => $default_filter,
+    '#ajax' => array(
+      'callback' => 'culturefeed_pages_ajax_timeline_filter',
+    ),
+  );
+
+  $form['page_id'] = array(
+    '#type' => 'hidden',
+    '#value' => $page_id,
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the ajax filter form for suggestions. Return the new list.
+ */
+function culturefeed_pages_page_suggestions_ajax_filter_submit($form, $form_state) {
+
+  // Also set $_COOKIE for later use in code.
+  setcookie('culturefeed_pages_suggestions_city', $form_state['values']['city'], $_SERVER['REQUEST_TIME'] + 60 * 60 * 24 * 30, '/');
+  $_COOKIE['culturefeed_pages_suggestions_city'] = $form_state['values']['city'];
+
+  $build = array();
+  $build[] = array(
+    '#markup' => culturefeed_pages_get_page_suggestions_list(),
+  );
+
+  $commands = array(ajax_command_html('#page-suggestions', render($build)));
+
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands,
+  );
+}
+
+/**
+ * Ajax callback, filter the timeline filter.
+ */
+function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
+
+  try {
+    $type = $form_state['values']['filter'] == 'all' ? NULL : $form_state['values']['filter'];
+    $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($form_state['values']['page_id'], NULL, $type);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
+
+  if ($time_line->total == 0) {
+    $activities = t('No activities found');
+  }
+  else {
+    $activities = theme('culturefeed_social_user_activity_list', array('activities' => $time_line));
+  }
+
+  $commands = array();
+  $commands[] = ajax_command_html('#timeline', $activities);
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+
 }

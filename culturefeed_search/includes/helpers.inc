@@ -846,3 +846,30 @@ function culturefeed_search_translate_facet(&$facet_items) {
   }
 }
 
+/**
+ * Prepare a block to be loaded via ajax.
+ * @param array $config
+ *   Config for the ajax.
+ */
+function culturefeed_search_block_ajaxload($config) {
+
+  $block['subject'] = $config['title'];
+  $block['content'] = array(
+    '#markup' => '<div id="' . $config['id'] . '">' . t('Loading') . '</div>',
+    '#id' => $config['id'],
+    '#ajax' => array(
+      'event' => 'ajaxload',
+      'path' => $config['path'],
+    ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_search') . '/js/culturefeed_search_ajax.js',
+        array('data' => array(), 'type' => 'setting'),
+      ),
+    ),
+  );
+
+  $block['content'] = ajax_pre_render_element($block['content']);
+
+  return $block;
+}

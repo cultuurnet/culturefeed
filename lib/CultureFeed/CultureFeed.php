@@ -495,6 +495,15 @@ class CultureFeed implements ICultureFeed {
   }
 
   /**
+   * Remove the depiction of a user.
+   * @param string $id
+   *   ID of the user to remove depiction for.
+   */
+  public function removeUserDepiction($id) {
+    $this->oauth_client->authenticatedPostAsXml('user/' . $id . '/depiction/remove');
+  }
+
+  /**
    * Resend the e-mail confirmation mail for a user.
    *
    * The object should be initialized with the consumer token and user access token of the user who is acted upon.

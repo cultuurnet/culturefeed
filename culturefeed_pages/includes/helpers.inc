@@ -435,3 +435,64 @@ function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
 
   return $admins_of_page;
 }
+
+/**
+ * Get the themed list of page suggestions.
+ */
+function culturefeed_pages_get_page_suggestions_list() {
+
+  $city = '';
+  if (!empty($_COOKIE['culturefeed_pages_suggestions_city'])) {
+    $city = $_COOKIE['culturefeed_pages_suggestions_city'];
+  }
+  elseif (culturefeed_is_culturefeed_user()) {
+
+    try {
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+      $city = $cf_user->zip;
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_pages', $e);
+    }
+  }
+
+  $parameters = array();
+
+  // Add custom query.
+  $query = variable_get('pages_block_page_suggestions_query', '');
+  if (!empty($query)) {
+    $parameters[] = new CultuurNet\Search\Parameter\Query($query);
+  }
+  else {
+   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*'); 
+  }
+
+  // Search on postal / city.
+  if (!empty($city)) {
+
+    $city_parts = explode(' ', $city);
+    if (is_numeric($city_parts[0])) {
+      $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($city_parts[0], variable_get('pages_block_page_suggestions_distance', 5));
+    }
+    else {
+      $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+    }
+  }
+
+  // Sort on total followers.
+  $parameters[] = new CultuurNet\Search\Parameter\Sort('pagefollow_count', CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+
+  // Add max items.
+  $parameters[] = new CultuurNet\Search\Parameter\Rows(variable_get('pages_block_page_suggestions_total', 10));
+
+  try {
+    $search = culturefeed_get_search_service();
+    $result = $search->searchPages($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return;
+  }
+
+  return theme('culturefeed_pages_page_suggestion_list', array('suggestions' => $result->getItems()));
+}

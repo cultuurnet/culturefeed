@@ -259,11 +259,14 @@ function culturefeed_pages_block_page_timeline($page) {
     return;
   }
 
+  $filter_form = drupal_get_form('culturefeed_pages_timeline_filter_form', 'all', $page->getId());
+
   $block = array();
   $block['subject'] = t('Timeline');
   $block['content'] = array(
-    '#theme' => 'culturefeed_social_user_activity_list',
-    '#activities' => $time_line,
+    '#theme' => 'culturefeed_pages_block_page_timeline',
+    '#filter_form' => $filter_form,
+    '#activities' => theme('culturefeed_social_user_activity_list', array('activities' => $time_line)),
   );
 
   return $block;
@@ -286,7 +289,7 @@ function culturefeed_pages_block_page_agenda($page) {
   }
 
   $is_admin = culturefeed_pages_get_active_page_id() == $page->getId();
-  $max_results = variable_get('pages_block_agenda_total_items', 5);
+  $max_results = variable_get('pages_block_agenda_total_items', 20);
 
   // Execute search and show results.
   $build = array();
@@ -314,7 +317,7 @@ function culturefeed_pages_block_page_agenda($page) {
   );
 
   if ($result->getTotalCount() > $max_results) {
-    $block['content']['#read_more_path'] = 'culturefeed/ajax/page/agenda/' . $page->getId();
+    $block['content']['#read_more_path'] = 'agenda/search';
   }
 
   return $block;
@@ -489,6 +492,9 @@ function culturefeed_pages_block_related_activities($page) {
 
 }
 
+/**
+ * Show block with a list of pages nearby given page.
+ */
 function culturefeed_pages_block_nearby_pages($page) {
 
   if (empty($page)) {
@@ -561,4 +567,24 @@ function culturefeed_pages_block_nearby_pages($page) {
 
   return $block;
 
+}
+
+/**
+ * Show a block with suggestions of pages for current user.
+ */
+function culturefeed_pages_block_page_suggestions() {
+
+  // Start with an empty list. On page load, the suggestions will be loaded through ajax.
+  return array(
+    'subject' => t('Discover these pages'),
+    'content' => array(
+      '#theme' => 'culturefeed_pages_block_page_suggestions',
+      '#filter_form' => drupal_get_form('culturefeed_pages_page_suggestions_filter_form'),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'culturefeed_pages') . '/js/page_suggestions.js',
+        )
+      ),
+    ),
+  );
 }
