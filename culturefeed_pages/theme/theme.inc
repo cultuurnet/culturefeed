@@ -46,7 +46,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item
   $variables['title'] = $page->getName();
 
   culturefeed_pages_preprocess_culturefeed_page_summary($variables);
-  $variables['description'] = truncate_utf8($variables['description'], 100, FALSE, TRUE);
+  $variables['description'] = truncate_utf8($variables['description'], 125, FALSE, TRUE);
 
   drupal_add_library('system', 'drupal.ajax');
 

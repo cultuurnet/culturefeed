@@ -1049,10 +1049,10 @@ function culturefeed_pages_page_suggestions_filter_form() {
 
   $form['city'] = array(
     '#type' => 'textfield',
-    '#title' => t('Show only pages nearby'),
+    '#title' => t('Find pages nearby'),
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#attributes' => array(
-      'placeholder' => t('postal or city'),
+      'placeholder' => t('Zipcode or city'),
       // This class is used to enable the autosubmit.
       'class' => array('auto_submit'),
     ),

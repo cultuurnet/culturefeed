@@ -6,7 +6,7 @@
  */
 ?>
 
-<a href="<?php print url('agenda/pages') ?>"><?php print t('All pages') ?></a>
+<a href="<?php print url('agenda/pages') ?>"><?php print t('Show all pages') ?></a>
 
 <?php print drupal_render($filter_form); ?>
 
