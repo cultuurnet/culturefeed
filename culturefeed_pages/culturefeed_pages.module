@@ -565,7 +565,7 @@ function culturefeed_pages_block_configure($delta) {
       '#title' => t('Query to use for the suggestions'),
       '#type' => 'textfield',
       '#default_value' => variable_get('pages_block_page_suggestions_query', ''),
-      '#description' => t('Example: <strong>category_id:("8.11.0.0.0”)</strong>'),
+      '#description' => t('Example: <strong>category_id:("8.11.0.0.0")</strong>'),
     );
     $form['pages_block_page_suggestions_total'] = array(
       '#title' => t('Total of suggestions to show'),
