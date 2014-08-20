@@ -10,6 +10,8 @@
 function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
+  $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
+
   $default_contacts = array();
   $performers_info = array();
   $languages_info = array();
@@ -18,6 +20,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $themetype_default = '';
   $default_location_label = '';
   $default_location_id = '';
+  $custom_location_title = '';
+  $custom_location_street = '';
+  $custom_location_number = '';
+  $custom_location_zip = '';
+  $custom_location_city = '';
+  $custom_location_country = '';
   $default_organiser_label = '';
   $default_organiser_id = '';
   $publication_date = '';
@@ -592,10 +600,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   }
 
   if ($form_state['#location_needed']) {
+
+    $country = isset($form_state['values']['location']['new']['citywrapper']['country_select']) && $form_state['values']['location']['new']['citywrapper']['country_select'] ? $form_state['values']['location']['new']['citywrapper']['country_select'] : ($custom_location_country ? $custom_location_country : 'BE');
+
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
-      '#default_value' => isset($custom_location_title) ? $custom_location_title : '',
+      '#default_value' => $custom_location_title ? $custom_location_title : '',
       '#required' => FALSE,
       '#size' => 80,
     );
@@ -607,12 +618,11 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       '#suffix' => '</div>',
     );
 
-    $form['basic']['location']['new']['citywrapper']['country'] = array(
+    $form['basic']['location']['new']['citywrapper']['country_select'] = array(
       '#type' => 'select',
-      '#name' => 'country_select',
       '#title' => t('Country'),
       '#options' => country_get_list(),
-      '#default_value' => isset($custom_location_country) ? $custom_location_country : 'BE',
+      '#default_value' => $custom_location_country ? $custom_location_country : 'BE',
       '#required' => FALSE,
       '#ajax' => array(
         'callback' => 'culturefeed_entry_ui_add_more_js',
@@ -623,14 +633,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
     $form['basic']['location']['new']['citywrapper']['zip_code'] = array(
       '#type' => 'textfield',
-      '#title' => '',
-      '#name' => 'zip_code',
-      '#default_value' => isset($custom_location_zip) ? $custom_location_zip : '',
+      '#title' => ($country == 'BE') ? '' : t('ZIP Code'),
+      '#default_value' => $custom_location_zip ? $custom_location_zip : '',
       '#required' => FALSE,
       '#size' => 10,
       '#attributes' => array(
         'style' => array(
-          'display:none;'
+          ($country == 'BE') ? 'display:none;' : 'display:block;margin-right:30px;',
         ),
       ),
     );
@@ -638,26 +647,31 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['basic']['location']['new']['citywrapper']['city'] = array(
       '#type' => 'textfield',
       '#title' => t('City'),
-      '#default_value' => isset($custom_location_city) ? $custom_location_city : '',
-      '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+      '#default_value' => $custom_location_city ? $custom_location_city : '',
+      '#autocomplete_path' => ($country == 'BE') ? 'autocomplete/culturefeed/city-suggestion' : '',
       '#required' => FALSE,
       '#size' => 60,
     );
 
-    $form['basic']['location']['new']['street'] = array(
+    $form['basic']['location']['new']['citywrapper']['street'] = array(
       '#type' => 'textfield',
-      '#title' => t('Street'),
-      '#default_value' => isset($custom_location_street) ? $custom_location_street : '',
+      '#title' => ($country == 'BE') ? t('Street') : t('Street and House Number'),
+      '#default_value' => $custom_location_street ? $custom_location_street : '',
       '#required' => FALSE,
       '#size' => 60,
     );
 
-    $form['basic']['location']['new']['house_number'] = array(
+    $form['basic']['location']['new']['citywrapper']['house_number'] = array(
       '#type' => 'textfield',
-      '#title' => t('House Number'),
-      '#default_value' => isset($custom_location_number) ? $custom_location_number : '',
+      '#title' => ($country == 'BE') ? t('House Number') : '',
+      '#default_value' => $custom_location_number ? $custom_location_number : '',
       '#required' => FALSE,
       '#size' => 10,
+      '#attributes' => array(
+        'style' => array(
+          ($country == 'BE') ? 'display:block;' : 'display:none;',
+        ),
+      ),
     );
   }
 
@@ -670,8 +684,6 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   );
 
   $date_count = (isset($form_state['#dates_needed'])) ? $form_state['#dates_needed'] : (count($timestamps) ? count($timestamps) : 1);
-
-  $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
 
   // $when can change from datetime to period and vice versa.
 
@@ -783,11 +795,13 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       // endtime exists.
       // Next check if there is a submitted end.
       // Next check if a new end is being added.
+      // Next check for any non date ajax trigger to avoid losing values.
       $has_end = (
         ($when == 'period') ||
         (!$triggering_element && isset($timestamps[$i]['endtime'])) ||
         (isset($form_state['values']['datetimes'][$i]['end'])) ||
-        ($triggering_element == 'datetimes_add_end_' . $i)
+        ($triggering_element == 'datetimes_add_end_' . $i) ||
+        ($triggering_element && strpos($triggering_element, 'datetimes') !== 0)
       );
 
       // Timestamp / Period add end date or time.
@@ -908,7 +922,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     ),
   );
 
-  if ($when == 'period' || $when == 'permanent') {
+  if (($when == 'period' || $when == 'permanent') || ($triggering_element && strpos($triggering_element, 'datetimes') !== 0)) {
 
     // TODO put in function cos we need it for permanent as well
     // Period / permanent elements.
@@ -2133,11 +2147,11 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location']['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    if ($values['location']['new']['citywrapper']['country'] != 'BE') {
+    /*if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
       if (empty($values['location']['new']['citywrapper']['zip_code'])) {
         form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
       }
-    }
+    }*/
     if (empty($values['location']['new']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
@@ -2647,17 +2661,27 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   else {
     $address = new CultureFeed_Cdb_Data_Address();
     $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['location']['new']['street']);
-    $physical_address->setHouseNumber($values['location']['new']['house_number']);
-    if ($values['location']['new']['citywrapper']['country'] == 'BE') {
+    $physical_address->setStreet($values['location']['new']['citywrapper']['street']);
+    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
+      $physical_address->setHouseNumber($values['location']['new']['citywrapper']['house_number']);
+    }
+    else {
+      $physical_address->setHouseNumber('');
+    }
+    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
       $physical_address->setZip(substr($values['location']['new']['citywrapper']['city'], 0, 4));
       $physical_address->setCity(substr($values['location']['new']['citywrapper']['city'], 5));
     }
     else {
       $physical_address->setCity($values['location']['new']['citywrapper']['city']);
-      $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
+      if(empty($values['location']['new']['citywrapper']['zip_code'])) {
+        $physical_address->setZip('0000');  
+      }
+      else {
+        $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
+      }
     }
-    $physical_address->setCountry($values['location']['new']['citywrapper']['country']);
+    $physical_address->setCountry($values['location']['new']['citywrapper']['country_select']);
     $address->setLabel($values['location']['new']['location_title']);
     $address->setPhysicalAddress($physical_address);
     $address->setLabel($values['location']['new']['location_title']);

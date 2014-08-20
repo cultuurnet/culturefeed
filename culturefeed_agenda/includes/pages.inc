@@ -176,7 +176,10 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
       if ($result->getTotalCount() >= 0) {
 
         $search_results = $result->getItems();
-        culturefeed_social_warmup_activities_cache($search_results);
+
+        if(module_exists('culturefeed_social')) {
+          culturefeed_social_warmup_activities_cache($search_results);
+        }
 
         // Render the results.
         $items = array();

@@ -312,6 +312,8 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
+  // Rebuild the form:
+  $form = drupal_rebuild_form($form['#form_id'], $form_state, $form);
   switch ($form_state['input']['_triggering_element_name']) {
 
     case 'begindates_add_more':
@@ -328,21 +330,8 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
     case 'timestamps_add_more':
       return $form['basic']['timestamps'];
       
-    case 'country_select':
-      if ($form_state['input']['country_select'] == 'BE') {
-        $form['basic']['location']['new']['citywrapper']['city']['#autocomplete_path'] = 'autocomplete/culturefeed/city-suggestion';
-        $form['basic']['location']['new']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:none;'));
-        $form['basic']['location']['new']['citywrapper']['zip_code']['#title'] = '';
-      } else {
-	    $form['basic']['location']['new']['citywrapper']['city']['#autocomplete_path'] = '';
-	    $form['basic']['location']['new']['citywrapper']['city']['#value'] = '';  
-	    $form['basic']['location']['new']['citywrapper']['country']['#value'] = $form_state['input']['country_select'];
-	    $form['basic']['location']['new']['citywrapper']['zip_code']['#attributes'] = array('style' => array('display:block;margin-right:30px;'));
-	    $form['basic']['location']['new']['citywrapper']['zip_code']['#title'] = t('ZIP Code');
-	    
-      }
+    case 'location[new][citywrapper][country_select]':
       return $form['basic']['location']['new']['citywrapper'];
-      return $form['basic']['location']['new']['citywrapper']['zip_code'];
 
     case 'links_add_more':
       return $form['extra']['links'];
