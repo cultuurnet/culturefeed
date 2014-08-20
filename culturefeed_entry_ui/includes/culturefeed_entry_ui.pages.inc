@@ -2874,6 +2874,8 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
         array($form_state),
       ),
     ),
+    'init_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Initializing.') . '</div>',
+    'progress_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Completed @current of @total.') . '</div>',
     'finished' => 'culturefeed_entry_ui_event_form_submission_timeout_batch_finished',
     'file' => drupal_get_path('module', 'culturefeed_entry_ui') . '/includes/culturefeed_entry_ui.pages.inc',
   );
