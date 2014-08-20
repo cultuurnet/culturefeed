@@ -668,7 +668,6 @@ function culturefeed_social_preprocess_culturefeed_social_news_detail(&$variable
   // Merge all page variables into the variables. Add page_ as prefix.
   if ($activity->contentType == 'page') {
     $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($activity->nodeId);
-    $variables['page_admin'] = true;
     $variables['page_id'] = $activity->nodeId;
 
     if (module_exists('culturefeed_pages')) {
