@@ -46,7 +46,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item
   $variables['title'] = $page->getName();
 
   culturefeed_pages_preprocess_culturefeed_page_summary($variables);
-  $variables['description'] = truncate_utf8($variables['description'], 100, FALSE, TRUE);
+  $variables['description'] = truncate_utf8($variables['description'], 125, FALSE, TRUE);
 
   drupal_add_library('system', 'drupal.ajax');
 
@@ -173,7 +173,6 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   else {
     $page = $item->getEntity();
   }
-
 
   $variables['title'] = check_plain($page->getName());
   $variables['id'] = $page->getId();
@@ -571,6 +570,14 @@ function culturefeed_pages_preprocess_culturefeed_pages_page_agenda(&$variables)
 
   $variables['is_following'] = culturefeed_pages_is_user_following_page($variables['page']->getId());
 
+}
+
+/**
+ * Preprocess the variables for a suggestion list item.
+ * @see
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_page_suggestion_list_item(&$variables) {
+  culturefeed_pages_preprocess_culturefeed_pages_basic_search_result_item($variables);
 }
 
 /**

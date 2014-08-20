@@ -492,6 +492,9 @@ function culturefeed_pages_block_related_activities($page) {
 
 }
 
+/**
+ * Show block with a list of pages nearby given page.
+ */
 function culturefeed_pages_block_nearby_pages($page) {
 
   if (empty($page)) {
@@ -564,4 +567,24 @@ function culturefeed_pages_block_nearby_pages($page) {
 
   return $block;
 
+}
+
+/**
+ * Show a block with suggestions of pages for current user.
+ */
+function culturefeed_pages_block_page_suggestions() {
+
+  // Start with an empty list. On page load, the suggestions will be loaded through ajax.
+  return array(
+    'subject' => t('Discover these pages'),
+    'content' => array(
+      '#theme' => 'culturefeed_pages_block_page_suggestions',
+      '#filter_form' => drupal_get_form('culturefeed_pages_page_suggestions_filter_form'),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'culturefeed_pages') . '/js/page_suggestions.js',
+        )
+      ),
+    ),
+  );
 }

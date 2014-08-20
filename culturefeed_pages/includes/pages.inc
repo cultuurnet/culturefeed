@@ -1287,3 +1287,42 @@ function culturefeed_pages_page_my_pages() {
   );
 
 }
+
+/**
+ * Ajax callback to get the agenda of a page.
+ */
+function culturefeed_pages_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page) {
+
+  $requested_page = isset($_GET['page']) ? $_GET['page'] : 0;
+  $max_results = variable_get('pages_block_agenda_total_items', 5) * ($requested_page + 1);
+
+  // Execute search and show results.
+  $result = culturefeed_pages_get_activities_from_page($page, $max_results);
+  if (!$result || $result->getTotalCount() == 0) {
+    return;
+  }
+
+  // Render the results.
+  $search_results = $result->getItems();
+  $items = array();
+  foreach ($search_results as $search_result) {
+    $items[] = theme('culturefeed_' . $search_result->getType() . '_mini_summary', array('item' => $search_result));
+  }
+
+  $build = array();
+  $build['list'] = array(
+    '#theme' => 'culturefeed_pages_page_agenda',
+    '#items' => $items,
+    '#page' => $page,
+    '#class' => 'page-activities',
+  );
+
+  if ($result->getTotalCount() > $max_results) {
+    $build['list']['#read_more_path'] = 'culturefeed/ajax/page/agenda/' . $page->getId();
+  }
+
+  $commands = array(ajax_command_replace('#page-agenda-ajax-wrapper-' . $page->getId(), render($build)));
+
+  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+}
+
