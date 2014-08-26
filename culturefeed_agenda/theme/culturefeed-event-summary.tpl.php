@@ -11,17 +11,17 @@
 
 <div class="event-teaser">
 
-  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title-' . $cdbid))); ?></h2>
+  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid))); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
       <?php if ($comment_count > 0): ?>
         <span class="comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#read" id="cf-review-read-<?php print $cdbid ?>"><?php print t('Read reactions'); ?></a>
-        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Write reaction'); ?></a>
+        <a href="<?php print $url ?>#read" id="cf-review-read_<?php print $cdbid ?>"><?php print t('Read reactions'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write_<?php print $cdbid ?>"><?php print t('Write reaction'); ?></a>
       <?php else: ?>
         <span class="no-comments"><?php print $comment_count; ?></span>
-        <a href="<?php print $url ?>#write" id="cf-review-write-<?php print $cdbid ?>"><?php print t('Be the first to write a review'); ?></a>
+        <a href="<?php print $url ?>#write" id="cf-review-write_<?php print $cdbid ?>"><?php print t('Be the first to write a review'); ?></a>
       <?php endif; ?>
     </div>
     <?php if ($recommend_count > 0): ?>
@@ -36,7 +36,7 @@
 
   <div class="image">
     <?php if (!empty($thumbnail)): ?>
-      <?php print culturefeed_search_detail_l('event', $cdbid, $title, '<img src="' . $thumbnail . '?width=160&height=120&crop=auto" />', array('attributes' => array('id' => 'cf-image-' . $cdbid), 'html' => TRUE)); ?>
+      <?php print culturefeed_search_detail_l('event', $cdbid, $title, '<img src="' . $thumbnail . '?width=160&height=120&crop=auto" />', array('attributes' => array('id' => 'cf-image_' . $cdbid), 'html' => TRUE)); ?>
     <?php endif; ?>
   </div>
 
@@ -81,9 +81,9 @@
   </dl>
 
   <?php if (!empty($tickets)): ?>
-    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
+    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('Info & tickets'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore_' . $cdbid))); ?>
   <?php else: ?>
-    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore-' . $cdbid))); ?>
+    <?php print culturefeed_search_detail_l('event', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button', 'id' => 'cf-readmore_' . $cdbid))); ?>
   <?php endif; ?>
 
 </div>
