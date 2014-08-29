@@ -200,10 +200,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   }
 
   public static function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
-    if (self::isCultureFeedUser()) {
-      return self::getLoggedInUserInstance()->getTotalPageActivities($pageId, $type_contentType, $private);
-    }
-    return self::getConsumerInstance()->getTotalPageActivities($pageId, $type_contentType, FALSE);
+    return self::getLoggedInUserInstance()->getTotalPageActivities($pageId, $type_contentType, $private);
   }
 
   /**

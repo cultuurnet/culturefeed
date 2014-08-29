@@ -2040,6 +2040,21 @@ class CultureFeed implements ICultureFeed {
       $activity->parentActivity = $object->xpath_str('parentActivity');
       $activity->status         = $object->xpath_str('status');
 
+      // Parse the event details if there are any.
+      if ($activity->contentType == CultureFeed_Activity::CONTENT_TYPE_EVENT) {
+        $event_objects = $object->xpath('eventDetails');
+        foreach ($event_objects as $event_object) {
+          $activity->contentDetails = new ActivityEventDetails();
+          $activity->contentDetails->title = $event_object->xpath_str('title');
+          $activity->contentDetails->calendar = $event_object->xpath_str('calendar');
+          $activity->contentDetails->cdbId = $event_object->xpath_str('cdbid');
+          $activity->contentDetails->description = $event_object->xpath_str('description');
+          $activity->contentDetails->location = $event_object->xpath_str('location');
+          $activity->contentDetails->thumbnail = $event_object->xpath_str('thumbnail');
+          $activity->contentDetails->type = $event_object->xpath_str('type');
+        }
+      }
+
       $activities[] = $activity;
     }
 
@@ -2106,8 +2121,8 @@ class CultureFeed implements ICultureFeed {
     $mailing = new CultureFeed_Mailing();
 
     $mailing->id                    = $element->xpath_str('id');
-    $mailing->name = $element->xpath_str('name');
-    $mailing->description = $element->xpath_str('description');
+    $mailing->name                  = $element->xpath_str('name');
+    $mailing->description           = $element->xpath_str('description');
     $mailing->template              = $element->xpath_str('template');
     $mailing->consumerKey           = $element->xpath_str('serviceConsumerKey');
     $mailing->subject               = $element->xpath_str('subject');

@@ -512,8 +512,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_events_admin_page(&$vari
   }
 
   $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), t('View page'));
-
-      $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
+  $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(),     $variables['page']->getName(), $variables['page']->getName());
 
 }
 
@@ -750,3 +749,46 @@ function culturefeed_pages_preprocess_culturefeed_pages_nearby_pages(&$variables
   $variables['items'] = $items;
 }
 
+/**
+ * Preprocess the culturefeed pages news admin page.
+ * @see culturefeed-pages-news-admin-page.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variables) {
+
+  $rows = array();
+  $page_id = $variables['page']->getId();
+
+  foreach ($variables['results'] as $activity) {
+
+    // Use node title as default.
+    $title = $activity->nodeTitle;
+
+    // Real title is stored in the json.
+    $content = json_decode($activity->value);
+    if ($content && !empty($content->title)) {
+      $title = $content->title;
+    }
+
+    $row = array();
+    $row['title'] = $title;
+    $row['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i');
+    $row['delete_url'] = url('pages/' . $page_id . '/news/delete/' . $activity->id);
+
+    $rows[] = $row;
+  }
+
+  $variables['items'] = $rows;
+  $variables['view_page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), t('View page'));
+  $variables['page_link'] = culturefeed_search_detail_l('page', $variables['page']->getId(), $variables['page']->getName(), $variables['page']->getName());
+}
+
+/**
+ * Preprocess the page timeline block.
+ * @see culturefeed-pages-block-page-timeline.tpl.php
+ */
+function culturefeed_pages_preprocess_culturefeed_pages_block_page_timeline(&$variables) {
+
+  $variables['activities'] = theme('culturefeed_social_user_activity_list', array('activities' => $variables['time_line']));
+  $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($variables['page']->getId());
+  $variables['page_id'] = $variables['page']->getId();
+}

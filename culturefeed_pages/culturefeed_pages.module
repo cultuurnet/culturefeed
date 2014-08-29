@@ -12,10 +12,10 @@ module_load_include('inc', 'culturefeed_pages', 'includes/helpers');
 define('CULTUREFEED_ACTORTYPE_ORGANISATION', '8.11.0.0.0');
 
 /**
- * Total items per page for the events admin and the agenda block.
+ * Total items per page for the admin pages and the agenda block.
  */
 define('CULTUREFEED_PAGES_ADMIN_EVENTS_COUNT', 50);
-
+define('CULTUREFEED_PAGES_ADMIN_NEWS_COUNT', 50);
 define('CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE', 20);
 
 /**
@@ -232,6 +232,12 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-block-page-timeline',
       'file' => 'theme.inc',
     ),
+    'culturefeed_pages_news_admin_page' => array(
+      'variables' => array('results' => array(), 'page' => NULL),
+      'template' => 'culturefeed-pages-news-admin-page',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }
@@ -319,6 +325,36 @@ function culturefeed_pages_menu() {
     'title' => t('Activities'),
     'page callback' => 'culturefeed_pages_page_events',
     'page arguments' => array(1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/news'] = array(
+    'title' => 'News',
+    'page callback' => 'culturefeed_pages_page_manage_news',
+    'page arguments' => array(1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/news/add'] = array(
+    'title' => 'Add a news item',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_add_news_form', 1),
+    'access callback' => 'culturefeed_pages_edit_page_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_news_item'] = array(
+    'title' => 'Delete news item',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_pages_delete_news_form', 1, 4),
     'access callback' => 'culturefeed_pages_edit_page_access',
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
@@ -811,6 +847,12 @@ function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Ite
       'description' => t('Manage your activities and comments.'),
       'weight' => -17,
     ),
+    'activities' => array(
+      'title' => t('News'),
+      'url' => 'pages/' . $page->getId() . '/news',
+      'description' => t('Manage your news.'),
+      'weight' => -16,
+    ),
   );
 
 }
@@ -1150,5 +1192,12 @@ function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
   $commands[] = ajax_command_html('#timeline', $activities);
 
   return array('#type' => 'ajax', '#commands' => $commands);
+}
 
+/**
+ * Load callback for a news item of a page.
+ */
+function culturefeed_news_item_load($news_item_id) {
+  $news_item = DrupalCultureFeed::loadActivity($news_item_id);
+  return empty($news_item) ? FALSE : $news_item;
 }

@@ -261,15 +261,14 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getTimeline()
    */
-  public function getTimeline($id, $dateFrom = NULL, $type = '') {
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
 
-    $cid = 'timeline:' . $id . ':' . $dateFrom . ':' . $type;
-
+    $cid = 'timeline:' . $id . ':' . $dateFrom . implode('|', $activityTypes);
     if ($cache = $this->cacheGet($cid)) {
       return $cache->data;
     }
 
-    $data = $this->realCultureFeedPages->getTimeline($id, $dateFrom, $type);
+    $data = $this->realCultureFeedPages->getTimeline($id, $dateFrom, $activityTypes);
 
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 

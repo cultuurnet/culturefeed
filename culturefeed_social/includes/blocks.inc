@@ -282,11 +282,9 @@ function culturefeed_social_block_page_activity_summary($page) {
 
   $types = array();
   foreach ($active_types as $type => $activity_config) {
-
     if (empty($activity_config)) {
       continue;
     }
-
     $allowed_types = $activity_config->allowedTypes;
     foreach ($allowed_types as $ctype) {
       if ($ctype == 'page' && !$has_pages) {

@@ -292,7 +292,6 @@ function culturefeed_pages_block_page_agenda($page) {
   $max_results = variable_get('pages_block_agenda_total_items', 20);
 
   // Execute search and show results.
-  $build = array();
   $result = culturefeed_pages_get_activities_from_page($page, $max_results);
   if (!$result || $result->getTotalCount() == 0) {
     return;

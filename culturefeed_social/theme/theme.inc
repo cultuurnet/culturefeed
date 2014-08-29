@@ -20,7 +20,14 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_list(&$v
       continue;
     }
 
-    $items[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+    // Special template for the News activity content. Actually news should be a
+    // content type and not an activity.
+    if ($activity->type == CultureFeed_Activity::TYPE_NEWS) {
+      $items[] = theme('culturefeed_social_user_activity_summary_with_teaser', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+    }
+    else {
+      $items[] = theme('culturefeed_social_user_activity_summary', array('activity' => $activity, 'uid' => $accounts[$activity->userId]));
+    }
   }
 
   $variables['items'] = $items;
@@ -94,6 +101,61 @@ function culturefeed_social_preprocess_culturefeed_social_user_activity_summary(
   if (!empty($activity->onBehalfOf) && !empty($activity->onBehalfOfName) && module_exists('culturefeed_pages')) {
     $variables['nick'] .= ' ' . t('from') . ' ' . culturefeed_search_detail_l('page', $activity->onBehalfOf, $activity->onBehalfOfName);
   }
+
+  if (!empty($activity->contentDetails)) {
+    $variables['teaser'] = theme('culturefeed_social_user_activity_event_details', array('activity' => $activity, 'uid' => $variables['uid']));
+  }
+
+}
+
+/**
+ * Preprocess function for the user activity summary.
+ * @see culturefeed-social-user-activity-summary.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_user_activity_summary_with_teaser(&$variables) {
+
+  culturefeed_social_preprocess_culturefeed_social_user_activity_summary($variables);
+
+  $activity = $variables['activity'];
+
+  // Real title, body and image is stored in the json.
+  $variables['has_teaser'] = FALSE;
+  $content = json_decode($activity->value);
+  if ($content && isset($content->title)) {
+    $variables['has_teaser'] = TRUE;
+
+    if (!empty($content->title)) {
+      $variables['teaser_title'] = $content->title;
+    }
+    if (!empty($content->body)) {
+
+      $variables['teaser_body'] = $content->body;
+
+      $short_summary = $content->body;
+      if (strlen($content->body) > 250) {
+        $short_summary = truncate_utf8($content->body, 250, TRUE);
+        $short_summary .= ' ' . l(t('Read more'), $_GET['q'], array('short-summary'));
+      }
+      $variables['teaser_summary'] = $short_summary;
+    }
+    if (!empty($content->image)) {
+      $variables['teaser_image'] = $content->image;
+    }
+  }
+}
+
+/**
+ * Preprocess function for the event detail of activity summary.
+ * @see culturefeed-social-user-activity-event-details.tpl.php
+ */
+function culturefeed_social_preprocess_culturefeed_social_user_activity_event_details(&$variables) {
+
+  $details = $variables['activity']->contentDetails;
+
+  $variables['title'] = $details->title;
+  $variables['image'] = $details->thumbnail;
+  $variables['body'] = $details->description;
+  $variables['link'] = l($details->title, culturefeed_social_activity_object_path(CultureFeed_Activity::CONTENT_TYPE_EVENT, $details->cdbId, $details->title));
 
 }
 

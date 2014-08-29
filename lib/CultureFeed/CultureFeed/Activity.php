@@ -101,6 +101,7 @@ class CultureFeed_Activity {
   const TYPE_MEDIA_PHOTO = 22;
   const TYPE_MEDIA_VIDEO = 23;
   const TYPE_PAGE_CREATED = 24;
+  const TYPE_NEWS = 25;
 
   /**
    * ID of the activity object.
@@ -243,6 +244,13 @@ class CultureFeed_Activity {
    * @var string
    */
   public $userpointsUserId;
+
+  /**
+   * The details of the content where the activity is occurred. Currently only
+   * for contentType Event.
+   * @var ActivityEventDetails $contentDetails
+   */
+  public $contentDetails;
 
   /**
    * Helper method to get a string value for an ID.
