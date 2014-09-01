@@ -29,6 +29,6 @@
 
 <?php print $date ?>
 
-<?php if($teaser): ?>
+<?php if(isset($teaser)): ?>
   <?php print $teaser; ?>
 <?php endif; ?>

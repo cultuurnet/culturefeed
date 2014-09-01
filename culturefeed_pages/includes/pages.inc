@@ -1169,7 +1169,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
  * for given page.
  */
 function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
-    
+
   $curr_page = isset($_GET['page']) ? $_GET['page'] : 0;
 
   $query = new CultureFeed_SearchActivitiesQuery();
@@ -1177,6 +1177,7 @@ function culturefeed_pages_page_manage_news(CultureFeed_Cdb_Item_Page $page) {
   $query->start = $curr_page * $query->max;
   $query->type = CultureFeed_Activity::TYPE_NEWS;
   $query->consumer = variable_get('culturefeed_api_application_key', '');
+  $query->nodeId = $page->getId();
   $query->skipCache = TRUE;
 
   // Execute search and show results.
@@ -1308,7 +1309,7 @@ function culturefeed_pages_delete_news_form($form, &$form_state, $page, $news_it
   $form_state['title'] = $title;
   $form_state['page'] = $page;
 
-  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $title)), 'pages/' . $page->getId() . '/news', t('This action cannot be undone.'), t('Delete'), t('Cancel')
+  return confirm_form($form, t('Are you sure you want to delete %title?', array('%title' => $title)), 'pages/' . $page->getId() . '/news', '<p>' . t('This action cannot be undone.') . '</p>', t('Delete'), t('Cancel')
   );
 }
 

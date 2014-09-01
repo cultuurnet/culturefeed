@@ -158,6 +158,23 @@ function culturefeed_pages_is_user_following_page($page_id) {
 }
 
 /**
+ * Get the page that currently is beïng viewed. This can be via a news item, or via the page itself.
+ */
+function culturefeed_pages_get_viewed_page() {
+
+  if (arg(0) == 'news') {
+    $activity = menu_get_object('culturefeed_social_news_item', 2);
+    if ($activity && $activity->contentType == CultureFeed_Activity::CONTENT_TYPE_CULTUREFEED_PAGE) {
+      return culturefeed_pages_page_load($activity->nodeId);
+    }
+  }
+  else {
+    return menu_get_object('culturefeed_pages_page', 3);
+  }
+
+}
+
+/**
  * Sets all the pages where the loggedIn user is ADMIN.
  */
 function culturefeed_pages_set_pages($pages) {

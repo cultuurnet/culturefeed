@@ -351,7 +351,7 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_news_item'] = array(
+  $items['pages/%culturefeed_pages_page/news/delete/%culturefeed_social_news_item'] = array(
     'title' => 'Delete news item',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_delete_news_form', 1, 4),
@@ -574,7 +574,7 @@ function culturefeed_pages_block_info() {
   if (module_exists('culturefeed_agenda')) {
     $blocks['page-agenda'] = array(
       'info' => t('Culturefeed pages: page agenda'),
-      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'cache' => DRUPAL_NO_CACHE,
     );
   }
 
@@ -662,23 +662,23 @@ function culturefeed_pages_block_view($delta) {
       return culturefeed_pages_block_pages_request_admin_membership($page);
 
     case 'page-timeline':
-      $page = menu_get_object('culturefeed_pages_page', 3);
+      $page = culturefeed_pages_get_viewed_page();
       return culturefeed_pages_block_page_timeline($page);
 
     case 'followers':
-      $page = menu_get_object('culturefeed_pages_page', 3);
+      $page = culturefeed_pages_get_viewed_page();
       return culturefeed_pages_block_followers($page);
 
     case 'members':
-      $page = menu_get_object('culturefeed_pages_page', 3);
+      $page = culturefeed_pages_get_viewed_page();
       return culturefeed_pages_block_members($page);
 
     case 'nearby-pages':
-      $page = menu_get_object('culturefeed_pages_page', 3);
+      $page = culturefeed_pages_get_viewed_page();
       return culturefeed_pages_block_nearby_pages($page);
 
     case 'page-agenda':
-      $page = menu_get_object('culturefeed_pages_page', 3);
+      $page = culturefeed_pages_get_viewed_page();
       return culturefeed_pages_block_page_agenda($page);
 
     case 'page-suggestions':
@@ -961,6 +961,9 @@ function culturefeed_pages_detail_title($page, $op = 'view') {
 function culturefeed_pages_edit_page_access($page) {
 
   $cultureFeedUser = DrupalCultureFeed::getLoggedInUser();
+  if (empty($cultureFeedUser)) {
+    return FALSE;
+  }
 
   // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {

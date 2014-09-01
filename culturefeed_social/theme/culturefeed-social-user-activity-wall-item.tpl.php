@@ -29,6 +29,8 @@
   <?php print $prefix . ' '; ?>:
 <?php endif; ?>
 
+<?php print $link; ?>
+
 <?php if($suffix): ?>
   <?php print ' ' . $suffix; ?>
 <?php endif; ?>
@@ -36,22 +38,6 @@
 
 <?php print $date ?>
 
-<?php if($has_teaser): ?>
-
-  <?php if($teaser_image): ?>
-    <img src="<?php print $teaser_image ?>" alt="<?php print $teaser_title ?>" />
-  <?php endif; ?>
-
-  <?php print $teaser_title ?>
-
-  <?php if($teaser_body): ?>
-    <?php if($teaser_summary): ?>
-    <?php print $teaser_summary ?>
-    <div style="display: none"><?php print $teaser_body ?></div>
-    <?php else: ?>
-    <?php print $teaser_body ?>
-    <?php endif; ?>
-
-  <?php endif; ?>
-
+<?php if (!empty($teaser)): ?>
+<?php print $teaser; ?>
 <?php endif; ?>

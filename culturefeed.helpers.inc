@@ -353,3 +353,53 @@ function culturefeed_ui_block_ajaxload($config) {
 
   return $block;
 }
+
+/**
+ * Generate an image style url for an external image.
+ */
+function culturefeed_external_image_style($image_url, $image_style) {
+
+  global $base_url;
+  $curr_url = str_replace('http://', '', $base_url);
+  $image_url_parts = explode('/', str_replace('http://', '', $image_url));
+  $curr_url_parts = explode('/', $curr_url);
+
+  $file_directory = variable_get('file_public_path', 'sites/default/files');
+
+  // If this file is original of current host, just use the original path.
+  if ($image_url_parts[0] == $curr_url_parts[0]) {
+    $local_uri = trim(str_replace($base_url . '/', '', $image_url), '/');
+    $local_uri = str_replace($file_directory . '/', 'public://', $local_uri);
+  }
+  // If the file is of another site, download it locally. This is needed to use imagecache.
+  else {
+
+    $file = new stdClass();
+    $file->filename = $image_url;
+    $validation_errors = file_validate_extensions($file, 'jpg jpeg png gif');
+    if ($validation_errors) {
+      return;
+    }
+
+    $name_parts = explode('/', $image_url);
+    $file_name = $name_parts[count($name_parts) - 1];
+
+    $local_uri = 'public://external/' . $file_name;
+    $directory = $file_directory . '/external';
+    // Not needed if the file already exists.
+    if (!file_exists($local_uri)) {
+      file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
+      $image_content = @file_get_contents($image_url);
+      if ($image_content) {
+        file_put_contents($directory . '/' . $file_name, $image_content);
+      }
+      else {
+        return;
+      }
+    }
+
+  }
+
+  return image_style_url($image_style, $local_uri);
+
+}

@@ -3,9 +3,8 @@
 /**
  * Description of ActivityEventDetails
  */
-class Culturefeed_ActivityEventDetails {
+class Culturefeed_ActivityProductionDetails {
 
-  public $calendar;
   public $cdbId;
   public $description;
   public $location;

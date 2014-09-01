@@ -694,7 +694,7 @@ function culturefeed_social_page_recent_activities() {
   }
   else {
     $content['activities'] = array(
-      '#theme' => 'culturefeed_social_user_activity_list',
+      '#theme' => 'culturefeed_social_user_activity_wall',
       '#activities' => $activities,
     );
 
@@ -704,4 +704,11 @@ function culturefeed_social_page_recent_activities() {
   }
 
   return $content;
+}
+
+/**
+ * Page callback: Show the detail of an activity item.
+ */
+function culturefeed_social_page_activity_detail($activity, $type) {
+  return theme('culturefeed_social_' . $type . '_detail', array('activity' => $activity));
 }

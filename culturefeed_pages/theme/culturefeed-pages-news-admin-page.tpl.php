@@ -14,7 +14,7 @@
       <tbody>
         <?php foreach ($items as $item): ?>
         <tr>
-          <td><?php print $item['title']; ?></td>
+          <td><a href="<?php print $item['url'] ?>"><?php print $item['title']; ?></a></td>
           <td><?php print $item['date']; ?></td>
           <td><a href="<?php print $item['delete_url'] ?>"><?php print t('Delete') ?></a><td>
         </tr>

@@ -771,6 +771,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variab
 
     $row = array();
     $row['title'] = $title;
+    $row['url'] = url(culturefeed_search_detail_path('news', $activity->id, $row['title']));
     $row['date'] = format_date($activity->creationDate, 'custom', 'd M \o\m H:i');
     $row['delete_url'] = url('pages/' . $page_id . '/news/delete/' . $activity->id);
 
@@ -788,7 +789,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_news_admin_page(&$variab
  */
 function culturefeed_pages_preprocess_culturefeed_pages_block_page_timeline(&$variables) {
 
-  $variables['activities'] = theme('culturefeed_social_user_activity_list', array('activities' => $variables['time_line']));
+  $variables['activities'] = theme('culturefeed_social_user_activity_wall', array('activities' => $variables['time_line']));
   $variables['page_admin'] = culturefeed_pages_is_user_admin_of_page($variables['page']->getId());
   $variables['page_id'] = $variables['page']->getId();
 }

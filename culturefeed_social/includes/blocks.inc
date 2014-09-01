@@ -193,7 +193,7 @@ function culturefeed_social_block_my_notifications() {
     $notifications = DrupalCultureFeed::getNotifications(DrupalCultureFeed::getLoggedInUserId(), $params);
     if ($notifications->total > 0) {
       $block['content'] = array(
-        '#theme' => 'culturefeed_social_user_activity_list',
+        '#theme' => 'culturefeed_social_user_activity_wall',
         '#activities' => $notifications,
         '#class' => 'notifications',
         '#read_more_url' => url('culturefeed/notifications'),

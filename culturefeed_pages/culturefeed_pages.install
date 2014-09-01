@@ -78,3 +78,18 @@ function culturefeed_pages_update_7005() {
       ->fields(array('cache' => DRUPAL_NO_CACHE))
       ->execute();
 }
+
+/**
+ * Remove block cache of timeline and page agenda.
+ */
+function culturefeed_pages_update_7006() {
+  db_update('block')
+    ->condition('delta', 'page-timeline')
+    ->fields(array('cache' => DRUPAL_NO_CACHE))
+    ->execute();
+
+  db_update('block')
+    ->condition('delta', 'page-agenda')
+    ->fields(array('cache' => DRUPAL_NO_CACHE))
+    ->execute();
+}

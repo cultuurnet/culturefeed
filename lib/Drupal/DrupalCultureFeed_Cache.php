@@ -175,6 +175,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $result = $this->realCultureFeed->deleteActivity($id);
     module_invoke_all('culturefeed_social_activity_deleted', $result);
     $this->cacheClearActivities();
+
+    // Also clear the timelines.
+    if (module_exists('culturefeed_pages')) {
+      cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
+
     return $result;
   }
 
@@ -182,11 +188,13 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     // If cache should be skipped, don't do cache_get.
     if (!$query->skipCache) {
-      $cid = sprintf('activity:activities:%s', md5(serialize($query->toPostData())));
+      return $this->realCultureFeed->searchActivities($query);
+    }
 
-      if ($cache = $this->cacheGet($cid)) {
-        return $cache->data;
-      }
+    $cid = sprintf('activity:activities:%s', md5(serialize($query->toPostData())));
+
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
     }
 
     $data = $this->realCultureFeed->searchActivities($query);
