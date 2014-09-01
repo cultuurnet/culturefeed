@@ -227,7 +227,7 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-suggestion-list-item',
     ),
     'culturefeed_pages_block_page_timeline' => array(
-      'variables' => array('filter_form' => NULL, '', 'activities' => array()),
+      'variables' => array('filter_form' => NULL, 'page' => NULL, 'activities' => array()),
       'path' => $path,
       'template' => 'culturefeed-pages-block-page-timeline',
       'file' => 'theme.inc',
