@@ -227,7 +227,8 @@ function culturefeed_pages_theme() {
       'template' => 'culturefeed-pages-page-suggestion-list-item',
     ),
     'culturefeed_pages_block_page_timeline' => array(
-      'variables' => array('filter_form' => NULL, 'page' => NULL, 'activities' => array()),
+      //'variables' => array('time_line' => NULL, 'page' => NULL),
+      'variables' => array('filter_form' => NULL, 'time_line' => NULL, 'page' => NULL),
       'path' => $path,
       'template' => 'culturefeed-pages-block-page-timeline',
       'file' => 'theme.inc',
@@ -1188,7 +1189,7 @@ function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
     $activities = t('No activities found');
   }
   else {
-    $activities = theme('culturefeed_social_user_activity_list', array('activities' => $time_line));
+    $activities = theme('culturefeed_social_user_activity_wall', array('activities' => $time_line));
   }
 
   $commands = array();

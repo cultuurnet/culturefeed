@@ -364,15 +364,15 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getTimeline()
    */
-  public function getTimeline($id, $dateFrom = NULL, $type = '') {
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
 
     $params = array();
     if (!empty($dateFrom)) {
       $params['dateFrom'] = $dateFrom;
     }
 
-    if (!empty($type)) {
-      $params['type'] = $type;
+    if (!empty($activityTypes)) {
+      $params['type'] = $activityTypes;
     }
 
     $result = $this->oauth_client->consumerGetAsXml('page/' . $id . '/timeline', $params);

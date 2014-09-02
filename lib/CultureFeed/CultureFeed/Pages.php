@@ -179,7 +179,7 @@ interface CultureFeed_Pages {
    * @return CultureFeed_ResultSet
    *   CultureFeed_ResultSet where the objects are of the CultureFeed_Activity type.
    */
-  public function getTimeline($id, $dateFrom = NULL, $type = '');
+  public function getTimeline($id, $dateFrom = NULL, $activityTypes = array());
 
   /**
    * Get the notifications for a page.
