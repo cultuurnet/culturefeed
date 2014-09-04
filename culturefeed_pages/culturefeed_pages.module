@@ -1177,7 +1177,7 @@ function culturefeed_pages_page_suggestions_ajax_filter_submit($form, $form_stat
 function culturefeed_pages_ajax_timeline_filter($form, $form_state) {
 
   try {
-    $type = $form_state['values']['filter'] == 'all' ? NULL : $form_state['values']['filter'];
+    $type = $form_state['values']['filter'] == 'all' ? NULL : array($form_state['values']['filter']);
     $time_line = DrupalCultureFeed::getConsumerInstance()->pages()->getTimeline($form_state['values']['page_id'], NULL, $type);
   }
   catch (Exception $e) {
