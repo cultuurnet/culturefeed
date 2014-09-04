@@ -565,6 +565,13 @@ function culturefeed_social_preprocess_culturefeed_social_page_activity_summary(
 
   $total_per_type = array();
 
+  // Make sure our default vars are set.
+  $variables['pages_total_' . CultureFeed_Activity::TYPE_PAGE_MEMBER] = 0;
+  $variables['pages_total_' . CultureFeed_Activity::TYPE_PAGE_ADMIN] = 0;
+  $variables['pages_total_' . CultureFeed_Activity::TYPE_FOLLOW] = 0;
+  $variables['activities_total_' . CultureFeed_Activity::TYPE_RECOMMEND] = 0;
+  $variables['activities_total_' . CultureFeed_Activity::TYPE_COMMENT] = 0;
+
   foreach ($variables['totals'] as $total) {
 
     // Conventional totals for each type/content type.
