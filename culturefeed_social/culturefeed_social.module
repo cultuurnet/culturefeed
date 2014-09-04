@@ -30,7 +30,7 @@ function culturefeed_social_menu() {
   );
 
   $items['admin/config/culturefeed/social'] = array(
-    'title' => 'CultureFeed Social',
+    'title' => t('CultureFeed Social'),
     'description' => 'Change CultureFeed Social settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_social_admin_settings_form'),
@@ -49,7 +49,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/delete/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Undo action',
+    'title' => t('Undo action'),
     'page callback' => 'culturefeed_social_page_activity_delete',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -79,7 +79,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/activity/privacy/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Edit privacy settings',
+    'title' => t('Edit privacy settings'),
     'page callback' => 'culturefeed_social_page_activity_privacy',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -89,7 +89,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/node/unfollow/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Unfollow node',
+    'title' => t('Unfollow node'),
     'page callback' => 'culturefeed_social_page_node_unfollow',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -100,7 +100,7 @@ function culturefeed_social_menu() {
   // Activity.
   $items['culturefeed/do/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Perform action',
+    'title' => t('Perform action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -110,7 +110,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => 'Do action',
+    'title' => t('Do action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -120,7 +120,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/do/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => 'Do action',
+    'title' => t('Do action'),
     'page callback' => 'culturefeed_social_page_do',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -130,7 +130,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%'] = array(
     'title callback' => FALSE,
-    'title' => 'Undo action',
+    'title' => t('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -140,7 +140,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/noredirect'] = array(
     'title callback' => FALSE,
-    'title' => 'Undo action',
+    'title' => t('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'noredirect'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -150,7 +150,7 @@ function culturefeed_social_menu() {
 
   $items['culturefeed/undo/%/%/%/advanced'] = array(
     'title callback' => FALSE,
-    'title' => 'Undo action',
+    'title' => t('Undo action'),
     'page callback' => 'culturefeed_social_page_undo',
     'page arguments' => array(2, 3, 4, 'advanced'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -181,7 +181,7 @@ function culturefeed_social_menu() {
   if (variable_get('culturefeed_social_notifications_enabled', FALSE)) {
     $items['culturefeed/notifications'] = array(
       'title callback' => FALSE,
-      'title' => 'My notifications',
+      'title' => t('My notifications'),
       'page callback' => 'culturefeed_social_page_notifications',
       'access callback' => 'culturefeed_is_culturefeed_user',
       'type' => MENU_CALLBACK,
@@ -191,7 +191,7 @@ function culturefeed_social_menu() {
     if (module_exists('culturefeed_pages')) {
       $items['pages/%culturefeed_pages_page/notifications'] = array(
         'title callback' => FALSE,
-        'title' => 'Notifications',
+        'title' => t('Notifications'),
         'page callback' => 'culturefeed_social_page_notifications',
         'page arguments' => array(1),
         'access callback' => 'culturefeed_pages_edit_page_access',
