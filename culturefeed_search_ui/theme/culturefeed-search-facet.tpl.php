@@ -5,7 +5,7 @@
  */
 
 /**
- * @var string $items
+ * @var array $items
  */
 ?>
 <ul class="facet-search facet-level-1">

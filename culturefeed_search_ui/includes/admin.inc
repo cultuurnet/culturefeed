@@ -34,6 +34,13 @@ function culturefeed_search_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_redirect_old_search', FALSE),
   );
 
+  $form['culturefeed_search_ui_facet_compatibility_mode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Compatibility markup'),
+    '#description' => t('If enabled, show the old facet block markup. This limits the visible levels to 2.'),
+    '#default_value' => variable_get('culturefeed_search_ui_facet_compatibility_mode', 0),
+  );
+
   $form['culturefeed_search_group'] = array(
     '#type' => 'textfield',
     '#title' => t('Group'),

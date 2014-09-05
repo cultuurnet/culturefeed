@@ -141,10 +141,10 @@ function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state
  *   Domain id where this facet belongs to. This is used to show the title
  * @param $allowed_items
  *   List of allowed items, and the label that should be shown for every item.
- * @param $sort
- *   Type of sorting. Can be default (empty), alphabetically, or total_results
+ * @param array $settings
+ *   Array containing setting information (sort, highest level and subitems).
  */
-function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $sort = '') {
+function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $settings = array()) {
 
   // FacetingComponent is set in the page callback.
   $culturefeedFacetingComponent = culturefeed_get_facet_component();
@@ -180,23 +180,35 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
   }
 
   if (!empty($items)) {
-
     $subject = '';
     if (!empty($domain_id)) {
       $subject = db_query('SELECT label FROM {culturefeed_search_domains} WHERE did = :did', array(':did' => $domain_id))->fetchField();
     }
 
-    return array(
+    // Do we have to use the theming compatibility mode?
+    $theme_function = 'culturefeed_search_facet_with_depth_settings';
+    if (variable_get('culturefeed_search_ui_facet_compatibility_mode', 0) === 1) {
+      if ($domain_id == 'eventtype') {
+        $theme_function = 'culturefeed_search_facet_eventtype';
+      }
+      else {
+        $theme_function = 'culturefeed_search_facet';
+      }
+    }
+
+    $return = array(
       'subject' => check_plain($subject),
       'content' => array(
-        '#theme' => ($domain_id == 'eventtype' ? 'culturefeed_search_facet_eventtype' : 'culturefeed_search_facet'),
+        '#theme' => $theme_function,
         '#facet' => $facet,
         '#items' => $items,
-        '#sort' => $sort,
+        '#sort' => (isset($settings['sort'])) ? $settings['sort'] : '',
+        '#highest_level' => (isset($settings['highest_level'])) ? $settings['highest_level'] : '',
+        '#show_subitems' => (isset($settings['show_subitems'])) ? $settings['show_subitems'] : '',
       ),
     );
+    return $return;
   }
-
 }
 
 /**
@@ -208,10 +220,8 @@ function culturefeed_search_ui_block_date_facet() {
     return;
   }
 
-  $build = array();
-
   $allowed_items = culturefeed_search_ui_get_date_facet_options();
-  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, '');
+  $facet_block = culturefeed_search_ui_search_facets_block('datetype', '', $allowed_items, array());
   if (!empty($facet_block)) {
 
     $build = array();
