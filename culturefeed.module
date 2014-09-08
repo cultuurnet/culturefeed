@@ -205,6 +205,10 @@ function culturefeed_page_build(&$page) {
   $gtm_globals['is_agenda_search'] = in_array(current_path(), $agenda_search_paths);
   // Check if it is an event detail page.
   $gtm_globals['is_event_detail'] = (arg(0) == 'agenda' && arg(1) == 'e');
+  if ($gtm_globals['is_event_detail']) {
+    $title = culturefeed_agenda_detail_title(menu_get_object('culturefeed_agenda_event', 3));
+    $gtm_globals['event_detail_title'] = $title;
+  }
 
   // Set the script code.
   // Add global variables.
