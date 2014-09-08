@@ -267,6 +267,64 @@ function culturefeed_social_block_my_activity_summary($account) {
 }
 
 /**
+ * Show the activity summary for this page.
+ *
+ * @page Culturefeed_Page
+ */
+function culturefeed_social_block_page_activity_summary($page) {
+
+  if (empty($page) || !($page instanceOf CultureFeed_Cdb_Item_Page)) {
+    return;
+  }
+
+  $has_pages = module_exists('culturefeed_pages');
+  $active_types = culturefeed_social_get_activity_filter_options(TRUE);
+
+  $types = array();
+  foreach ($active_types as $type => $activity_config) {
+
+    if (empty($activity_config)) {
+      continue;
+    }
+
+    $allowed_types = $activity_config->allowedTypes;
+    foreach ($allowed_types as $ctype) {
+      if ($ctype == 'page' && !$has_pages) {
+        continue;
+      }
+      if ($ctype == 'book' && !$has_pages) {
+        continue;
+      }
+      $types[] = $type . '_' . $ctype;
+    }
+  }
+
+  $private = FALSE;
+  try {
+    $totals = DrupalCultureFeed::getTotalPageActivities($page->getId(), $types, $private);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_social', $e);
+    return;
+  }
+
+  $content = array();
+  if ($totals) {
+
+    $content = array(
+      '#theme' => 'culturefeed_social_page_activity_summary',
+      '#totals' => $totals,
+    );
+  }
+
+  $block['subject'] = '';
+  $block['content'] = $content;
+
+  return $block;
+
+}
+
+/**
  * Return a block build of users that did an activity of a given type on a given object.
  * @param $object
  *   Cdb item to build the activity list for.

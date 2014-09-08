@@ -178,6 +178,7 @@ function culturefeed_search_ui_theme() {
         'path' => NULL,
         'query' => NULL,
         'active' => FALSE,
+        'has_active_sub_item' => FALSE,
       ),
       'template' => 'culturefeed-search-facet-item',
       'path' => $path,
@@ -276,6 +277,11 @@ function culturefeed_search_ui_block_info() {
 
   $blocks['facet-city-only'] = array(
     'info' => t('Culturefeed search: facet where - search only on cities and zipcodes'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['facet-age-range'] = array(
+    'info' => t('Facet: Age range'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -487,6 +493,10 @@ function culturefeed_search_ui_block_view($delta) {
       $block = culturefeed_search_ui_block_city_only_facet();
     break;
 
+    case 'facet-age-range':
+      $block = culturefeed_search_ui_block_age_range_facet();
+    break;
+
     case 'filter-form':
 
       $search_result = culturefeed_get_search_result();
@@ -535,6 +545,24 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
       $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery($option['api-filter-query']));
     }
   }
+
+  // Add facet on agefrom.
+  $facet_component = culturefeed_get_facet_component();
+  if ($facet_component) {
+    $culturefeedSearchPage->addParameter($facet_component->facetField('agefrom'));
+  }
+
+  // Add min age filter. This is always the requested age and count till 12.
+  if (isset($_GET['min_age']) && is_numeric($_GET['min_age']) && $_GET['min_age'] > -1) {
+
+    $age_range_filters = culturefeed_search_ui_get_age_range_facet_options();
+    if (isset($age_range_filters[$_GET['min_age']])) {
+      $query_string = $age_range_filters[$_GET['min_age']]['query'];
+    }
+
+    $culturefeedSearchPage->addParameter(new \Cultuurnet\Search\Parameter\FilterQuery($query_string));
+  }
+
 }
 
 /**
@@ -643,6 +671,26 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     $build['location'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
       '#label' => $label,
+      '#url' => $url
+    );
+  }
+
+  // Add min age to active facet filters.
+  if (!empty($query['min_age'])) {
+    $min_age = (int) $query['min_age'];
+    unset($query['min_age']);
+    $url = url($path, array('query' => $query));
+
+    $age_facets = culturefeed_search_ui_get_age_range_facet_options();
+    foreach ($age_facets as $key => $data) {
+      if ($key === $min_age) {
+        $current_age = t($data['name']);
+      }
+    }
+
+    $build['min-age'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => $min_age == 0 ? t('All ages') : $current_age,
       '#url' => $url
     );
   }

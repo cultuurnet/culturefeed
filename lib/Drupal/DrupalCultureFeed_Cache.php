@@ -124,6 +124,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->realCultureFeed->uploadUserDepiction($id, $file_data);
   }
 
+  public function removeUserDepiction($id) {
+    $this->realCultureFeed->removeUserDepiction($id);
+  }
+
   public function resendMboxConfirmationForUser($id) {
     $this->realCultureFeed->resendMboxConfirmationForUser($id);
   }
@@ -203,6 +207,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
   public function getTotalActivities($userId, $type_contentType, $private = FALSE) {
     return $this->realCultureFeed->getTotalActivities($userId, $type_contentType, $private);
+  }
+
+  public function getTotalPageActivities($pageId, $type_contentType, $private = FALSE) {
+    return $this->realCultureFeed->getTotalPageActivities($pageId, $type_contentType, $private);
   }
 
   /**

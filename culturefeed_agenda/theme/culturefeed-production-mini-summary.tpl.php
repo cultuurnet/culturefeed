@@ -10,6 +10,8 @@
 <p><?php print $themes[0] ?></p>
 <?php endif; ?>
 
+<p><?php print $agefrom; ?>
+
 <p>
 <?php if (isset($location['city'])): ?>
 <?php print $location['city']; ?>

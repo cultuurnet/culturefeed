@@ -223,8 +223,10 @@ function culturefeed_agenda_culturefeed_search_page_info() {
       'sort_options' => array(
         'relevancy' => t('Relevance'),
         'date' => t('Date'),
+        'agefrom' => t('Age'),
         'recommend_count' => t('Recommended'),
         'comment_count' => t('Reactions'),
+        'weight' => t('Weight'),
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,
@@ -293,7 +295,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#title' => t('Extra filter query for the result set'),
       '#type' => 'textfield',
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
-      '#description' => t('Make sure this is a correct solr query. Example title=mytitle'),
+      '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
 
     $form['agenda_related_activities_sort'] = array(
@@ -399,14 +401,30 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
   // Check the actor key.
   if (isset($query['actor'])) {
     $actor = culturefeed_agenda_actor_load($query['actor']);
+    if ($actor) {
+      $search_query = $query;
+      unset($search_query['actor']);
+      $url = url($path, array('query' => $search_query));
+      $build['nearby'] = array(
+        '#theme' => 'culturefeed_search_active_filters_item',
+        '#label' => t('Near ') . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+        '#url' => $url,
+      );
+    }
+  }
+
+  if (isset($query['organiser']) && module_exists('culturefeed_pages')) {
+    $organiser = culturefeed_pages_page_load($query['organiser']);
+    if ($organiser) {
     $search_query = $query;
-    unset($search_query['actor']);
+    unset($search_query['organiser']);
     $url = url($path, array('query' => $search_query));
-    $build['nearby'] = array(
+    $build['organiser'] = array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => t('Near ') . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+      '#label' => check_plain($organiser->getName()),
       '#url' => $url,
     );
+    }
   }
 
   return $build;
