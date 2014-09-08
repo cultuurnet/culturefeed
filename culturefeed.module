@@ -194,21 +194,31 @@ function culturefeed_page_build(&$page) {
 
   // Set up global variables.
   $gtm_globals = array();
+
   // Check if it is a search page.
   $types = culturefeed_get_searchable_types();
   $agenda_search_paths = array();
-  foreach ($types as $type) {
+  foreach ($types as $key => $type) {
     if (isset($type['class_name']) && $type['class_name'] == 'CultureFeedAgendaPage' && isset($type['path'])) {
-      $agenda_search_paths[] = $type['path'];
+      $agenda_search_paths[$type['path']] = $key;
     }
   }
-  $gtm_globals['is_agenda_search'] = in_array(current_path(), $agenda_search_paths);
+  $gtm_globals['is_agenda_search'] = in_array(current_path(), array_keys($agenda_search_paths));
+  if ($gtm_globals['is_agenda_search']) {
+    $gtm_globals['search_query'] = json_encode(drupal_get_query_parameters());
+  }
+
   // Check if it is an event detail page.
   $gtm_globals['is_event_detail'] = (arg(0) == 'agenda' && arg(1) == 'e');
   if ($gtm_globals['is_event_detail']) {
     $title = culturefeed_agenda_detail_title(menu_get_object('culturefeed_agenda_event', 3));
     $gtm_globals['event_detail_title'] = $title;
+    $gtm_globals['cdbid'] = arg(3);
   }
+
+  // Add custom dimensions.
+  $gtm_globals['consumer_key'] = variable_get('culturefeed_api_application_key', '');
+  $gtm_globals['login_status'] = user_is_logged_in();
 
   // Set the script code.
   // Add global variables.
