@@ -3075,7 +3075,7 @@ function culturefeed_entry_ui_photo_after_build($element) {
  */
 function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
   // Use the same function to get the event as used on the event page.
-  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event');
+  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event', FALSE);
   $event_updated = FALSE;
 
   if ($event_search) {
