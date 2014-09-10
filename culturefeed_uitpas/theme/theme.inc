@@ -21,10 +21,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   // Period.
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
-
-    $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
+    if (date('j/m/Y', $advantage->cashingPeriodBegin) <= date('j/m/Y')) {
+      $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
+    }
+    else {
+      $period = '';
+    }
     if ($advantage->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
+      $period .= t('valid until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
 
@@ -352,10 +356,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Period.
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
-
-    $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
+    if (date('j/m/Y', $promotion->cashingPeriodBegin) <= date('j/m/Y')) {
+      $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
+    }
+    else {
+      $period = '';
+    }
     if ($promotion->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
 
