@@ -164,6 +164,7 @@ function culturefeed_agenda_block_actor_program() {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('"' . $item->getId() . '"');
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
 
   try {
 
