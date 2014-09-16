@@ -1277,6 +1277,12 @@ function culturefeed_pages_add_news_form_validate($form, $form_state) {
 
   try {
     DrupalCultureFeed::createActivity($activity);
+    // If activity created we need to change the status of the file to permanent
+    if (!empty($form_state['values']['image'])) {
+      $file = file_load($form_state['values']['image']);
+      $file->status = 1;
+      file_save($file);
+    }
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
