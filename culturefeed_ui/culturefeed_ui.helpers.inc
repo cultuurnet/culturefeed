@@ -202,3 +202,12 @@ function culturefeed_ui_set_profile_breadcrumb() {
 
 }
 
+function culturefeed_ui_set_cookies_message() {
+  if (!path_is_admin(current_path()) && variable_get('culturefeed_ui_cookie_bool') == TRUE) {
+    $message = variable_get('site_name');
+    $message .= ' is using cookies. <a href="@url">Learn more</a>. ';
+    $message_vars = array("@url" => url(variable_get('culturefeed_ui_cookie_path')));
+    drupal_set_message(t($message, $message_vars), 'warning', FALSE);
+  }
+}
+
