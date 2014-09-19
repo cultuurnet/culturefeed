@@ -415,9 +415,9 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
 
   return array(
     'uitid' => array(
-      'title' => t('My account'),
+      'title' => t('My profile'),
       'url' => 'user/' . $user->uid,
-      'description' => t('How other users will see your account'),
+      'description' => t('How other users will see your profile'),
       'weight' => -20,
     ),
     'profile' => array(
