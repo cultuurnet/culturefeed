@@ -620,12 +620,12 @@ msgid "Culturefeed ui: something for you?"
 msgstr ""
 
 #: culturefeed_ui.module:411
-msgid "My account"
-msgstr "Mon compte"
+msgid "My profile"
+msgstr "Mon profil"
 
 #: culturefeed_ui.module:413
-msgid "How other users will see your account"
-msgstr "Comment les autres utilisateurs verront votre compte"
+msgid "How other users will see your profile"
+msgstr "Comment les autres utilisateurs verront votre profil"
 
 #: culturefeed_ui.module:419
 msgid "Change name, address, profile picture, …"

@@ -618,7 +618,9 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
   }
   $variables['items'] = $items;
 
-  $variables['search_url'] = url('agenda/search', array('query' => array('actor' => $variables['actor']->getId())));
+  $variables['search_url'] = url('agenda/search', array('query' => array('actor' => '"' . $variables['actor']->getId() . '"')));
+
+  $variables['title'] = culturefeed_agenda_detail_title($variables['actor']);
 
 }
 

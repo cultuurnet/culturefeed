@@ -349,3 +349,7 @@ msgstr "Met"
 #: theme/culturefeed-event-summary.tpl.php:70
 msgid "With"
 msgstr "Wie"
+
+#: theme/culturefeed-agenda-actor-program.tpl.php:14
+msgid "Show full calendar of"
+msgstr "Toon volledige agenda van"
