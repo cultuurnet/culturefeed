@@ -88,6 +88,9 @@ function culturefeed_social_block_user_activities($account) {
       if ($facebook) {
         $item_list = array(
           '#theme' => 'item_list',
+          '#attributes' => array(
+            'id' => 'facebook-privacy-toggle',
+            ),
           '#items' => array(
             array(
               'data' => $facebook,
