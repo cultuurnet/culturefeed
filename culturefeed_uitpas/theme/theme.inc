@@ -367,6 +367,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     }
     $vars['period'] = $period;
 
+  } else {
+    if ($promotion->cashingPeriodEnd) {
+      $period = t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    }
+    $vars['period'] = $period;
   }
 
   // Location.
