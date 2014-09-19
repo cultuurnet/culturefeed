@@ -402,6 +402,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   if ($promotion->description2) {
     $vars['description2'] = $promotion->description2;
   }
+  
+  // Stock.
+  $vars['stock'] = FALSE;
+  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
+    $vars['stock'] = TRUE;
+  }
 
 }
 

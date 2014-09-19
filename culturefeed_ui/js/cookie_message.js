@@ -11,7 +11,7 @@
       // When a close button is clicked hide this message.
       $(".messages a.cookie_close").click( function(event) {
         event.preventDefault();
-        $.cookie('culturefeed_ui-koekjes', 'hidden', { expires: 1095 });
+        $.cookie('culturefeed_ui_cookies', 'hidden', { expires: 1095 });
         $(this).parent().fadeOut("slow", function() {
           var messages_left = $("#messages .section").children().size();
           if (messages_left == 1) {

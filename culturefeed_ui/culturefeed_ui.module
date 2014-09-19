@@ -497,7 +497,7 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
 }
 
 function culturefeed_ui_page_build() {
-  if (!isset($_COOKIE['culturefeed_ui-koekjes']) || $_COOKIE['culturefeed_ui-koekjes'] != 'hidden') {
+  if (!isset($_COOKIE['culturefeed_ui_cookies']) || $_COOKIE['culturefeed_ui_cookies'] != 'hidden') {
     culturefeed_ui_set_cookies_message();
   }
 }
