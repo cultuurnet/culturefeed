@@ -842,13 +842,13 @@ function culturefeed_pages_culturefeed_pages_page_admin_menu(CultureFeed_Cdb_Ite
       'description' => t('Manage members, roles and rights.'),
       'weight' => -18,
     ),
-    'activities' => array(
+    'events' => array(
       'title' => t('Activities'),
       'url' => 'pages/' . $page->getId() . '/events',
       'description' => t('Manage your activities and comments.'),
       'weight' => -17,
     ),
-    'activities' => array(
+    'news' => array(
       'title' => t('News'),
       'url' => 'pages/' . $page->getId() . '/news',
       'description' => t('Manage your news.'),
