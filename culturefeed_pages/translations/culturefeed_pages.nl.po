@@ -750,11 +750,15 @@ msgstr ""
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:17
 msgid "is at the moment the only member of the page"
-msgstr "is momenteel het enige lid van pagina"
+msgstr "is momenteel het enige lid van de pagina"
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:21
 msgid "You are a member of"
 msgstr "Je bent lid van"
+
+#: theme/culturefeed-pages-fellow-members-block.tpl.php:21
+msgid "You are the only member of"
+msgstr "Je bent het enige lid van"
 
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "Are you a colleague of"
