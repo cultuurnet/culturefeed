@@ -579,6 +579,19 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     if ($locations) {
       $variables['location'] = $locations[0];
     }
+    
+    // Coordinates.
+    $addresses = $contact_info->getAddresses();
+    if ($addresses) {
+      $address = current($addresses);
+      $coordinates = $address->getPhysicalAddress()->getGeoInformation();
+      if ($coordinates) {
+        $variables['coordinates'] = array(
+          'lat' => $coordinates->getYCoordinate(),
+          'lng' => $coordinates->getXCoordinate(),
+        );
+      }
+    }
 
     // Mails.
     $mails = array();
