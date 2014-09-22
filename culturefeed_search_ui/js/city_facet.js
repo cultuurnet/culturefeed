@@ -22,7 +22,8 @@
         },
         select: function(event, ui) {
           $(this).val(ui.item.value);
-          this.form.submit();
+          $('.city-facet-submit').focus();
+          //this.form.submit();
         },
         search: function(){
           $(this).addClass('throbbing');
@@ -51,9 +52,9 @@
                 validated = true;
               }
             });
-            if (validated) {
+            /*if (validated) {
               form.submit();
-            }
+            }*/
           });
         }
       });

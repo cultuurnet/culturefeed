@@ -405,7 +405,8 @@ function culturefeed_search_ui_city_facet_form() {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
-    '#attributes' => array('class' => array('element-invisible')),
+    //'#attributes' => array('class' => array('element-invisible')),
+    '#attributes' => array('class' => array('city-facet-submit')),
   );
 
   return $form;
