@@ -530,7 +530,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
             unset($options['query'][$key]);
           }
         }
-        elseif (empty($options['query'][$key])) {
+        elseif (empty($options['query'][$key]) && $options['query'][$key] !== 0) {
           unset($options['query'][$key]);
         }
 
