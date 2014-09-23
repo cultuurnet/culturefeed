@@ -458,6 +458,49 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
 
   }
+  
+  // Calendar.
+  if ($calendar = $event->getCalendar()) {
+
+    $calendar_class = get_class($calendar);
+    $calendar->rewind();
+
+    if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+      
+      $variables['calendar'] = array(
+        'type' => 'period',
+        'period_start' => $calendar->current()->getDateFrom(),
+        'period_end' => $calendar->current()->getDateTo(),
+      );
+
+      if ($calendar->current()->getWeekScheme()) {  
+        $variables['calendar']['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->current()->getWeekScheme());
+      }
+      if ($calendar->current()->getExceptions()) {
+        $variables['calendar']['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->current()->getExceptions());
+      }
+       
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
+      $variables['calendar'] = array(
+        'type' => 'permanent',
+      );
+      
+      if ($calendar->getWeekScheme()) {
+        $variables['calendar']['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->getWeekScheme());
+      }
+      if ($calendar->getExceptions()) {
+        $variables['calendar']['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->getExceptions());
+      }
+      
+    }
+    elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+      $variables['calendar'] = array(
+        'type' => 'timestamps',
+      );
+      $variables['calendar']['timestamps'] = culturefeed_agenda_parse_timestamps($calendar);
+    }
+  }
 
   if ($event_detail) {
 

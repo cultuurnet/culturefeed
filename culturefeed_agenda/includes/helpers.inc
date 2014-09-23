@@ -157,10 +157,14 @@ function culturefeed_agenda_get_locations_of_item(CultureFeed_Cdb_Item_Base $ite
     $locations[] = culturefeed_agenda_get_location_of_event($item);
   }
   elseif ($item instanceof CultureFeed_Cdb_Item_Production) {
-    $events = culturefeed_agenda_load_events_of_production($item, FALSE);
-    if (!empty($events)) {
-      foreach ($events as $event) {
-        $locations[] = culturefeed_agenda_get_location_of_event($event->getEntity());
+    $relations = $item->getRelations();
+    // Production has a reference to multiple events.
+    if ($relations) {
+      foreach ($relations as $relation) {
+        $event = culturefeed_agenda_event_load($relation->getCdbid());
+        if ($event) {
+          $locations[] = culturefeed_agenda_get_location_of_event($event->getEntity());
+        }
       }
     }
   }
@@ -213,13 +217,11 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     if ($event->getCdbid()) {
       $location['cdbid_event'] = $event->getCdbid();
     }
-    if ($event->getLocation()->getCdbid()) {
-      $location['link'] = culturefeed_search_detail_l('actor', $event->getLocation()->getCdbid(), $location['title']);
-    }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($actor_detail) {
         $location['title'] = check_plain($actor_detail->getTitle());
+        $location['link'] = culturefeed_search_detail_l('actor', $location_info->getActor()->getCdbid(), $location['title']);
       }
     }
 
@@ -258,7 +260,6 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'url' => culturefeed_search_detail_url($item->getType(), $item->getId(), $detail->getTitle()),
       'calendar' => $detail->getCalendarSummary(),
       'city' => isset($location['city']) ? $location['city'] : '',
-      'venue' => isset($location['title']) ? $location['title'] : '',
     );
 
     // Extend with an url to the actor.
@@ -280,7 +281,8 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
 
     // If we did not find an organiser. Check if we can link to the location.
     if (!isset($data['all_url']) && isset($location['link'])) {
-      $data['all_url'] = culturefeed_search_detail_url('actor', $cdb_item->getLocation()->getCdbid(), $location['title']);
+      $location_actor = $cdb_item->getLocation()->getActor();
+      $data['all_url'] = culturefeed_search_detail_url('actor', $location_actor->getCdbid(), $location['title']);
     }
 
   }
@@ -491,46 +493,63 @@ function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStat
   );
 }
 
+
 /**
- * Load all related events for a production.
- * @param $production
- *   The production to load related events for.
- * @param $future_only
- *   FALSE to search also on past events.
+ * Parse weekscheme from object to array
  */
-function culturefeed_agenda_load_events_of_production($production, $future_only = TRUE) {
+function culturefeed_agenda_parse_weekscheme(CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme) {
 
-  $relations = $production->getRelations();
-  if (empty($relations)) {
-    return;
-  }
-
-  // Currently we do an extra query to load the event details.
-  // Sven checks if this could be added to the event loading.
-  $cdb_ids = array();
-  foreach ($relations as $relation) {
-    $cdb_ids[] = 'cdbid:' . $relation->getCdbid();
-  }
-
-  $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
-
-  if (!$future_only) {
-    $parameters[] = new \CultuurNet\Search\Parameter\Parameter('past', 'true');
-  }
-
-  try {
-    $result = culturefeed_get_search_service()->search($parameters);
-    if ($result->getTotalCount() == 0) {
-      return;
+  $weekscheme_array = array();
+  
+  foreach ($weekscheme->getDays() as $day) {  
+    $weekscheme_array[$day->getDayName()] = array(
+      'type' => $day->getOpenType(),
+    );
+    if ($day->getOpenType() == 'open') {
+      $i = 0;
+      foreach($day->getOpeningTimes() as $openingtime) {
+        $weekscheme_array[$day->getDayName()]['openingtimes'][$i]['from'] = $openingtime->getOpenFrom();
+        if ($openingtime->getOpenTill()) {
+          $weekscheme_array[$day->getDayName()]['openingtimes'][$i]['till'] = $openingtime->getOpenTill();
+        }
+        $i++;
+      }
     }
   }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_agenda', $e);
-    return;
-  }
+  return $weekscheme_array;
+}
 
-  return $result->getItems();
+
+/**
+ * Parse timestamps from object (CultureFeed_Cdb_Data_Calendar_TimestampList or CultureFeed_Cdb_Data_Calendar_Exceptions) to array
+ */
+function culturefeed_agenda_parse_timestamps($timestamps) {
+
+  $timestamps_array = array();
+
+  $timestamps_count = iterator_count($timestamps);
+  $timestamps->rewind();
+  $current_timestamp = 0;
+  for ($i = 0; $i < $timestamps_count; $i++) {
+
+    $timestamp = $timestamps->current();
+    $date = $timestamp->getDate();
+
+    $timestamps_array[$current_timestamp] = array(
+      'date' => $date,
+    );
+    if ($timestamp->getStartTime()) {
+      $timestamps_array[$current_timestamp]['begintime'] = $timestamp->getStartTime();
+    }
+    if ($timestamp->getEndTime()) {
+      $timestamps_array[$current_timestamp]['endtime'] = $timestamp->getEndTime();
+    }
+    if ($timestamp->getOpenType()) {
+      $timestamps_array[$current_timestamp]['type'] = $timestamp->getOpenType();
+    }
+    $current_timestamp++;
+    $timestamps->next();
+
+  }
+  return $timestamps_array;
 }
