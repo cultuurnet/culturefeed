@@ -693,3 +693,12 @@ msgstr "Beheer websites en applicaties"
 
 msgid "Member of"
 msgstr "Lid van"
+
+msgid "is using cookies"
+msgstr "maakt gebruik van cookies"
+
+msgid "Learn more"
+msgstr "Meer weten"
+
+msgid "OK, I understand"
+msgstr "OK, ik begrijp het"
