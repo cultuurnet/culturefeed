@@ -660,8 +660,11 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   }
 
   // Link to detail.
-  $actor_title = $variables['item']->getTitle();
-  $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $actor->getCdbid(), $actor_title);
+  $actor_detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  if ($actor_detail) {  
+    $actor_title = check_plain($actor_detail->getTitle());
+    $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $actor->getCdbid(), $actor_title);
+  }
 
 }
 
