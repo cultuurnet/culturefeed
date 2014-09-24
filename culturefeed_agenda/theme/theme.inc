@@ -659,6 +659,10 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
   }
 
+  // Link to detail.
+  $actor_title = $variables['item']->getTitle();
+  $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $actor->getCdbid(), $actor_title);
+
 }
 
 /**
