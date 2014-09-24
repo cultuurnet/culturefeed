@@ -120,6 +120,14 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       'type' => 0,
     );
 
+    $active_trail[] = array(
+      'title' => t('All activities'),
+      'href' => 'agenda/search',
+      'link_path' => '',
+      'localized_options' => array(),
+      'type' => 0,
+    );
+
     // Show event type and theme in breadcrumb.
     $query = drupal_get_query_parameters(NULL, array('page', 'q'));
     $facet = array();
@@ -158,18 +166,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
           'type' => 0,
         );
       }
-
-    }
-    // If a filter was active, but none of the above 2. Show all activities.
-    elseif (!empty($query)) {
-
-      $active_trail[] = array(
-        'title' => t('All activities'),
-        'href' => 'agenda/search',
-        'link_path' => '',
-        'localized_options' => array(),
-        'type' => 0,
-      );
 
     }
 
