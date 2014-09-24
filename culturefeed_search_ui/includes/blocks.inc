@@ -456,7 +456,7 @@ function culturefeed_search_ui_proximity_distance_form() {
     '#value' => t('Change radius'),
   );
 
-  $form['new_search']['#markup'] = '<p><label>' . t('Choose another location') . '</label></p>';
+  $form['new_search']['#markup'] = '<label>' . t('Choose another location') . '</label>';
 
   return $form;
 
