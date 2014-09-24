@@ -256,11 +256,11 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'title' => $detail->getTitle(),
       'id' => $item->getId(),
       'url' => culturefeed_search_detail_url($item->getType(), $item->getId(), $detail->getTitle()),
-      'calendar' => $detail->getCalendarSummary(),
+      'when' => $detail->getCalendarSummary(),
       'city' => isset($location['city']) ? $location['city'] : '',
       'venue' => isset($location['title']) ? $location['title'] : '',
     );
-
+    
     // Extend with an url to the actor.
     // This can be an organiser, or a location.
     $organiser = $cdb_item->getOrganiser();
@@ -285,8 +285,9 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
 
   }
 
-  return $data;
+  $data['calendar'] = culturefeed_agenda_parse_calendar($cdb_item->getCalendar());
 
+  return $data;
 }
 
 /**
@@ -575,22 +576,69 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
     $timestamp = $timestamps->current();
     $date = $timestamp->getDate();
+    $checkdate = new DateTime($date);
+    $now = new DateTime(date('Y-m-d', time()));
 
-    $timestamps_array[$current_timestamp] = array(
-      'date' => $date,
-    );
-    if ($timestamp->getStartTime()) {
-      $timestamps_array[$current_timestamp]['begintime'] = $timestamp->getStartTime();
+    if ($checkdate >= $now) {
+      $timestamps_array[$current_timestamp] = array(
+        'date' => date('d-m-Y', strtotime($date)),
+      );
+      if ($timestamp->getStartTime()) {
+        $timestamps_array[$current_timestamp]['begintime'] = date('H:i', strtotime($timestamp->getStartTime()));
+      }
+      if ($timestamp->getEndTime()) {
+        $timestamps_array[$current_timestamp]['endtime'] = date('H:i', strtotime($timestamp->getEndTime()));
+      }
+      if ($timestamp->getOpenType()) {
+        $timestamps_array[$current_timestamp]['type'] = $timestamp->getOpenType();
+      }
+      $current_timestamp++;
     }
-    if ($timestamp->getEndTime()) {
-      $timestamps_array[$current_timestamp]['endtime'] = $timestamp->getEndTime();
-    }
-    if ($timestamp->getOpenType()) {
-      $timestamps_array[$current_timestamp]['type'] = $timestamp->getOpenType();
-    }
-    $current_timestamp++;
     $timestamps->next();
 
   }
   return $timestamps_array;
+}
+
+function culturefeed_agenda_parse_calendar($calendar) {
+
+  $calendar_class = get_class($calendar);
+  $calendar->rewind();
+
+  if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+    
+    $calendar_array = array(
+      'type' => 'period',
+      'period_start' => $calendar->current()->getDateFrom(),
+      'period_end' => $calendar->current()->getDateTo(),
+    );
+
+    if ($calendar->current()->getWeekScheme()) {  
+      $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->current()->getWeekScheme());
+    }
+    if ($calendar->current()->getExceptions()) {
+      $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->current()->getExceptions());
+    }
+   
+  }
+  elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
+    $calendar_array = array(
+      'type' => 'permanent',
+    );
+  
+    if ($calendar->getWeekScheme()) {
+      $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->getWeekScheme());
+    }
+    if ($calendar->getExceptions()) {
+      $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->getExceptions());
+    }
+  
+  }
+  elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+    $calendar_array = array(
+      'type' => 'timestamps',
+    );
+    $calendar_array['timestamps'] = culturefeed_agenda_parse_timestamps($calendar);
+  }
+  return $calendar_array;
 }

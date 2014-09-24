@@ -50,9 +50,17 @@
   </dd>
   <?php endif; ?>
 
-  <?php if (!empty($when)): ?>
   <dt><?php print t('When'); ?></dt>
-  <dd><?php print $when; ?></dd>
+  <?php if ($calendar['type'] == 'timestamps'): ?>
+    <?php if (count($calendar['timestamps']) > 0): ?>
+      <?php foreach ($calendar['timestamps'] as $timestamp): ?>
+        <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <dd><?php print t('This event is finished.'); ?></dd>
+    <?php endif; ?>
+  <?php else: ?>
+    <dd><?php print $when; ?></dd>
   <?php endif; ?>
 
   <?php if ($organiser): ?>
