@@ -459,7 +459,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
 
   }
-  
+
   // Calendar.
   if ($calendar = $event->getCalendar()) {
     $variables['calendar'] = culturefeed_agenda_parse_calendar($calendar);
@@ -585,7 +585,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     if ($locations) {
       $variables['location'] = $locations[0];
     }
-    
+
     // Coordinates.
     $addresses = $contact_info->getAddresses();
     if ($addresses) {
@@ -624,7 +624,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
   // Link to detail.
   $actor_detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-  if ($actor_detail) {  
+  if ($actor_detail) {
     $actor_title = check_plain($actor_detail->getTitle());
     $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $actor->getCdbid(), $actor_title);
   }
@@ -644,7 +644,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
   }
   $variables['items'] = $items;
 
-  $variables['search_url'] = url('agenda/search', array('query' => array('actor' => '"' . $variables['actor']->getId() . '"')));
+  $variables['search_url'] = url('agenda/search', array('query' => array('actor' => $variables['actor']->getId())));
 
   $variables['title'] = culturefeed_agenda_detail_title($variables['actor']);
 
