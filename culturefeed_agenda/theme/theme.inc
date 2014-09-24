@@ -89,7 +89,6 @@ function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
   _culturefeed_agenda_preprocess_event_production_metatags($variables);
-  dsm($variables);
 }
 
 /**
