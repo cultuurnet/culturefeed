@@ -407,7 +407,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
       $url = url($path, array('query' => $search_query));
       $build['nearby'] = array(
         '#theme' => 'culturefeed_search_active_filters_item',
-        '#label' => t('Near ') . check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
+        '#label' => check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
         '#url' => $url,
       );
     }
