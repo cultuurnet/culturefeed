@@ -34,9 +34,13 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     ),
   );
 
-  // Advantages promotions.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/advantages_promotions');
-  culturefeed_uitpas_advantages_promotions_settings_get($form);
+  // Advantages.
+  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/advantages');
+  culturefeed_uitpas_advantages_settings_get($form);
+  
+  // Promotions.
+  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/promotions');
+  culturefeed_uitpas_promotions_settings_get($form);
 
   // Locations.
   $form['locations'] = array(

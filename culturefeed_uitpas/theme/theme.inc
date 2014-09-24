@@ -80,7 +80,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 /**
  * Implements hook_preprocess_culturefeed_uitpas_advantages_promotions().
  */
-function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
+/*function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
 
   // Advantages.
   $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
@@ -90,6 +90,32 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_advantages_promotions_info');
+
+}*/
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_advantages().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
+
+  // Advantages.
+  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
+
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_promotions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
+  dsm($vars);
+  // Promotions.
+  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
+
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
 
 }
 
