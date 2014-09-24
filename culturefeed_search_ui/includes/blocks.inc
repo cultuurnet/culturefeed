@@ -694,14 +694,12 @@ function culturefeed_search_ui_search_active_filters_block() {
 /**
  * Show the filter form for the search ui.
  */
-function culturefeed_search_ui_block_filter_form() {
-
-  $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
 
   $form = array();
   $form['filter-options'] = array();
 
-  foreach ($options as $option) {
+  foreach ($filter_options as $option) {
     $form['filter-options'][$option['query-string']] = array(
       '#type' => 'checkbox',
       '#title' => t($option['title']),
