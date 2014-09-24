@@ -473,6 +473,38 @@ function culturefeed_social_block_info() {
 }
 
 /**
+ * Implements hook_block_configure().
+ */
+function culturefeed_social_block_configure($delta) {
+
+  $form = array();
+
+  if ($delta == 'recent-activities') {
+
+    $form['culturefeed_social_recent_activities_total_items'] = array(
+      '#title' => t('Items to show'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('culturefeed_social_recent_activities_total_items', CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_social_block_save($delta, $edit) {
+
+  if ($delta == 'recent-activities') {
+    variable_set('culturefeed_social_recent_activities_total_items', $edit['culturefeed_social_recent_activities_total_items']);
+  }
+
+}
+
+/**
  * Implements hook_block_view().
  */
 function culturefeed_social_block_view($delta) {
