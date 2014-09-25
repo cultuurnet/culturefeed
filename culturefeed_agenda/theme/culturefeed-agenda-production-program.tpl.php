@@ -16,10 +16,10 @@
           <?php if (count($content['calendar']['timestamps']) > 0): ?>
             <?php foreach ($content['calendar']['timestamps'] as $timestamp): ?>
               <?php if (!is_array($timestamp['begintime'])): ?>
-                <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
+                <dd><?php print $timestamp['day'] . ' ' . $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
               <?php else: ?>
                 <?php $i=0; ?>
-                <dd><?php print $timestamp['date'] . t(' at '); ?>
+                <dd><?php print $timestamp['day'] . ' ' . $timestamp['date'] . t(' at '); ?>
                   <?php foreach ($timestamp['begintime'] as $begintime): ?>
                     <?php print $begintime; ?>
                     <?php if (++$i !== count($timestamp['begintime'])): ?>

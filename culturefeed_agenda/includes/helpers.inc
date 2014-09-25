@@ -581,7 +581,8 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
     if ($checkdate >= $now) {
       $timestamps_array[$current_timestamp] = array(
-        'date' => date('D d/m/Y', strtotime($date)),
+        'day' => date('D', strtotime($date)),
+        'date' => date('d/m', strtotime($date)),
       );
       if ($timestamp->getStartTime()) {
         $timestamps_array[$current_timestamp]['begintime'] = date('H:i', strtotime($timestamp->getStartTime()));
