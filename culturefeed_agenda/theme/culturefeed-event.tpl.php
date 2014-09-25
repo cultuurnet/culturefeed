@@ -57,9 +57,13 @@
         <?php if (!is_array($timestamp['begintime'])): ?>
           <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
         <?php else: ?>
+          <?php $i = 0; ?>
           <dd><?php print $timestamp['date'] . t(' at '); ?>
             <?php foreach ($timestamp['begintime'] as $begintime): ?>
-              <?php print $begintime . ' | '; ?>
+              <?php print $begintime; ?>
+              <?php if (++$i !== count($timestamp['begintime'])): ?>
+                <?php print ' | '; ?>
+              <?php endif; ?>
             <?php endforeach; ?>
           </dd>
         <?php endif; ?>
