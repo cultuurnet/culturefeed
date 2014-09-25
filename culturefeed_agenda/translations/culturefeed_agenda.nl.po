@@ -353,3 +353,31 @@ msgstr "Wie"
 #: theme/culturefeed-agenda-actor-program.tpl.php:14
 msgid "Show full calendar of"
 msgstr "Toon volledige agenda van"
+
+#: theme/theme.inc
+msgid "Location: @location"
+msgstr "Plaats: @location"
+
+#: theme/theme.inc
+msgid "When: @when"
+msgstr "Wanneer: @when"
+
+#: theme/theme.inc
+msgid "Organisation: @organisation"
+msgstr "Organisatie: @organisation"
+
+#: theme/theme.inc
+msgid "Price: € @price"
+msgstr "Prijs: € @price"
+
+#: theme/theme.inc
+msgid "Order your tickets"
+msgstr "Bestel hier tickets"
+
+#: theme/theme.inc
+msgid "Address: @location"
+msgstr "Adres: @location"
+
+#: theme/theme.inc
+msgid "Phone number: @number"
+msgstr "Telefoon: @number"
