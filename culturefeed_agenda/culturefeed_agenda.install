@@ -22,7 +22,7 @@ function culturefeed_agenda_update_7001() {
       }
     }
 
-    variable_set('culturefeed_search_sortoptions_agenda', $sorting_options);
+    variable_set('culturefeed_search_sortoptions_activiteiten', $sorting_options);
 
   }
 

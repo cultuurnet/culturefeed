@@ -207,7 +207,7 @@ function culturefeed_agenda_menu() {
 function culturefeed_agenda_culturefeed_search_page_info() {
   return array(
     'activiteiten' => array(
-      'id' => 'agenda',
+      'id' => 'activiteiten',
       'path' => 'agenda/search',
       'page_title' => t('Agenda'),
       'search_title' => t('Activities'),

@@ -622,7 +622,7 @@ function culturefeed_search_ui_block_view($delta) {
       }
 
       if ($search_page = culturefeed_get_searchable_type_by_path()) {
-        $block['content'] = theme('culturefeed_search_sort_links', array('type' => $search_page['name']));
+        $block['content'] = theme('culturefeed_search_sort_links', array('type' => $search_page['id']));
       }
 
     break;
