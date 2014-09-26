@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Install / update file for culturefeed_agenda.
+ */
+
+/**
+ * Rename the default sort variable.
+ */
+function culturefeed_agenda_update_7001() {
+
+  $default_sort = variable_get('culturefeed-agenda-default-sort', 'date');
+  if ($default_sort != 'date') {
+    variable_set('culturefeed_search_sortoptions_activiteiten', $default_sort);
+  }
+
+  variable_del('culturefeed-agenda-default-sort');
+
+}
+

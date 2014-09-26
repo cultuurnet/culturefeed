@@ -880,15 +880,25 @@ function culturefeed_pages_culturefeed_ui_profile_menu() {
 function culturefeed_pages_culturefeed_search_page_info() {
   return array(
     'pages' => array(
+      'id' => 'pages',
       'path' => 'agenda/pages',
       'page_title' => t('Pages'),
       'search_title' => t('Pages'),
       'class_name' => 'CultureFeedPagesSearchPage',
-      'sort_default' => \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW,
+      'sort_default' => 0, // key for follow count
       'sort_options' => array(
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW => t('Number of followers'),
-        'title' => t('Alphabetical'),
-        \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER => t('Number of members'),
+        array(
+          'value' => 'pagefollow_count',
+          'label' => t('Number of followers'),
+          'exposed' => TRUE,
+          'query' => 'pagefollow_count desc',
+        ),
+        array(
+          'value' => 'pagemember',
+          'label' => t('Number of members'),
+          'exposed' => TRUE,
+          'query' => 'pagemember_count desc',
+        ),
       ),
     ),
   );

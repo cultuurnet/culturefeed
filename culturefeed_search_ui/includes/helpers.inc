@@ -228,15 +228,23 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
  * This wil invoke a hook. Modules can define following stuff.
  *  return array(
  *   'activiteiten' => array(
+ *     'id' => 'activiteiten',
  *     'path' => 'agenda/search',
  *     'page_title' => 'Agenda',
  *     'search_title' => 'Activiteiten',
  *     'class_name' => 'CultureFeedAgendaPage',
- *       'sort_options' => array(
- *       'relevancy' => 'Relevantie',
- *       'date' => 'Datum',
- *       'recommends' => 'Aantal keer aangeraden',
- *       'comments' => 'Aantal reacties',
+ *     'sort_default' => 'relevancy',
+ *     'sort_options' => array(
+ *       'relevancy' => array(
+ *         'label' => 'Relevantie',
+ *         'exposed' => TRUE
+ *         'query' => 'weight asc'
+ *       ),
+ *       'date' => array(
+ *         'label' => 'Date',
+ *         'exposed' => TRUE
+ *         'query' => 'startdateday asc'
+ *       ),
  *     ),
  *     'active_facets' => array('category_actortype_name' => array('Organisator(en)')),  => optional
  *   ),
@@ -291,6 +299,7 @@ function culturefeed_get_searchable_type_by_path($path = '') {
   }
   foreach (culturefeed_get_searchable_types() as $name => $type) {
     if ($type['path'] == $path) {
+      $type['name'] = $name;
       return $type;
     }
   }
@@ -371,4 +380,21 @@ function culturefeed_search_ui_default_filter_options() {
       'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
     ),
   );
+}
+
+/**
+ * Get the sort options of a culturefeed search page.
+ */
+function culturefeed_search_ui_get_sort_options_for_page($search_page) {
+
+  $sort_options = variable_get('culturefeed_search_sortoptions_' . $search_page['id'], array());
+
+  // Load default ones.
+  if (empty($sort_options)) {
+    $sort_options = $search_page['sort_options'];
+    $sort_options['default'] = $search_page['sort_default'];
+  }
+
+  return $sort_options;
+
 }

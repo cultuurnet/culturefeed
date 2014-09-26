@@ -38,7 +38,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       }
 
       $this->addFacetFilters($params);
-      $this->addSort($params);
 
       $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
       $this->parameters[] = $this->facetComponent->facetField('category');
@@ -60,47 +59,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     if (isset($params['organiser'])) {
       $this->parameters[] = new Parameter\Query('"' . $params['organiser'] . '"');
-    }
-
-  }
-
-  /**
-   * Add the sorting parameters for the agenda searches.
-   */
-  protected function addSort($params) {
-
-    switch ($params['sort']) {
-
-      case 'date':
-        $this->parameters[] = new Parameter\Sort('permanent asc,startdateday asc,weight', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'agefrom':
-        $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
-      break;
-
-      case 'recommend_count':
-        $this->parameters[] = new Parameter\Sort('recommend_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'review_count':
-        $this->parameters[] = new Parameter\Sort('review_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'comment_count':
-        $this->parameters[] = new Parameter\Sort('comment_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'weight':
-        $this->parameters[] = new Parameter\Sort('weight', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'relevancy':
-        break;
-
-      default:
-        $this->parameters[] = new Parameter\Sort($params['sort'], Parameter\Sort::DIRECTION_ASC);
-        break;
     }
 
   }
