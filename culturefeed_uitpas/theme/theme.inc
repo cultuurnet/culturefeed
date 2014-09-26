@@ -99,7 +99,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
 
   // Advantages.
-  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
+  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
@@ -110,9 +110,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
  * Implements hook_preprocess_culturefeed_uitpas_promotions().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
-  dsm($vars);
+
   // Promotions.
-  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
+  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
@@ -619,7 +619,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_advantages(&$vars) {
+function theme_culturefeed_uitpas_advantages_table(&$vars) {
 
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_WelcomeAdvantage[] $advantages */
@@ -722,7 +722,7 @@ function theme_culturefeed_uitpas_promotion_image($vars) {
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_promotions(&$vars) {
+function theme_culturefeed_uitpas_promotions_table(&$vars) {
 
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_PointsPromotion[] $promotions */
