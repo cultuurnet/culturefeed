@@ -181,9 +181,11 @@ function culturefeed_messages_new_message_form_validate($form, &$form_state) {
   }
   // New messages always use current page as default.
   else {
-    $curr_page = culturefeed_pages_get_active_page_id();
-    if ($curr_page) {
-      $params['senderPage'] = $curr_page;
+    if (module_exists('culturefeed_pages')) {
+      $curr_page = culturefeed_pages_get_active_page_id();
+      if ($curr_page) {
+        $params['senderPage'] = $curr_page;
+      }
     }
   }
 

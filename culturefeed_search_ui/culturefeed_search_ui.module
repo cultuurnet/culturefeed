@@ -740,7 +740,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
       $search_query = $query;
       unset($search_query[$option['query-string']]);
       $url = url($path, array('query' => $search_query));
-      $build['free-only'] = array(
+      $build[$option['query-string']] = array(
         '#theme' => 'culturefeed_search_active_filters_item',
         '#label' => t($option['title']),
         '#url' => $url
