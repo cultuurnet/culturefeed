@@ -425,11 +425,22 @@ function culturefeed_search_ui_block_configure($delta) {
       '#type' => 'fieldset',
       '#title' => t('Possible filters'),
       '#theme' => 'culturefeed_search_ui_admin_filter_form_options',
-      '#description' => t('<p>Define the different filter options you want.<br />Example:<ul><li>Human name: No courses and workshops</li><li>Query string: no-courses-workshops</li><li>Filter query for API: !category_id:0.3.1.0.0</li></p>'),
+      '#description' => t('<p>
+        Define the different filter options you want. Filters that are not exposed are not shown, but will work if added to the querystring<br />Example:<ul>
+        <li>Human name: No courses and workshops</li>
+        <li>Query string: no-courses-workshops</li>
+        <li>Filter query for API: !category_id:0.3.1.0.0</li>
+      </p>'),
       '#tree' => TRUE,
     );
 
     for ($i = 0; $i < 10; $i++) {
+
+      $form['culturefeed-search-filter-options'][$i]['exposed'] = array(
+        '#title' => t('Exposed'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($options[$i]['exposed']) ? $options[$i]['exposed'] : TRUE
+      );
 
       $form['culturefeed-search-filter-options'][$i]['title'] = array(
         '#title' => t('Human name'),
@@ -540,10 +551,13 @@ function culturefeed_search_ui_block_view($delta) {
         return;
       }
 
-      $active_filters = variable_get('culturefeed_search_form_active_filters', array());
-      $filter_options = variable_get('culturefeed_search_filter_options', array());
+      $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+      $filter_options = array_filter($filter_options, function($option) {
+        return !isset($option['exposed']) || !empty($option['exposed']);
+      });
+
       if (!empty($filter_options)) {
-        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
+        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
       }
       break;
 
