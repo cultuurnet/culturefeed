@@ -728,7 +728,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Add min age to active facet filters.
-  if (!empty($query['min_age'])) {
+  if (isset($query['min_age'])) {
     $min_age = (int) $query['min_age'];
     unset($query['min_age']);
     $url = url($path, array('query' => $query));
