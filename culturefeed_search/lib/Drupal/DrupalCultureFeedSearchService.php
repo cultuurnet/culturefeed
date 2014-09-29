@@ -101,6 +101,13 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   }
 
   /**
+   * @see \CultuurNet\Search\ServiceInterface::getDeletions().
+   */
+  public function getDeletions($deleted_since = NULL) {
+    return $this->service->getDeletions($deleted_since);
+  }
+
+  /**
    * Adds the language parameter to the search.
    */
   public static function addLanguageParameter(&$parameters) {
