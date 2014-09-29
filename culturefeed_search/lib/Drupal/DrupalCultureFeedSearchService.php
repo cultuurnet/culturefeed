@@ -103,8 +103,8 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   /**
    * @see \CultuurNet\Search\ServiceInterface::getDeletions().
    */
-  public function getDeletions($deleted_since = NULL) {
-    return $this->service->getDeletions($deleted_since);
+  public function getDeletions($deleted_since = NULL, $rows = NULL, $start = NULL) {
+    return $this->service->getDeletions($deleted_since, $rows, $start);
   }
 
   /**
