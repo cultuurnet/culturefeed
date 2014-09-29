@@ -157,4 +157,11 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
     return $detail;
   }
 
+  /**
+   * @see \CultuurNet\Search\ServiceInterface::getDeletions().
+   */
+  public function getDeletions($deleted_since = NULL) {
+    return $this->realSearchService->getDeletions($deleted_since);
+  }
+
 }
