@@ -34,7 +34,7 @@ function culturefeed_search_ui_drush_command() {
  */
 function drush_culturefeed_search_ui_culturefeed_search_register_deletions() {
 
-  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', 0);
+  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', NULL);
   if ($last_registration_timestamp) {
     $last_registration = date('Y-m-d', $last_registration_timestamp);
   }
@@ -45,9 +45,8 @@ function drush_culturefeed_search_ui_culturefeed_search_register_deletions() {
 
   try {
 
-    $deletions = $service->getDeletions($last_registration);
+    $deletions = $service->getDeletions($last_registration, 9999999);
     $deletions = array_unique($deletions);
-    print_R($deletions);
     foreach ($deletions as $cdbid) {
 
       $existing = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid', array(':cdbid' => $cdbid))->fetchField();
