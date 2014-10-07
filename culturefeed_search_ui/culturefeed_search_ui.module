@@ -618,6 +618,32 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
 }
 
 /**
+ * Implements hook_page_alter().
+ */
+function culturefeed_search_ui_page_alter(&$variables) {
+
+  // Check if the 404 should be 410 (object deleted).
+  if (drupal_get_http_header('Status') == '404 Not Found') {
+
+    // Only for event details / production details and page details.
+    if (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a')) {
+
+      // Check if this object was deleted. If it was found, set the 410.
+      $cdbid = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid ', array(
+        ':cdbid' => arg(3),)
+      )->fetchField();
+
+      if ($cdbid) {
+        $variables['content']['#attached']['drupal_add_http_header'][] = array('Status', '410 Gone');
+      }
+
+    }
+
+  }
+
+}
+
+/**
  * Implements hook_culturefeed_search_ui_active_filters().
  */
 function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeedFacetingComponent) {
