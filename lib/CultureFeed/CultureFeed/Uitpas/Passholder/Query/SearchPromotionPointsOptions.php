@@ -155,6 +155,12 @@ class CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions extends C
   public $owningCardSystemId;
 
   /**
+   * Order by id of a CardSystem owning the promotions.
+   * @var string
+   */
+  public $orderByOwningCardSystemId;
+
+  /**
    * Id of a CardSystem to which the promotions are applicable.
    * @var string
    */
