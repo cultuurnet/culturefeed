@@ -102,17 +102,20 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  * Returns form elements for filter & sort on promotions page.
  */
 function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL) {
+  $cf = DrupalCultureFeed::getConsumerInstance();
+
+  $card_systems = $cf->uitpas()->getCardSystems();
+
+  $options = array();
+  foreach ($card_systems as $system) {
+    $options[$system->id] = $system->name;
+  }
 
   $form['promotions']['filter'] = array(
     '#type' => 'select',
     '#title' => t('Filter'),
     '#default_value' => isset($filter) ? $filter : 0,
-    '#options' => array(
-      0 => 'Alle kaartsystemen',
-      1 => 'UiTPAS regio Aalst',
-      2 => 'Paspartoe',
-      3 => 'UiTPAS Gent'
-    ),
+    '#options' => $options,
   );
 
   $form['promotions']['sort'] = array(
