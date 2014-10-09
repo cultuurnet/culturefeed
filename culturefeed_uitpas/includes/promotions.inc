@@ -115,7 +115,12 @@ function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL)
     '#type' => 'select',
     '#title' => t('Filter'),
     '#default_value' => isset($filter) ? $filter : 0,
-    '#options' => $options,
+    //'#options' => $options,
+    '#options' => array(
+      0 => '0',
+      1 => '1',
+      2 => '2',
+    ),
   );
 
   $form['promotions']['sort'] = array(

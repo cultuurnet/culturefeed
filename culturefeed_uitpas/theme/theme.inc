@@ -97,6 +97,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
 
   // Promotions.
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
+  $vars['promotions_filter'] = drupal_get_form('culturefeed_uitpas_promotions_filter_sort');
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
