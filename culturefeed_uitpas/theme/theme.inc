@@ -801,6 +801,6 @@ function theme_culturefeed_uitpas_promotions_table(&$vars) {
     'quantity' => $promotions_total,
   );
 
-  return $promotions_filter . theme_table($table) . theme('pager', $pager);
+  return drupal_render($promotions_filter) . theme_table($table) . theme('pager', $pager);
 
 }
