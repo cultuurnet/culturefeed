@@ -1212,7 +1212,7 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
   }
 
   public function getCardSystems() {
-    $result = $this->oauth_client->consumerGetAsXml('cardsystem');
+    $result = $this->oauth_client->consumerGetAsXml('uitpas/cardsystem');
 
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
@@ -1222,6 +1222,10 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
     }
 
     $cardsystems = array();
+
+    foreach ($xml->cardSystems->cardSystem as $cardSystemXml) {
+      $cardsystems[] = CultureFeed_Uitpas_CardSystem::createFromXML($cardSystemXml);
+    }
 
     return $cardsystems;
   }
