@@ -78,22 +78,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_culturefeed_uitpas_advantages_promotions().
- */
-/*function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
-
-  // Advantages.
-  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
-
-  // Promotions.
-  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
-
-  // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_advantages_promotions_info');
-
-}*/
-
-/**
  * Implements hook_preprocess_culturefeed_uitpas_advantages().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
@@ -433,7 +417,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   if ($promotion->description2) {
     $vars['description2'] = $promotion->description2;
   }
-  
+
   // Stock.
   $vars['stock'] = FALSE;
   if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
@@ -730,6 +714,7 @@ function theme_culturefeed_uitpas_promotions_table(&$vars) {
   $promotions = $vars['promotions'];
   $promotions_total = $vars['promotions_total'];
   $promotions_pager_element = $vars['promotions_pager_element'];
+  $promotions_filter = $vars['promotions_filter'];
 
   $table = array(
     'attributes' => array(),
@@ -815,6 +800,6 @@ function theme_culturefeed_uitpas_promotions_table(&$vars) {
     'quantity' => $promotions_total,
   );
 
-  return theme_table($table) . theme('pager', $pager);
+  return $promotions_filter . theme_table($table) . theme('pager', $pager);
 
 }

@@ -55,6 +55,7 @@ function culturefeed_uitpas_theme() {
         'promotions' => array(),
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
+        'promotions_filter' => array(),
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
@@ -184,7 +185,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
   if ($event) {
 
     $prices = array();
-    
+
     if (isset($price)) {
       $prices[] = $price;
     }
