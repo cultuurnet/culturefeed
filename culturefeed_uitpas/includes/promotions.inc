@@ -155,6 +155,8 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     '#markup' => drupal_render($results),
   );
 
+  $form['promotions']['#attached']['css'][] = drupal_get_path('module', 'culturefeed_uitpas') . '/css/culturefeed_uitpas.css';
+
   return $form;
 }
 
