@@ -42,7 +42,8 @@ function culturefeed_uitpas_menu() {
     ),
     'promotions' => array(
       'title' => variable_get('culturefeed_uitpas_promotions_title', 'UiTPAS promotions'),
-      'page callback' => 'culturefeed_uitpas_promotions_get',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_promotions_filter_sort'),
       'file' => 'includes/promotions.inc',
       'access arguments' => array('access content'),
     ),

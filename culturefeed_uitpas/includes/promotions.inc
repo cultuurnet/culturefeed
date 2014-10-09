@@ -43,7 +43,6 @@ function culturefeed_uitpas_promotions_get() {
     pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
     $promotions = $result->objects;
     $promotions_total = $result->total;
-    $promotions_filter = drupal_get_form('culturefeed_uitpas_promotions_filter_sort');
 
     foreach ($promotions as $key => $promotion) {
       if ($promotion->publicationPeriodBegin != NULL && $promotion->publicationPeriodBegin > time()) {
@@ -64,7 +63,7 @@ function culturefeed_uitpas_promotions_get() {
     '#promotions' => $promotions,
     '#promotions_total' => $promotions_total,
     '#promotions_pager_element' => $promotions_pager_element,
-    '#promotions_filter' => $promotions_filter,
+    //'#promotions_filter' => $promotions_filter,
   );
 
 }
@@ -111,14 +110,15 @@ function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL)
     $options[$system->id] = $system->name;
   }
 
-  $form['promotions']['filter'] = array(
+  $form['filter'] = array(
     '#type' => 'select',
     '#title' => t('Filter'),
     '#default_value' => isset($filter) ? $filter : 0,
+    '#empty_option' => t('All card systems'),
     '#options' => $options,
   );
 
-  $form['promotions']['sort'] = array(
+  $form['sort'] = array(
     '#type' => 'select',
     '#title' => t('Sort'),
     '#default_value' => isset($sort) ? $sort : 0,
@@ -126,6 +126,11 @@ function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL)
         0 => 'Owning kaartsysteem',
         1 => 'Aantal punten',
     ),
+  );
+
+  $results = culturefeed_uitpas_promotions_get();
+  $form['result'] = array(
+    '#markup' => drupal_render($results),
   );
 
   return $form;
