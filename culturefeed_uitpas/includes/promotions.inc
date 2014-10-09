@@ -8,14 +8,13 @@
 /**
  * Returns promotions.
  */
-function culturefeed_uitpas_promotions_get() {
+function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
 
   $promotions = array();
   $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);
   $promotions_pager_element = 1;
   $promotions_page = pager_find_page($promotions_pager_element);
   $promotions_total = 0;
-  $promotions_filter = 0;
 
   try {
 
@@ -36,6 +35,9 @@ function culturefeed_uitpas_promotions_get() {
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     if ($card_system_id) {
       $query->applicableCardSystemId = $card_system_id;
+    }
+    if ($filter) {
+      $query->owningCardSystemId = $filter;
     }
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
@@ -100,7 +102,7 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
 /**
  * Returns form elements for filter & sort on promotions page.
  */
-function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL) {
+function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $cf = DrupalCultureFeed::getConsumerInstance();
 
   $card_systems = $cf->uitpas()->getCardSystems();
@@ -110,15 +112,25 @@ function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL)
     $options[$system->id] = $system->name;
   }
 
-  $form['filter'] = array(
+  $id = drupal_html_id('promotions-filter-sort');
+
+  $form['promotions']['#prefix'] = "<div id=\"" . $id . "\">";
+  $form['promotions']["#suffix"] = "</div>";
+
+  $form['promotions']['filter'] = array(
     '#type' => 'select',
     '#title' => t('Filter'),
     '#default_value' => isset($filter) ? $filter : 0,
     '#empty_option' => t('All card systems'),
     '#options' => $options,
+    '#ajax' => array(
+      'event' => 'change',
+      'wrapper' => $id,
+      'callback' => 'culturefeed_uitpas_promotions_ajax_callback',
+    ),
   );
 
-  $form['sort'] = array(
+  $form['promotions']['sort'] = array(
     '#type' => 'select',
     '#title' => t('Sort'),
     '#default_value' => isset($sort) ? $sort : 0,
@@ -128,10 +140,17 @@ function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL)
     ),
   );
 
-  $results = culturefeed_uitpas_promotions_get();
-  $form['result'] = array(
+  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
+  $sort = isset($form_state['values']['sort']) ? $form_state['values']['sort'] : NULL;
+  $results = culturefeed_uitpas_promotions_get($filter, $sort);
+  $form['promotions']['result'] = array(
     '#markup' => drupal_render($results),
   );
 
   return $form;
+}
+
+function culturefeed_uitpas_promotions_ajax_callback($form, $form_state) {
+  //dpm($form);
+  return $form['promotions'];
 }
