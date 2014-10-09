@@ -15,6 +15,7 @@ function culturefeed_uitpas_promotions_get() {
   $promotions_pager_element = 1;
   $promotions_page = pager_find_page($promotions_pager_element);
   $promotions_total = 0;
+  $promotions_filter = 0;
 
   try {
 
@@ -42,9 +43,10 @@ function culturefeed_uitpas_promotions_get() {
     pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
     $promotions = $result->objects;
     $promotions_total = $result->total;
-    
-    foreach($promotions as $key => $promotion) {
-      if($promotion->publicationPeriodBegin != NULL && $promotion->publicationPeriodBegin > time()) {
+    $promotions_filter = drupal_get_form('culturefeed_uitpas_promotions_filter_sort');
+
+    foreach ($promotions as $key => $promotion) {
+      if ($promotion->publicationPeriodBegin != NULL && $promotion->publicationPeriodBegin > time()) {
         unset($promotions[$key]);
       }
     }
@@ -62,6 +64,7 @@ function culturefeed_uitpas_promotions_get() {
     '#promotions' => $promotions,
     '#promotions_total' => $promotions_total,
     '#promotions_pager_element' => $promotions_pager_element,
+    '#promotions_filter' => $promotions_filter,
   );
 
 }
@@ -93,4 +96,34 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
     '#default_value' => variable_get('culturefeed_uitpas_promotions_promotions_max', 20),
   );
 
+}
+
+/**
+ * Returns form elements for filter & sort on promotions page.
+ */
+function culturefeed_uitpas_promotions_filter_sort($filter = NULL, $sort = NULL) {
+
+  $form['promotions']['filter'] = array(
+    '#type' => 'select',
+    '#title' => t('Filter'),
+    '#default_value' => isset($filter) ? $filter : 0,
+    '#options' => array(
+      0 => 'Alle kaartsystemen',
+      1 => 'UiTPAS regio Aalst',
+      2 => 'Paspartoe',
+      3 => 'UiTPAS Gent'
+    ),
+  );
+
+  $form['promotions']['sort'] = array(
+    '#type' => 'select',
+    '#title' => t('Sort'),
+    '#default_value' => isset($sort) ? $sort : 0,
+    '#options' => array(
+        0 => 'Owning kaartsysteem',
+        1 => 'Aantal punten',
+    ),
+  );
+
+  return $form;
 }
