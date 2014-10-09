@@ -45,7 +45,6 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
     }
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
     $result = $cf->uitpas()->getPromotionPoints($query);
-    dpm($result);
     pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
     $promotions = $result->objects;
     $promotions_total = $result->total;
@@ -139,8 +138,8 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     '#title' => t('Sort'),
     '#default_value' => isset($sort) ? $sort : 0,
     '#options' => array(
-      'points' => 'Aantal punten',
-      'cardsystem' => 'Owning kaartsysteem',
+      'points' => t('Points'),
+      'cardsystem' => t('Owning card system'),
     ),
     '#ajax' => array(
       'event' => 'change',
@@ -160,6 +159,5 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 }
 
 function culturefeed_uitpas_promotions_ajax_callback($form, $form_state) {
-  //dpm($form);
   return $form['promotions'];
 }
