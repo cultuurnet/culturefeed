@@ -10,7 +10,9 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
   Drupal.behaviors.culturefeedSearchUi = {
    attach: function (context, settings) {
 
-     Drupal.CulturefeedSearch.bindSortDropdown();
+     if ($('#edit-sort').length > 0) {
+       Drupal.CulturefeedSearch.bindSortDropdown();
+     }
      if ($('#edit-date-range').length > 0) {
        Drupal.CulturefeedSearch.bindDatePicker();
      }
