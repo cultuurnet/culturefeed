@@ -5,7 +5,7 @@
  */
 ?>
 
-<?php
+<?php 
 /* print '<h1>' . $title . '</h1>'; */
 ?>
 
@@ -51,9 +51,29 @@
   <?php endif; ?>
 
   <dt><?php print t('When'); ?></dt>
-  <?php foreach ($when as $date): ?>
-    <dd><?php print $date; ?></dd>
-  <?php endforeach; ?>
+  <?php if ($calendar['type'] == 'timestamps'): ?>
+    <?php if (count($calendar['timestamps']) > 0): ?>
+      <?php foreach ($calendar['timestamps'] as $timestamp): ?>
+        <?php if (!is_array($timestamp['begintime'])): ?>
+          <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
+        <?php else: ?>
+          <?php $i = 0; ?>
+          <dd><?php print $timestamp['date'] . t(' at '); ?>
+            <?php foreach ($timestamp['begintime'] as $begintime): ?>
+              <?php print $begintime; ?>
+              <?php if (++$i !== count($timestamp['begintime'])): ?>
+                <?php print ' | '; ?>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </dd>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <dd><?php print t('This event is finished.'); ?></dd>
+    <?php endif; ?>
+  <?php else: ?>
+    <dd><?php print $when; ?></dd>
+  <?php endif; ?>
 
   <?php if ($organiser): ?>
   <dt><?php print t('Organization'); ?></dt>
