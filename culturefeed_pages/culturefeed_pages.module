@@ -258,8 +258,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/add'] = array(
-    'title' => t('Create your own page'),
-    'title callback' => FALSE,
+    'title' => 'Create your own page',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_add_form'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -277,7 +276,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/edit'] = array(
-    'title' => t('Edit page'),
+    'title' => 'Edit page',
     'title callback' => 'culturefeed_pages_detail_title',
     'title arguments' => array(1, 'edit'),
     'page callback' => 'drupal_get_form',
@@ -289,8 +288,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/remove/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Delete page'),
+    'title' => 'Delete page',
     'page callback' => 'culturefeed_pages_remove_page_confirm',
     'page arguments' => array(1, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -300,8 +298,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/publish/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Publish page'),
+    'title' => 'Publish page',
     'page callback' => 'culturefeed_pages_publish_page_confirm',
     'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -311,8 +308,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/configuration'] = array(
-    'title callback' => FALSE,
-    'title' => t('Settings'),
+    'title' => 'Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_configuration_page_form', 1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -322,8 +318,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/events'] = array(
-    'title callback' => FALSE,
-    'title' => t('Activities'),
+    'title' => 'Activities',
     'page callback' => 'culturefeed_pages_page_events',
     'page arguments' => array(1),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -363,8 +358,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/members/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Members'),
+    'title' => 'Members',
     'page callback' => 'culturefeed_pages_page_manage_members',
     'page arguments' => array(1, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -374,8 +368,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/edit/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Members'),
+    'title' => 'Members',
     'page callback' => 'culturefeed_pages_page_manage_members',
     'page arguments' => array(1, 5, 3),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -385,8 +378,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/%cf_user/delete/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Delete member'),
+    'title' => 'Delete member',
     'page callback' => 'culturefeed_pages_page_delete_member',
     'page arguments' => array(1, 3, 5),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -396,8 +388,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/add/%cf_user/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Add member'),
+    'title' => 'Add member',
     'page callback' => 'culturefeed_pages_page_add_member',
     'page arguments' => array(1, 4, 5),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -407,8 +398,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/request-admin/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Application for administrator of the page'),
+    'title' => 'Application for administrator of the page',
     'page callback' => 'culturefeed_pages_page_request_admin_membership',
     'page arguments' => array(1, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -417,8 +407,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/delete/%'] = array(
-    'title callback' => FALSE,
-    'title' => t('Remove myself as a member'),
+    'title' => 'Remove myself as a member',
     'page callback' => 'culturefeed_pages_page_delete_member',
     'page arguments' => array(1, NULL, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -427,8 +416,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/%culturefeed_pages_page/membership/request-approve/%cf_user'] = array(
-    'title callback' => FALSE,
-    'title' => t('Add member as administrator'),
+    'title' => 'Add member as administrator',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_pages_page_request_admin_membership_approved', 1, 4),
     'access callback' => 'culturefeed_pages_edit_page_access',
@@ -438,8 +426,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['pages/switch/%culturefeed_pages_page'] = array(
-    'title callback' => FALSE,
-    'title' => t('Change active page'),
+    'title' => 'Change active page',
     'page callback' => 'culturefeed_pages_switch_page',
     'page arguments' => array(2),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -464,8 +451,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['culturefeed/pages/follow/%/%culturefeed_pages_page'] = array(
-    'title callback' => FALSE,
-    'title' => t('Follow page'),
+    'title' => 'Follow page',
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -474,8 +460,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['culturefeed/pages/defollow/%/%culturefeed_pages_page'] = array(
-    'title callback' => FALSE,
-    'title' => t('Unfollow page'),
+    'title' => 'Unfollow page',
     'page callback' => 'culturefeed_pages_page_follow',
     'page arguments' => array(3, 4, FALSE),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -484,8 +469,7 @@ function culturefeed_pages_menu() {
   );
 
   $items['culturefeed/pages'] = array(
-    'title callback' => FALSE,
-    'title' => t('My pages'),
+    'title' => 'My pages',
     'page callback' => 'culturefeed_pages_page_my_pages',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
