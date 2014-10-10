@@ -89,7 +89,6 @@ function culturefeed_agenda_preprocess_culturefeed_event(&$variables) {
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
   _culturefeed_agenda_preprocess_event_production_metatags($variables);
-  dsm($variables);
 }
 
 /**
@@ -745,7 +744,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   }
 
   // Add meta title tag.
-  drupal_set_title(implode(' | ', $title_parts));
+  drupal_set_title(implode(' | ', $title_parts), PASS_THROUGH);
 
   // Add meta description tag.
   drupal_add_html_head(array(
@@ -785,7 +784,7 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
   }
 
   // Add meta title tag.
-  drupal_set_title(implode(' | ', $title_parts));
+  drupal_set_title(implode(' | ', $title_parts), PASS_THROUGH);
 
   // Add meta description field.
   drupal_add_html_head(array(

@@ -2,10 +2,22 @@
 
 class CultureFeed_Uitpas_Event_CultureEvent extends CultureFeed_Uitpas_ValueObject {
 
+  /**
+   * @deprecated Use the CultureFeed_Uitpas_Event_CheckinConstraintReason
+   *   constants instead.
+   */
   const CHECKIN_CONSTRAINT_REASON_MAXIMUM_REACHED = 'MAXIMUM_REACHED';
 
+  /**
+   * @deprecated Use the CultureFeed_Uitpas_Event_CheckinConstraintReason
+   *   constants instead.
+   */
   const CHECKIN_CONSTRAINT_REASON_INVALID_DATE_TIME = 'INVALID_DATE_TIME';
 
+  /**
+   * @deprecated Use the CultureFeed_Uitpas_Event_BuyConstraintReason
+   *   constants instead.
+   */
   const BUY_CONSTRAINT_REASON_MAXIMUM_REACHED = 'MAXIMUM_REACHED';
 
   /**

@@ -2,17 +2,16 @@
 
 /**
  * @file
- * Drush integration for the Culturefeed Search UI module.
+ * Drush integration for the Culturefeed search ui module
  */
 
 /**
  * Implements hook_drush_help().
  */
 function culturefeed_search_ui_drush_help($section) {
-
   switch ($section) {
-    case 'culturefeed_search:culturefeed-search-ui-register-deletions':
-      return dt("Store deleted ids so 410 headers can be triggered");
+    case 'culturefeed_search_ui:culturefeed-search-register-deletions':
+      return dt("Store deleted cdbis in a table, so we can trigger 410's.");
   }
 }
 
@@ -21,53 +20,50 @@ function culturefeed_search_ui_drush_help($section) {
  */
 function culturefeed_search_ui_drush_command() {
 
-  $items = array();
-
-  $items['culturefeed-search-ui-register-deletions'] = array(
-    'description' => 'Store deleted ids to trigger 410',
-    'aliases' => array('csuird'),
+  $items['culturefeed-search-register-deletions'] = array(
+    'description' => 'Store deleted cdbids.',
+    'aliases' => array('csrd'),
   );
 
   return $items;
 }
 
 /**
- * Implements the 'culturefeed-search-ui-register-deletions' drush command.
+ * Store deleted cdb ids in a table.
  */
-function drush_culturefeed_search_ui_register_deletions() {
+function drush_culturefeed_search_ui_culturefeed_search_register_deletions() {
 
-  // Return for now. Waiting for a more performant solution on service side.
-  //return;
+  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', NULL);
+  if ($last_registration_timestamp) {
+    $last_registration = date('Y-m-d', $last_registration_timestamp);
+  }
 
-  $last_check = variable_get('culturefeed_search_ui_last_deleted_check', 0);
-  $last_check = 0;
+  watchdog('culturefeed_search_ui', 'Fetching deleted objects from API for cleanup.', array(), WATCHDOG_INFO);
+
+  $service = culturefeed_get_search_service();
+
   try {
-    $client = culturefeed_get_search_service();
-    $params = array();
 
-    $params[] = new CultuurNet\Search\Parameter\Group();
-    $params[] = new CultuurNet\Search\Parameter\Query('*:*');
-    $params[] = new CultuurNet\Search\Parameter\Parameter('deletedsince', date('Y-m-d', $last_check));
-    $params[] = new CultuurNet\Search\Parameter\Rows(1000);
-    $result = $client->search($params, TRUE);
-    dsm($result->getTotalCount());
-    if ($result->getCurrentCount() > 0) {
-      $items = $result->getItems();
-      foreach ($items as $item) {
-        $record = array(
-          'cdbid' => $item->getId(),
-          'type' => $item->getType(),
-          'deleted' => $_SERVER['REQUEST_TIME'],
-        );
+    $deletions = $service->getDeletions($last_registration, 9999999);
+    $deletions = array_unique($deletions);
+    foreach ($deletions as $cdbid) {
 
-        drupal_write_record('culturefeed_search_deleted_items', $record);
-      }
+      $existing = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid', array(':cdbid' => $cdbid))->fetchField();
+      $update = ($existing) ? 'cdbid' : array();
+
+      $record = array();
+      $record['cdbid'] = $cdbid;
+      $record['deleted'] = $_SERVER['REQUEST_TIME'];
+
+      drupal_write_record('culturefeed_search_deleted_objects', $record, $update);
+
+      watchdog('culturefeed_search_ui', 'Finished registration of deleted objects.', array(), WATCHDOG_INFO);
+      variable_set('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME);
+
     }
 
-    variable_set('culturefeed_search_ui_last_deleted_check', $_SERVER['REQUEST_TIME']);
-    watchdog('Finished the registration of deleted items', array(), WATCHDOG_INFO);
+  } catch (Exception $e) {
+    watchdog('culturefeed_search_ui', 'Failed registration of deleted objects. Retrying again on the next run.', array(), WATCHDOG_ERROR);
   }
-  catch (Exception $e) {
-    watchdog('culturefeed_search_ui', 'Error on search api while searching for last deletions. Message: !message', array('!message' => $e->getMessage()), WATCHDOG_ERROR);
-  }
+
 }

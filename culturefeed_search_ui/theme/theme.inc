@@ -534,6 +534,7 @@ function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
 
   $table_variables = array(
     'header' => array(
+      t('Exposed'),
       t('Human name'),
       t('Querystring for drupal url'),
       t('Filterquery for API')

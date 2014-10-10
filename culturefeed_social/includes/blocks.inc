@@ -10,7 +10,7 @@
 function culturefeed_social_block_recent_activities() {
 
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->max = CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT;
+  $query->max = variable_get('culturefeed_social_recent_activities_total_items', CULTUREFEED_SOCIAL_RECENT_ACTIVITIES_COUNT);
   $query->type = array_keys(culturefeed_social_get_activity_filter_options(TRUE));
   $query->consumer = variable_get('culturefeed_api_application_key', '');
 

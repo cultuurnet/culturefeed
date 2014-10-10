@@ -436,11 +436,22 @@ function culturefeed_search_ui_block_configure($delta) {
       '#type' => 'fieldset',
       '#title' => t('Possible filters'),
       '#theme' => 'culturefeed_search_ui_admin_filter_form_options',
-      '#description' => t('<p>Define the different filter options you want.<br />Example:<ul><li>Human name: No courses and workshops</li><li>Query string: no-courses-workshops</li><li>Filter query for API: !category_id:0.3.1.0.0</li></p>'),
+      '#description' => t('<p>
+        Define the different filter options you want. Filters that are not exposed are not shown, but will work if added to the querystring<br />Example:<ul>
+        <li>Human name: No courses and workshops</li>
+        <li>Query string: no-courses-workshops</li>
+        <li>Filter query for API: !category_id:0.3.1.0.0</li>
+      </p>'),
       '#tree' => TRUE,
     );
 
     for ($i = 0; $i < 10; $i++) {
+
+      $form['culturefeed-search-filter-options'][$i]['exposed'] = array(
+        '#title' => t('Exposed'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($options[$i]['exposed']) ? $options[$i]['exposed'] : TRUE
+      );
 
       $form['culturefeed-search-filter-options'][$i]['title'] = array(
         '#title' => t('Human name'),
@@ -655,9 +666,13 @@ function culturefeed_search_ui_block_view($delta) {
         return;
       }
 
-      $filter_options = variable_get('culturefeed_search_filter_options', array());
+      $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+      $filter_options = array_filter($filter_options, function($option) {
+        return !isset($option['exposed']) || !empty($option['exposed']);
+      });
+
       if (!empty($filter_options)) {
-        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
+        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
       }
       break;
 
@@ -733,6 +748,32 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
         $culturefeedSearchPage->addParameter(new Parameter\Parameter('sort', $option['query']));
       }
     }
+  }
+
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function culturefeed_search_ui_page_alter(&$variables) {
+
+  // Check if the 404 should be 410 (object deleted).
+  if (drupal_get_http_header('Status') == '404 Not Found') {
+
+    // Only for event details / production details and page details.
+    if (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a')) {
+
+      // Check if this object was deleted. If it was found, set the 410.
+      $cdbid = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid ', array(
+        ':cdbid' => arg(3),)
+      )->fetchField();
+
+      if ($cdbid) {
+        $variables['content']['#attached']['drupal_add_http_header'][] = array('Status', '410 Gone');
+      }
+
+    }
+
   }
 
 }
@@ -848,7 +889,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Add min age to active facet filters.
-  if (!empty($query['min_age'])) {
+  if (isset($query['min_age'])) {
     $min_age = (int) $query['min_age'];
     unset($query['min_age']);
     $url = url($path, array('query' => $query));
