@@ -245,7 +245,7 @@ function culturefeed_pages_remove_active_page() {
  * @param CultureFeed_Cdb_Item_Page $page
  *   Page to set the breadcrumb to.
  */
-function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) {
+function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page, $title = NULL) {
 
   // Set the breadcrumb.
   $active_trail = array();
@@ -313,7 +313,7 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page) 
   }
 
   $active_trail[] = array(
-    'title' => $page->getName(),
+    'title' => empty($title) ? $page->getName() : $title,
     'href' => $_GET['q'],
     'link_path' => '',
     'localized_options' => array(),
@@ -481,7 +481,7 @@ function culturefeed_pages_get_page_suggestions_list() {
     $parameters[] = new CultuurNet\Search\Parameter\Query($query);
   }
   else {
-   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*'); 
+   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
   }
 
   // Search on postal / city.
