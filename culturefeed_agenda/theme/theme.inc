@@ -463,17 +463,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   if ($calendar = $event->getCalendar()) {
     $variables['calendar'] = culturefeed_agenda_parse_calendar($calendar);
   }
-
+  
+  if (count($variables['calendar']['timestamps']) > 0) {
+    foreach ($variables['calendar']['timestamps'] as $key => $timestamp) {
+      if (!is_array($timestamp['begintime'])) {
+        $variables['when'][] = $timestamp['day'] . ' ' . $timestamp['date'] . t(' at ') . $timestamp['begintime'];
+      }
+      else {
+        $variables['when'][$key] = $timestamp['day'] . ' ' . $timestamp['date'] . t(' at ') . $timestamp['begintime'];
+      }
+    }
+  }
+  else {
+    $variables['when'][] = 'This event is finished.';
+  }
+  
   if ($event_detail) {
 
     // Link to detail.
     $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $event->getCdbid(), $event_detail->getTitle());
 
     // When.
-    $variables['when'] = check_plain($event_detail->getCalendarSummary());
+    //$variables['when'] = check_plain($event_detail->getCalendarSummary());
 
   }
-
 }
 
 /**
