@@ -15,7 +15,6 @@ function culturefeed_search_ui_drush_help($section) {
   }
 }
 
-
 /**
  * Implements hook_drush_command().
  */

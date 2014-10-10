@@ -80,60 +80,6 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
 }
 
 /**
- * Creates a form to change the sortorder of the search results.
- */
-function culturefeed_search_ui_search_sortorder_form($form, & $form_state) {
-
-  $query = drupal_get_query_parameters();
-  $searchable_types = culturefeed_get_searchable_types();
-  $active_page = _culturefeed_search_ui_get_active_search_page();
-
-  // Don't show sort form, if we have no options.
-  if (!$active_page || !isset($searchable_types[$active_page]) || empty($searchable_types[$active_page]['sort_options'])) {
-    return;
-  }
-
-  $options = isset($searchable_types[$active_page]['sort_options']) ? $searchable_types[$active_page]['sort_options'] : array();
-  $default = $searchable_types[$active_page]['sort_default'];
-  $default = isset($query['sort']) ? $query['sort'] : $default;
-
-  if (!$options) {
-    return;
-  }
-
-  $form['sort'] = array(
-    '#title' => t('Sort'),
-    '#type' => 'select',
-    '#options' => $options,
-    '#default_value' => $default,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit'),
-  );
-
-  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/search_ui.js';
-  $form['#attributes']['class'] = array('sortorder-form');
-
-  return $form;
-
-}
-
-/**
- * Submits and changes the sortorder of the search results.
- */
-function culturefeed_search_ui_search_sortorder_form_submit($form, & $form_state) {
-
-  // When changing sort method, we remove the page parameter.
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-  $query['sort'] = $form_state['values']['sort'];
-
-  drupal_goto($_GET['q'], array('query' => $query));
-
-}
-
-/**
  * Renders a facet block to go along with the search form.
  * @param $facet_name
  *   Facet to show (ex category_theme_name)

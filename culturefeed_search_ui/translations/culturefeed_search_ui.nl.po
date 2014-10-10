@@ -157,7 +157,7 @@ msgstr "Zoeken"
 
 #: includes/blocks.inc:106
 msgid "Sort"
-msgstr "Sorteer resultaten op"
+msgstr "Sorteer op"
 
 #: includes/blocks.inc:114
 msgid "Submit"
