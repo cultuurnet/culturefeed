@@ -12,8 +12,7 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
 
   $promotions = array();
   $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);
-  $promotions_pager_element = 1;
-  $promotions_page = pager_find_page($promotions_pager_element);
+  $promotions_page = pager_find_page();
   $promotions_total = 0;
 
   try {
@@ -45,7 +44,7 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
     }
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
     $result = $cf->uitpas()->getPromotionPoints($query);
-    pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
+    pager_default_initialize($result->total, $promotions_max);
     $promotions = $result->objects;
     $promotions_total = $result->total;
 
@@ -59,16 +58,19 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
   catch (Exception $e) {
 
     watchdog_exception('culturefeed_uitpas_promotions', $e);
-    pager_default_initialize(0, $promotions_max, $promotions_pager_element);
+    pager_default_initialize(0, $promotions_max);
 
   }
 
   return array(
-    '#theme' => 'culturefeed_uitpas_promotions',
-    '#promotions' => $promotions,
-    '#promotions_total' => $promotions_total,
-    '#promotions_pager_element' => $promotions_pager_element,
-    //'#promotions_filter' => $promotions_filter,
+    array(
+      '#theme' => 'culturefeed_uitpas_promotions',
+      '#promotions' => $promotions,
+      '#promotions_total' => $promotions_total,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
   );
 
 }
@@ -106,6 +108,20 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  * Returns form elements for filter & sort on promotions page.
  */
 function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
+  
+  $form['promotions_link'] = array(
+    '#prefix' => '<div id="promotions_link"><ul>',
+    '#suffix' => '</ul></div>',
+  );
+  
+  $form['promotions_link']['promotions'] = array(
+    '#markup' => '<li><a href="/promotions">' . t('Promotions') . '</a></li>',
+  );
+  
+  $form['promotions_link']['advantages'] = array(
+    '#markup' => '<li><a href="/advantages">' . t('Welcome Advantages') . '</a></li>',
+  );
+  
   $cf = DrupalCultureFeed::getConsumerInstance();
 
   $card_systems = $cf->uitpas()->getCardSystems();

@@ -87,7 +87,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
 
   // Info.
   $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
-
 }
 
 /**
@@ -798,7 +797,7 @@ function theme_culturefeed_uitpas_promotions_table(&$vars) {
     'element' => $promotions_pager_element,
     'quantity' => $promotions_total,
   );
-
-  return drupal_render($promotions_filter) . theme_table($table) . theme('pager', $pager);
+  
+  return theme_table($table);
 
 }
