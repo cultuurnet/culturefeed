@@ -7,7 +7,7 @@
       "cultuurnet/cdb": "2.x-dev"
     },
     "autoload": {
-        "classmap": ["lib/CultureFeed", "lib/OAuth"]
+        "classmap": ["lib/CultureFeed", "lib/OAuth", "lib/Drupal"]
     },
     "extra": {
         "branch-alias": {
