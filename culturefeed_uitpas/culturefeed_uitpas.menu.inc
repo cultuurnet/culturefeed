@@ -28,12 +28,6 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('access content'),
       'file' => 'includes/advantage_details.inc',
     ),
-    /*'advantages_promotions' => array(
-      'title' => variable_get('culturefeed_uitpas_advantages_promotions_title', 'UiTPAS advantages'),
-      'page callback' => 'culturefeed_uitpas_advantages_promotions_get',
-      'file' => 'includes/advantages_promotions.inc',
-      'access arguments' => array('access content'),
-    ),*/
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_advantages_title', 'UiTPAS advantages'),
       'page callback' => 'culturefeed_uitpas_advantages_get',

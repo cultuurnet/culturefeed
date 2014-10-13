@@ -197,15 +197,6 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
-  $items['admin/config/culturefeed/agenda'] = array(
-    'title' => 'CultureFeed Agenda',
-    'description' => t('Change CultureFeed agenda settings'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_agenda_admin_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'includes/admin.inc',
-  );
-
   return $items;
 
 }
@@ -216,17 +207,49 @@ function culturefeed_agenda_menu() {
 function culturefeed_agenda_culturefeed_search_page_info() {
   return array(
     'activiteiten' => array(
+      'id' => 'activiteiten',
       'path' => 'agenda/search',
       'page_title' => t('Agenda'),
       'search_title' => t('Activities'),
-      'sort_default' => variable_get('culturefeed-agenda-default-sort', 'date'),
+      'sort_default' => 1, // key for date
       'sort_options' => array(
-        'relevancy' => t('Relevance'),
-        'date' => t('Date'),
-        'agefrom' => t('Age'),
-        'recommend_count' => t('Recommended'),
-        'comment_count' => t('Reactions'),
-        'weight' => t('Weight'),
+        array(
+          'value' => 'relevancy',
+          'label' => t('Relevance'),
+          'exposed' => TRUE,
+          'query' => '',
+        ),
+        array(
+          'value' => 'date',
+          'label' => t('Date'),
+          'exposed' => TRUE,
+          'query' => 'permanent asc,startdateday asc,weight desc',
+          'default' => TRUE,
+        ),
+        array(
+          'value' => 'agefrom',
+          'label' => t('Age'),
+          'exposed' => TRUE,
+          'query' => 'agefrom asc',
+        ),
+        array(
+          'value' => 'recommend_count',
+          'label' => t('Recommended'),
+          'exposed' => TRUE,
+          'query' => 'recommend_count desc',
+        ),
+        array(
+          'value' => 'comment_count',
+          'label' => t('Reactions'),
+          'exposed' => TRUE,
+          'query' => 'comment_count desc',
+        ),
+        array(
+          'value' => 'weight',
+          'label' => t('Weight'),
+          'exposed' => TRUE,
+          'query' => 'weight desc',
+        ),
       ),
       'class_name' => 'CultureFeedAgendaPage',
       'weight' => -20,

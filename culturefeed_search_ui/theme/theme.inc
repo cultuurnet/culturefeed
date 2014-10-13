@@ -416,6 +416,65 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 }
 
 /**
+ * Preprocess the sorting links.
+ * @see theme_culturefeed_search_sort_links().
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variables) {
+
+  $type = $variables['type'];
+  $search_page = culturefeed_get_searchable_type($type);
+  if (empty($search_page)) {
+    return;
+  }
+
+  $sort_options = variable_get('culturefeed_search_sortoptions_' . $type, array());
+  $default_sort = variable_get('culturefeed_search_default_sort_' . $type, '');
+
+  // Load default ones.
+  if (empty($sort_options)) {
+    $sort_options = $search_page['sort_options'];
+  }
+  if (empty($default_sort)) {
+    $default_sort = $search_page['default_sort'];
+  }
+
+  $current_sort = isset($_GET['sort']) ? $_GET['sort'] : $default_sort;
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+  // Construct all the sort links.
+  $links = array();
+  foreach ($sort_options as $key => $option) {
+
+    if ($key === 'default' || !$option['exposed']) {
+      continue;
+    }
+
+    $query['sort'] = $option['value'];
+    $attributes = array();
+    if ($option['value'] == $current_sort) {
+      $attributes = array(
+        'class' => array('active'),
+      );
+    }
+
+    $links[] = array(
+      'path' => current_path(),
+      'text' => $option['label'],
+      'options' => array(
+        'html' => FALSE,
+        'query' => $query,
+        'attributes' => $attributes,
+      )
+    );
+
+  }
+
+  $variables['links'] = $links;
+
+}
+
+/**
  * Theme the pager summary for a search result.
  */
 function theme_culturefeed_search_pager_summary($variables) {
@@ -430,6 +489,26 @@ function theme_culturefeed_search_pager_summary($variables) {
   $pager_summary = format_plural($result->getTotalCount(), '@range from @count result', '@range from @count results', $args);
 
   return $pager_summary;
+
+}
+
+/**
+ * Theme the sorting links.
+ */
+function theme_culturefeed_search_sort_links($variables) {
+
+  if (empty($variables['links'])) {
+    return '';
+  }
+
+  $output = '<ul class="sort-links">';
+  foreach ($variables['links'] as $link) {
+    $output .= '<li>' . theme('link', $link) . '</li>';
+  }
+  $output .= '</ul>';
+
+  return $output;
+
 
 }
 
@@ -455,6 +534,7 @@ function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
 
   $table_variables = array(
     'header' => array(
+      t('Exposed'),
       t('Human name'),
       t('Querystring for drupal url'),
       t('Filterquery for API')
@@ -463,4 +543,39 @@ function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
   );
 
   return theme('table', $table_variables);
+}
+
+/**
+ * Theme an admin table for sort options of a search page.
+ */
+function theme_culturefeed_search_ui_admin_sort_order_options($variables) {
+
+  $container = $variables['element'];
+
+  $rows = array();
+  foreach (element_children($container) as $key) {
+
+    $row = array();
+    foreach (element_children($container[$key]) as $child_key) {
+      $container[$key][$child_key]['#attributes']['placeholder'] = $container[$key][$child_key]['#title'];
+      unset($container[$key][$child_key]['#title']);
+      $row[] = drupal_render($container[$key][$child_key]);
+    }
+
+    $rows[] = $row;
+  }
+
+  $table_variables = array(
+    'header' => array(
+      t('Default'),
+      t('Exposed'),
+      t('Label'),
+      t('Value used in url'),
+      t('Sortquery for api'),
+    ),
+    'rows' => $rows,
+  );
+
+  return theme('table', $table_variables);
+
 }

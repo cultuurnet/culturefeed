@@ -17,19 +17,6 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-advantage',
     ),
-    /*'culturefeed_uitpas_advantages_promotions' => array(
-      'variables' => array(
-        'advantages' => array(),
-        'advantages_total' => 0,
-        'advantages_pager_element' => 0,
-        'promotions' => array(),
-        'promotions_total' => 0,
-        'promotions_pager_element' => 0,
-      ),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-      'template' => 'culturefeed-uitpas-advantages-promotions',
-    ),*/
     'culturefeed_uitpas_advantages' => array(
       'variables' => array(
         'advantages' => array(),
