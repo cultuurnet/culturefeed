@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<event xmlns:cdb="http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.1/FINAL/CdbXSD.xsd">
+    <cdb:calendar>
+        <cdb:periods>
+            <cdb:period>
+                <cdb:datefrom>2012-06-29</cdb:datefrom>
+                <cdb:dateto>2012-08-31</cdb:dateto>
+                <cdb:weekscheme>
+                    <cdb:monday opentype="closed"/>
+                    <cdb:tuesday opentype="open">
+                        <cdb:openingtime from="13:00:00" to="17:00:00"/>
+                    </cdb:tuesday>
+                    <cdb:wednesday opentype="open">
+                        <cdb:openingtime from="13:00:00" to="17:00:00"/>
+                    </cdb:wednesday>
+                    <cdb:thursday opentype="open">
+                        <cdb:openingtime from="13:00:00" to="17:00:00"/>
+                    </cdb:thursday>
+                    <cdb:friday opentype="open">
+                        <cdb:openingtime from="13:00:00" to="17:00:00"/>
+                    </cdb:friday>
+                    <cdb:saturday opentype="open">
+                        <cdb:openingtime from="14:00:00" to="18:00:00"/>
+                    </cdb:saturday>
+                    <cdb:sunday opentype="open">
+                        <cdb:openingtime from="14:00:00" to="18:00:00"/>
+                    </cdb:sunday>
+                </cdb:weekscheme>
+            </cdb:period>
+        </cdb:periods>
+    </cdb:calendar>
+    <calendarsummary>
+open di, woe, do, vrij van 10:00 tot 12:00 en 13:00 tot 17:00 za, zo van 14:00 tot 18:00</calendarsummary>
+    <cdbid>9ba1b072-40ea-41b6-a66b-ac3fdf646f36</cdbid>
+    <checkinAllowed>false</checkinAllowed>
+    <checkinConstraint>
+        <periodType>WEEK</periodType>
+        <periodVolume>1</periodVolume>
+    </checkinConstraint>
+    <checkinConstraintReason>INVALID_DATE_TIME</checkinConstraintReason>
+    <city>Aalst</city>
+    <locationId>5C9C73D3-E82F-E7B3-44161E6E3802E64F</locationId>
+    <locationName>'t Gasthuys - Stedelijk Museum Aalst</locationName>
+    <numberOfPoints>1</numberOfPoints>
+    <organiserId>5c9c73d3-e82f-e7b3-44161e6e3802e64f</organiserId>
+    <organiserName>'t Gasthuys - Stedelijk Museum Aalst</organiserName>
+    <price>0.0</price>
+    <tariff>0.0</tariff>
+    <title>De schatten van Vlieg in 't Gasthuys</title>
+</event>

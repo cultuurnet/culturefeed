@@ -13,3 +13,11 @@ culturefeed.api:
     _title: 'Culturefeed'
   requirements:
     _permission: 'administer site configuration'
+
+culturefeed.connect:
+  path: '/culturefeed/oauth/connect'
+  defaults:
+    _content: '\Drupal\culturefeed\Controller\Connect::login'
+    _title: 'Connect'
+  requirements:
+    _access: 'TRUE'

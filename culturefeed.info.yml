@@ -1,5 +1,6 @@
-name: 'Culturefeed'
+name: Culturefeed
 type: module
-description: 'CultureFeed.'
-package: 'Culturefeed'
+description: CultureFeed.
+package: Culturefeed
+version: 1.x-dev
 core: 8.x
