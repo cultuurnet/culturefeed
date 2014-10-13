@@ -1,0 +1,15 @@
+culturefeed.overview:
+  path: '/admin/config/culturefeed'
+  defaults:
+    _content: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Culturefeed'
+  requirements:
+    _permission: 'administer site configuration'
+
+culturefeed.api:
+  path: '/admin/config/culturefeed/api'
+  defaults:
+    _form: 'Drupal\culturefeed\Form\ApiSettings'
+    _title: 'Culturefeed'
+  requirements:
+    _permission: 'administer site configuration'

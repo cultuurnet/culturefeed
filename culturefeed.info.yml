@@ -1,0 +1,5 @@
+name: 'Culturefeed'
+type: module
+description: 'CultureFeed.'
+package: 'Culturefeed'
+core: 8.x

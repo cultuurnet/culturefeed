@@ -1,0 +1,10 @@
+culturefeed.overview:
+  title: Culturefeed
+  description: Culturefeed.
+  parent: system.admin_config
+  route_name: culturefeed.overview
+culturefeed.api:
+  title: API Settings
+  description: Configure API settings.
+  parent: culturefeed.overview
+  route_name: culturefeed.api
