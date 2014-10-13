@@ -11,7 +11,7 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
   protected static $logged_in_user;
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
-    $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+    $endpoint = \Drupal::config('culturefeed.api')->get('api_location');
     $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 
     $cf = new CultureFeed($oauth_client);

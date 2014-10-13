@@ -20,7 +20,7 @@ abstract class DrupalCultureFeedBase {
 
 
   public static function isCacheEnabled() {
-    return variable_get('culturefeed_cache_status', CULTUREFEED_CACHE_DISABLED) == CULTUREFEED_CACHE_ENABLED;
+    return \Drupal::config('culturefeed.api')->get('cache_status') == CULTUREFEED_CACHE_ENABLED;
   }
 
   public static function isCultureFeedUser($uid = NULL) {
@@ -173,8 +173,8 @@ abstract class DrupalCultureFeedBase {
    */
   public static function getConsumerInstance($application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
-      $application_key = variable_get('culturefeed_api_application_key', '');
-      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+      $application_key = \Drupal::config('culturefeed.api')->get('application_key');
+      $shared_secret = \Drupal::config('culturefeed.api')->get('shared_secret');
     }
 
     if (isset(static::$consumer_instance[$application_key])) {
@@ -193,8 +193,8 @@ abstract class DrupalCultureFeedBase {
    */
   public static function getOAuthClient($endpoint, $token, $secret, $application_key = NULL, $shared_secret = NULL) {
     if (!$application_key) {
-      $application_key = variable_get('culturefeed_api_application_key', '');
-      $shared_secret = variable_get('culturefeed_api_shared_secret', '');
+      $application_key = \Drupal::config('culturefeed.api')->get('application_key');
+      $shared_secret = \Drupal::config('culturefeed.api')->get('shared_secret');
     }
 
     $oauth_client = new CultureFeed_DefaultOAuthClient($application_key, $shared_secret, $token, $secret);
@@ -204,25 +204,16 @@ abstract class DrupalCultureFeedBase {
     $http_client_factory = static::getHttpClientFactory();
     if (!$http_client_factory) {
       $http_client = new CultureFeed_DefaultHttpClient();
-
-      // Enable the logging.
-      // We only do this when the default HTTP client is used, because
-      // the HttpClient interface does not have a enableLogging() method
-      // and a logger is actually something that should be injected through
-      // dependency injection.
-      if (module_exists('culturefeed_devel')) {
-        $http_client->enableLogging();
-      }
     }
     else {
       $http_client = $http_client_factory->createHttpClient();
     }
 
-    $http_client->setTimeout(variable_get('culturefeed_http_client_timeout', 10));
+    $http_client->setTimeout(\Drupal::config('culturefeed.api')->get('http_client_timeout'));
 
     if ($http_client instanceof CultureFeed_ProxySupportingClient) {
       $uri = @parse_url($endpoint);
-      $proxy_server = variable_get('proxy_server', '');
+      $proxy_server = \Drupal::config('culturefeed.api')->get('proxy_server');
       if ($proxy_server && (!is_callable('_drupal_http_use_proxy') || _drupal_http_use_proxy($uri['host']))) {
 
         $http_client->setProxyServer($proxy_server);
