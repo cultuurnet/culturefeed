@@ -160,6 +160,7 @@ input.add-more-link:hover {
 
 .when-datetimes .container-inline-date .date-padding {
   padding: 0;
+  float: none;
 }
 
 .when-datetimes input.add-more-link {
