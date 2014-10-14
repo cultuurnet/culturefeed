@@ -6,7 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use DrupalCultureFeed;
 
-class Culturefeed extends ControllerBase {
+class CulturefeedController extends ControllerBase {
 
   public function connect() {
 

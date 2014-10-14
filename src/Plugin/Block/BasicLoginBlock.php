@@ -8,6 +8,7 @@
 namespace Drupal\culturefeed\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Url;
 
 /**
  * Provides a 'Basic Login' block.
@@ -18,16 +19,17 @@ use Drupal\Core\Block\BlockBase;
  *   category = @Translation("Culturefeed")
  * )
  */
-class BasicLogin extends BlockBase {
+class BasicLoginBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
    */
   public function build() {
 
+    $link = \Drupal::l(t('Login'), Url::fromRoute('culturefeed.oauth.connect'));
     return array(
       'login' => array(
-        '#markup' => 'test',
+        '#markup' => $link,
       ),
     );
   }

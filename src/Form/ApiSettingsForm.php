@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Defines a form to configure maintenance settings for this site.
  */
-class ApiSettings extends ConfigFormBase {
+class ApiSettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
