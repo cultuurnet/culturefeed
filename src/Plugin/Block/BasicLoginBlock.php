@@ -10,6 +10,7 @@ namespace Drupal\culturefeed\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Url;
 
+
 /**
  * Provides a 'Basic Login' block.
  *
@@ -26,9 +27,15 @@ class BasicLoginBlock extends BlockBase {
    */
   public function build() {
 
-    $link = \Drupal::l(t('Login'), Url::fromRoute('culturefeed.oauth.connect'));
+    $account = \Drupal::currentUser();
+    if ($account->isAnonymous()) {
+      $link = \Drupal::l(t('Login'), Url::fromRoute('culturefeed.oauth.connect'));
+    }
+    else {
+      $link = \Drupal::l(t('Logout'), Url::fromRoute('user.logout'));
+    }
     return array(
-      'login' => array(
+      'link' => array(
         '#markup' => $link,
       ),
     );

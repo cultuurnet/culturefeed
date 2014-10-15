@@ -1,0 +1,4 @@
+services:
+  culturefeed.user:
+    class: Drupal\culturefeed\Service\UserService
+    arguments: ['@config.factory', '@current_user', '@module_handler', '@url_generator']
