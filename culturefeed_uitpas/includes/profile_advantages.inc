@@ -14,21 +14,8 @@ function culturefeed_uitpas_profile_advantages_get() {
 
   $advantages = array();
   $advantages_max = variable_get('culturefeed_uitpas_profile_advantages_advantages_max', 20);
-  $advantages_pager_element = 0;
-  $advantages_page = pager_find_page($advantages_pager_element);
+  $advantages_page = pager_find_page();
   $advantages_total = 0;
-
-  $promotions = array();
-  $promotions_max = variable_get('culturefeed_uitpas_profile_advantages_promotions_max', 20);
-  $promotions_pager_element = 1;
-  $promotions_page = pager_find_page($promotions_pager_element);
-  $promotions_total = 0;
-
-  $upcoming_promotions = array();
-  $upcoming_promotions_max = variable_get('culturefeed_uitpas_profile_advantages_upcoming_promotions_max', 20);
-  $upcoming_promotions_pager_element = 2;
-  $upcoming_promotions_page = pager_find_page($upcoming_promotions_pager_element);
-  $upcoming_promotions_total = 0;
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
@@ -40,7 +27,6 @@ function culturefeed_uitpas_profile_advantages_get() {
 
     // Welcome advantages.
     try {
-
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
@@ -48,62 +34,12 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query->max = $advantages_max;
       $result = $uitpas_user->cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
       $advantages = $result->objects;
-      pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
+      pager_default_initialize($result->total, $advantages_max);
       $advantages_total = $result->total;
     }
     catch (Exception $e) {
-
-      watchdog_exception('culturefeed_uitpas_profile_advantages_advantages', $e);
-      pager_default_initialize(0, $advantages_max, $advantages_pager_element);
-
-    }
-
-    // Promotions.
-    try {
-
-      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpasNumber = $uitpas_number;
-      $query->maxPoints = $uitpas_user->passholder->points;
-      $query->cashingPeriodBegin = time();
-      $query->unexpired = TRUE;
-      $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
-      $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
-      $query->start = $promotions_page * $promotions_max;
-      $query->max = $promotions_max;
-      $result = $uitpas_user->cf->uitpas()->getPromotionPoints($query);
-      $promotions = $result->objects;
-      pager_default_initialize($result->total, $promotions_max, $promotions_pager_element);
-      $promotions_total = $result->total;
-
-    }
-    catch (Exception $e) {
-
-      watchdog_exception('culturefeed_uitpas_profile_advantages_promotions', $e);
-      pager_default_initialize(0, $promotions_max, $promotions_pager_element);
-
-    }
-
-    // Upcoming promotions.
-    try {
-
-      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpasNumber = $uitpas_number;
-      $query->minPoints = $uitpas_user->passholder->points + 1;
-      $query->cashingPeriodBegin = time();
-      $query->unexpired = TRUE;
-      $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
-      $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
-      $query->start = $upcoming_promotions_page * $upcoming_promotions_max;
-      $query->max = $upcoming_promotions_max;
-      $result = $uitpas_user->cf->uitpas()->getPromotionPoints($query);
-      $upcoming_promotions = $result->objects;
-      pager_default_initialize($result->total, $upcoming_promotions_max, $upcoming_promotions_pager_element);
-      $upcoming_promotions_total = $result->total;
-    }
-    catch (Exception $e) {
-
-      watchdog_exception('culturefeed_uitpas_profile_advantages_upcoming_promotions', $e);
-      pager_default_initialize(0, $upcoming_promotions_max, $upcoming_promotions_pager_element);
+      watchdog_exception('culturefeed_uitpas_profile_advantages', $e);
+      pager_default_initialize(0, $advantages_max);
 
     }
 
@@ -115,16 +51,14 @@ function culturefeed_uitpas_profile_advantages_get() {
   }
 
   return array(
-    '#theme' => 'culturefeed_uitpas_profile_advantages',
-    '#advantages' => $advantages,
-    '#advantages_total' => $advantages_total,
-    '#advantages_pager_element' => $advantages_pager_element,
-    '#promotions' => $promotions,
-    '#promotions_total' => $promotions_total,
-    '#promotions_pager_element' => $promotions_pager_element,
-    '#upcoming_promotions' => $upcoming_promotions,
-    '#upcoming_promotions_total' => $upcoming_promotions_total,
-    '#upcoming_promotions_pager_element' => $upcoming_promotions_pager_element,
+    array(
+      '#theme' => 'culturefeed_uitpas_profile_advantages',
+      '#advantages' => $advantages,
+      '#advantages_total' => $advantages_total,
+    ),
+    array(
+      '#theme' => 'pager',
+    ),
   );
 
 }
@@ -144,16 +78,6 @@ function culturefeed_uitpas_profile_advantages_settings_get(&$form) {
     '#type' => 'textfield',
     '#title' => t('Number of advantages to display'),
     '#default_value' => variable_get('culturefeed_uitpas_profile_advantages_advantages_max', 20),
-  );
-  $form['profile_advantages']['culturefeed_uitpas_profile_advantages_promotions_max'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Number of promotions to display'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_advantages_promotions_max', 20),
-  );
-  $form['profile_advantages']['culturefeed_uitpas_profile_advantages_upcoming_promotions_max'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Number of upcoming promotions to display'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_advantages_upcoming_promotions_max', 20),
   );
 
 }
