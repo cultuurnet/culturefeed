@@ -66,6 +66,9 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL, $sort = NULL)
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
   }
+  
+  // Solution csdco on from https://www.drupal.org/node/1049354
+  $_GET['q'] = 'promotions';
 
   return array(
     array(
@@ -180,6 +183,5 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
 }
 
 function culturefeed_uitpas_profile_promotions_ajax_callback($form, $form_state) {
-  $form_state['rebuild'] = TRUE;
   return $form['profile_promotions'];
 }

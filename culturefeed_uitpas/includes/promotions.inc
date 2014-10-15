@@ -44,7 +44,16 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
     }
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
     $result = $cf->uitpas()->getPromotionPoints($query);
+    
+      
+    $tmp_q = $_GET['q']; // Store the current value of $_GET['q'].
+    $_GET['q'] = 'my/custom/callback'; // Change the value of $_GET['q'] to the "correct" path you want the pager to link to.
+
     pager_default_initialize($result->total, $promotions_max);
+    
+    
+    $_GET['q'] = $tmp_q; // Return $_GET['q'] to the proper value.
+    
     $promotions = $result->objects;
     $promotions_total = $result->total;
 
@@ -62,6 +71,9 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
 
   }
 
+  // Solution csdco on from https://www.drupal.org/node/1049354
+  $_GET['q'] = 'promotions';
+  
   return array(
     array(
       '#theme' => 'culturefeed_uitpas_promotions',

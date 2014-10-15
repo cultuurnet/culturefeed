@@ -49,6 +49,9 @@ function culturefeed_uitpas_profile_advantages_get() {
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
   }
+  
+  // Solution csdco on from https://www.drupal.org/node/1049354
+  $_GET['q'] = 'promotions';
 
   return array(
     array(
