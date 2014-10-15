@@ -257,9 +257,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
 
     $memberships = array();
     foreach ($passholder->memberships as $membership) {
+  
+      if (isset($membership->association->association)) {
 
-      $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
-      $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+        $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
+        $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+      
+      }
 
     }
     $vars['memberships'] = implode('<br />', $memberships);
