@@ -1,4 +1,7 @@
 services:
   culturefeed.user:
     class: Drupal\culturefeed\Service\UserService
-    arguments: ['@config.factory', '@current_user', '@module_handler', '@url_generator']
+    arguments: ['@config.factory', '@current_user', '@entity.query', '@culturefeed.user.name']
+  culturefeed.user.name:
+    class: Drupal\culturefeed\Service\UserName
+    arguments: ['@config.factory', '@current_user', '@entity.query']

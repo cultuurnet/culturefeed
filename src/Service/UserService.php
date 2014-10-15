@@ -4,28 +4,28 @@ namespace Drupal\culturefeed\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Routing\UrlGeneratorInterface;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\culturefeed\Service\UserName;
 
 class UserService {
 
   /**
    * Constructs a UserService object.
    */
-  public function __construct(ConfigFactoryInterface $config, AccountInterface $account, ModuleHandlerInterface $module_handler, UrlGeneratorInterface $urlGenerator) {
+  public function __construct(ConfigFactoryInterface $config, AccountInterface $account, QueryFactory $entity_query, UserName $user_name) {
 
     $this->config = $config->get('culturefeed.api');
     $this->account = $account;
-    $this->moduleHandler = $module_handler;
-    $this->urlGenerator = $urlGenerator;
+    $this->entityQuery = $entity_query;
+    $this->userName = $user_name;
 
   }
 
   public function setUser($uitid_account, $token) {
 
     // Check if the user is already known in our system.
-    $query = \Drupal::entityQuery('user')
-      ->condition('name', $token['userId']);
+    $query = \Drupal::entityQuery('culturefeed_user')
+      ->condition('uitid', $token['userId']);
     $result = $query->execute();
     $uid = key($result);
 
@@ -54,7 +54,7 @@ class UserService {
       }
       else {
         $account = entity_create('user', array(
-          'name' => $uitid_account->id,
+          'name' => $this->userName->uniqueUsername($uitid_account->nick),
           'status' => 1,
         ));
         $account->save();
