@@ -72,28 +72,22 @@ class CulturefeedController extends ControllerBase {
           $application_key = $this->config('culturefeed.api')->get('application_key');
         }
 
-        db_delete('culturefeed_token')
-          ->condition('cf_uid', $token['userId'])
-          ->condition('application_key', $application_key)
-          ->execute();
+        $query = \Drupal::entityQuery('culturefeed_token')
+          ->condition('uitid', $token['userId']);
+        $result = $query->execute();
+        entity_delete_multiple('culturefeed_token', array_keys($result));
 
-        db_insert('culturefeed_token')
-          ->fields(array(
-            'cf_uid' => $token['userId'],
-            'token' => $token['oauth_token'],
-            'secret' => $token['oauth_token_secret'],
-            'application_key' => $application_key,
-          ))
-          ->execute();
+        entity_create('culturefeed_token', array(
+          'uitid' => $token['userId'],
+          'token' => $token['oauth_token'],
+          'secret' => $token['oauth_token_secret'],
+          'application_key' => $application_key,
+        ))->save();
+
       }
 
       if ($account) {
-
-        global $user;
-        $user = $account;
-
         user_login_finalize($account);
-
       }
 
       return $this->redirect('<front>');

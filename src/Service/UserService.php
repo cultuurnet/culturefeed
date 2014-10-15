@@ -6,7 +6,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
-use Drupal\user\Entity\User;
 
 class UserService {
 
@@ -62,12 +61,10 @@ class UserService {
       }
 
       // Save the mapping between CultureFeed User ID and Drupal user id.
-      db_insert('culturefeed_user')
-        ->fields(array(
-          'uid' => $account->id(),
-          'cf_uid' => $uitid_account->id,
-        ))
-        ->execute();
+      entity_create('culturefeed_user', array(
+        'uid' => $account->id(),
+        'uitid' => $uitid_account->id,
+      ))->save();
 
     }
     catch (Exception $e) {
