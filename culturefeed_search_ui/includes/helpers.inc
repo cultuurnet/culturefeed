@@ -125,10 +125,6 @@ function culturefeed_search_ui_get_age_range_facet_options() {
       'name' => '15-17 ' . t('year'),
       'query' => '(agefrom:[15 TO 17])',
     ),
-    18 => array(
-      'name' => '+18 ' . t('year'),
-      'query' => '(agefrom:[18 TO *])',
-    ),
   );
 }
 
