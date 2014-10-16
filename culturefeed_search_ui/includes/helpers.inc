@@ -87,12 +87,11 @@ function culturefeed_search_ui_get_date_facet_options() {
 
   return array(
     'today' => t('Today'),
+    'tomorrow' => t('Tomorrow'),
     'next7days' => t('Next 7 days'),
     'thisweekend' => t('This weekend'),
-    'nextweekend' => t('Next weekend'),
     'next14days' => t('Next 14 days'),
     'next30days' => t('Next 30 days'),
-    'next12months' => t('Next 12 months'),
   );
 
 }

@@ -215,6 +215,10 @@ msgstr "Alle filters verwijderen"
 msgid "Today"
 msgstr "Vandaag"
 
+#: includes/helpers.inc:89
+msgid "Tomorrow"
+msgstr "Morgen"
+
 #: includes/helpers.inc:90
 msgid "Next 7 days"
 msgstr "Volgende 7 dagen"
