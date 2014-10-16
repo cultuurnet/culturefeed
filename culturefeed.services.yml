@@ -1,7 +1,7 @@
 services:
-  culturefeed.user:
-    class: Drupal\culturefeed\Service\UserService
-    arguments: ['@config.factory', '@current_user', '@entity.query', '@culturefeed.user.name']
-  culturefeed.user.name:
-    class: Drupal\culturefeed\Service\UserName
-    arguments: ['@config.factory', '@current_user', '@entity.query']
+  culturefeed.user_name.factory:
+    class: Drupal\culturefeed\UserNameFactory
+    arguments: ['@entity.query', '@current_user']
+  culturefeed.user.map:
+    class: Drupal\culturefeed\UserMap
+    arguments: ['@entity.manager', '@entity.query', '@current_user', '@culturefeed.user_name.factory']

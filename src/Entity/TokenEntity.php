@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\culturefeed\Entity\CulturefeedToken.
+ * Contains \Drupal\culturefeed\Entity\TokenEntity.
  */
 
 namespace Drupal\culturefeed\Entity;
@@ -13,7 +13,6 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
- *
  * Defines the culturefeed user entity.
  *
  * @ContentEntityType(
@@ -26,7 +25,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   },
  * )
  */
-class CulturefeedToken extends ContentEntityBase implements ContentEntityInterface {
+class TokenEntity extends ContentEntityBase implements ContentEntityInterface {
 
   /**
    * {@inheritdoc}

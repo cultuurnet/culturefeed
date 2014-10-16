@@ -10,7 +10,6 @@ namespace Drupal\culturefeed\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Url;
 
-
 /**
  * Provides a 'Basic Login' block.
  *
@@ -39,6 +38,7 @@ class BasicLoginBlock extends BlockBase {
         '#markup' => $link,
       ),
     );
+
   }
 
 }

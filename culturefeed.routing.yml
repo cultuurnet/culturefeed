@@ -17,7 +17,7 @@ culturefeed.api:
 culturefeed.oauth.connect:
   path: '/culturefeed/oauth/connect'
   defaults:
-    _content: '\Drupal\culturefeed\Controller\CulturefeedController::connect'
+    _content: '\Drupal\culturefeed\Controller\AuthenticationController::connect'
     _title: 'Connect'
   requirements:
     _access: 'TRUE'
@@ -25,7 +25,7 @@ culturefeed.oauth.connect:
 culturefeed.oauth.authorize:
   path: '/culturefeed/oauth/authorize'
   defaults:
-    _content: '\Drupal\culturefeed\Controller\CulturefeedController::authorize'
+    _content: '\Drupal\culturefeed\Controller\AuthenticationController::authorize'
     _title: 'Connect'
   requirements:
     _access: 'TRUE'

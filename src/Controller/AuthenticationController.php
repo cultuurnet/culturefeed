@@ -1,13 +1,45 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\culturefeed\Controller\AuthenticationController.
+ */
+
 namespace Drupal\culturefeed\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\culturefeed\UserMapInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use DrupalCultureFeed;
 
-class CulturefeedController extends ControllerBase {
+class AuthenticationController extends ControllerBase {
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('culturefeed.user.map')
+    );
+  }
+
+  /**
+   * Constructs an AuthenticationController object.
+   *
+   * @param \Drupal\culturefeed\UserMapInterface $user_map
+   *   The user map interface.
+   */
+  public function __construct(UserMapInterface $user_map) {
+    $this->userMap = $user_map;
+  }
+
+  /**
+   * Redirects to the culturefeed auth service.
+   *
+   * @return RedirectResponse
+   *   A redirect.
+   */
   public function connect() {
 
     $cf = DrupalCultureFeed::getConsumerInstance();
@@ -40,7 +72,13 @@ class CulturefeedController extends ControllerBase {
 
   }
 
-  public function authorize($application_key = NULL) {
+  /**
+   * Redirects after authentication.
+   *
+   * @return RedirectResponse
+   *   A redirect.
+   */
+  public function authorize() {
 
     if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
 
@@ -62,10 +100,10 @@ class CulturefeedController extends ControllerBase {
         drupal_goto();
       }
 
-      $user_service = \Drupal::service('culturefeed.user');
-      $account = $user_service->setUser($cf_account, $token);
+      $account = $this->userMap->get($cf_account, $token);
 
-      // If a token was passed, save it after deleting a possible previous entry.
+      // If a token was passed, save it after deleting a possible previous
+      // entry.
       if ($token) {
 
         if (!isset($application_key)) {

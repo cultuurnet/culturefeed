@@ -13,7 +13,6 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
- *
  * Defines the culturefeed user entity.
  *
  * @ContentEntityType(
@@ -26,7 +25,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   },
  * )
  */
-class CulturefeedUser extends ContentEntityBase implements ContentEntityInterface {
+class UserEntity extends ContentEntityBase implements ContentEntityInterface {
 
   /**
    * {@inheritdoc}

@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * @file
+ * The culturefeed module file.
+ */
+
 define('CULTUREFEED_CACHE_DISABLED', 0);
 define('CULTUREFEED_CACHE_ENABLED', 1);
 define('CULTUREFEED_CACHE_EXPIRES', 3600);
 
+/**
+ * Implements hook_user_delete().
+ */
 function culturefeed_user_delete(Drupal\Core\Entity\EntityInterface $entity) {
 
   // Delete the culturefeed user if exist.
