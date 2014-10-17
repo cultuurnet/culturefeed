@@ -476,9 +476,6 @@ function culturefeed_search_ui_block_age_range_facet() {
     elseif ($age >= 15 && $age <= 17) {
       $counts[15] += $item->getTotalResults();
     }
-    elseif ($age >= 18) {
-      $counts[18] += $item->getTotalResults();
-    }
   }
 
   // Create facet item for every count.
