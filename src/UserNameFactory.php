@@ -50,7 +50,7 @@ class UserNameFactory implements UserNameFactoryInterface {
     $name = $nick;
     while ($this->check($name)) {
       $count++;
-      $name = $name . '_' . $count;
+      $name = $nick . '_' . $count;
     }
     return $name;
 

@@ -3,7 +3,7 @@ services:
     class: DrupalCultureFeed
   culturefeed.authentication:
     class: Drupal\culturefeed\Authentication
-    arguments: ['@culturefeed.drupal', '@url_generator', '@config.factory', '@culturefeed.user.map']
+    arguments: ['@culturefeed.drupal', '@url_generator', '@config.factory', '@culturefeed.user.map', '@entity.manager']
   culturefeed.user_name.factory:
     class: Drupal\culturefeed\UserNameFactory
     arguments: ['@entity.query', '@current_user']
