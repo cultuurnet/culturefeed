@@ -434,7 +434,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
   if (empty($sort_options)) {
     $sort_options = $search_page['sort_options'];
   }
-  if (empty($default_sort)) {
+  if (empty($default_sort) && isset($search_page['default_sort'])) {
     $default_sort = $search_page['default_sort'];
   }
 
