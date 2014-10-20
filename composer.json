@@ -4,11 +4,10 @@
     "description": "CultuurNet culturefeed PHP library & Drupal module",
     "license": "Apache-2.0",
     "require": {
-      "cultuurnet/auth": "1.0.*@dev",
       "cultuurnet/cdb": "2.x-dev"
     },
     "autoload": {
-        "classmap": ["lib/CultureFeed", "lib/OAuth", "lib/Drupal"]
+        "classmap": ["lib/CultureFeed", "lib/OAuth"]
     },
     "extra": {
         "branch-alias": {
