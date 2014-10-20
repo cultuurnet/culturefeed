@@ -1,0 +1,16 @@
+{
+    "name": "cultuurnet/udb3",
+    "description": "Culturefeed UDB3 search platform",
+    "license": "GPLv3",
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://bitbucket.org/2dotstwice/culudb-php.git"
+      }
+    ],
+    "require": {
+      "cultuurnet/udb3": "~0.0@dev",
+      "cultuurnet/search": "dev-guzzle-39-update"
+    },
+    "minimum-stability": "dev"
+}
