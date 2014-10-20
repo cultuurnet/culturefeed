@@ -73,17 +73,15 @@ function culturefeed_uitpas_profile_notifications_form($form, &$form_state, $uit
       '#default_value' => ($card_system_specific->emailPreference == CultureFeed_Uitpas_Passholder_CardSystemPreferences::EMAIL_ALL_MAILS) ? 1 : 0,
     );
 
-
-
-   $form['notifications'][$card_system_id]['sms'] = array(
+    $form['notifications'][$card_system_id]['sms'] = array(
       '#type' => 'checkbox',
       '#title' => t('via sms'),
       '#default_value' => ($card_system_specific->smsPreference == CultureFeed_Uitpas_Passholder_CardSystemPreferences::SMS_ALL_SMS) ? 1 : 0,
     );
   }
-  
-  /* Hide 'SMS' temporary - awaiting activation SMS service */
-  unset($form['notifications'][$card_system_id]['sms']);
+
+  /* Hide 'SMS' temporary - awaiting activation SMS service
+  unset($form['notifications'][$card_system_id]['sms']); */
 
 
   $form['email'] = array(
