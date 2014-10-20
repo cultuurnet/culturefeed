@@ -17,18 +17,18 @@ use Exception;
 class Authentication implements AuthenticationInterface {
 
   /**
-   * The drupal culturefeed.
+   * The culturefeed instance.
    *
-   * @var \DrupalCultureFeed;
+   * @var \Drupal\culturefeed\Instance;
    */
-  protected $drupalCultureFeed;
+  protected $instance;
 
   /**
-   * The culturefeed consumer instance.
+   * The application key.
    *
-   * @var \Culturefeed;
+   * @var string;
    */
-  protected $consumerInstance;
+  public $applicationKey;
 
   /**
    * The url generator.
@@ -36,20 +36,6 @@ class Authentication implements AuthenticationInterface {
    * @var \Drupal\Core\Routing\UrlGenerator;
    */
   protected $urlGenerator;
-
-  /**
-   * The config factory.
-   *
-   * @var \Drupal\Core\Config\ConfigFactory;
-   */
-  protected $config;
-
-  /**
-   * The application key.
-   *
-   * @var string;
-   */
-  protected $applicationKey;
 
   /**
    * The user map.
@@ -68,24 +54,20 @@ class Authentication implements AuthenticationInterface {
   /**
    * Constructs a Authentication object.
    *
-   * @param DrupalCultureFeed $drupal_culturefeed
-   *   The drupal culturefeed.
+   * @param Instance $instance
+   *   The culturefeed instance.
    * @param UrlGenerator $url_generator
    *   The url generator.
-   * @param ConfigFactory $config_factory
-   *   The config factory.
    * @param UserMapInterface $user_map
    *   The user map.
    * @param EntityManagerInterface $entity_manager
    *   The entity manger.
    */
-  public function __construct(DrupalCultureFeed $drupal_culturefeed, UrlGenerator $url_generator, ConfigFactory $config_factory, UserMapInterface $user_map, EntityManagerInterface $entity_manager) {
+  public function __construct(Instance $instance, UrlGenerator $url_generator, UserMapInterface $user_map, EntityManagerInterface $entity_manager) {
 
-    $this->drupalCultureFeed = $drupal_culturefeed;
-    $this->consumerInstance = $this->drupalCultureFeed->getConsumerInstance();
+    $this->instance = $instance;
+    $this->applicationKey = $this->instance->applicationKey;
     $this->urlGenerator = $url_generator;
-    $this->config = $config_factory->get('culturefeed.api');
-    $this->applicationKey = $this->config->get('application_key');
     $this->userMap = $user_map;
     $this->entityManager = $entity_manager;
 
@@ -97,10 +79,11 @@ class Authentication implements AuthenticationInterface {
   public function connect() {
 
     $callback_url = $this->urlGenerator->generateFromRoute('culturefeed.oauth.authorize', array(), array('absolute' => TRUE));
+    $instance = $this->instance->get();
 
     // Fetch the request token.
     try {
-      $token = $this->consumerInstance->getRequestToken($callback_url);
+      $token = $instance->getRequestToken($callback_url);
     }
     catch (Exception $e) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
@@ -113,11 +96,10 @@ class Authentication implements AuthenticationInterface {
       $this->redirect('<front>');
     }
 
-    // Save the token and secret in the session.
     $_SESSION['oauth_token'] = $token['oauth_token'];
     $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-    return $this->consumerInstance->getUrlAuthorize($token, $callback_url, NULL, FALSE, NULL, NULL, 'nl', $this->applicationKey);
+    return $instance->getUrlAuthorize($token, $callback_url, NULL, FALSE, NULL, NULL, 'nl');
 
   }
 
@@ -130,10 +112,12 @@ class Authentication implements AuthenticationInterface {
 
       try {
 
-        $token = $this->drupalCultureFeed->getInstance($_GET['oauth_token'], $_SESSION['oauth_token_secret'], '', NULL)->getAccessToken($_GET['oauth_verifier']);
+        $instance = $this->instance->get($_GET['oauth_token'], $_SESSION['oauth_token_secret']);
+        $token = $instance->getAccessToken($_GET['oauth_verifier']);
         unset($_SESSION['oauth_token']);
         unset($_SESSION['oauth_token_secret']);
-        $account = $this->drupalCultureFeed->getInstance($token['oauth_token'], $token['oauth_token_secret'], '', NULL)->getUser($token['userId']);
+        $instance = $this->instance->get($token['oauth_token'], $token['oauth_token_secret']);
+        $account = $instance->getUser($token['userId']);
 
       }
       catch (Exception $e) {
