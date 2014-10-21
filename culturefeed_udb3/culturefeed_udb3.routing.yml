@@ -1,5 +1,13 @@
+culturefeed_udb3.event_context:
+  path: '/udb3/api/1.0/event.jsonld'
+  defaults:
+    _content: '\Drupal\culturefeed_udb3\Controller\RestController::eventContext'
+    _title: 'Event JSON-LD context'
+  requirements:
+    _access: 'TRUE'
+
 culturefeed_udb3.search:
-  path: '/udb3/search'
+  path: '/udb3/api/1.0/search'
   defaults:
     _content: '\Drupal\culturefeed_udb3\Controller\RestController::search'
     _title: 'Search'
@@ -7,25 +15,9 @@ culturefeed_udb3.search:
     _access: 'TRUE'
 
 culturefeed_udb3.event:
-  path: '/udb3/api/1.0/event.jsonld'
-  defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\RestController::event'
-    _title: 'Event'
-  requirements:
-    _access: 'TRUE'
-
-culturefeed_udb3.api_search:
-  path: '/udb3/api/1.0/search'
-  defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\RestController::api_search'
-    _title: 'API Search'
-  requirements:
-    _access: 'TRUE'
-
-culturefeed_udb3.api_event:
   path: '/udb3/event/{cdbid}'
   defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\RestController::eventDetail'
-    _title: 'Event Detail'
+    _content: '\Drupal\culturefeed_udb3\Controller\RestController::event'
+    _title: 'Event detail'
   requirements:
     _access: 'TRUE'
