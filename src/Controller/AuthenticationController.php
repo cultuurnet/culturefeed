@@ -11,6 +11,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\culturefeed\AuthenticationInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticationController extends ControllerBase {
 
@@ -48,7 +49,8 @@ class AuthenticationController extends ControllerBase {
    */
   public function connect() {
 
-    $auth_url = $this->authentication->connect();
+    $language = $this->languageManager()->getCurrentLanguage();
+    $auth_url = $this->authentication->connect($language);
     return new RedirectResponse($auth_url, 302);
 
   }
@@ -56,12 +58,15 @@ class AuthenticationController extends ControllerBase {
   /**
    * Redirects after authentication.
    *
+   * @param Request $request
+   *   The request.
+   *
    * @return RedirectResponse
    *   A redirect.
    */
-  public function authorize() {
+  public function authorize(Request $request) {
 
-    $this->authentication->authorize();
+    $this->authentication->authorize($request);
     return $this->redirect('<front>');
 
   }

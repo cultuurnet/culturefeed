@@ -31,38 +31,38 @@ class ApiSettingsForm extends ConfigFormBase {
 
     $form['api_location'] = array(
       '#type' => 'textfield',
-      '#title' => t('API location'),
-      '#description' => t('The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
+      '#title' => $this->t('API location'),
+      '#description' => $this->t('The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
       '#default_value' => $config->get('api_location'),
     );
     $form['application_key'] = array(
       '#type' => 'textfield',
-      '#title' => t('Application key'),
-      '#description' => t('Your CultureFeed Application key.'),
+      '#title' => $this->t('Application key'),
+      '#description' => $this->t('Your CultureFeed Application key.'),
       '#default_value' => $config->get('application_key'),
       '#size' => 40,
       '#maxlength' => 40,
     );
     $form['shared_secret'] = array(
       '#type' => 'textfield',
-      '#title' => t('Shared secret'),
-      '#description' => t('Your CultureFeed Shared Secret.'),
+      '#title' => $this->t('Shared secret'),
+      '#description' => $this->t('Your CultureFeed Shared Secret.'),
       '#default_value' => $config->get('shared_secret'),
       '#size' => 40,
       '#maxlength' => 40,
     );
     $form['entry_api_path'] = array(
       '#type' => 'textfield',
-      '#title' => t('Entry API path'),
-      '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
+      '#title' => $this->t('Entry API path'),
+      '#description' => $this->t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
       '#default_value' => $config->get('entry_api_path'),
     );
     $form['http_client_timeout'] = array(
       '#type' => 'textfield',
-      '#title' => t('HTTP client timeout'),
-      '#description' => t('Timeout on requests by the HTTP client.'),
+      '#title' => $this->t('HTTP client timeout'),
+      '#description' => $this->t('Timeout on requests by the HTTP client.'),
       '#default_value' => $config->get('http_client_timeout'),
-      '#field_suffix' => t('seconds'),
+      '#field_suffix' => $this->t('seconds'),
     );
 
     return parent::buildForm($form, $form_state);

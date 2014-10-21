@@ -7,10 +7,11 @@
 
 namespace Drupal\culturefeed;
 
-use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\Core\Routing\UrlGenerator;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
+use Symfony\Component\HttpFoundation\Request;
+use Drupal\Core\Language\LanguageInterface;
 use Exception;
 
 class Authentication implements AuthenticationInterface {
@@ -77,7 +78,7 @@ class Authentication implements AuthenticationInterface {
   /**
    * {@inheritdoc}
    */
-  public function connect() {
+  public function connect(LanguageInterface $language) {
 
     $callback_url = $this->urlGenerator->generateFromRoute('culturefeed.oauth.authorize', array(), array('absolute' => TRUE));
     $instance = $this->instance->create();
@@ -89,32 +90,33 @@ class Authentication implements AuthenticationInterface {
     catch (Exception $e) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
       watchdog_exception('culturefeed', $e);
-      $this->redirect('<front>');
+      return '<front>';
     }
 
     if (!$token) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
-      $this->redirect('<front>');
+      return '<front>';
     }
 
     $_SESSION['oauth_token'] = $token['oauth_token'];
     $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-    return $instance->getUrlAuthorize($token, $callback_url, NULL, FALSE, NULL, NULL, 'nl');
+    return $instance->getUrlAuthorize($token, $callback_url, NULL, FALSE, NULL, NULL, $language->getId());
 
   }
 
   /**
    * {@inheritdoc}
    */
-  public function authorize() {
+  public function authorize(Request $request) {
 
-    if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
+    $get = $request->query;
+    if ($get->get('oauth_token') && $get->get('oauth_verifier')) {
 
       try {
 
-        $instance = $this->instance->create($_GET['oauth_token'], $_SESSION['oauth_token_secret']);
-        $token = $instance->getAccessToken($_GET['oauth_verifier']);
+        $instance = $this->instance->create($get->get('oauth_token'), $_SESSION['oauth_token_secret']);
+        $token = $instance->getAccessToken($get->get('oauth_verifier'));
         unset($_SESSION['oauth_token']);
         unset($_SESSION['oauth_token_secret']);
         $instance = $this->instance->create($token['oauth_token'], $token['oauth_token_secret']);
