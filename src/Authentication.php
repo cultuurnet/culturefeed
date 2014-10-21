@@ -7,10 +7,7 @@
 
 namespace Drupal\culturefeed;
 
-use DrupalCultureFeed;
-use CultureFeed;
 use Drupal\Core\Routing\UrlGenerator;
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Exception;
 
@@ -19,7 +16,7 @@ class Authentication implements AuthenticationInterface {
   /**
    * The culturefeed instance.
    *
-   * @var \Drupal\culturefeed\Instance;
+   * @var \Drupal\culturefeed\CultureFeedFactoryInterface;
    */
   protected $instance;
 
@@ -54,7 +51,7 @@ class Authentication implements AuthenticationInterface {
   /**
    * Constructs a Authentication object.
    *
-   * @param Instance $instance
+   * @param CultureFeedFactoryInterface $instance
    *   The culturefeed instance.
    * @param UrlGenerator $url_generator
    *   The url generator.
@@ -63,7 +60,7 @@ class Authentication implements AuthenticationInterface {
    * @param EntityManagerInterface $entity_manager
    *   The entity manger.
    */
-  public function __construct(Instance $instance, UrlGenerator $url_generator, UserMapInterface $user_map, EntityManagerInterface $entity_manager) {
+  public function __construct(CultureFeedFactoryInterface $instance, UrlGenerator $url_generator, UserMapInterface $user_map, EntityManagerInterface $entity_manager) {
 
     $this->instance = $instance;
     $this->applicationKey = $this->instance->applicationKey;
@@ -79,7 +76,7 @@ class Authentication implements AuthenticationInterface {
   public function connect() {
 
     $callback_url = $this->urlGenerator->generateFromRoute('culturefeed.oauth.authorize', array(), array('absolute' => TRUE));
-    $instance = $this->instance->get();
+    $instance = $this->instance->create();
 
     // Fetch the request token.
     try {
@@ -112,11 +109,11 @@ class Authentication implements AuthenticationInterface {
 
       try {
 
-        $instance = $this->instance->get($_GET['oauth_token'], $_SESSION['oauth_token_secret']);
+        $instance = $this->instance->create($_GET['oauth_token'], $_SESSION['oauth_token_secret']);
         $token = $instance->getAccessToken($_GET['oauth_verifier']);
         unset($_SESSION['oauth_token']);
         unset($_SESSION['oauth_token_secret']);
-        $instance = $this->instance->get($token['oauth_token'], $token['oauth_token_secret']);
+        $instance = $this->instance->create($token['oauth_token'], $token['oauth_token_secret']);
         $account = $instance->getUser($token['userId']);
 
       }

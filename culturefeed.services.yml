@@ -1,13 +1,13 @@
 services:
   culturefeed.oauth_client:
-    class: Drupal\culturefeed\OAuthClient
+    class: Drupal\culturefeed\OAuthClientFactory
     arguments: ['@config.factory']
-  culturefeed.instance:
-    class: Drupal\culturefeed\Instance
+  culturefeed.factory:
+    class: Drupal\culturefeed\CultureFeedFactory
     arguments: ['@culturefeed.oauth_client']
   culturefeed.authentication:
     class: Drupal\culturefeed\Authentication
-    arguments: ['@culturefeed.instance', '@url_generator', '@culturefeed.user.map', '@entity.manager']
+    arguments: ['@culturefeed.factory', '@url_generator', '@culturefeed.user.map', '@entity.manager']
   culturefeed.user_name.factory:
     class: Drupal\culturefeed\UserNameFactory
     arguments: ['@entity.query', '@current_user']

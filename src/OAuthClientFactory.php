@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\culturefeed\OAuthClient.
+ * Contains Drupal\culturefeed\OAuthClientFactory.
  */
 
 namespace Drupal\culturefeed;
@@ -10,8 +10,7 @@ namespace Drupal\culturefeed;
 use Drupal\Core\Config\ConfigFactory;
 use CultureFeed_DefaultOAuthClient;
 
-
-class OAuthClient {
+class OAuthClientFactory implements OAuthClientFactoryInterface {
 
   /**
    * The config factory.
@@ -57,16 +56,9 @@ class OAuthClient {
   }
 
   /**
-   * Returns a new OAuthClient.
-   *
-   * @param string $token
-   *   The token.
-   * @param string $secret
-   *   The secret.
-   *
-   * @return CultureFeed_DefaultOAuthClient
+   * {@inheritdoc}
    */
-  public function get($token = NULL, $secret = NULL) {
+  public function create($token = NULL, $secret = NULL) {
 
     $oauth_client = new CultureFeed_DefaultOAuthClient($this->applicationKey, $this->sharedSecret, $token, $secret);
     $oauth_client->setEndpoint($this->apiLocation);
