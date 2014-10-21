@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\culturefeed\User.
+ * Contains Drupal\culturefeed\UserFactory.
  */
 
 namespace Drupal\culturefeed;
@@ -11,7 +11,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 
-class User implements UserInterface {
+class UserFactory implements UserFactoryInterface {
 
   /**
    * The culturefeed instance.
@@ -74,18 +74,14 @@ class User implements UserInterface {
     if ($uitid) {
 
       // Get the uitid data.
-      $result = $this->entityQuery->get('culturefeed_token')
-        ->condition('uitid', $uitid)
-        ->execute();
-      $data = $this->entityManager->getStorage('culturefeed_token')
-        ->load(reset($result));
+      $result = $this->entityQuery->get('culturefeed_token')->condition('uitid', $uitid)->execute();
+      $data = $this->entityManager->getStorage('culturefeed_token')->load(reset($result));
       $instance = $this->instance->create($data->token, $data->secret);
       $user = $instance->getUser($uitid);
 
-      return array(
-        'uitid' => $uitid,
-        'nick' => $user->nick,
-      );
+      if ($user) {
+        return $user;
+      }
 
     }
 

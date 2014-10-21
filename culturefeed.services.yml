@@ -8,9 +8,13 @@ services:
   culturefeed.authentication:
     class: Drupal\culturefeed\Authentication
     arguments: ['@culturefeed.factory', '@url_generator', '@culturefeed.user.map', '@entity.manager', '@entity.query']
-  culturefeed.user:
-    class: Drupal\culturefeed\User
+  culturefeed.user_factory:
+    class: Drupal\culturefeed\UserFactory
     arguments: ['@culturefeed.factory', '@current_user', '@entity.manager', '@entity.query']
+  culturefeed.current_user:
+    class: Drupal\culturefeed\UserFactory
+    factory_service: culturefeed.user_factory
+    factory_method: get
   culturefeed.user_name.factory:
     class: Drupal\culturefeed\UserNameFactory
     arguments: ['@entity.query', '@current_user']

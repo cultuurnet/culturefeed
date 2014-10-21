@@ -8,7 +8,7 @@
 namespace Drupal\culturefeed_udb3\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\culturefeed\UserInterface;
+use CultureFeed_User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -17,7 +17,7 @@ class UserRestController extends ControllerBase {
   /**
    * The culturefeed user service.
    *
-   * @var \Drupal\culturefeed\User;
+   * @var CultureFeed_User;
    */
   protected $user;
 
@@ -26,16 +26,16 @@ class UserRestController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('culturefeed.user')
+      $container->get('culturefeed.current_user')
     );
   }
 
   /**
    * Constructs a RestController.
    *
-   * @param UserInterface $user
+   * @param CultureFeed_User $user
    */
-  public function __construct(UserInterface $user) {
+  public function __construct(CultureFeed_User $user) {
     $this->user = $user;
   }
 
@@ -46,9 +46,8 @@ class UserRestController extends ControllerBase {
       ->setClientTtl(60 * 1)
       ->setTtl(60 * 5);
 
-    $user = $this->user->get();
     $response
-      ->setData($user)
+      ->setData($this->user)
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);
