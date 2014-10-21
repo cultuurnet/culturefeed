@@ -44,13 +44,16 @@ class AuthenticationController extends ControllerBase {
   /**
    * Redirects to the culturefeed auth service.
    *
+   * @param Request $request
+   *   The request.
+
    * @return RedirectResponse
    *   A redirect.
    */
-  public function connect() {
+  public function connect(Request $request) {
 
     $language = $this->languageManager()->getCurrentLanguage();
-    $auth_url = $this->authentication->connect($language);
+    $auth_url = $this->authentication->connect($request, $language);
     return new RedirectResponse($auth_url, 302);
 
   }

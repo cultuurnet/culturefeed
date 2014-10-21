@@ -78,9 +78,14 @@ class Authentication implements AuthenticationInterface {
   /**
    * {@inheritdoc}
    */
-  public function connect(LanguageInterface $language) {
+  public function connect(Request $request, LanguageInterface $language) {
 
-    $callback_url = $this->urlGenerator->generateFromRoute('culturefeed.oauth.authorize', array(), array('absolute' => TRUE));
+    $options = array('absolute' => TRUE);
+    if ($request->query->get('destination')) {
+      $options['query']['destination'] = $request->query->get('destination');
+      $request->query->remove('destination');
+    }
+    $callback_url = $this->urlGenerator->generateFromRoute('culturefeed.oauth.authorize', array(), $options);
     $instance = $this->instance->create();
 
     // Fetch the request token.

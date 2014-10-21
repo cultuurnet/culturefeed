@@ -18,13 +18,15 @@ interface AuthenticationInterface {
   /**
    * Returns the authentication connect url.
    *
+   * @param Request $request
+   *   The request.
    * @param LanguageInterface $language
    *   The language.
    *
    * @return string $url
    *   A url.
    */
-  public function connect(LanguageInterface $language);
+  public function connect(Request $request, LanguageInterface $language);
 
   /**
    * Authenticates the user.
