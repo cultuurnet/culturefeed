@@ -11,7 +11,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Defines a form to configure maintenance settings for this site.
+ * Defines a form to configure the culturefeed api.
  */
 class ApiSettingsForm extends ConfigFormBase {
 
