@@ -29,7 +29,7 @@ interface AuthenticationInterface {
   /**
    * Authenticates the user.
    *
-   * @param Request $request.
+   * @param Request $request
    *   The request.
    */
   public function authorize(Request $request);
