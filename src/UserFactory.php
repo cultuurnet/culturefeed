@@ -10,6 +10,7 @@ namespace Drupal\culturefeed;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
+use CultureFeed_User;
 
 class UserFactory implements UserFactoryInterface {
 
@@ -84,6 +85,8 @@ class UserFactory implements UserFactoryInterface {
       }
 
     }
+
+    return new CultureFeed_User();
 
   }
 

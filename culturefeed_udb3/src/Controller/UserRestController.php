@@ -34,12 +34,19 @@ class UserRestController extends ControllerBase {
    * Constructs a RestController.
    *
    * @param CultureFeed_User $user
+   *   A culturefeed user object.
    */
   public function __construct(CultureFeed_User $user) {
     $this->user = $user;
   }
 
-  function info() {
+  /**
+   * Returns culturefeed user data.
+   *
+   * @return JsonResponse
+   *   A json response.
+   */
+  public function info() {
 
     $response = JsonResponse::create()
       ->setPublic()
