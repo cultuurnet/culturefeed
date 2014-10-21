@@ -1,0 +1,4 @@
+services:
+  culturefeed_udb3.search_api:
+    class: Drupal\culturefeed_udb3\SearchApi
+    arguments: ['@config.factory']

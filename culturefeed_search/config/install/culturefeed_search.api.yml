@@ -1,0 +1,3 @@
+api_location: 'http://acc.uitid.be/uitid/rest/searchv2'
+application_key: e36c2db19aeb6d2760ce0500d393e83c
+shared_secret: f0d991505f50d5da23b1157bce133aa9

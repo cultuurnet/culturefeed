@@ -5,13 +5,13 @@
  * Contains \Drupal\culturefeed\Form\ApiSettings.
  */
 
-namespace Drupal\culturefeed\Form;
+namespace Drupal\culturefeed_search\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Defines a form to configure the culturefeed api.
+ * Defines a form to configure the culturefeed search api.
  */
 class ApiSettingsForm extends ConfigFormBase {
 
@@ -19,7 +19,7 @@ class ApiSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormID() {
-    return 'culturefeed_api_settings';
+    return 'culturefeed_search_api_settings';
   }
 
   /**
@@ -27,7 +27,7 @@ class ApiSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $config = $this->config('culturefeed.api');
+    $config = $this->config('culturefeed_search.api');
 
     $form['api_location'] = array(
       '#type' => 'textfield',
@@ -51,19 +51,6 @@ class ApiSettingsForm extends ConfigFormBase {
       '#size' => 40,
       '#maxlength' => 40,
     );
-    $form['entry_api_path'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Entry API path'),
-      '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
-      '#default_value' => $config->get('entry_api_path'),
-    );
-    $form['http_client_timeout'] = array(
-      '#type' => 'textfield',
-      '#title' => t('HTTP client timeout'),
-      '#description' => t('Timeout on requests by the HTTP client.'),
-      '#default_value' => $config->get('http_client_timeout'),
-      '#field_suffix' => t('seconds'),
-    );
 
     return parent::buildForm($form, $form_state);
 
@@ -74,12 +61,10 @@ class ApiSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
-    $this->config('culturefeed.api')
+    $this->config('culturefeed_search.api')
       ->set('api_location', $values['api_location'])
       ->set('application_key', $values['application_key'])
       ->set('shared_secret', $values['shared_secret'])
-      ->set('entry_api_path', $values['entry_api_path'])
-      ->set('http_client_timeout', $values['http_client_timeout'])
       ->save();
     parent::submitForm($form, $form_state);
   }

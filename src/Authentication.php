@@ -7,10 +7,7 @@
 
 namespace Drupal\culturefeed;
 
-use DrupalCultureFeed;
-use CultureFeed;
 use Drupal\Core\Routing\UrlGenerator;
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Exception;
 

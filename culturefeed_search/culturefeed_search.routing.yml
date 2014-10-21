@@ -1,0 +1,7 @@
+culturefeed_search.api:
+  path: '/admin/config/culturefeed/search_api'
+  defaults:
+    _form: 'Drupal\culturefeed_search\Form\ApiSettingsForm'
+    _title: 'Culturefeed Search'
+  requirements:
+    _permission: 'administer site configuration'
