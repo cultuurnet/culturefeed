@@ -31,7 +31,7 @@ class OAuthClientFactory implements OAuthClientFactoryInterface {
    *
    * @var string;
    */
-  public $applicationKey;
+  protected $applicationKey;
 
   /**
    * The shared secret.

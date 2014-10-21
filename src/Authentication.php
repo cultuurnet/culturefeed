@@ -7,8 +7,10 @@
 
 namespace Drupal\culturefeed;
 
+use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\Core\Routing\UrlGenerator;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\Query\QueryFactory;
 use Exception;
 
 class Authentication implements AuthenticationInterface {
@@ -19,13 +21,6 @@ class Authentication implements AuthenticationInterface {
    * @var \Drupal\culturefeed\CultureFeedFactoryInterface;
    */
   protected $instance;
-
-  /**
-   * The application key.
-   *
-   * @var string;
-   */
-  public $applicationKey;
 
   /**
    * The url generator.
@@ -49,6 +44,13 @@ class Authentication implements AuthenticationInterface {
   protected $entityManager;
 
   /**
+   * The query factory.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactory;
+   */
+  protected $entityQuery;
+
+  /**
    * Constructs a Authentication object.
    *
    * @param CultureFeedFactoryInterface $instance
@@ -59,14 +61,16 @@ class Authentication implements AuthenticationInterface {
    *   The user map.
    * @param EntityManagerInterface $entity_manager
    *   The entity manger.
+   * @param QueryFactory $entity_query
+   *   The query factory.
    */
-  public function __construct(CultureFeedFactoryInterface $instance, UrlGenerator $url_generator, UserMapInterface $user_map, EntityManagerInterface $entity_manager) {
+  public function __construct(CultureFeedFactoryInterface $instance, UrlGenerator $url_generator, UserMapInterface $user_map, EntityManagerInterface $entity_manager, QueryFactory $entity_query) {
 
     $this->instance = $instance;
-    $this->applicationKey = $this->instance->applicationKey;
     $this->urlGenerator = $url_generator;
     $this->userMap = $user_map;
     $this->entityManager = $entity_manager;
+    $this->entityQuery = $entity_query;
 
   }
 
@@ -132,17 +136,18 @@ class Authentication implements AuthenticationInterface {
 
         $storage = $this->entityManager->getStorage('culturefeed_token');
 
-        $query = \Drupal::entityQuery('culturefeed_token')
-          ->condition('uitid', $token['userId']);
+        $query = $this->entityQuery->get('culturefeed_token')->condition('uitid', $token['userId']);
         $result = $query->execute();
         $entities = $storage->loadMultiple(array_keys($result));
         $storage->delete($entities);
+
+        $consumer = $instance->getConsumer();
 
         $storage->create(array(
           'uitid' => $token['userId'],
           'token' => $token['oauth_token'],
           'secret' => $token['oauth_token_secret'],
-          'application_key' => $this->applicationKey,
+          'application_key' => $consumer->key,
         ))->save();
 
       }

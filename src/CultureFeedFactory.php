@@ -19,13 +19,6 @@ class CultureFeedFactory implements CultureFeedFactoryInterface {
   protected $oauthClient;
 
   /**
-   * The application key.
-   *
-   * @var string;
-   */
-  public $applicationKey;
-
-  /**
    * Constructs a culturefeed instance.
    *
    * @param OAuthClientFactoryInterface $oauth_client
@@ -33,7 +26,6 @@ class CultureFeedFactory implements CultureFeedFactoryInterface {
    */
   public function __construct(OAuthClientFactoryInterface $oauth_client) {
     $this->oauthClient = $oauth_client;
-    $this->applicationKey = $this->oauthClient->applicationKey;
   }
 
   /**
