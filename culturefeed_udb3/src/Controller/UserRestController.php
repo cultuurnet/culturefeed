@@ -49,11 +49,6 @@ class UserRestController extends ControllerBase {
   public function info() {
 
     $response = JsonResponse::create()
-      ->setPublic()
-      ->setClientTtl(60 * 1)
-      ->setTtl(60 * 5);
-
-    $response
       ->setData($this->user)
       ->setPublic()
       ->setClientTtl(60 * 30)
