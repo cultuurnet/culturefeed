@@ -11,6 +11,7 @@ use Drupal\Core\Controller\ControllerBase;
 use CultureFeed_User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Drupal\Core\Access\AccessResult;
 
 class UserRestController extends ControllerBase {
 
@@ -58,6 +59,16 @@ class UserRestController extends ControllerBase {
 
     return $response;
 
+  }
+
+  /**
+   * Checks access.
+   *
+   * @return bool
+   *   Access or not.
+   */
+  public function access() {
+    return AccessResult::allowedIf($this->user->id)->setCacheable(FALSE);
   }
 
 }
