@@ -136,7 +136,8 @@ function culturefeed_messages_preprocess_culturefeed_messages_thread(&$variables
   }
 
   $variables['messages'] = array();
-  $variables['messages'][] = theme('culturefeed_messages_message_' . $thread->type, array('message' => $thread));
+  $thread_type = empty($thread->type) ? 'default' : $thread->type;
+  $variables['messages'][] = theme('culturefeed_messages_message_' . $thread_type, array('message' => $thread));
 
   $thread_children = $thread->children;
   if (!empty($thread_children)) {
