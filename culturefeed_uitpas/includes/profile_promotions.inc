@@ -8,7 +8,7 @@
 /**
  * Returns profile advantages.
  */
-function culturefeed_uitpas_profile_promotions_get($filter = NULL, $sort = NULL) {
+function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
@@ -36,12 +36,8 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL, $sort = NULL)
       if ($filter) {
         $query->owningCardSystemId = $filter;
       }
-
+      $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
-
-      if ($sort && $sort == 'cardsystem') {
-        $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
-      }
 
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
 
@@ -66,7 +62,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL, $sort = NULL)
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
   }
-  
+
   // Solution csdco on from https://www.drupal.org/node/1049354
   $_GET['q'] = 'promotions';
 
@@ -155,24 +151,8 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $form['profile_promotions']['sort'] = array(
-    '#type' => 'select',
-    '#title' => t('Sort'),
-    '#default_value' => isset($sort) ? $sort : 0,
-    '#options' => array(
-      'points' => t('Points'),
-      'cardsystem' => t('Owning card system'),
-    ),
-    '#ajax' => array(
-      'event' => 'change',
-      'wrapper' => $id,
-      'callback' => 'culturefeed_uitpas_profile_promotions_ajax_callback',
-    ),
-  );
-
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
-  $sort = isset($form_state['values']['sort']) ? $form_state['values']['sort'] : NULL;
-  $results = culturefeed_uitpas_profile_promotions_get($filter, $sort);
+  $results = culturefeed_uitpas_profile_promotions_get($filter);
   $form['profile_promotions']['result'] = array(
     '#markup' => drupal_render($results),
   );

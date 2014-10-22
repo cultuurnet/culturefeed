@@ -8,7 +8,7 @@
 /**
  * Returns promotions.
  */
-function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
+function culturefeed_uitpas_promotions_get($filter = NULL) {
 
   $promotions = array();
   $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);
@@ -38,22 +38,21 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
     if ($filter) {
       $query->owningCardSystemId = $filter;
     }
+    $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
-    if ($sort && $sort == 'cardsystem') {
-      $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
-    }
+
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
     $result = $cf->uitpas()->getPromotionPoints($query);
-    
-      
+
+
     $tmp_q = $_GET['q']; // Store the current value of $_GET['q'].
     $_GET['q'] = 'my/custom/callback'; // Change the value of $_GET['q'] to the "correct" path you want the pager to link to.
 
     pager_default_initialize($result->total, $promotions_max);
-    
-    
+
+
     $_GET['q'] = $tmp_q; // Return $_GET['q'] to the proper value.
-    
+
     $promotions = $result->objects;
     $promotions_total = $result->total;
 
@@ -73,7 +72,7 @@ function culturefeed_uitpas_promotions_get($filter = NULL, $sort = NULL) {
 
   // Solution csdco on from https://www.drupal.org/node/1049354
   $_GET['q'] = 'promotions';
-  
+
   return array(
     array(
       '#theme' => 'culturefeed_uitpas_promotions',
@@ -120,20 +119,20 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  * Returns form elements for filter & sort on promotions page.
  */
 function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
-  
+
   $form['promotions_link'] = array(
     '#prefix' => '<div id="promotions_link"><ul>',
     '#suffix' => '</ul></div>',
   );
-  
+
   $form['promotions_link']['promotions'] = array(
     '#markup' => '<li><a href="/promotions">' . t('Promotions') . '</a></li>',
   );
-  
+
   $form['promotions_link']['advantages'] = array(
     '#markup' => '<li><a href="/advantages">' . t('Welcome Advantages') . '</a></li>',
   );
-  
+
   $cf = DrupalCultureFeed::getConsumerInstance();
 
   $card_systems = $cf->uitpas()->getCardSystems();
@@ -161,24 +160,8 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $form['promotions']['sort'] = array(
-    '#type' => 'select',
-    '#title' => t('Sort'),
-    '#default_value' => isset($sort) ? $sort : 0,
-    '#options' => array(
-      'points' => t('Points'),
-      'cardsystem' => t('Owning card system'),
-    ),
-    '#ajax' => array(
-      'event' => 'change',
-      'wrapper' => $id,
-      'callback' => 'culturefeed_uitpas_promotions_ajax_callback',
-    ),
-  );
-
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
-  $sort = isset($form_state['values']['sort']) ? $form_state['values']['sort'] : NULL;
-  $results = culturefeed_uitpas_promotions_get($filter, $sort);
+  $results = culturefeed_uitpas_promotions_get($filter);
   $form['promotions']['result'] = array(
     '#markup' => drupal_render($results),
   );

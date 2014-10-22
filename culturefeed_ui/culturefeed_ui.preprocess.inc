@@ -85,9 +85,9 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
 }
 
 /**
- * Preprocess variables for culturefeed-ui-activity-summary.tpl.php.
+ * Preprocess variables for culturefeed-ui-profile-menu-item.tpl.php.
  *
- * @see culturefeed-ui-activity-summary.tpl.php
+ * @see culturefeed-ui-profile-menu-item.tpl.php
  */
 function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
   $variables['link'] = l($variables['title'], $variables['url']);
