@@ -64,7 +64,7 @@ class UserRestController extends ControllerBase {
   /**
    * Checks access.
    *
-   * @return bool
+   * @return AccessResult
    *   Access or not.
    */
   public function access() {
