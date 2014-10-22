@@ -31,22 +31,22 @@ class ApiSettingsForm extends ConfigFormBase {
 
     $form['api_location'] = array(
       '#type' => 'textfield',
-      '#title' => t('API location'),
-      '#description' => t('The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
+      '#title' => $this->t('API location'),
+      '#description' => $this->t('The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
       '#default_value' => $config->get('api_location'),
     );
     $form['application_key'] = array(
       '#type' => 'textfield',
-      '#title' => t('Application key'),
-      '#description' => t('Your CultureFeed Application key.'),
+      '#title' => $this->t('Application key'),
+      '#description' => $this->t('Your CultureFeed Application key.'),
       '#default_value' => $config->get('application_key'),
       '#size' => 40,
       '#maxlength' => 40,
     );
     $form['shared_secret'] = array(
       '#type' => 'textfield',
-      '#title' => t('Shared secret'),
-      '#description' => t('Your CultureFeed Shared Secret.'),
+      '#title' => $this->t('Shared secret'),
+      '#description' => $this->t('Your CultureFeed Shared Secret.'),
       '#default_value' => $config->get('shared_secret'),
       '#size' => 40,
       '#maxlength' => 40,
