@@ -5,9 +5,19 @@ services:
   culturefeed_udb3.search:
     class: CultuurNet\UDB3\PullParsingSearchService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
-  culturefeed_udb3.event:
+  culturefeed_udb3.event.real:
     class: CultuurNet\UDB3\DefaultEventService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
+  culturefeed_udb3.event.cache:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory_method: get
+    factory_service: cache_factory
+    arguments: [culturefeed_udb3_event]
+  culturefeed_udb3.event:
+    class: Drupal\culturefeed_udb3\EventServiceCache
+    arguments: ['@culturefeed_udb3.event.real', '@culturefeed_udb3.event.cache']
   culturefeed_udb3.search_api_2.factory:
     class: Drupal\culturefeed_udb3\SearchApi2Factory
     arguments: ['@config.factory']
