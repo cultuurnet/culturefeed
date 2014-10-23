@@ -9,8 +9,7 @@
       }
     ],
     "require": {
-      "cultuurnet/udb3": "~0.0@dev",
-      "cultuurnet/search": "dev-guzzle-39-update"
+      "cultuurnet/udb3": "~0.0@dev"
     },
     "minimum-stability": "dev"
 }
