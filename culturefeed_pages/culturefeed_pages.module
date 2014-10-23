@@ -455,6 +455,14 @@ function culturefeed_pages_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['ajax/culturefeed/pages/page-suggestion/ids'] = array(
+    'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
+    'page arguments' => array(5, TRUE),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['culturefeed/pages/join/%/%culturefeed_pages_page'] = array(
     'page callback' => 'culturefeed_pages_page_join',
     'page arguments' => array(3, 4),
