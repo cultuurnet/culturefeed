@@ -1,17 +1,17 @@
 {
-    "name": "cultuurnet/culturefeed",
+    "name": "cultuurnet/culturefeed-drupal8",
     "type": "drupal-module",
     "description": "CultuurNet culturefeed PHP library & Drupal module",
     "license": "Apache-2.0",
     "require": {
-      "cultuurnet/cdb": "master@dev"
+      "cultuurnet/cdb": "~2.0"
     },
     "autoload": {
         "classmap": ["lib/CultureFeed", "lib/OAuth"]
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.x-dev"
         }
     },
     "minimum-stability": "dev"
