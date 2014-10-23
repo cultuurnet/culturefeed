@@ -1,7 +1,7 @@
 name = CultureFeed
 description = CultureFeed
 package = CultureFeed
-version = VERSION
+version = "7.x-3.3"
 core = 7.x
 
 files[] = lib/Drupal/DrupalCultureFeedBase.php
