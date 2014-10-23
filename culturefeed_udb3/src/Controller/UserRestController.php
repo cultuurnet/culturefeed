@@ -7,10 +7,10 @@
 
 namespace Drupal\culturefeed_udb3\Controller;
 
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Drupal\Core\Controller\ControllerBase;
 use CultureFeed_User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\Access\AccessResult;
 
 class UserRestController extends ControllerBase {
@@ -44,18 +44,16 @@ class UserRestController extends ControllerBase {
   /**
    * Returns culturefeed user data.
    *
-   * @return JsonResponse
+   * @return JsonLdResponse
    *   A json response.
    */
   public function info() {
 
-    $response = JsonResponse::create()
+    $response = JsonLdResponse::create()
       ->setData($this->user)
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);
-
-    $response->headers->set('Content-Type', 'application/ld+json');
 
     return $response;
 

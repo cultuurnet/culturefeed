@@ -6,10 +6,15 @@
       {
         "type": "vcs",
         "url": "https://bitbucket.org/2dotstwice/culudb-php.git"
+      },
+      {
+        "type": "vcs",
+        "url": "https://bitbucket.org/2dotstwice/culudb-php-symfony.git"
       }
     ],
     "require": {
-      "cultuurnet/udb3": "~0.0@dev"
+      "cultuurnet/udb3": "~0.0@dev",
+      "cultuurnet/udb3-symfony": "~0.0@dev"
     },
     "minimum-stability": "dev"
 }

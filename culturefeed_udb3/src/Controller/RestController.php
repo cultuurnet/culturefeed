@@ -9,11 +9,10 @@ namespace Drupal\culturefeed_udb3\Controller;
 
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\SearchServiceInterface;
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -45,6 +44,7 @@ class RestController extends ControllerBase {
    * Constructs a RestController.
    *
    * @param SearchServiceInterface $searchService
+   * @param EventServiceInterface $eventService
    */
   public function __construct(SearchServiceInterface $searchService, EventServiceInterface $eventService) {
     $this->searchService = $searchService;
@@ -54,7 +54,9 @@ class RestController extends ControllerBase {
   /**
    * Executes a search and returns the results.
    *
-   * @return Response
+   * @param Request $request
+   *
+   * @return JsonLdResponse
    *   A response.
    */
   public function search(Request $request) {
@@ -65,13 +67,11 @@ class RestController extends ControllerBase {
 
     $response = $this->searchService->search($q, $limit, $start);
 
-    $response = JsonResponse::create()
+    $response = JsonLdResponse::create()
       ->setData($response)
       ->setPublic()
       ->setClientTtl(60 * 1)
       ->setTtl(60 * 5);
-
-    $response->headers->set('Content-Type', 'application/ld+json');
 
     return $response;
 
@@ -83,17 +83,20 @@ class RestController extends ControllerBase {
     return $response;
   }
 
+  /**
+   * @param string $cdbid
+   *
+   * @return JsonLdResponse
+   */
   function event($cdbid) {
     $event = $this->eventService->getEvent($cdbid);
 
     /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
-    $response = JsonResponse::create()
+    $response = JsonLdResponse::create()
       ->setData($event)
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);
-
-    $response->headers->set('Content-Type', 'application/ld+json');
 
     return $response;
 
