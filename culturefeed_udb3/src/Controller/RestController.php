@@ -59,7 +59,7 @@ class RestController extends ControllerBase {
    */
   public function search(Request $request) {
 
-    $q = $request->query->get('query');
+    $q = $request->query->get('query', '*.*');
     $limit = $request->query->get('limit', 30);
     $start = $request->query->get('start', 0);
 
