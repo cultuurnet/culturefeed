@@ -583,7 +583,7 @@ msgid "Continue"
 msgstr "Doorgaan"
 
 #: includes/user_register.inc:54;203
-msgid "Already registered ?  <a href=\"@url\">Apply here</a>."
+msgid "Already registered?  <a href=\"@url\">Apply here</a>."
 msgstr "Ben je al geregistreerd?  <a href=\"@url\">Aanmelden</a>."
 
 #: includes/user_register.inc:106
