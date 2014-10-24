@@ -125,15 +125,21 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$vars) {
 
-    // Promotions.
-    $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
+  // Page elements.
+  $min = $vars['promotions_pager_min'];
+  $max = $vars['promotions_pager_max'];
+  $total = $vars['promotions_total'];
+  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
 
-    // Info.
-    $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+  // Promotions.
+  $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
-    // User points.
-    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-    $vars['passholder'] = $uitpas_user->passholder;
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+
+  // User points.
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  $vars['passholder'] = $uitpas_user->passholder;
 }
 
 /**
