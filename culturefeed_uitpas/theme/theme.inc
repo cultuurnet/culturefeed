@@ -381,8 +381,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
   // Points.
-  $singular = t('Needed points') . ': @count ' . t('point');
-  $plural = t('Needed points') . ': @count ' . t('points');
+  $singular = '@count ' . t('point');
+  $plural = '@count ' . t('points');
   $vars['points'] = format_plural($promotion->points, $singular, $plural);
 
   // Period.
