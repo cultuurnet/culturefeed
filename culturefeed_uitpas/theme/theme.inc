@@ -107,6 +107,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
 
+  // Page elements.
+  $min = $vars['promotions_pager_min'];
+  $max = $vars['promotions_pager_max'];
+  $total = $vars['promotions_total'];
+  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+
   // Promotions.
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
@@ -257,12 +263,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
 
     $memberships = array();
     foreach ($passholder->memberships as $membership) {
-  
+
       if (isset($membership->association->association)) {
 
         $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
         $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
-      
+
       }
 
     }
@@ -351,7 +357,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $vars['upcoming_promotions_links'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
   // All promotions.
-  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
+  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/promotions');
 
 }
 

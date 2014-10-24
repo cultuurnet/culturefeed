@@ -43,6 +43,8 @@ function culturefeed_uitpas_theme() {
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
         'promotions_filter' => array(),
+        'promotions_pager_min' => 0,
+        'promotions_pager_max' => 0,
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
@@ -50,10 +52,10 @@ function culturefeed_uitpas_theme() {
     ),
     'culturefeed_uitpas_promotions_table' => array(
       'variables' => array(
-          'title' => t('Promotions'),
-          'promotions' => array(),
-          'promotions_total' => 0,
-          'promotions_pager_element' => 0,
+        'title' => t('Promotions'),
+        'promotions' => array(),
+        'promotions_total' => 0,
+        'promotions_pager_element' => 0,
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
