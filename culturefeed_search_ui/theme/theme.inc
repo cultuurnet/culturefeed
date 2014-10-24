@@ -422,23 +422,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variables) {
 
   $type = $variables['type'];
+
   $search_page = culturefeed_get_searchable_type($type);
   if (empty($search_page)) {
     return;
   }
 
-  $sort_options = variable_get('culturefeed_search_sortoptions_' . $type, array());
-  $default_sort = variable_get('culturefeed_search_default_sort_' . $type, '');
-
-  // Load default ones.
-  if (empty($sort_options)) {
-    $sort_options = $search_page['sort_options'];
-  }
-  if (empty($default_sort) && isset($search_page['default_sort'])) {
-    $default_sort = $search_page['default_sort'];
-  }
-
-  $current_sort = isset($_GET['sort']) ? $_GET['sort'] : $default_sort;
+  $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_page);
+  $current_sort = isset($_GET['sort']) ? $_GET['sort'] : $sort_options['default'];
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
 
@@ -452,7 +443,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
 
     $query['sort'] = $option['value'];
     $attributes = array();
-    if ($option['value'] == $current_sort) {
+    if ($key == $current_sort) {
       $attributes = array(
         'class' => array('active'),
       );
