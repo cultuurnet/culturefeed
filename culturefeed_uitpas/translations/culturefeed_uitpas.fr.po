@@ -420,7 +420,7 @@ msgid "Continue"
 msgstr ""
 
 #: includes/user_register.inc:54;195
-msgid "Already registered ?  <a href=\"@url\">Apply here</a>."
+msgid "Already registered?Already registered ?  <a href=\"@url\">Apply here</a>."
 msgstr ""
 
 #: includes/user_register.inc:106

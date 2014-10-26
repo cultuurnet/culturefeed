@@ -182,12 +182,13 @@ function culturefeed_image_file_process($element, &$form_state, $form) {
 
 /**
  * Implements hook_page_build().
- * Please don't remove this. It will be used for user behavior tracking. 
+ * Please don't remove this. It will be used for user behavior tracking.
  * Some day your client will benefit from our aggregated insights & benchmarks too.
  * See https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-tracking
  * Thanks!
  */
 function culturefeed_page_build(&$page) {
+
   // Add Google Tag Manager
 
   $container_id = variable_get('culturefeed_gtm_container_id', 'GTM-WPZSG2');
@@ -218,9 +219,13 @@ function culturefeed_page_build(&$page) {
   // Check if it is an event detail page.
   $gtm_globals['is_event_detail'] = (arg(0) == 'agenda' && arg(1) == 'e');
   if ($gtm_globals['is_event_detail']) {
-    $title = culturefeed_agenda_detail_title(menu_get_object('culturefeed_agenda_event', 3));
-    $gtm_globals['event_detail_title'] = $title;
-    $gtm_globals['cdbid'] = arg(3);
+
+    $event = menu_get_object('culturefeed_agenda_event', 3);
+    if ($event) {
+      $gtm_globals['event_detail_title'] = culturefeed_agenda_detail_title($event);
+      $gtm_globals['cdbid'] = arg(3);
+    }
+
   }
 
   // Add custom dimensions.

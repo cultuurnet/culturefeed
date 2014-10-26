@@ -11,7 +11,8 @@
  */
 ?>
 <div class="promotions">
+  <div class="page_elements"><?php print $page_elements; ?></div>
   <div class="promotions_table"><?php print $promotions_table; ?></div>
-  
+
   <div class="info"><?php print $info; ?></div>
 </div>

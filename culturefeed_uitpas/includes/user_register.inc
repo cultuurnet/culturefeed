@@ -51,7 +51,7 @@ function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user)
   if ($_GET['q'] != 'register_uitpas' && !$uitpas_user->user) {
 
     $args = array('@url' => url('culturefeed/oauth/connect'));
-    $form['suffix']['#markup'] = format_string(variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered ?  <a href="@url">Apply here</a>.')), $args);
+    $form['suffix']['#markup'] = '<p>' . format_string(variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered?  <a href="@url">Apply here</a>.')), $args) . '</p>';
 
   }
 
@@ -200,7 +200,7 @@ function culturefeed_uitpas_user_register_settings_get(&$form, $include_title = 
   $form['culturefeed_uitpas_user_register_apply_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Apply text'),
-    '#default_value' => variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered ?  <a href="@url">Apply here</a>.')),
+    '#default_value' => variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered?  <a href="@url">Apply here</a>.')),
   );
 
 }

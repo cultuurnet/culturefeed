@@ -78,6 +78,8 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
       '#theme' => 'culturefeed_uitpas_promotions',
       '#promotions' => $promotions,
       '#promotions_total' => $promotions_total,
+      '#promotions_pager_min' => ($promotions_page * $promotions_max) + 1,
+      '#promotions_pager_max' => ($promotions_page * $promotions_max) + $promotions_max,
     ),
     array(
       '#theme' => 'pager',
