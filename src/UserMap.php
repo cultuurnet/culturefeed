@@ -72,7 +72,7 @@ class UserMap implements UserMapInterface {
     // Check if the user is already known in our system.
     $query = $this->entityQuery->get('culturefeed_user')->condition('uitid', $token['userId']);
     $result = $query->execute();
-    $uid = key($result);
+    $uid = reset($result);
 
     if (!$uid) {
       $account = $this->create($user);
@@ -127,6 +127,28 @@ class UserMap implements UserMapInterface {
 
     return $account;
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCultureFeedId($id) {
+    $result = $this->entityQuery->get('culturefeed_user')->condition('uid', $id)->execute();
+    if (!empty($result)) {
+      return $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uitid->value;
+    }
+    return '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDrupalId($id) {
+    $result = $this->entityQuery->get('culturefeed_user')->condition('uitid', $id)->execute();
+    if (!empty($result)) {
+      return $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uid->value;
+    }
+    return 0;
   }
 
 }

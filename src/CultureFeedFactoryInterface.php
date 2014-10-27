@@ -27,4 +27,12 @@ interface CultureFeedFactoryInterface {
    */
   public function create($token = NULL, $secret = NULL);
 
+  /**
+   * Returns a new authenticated Culturefeed Instance.
+   *
+   * @return CultureFeed
+   *   The CultureFeed instance.
+   */
+  public function createAuthenticated();
+
 }

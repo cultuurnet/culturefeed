@@ -8,8 +8,7 @@
 namespace Drupal\culturefeed;
 
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
+use CultureFeed;
 use CultureFeed_User;
 
 class UserFactory implements UserFactoryInterface {
@@ -29,37 +28,27 @@ class UserFactory implements UserFactoryInterface {
   protected $account;
 
   /**
-   * The entity manager.
+   * The user map.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface;
+   * @var string;
    */
-  protected $entityManager;
-
-  /**
-   * The query factory.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryFactory;
-   */
-  protected $entityQuery;
+  protected $userMap;
 
   /**
    * Constructs a CultureFeed user object.
    *
-   * @param CultureFeedFactoryInterface $instance
-   *   The culturefeed instance.
+   * @param CultureFeed $instance
+   *   The authenticated culturefeed instance.
    * @param AccountInterface $account
    *   The account interface.
-   * @param EntityManagerInterface $entity_manager
-   *   The entity manger.
-   * @param QueryFactory $entity_query
-   *   The query factory.
+   * @param UserMapInterface $user_map
+   *   The user map.
    */
-  public function __construct(CultureFeedFactoryInterface $instance, AccountInterface $account, EntityManagerInterface $entity_manager, QueryFactory $entity_query) {
+  public function __construct(CultureFeed $instance, AccountInterface $account, UserMapInterface $user_map) {
 
     $this->instance = $instance;
     $this->account = $account;
-    $this->entityManager = $entity_manager;
-    $this->entityQuery = $entity_query;
+    $this->userMap = $user_map;
 
   }
 
@@ -68,28 +57,13 @@ class UserFactory implements UserFactoryInterface {
    */
   public function get() {
 
-    // Get the uitid.
-    $result = $this->entityQuery->get('culturefeed_user')->condition('uid', $this->account->id())->execute();
-
-    if (count($result)) {
-
-      $uitid = $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uitid->value;
-      if ($uitid) {
-
-        // Get the uitid data.
-        $result = $this->entityQuery->get('culturefeed_token')->condition('uitid', $uitid)->execute();
-        $data = $this->entityManager->getStorage('culturefeed_token')->load(reset($result));
-        $instance = $this->instance->create($data->token, $data->secret);
-        $user = $instance->getUser($uitid);
-
-        if ($user) {
-          return $user;
-        }
-
-      }
+    try {
+      $uitid = $this->userMap->getCulturefeedId($this->account->id);
+      return $this->instance->getUser($uitid);
     }
-
-    return new CultureFeed_User();
+    catch (\Exception $e) {
+      return new CultureFeed_User();
+    }
 
   }
 

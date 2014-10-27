@@ -28,4 +28,26 @@ interface UserMapInterface {
    */
   public function get(CultureFeed_User $user, array $token);
 
+  /**
+   * Returns the culturefeed user id.
+   *
+   * @param int $id
+   *   A drupal user id.
+   *
+   * @return string
+   *   A culturefeed user id.
+   */
+  public function getCultureFeedId($id);
+
+  /**
+   * Returns the drupal user id.
+   *
+   * @param string $id
+   *   A culturefeed user id.
+   *
+   * @return int
+   *   A drupal user id.
+   */
+  public function getDrupalId($id);
+
 }
