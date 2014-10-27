@@ -907,6 +907,13 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
       }
     }
 
+    if ($min_age == 0) {
+      $label = t('All ages');
+    }
+    else {
+      $label = isset($current_age) ? $current_age : check_plain($min_age);
+    }
+
     $build['min-age'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
       '#label' => $min_age == 0 ? t('All ages') : $current_age,
