@@ -962,10 +962,10 @@ function culturefeed_search_ui_register_deletions() {
 
       drupal_write_record('culturefeed_search_deleted_objects', $record, $update);
 
-      watchdog('culturefeed_search_ui', 'Finished registration of deleted objects.', array(), WATCHDOG_INFO);
-      variable_set('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME);
-
     }
+
+    watchdog('culturefeed_search_ui', 'Finished registration of deleted objects.', array(), WATCHDOG_INFO);
+    variable_set('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME);
 
   } catch (Exception $e) {
     watchdog('culturefeed_search_ui', 'Failed registration of deleted objects. Retrying again on the next run.', array(), WATCHDOG_ERROR);
