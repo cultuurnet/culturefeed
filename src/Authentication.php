@@ -115,13 +115,13 @@ class Authentication implements AuthenticationInterface {
    */
   public function authorize(Request $request) {
 
-    $get = $request->query;
-    if ($get->get('oauth_token') && $get->get('oauth_verifier')) {
+    $query = $request->query;
+    if ($query->get('oauth_token') && $query->get('oauth_verifier')) {
 
       try {
 
-        $instance = $this->instance->create($get->get('oauth_token'), $_SESSION['oauth_token_secret']);
-        $token = $instance->getAccessToken($get->get('oauth_verifier'));
+        $instance = $this->instance->create($query->get('oauth_token'), $_SESSION['oauth_token_secret']);
+        $token = $instance->getAccessToken($query->get('oauth_verifier'));
         unset($_SESSION['oauth_token']);
         unset($_SESSION['oauth_token_secret']);
         $instance = $this->instance->create($token['oauth_token'], $token['oauth_token_secret']);

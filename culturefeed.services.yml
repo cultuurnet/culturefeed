@@ -21,3 +21,8 @@ services:
   culturefeed.user.map:
     class: Drupal\culturefeed\UserMap
     arguments: ['@entity.manager', '@entity.query', '@current_user', '@culturefeed.user_name.factory']
+  access_check.culturefeed.current_user:
+    class: Drupal\culturefeed\Access\User
+    arguments: ['@culturefeed.current_user']
+    tags:
+      - { name: access_check, applies_to: _culturefeed_current_user }

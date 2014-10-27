@@ -59,14 +59,4 @@ class UserRestController extends ControllerBase {
 
   }
 
-  /**
-   * Checks access.
-   *
-   * @return AccessResult
-   *   Access or not.
-   */
-  public function access() {
-    return AccessResult::allowedIf($this->user->id)->setCacheable(FALSE);
-  }
-
 }

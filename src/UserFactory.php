@@ -29,7 +29,7 @@ class UserFactory implements UserFactoryInterface {
   protected $account;
 
   /**
-   * The entity Manager.
+   * The entity manager.
    *
    * @var \Drupal\Core\Entity\EntityManagerInterface;
    */
@@ -70,20 +70,23 @@ class UserFactory implements UserFactoryInterface {
 
     // Get the uitid.
     $result = $this->entityQuery->get('culturefeed_user')->condition('uid', $this->account->id())->execute();
-    $uitid = $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uitid->value;
 
-    if ($uitid) {
+    if (count($result)) {
 
-      // Get the uitid data.
-      $result = $this->entityQuery->get('culturefeed_token')->condition('uitid', $uitid)->execute();
-      $data = $this->entityManager->getStorage('culturefeed_token')->load(reset($result));
-      $instance = $this->instance->create($data->token, $data->secret);
-      $user = $instance->getUser($uitid);
+      $uitid = $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uitid->value;
+      if ($uitid) {
 
-      if ($user) {
-        return $user;
+        // Get the uitid data.
+        $result = $this->entityQuery->get('culturefeed_token')->condition('uitid', $uitid)->execute();
+        $data = $this->entityManager->getStorage('culturefeed_token')->load(reset($result));
+        $instance = $this->instance->create($data->token, $data->secret);
+        $user = $instance->getUser($uitid);
+
+        if ($user) {
+          return $user;
+        }
+
       }
-
     }
 
     return new CultureFeed_User();
