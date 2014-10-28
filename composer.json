@@ -1,7 +1,7 @@
 {
     "name": "cultuurnet/culturefeed",
     "type": "drupal-module",
-    "description": "CultuurNet culturefeed PHP library & Drupal module",
+    "description": "CultuurNet culturefeed Drupal module",
     "license": "Apache-2.0",
     "require": {
       "cultuurnet/search": "~1.0",
