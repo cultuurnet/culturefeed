@@ -1,5 +1,6 @@
 name = CultureFeed Roles
 description = Pre-assign roles to UiTID users that have not logged in yet
+package = CultureFeed
 core = 7.x
 dependencies[] = culturefeed
 

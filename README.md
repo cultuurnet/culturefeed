@@ -3,7 +3,7 @@ culturefeed
 
 [![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
 
-Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. But for this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key at [http://tools.uitdatabank.be/docs/search-api-v2-getting-started](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
+Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. But for this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
 
 __[Live demo connecting production API](http://www.culturefeed.be/)__
 
@@ -64,11 +64,20 @@ Last step is include this in your settings.php file of your site.
 require 'vendor/autoload.php';
 ```
 
-You should be able now to 
+You should be able now to enable the modules (typically you start with culturefeed, culturefeed_ui, culturefeed_search, culturefeed_search_ui and culturefeed_agenda) you need and fill in your key and secret:
+
+- culturefeed core at admin/config/culturefeed/api-settings
+- if culturefeed_search enabled also at admin/config/culturefeed/search
+
+It's a good practice to connect your user/1 (admin) user with a UiTID account. This you can do by when logged is as user/1 go to culturefeed/oauth/connect and login to UiTID. If this works culturefeed core is configured well. And if you get results at the path agende/search culturefeed_search is working as well.
 
 
 ## Tutorials 
+Further on we created 3 tutorials to integrate the most common use cases:
 
+- [Set up a search page](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
+- [Integrate UiTID](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI)
+- [Integrate UiTPAS](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS)
 
 ## PHP libraries
 
@@ -215,9 +224,23 @@ Send messages to other users (most likely page owners), interesting when actors 
 Collect on line userpoints (for specific actions like writing reviews) and claim promotions (Vlieg).  __Not yet available for partners.__ Please contact us if interested. 
 
 ### culturefeed_roles
-Pre-assign roles to UiTID users that have not logged in yet.  Drush integration.
+Pre-assign roles to UiTID users that have not logged in yet. Drush integration.
 
+### Examples
 
+There already a lot of integrations live on the 3.x version (and still counting):
+
+- http://www.uitinmechelen.be
+- http://www.uitinsint-niklaas.be
+- http://www.2014-18.be
+- http://m.uitinvlaanderen.be
+- http://agenda.hbvl.be
+- http://agenda.gva.be
+- https://www.uitpas.be
+- https://www.muntpunt.be/agenda/search
+- http://www.starttoswim.com
+- http://www.cultuurkuur.be
+- http://www.uitmetvlieg.be
 
 
 ## License
