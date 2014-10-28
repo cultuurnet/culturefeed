@@ -141,6 +141,12 @@ function culturefeed_ui_menu_alter(&$items) {
  */
 function culturefeed_ui_init() {
   culturefeed_ui_set_canonical_and_noindex();
+  if (variable_get('culturefeed_ui_cookie_bool')) {
+    drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/jquery.cookie.js');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_ui') . '/js/cookie_message.js');
+    drupal_add_js(array('culturefeed_ui' => array('path' => variable_get('culturefeed_ui_cookie_path'))), 'setting');
+    drupal_add_css(drupal_get_path('module', 'culturefeed_ui') . '/css/cookie_message.css');
+  }
 }
 
 function culturefeed_ui_default_title_callback($title = '') {
@@ -409,9 +415,9 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
 
   return array(
     'uitid' => array(
-      'title' => t('My account'),
+      'title' => t('My profile'),
       'url' => 'user/' . $user->uid,
-      'description' => t('How other users will see your account'),
+      'description' => t('How other users will see your profile'),
       'weight' => -20,
     ),
     'profile' => array(
@@ -488,4 +494,10 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
     '#options' => $period,
     '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
   );
+}
+
+function culturefeed_ui_page_build() {
+  if (!isset($_COOKIE['culturefeed_ui_cookies']) || $_COOKIE['culturefeed_ui_cookies'] != 'hidden') {
+    culturefeed_ui_set_cookies_message();
+  }
 }

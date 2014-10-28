@@ -771,6 +771,10 @@ msgstr "ist derzeit das einzige Mitglied von Seite"
 msgid "You are a member of"
 msgstr "Sie sind Mitglied von"
 
+#: theme/culturefeed-pages-fellow-members-block.tpl.php:21
+msgid "You are the only member of"
+msgstr "Sie sind das einzige Mitglied von"
+
 #: theme/culturefeed-pages-fellow-members-block.tpl.php:23
 msgid "Are you a colleague of"
 msgstr "Sind Sie ein Kollege von"

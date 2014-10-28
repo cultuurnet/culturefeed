@@ -28,10 +28,17 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('access content'),
       'file' => 'includes/advantage_details.inc',
     ),
-    'advantages_promotions' => array(
-      'title' => variable_get('culturefeed_uitpas_advantages_promotions_title', 'UiTPAS advantages'),
-      'page callback' => 'culturefeed_uitpas_advantages_promotions_get',
-      'file' => 'includes/advantages_promotions.inc',
+    'advantages' => array(
+      'title' => variable_get('culturefeed_uitpas_advantages_title', 'UiTPAS advantages'),
+      'page callback' => 'culturefeed_uitpas_advantages_get',
+      'file' => 'includes/advantages.inc',
+      'access arguments' => array('access content'),
+    ),
+    'promotions' => array(
+      'title' => variable_get('culturefeed_uitpas_promotions_title', 'UiTPAS promotions'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_promotions_filter_sort'),
+      'file' => 'includes/promotions.inc',
       'access arguments' => array('access content'),
     ),
     'culturefeed/profile/uitpas/actions' => array(
@@ -40,6 +47,14 @@ function culturefeed_uitpas_menu() {
       'page callback' => 'culturefeed_uitpas_profile_actions_get',
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_actions.inc',
+    ),
+    'culturefeed/profile/uitpas/promotions' => array(
+      'title callback' => 'culturefeed_uitpas_profile_promotions_title',
+      'description' => variable_get('culturefeed_uitpas_profile_details_menu_promotions_description', t('Discover which promotions and advantages you are entitled to.')),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_profile_promotions_filter_sort'),
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_promotions.inc',
     ),
     'culturefeed/profile/uitpas/advantages' => array(
       'title callback' => 'culturefeed_uitpas_profile_advantages_title',

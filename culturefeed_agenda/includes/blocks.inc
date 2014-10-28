@@ -129,7 +129,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   }
 
   if (!empty($form_state['#domain_id'])) {
-    unset($query['facet']['category_' . $form_state['#domain_id'] . '_name']);
+    unset($query['facet']['category_' . $form_state['#domain_id'] . '_id']);
     // Activate the category facet.
     if (!empty($form_state['values']['category'])) {
       $query['facet']['category_' . $form_state['#domain_id'] . '_id'][0] = $form_state['values']['category'];
@@ -164,6 +164,7 @@ function culturefeed_agenda_block_actor_program() {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('"' . $item->getId() . '"');
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
 
   try {
 

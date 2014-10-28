@@ -157,7 +157,7 @@ msgstr "Zoeken"
 
 #: includes/blocks.inc:106
 msgid "Sort"
-msgstr "Sorteer resultaten op"
+msgstr "Sorteer op"
 
 #: includes/blocks.inc:114
 msgid "Submit"
@@ -214,6 +214,10 @@ msgstr "Alle filters verwijderen"
 #: includes/helpers.inc:89
 msgid "Today"
 msgstr "Vandaag"
+
+#: includes/helpers.inc:89
+msgid "Tomorrow"
+msgstr "Morgen"
 
 #: includes/helpers.inc:90
 msgid "Next 7 days"
@@ -308,3 +312,7 @@ msgstr[1] "@range van @count resultaten"
 
 msgid "Show the facet only when an eventtype is chosen"
 msgstr "Toon de facet enkel wanneer een eventtype is gekozen"
+
+#: includes/helpers.inc:106
+msgid "year"
+msgstr "jaar"

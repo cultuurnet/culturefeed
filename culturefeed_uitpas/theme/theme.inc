@@ -21,10 +21,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   // Period.
   $vars['period'] = '';
   if ($advantage->cashingPeriodBegin) {
-
-    $period = t('From !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodBegin)));
+    if (date('j/m/Y', $advantage->cashingPeriodBegin) <= date('j/m/Y')) {
+      $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
+    }
+    else {
+      $period = '';
+    }
     if ($advantage->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/n/Y', $advantage->cashingPeriodEnd)));
+      $period .= t('valid until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
 
@@ -74,19 +78,68 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_culturefeed_uitpas_advantages_promotions().
+ * Implements hook_preprocess_culturefeed_uitpas_advantages().
  */
-function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_promotions(&$vars) {
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
 
   // Advantages.
-  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
-
-  // Promotions.
-  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
+  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_advantages_promotions_info');
+  $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+}
 
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_advantages().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
+
+    // Advantages.
+    $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
+
+    // Info.
+    $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_promotions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
+
+  // Page elements.
+  $min = $vars['promotions_pager_min'];
+  $max = $vars['promotions_pager_max'];
+  $total = $vars['promotions_total'];
+  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+
+  // Promotions.
+  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
+
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_promotions().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$vars) {
+
+  // Page elements.
+  $min = $vars['promotions_pager_min'];
+  $max = $vars['promotions_pager_max'];
+  $total = $vars['promotions_total'];
+  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+
+  // Promotions.
+  $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
+
+  // Info.
+  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+
+  // User points.
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  $vars['passholder'] = $uitpas_user->passholder;
 }
 
 /**
@@ -147,27 +200,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
     $form = drupal_get_form('culturefeed_uitpas_activity_preferences_form');
     $vars['activity_preferences_form'] = drupal_render($form);
   }
-
-}
-
-/**
- * Implements hook_preprocess_culturefeed_uitpas_profile_advantages().
- */
-function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
-
-  // Promotions.
-  $vars['promotions_table'] = theme('culturefeed_uitpas_promotions', $vars);
-
-  // Upcoming promotions.
-  $vars['upcoming_promotions_table'] = theme('culturefeed_uitpas_promotions', array(
-    'title' => t('Upcoming promotions'),
-    'promotions' => $vars['upcoming_promotions'],
-    'promotions_total' => $vars['upcoming_promotions_total'],
-    'promotions_pager_element' => $vars['upcoming_promotions_pager_element'],
-  ));
-
-  // Advantages.
-  $vars['advantages_table'] = theme('culturefeed_uitpas_advantages', $vars);
 
 }
 
@@ -238,8 +270,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     $memberships = array();
     foreach ($passholder->memberships as $membership) {
 
-      $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
-      $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+      if (isset($membership->association->association)) {
+
+        $endate = t('valid till !date', array('!date' => date('j/m/Y', $membership->endDate)));
+        $memberships[] = '<label>' . $membership->association . ':</label> ' . $endate;
+
+      }
 
     }
     $vars['memberships'] = implode('<br />', $memberships);
@@ -327,7 +363,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
   $vars['upcoming_promotions_links'] = (count($upcoming_promotions)) ? theme_links($links) : '';
 
   // All promotions.
-  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/advantages');
+  $vars['all_promotions'] = l(variable_get('culturefeed_uitpas_profile_summary_more_link_text', t('Show all my promotions')), 'culturefeed/profile/uitpas/promotions');
 
 }
 
@@ -345,20 +381,29 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
   // Points.
-  $singular = t('Needed points') . ': @count ' . t('point');
-  $plural = t('Needed points') . ': @count ' . t('points');
+  $singular = '@count ' . t('point');
+  $plural = '@count ' . t('points');
   $vars['points'] = format_plural($promotion->points, $singular, $plural);
 
   // Period.
   $vars['period'] = '';
   if ($promotion->cashingPeriodBegin) {
-
-    $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin)));
+    if (date('j/m/Y', $promotion->cashingPeriodBegin) <= date('j/m/Y')) {
+      $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
+    }
+    else {
+      $period = '';
+    }
     if ($promotion->cashingPeriodEnd) {
-      $period .= ' ' . t('to !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
 
+  } else {
+    if ($promotion->cashingPeriodEnd) {
+      $period = t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    }
+    $vars['period'] = $period;
   }
 
   // Location.
@@ -393,6 +438,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['description2'] = '';
   if ($promotion->description2) {
     $vars['description2'] = $promotion->description2;
+  }
+
+  // Stock.
+  $vars['stock'] = FALSE;
+  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
+    $vars['stock'] = TRUE;
   }
 
 }
@@ -574,7 +625,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_advantages(&$vars) {
+function theme_culturefeed_uitpas_advantages_table(&$vars) {
 
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_WelcomeAdvantage[] $advantages */
@@ -677,7 +728,7 @@ function theme_culturefeed_uitpas_promotion_image($vars) {
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_promotions(&$vars) {
+function theme_culturefeed_uitpas_promotions_table(&$vars) {
 
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_PointsPromotion[] $promotions */
@@ -770,6 +821,6 @@ function theme_culturefeed_uitpas_promotions(&$vars) {
     'quantity' => $promotions_total,
   );
 
-  return theme_table($table) . theme('pager', $pager);
+  return theme_table($table);
 
 }

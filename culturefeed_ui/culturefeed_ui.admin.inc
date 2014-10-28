@@ -28,6 +28,23 @@ function culturefeed_ui_admin_settings() {
     '#options' => $sort_options,
     '#default_value' => variable_get('culturefeed_ui_block_most_active_user_sort', CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
   );
+  
+  $form['cookies'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Settings for displaying cookies notification'),
+  );
+  
+  $form['cookies']['culturefeed_ui_cookie_bool'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable cookie notification'),
+    '#default_value' => variable_get('culturefeed_ui_cookie_bool', 0),
+  );
+  
+  $form['cookies']['culturefeed_ui_cookie_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Internal path to the page with cookie terms'),
+    '#default_value' => variable_get('culturefeed_ui_cookie_path', ''),
+  );
 
   return system_settings_form($form);
 }

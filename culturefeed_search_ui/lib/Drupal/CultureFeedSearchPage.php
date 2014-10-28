@@ -446,12 +446,7 @@ class CultureFeedSearchPage {
 
     // Calculate actor if available.
     if (isset($params['actor']) && !empty($params['actor'])) {
-      $id_search = array(
-        'performer_cdbid' => $params['actor'],
-        'location_cdbid' => $params['actor'],
-        'organiser_cdbid' => $params['actor'],
-      );
-      $this->parameters[] = new Parameter\FilterQuery(implode(' OR ', $id_search));
+      $this->parameters[] = new Parameter\FilterQuery('"' . $params['actor'] . '"');
     }
 
     foreach ($params['facet'] as $facetFieldName => $facetFilter) {

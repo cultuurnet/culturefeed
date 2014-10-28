@@ -17,7 +17,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_menu() {
   return array(
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages')),
-      'url' => 'culturefeed/profile/uitpas/advantages',
+      'url' => 'culturefeed/profile/uitpas/promotions',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
       'weight' => -12,
     ),

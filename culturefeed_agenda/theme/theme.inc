@@ -154,6 +154,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['shortdescription'] = $detail->getShortDescription();
     $variables['longdescription'] = $detail->getLongDescription();
 
+    // Ad id / title to Drupal settings for easy reference in GTM.
+    drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
+      'events' => array(
+        $item->getId() => $variables['title'],
+      ),
+    ))), 'setting');
+
     if ($detail->getPrice()) {
       $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
       $variables['price_description'] = $detail->getPrice()->getDescription();
@@ -166,13 +173,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['ticket_buttons'] = array();
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link')));
+      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
       $button['text'] = t('Buy tickets');
       $button['link'] = $link->getHLink();
-      $button['options'] = array('attributes' => array('class' => 'reservation-link button'));
+      $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
     }
 
@@ -365,7 +372,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // clean up link text
     $link_text = str_replace('http://', '', $link);
     $link_text = str_replace('https://', '', $link_text);
-    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link);
+    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('id' => 'cf-link')));
   }
 
   if (module_exists('culturefeed_social')) {
@@ -395,7 +402,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress());
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -420,7 +427,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail);
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -439,7 +446,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           // clean up link text
           $url_text = str_replace('http://', '', $url);
           $url_text = str_replace('https://', '', $url_text);
-          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url);
+          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
         }
         $variables['reservation']['url'] = implode(', ', $reservation_urls);
       }
@@ -457,6 +464,11 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       }
     }
 
+  }
+
+  // Calendar.
+  if ($calendar = $event->getCalendar()) {
+    $variables['calendar'] = culturefeed_agenda_parse_calendar($calendar);
   }
 
   if ($event_detail) {
@@ -580,6 +592,19 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       $variables['location'] = $locations[0];
     }
 
+    // Coordinates.
+    $addresses = $contact_info->getAddresses();
+    if ($addresses) {
+      $address = current($addresses);
+      $coordinates = $address->getPhysicalAddress()->getGeoInformation();
+      if ($coordinates) {
+        $variables['coordinates'] = array(
+          'lat' => $coordinates->getYCoordinate(),
+          'lng' => $coordinates->getXCoordinate(),
+        );
+      }
+    }
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
@@ -603,6 +628,13 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
   }
 
+  // Link to detail.
+  $actor_detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  if ($actor_detail) {
+    $actor_title = check_plain($actor_detail->getTitle());
+    $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $actor->getCdbid(), $actor_title);
+  }
+
 }
 
 /**
@@ -619,6 +651,8 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
   $variables['items'] = $items;
 
   $variables['search_url'] = url('agenda/search', array('query' => array('actor' => $variables['actor']->getId())));
+
+  $variables['title'] = culturefeed_agenda_detail_title($variables['actor']);
 
 }
 
@@ -717,7 +751,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   }
 
   // Add meta title tag.
-  drupal_set_title(implode(' | ', $title_parts));
+  drupal_set_title(implode(' | ', $title_parts), PASS_THROUGH);
 
   // Add meta description tag.
   drupal_add_html_head(array(
@@ -757,7 +791,7 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
   }
 
   // Add meta title tag.
-  drupal_set_title(implode(' | ', $title_parts));
+  drupal_set_title(implode(' | ', $title_parts), PASS_THROUGH);
 
   // Add meta description field.
   drupal_add_html_head(array(
