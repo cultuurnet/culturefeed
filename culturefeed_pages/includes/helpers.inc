@@ -186,6 +186,18 @@ function culturefeed_pages_is_user_following_page($page_id) {
 }
 
 /**
+ * Check if current page is a validated page.
+ *
+ * @param CultureFeed_Cdb_Item_Page $page
+ *   Page to check
+ * @return bool
+ */
+function culturefeed_pages_page_is_validated_page(CultureFeed_Cdb_Item_Page $page) {
+  $validated_admins = culturefeed_pages_get_validated_admins_of_page($page);
+  return count($validated_admins) > 0;
+}
+
+/**
  * Get the page that currently is beïng viewed. This can be via a news item, or via the page itself.
  */
 function culturefeed_pages_get_viewed_page() {
@@ -565,3 +577,4 @@ function culturefeed_pages_get_page_suggestions_list() {
 
   return theme('culturefeed_pages_page_suggestion_list', array('suggestions' => $result->getItems()));
 }
+
