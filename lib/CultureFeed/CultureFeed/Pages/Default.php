@@ -96,7 +96,6 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   public function getPage($id) {
 
     $result = $this->oauth_client->consumerGetAsXml('page/' . $id);
-
     try {
       $xml = new CultureFeed_SimpleXMLElement($result);
     }
@@ -242,6 +241,7 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
       $membership->role          = $object->xpath_str('pageRole');
       $membership->relation      = $object->xpath_str('relation');
       $membership->creationDate  = $object->xpath_time('creationDate');
+      $membership->validated  = $object->xpath_bool('validated');
 
       $userList->memberships[] = $membership;
 
@@ -359,6 +359,15 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
     $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/admin/remove', array('userId' => $userId));
     $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
 
+  }
+
+  /**
+   * @see CultureFeed_Pages::addValidatedAdmin()
+   */
+  public function addValidatedAdmin($id) {
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/validatedadmin/add');
+    $xmlElement = $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
+    return $xmlElement->xpath_str('message');
   }
 
   /**

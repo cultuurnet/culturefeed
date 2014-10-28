@@ -37,4 +37,10 @@ class CultureFeed_Pages_Membership {
    */
   public $relation;
 
+  /**
+   * A validated membership or not.
+   * @var bool
+   */
+  public $validated;
+
 }

@@ -130,6 +130,34 @@ function culturefeed_pages_is_user_admin_of_page($page_id, $cf_account = NULL) {
 }
 
 /**
+ * Is the given user validated admin of a given page.
+ * @return bool
+ */
+function culturefeed_pages_is_user_validated_admin_of_page($page_id, $cf_account = NULL) {
+
+  try {
+
+    if (empty($cf_account)) {
+      $cf_account = DrupalCultureFeed::getLoggedInUser();
+    }
+
+    if (!empty($cf_account->pageMemberships)) {
+      foreach ($cf_account->pageMemberships as $membership) {
+        if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN && $membership->page->getId() == $page_id && $membership->validated) {
+          return TRUE;
+        }
+      }
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+  }
+
+  return FALSE;
+
+}
+
+/**
  * Is the current user following a given page id.
  * @param string $page_id
  */
@@ -443,11 +471,35 @@ function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
-    $admin_list = new CultureFeed_Pages_UserList();
+    return array();
   }
 
   foreach ($admin_list->memberships as $admin) {
     $admins_of_page[$admin->user->id] = $admin->user->id;
+  }
+
+  return $admins_of_page;
+}
+
+/**
+ * Get all the validated admins of a given page.
+ * @param CultureFeed_Cdb_Item_Page $page
+ */
+function culturefeed_pages_get_validated_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
+
+  try {
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $admin_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    return array();
+  }
+
+  foreach ($admin_list->memberships as $admin) {
+    if ($admin->validated) {
+      $admins_of_page[$admin->user->id] = $admin->user->id;
+    }
   }
 
   return $admins_of_page;
@@ -481,7 +533,7 @@ function culturefeed_pages_get_page_suggestions_list() {
     $parameters[] = new CultuurNet\Search\Parameter\Query($query);
   }
   else {
-   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*'); 
+   $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
   }
 
   // Search on postal / city.

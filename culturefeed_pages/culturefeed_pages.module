@@ -437,6 +437,15 @@ function culturefeed_pages_menu() {
     'file' => 'includes/members.inc',
   );
 
+  $items['pages/%culturefeed_pages_page/membership/request-validated-admin/%'] = array(
+    'title' => 'Request to become validated admin',
+    'page callback' => 'culturefeed_pages_page_request_validated_admin',
+    'page arguments' => array(1, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/members.inc',
+  );
+
   $items['pages/switch/%culturefeed_pages_page'] = array(
     'title callback' => FALSE,
     'title' => t('Change active page'),

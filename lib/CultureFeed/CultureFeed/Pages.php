@@ -169,6 +169,15 @@ interface CultureFeed_Pages {
   public function removeAdmin($id, $userId);
 
   /**
+   * Send a request for current user to become validated admin.
+   * @param string $id
+   *   The page ID to add to.
+   * @return string
+   *   Message returned by the service.
+   */
+  public function addValidatedAdmin($id);
+
+  /**
    * Get the timeline of a page.
    * @param string $id
    *   The page ID where the timeline is requested for.

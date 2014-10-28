@@ -288,12 +288,12 @@ function culturefeed_pages_edit_membership_form_submit(&$form, &$form_state) {
 function culturefeed_pages_search_user_form() {
 
   $form = array();
-  
+
   $form['title'] = array(
     '#markup' => t('Add new members'),
     '#weight' => -999,
   );
-  
+
   $form['search'] = array(
     '#title' => t('Keyword'),
     '#type' => 'textfield',
@@ -407,7 +407,7 @@ function culturefeed_pages_add_member_form_submit($form, &$form_state) {
   try {
     $params = array('activityPrivate' => FALSE);
     DrupalCultureFeed::getLoggedInUserInstance()->pages()->addMember($form_state['page']->getId(), $form_state['user']->id, $params);
-    $message = format_string(t('@nick is member of @page now.'), array('@nick' => $form_state['user']->nick, '@page' => $page->getName()));
+    $message = t('@nick is member of @page now.', array('@nick' => $form_state['user']->nick, '@page' => $page->getName()));
     drupal_set_message($message);
   }
   catch (Exception $e) {
@@ -529,13 +529,13 @@ function culturefeed_pages_delete_member_form_submit($form, &$form_state) {
 
   if ($form_state['my_pages']) {
     $form_state['redirect'] = 'culturefeed/pages';
-    $message = format_string(t('You are not longer a member of @page.'), array(
+    $message = t('You are not longer a member of @page.', array(
       '@page' => $form_state['page']->getName())
     );
   }
   else {
     $form_state['redirect'] = 'pages/' . $form_state['page']->getId() . '/members/nojs';
-    $message = format_string(t('User @nick is removed as member of page @page.'), array(
+    $message = t('User @nick is removed as member of page @page.', array(
       '@nick' => $form_state['user']->nick,
       '@page' => $form_state['page']->getName())
     );
@@ -608,7 +608,7 @@ function culturefeed_pages_page_request_admin_membership_approved($form, &$form_
 
   $drupal_uid = culturefeed_get_uid_for_cf_uid($cf_user->id, $cf_user->nick);
   $page_title = $page->getName();
-  $message = format_string(t('!username wants to be an administrator of !page.'), array(
+  $message = t('!username wants to be an administrator of !page.', array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, culturefeed_search_detail_path('page', $page->getId(), $page_title)),
   ));
@@ -640,7 +640,7 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
   $page_title = $page->getName();
   $page_path = culturefeed_search_detail_path('page', $page->getId(), $page_title);
 
-  $message = format_string(t('!username successfully added as administrator of page !page.'), array(
+  $message = t('!username successfully added as administrator of page !page.', array(
     '!username' => l($cf_user->nick, 'user/' . $drupal_uid),
     '!page' => l($page_title, $page_path),
   ));
@@ -661,5 +661,39 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
   }
 
   drupal_goto($page_path);
+
+}
+
+/**
+ * Sent a request to become validated admin.
+ */
+function culturefeed_pages_page_request_validated_admin($page, $request_type) {
+
+  // Send request to become a validated admin.
+  try {
+
+    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    $cf_pages->addValidatedadmin($page->getId());
+    $message = t('Your request to become a validated administrator of this page is sent');
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_pages', $e);
+    $message = t('The request could not be sent.');
+  }
+
+  if ($type == 'ajax') {
+    $commands = array();
+
+    if ($success) {
+      $commands[] = ajax_command_html('#request_validated_adminship_link_' . $page->getId() . '_wrapper', $message);
+    }
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
+  else {
+    drupal_set_message($message);
+    drupal_goto();
+  }
 
 }
