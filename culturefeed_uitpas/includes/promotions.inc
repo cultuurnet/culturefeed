@@ -73,13 +73,19 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
   // Solution csdco on from https://www.drupal.org/node/1049354
   $_GET['q'] = 'promotions';
 
+  $promotions_pager_min = ($promotions_page * $promotions_max) + 1;
+  $promotions_pager_max = ($promotions_page * $promotions_max) + $promotions_max;
+  if ($promotions_pager_max > $promotions_total) {
+    $promotions_pager_max = $promotions_total;
+  }
+
   return array(
     array(
       '#theme' => 'culturefeed_uitpas_promotions',
       '#promotions' => $promotions,
       '#promotions_total' => $promotions_total,
-      '#promotions_pager_min' => ($promotions_page * $promotions_max) + 1,
-      '#promotions_pager_max' => ($promotions_page * $promotions_max) + $promotions_max,
+      '#promotions_pager_min' => $promotions_pager_min,
+      '#promotions_pager_max' => $promotions_pager_max,
     ),
     array(
       '#theme' => 'pager',
