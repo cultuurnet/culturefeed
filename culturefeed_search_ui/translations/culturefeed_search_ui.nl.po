@@ -157,7 +157,7 @@ msgstr "Zoeken"
 
 #: includes/blocks.inc:106
 msgid "Sort"
-msgstr "Sorteer resultaten op"
+msgstr "Sorteer op"
 
 #: includes/blocks.inc:114
 msgid "Submit"
@@ -214,6 +214,10 @@ msgstr "Alle filters verwijderen"
 #: includes/helpers.inc:89
 msgid "Today"
 msgstr "Vandaag"
+
+#: includes/helpers.inc:89
+msgid "Tomorrow"
+msgstr "Morgen"
 
 #: includes/helpers.inc:90
 msgid "Next 7 days"
@@ -310,29 +314,5 @@ msgid "Show the facet only when an eventtype is chosen"
 msgstr "Toon de facet enkel wanneer een eventtype is gekozen"
 
 #: includes/helpers.inc:106
-msgid "0-2 year"
-msgstr "0-2 jaar"
-
-#: includes/helpers.inc:110
-msgid "3-5 year"
-msgstr "3-5 jaar"
-
-#: includes/helpers.inc:114
-msgid "6-8 year"
-msgstr "6-8 jaar"
-
-#: includes/helpers.inc:118
-msgid "9-11 year"
-msgstr "9-11 jaar"
-
-#: includes/helpers.inc:122
-msgid "12-14 year"
-msgstr "12-14 jaar"
-
-#: includes/helpers.inc:126
-msgid "15-17 year"
-msgstr "15-17 jaar"
-
-#: includes/helpers.inc:130
-msgid "18+ year"
-msgstr "18+ jaar"
+msgid "year"
+msgstr "jaar"

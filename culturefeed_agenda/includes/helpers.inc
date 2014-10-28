@@ -581,7 +581,8 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
     if ($checkdate >= $now) {
       $timestamps_array[$current_timestamp] = array(
-        'date' => date('d-m-Y', strtotime($date)),
+        'day' => date('D', strtotime($date)),
+        'date' => date('d/m', strtotime($date)),
       );
       if ($timestamp->getStartTime()) {
         $timestamps_array[$current_timestamp]['begintime'] = date('H:i', strtotime($timestamp->getStartTime()));
@@ -598,6 +599,32 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
   }
   return $timestamps_array;
+}
+
+function culturefeed_agenda_group_timestamps(&$timestamps) {
+  
+  for ($i=0; $i<count($timestamps); $i++) {
+    if (isset($timestamps[$i+1])) {
+      $this_timestamp = $timestamps[$i];
+      $next_timestamp = $timestamps[$i+1];
+
+      if ($this_timestamp['date'] == $next_timestamp['date']) {
+        if (!is_array($timestamps[$i]['begintime'])){  
+          unset($timestamps[$i]['begintime']);
+          $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
+          $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
+        }
+        else {
+          $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+        }
+        sort($timestamps[$i]['begintime']);
+        unset($timestamps[$i+1]);
+        $timestamps = array_values($timestamps);
+        $i--;
+      }
+    }
+  }
+  return $timestamps;
 }
 
 function culturefeed_agenda_parse_calendar($calendar) {
@@ -639,6 +666,7 @@ function culturefeed_agenda_parse_calendar($calendar) {
       'type' => 'timestamps',
     );
     $calendar_array['timestamps'] = culturefeed_agenda_parse_timestamps($calendar);
+    $calendar_array['timestamps'] = culturefeed_agenda_group_timestamps($calendar_array['timestamps']);
   }
   return $calendar_array;
 }

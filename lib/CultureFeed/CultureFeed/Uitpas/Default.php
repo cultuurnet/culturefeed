@@ -1210,4 +1210,23 @@ class CultureFeed_Uitpas_Default implements CultureFeed_Uitpas {
 
     return $promotion;
   }
+
+  public function getCardSystems() {
+    $result = $this->oauth_client->consumerGetAsXml('uitpas/cardsystem');
+
+    try {
+      $xml = new CultureFeed_SimpleXMLElement($result);
+    }
+    catch (Exception $e) {
+      throw new CultureFeed_ParseException($result);
+    }
+
+    $cardsystems = array();
+
+    foreach ($xml->cardSystems->cardSystem as $cardSystemXml) {
+      $cardsystems[] = CultureFeed_Uitpas_CardSystem::createFromXML($cardSystemXml);
+    }
+
+    return $cardsystems;
+  }
 }

@@ -17,6 +17,8 @@ define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
 define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
 
+use Cultuurnet\Search\Parameter;
+
 /**
  * Implements hook_init().
  */
@@ -51,6 +53,13 @@ function culturefeed_search_ui_init() {
     culturefeed_search_ui_set_noindex_metatag();
   }
 
+}
+
+/**
+ * Implements hook_cron().
+ */
+function culturefeed_search_ui_cron() {
+  culturefeed_search_ui_register_deletions();
 }
 
 /**
@@ -214,7 +223,11 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
-
+    'culturefeed_search_sort_links' => array(
+      'variables' => array('type' => ''),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_suggestions' => array(
       'variables' => array(
         'suggestions' => array(),
@@ -224,6 +237,11 @@ function culturefeed_search_ui_theme() {
       'file' => 'theme.inc',
     ),
     'culturefeed_search_ui_admin_filter_form_options' => array(
+      'render element' => 'element',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_ui_admin_sort_order_options' => array(
       'render element' => 'element',
       'path' => $path,
       'file' => 'theme.inc',
@@ -425,11 +443,22 @@ function culturefeed_search_ui_block_configure($delta) {
       '#type' => 'fieldset',
       '#title' => t('Possible filters'),
       '#theme' => 'culturefeed_search_ui_admin_filter_form_options',
-      '#description' => t('<p>Define the different filter options you want.<br />Example:<ul><li>Human name: No courses and workshops</li><li>Query string: no-courses-workshops</li><li>Filter query for API: !category_id:0.3.1.0.0</li></p>'),
+      '#description' => t('<p>
+        Define the different filter options you want. Filters that are not exposed are not shown, but will work if added to the querystring<br />Example:<ul>
+        <li>Human name: No courses and workshops</li>
+        <li>Query string: no-courses-workshops</li>
+        <li>Filter query for API: !category_id:0.3.1.0.0</li>
+      </p>'),
       '#tree' => TRUE,
     );
 
     for ($i = 0; $i < 10; $i++) {
+
+      $form['culturefeed-search-filter-options'][$i]['exposed'] = array(
+        '#title' => t('Exposed'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($options[$i]['exposed']) ? $options[$i]['exposed'] : TRUE
+      );
 
       $form['culturefeed-search-filter-options'][$i]['title'] = array(
         '#title' => t('Human name'),
@@ -448,6 +477,79 @@ function culturefeed_search_ui_block_configure($delta) {
         '#type' => 'textfield',
         '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
       );
+
+    }
+
+  }
+
+  elseif ($delta == 'culturefeed-search-sortorder') {
+
+    $form['description'] = array(
+      '#markup' => t('<p>
+        Define the different sorting options you want.<br />
+        When a sorting option is not exposed. It won\'t be shown as option, but is applicable through the url.
+        Example:<ul>
+        <li>Label: Date</li>
+        <li>Value: date</li>
+        <li>Sort query for API: startdateday asc</li>
+      </p>'
+    ));
+
+    $form['sort_options'] = array(
+      '#type' => 'container',
+      '#tree' => TRUE,
+    );
+
+    $search_pages = culturefeed_get_searchable_types();
+    foreach ($search_pages as $search_page) {
+
+      $type = $search_page['id'];
+      $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_page);
+
+      $form['sort_options'][$type] = array(
+        '#type' => 'fieldset',
+        '#title' => check_plain($search_page['page_title']),
+        '#tree' => TRUE,
+        '#theme' => 'culturefeed_search_ui_admin_sort_order_options',
+      );
+
+      for ($i = 0; $i < 10; $i++) {
+
+        $value = isset($sort_options[$i]['value']) ? $sort_options[$i]['value'] : '';
+
+        $form['sort_options'][$type][$i]['default'] = array(
+          '#title' => t('Default'),
+          '#type' => 'radio',
+          '#parents' => array('sort_options', $type, 'default'),
+          '#default_value' => (isset($sort_options['default']) && $i == $sort_options['default']) ? $i : FALSE,
+          '#return_value' => $i,
+        );
+
+        $form['sort_options'][$type][$i]['exposed'] = array(
+          '#title' => t('Exposed'),
+          '#type' => 'checkbox',
+          '#default_value' => isset($sort_options[$i]['exposed']) ? $sort_options[$i]['exposed'] : $i
+        );
+
+        $form['sort_options'][$type][$i]['label'] = array(
+          '#title' => t('Label'),
+          '#type' => 'textfield',
+          '#default_value' => isset($sort_options[$i]['label']) ? $sort_options[$i]['label'] : '',
+        );
+
+        $form['sort_options'][$type][$i]['value'] = array(
+          '#title' => t('Value used in url'),
+          '#type' => 'textfield',
+          '#default_value' => $value,
+        );
+
+        $form['sort_options'][$type][$i]['query'] = array(
+          '#title' => t('Sortquery for api'),
+          '#type' => 'textfield',
+          '#default_value' => isset($sort_options[$i]['query']) ? $sort_options[$i]['query'] : '',
+        );
+
+      }
 
     }
 
@@ -487,6 +589,34 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-facet-show-subitems'])) {
     variable_set('culturefeed_facet_show_subitems_' . $delta, $edit['culturefeed-facet-show-subitems']);
   }
+
+  if ($delta == 'culturefeed-search-sortorder') {
+
+    if (!empty($edit['sort_options'])) {
+
+      // Don't save empty options.
+      foreach ($edit['sort_options'] as $type => $options) {
+
+        $default_sort = $edit['sort_options'][$type]['default'];
+        foreach ($options as $key => &$option) {
+
+          if ($key == 'default') {
+            continue;
+          }
+
+          if (empty($option['value'])) {
+            unset($options[$key]);
+          }
+        }
+
+        variable_set('culturefeed_search_sortoptions_' . $type, $options);
+
+      }
+
+    }
+
+  }
+
 }
 
 /**
@@ -509,7 +639,9 @@ function culturefeed_search_ui_block_view($delta) {
         return;
       }
 
-      $block['content'] = drupal_get_form('culturefeed_search_ui_search_sortorder_form');
+      if ($search_page = culturefeed_get_searchable_type_by_path()) {
+        $block['content'] = theme('culturefeed_search_sort_links', array('type' => $search_page['id']));
+      }
 
     break;
 
@@ -535,15 +667,19 @@ function culturefeed_search_ui_block_view($delta) {
     break;
 
     case 'filter-form':
+
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
         return;
       }
 
-      $active_filters = variable_get('culturefeed_search_form_active_filters', array());
-      $filter_options = variable_get('culturefeed_search_filter_options', array());
+      $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+      $filter_options = array_filter($filter_options, function($option) {
+        return !isset($option['exposed']) || !empty($option['exposed']);
+      });
+
       if (!empty($filter_options)) {
-        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form');
+        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
       }
       break;
 
@@ -577,10 +713,11 @@ function culturefeed_search_ui_block_view($delta) {
  */
 function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
 
+  // Add possible filters.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
   foreach ($filter_options as $option) {
     if (!empty($_GET[$option['query-string']])) {
-      $culturefeedSearchPage->addParameter(new \CultuurNet\Search\Parameter\FilterQuery($option['api-filter-query']));
+      $culturefeedSearchPage->addParameter(new Parameter\FilterQuery($option['api-filter-query']));
     }
   }
 
@@ -598,7 +735,52 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
       $query_string = $age_range_filters[$_GET['min_age']]['query'];
     }
 
-    $culturefeedSearchPage->addParameter(new \Cultuurnet\Search\Parameter\FilterQuery($query_string));
+    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery($query_string));
+  }
+
+  // Add the sorting.
+  $active_page = culturefeed_get_searchable_type_by_path();
+  $sorting_options = culturefeed_search_ui_get_sort_options_for_page($active_page);
+
+  if (!isset($_GET['sort'])) {
+
+    if (isset($sorting_options['default']) && isset($sorting_options[$sorting_options['default']])) {
+      $culturefeedSearchPage->addParameter(new Parameter\Parameter('sort', $sorting_options[$sorting_options['default']]['query']));
+    }
+  }
+  else {
+    unset($sorting_options['default']);
+    foreach ($sorting_options as $option) {
+      if ($option['value'] == $_GET['sort']) {
+        $culturefeedSearchPage->addParameter(new Parameter\Parameter('sort', $option['query']));
+      }
+    }
+  }
+
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function culturefeed_search_ui_page_alter(&$variables) {
+
+  // Check if the 404 should be 410 (object deleted).
+  if (drupal_get_http_header('Status') == '404 Not Found') {
+
+    // Only for event details / production details and page details.
+    if (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a')) {
+
+      // Check if this object was deleted. If it was found, set the 410.
+      $cdbid = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid ', array(
+        ':cdbid' => arg(3),)
+      )->fetchField();
+
+      if ($cdbid) {
+        $variables['content']['#attached']['drupal_add_http_header'][] = array('Status', '410 Gone');
+      }
+
+    }
+
   }
 
 }
@@ -714,7 +896,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Add min age to active facet filters.
-  if (!empty($query['min_age'])) {
+  if (isset($query['min_age'])) {
     $min_age = (int) $query['min_age'];
     unset($query['min_age']);
     $url = url($path, array('query' => $query));
@@ -740,7 +922,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
       $search_query = $query;
       unset($search_query[$option['query-string']]);
       $url = url($path, array('query' => $search_query));
-      $build['free-only'] = array(
+      $build[$option['query-string']] = array(
         '#theme' => 'culturefeed_search_active_filters_item',
         '#label' => t($option['title']),
         '#url' => $url
@@ -749,4 +931,44 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   return $build;
+}
+
+/**
+ * Register deleted events / actors / productions.
+ */
+function culturefeed_search_ui_register_deletions() {
+
+  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', NULL);
+  if ($last_registration_timestamp) {
+    $last_registration = date('Y-m-d', $last_registration_timestamp);
+  }
+
+  watchdog('culturefeed_search_ui', 'Fetching deleted objects from API for cleanup.', array(), WATCHDOG_INFO);
+
+  $service = culturefeed_get_search_service();
+
+  try {
+
+    $deletions = $service->getDeletions($last_registration, 9999999);
+    $deletions = array_unique($deletions);
+    foreach ($deletions as $cdbid) {
+
+      $existing = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid', array(':cdbid' => $cdbid))->fetchField();
+      $update = ($existing) ? 'cdbid' : array();
+
+      $record = array();
+      $record['cdbid'] = $cdbid;
+      $record['deleted'] = $_SERVER['REQUEST_TIME'];
+
+      drupal_write_record('culturefeed_search_deleted_objects', $record, $update);
+
+      watchdog('culturefeed_search_ui', 'Finished registration of deleted objects.', array(), WATCHDOG_INFO);
+      variable_set('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME);
+
+    }
+
+  } catch (Exception $e) {
+    watchdog('culturefeed_search_ui', 'Failed registration of deleted objects. Retrying again on the next run.', array(), WATCHDOG_ERROR);
+  }
+
 }

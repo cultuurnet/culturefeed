@@ -583,7 +583,7 @@ msgid "Continue"
 msgstr "Doorgaan"
 
 #: includes/user_register.inc:54;203
-msgid "Already registered ?  <a href=\"@url\">Apply here</a>."
+msgid "Already registered?  <a href=\"@url\">Apply here</a>."
 msgstr "Ben je al geregistreerd?  <a href=\"@url\">Aanmelden</a>."
 
 #: includes/user_register.inc:106
@@ -966,3 +966,7 @@ msgstr "Kaartsysteem ID (Drupal)"
 #: views/handlers/culturefeed_uitpas_views_handler_filter_date.inc:28
 msgid "now"
 msgstr "Nu"
+
+#: includes/user_register.inc:29;180
+msgid "Register here, so you can follow your UiTPAS advantages and points balance online."
+msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."

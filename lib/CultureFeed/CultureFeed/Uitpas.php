@@ -338,4 +338,9 @@ interface CultureFeed_Uitpas {
    * @return CultureFeed_Uitpas_Response
    */
   public function registerEvent(CultureFeed_Uitpas_Event_CultureEvent $event);
+
+  /**
+   * @return CultureFeed_Uitpas_CardSystem[]
+   */
+  public function getCardSystems();
 }

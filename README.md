@@ -45,3 +45,29 @@ Example of usage:
     $culturefeedSearchPage->setLocalParam('b', 'sum(recommend_count,product(comment_count,10))');
   }
 
+## October 24, 2014 ##
+The sorting options (and default setting) of hook_culturefeed_search_page_info() has been changed.
+Before:
+'sort_default' => 'date',
+'sort_options' => array(
+  'relevancy' => t('Relevance'),
+  'date' => t('Date'),
+),
+
+Now:
+'id' = 'agenda',
+'sort_default' => 1, // key for date
+'sort_options' => array(
+  array(
+    'value' => 'relevancy',
+    'label' => t('Relevance'),
+    'exposed' => TRUE,
+    'query' => '',
+  ),
+  array(
+    'value' => 'date',
+    'label' => t('Date'),
+    'exposed' => TRUE,
+    'query' => 'permanent asc,startdateday asc,weight desc',
+    'default' => TRUE,
+  ),
