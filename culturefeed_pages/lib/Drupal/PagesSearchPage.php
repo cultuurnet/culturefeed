@@ -37,7 +37,6 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
       }
 
       $this->addFacetFilters($params);
-      $this->addSort($params);
 
       $this->parameters[] = $this->facetComponent->facetField('category');
       $this->parameters[] = $this->facetComponent->facetField('city');
@@ -77,39 +76,6 @@ class CultureFeedPagesSearchPage extends CultureFeedSearchPage
 
     $this->result = culturefeed_get_search_service()->searchPages($this->parameters);
     $this->facetComponent->obtainResults($this->result);
-
-  }
-
-  /**
-   * Add the sorting parameters for the agenda searches.
-   */
-  private function addSort($params) {
-
-    switch ($params['sort']) {
-
-      case 'title':
-        $this->parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
-      break;
-
-      case \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_MEMBER:
-        $this->parameters[] = new Parameter\Sort('pagemember_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case \CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_PAGE_FOLLOW:
-        $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'activity_count':
-        $this->parameters[] = new Parameter\Sort('pagefollow_count', Parameter\Sort::DIRECTION_DESC);
-      break;
-
-      case 'agefrom':
-        $this->parameters[] = new Parameter\Sort('agefrom', Parameter\Sort::DIRECTION_ASC);
-      break;
-
-      default:
-
-    }
 
   }
 
