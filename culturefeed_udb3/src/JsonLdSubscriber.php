@@ -12,12 +12,12 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Subscribes to the kernel request event to add HAL media types.
+ * Subscribes to the kernel request event to add JSON-LD media types.
  */
 class JsonLdSubscriber implements EventSubscriberInterface {
 
     /**
-     * Registers Json-LD formats with the Request class.
+     * Registers JSON-LD formats with the Request class.
      *
      * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      *   The event to process.

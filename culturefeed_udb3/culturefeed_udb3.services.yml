@@ -25,7 +25,7 @@ services:
     class: CultuurNet\UDB3\SearchAPI2\DefaultSearchService
     factory_service: culturefeed_udb3.search_api_2.factory
     factory_method: create
-  culturefeed_udb3.subscriber:
+  culturefeed_udb3.json_ld_subscriber:
     class: Drupal\culturefeed_udb3\JsonLdSubscriber
     tags:
       - { name: event_subscriber }
