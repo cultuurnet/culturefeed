@@ -196,7 +196,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   else {
     if (culturefeed_pages_is_user_member_of_page($page->getId()) && !culturefeed_pages_is_user_validated_admin_of_page($page->getId())) {
       $query = array('destination' => culturefeed_search_detail_path('page', $page->getId(), $page->getName()), '/');
-      $variables['become_validated_admin_url'] = url('culturefeed/pages/validated-admin/nojs/' . $page->getId(), array('query' => $query));
+      $variables['become_validated_admin_url'] = url('pages/' . $page->getId() . '/membership/request-validated-admin/nojs', array('query' => $query));
     }
   }
 

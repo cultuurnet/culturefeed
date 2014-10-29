@@ -720,7 +720,7 @@ function culturefeed_pages_page_request_validated_admin($page, $request_type) {
     $message = t('The request could not be sent.');
   }
 
-  if ($type == 'ajax') {
+  if ($request_type == 'ajax') {
     $commands = array();
 
     if ($success) {

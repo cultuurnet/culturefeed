@@ -432,7 +432,7 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
   if ($is_admin) {
     return;
   }
-
+return;
   $build = array(
     '#theme' => 'culturefeed_pages_request_admin_membership_block',
     '#page' => $page,
