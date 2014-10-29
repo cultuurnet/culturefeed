@@ -371,6 +371,14 @@ class CultureFeed_Pages_Default implements CultureFeed_Pages {
   }
 
   /**
+   * @see CultureFeed_Pages::removeValidatedAdmin()
+   */
+  public function removeValidatedAdmin($id) {
+    $result = $this->oauth_client->authenticatedPostAsXml('page/' . $id . '/validatedadmin/remove');
+    $this->validateResult($result, CultureFeed_Pages_Default::CODE_ACTION_SUCCEEDED);
+  }
+
+  /**
    * @see CultureFeed_Pages::getTimeline()
    */
   public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {
