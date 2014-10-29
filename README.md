@@ -1,9 +1,9 @@
-culturefeed
+Culturefeed
 ===========
 
 [![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
 
-Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. But for this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
+Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. For this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
 
 __[Live demo connecting production API](http://www.culturefeed.be/)__
 
@@ -13,7 +13,7 @@ __[Live demo connecting acceptance API](http://acc.culturefeed.be/)__
 
 ## Culturefeed-kickstart
 
-When you start with a clean Drupal install of just for setting up a quick demo site we created a __[Drupal install profile](https://drupal.org/developing/distributions)__ ("Installation profiles provide specific site features and functions for a specific purpose or type of site distributions"). This included also a shell script (Build.sh) which downloads:
+When you start with a clean Drupal install or just for setting up a quick demo site we created a __[Drupal install profile](https://drupal.org/developing/distributions)__ ("Installation profiles provide specific site features and functions for a specific purpose or type of site distributions"). This included also a shell script (Build.sh) which downloads:
 
 - drupal core (at the moment 7.32) 
 - drupal contribs (bootstrap 3.0)
@@ -39,7 +39,7 @@ Place the module suite in your __sites/\*/modules__ folder, you can do this with
 ```bash
 git clone https://github.com/cultuurnet/culturefeed
 ```
-Afterwards copy the composer.json file from the root of the module suite to the root directory of your Drupal. If you use allready composer.json you have to add the required libraries.
+Afterwards copy the composer.json file from the root of the module suite to the root directory of your Drupal. If you use already composer.json you have to add the required libraries.
 
 ```
 {
@@ -56,24 +56,29 @@ Afterwards copy the composer.json file from the root of the module suite to the 
 }
 ```
 
-After that run ``composer install`` or ``composer update`` if already using composer. This will donwload our libraries and add theme to a vendor directory. It will also create a composer.lock file. Typical we add vendor/* to the .gitignore file.
+After that run ``composer install`` or ``composer update`` if already using composer. This will download our libraries and add a theme to a vendor directory. It will also create a composer.lock file. Typical we add vendor/* to the .gitignore file.
 
-Last step is include this in your settings.php file of your site.
+Last step is to include autoload.php in your settings.php file of your site.
 
 ```
 require 'vendor/autoload.php';
 ```
 
-You should be able now to enable the modules (typically you start with culturefeed, culturefeed_ui, culturefeed_search, culturefeed_search_ui and culturefeed_agenda) you need and fill in your key and secret:
+You should now be able to enable the modules (typically you start with culturefeed, culturefeed_ui, culturefeed_search, culturefeed_search_ui and culturefeed_agenda) and fill in your key and secret:
 
 - culturefeed core at admin/config/culturefeed/api-settings
 - if culturefeed_search enabled also at admin/config/culturefeed/search
 
-It's a good practice to connect your user/1 (admin) user with a UiTID account. This you can do by when logged is as user/1 go to culturefeed/oauth/connect and login to UiTID. If this works culturefeed core is configured well. And if you get results at the path agende/search culturefeed_search is working as well.
+It's a good practice to connect your user/1 (admin) user with a UiTID account:
+- Log in as user/1
+- Go to culturefeed/oauth/connect and login to UiTID.
+
+If this works culturefeed core is configured well. And if you get results at the path agenda/search culturefeed_search is working as well.
 
 
-## Tutorials 
-Further on we created 3 tutorials to integrate the most common use cases:
+## Tutorials
+
+We created 3 tutorials to integrate the most common use cases:
 
 - [Set up a search page](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
 - [Integrate UiTID](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI)
@@ -81,7 +86,7 @@ Further on we created 3 tutorials to integrate the most common use cases:
 
 ## PHP libraries
 
-Most of the modules have an dependency to these PHP libraries. See Install how to install theme with composer.
+Most of the modules have an dependency on these PHP libraries. See "Install" how to install theme with composer.
 
 ###CultuurNet\Cdb 
 Fluent PHP library for manipulating, serializing and deserializing data present in CultuurNet's CdbXML 3.2 format
@@ -121,37 +126,41 @@ We chose to make use of the [Font Awesome Icon library](http://fortawesome.githu
 
 ## Modules
 
-Please switch on only the modules you need.
+Please enable only the modules you need.
 
-### culturefeed core
+### Culturefeed core
+
 Core of the module suite and is required by the other modules. It provides the settings form where you can enter the API Information.
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed)__
 
-### culturefeed_search
-Base framework to enable searches on your site. Out of the box this module doesn't provide any interface elements (use Culturefeed Search UI and Culturefeed Agenda instead). It's provides some drush commands and caching.
+### Culturefeed_search
+
+Base framework to enable searches on your site. Out of the box this module doesn't provide any interface elements (use Culturefeed Search UI and Culturefeed Agenda instead). It provides some drush commands and caching.
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Search)__
 
-### culturefeed_agenda
+### Culturefeed_agenda
+
 Provides a Culturefeed search page available on 'agenda/search' and detail pages.  The blocks provided by this module can be used to extend the detail pages of events, actors and productions.
 Includes also a simple search form.
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda)__
 
-### culturefeed_search_ui
-Basic elements needed to build up an event search (such as provided by Culturefeed Agenda). 
+### Culturefeed_search_ui
+Basic elements to build up an event search (such as provided by Culturefeed Agenda). 
 
-- basic search form with type selector in the front (can be extended)
-- sort block
-- active filters
-- facets
+- Basic search form with type selector in the front (can be extended)
+- Sort block
+- Active filters
+- Facets
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Search-UI)__
 
-To integrate a search page we also wrote a [Tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
+To integrate a search page we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
 
-### culturefeed_search_views
+### Culturefeed_search_views
+
 Views integration to list events, actors or productions. To create culturefeed views, create a new view and configure it to show Cdb items. Once the view is created, following handlers can be set:
 
 - Fields
@@ -160,22 +169,21 @@ Views integration to list events, actors or productions. To create culturefeed v
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Search-UI)__
 
-### culturefeed_devel
+### Culturefeed_devel
+
 This module logs every query to our API, on the screen for admins or to the watchdog. Handy tool to check which is the performance killer, your Drupal install or our API's.
 
-
-### culturefeed_entry_ui
+### Culturefeed_entry_ui
 Functions to do a CRUD on events are already in library, but we are building a form to create, update and delete events in our UiTdatabank as well.
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Entry-UI)__
 
-### culturefeed_pages
+### Culturefeed_pages
 User can create a page (locations, performers, families, schools, …) or become member and follower. 
 
 __Wiki page not yet available__
 
-
-### culturefeed_ui
+### Culturefeed_ui
 Provides a collection of pages and blocks to enhance the user pages with __UiTID__ information. To do this it will override and/or enhance the default Drupal user pages. Some features:
 
 - edit profile page
@@ -208,22 +216,18 @@ Integration with the UiTPAS card system. It contains multiple pages and blocks t
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-UiTPAS)__
 
-To integrate UiTPAS we also wrote a [Tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS)
+To integrate UiTPAS we wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS)
 
-
-
-### culturefeed_mailing
+### Culturefeed_mailing
 To create mailings with search results from event (based on lifestyleprofile, Vlieg weekendflash, …). __Not yet available for partners.__ Please contact us if interested. 
 
-
-### culturefeed_messages
+### Culturefeed_messages
 Send messages to other users (most likely page owners), interesting when actors become pages.
 
-
-### culturefeed_userpoints_ui
+### Culturefeed_userpoints_ui
 Collect on line userpoints (for specific actions like writing reviews) and claim promotions (Vlieg).  __Not yet available for partners.__ Please contact us if interested. 
 
-### culturefeed_roles
+### Culturefeed_roles
 Pre-assign roles to UiTID users that have not logged in yet. Drush integration.
 
 ### Examples
