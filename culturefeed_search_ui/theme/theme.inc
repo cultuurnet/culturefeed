@@ -443,7 +443,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
 
     $query['sort'] = $option['value'];
     $attributes = array();
-    if ($key == $current_sort) {
+    if ($key === $current_sort || $option['value'] == $current_sort) {
       $attributes = array(
         'class' => array('active'),
       );
