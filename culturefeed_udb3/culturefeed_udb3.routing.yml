@@ -21,6 +21,7 @@ culturefeed_udb3.event:
     _title: 'Event detail'
   requirements:
     _access: 'TRUE'
+    _format: ld_json|json
 
 culturefeed_udb3.user:
   path: '/udb3/api/1.0/user'
