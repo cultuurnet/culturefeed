@@ -31,23 +31,23 @@ interface UserMapInterface {
   /**
    * Returns the culturefeed user id.
    *
-   * @param int $id
+   * @param int $drupal_id
    *   A drupal user id.
    *
    * @return string
    *   A culturefeed user id.
    */
-  public function getCultureFeedId($id);
+  public function getCultureFeedId($drupal_id);
 
   /**
    * Returns the drupal user id.
    *
-   * @param string $id
+   * @param string $uitid
    *   A culturefeed user id.
    *
    * @return int
    *   A drupal user id.
    */
-  public function getDrupalId($id);
+  public function getDrupalId($uitid);
 
 }

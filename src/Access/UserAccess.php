@@ -11,7 +11,7 @@ use Drupal\Core\Routing\Access\AccessInterface;
 use CultureFeed_User;
 use Drupal\Core\Access\AccessResult;
 
-class User implements AccessInterface {
+class UserAccess implements AccessInterface {
 
   /**
    * The culturefeed user.

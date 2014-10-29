@@ -132,8 +132,8 @@ class UserMap implements UserMapInterface {
   /**
    * {@inheritdoc}
    */
-  public function getCultureFeedId($id) {
-    $result = $this->entityQuery->get('culturefeed_user')->condition('uid', $id)->execute();
+  public function getCultureFeedId($drupal_id) {
+    $result = $this->entityQuery->get('culturefeed_user')->condition('uid', $drupal_id)->execute();
     if (!empty($result)) {
       return $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uitid->value;
     }
@@ -143,8 +143,8 @@ class UserMap implements UserMapInterface {
   /**
    * {@inheritdoc}
    */
-  public function getDrupalId($id) {
-    $result = $this->entityQuery->get('culturefeed_user')->condition('uitid', $id)->execute();
+  public function getDrupalId($uitid) {
+    $result = $this->entityQuery->get('culturefeed_user')->condition('uitid', $uitid)->execute();
     if (!empty($result)) {
       return $this->entityManager->getStorage('culturefeed_user')->load(reset($result))->uid->value;
     }
