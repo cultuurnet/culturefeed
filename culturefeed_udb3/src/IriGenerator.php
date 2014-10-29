@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
+ * Contains Drupal\culturefeed_udb3\IriGenerator.
  */
 
 namespace Drupal\culturefeed_udb3;
-
 
 use CultuurNet\UDB3\IriGeneratorInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
@@ -28,15 +28,17 @@ class IriGenerator implements IriGeneratorInterface {
   /**
    * Constructs a new IriGenerator for use with Drupal's URLGeneratorInterface.
    *
-   * @param UrlGeneratorInterface $urlGenerator
+   * @param UrlGeneratorInterface $url_generator
+   *   The url generator.
+   * @param string $event_route_name
+   *   The event route name.
    */
   public function __construct(
-    UrlGeneratorInterface $urlGenerator,
-    $eventRouteName = 'culturefeed_udb3.event'
-  )
-  {
-    $this->urlGenerator = $urlGenerator;
-    $this->eventRouteName = $eventRouteName;
+    UrlGeneratorInterface $url_generator,
+    $event_route_name = 'culturefeed_udb3.event'
+  ) {
+    $this->urlGenerator = $url_generator;
+    $this->eventRouteName = $event_route_name;
   }
 
   /**
@@ -53,4 +55,5 @@ class IriGenerator implements IriGeneratorInterface {
       )
     );
   }
-} 
+
+}

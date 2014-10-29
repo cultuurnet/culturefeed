@@ -83,7 +83,15 @@ class CultureFeedFactory implements CultureFeedFactoryInterface {
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
    */
-  public function __construct(OAuthClientFactoryInterface $oauth_client, ConfigFactory $config_factory, AccountInterface $account, UserMapInterface $user_map, EntityManagerInterface $entity_manager, QueryFactory $entity_query, LoggerInterface $logger) {
+  public function __construct(
+    OAuthClientFactoryInterface $oauth_client,
+    ConfigFactory $config_factory,
+    AccountInterface $account,
+    UserMapInterface $user_map,
+    EntityManagerInterface $entity_manager,
+    QueryFactory $entity_query,
+    LoggerInterface $logger
+  ) {
 
     $this->oauthClient = $oauth_client;
     $this->config = $config_factory->get('culturefeed.api');

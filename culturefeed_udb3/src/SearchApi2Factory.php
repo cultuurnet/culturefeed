@@ -31,15 +31,21 @@ class SearchApi2Factory {
     $this->config = $config_factory->get('culturefeed_search.api');
   }
 
+  /**
+   * Creates the default search service.
+   *
+   * @return DefaultSearchService
+   *   The default search service.
+   */
   public function create() {
-    $consumerCredentials = new ConsumerCredentials(
+    $consumer_credentials = new ConsumerCredentials(
       $this->config->get('application_key'),
       $this->config->get('shared_secret')
     );
 
     return new DefaultSearchService(
       $this->config->get('api_location'),
-      $consumerCredentials
+      $consumer_credentials
     );
   }
 

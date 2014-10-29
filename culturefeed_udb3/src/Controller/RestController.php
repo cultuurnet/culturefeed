@@ -26,6 +26,8 @@ class RestController extends ControllerBase {
   protected $searchService;
 
   /**
+   * The event service.
+   *
    * @var EventServiceInterface
    */
   protected $eventService;
@@ -43,18 +45,21 @@ class RestController extends ControllerBase {
   /**
    * Constructs a RestController.
    *
-   * @param SearchServiceInterface $searchService
-   * @param EventServiceInterface $eventService
+   * @param SearchServiceInterface $search_service
+   *   The search service.
+   * @param EventServiceInterface $event_service
+   *   The event service.
    */
-  public function __construct(SearchServiceInterface $searchService, EventServiceInterface $eventService) {
-    $this->searchService = $searchService;
-    $this->eventService = $eventService;
+  public function __construct(SearchServiceInterface $search_service, EventServiceInterface $event_service) {
+    $this->searchService = $search_service;
+    $this->eventService = $event_service;
   }
 
   /**
    * Executes a search and returns the results.
    *
    * @param Request $request
+   *   The request.
    *
    * @return JsonLdResponse
    *   A response.
@@ -77,18 +82,28 @@ class RestController extends ControllerBase {
 
   }
 
-  function eventContext() {
+  /**
+   * Creates a json-ld response.
+   *
+   * @return BinaryFileResponse
+   *   The response.
+   */
+  public function eventContext() {
     $response = new BinaryFileResponse('/udb3/api/1.0/event.jsonld');
     $response->headers->set('Content-Type', 'application/ld+json');
     return $response;
   }
 
   /**
+   * Returns an event.
+   *
    * @param string $cdbid
+   *   The event id.
    *
    * @return JsonLdResponse
+   *   The response.
    */
-  function event($cdbid) {
+  public function event($cdbid) {
     $event = $this->eventService->getEvent($cdbid);
 
     /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
