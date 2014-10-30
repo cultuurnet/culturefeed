@@ -510,6 +510,7 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
   // Send request to add a page.
   try {
+    /** @var CultureFeed_Pages $cf_pages */
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $page_id = $cf_pages->addPage($form_state['post_params']);
 
@@ -555,9 +556,9 @@ function culturefeed_pages_add_request_send(& $form, & $form_state) {
 
       $file_cover = file_load($form_state['values']['cover']);
       if ($file_cover) {
-        $cover = file_get_contents(drupal_realpath($file_cover->uri));
         try {
-          $cf_pages->addCover($page_id, array('image' => $cover));
+          $file_upload = culturefeed_prepare_curl_upload_from_file($file_cover);
+          $cf_pages->addCover($page_id, array('image' => $file_upload));
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
@@ -723,9 +724,9 @@ function culturefeed_pages_edit_request_send(& $form, & $form_state) {
 
       $file = file_load($form_state['values']['image']);
       if ($file) {
-        $image = file_get_contents(drupal_realpath($file->uri));
+        $file_upload = culturefeed_prepare_curl_upload_from_file($file);
         try {
-          $cf_pages->addImage($uid, array('image' => $image));
+          $cf_pages->addImage($uid, array('image' => $file_upload));
         }
         catch (Exception $e) {
           watchdog_exception('culturefeed_pages', $e);
