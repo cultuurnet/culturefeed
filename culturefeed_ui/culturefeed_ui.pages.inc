@@ -387,9 +387,13 @@ function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
 
     $file = file_load($form_state['values']['picture']);
     if ($file) {
-      $image = file_get_contents(drupal_realpath($file->uri));
       try {
-        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $image);
+        $fileUpload = new CultureFeed_FileUpload(
+          drupal_realpath($file->uri),
+          $file->filemime,
+          $file->filename
+        );
+        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $fileUpload);
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_ui', $e);
