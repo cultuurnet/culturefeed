@@ -58,7 +58,7 @@ class UserFactory implements UserFactoryInterface {
   public function get() {
 
     try {
-      $uitid = $this->userMap->getCulturefeedId($this->account->id);
+      $uitid = $this->userMap->getCulturefeedId($this->account->id());
       return $this->instance->getUser($uitid);
     }
     catch (\Exception $e) {
