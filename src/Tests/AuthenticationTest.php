@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
 /**
  * Tests the authentication.
  *
- * @group culturefeed
+ * @group Culturefeed
  * @see \Drupal\culturefeed\Authentication
  */
 class AuthenticationTest extends WebTestBase {
@@ -30,7 +30,7 @@ class AuthenticationTest extends WebTestBase {
   public function testAuthentication() {
 
     $this->drupalGet('culturefeed/oauth/connect');
-    $this->assertResponse('200', $this->getUrl());
+    $this->assertResponse('200');
 
   }
 
