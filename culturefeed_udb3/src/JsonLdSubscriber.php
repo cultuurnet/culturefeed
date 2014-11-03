@@ -16,26 +16,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class JsonLdSubscriber implements EventSubscriberInterface {
 
-    /**
-     * Registers JSON-LD formats with the Request class.
-     *
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     *   The event to process.
-     */
-    public function onKernelRequest(GetResponseEvent $event) {
-        $request = $event->getRequest();
-        $request->setFormat('ld_json', 'application/ld+json');
-    }
+  /**
+   * Registers JSON-LD formats with the Request class.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+   *   The event to process.
+   */
+  public function onKernelRequest(GetResponseEvent $event) {
+    $request = $event->getRequest();
+    $request->setFormat('ld_json', 'application/ld+json');
+  }
 
-    /**
-     * Registers the methods in this class that should be listeners.
-     *
-     * @return array
-     *   An array of event listener definitions.
-     */
-    static function getSubscribedEvents() {
-        $events[KernelEvents::REQUEST][] = array('onKernelRequest', 40);
-        return $events;
-    }
+  /**
+   * Registers the methods in this class that should be listeners.
+   *
+   * @return array
+   *   An array of event listener definitions.
+   */
+  public static function getSubscribedEvents() {
+    $events[KernelEvents::REQUEST][] = array('onKernelRequest', 40);
+    return $events;
+  }
 
 }
