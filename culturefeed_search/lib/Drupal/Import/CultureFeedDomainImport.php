@@ -8,7 +8,7 @@ use \Guzzle\Http\Client;
 
 class CultureFeedDomainImport {
 
-  const END_POINT = 'http://test.rest.uitdatabank.be/api/';
+  const END_POINT = 'http://taxonomy.uitdatabank.be/api/';
 
   /**
    * Guzzle http client.
