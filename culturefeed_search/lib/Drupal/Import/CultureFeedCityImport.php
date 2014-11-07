@@ -8,7 +8,7 @@ use \Guzzle\Http\Client;
 
 class CultureFeedCityImport {
 
-  const END_POINT = 'http://rest.uitdatabank.be/api/';
+  const END_POINT = 'http://taxonomy.uitdatabank.be/api/';
 
   /**
    * Guzzle http client.
