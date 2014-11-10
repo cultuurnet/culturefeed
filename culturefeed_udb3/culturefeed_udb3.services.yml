@@ -7,6 +7,8 @@ services:
   culturefeed_udb3.search:
     class: CultuurNet\UDB3\PullParsingSearchService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
+  culturefeed_udb3.serialize:
+    class: Broadway\Serializer\SimpleInterfaceSerializer
   culturefeed_udb3.event.real:
     class: CultuurNet\UDB3\DefaultEventService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
@@ -19,7 +21,7 @@ services:
     arguments: [culturefeed_udb3_event]
   culturefeed_udb3.event.store:
     class: Drupal\culturefeed_udb3\EventStore
-    arguments: ['@entity.manager', '@entity.query']
+    arguments: ['@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
   culturefeed_udb3.event.bus:
     class: Broadway\EventHandling\SimpleEventBus
   culturefeed_udb3.event.repository:
