@@ -33,3 +33,12 @@ culturefeed_udb3.user:
     _title: 'User info'
   requirements:
     _culturefeed_current_user: 'TRUE'
+
+culturefeed_udb3.events.tag:
+  path: '/udb3/api/1.0/events/tag'
+  defaults:
+    _content: '\Drupal\culturefeed_udb3\Controller\EventsController::tag'
+    _title: 'Events tagger'
+  requirements:
+    _access: 'TRUE'
+  #   _culturefeed_current_user: 'TRUE'
