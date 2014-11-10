@@ -39,6 +39,12 @@ services:
   culturefeed_udb3.event:
     class: Drupal\culturefeed_udb3\EventServiceCache
     arguments: ['@culturefeed_udb3.event.real', '@culturefeed_udb3.event.cache']
+  culturefeed_udb3.event.used_keywords_memory_repository:
+    class: CultuurNet\UDB3\UsedKeywordsMemory\UsedKeywordsMemoryRepository
+    arguments: ['@culturefeed_udb3.event.store', '@culturefeed_udb3.event.bus']
+  culturefeed_udb3.event.used_keywords_memory:
+    class: CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService
+    arguments: ['@culturefeed_udb3.event.used_keywords_memory_repository']
   culturefeed_udb3.search_api_2.factory:
     class: Drupal\culturefeed_udb3\SearchApi2Factory
     arguments: ['@config.factory']
