@@ -374,6 +374,20 @@ function culturefeed_search_ui_block_configure($delta) {
       );
     }
 
+    // Disable possible facet options.
+    if ($delta == 'facet-facility') {
+
+      $options = culturefeed_search_get_categories_by_domain($delta_parts[1]);
+      $enabled_options = variable_get('culturefeed_facet_enabled_options', NULL);
+
+      $form['culturefeed-facet-enabled-options'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Show only selected options'),
+        '#options' => $options,
+        '#default_value' => $enabled_options !== NULL && isset($enabled_options[$delta_parts[1]]) ? $enabled_options[$delta_parts[1]] : array_keys($options),
+      );
+    }
+
     if ($delta == 'facet-theme') {
       $form['culturefeed-facet-theme-hide'] = array(
         '#type' => 'checkbox',
@@ -588,6 +602,14 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   }
   if (isset($edit['culturefeed-facet-show-subitems'])) {
     variable_set('culturefeed_facet_show_subitems_' . $delta, $edit['culturefeed-facet-show-subitems']);
+  }
+
+  // Save enabled facet options.
+  if (isset($edit['culturefeed-facet-enabled-options'])) {
+    $delta_parts = explode('-', $delta);
+    $options = variable_get('culturefeed_facet_enabled_options', array());
+    $options[$delta_parts[1]] = array_filter($edit['culturefeed-facet-enabled-options']);
+    variable_set('culturefeed_facet_enabled_options', $options);
   }
 
   if ($delta == 'culturefeed-search-sortorder') {
