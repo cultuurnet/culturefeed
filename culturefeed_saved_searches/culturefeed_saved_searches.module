@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_saved_searches_block_info() {
+
+  $blocks = array();
+
+  $blocks['culturefeed-saved-searches-cta'] = array(
+    'info' => t('Culturefeed Saved searches CTA'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['culturefeed-saved-searches-cta-2'] = array(
+    'info' => t('Culturefeed Saved searches CTA below search results.'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_saved_searches_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_saved_searches', 'includes/blocks');
+
+  $block = array();
+
+  switch ($delta) {
+
+    case 'culturefeed-saved-searches-cta':
+      $block['content'] = culturefeed_saved_searches_block_cta();
+      break;
+
+    case 'culturefeed-saved-searches-cta-2':
+      $block['content'] = culturefeed_saved_searches_block_cta_bottom();
+      break;
+
+  }
+
+  return $block;
+
+}
+
+/**
+ * Implements hook_permission
+ */
+function culturefeed_saved_searches_permission() {
+
+  return array(
+    'save searches' => array(
+      'title' => t('Save searches'),
+      'description' => t('Allows the user to save his culturefeed searches'),
+    )
+  );
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_saved_searches_menu() {
+
+  $items = array();
+
+  // Dummy page callback used to redirect the user to the real search page.
+  $items['culturefeed/search/save'] = array(
+    'title' => 'Save search',
+    'title callback' => FALSE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_saved_searches_save_search_form'),
+    'file' => 'includes/pages.inc',
+    'access arguments' => array('save searches'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+
+}

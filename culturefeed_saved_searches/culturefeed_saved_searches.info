@@ -1,0 +1,5 @@
+name = CultureFeed Saved searches
+description = CultureFeed Saved Search allows users to save their search and get notifications when new search resutls become available.
+package = CultureFeed
+version = VERSION
+core = 7.x
