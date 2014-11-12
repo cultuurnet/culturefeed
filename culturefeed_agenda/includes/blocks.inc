@@ -89,7 +89,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     $form['when'] = array(
       '#type' => 'select',
       '#title' => t('When'),
-      '#options' => culturefeed_search_ui_get_date_facet_options(),
+      '#options' => array('' => t('All dates')) + culturefeed_search_ui_get_date_facet_options(),
       '#default_value' => isset($_GET['facet']['datetype'][0]) ? $_GET['facet']['datetype'][0] : NULL,
       '#weight' => $active_filters['when'],
     );
@@ -162,6 +162,21 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
   if (!empty($form_state['values']['search'])) {
     $query['search'] = $form_state['values']['search'];
+  }
+
+  $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
+  if (isset($active_filters['when'])) {
+    unset($query['facet']['datetype']);
+    if (!empty($form_state['values']['when'])) {
+      $query['facet']['datetype'][0] = $form_state['values']['when'];
+    }
+  }
+
+  if (isset($active_filters['where'])) {
+    unset($query['where']);
+    if (!empty($form_state['values']['where'])) {
+      $query['location'] = $form_state['values']['where'];
+    }
   }
 
   if (!empty($form_state['#domain_id'])) {

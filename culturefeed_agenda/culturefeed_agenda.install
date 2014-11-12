@@ -10,8 +10,8 @@
  */
 function culturefeed_agenda_install() {
   $filters = array(
-    'what' => 1,
-    'types' => 2,
+    'what' => 0,
+    'types' => 1,
   );
 
   variable_set('culturefeed_agenda_search_block_active_filters', $filters);
