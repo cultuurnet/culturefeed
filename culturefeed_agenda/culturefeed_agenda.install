@@ -6,6 +6,18 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function culturefeed_agenda_install() {
+  $filters = array(
+    'what' => 1,
+    'types' => 2,
+  );
+
+  variable_set('culturefeed_agenda_search_block_active_filters', $filters);
+}
+
+/**
  * Move the default sort variable to the new settings.
  */
 function culturefeed_agenda_update_7001() {
@@ -30,3 +42,15 @@ function culturefeed_agenda_update_7001() {
 
 }
 
+/**
+ * Set the default search block active filters.
+ */
+function culturefeed_agenda_update_7002() {
+
+  $filters = array(
+    'what' => 1,
+    'types' => 2,
+  );
+
+  variable_set('culturefeed_agenda_search_block_active_filters', $filters);
+}

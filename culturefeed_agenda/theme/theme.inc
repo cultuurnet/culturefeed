@@ -885,3 +885,42 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$varia
 
   drupal_add_js(array('delijn' => $settings), 'setting');
 }
+
+/**
+ * Theme an admin table for the possible filter options on the agenda search block.
+ */
+function theme_culturefeed_agenda_search_block_filter_settings($variables) {
+
+  $container = $variables['element'];
+
+  $rows = array();
+  foreach (element_children($container) as $key) {
+
+   $container[$key]['weight']['#attributes']['class'] = array('enabled-filters-order-weight');
+
+    $row = array();
+    $row[] = array('data' => drupal_render($container[$key]['enabled']), 'width' => '20px');
+    $row[] = drupal_render($container[$key]['title']);
+    $row[] = drupal_render($container[$key]['weight']);
+
+    $rows[] = array(
+      'data' => $row,
+      'class' => array('draggable'),
+    );
+  }
+
+  $table_variables = array(
+    'header' => array(
+      t('Enabled'),
+      t('Filter'),
+      t('Weight'),
+    ),
+    'rows' => $rows,
+    'attributes' => array('id' => 'enabled-filters'),
+  );
+
+  drupal_add_tabledrag('enabled-filters', 'order', 'sibling', 'enabled-filters-order-weight');
+
+  return theme('table', $table_variables);
+
+}

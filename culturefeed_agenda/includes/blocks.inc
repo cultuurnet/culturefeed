@@ -30,47 +30,82 @@ function culturefeed_agenda_block_related_activities() {
  */
 function culturefeed_agenda_search_block_form($form, &$form_state) {
 
+  $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
+
   $form = array();
 
   // Always submit to front, so that searches on a 404 would work.
   // $form['#action'] = url('<front>');
 
-  $domain_id = variable_get('agenda_search_block_domain_id');
-  if (!empty($domain_id)) {
+  // Category search.
+  if (isset($active_filters['types'])) {
 
-    $options = array('' => t('All categories'));
-    $categories = culturefeed_search_get_categories_by_domain($domain_id);
+    $domain_id = variable_get('agenda_search_block_domain_id');
+    if (!empty($domain_id)) {
 
-    if ($domain_id == 'eventtype') {
-      $categories_remove = array(
-        '0.100.0.0.0' => 'Kijken en luisteren',
-        '0.100.1.0.0' => 'Doen',
-        '0.100.2.0.0' => 'Bezoeken',
-        '0.51.0.0.0' => 'Type onbepaald',
+      $options = array('' => t('All categories'));
+      $categories = culturefeed_search_get_categories_by_domain($domain_id);
+
+      if ($domain_id == 'eventtype') {
+        $categories_remove = array(
+          '0.100.0.0.0' => 'Kijken en luisteren',
+          '0.100.1.0.0' => 'Doen',
+          '0.100.2.0.0' => 'Bezoeken',
+          '0.51.0.0.0' => 'Type onbepaald',
+        );
+        $categories = array_diff_key($categories, $categories_remove);
+      }
+      foreach ($categories as $id => $category) {
+        $options[$id] = $category;
+      }
+      asort($options);
+
+      $form['category'] = array(
+        '#type' => 'select',
+        '#options' => $options,
+        '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
+        '#weight' => $active_filters['types'],
       );
-      $categories = array_diff_key($categories, $categories_remove);
-    }
-    foreach ($categories as $id => $category) {
-      $options[$id] = $category;
-    }
-    asort($options);
 
-    $form['category'] = array(
-      '#type' => 'select',
-      '#options' => $options,
-      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
-    );
+      $form_state['#domain_id'] = $domain_id;
 
-    $form_state['#domain_id'] = $domain_id;
+    }
 
   }
 
-  $form['search'] = array(
-    '#type' => 'textfield',
-    '#size' => 28,
-    '#title' => t('Search string'),
-    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-  );
+  // Free text search.
+  if (isset($active_filters['what'])) {
+    $form['search'] = array(
+      '#type' => 'textfield',
+      '#size' => 28,
+      '#title' => t('Search string'),
+      '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
+      '#weight' => $active_filters['what'],
+    );
+  }
+
+  // Datetype search.
+  if (isset($active_filters['when'])) {
+    $form['when'] = array(
+      '#type' => 'select',
+      '#title' => t('When'),
+      '#options' => culturefeed_search_ui_get_date_facet_options(),
+      '#default_value' => isset($_GET['facet']['datetype'][0]) ? $_GET['facet']['datetype'][0] : NULL,
+      '#weight' => $active_filters['when'],
+    );
+  }
+
+  // Location search.
+  if (isset($active_filters['where'])) {
+    $form['where'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Where'),
+      '#default_value' => isset($_GET['location']) ? $_GET['location'] : NULL,
+      '#weight' => $active_filters['where'],
+      '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+      '#attributes' => array('placeholder' => t('Zipcode or city')),
+    );
+  }
 
   $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
   $form['nearby'] = array(
@@ -93,7 +128,8 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search'),
+    '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
+    '#weight' => 20,
   );
 
   global $language;
