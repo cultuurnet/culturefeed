@@ -1,17 +1,34 @@
 parameters:
   event.command.bus.parameter: event
+  resque.command.bus.event_command_context_set: broadway.command_handling.context
+
 services:
   culturefeed_udb3.iri_generator:
     class: Drupal\culturefeed_udb3\IriGenerator
     arguments: ['@url_generator']
+  culturefeed_udb3.search_api_2.factory:
+    class: Drupal\culturefeed_udb3\SearchApi2Factory
+    arguments: ['@config.factory']
+  culturefeed_udb3.search_api_2:
+    class: CultuurNet\UDB3\SearchAPI2\DefaultSearchService
+    factory_service: culturefeed_udb3.search_api_2.factory
+    factory_method: create
   culturefeed_udb3.search:
     class: CultuurNet\UDB3\PullParsingSearchService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
   culturefeed_udb3.serialize:
     class: Broadway\Serializer\SimpleInterfaceSerializer
+  culturefeed_udb3.execution_context_metadata_enricher:
+    class: CultuurNet\UDB3\EventSourcing\ExecutionContextMetadataEnricher
+  culturefeed_udb3.main_command_bus:
+    class: CultuurNet\UDB3\CommandHandling\SimpleContextAwareCommandBus
+
   culturefeed_udb3.event.real:
     class: CultuurNet\UDB3\DefaultEventService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
+  culturefeed_udb3.event:
+    class: Drupal\culturefeed_udb3\EventServiceCache
+    arguments: ['@culturefeed_udb3.event.real', '@culturefeed_udb3.event.cache']
   culturefeed_udb3.event.cache:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
@@ -24,36 +41,35 @@ services:
     arguments: ['@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
   culturefeed_udb3.event.bus:
     class: Broadway\EventHandling\SimpleEventBus
+  culturefeed_udb3.event.stream_metadata_enricher:
+    class: Broadway\EventSourcing\MetadataEnrichment\MetadataEnrichingEventStreamDecorator
+    calls:
+      - [registerEnricher, ['@culturefeed_udb3.execution_context_metadata_enricher']]
   culturefeed_udb3.event.repository:
     class: CultuurNet\UDB3\Event\EventRepository
-    arguments: ['@culturefeed_udb3.event.store', '@culturefeed_udb3.event.bus', '@culturefeed_udb3.search_api_2']
+    arguments: ['@culturefeed_udb3.event.store', '@culturefeed_udb3.event.bus', '@culturefeed_udb3.search_api_2', ['@culturefeed_udb3.event.stream_metadata_enricher']]
+  culturefeed_udb3.event.command_bus_event_dispatcher:
+    class: Broadway\EventDispatcher\EventDispatcher
+    calls:
+      - [addListener, ['%resque.command.bus.event_command_context_set%', ['@culturefeed_udb3.execution_context_metadata_enricher', 'setContext']]]
   culturefeed_udb3.event.command_handler:
     class: CultuurNet\UDB3\Event\EventCommandHandler
     arguments: ['@culturefeed_udb3.event.repository']
   culturefeed_udb3.event.command.bus:
     class: CultuurNet\UDB3\CommandHandling\ResqueCommandBus
-    arguments: ['%event.command.bus.parameter%']
+    arguments: ['@culturefeed_udb3.main_command_bus', '%event.command.bus.parameter%', '@culturefeed_udb3.event.command_bus_event_dispatcher']
     calls:
       - [subscribe, ['@culturefeed_udb3.event.command_handler']]
   culturefeed_udb3.event.tagger:
     class: CultuurNet\UDB3\Event\DefaultEventTaggerService
     arguments: ['@culturefeed_udb3.event', '@culturefeed_udb3.event.command.bus']
-  culturefeed_udb3.event:
-    class: Drupal\culturefeed_udb3\EventServiceCache
-    arguments: ['@culturefeed_udb3.event.real', '@culturefeed_udb3.event.cache']
   culturefeed_udb3.event.used_keywords_memory_repository:
     class: CultuurNet\UDB3\UsedKeywordsMemory\UsedKeywordsMemoryRepository
     arguments: ['@culturefeed_udb3.event.store', '@culturefeed_udb3.event.bus']
   culturefeed_udb3.event.used_keywords_memory:
     class: CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService
     arguments: ['@culturefeed_udb3.event.used_keywords_memory_repository']
-  culturefeed_udb3.search_api_2.factory:
-    class: Drupal\culturefeed_udb3\SearchApi2Factory
-    arguments: ['@config.factory']
-  culturefeed_udb3.search_api_2:
-    class: CultuurNet\UDB3\SearchAPI2\DefaultSearchService
-    factory_service: culturefeed_udb3.search_api_2.factory
-    factory_method: create
+
   culturefeed_udb3.json_ld_subscriber:
     class: Drupal\culturefeed_udb3\JsonLdSubscriber
     tags:

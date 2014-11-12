@@ -19,11 +19,10 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   id = "culturefeed_domain_message",
  *   label = @Translation("Culturefeed domain message"),
  *   base_table = "culturefeed_domain_message",
- *   fieldable = FALSE,
  *   entity_keys = {
- *     "id" = "uuid",
- *     "playhead" = "playhead",
+ *     "id" = "dmid",
  *   },
+ *   fieldable = FALSE,
  * )
  */
 class DomainMessageEntity extends ContentEntityBase implements ContentEntityInterface {
@@ -33,13 +32,19 @@ class DomainMessageEntity extends ContentEntityBase implements ContentEntityInte
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
+    $fields['dmid'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('ID'))
+      ->setDescription(t('ID.'))
+      ->setReadOnly(TRUE);
+
+    $fields['uuid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('UUID'))
       ->setDescription(t('UUID.'));
 
-    $fields['playhead'] = BaseFieldDefinition::create('string_long')
+    $fields['playhead'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Playhead'))
-      ->setDescription(t('Playhead.'));
+      ->setDescription(t('Playhead.'))
+      ->setSetting('unsigned', TRUE);
 
     $fields['metadata'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Metadata'))
