@@ -594,6 +594,24 @@ function culturefeed_search_ui_city_only_facet_form_submit($form, &$form_state) 
 }
 
 /**
+ * Show the entity type facet.
+ */
+function culturefeed_search_ui_block_entity_type_facet() {
+
+  $block_settings = array(
+    'sort' => variable_get('culturefeed_search_sort_facet-type', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
+    'highest_level' => variable_get('culturefeed_facet_highest_level_facet-type', 1),
+    'show_subitems' => variable_get('culturefeed_facet_show_subitems_facet-type', FALSE),
+  );
+
+  $block = culturefeed_search_ui_search_facets_block('type', '', array(), $block_settings);
+  $block['subject'] = t('Type');
+
+  return $block;
+
+}
+
+/**
  * Block callback for the active filters during search.
  */
 function culturefeed_search_ui_search_active_filters_block() {
