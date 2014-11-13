@@ -9,6 +9,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   protected $realCultureFeed;
   protected $pages;
   protected $messages;
+  protected $savedSearches;
 
   public function __construct(CultureFeed $realCultureFeed, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
@@ -430,6 +431,22 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     public function messages() {
       return $this->realCultureFeed->messages();
     }
+
+    /**
+     * Get the savedSearches service.
+     *
+     * @return DrupalCultureFeedSavedSearches_Cache
+     */
+    public function savedSearches() {
+
+      if (!$this->savedSearches) {
+        $this->savedSearches = new DrupalCultureFeedSavedSearches_Cache($this->realCultureFeed->savedSearches());
+      }
+
+      return $this->savedSearches;
+
+    }
+
 
     public function getClient() {
       return $this->realCultureFeed->getClient();
