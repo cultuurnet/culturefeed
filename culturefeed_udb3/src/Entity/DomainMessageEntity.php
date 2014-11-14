@@ -19,6 +19,9 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   id = "culturefeed_domain_message",
  *   label = @Translation("Culturefeed domain message"),
  *   base_table = "culturefeed_domain_message",
+ *   handlers = {
+ *     "storage_schema" = "Drupal\culturefeed_udb3\DomainMessageStorageSchema",
+ *   },
  *   entity_keys = {
  *     "id" = "dmid",
  *   },

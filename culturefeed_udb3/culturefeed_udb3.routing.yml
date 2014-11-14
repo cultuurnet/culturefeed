@@ -40,5 +40,6 @@ culturefeed_udb3.events.tag:
     _content: '\Drupal\culturefeed_udb3\Controller\EventsController::tag'
     _title: 'Events tagger'
   requirements:
-    _access: 'TRUE'
-  #   _culturefeed_current_user: 'TRUE'
+    _culturefeed_current_user: 'TRUE'
+    _format: ld_json
+    _method: GET
