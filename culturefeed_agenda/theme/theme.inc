@@ -500,7 +500,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
-  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
+  if (is_numeric($production->getAgeFrom()) && ($production->getAgeFrom() <= 12)) {
     $variables['forkids'] = TRUE;
   }
 
