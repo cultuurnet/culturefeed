@@ -98,27 +98,19 @@ function culturefeed_search_ui_get_age_range_facet_options() {
   return array(
     0 => array(
       'name' => '0-2 ' . t('year'),
-      'query' => '(agefrom:[0 TO 2])',
+      'query' => '(agefrom:[0 TO 2] OR keywords:"ook voor kinderen")',
     ),
     3 => array(
       'name' => '3-5 ' . t('year'),
-      'query' => '(agefrom:[3 TO 5])',
+      'query' => '(agefrom:[3 TO 5] OR keywords:"ook voor kinderen")',
     ),
     6 => array(
       'name' => '6-8 ' . t('year'),
-      'query' => '(agefrom:[6 TO 8])',
+      'query' => '(agefrom:[6 TO 8] OR keywords:"ook voor kinderen")',
     ),
     9 => array(
       'name' => '9-11 ' . t('year'),
-      'query' => '(agefrom:[9 TO 11])',
-    ),
-    12 => array(
-      'name' => '12-14 ' . t('year'),
-      'query' => '(agefrom:[12 TO 14])',
-    ),
-    15 => array(
-      'name' => '15-17 ' . t('year'),
-      'query' => '(agefrom:[15 TO 17])',
+      'query' => '(agefrom:[9 TO 11] OR keywords:"ook voor kinderen")',
     ),
   );
 }
