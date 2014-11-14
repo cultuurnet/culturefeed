@@ -30,8 +30,7 @@ function culturefeed_mailing_menu() {
   $items = array();
 
   $items['culturefeed/toggle/newsletter-optin/%/%/%'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Newsletter opt-in'),
+    'title' => 'Newsletter opt-in',
     'page callback' => 'culturefeed_mailing_toggle_optin',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -75,8 +74,7 @@ function culturefeed_mailing_menu() {
 
   // Content management pages.
   $items['admin/content/mailing-lists'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Mailing lists')),
+    'title' => 'Mailing lists',
     'page callback' => 'culturefeed_mailing_lists_overview',
     'access arguments' => array('manage mailing lists'),
     'type' => MENU_LOCAL_TASK,
@@ -84,8 +82,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/add'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Add mailing list')),
+    'title' => 'Add mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_lists_form'),
     'access arguments' => array('manage mailing lists'),
@@ -94,8 +91,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/edit/%culturefeed_mailing'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Add mailing list')),
+    'title' => 'Add mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_lists_form', 4),
     'access arguments' => array('manage mailing lists'),
@@ -103,8 +99,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/test/%culturefeed_mailing'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Test mailing list')),
+    'title' => 'Test mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_test_list_form', 4),
     'access arguments' => array('manage mailing lists'),
@@ -112,8 +107,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/send/%culturefeed_mailing'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Activate mailing list')),
+    'title' => 'Activate mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_send_list_form', 4),
     'access arguments' => array('manage mailing lists'),
@@ -121,8 +115,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/disable/%culturefeed_mailing'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Disable scheduled sending')),
+    'title' => 'Disable scheduled sending',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_disable_list_form', 4),
     'access arguments' => array('manage mailing lists'),
@@ -130,8 +123,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/delete/%culturefeed_mailing'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array(t('Add mailing list')),
+    'title' => 'Add mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_delete_form', 4),
     'access arguments' => array('manage mailing lists'),
