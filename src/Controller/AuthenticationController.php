@@ -54,6 +54,9 @@ class AuthenticationController extends ControllerBase {
 
     $language = $this->languageManager()->getCurrentLanguage();
     $auth_url = $this->authentication->connect($request, $language);
+    if ($auth_url == '<front>') {
+      $auth_url = $this->getUrlGenerator()->generateFromRoute('<front>');
+    }
     return new RedirectResponse($auth_url, 302);
 
   }
