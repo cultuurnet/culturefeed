@@ -351,7 +351,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['videos'] = array();
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
     foreach ($videos as $video) {
-      if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink(), 240, 180)) {
+      if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink())) {
         $variables['videos'][] = $video_embed;
       }
     }
