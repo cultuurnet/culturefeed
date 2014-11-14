@@ -393,7 +393,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
-  if ($event->getAgeFrom() && ($event->getAgeFrom() <= 12)) {
+  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
     $variables['forkids'] = TRUE;
   }
   $variables['location'] = culturefeed_agenda_get_location_of_event($event);
@@ -500,7 +500,7 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
-  if ($event->getAgeFrom() && ($event->getAgeFrom() <= 12)) {
+  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
     $variables['forkids'] = TRUE;
   }
 
