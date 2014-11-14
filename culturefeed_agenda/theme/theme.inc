@@ -325,6 +325,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['keywords'] = '';
   if ($keywords) {
     $variables['keywords'] = implode(', ', $keywords);
+    // check if event is suitable for kids
+    if (array_key_exists('ook voor kinderen', $keywords)) {
+      $variables['forkids'] = TRUE;
+    }
   }
 
 }
@@ -389,6 +393,9 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
+  if ($event->getAgeFrom() && ($event->getAgeFrom() <= 12)) {
+    $variables['forkids'] = TRUE;
+  }
   $variables['location'] = culturefeed_agenda_get_location_of_event($event);
 
   $actor = NULL;
@@ -493,6 +500,9 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
+  if ($event->getAgeFrom() && ($event->getAgeFrom() <= 12)) {
+    $variables['forkids'] = TRUE;
+  }
 
   $relations = $production->getRelations();
   $total_relations = count($relations);
