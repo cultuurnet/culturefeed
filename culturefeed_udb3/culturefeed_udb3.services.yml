@@ -42,7 +42,13 @@ services:
     arguments: ['@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
   culturefeed_udb3.event_repository:
     class: CultuurNet\UDB3\Event\EventRepository
-    arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', '@culturefeed_udb3.search_api_2', ['@culturefeed_udb3.event_stream_metadata_enricher']]
+    arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
+  culturefeed_udb3.udb2_entry_api_factory:
+    class: CultuurNet\UDB3\UDB2\EntryAPIFactory
+    arguments: ['@config.factory']
+  culturefeed_udb3.udb2_event_repository:
+    class: CultuurNet\UDB3\UDB2\EventRepository
+    arguments: ['@culturefeed_udb3.event_repository', '@culturefeed_udb3.search_api_2', ['@culturefeed_udb3.udb2_entry_api_factory', 'get'], ['@culturefeed_udb3.event_stream_metadata_enricher']]
   culturefeed_udb3.event_command_handler:
     class: CultuurNet\UDB3\Event\EventCommandHandler
     arguments: ['@culturefeed_udb3.event_repository']

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService;
 use CultureFeed_User;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use CultuurNet\UDB3\Keyword;
 
 class EventsController extends ControllerBase {
 
@@ -59,7 +60,7 @@ class EventsController extends ControllerBase {
    */
   public function tag(Request $request) {
 
-    $keyword = $request->query->get('keyword');
+    $keyword = new Keyword($request->query->get('keyword'));
     $event_ids = $request->query->get('events');
 
     $response = JsonLdResponse::create();

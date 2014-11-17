@@ -5,9 +5,16 @@ services:
   culturefeed.oauth_client:
     class: Drupal\culturefeed\OAuthClientFactory
     arguments: ['@config.factory']
+  culturefeed.user_credentials.factory:
+    class: Drupal\culturefeed\UserCredentialsFactory
+    arguments: ['@config.factory', '@current_user', '@culturefeed.user_map', '@entity.manager', '@entity.query', '@logger.channel.culturefeed']
+  culturefeed.user_credentials:
+    class: CultuurNet\Auth\ConsumerCredentials
+    factory_service: culturefeed.user_credentials.factory
+    factory_method: create
   culturefeed.factory:
     class: Drupal\culturefeed\CultureFeedFactory
-    arguments: ['@culturefeed.oauth_client', '@config.factory', '@current_user', '@culturefeed.user_map', '@entity.manager', '@entity.query', '@logger.channel.culturefeed']
+    arguments: ['@culturefeed.oauth_client', '@culturefeed.user_credentials', '@logger.channel.culturefeed']
   culturefeed.factory.authenticated:
     class: Drupal\culturefeed\CultureFeedFactory
     factory_service: culturefeed.factory
@@ -22,12 +29,12 @@ services:
     class: Drupal\culturefeed\UserFactory
     factory_service: culturefeed.user_factory
     factory_method: get
-  culturefeed.user_name.factory:
-    class: Drupal\culturefeed\UserNameFactory
-    arguments: ['@entity.query', '@current_user']
   culturefeed.user_map:
     class: Drupal\culturefeed\UserMap
     arguments: ['@entity.manager', '@entity.query', '@current_user', '@culturefeed.user_name.factory']
+  culturefeed.user_name.factory:
+    class: Drupal\culturefeed\UserNameFactory
+    arguments: ['@entity.query', '@current_user']
   access_check.culturefeed.current_user:
     class: Drupal\culturefeed\Access\UserAccess
     arguments: ['@culturefeed.current_user']
