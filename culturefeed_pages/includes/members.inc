@@ -670,12 +670,14 @@ function culturefeed_pages_page_request_admin_membership_approved_submit($form, 
 function culturefeed_pages_page_request_validated_admin($page, $request_type) {
 
   // Send request to become a validated admin.
+  $success = FALSE;
   try {
 
     $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
     $cf_pages->addValidatedadmin($page->getId());
     $message = t('Your request to become a validated administrator of this page is sent');
-
+    $success = TRUE;
+    
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_pages', $e);
@@ -692,7 +694,7 @@ function culturefeed_pages_page_request_validated_admin($page, $request_type) {
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
-    drupal_set_message($message);
+    drupal_set_message($message, $success ? 'status': 'error');
     drupal_goto();
   }
 
