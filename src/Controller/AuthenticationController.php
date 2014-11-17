@@ -73,6 +73,17 @@ class AuthenticationController extends ControllerBase {
   public function authorize(Request $request) {
 
     $this->authentication->authorize($request);
+
+    // Check if a redirect is provided, this can be an external url.
+    if ($request->get('destination')) {
+      try {
+        return $this->redirect($request->get('destination'));
+      }
+      catch (\Exception $e) {
+        return new RedirectResponse($request->get('destination'), 302);
+      }
+    }
+
     return $this->redirect('<front>');
 
   }
