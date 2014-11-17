@@ -29,10 +29,12 @@ culturefeed_udb3.event:
 culturefeed_udb3.user:
   path: '/udb3/api/1.0/user'
   defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\UserRestController::info'
+    _controller: '\Drupal\culturefeed_udb3\Controller\UserRestController::info'
     _title: 'User info'
   requirements:
     _culturefeed_current_user: 'TRUE'
+    _format: ld_json
+    _method: GET
 
 culturefeed_udb3.events.tag:
   path: '/udb3/api/1.0/events/tag'

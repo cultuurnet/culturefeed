@@ -7,11 +7,10 @@
 
 namespace Drupal\culturefeed_udb3\Controller;
 
-use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Drupal\Core\Controller\ControllerBase;
-use CultureFeed_User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Access\AccessResult;
+use CultureFeed_User;
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
 
 class UserRestController extends ControllerBase {
 

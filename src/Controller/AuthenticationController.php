@@ -54,6 +54,9 @@ class AuthenticationController extends ControllerBase {
 
     $language = $this->languageManager()->getCurrentLanguage();
     $auth_url = $this->authentication->connect($request, $language);
+    if ($auth_url == '<front>') {
+      $auth_url = $this->getUrlGenerator()->generateFromRoute('<front>');
+    }
     return new RedirectResponse($auth_url, 302);
 
   }
@@ -70,6 +73,17 @@ class AuthenticationController extends ControllerBase {
   public function authorize(Request $request) {
 
     $this->authentication->authorize($request);
+
+    // Check if a redirect is provided, this can be an external url.
+    if ($request->get('destination')) {
+      try {
+        return $this->redirect($request->get('destination'));
+      }
+      catch (\Exception $e) {
+        return new RedirectResponse($request->get('destination'), 302);
+      }
+    }
+
     return $this->redirect('<front>');
 
   }
