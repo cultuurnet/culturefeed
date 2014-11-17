@@ -101,14 +101,7 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
       $row['function'] = $member->relation;
       switch ($member->role) {
         case CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN:
-
-          if ($member->validated) {
-            $role = t('validated administrator');
-          }
-          else {
-            $role = t('administrator');
-          }
-
+          $role = t('administrator');
         break;
         case CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER:
         default:
@@ -119,17 +112,11 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
       $row['member_since'] = date('d/m/Y H:i', $member->creationDate);
       $row['edit'] = l(t('Edit'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/edit/nojs', array('attributes' => array('class' => 'use-ajax')));
 
-      if ($total_admins == 1 && !$member->validated && $member->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
+      if ($total_admins == 1 && $member->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
         $row['delete'] = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $page));
       }
       else {
-        if ($member->validated) {
-          $delete_label = t('Remove as validated administrator');
-        }
-        else {
-          $delete_label = t('Remove as member');
-        }
-        $row['delete'] = l($delete_label, 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs');
+        $row['delete'] = l(t('Remove as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs');
       }
     }
     // Show the edit form.
@@ -211,18 +198,10 @@ function culturefeed_pages_edit_membership_form($form, &$form_state, CultureFeed
 
   // Only show toggle when user is not an admin, or he is not the only admin.
   if ($membership->role != CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN || $total_admins != 1) {
-
-    if ($membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER) {
-      $toggle_label = t('Make administrator');
-    }
-    else {
-      $toggle_label = $membership->validated ? t('Remove administrator') : t('Remove validated administrator');
-    }
-
     $form['role'] = array(
       '#type' => 'button',
       '#name' => 'toggle_role',
-      '#value' => $toggle_label,
+      '#value' => $membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN ? t('Remove administrator') : t('Make administrator'),
       '#ajax' => array(
         'callback' => 'culturefeed_pages_edit_membership_ajax_form_submit',
         'wrapper' => 'membership-ajax-wrapper',
@@ -251,25 +230,16 @@ function culturefeed_pages_edit_membership_form_validate($form, &$form_state) {
       $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
       if ($form['#membership']->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
 
-        // If he is a validated admin. Remove him as validated admin. He becomes a normal admin.
-        if ($form['#membership']->validated) {
-          $cf_pages->removeValidatedAdmin($form['#membership']->page->getId());
-          $form_state['new_role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN;
-        }
-        else {
+        $cf_pages->removeAdmin($form['#membership']->page->getId(), $form['#membership']->user->id);
 
-          $cf_pages->removeAdmin($form['#membership']->page->getId(), $form['#membership']->user->id);
+        // If he was removed as admin, he is also removed as member. Re-add him as member.
+        $params = array(
+          'relation' => $form['#membership']->relation,
+          'activityPrivate' => FALSE,
+        );
 
-          // If he was removed as admin, he is also removed as member. Re-add him as member.
-          $params = array(
-            'relation' => $form['#membership']->relation,
-            'activityPrivate' => FALSE,
-          );
-
-          $cf_pages->addMember($form['#membership']->page->getId(), $form['#membership']->user->id, $params);
-          $form_state['new_role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER;
-
-        }
+        $cf_pages->addMember($form['#membership']->page->getId(), $form['#membership']->user->id, $params);
+        $form_state['new_role'] = CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER;
 
       }
       else {
@@ -538,15 +508,7 @@ function culturefeed_pages_delete_member_form_validate($form, &$form_state) {
 
     // Check if the user is admin or member.
     if (culturefeed_pages_is_user_admin_of_page($form_state['page']->getId(), $form_state['user'])) {
-
-      // If a validated admin is removed, he becomes a normal admin.
-      if (culturefeed_pages_is_user_validated_admin_of_page($form_state['page']->getId(), $form_state['user'])) {
-        DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeValidatedAdmin($form_state['page']->getId());
-      }
-      else {
-        DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeAdmin($form_state['page']->getId(), $form_state['user']->id);
-      }
-
+      DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeAdmin($form_state['page']->getId(), $form_state['user']->id);
     }
     else {
       DrupalCultureFeed::getLoggedInUserInstance()->pages()->removeMember($form_state['page']->getId(), $form_state['user']->id);
