@@ -6,7 +6,7 @@
 
 namespace Drupal\culturefeed_udb3;
 
-use CultuurNet\UDB3\IriGeneratorInterface;
+use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 
 class IriGenerator implements IriGeneratorInterface {

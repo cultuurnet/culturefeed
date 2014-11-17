@@ -21,7 +21,7 @@ class UserRestController extends ControllerBase {
    */
   protected $user;
 
-    /**
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {

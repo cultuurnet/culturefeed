@@ -7,13 +7,12 @@
 
 namespace Drupal\culturefeed_udb3\Controller;
 
-use CultuurNet\UDB3\EventServiceInterface;
-use CultuurNet\UDB3\SearchServiceInterface;
-use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use CultuurNet\UDB3\Search\PullParsingSearchService;
+use CultuurNet\UDB3\EventServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
-
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RestController extends ControllerBase {
@@ -21,7 +20,7 @@ class RestController extends ControllerBase {
   /**
    * The search service.
    *
-   * @var SearchServiceInterface;
+   * @var PullParsingSearchService;
    */
   protected $searchService;
 
@@ -45,12 +44,12 @@ class RestController extends ControllerBase {
   /**
    * Constructs a RestController.
    *
-   * @param SearchServiceInterface $search_service
+   * @param PullParsingSearchService $search_service
    *   The search service.
    * @param EventServiceInterface $event_service
    *   The event service.
    */
-  public function __construct(SearchServiceInterface $search_service, EventServiceInterface $event_service) {
+  public function __construct(PullParsingSearchService $search_service, EventServiceInterface $event_service) {
     $this->searchService = $search_service;
     $this->eventService = $event_service;
   }

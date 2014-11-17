@@ -3,7 +3,7 @@ services:
     class: Drupal\culturefeed_udb3\IriGenerator
     arguments: ['@url_generator']
   culturefeed_udb3.search:
-    class: CultuurNet\UDB3\PullParsingSearchService
+    class: CultuurNet\UDB3\Search\PullParsingSearchService
     arguments: ['@culturefeed_udb3.search_api_2', '@culturefeed_udb3.iri_generator']
   culturefeed_udb3.event.real:
     class: CultuurNet\UDB3\DefaultEventService
