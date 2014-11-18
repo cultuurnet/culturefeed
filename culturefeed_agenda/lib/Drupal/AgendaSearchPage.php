@@ -37,13 +37,21 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $this->addQueryTerm(preg_replace("/\/\b|\b:/x", "", $params['search']));
       }
 
-      $this->addFacetFilters($params);
+      if (isset($params['facet']['type'])) {
+        $active_types = $params['facet']['type'];
+        unset($params['facet']['type']);
+      }
+      else {
+        $active_types = variable_get('culturefeed_agenda_active_entity_types', array('event', 'production'));
+      }
 
-      $active_types = variable_get('culturefeed_agenda_active_entity_types', array('event', 'production'));
       array_walk($active_types, function(&$active_type) {
         $active_type = 'type:' . $active_type;
       });
       $this->parameters[] = new Parameter\FilterQuery(implode(' OR ', $active_types));
+
+      $this->addFacetFilters($params);
+
       $this->parameters[] = $this->facetComponent->facetField('category');
       $this->parameters[] = $this->facetComponent->facetField('datetype');
       $this->parameters[] = $this->facetComponent->facetField('city');
