@@ -1,3 +1,11 @@
+culturefeed_udb3.settings:
+  path: '/admin/config/culturefeed/udb3'
+  defaults:
+    _form: 'Drupal\culturefeed_udb3\Form\SettingsForm'
+    _title: 'Culturefeed udb3 settings'
+  requirements:
+    _permission: 'administer site configuration'
+
 culturefeed_udb3.event_context:
   path: '/udb3/api/1.0/event.jsonld'
   defaults:

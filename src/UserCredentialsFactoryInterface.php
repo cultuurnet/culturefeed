@@ -20,6 +20,6 @@ interface UserCredentialsFactoryInterface {
    * @return ConsumerCredentials
    *   The user credentials.
    */
-  public function create();
+  public function get();
 
 }

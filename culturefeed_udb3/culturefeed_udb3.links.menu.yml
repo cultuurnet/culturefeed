@@ -1,0 +1,5 @@
+culturefeed_udb3.settings:
+  title: UDB3 Settings
+  description: Configure UDB3 settings.
+  parent: culturefeed.overview
+  route_name: culturefeed_udb3.settings

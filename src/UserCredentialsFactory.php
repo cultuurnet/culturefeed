@@ -93,7 +93,7 @@ class UserCredentialsFactory implements UserCredentialsFactoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function create() {
+  public function get() {
 
     if ($this->userMap) {
 

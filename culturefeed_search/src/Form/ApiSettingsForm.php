@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\culturefeed\Form\ApiSettings.
+ * Contains \Drupal\culturefeed\Form\ApiSettingsForm.
  */
 
 namespace Drupal\culturefeed_search\Form;

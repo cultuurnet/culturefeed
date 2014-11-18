@@ -11,7 +11,7 @@ use Drupal\Core\Config\ConfigFactory;
 use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\UDB3\UDB2\Consumer;
 
-class EntryApiFactory {
+class EntryApiFactory implements EntryApiFactoryInterface {
 
   /**
    * The config factory.
