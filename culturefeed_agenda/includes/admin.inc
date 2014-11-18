@@ -16,9 +16,9 @@ function culturefeed_agenda_admin_settings_form() {
     '#title' => t('Entity types to be searched'),
     '#type' => 'checkboxes',
     '#options' => array(
-      'event' => t('Events'),
-      'production' => t('Productions'),
-      'actor' => t('Actors'),
+      'event' => t('event', array(), array('context' => 'culturefeed-facets')),
+      'production' => t('production', array(), array('context' => 'culturefeed-facets')),
+      'actor' => t('actor', array(), array('context' => 'culturefeed-facets')),
     ),
     '#default_value' => variable_get('culturefeed_agenda_active_entity_types', array('event', 'production')),
     '#description' => t('Select the different entity types that can be shown on agenda/search'),

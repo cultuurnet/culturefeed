@@ -119,10 +119,17 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
   else {
     $items = $facet->getResult()->getItems();
 
+    // type facet should go through t()
+    if ($facet_name == 'type') {
+      foreach ($items as $item) {
+        $item->setLabel(t($item->getLabel(), array(), array('context' => 'culturefeed-facets')));
+      }
+    }
     // If the facet is one of the category facets. Translate the items.
-    if (substr($facet_name, strlen($facet_name) - 3) == '_id') {
+    elseif (substr($facet_name, strlen($facet_name) - 3) == '_id') {
       culturefeed_search_translate_facet($items);
     }
+
   }
 
   if (!empty($items)) {
