@@ -21,7 +21,7 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_manage
       'form' => drupal_get_form('culturefeed_saved_searches_edit_frequency_form', $search),
       'id' => (int)$search->id,
       'delete_url' => url('culturefeed/searches/' . $search->id . '/delete'),
-      'search_url' => url('agenda/search'),
+      'search_url' => url('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search))),
     );
     $items[] = $item;
   }

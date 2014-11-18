@@ -105,7 +105,7 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
 function culturefeed_saved_searches_page_my_searches() {
 
   $build = array();
-dsm(DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList());
+
   try {
 
     $build['list'] = array(
