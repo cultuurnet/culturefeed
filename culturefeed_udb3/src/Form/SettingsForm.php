@@ -28,11 +28,85 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     $config = $this->config('culturefeed_udb3.settings');
+    $types = array('' => '', 'DEBUG' => t('Debug'), 'ALERT' => t('Alert'));
 
     $form['sync_with_udb2'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Sync with UDB2'),
       '#default_value' => $config->get('sync_with_udb2'),
+    );
+
+    $form['log.command_bus'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('Command bus logging settings'),
+    );
+
+    $form['log.command_bus']['hipchat'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('Hipchat'),
+    );
+    $form['log.command_bus']['hipchat']['hipchat_type'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable'),
+      '#default_value' => $config->get('log.command_bus.hipchat'),
+    );
+
+    $form['log.command_bus']['file'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('File'),
+    );
+    $form['log.command_bus']['file']['file_type'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable'),
+      '#default_value' => $config->get('log.command_bus.file'),
+    );
+    $form['log.command_bus']['file']['file_path'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Path'),
+      '#default_value' => $config->get('log.command_bus.file_path'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="file_type"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+
+    $form['log.command_bus']['socketioemitter'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('Socket'),
+    );
+    $form['log.command_bus']['socketioemitter']['socketioemitter_type'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable'),
+      '#default_value' => $config->get('log.command_bus.socketioemitter'),
+    );
+    $form['log.command_bus']['socketioemitter']['socketioemitter_redis_host'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Redis host'),
+      '#default_value' => $config->get('log.command_bus.socketioemitter_redis_host'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+    $form['log.command_bus']['socketioemitter']['socketioemitter_redis_port'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Redis port'),
+      '#default_value' => $config->get('log.command_bus.socketioemitter_redis_port'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+
+    $form['log.command_bus']['level'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('Level'),
+      '#options' => $types,
+      '#required' => TRUE,
+      '#default_value' => $config->get('log.command_bus.level'),
     );
 
     return parent::buildForm($form, $form_state);
@@ -47,6 +121,13 @@ class SettingsForm extends ConfigFormBase {
     $values = $form_state->getValues();
     $this->config('culturefeed_udb3.settings')
       ->set('sync_with_udb2', $values['sync_with_udb2'])
+      ->set('log.command_bus.hipchat', $values['hipchat_type'])
+      ->set('log.command_bus.file', $values['file_type'])
+      ->set('log.command_bus.file_path', $values['file_path'])
+      ->set('log.command_bus.socketioemitter', $values['socketioemitter_type'])
+      ->set('log.command_bus.socketioemitter_redis_host', $values['socketioemitter_redis_host'])
+      ->set('log.command_bus.socketioemitter_redis_port', $values['socketioemitter_redis_port'])
+      ->set('log.command_bus.level', $values['level'])
       ->save();
     parent::submitForm($form, $form_state);
   }

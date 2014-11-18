@@ -8,7 +8,6 @@
 namespace Drupal\culturefeed;
 
 use CultureFeed;
-use CultuurNet\Auth\ConsumerCredentials;
 use Psr\Log\LoggerInterface;
 
 class CultureFeedFactory implements CultureFeedFactoryInterface {
@@ -39,19 +38,19 @@ class CultureFeedFactory implements CultureFeedFactoryInterface {
    *
    * @param OAuthClientFactoryInterface $oauth_client
    *   The oauth client.
-   * @param ConsumerCredentials $consumer_credentials
-   *   The consumer credentials.
+   * @param UserCredentials $user_credentials
+   *   The user credentials.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
    */
   public function __construct(
     OAuthClientFactoryInterface $oauth_client,
-    ConsumerCredentials $consumer_credentials,
+    UserCredentials $user_credentials,
     LoggerInterface $logger
   ) {
 
     $this->oauthClient = $oauth_client;
-    $this->consumerCredentials = $consumer_credentials;
+    $this->userCredentials = $user_credentials;
     $this->logger = $logger;
 
   }
@@ -69,11 +68,11 @@ class CultureFeedFactory implements CultureFeedFactoryInterface {
    */
   public function createAuthenticated() {
 
-    $key = $this->consumerCredentials->getKey();
-    $secret = $this->consumerCredentials->getSecret();
+    $token = $this->userCredentials->getToken();
+    $secret = $this->userCredentials->getSecret();
 
     try {
-      return $this->create($key, $secret);
+      return $this->create($token, $secret);
     }
     catch (\Exception $e) {
       $this->logger->error('No authenticated instance could be created.');

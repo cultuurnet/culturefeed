@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\culturefeed_udb3\EntryApiFactory.
+ * Contains Drupal\culturefeed_udb3\UDB2EntryApiFactory.
  */
 
 namespace Drupal\culturefeed_udb3;
@@ -10,8 +10,9 @@ namespace Drupal\culturefeed_udb3;
 use Drupal\Core\Config\ConfigFactory;
 use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\UDB3\UDB2\Consumer;
+use CultuurNet\UDB3\UDB2\EntryAPIFactory;
 
-class EntryApiFactory implements EntryApiFactoryInterface {
+class UDB2EntryApiFactory implements UDB2EntryApiFactoryInterface {
 
   /**
    * The config factory.
@@ -46,9 +47,9 @@ class EntryApiFactory implements EntryApiFactoryInterface {
   public function get() {
 
     $config = $this->config;
-    $base_url = $config->get('culturefeed.api')->get('api_location');
+    $base_url = $config->get('api_location');
     $consumer = new Consumer($base_url, $this->credentials);
-    return new \CultuurNet\UDB3\UDB2\EntryAPIFactory($consumer);
+    return new EntryAPIFactory($consumer);
   }
 
 

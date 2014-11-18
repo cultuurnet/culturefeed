@@ -60,8 +60,9 @@ class EventsController extends ControllerBase {
    */
   public function tag(Request $request) {
 
-    $keyword = new Keyword($request->query->get('keyword'));
-    $event_ids = $request->query->get('events');
+    $body_content = json_decode($request->getContent());
+    $keyword = new Keyword($body_content->keyword);
+    $event_ids = $body_content->events;
 
     $response = JsonLdResponse::create();
 

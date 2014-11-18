@@ -32,26 +32,34 @@ services:
     class: Broadway\EventDispatcher\EventDispatcher
     calls:
       - [addListener, ['%resque.command.bus.event_command_context_set%', ['@culturefeed_udb3.execution_context_metadata_enricher', 'setContext']]]
+  culturefeed_udb3.local_event_repository:
+    class: CultuurNet\UDB3\Event\EventRepository
+    arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
+  culturefeed_udb3.udb2_entry_api.factory:
+    class: Drupal\culturefeed_udb3\UDB2EntryApiFactory
+    arguments: ['@config.factory', '@culturefeed.consumer_credentials']
+  culturefeed_udb3.udb2_entry_api:
+    class: CultuurNet\UDB3\UDB2\EntryAPIFactory
+    factory_service: culturefeed_udb3.udb2_entry_api.factory
+    factory_method: get
+  culturefeed_udb3.event_repository:
+    class: CultuurNet\UDB3\UDB2\EventRepository
+    arguments: ['@culturefeed_udb3.local_event_repository', '@culturefeed_udb3.search_api_2', '@culturefeed_udb3.udb2_entry_api', ['@culturefeed_udb3.event_stream_metadata_enricher']]
+  culturefeed_udb3.event_command_handler:
+    class: CultuurNet\UDB3\Event\EventCommandHandler
+    arguments: ['@culturefeed_udb3.event_repository', '@culturefeed_udb3.search']
+  culturefeed_udb3.logger.command_bus.factory:
+    class: Monolog\Logger
+    arguments: ['@config.factory']
   culturefeed_udb3.event_command_bus:
     class: CultuurNet\UDB3\CommandHandling\ResqueCommandBus
     arguments: ['@culturefeed_udb3.main_command_bus', '%command_bus.parameter%', '@culturefeed_udb3.command_bus_event_dispatcher']
     calls:
+      - [setLogger, ['@culturefeed_udb3.logger.command_bus.factory']]
       - [subscribe, ['@culturefeed_udb3.event_command_handler']]
   culturefeed_udb3.event_store:
     class: Drupal\culturefeed_udb3\EventStore
     arguments: ['@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
-  culturefeed_udb3.event_repository:
-    class: CultuurNet\UDB3\Event\EventRepository
-    arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
-  culturefeed_udb3.udb2_entry_api_factory:
-    class: CultuurNet\UDB3\UDB2\EntryAPIFactory
-    arguments: ['@config.factory']
-  culturefeed_udb3.udb2_event_repository:
-    class: CultuurNet\UDB3\UDB2\EventRepository
-    arguments: ['@culturefeed_udb3.event_repository', '@culturefeed_udb3.search_api_2', ['@culturefeed_udb3.udb2_entry_api_factory', 'get'], ['@culturefeed_udb3.event_stream_metadata_enricher']]
-  culturefeed_udb3.event_command_handler:
-    class: CultuurNet\UDB3\Event\EventCommandHandler
-    arguments: ['@culturefeed_udb3.event_repository']
 
   culturefeed_udb3.event.real:
     class: CultuurNet\UDB3\DefaultEventService
@@ -63,8 +71,8 @@ services:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
       - { name: cache.bin }
-    factory_method: get
     factory_service: cache_factory
+    factory_method: get
     arguments: [culturefeed_udb3_event]
   culturefeed_udb3.event.tagger:
     class: CultuurNet\UDB3\Event\DefaultEventTaggerService

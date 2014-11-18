@@ -1,1 +1,10 @@
 sync_with_udb2: 1
+log:
+  command_bus:
+    hipchat: 0
+    file: 0
+    socketioemitter: 0
+    file_path: command_bus.log
+    socketioemitter_redis_host: 127.0.0.1
+    socketioemitter_redis_port: '6379'
+    level: DEBUG

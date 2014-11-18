@@ -7,8 +7,6 @@
 
 namespace Drupal\culturefeed;
 
-use CultuurNet\Auth\ConsumerCredentials;
-
 /**
  * The interface for creating user credentials.
  */
@@ -17,7 +15,7 @@ interface UserCredentialsFactoryInterface {
   /**
    * Returns user credentials.
    *
-   * @return ConsumerCredentials
+   * @return UserCredentials
    *   The user credentials.
    */
   public function get();

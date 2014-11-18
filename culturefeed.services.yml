@@ -15,7 +15,7 @@ services:
     class: Drupal\culturefeed\UserCredentialsFactory
     arguments: ['@config.factory', '@current_user', '@culturefeed.user_map', '@entity.manager', '@entity.query', '@logger.channel.culturefeed']
   culturefeed.user_credentials:
-    class: CultuurNet\Auth\ConsumerCredentials
+    class: Drupal\culturefeed\UserCredentials
     factory_service: culturefeed.user_credentials.factory
     factory_method: get
   culturefeed.factory:
@@ -34,6 +34,13 @@ services:
   culturefeed.current_user:
     class: Drupal\culturefeed\UserFactory
     factory_service: culturefeed.user_factory
+    factory_method: get
+  culturefeed.consumer_credentials.factory:
+    class: Drupal\culturefeed\ConsumerCredentialsFactory
+    arguments: ['@config.factory', '@logger.channel.culturefeed']
+  culturefeed.consumer_credentials:
+    class: CultuurNet\Auth\ConsumerCredentials
+    factory_service: culturefeed.consumer_credentials.factory
     factory_method: get
 
   access_check.culturefeed.current_user:

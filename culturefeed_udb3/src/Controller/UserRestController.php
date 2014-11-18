@@ -10,6 +10,8 @@ namespace Drupal\culturefeed_udb3\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultureFeed_User;
+use CultuurNet\UDB3\UsedKeywordsMemory\UsedKeywordsMemoryServiceInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 
 class UserRestController extends ControllerBase {
@@ -26,7 +28,8 @@ class UserRestController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('culturefeed.current_user')
+      $container->get('culturefeed.current_user'),
+      $container->get('culturefeed_udb3.event.used_keywords_memory')
     );
   }
 
@@ -36,8 +39,9 @@ class UserRestController extends ControllerBase {
    * @param CultureFeed_User $user
    *   A culturefeed user object.
    */
-  public function __construct(CultureFeed_User $user) {
+  public function __construct(CultureFeed_User $user, UsedKeywordsMemoryServiceInterface $memory) {
     $this->user = $user;
+    $this->memory = $memory;
   }
 
   /**
@@ -53,6 +57,24 @@ class UserRestController extends ControllerBase {
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);
+
+    return $response;
+
+  }
+
+  /**
+   * Returns udb3 keywords.
+   *
+   * @return JsonLdResponse
+   *   A json response.
+   */
+  public function keywords() {
+
+    $memory = $this->memory;
+    $user = $this->user;
+    $memory = $memory->getMemory($user->id);
+
+    $response = JsonResponse::create($memory);
 
     return $response;
 

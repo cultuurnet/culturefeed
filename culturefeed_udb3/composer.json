@@ -3,18 +3,30 @@
     "description": "Culturefeed UDB3 search platform",
     "license": "GPLv3",
     "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://bitbucket.org/2dotstwice/culudb-php.git"
-      },
-      {
-        "type": "vcs",
-        "url": "https://bitbucket.org/2dotstwice/culudb-php-symfony.git"
-      }
+        {
+            "type": "vcs",
+            "url": "https://bitbucket.org/2dotstwice/culudb-php.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://bitbucket.org/2dotstwice/culudb-php-doctrine.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://bitbucket.org/2dotstwice/culudb-php-symfony.git"
+        }
     ],
+    "minimum-stability": "dev",
     "require": {
-      "cultuurnet/udb3": "~0.0@dev",
-      "cultuurnet/udb3-symfony": "~0.0@dev"
+        "cultuurnet/udb3": "~0.0@dev",
+        "cultuurnet/udb3-symfony": "~0.0@dev",
+        "monolog/monolog": "~1.11",
+        "chrisboulton/php-resque": "~1.2",
+        "predis/predis": "~1.0",
+        "rase/socket.io-emitter": "0.6.1"
     },
-    "minimum-stability": "dev"
+    "preferred-install": "source",
+    "provide": {
+      "ext-redis": "*"
+    }
 }

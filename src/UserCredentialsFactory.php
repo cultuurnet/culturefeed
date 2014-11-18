@@ -11,7 +11,6 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
-use CultuurNet\Auth\ConsumerCredentials;
 use Psr\Log\LoggerInterface;
 
 class UserCredentialsFactory implements UserCredentialsFactoryInterface {
@@ -108,17 +107,17 @@ class UserCredentialsFactory implements UserCredentialsFactoryInterface {
           ->load(reset($result));
 
         try {
-          return new ConsumerCredentials($data->token->value, $data->secret->value);
+          return new UserCredentials($data->token->value, $data->secret->value);
         }
         catch (\Exception $e) {
-          $this->logger->error('No consumer credentials could be created.');
+          $this->logger->error('No user credentials could be created.');
         }
 
       }
 
     }
 
-    return new ConsumerCredentials();
+    return new UserCredentials();
 
   }
 

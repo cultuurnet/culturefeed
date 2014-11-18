@@ -44,12 +44,22 @@ culturefeed_udb3.user:
     _format: ld_json
     _method: GET
 
-culturefeed_udb3.events.tag:
-  path: '/udb3/api/1.0/events/tag'
+culturefeed_udb3.user.keywords:
+  path: '/udb3/api/1.0/user/keywords'
   defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\EventsController::tag'
+    _controller: '\Drupal\culturefeed_udb3\Controller\UserRestController::keywords'
+    _title: 'User keywords'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: GET
+
+culturefeed_udb3.events.tag:
+  path: 'events/tag'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventsController::tag'
     _title: 'Events tagger'
   requirements:
     _culturefeed_current_user: 'TRUE'
-    _format: ld_json
-    _method: GET
+    _format: json
+    _method: POST
