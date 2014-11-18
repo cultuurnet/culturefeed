@@ -302,6 +302,15 @@ function culturefeed_get_searchable_type_by_path($path = '') {
 }
 
 /**
+ * Get the search page that's currently shown.
+ */
+function culturefeed_search_get_active_search_page() {
+  if ($type = culturefeed_get_searchable_type_by_path()) {
+    return culturefeed_get_search_page($type);
+  }
+}
+
+/**
  * Returns an instance of a search page.
  *
  * @param array $search_type

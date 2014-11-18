@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Page callbacks for the saved searches module.
+ */
 
 /**
  * Save searches form.
@@ -17,12 +21,7 @@ function culturefeed_saved_searches_save_search_form() {
   $form['save_search_notification_frequency'] = array(
     '#title' => t('Stuur UiTalerts bij nieuwe resultaten:'),
     '#type' => 'select',
-    '#options' => array(
-      'ASAP' => 'dagelijks overzicht',
-      'DAILY' => 'wekelijks overzicht',
-      'WEEKLY' => 'onmiddellijk',
-      'NEVER' => 'nee, bedankt',
-    ),
+    '#options' => culturefeed_saved_searches_frequency_options(),
   );
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
@@ -97,5 +96,53 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
   // Construct URL redirect with same search params
   // @question: do we need to set the facets in the URl as well when we redirect to search page?
   $form_state['redirect'] = current_path();
+
+}
+
+/**
+ * Page callback to show the management listing of all saved searches of current user.
+ */
+function culturefeed_saved_searches_page_my_searches() {
+
+  $build = array();
+dsm(DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList());
+  try {
+
+    $build['list'] = array(
+      '#theme' => 'culturefeed_saved_searches_manage_list',
+      '#searches' => DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList(),
+    );
+
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('A problem occurred while loading your searches. Please try again later.'), 'error');
+  }
+
+  return $build;
+
+}
+
+/**
+ * Form callback to delete a given search.
+ */
+function culturefeed_saved_searches_delete_form($form, &$form_state, CultureFeed_SavedSearches_SavedSearch $search) {
+  $form_state['search'] = $search;
+  return confirm_form($form, t('Are you sure you want to delete this search?'), 'culturefeed/searches', '<p>' . t('This action cannot be undone.') . '</p>', t('Delete'), t('Cancel'));
+}
+
+/**
+ * Submit the delete form.
+ */
+function culturefeed_saved_searches_delete_form_submit($form, &$form_state) {
+
+  try {
+    DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->unsubscribe($form_state['search']->id, DrupalCultureFeed::getLoggedInUserId());
+    $form_state['redirect'] = 'culturefeed/searches';
+    drupal_set_message(t('Your search has been deleted'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_saved_searches', $e);
+    drupal_set_message(t('A problem occurred while deleting your search. Please try again later.'), 'error');
+  }
 
 }

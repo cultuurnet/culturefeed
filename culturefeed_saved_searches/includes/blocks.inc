@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Block callbacks for the saved searches module.
+ */
 
 /**
  * CTA block to save current search.
@@ -27,8 +31,7 @@ function culturefeed_saved_searches_block_cta_bottom() {
  */
 function culturefeed_saved_searches_construct_save_link() {
 
-  if ($type = culturefeed_get_searchable_type_by_path()) {
-    $page = culturefeed_get_search_page($type);
+  if ($page = culturefeed_search_get_active_search_page()) {
 
     // Construct saved query parameters.
     $query = array();
