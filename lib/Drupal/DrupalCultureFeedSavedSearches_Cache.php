@@ -102,5 +102,24 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
 
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getSavedSearch($savedSearchId) {
+
+    $cid = 'detail:' . $savedSearchId;
+
+    if ($cache = $this->cacheGet($cid)) {
+      return $cache->data;
+    }
+
+    $data = $this->realCultureFeedSavedSearches->getSavedSearch($savedSearchId);
+
+    $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
+
+    return $data;
+
+  }
+
 }
 

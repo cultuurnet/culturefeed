@@ -48,7 +48,7 @@ function culturefeed_saved_searches_construct_save_link() {
     foreach ($parameters as $param) {
       $key = $param->getKey();
 
-      if (in_array($key, $disallowed_parameters)) {
+      if (in_array($key, $supported_parameters)) {
         $params[] = $key . '=' . $param->getValue();
       }
       elseif ($key == 'datetype') {

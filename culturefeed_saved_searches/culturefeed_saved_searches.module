@@ -69,8 +69,7 @@ function culturefeed_saved_searches_menu() {
     'title' => 'Delete saved search',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_saved_searches_delete_form', 2),
-    'access callback' => 'culturefeed_saved_searches_is_owner',
-    'access arguments' => array(2),
+    'access callback' => 'culturefeed_is_culturefeed_user', // access check is done on service.
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
@@ -250,13 +249,8 @@ function culturefeed_saved_searches_search_load($id) {
   }
 
   try {
-    $list = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
-    foreach ($list as $item) {
-      $items[$item->id] = $item;
-      if ($id == $item->id) {
-        return $item;
-      }
-    }
+    $search = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getSavedSearch($id);
+    return empty($search) ? FALSE : $search;
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_saved_searches', $e);
@@ -266,12 +260,4 @@ function culturefeed_saved_searches_search_load($id) {
 
   return FALSE;
 
-}
-
-/**
- * Access callback to check if the current user is owner of a given saved search.
- */
-function culturefeed_saved_searches_is_owner(CultureFeed_SavedSearches_SavedSearch $search) {
-  return TRUE;
-  return $search->userId == DrupalCulturefeed::getLoggedInUserId();
 }

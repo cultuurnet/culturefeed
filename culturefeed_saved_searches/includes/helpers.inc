@@ -23,6 +23,14 @@ function culturefeed_saved_searches_frequency_options() {
  */
 function culturefeed_saved_search_get_search_url_query($search) {
 dsm($search->query);
+
+  // Check for custom filter options.
+  $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+  $known_queries = array();
+  foreach ($filter_options as $filter) {
+    $known_queries[$filter['api-filter-query']] = $filter['query-string'];
+  }
+
   $query = array();
   foreach (explode('&', $search->query) as $key => $value) {
 
@@ -45,6 +53,12 @@ dsm($search->query);
     // Filterqueries are most of the time facets.
     elseif ($param[0] == 'fq') {
 
+      // First check if the query is a custom filter option.
+      if (isset($known_queries[$param[1]])) {
+        $query[$known_queries[$param[1]]] = TRUE;
+        continue;
+      }
+
       $conditions = explode(' OR ', $param[1]);
       foreach ($conditions as $condition) {
 
@@ -56,23 +70,36 @@ dsm($search->query);
         $facet_value = $search_on[1];
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
 
-        // Takeout the special facets.
+        // Check what type of filter it is.
         switch ($facet_field) {
 
+          // Agefrom facet.
           case 'agefrom':
             $query['min_age'] = culturefeed_saved_search_get_agefrom_value($facet_value);
             break;
 
+          // Filtering on an actor.
+          case 'actor':
+            $query['actor'] = $facet_value;
+
+          // Filtering on location.
           case 'category_flandersregion_name':
             $query['location'] = $facet_value;
             break;
 
-          default:
+          // Normal facets.
+          case 'category_id':
+          case 'type':
+
             $values = explode(',', $facet_value);
             if (!isset($query['facet'][$search_on[0]])) {
               $query['facet'][$search_on[0]] = array();
             }
             $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+            break;
+
+          default:
+            // unsupported filter options.
 
         }
 
