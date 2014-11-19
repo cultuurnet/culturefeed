@@ -938,7 +938,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
  */
 function culturefeed_search_ui_register_deletions() {
 
-  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', NULL);
+  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME - (2629743 * 3));
   if ($last_registration_timestamp) {
     $last_registration = date('Y-m-d', $last_registration_timestamp);
   }
