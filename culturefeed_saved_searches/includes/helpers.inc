@@ -31,9 +31,18 @@ dsm($search->query);
       continue;
     }
 
+    // Param q = the search
     if ($param[0] == 'q') {
+      if ($param[1] == '*:*') {
+        continue;
+      }
       $query['search'] = $param[1];
     }
+    // Search on location
+    elseif ($param[0] == 'zipcode') {
+      $query['location'] = $param[1];
+    }
+    // Filterqueries are most of the time facets.
     elseif ($param[0] == 'fq') {
 
       $conditions = explode(' OR ', $param[1]);
@@ -47,16 +56,26 @@ dsm($search->query);
         $facet_value = $search_on[1];
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
 
-        if ($facet_field == 'agefrom') {
-          $query['min_age'] = culturefeed_saved_search_get_agefrom_value($facet_value);
+        // Takeout the special facets.
+        switch ($facet_field) {
+
+          case 'agefrom':
+            $query['min_age'] = culturefeed_saved_search_get_agefrom_value($facet_value);
+            break;
+
+          case 'category_flandersregion_name':
+            $query['location'] = $facet_value;
+            break;
+
+          default:
+            $values = explode(',', $facet_value);
+            if (!isset($query['facet'][$search_on[0]])) {
+              $query['facet'][$search_on[0]] = array();
+            }
+            $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+
         }
-        else {
-          $values = explode(',', $facet_value);
-          if (!isset($query['facet'][$search_on[0]])) {
-            $query['facet'][$search_on[0]] = array();
-          }
-          $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
-        }
+
 
       }
 
@@ -86,6 +105,9 @@ dsm($search->query);
  * Get the agefrom querystring to be set active.
  */
 function culturefeed_saved_search_get_agefrom_value($facet_value) {
+
+  $facet_value = 'agefrom:' . $facet_value;
+
   $options = culturefeed_search_ui_get_age_range_facet_options();
   foreach ($options as $key => $option) {
     $option['query'] = str_replace(array('(', ')', '"'), '', $option['query']);

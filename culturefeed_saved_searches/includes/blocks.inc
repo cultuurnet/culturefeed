@@ -40,28 +40,23 @@ function culturefeed_saved_searches_construct_save_link() {
     $query['title'] = drupal_get_title();
 
     // Add search parameters in string.
-    $allowed_parameters = array('fq', 'group');
+    $supported_parameters = array('fq', 'q', 'zipcode');
     $parameters = $page->getParameters();
 
     $has_date_filter = FALSE;
-    $query_string = '';
-
+    $params = array();
     foreach ($parameters as $param) {
       $key = $param->getKey();
 
-      if (in_array($key, $allowed_parameters)) {
-        $value = $param->getValue();
-        $query_string .= '&' . $key . '=' . $value;
+      if (in_array($key, $disallowed_parameters)) {
+        $params[] = $key . '=' . $param->getValue();
       }
-      if ($key == 'q') { // Query param comes first in string.
-        $query_string = $key . '=' . $param->getValue() . $query_string;
-      }
-      if ($key == 'datetype') {
+      elseif ($key == 'datetype') {
         $has_date_filter = TRUE;
       }
     }
 
-    $query['query'] = $query_string;
+    $query['query'] = implode('&', $params);
     if ($has_date_filter) {
       $query['datefilter'] = TRUE;
     }
