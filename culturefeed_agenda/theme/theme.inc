@@ -151,7 +151,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
-    $variables['shortdescription'] = $detail->getShortDescription();
+    $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
 
     // Ad id / title to Drupal settings for easy reference in GTM.
