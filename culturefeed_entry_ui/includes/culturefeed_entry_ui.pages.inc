@@ -3032,7 +3032,7 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
 
   } catch (Exception $e) {
 
-    if ($e->getCode() == culturefeed_entry_uiApi::CODE_KEYWORD_PRIVATE) {
+    if ($e->getCode() == CultureFeed_EntryApi::CODE_KEYWORD_PRIVATE) {
       drupal_set_message(t('You tried to add a tag that should not be added by anyone. If you still wish to add this or have other questions about this, please email to "vragen@uitdatabank.be".'));
     }
     else {
