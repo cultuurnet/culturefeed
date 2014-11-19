@@ -10,6 +10,7 @@ namespace Drupal\culturefeed_udb3;
 use CultuurNet\UDB3\Event\EventRepository;
 use CultuurNet\UDB3\SearchAPI2\DefaultSearchService;
 use CultuurNet\UDB3\UDB2\EntryAPIFactory;
+use CultuurNet\UDB3\UDB2\EntryAPIImprovedFactory;
 use Broadway\EventSourcing\MetadataEnrichment\MetadataEnrichingEventStreamDecorator;
 use Drupal\Core\Config\ConfigFactory;
 
@@ -59,6 +60,8 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
    *   The search api.
    * @param EntryAPIFactory $entry_api
    *   The entry api.
+   * @param EntryAPIImprovedFactory $improved_entry_api
+   *   The improved entry api.
    * @param MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher
    *   The event stream metadata enricher.
    * @param ConfigFactory $config
@@ -68,12 +71,14 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
     EventRepository $local_event_repository,
     DefaultSearchService $search_api,
     EntryAPIFactory $entry_api,
+    EntryAPIImprovedFactory $improved_entry_api,
     MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher,
     ConfigFactory $config
   ) {
     $this->localEventRepository = $local_event_repository;
     $this->searchApi = $search_api;
     $this->entryApi = $entry_api;
+    $this->improvedEntryApi = $improved_entry_api;
     $this->eventStreamMetadataEnricher = $event_stream_metadata_enricher;
     $this->config = $config->get('culturefeed_udb3.settings');
   }
@@ -87,6 +92,7 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
       $this->localEventRepository,
       $this->searchApi,
       $this->entryApi,
+      $this->improvedEntryApi,
       array($this->eventStreamMetadataEnricher)
     );
 

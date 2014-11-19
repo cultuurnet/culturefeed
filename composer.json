@@ -4,7 +4,7 @@
     "description": "CultuurNet culturefeed PHP library & Drupal module",
     "license": "Apache-2.0",
     "require": {
-      "cultuurnet/cdb": "~2.0",
+      "cultuurnet/cdb": "dev-feature/keywords-remove-leading-trailing-whitespace as 2.0.1",
       "cultuurnet/culturefeed-php": "~1.0"
     },
     "extra": {
