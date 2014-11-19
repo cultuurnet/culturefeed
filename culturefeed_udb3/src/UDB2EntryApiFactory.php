@@ -17,14 +17,14 @@ class UDB2EntryApiFactory implements UDB2EntryApiFactoryInterface {
   /**
    * The config factory.
    *
-   * @var \Drupal\Core\Config\ConfigFactory;
+   * @var \Drupal\Core\Config\ConfigFactory
    */
   protected $config;
 
   /**
    * The credentials.
    *
-   * @var \CultuurNet\Auth\ConsumerCredentials;
+   * @var \CultuurNet\Auth\ConsumerCredentials
    */
   protected $credentials;
 
