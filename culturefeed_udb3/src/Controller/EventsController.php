@@ -59,14 +59,12 @@ class EventsController extends ControllerBase {
    *   A json response.
    */
   public function tag(Request $request) {
-
-    $body_content = json_decode($request->getContent());
-    $keyword = new Keyword($body_content->keyword);
-    $event_ids = $body_content->events;
-
     $response = JsonLdResponse::create();
 
     try {
+      $body_content = json_decode($request->getContent());
+      $keyword = new Keyword($body_content->keyword);
+      $event_ids = $body_content->events;
 
       $command_id = $this->eventTagger->tagEventsById($event_ids, $keyword);
 
