@@ -43,6 +43,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->parameters[] = $this->facetComponent->facetField('category');
       $this->parameters[] = $this->facetComponent->facetField('datetype');
       $this->parameters[] = $this->facetComponent->facetField('city');
+      $this->parameters[] = $this->facetComponent->facetField('location_category_facility_id');
 
       $this->execute($params);
 
@@ -181,8 +182,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $translated_terms = array();
     $facets = $this->facetComponent->getFacets();
     foreach ($facets as $key => $facet) {
-      // The key should start with 'category_'
-      if (substr($key, 0, 9) == 'category_') {
+      // The key should start with 'category_' or 'location_'
+      $start = substr($key, 0, 9);
+      if (in_array($start, array('category_', 'location_'))) {
         $items = $facet->getResult()->getItems();
         foreach ($items as $item) {
           $found_ids[$item->getValue()] = $item->getValue();
@@ -198,12 +200,16 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
       // Translate the facets labels.
       foreach ($facets as $key => $facet) {
-        // The key should start with 'category_'
-        if (substr($key, 0, 9) == 'category_') {
+        // The key should start with 'category_' or 'location_'
+        $start = substr($key, 0, 9);
+        if (in_array($start, array('category_', 'location_'))) {
           $items = $facet->getResult()->getItems();
           foreach ($items as $item) {
             // Translate if found.
             if (!empty($translations[$item->getValue()][$preferred_language])) {
+              if ($start == 'location_') {
+                dsm($translations[$item->getValue()][$preferred_language], $item->getLabel());
+              }
               $item->setLabel($translations[$item->getValue()][$preferred_language]);
             }
           }

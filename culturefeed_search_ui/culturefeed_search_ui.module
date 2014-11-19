@@ -375,6 +375,7 @@ function culturefeed_search_ui_block_configure($delta) {
     }
 
     // Disable possible facet options.
+    // In fact this facility is named "location_category_facility_id" on events.
     if ($delta == 'facet-facility') {
 
       $options = culturefeed_search_get_categories_by_domain($delta_parts[1]);
@@ -716,12 +717,30 @@ function culturefeed_search_ui_block_view($delta) {
           }
         }
 
+        $facet_name = 'category_' . $delta_parts[1] . '_id';
+        $domain_id = $delta_parts[1];
+        $allowed_values = array();
+
+        // Hande "location_category_facility_id" as "facility".
+        if ($delta_parts[1] == 'facility') {
+          $delta = 'facility';
+          $facet_name = 'location_category_facility_id';
+          $domain_id = 'location_category_facility_id';
+          $enabled_options = variable_get('culturefeed_facet_enabled_options', NULL);
+          $allowed_values = culturefeed_search_get_categories_by_domain($delta_parts[1]);
+          foreach ($allowed_values as $key => $value) {
+            if (!isset($enabled_options[$delta][$key])) {
+              unset($allowed_values[$key]);
+            }
+          }
+        }
+
         $block_settings = array(
           'sort' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
           'highest_level' => variable_get('culturefeed_facet_highest_level_' . $delta, 1),
           'show_subitems' => variable_get('culturefeed_facet_show_subitems_' . $delta, FALSE),
         );
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), $block_settings);
+        $block = culturefeed_search_ui_search_facets_block($facet_name, $domain_id, $allowed_values, $block_settings);
       }
 
   }
