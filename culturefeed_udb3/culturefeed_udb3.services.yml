@@ -96,3 +96,8 @@ services:
     class: Drupal\culturefeed_udb3\JsonLdSubscriber
     tags:
       - { name: event_subscriber }
+  culturefeed_udb3.event_command_bus_subscriber:
+    class: Drupal\culturefeed_udb3\EventCommandBusSubscriber
+    arguments: ['@culturefeed_udb3.event_command_bus', '@culturefeed.current_user', '@culturefeed.user_credentials']
+    tags:
+      - { name: event_subscriber }

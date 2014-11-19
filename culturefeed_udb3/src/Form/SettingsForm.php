@@ -30,17 +30,20 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('culturefeed_udb3.settings');
     $types = array('' => '', 'DEBUG' => t('Debug'), 'ALERT' => t('Alert'));
 
+    // Sync with UDB2.
     $form['sync_with_udb2'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Sync with UDB2'),
       '#default_value' => $config->get('sync_with_udb2'),
     );
 
+    // Command bus logging.
     $form['log.command_bus'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Command bus logging settings'),
     );
 
+    // Command bus logging: hipchat.
     $form['log.command_bus']['hipchat'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Hipchat'),
@@ -50,7 +53,28 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Enable'),
       '#default_value' => $config->get('log.command_bus.hipchat'),
     );
+    $form['log.command_bus']['hipchat']['hipchat_room'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Room'),
+      '#default_value' => $config->get('log.command_bus.hipchat_room'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="hipchat_type"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+    $form['log.command_bus']['hipchat']['hipchat_token'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Token'),
+      '#default_value' => $config->get('log.command_bus.hipchat_token'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="hipchat_type"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
 
+    // Command bus logging: file.
     $form['log.command_bus']['file'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('File'),
@@ -71,6 +95,7 @@ class SettingsForm extends ConfigFormBase {
       ),
     );
 
+    // Command bus logging: socketioemitter.
     $form['log.command_bus']['socketioemitter'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Socket'),
@@ -122,6 +147,8 @@ class SettingsForm extends ConfigFormBase {
     $this->config('culturefeed_udb3.settings')
       ->set('sync_with_udb2', $values['sync_with_udb2'])
       ->set('log.command_bus.hipchat', $values['hipchat_type'])
+      ->set('log.command_bus.hipchat_room', $values['hipchat_room'])
+      ->set('log.command_bus.hipchat_token', $values['hipchat_token'])
       ->set('log.command_bus.file', $values['file_type'])
       ->set('log.command_bus.file_path', $values['file_path'])
       ->set('log.command_bus.socketioemitter', $values['socketioemitter_type'])

@@ -32,7 +32,7 @@ services:
     class: Drupal\culturefeed\UserFactory
     arguments: ['@culturefeed.factory.authenticated', '@current_user', '@culturefeed.user_map']
   culturefeed.current_user:
-    class: Drupal\culturefeed\UserFactory
+    class: CultureFeed_User
     factory_service: culturefeed.user_factory
     factory_method: get
   culturefeed.consumer_credentials.factory:

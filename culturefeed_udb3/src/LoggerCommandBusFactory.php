@@ -54,7 +54,7 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
     $config = $this->config;
     $logger = new Logger('command_bus');
 
-    $handler = $this->logger;
+    $handler = NULL;
 
     if ($config->get('log.command_bus.hipchat')) {
 
@@ -99,12 +99,13 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
 
     }
 
-    $handler->setLevel($config->get('log.command_bus.level'));
-    $logger->pushHandler($handler);
+    if ($handler) {
+      $handler->setLevel($config->get('log.command_bus.level'));
+      $logger->pushHandler($handler);
+    }
 
     return $logger;
 
   }
-
 
 }
