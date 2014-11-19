@@ -508,6 +508,7 @@ function culturefeed_pages_get_validated_admins_of_page(CultureFeed_Cdb_Item_Pag
     return array();
   }
 
+  $admins_of_page = array();
   foreach ($admin_list->memberships as $admin) {
     if ($admin->validated) {
       $admins_of_page[$admin->user->id] = $admin->user->id;
