@@ -16,6 +16,7 @@ function culturefeed_saved_searches_save_search_form() {
     '#type' => 'textarea',
     '#rows' => 2,
     '#resizable' => FALSE,
+    '#required' => TRUE,
     '#default_value' => isset($params['title']) ? $params['title'] : '',
   );
   $form['save_search_notification_frequency'] = array(
@@ -85,7 +86,7 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
   $cf_account = DrupalCultureFeed::getLoggedInUser();
   $savedSearch = new CultureFeed_SavedSearches_SavedSearch();
   $params = drupal_get_query_parameters();
-
+dsm($params);
   $savedSearch->userId = $cf_account->id;
   $savedSearch->name = $params['title'];
   $savedSearch->query = urlencode($params['query']);
@@ -93,9 +94,10 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
 
   $service = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->subscribe($savedSearch);
 
-  // Construct URL redirect with same search params
-  // @question: do we need to set the facets in the URl as well when we redirect to search page?
-  $form_state['redirect'] = current_path();
+  // Construct URL redirect with same search params.
+  dsm($savedSearch);
+  dsm(culturefeed_saved_search_get_search_url_query($savedSearch));
+  $form_state['redirect'] = array('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($savedSearch)));
 
 }
 
