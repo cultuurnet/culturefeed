@@ -5,29 +5,13 @@
  * Contains \Drupal\culturefeed_udb3\Entity\DomainMessageEntity.
  */
 
-namespace Drupal\culturefeed_udb3\Entity;
+namespace Drupal\culturefeed_udb3;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
-/**
- * Defines the culturefeed user entity.
- *
- * @ContentEntityType(
- *   id = "culturefeed_domain_message",
- *   label = @Translation("Culturefeed domain message"),
- *   base_table = "culturefeed_domain_message",
- *   handlers = {
- *     "storage_schema" = "Drupal\culturefeed_udb3\DomainMessageStorageSchema",
- *   },
- *   entity_keys = {
- *     "id" = "dmid",
- *   },
- *   fieldable = FALSE,
- * )
- */
 class DomainMessageEntity extends ContentEntityBase implements ContentEntityInterface {
 
   /**

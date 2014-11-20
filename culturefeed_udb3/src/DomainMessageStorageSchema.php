@@ -22,7 +22,7 @@ class DomainMessageStorageSchema extends SqlContentEntityStorageSchema {
 
     $schema = parent::getEntitySchema($entity_type, $reset);
 
-    $schema['culturefeed_domain_message']['unique keys'] += array(
+    $schema[$entity_type->getBaseTable()]['unique keys'] += array(
       'id' => array('uuid', 'playhead'),
     );
 

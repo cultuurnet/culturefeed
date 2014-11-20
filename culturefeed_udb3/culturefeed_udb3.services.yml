@@ -64,7 +64,7 @@ services:
     factory_method: get
   culturefeed_udb3.event_store:
     class: Drupal\culturefeed_udb3\EventStore
-    arguments: ['@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
+    arguments: ['event_store', '@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
   culturefeed_udb3.local_event_repository:
     class: CultuurNet\UDB3\Event\EventRepository
     arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
@@ -108,9 +108,12 @@ services:
   culturefeed_udb3.event.tagger:
     class: CultuurNet\UDB3\Event\DefaultEventTaggerService
     arguments: ['@culturefeed_udb3.event', '@culturefeed_udb3.event_command_bus']
+  culturefeed_udb3.used_keywords_memory_event_store:
+    class: Drupal\culturefeed_udb3\EventStore
+    arguments: ['used_keywords_memory_event_store', '@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
   culturefeed_udb3.event.used_keywords_memory_repository:
     class: CultuurNet\UDB3\UsedKeywordsMemory\UsedKeywordsMemoryRepository
-    arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus']
+    arguments: ['@culturefeed_udb3.used_keywords_memory_event_store', '@culturefeed_udb3.event_bus']
   culturefeed_udb3.event.used_keywords_memory:
     class: CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService
     arguments: ['@culturefeed_udb3.event.used_keywords_memory_repository']

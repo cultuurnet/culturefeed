@@ -50,6 +50,8 @@ class EventStore implements EventStoreInterface {
   /**
    * Constructs the event store.
    *
+   * @param string $entity_type
+   *   The Domain Message Entity Type.
    * @param EntityManagerInterface $entity_manager
    *   The entity manger.
    * @param QueryFactory $entity_query
@@ -60,13 +62,14 @@ class EventStore implements EventStoreInterface {
    *   The metadata serializer.
    */
   public function __construct(
+    $entity_type,
     EntityManagerInterface $entity_manager,
     QueryFactory $entity_query,
     SimpleInterfaceSerializer $payload_serializer,
     SimpleInterfaceSerializer $metadata_serializer
   ) {
-    $this->entityManager = $entity_manager->getStorage('culturefeed_domain_message');
-    $this->entityQuery = $entity_query->get('culturefeed_domain_message');
+    $this->entityManager = $entity_manager->getStorage($entity_type);
+    $this->entityQuery = $entity_query->get($entity_type);
     $this->payloadSerializer  = $payload_serializer;
     $this->metadataSerializer = $metadata_serializer;
   }
