@@ -22,7 +22,6 @@ function culturefeed_saved_searches_frequency_options() {
  * Get the query for the search url of a saved search.
  */
 function culturefeed_saved_search_get_search_url_query($search) {
-dsm($search->query);
 
   // Check for custom filter options.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
