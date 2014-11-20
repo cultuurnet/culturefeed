@@ -15,7 +15,7 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_manage
   $items = array();
 
   foreach ($searches as $search) {
-dsm($search);
+
     $item = array(
       'title' => check_plain($search->name),
       'form' => drupal_get_form('culturefeed_saved_searches_edit_frequency_form', $search),
