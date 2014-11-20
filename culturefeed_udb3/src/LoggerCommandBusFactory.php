@@ -8,10 +8,10 @@
 namespace Drupal\culturefeed_udb3;
 
 use Drupal\Core\Config\ConfigFactory;
+use Psr\Log\LoggerInterface;
 use Monolog\Logger;
 use Monolog\Handler\HipChatHandler;
 use Monolog\Handler\StreamHandler;
-use Psr\Log\LoggerInterface;
 use SocketIO\Emitter;
 use Redis;
 use Predis\Client;
@@ -54,11 +54,11 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
     $config = $this->config;
     $logger = new Logger('command_bus');
 
-    $handler = NULL;
+    $handlers = array();
 
     if ($config->get('log.command_bus.hipchat')) {
 
-      $handler = new HipChatHandler(
+      $handlers[] = new HipChatHandler(
         $config->get('log.command_bus.hipchat_token'),
         $config->get('log.command_bus.hipchat_room')
       );
@@ -68,14 +68,14 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
     if ($config->get('log.command_bus.file')) {
 
       $path = $config->get('log.command_bus.file_path');
-      $handler = new StreamHandler('public://' . $path);
+      $handlers[] = new StreamHandler('public://' . $path);
 
     }
 
     if ($config->get('log.command_bus.socketioemitter')) {
 
-      $redis_host = ($config->get('log.command_bus.socketioemitter_redis_host')) ? $config->get('log.command_bus.socketioemitter_redis_host') : '127.0.0.1';
-      $redis_port = ($config->get('log.command_bus.socketioemitter_redis_port')) ? $config->get('log.command_bus.socketioemitter_redis_port') : '6379';
+      $redis_host = $config->get('log.command_bus.socketioemitter_redis_host');
+      $redis_port = $config->get('log.command_bus.socketioemitter_redis_port');
 
       if (extension_loaded('redis')) {
 
@@ -94,12 +94,11 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
       }
 
       $emitter = new Emitter($redis);
-
-      $handler = new SocketIOEmitterHandler($emitter);
+      $handlers[] = new SocketIOEmitterHandler($emitter);
 
     }
 
-    if ($handler) {
+    foreach ($handlers as $handler) {
       $handler->setLevel($config->get('log.command_bus.level'));
       $logger->pushHandler($handler);
     }

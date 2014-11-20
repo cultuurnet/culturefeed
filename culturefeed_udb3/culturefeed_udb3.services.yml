@@ -3,6 +3,14 @@ parameters:
   resque.command.bus.event_command_context_set: broadway.command_handling.context
 
 services:
+
+  culturefeed_udb3.cache:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory_method: get
+    factory_service: cache_factory
+    arguments: [culturefeed_udb3]
   culturefeed_udb3.iri_generator:
     class: Drupal\culturefeed_udb3\IriGenerator
     arguments: ['@url_generator']
@@ -20,10 +28,18 @@ services:
     class: Broadway\Serializer\SimpleInterfaceSerializer
   culturefeed_udb3.execution_context_metadata_enricher:
     class: CultuurNet\UDB3\EventSourcing\ExecutionContextMetadataEnricher
+  culturefeed_udb3.eventld_repository:
+    class: Drupal\culturefeed_udb3\EventldRepository
+    arguments: ['@culturefeed_udb3.cache']
+  culturefeed_udb3.eventld_projector:
+    class: CultuurNet\UDB3\Event\EventLDProjector
+    arguments: ['@culturefeed_udb3.eventld_repository', '@culturefeed_udb3.iri_generator']
   culturefeed_udb3.main_command_bus:
     class: CultuurNet\UDB3\CommandHandling\SimpleContextAwareCommandBus
   culturefeed_udb3.event_bus:
     class: Broadway\EventHandling\SimpleEventBus
+    calls:
+      - [subscribe, ['@culturefeed_udb3.eventld_projector']]
   culturefeed_udb3.event_stream_metadata_enricher:
     class: Broadway\EventSourcing\MetadataEnrichment\MetadataEnrichingEventStreamDecorator
     calls:

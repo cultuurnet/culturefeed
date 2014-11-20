@@ -5,7 +5,6 @@
  * Worker bootstrap.
  */
 
-
 use Drupal\Core\DrupalKernel;
 use Symfony\Component\HttpFoundation\Request;
 use CultuurNet\UDB3\CommandHandling\QueueJob;
