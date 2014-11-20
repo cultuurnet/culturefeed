@@ -733,6 +733,7 @@ function culturefeed_search_ui_block_view($delta) {
               unset($allowed_values[$key]);
             }
           }
+          $allowed_values = drupal_map_assoc($allowed_values);
         }
 
         $block_settings = array(

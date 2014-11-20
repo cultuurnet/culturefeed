@@ -207,9 +207,6 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
           foreach ($items as $item) {
             // Translate if found.
             if (!empty($translations[$item->getValue()][$preferred_language])) {
-              if ($start == 'location_') {
-                dsm($translations[$item->getValue()][$preferred_language], $item->getLabel());
-              }
               $item->setLabel($translations[$item->getValue()][$preferred_language]);
             }
           }
