@@ -91,10 +91,19 @@ function culturefeed_saved_search_get_search_url_query($search) {
           case 'type':
 
             $values = explode(',', $facet_value);
-            if (!isset($query['facet'][$search_on[0]])) {
-              $query['facet'][$search_on[0]] = array();
+
+            // Region facets arre location searches.
+            if (substr($facet_value, 0, 4) == 'reg.') {
+              $query['regId'] = $facet_value;
+              $query['location'] = culturefeed_search_get_term_translation($facet_value);
             }
-            $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+            else {
+              if (!isset($query['facet'][$search_on[0]])) {
+                $query['facet'][$search_on[0]] = array();
+              }
+              $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+            }
+
             break;
 
           default:
