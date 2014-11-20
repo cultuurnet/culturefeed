@@ -58,8 +58,6 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
    *   The local event repository.
    * @param DefaultSearchService $search_api
    *   The search api.
-   * @param EntryAPIFactory $entry_api
-   *   The entry api.
    * @param EntryAPIImprovedFactory $improved_entry_api
    *   The improved entry api.
    * @param MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher
@@ -70,14 +68,12 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
   public function __construct(
     EventRepository $local_event_repository,
     DefaultSearchService $search_api,
-    EntryAPIFactory $entry_api,
     EntryAPIImprovedFactory $improved_entry_api,
     MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher,
     ConfigFactory $config
   ) {
     $this->localEventRepository = $local_event_repository;
     $this->searchApi = $search_api;
-    $this->entryApi = $entry_api;
     $this->improvedEntryApi = $improved_entry_api;
     $this->eventStreamMetadataEnricher = $event_stream_metadata_enricher;
     $this->config = $config->get('culturefeed_udb3.settings');
@@ -91,7 +87,6 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
     $udb2_repository_decorator = new \CultuurNet\UDB3\UDB2\EventRepository(
       $this->localEventRepository,
       $this->searchApi,
-      $this->entryApi,
       $this->improvedEntryApi,
       array($this->eventStreamMetadataEnricher)
     );

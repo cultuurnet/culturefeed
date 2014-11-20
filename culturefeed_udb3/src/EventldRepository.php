@@ -37,13 +37,12 @@ class EventldRepository implements DocumentRepositoryInterface {
 
     $cache_item = $this->cache->get($id);
     if (FALSE === $cache_item) {
-      $value = NULL;
+      return NULL;
     }
     else {
       $value = $cache_item->data;
+      return new JsonDocument($id, $value);
     }
-
-    return new JsonDocument($id, $value);
 
   }
 

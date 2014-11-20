@@ -9,30 +9,90 @@ culturefeed_udb3.settings:
 culturefeed_udb3.event_context:
   path: '/udb3/api/1.0/event.jsonld'
   defaults:
-    _content: '\Drupal\culturefeed_udb3\Controller\RestController::eventContext'
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::eventContext'
     _title: 'Event JSON-LD context'
   requirements:
     _access: 'TRUE'
 
-culturefeed_udb3.search:
+culturefeed_udb3.event:
+  path: '/udb3/api/1.0/event/{cdbid}'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::details'
+    _title: 'Event detail'
+  requirements:
+    _access: 'TRUE'
+    _format: ld_json
+    _method: GET
+
+culturefeed_udb3.event.title:
+  path: '/udb3/api/1.0/event/{cdbid}/{language}/title'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::title'
+    _title: 'Event title'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
+culturefeed_udb3.event.description:
+  path: '/udb3/api/1.0/event/{cdbid}/{lang}/description'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::description'
+    _title: 'Event description'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
+culturefeed_udb3.event.keywords:
+  path: '/udb3/api/1.0/event/{cdbid}/keywords'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::addKeyword'
+    _title: 'Add event keyword'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
+culturefeed_udb3.event.title:
+  path: '/udb3/api/1.0/event/{cdbid}/keywords/{keyword}'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::deleteKeyword'
+    _title: 'Delete event keyword'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
+culturefeed_udb3.events.search:
   path: '/udb3/api/1.0/search'
   defaults:
-    _controller: '\Drupal\culturefeed_udb3\Controller\RestController::search'
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventsRestController::search'
     _title: 'Search'
   requirements:
     _access: 'TRUE'
     _format: ld_json
     _method: GET
 
-culturefeed_udb3.event:
-  path: '/udb3/event/{cdbid}'
+culturefeed_udb3.events.tag:
+  path: '/udb3/api/1.0/events/tag'
   defaults:
-    _controller: '\Drupal\culturefeed_udb3\Controller\RestController::event'
-    _title: 'Event detail'
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventsRestController::tagEvents'
+    _title: 'Events tagger'
   requirements:
-    _access: 'TRUE'
-    _format: ld_json
-    _method: GET
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
+culturefeed_udb3.query.tag:
+  path: '/udb3/api/1.0/query/tag'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventsRestController::tagQuery'
+    _title: 'Query tagger'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
 
 culturefeed_udb3.user:
   path: '/udb3/api/1.0/user'
@@ -53,23 +113,3 @@ culturefeed_udb3.user.keywords:
     _culturefeed_current_user: 'TRUE'
     _format: json
     _method: GET
-
-culturefeed_udb3.events.tag:
-  path: '/udb3/api/1.0/events/tag'
-  defaults:
-    _controller: '\Drupal\culturefeed_udb3\Controller\EventsController::tagEvents'
-    _title: 'Events tagger'
-  requirements:
-    _culturefeed_current_user: 'TRUE'
-    _format: json
-    _method: POST
-
-culturefeed_udb3.query.tag:
-  path: '/udb3/api/1.0/query/tag'
-  defaults:
-    _controller: '\Drupal\culturefeed_udb3\Controller\EventsController::tagQuery'
-    _title: 'Query tagger'
-  requirements:
-    _culturefeed_current_user: 'TRUE'
-    _format: json
-    _method: POST
