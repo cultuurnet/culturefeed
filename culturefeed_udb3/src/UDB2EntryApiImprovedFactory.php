@@ -47,7 +47,9 @@ class UDB2EntryApiImprovedFactory implements UDB2EntryApiImprovedFactoryInterfac
   public function get() {
 
     $config = $this->config;
-    $base_url = $config->get('api_location');
+    $api_location = $config->get('api_location');
+    $entry_api_path = $config->get('entry_api_path');
+    $base_url = $api_location . $entry_api_path;
     $consumer = new Consumer($base_url, $this->credentials);
     return new EntryAPIImprovedFactory($consumer);
   }

@@ -61,6 +61,9 @@ class SettingsForm extends ConfigFormBase {
         'invisible' => array(
           ':input[name="hipchat_type"]' => array('checked' => FALSE),
         ),
+        'required' => array(
+          ':input[name="hipchat_type"]' => array('checked' => TRUE),
+        ),
       ),
     );
     $form['log.command_bus']['hipchat']['hipchat_token'] = array(
@@ -70,6 +73,9 @@ class SettingsForm extends ConfigFormBase {
       '#states' => array(
         'invisible' => array(
           ':input[name="hipchat_type"]' => array('checked' => FALSE),
+        ),
+        'required' => array(
+          ':input[name="hipchat_type"]' => array('checked' => TRUE),
         ),
       ),
     );
@@ -92,6 +98,9 @@ class SettingsForm extends ConfigFormBase {
         'invisible' => array(
           ':input[name="file_type"]' => array('checked' => FALSE),
         ),
+        'required' => array(
+          ':input[name="file_type"]' => array('checked' => TRUE),
+        ),
       ),
     );
 
@@ -104,6 +113,7 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Enable'),
       '#default_value' => $config->get('log.command_bus.socketioemitter'),
+      '#disabled' => TRUE,
     );
     $form['log.command_bus']['socketioemitter']['socketioemitter_redis_host'] = array(
       '#type' => 'textfield',
@@ -112,6 +122,9 @@ class SettingsForm extends ConfigFormBase {
       '#states' => array(
         'invisible' => array(
           ':input[name="socketioemitter_type"]' => array('checked' => FALSE),
+        ),
+        'required' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => TRUE),
         ),
       ),
     );
@@ -122,6 +135,9 @@ class SettingsForm extends ConfigFormBase {
       '#states' => array(
         'invisible' => array(
           ':input[name="socketioemitter_type"]' => array('checked' => FALSE),
+        ),
+        'required' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => TRUE),
         ),
       ),
     );
