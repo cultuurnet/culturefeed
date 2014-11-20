@@ -730,7 +730,6 @@ function culturefeed_search_ui_block_view($delta) {
         if ($delta_parts[1] == 'facility') {
           $delta = 'facility';
           $facet_name = 'location_category_facility_id';
-          $domain_id = 'location_category_facility_id';
           $enabled_options = variable_get('culturefeed_facet_enabled_options', NULL);
           $allowed_values = $enabled_options['facility'];
           $block_settings['intersect'] = TRUE;
