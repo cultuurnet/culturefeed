@@ -58,7 +58,8 @@ class EventsController extends ControllerBase {
    * @return JsonLdResponse
    *   A json response.
    */
-  public function tag(Request $request) {
+  public function tagEvents(Request $request) {
+
     $response = JsonLdResponse::create();
 
     try {
@@ -67,6 +68,49 @@ class EventsController extends ControllerBase {
       $event_ids = $body_content->events;
 
       $command_id = $this->eventTagger->tagEventsById($event_ids, $keyword);
+
+      $user = $this->user;
+      $this->usedKeywordsMemory->rememberKeywordUsed(
+        $user->id,
+        $keyword
+      );
+
+      $response->setData(['commandId' => $command_id]);
+
+    }
+    catch (\Exception $e) {
+
+      $response->setStatusCode(400);
+      $response->setData(['error' => $e->getMessage()]);
+
+    };
+
+    return $response;
+
+  }
+
+  /**
+   * Tag culturefeed events.
+   *
+   * @param Request $request
+   *   The request.
+   *
+   * @return JsonLdResponse
+   *   A json response.
+   */
+  public function tagQuery(Request $request) {
+
+    $response = JsonLdResponse::create();
+
+    try {
+      $body_content = json_decode($request->getContent());
+      $keyword = new Keyword($body_content->keyword);
+      $query = $body_content->query;
+      if (!$query) {
+        return new JsonLDResponse(['error' => "query required"], 400);
+      }
+
+      $command_id = $this->eventTagger->tagQuery($query, $keyword);
 
       $user = $this->user;
       $this->usedKeywordsMemory->rememberKeywordUsed(
