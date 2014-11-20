@@ -105,7 +105,6 @@ class RestController extends ControllerBase {
   public function event($cdbid) {
     $event = $this->eventService->getEvent($cdbid);
 
-    /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
     $response = JsonLdResponse::create()
       ->setData($event)
       ->setPublic()
