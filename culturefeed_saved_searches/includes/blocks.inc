@@ -61,6 +61,19 @@ function culturefeed_saved_searches_construct_save_link() {
       $query['datefilter'] = TRUE;
     }
 
+    // We need to fetch the whole list of saved searches since we don't have ID.
+    $savedSearchList = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
+    $exists = FALSE;
+    foreach ($savedSearchList as $savedSearch) {
+      if ($savedSearch->query == $query['query']) {
+        $exists = TRUE;
+      }
+    }
+
+    if ($exists) {
+      return;
+    }
+
     $text = '<h5>' . t('Save this search') . '</h5>' . t('to search even faster next time');
     $link = l($text, 'culturefeed/search/save', array('query' => $query, 'html' => TRUE, 'attributes' => array('class' => 'btn-primary btn btn-block')));
 

@@ -104,6 +104,15 @@ function culturefeed_saved_search_get_search_url_query($search) {
               $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
             }
 
+            if (isset($query['facet']['type'])) {
+              foreach ($query['facet']['type'] as $key => $content_type) {
+                if (in_array($content_type, array('production', 'event'))) {
+                  unset($query['facet']['type'][$key]);
+                }
+              }
+
+            }
+
             break;
 
           default:
