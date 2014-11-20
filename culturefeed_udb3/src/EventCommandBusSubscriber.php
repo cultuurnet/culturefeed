@@ -12,9 +12,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use CultuurNet\UDB3\CommandHandling\ResqueCommandBus;
 use CultureFeed_User;
 use Drupal\culturefeed\UserCredentials;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Broadway\Domain\Metadata;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 
 class EventCommandBusSubscriber implements EventSubscriberInterface {
 
@@ -58,27 +58,34 @@ class EventCommandBusSubscriber implements EventSubscriberInterface {
   /**
    * Registers JSON-LD formats with the Request class.
    *
-   * @param GetResponseEvent $event
+   * @param FilterControllerEvent $event
    *   The event to process.
    */
-  public function onKernelRequest(GetResponseEvent $event) {
+  public function onKernelControllerRequest(FilterControllerEvent $event) {
 
     $request = $event->getRequest();
-    $context_values = array();
 
-    if ($this->user) {
+    /* @var \Symfony\Component\Routing\Route $route */
+    $route = $request->attributes->get('_route_object');
+    $culturefeed_user_requirement = $route->getRequirement('_culturefeed_current_user');
 
-      $context_values['user_id'] = $this->user->id;
-      $context_values['user_nick'] = $this->user->nick;
-      $credentials = new TokenCredentials($this->userCredentials->getToken(), $this->userCredentials->getSecret());
-      $context_values['uitid_token_credentials'] = $credentials;
+    if ($culturefeed_user_requirement) {
+
+      if ($this->user) {
+
+        $context_values['user_id'] = $this->user->id;
+        $context_values['user_nick'] = $this->user->nick;
+        $credentials = new TokenCredentials($this->userCredentials->getToken(), $this->userCredentials->getSecret());
+        $context_values['uitid_token_credentials'] = $credentials;
+
+      }
+
+      $context_values['client_ip'] = $request->getClientIp();
+      $context_values['request_time'] = $_SERVER['REQUEST_TIME'];
+      $context = new Metadata($context_values);
+      $this->eventCommandBus->setContext($context);
 
     }
-
-    $context_values['client_ip'] = $request->getClientIp();
-    $context_values['request_time'] = $_SERVER['REQUEST_TIME'];
-    $context = new Metadata($context_values);
-    $this->eventCommandBus->setContext($context);
 
   }
 
@@ -86,7 +93,7 @@ class EventCommandBusSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::REQUEST][] = array('onKernelRequest', 40);
+    $events[KernelEvents::CONTROLLER][] = array('onKernelControllerRequest');
     return $events;
   }
 
