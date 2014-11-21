@@ -59,7 +59,12 @@ function culturefeed_search_ui_init() {
  * Implements hook_cron().
  */
 function culturefeed_search_ui_cron() {
-  culturefeed_search_ui_register_deletions();
+   
+  // Only register deletions on production api (otherwise to slow)
+  if (strpos(variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION) ,'www') !== false) {
+    culturefeed_search_ui_register_deletions();
+  }
+  
 }
 
 /**
