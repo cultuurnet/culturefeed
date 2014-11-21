@@ -151,7 +151,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
-    $variables['shortdescription'] = $detail->getShortDescription();
+    $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
 
     // Ad id / title to Drupal settings for easy reference in GTM.
@@ -325,6 +325,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['keywords'] = '';
   if ($keywords) {
     $variables['keywords'] = implode(', ', $keywords);
+    // check if event is suitable for kids
+    if (array_key_exists('ook voor kinderen', $keywords)) {
+      $variables['forkids'] = TRUE;
+    }
   }
 
 }
@@ -351,7 +355,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['videos'] = array();
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
     foreach ($videos as $video) {
-      if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink(), 240, 180)) {
+      if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink())) {
         $variables['videos'][] = $video_embed;
       }
     }
@@ -389,6 +393,9 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
+  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
+    $variables['forkids'] = TRUE;
+  }
   $variables['location'] = culturefeed_agenda_get_location_of_event($event);
 
   $actor = NULL;
@@ -493,6 +500,9 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
   $organiser = $production->getOrganiser();
 
   $variables['agefrom'] = $production->getAgeFrom();
+  if (is_numeric($production->getAgeFrom()) && ($production->getAgeFrom() <= 12)) {
+    $variables['forkids'] = TRUE;
+  }
 
   $relations = $production->getRelations();
   $total_relations = count($relations);

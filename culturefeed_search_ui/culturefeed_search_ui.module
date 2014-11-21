@@ -59,7 +59,12 @@ function culturefeed_search_ui_init() {
  * Implements hook_cron().
  */
 function culturefeed_search_ui_cron() {
-  culturefeed_search_ui_register_deletions();
+   
+  // Only register deletions on production api (otherwise to slow)
+  if (strpos(variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION) ,'www') !== false) {
+    culturefeed_search_ui_register_deletions();
+  }
+  
 }
 
 /**
@@ -379,6 +384,21 @@ function culturefeed_search_ui_block_configure($delta) {
       );
     }
 
+    // Disable possible facet options.
+    // In fact this facility is named "location_category_facility_id" on events.
+    if ($delta == 'facet-facility') {
+
+      $options = culturefeed_search_get_categories_by_domain($delta_parts[1]);
+      $enabled_options = variable_get('culturefeed_facet_enabled_options', NULL);
+
+      $form['culturefeed-facet-enabled-options'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Show only selected options'),
+        '#options' => $options,
+        '#default_value' => $enabled_options !== NULL && isset($enabled_options[$delta_parts[1]]) ? $enabled_options[$delta_parts[1]] : array_keys($options),
+      );
+    }
+
     if ($delta == 'facet-theme') {
       $form['culturefeed-facet-theme-hide'] = array(
         '#type' => 'checkbox',
@@ -595,6 +615,14 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     variable_set('culturefeed_facet_show_subitems_' . $delta, $edit['culturefeed-facet-show-subitems']);
   }
 
+  // Save enabled facet options.
+  if (isset($edit['culturefeed-facet-enabled-options'])) {
+    $delta_parts = explode('-', $delta);
+    $options = variable_get('culturefeed_facet_enabled_options', array());
+    $options[$delta_parts[1]] = array_filter($edit['culturefeed-facet-enabled-options']);
+    variable_set('culturefeed_facet_enabled_options', $options);
+  }
+
   if ($delta == 'culturefeed-search-sortorder') {
 
     if (!empty($edit['sort_options'])) {
@@ -703,12 +731,24 @@ function culturefeed_search_ui_block_view($delta) {
           }
         }
 
+        $facet_name = 'category_' . $delta_parts[1] . '_id';
+        $domain_id = $delta_parts[1];
+        $allowed_values = array();
         $block_settings = array(
           'sort' => variable_get('culturefeed_search_sort_' . $delta, CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
           'highest_level' => variable_get('culturefeed_facet_highest_level_' . $delta, 1),
           'show_subitems' => variable_get('culturefeed_facet_show_subitems_' . $delta, FALSE),
         );
-        $block = culturefeed_search_ui_search_facets_block('category_' . $delta_parts[1] . '_id', $delta_parts[1], array(), $block_settings);
+
+        // Hande "location_category_facility_id" as "facility".
+        if ($delta_parts[1] == 'facility') {
+          $delta = 'facility';
+          $facet_name = 'location_category_facility_id';
+          $enabled_options = variable_get('culturefeed_facet_enabled_options', NULL);
+          $allowed_values = $enabled_options['facility'];
+          $block_settings['intersect'] = TRUE;
+        }
+        $block = culturefeed_search_ui_search_facets_block($facet_name, $domain_id, $allowed_values, $block_settings);
       }
 
   }
@@ -945,7 +985,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
  */
 function culturefeed_search_ui_register_deletions() {
 
-  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', NULL);
+  $last_registration_timestamp = variable_get('culturefeed_search_ui_last_deletion_registration', REQUEST_TIME - (2629743 * 3));
   if ($last_registration_timestamp) {
     $last_registration = date('Y-m-d', $last_registration_timestamp);
   }
