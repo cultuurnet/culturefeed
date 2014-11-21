@@ -35,7 +35,7 @@ culturefeed_udb3.event.title:
     _method: POST
 
 culturefeed_udb3.event.description:
-  path: '/udb3/api/1.0/event/{cdbid}/{lang}/description'
+  path: '/udb3/api/1.0/event/{cdbid}/{language}/description'
   defaults:
     _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::description'
     _title: 'Event description'
@@ -54,7 +54,7 @@ culturefeed_udb3.event.keywords:
     _format: json
     _method: POST
 
-culturefeed_udb3.event.title:
+culturefeed_udb3.event.keywords_delete:
   path: '/udb3/api/1.0/event/{cdbid}/keywords/{keyword}'
   defaults:
     _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::deleteKeyword'
@@ -62,7 +62,7 @@ culturefeed_udb3.event.title:
   requirements:
     _culturefeed_current_user: 'TRUE'
     _format: json
-    _method: POST
+    _method: DELETE
 
 culturefeed_udb3.events.search:
   path: '/udb3/api/1.0/search'
