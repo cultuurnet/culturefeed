@@ -458,6 +458,9 @@ class CultureFeedSearchPage {
         if ($facetFieldName == 'datetype') {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
         }
+        elseif ($facetFieldName == 'location_category_facility_id') {
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
+        }
         else {
 
           // If wreg we need to add reg (same id's, example 3000 Leuven wreg.638 reg.638)
