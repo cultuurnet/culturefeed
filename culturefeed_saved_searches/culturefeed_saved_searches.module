@@ -7,7 +7,7 @@
 require_once 'includes/helpers.inc';
 
 /**
- * Implements hook_permission
+ * Implements hook_permission().
  */
 function culturefeed_saved_searches_permission() {
 
@@ -35,6 +35,14 @@ function culturefeed_saved_searches_theme() {
       'path' => $path,
       'file' => 'theme.inc',
       'template' => 'culturefeed-saved-searches-manage-list',
+    ),
+    'culturefeed_saved_searches_list' => array(
+      'variables' => array(
+        'searches' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-saved-searches-list',
     ),
   );
 
@@ -109,6 +117,10 @@ function culturefeed_saved_searches_block_info() {
     'info' => t('Culturefeed Searches CTA: only shown when results'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  $blocks['saved-searches-teaser-list'] = array(
+    'info' => t('Culturefeed Searches Teaser: (short) list of results'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   return $blocks;
 
@@ -131,6 +143,10 @@ function culturefeed_saved_searches_block_view($delta) {
 
     case 'culturefeed-saved-searches-cta-2':
       $block['content'] = culturefeed_saved_searches_block_cta_bottom();
+      break;
+
+    case 'saved-searches-teaser-list':
+      $block['content'] = culturefeed_saved_searches_block_teaser();
       break;
 
   }

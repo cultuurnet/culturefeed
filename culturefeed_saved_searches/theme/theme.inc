@@ -29,3 +29,24 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_manage
   $vars['items'] = $items;
 
 }
+
+/**
+ * Preprocess the saved searches frontend list.
+ * @see culturefeed-saved-searches-list.tpl.php
+ */
+function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&$vars) {
+
+  $searches = $vars['searches'];
+  $items = array();
+
+  foreach ($searches as $search) {
+    $item = array(
+      'title' => check_plain($search->name),
+      'search_url' => url('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search))),
+    );
+    $items[] = $item;
+  }
+
+  $vars['items'] = $items;
+
+}

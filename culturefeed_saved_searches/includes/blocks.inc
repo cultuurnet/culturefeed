@@ -80,3 +80,28 @@ function culturefeed_saved_searches_construct_save_link() {
     return $link;
   }
 }
+
+/**
+ * Render a block with a (short) list of saved searches.
+ */
+function culturefeed_saved_searches_block_teaser() {
+
+  $block = array('title' => '', 'content' => '');
+
+  $build = array();
+
+  try {
+
+    $block['content'] = array(
+      '#theme' => 'culturefeed_saved_searches_list',
+      '#searches' => DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList(),
+    );
+
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('A problem occurred while loading your searches. Please try again later.'), 'error');
+  }
+
+  return $block;
+
+}
