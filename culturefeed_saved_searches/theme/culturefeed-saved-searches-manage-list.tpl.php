@@ -6,24 +6,31 @@
  */
 ?>
 
-<div id="saved-searches-messages"></div>
+<?php if (!empty($items)): ?>
 
-<table>
-  <?php foreach ($items as $item): ?>
-  <tr>
-    <td>
-      <a href="<?php print $item['search_url']; ?>"><?php print $item['title']; ?></a>
-    </td>
-    <td>
-      <?php print t('frequency e-mail alerts') ?>:
-      <?php print drupal_render($item['form']); ?>
-    </td>
-    <td>
-      <a href="<?php print $item['delete_url']; ?>"><?php print t('Delete'); ?></a>
-    </td>
+  <div id="saved-searches-messages"></div>
 
-  </tr>
-  <?php endforeach; ?>
-</table>
+  <table>
+    <?php foreach ($items as $item): ?>
+    <tr>
+      <td>
+        <a href="<?php print $item['search_url']; ?>"><?php print $item['title']; ?></a>
+      </td>
+      <td>
+        <?php print t('frequency e-mail alerts') ?>:
+        <?php print drupal_render($item['form']); ?>
+      </td>
+      <td>
+        <a href="<?php print $item['delete_url']; ?>"><?php print t('Delete'); ?></a>
+      </td>
 
+    </tr>
+    <?php endforeach; ?>
+  </table>
+
+<?php else: ?>
+
+  <p><?php print t('There are no saved searches yet') ?></p>
+
+<?php endif; ?>
 
