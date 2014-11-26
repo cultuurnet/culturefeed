@@ -92,10 +92,21 @@ function culturefeed_saved_search_get_search_url_query($search) {
 
             $values = explode(',', $facet_value);
 
-            // Region facets arre location searches.
+            // Region facets are location searches.
             if (substr($facet_value, 0, 4) == 'reg.') {
-              $query['regId'] = $facet_value;
-              $query['location'] = culturefeed_search_get_term_translation($facet_value);
+
+              $term = culturefeed_search_get_term_by_id($facet_value, LANGUAGE_NONE);
+              $term_parts = explode(' ', $term->name);
+
+              // If first part is numeric: do location search.
+              if (is_numeric($term_parts[0])) {
+                $query['regId'] = $facet_value;
+                $query['location'] = culturefeed_search_get_term_translation($facet_value);
+              }
+              // Otherwise set flandersregion facet active.
+              else {
+                $query['facet']['flandersregion'][0] = $facet_value;
+              }
             }
             else {
               if (!isset($query['facet'][$search_on[0]])) {

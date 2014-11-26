@@ -744,6 +744,23 @@ function culturefeed_search_get_preferred_language() {
 }
 
 /**
+ * Get a term by id.
+ */
+function culturefeed_search_get_term_by_id($id, $lang = NULL) {
+
+  if (empty($lang)) {
+    $lang = culturefeed_search_get_preferred_language();
+  }
+
+  return db_select('culturefeed_search_terms', 't')
+    ->condition('tid', $id)
+    ->condition('language', array($lang), 'IN')
+    ->fields('t')
+    ->execute()->fetchObject();
+
+}
+
+/**
  * Returns a list of terms to translate.
  *
  * @param array $tids

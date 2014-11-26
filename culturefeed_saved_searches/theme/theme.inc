@@ -39,6 +39,8 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&
   $searches = $vars['searches'];
   $items = array();
 
+  $vars['total_searches'] = count($searches);
+
   foreach ($searches as $search) {
     $item = array(
       'title' => check_plain($search->name),

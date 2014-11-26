@@ -9,7 +9,10 @@
  */
 function culturefeed_saved_searches_block_cta() {
 
-  return culturefeed_saved_searches_construct_save_link(t('and receive an email when there are new results'));
+  $query = culturefeed_saved_searches_construct_query();
+  if (!empty($query)) {
+    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results'), 'query' => $query));
+  }
 
 }
 
@@ -21,7 +24,10 @@ function culturefeed_saved_searches_block_cta_bottom() {
   $results = culturefeed_get_search_result();
 
   if ($results && $results->getCurrentCount() > 0) {
-    return culturefeed_saved_searches_construct_save_link(t('to search faster next time'));
+    $query = culturefeed_saved_searches_construct_query();
+    if (!empty($query)) {
+      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time'), 'query' => $query));
+    }
   }
 
 }
@@ -29,12 +35,31 @@ function culturefeed_saved_searches_block_cta_bottom() {
 /**
  * Helper function taht constructs the 'save search'-link.
  */
-function culturefeed_saved_searches_construct_save_link($text) {
+function culturefeed_saved_searches_construct_query() {
+
+  $query = drupal_static(__FUNCTION__, NULL);
+  if ($query != NULL) {
+    return;
+  }
+
+  $query = array();
 
   if ($page = culturefeed_search_get_active_search_page()) {
 
-    // Construct saved query parameters.
-    $query = array();
+    $option_active = FALSE;
+
+    // Check if a custom filter option is active.
+    $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+    foreach ($filter_options as $option) {
+      if (isset($_GET[$option['query-string']])) {
+        $option_active = TRUE;
+      }
+    }
+
+    // Check if we are searching.
+    if (!$option_active && !isset($_GET['facet']) && !isset($_GET['location']) && !isset($_GET['search']) && !isset($_GET['regId']) && !isset($_GET['actor'])) {
+      return $query;
+    }
 
     // Add page title.
     $query['title'] = drupal_get_title();
@@ -71,10 +96,8 @@ function culturefeed_saved_searches_construct_save_link($text) {
     }
 
     if ($exists) {
-      return;
+      return $query;
     }
-
-    return theme('culturefeed_saved_searches_cta', array('text' => $text, 'query' => $query));
 
   }
 }

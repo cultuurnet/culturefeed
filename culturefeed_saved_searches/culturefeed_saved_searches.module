@@ -122,11 +122,11 @@ function culturefeed_saved_searches_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
   $blocks['culturefeed-saved-searches-cta-2'] = array(
-    'info' => t('Culturefeed Searches CTA: only shown when results'),
+    'info' => t('Saved searches CTA: only shown when results'),
     'cache' => DRUPAL_NO_CACHE,
   );
   $blocks['saved-searches-teaser-list'] = array(
-    'info' => t('Culturefeed Searches Teaser: (short) list of results'),
+    'info' => t('Saved searches: list'),
     'cache' => DRUPAL_NO_CACHE,
   );
 

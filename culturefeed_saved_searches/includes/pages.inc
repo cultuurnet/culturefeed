@@ -92,7 +92,14 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
   $savedSearch->query = $params['query'];
   $savedSearch->frequency = $form_state['values']['save_search_notification_frequency'];
 
-  $service = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->subscribe($savedSearch);
+  try {
+    DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->subscribe($savedSearch);
+    drupal_set_message(t('You search has been saved'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('saved_searches', $e);
+    drupal_set_message(t('There was an error while saving your search. Please try again.'), 'error');
+  }
 
   // Construct URL redirect with same search params.
   $form_state['redirect'] = array('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($savedSearch)));
