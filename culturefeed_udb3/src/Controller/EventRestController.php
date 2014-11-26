@@ -14,6 +14,8 @@ use CultuurNet\UDB3\Search\PullParsingSearchService;
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Keyword;
+use CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService;
+use CultureFeed_User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
@@ -41,7 +43,9 @@ class EventRestController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('culturefeed_udb3.event.service'),
-      $container->get('culturefeed_udb3.event.editor')
+      $container->get('culturefeed_udb3.event.editor'),
+      $container->get('culturefeed_udb3.event.used_keywords_memory'),
+      $container->get('culturefeed.current_user')
     );
   }
 
@@ -52,10 +56,21 @@ class EventRestController extends ControllerBase {
    *   The event service.
    * @param EventEditingServiceInterface $event_editor
    *   The event editor.
+   * @param DefaultUsedKeywordsMemoryService $used_keywords_memory
+   *   The event tagger.
+   * @param CultureFeed_User $user
+   *   The event tagger.
    */
-  public function __construct(EventServiceInterface $event_service, EventEditingServiceInterface $event_editor) {
+  public function __construct(
+    EventServiceInterface $event_service,
+    EventEditingServiceInterface $event_editor,
+    DefaultUsedKeywordsMemoryService $used_keywords_memory,
+    CultureFeed_User $user
+  ) {
     $this->eventService = $event_service;
     $this->eventEditor = $event_editor;
+    $this->usedKeywordsMemory = $used_keywords_memory;
+    $this->user = $user;
   }
 
   /**
@@ -189,9 +204,17 @@ class EventRestController extends ControllerBase {
     $body_content = json_decode($request->getContent());
 
     try {
+
+      $keyword = new Keyword($body_content->keyword);
       $command_id = $this->eventEditor->tag(
         $cdbid,
-        new Keyword($body_content->keyword)
+        $keyword
+      );
+
+      $user = $this->user;
+      $this->usedKeywordsMemory->rememberKeywordUsed(
+        $user->id,
+        $keyword
       );
 
       $response->setData(['commandId' => $command_id]);
