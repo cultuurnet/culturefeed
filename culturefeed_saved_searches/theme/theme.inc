@@ -50,3 +50,13 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&
   $vars['items'] = $items;
 
 }
+
+/**
+ * Theme the saved searches CTA.
+ */
+function theme_culturefeed_saved_searches_cta($vars) {
+
+    $text = '<h2>' . t('Save this search') . '</h2>' . check_plain($vars['text']);
+    return l($text, 'culturefeed/search/save', array('query' => $vars['query'], 'html' => TRUE));
+
+}

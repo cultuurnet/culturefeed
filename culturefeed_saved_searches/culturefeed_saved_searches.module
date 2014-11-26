@@ -44,6 +44,14 @@ function culturefeed_saved_searches_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-saved-searches-list',
     ),
+    'culturefeed_saved_searches_cta' => array(
+      'variables' => array(
+        'query' => array(),
+        'text' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
   );
 
 }

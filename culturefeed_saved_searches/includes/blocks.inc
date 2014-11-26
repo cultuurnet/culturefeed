@@ -9,7 +9,7 @@
  */
 function culturefeed_saved_searches_block_cta() {
 
-  return culturefeed_saved_searches_construct_save_link();
+  return culturefeed_saved_searches_construct_save_link(t('and receive an email when there are new results'));
 
 }
 
@@ -21,7 +21,7 @@ function culturefeed_saved_searches_block_cta_bottom() {
   $results = culturefeed_get_search_result();
 
   if ($results && $results->getCurrentCount() > 0) {
-    return culturefeed_saved_searches_construct_save_link();
+    return culturefeed_saved_searches_construct_save_link(t('to search faster next time'));
   }
 
 }
@@ -29,7 +29,7 @@ function culturefeed_saved_searches_block_cta_bottom() {
 /**
  * Helper function taht constructs the 'save search'-link.
  */
-function culturefeed_saved_searches_construct_save_link() {
+function culturefeed_saved_searches_construct_save_link($text) {
 
   if ($page = culturefeed_search_get_active_search_page()) {
 
@@ -74,10 +74,8 @@ function culturefeed_saved_searches_construct_save_link() {
       return;
     }
 
-    $text = '<h5>' . t('Save this search') . '</h5>' . t('to search even faster next time');
-    $link = l($text, 'culturefeed/search/save', array('query' => $query, 'html' => TRUE, 'attributes' => array('class' => 'btn-primary btn btn-block')));
+    return theme('culturefeed_saved_searches_cta', array('text' => $text, 'query' => $query));
 
-    return $link;
   }
 }
 
