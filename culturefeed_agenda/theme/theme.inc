@@ -895,3 +895,22 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$varia
 
   drupal_add_js(array('delijn' => $settings), 'setting');
 }
+
+/**
+ * Preprocess the agenda nearby actor search.
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_actors_nearby(&$variables) {
+
+  //Create link for each actor.
+  $actors = array();
+
+  foreach ($variables['items'] as $item) {
+    $title = $item->getTitle(culturefeed_search_get_preferred_language());
+    $id = $item->getId();
+    $url = culturefeed_search_detail_url('actor', $id, $title);
+    $actors[] = l($title, $GLOBALS['base_url'] . $url);
+  }
+
+  $variables['links'] = implode(', ', $actors);
+
+}

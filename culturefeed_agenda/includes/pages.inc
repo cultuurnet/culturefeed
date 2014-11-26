@@ -219,3 +219,30 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 
 }
+
+function culturefeed_agenda_actor_search_autocomplete($search, $past) {
+
+  $matches = array();
+
+  if ($search) {
+
+    try {
+
+      // Get the list of suggestions from service.
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search, array('actor'), $past);
+      // @todo: only use suggestions for the actortypes saved in block configure.
+      if ($suggestions->hasSuggestions()) {
+        foreach ($suggestions as $suggestion) {
+          $path = culturefeed_search_detail_url('actor', $suggestion->getCdbid(), $suggestion->getTitle());
+          $matches[$path] = check_plain($suggestion->getTitle());
+        }
+      }
+
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_agenda', $e);
+    }
+
+  }
+  drupal_json_output($matches);
+}
