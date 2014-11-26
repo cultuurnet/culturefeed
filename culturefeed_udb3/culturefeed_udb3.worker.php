@@ -56,5 +56,5 @@ Resque_Event::listen('afterFork', function() use ($autoloader) {
 
 $worker = new Resque_Worker(array('event'));
 $worker->logLevel = Resque_Worker::LOG_VERBOSE;
-fwrite(STDOUT, '*** Starting worker '.$worker."\n");
+fwrite(STDOUT, '*** Starting worker ' . $worker . "\n");
 $worker->work(5);
