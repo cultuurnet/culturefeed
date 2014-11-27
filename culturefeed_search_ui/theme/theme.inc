@@ -237,7 +237,15 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
     'facet' => array()
   );
 
-  $active_options = isset($query['facet'][$facet->getKey()]) ? $query['facet'][$facet->getKey()] : array();
+  if (isset($query['facet'][$facet->getKey()])) {
+    $active_options = $query['facet'][$facet->getKey()];
+  }
+  elseif (isset($query['facet']['category_id'])) {
+    $active_options = $query['facet']['category_id'];
+  }
+  else {
+    $active_options = array();
+  }
 
   $items = array();
   $facets = $variables['items'];
@@ -443,7 +451,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
 
     $query['sort'] = $option['value'];
     $attributes = array();
-    
+
     if ($option['value'] == $current_sort) {
       $attributes = array(
         'class' => array('active'),
