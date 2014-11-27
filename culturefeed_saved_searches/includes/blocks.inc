@@ -86,6 +86,10 @@ function culturefeed_saved_searches_construct_query() {
       $query['datefilter'] = TRUE;
     }
 
+    if (!culturefeed_is_culturefeed_user()) {
+      return $query;
+    }
+
     // We need to fetch the whole list of saved searches since we don't have ID.
     $savedSearchList = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
     $exists = FALSE;
@@ -95,7 +99,7 @@ function culturefeed_saved_searches_construct_query() {
       }
     }
 
-    if ($exists) {
+    if (!$exists) {
       return $query;
     }
 
@@ -107,9 +111,11 @@ function culturefeed_saved_searches_construct_query() {
  */
 function culturefeed_saved_searches_block_teaser() {
 
-  $block = array('title' => '', 'content' => '');
+  if (!culturefeed_is_culturefeed_user()) {
+    return;
+  }
 
-  $build = array();
+  $block = array();
 
   try {
 

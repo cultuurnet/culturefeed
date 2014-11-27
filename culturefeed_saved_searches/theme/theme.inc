@@ -54,11 +54,33 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&
 }
 
 /**
+ * Preprocess the saved searches CTA.
+ */
+function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_cta(&$vars) {
+
+  $vars['path'] = 'culturefeed/search/save';
+  if (!culturefeed_is_culturefeed_user()) {
+
+    // If not logged in, go to authenticated page.
+    $vars['query'] = drupal_get_destination();
+    $vars['path'] = 'authenticated';
+
+  }
+
+}
+
+/**
  * Theme the saved searches CTA.
  */
 function theme_culturefeed_saved_searches_cta($vars) {
 
-    $text = '<h2>' . t('Save this search') . '</h2>' . check_plain($vars['text']);
-    return l($text, 'culturefeed/search/save', array('query' => $vars['query'], 'html' => TRUE));
+  $path = 'culturefeed/search/save';
+  if (!culturefeed_is_culturefeed_user()) {
+    $path = 'authenticated';
+    $vars['query']['destination'] = 'culturefeed/search/save';
+  }
+
+  $text = '<h2>' . t('Save this search') . '</h2>' . check_plain($vars['text']);
+  return l($text, $path, array('query' => $vars['query'], 'html' => TRUE));
 
 }
