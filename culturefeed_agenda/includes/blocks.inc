@@ -257,7 +257,7 @@ function culturefeed_agenda_block_actor_search_facet() {
   }
 
   // Only show this block if allowed in the block settings.
-  $current_event = $_GET['facet']['category_eventtype_id'][0];
+  $current_event = isset($_GET['facet']['category_eventtype_id'][0]) ? $_GET['facet']['category_eventtype_id'][0] : '';
   $saved_events = variable_get('agenda_actor_search_visibility');
   $allowed_events = array();
 
