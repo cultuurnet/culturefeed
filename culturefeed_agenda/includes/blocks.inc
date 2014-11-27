@@ -57,11 +57,11 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     }
     asort($options);
 
-    if (isset($_GET['facet']['category_id'][0])) {
-      $default = $_GET['facet']['category_id'][0];
-    }
-    elseif (isset($_GET['facet']['category_' . $domain_id . '_id'][0])) {
+    if (isset($_GET['facet']['category_' . $domain_id . '_id'][0])) {
       $default = $_GET['facet']['category_' . $domain_id . '_id'][0];
+    }
+    elseif (isset($_GET['facet']['category_id'][0])) {
+      $default = $_GET['facet']['category_id'][0];
     }
     else {
       $default = NULL;
@@ -267,16 +267,16 @@ function culturefeed_agenda_block_actor_search_facet() {
   }
 
   // Only show this block if allowed in the block settings.
-  if (isset($_GET['facet']['category_id'][0])) {
-      $current_event = $_GET['facet']['category_id'][0];
-    }
-    elseif (isset($_GET['facet']['category_eventtype_id'][0])) {
-      $current_event = $_GET['facet']['category_eventtype_id'][0];
-    }
-    else {
-      $current_event = '';
-    }
-  
+  if (isset($_GET['facet']['category_eventtype_id'][0])) {
+    $current_event = $_GET['facet']['category_eventtype_id'][0];
+  }
+  elseif (isset($_GET['facet']['category_id'][0])) {
+    $current_event = $_GET['facet']['category_id'][0];
+  }
+  else {
+    $current_event = '';
+  }
+
   $saved_events = variable_get('agenda_actor_search_visibility');
   $allowed_events = array();
 
