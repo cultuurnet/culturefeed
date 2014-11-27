@@ -119,9 +119,14 @@ function culturefeed_saved_searches_block_teaser() {
 
   try {
 
+    $list = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
+    if (empty($list)) {
+      return $block;
+    }
+
     $block['content'] = array(
       '#theme' => 'culturefeed_saved_searches_list',
-      '#searches' => DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList(),
+      '#searches' => $list,
     );
 
   }

@@ -67,6 +67,7 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
    */
   public function subscribe(CultureFeed_SavedSearches_SavedSearch $savedSearch) {
     $this->realCultureFeedSavedSearches->subscribe($savedSearch);
+    $this->cacheClear('list:' . DrupalCulturefeed::getLoggedInUserId() . ':', TRUE);
   }
 
   /**
@@ -74,6 +75,8 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
    */
   public function unsubscribe($savedSearchId, $userId) {
     $this->realCultureFeedSavedSearches->unsubscribe($savedSearchId, $userId);
+    $this->cacheClear('list:' . DrupalCulturefeed::getLoggedInUserId() . ':', TRUE);
+    $this->cacheClear('detail:' . $savedSearchId);
   }
 
   /**
@@ -81,6 +84,8 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
    */
   public function changeFrequency($savedSearchId, $frequency) {
     $this->realCultureFeedSavedSearches->changeFrequency($savedSearchId, $frequency);
+    $this->cacheClear('list:' . DrupalCulturefeed::getLoggedInUserId() . ':', TRUE);
+    $this->cacheClear('detail:' . $savedSearchId);
   }
 
   /**
