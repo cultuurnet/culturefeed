@@ -676,6 +676,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       'timestamps' => $timestamps,
       'permanent' => $weekscheme,
     ),
+    '#allowed_days' => CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays,
   );
 
   // Extra.

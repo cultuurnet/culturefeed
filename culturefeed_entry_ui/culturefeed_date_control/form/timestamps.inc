@@ -14,7 +14,7 @@
  * @return array $element
  *   The element.
  */
-function culturefeed_date_control_timestamps_pre_render(array &$element) {
+function culturefeed_date_control_timestamps_pre_render(array $element) {
 
   $timestamps = $element['#value']['stamps'];
 
@@ -40,7 +40,7 @@ function culturefeed_date_control_timestamps_pre_render(array &$element) {
 }
 
 /**
- * Sets the date control timestamps form elements.
+ * Sets the culturefeed date control timestamps form elements.
  *
  * @param array $element
  *   The element.
@@ -69,7 +69,6 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
     // '#limit_validation_errors' => array($element['#parents']),
     '#submit' => array('culturefeed_date_control_date_control_submit'),
     '#type' => 'submit',
-
   );
 
   // Get the timestamps.
@@ -85,29 +84,29 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
       );
 
       $element['stamps'][$key]['date'] = array(
-        '#type' => 'date_popup',
-        '#default_value' => '',
-        '#title' => t('Date'),
-        '#date_label_position' => 'none',
         '#date_format' => 'd-m-Y',
+        '#date_label_position' => 'none',
+        '#default_value' => '',
         '#icon' => TRUE,
+        '#title' => t('Date'),
+        '#type' => 'date_popup',
       );
 
       $element['stamps'][$key]['start_time'] = array(
-        '#type' => 'date_select',
-        '#default_value' => '',
-        '#title' => '',
         '#date_format' => 'H:i',
         '#date_increment' => 30,
+        '#default_value' => '',
+        '#title' => '',
+        '#type' => 'date_select',
       );
 
       $element['stamps'][$key]['end_time'] = array(
-        '#type' => 'date_select',
-        '#default_value' => '',
-        '#title' => '',
+        '#access' => TRUE,
         '#date_format' => 'H:i',
         '#date_increment' => 30,
-        '#access' => TRUE,
+        '#default_value' => '',
+        '#title' => '',
+        '#type' => 'date_select',
       );
 
       $element['stamps'][$key]['remove_end'] = $ajax_button + array(
@@ -129,18 +128,12 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
     '#value' => t('+ add date'),
   );
 
-  $element['#attached'] = array(
-    'css' => array(
-      drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control_timestamps.css',
-    ),
-  );
-
   return $element;
 
 }
 
 /**
- * Validate and alter the timestamp form values.
+ * Validate and alter the culturefeed date control timestamps form values.
  *
  * @param array $element
  *   The element.
@@ -151,7 +144,7 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
 
   $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
 
-  if ($triggering_element) {
+  if ($triggering_element && culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
 
     $timestamps = $element['#value']['stamps'];
     $triggering_parent = array_pop($triggering_element['#parents']);
@@ -185,7 +178,7 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
 }
 
 /**
- * Value callback for the date control element.
+ * Value callback for the culturefeed date control timestamps element.
  *
  * @param array $element
  *   The element.

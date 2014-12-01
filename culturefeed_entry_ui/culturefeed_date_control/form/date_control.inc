@@ -33,6 +33,17 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#type' => 'culturefeed_date_control_timestamps',
   );
 
+  // Period.
+  $element['date_control']['period'] = array(
+    '#type' => 'culturefeed_date_control_period',
+  );
+
+  // Opening times.
+  $element['date_control']['opening_times'] = array(
+    '#type' => 'culturefeed_date_control_opening_times',
+    '#allowed_days' => $element['#allowed_days'],
+  );
+
   $element['#attached'] = array(
     'css' => array(
       drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control.css',

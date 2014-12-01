@@ -6,6 +6,8 @@
  */
 
 require_once 'form/date_control.inc';
+require_once 'form/opening_times.inc';
+require_once 'form/period.inc';
 require_once 'form/timestamps.inc';
 
 /**
@@ -26,6 +28,21 @@ function culturefeed_date_control_ajax_callback() {
   $result['#commands'] = array_merge($commands, $result['#commands']);
   return $result;
 
+}
+
+/**
+ * Checks if the triggering element is part of the element.
+ *
+ * @param array $triggering_element
+ *   The triggering element.
+ * @param array $element
+ *   The element.
+ *
+ * @return bool
+ *   True or false.
+ */
+function culturefeed_date_control_check_trigger_element(array $triggering_element, array $element) {
+  return array_intersect($triggering_element['#parents'], $element['#parents']) == $element['#parents'];
 }
 
 /**
@@ -72,6 +89,19 @@ function culturefeed_date_control_element_info() {
       '#tree' => TRUE,
       '#value_callback' => 'culturefeed_date_control_date_control_value_callback',
     ),
+    'culturefeed_date_control_opening_times' => array(
+      '#input' => TRUE,
+      '#process' => array('culturefeed_date_control_opening_times_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+    ),
+    'culturefeed_date_control_period' => array(
+      '#element_validate' => array('culturefeed_date_control_period_validate'),
+      '#pre_render' => array('culturefeed_date_control_period_pre_render'),
+      '#input' => TRUE,
+      '#process' => array('culturefeed_date_control_period_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_period_table',
+      '#tree' => TRUE,
+    ),
     'culturefeed_date_control_timestamps' => array(
       '#cell_count' => 4,
       '#input' => TRUE,
@@ -117,12 +147,16 @@ function culturefeed_date_control_menu() {
  */
 function culturefeed_date_control_theme() {
 
+  $settings = array(
+    'file' => 'theme.inc',
+    'path' => drupal_get_path('module', 'culturefeed_date_control') . '/theme',
+    'render element' => 'form',
+  );
+
   return array(
-    'culturefeed_date_control_timestamps_table' => array(
-      'file' => 'theme.inc',
-      'path' => drupal_get_path('module', 'culturefeed_date_control') . '/theme',
-      'render element' => 'form',
-    ),
+    'culturefeed_date_control_opening_times_table' => $settings,
+    'culturefeed_date_control_period_table' => $settings,
+    'culturefeed_date_control_timestamps_table' => $settings,
   );
 
 }

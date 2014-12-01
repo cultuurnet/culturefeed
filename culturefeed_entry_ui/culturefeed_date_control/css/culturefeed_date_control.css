@@ -15,37 +15,22 @@ table.date-control-table {
   display: inline-block;
 }
 
-
-
-/*.when-datetimes .container-inline-date .date-padding {
-  padding: 0;
-  float: none;
-}
-
-.when-datetimes input.add-more-link {
+.date-control-table input.add-more-link {
   display: inline-block;
   vertical-align: middle;
 }
 
-.when-datetimes-table {
-  width: auto !important;
-}
-
-.when-datetimes-table td {
+.date-control-table td {
   white-space: nowrap;
   padding: 4px;
   vertical-align: top;
 }
 
-.when-datetimes-table td .container-inline-date .form-item .form-item {
+.date-control-table td .container-inline-date .form-item .form-item {
   display: inline-block;
   float: none;
 }
 
-.when-datetimes-table td .container-inline-date .form-item {
+.date-control-table td .container-inline-date .form-item {
   vertical-align: top;
 }
-
-.when-datetimes-table .ui-icon {
-  display: inline-block;
-}*/

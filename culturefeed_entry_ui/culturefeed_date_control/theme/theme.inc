@@ -14,11 +14,94 @@
  * @return string
  *   The output.
  */
+function theme_culturefeed_date_control_opening_times_table(array &$variables) {
+
+  $form = $variables['form'];
+
+  $header = array(t('open'), t('from'), t('to'));
+  $table = array(
+    'header' => $header,
+    'rows' => array(),
+    'attributes' => array('class' => 'date-control-opening-times-table'),
+  );
+
+  foreach (element_children($form) as $element) {
+
+    $cells = array();
+    $cells[] = $form[$element]['#title'];
+    $cells[] = array(
+      'data' => drupal_render($form[$element][0]['open_from']),
+      'class' => 'culturefeed-date-control-opening-times-complete',
+    );
+    $cells[] = array(
+      'data' => drupal_render($form[$element][0]['open_till']),
+      'class' => 'culturefeed-date-control-opening-times-complete',
+    );
+    $table['rows'][] = $cells;
+
+  }
+
+  $output = theme('table', $table);
+  return $output;
+
+}
+
+/**
+ * Theme the period table.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The output.
+ */
+function theme_culturefeed_date_control_period_table(array &$variables) {
+
+  $form = $variables['form'];
+
+  $table = array(
+    'attributes' => array(
+      'class' => array('date-control-table', 'date-control-period-table'),
+    ),
+    'rows' => array(),
+  );
+
+  $cells = array(drupal_render($form['start_date']));
+  if ($form['add_end']['#access']) {
+    $cells[] = drupal_render($form['add_end']);
+  }
+  if ($form['end_date']['#access']) {
+    $cells[] = drupal_render($form['end_date']);
+  }
+  if ($form['remove_end']['#access']) {
+    $cells[] = drupal_render($form['remove_end']);
+  }
+
+  $table['rows'][] = $cells;
+  $output = theme('table', $table);
+  return $output;
+
+}
+
+/**
+ * Theme the timestamps table.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The output.
+ */
 function theme_culturefeed_date_control_timestamps_table(array &$variables) {
 
   $form = $variables['form'];
 
-  $table = array('rows' => array(), 'attributes' => array('class' => 'date-control-timestamps-table'));
+  $table = array(
+    'rows' => array(),
+    'attributes' => array(
+      'class' => array('date-control-table', 'date-control-timestamps-table'),
+    ),
+  );
 
   foreach (element_children($form['stamps']) as $element) {
 
