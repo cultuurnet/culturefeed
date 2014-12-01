@@ -10,7 +10,6 @@
 function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
 
   $form = array();
-  $triggering_element = isset($form_state['input']['_triggering_element_name']) ? $form_state['input']['_triggering_element_name'] : '';
 
   $default_contacts = array();
   $performers_info = array();

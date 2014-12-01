@@ -5,36 +5,82 @@
  * Contains the culturefeed date control module.
  */
 
-// Includes.
-require_once 'form_element/date_control.inc';
+require_once 'form/date_control.inc';
+require_once 'form/timestamps.inc';
 
 /**
  * Ajax callback for the date control element.
  */
-function culturefeed_date_control_ajax_callback($form, $form_state) {
+function culturefeed_date_control_ajax_callback() {
 
-  // Buttons are on different levels inside the element.  Find the correct
-  // parent by starting from the deepest element.
-  $parents = array_reverse($form_state['triggering_element']['#array_parents']);
-  foreach ($parents as $element) {
-    array_shift($parents);
-    if ($element == 'date_control') {
-      break;
-    }
-  }
-  $parents = array_reverse($parents);
-  return drupal_array_get_nested_value($form, $parents);
+  list($form, $form_state, $form_id, $form_build_id, $commands) = ajax_get_form();
+  drupal_process_form($form['#form_id'], $form, $form_state);
+  $parents = func_get_args();
+
+  $form = drupal_array_get_nested_value($form, $parents);
+  $output = drupal_render($form);
+  $result = array(
+    '#type' => 'ajax',
+    '#commands' => ajax_prepare_response($output),
+  );
+  $result['#commands'] = array_merge($commands, $result['#commands']);
+  return $result;
 
 }
 
 /**
+ * Adds a span element for a calendar icon on date popup fields.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The element.
+ */
+function culturefeed_date_control_element_date_popup_after_build(array $element, array $form_state) {
+  if (isset($element['date']) && isset($element['#icon']) && $element['#icon']) {
+    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
+  }
+  return $element;
+}
+
+/**
  * Implements hook_element_info().
+ *
+ * This is a complex ajax driven form element.  Several new ajax buttons are
+ * added based on initial interaction or default value.  Most of the logic is
+ * taken from the core managed file field.
+ *
+ * - To ensure all buttons remain registered in the form, visibility is set
+ *   through access in a pre render function.
+ * - A custom value callback is used so the pre render function has all the data
+ *   needed.
+ * - A custom ajax callback path to ensure the form is rerenderd.
+ *
+ * @see file_managed_file_pre_render()
+ * @see file_managed_file_submit()
+ * @see file_managed_file_value()
  */
 function culturefeed_date_control_element_info() {
   return array(
     'culturefeed_date_control' => array(
       '#input' => TRUE,
-      '#process' => array('culturefeed_date_control_process_element'),
+      '#pre_render' => array('culturefeed_date_control_pre_render_element'),
+      '#process' => array('culturefeed_date_control_date_control_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_date_control_value_callback',
+    ),
+    'culturefeed_date_control_timestamps' => array(
+      '#cell_count' => 4,
+      '#input' => TRUE,
+      '#element_validate' => array('culturefeed_date_control_timestamps_validate'),
+      '#pre_render' => array('culturefeed_date_control_timestamps_pre_render'),
+      '#process' => array('culturefeed_date_control_timestamps_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_timestamps_table',
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_timestamps_value_callback',
     ),
   );
 }
@@ -49,13 +95,21 @@ function culturefeed_date_control_element_info_alter(&$types) {
 }
 
 /**
- * Adds a span element for a calendar icon on date popup fields.
+ * Implements hook_menu().
  */
-function culturefeed_date_control_element_date_popup_after_build($element, $form_state) {
-  if (isset($element['date']) && isset($element['#icon']) && $element['#icon']) {
-    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
-  }
-  return $element;
+function culturefeed_date_control_menu() {
+
+  return array(
+    'culturefeed_elements/ajax' => array(
+      'title' => 'AHAH callback',
+      'page callback' => 'culturefeed_date_control_ajax_callback',
+      'delivery callback' => 'ajax_deliver',
+      'access callback' => TRUE,
+      'theme callback' => 'ajax_base_page_theme',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+
 }
 
 /**

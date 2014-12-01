@@ -7,34 +7,44 @@
 
 /**
  * Theme the timestamps table.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The output.
  */
-function theme_culturefeed_date_control_timestamps_table(&$variables) {
+function theme_culturefeed_date_control_timestamps_table(array &$variables) {
 
   $form = $variables['form'];
 
-  $table = array('rows' => array(), 'attributes' => array('class' => 'date-control-table'));
+  $table = array('rows' => array(), 'attributes' => array('class' => 'date-control-timestamps-table'));
 
-  foreach (element_children($form) as $element) {
+  foreach (element_children($form['stamps']) as $element) {
 
-    $cells = array();
-    if (isset($form[$element]['timestamps_remove_child'])) {
-      $cells[] = drupal_render($form[$element]['timestamps_remove_stamp']);
+    if ($element !== 'timestamps_add_stamp') {
+
+      $cells = array();
+      if ($form['stamps'][$element]['remove_stamp']['#access']) {
+        $cells[] = drupal_render($form['stamps'][$element]['remove_stamp']);
+      }
+      $cells[] = drupal_render($form['stamps'][$element]['date']);
+      $cells[] = drupal_render($form['stamps'][$element]['start_time']);
+      if ($form['stamps'][$element]['end_time']['#access']) {
+        $cells[] = drupal_render($form['stamps'][$element]['end_time']);
+      }
+      if ($form['stamps'][$element]['add_end']['#access']) {
+        $cells[] = drupal_render($form['stamps'][$element]['add_end']);
+      }
+      if ($form['stamps'][$element]['remove_end']['#access']) {
+        $cells[] = drupal_render($form['stamps'][$element]['remove_end']);
+      }
+      elseif ($form['#cell_count'] == 5) {
+        $cells[] = '';
+      }
+      $table['rows'][] = $cells;
+
     }
-    $cells[] = drupal_render($form[$element]['date']);
-    $cells[] = drupal_render($form[$element]['start_time']);
-    if (isset($form[$element]['end_time'])) {
-      $cells[] = drupal_render($form[$element]['end_time']);
-    }
-    if (isset($form[$element]['add_end_' . $element])) {
-      $cells[] = drupal_render($form[$element]['add_end_' . $element]);
-    }
-    if (isset($form[$element]['remove_end_' . $element])) {
-      $cells[] = drupal_render($form[$element]['remove_end_' . $element]);
-    }
-    else {
-      $cells[] = '';
-    }
-    $table['rows'][] = $cells;
 
   }
 
