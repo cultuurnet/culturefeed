@@ -1,0 +1,50 @@
+<?php
+/**
+ * @file
+ * CultureFeed Calendar allows users to manage their own activities in a calendar.
+ */
+
+require_once 'includes/helpers.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_calendar_menu() {
+
+  $items = array();
+
+  $items['culturefeed/calendar'] = array(
+    'title' => t('My Calendar'),
+    'page callback' => 'culturefeed_calendar_page_my_activities',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/add/%'] = array(
+    'title' => t('Add to calendar'),
+    'page callback' => 'culturefeed_calendar_add_to_calendar',
+    'page arguments' => array(3),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_calendar_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_calendar') . '/theme';
+
+  return array(
+    'culturefeed_calendar_button' => array(
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-calendar-button',
+    ),
+  );
+
+}

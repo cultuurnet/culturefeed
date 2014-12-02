@@ -5,7 +5,7 @@
  */
 ?>
 
-<?php 
+<?php
 /* print '<h1>' . $title . '</h1>'; */
 ?>
 
@@ -74,6 +74,7 @@
   <?php else: ?>
     <dd><?php print $when; ?></dd>
   <?php endif; ?>
+  <?php print $personal_calendar['button_content']; ?>
 
   <?php if ($organiser): ?>
   <dt><?php print t('Organization'); ?></dt>
@@ -174,3 +175,4 @@
 <?php endif; ?>
 
 <?php print $recommend_link; ?>
+<?php print $personal_calendar['button_footer']; ?>

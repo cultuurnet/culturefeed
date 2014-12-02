@@ -1,0 +1,7 @@
+name = CultureFeed Calendar
+description = CultureFeed Calendar allows users to manage their own activities in a calendar.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed
