@@ -380,6 +380,19 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   // Every filter will reset the current facet.
   // Remove this facet from URL, URL will function as removal URL.
   unset($query['facet'][$facet_key]);
+
+  if (isset($query['facet']['category_id'])) {
+    $key = array_search($facet_item->getValue(), $query['facet']['category_id']);
+    if ($key !== FALSE) {
+      unset($query['facet']['category_id'][$key]);
+      if (empty($query['facet']['category_id'])) {
+        unset($query['facet']['category_id']);
+      }
+    }
+
+  }
+
+
   if ($is_age_facet) {
     unset($query['min_age']);
   }
