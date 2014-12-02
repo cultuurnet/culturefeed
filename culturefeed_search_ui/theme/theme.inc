@@ -64,7 +64,15 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
     'facet' => array()
   );
 
-  $active_options = isset($query['facet'][$facet_key]) ? $query['facet'][$facet_key] : array();
+  if (isset($query['facet'][$facet_key])) {
+    $active_options = $query['facet'][$facet_key];
+  }
+  elseif (isset($query['facet']['category_id'])) {
+    $active_options = $query['facet']['category_id'];
+  }
+  else {
+    $active_options = array();
+  }
 
   $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
   $facet_links = $facet_links['facet_links'];
