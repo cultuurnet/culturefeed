@@ -54,16 +54,24 @@ function culturefeed_date_control_timestamps_pre_render(array $element) {
  */
 function culturefeed_date_control_timestamps_process(array $element, array &$form_state, array $form) {
 
-  $element['#prefix'] = "<div id=\"" . $element['#id'] . "-ajax-wrapper\">";
+  $element_id = $element['#id'];
+  $array_parents = $element['#array_parents'];
+
+  $element['#prefix'] = "<div id=\"" . $element_id . "-ajax-wrapper\">";
   $element['#suffix'] = "</div>";
+
+  if (isset($element['#date_control'])) {
+    $element_id = $element['#date_control']['#id'];
+    $array_parents = $element['#date_control']['#array_parents'];
+  }
 
   $ajax_button = array(
     '#access' => TRUE,
     '#ajax' => array(
       'effect' => 'none',
-      'path' => 'culturefeed_elements/ajax/' . implode('/', $element['#array_parents']),
+      'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
       'progress' => array('type' => 'throbber'),
-      'wrapper' => $element['#id'] . '-ajax-wrapper',
+      'wrapper' => $element_id . '-ajax-wrapper',
     ),
     '#attributes' => array('class' => array('add-more-link btn-link')),
     // '#limit_validation_errors' => array($element['#parents']),
@@ -143,37 +151,36 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
 function culturefeed_date_control_timestamps_validate(array $element, array &$form_state) {
 
   $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
+  $triggering_parent = array_pop($triggering_element['#parents']);
+  $timestamps = $element['#value'];
 
-  if ($triggering_element && culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
-
-    $timestamps = $element['#value']['stamps'];
-    $triggering_parent = array_pop($triggering_element['#parents']);
+  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 
       case 'timestamps_add_stamp':
-        $timestamps[] = array('date' => '');
+        $timestamps['stamps'][] = array('date' => '');
         $triggering_element['#parents'][] = 'stamps';
         break;
 
       case 'remove_stamp':
-        array_splice($timestamps, array_pop($triggering_element['#parents']), 1);
+        array_splice($timestamps['stamps'], array_pop($triggering_element['#parents']), 1);
         break;
 
       case 'add_end':
-        $timestamps[array_pop($triggering_element['#parents'])]['end_time'] = '';
+        $timestamps['stamps'][array_pop($triggering_element['#parents'])]['end_time'] = '';
         break;
 
       case 'remove_end':
-        unset($timestamps[array_pop($triggering_element['#parents'])]['end_time']);
+        unset($timestamps['stamps'][array_pop($triggering_element['#parents'])]['end_time']);
         break;
 
     }
 
-    drupal_array_set_nested_value($form_state['values'], $triggering_element['#parents'], $timestamps);
-    drupal_array_set_nested_value($form_state['input'], $triggering_element['#parents'], $timestamps);
-
   }
+
+  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $timestamps, TRUE);
+  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $timestamps, TRUE);
 
 }
 
@@ -196,8 +203,14 @@ function culturefeed_date_control_timestamps_value_callback(array &$element, $in
     return $input;
   }
   else {
+
     // Default value or an empty stamp.
-    return array('stamps' => array(array('date' => '')));
+    if (!isset($element['#default_value'])) {
+      return array('stamps' => array(array('date' => '')));
+    }
+    else {
+      return array('stamps' => $element['#default_value']);
+    }
   }
 
 }

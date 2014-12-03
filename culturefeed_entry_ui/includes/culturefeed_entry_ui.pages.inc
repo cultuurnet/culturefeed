@@ -31,6 +31,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
   $timestamps = array();
   $period_start = '';
   $period_end = '';
+  $permanent = FALSE;
   $weekscheme = NULL;
   $age = '';
   $age_category = 'everyone';
@@ -128,18 +129,16 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
       $today = strtotime(date('Y-m-d') . ' 00:00:00');
 
       if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
-        $when = 'period';
         $period_start = $calendar->current()->getDateFrom();
         $period_end = $calendar->current()->getDateTo();
         $weekscheme = $calendar->current()->getWeekScheme();
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
-        $when = 'permanent';
+        $permanent = TRUE;
         $weekscheme = $calendar->getWeekScheme();
       }
       elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
 
-        $when = 'timestamps';
         $timestamps_count = iterator_count($calendar);
         $calendar->rewind();
         $current_timestamp = 0;
@@ -673,8 +672,9 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         'start' => $period_start,
         'end' => $period_end,
       ),
+      'permanent' => $permanent,
       'timestamps' => $timestamps,
-      'permanent' => $weekscheme,
+      'weekscheme' => $weekscheme,
     ),
     '#allowed_days' => CultureFeed_Cdb_Data_Calendar_SchemeDay::$allowedDays,
   );

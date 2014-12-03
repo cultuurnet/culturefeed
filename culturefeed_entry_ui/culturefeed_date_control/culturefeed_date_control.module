@@ -6,6 +6,7 @@
  */
 
 require_once 'form/date_control.inc';
+require_once 'form/hybrid.inc';
 require_once 'form/opening_times.inc';
 require_once 'form/period.inc';
 require_once 'form/timestamps.inc';
@@ -25,7 +26,6 @@ function culturefeed_date_control_ajax_callback() {
     '#type' => 'ajax',
     '#commands' => ajax_prepare_response($output),
   );
-  $result['#commands'] = array_merge($commands, $result['#commands']);
   return $result;
 
 }
@@ -72,22 +72,29 @@ function culturefeed_date_control_element_date_popup_after_build(array $element,
  *
  * - To ensure all buttons remain registered in the form, visibility is set
  *   through access in a pre render function.
- * - A custom value callback is used so the pre render function has all the data
- *   needed.
+ * - Element validation functions are used to set the data.
  * - A custom ajax callback path to ensure the form is rerenderd.
  *
  * @see file_managed_file_pre_render()
- * @see file_managed_file_submit()
  * @see file_managed_file_value()
  */
 function culturefeed_date_control_element_info() {
   return array(
     'culturefeed_date_control' => array(
+      '#element_validate' => array('culturefeed_date_control_date_control_validate'),
       '#input' => TRUE,
-      '#pre_render' => array('culturefeed_date_control_pre_render_element'),
+      '#pre_render' => array('culturefeed_date_control_date_control_pre_render'),
       '#process' => array('culturefeed_date_control_date_control_process', 'ajax_process_form'),
       '#tree' => TRUE,
       '#value_callback' => 'culturefeed_date_control_date_control_value_callback',
+    ),
+    'culturefeed_date_control_hybrid' => array(
+      '#element_validate' => array('culturefeed_date_control_hybrid_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_date_control_hybrid_pre_render'),
+      '#process' => array('culturefeed_date_control_hybrid_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_hybrid_table',
+      '#tree' => TRUE,
     ),
     'culturefeed_date_control_opening_times' => array(
       '#input' => TRUE,
@@ -96,16 +103,16 @@ function culturefeed_date_control_element_info() {
     ),
     'culturefeed_date_control_period' => array(
       '#element_validate' => array('culturefeed_date_control_period_validate'),
-      '#pre_render' => array('culturefeed_date_control_period_pre_render'),
       '#input' => TRUE,
+      '#pre_render' => array('culturefeed_date_control_period_pre_render'),
       '#process' => array('culturefeed_date_control_period_process', 'ajax_process_form'),
       '#theme' => 'culturefeed_date_control_period_table',
       '#tree' => TRUE,
     ),
     'culturefeed_date_control_timestamps' => array(
       '#cell_count' => 4,
-      '#input' => TRUE,
       '#element_validate' => array('culturefeed_date_control_timestamps_validate'),
+      '#input' => TRUE,
       '#pre_render' => array('culturefeed_date_control_timestamps_pre_render'),
       '#process' => array('culturefeed_date_control_timestamps_process', 'ajax_process_form'),
       '#theme' => 'culturefeed_date_control_timestamps_table',
@@ -154,6 +161,7 @@ function culturefeed_date_control_theme() {
   );
 
   return array(
+    'culturefeed_date_control_hybrid_table' => $settings,
     'culturefeed_date_control_opening_times_table' => $settings,
     'culturefeed_date_control_period_table' => $settings,
     'culturefeed_date_control_timestamps_table' => $settings,

@@ -45,16 +45,24 @@ function culturefeed_date_control_period_pre_render(array $element) {
  */
 function culturefeed_date_control_period_process(array $element, array &$form_state, array $form) {
 
-  $element['#prefix'] = "<div id=\"" . $element['#id'] . "-ajax-wrapper\">";
+  $element_id = $element['#id'];
+  $array_parents = $element['#array_parents'];
+
+  $element['#prefix'] = "<div id=\"" . $element_id . "-ajax-wrapper\">";
   $element['#suffix'] = "</div>";
+
+  if (isset($element['#date_control'])) {
+    $element_id = $element['#date_control']['#id'];
+    $array_parents = $element['#date_control']['#array_parents'];
+  }
 
   $ajax_button = array(
     '#access' => TRUE,
     '#ajax' => array(
       'effect' => 'none',
-      'path' => 'culturefeed_elements/ajax/' . implode('/', $element['#array_parents']),
+      'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
       'progress' => array('type' => 'throbber'),
-      'wrapper' => $element['#id'] . '-ajax-wrapper',
+      'wrapper' => $element_id . '-ajax-wrapper',
     ),
     '#attributes' => array('class' => array('add-more-link btn-link')),
     // '#limit_validation_errors' => array($element['#parents']),
@@ -106,11 +114,10 @@ function culturefeed_date_control_period_process(array $element, array &$form_st
 function culturefeed_date_control_period_validate(array $element, array &$form_state) {
 
   $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
+  $triggering_parent = array_pop($triggering_element['#parents']);
+  $dates = $element['#value'];
 
-  if ($triggering_element && culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
-
-    $dates = $element['#value'];
-    $triggering_parent = array_pop($triggering_element['#parents']);
+  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 
@@ -124,9 +131,9 @@ function culturefeed_date_control_period_validate(array $element, array &$form_s
 
     }
 
-    drupal_array_set_nested_value($form_state['values'], $triggering_element['#parents'], $dates);
-    drupal_array_set_nested_value($form_state['input'], $triggering_element['#parents'], $dates);
-
   }
+
+  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $dates, TRUE);
+  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $dates, TRUE);
 
 }

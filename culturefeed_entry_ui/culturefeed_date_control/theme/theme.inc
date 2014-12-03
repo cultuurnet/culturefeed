@@ -6,6 +6,49 @@
  */
 
 /**
+ * Theme the hybrid table.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The output.
+ */
+function theme_culturefeed_date_control_hybrid_table(array &$variables) {
+
+  $form = $variables['form'];
+
+  $table = array(
+    'attributes' => array(
+      'class' => array(
+        'date-control-table',
+        'date-control-hybrid-table',
+      ),
+    ),
+    'rows' => array(),
+  );
+
+  $cells = array();
+  $cells[] = drupal_render($form['start_date']);
+  $cells[] = drupal_render($form['start_time']);
+  if (!$form['end_date']['#access'] && !$form['end_time']['#access']) {
+    $cells[] = drupal_render($form['add_end_date_or_time']);
+  }
+  if ($form['end_date']['#access']) {
+    $cells[] = drupal_render($form['end_date']);
+  }
+  if ($form['end_time']['#access']) {
+    $cells[] = drupal_render($form['end_time']);
+  }
+
+  $table['rows'][] = $cells;
+  $output = theme('table', $table);
+  $output .= drupal_render_children($form);
+  return $output;
+
+}
+
+/**
  * Theme the timestamps table.
  *
  * @param array $variables
@@ -20,9 +63,14 @@ function theme_culturefeed_date_control_opening_times_table(array &$variables) {
 
   $header = array(t('open'), t('from'), t('to'));
   $table = array(
+    'attributes' => array(
+      'class' => array(
+        'date-control-table',
+        'date-control-opening-times-table',
+      ),
+    ),
     'header' => $header,
     'rows' => array(),
-    'attributes' => array('class' => 'date-control-opening-times-table'),
   );
 
   foreach (element_children($form) as $element) {
@@ -61,7 +109,10 @@ function theme_culturefeed_date_control_period_table(array &$variables) {
 
   $table = array(
     'attributes' => array(
-      'class' => array('date-control-table', 'date-control-period-table'),
+      'class' => array(
+        'date-control-table',
+        'date-control-period-table',
+      ),
     ),
     'rows' => array(),
   );
@@ -97,10 +148,13 @@ function theme_culturefeed_date_control_timestamps_table(array &$variables) {
   $form = $variables['form'];
 
   $table = array(
-    'rows' => array(),
     'attributes' => array(
-      'class' => array('date-control-table', 'date-control-timestamps-table'),
+      'class' => array(
+        'date-control-table',
+        'date-control-timestamps-table',
+      ),
     ),
+    'rows' => array(),
   );
 
   foreach (element_children($form['stamps']) as $element) {

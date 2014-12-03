@@ -6,6 +6,57 @@
  */
 
 /**
+ * Pre renders the culturefeed date control.
+ *
+ * @param array $element
+ *   The element.
+ *
+ * @return array $element
+ *   The element.
+ */
+function culturefeed_date_control_date_control_pre_render(array $element) {
+
+  $value = $element['#value'];
+
+  if ($value['date_control']['type'] == 'hybrid') {
+
+    $element['date_control']['opening_times']['#access'] = FALSE;
+    $element['date_control']['period']['#access'] = FALSE;
+    $element['date_control']['permanent']['#access'] = FALSE;
+    $element['date_control']['timestamps']['#access'] = FALSE;
+
+  }
+
+  elseif ($value['date_control']['type'] == 'period') {
+
+    $element['date_control']['hybrid']['#access'] = FALSE;
+    $element['date_control']['permanent']['#access'] = FALSE;
+    $element['date_control']['timestamps']['#access'] = FALSE;
+
+  }
+
+  elseif ($value['date_control']['type'] == 'permanent') {
+
+    $element['date_control']['hybrid']['#access'] = FALSE;
+    $element['date_control']['period']['#access'] = FALSE;
+    $element['date_control']['timestamps']['#access'] = FALSE;
+
+  }
+
+  elseif ($value['date_control']['type'] == 'timestamps') {
+
+    $element['date_control']['hybrid']['#access'] = FALSE;
+    $element['date_control']['opening_times']['#access'] = FALSE;
+    $element['date_control']['period']['#access'] = FALSE;
+    $element['date_control']['permanent']['#access'] = FALSE;
+
+  }
+
+  return $element;
+
+}
+
+/**
  * Returns the culturefeed date control element.
  *
  * @param array $element
@@ -28,20 +79,53 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#title' => (isset($element['#title'])) ? $element['#title'] : t('Dates'),
   );
 
+  // Type.
+  $element['date_control']['type'] = array(
+    '#type' => 'hidden',
+    '#value' => $element['#value']['date_control']['type'],
+  );
+
+  // Hybrid.
+  $element['date_control']['hybrid'] = array(
+    '#access' => TRUE,
+    '#date_control' => $element,
+    '#type' => 'culturefeed_date_control_hybrid',
+  );
+
   // Timestamps.
   $element['date_control']['timestamps'] = array(
+    '#access' => TRUE,
+    '#date_control' => $element,
     '#type' => 'culturefeed_date_control_timestamps',
   );
 
   // Period.
   $element['date_control']['period'] = array(
+    '#access' => TRUE,
+    '#date_control' => $element,
     '#type' => 'culturefeed_date_control_period',
+  );
+
+  // Permanent.
+  $element['date_control']['permanent'] = array(
+    '#access' => TRUE,
+    '#ajax' => array(
+      'effect' => 'none',
+      'path' => 'culturefeed_elements/ajax/' . implode('/', $element['#array_parents']),
+      'progress' => array('type' => 'throbber'),
+      'wrapper' => $element['#id'] . '-ajax-wrapper',
+    ),
+    '#value' => isset($element['#value']['date_control']['permanent']) ? $element['#value']['date_control']['permanent'] : 0,
+    '#title' => t('Permanent'),
+    '#type' => 'checkbox',
   );
 
   // Opening times.
   $element['date_control']['opening_times'] = array(
-    '#type' => 'culturefeed_date_control_opening_times',
+    '#access' => TRUE,
     '#allowed_days' => $element['#allowed_days'],
+    '#date_control' => $element,
+    '#type' => 'culturefeed_date_control_opening_times',
   );
 
   $element['#attached'] = array(
@@ -51,6 +135,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   );
 
   return $element;
+
 }
 
 /**
@@ -64,6 +149,132 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 function culturefeed_date_control_date_control_submit(array $form, array &$form_state) {
 
   $form_state['rebuild'] = TRUE;
+
+}
+
+/**
+ * Validate and alter the culturefeed date control form values.
+ *
+ * This is where the element switching is set, based on values.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_date_control_date_control_validate(array $element, array &$form_state) {
+
+  $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
+  $triggering_parent = array_pop($triggering_element['#parents']);
+  // Use form_state instead of element as individual sub elements have changes
+  // that won't be reflected in element.
+  $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  $date_control = $values['date_control'];
+
+  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
+
+    $type = $date_control['type'];
+
+    // Hybrid.
+    if ($date_control['type'] == 'hybrid') {
+
+      // Period.
+      if ($triggering_parent == 'end_date') {
+
+        $type = 'period';
+        $date_control['period'] = array('start_date' => '');
+        if (isset($date_control['hybrid']['start_date'])) {
+          $date_control['period']['start_date'] = $date_control['hybrid']['start_date'];
+        }
+        if (isset($date_control['hybrid']['end_date'])) {
+          $date_control['period']['end_date'] = $date_control['hybrid']['end_date'];
+        }
+
+      }
+
+      // Permanent.
+      if ($triggering_parent == 'permanent') {
+
+        $type = 'permanent';
+        $date_control['permanent'] = 1;
+
+      }
+
+      // Timestamps.
+      if ($triggering_parent == 'add_date' || $triggering_parent == 'hour' || $triggering_parent == 'minute') {
+
+        $type = 'timestamps';
+        $date_control['timestamps']['stamps'] = array(
+          array('date' => ''),
+        );
+        if (isset($date_control['hybrid']['start_date'])) {
+          $date_control['timestamps']['stamps'][0]['date'] = $date_control['hybrid']['start_date'];
+        }
+        if (isset($date_control['hybrid']['start_time'])) {
+          $date_control['timestamps']['stamps'][0]['start_time'] = $date_control['hybrid']['start_time'];
+        }
+        if (isset($date_control['hybrid']['end_time'])) {
+          $date_control['timestamps']['stamps'][0]['end_time'] = $date_control['hybrid']['end_time'];
+        }
+        if ($triggering_parent == 'add_date') {
+          $date_control['timestamps']['stamps'][] = array('date' => '');
+        }
+
+      }
+
+    }
+
+    // Period.
+    if ($date_control['type'] == 'period') {
+
+      if ($triggering_parent == 'remove_end') {
+
+        $type = 'hybrid';
+        // Pass over any set values.
+        $date_control['hybrid'] = array(
+          'start_date' => isset($date_control['period']['start_date']) ? $date_control['period']['start_date'] : '',
+        );
+
+      }
+
+    }
+
+    // Permanent.
+    if ($date_control['type'] == 'permanent') {
+
+      if ($triggering_parent == 'permanent') {
+
+        $type = 'hybrid';
+
+      }
+
+    }
+
+    // Timestamps.
+    if ($date_control['type'] == 'timestamps') {
+
+      if (($triggering_parent == 'remove_stamp' || $triggering_parent == 'remove_end')  && count($date_control['timestamps']['stamps']) == 1) {
+
+        $type = 'hybrid';
+        $date_control['hybrid'] = array('start_date' => '');
+        if (isset($date_control['timestamps']['stamps'][0]['date'])) {
+          $date_control['hybrid']['start_date'] = $date_control['timestamps']['stamps'][0]['date'];
+        }
+        if (isset($date_control['timestamps']['stamps'][0]['start_time'])) {
+          $date_control['hybrid']['start_time'] = $date_control['timestamps']['stamps'][0]['start_time'];
+        }
+
+      }
+
+    }
+
+    $date_control['type'] = $type;
+
+  }
+
+  $element['#parents'][] = 'date_control';
+  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $date_control);
+  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $date_control);
 
 }
 
@@ -85,29 +296,49 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
   if ($input) {
     return $input;
   }
-
-}
-
-/**
- * Returns the date control type based on the values.
- *
- * @param array $values
- *   The element values.
- *
- * @return string
- *   The type.
- */
-function culturefeed_date_control_get_type(array $values) {
-
-  if (isset($values['period']['start']) && $values['period']['end']) {
-    return 'period';
-  }
-  if (isset($values['permanent'])) {
-    return 'permanent';
-  }
   else {
-    // Default setting.
-    return 'timestamps';
+
+    // Default value or an empty value.
+    if (!isset($element['#default_value'])) {
+
+      return array(
+        'date_control' => array(
+          'type' => 'hybrid',
+          'hybrid' => array(),
+          'opening_times' => array(),
+          'period' => array(),
+          'timestamps' => array(),
+        ),
+      );
+
+    }
+
+    else {
+
+      $default_value = $element['#default_value'];
+
+      if (count($default_value['timestamps'])) {
+        $stamps = $default_value['timestamps'];
+        $default_value['timestamps'] = array('stamps' => $stamps);
+        $default_value['type'] = 'timestamps';
+      }
+
+      if ($default_value['period']['start']) {
+        $default_value['type'] = 'period';
+      }
+
+      if ($default_value['permanent']) {
+        $default_value['type'] = 'permanent';
+      }
+
+      else {
+        $default_value['type'] = 'hybrid';
+      }
+
+      return array('date_control' => $default_value);
+
+    }
+
   }
 
 }

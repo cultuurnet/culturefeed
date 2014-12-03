@@ -70,6 +70,9 @@ function culturefeed_date_control_opening_times_process(array $element, array &$
   }
 
   $element['#attached'] = array(
+    'css' => array(
+      drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control_opening_times.css',
+    ),
     'js' => array(
       drupal_get_path('module', 'culturefeed_date_control') . '/js/culturefeed_date_control_opening_times.js',
     ),
