@@ -17,7 +17,7 @@ define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
 define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
 
-use Cultuurnet\Search\Parameter;
+use CultuurNet\Search\Parameter;
 
 /**
  * Implements hook_init().
