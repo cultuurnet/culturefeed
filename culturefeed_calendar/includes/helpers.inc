@@ -47,6 +47,7 @@ function culturefeed_calendar_get_user_activities() {
     $activities->total = 0;
     if(isset($_COOKIE['Drupal_visitor_calendar'])) {
       $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      dsm($activities, 'da');
       $activities->total = count($activities->objects);
     }
   }
@@ -106,7 +107,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
 
   if ($authenticated) {
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-    
+
     DrupalCultureFeed::createActivity($activity);
   }
   else {

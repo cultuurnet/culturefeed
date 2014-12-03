@@ -8,7 +8,7 @@
 /**
  * Page callback to show the calendar page.
  */
-function culturefeed_calendar_page_my_activities () {
+function culturefeed_calendar_page_my_activities() {
 
   $activities = culturefeed_calendar_get_user_activities();
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
@@ -21,7 +21,7 @@ function culturefeed_calendar_page_my_activities () {
 
 
   foreach ($activities->objects as $activity) {
-    $output .= '<div>' . $activity->nodeTitle . '</div>';
+    $output .= '<div>' . theme('culturefeed_calendar_activity', array('activity' => $activity)) . '</div>';
   }
 
   return $output;

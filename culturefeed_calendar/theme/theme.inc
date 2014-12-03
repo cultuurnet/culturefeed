@@ -10,6 +10,7 @@
  * @see culturefeed-calendar-button.tpl.php
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables) {
+
   if ($variables['button']['action'] == 'view') {
     $variables['button']['url'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
@@ -28,5 +29,22 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     elseif ($variables['button']['location'] == 'footer') {
       $variables['button']['text'] = t('Add');
     }
+  }
+
+}
+
+/**
+ * Preprocess the variables for the calendar activities on my-calendar page.
+ *
+ * @see culturefeed-calendar-activity.tpl.php
+ */
+function culturefeed_calendar_preprocess_culturefeed_calendar_activity(&$variables) {
+
+  if (isset($variables['activity'])) {
+    $activity = $variables['activity'];
+
+  dsm($activity);
+
+    $variables['event']['title'] = $activity->nodeTitle;
   }
 }

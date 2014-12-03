@@ -43,14 +43,24 @@ function culturefeed_calendar_menu() {
  */
 function culturefeed_calendar_theme() {
 
+  $items = array();
+
   $path = drupal_get_path('module', 'culturefeed_calendar') . '/theme';
 
-  return array(
-    'culturefeed_calendar_button' => array(
-      'path' => $path,
-      'file' => 'theme.inc',
-      'template' => 'culturefeed-calendar-button',
+  $items['culturefeed_calendar_button'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-button',
+  );
+  $items['culturefeed_calendar_activity'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activity',
+    'variables' => array(
+      'event' => NULL
     ),
   );
+
+  return $items;
 
 }
