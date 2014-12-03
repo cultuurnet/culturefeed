@@ -21,7 +21,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     }
   }
   elseif ($variables['button']['action'] == 'add') {
-    $variables['button']['url'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'];
+    $variables['button']['url'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/ajax';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['text'] = t('Add to my OuTcalendar');
     }

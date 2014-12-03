@@ -9,34 +9,46 @@
  */
 function culturefeed_calendar_get_user_activities() {
 
-  // Only search for activities with type_like or type_ik_ga.
-  $activity_options = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_IK_GA,
-  );
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
 
-  // Load the config for the activity options.
-  $options = array();
-  foreach ($activity_options as $activity_type) {
-    $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
+  if ($authenticated) {
+    // Only search for activities with type_like or type_ik_ga.
+    $activity_options = array(
+      CultureFeed_Activity::TYPE_LIKE,
+      CultureFeed_Activity::TYPE_IK_GA,
+    );
+
+    // Load the config for the activity options.
+    $options = array();
+    foreach ($activity_options as $activity_type) {
+      $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
+    }
+
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->type = $activity_options;
+    $query->contentType = 'event';
+    $query->userId = DrupalCultureFeed::getLoggedInUserId();
+
+    try {
+      $activities = DrupalCultureFeed::searchActivities($query);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_calendar', $e);
+      return;
+    }
+
+    if ($activities->total == 0) {
+      return;
+    }
   }
-
-  $query = new CultureFeed_SearchActivitiesQuery();
-  //$query->max = 500;
-  $query->type = $activity_options;
-  $query->contentType = 'event';
-  $query->userId = DrupalCultureFeed::getLoggedInUserId();
-
-  try {
-    $activities = DrupalCultureFeed::searchActivities($query);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_calendar', $e);
-    return;
-  }
-
-  if ($activities->total == 0) {
-    return;
+  else {
+    $activities = new stdClass();
+    $activities->objects = array();
+    $activities->total = 0;
+    if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+      $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      $activities->total = count($activities->objects);
+    }
   }
 
   return $activities;
@@ -65,4 +77,49 @@ function culturefeed_calendar_render_button($item, $location) {
   $button['item_id'] = $id;
 
   return theme('culturefeed_calendar_button', array('button' => $button));
+}
+
+/**
+ * Helper function to add an activity to the calendar.
+ */
+function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
+
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
+  $activity = new CultureFeed_Activity();
+
+  if (!empty($date)) {
+    $value = new stdClass();
+    $value->date = $date;
+    $activity->value = json_encode($value);
+
+    $activity->type = CultureFeed_Activity::TYPE_IK_GA;
+
+  }
+  else {
+    $activity->type = CultureFeed_Activity::TYPE_LIKE;
+  }
+
+  $activity->contentType = 'event';
+  $activity->nodeId = $node_id;
+  $activity->nodeTitle = $node_title;
+
+
+  if ($authenticated) {
+    $activity->userId = DrupalCultureFeed::getLoggedInUserId();
+dsm($activity);
+return;
+    DrupalCultureFeed::createActivity($activity);
+  }
+  else {
+    $calendar = array();
+    if (isset($_COOKIE ['Drupal_visitor_calendar'] )) {
+      $calendar['calendar'] = unserialize($_COOKIE ['Drupal_visitor_calendar']);
+    }
+
+    $calendar['calendar'][] = $activity;
+    $calendar['calendar'] = serialize($calendar['calendar']);
+    user_cookie_save($calendar);
+  }
+  drupal_set_message(t('The event has been added to your OuTcalendar.'));
+  drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
 }

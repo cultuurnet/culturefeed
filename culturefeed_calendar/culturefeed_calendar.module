@@ -16,17 +16,23 @@ function culturefeed_calendar_menu() {
   $items['culturefeed/calendar'] = array(
     'title' => t('My Calendar'),
     'page callback' => 'culturefeed_calendar_page_my_activities',
-    'access callback' => 'culturefeed_is_culturefeed_user',
+    'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['culturefeed/calendar/add/%'] = array(
+  $items['culturefeed/calendar/add/%culturefeed_agenda_event/%'] = array(
     'title' => t('Add to calendar'),
     'page callback' => 'culturefeed_calendar_add_to_calendar',
-    'page arguments' => array(3),
-    'access callback' => 'culturefeed_is_culturefeed_user',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/add-cookie-to-calendar'] = array(
+    'title' => t('Add cookie events to calendar'),
+    'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
   );
 
   return $items;
