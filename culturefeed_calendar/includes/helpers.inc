@@ -106,8 +106,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
 
   if ($authenticated) {
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
-dsm($activity);
-return;
+    
     DrupalCultureFeed::createActivity($activity);
   }
   else {

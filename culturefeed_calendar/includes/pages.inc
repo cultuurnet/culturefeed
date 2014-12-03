@@ -51,14 +51,12 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 
   foreach ($activities as $key => $activity) {
     $activity->userId = $user_id;
-    dsm($activity);
     DrupalCultureFeed::createActivity($activity);
 
   }
   user_cookie_delete('calendar');
-  dsm($_COOKIE);
 
-  //drupal_goto('culturefeed/calendar');
+  drupal_goto('culturefeed/calendar');
 }
 
 /**
