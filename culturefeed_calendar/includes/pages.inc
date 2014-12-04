@@ -19,9 +19,11 @@ function culturefeed_calendar_page_my_activities() {
     $output .= drupal_render($form);
   }
 
-
   foreach ($activities->objects as $activity) {
-    $output .= '<div>' . theme('culturefeed_calendar_activity', array('activity' => $activity)) . '</div>';
+    dsm($activity);
+    $item = culturefeed_search_item_load($activity->nodeId, 'event');
+    $output = 'activity .. todo';
+//    $output .= '<div>' . theme('culturefeed_calendar_activity_summary', array('item' => $item)) . '</div>';
   }
 
   return $output;
@@ -62,7 +64,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 
   //Get activities from cookie
   $activities = array();
-  if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+  if(isset($_COOKIE['calendar'])) {
     $activities = unserialize($_COOKIE['calendar']);
   }
 
@@ -80,6 +82,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
  * Page callback to add items to the calendar
  */
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
+
   $entity = $event->getEntity();
   $node_id = $entity->getCdbId();
 

@@ -45,6 +45,7 @@ function culturefeed_calendar_get_user_activities() {
     $activities = new stdClass();
     $activities->objects = array();
     $activities->total = 0;
+
     if(isset($_COOKIE['calendar'])) {
       $activities->objects = unserialize($_COOKIE['calendar']);
       dsm($activities, 'da');

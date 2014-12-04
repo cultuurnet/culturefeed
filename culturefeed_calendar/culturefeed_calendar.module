@@ -52,12 +52,13 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button',
   );
-  $items['culturefeed_calendar_activity'] = array(
+
+  $items['culturefeed_calendar_activity_summary'] = array(
     'path' => $path,
     'file' => 'theme.inc',
-    'template' => 'culturefeed-calendar-activity',
+    'template' => 'culturefeed-calendar-activity-summary',
     'variables' => array(
-      'event' => NULL
+      'item' => NULL
     ),
   );
 
