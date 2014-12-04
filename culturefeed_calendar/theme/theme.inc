@@ -43,8 +43,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity(&$variabl
   if (isset($variables['activity'])) {
     $activity = $variables['activity'];
 
-  dsm($activity);
-
     $variables['event']['title'] = $activity->nodeTitle;
+    $variables['event']['date'] = '';
+    if(!empty($activity->value)) {
+      $variables['event']['date'] = date('d-m-Y', strtotime(json_decode($activity->value)->date[0]));
+    }
   }
 }

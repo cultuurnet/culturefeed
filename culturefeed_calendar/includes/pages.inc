@@ -40,25 +40,6 @@ function culturefeed_calendar_save_cookie_form($form, &$form_state) {
   return $form;
 }
 
-function culturefeed_calendar_add_cookie_to_calendar() {
-  $user_id = DrupalCultureFeed::getLoggedInUserId();
-
-  //Get activities from cookie
-  $activities = array();
-  if(isset($_COOKIE['Drupal_visitor_calendar'])) {
-    $activities = unserialize($_COOKIE['Drupal_visitor_calendar']);
-  }
-
-  foreach ($activities as $key => $activity) {
-    $activity->userId = $user_id;
-    DrupalCultureFeed::createActivity($activity);
-
-  }
-  user_cookie_delete('calendar');
-
-  drupal_goto('culturefeed/calendar');
-}
-
 /**
  * Submit the save cookie form.
  */
@@ -71,6 +52,28 @@ function culturefeed_calendar_save_cookie_form_submit($form, &$form_state) {
     ),
   );
   drupal_goto($url, $options);
+}
+
+/**
+ * Page callback to move the events from the cookie to the calendar.
+ */
+function culturefeed_calendar_add_cookie_to_calendar() {
+  $user_id = DrupalCultureFeed::getLoggedInUserId();
+
+  //Get activities from cookie
+  $activities = array();
+  if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+    $activities = unserialize($_COOKIE['calendar']);
+  }
+
+  foreach ($activities as $key => $activity) {
+    $activity->userId = $user_id;
+    DrupalCultureFeed::createActivity($activity);
+
+  }
+  user_cookie_delete('calendar');
+
+  drupal_goto('culturefeed/calendar');
 }
 
 /**
@@ -117,7 +120,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
-  return $form;
+ // return $form;
 
   if ($request_type == 'ajax') {
     $output = drupal_render($form);
@@ -158,7 +161,8 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
   elseif ($params['type'] == 'timestamps') {
 
     foreach ($params['dates'] as $key => $date) {
-      $dates[$key] = date('d-m-Y', strtotime($date));
+      $date_formatted = date('d-m-Y', strtotime($date));
+      $dates[$date] = date('d-m-Y', strtotime($date_formatted));
     }
 
     $form['calendar_dates']['date'] = array(

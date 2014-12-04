@@ -45,8 +45,8 @@ function culturefeed_calendar_get_user_activities() {
     $activities = new stdClass();
     $activities->objects = array();
     $activities->total = 0;
-    if(isset($_COOKIE['Drupal_visitor_calendar'])) {
-      $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
+    if(isset($_COOKIE['calendar'])) {
+      $activities->objects = unserialize($_COOKIE['calendar']);
       dsm($activities, 'da');
       $activities->total = count($activities->objects);
     }
@@ -111,14 +111,14 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     DrupalCultureFeed::createActivity($activity);
   }
   else {
-    $calendar = array();
-    if (isset($_COOKIE ['Drupal_visitor_calendar'] )) {
-      $calendar['calendar'] = unserialize($_COOKIE ['Drupal_visitor_calendar']);
+    $cookie = array();
+    if (isset($_COOKIE ['calendar'] )) {
+      $cookie['calendar'] = unserialize($_COOKIE ['calendar']);
     }
 
-    $calendar['calendar'][] = $activity;
-    $calendar['calendar'] = serialize($calendar['calendar']);
-    user_cookie_save($calendar);
+    $cookie['calendar'][] = $activity;
+    $cookie['calendar'] = serialize($cookie['calendar']);
+    user_cookie_save($cookie);
   }
   drupal_set_message(t('The event has been added to your OuTcalendar.'));
   drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
