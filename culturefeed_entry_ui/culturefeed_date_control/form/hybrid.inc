@@ -157,6 +157,10 @@ function culturefeed_date_control_hybrid_validate(array $element, array &$form_s
 
   }
 
+  elseif (!isset($element['#date_control']) || !culturefeed_date_control_check_trigger_element($triggering_element, $element['#date_control'])) {
+    $hybrid = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  }
+
   drupal_array_set_nested_value($form_state['values'], $element['#parents'], $hybrid);
   drupal_array_set_nested_value($form_state['input'], $element['#parents'], $hybrid);
 

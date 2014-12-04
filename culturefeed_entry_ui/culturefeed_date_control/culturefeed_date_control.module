@@ -108,6 +108,7 @@ function culturefeed_date_control_element_info() {
       '#process' => array('culturefeed_date_control_period_process', 'ajax_process_form'),
       '#theme' => 'culturefeed_date_control_period_table',
       '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_period_value_callback',
     ),
     'culturefeed_date_control_timestamps' => array(
       '#cell_count' => 4,

@@ -96,6 +96,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   $element['date_control']['timestamps'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
+    '#default_value' => $element['#default_value']['timestamps'],
     '#type' => 'culturefeed_date_control_timestamps',
   );
 
@@ -103,6 +104,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   $element['date_control']['period'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
+    '#default_value' => $element['#default_value']['period'],
     '#type' => 'culturefeed_date_control_period',
   );
 
@@ -125,6 +127,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#access' => TRUE,
     '#allowed_days' => $element['#allowed_days'],
     '#date_control' => $element,
+    '#default_value' => $element['#default_value']['opening_times'],
     '#type' => 'culturefeed_date_control_opening_times',
   );
 
@@ -253,7 +256,10 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
     // Timestamps.
     if ($date_control['type'] == 'timestamps') {
 
-      if (($triggering_parent == 'remove_stamp' || $triggering_parent == 'remove_end')  && count($date_control['timestamps']['stamps']) == 1) {
+      if (
+        (($triggering_parent == 'remove_stamp' && !isset($date_control['timestamps']['stamps'][0]['end_time'])) ||
+          $triggering_parent == 'remove_end')  && count($date_control['timestamps']['stamps']) == 1
+      ) {
 
         $type = 'hybrid';
         $date_control['hybrid'] = array('start_date' => '');
@@ -323,11 +329,11 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
         $default_value['type'] = 'timestamps';
       }
 
-      if ($default_value['period']['start']) {
+      elseif ($default_value['period']['start_date']) {
         $default_value['type'] = 'period';
       }
 
-      if ($default_value['permanent']) {
+      elseif ($default_value['permanent']) {
         $default_value['type'] = 'permanent';
       }
 

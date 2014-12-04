@@ -84,50 +84,48 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
 
   foreach ($timestamps as $key => $timestamp) {
 
-    if ($key !== 'timestamps_add_stamp') {
+    $default_value = !count($form_state['input']) && isset($element['#default_value'][$key]) ? $element['#default_value'][$key] : array();
 
-      $element['stamps'][$key]['remove_stamp'] = $ajax_button + array(
-        '#value' => t('×'),
-        '#name' => 'remove_stamp_' . $key,
-      );
+    $element['stamps'][$key]['remove_stamp'] = $ajax_button + array(
+      '#value' => t('×'),
+      '#name' => 'remove_stamp_' . $key,
+    );
 
-      $element['stamps'][$key]['date'] = array(
-        '#date_format' => 'd-m-Y',
-        '#date_label_position' => 'none',
-        '#default_value' => '',
-        '#icon' => TRUE,
-        '#title' => t('Date'),
-        '#type' => 'date_popup',
-      );
+    $element['stamps'][$key]['date'] = array(
+      '#date_format' => 'd-m-Y',
+      '#date_label_position' => 'none',
+      '#default_value' => isset($default_value['date']) ? $default_value['date'] : '',
+      '#icon' => TRUE,
+      '#title' => t('Date'),
+      '#type' => 'date_popup',
+    );
 
-      $element['stamps'][$key]['start_time'] = array(
-        '#date_format' => 'H:i',
-        '#date_increment' => 30,
-        '#default_value' => '',
-        '#title' => '',
-        '#type' => 'date_select',
-      );
+    $element['stamps'][$key]['start_time'] = array(
+      '#date_format' => 'H:i',
+      '#date_increment' => 30,
+      '#default_value' => isset($default_value['start_time']) ? $default_value['date'] . ' ' . $default_value['start_time'] : '',
+      '#title' => '',
+      '#type' => 'date_select',
+    );
 
-      $element['stamps'][$key]['end_time'] = array(
-        '#access' => TRUE,
-        '#date_format' => 'H:i',
-        '#date_increment' => 30,
-        '#default_value' => '',
-        '#title' => '',
-        '#type' => 'date_select',
-      );
+    $element['stamps'][$key]['end_time'] = array(
+      '#access' => TRUE,
+      '#date_format' => 'H:i',
+      '#date_increment' => 30,
+      '#default_value' => isset($default_value['end_time']) ? $default_value['date'] . ' ' . $default_value['end_time'] : '',
+      '#title' => '',
+      '#type' => 'date_select',
+    );
 
-      $element['stamps'][$key]['remove_end'] = $ajax_button + array(
-        '#name' => 'remove_end_' . $key,
-        '#value' => t('- remove end time'),
-      );
+    $element['stamps'][$key]['remove_end'] = $ajax_button + array(
+      '#name' => 'remove_end_' . $key,
+      '#value' => t('- remove end time'),
+    );
 
-      $element['stamps'][$key]['add_end'] = $ajax_button + array(
-        '#name' => 'add_end_' . $key,
-        '#value' => t('+ add end time'),
-      );
-
-    }
+    $element['stamps'][$key]['add_end'] = $ajax_button + array(
+      '#name' => 'add_end_' . $key,
+      '#value' => t('+ add end time'),
+    );
 
   }
 
@@ -160,7 +158,6 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
 
       case 'timestamps_add_stamp':
         $timestamps['stamps'][] = array('date' => '');
-        $triggering_element['#parents'][] = 'stamps';
         break;
 
       case 'remove_stamp':
@@ -177,6 +174,10 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
 
     }
 
+  }
+
+  elseif (!isset($element['#date_control']) || !culturefeed_date_control_check_trigger_element($triggering_element, $element['#date_control'])) {
+    $timestamps = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
   }
 
   drupal_array_set_nested_value($form_state['values'], $element['#parents'], $timestamps, TRUE);
@@ -197,20 +198,13 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
  * @return mixed
  *   The value.
  */
-function culturefeed_date_control_timestamps_value_callback(array &$element, $input, array $form_state) {
+function culturefeed_date_control_timestamps_value_callback(array $element, $input, array $form_state) {
 
   if ($input) {
     return $input;
   }
   else {
-
-    // Default value or an empty stamp.
-    if (!isset($element['#default_value'])) {
-      return array('stamps' => array(array('date' => '')));
-    }
-    else {
-      return array('stamps' => $element['#default_value']);
-    }
+    return array('stamps' => array(array('date' => '')));
   }
 
 }

@@ -30,11 +30,15 @@ function culturefeed_date_control_opening_times_process(array $element, array &$
     'sunday' => t('sun'),
   );
 
+  /* @var CultureFeed_Cdb_Data_Calendar_Weekscheme $week_scheme */
+  // @todo This should be in the entry_ui module.
+  $week_scheme = !count($form_state['input']) && isset($element['#default_value']['days']) ? $element['#default_value']['days'] : '';
+
   $element['all_day'] = array(
     '#options' => array('1' => t('Yes'), '0' => t('No')),
     '#title' => t('Open all day ?'),
     '#type' => 'radios',
-    '#default_value' => 1,
+    '#default_value' => $week_scheme ? 0 : 1,
   );
 
   $element['days'] = array(
@@ -47,6 +51,21 @@ function culturefeed_date_control_opening_times_process(array $element, array &$
 
   foreach ($element['#allowed_days'] as $day) {
 
+    $default_value = '';
+    if ($week_scheme) {
+
+      $day_scheme = $week_scheme->getDay($day);
+      if ($day_scheme->isOpen()) {
+        $opening_times = $day_scheme->getOpeningTimes();
+        // Strip the seconds.
+        $default_value = array(
+          'open_from' => substr($opening_times[0]->getOpenFrom(), 0, 5),
+          'open_till' => substr($opening_times[0]->getOpenTill(), 0, 5),
+        );
+      }
+
+    }
+
     $element['days'][$day] = array(
       '#tree' => TRUE,
       '#type' => 'fieldset',
@@ -54,17 +73,17 @@ function culturefeed_date_control_opening_times_process(array $element, array &$
     );
 
     $element['days'][$day][0]['open_from'] = array(
-      '#type' => 'textfield',
-      '#size' => 12,
-      '#default_value' => '',
+      '#default_value' => $default_value && isset($default_value['open_from']) ? $default_value['open_from'] : '',
       '#description' => t('Format') . ': 12:00',
+      '#size' => 12,
+      '#type' => 'textfield',
     );
 
     $element['days'][$day][0]['open_till'] = array(
-      '#type' => 'textfield',
-      '#size' => 12,
-      '#default_value' => '',
+      '#default_value' => $default_value && isset($default_value['open_till']) ? $default_value['open_till'] : '',
       '#description' => t('Format') . ': 12:00',
+      '#size' => 12,
+      '#type' => 'textfield',
     );
 
   }

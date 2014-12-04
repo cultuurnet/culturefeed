@@ -70,10 +70,12 @@ function culturefeed_date_control_period_process(array $element, array &$form_st
     '#type' => 'submit',
   );
 
+  $default_value = !count($form_state['input']) && isset($element['#default_value']) ? $element['#default_value'] : array();
+
   $element['start_date'] = array(
     '#date_format' => 'd-m-Y',
     '#date_label_position' => 'none',
-    '#default_value' => '',
+    '#default_value' => isset($default_value['start_date']) ? $default_value['start_date'] : '',
     '#icon' => TRUE,
     '#title' => t('Start date'),
     '#type' => 'date_popup',
@@ -88,7 +90,7 @@ function culturefeed_date_control_period_process(array $element, array &$form_st
     '#access' => TRUE,
     '#date_format' => 'd-m-Y',
     '#date_label_position' => 'none',
-    '#default_value' => '',
+    '#default_value' => isset($default_value['end_date']) ? $default_value['end_date'] : '',
     '#icon' => TRUE,
     '#title' => t('End date'),
     '#type' => 'date_popup',
@@ -133,7 +135,35 @@ function culturefeed_date_control_period_validate(array $element, array &$form_s
 
   }
 
+  elseif (!isset($element['#date_control']) || !culturefeed_date_control_check_trigger_element($triggering_element, $element['#date_control'])) {
+    $dates = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  }
+
   drupal_array_set_nested_value($form_state['values'], $element['#parents'], $dates, TRUE);
   drupal_array_set_nested_value($form_state['input'], $element['#parents'], $dates, TRUE);
+
+}
+
+/**
+ * Value callback for the culturefeed date control period element.
+ *
+ * @param array $element
+ *   The element.
+ * @param mixed $input
+ *   The input.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return mixed
+ *   The value.
+ */
+function culturefeed_date_control_period_value_callback(array $element, $input, array $form_state) {
+
+  if ($input) {
+    return $input;
+  }
+  else {
+    return array('start_date' => '', 'end_date' => '');
+  }
 
 }
