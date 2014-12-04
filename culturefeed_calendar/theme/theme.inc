@@ -42,7 +42,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&$variables) {
 
-  $event = $variables['item']->getEntity();
+  $activity = $variables['activity'];
+  $item = culturefeed_search_item_load($activity->nodeId, 'event');
+
+  $event = $item->getEntity();
   $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
@@ -84,14 +87,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
     $variables['reservation'] = $contact_info->getReservationInfo();
     $reservation_info = $variables['reservation'];
 
-      // Reservation mail
-      if (isset($reservation_info['mails'])) {
-        foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
-        }
-        $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+    // Reservation mail
+    if (isset($reservation_info['mails'])) {
+      foreach ($reservation_info['mails'] as $mail) {
+        $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
       }
+      $variables['reservation']['mail'] = implode(', ', $reservation_mails);
+    }
 
+    // Activity details.
     $variables['event']['title'] = $activity->nodeTitle;
     $variables['event']['date'] = '';
     if(!empty($activity->value)) {
@@ -103,7 +107,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   if ($event_detail) {
 
     // Link to detail.
-    $variables['url'] = culturefeed_search_detail_url($variables['item']->getType(), $event->getCdbid(), $event_detail->getTitle());
+    $variables['url'] = culturefeed_search_detail_url($item->getType(), $event->getCdbid(), $event_detail->getTitle());
 
     // When.
     $variables['when'] = check_plain($event_detail->getCalendarSummary());
@@ -111,12 +115,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   }
 
   // Personal calendar buttons.
-  $variables['personal_calendar']['button_footer'] = '';
-  $variables['personal_calendar']['button_content'] = '';
+  $variables['personal_calendar']['button_footer'] = culturefeed_calendar_render_button($item, 'footer');
+  $variables['personal_calendar']['button_content'] = culturefeed_calendar_render_button($item,'content');
 
-  if (module_exists('culturefeed_calendar')) {
-    $variables['personal_calendar']['button_footer'] = culturefeed_calendar_render_button($variables['item'], 'footer');
-    $variables['personal_calendar']['button_content'] = culturefeed_calendar_render_button($variables['item'],'content');
-  }
 
 }

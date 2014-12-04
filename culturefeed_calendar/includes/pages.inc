@@ -20,10 +20,8 @@ function culturefeed_calendar_page_my_activities() {
   }
 
   foreach ($activities->objects as $activity) {
-    dsm($activity);
-    $item = culturefeed_search_item_load($activity->nodeId, 'event');
-    $output = 'activity .. todo';
-//    $output .= '<div>' . theme('culturefeed_calendar_activity_summary', array('item' => $item)) . '</div>';
+    $output .= 'ha';
+    $output .= '<div>' . theme('culturefeed_calendar_activity_summary', array('activity' => $activity)) . '</div>';
   }
 
   return $output;

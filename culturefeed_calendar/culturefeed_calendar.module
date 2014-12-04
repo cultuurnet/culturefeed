@@ -58,7 +58,7 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-activity-summary',
     'variables' => array(
-      'item' => NULL
+      'activity' => NULL
     ),
   );
 

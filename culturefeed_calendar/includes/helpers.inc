@@ -48,7 +48,6 @@ function culturefeed_calendar_get_user_activities() {
 
     if(isset($_COOKIE['calendar'])) {
       $activities->objects = unserialize($_COOKIE['calendar']);
-      dsm($activities, 'da');
       $activities->total = count($activities->objects);
     }
   }
