@@ -35,6 +35,7 @@ function culturefeed_calendar_get_user_activities() {
     */
 
     $query = new CultureFeed_SearchActivitiesQuery();
+    $query->max = 500;
     $query->type = $activity_options;
     $query->contentType = 'event';
     $query->userId = DrupalCultureFeed::getLoggedInUserId();
@@ -154,4 +155,19 @@ function culturefeed_calendar_remove_activity_button($activity_id) {
   );
 
   return drupal_render($delete);
+}
+
+/**
+ * Helper function to return the total unread activities (stored in cookie).
+ */
+function culturefeed_calendar_get_total_unread_activities() {
+  $activities_count = 0;
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
+
+  if (!$authenticated) {
+    $activities = culturefeed_calendar_get_user_activities();
+    $activities_count = $activities->total;
+  }
+
+  return $activities_count;
 }

@@ -52,7 +52,11 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button',
   );
-
+  $items['culturefeed_calendar_total_activities_profile_box_item'] = array(
+    'variables' => array('total' => 0),
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
   $items['culturefeed_calendar_activity_summary'] = array(
     'path' => $path,
     'file' => 'theme.inc',
@@ -92,6 +96,44 @@ function culturefeed_calendar_theme() {
     'variables' => array(
       'activities' => NULL
     ),
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_calendar_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+
+  $items['activities'] = array(
+    'data' => theme('culturefeed_calendar_total_activities_profile_box_item', array(
+      'total' => culturefeed_calendar_get_total_unread_activities(),
+    )),
+    'class' => 'activities',
+    'weight' => -10,
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_anonymous_profile_box_main_items().
+ */
+function culturefeed_calendar_culturefeed_ui_anonymous_profile_box_main_items() {
+
+  $items = array();
+
+  $items['activities'] = array(
+    'data' => theme('culturefeed_calendar_total_activities_profile_box_item', array(
+      'total' => culturefeed_calendar_get_total_unread_activities(),
+    )),
+    'class' => 'activities',
+    'weight' => -10,
   );
 
   return $items;

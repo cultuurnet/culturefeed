@@ -38,6 +38,13 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 }
 
 /**
+ * Theme the total activities profile box item.
+ */
+function theme_culturefeed_calendar_total_activities_profile_box_item($variables) {
+  return l(format_plural($variables['total'], '@count unsaved activity', '@count unsaved activities'), 'culturefeed/calendar');
+}
+
+/**
  * Preprocess the variables for one of the event templates on calendar page.
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activities_liked(&$variables) {
@@ -93,7 +100,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
-  
+
 }
 
 

@@ -109,8 +109,10 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   $params['node_id'] = $node_id;
   $params['node_title'] = $title;
   $params['calendar_summary'] = $calendar_summary;
-
-  if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+  if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
+      $params['type'] = 'permanent';
+    }
+  elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
     $params['date_from'] = $calendar->current()->getDateFrom();
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
@@ -160,7 +162,7 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
       '#markup' => '<label>' . t($params['node_title'] . t(' runs ') . $params['calendar_summary']  . '.') . '</label>',
     );
 
-  if ($params['type'] == 'period') {
+  if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
 
     $form['calendar_dates']['date'] = array(
       '#title' => t('When do you want to go?'),

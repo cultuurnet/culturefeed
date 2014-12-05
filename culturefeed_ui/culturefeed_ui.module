@@ -157,7 +157,9 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile-box',
     ),
     'culturefeed_ui_anonymous_profile_box' => array(
-      'variables' => array(),
+      'variables' => array(
+        'main_items' => array(),
+      ),
       'template' => 'culturefeed-ui-anonymous-profile-box',
     ),
     'culturefeed_ui_most_active_user' => array(
