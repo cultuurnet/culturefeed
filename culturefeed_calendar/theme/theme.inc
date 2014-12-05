@@ -106,11 +106,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
-<<<<<<< HEAD
-=======
   $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/ajax';
   $variables['edit_link']['text'] = t('Verplaatsen');
->>>>>>> 6011a3a5f7998bddb430ed3fa0f80600bfb0a2db
 
 }
 
