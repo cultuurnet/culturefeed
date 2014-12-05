@@ -95,11 +95,13 @@ function culturefeed_date_control_element_info() {
       '#process' => array('culturefeed_date_control_hybrid_process', 'ajax_process_form'),
       '#theme' => 'culturefeed_date_control_hybrid_table',
       '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_hybrid_value_callback',
     ),
     'culturefeed_date_control_opening_times' => array(
       '#input' => TRUE,
       '#process' => array('culturefeed_date_control_opening_times_process', 'ajax_process_form'),
       '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_opening_times_value_callback',
     ),
     'culturefeed_date_control_period' => array(
       '#element_validate' => array('culturefeed_date_control_period_validate'),
@@ -130,6 +132,114 @@ function culturefeed_date_control_element_info_alter(&$types) {
   if (isset($types['date_popup'])) {
     $types['date_popup']['#after_build'][] = 'culturefeed_date_control_element_date_popup_after_build';
   }
+}
+
+/**
+ * Explodes a date string into array components.
+ *
+ * @param array $element
+ *   The element.
+ * @param string $date_string
+ *   The date.
+ *
+ * @return array
+ *   The exploded date.
+ */
+function culturefeed_date_control_explode_date(array $element, $date_string) {
+
+  $date_element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#popup_date_format'],
+    '#date_increment' => $element['#popup_date_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $date_string,
+  );
+
+  $date = date_default_date($date_element);
+  $date = array(
+    'date' => date_format_date($date, 'custom', $element['#popup_date_format']),
+  );
+
+  return $date;
+
+}
+
+/**
+ * Explodes a time string into array components.
+ *
+ * @param array $element
+ *   The element.
+ * @param string $time_string
+ *   The time.
+ *
+ * @return array
+ *   The exploded time.
+ */
+function culturefeed_date_control_explode_time(array $element, $time_string) {
+
+  $time_element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#select_time_format'],
+    '#date_increment' => $element['#select_time_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $time_string,
+  );
+
+  return date_select_element_value_callback($time_element);
+
+}
+
+/**
+ * Implodes a date array into string.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $date_array
+ *   The date array.
+ *
+ * @return string
+ *   The imploded date.
+ */
+function culturefeed_date_control_implode_date(array $element, array $date_array) {
+
+  $element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#popup_date_format'],
+    '#date_increment' => $element['#popup_date_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $date_array,
+  );
+  $date = date_popup_input_date($element, $date_array);
+  return date_format_date($date, 'custom', 'Y-m-d');
+
+}
+
+/**
+ * Implodes a time array into string.
+ *
+ * @param array $time_array
+ *   The time array.
+ * @param string $date_string
+ *   The date string.
+ *
+ * @return string
+ *   The imploded time.
+ */
+function culturefeed_date_control_implode_time(array $time_array, $date_string) {
+
+  $time = '';
+  if (isset($time_array['hour']) && isset($time_array['minute']) && $date_string) {
+    $time = new DateObject(
+      array(
+        'hour' => $time_array['hour'],
+        'minute' => $time_array['minute'],
+      ),
+      date_default_timezone()
+    );
+    $time = $date_string . ' ' . $time->format(DATE_FORMAT_DATETIME);
+  }
+  return $time;
+
 }
 
 /**

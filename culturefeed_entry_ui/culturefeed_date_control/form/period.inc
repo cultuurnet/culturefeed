@@ -56,6 +56,8 @@ function culturefeed_date_control_period_process(array $element, array &$form_st
     $array_parents = $element['#date_control']['#array_parents'];
   }
 
+  $period = $element['#value'];
+
   $ajax_button = array(
     '#access' => TRUE,
     '#ajax' => array(
@@ -65,41 +67,52 @@ function culturefeed_date_control_period_process(array $element, array &$form_st
       'wrapper' => $element_id . '-ajax-wrapper',
     ),
     '#attributes' => array('class' => array('add-more-link btn-link')),
-    // '#limit_validation_errors' => array($element['#parents']),
+    '#limit_validation_errors' => array($element['#parents']),
     '#submit' => array('culturefeed_date_control_date_control_submit'),
     '#type' => 'submit',
   );
 
-  $default_value = !count($form_state['input']) && isset($element['#default_value']) ? $element['#default_value'] : array();
-
+  $date = isset($period['start_date']) && $period['start_date'] ? culturefeed_date_control_implode_date($element, $period['start_date']) : '';
   $element['start_date'] = array(
     '#date_format' => 'd-m-Y',
     '#date_label_position' => 'none',
-    '#default_value' => isset($default_value['start_date']) ? $default_value['start_date'] : '',
+    '#default_value' => $date,
     '#icon' => TRUE,
+    '#required' => TRUE,
     '#title' => t('Start date'),
     '#type' => 'date_popup',
   );
 
-  $element['add_end'] = $ajax_button + array(
-    '#value' => t('+ add end date'),
+  $element['add_end'] = array(
     '#name' => 'add_end',
-  );
+    '#value' => t('+ add end date'),
+  ) + $ajax_button;
 
+  $date = isset($period['end_date']) && $period['end_date'] ? culturefeed_date_control_implode_date($element, $period['end_date']) : '';
   $element['end_date'] = array(
     '#access' => TRUE,
     '#date_format' => 'd-m-Y',
     '#date_label_position' => 'none',
-    '#default_value' => isset($default_value['end_date']) ? $default_value['end_date'] : '',
+    '#default_value' => $date,
     '#icon' => TRUE,
+    '#required' => TRUE,
     '#title' => t('End date'),
     '#type' => 'date_popup',
   );
 
-  $element['remove_end'] = $ajax_button + array(
-    '#value' => t('- remove end date'),
+  $element['remove_end'] = array(
+    '#limit_validation_errors' => array(),
     '#name' => 'remove_end',
-  );
+    '#value' => t('- remove end date'),
+  ) + $ajax_button;
+
+  if (!isset($element['#date_control'])) {
+    $element['#attached'] = array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control.css',
+      ),
+    );
+  }
 
   return $element;
 
@@ -124,7 +137,7 @@ function culturefeed_date_control_period_validate(array $element, array &$form_s
     switch ($triggering_parent) {
 
       case 'add_end':
-        $dates['end_date'] = '';
+        $dates['end_date'] = array('date' => '');
         break;
 
       case 'remove_end':
@@ -133,14 +146,9 @@ function culturefeed_date_control_period_validate(array $element, array &$form_s
 
     }
 
-  }
+    drupal_array_set_nested_value($form_state['input'], $element['#parents'], $dates, TRUE);
 
-  elseif (!isset($element['#date_control']) || !culturefeed_date_control_check_trigger_element($triggering_element, $element['#date_control'])) {
-    $dates = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
   }
-
-  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $dates, TRUE);
-  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $dates, TRUE);
 
 }
 
@@ -163,7 +171,19 @@ function culturefeed_date_control_period_value_callback(array $element, $input, 
     return $input;
   }
   else {
-    return array('start_date' => '', 'end_date' => '');
+
+    if (isset($element['#default_value'])) {
+
+      $exploded = array();
+      $exploded['start_date'] = culturefeed_date_control_explode_date($element, $element['#default_value']['start_date']);
+      $exploded['end_date'] = culturefeed_date_control_explode_date($element, $element['#default_value']['end_date']);
+      return $exploded;
+
+    }
+    else {
+      return array('start_date' => '', 'end_date' => '');
+    }
+
   }
 
 }

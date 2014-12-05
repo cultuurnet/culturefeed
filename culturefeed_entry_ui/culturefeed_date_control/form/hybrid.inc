@@ -55,6 +55,8 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     $array_parents = $element['#date_control']['#array_parents'];
   }
 
+  $hybrid = $element['#value'];
+
   $ajax_settings = array(
     'effect' => 'none',
     'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
@@ -66,24 +68,26 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     '#access' => TRUE,
     '#ajax' => $ajax_settings,
     '#attributes' => array('class' => array('add-more-link btn-link')),
-    // '#limit_validation_errors' => array($element['#parents']),
+    '#limit_validation_errors' => array($element['#parents']),
     '#submit' => array('culturefeed_date_control_date_control_submit'),
     '#type' => 'submit',
   );
 
+  $date = isset($hybrid['start_date']) && $hybrid['start_date'] ? culturefeed_date_control_implode_date($element, $hybrid['start_date']) : '';
   $element['start_date'] = array(
     '#date_format' => 'd-m-Y',
     '#date_label_position' => 'none',
-    '#default_value' => '',
+    '#default_value' => $date,
     '#icon' => TRUE,
     '#title' => t('Date'),
     '#type' => 'date_popup',
   );
 
+  $time = isset($hybrid['start_time']) && $hybrid['start_time'] ? culturefeed_date_control_implode_time($hybrid['start_time'], $date) : '';
   $element['start_time'] = array(
     '#date_format' => 'H:i',
     '#date_increment' => 30,
-    '#default_value' => '',
+    '#default_value' => $time,
     '#title' => '',
     '#type' => 'date_select',
   );
@@ -117,7 +121,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     '#value' => t('+ add date'),
   );
 
-  // Value will always be 0 as a different element is used when acctualy
+  // Value will always be 0 as a different element is used when actually
   // permanent.
   $element['permanent'] = array(
     '#ajax' => $ajax_settings,
@@ -138,7 +142,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
  * @param array $form_state
  *   The form state.
  */
-function culturefeed_date_control_hybrid_validate(array $element, array &$form_state) {
+function culturefeed_date_control_hybrid_validate(array &$element, array &$form_state) {
 
   $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
   $triggering_parent = array_pop($triggering_element['#parents']);
@@ -155,13 +159,32 @@ function culturefeed_date_control_hybrid_validate(array $element, array &$form_s
 
     }
 
+    drupal_array_set_nested_value($form_state['input'], $element['#parents'], $hybrid);
+
   }
 
-  elseif (!isset($element['#date_control']) || !culturefeed_date_control_check_trigger_element($triggering_element, $element['#date_control'])) {
-    $hybrid = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
-  }
+}
 
-  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $hybrid);
-  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $hybrid);
+/**
+ * Value callback for the culturefeed date control hybrid element.
+ *
+ * @param array $element
+ *   The element.
+ * @param mixed $input
+ *   The input.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return mixed
+ *   The value.
+ */
+function culturefeed_date_control_hybrid_value_callback(array $element, $input, array $form_state) {
+
+  if ($input) {
+    return $input;
+  }
+  else {
+    return array('start_date' => '', 'start_time' => '');
+  }
 
 }

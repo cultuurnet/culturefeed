@@ -89,6 +89,10 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   $element['date_control']['hybrid'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
+    '#popup_date_format' => 'd-m-Y',
+    '#popup_date_increment' => 1,
+    '#select_time_format' => 'H:i',
+    '#select_time_increment' => 30,
     '#type' => 'culturefeed_date_control_hybrid',
   );
 
@@ -97,6 +101,10 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#access' => TRUE,
     '#date_control' => $element,
     '#default_value' => $element['#default_value']['timestamps'],
+    '#popup_date_format' => 'd-m-Y',
+    '#popup_date_increment' => 1,
+    '#select_time_format' => 'H:i',
+    '#select_time_increment' => 30,
     '#type' => 'culturefeed_date_control_timestamps',
   );
 
@@ -105,6 +113,8 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#access' => TRUE,
     '#date_control' => $element,
     '#default_value' => $element['#default_value']['period'],
+    '#popup_date_format' => 'd-m-Y',
+    '#popup_date_increment' => 1,
     '#type' => 'culturefeed_date_control_period',
   );
 
@@ -171,7 +181,7 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
   $triggering_parent = array_pop($triggering_element['#parents']);
   // Use form_state instead of element as individual sub elements have changes
   // that won't be reflected in element.
-  $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  $values = drupal_array_get_nested_value($form_state['input'], $element['#parents']);
   $date_control = $values['date_control'];
 
   if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
@@ -275,12 +285,11 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
     }
 
     $date_control['type'] = $type;
+    $element['#parents'][] = 'date_control';
+
+    drupal_array_set_nested_value($form_state['input'], $element['#parents'], $date_control);
 
   }
-
-  $element['#parents'][] = 'date_control';
-  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $date_control);
-  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $date_control);
 
 }
 
@@ -305,7 +314,55 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
   else {
 
     // Default value or an empty value.
-    if (!isset($element['#default_value'])) {
+    if (isset($element['#default_value'])) {
+
+      $date_control = array(
+        'hybrid' => array(),
+        'opening_times' => array(),
+        'period' => array(),
+        'timestamps' => array(),
+      );
+
+      // Timestamps.
+      if (count($element['#default_value']['timestamps'])) {
+
+        $date_control['type'] = 'timestamps';
+        $date_control['timestamps'] = $element['#default_value']['timestamps'];
+
+      }
+
+      // Period.
+      elseif ($element['#default_value']['period']['start_date'] && $element['#default_value']['period']['end_date']) {
+
+        $date_control['type'] = 'period';
+        $date_control['period'] = $element['#default_value']['period'];
+
+      }
+
+      // Permanent.
+      elseif ($element['#default_value']['permanent']) {
+
+        $date_control['type'] = 'permanent';
+        $date_control['permanent'] = $element['#default_value']['permanent'];
+
+      }
+
+      else {
+        $date_control['type'] = 'hybrid';
+      }
+
+      // Opening times don't set type, they go with period or permanent.
+      if ($element['#default_value']['opening_times']) {
+
+        $date_control['opening_times'] = $element['#default_value']['opening_times'];
+
+      }
+
+      return array('date_control' => $date_control);
+
+    }
+
+    else {
 
       return array(
         'date_control' => array(
@@ -316,32 +373,6 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
           'timestamps' => array(),
         ),
       );
-
-    }
-
-    else {
-
-      $default_value = $element['#default_value'];
-
-      if (count($default_value['timestamps'])) {
-        $stamps = $default_value['timestamps'];
-        $default_value['timestamps'] = array('stamps' => $stamps);
-        $default_value['type'] = 'timestamps';
-      }
-
-      elseif ($default_value['period']['start_date']) {
-        $default_value['type'] = 'period';
-      }
-
-      elseif ($default_value['permanent']) {
-        $default_value['type'] = 'permanent';
-      }
-
-      else {
-        $default_value['type'] = 'hybrid';
-      }
-
-      return array('date_control' => $default_value);
 
     }
 
