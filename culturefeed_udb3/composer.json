@@ -18,7 +18,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "cultuurnet/udb3": "dev-feature/iii-97",
+        "cultuurnet/udb3": "dev-feature/III-105",
         "cultuurnet/udb3-symfony": "~0.0@dev",
         "monolog/monolog": "~1.11",
         "chrisboulton/php-resque": "~1.2",
