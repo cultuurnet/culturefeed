@@ -74,8 +74,8 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 
   //Get activities from cookie
   $activities = array();
-  if(isset($_COOKIE['calendar'])) {
-    $activities = unserialize($_COOKIE['calendar']);
+  if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+    $activities = unserialize($_COOKIE['Drupal_visitor_calendar']);
   }
 
   foreach ($activities as $key => $activity) {

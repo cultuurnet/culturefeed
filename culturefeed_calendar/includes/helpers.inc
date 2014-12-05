@@ -8,7 +8,7 @@
  * Get the users activities.
  */
 function culturefeed_calendar_get_user_activities() {
-
+dsm($_COOKIE);
   $uid = DrupalCultureFeed::getLoggedInUserId();
 
   if ($uid) {
@@ -118,8 +118,9 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   }
   else {
     $cookie = array();
-    if (isset($_COOKIE ['calendar'] )) {
-      $cookie['calendar'] = unserialize($_COOKIE ['calendar']);
+
+    if (isset($_COOKIE ['Drupal_visitor_calendar'] )) {
+      $cookie['calendar'] = unserialize($_COOKIE ['Drupal_visitor_calendar']);
     }
 
     $cookie['calendar'][] = $activity;
