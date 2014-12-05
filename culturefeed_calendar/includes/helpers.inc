@@ -56,8 +56,8 @@ function culturefeed_calendar_get_user_activities() {
     $activities->objects = array();
     $activities->total = 0;
 
-    if(isset($_COOKIE['calendar'])) {
-      $activities->objects = unserialize($_COOKIE['calendar']);
+    if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+      $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
       $activities->total = count($activities->objects);
     }
   }
