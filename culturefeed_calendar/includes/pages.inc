@@ -14,7 +14,6 @@ function culturefeed_calendar_page_my_activities() {
 
   $activities = culturefeed_calendar_get_user_activities();
   $activities_by_type = _culturefeed_calendar_sort_user_activities_by_type($activities);
-
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
 
   // Add a block for months-scroller with months.
@@ -210,7 +209,8 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
  */
 function culturefeed_calendar_add_to_calendar_form_validate($form, $form_state) {
 
-  if ($form_state['params']['type'] == 'period') {
+  if ($form_state['params']['type'] == 'period'
+      && !empty($form_state['values']['calendar_dates']['date'])) {
    $date = strtotime($form_state['values']['calendar_dates']['date']);
    $date_from = strtotime($form_state['params']['date_from']);
    $date_to = strtotime($form_state['params']['date_to']);
