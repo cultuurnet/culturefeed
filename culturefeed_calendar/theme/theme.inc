@@ -37,6 +37,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 
 }
 
+
 /**
  * Theme the total activities profile box item.
  */
@@ -54,7 +55,9 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activities_liked(&
 function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&$variables) {
 
   $activities = $variables['activities'];
-  $variables['months'] = array();
+  $months = $variables['month_names'];
+
+  $variables['months'] = array_fill_keys($months, array());
 
   foreach ($activities as $activity) {
     $month = format_date($activity->value, 'custom', 'F');
@@ -79,6 +82,9 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
+  // Plan the activity link.
+  $variables['plan_link']['url'] = '/culturefeed/calendar/plan/' . $activity->nodeId . '/'. $activity->id . '/ajax';
+  $variables['plan_link']['text'] = t('Plan it');
 
 }
 
@@ -100,6 +106,11 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
+<<<<<<< HEAD
+=======
+  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/ajax';
+  $variables['edit_link']['text'] = t('Verplaatsen');
+>>>>>>> 6011a3a5f7998bddb430ed3fa0f80600bfb0a2db
 
 }
 
