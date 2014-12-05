@@ -9,9 +9,9 @@
  */
 function culturefeed_calendar_get_user_activities() {
 
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
+  $uid = DrupalCultureFeed::getLoggedInUserId();
 
-  if ($authenticated) {
+  if ($uid) {
     // Only search for activities with type_like or type_ik_ga.
     $activity_options = array(
       CultureFeed_Activity::TYPE_LIKE,
@@ -23,6 +23,16 @@ function culturefeed_calendar_get_user_activities() {
     foreach ($activity_options as $activity_type) {
       $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
     }
+
+    /*$service = culturefeed_get_search_service();
+    $parameters = array();
+    $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
+    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('type:event');
+    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('like_users:' . $uid);
+    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('attend_users:' . $uid);
+
+    $result = $service->search($parameters);
+    */
 
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->type = $activity_options;
@@ -89,12 +99,8 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   $activity = new CultureFeed_Activity();
 
   if (!empty($date)) {
-    $value = new stdClass();
-    $value->date = $date;
-    $activity->value = json_encode($value);
-
+    $activity->value = strtotime($date);
     $activity->type = CultureFeed_Activity::TYPE_IK_GA;
-
   }
   else {
     $activity->type = CultureFeed_Activity::TYPE_LIKE;

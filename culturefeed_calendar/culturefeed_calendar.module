@@ -61,6 +61,38 @@ function culturefeed_calendar_theme() {
       'activity' => NULL
     ),
   );
+  $items['culturefeed_calendar_activity_mini'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activity-mini',
+    'variables' => array(
+      'activity' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_activities_going'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activities-going',
+    'variables' => array(
+      'activities' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_activities_liked'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activities-liked',
+    'variables' => array(
+      'activities' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_nav_months'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-nav-months',
+    'variables' => array(
+      'activities' => NULL
+    ),
+  );
 
   return $items;
 

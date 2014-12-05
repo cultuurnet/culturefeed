@@ -40,83 +40,58 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 /**
  * Preprocess the variables for one of the event templates on calendar page.
  */
+function culturefeed_calendar_preprocess_culturefeed_calendar_activities_liked(&$variables) {
+  //haha
+}
+
+function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&$variables) {
+
+  $activities = $variables['activities'];
+  $variables['months'] = array();
+
+  foreach ($activities as $activity) {
+    $month = format_date($activity->value, 'custom', 'F');
+    $variables['months'][$month][] = $activity;
+  }
+}
+
+/**
+ * Preprocess the variables for one of the event templates on calendar page.
+ */
+function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$variables) {
+
+  $activity = $variables['activity'];
+  $item = culturefeed_search_item_load($activity->nodeId, 'event');
+  $variables['item'] = $item;
+
+  module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+  $function = 'culturefeed_agenda_preprocess_culturefeed_event_summary';
+  if (function_exists($function)) {
+    $function($variables);
+  }
+
+}
+
+
 function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&$variables) {
 
   $activity = $variables['activity'];
   $item = culturefeed_search_item_load($activity->nodeId, 'event');
+  $variables['item'] = $item;
 
-  $event = $item->getEntity();
-  $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-
-  $variables['agefrom'] = check_plain($event->getAgeFrom());
-  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
-    $variables['forkids'] = TRUE;
-  }
-  $variables['location'] = culturefeed_agenda_get_location_of_event($event);
-
-  $actor = NULL;
-
-  // Contact information
-  $variables['contact'] = array();
-  if ($event->getContactInfo()) {
-
-    $contact_info = $event->getContactInfo();
-
-    // Mails.
-    $mails = array();
-    foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
-    }
-    $variables['contact']['mail'] = implode(', ', $mails);
-
-    // Fax + phone numbers.
-    $phones = array();
-    $faxes = array();
-    foreach ($contact_info->getPhones() as $phone) {
-      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        $phones[] = $phone->getNumber();
-      }
-      else {
-        $faxes[] = $phone->getNumber();
-      }
-    }
-    $variables['contact']['phone'] = implode(', ', $phones);
-    $variables['contact']['fax'] = implode(', ', $faxes);
-
-    // Reservation data.
-    $variables['reservation'] = $contact_info->getReservationInfo();
-    $reservation_info = $variables['reservation'];
-
-    // Reservation mail
-    if (isset($reservation_info['mails'])) {
-      foreach ($reservation_info['mails'] as $mail) {
-        $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
-      }
-      $variables['reservation']['mail'] = implode(', ', $reservation_mails);
-    }
-
-    // Activity details.
-    $variables['event']['title'] = $activity->nodeTitle;
-    $variables['event']['date'] = '';
-    if(!empty($activity->value)) {
-      $variables['event']['date'] = date('d-m-Y', strtotime(json_decode($activity->value)->date[0]));
-    }
-
+  module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+  $function = 'culturefeed_agenda_preprocess_culturefeed_event_summary';
+  if (function_exists($function)) {
+    $function($variables);
   }
 
-  if ($event_detail) {
-
-    // Link to detail.
-    $variables['url'] = culturefeed_search_detail_url($item->getType(), $event->getCdbid(), $event_detail->getTitle());
-
-    // When.
-    $variables['when'] = check_plain($event_detail->getCalendarSummary());
-
-  }
+  // Activity details.
+  $variables['date'] = format_date($activity->value, 'custom', 'l j F Y');
 
   // Personal calendar buttons.
   $variables['personal_calendar']['button_footer'] = culturefeed_calendar_render_button($item, 'footer');
   $variables['personal_calendar']['button_content'] = culturefeed_calendar_render_button($item,'content');
 
-
 }
+
+

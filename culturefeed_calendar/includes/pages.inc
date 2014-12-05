@@ -10,18 +10,30 @@
  */
 function culturefeed_calendar_page_my_activities() {
 
+  $output = '';
+
   $activities = culturefeed_calendar_get_user_activities();
+  $activities_by_type = _culturefeed_calendar_sort_user_activities_by_type($activities);
+
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
 
-  $output = '';
+  // Add a block for months-scroller with months.
+  $months = array_map("_culturefeed_calendar_months_get_nav_months", range(1,12));
+  $output .= theme('culturefeed_calendar_nav_months', array('months' => $months));
+
+  // Print the 'LIKED' activities.
+  if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
+    $output .= theme('culturefeed_calendar_activities_liked', array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
+  }
+  // Print the 'IK GA' activities.
+  if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
+    $output .= theme('culturefeed_calendar_activities_going', array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA]));
+  }
+
+  // Print the 'I’m going' activities.
   if (!$authenticated) {
     $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
     $output .= drupal_render($form);
-  }
-
-  foreach ($activities->objects as $activity) {
-    $output .= 'ha';
-    $output .= '<div>' . theme('culturefeed_calendar_activity_summary', array('activity' => $activity)) . '</div>';
   }
 
   return $output;
@@ -110,7 +122,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
     }
 
     if (count($dates) == 1) {
-      culturefeed_calendar_add_activity($node_id, $title, $dates);
+      culturefeed_calendar_add_activity($node_id, $title, $dates[0]);
       return;
     }
     else {
@@ -121,7 +133,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
- // return $form;
+  return $form;
 
   if ($request_type == 'ajax') {
     $output = drupal_render($form);
@@ -228,3 +240,28 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, $form_state) {
   }
 }
 
+/**
+ * Helper function to sort user activities by type.
+ */
+function _culturefeed_calendar_sort_user_activities_by_type($activities) {
+
+  $activities_by_type = array();
+
+  foreach($activities->objects as $activity) {
+    $activities_by_type[$activity->type][] = $activity;
+  }
+
+  return $activities_by_type;
+
+}
+
+/**
+ * Get twleve months names, starting with current month.
+ */
+function _culturefeed_calendar_months_get_nav_months($x) {
+
+  $time = mktime(NULL, NULL, NULL, (int)date("n") + ($x), NULL, NULL);
+
+  return format_date($time, 'custom', 'F');
+
+}
