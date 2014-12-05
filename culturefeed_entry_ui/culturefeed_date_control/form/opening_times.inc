@@ -118,7 +118,10 @@ function culturefeed_date_control_opening_times_value_callback(array $element, $
   }
   else {
 
-    if (isset($element['#default_value']) && isset($element['#default_value']['days']) && $element['#default_value']['days']) {
+    if (
+      isset($element['#default_value']) && isset($element['#default_value']['days']) &&
+      $element['#default_value']['days'] && $element['#access']
+    ) {
 
       // @todo This should be in the entry_ui module.
       /* @var CultureFeed_Cdb_Data_Calendar_Weekscheme $week_scheme */

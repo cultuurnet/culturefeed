@@ -6,57 +6,6 @@
  */
 
 /**
- * Pre renders the culturefeed date control.
- *
- * @param array $element
- *   The element.
- *
- * @return array $element
- *   The element.
- */
-function culturefeed_date_control_date_control_pre_render(array $element) {
-
-  $value = $element['#value'];
-
-  if ($value['date_control']['type'] == 'hybrid') {
-
-    $element['date_control']['opening_times']['#access'] = FALSE;
-    $element['date_control']['period']['#access'] = FALSE;
-    $element['date_control']['permanent']['#access'] = FALSE;
-    $element['date_control']['timestamps']['#access'] = FALSE;
-
-  }
-
-  elseif ($value['date_control']['type'] == 'period') {
-
-    $element['date_control']['hybrid']['#access'] = FALSE;
-    $element['date_control']['permanent']['#access'] = FALSE;
-    $element['date_control']['timestamps']['#access'] = FALSE;
-
-  }
-
-  elseif ($value['date_control']['type'] == 'permanent') {
-
-    $element['date_control']['hybrid']['#access'] = FALSE;
-    $element['date_control']['period']['#access'] = FALSE;
-    $element['date_control']['timestamps']['#access'] = FALSE;
-
-  }
-
-  elseif ($value['date_control']['type'] == 'timestamps') {
-
-    $element['date_control']['hybrid']['#access'] = FALSE;
-    $element['date_control']['opening_times']['#access'] = FALSE;
-    $element['date_control']['period']['#access'] = FALSE;
-    $element['date_control']['permanent']['#access'] = FALSE;
-
-  }
-
-  return $element;
-
-}
-
-/**
  * Returns the culturefeed date control element.
  *
  * @param array $element
@@ -89,7 +38,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 
   // Hybrid.
   $element['date_control']['hybrid'] = array(
-    '#access' => TRUE,
+    '#access' => $date_control['type'] == 'hybrid',
     '#date_control' => $element,
     '#default_value' => isset($date_control['hybrid']) ? $date_control['hybrid'] : '',
     '#popup_date_format' => 'd-m-Y',
@@ -101,7 +50,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 
   // Timestamps.
   $element['date_control']['timestamps'] = array(
-    '#access' => TRUE,
+    '#access' => $date_control['type'] == 'timestamps',
     '#date_control' => $element,
     '#default_value' => isset($date_control['timestamps']) ? $date_control['timestamps'] : '',
     '#popup_date_format' => 'd-m-Y',
@@ -113,7 +62,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 
   // Period.
   $element['date_control']['period'] = array(
-    '#access' => TRUE,
+    '#access' => $date_control['type'] == 'period',
     '#date_control' => $element,
     '#default_value' => isset($date_control['period']) ? $date_control['period'] : '',
     '#popup_date_format' => 'd-m-Y',
@@ -123,7 +72,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 
   // Permanent.
   $element['date_control']['permanent'] = array(
-    '#access' => TRUE,
+    '#access' => $date_control['type'] == 'permanent',
     '#ajax' => array(
       'effect' => 'none',
       'path' => 'culturefeed_elements/ajax/' . implode('/', $element['#array_parents']),
@@ -137,7 +86,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
 
   // Opening times.
   $element['date_control']['opening_times'] = array(
-    '#access' => TRUE,
+    '#access' => $date_control['type'] == 'period' || $date_control['type'] == 'permanent',
     '#allowed_days' => $element['#allowed_days'],
     '#date_control' => $element,
     '#default_value' => isset($date_control['opening_times']) ? $date_control['opening_times'] : '',

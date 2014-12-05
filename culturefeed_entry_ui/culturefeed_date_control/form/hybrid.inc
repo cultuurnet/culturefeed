@@ -79,6 +79,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     '#date_label_position' => 'none',
     '#default_value' => $date,
     '#icon' => TRUE,
+    '#required' => TRUE,
     '#title' => t('Date'),
     '#type' => 'date_popup',
   );
@@ -187,7 +188,7 @@ function culturefeed_date_control_hybrid_value_callback(array $element, $input, 
 
     $value = array('start_date' => '', 'start_time' => '');
 
-    if (isset($element['#default_value']) && $element['#default_value']) {
+    if (isset($element['#default_value']) && $element['#default_value'] && $element['#access']) {
 
       $default_value = $element['#default_value'];
       if (isset($default_value['start_date']) && $default_value['start_date']) {
