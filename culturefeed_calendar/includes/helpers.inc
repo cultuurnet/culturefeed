@@ -129,3 +129,28 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   drupal_set_message(t('The event has been added to your OuTcalendar.'));
   drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
 }
+
+/**
+ * Helper function to add an activity to the calendar.
+ */
+function culturefeed_calendar_remove_activity_button($activity_id) {
+
+// Remove from calendar button.
+  $remove_path = 'culturefeed/activity/delete/' . $activity_id;
+  $attributes = array(
+    'class' => array('remove-link'),
+    'role' => 'button',
+    'data-toggle' => 'modal',
+    'data-target' => '#delete-wrapper-' . $activity_id,
+    'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
+  );
+  $delete = array(
+    '#type' => 'link',
+    '#title' => t('Remove'),
+    '#href' => $remove_path . '/nojs',
+    '#attributes' => $attributes,
+    '#options' => array('query' => drupal_get_destination()),
+  );
+
+  return drupal_render($delete);
+}

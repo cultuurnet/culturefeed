@@ -5,7 +5,6 @@
  */
 ?>
 
-
 <div class="calendar-button">
   <?php if (isset($button['description'])) : ?>
     <?php print $button['description']; ?>

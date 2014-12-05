@@ -70,6 +70,9 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
     $function($variables);
   }
 
+  // Remove the activity button.
+  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
+
 }
 
 
@@ -88,10 +91,9 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   // Activity details.
   $variables['date'] = format_date($activity->value, 'custom', 'l j F Y');
 
-  // Personal calendar buttons.
-  $variables['personal_calendar']['button_footer'] = culturefeed_calendar_render_button($item, 'footer');
-  $variables['personal_calendar']['button_content'] = culturefeed_calendar_render_button($item,'content');
-
+  // Remove the activity button.
+  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
+  
 }
 
 
