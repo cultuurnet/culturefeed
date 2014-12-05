@@ -79,16 +79,19 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#title' => (isset($element['#title'])) ? $element['#title'] : t('Dates'),
   );
 
+  $date_control = $element['#value']['date_control'];
+
   // Type.
   $element['date_control']['type'] = array(
     '#type' => 'hidden',
-    '#value' => $element['#value']['date_control']['type'],
+    '#value' => $date_control['type'],
   );
 
   // Hybrid.
   $element['date_control']['hybrid'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
+    '#default_value' => isset($date_control['hybrid']) ? $date_control['hybrid'] : '',
     '#popup_date_format' => 'd-m-Y',
     '#popup_date_increment' => 1,
     '#select_time_format' => 'H:i',
@@ -100,7 +103,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   $element['date_control']['timestamps'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
-    '#default_value' => $element['#default_value']['timestamps'],
+    '#default_value' => isset($date_control['timestamps']) ? $date_control['timestamps'] : '',
     '#popup_date_format' => 'd-m-Y',
     '#popup_date_increment' => 1,
     '#select_time_format' => 'H:i',
@@ -112,7 +115,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
   $element['date_control']['period'] = array(
     '#access' => TRUE,
     '#date_control' => $element,
-    '#default_value' => $element['#default_value']['period'],
+    '#default_value' => isset($date_control['period']) ? $date_control['period'] : '',
     '#popup_date_format' => 'd-m-Y',
     '#popup_date_increment' => 1,
     '#type' => 'culturefeed_date_control_period',
@@ -127,7 +130,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
       'progress' => array('type' => 'throbber'),
       'wrapper' => $element['#id'] . '-ajax-wrapper',
     ),
-    '#value' => isset($element['#value']['date_control']['permanent']) ? $element['#value']['date_control']['permanent'] : 0,
+    '#value' => isset($date_control['permanent']) ? $date_control['permanent'] : 0,
     '#title' => t('Permanent'),
     '#type' => 'checkbox',
   );
@@ -137,7 +140,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#access' => TRUE,
     '#allowed_days' => $element['#allowed_days'],
     '#date_control' => $element,
-    '#default_value' => $element['#default_value']['opening_times'],
+    '#default_value' => isset($date_control['opening_times']) ? $date_control['opening_times'] : '',
     '#type' => 'culturefeed_date_control_opening_times',
   );
 
@@ -290,6 +293,28 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
     drupal_array_set_nested_value($form_state['input'], $element['#parents'], $date_control);
 
   }
+  else {
+
+    // The one exception.
+    if ($date_control['type'] == 'hybrid') {
+
+      $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+      $date_control = $values['date_control'];
+
+      $date_control['timestamps']['stamps'][0] = array(
+        'date' => $date_control['hybrid']['start_date'],
+      );
+      if (isset($date_control['hybrid']['start_time'])) {
+        $date_control['timestamps']['stamps'][0]['start_time'] = $date_control['hybrid']['start_time'];
+      }
+      $date_control['type'] = 'timestamps';
+
+      $element['#parents'][] = 'date_control';
+      drupal_array_set_nested_value($form_state['values'], $element['#parents'], $date_control);
+
+    }
+
+  }
 
 }
 
@@ -313,37 +338,55 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
   }
   else {
 
-    // Default value or an empty value.
-    if (isset($element['#default_value'])) {
-
-      $date_control = array(
+    $value = array(
+      'date_control' => array(
+        'type' => 'hybrid',
         'hybrid' => array(),
         'opening_times' => array(),
         'period' => array(),
         'timestamps' => array(),
-      );
+      ),
+    );
+
+    if (isset($element['#default_value']) && $element['#default_value']) {
+
+      $date_control = $value['date_control'];
+      $default_value = $element['#default_value'];
+
+      // Timestamps / hybrid.
+      if (count($default_value['timestamps']) == 1 && !isset($default_value['timestamps'][0]['end_time'])) {
+
+        $date_control['type'] = 'hybrid';
+        $date_control['hybrid'] = array(
+          'start_date' => $default_value['timestamps'][0]['date'],
+        );
+        if (isset($default_value['timestamps'][0]['start_time'])) {
+          $date_control['hybrid']['start_time'] = $default_value['timestamps'][0]['start_time'];
+        }
+
+      }
 
       // Timestamps.
-      if (count($element['#default_value']['timestamps'])) {
+      elseif (count($default_value['timestamps'])) {
 
         $date_control['type'] = 'timestamps';
-        $date_control['timestamps'] = $element['#default_value']['timestamps'];
+        $date_control['timestamps'] = $default_value['timestamps'];
 
       }
 
       // Period.
-      elseif ($element['#default_value']['period']['start_date'] && $element['#default_value']['period']['end_date']) {
+      elseif ($default_value['period']['start_date'] && $default_value['period']['end_date']) {
 
         $date_control['type'] = 'period';
-        $date_control['period'] = $element['#default_value']['period'];
+        $date_control['period'] = $default_value['period'];
 
       }
 
       // Permanent.
-      elseif ($element['#default_value']['permanent']) {
+      elseif ($default_value['permanent']) {
 
         $date_control['type'] = 'permanent';
-        $date_control['permanent'] = $element['#default_value']['permanent'];
+        $date_control['permanent'] = $default_value['permanent'];
 
       }
 
@@ -352,29 +395,17 @@ function culturefeed_date_control_date_control_value_callback(array &$element, $
       }
 
       // Opening times don't set type, they go with period or permanent.
-      if ($element['#default_value']['opening_times']) {
+      if ($default_value['opening_times']) {
 
-        $date_control['opening_times'] = $element['#default_value']['opening_times'];
+        $date_control['opening_times'] = $default_value['opening_times'];
 
       }
 
-      return array('date_control' => $date_control);
+      $value['date_control'] = $date_control;
 
     }
 
-    else {
-
-      return array(
-        'date_control' => array(
-          'type' => 'hybrid',
-          'hybrid' => array(),
-          'opening_times' => array(),
-          'period' => array(),
-          'timestamps' => array(),
-        ),
-      );
-
-    }
+    return $value;
 
   }
 

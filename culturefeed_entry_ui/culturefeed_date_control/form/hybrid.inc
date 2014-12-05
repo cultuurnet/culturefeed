@@ -184,7 +184,23 @@ function culturefeed_date_control_hybrid_value_callback(array $element, $input, 
     return $input;
   }
   else {
-    return array('start_date' => '', 'start_time' => '');
+
+    $value = array('start_date' => '', 'start_time' => '');
+
+    if (isset($element['#default_value']) && $element['#default_value']) {
+
+      $default_value = $element['#default_value'];
+      if (isset($default_value['start_date']) && $default_value['start_date']) {
+        $value['start_date'] = culturefeed_date_control_explode_date($element, $default_value['start_date']);
+        if (isset($element['#default_value']['start_time']) && $element['#default_value']['start_time']) {
+          $value['start_time'] = culturefeed_date_control_explode_time($element, $default_value['start_time'], $default_value['start_date']);
+        }
+      }
+
+    }
+
+    return $value;
+
   }
 
 }

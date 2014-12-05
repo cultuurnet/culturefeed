@@ -172,17 +172,22 @@ function culturefeed_date_control_period_value_callback(array $element, $input, 
   }
   else {
 
-    if (isset($element['#default_value'])) {
+    $value = array('start_date' => '', 'end_date' => '');
 
-      $exploded = array();
-      $exploded['start_date'] = culturefeed_date_control_explode_date($element, $element['#default_value']['start_date']);
-      $exploded['end_date'] = culturefeed_date_control_explode_date($element, $element['#default_value']['end_date']);
-      return $exploded;
+    if (isset($element['#default_value']) && $element['#default_value']) {
+
+      $default_value = $element['#default_value'];
+      if (
+        isset($default_value['start_date']) && $default_value['start_date'] &&
+        isset($default_value['end_date']) && $default_value['end_date']
+      ) {
+        $value['start_date'] = culturefeed_date_control_explode_date($element, $default_value['start_date']);
+        $value['end_date'] = culturefeed_date_control_explode_date($element, $default_value['end_date']);
+      }
 
     }
-    else {
-      return array('start_date' => '', 'end_date' => '');
-    }
+
+    return $value;
 
   }
 

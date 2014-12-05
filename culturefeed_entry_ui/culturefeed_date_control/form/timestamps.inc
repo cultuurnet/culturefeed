@@ -218,37 +218,40 @@ function culturefeed_date_control_timestamps_value_callback(array $element, $inp
   }
   else {
 
-    if (isset($element['#default_value'])) {
+    $value = array(
+      'stamps' => array(
+        array('date' => '', 'start_time' => '', 'end_time' => ''),
+      ),
+    );
 
-      foreach ($element['#default_value'] as &$stamp) {
+    if (isset($element['#default_value']) && $element['#default_value']) {
 
-        $exploded = array();
-        $exploded['date'] = culturefeed_date_control_explode_date($element, $stamp['date']);
-        if (isset($stamp['start_time'])) {
-          $exploded['start_time'] = culturefeed_date_control_explode_time($element, $stamp['date'] . ' ' . $stamp['start_time']);
+      $stamps = array();
+      foreach ($element['#default_value'] as $default_value) {
+
+        if (isset($default_value['date']) && $default_value['date']) {
+
+          $stamp = array();
+          $stamp['date'] = culturefeed_date_control_explode_date($element, $default_value['date']);
+          if (isset($default_value['start_time']) && $default_value['start_time']) {
+            $stamp['start_time'] = culturefeed_date_control_explode_time($element, $default_value['start_time'], $default_value['date']);
+          }
+          if (isset($default_value['end_time']) && $default_value['end_time']) {
+            $stamp['end_time'] = culturefeed_date_control_explode_time($element, $default_value['end_time'], $default_value['date']);
+          }
+          $stamps[] = $stamp;
+
         }
-        if (isset($stamp['end_time'])) {
-          $exploded['end_time'] = culturefeed_date_control_explode_time($element, $stamp['date'] . ' ' . $stamp['end_time']);
-        }
-        $stamp = $exploded;
 
       }
 
-      return array(
-        'stamps' => $element['#default_value'],
-      );
+      if (count($stamps)) {
+        $value['stamps'] = $stamps;
+      }
 
     }
 
-    else {
-
-      return array(
-        'stamps' => array(
-          array('date' => '', 'start_time' => NULL, 'end_time' => NULL),
-        ),
-      );
-
-    }
+    return $value;
 
   }
 

@@ -171,18 +171,20 @@ function culturefeed_date_control_explode_date(array $element, $date_string) {
  *   The element.
  * @param string $time_string
  *   The time.
+ * @param string $date_string
+ *   The date.
  *
  * @return array
  *   The exploded time.
  */
-function culturefeed_date_control_explode_time(array $element, $time_string) {
+function culturefeed_date_control_explode_time(array $element, $time_string, $date_string) {
 
   $time_element = array(
     '#date_flexible' => 0,
     '#date_format' => $element['#select_time_format'],
     '#date_increment' => $element['#select_time_increment'],
     '#date_timezone' => date_default_timezone(),
-    '#default_value' => $time_string,
+    '#default_value' => $date_string . ' ' . $time_string,
   );
 
   return date_select_element_value_callback($time_element);
