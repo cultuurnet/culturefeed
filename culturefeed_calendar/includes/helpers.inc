@@ -8,7 +8,7 @@
  * Get the users activities.
  */
 function culturefeed_calendar_get_user_activities() {
-dsm($_COOKIE);
+
   $uid = DrupalCultureFeed::getLoggedInUserId();
 
   if ($uid) {

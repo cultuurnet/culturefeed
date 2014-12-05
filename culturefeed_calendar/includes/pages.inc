@@ -165,7 +165,6 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     $form['calendar_dates']['date'] = array(
       '#title' => t('When do you want to go?'),
       '#type' => 'date_popup',
-      '#required' => TRUE,
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
       '#default_value' => '',
@@ -183,7 +182,6 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
       '#type' => 'radios',
       '#options' => $dates,
       '#default_value' => 0,
-      '#required' => TRUE,
     );
   }
 
