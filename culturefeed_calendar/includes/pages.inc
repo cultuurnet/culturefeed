@@ -100,7 +100,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
-  return $form;
+  //return $form;
 
   if ($request_type == 'ajax') {
     $output = drupal_render($form);
