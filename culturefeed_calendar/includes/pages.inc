@@ -22,11 +22,13 @@ function culturefeed_calendar_page_my_activities() {
 
   // Print the 'LIKED' activities.
   if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
-    $output .= theme('culturefeed_calendar_activities_liked', array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
+    $output .= theme('culturefeed_calendar_activities_liked',
+      array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
   }
   // Print the 'IK GA' activities.
   if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
-    $output .= theme('culturefeed_calendar_activities_going', array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA]));
+    $output .= theme('culturefeed_calendar_activities_going',
+      array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
   }
 
   // Print the 'I’m going' activities.
@@ -92,43 +94,9 @@ function culturefeed_calendar_add_cookie_to_calendar() {
  */
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
-  $entity = $event->getEntity();
-  $node_id = $entity->getCdbId();
-
-  $event_detail = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-  $calendar_summary = check_plain($event_detail->getCalendarSummary());
-
-  $calendar = $entity->getCalendar();
-  $calendar_type = get_class($calendar);
-
-  $lang_code = $GLOBALS['language']->language;
-  $title = $event->getTitle($lang_code);
-
-  $params = array();
-  $params['node_id'] = $node_id;
-  $params['node_title'] = $title;
-  $params['calendar_summary'] = $calendar_summary;
-
-  if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
-    $params['date_from'] = $calendar->current()->getDateFrom();
-    $params['date_to'] = $calendar->current()->getDateTo();
-    $params['type'] = 'period';
-  }
-  elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
-    while ($calendar->valid()) {
-      $dates[] = $calendar->current()->getDate();
-      $calendar->next();
-    }
-
-    if (count($dates) == 1) {
-      culturefeed_calendar_add_activity($node_id, $title, $dates[0]);
-      return;
-    }
-    else {
-      $params['dates'] = $dates;
-      $params['type'] = 'timestamps';
-    }
-  }
+  $params = _culuturefeed_calendar_get_event_params($event);
+  $params['submit'] = 'culturefeed_calendar_add_to_calendar_form_submit';
+  $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
@@ -142,6 +110,53 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
     return $form;
   }
 }
+
+/**
+ * Bla
+ */
+function culturefeed_calendar_edit_calendar_event(CultuurNet\Search\ActivityStatsExtendedEntity $event, $activity_id, $request_type = 'ajax') {
+
+  $params = _culuturefeed_calendar_get_event_params($event);
+  $params['activity_id'] = $activity_id;
+  $params['submit'] = 'culturefeed_calendar_edit_calendar_event_form_submit';
+  $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
+
+  $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
+
+  return $form;
+
+  if ($request_type == 'ajax') {
+    $output = drupal_render($form);
+    print $output;
+  }
+  else {
+    return $form;
+  }
+}
+
+/**
+ * Bla
+ */
+function culturefeed_calendar_plan_calendar_event(CultuurNet\Search\ActivityStatsExtendedEntity $event, $activity_id, $request_type = 'ajax') {
+
+  $params = _culuturefeed_calendar_get_event_params($event, $activity_id);
+  $params['activity_id'] = $activity_id;
+  $params['submit'] = 'culturefeed_calendar_plan_calendar_event_form_submit';
+  $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
+
+  $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
+
+  return $form;
+
+  if ($request_type == 'ajax') {
+    $output = drupal_render($form);
+    print $output;
+  }
+  else {
+    return $form;
+  }
+}
+
 
 /**
  * Form to choose dates before adding an event to the calendar.
@@ -188,15 +203,15 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     '#type' => 'submit',
     '#value' => t("Add"),
     '#name' => 'add',
-    '#submit' => array('culturefeed_calendar_add_to_calendar_form_submit'),
-    '#validate' => array('culturefeed_calendar_add_to_calendar_form_validate'),
+    '#submit' => array($params['submit']),
+    '#validate' => array($params['validate']),
   );
 
   $form['calendar_dates']['cancel'] = array(
     '#type' => 'submit',
     '#value' => t("Cancel"),
     '#name' => 'cancel',
-    '#submit' => array('culturefeed_calendar_add_to_calendar_form_submit'),
+    '#submit' => array($params['submit']),
   );
 
   $form_state['params'] = $params;
@@ -218,7 +233,9 @@ function culturefeed_calendar_add_to_calendar_form_validate($form, $form_state) 
      form_set_error("'calendar_dates']['date'", t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
    }
   }
+
 }
+
 /**
  * Submit the add to calendar form.
  */
@@ -239,6 +256,124 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, $form_state) {
 }
 
 /**
+ *
+ * @param type $form
+ * @param type $form_state
+ */
+function culturefeed_calendar_plan_calendar_event_form_submit($form, $form_state) {
+
+  $node_title = $form_state['params']['node_title'];
+  $node_id = $form_state['params']['node_id'];
+  $activity_id = $form_state['params']['activity_id'];
+
+  $date = $form_state['values']['calendar_dates']['date'];
+
+  if ($form_state['triggering_element']['#name'] == 'add') {
+    try {
+      $activity = DrupalCultureFeed::loadActivity($activity_id);
+
+      DrupalCultureFeed::deleteActivity($activity_id);
+      $activity->value = strtotime($date);
+      $activity->type = CultureFeed_Activity::TYPE_IK_GA;
+
+      DrupalCultureFeed::createActivity($activity);
+      drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
+    }
+    catch (Exception $e) {
+      $success = FALSE;
+      watchdog_exception('culturefeed_ui', $e);
+    }
+  }
+  elseif ($form_state['triggering_element']['#name'] == 'cancel') {
+    drupal_set_message(t('The event was not added to your calendar.'));
+    drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
+  }
+
+}
+
+/**
+ *
+ * @param type $form
+ * @param type $form_state
+ */
+function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state) {
+
+  $activity_id = $form_state['params']['activity_id'];
+  $date = $form_state['values']['calendar_dates']['date'];
+
+  if ($form_state['triggering_element']['#name'] == 'add') {
+    try {
+      $activity = DrupalCultureFeed::loadActivity($activity_id);
+
+      DrupalCultureFeed::deleteActivity($activity_id);
+      $activity->value = strtotime($date);
+
+      DrupalCultureFeed::createActivity($activity);
+    }
+    catch (Exception $e) {
+      $success = FALSE;
+      watchdog_exception('culturefeed_ui', $e);
+    }
+  }
+  elseif ($form_state['triggering_element']['#name'] == 'cancel') {
+    drupal_set_message(t('Your calendar event was changed.'));
+  }
+
+  drupal_goto('culturefeed/calendar');
+
+}
+
+/**
+ * Helper function that get form parameters for edit/add/delete activity-forms.
+ *
+ * @param type $event
+ * @param type $activity_id
+ * @return type
+ */
+function _culuturefeed_calendar_get_event_params($event) {
+
+  $entity = $event->getEntity();
+  $node_id = $entity->getCdbId();
+
+  $event_detail = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $calendar_summary = check_plain($event_detail->getCalendarSummary());
+
+  $calendar = $entity->getCalendar();
+  $calendar_type = get_class($calendar);
+
+  $lang_code = $GLOBALS['language']->language;
+  $title = $event->getTitle($lang_code);
+
+  $params = array();
+  $params['node_id'] = $node_id;
+  $params['node_title'] = $title;
+  $params['calendar_summary'] = $calendar_summary;
+
+  if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
+    $params['date_from'] = $calendar->current()->getDateFrom();
+    $params['date_to'] = $calendar->current()->getDateTo();
+    $params['type'] = 'period';
+  }
+  elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+    while ($calendar->valid()) {
+      $dates[] = $calendar->current()->getDate();
+      $calendar->next();
+    }
+
+    if (count($dates) == 1) {
+      culturefeed_calendar_add_activity($node_id, $title, $dates[0]);
+      return;
+    }
+    else {
+      $params['dates'] = $dates;
+      $params['type'] = 'timestamps';
+    }
+  }
+
+  return $params;
+}
+
+/**
  * Helper function to sort user activities by type.
  */
 function _culturefeed_calendar_sort_user_activities_by_type($activities) {
@@ -254,7 +389,7 @@ function _culturefeed_calendar_sort_user_activities_by_type($activities) {
 }
 
 /**
- * Get twleve months names, starting with current month.
+ * Get twelve months names, starting with current month.
  */
 function _culturefeed_calendar_months_get_nav_months($x) {
 

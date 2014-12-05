@@ -28,6 +28,22 @@ function culturefeed_calendar_menu() {
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
+  $items['culturefeed/calendar/plan/%culturefeed_agenda_event/%/%'] = array(
+    'title' => t('Plan event in calendar'),
+    'page callback' => 'culturefeed_calendar_plan_calendar_event',
+    'page arguments' => array(3, 4, 5),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/edit/%culturefeed_agenda_event/%/%'] = array(
+    'title' => t('Edit event in calendar'),
+    'page callback' => 'culturefeed_calendar_edit_calendar_event',
+    'page arguments' => array(3, 4, 5),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
   $items['culturefeed/calendar/add-cookie-to-calendar'] = array(
     'title' => t('Add cookie events to calendar'),
     'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
@@ -74,7 +90,8 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-activities-going',
     'variables' => array(
-      'activities' => NULL
+      'activities' => NULL,
+      'month_names' => array(),
     ),
   );
   $items['culturefeed_calendar_activities_liked'] = array(

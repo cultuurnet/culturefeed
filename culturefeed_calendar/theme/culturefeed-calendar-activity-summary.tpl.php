@@ -12,7 +12,8 @@
       <?php print $date; ?><br />
     <?php endif; ?>
     <a href="<?php print $url; ?>"><?php print $title; ?></a><br />
-    <?php print $remove_button; ?>
+    <?php print $remove_button; ?><br />
+    <a href="<?php print $edit_link['url'] ?>"><?php print $edit_link['text']; ?></a>
   </div>
   <dl class="clearfix">
     <?php if ($location): ?>

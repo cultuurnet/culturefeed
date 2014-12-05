@@ -136,7 +136,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
  */
 function culturefeed_calendar_remove_activity_button($activity_id) {
 
-// Remove from calendar button.
+  // Remove from calendar button.
   $remove_path = 'culturefeed/activity/delete/' . $activity_id;
   $attributes = array(
     'class' => array('remove-link'),
@@ -154,4 +154,5 @@ function culturefeed_calendar_remove_activity_button($activity_id) {
   );
 
   return drupal_render($delete);
+
 }
