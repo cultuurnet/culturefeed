@@ -174,7 +174,7 @@ function culturefeed_date_control_period_value_callback(array $element, $input, 
 
     $value = array('start_date' => '', 'end_date' => '');
 
-    if (isset($element['#default_value']) && $element['#default_value'] && $element['#access']) {
+    if (isset($element['#default_value']) && $element['#default_value']) {
 
       $default_value = $element['#default_value'];
       if (

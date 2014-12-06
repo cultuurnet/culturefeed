@@ -224,7 +224,7 @@ function culturefeed_date_control_timestamps_value_callback(array $element, $inp
       ),
     );
 
-    if (isset($element['#default_value']) && $element['#default_value'] && $element['#access']) {
+    if (isset($element['#default_value']) && $element['#default_value']) {
 
       $stamps = array();
       foreach ($element['#default_value'] as $default_value) {

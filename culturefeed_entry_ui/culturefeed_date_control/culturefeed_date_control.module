@@ -83,7 +83,6 @@ function culturefeed_date_control_element_info() {
     'culturefeed_date_control' => array(
       '#element_validate' => array('culturefeed_date_control_date_control_validate'),
       '#input' => TRUE,
-      '#pre_render' => array('culturefeed_date_control_date_control_pre_render'),
       '#process' => array('culturefeed_date_control_date_control_process', 'ajax_process_form'),
       '#tree' => TRUE,
       '#value_callback' => 'culturefeed_date_control_date_control_value_callback',
