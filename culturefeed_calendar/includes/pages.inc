@@ -100,11 +100,12 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
-  return $form;
-
   if ($request_type == 'ajax') {
-    $output = drupal_render($form);
-    print $output;
+    $commands = array();
+    $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+
+    print ajax_render($commands);
+    exit;
   }
   else {
     return $form;
@@ -126,8 +127,13 @@ function culturefeed_calendar_edit_calendar_event(CultuurNet\Search\ActivityStat
   return $form;
 
   if ($request_type == 'ajax') {
-    $output = drupal_render($form);
-    print $output;
+
+    $commands = array();
+    $commands[] = culturefeed_ajax_command_modal('#edit-calendar-form', drupal_render($form));
+
+    print ajax_render($commands);
+    exit;
+
   }
   else {
     return $form;
@@ -149,7 +155,7 @@ function culturefeed_calendar_plan_calendar_event(CultuurNet\Search\ActivityStat
   if ($request_type == 'ajax') {
 
     $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+    $commands[] = culturefeed_ajax_command_modal('#plan-calendar-form', drupal_render($form));
 
     print ajax_render($commands);
     exit;
