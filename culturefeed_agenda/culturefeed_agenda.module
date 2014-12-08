@@ -90,7 +90,7 @@ function culturefeed_agenda_theme() {
     'path' => $path,
   );
 
-  $theme['culturefeed_agenda_search_block_filter_settings'] = array(
+  $theme['culturefeed_agenda_search_block_field_settings'] = array(
     'render element' => 'element',
     'path' => $path,
     'file' => 'theme.inc',
@@ -354,42 +354,42 @@ function culturefeed_agenda_block_configure($delta) {
 
   elseif ($delta == 'agenda-search-block') {
 
-    $filters = array(
+    $fields = array(
       'what' => 'What <div class="description">textfield to perform full text search</div>',
       'types' => 'Types <div class="description">selectbox with possible categories</div>',
       'where' => 'Where <div class="description">Autocomplete field with available regions and cities</div>',
       'when' => 'When <div class="description">selecbox with possible date ranges</div>',
     );
 
-    $form['filters'] = array(
+    $form['fields'] = array(
       '#type' => 'container',
       '#tree' => TRUE,
-      '#theme' => 'culturefeed_agenda_search_block_filter_settings',
+      '#theme' => 'culturefeed_agenda_search_block_field_settings',
     );
 
     // Show all possible filters, sorted by weight.
-    $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
-    foreach ($filters as $filter => $title) {
-      $form['filters'][$filter]['enabled'] = array(
+    $active_fields = variable_get('culturefeed_agenda_search_block_active_fields', array());
+    foreach ($fields as $field => $title) {
+      $form['fields'][$field]['enabled'] = array(
         '#type' => 'checkbox',
         '#title' => t('Enabled'),
         '#title_display' => 'invisible',
-        '#default_value' => isset($active_filters[$filter]),
+        '#default_value' => isset($active_fields[$field]),
       );
 
-      $form['filters'][$filter]['title'] = array(
+      $form['fields'][$field]['title'] = array(
         '#markup' => $title,
       );
 
-      $form['filters'][$filter]['weight'] = array(
+      $form['fields'][$field]['weight'] = array(
         '#type' => 'weight',
         '#title_display' => 'invisible',
-        '#default_value' => isset($active_filters[$filter]) ? $active_filters[$filter] : 10,
+        '#default_value' => isset($active_fields[$field]) ? $active_fields[$field] : 10,
       );
-      $form['filters'][$filter]['#weight'] = isset($active_filters[$filter]) ? $active_filters[$filter] : 10;
+      $form['fields'][$field]['#weight'] = isset($active_fields[$field]) ? $active_fields[$field] : 10;
     }
 
-    uasort($form['filters'], 'drupal_sort_weight');
+    uasort($form['fields'], 'drupal_sort_weight');
 
     // Category to be used in the dropdown.
     $options = array('' => t('None'));
@@ -402,7 +402,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#default_value' => variable_get('agenda_search_block_domain_id'),
       '#states' => array(
         'visible' => array(
-          ':input[name="filters[types][enabled]"]' => array('checked' => TRUE),
+          ':input[name="fields[types][enabled]"]' => array('checked' => TRUE),
         ),
       ),
     );
@@ -437,13 +437,13 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_search_block_domain_id', $edit['agenda_search_block_domain_id']);
     variable_set('agenda_search_block_submit_value', $edit['agenda_search_block_submit_value']);
 
-    $filters = array();
-    foreach ($edit['filters'] as $key => $filter) {
-      if ($filter['enabled']) {
-        $filters[$key] = $filter['weight'];
+    $fields = array();
+    foreach ($edit['fields'] as $key => $field) {
+      if ($field['enabled']) {
+        $fields[$key] = $field['weight'];
       }
     }
-    variable_set('culturefeed_agenda_search_block_active_filters', $filters);
+    variable_set('culturefeed_agenda_search_block_active_fields', $fields);
 
   }
 

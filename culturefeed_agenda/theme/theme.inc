@@ -889,14 +889,14 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_de_lijn_widget(&$varia
 /**
  * Theme an admin table for the possible filter options on the agenda search block.
  */
-function theme_culturefeed_agenda_search_block_filter_settings($variables) {
+function theme_culturefeed_agenda_search_block_field_settings($variables) {
 
   $container = $variables['element'];
 
   $rows = array();
   foreach (element_children($container) as $key) {
 
-   $container[$key]['weight']['#attributes']['class'] = array('enabled-filters-order-weight');
+   $container[$key]['weight']['#attributes']['class'] = array('enabled-fields-order-weight');
 
     $row = array();
     $row[] = array('data' => drupal_render($container[$key]['enabled']), 'width' => '20px');
@@ -916,10 +916,10 @@ function theme_culturefeed_agenda_search_block_filter_settings($variables) {
       t('Weight'),
     ),
     'rows' => $rows,
-    'attributes' => array('id' => 'enabled-filters'),
+    'attributes' => array('id' => 'enabled-fields'),
   );
 
-  drupal_add_tabledrag('enabled-filters', 'order', 'sibling', 'enabled-filters-order-weight');
+  drupal_add_tabledrag('enabled-fields', 'order', 'sibling', 'enabled-fields-order-weight');
 
   return theme('table', $table_variables);
 

@@ -9,12 +9,12 @@
  * Implements hook_install().
  */
 function culturefeed_agenda_install() {
-  $filters = array(
+  $fields = array(
     'what' => 0,
     'types' => 1,
   );
 
-  variable_set('culturefeed_agenda_search_block_active_filters', $filters);
+  variable_set('culturefeed_agenda_search_block_active_fields', $fields);
 }
 
 /**
@@ -47,10 +47,10 @@ function culturefeed_agenda_update_7001() {
  */
 function culturefeed_agenda_update_7002() {
 
-  $filters = array(
+  $fields = array(
     'what' => 1,
     'types' => 2,
   );
 
-  variable_set('culturefeed_agenda_search_block_active_filters', $filters);
+  variable_set('culturefeed_agenda_search_block_active_fields', $fields);
 }

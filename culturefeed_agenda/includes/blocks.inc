@@ -30,7 +30,7 @@ function culturefeed_agenda_block_related_activities() {
  */
 function culturefeed_agenda_search_block_form($form, &$form_state) {
 
-  $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
+  $active_fields = variable_get('culturefeed_agenda_search_block_active_fields', array());
 
   $form = array();
 
@@ -38,7 +38,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   // $form['#action'] = url('<front>');
 
   // Category search.
-  if (isset($active_filters['types'])) {
+  if (isset($active_fields['types'])) {
 
     $domain_id = variable_get('agenda_search_block_domain_id');
     if (!empty($domain_id)) {
@@ -64,7 +64,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
         '#type' => 'select',
         '#options' => $options,
         '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
-        '#weight' => $active_filters['types'],
+        '#weight' => $active_fields['types'],
       );
 
       $form_state['#domain_id'] = $domain_id;
@@ -74,34 +74,34 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   }
 
   // Free text search.
-  if (isset($active_filters['what'])) {
+  if (isset($active_fields['what'])) {
     $form['search'] = array(
       '#type' => 'textfield',
       '#size' => 28,
       '#title' => t('Search string'),
       '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-      '#weight' => $active_filters['what'],
+      '#weight' => $active_fields['what'],
     );
   }
 
   // Datetype search.
-  if (isset($active_filters['when'])) {
+  if (isset($active_fields['when'])) {
     $form['when'] = array(
       '#type' => 'select',
       '#title' => t('When'),
       '#options' => array('' => t('All dates')) + culturefeed_search_ui_get_date_facet_options(),
       '#default_value' => isset($_GET['facet']['datetype'][0]) ? $_GET['facet']['datetype'][0] : NULL,
-      '#weight' => $active_filters['when'],
+      '#weight' => $active_fields['when'],
     );
   }
 
   // Location search.
-  if (isset($active_filters['where'])) {
+  if (isset($active_fields['where'])) {
     $form['where'] = array(
       '#type' => 'textfield',
       '#title' => t('Where'),
       '#default_value' => isset($_GET['location']) ? $_GET['location'] : NULL,
-      '#weight' => $active_filters['where'],
+      '#weight' => $active_fields['where'],
       '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
       '#attributes' => array('placeholder' => t('Zipcode or city')),
     );
