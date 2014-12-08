@@ -9,6 +9,6 @@
   <?php if (isset($button['description'])) : ?>
     <?php print $button['description']; ?>
   <?php endif; ?>
-  <?php print l($button['text'], $button['url']); ?>
+  <?php print l($button['text'], $button['path']); ?>
 </div>
 
