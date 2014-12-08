@@ -146,11 +146,14 @@ function culturefeed_calendar_plan_calendar_event(CultuurNet\Search\ActivityStat
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
-  return $form;
-
   if ($request_type == 'ajax') {
-    $output = drupal_render($form);
-    print $output;
+
+    $commands = array();
+    $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+
+    print ajax_render($commands);
+    exit;
+
   }
   else {
     return $form;
@@ -163,20 +166,16 @@ function culturefeed_calendar_plan_calendar_event(CultuurNet\Search\ActivityStat
  */
 function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params) {
 
-  $form['calendar_dates'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Add ') . $params['node_title'] . t(' to your OuTcalendar'),
-    '#tree' => TRUE,
-  );
+  drupal_set_title(t('Add !title to your OutCalendar', array('!title' => $params['node_title'])));
 
-  $form['calendar_dates']['info'] = array(
-      '#type' => 'markup',
-      '#markup' => '<label>' . t($params['node_title'] . t(' runs ') . $params['calendar_summary']  . '.') . '</label>',
-    );
+  $form['info'] = array(
+    '#type' => 'markup',
+    '#markup' => '<label>' . t($params['node_title'] . t(' runs ') . $params['calendar_summary']  . '.') . '</label>',
+  );
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
 
-    $form['calendar_dates']['date'] = array(
+    $form['date'] = array(
       '#title' => t('When do you want to go?'),
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
@@ -191,7 +190,7 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
       $dates[$date] = date('d-m-Y', strtotime($date_formatted));
     }
 
-    $form['calendar_dates']['date'] = array(
+    $form['date'] = array(
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
@@ -199,7 +198,11 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     );
   }
 
-  $form['calendar_dates']['submit'] = array(
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t("Add"),
     '#name' => 'add',
@@ -207,7 +210,7 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     '#validate' => array($params['validate']),
   );
 
-  $form['calendar_dates']['cancel'] = array(
+  $form['actions']['cancel'] = array(
     '#type' => 'submit',
     '#value' => t("Cancel"),
     '#name' => 'cancel',

@@ -11,9 +11,11 @@
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables) {
 
+  drupal_add_library('system', 'drupal.ajax');
+
   if ($variables['button']['action'] == 'view') {
 
-    $variables['button']['url'] = 'culturefeed/calendar';
+    $variables['button']['path'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['description'] = t('This activity is added to your OuTcalendar.');
       $variables['button']['text'] = t('View OuTcalendar');
@@ -25,7 +27,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
   }
   elseif ($variables['button']['action'] == 'add') {
 
-    $variables['button']['url'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/ajax';
+    $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['text'] = t('Add to my OuTcalendar');
     }
