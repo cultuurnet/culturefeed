@@ -641,8 +641,34 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
     }
 
     // A known search page, no need to alter the path.
+    // We have a conflict with global redirect. So we will check here if a clean url
+    // version of current requested url is available.
     $search_page = _culturefeed_search_ui_get_active_search_page();
     if ($search_page) {
+
+      $query_string = drupal_get_query_parameters();
+      if (empty($query_string)) {
+        $query_string = NULL;
+      }
+
+      $request_path = $path;
+      // Establish the language prefix that should be used, ie. the one that
+      // drupal_goto() would use
+      $options = array(
+        'fragment' => '',
+        'query' => $query_string,
+        'absolute' => FALSE,
+        'alias' => FALSE,
+        'prefix' => '',
+        'external' => FALSE,
+      );
+
+      // Check if we need to do a 301 redirect to the clean url.
+      drupal_alter('url_outbound', $request_path, $options, $request_path);
+      if ($request_path != $path) {
+        drupal_goto($request_path, $options, 301);
+      }
+
       return;
     }
 
