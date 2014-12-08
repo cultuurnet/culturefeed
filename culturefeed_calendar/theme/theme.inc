@@ -110,6 +110,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
   $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/ajax';
   $variables['edit_link']['text'] = t('Verplaatsen');
+  $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
 
 }
 

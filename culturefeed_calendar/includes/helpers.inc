@@ -148,7 +148,7 @@ function culturefeed_calendar_remove_activity_button($activity_id) {
   );
   $delete = array(
     '#type' => 'link',
-    '#title' => t('Remove'),
+    '#title' => t('Verwijderen'),
     '#href' => $remove_path . '/nojs',
     '#attributes' => $attributes,
     '#options' => array('query' => drupal_get_destination()),
@@ -170,4 +170,24 @@ function culturefeed_calendar_get_total_unread_activities() {
   }
 
   return $activities_count;
+}
+
+/**
+ * Checks wether an event has multiple dates.
+ */
+function culturefeed_calendar_event_has_multiple_dates($dates_array) {
+
+  switch ($dates_array['type']) {
+
+    case 'period':
+      return ($dates_array['period_start'] == $dates_array['period_end']) ? FALSE : TRUE;
+
+    case 'permanent':
+      return TRUE;
+
+    case 'timestamps':
+      return (count($dates_array['timestamps']) > 1) ? TRUE : FALSE;
+
+  }
+
 }

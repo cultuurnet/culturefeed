@@ -12,8 +12,11 @@
       <?php print $date; ?><br />
     <?php endif; ?>
     <a href="<?php print $url; ?>"><?php print $title; ?></a><br />
-    <?php print $remove_button; ?><br />
-    <a href="<?php print $edit_link['url'] ?>"><?php print $edit_link['text']; ?></a>
+    <?php print $remove_button; ?>
+    <?php if ($edit_link['show']): ?>
+      <br />
+      <a href="<?php print $edit_link['url'] ?>"><?php print $edit_link['text']; ?></a>
+    <?php endif; ?>
   </div>
   <dl class="clearfix">
     <?php if ($location): ?>
