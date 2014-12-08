@@ -96,7 +96,7 @@ services:
 
   culturefeed_udb3.event.service:
     class: CultuurNet\UDB3\LocalEventService
-    arguments: ['@culturefeed_udb3.eventld_repository', '@culturefeed_udb3.event_repository', '@culturefeed_udb3.iri_generator']
+    arguments: ['@culturefeed_udb3.eventld_repository', '@culturefeed_udb3.event_repository']
   culturefeed_udb3.event.tagger:
     class: CultuurNet\UDB3\Event\DefaultEventTaggerService
     arguments: ['@culturefeed_udb3.event.service', '@culturefeed_udb3.event_command_bus']
@@ -113,6 +113,46 @@ services:
   culturefeed_udb3.event.used_keywords_memory:
     class: CultuurNet\UDB3\UsedKeywordsMemory\DefaultUsedKeywordsMemoryService
     arguments: ['@culturefeed_udb3.event.used_keywords_memory_repository']
+
+  # Place
+  culturefeed_udb3.placeld_cache:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory_method: get
+    factory_service: cache_factory
+    arguments: [culturefeed_udb3_placeld]
+  culturefeed_udb3.placeld_repository:
+    class: Drupal\culturefeed_udb3\PlaceldRepository
+    arguments: ['@culturefeed_udb3.placeld_cache']
+  culturefeed_udb3.place_store:
+    class: Drupal\culturefeed_udb3\EventStore
+    arguments: ['place_store', '@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
+  culturefeed_udb3.place.iri_generator:
+    class: Drupal\culturefeed_udb3\IriGenerator
+    arguments: ['@url_generator', 'culturefeed_udb3.place']
+  culturefeed_udb3.placeld_projector:
+    class: CultuurNet\UDB3\Place\PlaceLDProjector
+    arguments: ['@culturefeed_udb3.placeld_repository', '@culturefeed_udb3.place.iri_generator']
+  culturefeed_udb3.place.event_bus:
+    class: Broadway\EventHandling\SimpleEventBus
+    calls:
+      - [subscribe, ['@culturefeed_udb3.placeld_projector']]
+  culturefeed_udb3.local_place_repository:
+    class: CultuurNet\UDB3\Place\PlaceRepository
+    arguments: ['@culturefeed_udb3.place_store', '@culturefeed_udb3.place.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
+  culturefeed_udb3.place_repository.factory:
+    class: Drupal\culturefeed_udb3\PlaceRepositoryFactory
+    arguments: ['@culturefeed_udb3.local_place_repository', '@culturefeed_udb3.search_api_2', '@culturefeed_udb3.udb2_entry_api_improved', '@culturefeed_udb3.event_stream_metadata_enricher', '@config.factory']
+  culturefeed_udb3.place_repository:
+    class: CultuurNet\UDB3\UDB2\PlaceRepository
+    factory_service: culturefeed_udb3.place_repository.factory
+    factory_method: get
+  culturefeed_udb3.place.service:
+    class: CultuurNet\UDB3\LocalPlaceService
+    arguments: ['@culturefeed_udb3.placeld_repository', '@culturefeed_udb3.place_repository']
+
+
 
   culturefeed_udb3.json_ld_subscriber:
     class: Drupal\culturefeed_udb3\JsonLdSubscriber

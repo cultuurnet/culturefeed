@@ -38,6 +38,13 @@ class EventRestController extends ControllerBase {
   protected $eventService;
 
   /**
+   * The culturefeed user.
+   *
+   * @var Culturefeed_User
+   */
+  protected $user;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -59,7 +66,7 @@ class EventRestController extends ControllerBase {
    * @param DefaultUsedKeywordsMemoryService $used_keywords_memory
    *   The event tagger.
    * @param CultureFeed_User $user
-   *   The event tagger.
+   *   The culturefeed user.
    */
   public function __construct(
     EventServiceInterface $event_service,

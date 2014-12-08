@@ -113,3 +113,14 @@ culturefeed_udb3.user.keywords:
     _culturefeed_current_user: 'TRUE'
     _format: json
     _method: GET
+
+culturefeed_udb3.place:
+  path: '/udb3/api/1.0/place/{cdbid}'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\PlaceRestController::details'
+    _title: 'Place detail'
+  requirements:
+    _access: 'TRUE'
+    _format: ld_json
+    _method: GET
+
