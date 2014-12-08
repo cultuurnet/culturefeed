@@ -118,18 +118,21 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     DrupalCultureFeed::createActivity($activity);
   }
   else {
-    $cookie = array();
+    $calendar = array();
 
     if (isset($_COOKIE ['Drupal_visitor_calendar'] )) {
-      $cookie['calendar'] = unserialize($_COOKIE ['Drupal_visitor_calendar']);
+      $calendar = unserialize($_COOKIE ['Drupal_visitor_calendar']);
     }
 
-    $cookie['calendar'][] = $activity;
-    $cookie['calendar'] = serialize($cookie['calendar']);
-    user_cookie_save($cookie);
+    $calendar[] = $activity;
+    $values = array(
+      'calendar' => serialize($calendar),
+    );
+
+    user_cookie_save($values);
+
   }
-  drupal_set_message(t('The event has been added to your OuTcalendar.'));
-  drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
+
 }
 
 /**

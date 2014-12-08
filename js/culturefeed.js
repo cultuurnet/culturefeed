@@ -44,6 +44,13 @@ if (Drupal.ajax) {
 
   };
 
+  /**
+   * Command to reload current page.
+   */
+  Drupal.ajax.prototype.commands.culturefeedGoto = function (ajax, response, status) {
+    window.location.href = response.url;
+  }
+
 }
 
 })(jQuery);

@@ -17,7 +17,7 @@ define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
  * Implements hook_init().
  */
 function culturefeed_init() {
-  
+
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
 
   if (isset($_GET['closepopup'])) {

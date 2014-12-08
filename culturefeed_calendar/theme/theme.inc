@@ -104,7 +104,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   }
 
   // Activity details.
-  $variables['date'] = format_date($activity->value, 'custom', 'l j F Y');
+  $variables['date'] = format_date($activity->value, 'custom', 'l j F Y H:i');
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
@@ -112,6 +112,16 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   $variables['edit_link']['text'] = t('Verplaatsen');
   $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
 
+}
+
+function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$variables) {
+
+  $variables['url'] = 'culturefeed/oauth/connect';
+  $variables['options'] = array(
+    'query' => array(
+      'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
+    ),
+  );
 }
 
 

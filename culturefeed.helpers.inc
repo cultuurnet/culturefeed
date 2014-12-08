@@ -416,3 +416,10 @@ function culturefeed_ajax_command_modal($selector, $html) {
     'data' => $html,
   );
 }
+
+/**
+ * Ajax command to reload current page.
+ */
+function culturefeed_ajax_command_goto($url) {
+  return array('command' => 'culturefeedGoto', 'url' => $url);
+}

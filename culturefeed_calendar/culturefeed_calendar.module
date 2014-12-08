@@ -7,6 +7,17 @@
 require_once 'includes/helpers.inc';
 
 /**
+ * Implements hook_init().
+ */
+function culturefeed_agenda_init() {
+
+  if (isset($_GET['added_to_calendar'])) {
+    drupal_set_message(t('The event has been added to your OuTcalendar.'));
+  }
+
+}
+
+/**
  * Implements hook_menu().
  */
 function culturefeed_calendar_menu() {
@@ -113,6 +124,11 @@ function culturefeed_calendar_theme() {
     'variables' => array(
       'activities' => NULL
     ),
+  );
+  $items['culturefeed_calendar_button_hover'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-button-hover',
   );
 
   return $items;

@@ -94,21 +94,37 @@ function culturefeed_calendar_add_cookie_to_calendar() {
  */
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
-  $params = _culuturefeed_calendar_get_event_params($event);
+  $params = _culturefeed_calendar_get_event_params($event);
+
   $params['submit'] = 'culturefeed_calendar_add_to_calendar_form_submit';
   $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
   if ($request_type == 'ajax') {
+
     $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+    if ($params['get_form']) {
+      $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+    }
+    else {
+      $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
+      $url .= '?added_to_calendar=true';
+      $commands[] = culturefeed_ajax_command_goto($url);
+    }
 
     print ajax_render($commands);
     exit;
   }
   else {
-    return $form;
+
+    if ($params['get_form']) {
+      return $form;
+    }
+    else {
+      drupal_goto(culturefeed_search_detail_path('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language())));
+    }
+
   }
 }
 
@@ -117,7 +133,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
  */
 function culturefeed_calendar_edit_calendar_event(CultuurNet\Search\ActivityStatsExtendedEntity $event, $activity_id, $request_type = 'ajax') {
 
-  $params = _culuturefeed_calendar_get_event_params($event);
+  $params = _culturefeed_calendar_get_event_params($event);
   $params['activity_id'] = $activity_id;
   $params['submit'] = 'culturefeed_calendar_edit_calendar_event_form_submit';
   $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
@@ -145,7 +161,7 @@ function culturefeed_calendar_edit_calendar_event(CultuurNet\Search\ActivityStat
  */
 function culturefeed_calendar_plan_calendar_event(CultuurNet\Search\ActivityStatsExtendedEntity $event, $activity_id, $request_type = 'ajax') {
 
-  $params = _culuturefeed_calendar_get_event_params($event, $activity_id);
+  $params = _culturefeed_calendar_get_event_params($event, $activity_id);
   $params['activity_id'] = $activity_id;
   $params['submit'] = 'culturefeed_calendar_plan_calendar_event_form_submit';
   $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
@@ -184,7 +200,7 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     $form['date'] = array(
       '#title' => t('When do you want to go?'),
       '#type' => 'date_popup',
-      '#date_format' => 'd-m-Y',
+      '#date_format' => 'd-m-Y H:i',
       '#date_year_range' => '-0:+1',
       '#default_value' => '',
     );
@@ -192,8 +208,16 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
   elseif ($params['type'] == 'timestamps') {
 
     foreach ($params['dates'] as $key => $date) {
-      $date_formatted = date('d-m-Y', strtotime($date));
-      $dates[$date] = date('d-m-Y', strtotime($date_formatted));
+
+      $time_string = "";
+      if (!empty($date['start'])) {
+        $time_string .= t(" from ") . $date['start'];
+        if (!empty($date['end'])) {
+          $time_string .= t(" to ") . $date['end'];
+        }
+      }
+      $date_formatted = date('d-m-Y', strtotime($date['date']));
+      $dates[$date['date']] = date('d-m-Y', strtotime($date_formatted)) . $time_string;
     }
 
     $form['date'] = array(
@@ -214,6 +238,10 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
     '#name' => 'add',
     '#submit' => array($params['submit']),
     '#validate' => array($params['validate']),
+    '#ajax' => array(
+        'callback' => 'culturefeed_calendar_add_to_calendar_form_ajax',
+        'wrapper' => 'add-to-calendar-form',
+       ),
   );
 
   $form['actions']['cancel'] = array(
@@ -229,17 +257,33 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
 }
 
 /**
+ * Submit the add to calendar form.
+ */
+function culturefeed_calendar_add_to_calendar_form_ajax($form, $form_state) {
+
+
+  $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
+  $url .= '?added_to_calendar=true';
+
+  $commands = array();
+  $commands[] = culturefeed_ajax_command_goto($url);
+
+  print ajax_render($commands);
+  exit;
+}
+
+/**
  * Validate the add to calendar form.
  */
 function culturefeed_calendar_add_to_calendar_form_validate($form, $form_state) {
 
   if ($form_state['params']['type'] == 'period'
-      && !empty($form_state['values']['calendar_dates']['date'])) {
-   $date = strtotime($form_state['values']['calendar_dates']['date']);
+      && !empty($form_state['values']['date'])) {
+   $date = strtotime($form_state['values']['date']);
    $date_from = strtotime($form_state['params']['date_from']);
    $date_to = strtotime($form_state['params']['date_to']);
    if (($date < $date_from) || ($date > $date_to)) {
-     form_set_error("'calendar_dates']['date'", t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
+     form_set_error("'date'", t('Enter a date between ') . date('d-m-Y H:i', $date_from) . t(' and ') . date('d-m-Y H:i', $date_to) . '.');
    }
   }
 
@@ -253,8 +297,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, $form_state) {
   $node_title = $form_state['params']['node_title'];
   $node_id = $form_state['params']['node_id'];
 
-  $date = $form_state['values']['calendar_dates']['date'];
-
+  $date = $form_state['values']['date'];
   if ($form_state['triggering_element']['#name'] == 'add') {
     culturefeed_calendar_add_activity($node_id, $node_title, $date);
   }
@@ -275,7 +318,7 @@ function culturefeed_calendar_plan_calendar_event_form_submit($form, $form_state
   $node_id = $form_state['params']['node_id'];
   $activity_id = $form_state['params']['activity_id'];
 
-  $date = $form_state['values']['calendar_dates']['date'];
+  $date = $form_state['values']['date'];
 
   if ($form_state['triggering_element']['#name'] == 'add') {
     try {
@@ -308,7 +351,7 @@ function culturefeed_calendar_plan_calendar_event_form_submit($form, $form_state
 function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state) {
 
   $activity_id = $form_state['params']['activity_id'];
-  $date = $form_state['values']['calendar_dates']['date'];
+  $date = $form_state['values']['date'];
 
   if ($form_state['triggering_element']['#name'] == 'add') {
     try {
@@ -339,7 +382,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state
  * @param type $activity_id
  * @return type
  */
-function _culuturefeed_calendar_get_event_params($event) {
+function _culturefeed_calendar_get_event_params($event) {
 
   $entity = $event->getEntity();
   $node_id = $entity->getCdbId();
@@ -357,6 +400,7 @@ function _culuturefeed_calendar_get_event_params($event) {
   $params['node_id'] = $node_id;
   $params['node_title'] = $title;
   $params['calendar_summary'] = $calendar_summary;
+  $params['get_form'] = TRUE;
 
   if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $params['type'] = 'permanent';
@@ -367,14 +411,20 @@ function _culuturefeed_calendar_get_event_params($event) {
     $params['type'] = 'period';
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+    $i = 0;
+    $dates = array();
     while ($calendar->valid()) {
-      $dates[] = $calendar->current()->getDate();
+      $dates[$i]['date'] = $calendar->current()->getDate();
+      $dates[$i]['start'] = $calendar->current()->getStartTime();
+      $dates[$i]['end'] = $calendar->current()->getEndTime();
       $calendar->next();
+      $i++;
     }
 
     if (count($dates) == 1) {
-      culturefeed_calendar_add_activity($node_id, $title, $dates[0]);
-      return;
+      $params['get_form'] = FALSE;
+      culturefeed_calendar_add_activity($node_id, $title, $dates[0]['date']);
+      return $params;
     }
     else {
       $params['dates'] = $dates;
