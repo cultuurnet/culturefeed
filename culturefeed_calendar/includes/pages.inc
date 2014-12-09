@@ -266,10 +266,18 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
   if (isset($form_state['params']['activity'])) {
     $url = '/culturefeed/calendar';
   }
+  // Adding an event.
   else {
     $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    $commands[] = ajax_command_prepend('#add-to-calendar-ajax', theme('status_messages'));
+    if ($form_state['params']['validated']) {
+      $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
+      $url .= '?added_to_calendar=true';
+      $commands[] = culturefeed_ajax_command_goto($url);
+    }
+    else {
+      $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
+      $commands[] = ajax_command_prepend('#add-to-calendar-ajax', theme('status_messages'));
+    }
 
     print ajax_render($commands);
     exit;
@@ -286,7 +294,11 @@ function culturefeed_calendar_add_to_calendar_form_validate(&$form, &$form_state
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
     if (($date < $date_from) || ($date > $date_to)) {
+      $form_state['params']['validated'] = FALSE;
       form_set_error('date', t('Enter a date between ') . date('d-m-Y H:i', $date_from) . t(' and ') . date('d-m-Y H:i', $date_to) . '.');
+    }
+    else {
+      $form_state['params']['validated'] = TRUE;
     }
   }
 }
@@ -500,6 +512,7 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['date_from'] = $calendar->current()->getDateFrom();
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
+    $params['week_scheme'] = $calendar->current()->getWeekScheme();
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
     $i = 0;
