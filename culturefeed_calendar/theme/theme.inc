@@ -85,7 +85,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
   // Plan the activity link.
-  $variables['plan_link']['url'] = '/culturefeed/calendar/plan/' . $activity->nodeId . '/'. $activity->id . '/ajax';
+  $variables['plan_link']['url'] = '/culturefeed/calendar/plan/' . $activity->nodeId . '/'. $activity->id . '/nojs';
   $variables['plan_link']['text'] = t('Plan it');
 
 }
@@ -108,7 +108,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Remove the activity button.
   $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
-  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/ajax';
+  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/nojs';
   $variables['edit_link']['text'] = t('Verplaatsen');
   $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
 

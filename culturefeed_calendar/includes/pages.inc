@@ -98,6 +98,8 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   $params['submit'] = 'culturefeed_calendar_add_to_calendar_form_submit';
   $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
+  $params['operation'] = 'add';
+
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
@@ -137,23 +139,40 @@ function culturefeed_calendar_edit_calendar_event(CultuurNet\Search\ActivityStat
   $params['activity_id'] = $activity_id;
   $params['submit'] = 'culturefeed_calendar_edit_calendar_event_form_submit';
   $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
+  $params['operation'] = 'edit';
 
   $form = drupal_get_form('culturefeed_calendar_add_to_calendar_form', $params);
 
-  return $form;
+//  return $form;
+
 
   if ($request_type == 'ajax') {
 
     $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#edit-calendar-form', drupal_render($form));
-
+    if ($params['get_form']) {
+      $commands[] = culturefeed_ajax_command_modal('#add-to-calendar-form', drupal_render($form));
+    }
+    else {
+      $url = 'culturefeed/calendar';
+      $url .= '?edit_calendar=true';
+      $commands[] = culturefeed_ajax_command_goto($url);
+    }
+//die(print_r($commands));
     print ajax_render($commands);
-    exit;
 
+    exit;
   }
   else {
-    return $form;
+
+    if ($params['get_form']) {
+      return $form;
+    }
+    else {
+      drupal_goto(culturefeed_search_detail_path('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language())));
+    }
+
   }
+
 }
 
 /**
@@ -261,9 +280,12 @@ function culturefeed_calendar_add_to_calendar_form($form, &$form_state, $params)
  */
 function culturefeed_calendar_add_to_calendar_form_ajax($form, $form_state) {
 
-
   $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
   $url .= '?added_to_calendar=true';
+  if ($form_state['params']['operation'] == 'edit') {
+    $url = 'culturefeed/calendar';
+    $url .= '?edit_calendar=true';
+  }
 
   $commands = array();
   $commands[] = culturefeed_ajax_command_goto($url);
