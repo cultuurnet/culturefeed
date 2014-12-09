@@ -111,7 +111,6 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   $activity->nodeId = $node_id;
   $activity->nodeTitle = $node_title;
 
-
   if ($authenticated) {
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
 
@@ -137,40 +136,6 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
 
   }
 
-}
-
-/**
- * Helper function to add an activity to the calendar.
- */
-function culturefeed_calendar_remove_activity_button($node_id, $activity_id) {
-
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
-
-//  if ($authenticated) {
-    // Remove from calendar button.
-    $remove_path = 'culturefeed/activity/delete/' . $activity_id;
-    $attributes = array(
-      'class' => array('remove-link'),
-      'role' => 'button',
-      'data-toggle' => 'modal',
-      'data-target' => '#delete-wrapper-' . $activity_id,
-      'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
-    );
-    $delete = array(
-      '#type' => 'link',
-      '#title' => t('Verwijderen'),
-      '#href' => $remove_path . '/nojs',
-      '#attributes' => $attributes,
-      '#options' => array('query' => drupal_get_destination()),
-    );
- /* }
-
-  else {
-    // remove from cookie.
-  }
-*/
-
-  return drupal_render($delete);
 }
 
 /**
@@ -221,6 +186,10 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
     $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
     if (isset($calendar[$activity->id])) {
       $calendar[$activity->id]->value = strtotime($date);
+      $calendar[$activity->id]->type = CultureFeed_Activity::TYPE_IK_GA;
+    }
+    else {
+      return FALSE;
     }
 
     $values = array(
@@ -228,6 +197,38 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
     );
 
     user_cookie_save($values);
+
+    return TRUE;
   }
 
+  return FALSE;
+
+}
+
+/**
+ * deletes a calendar event from the cookie for anon users.
+ *
+ * @param CultureFeed_Activity $activity
+ */
+function culturefeed_calendar_delete_calendar_event_cookie($activity) {
+  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
+
+    $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+    if (isset($calendar[$activity->id])) {
+      unset($calendar[$activity->id]);
+    }
+    else {
+      return FALSE;
+    }
+
+    $values = array(
+      'calendar' => serialize($calendar),
+    );
+
+    user_cookie_save($values);
+
+    return TRUE;
+  }
+
+  return FALSE;
 }

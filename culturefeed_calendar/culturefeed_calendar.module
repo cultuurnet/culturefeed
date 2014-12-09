@@ -51,6 +51,14 @@ function culturefeed_calendar_menu() {
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
+  $items['culturefeed/calendar/delete/%culturefeed_calendar_activity/%'] = array(
+    'title' => t('Delete event from calendar'),
+    'page callback' => 'culturefeed_calendar_delete_calendar_event',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
   $items['culturefeed/calendar/add-cookie-to-calendar'] = array(
     'title' => t('Add cookie events to calendar'),
     'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
