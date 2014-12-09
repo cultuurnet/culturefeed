@@ -57,7 +57,7 @@ function culturefeed_calendar_get_user_activities() {
     $activities->objects = array();
     $activities->total = 0;
 
-    if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+    if (isset($_COOKIE['Drupal_visitor_calendar'])) {
       $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
       $activities->total = count($activities->objects);
     }
@@ -120,11 +120,15 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   else {
     $calendar = array();
 
-    if (isset($_COOKIE ['Drupal_visitor_calendar'] )) {
-      $calendar = unserialize($_COOKIE ['Drupal_visitor_calendar']);
+    if (isset($_COOKIE['Drupal_visitor_calendar'] )) {
+      $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
     }
 
     $calendar[] = $activity;
+    end($calendar);
+    $last_key = key($calendar);
+    $calendar[$last_key]->id = $last_key;
+
     $values = array(
       'calendar' => serialize($calendar),
     );
@@ -138,24 +142,33 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
 /**
  * Helper function to add an activity to the calendar.
  */
-function culturefeed_calendar_remove_activity_button($activity_id) {
+function culturefeed_calendar_remove_activity_button($node_id, $activity_id) {
 
-  // Remove from calendar button.
-  $remove_path = 'culturefeed/activity/delete/' . $activity_id;
-  $attributes = array(
-    'class' => array('remove-link'),
-    'role' => 'button',
-    'data-toggle' => 'modal',
-    'data-target' => '#delete-wrapper-' . $activity_id,
-    'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
-  );
-  $delete = array(
-    '#type' => 'link',
-    '#title' => t('Verwijderen'),
-    '#href' => $remove_path . '/nojs',
-    '#attributes' => $attributes,
-    '#options' => array('query' => drupal_get_destination()),
-  );
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
+
+//  if ($authenticated) {
+    // Remove from calendar button.
+    $remove_path = 'culturefeed/activity/delete/' . $activity_id;
+    $attributes = array(
+      'class' => array('remove-link'),
+      'role' => 'button',
+      'data-toggle' => 'modal',
+      'data-target' => '#delete-wrapper-' . $activity_id,
+      'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
+    );
+    $delete = array(
+      '#type' => 'link',
+      '#title' => t('Verwijderen'),
+      '#href' => $remove_path . '/nojs',
+      '#attributes' => $attributes,
+      '#options' => array('query' => drupal_get_destination()),
+    );
+ /* }
+
+  else {
+    // remove from cookie.
+  }
+*/
 
   return drupal_render($delete);
 }
@@ -191,6 +204,30 @@ function culturefeed_calendar_event_has_multiple_dates($dates_array) {
     case 'timestamps':
       return (count($dates_array['timestamps']) > 1) ? TRUE : FALSE;
 
+  }
+
+}
+
+/**
+ * Updates a calendar event in the cookie for anon users.
+ *
+ * @param CultureFeed_Activity $activity
+ * @param string $date String version of the date to save.
+ */
+function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
+
+  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
+
+    $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+    if (isset($calendar[$activity->id])) {
+      $calendar[$activity->id]->value = strtotime($date);
+    }
+
+    $values = array(
+      'calendar' => serialize($calendar),
+    );
+
+    user_cookie_save($values);
   }
 
 }

@@ -43,18 +43,10 @@ function culturefeed_calendar_menu() {
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['culturefeed/calendar/plan/%culturefeed_agenda_event/%/%'] = array(
-    'title' => t('Plan event in calendar'),
-    'page callback' => 'culturefeed_calendar_plan_calendar_event',
-    'page arguments' => array(3, 4, 5),
-    'access arguments' => array('access content'),
-    'file' => 'includes/pages.inc',
-    'type' => MENU_CALLBACK,
-  );
-  $items['culturefeed/calendar/edit/%culturefeed_agenda_event/%/%'] = array(
+  $items['culturefeed/calendar/edit/%culturefeed_calendar_activity/%'] = array(
     'title' => t('Edit event in calendar'),
     'page callback' => 'culturefeed_calendar_edit_calendar_event',
-    'page arguments' => array(3, 4, 5),
+    'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
@@ -174,5 +166,36 @@ function culturefeed_calendar_culturefeed_ui_anonymous_profile_box_main_items() 
   );
 
   return $items;
+
+}
+
+/**
+ * Load the calendar activity.
+ */
+function culturefeed_calendar_activity_load($activity_id) {
+
+  // No uuid = anonymous user. Get it in the cookie.
+  if (is_numeric($activity_id)) {
+
+    if (isset($_COOKIE['Drupal_visitor_calendar'])) {
+      $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      if (isset($calendar[$activity_id])) {
+        return $calendar[$activity_id];
+      }
+    }
+
+  }
+  // Uuid = load with API.
+  else {
+    try {
+      return DrupalCultureFeed::loadActivity($activity_id);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_calendar', $e);
+    }
+
+  }
+
+  return FALSE;
 
 }

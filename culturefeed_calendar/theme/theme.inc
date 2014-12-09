@@ -68,12 +68,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&
 }
 
 /**
- * Preprocess the variables for one of the event templates on calendar page.
+ * Preprocess activity mini summary.
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$variables) {
 
   $activity = $variables['activity'];
-  $item = culturefeed_search_item_load($activity->nodeId, 'event');
+  $node_id = $activity->nodeId;
+
+  $activity_id = $activity->id;
+  $item = culturefeed_search_item_load($node_id, 'event');
   $variables['item'] = $item;
 
   module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
@@ -83,14 +86,19 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
   }
 
   // Remove the activity button.
-  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
+  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($node_id ,$activity_id);
+
   // Plan the activity link.
-  $variables['plan_link']['url'] = '/culturefeed/calendar/plan/' . $activity->nodeId . '/'. $activity->id . '/nojs';
+  $variables['plan_link']['url'] = '/culturefeed/calendar/edit/'. $activity_id . '/nojs';
   $variables['plan_link']['text'] = t('Plan it');
 
 }
 
-
+/**
+ * Preprocess activity summary.
+ *
+ * @param type $variables
+ */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&$variables) {
 
   $activity = $variables['activity'];
@@ -106,14 +114,21 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   // Activity details.
   $variables['date'] = format_date($activity->value, 'custom', 'l j F Y H:i');
 
+  $activity_id = $activity->id;
+  $node_id = $activity->nodeId;
+
   // Remove the activity button.
-  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($activity->id);
-  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/' . $activity->nodeId . '/'. $activity->id . '/nojs';
+  $variables['remove_button'] = culturefeed_calendar_remove_activity_button($node_id ,$activity_id);
+  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/'. $activity_id . '/nojs';
   $variables['edit_link']['text'] = t('Verplaatsen');
   $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
 
 }
 
+/**
+ *
+ * @param type $variables
+ */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$variables) {
 
   $variables['url'] = 'culturefeed/oauth/connect';
