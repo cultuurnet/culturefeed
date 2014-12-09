@@ -11,6 +11,11 @@ use Drupal\Core\Config\ConfigFactory;
 use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\UDB3\SearchAPI2\DefaultSearchService;
 
+/**
+ * Class SearchApi2Factory.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class SearchApi2Factory {
 
   /**

@@ -10,6 +10,11 @@ namespace Drupal\culturefeed;
 use Drupal\Core\Config\ConfigFactory;
 use CultureFeed_DefaultOAuthClient;
 
+/**
+ * Class OAuthClientFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class OAuthClientFactory implements OAuthClientFactoryInterface {
 
   /**

@@ -16,6 +16,11 @@ use Broadway\Domain\Metadata;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 
+/**
+ * Class EventCommandBusSubscriber.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class EventCommandBusSubscriber implements EventSubscriberInterface {
 
   /**

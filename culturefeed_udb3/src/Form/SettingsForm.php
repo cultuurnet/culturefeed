@@ -18,7 +18,7 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormID() {
+  public function getFormId() {
     return 'culturefeed_udb3_settings';
   }
 

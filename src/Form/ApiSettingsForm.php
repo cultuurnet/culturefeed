@@ -18,7 +18,7 @@ class ApiSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormID() {
+  public function getFormId() {
     return 'culturefeed_api_settings';
   }
 

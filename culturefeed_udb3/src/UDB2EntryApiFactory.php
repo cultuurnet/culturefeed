@@ -12,6 +12,11 @@ use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\UDB3\UDB2\Consumer;
 use CultuurNet\UDB3\UDB2\EntryAPIFactory;
 
+/**
+ * Class UDB2EntryApiFactory.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class UDB2EntryApiFactory implements UDB2EntryApiFactoryInterface {
 
   /**

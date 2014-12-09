@@ -17,6 +17,11 @@ use Broadway\Domain\DomainMessage;
 use Broadway\Serializer\SimpleInterfaceSerializer;
 use Broadway\Domain\DateTime;
 
+/**
+ * Class EventStore.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class EventStore implements EventStoreInterface {
 
   /**

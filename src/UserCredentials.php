@@ -7,6 +7,11 @@
 
 namespace Drupal\culturefeed;
 
+/**
+ * Class UserCredentials.
+ *
+ * @package Drupal\culturefeed
+ */
 class UserCredentials {
 
   /**

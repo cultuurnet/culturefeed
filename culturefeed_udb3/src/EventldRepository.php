@@ -11,6 +11,11 @@ use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Event\ReadModel\JsonDocument;
 use Drupal\Core\Cache\CacheBackendInterface;
 
+/**
+ * Class EventldRepository.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class EventldRepository implements DocumentRepositoryInterface {
 
   /**

@@ -12,6 +12,11 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
+/**
+ * Class DomainMessageEntity.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class DomainMessageEntity extends ContentEntityBase implements ContentEntityInterface {
 
   /**

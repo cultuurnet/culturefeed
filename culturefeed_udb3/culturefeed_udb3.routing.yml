@@ -124,3 +124,13 @@ culturefeed_udb3.place:
     _format: ld_json
     _method: GET
 
+culturefeed_udb3.organizer:
+  path: '/udb3/api/1.0/organizer/{cdbid}'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\OrganizerRestController::details'
+    _title: 'Organizer detail'
+  requirements:
+    _access: 'TRUE'
+    _format: ld_json
+    _method: GET
+

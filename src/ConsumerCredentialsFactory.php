@@ -11,6 +11,11 @@ use Drupal\Core\Config\ConfigFactory;
 use CultuurNet\Auth\ConsumerCredentials;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class ConsumerCredentialsFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class ConsumerCredentialsFactory implements ConsumerCredentialsFactoryInterface {
 
   /**

@@ -17,6 +17,11 @@ use Redis;
 use Predis\Client;
 use CultuurNet\UDB3\Monolog\SocketIOEmitterHandler;
 
+/**
+ * Class LoggerCommandBusFactory.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
 
   /**

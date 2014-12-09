@@ -13,6 +13,11 @@ use Drupal\culturefeed\AuthenticationInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class AuthenticationController.
+ *
+ * @package Drupal\culturefeed\Controller
+ */
 class AuthenticationController extends ControllerBase {
 
   /**

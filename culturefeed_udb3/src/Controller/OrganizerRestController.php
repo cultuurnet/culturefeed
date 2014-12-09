@@ -16,11 +16,11 @@ use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Class PlaceRestController.
+ * Class OrganizerRestController.
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class PlaceRestController extends ControllerBase {
+class OrganizerRestController extends ControllerBase {
 
   /**
    * The entity service.
@@ -41,7 +41,7 @@ class PlaceRestController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('culturefeed_udb3.place.service'),
+      $container->get('culturefeed_udb3.organizer.service'),
       $container->get('culturefeed.current_user')
     );
   }
@@ -68,14 +68,14 @@ class PlaceRestController extends ControllerBase {
    * @return BinaryFileResponse
    *   The response.
    */
-  public function placeContext() {
-    $response = new BinaryFileResponse('/udb3/api/1.0/place.jsonld');
+  public function organizerContext() {
+    $response = new BinaryFileResponse('/udb3/api/1.0/organizer.jsonld');
     $response->headers->set('Content-Type', 'application/ld+json');
     return $response;
   }
 
   /**
-   * Returns a place.
+   * Returns an organizer.
    *
    * @param string $cdbid
    *   The place id.
@@ -85,10 +85,10 @@ class PlaceRestController extends ControllerBase {
    */
   public function details($cdbid) {
 
-    $place = $this->entityService->getEntity($cdbid);
+    $organizer = $this->entityService->getEntity($cdbid);
 
     $response = JsonResponse::create()
-      ->setContent($place)
+      ->setContent($organizer)
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);

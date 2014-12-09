@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\culturefeed_udb3\PlaceldRepository.
+ * Contains \Drupal\culturefeed_udb3\EntityLdRepository.
  */
 
 namespace Drupal\culturefeed_udb3;
@@ -11,7 +11,12 @@ use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Event\ReadModel\JsonDocument;
 use Drupal\Core\Cache\CacheBackendInterface;
 
-class PlaceldRepository implements DocumentRepositoryInterface {
+/**
+ * Class EntityLdRepository.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
+class EntityLdRepository implements DocumentRepositoryInterface {
 
   /**
    * The cache.
@@ -21,7 +26,7 @@ class PlaceldRepository implements DocumentRepositoryInterface {
   protected $cache;
 
   /**
-   * Constructs the placeld repository.
+   * Constructs the entity ld repository.
    *
    * @param CacheBackendInterface $cache
    *   The cache.

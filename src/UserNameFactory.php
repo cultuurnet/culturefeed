@@ -10,6 +10,11 @@ namespace Drupal\culturefeed;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 
+/**
+ * Class UserNameFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class UserNameFactory implements UserNameFactoryInterface {
 
   /**

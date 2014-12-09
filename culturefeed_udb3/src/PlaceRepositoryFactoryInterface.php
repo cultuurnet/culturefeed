@@ -10,7 +10,7 @@ namespace Drupal\culturefeed_udb3;
 use CultuurNet\UDB3\UDB2\PlaceRepository;
 
 /**
- * The interface for creating an event repository factory.
+ * The interface for creating a place repository factory.
  */
 interface PlaceRepositoryFactoryInterface {
 

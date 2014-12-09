@@ -13,6 +13,11 @@ use Drupal\Core\Session\AccountInterface;
 use CultureFeed_User;
 use Exception;
 
+/**
+ * Class UserMap.
+ *
+ * @package Drupal\culturefeed
+ */
 class UserMap implements UserMapInterface {
 
   /**

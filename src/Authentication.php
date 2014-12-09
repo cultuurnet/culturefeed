@@ -14,6 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\Language\LanguageInterface;
 use Exception;
 
+/**
+ * Class Authentication.
+ *
+ * @package Drupal\culturefeed
+ */
 class Authentication implements AuthenticationInterface {
 
   /**

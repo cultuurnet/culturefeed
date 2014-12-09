@@ -14,6 +14,11 @@ use CultuurNet\UDB3\UsedKeywordsMemory\UsedKeywordsMemoryServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 
+/**
+ * Class UserRestController.
+ *
+ * @package Drupal\culturefeed_udb3\Controller
+ */
 class UserRestController extends ControllerBase {
 
   /**

@@ -11,6 +11,11 @@ use Drupal\Core\Routing\Access\AccessInterface;
 use CultureFeed_User;
 use Drupal\Core\Access\AccessResult;
 
+/**
+ * Class UserAccess.
+ *
+ * @package Drupal\culturefeed\Access
+ */
 class UserAccess implements AccessInterface {
 
   /**

@@ -17,6 +17,11 @@ use CultureFeed_User;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Keyword;
 
+/**
+ * Class EventsRestController.
+ *
+ * @package Drupal\culturefeed_udb3\Controller
+ */
 class EventsRestController extends ControllerBase {
 
   /**

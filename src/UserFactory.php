@@ -11,6 +11,11 @@ use Drupal\Core\Session\AccountInterface;
 use CultureFeed;
 use CultureFeed_User;
 
+/**
+ * Class UserFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class UserFactory implements UserFactoryInterface {
 
   /**

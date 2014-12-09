@@ -10,6 +10,11 @@ namespace Drupal\culturefeed;
 use CultureFeed;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class CultureFeedFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class CultureFeedFactory implements CultureFeedFactoryInterface {
 
   /**

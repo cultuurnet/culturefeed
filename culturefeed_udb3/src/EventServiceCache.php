@@ -10,6 +10,11 @@ use CultuurNet\UDB3\EventServiceDecoratorBase;
 use CultuurNet\UDB3\EventServiceInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 
+/**
+ * Class EventServiceCache.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class EventServiceCache extends EventServiceDecoratorBase {
 
   /**

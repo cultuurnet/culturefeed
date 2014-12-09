@@ -9,11 +9,16 @@ namespace Drupal\culturefeed_udb3;
 
 use Broadway\EventSourcing\EventSourcingRepository;
 use CultuurNet\UDB3\SearchAPI2\DefaultSearchService;
-use CultuurNet\UDB3\UDB2\EntryAPIFactory;
 use CultuurNet\UDB3\UDB2\EntryAPIImprovedFactory;
 use Broadway\EventSourcing\MetadataEnrichment\MetadataEnrichingEventStreamDecorator;
 use Drupal\Core\Config\ConfigFactory;
+use CultuurNet\UDB3\UDB2\PlaceRepository as UDB2PlaceRepository;
 
+/**
+ * Class PlaceRepositoryFactory.
+ *
+ * @package Drupal\culturefeed_udb3
+ */
 class PlaceRepositoryFactory implements PlaceRepositoryFactoryInterface {
 
   /**
@@ -84,7 +89,7 @@ class PlaceRepositoryFactory implements PlaceRepositoryFactoryInterface {
    */
   public function get() {
 
-    $udb2_repository_decorator = new \CultuurNet\UDB3\UDB2\PlaceRepository(
+    $udb2_repository_decorator = new UDB2PlaceRepository(
       $this->localPlaceRepository,
       $this->searchApi,
       $this->improvedEntryApi,

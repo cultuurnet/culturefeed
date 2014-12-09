@@ -13,6 +13,11 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class UserCredentialsFactory.
+ *
+ * @package Drupal\culturefeed
+ */
 class UserCredentialsFactory implements UserCredentialsFactoryInterface {
 
   /**

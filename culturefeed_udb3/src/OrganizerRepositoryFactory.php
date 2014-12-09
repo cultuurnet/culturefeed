@@ -2,31 +2,31 @@
 
 /**
  * @file
- * Contains Drupal\culturefeed_udb3\EventRepositoryFactory.
+ * Contains Drupal\culturefeed_udb3\OrganizerRepositoryFactory.
  */
 
 namespace Drupal\culturefeed_udb3;
 
-use CultuurNet\UDB3\Event\EventRepository;
+use Broadway\EventSourcing\EventSourcingRepository;
 use CultuurNet\UDB3\SearchAPI2\DefaultSearchService;
-use CultuurNet\UDB3\UDB2\EntryAPIFactory;
 use CultuurNet\UDB3\UDB2\EntryAPIImprovedFactory;
 use Broadway\EventSourcing\MetadataEnrichment\MetadataEnrichingEventStreamDecorator;
 use Drupal\Core\Config\ConfigFactory;
+use CultuurNet\UDB3\UDB2\OrganizerRepository as UDB2OrganizeRepository;
 
 /**
- * Class EventRepositoryFactory.
+ * Class OrganizerRepositoryFactory.
  *
  * @package Drupal\culturefeed_udb3
  */
-class EventRepositoryFactory implements EventRepositoryFactoryInterface {
+class OrganizerRepositoryFactory implements OrganizerRepositoryFactoryInterface {
 
   /**
-   * The local event repository.
+   * The local place repository.
    *
-   * @var \CultuurNet\UDB3\Event\EventRepository
+   * @var \CultuurNet\UDB3\Place\PlaceRepository
    */
-  protected $localEventRepository;
+  protected $localPlaceRepository;
 
   /**
    * The search api.
@@ -59,8 +59,8 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
   /**
    * Constructs an event repository factory.
    *
-   * @param EventRepository $local_event_repository
-   *   The local event repository.
+   * @param EventSourcingRepository $local_organizer_repository
+   *   The local organizer repository.
    * @param DefaultSearchService $search_api
    *   The search api.
    * @param EntryAPIImprovedFactory $improved_entry_api
@@ -71,13 +71,13 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
    *   The config factory.
    */
   public function __construct(
-    EventRepository $local_event_repository,
+    EventSourcingRepository $local_organizer_repository,
     DefaultSearchService $search_api,
     EntryAPIImprovedFactory $improved_entry_api,
     MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher,
     ConfigFactory $config
   ) {
-    $this->localEventRepository = $local_event_repository;
+    $this->localOrganizerRepository = $local_organizer_repository;
     $this->searchApi = $search_api;
     $this->improvedEntryApi = $improved_entry_api;
     $this->eventStreamMetadataEnricher = $event_stream_metadata_enricher;
@@ -89,8 +89,8 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
    */
   public function get() {
 
-    $udb2_repository_decorator = new \CultuurNet\UDB3\UDB2\EventRepository(
-      $this->localEventRepository,
+    $udb2_repository_decorator = new UDB2OrganizeRepository(
+      $this->localOrganizerRepository,
       $this->searchApi,
       $this->improvedEntryApi,
       array($this->eventStreamMetadataEnricher)
