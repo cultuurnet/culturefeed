@@ -35,7 +35,7 @@ function culturefeed_get_search_service() {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
-function culturefeed_search_item_load($cdb_id, $type = '') {
+function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
 
   $items = &drupal_static(__FUNCTION__, array());
 
@@ -66,7 +66,9 @@ function culturefeed_search_item_load($cdb_id, $type = '') {
       return $items[$cdb_id];
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_search', $e);
+      if ($watchdog) {
+        watchdog_exception('culturefeed_search', $e);
+      }
     }
   }
 
