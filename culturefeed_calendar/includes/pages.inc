@@ -200,7 +200,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#default_value' => '',
     );
   }
-  elseif ($params['type'] == 'timestamps') {
+  // timestamps.
+  else {
 
     foreach ($params['dates'] as $key => $date) {
 
@@ -222,6 +223,11 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#default_value' => 0,
     );
   }
+
+  $form['errors'] = array(
+    '#type' => 'markup',
+    '#markup' => '<div id="add-to-calendar-ajax"></div>'
+  );
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -252,7 +258,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 }
 
 /**
- * Submit the add to calendar form.
+ * Ajax callback for the calendar form.
  */
 function culturefeed_calendar_form_ajax($form, $form_state) {
 
@@ -261,38 +267,34 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
     $url = '/culturefeed/calendar';
   }
   else {
-    $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
-    $url .= '?added_to_calendar=true';
+    $commands = array();
+    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
+    $commands[] = ajax_command_prepend('#add-to-calendar-ajax', theme('status_messages'));
+
+    print ajax_render($commands);
+    exit;
   }
-
-  $commands = array();
-  $commands[] = culturefeed_ajax_command_goto($url);
-
-  print ajax_render($commands);
-  exit;
 }
 
 /**
  * Validate the add to calendar form.
  */
-function culturefeed_calendar_add_to_calendar_form_validate($form, $form_state) {
+function culturefeed_calendar_add_to_calendar_form_validate(&$form, &$form_state) {
 
-  if ($form_state['params']['type'] == 'period'
-      && !empty($form_state['values']['date'])) {
-   $date = strtotime($form_state['values']['date']);
-   $date_from = strtotime($form_state['params']['date_from']);
-   $date_to = strtotime($form_state['params']['date_to']);
-   if (($date < $date_from) || ($date > $date_to)) {
-     form_set_error("'date'", t('Enter a date between ') . date('d-m-Y H:i', $date_from) . t(' and ') . date('d-m-Y H:i', $date_to) . '.');
-   }
+  if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
+    $date = strtotime($form_state['values']['date']);
+    $date_from = strtotime($form_state['params']['date_from']);
+    $date_to = strtotime($form_state['params']['date_to']);
+    if (($date < $date_from) || ($date > $date_to)) {
+      form_set_error('date', t('Enter a date between ') . date('d-m-Y H:i', $date_from) . t(' and ') . date('d-m-Y H:i', $date_to) . '.');
+    }
   }
-
 }
 
 /**
  * Submit the add to calendar form.
  */
-function culturefeed_calendar_add_to_calendar_form_submit($form, $form_state) {
+function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 
   $node_title = $form_state['params']['node_title'];
   $node_id = $form_state['params']['node_id'];
