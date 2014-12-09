@@ -744,7 +744,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     );
   }
 
-  // Tags todo
+  // Tags
   $form['extra']['keywords'] = array(
     '#type' => 'textfield',
     '#title' => t('Tags'),
@@ -2249,14 +2249,19 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $event->setContactInfo($contact_object);
 
   // Keywords.
-  if ($values['keywords']) {
-    $keywords = explode(';', $values['keywords']);
-    foreach ($keywords as $keyword) {
-      $event->addKeyword($keyword);
-    }
+  $keywords_form = array();
+  if ($values['keywords']) {    
+    $keywords_form = explode(';', $values['keywords']);
+  }
+  if (variable_get('culturefeed_entry_ui_custom_entry_api_tags')) {
+    $custom_entry_api_tags = explode("\n", variable_get('culturefeed_entry_ui_custom_entry_api_tags'));
+  }
+  $keywords = array_map('trim',array_unique(array_merge($keywords_form,$custom_entry_api_tags)));
+  foreach ($keywords as $keyword) {
+    $event->addKeyword($keyword);
   }
 
-  // Members
+  // Members.
   if ($values['members']) {
     $event->setPrivate(TRUE);
   }
