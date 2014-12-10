@@ -49,16 +49,9 @@ services:
 
   # Place
   # Place: ld repository
-  culturefeed_udb3.place.ld_cache:
-    class: Drupal\Core\Cache\CacheBackendInterface
-    tags:
-      - { name: cache.bin }
-    factory_method: get
-    factory_service: cache_factory
-    arguments: [culturefeed_udb3_place_ld]
   culturefeed_udb3.place.ld_repository:
     class: Drupal\culturefeed_udb3\EntityLdRepository
-    arguments: ['@culturefeed_udb3.place.ld_cache']
+    arguments: ['place_document_repository', '@entity.manager']
   # Place: repository
   culturefeed_udb3.place.store:
     class: Drupal\culturefeed_udb3\EventStore
@@ -90,16 +83,9 @@ services:
 
   # Organizer
   # Organizer: ld repository
-  culturefeed_udb3.organizer.ld_cache:
-    class: Drupal\Core\Cache\CacheBackendInterface
-    tags:
-      - { name: cache.bin }
-    factory_method: get
-    factory_service: cache_factory
-    arguments: [culturefeed_udb3_organizer_ld]
   culturefeed_udb3.organizer.ld_repository:
     class: Drupal\culturefeed_udb3\EntityLdRepository
-    arguments: ['@culturefeed_udb3.organizer.ld_cache']
+    arguments: ['organizer_document_repository', '@entity.manager']
   # Organizer: repository
   culturefeed_udb3.organizer.store:
     class: Drupal\culturefeed_udb3\EventStore
@@ -130,16 +116,9 @@ services:
     arguments: ['@culturefeed_udb3.organizer.ld_repository', '@culturefeed_udb3.organizer.repository']
 
   # Event
-  culturefeed_udb3.eventld_cache:
-    class: Drupal\Core\Cache\CacheBackendInterface
-    tags:
-      - { name: cache.bin }
-    factory_method: get
-    factory_service: cache_factory
-    arguments: [culturefeed_udb3_eventld]
   culturefeed_udb3.eventld_repository:
-    class: Drupal\culturefeed_udb3\EventldRepository
-    arguments: ['@culturefeed_udb3.eventld_cache']
+    class: Drupal\culturefeed_udb3\EntityLdRepository
+    arguments: ['event_document_repository', '@entity.manager']
   culturefeed_udb3.eventld_projector:
     class: CultuurNet\UDB3\Event\EventLDProjector
     arguments: ['@culturefeed_udb3.eventld_repository', '@culturefeed_udb3.iri_generator', '@culturefeed_udb3.place.ld_projector', '@culturefeed_udb3.organizer.ld_projector']

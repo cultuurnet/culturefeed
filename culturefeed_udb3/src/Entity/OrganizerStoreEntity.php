@@ -10,7 +10,7 @@ namespace Drupal\culturefeed_udb3\Entity;
 use Drupal\culturefeed_udb3\DomainMessageEntity;
 
 /**
- * Defines the culturefeed user entity.
+ * Defines the culturefeed udb3 organizer store.
  *
  * @ContentEntityType(
  *   id = "organizer_store",

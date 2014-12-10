@@ -10,7 +10,7 @@ namespace Drupal\culturefeed_udb3\Entity;
 use Drupal\culturefeed_udb3\DomainMessageEntity;
 
 /**
- * Defines the culturefeed user entity.
+ * Defines the culturefeed udb3 used keywords memory event store.
  *
  * @ContentEntityType(
  *   id = "used_keywords_memory_event_store",
