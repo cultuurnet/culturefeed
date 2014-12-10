@@ -397,30 +397,18 @@ function culturefeed_pages_block_request_admin_membership(CultureFeed_Cdb_Item_P
 
   // Only for pages if the current user is already member of the page AND
   // if the page does not have a default admin yet.
-  $is_member = FALSE;
-  $is_admin = FALSE;
-  $number_of_admins = 0;
-
   $account = DrupalCultureFeed::getLoggedInAccount();
   if (!$account) {
     return;
   }
 
-  $cf_pages = DrupalCultureFeed::getConsumerInstance()->pages();
-  $user_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN, CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_MEMBER), FALSE);
 
-  if (!empty($user_list->memberships)) {
-    foreach ($user_list->memberships as $user_list_membership) {
-      if ($user_list_membership->user->id == $account->culturefeed_uid) {
-        $is_member = TRUE;
-        if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
-          $is_admin = TRUE;
-        }
-      }
-      if ($user_list_membership->role == CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN) {
-        $number_of_admins++;
-      }
-    }
+  $is_admin = culturefeed_pages_is_user_admin_of_page($page->getId());
+  if ($is_admin) {
+    $is_member = TRUE;
+  }
+  else {
+    $is_member = culturefeed_pages_is_user_member_of_page($page->getId());
   }
 
   // Skip if the user is not even member.
