@@ -97,29 +97,39 @@ function culturefeed_calendar_render_button($item, $location) {
 function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
-  $activity = new CultureFeed_Activity();
-
-  if (!empty($date)) {
-    $activity->value = strtotime($date);
-    $activity->type = CultureFeed_Activity::TYPE_IK_GA;
-  }
-  else {
-    $activity->type = CultureFeed_Activity::TYPE_LIKE;
-  }
-
-  $activity->contentType = 'event';
-  $activity->nodeId = $node_id;
-  $activity->nodeTitle = $node_title;
 
   if ($authenticated) {
+    $activity = new CultureFeed_Activity();
+    if (!empty($date)) {
+      $activity->value = strtotime($date);
+      $activity->type = CultureFeed_Activity::TYPE_IK_GA;
+    }
+    else {
+      $activity->type = CultureFeed_Activity::TYPE_LIKE;
+    }
+
+    $activity->contentType = 'event';
+    $activity->nodeId = $node_id;
+    $activity->nodeTitle = $node_title;
     $activity->userId = DrupalCultureFeed::getLoggedInUserId();
 
     DrupalCultureFeed::createActivity($activity);
   }
   else {
+    $activity = new stdClass();
+
+    if (!empty($date)) {
+      $activity->value = strtotime($date);
+      $activity->type = CultureFeed_Activity::TYPE_IK_GA;
+    }
+    else {
+      $activity->type = CultureFeed_Activity::TYPE_LIKE;
+    }
+    $activity->nodeId = $node_id;
+
     $calendar = array();
 
-    if (isset($_COOKIE['Drupal_visitor_calendar'] )) {
+    if (isset($_COOKIE['Drupal_visitor_calendar'])) {
       $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
     }
 

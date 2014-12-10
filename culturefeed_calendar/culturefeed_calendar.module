@@ -11,10 +11,6 @@ require_once 'includes/helpers.inc';
  */
 function culturefeed_calendar_init() {
 
-  if (isset($_GET['added_to_calendar'])) {
-    drupal_set_message(t('The event has been added to your OuTcalendar.'));
-  }
-
   if (isset($_GET['edit_calendar'])) {
     drupal_set_message(t('The event has been updated.'));
   }
