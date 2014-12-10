@@ -235,7 +235,12 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
    * @see CultureFeed_EntryApi::checkPermission()
    */
   public static function checkPermission($userid, $email, $ids) {
-    self::getLoggedInUserInstance()->checkPermission($userid, $email, $ids);
+    $permissions = json_decode( json_encode(self::getLoggedInUserInstance()->checkPermission($userid, $email, $ids)) , 1);
+    $parsed_permissons = array();
+    foreach ($permissions['event'] as $permission) {
+      $parsed_permissons[$permission['cdbid']] = $permission['editable'];
+    }
+    return $parsed_permissons;
   }
 
 }
