@@ -12,9 +12,11 @@
 function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables) {
 
   drupal_add_library('system', 'drupal.ajax');
+  drupal_add_library('system', 'jquery.cookie');
 
   if ($variables['button']['action'] == 'view') {
 
+    $variables['button']['class'] = 'view-calendar';
     $variables['button']['path'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['description'] = t('This activity is added to your OuTcalendar.');
@@ -27,6 +29,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
   }
   elseif ($variables['button']['action'] == 'add') {
 
+    $variables['button']['class'] = 'add-to-calendar';
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['text'] = t('Add to my OuTcalendar');
@@ -131,7 +134,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
  * @param type $variables
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$variables) {
-
+  drupal_add_css(drupal_get_path('module', 'culturefeed_calendar') . '/css/culturefeed_calendar.css');
   $variables['url'] = 'culturefeed/oauth/connect';
   $variables['options'] = array(
     'query' => array(

@@ -182,7 +182,7 @@ function culturefeed_calendar_activity_load($activity_id) {
   if (is_numeric($activity_id)) {
 
     if (isset($_COOKIE['Drupal_visitor_calendar'])) {
-      $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
       if (isset($calendar[$activity_id])) {
         return $calendar[$activity_id];
       }

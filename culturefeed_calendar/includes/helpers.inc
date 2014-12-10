@@ -58,7 +58,7 @@ function culturefeed_calendar_get_user_activities() {
     $activities->total = 0;
 
     if (isset($_COOKIE['Drupal_visitor_calendar'])) {
-      $activities->objects = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      $activities->objects = json_decode($_COOKIE['Drupal_visitor_calendar']);
       $activities->total = count($activities->objects);
     }
   }
@@ -67,28 +67,50 @@ function culturefeed_calendar_get_user_activities() {
 }
 
 /**
- * Render the button to go to the calendar page or add item form.
+ * Render the buttons to go to the calendar page or add item form.
  */
-function culturefeed_calendar_render_button($item, $location) {
-
+function culturefeed_calendar_render_calendar_buttons($item) {
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $ids_to_check = array();
-  $activities = culturefeed_calendar_get_user_activities();
-  foreach($activities->objects as $key => $activity) {
-    $ids_to_check[] = $activity->nodeId;
-  }
+  $locations = array('content', 'footer');
+  $actions = array('view', 'add');
+  $buttons = array();
+  $button = array();
 
-  if (in_array($id, $ids_to_check)) {
-    $button['action'] = 'view';
-  }
-  else {
-    $button['action'] = 'add';
-  }
-
-  $button['location'] = $location;
   $button['item_id'] = $id;
 
-  return theme('culturefeed_calendar_button', array('button' => $button));
+  foreach($locations as $location) {
+
+    $button['location'] = $location;
+
+    if ($authenticated) {
+
+      $ids_to_check = array();
+      $activities = culturefeed_calendar_get_user_activities();
+      if(isset($activities->objects)) {
+        foreach($activities->objects as $key => $activity) {
+          $ids_to_check[] = $activity->nodeId;
+        }
+      }
+
+      if (in_array($id, $ids_to_check)) {
+        $action = 'view';
+      }
+      else {
+        $action = 'add';
+      }
+      $button['action'] = $action;
+      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
+    }
+    else {
+      drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar.js');
+      foreach ($actions as $action) {
+        $button['action'] = $action;
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
+      }
+    }
+  }
+  return $buttons;
 }
 
 /**
@@ -130,7 +152,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     $calendar = array();
 
     if (isset($_COOKIE['Drupal_visitor_calendar'])) {
-      $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+      $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
     }
 
     $calendar[] = $activity;
@@ -139,7 +161,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     $calendar[$last_key]->id = $last_key;
 
     $values = array(
-      'calendar' => serialize($calendar),
+      'calendar' => json_encode($calendar),
     );
 
     user_cookie_save($values);
@@ -193,7 +215,7 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
 
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
 
-    $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+    $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
     if (isset($calendar[$activity->id])) {
       $calendar[$activity->id]->value = strtotime($date);
       $calendar[$activity->id]->type = CultureFeed_Activity::TYPE_IK_GA;
@@ -203,7 +225,7 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
     }
 
     $values = array(
-      'calendar' => serialize($calendar),
+      'calendar' => json_encode($calendar),
     );
 
     user_cookie_save($values);
@@ -223,7 +245,7 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
 function culturefeed_calendar_delete_calendar_event_cookie($activity) {
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
 
-    $calendar = unserialize($_COOKIE['Drupal_visitor_calendar']);
+    $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
     if (isset($calendar[$activity->id])) {
       unset($calendar[$activity->id]);
     }
@@ -232,7 +254,7 @@ function culturefeed_calendar_delete_calendar_event_cookie($activity) {
     }
 
     $values = array(
-      'calendar' => serialize($calendar),
+      'calendar' => json_encode($calendar),
     );
 
     user_cookie_save($values);

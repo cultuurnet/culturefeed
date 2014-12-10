@@ -1,0 +1,9 @@
+.popover.bottom {
+  bottom: auto;
+}
+
+.add-to-calendar,
+.view-calendar,
+small.activity-count {
+  display: none
+}
