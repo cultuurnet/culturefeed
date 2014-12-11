@@ -50,7 +50,7 @@ function culturefeed_calendar_page_my_activities() {
 
   // Print the save cookie button.
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
-  if (!$authenticated && !empty($activities)) {
+  if (!$authenticated && !empty($activities->objects)) {
     $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
     $output .= drupal_render($form);
   }
