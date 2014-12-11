@@ -12,13 +12,25 @@ function culturefeed_calendar_page_my_activities() {
 
   $output = '';
 
-  $activities = culturefeed_calendar_get_user_activities();
-  $activities_by_type = _culturefeed_calendar_sort_user_activities_by_type($activities);
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
-
-  // Add a block for months-scroller with months.
-  $months = array_map("_culturefeed_calendar_months_get_nav_months", range(1,12));
+  // Add a block for top nav with month names.
+  $months = _culturefeed_calendar_get_nav_months();
   $output .= theme('culturefeed_calendar_nav_months', array('months' => $months));
+
+  $output .= '<aside class="col-md-3" role="complementary">
+      <div class="region region-sidebar-first">
+        <div class="panel panel-default">
+          <div class="panel-body">Sidebar</div>
+        </div>
+      </div>
+    </aside>';
+  $output .= '<section class="col-md-9">';
+
+  // Get the user's activities sorted by type.
+  $activities = culturefeed_calendar_get_user_activities();
+  $activities_by_type = array();
+  foreach($activities->objects as $activity) {
+    $activities_by_type[$activity->type][] = $activity;
+  }
 
   // Print the 'LIKED' activities.
   if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
@@ -31,11 +43,14 @@ function culturefeed_calendar_page_my_activities() {
       array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
   }
 
-  // Print the 'I’m going' activities.
-  if (!$authenticated) {
+  // Print the 'I’m going' button.
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
+  if (!$authenticated && !empty($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
     $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
     $output .= drupal_render($form);
   }
+
+  $output .= '</section>';
 
   return $output;
 }
@@ -134,7 +149,6 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   $params['submit'] = 'culturefeed_calendar_add_to_calendar_form_submit';
   $params['title'] = t('Add !title to your OutCalendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Add');
-  $params['operation'] = 'add';
   $params['use_ajax'] = $request_type == 'ajax';
 
   // If no form should be shown, we can create the activity.
@@ -182,34 +196,20 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $params['submit'] = 'culturefeed_calendar_edit_calendar_event_form_submit';
   $params['title'] = t('Change !title in your OutCalendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Update event');
-
+  $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
 
   $form = drupal_get_form('culturefeed_calendar_form', $params);
 
+  // Always show the form/modal when editing events, no need to check on $params['show_form'].
   if ($request_type == 'ajax') {
-
     $commands = array();
-    if ($params['get_form']) {
-      $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    }
-    else {
-      $url = '/culturefeed/calendar';
-      $commands[] = culturefeed_ajax_command_goto($url);
-    }
-
+    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
     print ajax_render($commands);
     exit;
   }
   else {
-
-    if ($params['get_form']) {
-      return $form;
-    }
-    else {
-      drupal_goto('/culturefeed/calendar');
-    }
-
+    return $form;
   }
 
 }
@@ -221,21 +221,16 @@ function culturefeed_calendar_delete_calendar_event($activity, $request_type = '
 
   $event = culturefeed_agenda_event_load($activity->nodeId);
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Are you sure you want to delete !title from your OutCalendar', array('!title' => $params['node_title']));
+  $params['title'] = t('Evenement verwijderen');
   $params['activity'] = $activity;
+  $params['use_ajax'] = $request_type == 'ajax';
 
   $form = drupal_get_form('culturefeed_calendar_delete_form', $params);
 
   if ($request_type == 'ajax') {
 
     $commands = array();
-    if ($params['get_form']) {
-      $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    }
-    else {
-      $url = '/culturefeed/calendar';
-      $commands[] = culturefeed_ajax_command_goto($url);
-    }
+    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
 
     print ajax_render($commands);
     exit;
@@ -344,7 +339,7 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
 
   $form['info'] = array(
     '#type' => 'markup',
-    '#markup' => '<label>' . 'deng, that will hurt' . '</label>',
+    '#markup' => '<label>' . t('Are you sure you want to delete \'!title\' from your UiTkalender?', array('!title' => $params['node_title'])) . '</label>',
   );
 
   $form['actions'] = array(
@@ -356,11 +351,14 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
     '#value' => t('Verwijderen'),
     '#name' => 'add',
     '#submit' => array('culturefeed_calendar_delete_form_submit'),
-    '#ajax' => array(
-        'callback' => 'culturefeed_calendar_delete_form_ajax',
-        'wrapper' => 'calendar-form',
-       ),
   );
+
+  if ($params['use_ajax']) {
+    $form['actions']['submit']['#ajax'] = array(
+      'callback' => 'culturefeed_calendar_delete_form_ajax',
+      'wrapper' => 'calendar-form',
+    );
+  }
 
   $form['actions']['cancel'] = array(
     '#type' => 'submit',
@@ -386,18 +384,20 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
   }
   // After adding, return to event detail.
   else {
-    $commands = array();
-    if (empty($form_state['params']['validation_error'])) {
-      $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
-      $commands[] = culturefeed_ajax_command_goto($url);
-    }
-    else {
-      $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
-      $commands[] = ajax_command_html('#add-to-calendar-ajax', theme('status_messages'));
-    }
-
-    return array('#type' => 'ajax', '#commands' => $commands);
+    $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
   }
+
+  $commands = array();
+  if (empty($form_state['params']['validation_error'])) {
+    $commands[] = culturefeed_ajax_command_goto($url);
+  }
+  else {
+    $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
+    $commands[] = ajax_command_html('#add-to-calendar-ajax', theme('status_messages'));
+  }
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+  
 }
 
 /**
@@ -620,28 +620,26 @@ function _culturefeed_calendar_get_event_params($event) {
 }
 
 /**
- * Helper function to sort user activities by type.
+ * Helper function that gets the current and next twelve months for nav links.
+ * @return array
+ *  - full month name
+ *  - short month name
+ *  - year
  */
-function _culturefeed_calendar_sort_user_activities_by_type($activities) {
+function _culturefeed_calendar_Get_nav_months() {
 
-  $activities_by_type = array();
+  $months = array();
+  $month = date('n'); // Current month.
+  for ($x = 0; $x < 12; $x++) {
+    $time = mktime(0, 0, 0, $month + $x, 1);
+    $item = array(
+      'full_month' => format_date($time, 'custom', 'F'),
+      'month' => format_date($time, 'custom', 'M'),
+      'year' => format_date($time, 'custom', 'Y'),
+    );
+    $months[] = $item;
 
-  foreach($activities->objects as $activity) {
-
-    $activities_by_type[$activity->type][] = $activity;
   }
 
-  return $activities_by_type;
-
-}
-
-/**
- * Get twelve months names, starting with current month.
- */
-function _culturefeed_calendar_months_get_nav_months($x) {
-
-  $time = mktime(NULL, NULL, NULL, (int)date("n") + ($x), NULL, NULL);
-
-  return format_date($time, 'custom', 'F');
-
+  return $months;
 }
