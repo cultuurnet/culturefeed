@@ -288,7 +288,9 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         }
       }
       $date_formatted = date('d-m-Y', strtotime($date['date']));
-      $dates[$date['date']] = date('d-m-Y', strtotime($date_formatted)) . $time_string;
+      if(strtotime($date['date']) >= time()) {
+        $dates[$date['date']] = date('d-m-Y', strtotime($date_formatted)) . $time_string;
+      }
     }
 
     $form['date'] = array(
@@ -433,8 +435,12 @@ function culturefeed_calendar_add_to_calendar_form_validate(&$form, &$form_state
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
 
+    if ($date <= time()) {
+      form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
+      $form_state['params']['validation_error'] = TRUE;
+    }
     // Check if the chosen date is between the start and end date of the event.
-    if (($date < $date_from) || ($date > $date_to)) {
+    elseif (($date < $date_from) || ($date > $date_to)) {
       form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
       $form_state['params']['validation_error'] = TRUE;
     }
