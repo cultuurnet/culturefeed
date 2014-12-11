@@ -33,12 +33,23 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
           'title' => t('Delete'),
         )
       );
-
-      foreach ($ops as $op => $op_details) {
-        $path = culturefeed_entry_ui_entity_path($extended_entity, $op);
-        if ($path && user_access($op_details['permission'])) {
-          $links[$op] = l($op_details['title'], $path);
+      
+      
+      
+      $user = $cf_account = DrupalCultureFeed::getLoggedInUser();
+      
+      $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($user->id, $user->mbox, array('ids' => $extended_entity->getId()));
+      
+      if ($ubd_permission[$extended_entity->getId()] == 'true') {
+        foreach ($ops as $op => $op_details) {
+          $path = culturefeed_entry_ui_entity_path($extended_entity, $op);
+          if ($path && user_access($op_details['permission'])) {
+            $links[$op] = l($op_details['title'], $path);
+          }
         }
+      }
+      else {
+        $links[] = '<button class="btn btn-default disabled">' . t('You don\' have permission to edit event') . '</button>';
       }
     }
 
