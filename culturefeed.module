@@ -218,14 +218,44 @@ function culturefeed_page_build(&$page) {
     $gtm_globals['search_query'] = json_encode(drupal_get_query_parameters());
   }
 
-  // Check if it is an event detail page.
-  $gtm_globals['is_event_detail'] = (arg(0) == 'agenda' && arg(1) == 'e');
-  if ($gtm_globals['is_event_detail']) {
+  // Check if it is a detail page.
+  $gtm_globals['is_detail'] = (arg(0) == 'agenda' && in_array(arg(1), array('e', 'a', 'p', 'g')));
+  if ($gtm_globals['is_detail']) {
 
-    $event = menu_get_object('culturefeed_agenda_event', 3);
-    if ($event) {
-      $gtm_globals['event_detail_title'] = culturefeed_agenda_detail_title($event);
-      $gtm_globals['cdbid'] = arg(3);
+    if (arg(1) == 'e') {
+      $event = menu_get_object('culturefeed_agenda_event', 3);
+      if ($event) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($event);
+        $gtm_globals['detail_type'] = 'event';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'a') {
+      $actor = menu_get_object('culturefeed_agenda_actor', 3);
+      if ($actor) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($actor);
+        $gtm_globals['detail_type'] = 'actor';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'p') {
+      $production = menu_get_object('culturefeed_agenda_production', 3);
+      if ($production) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($production);
+        $gtm_globals['detail_type'] = 'production';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'g') {
+      $cfpage = menu_get_object('culturefeed_pages_page', 3);
+      if ($cfpage) {
+        $gtm_globals['detail_title'] = culturefeed_pages_detail_title($cfpage);
+        $gtm_globals['detail_type'] = 'page';
+        $gtm_globals['cdbid'] = arg(3);
+      }
     }
 
   }
