@@ -28,8 +28,13 @@ function culturefeed_calendar_page_my_activities() {
   // Get the user's activities sorted by type.
   $activities = culturefeed_calendar_get_user_activities();
   $activities_by_type = array();
-  foreach($activities->objects as $activity) {
-    $activities_by_type[$activity->type][] = $activity;
+  if (!empty($activities->objects)) {
+    foreach($activities->objects as $activity) {
+      $activities_by_type[$activity->type][] = $activity;
+    }
+  }
+  else {
+    $output .= '<h3>' . t('No activities in your UiTKalender') . '</h3>';
   }
 
   // Print the 'LIKED' activities.
@@ -229,7 +234,6 @@ function culturefeed_calendar_delete_calendar_event($activity, $request_type = '
   $form = drupal_get_form('culturefeed_calendar_delete_form', $params);
 
   if ($request_type == 'ajax') {
-
     $commands = array();
     $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
 
@@ -237,14 +241,7 @@ function culturefeed_calendar_delete_calendar_event($activity, $request_type = '
     exit;
   }
   else {
-
-    if ($params['get_form']) {
-      return $form;
-    }
-    else {
-      drupal_goto('/culturefeed/calendar');
-    }
-
+    return $form;
   }
 
 }
@@ -350,7 +347,7 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Verwijderen'),
-    '#name' => 'add',
+    '#name' => 'delete',
     '#submit' => array('culturefeed_calendar_delete_form_submit'),
   );
 
@@ -402,7 +399,7 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
 }
 
 /**
- * Ajax callback for the calendar form.
+ * Ajax callback for the calendar delete form.
  */
 function culturefeed_calendar_delete_form_ajax($form, $form_state) {
 
@@ -482,7 +479,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state
 
   if ($form_state['triggering_element']['#name'] == 'cancel') {
     drupal_set_message(t('Your calendar event was not changed.'));
-    drupal_goto('/culturefeed/calendar');
+    drupal_goto('culturefeed/calendar');
     return;
   }
 
@@ -519,6 +516,10 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state
     drupal_set_message(t('An error occured while saving your calendar'), 'error');
   }
 
+  if (!$form_state['params']['use_ajax']) {
+    drupal_goto('culturefeed/calendar');
+  }
+
 }
 
 
@@ -528,8 +529,8 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state
 function culturefeed_calendar_delete_form_submit($form, $form_state) {
 
   if ($form_state['triggering_element']['#name'] == 'cancel') {
-    drupal_set_message(t('Your caldnar event was not deleted.'));
-    drupal_goto('/culturefeed/calendar');
+    drupal_set_message(t('Your calendar event was not deleted.'));
+    drupal_goto('culturefeed/calendar');
     return;
   }
 
@@ -557,13 +558,16 @@ function culturefeed_calendar_delete_form_submit($form, $form_state) {
   else {
     drupal_set_message(t('An error occured while deleting the event from your calendar'), 'error');
   }
+
+  if (!$form_state['params']['use_ajax']) {
+    drupal_goto('culturefeed/calendar');
+  }
 }
 
 /**
  * Helper function that get form parameters for edit/add/delete activity-forms.
  *
  * @param type $event
- * @param type $activity_id
  * @return type
  */
 function _culturefeed_calendar_get_event_params($event) {
