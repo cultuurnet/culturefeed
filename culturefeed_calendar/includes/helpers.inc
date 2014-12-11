@@ -290,9 +290,11 @@ function culturefeed_calendar_delete_calendar_event_cookie($activity) {
  */
 function culturefeed_calendar_get_selected_date($activity) {
 
-  $calendar_info = json_decode($activity->value);
-  if ($calendar_info && !empty($calendar_info->calendar_date)) {
-    return $calendar_info->calendar_date;
+  if (isset($activity->value)) {
+    $calendar_info = json_decode($activity->value);
+    if ($calendar_info && !empty($calendar_info->calendar_date)) {
+      return $calendar_info->calendar_date;
+    }
   }
 
 }
