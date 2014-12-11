@@ -383,18 +383,19 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
   // After adding, return to event detail.
   else {
     $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
-  
-    $commands = array();
-    if (empty($form_state['params']['validation_error'])) {
-      $commands[] = culturefeed_ajax_command_goto($url);
-    }
-    else {
-      $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
-      $commands[] = ajax_command_html('#add-to-calendar-ajax', theme('status_messages'));
-    }
-
-    return array('#type' => 'ajax', '#commands' => $commands);
   }
+
+  $commands = array();
+  if (empty($form_state['params']['validation_error'])) {
+    $commands[] = culturefeed_ajax_command_goto($url);
+  }
+  else {
+    $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
+    $commands[] = ajax_command_html('#add-to-calendar-ajax', theme('status_messages'));
+  }
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+  
 }
 
 /**
