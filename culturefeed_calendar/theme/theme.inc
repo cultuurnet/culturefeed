@@ -5,6 +5,52 @@
  * Theming / preprocess functions for culturefeed_calendar.
  */
 
+
+function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
+
+  $variables['sidebar'] = 'empty';
+
+  // Top nav with month names.
+  $months = _culturefeed_calendar_get_nav_months();
+  $variables['nav_months'] = theme('culturefeed_calendar_nav_months', array('months' => $months));
+
+  // Sort activities by type.
+  $activities = $variables['activities'];
+  $activities_by_type = array();
+  if (!empty($activities->objects)) {
+    foreach($activities->objects as $activity) {
+      $activity_type = $activity->type;
+      if (!culturefeed_calendar_get_selected_date($activity)) {
+        $activity_type = CultureFeed_Activity::TYPE_LIKE;
+      }
+      $activities_by_type[$activity_type][] = $activity;
+    }
+  }
+
+  $content = '';
+  if (!empty($activities_by_type)) {
+    // Print the 'LIKED' activities.
+    if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
+      $content .= theme('culturefeed_calendar_activities_liked',
+        array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
+    }
+    // Print the 'IK GA' activities.
+    if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
+      $content .= theme('culturefeed_calendar_activities_going',
+        array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
+    }
+    // Print the save cookie button.
+    $authenticated = DrupalCultureFeed::isCultureFeedUser();
+    if (!$authenticated && !empty($activities->objects)) {
+      $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
+      $content .= drupal_render($form);
+    }
+  }
+
+  $variables['content'] = $content;
+
+}
+
 /**
  * Preprocess the variables for the calendar buttons.
  * @see culturefeed-calendar-button.tpl.php
@@ -50,6 +96,9 @@ function theme_culturefeed_calendar_total_activities_profile_box_item($variables
   return l(format_plural($variables['total'], '@count unsaved activity', '@count unsaved activities'), 'culturefeed/calendar');
 }
 
+/**
+ * Preprocess activities 'going'.
+ */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&$variables) {
 
   $activities = $variables['activities'];

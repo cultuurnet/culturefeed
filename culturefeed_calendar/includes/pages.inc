@@ -10,60 +10,9 @@
  */
 function culturefeed_calendar_page_my_activities() {
 
-  $output = '';
+  $activities = culturefeed_calendar_get_user_activities();
+  return theme('culturefeed_calendar_page', array('activities' => $activities));
 
-  // Add a block for top nav with month names.
-  $months = _culturefeed_calendar_get_nav_months();
-  $output .= theme('culturefeed_calendar_nav_months', array('months' => $months));
-
-  $output .= '<aside class="col-md-3" role="complementary">
-      <div class="region region-sidebar-first">
-        <div class="panel panel-default">
-          <div class="panel-body">Sidebar</div>
-        </div>
-      </div>
-    </aside>';
-  $output .= '<section class="col-md-9">';
-
-  // Get the user's activities sorted by type.
-  $activities = culturefeed_calendar_get_user_activities(TRUE);
-  $activities_by_type = array();
-  if (!empty($activities->objects)) {
-    foreach($activities->objects as $activity) {
-
-      $activity_type = $activity->type;
-      if (!culturefeed_calendar_get_selected_date($activity)) {
-        $activity_type = CultureFeed_Activity::TYPE_LIKE;
-      }
-
-      $activities_by_type[$activity_type][] = $activity;
-    }
-  }
-  else {
-    $output .= '<h3>' . t('No activities in your UiTKalender') . '</h3>';
-  }
-
-  // Print the 'LIKED' activities.
-  if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
-    $output .= theme('culturefeed_calendar_activities_liked',
-      array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
-  }
-  // Print the 'IK GA' activities.
-  if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
-    $output .= theme('culturefeed_calendar_activities_going',
-      array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
-  }
-
-  // Print the save cookie button.
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
-  if (!$authenticated && !empty($activities->objects)) {
-    $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
-    $output .= drupal_render($form);
-  }
-
-  $output .= '</section>';
-
-  return $output;
 }
 
 /**

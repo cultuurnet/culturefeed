@@ -25,7 +25,7 @@ function culturefeed_calendar_menu() {
   $items = array();
 
   $items['culturefeed/calendar'] = array(
-    'title' => t('My Calendar'),
+    'title' => t('UitKalendar'),
     'page callback' => 'culturefeed_calendar_page_my_activities',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
@@ -81,6 +81,14 @@ function culturefeed_calendar_theme() {
   );
   $items['culturefeed_calendar_total_activities_profile_box_item'] = array(
     'variables' => array('total' => 0),
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+  $items['culturefeed_calendar_page'] = array(
+    'variables' => array(
+      'activities' => NULL
+    ),
+    'template' => 'culturefeed-calendar-page',
     'path' => $path,
     'file' => 'theme.inc',
   );
