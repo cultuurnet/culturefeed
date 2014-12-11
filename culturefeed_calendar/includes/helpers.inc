@@ -237,7 +237,9 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
 
     $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
     if (isset($calendar[$activity->id])) {
-      $calendar[$activity->id]->value = strtotime($date);
+      $selection = new stdClass();
+      $selection->calendar_date = strtotime($date);
+      $calendar[$activity->id]->value = json_encode($selection);
       $calendar[$activity->id]->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
