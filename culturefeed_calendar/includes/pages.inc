@@ -43,9 +43,9 @@ function culturefeed_calendar_page_my_activities() {
       array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
   }
 
-  // Print the 'I’m going' button.
+  // Print the save cookie button.
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
-  if (!$authenticated && !empty($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
+  if (!$authenticated && !empty($activities)) {
     $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
     $output .= drupal_render($form);
   }
@@ -99,6 +99,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   }
 
   // Get activities from calendar.
+  $calendar_ids = array();
   $calendar_activities = culturefeed_calendar_get_user_activities();
   foreach ($calendar_activities->objects as $calendar_activity) {
     $calendar_ids[] = $calendar_activity->nodeId;
@@ -397,7 +398,7 @@ function culturefeed_calendar_form_ajax($form, $form_state) {
   }
 
   return array('#type' => 'ajax', '#commands' => $commands);
-  
+
 }
 
 /**
