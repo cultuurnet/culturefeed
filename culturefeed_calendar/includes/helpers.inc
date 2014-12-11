@@ -9,36 +9,55 @@
  */
 function culturefeed_calendar_get_user_activities() {
 
+  $activities = &drupal_static(__FUNCTION__, NULL);
+
+  if ($activities != NULL) {
+    return $activities;
+  }
+
+  $activities = new stdClass();
+  $activities->objects = array();
+  $activities->total = 0;
+
   $uid = DrupalCultureFeed::getLoggedInUserId();
 
   if ($uid) {
+
     // Only search for activities with type_like or type_ik_ga.
     $activity_options = array(
       CultureFeed_Activity::TYPE_LIKE,
       CultureFeed_Activity::TYPE_IK_GA,
     );
 
-    // Load the config for the activity options.
-    $options = array();
-    foreach ($activity_options as $activity_type) {
-      $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
-    }
-
-    /*$service = culturefeed_get_search_service();
+    // Search on the service for attends or likes of this user.
+    $service = culturefeed_get_search_service();
     $parameters = array();
     $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
+    $parameters[] = new CultuurNet\Search\Parameter\Group();
+    $parameters[] = new CultuurNet\Search\Parameter\Rows(500);
     $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('type:event');
-    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('like_users:' . $uid);
-    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('attend_users:' . $uid);
+    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('attend_users:' . $uid . ' OR like_users:' . $uid);
 
     $result = $service->search($parameters);
-    */
+    // No likes / attends for this user on future events, don't do an activity search.
+    if ($result->getTotalCount() == 0) {
+      return $activities;
+    }
 
+    $items = $result->getItems();
+
+    $content_ids = array();
+    foreach ($items as $item) {
+      $content_ids[] = $item->getId();
+    }
+
+    // Only search on found events. This way, we only see events in the future.
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->max = 500;
     $query->type = $activity_options;
     $query->contentType = 'event';
     $query->userId = DrupalCultureFeed::getLoggedInUserId();
+    $query->nodeId = $content_ids;
 
     try {
       $activities = DrupalCultureFeed::searchActivities($query);
@@ -48,14 +67,8 @@ function culturefeed_calendar_get_user_activities() {
       return;
     }
 
-    if ($activities->total == 0) {
-      return;
-    }
   }
   else {
-    $activities = new stdClass();
-    $activities->objects = array();
-    $activities->total = 0;
 
     if (isset($_COOKIE['Drupal_visitor_calendar'])) {
       $activities->objects = json_decode($_COOKIE['Drupal_visitor_calendar']);

@@ -470,10 +470,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 }
 
 /**
- * Submit handler for adding/editing calendar events.
- *
- * @param type $form
- * @param type $form_state
+ * Submit handler for editing calendar events.
  */
 function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state) {
 
