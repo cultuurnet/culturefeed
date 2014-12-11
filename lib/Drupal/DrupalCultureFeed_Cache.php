@@ -163,6 +163,11 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
     }
 
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
+    }
+
     return $result;
   }
 
@@ -180,6 +185,11 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     // Also clear the timelines.
     if (module_exists('culturefeed_pages')) {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
+
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
     }
 
     return $result;

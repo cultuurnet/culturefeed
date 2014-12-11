@@ -26,11 +26,17 @@ function culturefeed_calendar_page_my_activities() {
   $output .= '<section class="col-md-9">';
 
   // Get the user's activities sorted by type.
-  $activities = culturefeed_calendar_get_user_activities();
+  $activities = culturefeed_calendar_get_user_activities(TRUE);
   $activities_by_type = array();
   if (!empty($activities->objects)) {
     foreach($activities->objects as $activity) {
-      $activities_by_type[$activity->type][] = $activity;
+
+      $activity_type = $activity->type;
+      if (!culturefeed_calendar_get_selected_date($activity)) {
+        $activity_type = CultureFeed_Activity::TYPE_LIKE;
+      }
+
+      $activities_by_type[$activity_type][] = $activity;
     }
   }
   else {
@@ -252,7 +258,8 @@ function culturefeed_calendar_delete_calendar_event($activity, $request_type = '
 function culturefeed_calendar_form($form, &$form_state, $params) {
 
   // Activity is passed when editing.
-  $edit = isset($params['activity']->value) ? TRUE : FALSE;
+  $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
+  $edit = !empty($selected_date) ? TRUE : FALSE;
 
   drupal_set_title($params['title']);
 
@@ -267,7 +274,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
-      '#default_value' => $edit ? date('Y-m-d H:i', $params['activity']->value) : '',
+      '#default_value' => $edit ? date('Y-m-d H:i', $selected_date) : '',
     );
   }
   // timestamps.
@@ -288,7 +295,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
-      '#default_value' => $edit ? date('Y-m-d', $params['activity']->value) : '',
+      '#default_value' => $edit ? date('Y-m-d', $selected_date) : '',
     );
   }
 
@@ -628,7 +635,7 @@ function _culturefeed_calendar_get_event_params($event) {
  *  - short month name
  *  - year
  */
-function _culturefeed_calendar_Get_nav_months() {
+function _culturefeed_calendar_get_nav_months() {
 
   $months = array();
   $month = date('n'); // Current month.

@@ -7,7 +7,7 @@
 /**
  * Get the users activities.
  */
-function culturefeed_calendar_get_user_activities() {
+function culturefeed_calendar_get_user_activities($use_search = FALSE) {
 
   $activities = &drupal_static(__FUNCTION__, NULL);
 
@@ -29,42 +29,45 @@ function culturefeed_calendar_get_user_activities() {
       CultureFeed_Activity::TYPE_IK_GA,
     );
 
-    // Search on the service for attends or likes of this user.
-    $service = culturefeed_get_search_service();
-    $parameters = array();
-    $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
-    $parameters[] = new CultuurNet\Search\Parameter\Group();
-    $parameters[] = new CultuurNet\Search\Parameter\Rows(500);
-    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('type:event');
-    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('attend_users:' . $uid . ' OR like_users:' . $uid);
-
-    $result = $service->search($parameters);
-    // No likes / attends for this user on future events, don't do an activity search.
-    if ($result->getTotalCount() == 0) {
-      return $activities;
-    }
-
-    $items = $result->getItems();
-
-    $content_ids = array();
-    foreach ($items as $item) {
-      $content_ids[] = $item->getId();
-    }
-
-    // Only search on found events. This way, we only see events in the future.
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->max = 500;
     $query->type = $activity_options;
     $query->contentType = 'event';
     $query->userId = DrupalCultureFeed::getLoggedInUserId();
-    $query->nodeId = $content_ids;
+
+    // Search on the service for attends or likes of this user.
+    if ($use_search) {
+
+      $service = culturefeed_get_search_service();
+      $parameters = array();
+      $parameters[] = new CultuurNet\Search\Parameter\Query('*:*');
+      $parameters[] = new CultuurNet\Search\Parameter\Group();
+      $parameters[] = new CultuurNet\Search\Parameter\Rows(500);
+      $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('type:event');
+      $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('attend_users:' . $uid . ' OR like_users:' . $uid);
+
+      $result = $service->search($parameters);
+      // No likes / attends for this user on future events, don't do an activity search.
+      if ($result->getTotalCount() == 0) {
+        return $activities;
+      }
+
+      $items = $result->getItems();
+      $content_ids = array();
+      foreach ($items as $item) {
+        $content_ids[] = $item->getId();
+      }
+
+      // Only search on found events. This way, we only see events in the future.
+      $query->nodeId = $content_ids;
+
+    }
 
     try {
       $activities = DrupalCultureFeed::searchActivities($query);
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_calendar', $e);
-      return;
     }
 
   }
@@ -136,7 +139,9 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   if ($authenticated) {
     $activity = new CultureFeed_Activity();
     if (!empty($date)) {
-      $activity->value = strtotime($date);
+      $selection = new stdClass();
+      $selection->calendar_date = strtotime($date);
+      $activity->value = json_encode($selection);
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -154,7 +159,9 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     $activity = new stdClass();
 
     if (!empty($date)) {
-      $activity->value = strtotime($date);
+      $selection = new stdClass();
+      $selection->calendar_date = strtotime($date);
+      $activity->value = json_encode($selection);
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -276,4 +283,16 @@ function culturefeed_calendar_delete_calendar_event_cookie($activity) {
   }
 
   return FALSE;
+}
+
+/**
+ * Get the calendar date that is selected for an activity.
+ */
+function culturefeed_calendar_get_selected_date($activity) {
+
+  $calendar_info = json_decode($activity->value);
+  if ($calendar_info && !empty($calendar_info->calendar_date)) {
+    return $calendar_info->calendar_date;
+  }
+
 }

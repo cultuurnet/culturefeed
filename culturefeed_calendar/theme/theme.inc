@@ -50,13 +50,6 @@ function theme_culturefeed_calendar_total_activities_profile_box_item($variables
   return l(format_plural($variables['total'], '@count unsaved activity', '@count unsaved activities'), 'culturefeed/calendar');
 }
 
-/**
- * Preprocess the variables for one of the event templates on calendar page.
- */
-function culturefeed_calendar_preprocess_culturefeed_calendar_activities_liked(&$variables) {
-  //haha
-}
-
 function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&$variables) {
 
   $activities = $variables['activities'];
@@ -65,8 +58,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&
   $variables['months'] = array_fill_keys(array_map(function($element){return $element['full_month'];}, $months), array());
 
   foreach ($activities as $activity) {
-    $month = format_date($activity->value, 'custom', 'F');
-    $variables['months'][$month][] = $activity;
+    if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
+      $month = format_date($selected_date, 'custom', 'F');
+      $variables['months'][$month][] = $activity;
+    }
   }
 }
 
@@ -115,7 +110,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   }
 
   // Activity details.
-  $variables['date'] = format_date($activity->value, 'custom', 'l j F Y H:i');
+  if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
+    $variables['date'] = format_date($selected_date, 'custom', 'l j F Y H:i');
+  }
+
   $activity_id = $activity->id;
   $node_id = $activity->nodeId;
 
