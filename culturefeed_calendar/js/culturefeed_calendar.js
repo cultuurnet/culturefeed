@@ -3,6 +3,7 @@
 
   Drupal.behaviors.culturefeedCalendar = {
     attach: function (context, settings) {
+
       Drupal.setAddViewCalendarButtons();
       Drupal.setTotalCookieActivitiesLabel();
     }
@@ -38,12 +39,14 @@
   }
 
   Drupal.setTotalCookieActivitiesLabel = function() {
+
     // Set default state.
     $("small.activity-count").hide();
 
     // Get cookie calendar information.
     if ($.cookie('Drupal.visitor.calendar') !== null) {
-      cookie = jQuery.parseJSON($.cookie('Drupal.visitor.calendar'));
+
+      var cookie = jQuery.parseJSON($.cookie('Drupal.visitor.calendar'));
 
       // Count the cookie event objects.
       var total = 0;

@@ -117,7 +117,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   user_cookie_delete('calendar');
 
   // Set messages.
-  $message = "Added " . $added . " activities to your OuTcalendar. Skipped " . $skipped . " activities that already existed.";
+  $message = "Added " . $added . " activities to your OuTcalendar. Skipped " . $skipped . " activities.";
   drupal_set_message($message);
 
   // Proceed to the calendar.
@@ -137,32 +137,34 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   $params['operation'] = 'add';
   $params['use_ajax'] = $request_type == 'ajax';
 
+  // If no form should be shown, we can create the activity.
+  if ($params['get_form']) {
+    $form = drupal_get_form('culturefeed_calendar_form', $params);
+  }
+  else {
+    culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
+    drupal_set_message(t('The event has been added to your OuTcalendar.'));
+  }
 
   if ($request_type == 'ajax') {
     $commands = array();
     if ($params['get_form']) {
-      $form = drupal_get_form('culturefeed_calendar_form', $params);
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
     }
     else {
-      // If no form should be shown, we can create the activity.
-      culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
-      drupal_set_message(t('The event has been added to your OuTcalendar.'));
       $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
       $commands[] = culturefeed_ajax_command_goto($url);
     }
-    print ajax_render($commands);
+
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     exit;
+
   }
   else {
     if ($params['get_form']) {
-      $form = drupal_get_form('culturefeed_calendar_form', $params);
       return $form;
     }
     else {
-      // If no form should be shown, we can create the activity.
-      culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
-      drupal_set_message(t('The event has been added to your OuTcalendar.'));
       drupal_goto(culturefeed_search_detail_path('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language())));
     }
 
