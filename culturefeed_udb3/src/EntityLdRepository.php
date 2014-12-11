@@ -60,7 +60,7 @@ class EntityLdRepository implements DocumentRepositoryInterface {
   public function get($id) {
 
     $entity = $this->entityManager->load($id);
-    if ($entity->body->value) {
+    if (isset($entity->body->value) && $entity->body->value) {
       return new JsonDocument($id, $entity->body->value);
     }
 
