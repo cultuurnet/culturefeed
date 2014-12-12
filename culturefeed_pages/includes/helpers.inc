@@ -484,11 +484,27 @@ function culturefeed_pages_get_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
 /**
  * Get all the validated admins of a given page.
  * @param CultureFeed_Cdb_Item_Page $page
+ * @param bool $skip_cache
+ *   Skip the cache.
  */
-function culturefeed_pages_get_validated_admins_of_page(CultureFeed_Cdb_Item_Page $page) {
+function culturefeed_pages_get_validated_admins_of_page(CultureFeed_Cdb_Item_Page $page, $skip_cache = FALSE) {
 
   try {
-    $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+
+    if (!$skip_cache) {
+      $cf_pages = DrupalCultureFeed::getLoggedInUserInstance()->pages();
+    }
+    else {
+      $cf = DrupalCultureFeed::getLoggedInUserInstance();
+      if ($cf instanceof DrupalCultureFeed_Cache) {
+        $cf_pages = $cf->getRealCultureFeed()->pages();
+      }
+      else {
+        $cf_pages = $cf->pages();
+      }
+    }
+
+
     $admin_list = $cf_pages->getUserList($page->getId(), array(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN), FALSE);
   }
   catch (Exception $e) {
