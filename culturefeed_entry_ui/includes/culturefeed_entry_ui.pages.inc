@@ -705,6 +705,8 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#type' => 'textarea',
     '#title' => t('Short description'),
     '#rows' => 4,
+    '#maxlength' => 400,
+    '#description' => t('Maximum 400 characters'),
     '#default_value' => $default_short_description,
     '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
   );
