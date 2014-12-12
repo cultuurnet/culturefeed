@@ -54,7 +54,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 
   //Get activities from cookie
   $cookie_activities = array();
-  if(isset($_COOKIE['Drupal_visitor_calendar'])) {
+  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
     $cookie_activities = json_decode($_COOKIE['Drupal_visitor_calendar']);
   }
 
@@ -72,8 +72,10 @@ function culturefeed_calendar_add_cookie_to_calendar() {
     // Only create activities that don't already exist.
     if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
       $activity = new CultureFeed_Activity();
-
-      $activity->value = $cookie_activity->value;
+      // Add planned activity's' date.
+      if (isset($cookie_activity->value)) {
+        $activity->value = $cookie_activity->value;
+      }
       $activity->type = $cookie_activity->type;
       $activity->contentType = 'event';
       $activity->nodeId = $cookie_activity->nodeId;
@@ -452,8 +454,11 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state
 
       DrupalCultureFeed::deleteActivity($activity->id);
 
+      $selection = new stdClass();
+      $selection->calendar_date = strtotime($date);
+
       $new_activity = $activity;
-      $new_activity->value = strtotime($date);
+      $new_activity->value = json_encode($selection);
       $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
 
       DrupalCultureFeed::createActivity($new_activity);

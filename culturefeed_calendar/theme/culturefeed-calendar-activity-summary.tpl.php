@@ -12,7 +12,7 @@
       <?php print $date; ?><br />
     <?php endif; ?>
     <a href="<?php print $url; ?>"><?php print $title; ?></a><br />
-    <?php print $remove_button; ?>
+    <a href="<?php print $delete_link['url'] ?>"><?php print $delete_link['text']; ?></a>
     <?php if ($edit_link['show']): ?>
       <br />
       <a href="<?php print $edit_link['url'] ?>"><?php print $edit_link['text']; ?></a>
