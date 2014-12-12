@@ -43,7 +43,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $authenticated = DrupalCultureFeed::isCultureFeedUser();
     if (!$authenticated && !empty($activities->objects)) {
       $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
-      $content .= drupal_render($form);
+      $variables['add_button'] = drupal_render($form);
     }
   }
 

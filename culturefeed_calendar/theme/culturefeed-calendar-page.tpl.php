@@ -1,3 +1,18 @@
+<?php
+/**
+ * @file
+ * Template for the calendar page.
+ */
+?>
+
+<row>
+  <section  class="col-md-12">
+    <?php if (!empty($add_button)) : ?>
+      <?php print $add_button ?>
+    <?php endif; ?>
+  </section>
+</row>
+
 <row>
   <section  class="col-md-12">
     <?php if (!empty($nav_months)) : ?>
@@ -11,7 +26,6 @@
     <div class="region region-sidebar-first">
       <div class="panel panel-default">
         <div class="panel-body">
-          SIDEBAR
           <?php print $sidebar; ?>
         </div>
       </div>
@@ -22,10 +36,6 @@
       <?php print $content ?><br />
     <?php else: ?>
       <h3><?php print t('No activities added to your calendar yet.') ?></h3>
-    <?php endif; ?>
-
-    <?php if (empty($content)): ?>
-      <?php print $content; ?>
     <?php endif; ?>
   </section>
 </row>

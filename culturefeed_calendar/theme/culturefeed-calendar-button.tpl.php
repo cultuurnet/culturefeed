@@ -11,4 +11,3 @@
   <?php endif; ?>
   <?php print l($button['text'], $button['path']); ?>
 </div>
-
