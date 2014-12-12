@@ -2016,7 +2016,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
     // Add to detail
     $file = new CultureFeed_Cdb_Data_File();
-    $file->setMediaType($file::MEDIA_TYPE_IMAGEWEB);
+    $file->setMediaType($file::MEDIA_TYPE_PHOTO);
     $file->setMain(TRUE);
     switch ($drupal_file->filemime) {
       case 'image/gif':
