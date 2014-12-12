@@ -177,6 +177,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 }
 
 /**
+ * Preprocess for add button tootlip.
  *
  * @param type $variables
  */
