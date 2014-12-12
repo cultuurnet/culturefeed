@@ -88,7 +88,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 
 }
 
-
 /**
  * Theme the total activities profile box item.
  */
@@ -101,7 +100,10 @@ function theme_culturefeed_calendar_total_activities_profile_box_item($variables
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&$variables) {
 
+  // Get activities and sort them by date to add them to the calendar in the right order.
   $activities = $variables['activities'];
+  usort($activities, "culturefeed_calendar_sort_by_date");
+
   $months = $variables['month_names'];
 
   $variables['months'] = array_fill_keys(array_map(function($element){return $element['full_month'];}, $months), array());

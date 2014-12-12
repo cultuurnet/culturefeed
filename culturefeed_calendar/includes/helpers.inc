@@ -300,3 +300,11 @@ function culturefeed_calendar_get_selected_date($activity) {
   }
 
 }
+
+/**
+ * Helper function to sort activities by date.
+ */
+function culturefeed_calendar_sort_by_date( $a, $b ) {
+
+    return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
+}
