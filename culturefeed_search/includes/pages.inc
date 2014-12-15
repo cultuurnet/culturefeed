@@ -5,11 +5,12 @@
  */
 
 use \Guzzle\Http\Exception;
+use \Guzzle\Http\Client;
 
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE) {
 
   $matches = array();
 
@@ -18,21 +19,35 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
     try {
 
       $types = !empty($type) ? array($type) : array();
-
-      // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
-      if ($suggestions->hasSuggestions()) {
-        foreach ($suggestions as $suggestion) {
-          $title = $location_title = check_plain($suggestion->getTitle());
-          $location = $suggestion->getLocation();
-          if (!empty($location)) {
-            $location_title .= ' - <small class="muted">(' . $location . ')<small>';
+      
+      if (!$all) {
+        // Get the list of suggestions from service.
+        $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
+        if ($suggestions->hasSuggestions()) {
+          foreach ($suggestions as $suggestion) {
+            $title = $location_title = check_plain($suggestion->getTitle());
+            $location = $suggestion->getLocation();
+            if (!empty($location)) {
+              $location_title .= ' - <small class="muted">(' . $location . ')<small>';
+            }
+            $object = new stdClass();
+            $object->title = $title;
+            $object->key = $suggestion->getCdbId();
+            $object->locationTitle = $location_title;
+            $matches[$suggestion->getCdbId()] = $object;
           }
-          $object = new stdClass();
-          $object->title = $title;
-          $object->key = $suggestion->getCdbId();
-          $object->locationTitle = $location_title;
-          $matches[$suggestion->getCdbId()] = $object;
+        }
+      }
+      else {
+        $client = new Client();
+        $client->setDefaultHeaders(array('Accept' => 'application/json'));
+        $body = json_decode($client->get('http://search-prod.lodgon.com/search/rest/search/suggest/item?title=' . $search_string . '&fq=type:actor%20asset:true')->send()->getBody(TRUE));
+        foreach ($body->suggestions as $suggestion) {
+          $suffix = '';
+          if (!empty($suggestion->zipcode)) {
+            $suffix .= ' - (' . $suggestion->zipcode . ')';
+          }
+          $matches[$suggestion->cdbid] = $suggestion->value . $suffix;
         }
       }
 
