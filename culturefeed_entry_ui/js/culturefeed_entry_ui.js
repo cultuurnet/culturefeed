@@ -54,16 +54,6 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         }
       });
       
-      $('.link-field').focusout(function() {
-        if($(this).val() != '') {
-          console.log(this);
-          if($(this).val().indexOf('http://') == -1 || $(this).val().indexOf('https://') == -1) {
-            if($(this).val().substring(0,7) != 'http://' && $(this).val().substring(0,8) != 'https://') {
-	          $(this).val('http://' + $(this).val());
-	        }
-	      }
-	    }
-      });
 	}
 
   };
