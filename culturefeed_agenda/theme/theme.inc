@@ -281,20 +281,42 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['themes'] = array();
   $themes = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME);
   if ($themes) {
+
+    // Create array with typenames.
     array_walk($themes, function(&$item) {
       $item = check_plain($item->getName());
     });
     $variables['themes'] = $themes;
+
+    // Create array with link to typename search.
+    array_walk($themes, function(&$item) {
+      $url = 'agenda/search';
+      $attr = array(
+        'query' => array(
+          'theme' => str_replace(' ', '-', strtolower($item)),
+        ),
+      );
+      $item = l($item, $url, $attr);
+    });
+    $variables['themes_links'] = $themes;
   }
 
   // Types from this item.
   $variables['types'] = array();
   $types = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
   if ($types) {
+
+    // Create array with typenames.
     array_walk($types, function(&$item) {
       $item = check_plain($item->getName());
     });
     $variables['types'] = $types;
+
+    // Create array with link to typename search.
+    array_walk($types, function(&$item) {
+      $item = l($item,'agenda/' . str_replace(' ', '-', strtolower($item)));
+    });
+    $variables['types_links'] = $types;
   }
 
   // Preprocess the organiser variables.

@@ -19,8 +19,8 @@
   <a href="#schrijf"><?php print t('Be the first to write a review'); ?></a>
 <?php endif; ?>
 
-<?php if ($themes): ?>
-<?php print t('Theme'); ?>: <?php print $themes[0] ?><br/>
+<?php if ($themes_links): ?>
+<?php print t('Theme'); ?>: <?php print $themes_links[0] ?><br/>
 <?php endif; ?>
 
 <?php print t('Short description'); ?>: <?php print $shortdescription; ?><br/>
