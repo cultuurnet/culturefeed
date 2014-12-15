@@ -618,7 +618,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress());
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
