@@ -88,6 +88,10 @@ function culturefeed_search_ui_search_block_form_submit($form, & $form_state) {
  *   List of allowed items, and the label that should be shown for every item.
  * @param array $settings
  *   Array containing setting information (sort, highest level and subitems).
+ *   $settings['intersect'] only works when $allowed_items is set. Intersect
+ *   enabled will only use the options which were given.
+ *   Intersect disabled will override the filter term labels. If you use this,
+ *   make sure the given allowed items have the label as key as well.
  */
 function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '', $allowed_items = array(), $settings = array()) {
 
@@ -104,14 +108,24 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
 
   $facet = $facets[$facet_name];
 
-  // Show only the allowed values, and set the requested label.
   if (!empty($allowed_items)) {
     $all_items = $facet->getResult()->getItems();
     $items = array();
-    foreach ($all_items as $item) {
-      if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
-        $item->setLabel($allowed_items[$item->getLabel()]);
-        $items[] = $item;
+    // Show only the allowed values, and set the requested label.
+    if (!isset($settings['intersect']) || !$settings['intersect']) {
+      foreach ($all_items as $item) {
+        if (isset($allowed_items[$item->getLabel()]) && $item->getTotalResults() > 0) {
+          $item->setLabel($allowed_items[$item->getLabel()]);
+          $items[] = $item;
+        }
+      }
+    }
+    // Show only the filtered allowed values.
+    else {
+      foreach ($all_items as $item) {
+        if (isset($allowed_items[$item->getValue()]) && $item->getTotalResults() > 0) {
+          $items[] = $item;
+        }
       }
     }
   }
@@ -468,12 +482,6 @@ function culturefeed_search_ui_block_age_range_facet() {
     }
     elseif ($age >= 9 && $age <= 11) {
       $counts[9] += $item->getTotalResults();
-    }
-    elseif ($age >= 12 && $age <= 14) {
-      $counts[12] += $item->getTotalResults();
-    }
-    elseif ($age >= 15 && $age <= 17) {
-      $counts[15] += $item->getTotalResults();
     }
   }
 

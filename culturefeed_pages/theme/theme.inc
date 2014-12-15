@@ -179,6 +179,7 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
   $variables['description'] = check_markup($page->getDescription(), 'filtered_html');
   $variables['links'] = $page->getLinks();
   $variables['image'] = $page->getImage();
+  $variables['thumbnail'] = $page->getImage();
   $variables['baseline'] = $page->getTagline();
   $variables['cover'] = $page->getCover();
 

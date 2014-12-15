@@ -62,3 +62,115 @@ function culturefeed_search_ui_admin_settings() {
   return system_settings_form($form);
 
 }
+
+/**
+ * Admin form for sort order settings.
+ */
+function culturefeed_search_ui_admin_sort_order_settings_form() {
+
+  $form = array();
+
+  $form['description'] = array(
+    '#markup' => t('<p>
+      Define the different sorting options you want.<br />
+      When a sorting option is not exposed. It won\'t be shown as option, but is applicable through the url.
+      Example:<ul>
+      <li>Label: Date</li>
+      <li>Value: date</li>
+      <li>Sort query for API: startdateday asc</li>
+    </p>'
+  ));
+
+  $form['sort_options'] = array(
+    '#type' => 'container',
+    '#tree' => TRUE,
+  );
+
+  $search_pages = culturefeed_get_searchable_types();
+  foreach ($search_pages as $search_page) {
+
+    $type = $search_page['id'];
+    $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_page);
+
+    $form['sort_options'][$type] = array(
+      '#type' => 'fieldset',
+      '#title' => check_plain($search_page['page_title']),
+      '#tree' => TRUE,
+      '#theme' => 'culturefeed_search_ui_admin_sort_order_options',
+    );
+
+    for ($i = 0; $i < 10; $i++) {
+
+      $value = isset($sort_options[$i]['value']) ? $sort_options[$i]['value'] : '';
+
+      $form['sort_options'][$type][$i]['default'] = array(
+        '#title' => t('Default'),
+        '#type' => 'radio',
+        '#parents' => array('sort_options', $type, 'default'),
+        '#default_value' => (isset($sort_options['default']) && $i == $sort_options['default']) ? $i : FALSE,
+        '#return_value' => $i,
+      );
+
+      $form['sort_options'][$type][$i]['exposed'] = array(
+        '#title' => t('Exposed'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($sort_options[$i]['exposed']) ? $sort_options[$i]['exposed'] : $i
+      );
+
+      $form['sort_options'][$type][$i]['label'] = array(
+        '#title' => t('Label'),
+        '#type' => 'textfield',
+        '#default_value' => isset($sort_options[$i]['label']) ? $sort_options[$i]['label'] : '',
+      );
+
+      $form['sort_options'][$type][$i]['value'] = array(
+        '#title' => t('Value used in url'),
+        '#type' => 'textfield',
+        '#default_value' => $value,
+      );
+
+      $form['sort_options'][$type][$i]['query'] = array(
+        '#title' => t('Sortquery for api'),
+        '#type' => 'textfield',
+        '#default_value' => isset($sort_options[$i]['query']) ? $sort_options[$i]['query'] : '',
+      );
+
+    }
+
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save settings'),
+    '#submit' => array('culturefeed_search_ui_admin_sort_order_settings_form_submit'),
+  );
+
+  return $form;
+}
+
+
+/**
+ * Submit the admin sort order settings form.
+ */
+function culturefeed_search_ui_admin_sort_order_settings_form_submit(&$form, &$form_state) {
+
+  if (!empty($form_state['values']['sort_options'])) {
+
+    // Don't save empty options.
+    foreach ($form_state['values']['sort_options'] as $type => $options) {
+
+      $default_sort = $form_state['values']['sort_options'][$type]['default'];
+      foreach ($options as $key => &$option) {
+
+        if ($key == 'default') {
+          continue;
+        }
+
+        if (empty($option['value'])) {
+          unset($options[$key]);
+        }
+      }
+
+      variable_set('culturefeed_search_sortoptions_' . $type, $options);
+    }
+  }
+}

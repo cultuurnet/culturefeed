@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+/* dates */
+
+table.date-control-table {
+  width: auto;
+}
+
+.date-control-table .container-inline-date .date-padding {
+  padding: 0;
+  float: none;
+}
+
+.date-control-table .ui-icon {
+  display: inline-block;
+}
+
+.date-control-table input.add-more-link {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.date-control-table td {
+  white-space: nowrap;
+  padding: 4px;
+  vertical-align: top;
+}
+
+.date-control-table td .container-inline-date .form-item .form-item {
+  display: inline-block;
+  float: none;
+}
+
+.date-control-table td .container-inline-date .form-item {
+  vertical-align: top;
+}
