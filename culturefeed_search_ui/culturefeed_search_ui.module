@@ -344,11 +344,10 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  $blocks['filter-form-copy'] = array(
-    'info' => t('Culturefeed search: Filter form (copy)'),
+  $blocks['filter-form-2'] = array(
+    'info' => t('Culturefeed search: Filter form 2'),
     'cache' => DRUPAL_NO_CACHE,
   );
-
 
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
@@ -463,11 +462,11 @@ function culturefeed_search_ui_block_configure($delta) {
     }
 
   }
-  elseif ($delta == 'filter-form' || $delta == 'filter-form-copy') {
+  elseif ($delta == 'filter-form' || $delta == 'filter-form-2') {
 
-    $config_label = 'culturefeed-search-filter-options' . (($delta == 'filter-form-copy') ? '-copy' : '');
-    $display_label = 'culturefeed-search-filter-display-options' . (($delta == 'filter-form-copy') ? '-copy' : '');
-    $operator_label = 'culturefeed-search-filter-operator' . (($delta == 'filter-form-copy') ? '-copy' : '');
+    $config_label = 'culturefeed-search-filter-options' . (($delta == 'filter-form-2') ? '-2' : '');
+    $display_label = 'culturefeed-search-filter-display-options' . (($delta == 'filter-form-2') ? '-2' : '');
+    $operator_label = 'culturefeed-search-filter-operator' . (($delta == 'filter-form-2') ? '-2' : '');
     $config_variable = str_replace('-', '_', $config_label);
     $display_variable = str_replace('-', '_', $display_label);
     $operator_variable = str_replace('-', '_', $operator_label);
@@ -615,8 +614,8 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-search-filter-display-options'])) {
     variable_set('culturefeed_search_filter_display_options', $edit['culturefeed-search-filter-display-options']);
   }
-  if (isset($edit['culturefeed-search-filter-display-options-copy'])) {
-    variable_set('culturefeed_search_filter_display_options_copy', $edit['culturefeed-search-filter-display-options-copy']);
+  if (isset($edit['culturefeed-search-filter-display-options-2'])) {
+    variable_set('culturefeed_search_filter_display_options_2', $edit['culturefeed-search-filter-display-options-2']);
   }
 
   if (isset($edit['sort'])) {
@@ -638,8 +637,8 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-search-filter-operator'])) {
     variable_set('culturefeed_search_filter_operator', $edit['culturefeed-search-filter-operator']);
   }
-  if (isset($edit['culturefeed-search-filter-operator-copy'])) {
-    variable_set('culturefeed_search_filter_operator_copy', $edit['culturefeed-search-filter-operator-copy']);
+  if (isset($edit['culturefeed-search-filter-operator-2'])) {
+    variable_set('culturefeed_search_filter_operator_2', $edit['culturefeed-search-filter-operator-2']);
   }
   if (isset($edit['culturefeed-search-filter-options'])) {
     $options = array();
@@ -650,14 +649,14 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     }
     variable_set('culturefeed_search_filter_options', $options);
   }
-  if (isset($edit['culturefeed-search-filter-options-copy'])) {
+  if (isset($edit['culturefeed-search-filter-options-2'])) {
     $options = array();
-    foreach ($edit['culturefeed-search-filter-options-copy'] as $option) {
+    foreach ($edit['culturefeed-search-filter-options-2'] as $option) {
       if (!empty($option['title']) && !empty($option['query-string']) && !empty($option['api-filter-query'])) {
         $options[] = $option;
       }
     }
-    variable_set('culturefeed_search_filter_options_copy', $options);
+    variable_set('culturefeed_search_filter_options_2', $options);
   }
 
   if ($delta == 'culturefeed-search-sortorder') {
@@ -738,15 +737,15 @@ function culturefeed_search_ui_block_view($delta) {
 
     // Filter form and it's copy.
     case 'filter-form':
-    case 'filter-form-copy':
+    case 'filter-form-2':
       // Don't show block if no search results.
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
         return;
       }
       // Only variable differs between Filter form and it's copy.
-      $variable_name = 'culturefeed_search_filter_options' . (($delta == 'filter-form-copy') ? '_copy' : '');
-      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-copy') ? '_copy' : ''));
+      $variable_name = 'culturefeed_search_filter_options' . (($delta == 'filter-form-2') ? '_2' : '');
+      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''));
       $filter_options = variable_get($variable_name, culturefeed_search_ui_default_filter_options());
       $filter_options = array_filter($filter_options, function($option) {
         return !isset($option['exposed']) || !empty($option['exposed']);
@@ -792,8 +791,8 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
   culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);
 
   // Add possible filters from second filter block.
-  $operator = variable_get('culturefeed_search_filter_operator_copy', 'and');
-  $filter_options = variable_get('culturefeed_search_filter_options_copy', culturefeed_search_ui_default_filter_options());
+  $operator = variable_get('culturefeed_search_filter_operator_2', 'and');
+  $filter_options = variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
   culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);
 
   // Add facet on agefrom.
