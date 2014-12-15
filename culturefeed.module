@@ -228,6 +228,9 @@ function culturefeed_page_build(&$page) {
         $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($event);
         $gtm_globals['detail_type'] = 'event';
         $gtm_globals['cdbid'] = arg(3);
+        
+        // Make this backwards compatible
+        $gtm_globals['is_event_detail'] = TRUE;
       }
     }
 
