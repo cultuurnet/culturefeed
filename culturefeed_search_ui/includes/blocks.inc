@@ -636,14 +636,12 @@ function culturefeed_search_ui_search_active_filters_block() {
 /**
  * Show the filter form for the search ui.
  */
-function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
-
-  // Display as links or checkboxes.
-  $display_type = variable_get('culturefeed_search_filter_display_options', 'checkboxes');
+function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options, $display_type) {
 
   $form = array();
   $form['filter-options'] = array();
 
+  // Show filters as checkboxes with submit button.
   if ($display_type == 'checkboxes') {
     foreach ($filter_options as $option) {
       $form['filter-options'][$option['query-string']] = array(
@@ -658,6 +656,7 @@ function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_opt
       '#value' => t('Filter')
     );
   }
+  // Show filters as links.
   elseif ($display_type == 'links') {
     $searches = culturefeed_get_searchable_types();
     $path = isset($searches['path']) ? $searches['path'] : NULL;

@@ -496,7 +496,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_
 
   $filter_option = $variables['filter_option'];
   $active_query = $variables['query'];
-  $path = $variables['path'];
+  $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
   $item_active = isset($active_query[$filter_option['query-string']]) ? TRUE: FALSE;
   $query_string = $filter_option['query-string'];
