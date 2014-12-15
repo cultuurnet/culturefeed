@@ -483,7 +483,7 @@ function culturefeed_search_ui_block_configure($delta) {
     );
     $form[$operator_label] = array(
       '#title' => t('How to apply filters on the query'),
-      '#description' => t('Seelct the operator for the search filters'),
+      '#description' => t('Select the operator for the search filters'),
       '#type' => 'radios',
       '#options' => array(
         'and' => t('Use AND-operator'),
@@ -611,6 +611,7 @@ function culturefeed_search_ui_block_configure($delta) {
 */
 function culturefeed_search_ui_block_save($delta, $edit = array()) {
 
+  // Search filter blocks.
   if (isset($edit['culturefeed-search-filter-display-options'])) {
     variable_set('culturefeed_search_filter_display_options', $edit['culturefeed-search-filter-display-options']);
   }
@@ -735,15 +736,15 @@ function culturefeed_search_ui_block_view($delta) {
       $block = culturefeed_search_ui_block_age_range_facet();
     break;
 
-    // Filter form and it's copy.
+    // Search filter form and it's copy.
     case 'filter-form':
     case 'filter-form-2':
-      // Don't show block if no search results.
+      // Don't show block if there are no search results.
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
         return;
       }
-      // Only variable differs between Filter form and it's copy.
+
       $variable_name = 'culturefeed_search_filter_options' . (($delta == 'filter-form-2') ? '_2' : '');
       $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''));
       $filter_options = variable_get($variable_name, culturefeed_search_ui_default_filter_options());
@@ -751,7 +752,7 @@ function culturefeed_search_ui_block_view($delta) {
         return !isset($option['exposed']) || !empty($option['exposed']);
       });
       if (!empty($filter_options)) {
-        $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options, $display_type);
+        $block['content'] = culturefeed_search_ui_block_filter_block($filter_options, $display_type);
       }
       break;
 
@@ -785,12 +786,12 @@ function culturefeed_search_ui_block_view($delta) {
  */
 function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
 
-  // Add possible filters from first filter block.
+  // Add filters from first filter block.
   $operator = variable_get('culturefeed_search_filter_operator', 'and');
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
   culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);
 
-  // Add possible filters from second filter block.
+  // Add filters from second filter block.
   $operator = variable_get('culturefeed_search_filter_operator_2', 'and');
   $filter_options = variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
   culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);

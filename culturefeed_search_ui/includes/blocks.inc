@@ -633,46 +633,51 @@ function culturefeed_search_ui_search_active_filters_block() {
 
 }
 
-/**
- * Show the filter form for the search ui.
- */
-function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options, $display_type) {
+function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
 
   $form = array();
   $form['filter-options'] = array();
 
-  // Show filters as checkboxes with submit button.
-  if ($display_type == 'checkboxes') {
-    foreach ($filter_options as $option) {
-      $form['filter-options'][$option['query-string']] = array(
-        '#type' => 'checkbox',
-        '#title' => t($option['title']),
-        '#default_value' => !empty($_GET[$option['query-string']])
-      );
-    }
-
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Filter')
+  foreach ($filter_options as $option) {
+    $form['filter-options'][$option['query-string']] = array(
+      '#type' => 'checkbox',
+      '#title' => t($option['title']),
+      '#default_value' => !empty($_GET[$option['query-string']])
     );
   }
-  // Show filters as links.
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Filter')
+  );
+
+  return $form;
+}
+
+/**
+ * Show the filter form for the search ui.
+ */
+function culturefeed_search_ui_block_filter_block($filter_options, $display_type) {
+
+  if ($display_type == 'checkboxes') {
+    // Show filters as checkboxes with submit button.
+    return drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
+  }
   elseif ($display_type == 'links') {
+    // Show filters as links.
     $searches = culturefeed_get_searchable_types();
     $path = isset($searches['path']) ? $searches['path'] : NULL;
     $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-    $form['filter-options'] = array(
-      '#type' => 'item',
-      '#markup' => theme('culturefeed_search_block_filter_links',
-        array(
-          'filter_options' => $filter_options,
-          'query' => $query,
-          'path' => $path
-        )),
-    );
+
+    return  theme('culturefeed_search_block_filter_links',
+      array(
+        'filter_options' => $filter_options,
+        'query' => $query,
+        'path' => $path
+      )
+     );
   }
 
-  return $form;
 }
 
 /**

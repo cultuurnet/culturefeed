@@ -474,7 +474,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links(
   $items = array();
   $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
-  foreach($variables['filter_options'] as $filter_option) {
+  foreach ($variables['filter_options'] as $filter_option) {
     $items[] = array(
       'data' => theme('culturefeed_search_block_filter_links_item', array(
         'filter_option' => $filter_option,
