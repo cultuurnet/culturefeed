@@ -228,6 +228,28 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_search_block_filter_links' => array(
+      'variables' => array(
+        'filter_options' => array(),
+        'query' => '',
+        'items' => array(),
+        'path' => NULL,
+      ),
+      'template' => 'culturefeed-search-block-filter-links',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+    'culturefeed_search_block_filter_links_item' => array(
+      'variables' => array(
+        'item' => array(),
+        'label'=> '',
+        'url' => '',
+        'active' => FALSE,
+      ),
+      'template' => 'culturefeed-search-block-filter-links-item',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_suggestions' => array(
       'variables' => array(
         'suggestions' => array(),
@@ -438,6 +460,15 @@ function culturefeed_search_ui_block_configure($delta) {
 
   elseif ($delta == 'filter-form') {
 
+    $form['culturefeed-search-filter-display-options'] = array(
+      '#type' => 'radios',
+      '#options' => array(
+        'links' => t('As links'),
+        'checkboxes' => t('As checkboxes with submit button'),
+      ),
+      '#default_value' => variable_get('culturefeed_search_filter_display_options', 'links'),
+    );
+
     $options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
     $form['culturefeed-search-filter-options'] = array(
       '#type' => 'fieldset',
@@ -562,6 +593,10 @@ function culturefeed_search_ui_block_configure($delta) {
 * Implements hook_block_save().
 */
 function culturefeed_search_ui_block_save($delta, $edit = array()) {
+
+  if (isset($edit['culturefeed-search-filter-display-options'])) {
+    variable_set('culturefeed_search_filter_display_options', $edit['culturefeed-search-filter-display-options']);
+  }
 
   if (isset($edit['sort'])) {
     variable_set('culturefeed_search_sort_' . $delta, $edit['sort']);
@@ -712,7 +747,7 @@ function culturefeed_search_ui_block_view($delta) {
  * Implements hook_culturefeed_search_page_query_alter().
  */
 function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
-
+// @TODO: Use OR / AND for query, depending on setting.
   // Add possible filters.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
   foreach ($filter_options as $option) {

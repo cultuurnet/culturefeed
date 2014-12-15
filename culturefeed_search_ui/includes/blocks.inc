@@ -21,7 +21,6 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     $options[$key] = $type['search_title'];
   }
   $active_page = _culturefeed_search_ui_get_active_search_page();
-
   $form['#action'] = url('culturefeed/search');
 
   $form['type'] = array(
@@ -639,21 +638,40 @@ function culturefeed_search_ui_search_active_filters_block() {
  */
 function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
 
+  // Display as links or checkboxes.
+  $display_type = variable_get('culturefeed_search_filter_display_options', 'checkboxes');
+
   $form = array();
   $form['filter-options'] = array();
 
-  foreach ($filter_options as $option) {
-    $form['filter-options'][$option['query-string']] = array(
-      '#type' => 'checkbox',
-      '#title' => t($option['title']),
-      '#default_value' => !empty($_GET[$option['query-string']])
+  if ($display_type == 'checkboxes') {
+    foreach ($filter_options as $option) {
+      $form['filter-options'][$option['query-string']] = array(
+        '#type' => 'checkbox',
+        '#title' => t($option['title']),
+        '#default_value' => !empty($_GET[$option['query-string']])
+      );
+    }
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Filter')
     );
   }
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Filter')
-  );
+  elseif ($display_type == 'links') {
+    $searches = culturefeed_get_searchable_types();
+    $path = isset($searches['path']) ? $searches['path'] : NULL;
+    $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+    $form['filter-options'] = array(
+      '#type' => 'item',
+      '#markup' => theme('culturefeed_search_block_filter_links',
+        array(
+          'filter_options' => $filter_options,
+          'query' => $query,
+          'path' => $path
+        )),
+    );
+  }
 
   return $form;
 }

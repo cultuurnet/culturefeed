@@ -466,6 +466,56 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
 }
 
 /**
+ * Preprocess the filter block links.
+ * @see culturefeed-search-block-filter-links.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links(&$variables) {
+
+  $items = array();
+  $path = !empty($variables['path']) ? $variables['path'] : current_path();
+
+  foreach($variables['filter_options'] as $filter_option) {
+    $items[] = array(
+      'data' => theme('culturefeed_search_block_filter_links_item', array(
+        'filter_option' => $filter_option,
+        'query' => $variables['query'],
+        'path' => $path
+      )),
+    );
+
+  }
+
+  $variables['items'] = $items;
+}
+
+/**
+ * Preprocess a filter block link item.
+ * @see culturefeed-search-block-filter-links-item.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_item(&$variables) {
+
+  $filter_option = $variables['filter_option'];
+  $active_query = $variables['query'];
+  $path = $variables['path'];
+
+  $item_active = isset($active_query[$filter_option['query-string']]) ? TRUE: FALSE;
+  $query_string = $filter_option['query-string'];
+
+  // Add/remove the filter options from the active query.
+  if ($item_active) {
+    unset($active_query[$query_string]);
+  }
+  else {
+    $active_query[$query_string] = '1';
+  }
+
+  $variables['url'] = url($path, array('query' => $active_query));
+  $variables['label'] = $filter_option['title'];
+  $variables['active'] = $item_active;
+
+}
+
+/**
  * Theme the pager summary for a search result.
  */
 function theme_culturefeed_search_pager_summary($variables) {
@@ -499,7 +549,6 @@ function theme_culturefeed_search_sort_links($variables) {
   $output .= '</ul>';
 
   return $output;
-
 
 }
 
