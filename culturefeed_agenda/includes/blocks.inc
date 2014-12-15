@@ -345,6 +345,14 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
   $form['#attached']['js'] = array(
     array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/actor_autocomplete.js',
+    array(
+      'data' => array(
+        'culturefeed' => array(
+          'actorsSuggestUrl' => url('ajax/culturefeed-agenda/actor-suggest'),
+        ),
+      ),
+      'type' => 'setting',
+    ),
   );
   $form['#attached']['library'] = array(
     array('system', 'jquery.cookie'),
@@ -359,7 +367,7 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
     '#autocomplete_path' => 'autocomplete/culturefeed/agenda/actor-search'
   );
 
-  $form['#prefix'] = '<div id="actor-search-suggest"></div>';
+  $form['#suffix'] = '<div id="actor-search-suggest"></div>';
 
   return $form;
 }

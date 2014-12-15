@@ -915,7 +915,6 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actors_nearby(&$variab
 
 }
 
-<<<<<<< Updated upstream
 /*
  * Theme an admin table for the possible filter options on the agenda search block.
  */

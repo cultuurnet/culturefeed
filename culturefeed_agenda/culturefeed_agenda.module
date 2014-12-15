@@ -210,9 +210,16 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['ajax/culturefeed-agenda/actor-suggest'] = array(
+    'page callback' => 'culturefeed_agenda_page_ajax_actor_suggest',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['autocomplete/culturefeed/agenda/actor-search'] = array(
     'page callback' => 'culturefeed_agenda_actor_search_autocomplete',
-    'page arguments' => array(4, TRUE),
+    'page arguments' => array(4),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -454,7 +461,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#description' => t('Select the eventtypes where tis block may be visible.'),
       '#type' => 'checkboxes',
       '#options' => $visibility_options,
-      '#default_value' => variable_get('agenda_actor_search_visibility', array_keys($options)),
+      '#default_value' => variable_get('agenda_actor_search_visibility', array_keys($visibility_options)),
     );
 
   }
@@ -491,7 +498,7 @@ function culturefeed_agenda_block_save($delta, $edit) {
 
   }
   elseif ($delta == 'agenda-actor-search') {
-    variable_set('agenda_actor_search', $edit['agenda_actor_search']);
+    variable_set('agenda_actor_autocomplete_categories', array_filter($edit['agenda_actor_autocomplete_categories']));
     variable_set('agenda_actor_search_visibility', array_filter($edit['agenda_actor_search_visibility']));
   }
 
