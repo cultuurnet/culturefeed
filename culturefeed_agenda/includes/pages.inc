@@ -220,6 +220,9 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
 
 }
 
+/**
+ * Autocomplete callback for actor search.
+ */
 function culturefeed_agenda_actor_search_autocomplete($search, $past) {
 
   $matches = array();
@@ -245,4 +248,53 @@ function culturefeed_agenda_actor_search_autocomplete($search, $past) {
 
   }
   drupal_json_output($matches);
+}
+
+/**
+ * Search for nearby actors.
+ */
+function culturefeed_agenda_get_actors_nearby_for_event() {
+
+  $parameters = array();
+
+  if (isset($_COOKIE['uitid_location'])) {
+    $coordinates = json_decode($_COOKIE['uitid_location']);
+    $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->latitude, $coordinates->longitude);
+    $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+    $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(5);
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+
+  $allowed_categories = variable_get('agenda_actor_search_visibility', NULL);
+  if (!empty($allowed_categories)) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_eventtype_id:(' . implode(' OR ', $allowed_categories) . ')');
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+
+  try {
+
+    $result = culturefeed_get_search_service()->search($parameters);
+
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+
+    $items = $result->getItems();
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  $actors = array(
+    '#theme' => 'culturefeed_agenda_actors_nearby',
+    '#items' => $items,
+  );
+
+  return $actors;
 }

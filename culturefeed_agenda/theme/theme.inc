@@ -914,3 +914,43 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actors_nearby(&$variab
   $variables['links'] = implode(', ', $actors);
 
 }
+
+<<<<<<< Updated upstream
+/*
+ * Theme an admin table for the possible filter options on the agenda search block.
+ */
+function theme_culturefeed_agenda_search_block_field_settings($variables) {
+
+  $container = $variables['element'];
+
+  $rows = array();
+  foreach (element_children($container) as $key) {
+
+   $container[$key]['weight']['#attributes']['class'] = array('enabled-fields-order-weight');
+
+    $row = array();
+    $row[] = array('data' => drupal_render($container[$key]['enabled']), 'width' => '20px');
+    $row[] = drupal_render($container[$key]['title']);
+    $row[] = drupal_render($container[$key]['weight']);
+
+    $rows[] = array(
+      'data' => $row,
+      'class' => array('draggable'),
+    );
+  }
+
+  $table_variables = array(
+    'header' => array(
+      t('Enabled'),
+      t('Filter'),
+      t('Weight'),
+    ),
+    'rows' => $rows,
+    'attributes' => array('id' => 'enabled-fields'),
+  );
+
+  drupal_add_tabledrag('enabled-fields', 'order', 'sibling', 'enabled-fields-order-weight');
+
+  return theme('table', $table_variables);
+
+}
