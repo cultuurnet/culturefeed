@@ -2,7 +2,7 @@
 /**
  * @file
  * Page callbacks for the entry api ui.
- */
+ */ 
 
 /**
  * Form callback: Create a new event, or edit an existing.
@@ -216,6 +216,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
+            CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE,
           )
         );
 
@@ -540,7 +541,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['basic']['location']['actor']['location_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Location'),
-      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions/all',
       '#required' => FALSE,
       '#default_value' => isset($default_location_label) ? $default_location_label : '',
       '#size' => 80,
@@ -949,7 +950,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     $form['extra']['organiser']['actor']['organiser_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Organizer'),
-      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions',
+      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions/all',
       '#required' => FALSE,
       '#default_value' => $default_organiser_label,
     );
@@ -1722,12 +1723,17 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }*/
 
   // Validate Links
+  $i = 0;
   foreach ($values['links'] as $link_data) {
     if (!empty($link_data['URL'])) {
+      if (!preg_match("@^https?://@", $link_data['URL'])) {
+        $link_data['URL'] = 'http://' . $link_data['URL'];
+      }
       if (!valid_url($link_data['URL'], TRUE)) {
-        form_set_error('links', t('Not a valid URL'));
+        form_set_error('links][' . $i . '][URL', t('Not a valid URL'));
       }
     }
+    $i++;
   }
 
   // Validate organiser.
