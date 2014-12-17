@@ -685,3 +685,79 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
     array('query' => $query)
   );
 }
+
+/**
+ * Block callback for the city and actor search.
+ */
+function culturefeed_search_ui_block_city_actor_facet() {
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $build['form'] = drupal_get_form('culturefeed_search_ui_block_city_actor_facet_form');
+
+  return array(
+    'subject' => t('Where'),
+    'content' => $build,
+  );
+}
+
+/**
+ * Show the filter form for the city and actor search.
+ */
+function culturefeed_search_ui_block_city_actor_facet_form($form, $form_state) {
+
+  $form = array();
+
+  $form['#attached']['library'][] = array('system', 'ui');
+
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'culturefeed_search_ui') . '/js/city_actor_facet.js',
+    'type' => 'file',
+  );
+
+  $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/city_actor_facet.css';
+
+  $form['#attributes']['class'][] = 'append-button';
+
+  $form['city_actor'] = array(
+    '#type' => 'textfield',
+    '#size' => 28,
+    '#title' => t('Where'),
+    '#title_display' => 'invisible',
+    '#attributes' => array('class' => array('city-actor-facet', 'form-autocomplete'), 'placeholder' => t('Zipcode or city')),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+    '#attributes' => array('class' => array('city-actor-facet-submit', 'element-invisible')),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the where facet form.
+ */
+function culturefeed_search_ui_block_city_actor_facet_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+  if (!empty($form_state['values']['city_actor'])) {
+
+    $values = explode('|', $form_state['values']['city_actor']);
+
+    if($values[1] == 'actor'){
+      $form_state['redirect'] = $values[0];
+    }
+    else {
+      $query['location'] = $values[0];
+      $form_state['redirect'] = array(
+        $_GET['q'],
+        array('query' => $query)
+      );
+    }
+  }
+}
