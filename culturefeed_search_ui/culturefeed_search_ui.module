@@ -146,6 +146,14 @@ function culturefeed_search_ui_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['autocomplete/culturefeed_ui/city-actor-suggestion'] = array(
+    'page callback' => 'culturefeed_search_ui_city_actor_suggestion_autocomplete',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -344,6 +352,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-city-actor'] = array(
+    'info' => t('Culturefeed search: facet where/actor'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
@@ -470,7 +483,17 @@ function culturefeed_search_ui_block_configure($delta) {
       }
 
     }
-
+    if ($delta == 'facet-city-actor') {
+      $options = culturefeed_search_get_actortype_categories();
+      asort($options);
+      $form['culturefeed-facet-city-actor-search'] = array(
+        '#title' => t('Available actortype categories.'),
+        '#description' => t('Select the actortype categories that will be used to filter the autocomplete.'),
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => variable_get('culturefeed_facet_city_actor_search'),
+      );
+    }
   }
 
   elseif ($delta == 'filter-form') {
@@ -561,6 +584,10 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     $options[$delta_parts[1]] = array_filter($edit['culturefeed-facet-enabled-options']);
     variable_set('culturefeed_facet_enabled_options', $options);
   }
+
+  if (isset($edit['culturefeed-facet-city-actor-search'])) {
+    variable_set('culturefeed_facet_city_actor_search', $edit['culturefeed-facet-city-actor-search']);
+  }
 }
 
 /**
@@ -626,6 +653,10 @@ function culturefeed_search_ui_block_view($delta) {
         $block['content'] = drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
       }
       break;
+
+    case 'facet-city-actor':
+      $block = culturefeed_search_ui_block_city_actor_facet();
+    break;
 
     default:
       $delta_parts = explode('-', $delta);

@@ -122,3 +122,55 @@ function culturefeed_search_ui_city_suggestion_autocomplete_page($search_string,
   drupal_json_output($matches);
 
 }
+
+/**
+ * Page callback for the city and actor suggestions autocomplete.
+ *
+ * (using jquery ui autocomplete format).
+ */
+function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string) {
+
+  $matches = array();
+
+  if ($search_string) {
+    try {
+
+      // Get the list of city suggestions from service.
+      $city_suggestions = culturefeed_search_get_city_suggestions($search_string, TRUE);
+      // We only need the 5 first suggestions.
+      $city_suggestions = array_slice($city_suggestions, 0, 5);
+      foreach ($city_suggestions as $city_key => $city_suggestion) {
+        $matches[] = array(
+          'label' => check_plain($city_suggestion),
+          'category' => '',
+          'suggestion' => $city_suggestion,
+          'type' => 'city',
+        );
+      }
+
+      // Get the list of actor suggestions from service.
+      $actor_suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('actor'), FALSE);
+      // @todo: only use suggestions for the actortypes saved in block configure.
+      if ($actor_suggestions->hasSuggestions()) {
+        foreach ($actor_suggestions as $actor_key => $actor_suggestion) {
+          // We only need the 5 first suggestions.
+          if($actor_key < 5) {
+            $actor_path = culturefeed_search_detail_url('actor', $actor_suggestion->getCdbid(), $actor_suggestion->getTitle());
+            $matches[] = array(
+              'label' => check_plain($actor_suggestion->getTitle()),
+              'category' => t('Directly to'),
+              'suggestion' => $actor_path,
+              'type' => 'actor',
+            );
+          }
+        }
+      }
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_search_ui', $e);
+    }
+  }
+
+  drupal_json_output($matches);
+
+}
