@@ -94,10 +94,6 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   // Delete the cookie.
   user_cookie_delete('calendar');
 
-  // Set messages.
-  $message = "Added " . $added . " activities to your OuTcalendar. Skipped " . $skipped . " activities.";
-  drupal_set_message($message);
-
   // Proceed to the calendar.
   drupal_goto('culturefeed/calendar');
 }
@@ -108,8 +104,6 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
-  $params['submit'] = 'culturefeed_calendar_add_to_calendar_form_submit';
   $params['title'] = t('Add !title to your OutCalendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
@@ -119,11 +113,18 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
     $form = drupal_get_form('culturefeed_calendar_form', $params);
   }
   else {
-    culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
-    drupal_set_message(t('The event has been added to your OuTcalendar.'));
+    try {
+      culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
+      drupal_set_message(t('The event has been added to your OuTcalendar.'));
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('There was an error while adding to your OuTcalendar'), 'error');
+    }
   }
 
   if ($request_type == 'ajax') {
+
+    // No form should be shown, redirect to the detailpage.
     $commands = array();
     if ($params['get_form']) {
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
@@ -154,9 +155,8 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'ajax') {
 
   $event = culturefeed_agenda_event_load($activity->nodeId);
+
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['validate'] = 'culturefeed_calendar_add_to_calendar_form_validate';
-  $params['submit'] = 'culturefeed_calendar_edit_calendar_event_form_submit';
   $params['title'] = t('Change !title in your OutCalendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Update event');
   $params['use_ajax'] = $request_type == 'ajax';
@@ -168,32 +168,6 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   if ($request_type == 'ajax') {
     $commands = array();
     $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    print ajax_render($commands);
-    exit;
-  }
-  else {
-    return $form;
-  }
-
-}
-
-/**
- * Page callback to delete events from the calendar.
- */
-function culturefeed_calendar_delete_calendar_event($activity, $request_type = 'ajax') {
-
-  $event = culturefeed_agenda_event_load($activity->nodeId);
-  $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Evenement verwijderen');
-  $params['activity'] = $activity;
-  $params['use_ajax'] = $request_type == 'ajax';
-
-  $form = drupal_get_form('culturefeed_calendar_delete_form', $params);
-
-  if ($request_type == 'ajax') {
-    $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-
     print ajax_render($commands);
     exit;
   }
@@ -254,19 +228,29 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 
   $form['errors'] = array(
     '#type' => 'markup',
-    '#markup' => '<div id="add-to-calendar-ajax"></div>'
+    '#markup' => '<div id="add-to-calendar-errors"></div>',
+    '#weight' => -20,
   );
 
   $form['actions'] = array(
     '#type' => 'actions',
   );
 
+  $submit_function = isset($params['activity']) ? 'culturefeed_calendar_edit_calendar_event_form_submit' : 'culturefeed_calendar_add_to_calendar_form_submit';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => $params['button_text'],
     '#name' => 'add',
-    '#submit' => array($params['submit']),
-    '#validate' => array($params['validate']),
+    '#submit' => array($submit_function),
+    '#validate' => array('culturefeed_calendar_form_validate'),
+  );
+
+  $form['actions']['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t("Cancel"),
+    '#name' => 'cancel',
+    '#submit' => array($submit_function),
+    '#limit_validation_errors' => array(),
   );
 
   if ($params['use_ajax']) {
@@ -274,18 +258,179 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       'callback' => 'culturefeed_calendar_form_ajax',
       'wrapper' => 'calendar-form',
     );
+    $form['actions']['cancel']['#ajax'] = array(
+      'callback' => 'culturefeed_calendar_form_ajax',
+      'wrapper' => 'calendar-form',
+    );
   }
-
-  $form['actions']['cancel'] = array(
-    '#type' => 'submit',
-    '#value' => t("Cancel"),
-    '#name' => 'cancel',
-    '#submit' => array($params['submit']),
-  );
 
   $form_state['params'] = $params;
 
   return $form;
+}
+
+/**
+ * Ajax callback for the calendar form.
+ */
+function culturefeed_calendar_form_ajax($form, $form_state) {
+
+  // When editing, activity is passed; after edit, return to the calendar page.
+  if (isset($form_state['params']['activity'])) {
+    $url = url('culturefeed/calendar');
+  }
+  // After adding, return to event detail.
+  else {
+    $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
+  }
+
+  $commands = array();
+  if (empty($form_state['params']['validation_error'])) {
+    $commands[] = culturefeed_ajax_command_goto($url);
+  }
+  else {
+    $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
+    $commands[] = ajax_command_html('#add-to-calendar-errors', theme('status_messages'));
+  }
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+
+}
+
+/**
+ * Validate the add to calendar form.
+ */
+function culturefeed_calendar_form_validate(&$form, &$form_state) {
+
+  $form_state['params']['validation_error'] = FALSE;
+
+  if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
+
+    $date = strtotime($form_state['values']['date']);
+    $date_from = strtotime($form_state['params']['date_from']);
+    $date_to = strtotime($form_state['params']['date_to']);
+
+    if ($date <= time()) {
+      form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
+      $form_state['params']['validation_error'] = TRUE;
+    }
+    // Check if the chosen date is between the start and end date of the event.
+    elseif (($date < $date_from) || ($date > $date_to)) {
+      form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
+      $form_state['params']['validation_error'] = TRUE;
+    }
+    // Check if the event is opened on the chosen day.
+    elseif (!empty($form_state['params']['week_scheme'])) {
+      $week_scheme = $form_state['params']['week_scheme'];
+      $day = strtolower(date('l', $date));
+      $day_allowed = $week_scheme->getDay($day)->getopenType() == 'closed' ? FALSE : TRUE;
+
+      if (!$day_allowed) {
+        $form_state['params']['validation_error'] = TRUE;
+        form_set_error('date', t('The event is closed on ') . t($day) . '. Please chose another day.');
+      }
+    }
+  }
+}
+
+/**
+ * Submit the add to calendar form.
+ */
+function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
+
+  $node_title = $form_state['params']['node_title'];
+  $node_id = $form_state['params']['node_id'];
+  $form_state['redirect'] = 'agenda/e/' . $node_title . '/' . $node_id;
+
+  $date = $form_state['values']['date'];
+  if ($form_state['triggering_element']['#name'] == 'add') {
+
+    try {
+      culturefeed_calendar_add_activity($node_id, $node_title, $date);
+      drupal_set_message(t('The event has been added to your OuTcalendar.'));
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('There was an error while adding to your OuTcalendar'), 'error');
+    }
+
+  }
+}
+
+/**
+ * Submit handler for editing calendar events.
+ */
+function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_state) {
+
+  if ($form_state['triggering_element']['#name'] == 'cancel') {
+    $form_state['redirect'] = 'culturefeed/calendar';
+    return;
+  }
+
+  $activity = $form_state['params']['activity'];
+  $date = $form_state['values']['date'];
+
+  // Not numeric id = activity on service.
+  $success = TRUE;
+  if (!is_numeric($activity->id) != 0) {
+    try {
+
+      DrupalCultureFeed::deleteActivity($activity->id);
+
+      $selection = new stdClass();
+      $selection->calendar_date = strtotime($date);
+
+      $new_activity = $activity;
+      $new_activity->value = json_encode($selection);
+      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
+
+      DrupalCultureFeed::createActivity($new_activity);
+    }
+    catch (Exception $e) {
+      $success = FALSE;
+      watchdog_exception('culturefeed_calendar', $e);
+    }
+  }
+  // No uuid = anonymous user. Update in cookie.
+  else {
+    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
+  }
+
+  if ($success) {
+    drupal_set_message(t('Your calendar event was updated.'));
+  }
+  else {
+    drupal_set_message(t('An error occured while saving your calendar'), 'error');
+  }
+
+  if (!$form_state['params']['use_ajax']) {
+    $form_state['redirect'] = 'culturefeed/calendar';
+  }
+
+}
+
+/**
+ * Page callback to delete events from the calendar.
+ */
+function culturefeed_calendar_delete_calendar_event($activity, $request_type = 'ajax') {
+
+  $event = culturefeed_agenda_event_load($activity->nodeId);
+  $params = _culturefeed_calendar_get_event_params($event);
+  $params['title'] = t('Evenement verwijderen');
+  $params['activity'] = $activity;
+  $params['use_ajax'] = $request_type == 'ajax';
+
+  $form = drupal_get_form('culturefeed_calendar_delete_form', $params);
+
+  if ($request_type == 'ajax') {
+    $commands = array();
+    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
+
+    print ajax_render($commands);
+    exit;
+  }
+  else {
+    return $form;
+  }
+
 }
 
 /**
@@ -332,41 +477,12 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
 }
 
 /**
- * Ajax callback for the calendar form.
- */
-function culturefeed_calendar_form_ajax($form, $form_state) {
-
-  // When editing, activity is passed; after edit, return to the calendar page.
-  if (isset($form_state['params']['activity'])) {
-    $url = '/culturefeed/calendar';
-  }
-  // After adding, return to event detail.
-  else {
-    $url = culturefeed_search_detail_url('event', $form_state['params']['node_id'], $form_state['params']['node_title']);
-  }
-
-  $commands = array();
-  if (empty($form_state['params']['validation_error'])) {
-    $commands[] = culturefeed_ajax_command_goto($url);
-  }
-  else {
-    $commands[] = ajax_command_html('#calendar-form', drupal_render($form));
-    $commands[] = ajax_command_html('#add-to-calendar-ajax', theme('status_messages'));
-  }
-
-  return array('#type' => 'ajax', '#commands' => $commands);
-
-}
-
-/**
  * Ajax callback for the calendar delete form.
  */
 function culturefeed_calendar_delete_form_ajax($form, $form_state) {
 
-  $url = '/culturefeed/calendar';
-
   $commands = array();
-  $commands[] = culturefeed_ajax_command_goto($url);
+  $commands[] = culturefeed_ajax_command_goto(url('culturefeed/calendar'));
 
   print ajax_render($commands);
   exit;
@@ -374,127 +490,13 @@ function culturefeed_calendar_delete_form_ajax($form, $form_state) {
 }
 
 /**
- * Validate the add to calendar form.
- */
-function culturefeed_calendar_add_to_calendar_form_validate(&$form, &$form_state) {
-
-  $form_state['params']['validation_error'] = FALSE;
-
-  if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
-
-    $date = strtotime($form_state['values']['date']);
-    $date_from = strtotime($form_state['params']['date_from']);
-    $date_to = strtotime($form_state['params']['date_to']);
-
-    if ($date <= time()) {
-      form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
-      $form_state['params']['validation_error'] = TRUE;
-    }
-    // Check if the chosen date is between the start and end date of the event.
-    elseif (($date < $date_from) || ($date > $date_to)) {
-      form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
-      $form_state['params']['validation_error'] = TRUE;
-    }
-    // Check if the event is opened on the chosen day.
-    elseif (!empty($form_state['params']['week_scheme'])) {
-      $week_scheme = $form_state['params']['week_scheme'];
-      $day = strtolower(date('l', $date));
-      $day_allowed = $week_scheme->getDay($day)->getopenType() == 'closed' ? FALSE : TRUE;
-
-      if (!$day_allowed) {
-        $form_state['params']['validation_error'] = TRUE;
-        form_set_error('date', t('The event is closed on ') . t($day) . '. Please chose another day.');
-      }
-    }
-  }
-}
-
-/**
- * Submit the add to calendar form.
- */
-function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
-
-  $node_title = $form_state['params']['node_title'];
-  $node_id = $form_state['params']['node_id'];
-
-  $date = $form_state['values']['date'];
-  if ($form_state['triggering_element']['#name'] == 'add') {
-
-    culturefeed_calendar_add_activity($node_id, $node_title, $date);
-    drupal_set_message(t('The event has been added to your OuTcalendar.'));
-
-    if (!$form_state['params']['use_ajax']) {
-      drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
-    }
-
-  }
-  elseif ($form_state['triggering_element']['#name'] == 'cancel') {
-    drupal_goto('agenda/e/' . $node_title . '/' . $node_id);
-  }
-}
-
-/**
- * Submit handler for editing calendar events.
- */
-function culturefeed_calendar_edit_calendar_event_form_submit($form, $form_state) {
-
-  if ($form_state['triggering_element']['#name'] == 'cancel') {
-    drupal_set_message(t('Your calendar event was not changed.'));
-    drupal_goto('culturefeed/calendar');
-    return;
-  }
-
-  $activity = $form_state['params']['activity'];
-  $date = $form_state['values']['date'];
-
-  // Not numeric id = activity on service.
-  $success = TRUE;
-  if (!is_numeric($activity->id) != 0) {
-    try {
-
-      DrupalCultureFeed::deleteActivity($activity->id);
-
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-
-      $new_activity = $activity;
-      $new_activity->value = json_encode($selection);
-      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
-
-      DrupalCultureFeed::createActivity($new_activity);
-    }
-    catch (Exception $e) {
-      $success = FALSE;
-      watchdog_exception('culturefeed_calendar', $e);
-    }
-  }
-  // No uuid = anonymous user. Update in cookie.
-  else {
-    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
-  }
-
-  if ($success) {
-    drupal_set_message(t('Your calendar event was updated.'));
-  }
-  else {
-    drupal_set_message(t('An error occured while saving your calendar'), 'error');
-  }
-
-  if (!$form_state['params']['use_ajax']) {
-    drupal_goto('culturefeed/calendar');
-  }
-
-}
-
-
-/**
  * Submit handler for deleting calendar events.
  */
-function culturefeed_calendar_delete_form_submit($form, $form_state) {
+function culturefeed_calendar_delete_form_submit($form, &$form_state) {
+
+  $form_state['redirect'] = 'culturefeed/calendar';
 
   if ($form_state['triggering_element']['#name'] == 'cancel') {
-    drupal_set_message(t('Your calendar event was not deleted.'));
-    drupal_goto('culturefeed/calendar');
     return;
   }
 
@@ -523,9 +525,6 @@ function culturefeed_calendar_delete_form_submit($form, $form_state) {
     drupal_set_message(t('An error occured while deleting the event from your calendar'), 'error');
   }
 
-  if (!$form_state['params']['use_ajax']) {
-    drupal_goto('culturefeed/calendar');
-  }
 }
 
 /**

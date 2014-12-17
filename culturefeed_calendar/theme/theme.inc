@@ -27,16 +27,17 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     }
   }
 
-  $content = '';
+  $variables['not_yet_planned'] = '';
+  $variables['planned'] = '';
   if (!empty($activities_by_type)) {
     // Print the 'LIKED' activities.
     if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
-      $content .= theme('culturefeed_calendar_activities_liked',
+      $variables['not_yet_planned'] = theme('culturefeed_calendar_activities_liked',
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
     }
     // Print the 'IK GA' activities.
     if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
-      $content .= theme('culturefeed_calendar_activities_going',
+      $variables['planned'] = theme('culturefeed_calendar_activities_going',
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
     }
     // Print the save cookie button.
@@ -47,8 +48,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     }
   }
 
-  $variables['content'] = $content;
-
 }
 
 /**
@@ -57,8 +56,18 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables) {
 
+  drupal_add_js(array(
+    'culturefeed' => array(
+      'currentEventId' => $variables['button']['item_id'],
+    ),
+  ), 'setting');
+
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.cookie');
+
+  if (!culturefeed_is_culturefeed_user()) {
+    drupal_add_css(drupal_get_path('module', 'culturefeed_calendar') . '/css/culturefeed_calendar_anonymous.css');
+  }
 
   if ($variables['button']['action'] == 'view') {
 
@@ -92,7 +101,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
  * Theme the total activities profile box item.
  */
 function theme_culturefeed_calendar_total_activities_profile_box_item($variables) {
-  return l(format_plural($variables['total'], '@count unsaved activity', '@count unsaved activities'), 'culturefeed/calendar');
+  return l(format_plural($variables['total'], '<small class="activity-count">@count</small> unsaved activity', '<small class="activity-count">@count</small> unsaved activities'), 'culturefeed/calendar', array('html' => TRUE));
 }
 
 /**
@@ -129,16 +138,13 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
   $variables['item'] = $item;
 
   module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-  $function = 'culturefeed_agenda_preprocess_culturefeed_event_summary';
-  if (function_exists($function)) {
-    $function($variables);
-  }
+  culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
 
   // Plan link.
-  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/'. $activity_id . '/nojs';
+  $variables['edit_link']['url'] = url('culturefeed/calendar/edit/'. $activity_id . '/nojs');
   $variables['edit_link']['text'] = t('Inplannen');
   // Remove link.
-  $variables['delete_link']['url'] = '/culturefeed/calendar/delete/'. $activity_id . '/nojs';
+  $variables['delete_link']['url'] = url('culturefeed/calendar/delete/'. $activity_id . '/nojs');
   $variables['delete_link']['text'] = t('Verwijderen');
 
 }
@@ -166,14 +172,13 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
   }
 
   $activity_id = $activity->id;
-  $node_id = $activity->nodeId;
 
   // Edit link.
-  $variables['edit_link']['url'] = '/culturefeed/calendar/edit/'. $activity_id . '/nojs';
+  $variables['edit_link']['url'] = url('culturefeed/calendar/edit/'. $activity_id . '/nojs');
   $variables['edit_link']['text'] = t('Verplaatsen');
   $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
   // Remove link.
-  $variables['delete_link']['url'] = '/culturefeed/calendar/delete/'. $activity_id . '/nojs';
+  $variables['delete_link']['url'] = url('culturefeed/calendar/delete/'. $activity_id . '/nojs');
   $variables['delete_link']['text'] = t('Verwijderen');
 
 }
@@ -184,7 +189,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
  * @param type $variables
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$variables) {
-  drupal_add_css(drupal_get_path('module', 'culturefeed_calendar') . '/css/culturefeed_calendar.css');
+
   $variables['url'] = 'culturefeed/oauth/connect';
   $variables['options'] = array(
     'query' => array(

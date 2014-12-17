@@ -1,63 +1,69 @@
 
 (function($) {
 
-  Drupal.behaviors.culturefeedCalendar = {
-    attach: function (context, settings) {
+  Drupal.CultureFeed = Drupal.CultureFeed || {};
+  Drupal.CultureFeed.Calendar = {};
+  Drupal.CultureFeed.Calendar.cookieJson = null;
 
-      Drupal.setAddViewCalendarButtons();
-      Drupal.setTotalCookieActivitiesLabel();
-    }
-  };
-
-  Drupal.setAddViewCalendarButtons = function () {
-
-    // Set default buttons.
-    $(".add-to-calendar").show();
-    $(".view-calendar").hide();
+  $(document).ready(function() {
 
     if ($.cookie('Drupal.visitor.calendar') !== null) {
+      Drupal.CultureFeed.Calendar.cookieJson = jQuery.parseJSON($.cookie('Drupal.visitor.calendar'));
+    }
 
-      // Get cookie calendar information.
-      cookie = jQuery.parseJSON($.cookie('Drupal.visitor.calendar'));
+    Drupal.CultureFeed.Calendar.initButtons();
+    Drupal.CultureFeed.Calendar.showTotalAdded();
+  });
+
+  /**
+   * Init the calendar buttons.
+   */
+  Drupal.CultureFeed.Calendar.initButtons = function () {
+
+    if (Drupal.CultureFeed.Calendar.cookieJson !== null) {
 
       // Loop through the cookie event objects and store the nodeId's in an array.
       var ids = [];
-      $.each(cookie, function(index, value) {
+      $.each(Drupal.CultureFeed.Calendar.cookieJson, function(index, value) {
         ids.push(value["nodeId"]);
       });
 
-      // Get the id of the current event (from the url)
-      var pathArray = window.location.pathname.split( '/' );
-      var id = pathArray[4];
-
       // Change buttons if needed.
-      if ($.inArray(id, ids) !== -1) {
+      if ($.inArray(Drupal.settings.culturefeed.currentEventId, ids) !== -1) {
         $(".add-to-calendar").hide();
         $(".view-calendar").show();
       }
+      else {
+        $(".add-to-calendar").show();
+        $(".view-calendar").hide();
+      }
+    }
+    else {
+      $(".add-to-calendar").show();
     }
   }
 
-  Drupal.setTotalCookieActivitiesLabel = function() {
+  /**
+   * Show how many activites are currently stored in the cookie.
+   */
+  Drupal.CultureFeed.Calendar.showTotalAdded = function() {
 
-    // Set default state.
-    $("small.activity-count").hide();
+    var $calendarItem = $('#block-culturefeed-ui-profile-box').find('li.activities');
+    $calendarItem.hide();
 
     // Get cookie calendar information.
-    if ($.cookie('Drupal.visitor.calendar') !== null) {
-
-      var cookie = jQuery.parseJSON($.cookie('Drupal.visitor.calendar'));
+    if (Drupal.CultureFeed.Calendar.cookieJson !== null) {
 
       // Count the cookie event objects.
       var total = 0;
-      $.each(cookie, function(index, value) {
+      $.each(Drupal.CultureFeed.Calendar.cookieJson, function(index, value) {
         total++;
       });
 
       // set the label and value if needed.
       if (total > 0) {
         $("span.unread-activities").text(total);
-        $("small.activity-count").show();
+        $calendarItem.show();
       }
     }
   }

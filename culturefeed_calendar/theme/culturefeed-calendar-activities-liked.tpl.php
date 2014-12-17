@@ -5,13 +5,11 @@
  */
 ?>
 
-<div class="calendar-activities-liked-wrapper row">
-<h4><?php print t('Nog niet ingepland'); ?></h4>
-<div class="col-xs-12">
-  <table class="table table-bordered">
+<div class="calendar-activities-liked-wrapper">
+  <h4><?php print t('Nog niet ingepland'); ?></h4>
+
   <?php foreach ($activities as $activity): ?>
     <?php print theme('culturefeed_calendar_activity_mini', array('activity' => $activity)); ?>
   <?php endforeach ?>
-  </table>
-</div>
+  
 </div>

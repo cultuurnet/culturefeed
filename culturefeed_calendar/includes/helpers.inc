@@ -86,6 +86,7 @@ function culturefeed_calendar_get_user_activities($use_search = FALSE) {
  * Render the buttons to go to the calendar page or add item form.
  */
 function culturefeed_calendar_render_calendar_buttons($item) {
+
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
   $locations = array('content', 'footer');
@@ -95,15 +96,16 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $button['item_id'] = $id;
 
-  foreach($locations as $location) {
+  foreach ($locations as $location) {
 
     $button['location'] = $location;
 
+    // Show the correct button for authenticated users.
     if ($authenticated) {
 
       $ids_to_check = array();
       $activities = culturefeed_calendar_get_user_activities();
-      if(isset($activities->objects)) {
+      if (isset($activities->objects)) {
         foreach($activities->objects as $key => $activity) {
           $ids_to_check[] = $activity->nodeId;
         }
@@ -115,11 +117,12 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       else {
         $action = 'add';
       }
+
       $button['action'] = $action;
       $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
     }
+    // Show both buttons for anonymous users. JS will show the correct one.
     else {
-      drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar.js');
       foreach ($actions as $action) {
         $button['action'] = $action;
         $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
