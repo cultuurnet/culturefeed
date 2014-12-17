@@ -138,6 +138,14 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
       // Get the list of city suggestions from service.
       $city_suggestions = culturefeed_search_get_city_suggestions($search_string, TRUE);
       // We only need the 5 first suggestions.
+      if (empty($city_suggestions)) {
+        $matches[] = array(
+          'label' => '',
+          'category' => t('No postal or city found.'),
+          'suggestion' => '',
+          'type' => 'empty',
+        );
+      }
       $city_suggestions = array_slice($city_suggestions, 0, 5);
       foreach ($city_suggestions as $city_key => $city_suggestion) {
         $matches[] = array(
