@@ -747,7 +747,7 @@ function culturefeed_search_ui_block_city_actor_facet_form_submit($form, &$form_
 
     $values = explode('|', $form_state['values']['city_actor']);
 
-    if($values[1] == 'actor'){
+    if(isset($values[1]) && $values[1] == 'actor'){
       $form_state['redirect'] = $values[0];
     }
     else {
