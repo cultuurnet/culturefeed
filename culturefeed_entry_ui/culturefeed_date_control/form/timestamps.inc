@@ -107,6 +107,7 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
 
     $time = isset($timestamp['start_time']) && $timestamp['start_time'] ? culturefeed_date_control_implode_time($timestamp['start_time'], $date) : '';
     $element['stamps'][$key]['start_time'] = array(
+      '#attributes' => array('class' => array('time-select-complete-minutes')),
       '#date_format' => $element['#select_time_format'],
       '#date_increment' => $element['#select_time_increment'],
       '#default_value' => $time,
@@ -117,6 +118,7 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
     $time = isset($timestamp['end_time']) && $timestamp['end_time'] ? culturefeed_date_control_implode_time($timestamp['end_time'], $date) : '';
     $element['stamps'][$key]['end_time'] = array(
       '#access' => TRUE,
+      '#attributes' => array('class' => array('time-select-complete-minutes')),
       '#date_format' => $element['#select_time_format'],
       '#date_increment' => $element['#select_time_increment'],
       '#default_value' => $time,
@@ -141,11 +143,15 @@ function culturefeed_date_control_timestamps_process(array $element, array &$for
     '#value' => t('+ add date'),
   ) + $ajax_button;
 
+  $element['#attached'] = array(
+    'js' => array(
+      drupal_get_path('module', 'culturefeed_date_control') . '/js/culturefeed_date_control_time_select.js',
+    ),
+  );
+
   if (!isset($element['#date_control'])) {
-    $element['#attached'] = array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control.css',
-      ),
+    $element['#attached']['css'] = array(
+      drupal_get_path('module', 'culturefeed_date_control') . '/css/culturefeed_date_control.css',
     );
   }
 
