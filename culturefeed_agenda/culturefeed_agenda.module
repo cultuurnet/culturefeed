@@ -179,6 +179,15 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['admin/config/culturefeed/agenda'] = array(
+    'title' => 'CultureFeed Agenda',
+    'description' => 'Change CultureFeed Agenda settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_agenda_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
   // Autocomplete for event / production suggestions
   $items['autocomplete/culturefeed/activity-suggestion'] = array(
     'page callback' => 'culturefeed_agenda_activity_suggestion_autocomplete_page',

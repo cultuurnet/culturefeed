@@ -1,4 +1,4 @@
-cf-review-read<?php
+<?php
 /**
  * @file
  * Template for the summary of a production.
