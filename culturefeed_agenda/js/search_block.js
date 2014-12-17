@@ -1,7 +1,7 @@
 (function ($) {
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
-  Drupal.CultureFeed.Agenda = {};
+  Drupal.CultureFeed.Agenda = Drupal.CultureFeed.Agenda || {};
 
   $(document).ready(function() {
 

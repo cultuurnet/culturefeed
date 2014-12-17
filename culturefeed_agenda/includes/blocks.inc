@@ -28,6 +28,36 @@ function culturefeed_agenda_block_related_activities() {
 }
 
 /**
+ * Block to show the nearby events for the user's location.
+ */
+function culturefeed_agenda_block_nearby_activities() {
+
+  // Block title.
+  $title = t('Near you');
+
+  // Ensure location is set in the cookie.
+  drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
+  drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/common.js');
+  drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/my_location.js');
+
+  // Get location info form cookie.
+  if (isset($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    $title .= ' ' . '<span class="text-muted">// ' . $user_location->postal . ' ' . $user_location->city .'</span>';
+  }
+
+  // Load the block.
+  $config = array(
+    'title' => $title,
+    'id' => 'nearby-activities',
+    'path' => 'ajax/culturefeed/nearby-activities',
+  );
+
+  return culturefeed_ui_block_ajaxload($config);
+
+}
+
+/**
  * Form callback to show the agenda search block.
  */
 function culturefeed_agenda_search_block_form($form, &$form_state) {
@@ -343,7 +373,9 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
   $form = array();
 
   $form['#attached']['js'] = array(
-    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+    array(
+      'data' => CULTUREFEED_GOOGLE_MAPS_JS_API,
+      'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/actor_autocomplete.js',
     array(
       'data' => array(

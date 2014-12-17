@@ -10,7 +10,6 @@
     $.ajax({
       url : Drupal.settings.culturefeed.actorsSuggestUrl,
       success : function(data, status) {
-        console.log(data);
         if (data.success) {
           $('#actor-search-suggest').html(data.data);
         }
