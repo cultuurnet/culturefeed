@@ -265,6 +265,7 @@ function culturefeed_page_build(&$page) {
 
   // Add custom dimensions.
   $gtm_globals['consumer_key'] = variable_get('culturefeed_api_application_key', '');
+  $gtm_globals['consumer_name'] = variable_get('site_name', '');
   $gtm_globals['login_status'] = user_is_logged_in();
 
   // Set the script code.
