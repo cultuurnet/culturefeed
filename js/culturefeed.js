@@ -28,4 +28,31 @@ Drupal.behaviors.culturefeedPopupConnect = {
   }
 };
 
+
+
+if (Drupal.ajax) {
+
+  /**
+   * Command to provide a bridge between culturefeed_bootstrap and framework.
+   */
+  Drupal.ajax.prototype.commands.culturefeedModal = function (ajax, response, status) {
+
+    if (Drupal.ajax.prototype.commands.bootstrapModal != undefined) {
+      Drupal.ajax.prototype.commands.bootstrapModal(ajax, response, status);
+    }
+    else {
+      Drupal.ajax.prototype.commands.insert(ajax, response, status);
+    }
+
+  };
+
+  /**
+   * Command to reload current page.
+   */
+  Drupal.ajax.prototype.commands.culturefeedGoto = function (ajax, response, status) {
+    window.location.href = response.url;
+  }
+
+}
+
 })(jQuery);
