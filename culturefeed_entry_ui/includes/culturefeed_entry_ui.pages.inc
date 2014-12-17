@@ -1565,19 +1565,25 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
 
     $period = $values['when']['date_control']['period'];
 
-    // The dates.
-    try {
-      CultureFeed_Cdb_Data_Calendar::validateDate($period['start_date']);
-      CultureFeed_Cdb_Data_Calendar::validateDate($period['end_date']);
-    } catch (UnexpectedValueException $e) {
-      form_set_error('when][date_control][period', t('Please fill in correct date and time'));
-    }
+    // Form validation hasn't processed the dates values yet, so don't validate.
+    if (!is_array($period['start_date']) && !is_array($period['end_date'])) {
 
-    // Order of dates.
-    $start_date = strtotime($period['start_date']);
-    $end_date = strtotime($period['end_date']);
-    if ($start_date > $end_date) {
-      form_set_error('when][date_control][period', t('Date field is invalid. The end date is earlier than the beginning date.'));
+      // The dates.
+      try {
+        CultureFeed_Cdb_Data_Calendar::validateDate($period['start_date']);
+        CultureFeed_Cdb_Data_Calendar::validateDate($period['end_date']);
+      }
+      catch (UnexpectedValueException $e) {
+        form_set_error('when][date_control][period', t('Please fill in correct date and time'));
+      }
+
+      // Order of dates.
+      $start_date = strtotime($period['start_date']);
+      $end_date = strtotime($period['end_date']);
+      if ($start_date > $end_date) {
+        form_set_error('when][date_control][period', t('Date field is invalid. The end date is earlier than the beginning date.'));
+      }
+
     }
 
   }
@@ -1588,6 +1594,11 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     $timestamps = $values['when']['date_control']['timestamps']['stamps'];
 
     foreach ($timestamps as $key => $timestamp) {
+
+      // Form validation hasn't processed the dates values yet, so don't validate.
+      if (is_array($timestamp['date'])) {
+        continue;
+      }
 
       // The date.
       try {
