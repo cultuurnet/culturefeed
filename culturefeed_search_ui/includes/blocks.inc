@@ -719,8 +719,6 @@ function culturefeed_search_ui_block_city_actor_facet_form($form, $form_state) {
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/city_actor_facet.css';
 
-  $form['#attributes']['class'][] = 'append-button';
-
   $form['city_actor'] = array(
     '#type' => 'textfield',
     '#size' => 28,
@@ -732,14 +730,14 @@ function culturefeed_search_ui_block_city_actor_facet_form($form, $form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
-    '#attributes' => array('class' => array('city-actor-facet-submit', 'element-invisible')),
+    '#attributes' => array('class' => array('city-actor-facet-submit')),
   );
 
   return $form;
 }
 
 /**
- * Submit the where facet form.
+ * Submit the city actor facet form.
  */
 function culturefeed_search_ui_block_city_actor_facet_form_submit($form, &$form_state) {
 

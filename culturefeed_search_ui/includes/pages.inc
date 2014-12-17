@@ -148,13 +148,22 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
         );
       }
 
+      // Get the allowed actor types.
+      $parameters = array();
+      $allowed_categories = variable_get('culturefeed_facet_city_actor_search', NULL);
+      if (!empty($allowed_categories)) {
+        array_walk($allowed_categories, function(&$item) {
+          $item = '"' . $item . '"';
+        });
+        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_actortype_id:(' . implode(' OR ', $allowed_categories) . ')');
+      }
+
       // Get the list of actor suggestions from service.
-      $actor_suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('actor'), FALSE);
-      // @todo: only use suggestions for the actortypes saved in block configure.
+      $actor_suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('actor'), FALSE, $parameters);
       if ($actor_suggestions->hasSuggestions()) {
         foreach ($actor_suggestions as $actor_key => $actor_suggestion) {
           // We only need the 5 first suggestions.
-          if($actor_key < 5) {
+          if  ($actor_key < 5) {
             $actor_path = culturefeed_search_detail_url('actor', $actor_suggestion->getCdbid(), $actor_suggestion->getTitle());
             $matches[] = array(
               'label' => check_plain($actor_suggestion->getTitle()),
@@ -165,6 +174,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
           }
         }
       }
+
     }
     catch (ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_search_ui', $e);
