@@ -5,8 +5,12 @@
  */
 ?>
 
-<?php if (!empty($add_button)) : ?>
-  <?php print $add_button ?>
+<?php if (!empty($save_cookie_button)) : ?>
+  <?php print $save_cookie_button ?>
+<?php endif; ?>
+
+<?php if (!empty($share_calendar_button)) : ?>
+  <?php print $share_calendar_button ?>
 <?php endif; ?>
 
 <div>

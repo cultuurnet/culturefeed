@@ -611,3 +611,23 @@ function _culturefeed_calendar_get_nav_months() {
 
   return $months;
 }
+
+/**
+ * Form to add a button to go to share the calendar page.
+ */
+function culturefeed_calendar_share_calendar_button_form($form, &$form_state) {
+  $form['share_calendar'] = array(
+    '#type' => 'submit',
+    '#value' => t('Share'),
+    '#disabled' => FALSE,
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the share calendar button form.
+ */
+function culturefeed_calendar_share_calendar_button_form_submit($form, &$form_state) {
+  
+}

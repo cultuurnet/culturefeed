@@ -8,6 +8,7 @@
 
 function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
 
+  $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $variables['sidebar'] = 'empty';
 
   // Top nav with month names.
@@ -41,11 +42,14 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
     }
     // Print the save cookie button.
-    $authenticated = DrupalCultureFeed::isCultureFeedUser();
     if (!$authenticated && !empty($activities->objects)) {
-      $form = drupal_get_form('culturefeed_calendar_save_cookie_form');
-      $variables['add_button'] = drupal_render($form);
+      $save_cookie_button_form = drupal_get_form('culturefeed_calendar_save_cookie_form');
+      $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
     }
+  }
+  if ($authenticated) {
+    $share_calendar_button_form = drupal_get_form('culturefeed_calendar_share_calendar_button_form');
+    $variables['share_calendar_button'] = drupal_render($share_calendar_button_form);
   }
 
 }
