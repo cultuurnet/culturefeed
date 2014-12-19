@@ -387,8 +387,13 @@ class CultureFeedSearchPage {
     if (isset($params['coordinates'])) {
 
       $coordinates = explode(',', $params['coordinates']);
-
-      $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      
+      if (isset($params['distance'])) {
+        $distance = new Parameter\Spatial\Distance($params['distance']);
+      }
+      else {
+        $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      }
       $point = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $field = new Parameter\Spatial\SpatialField('physical_gis');
       $this->parameters[] = new Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
