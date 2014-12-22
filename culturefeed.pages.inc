@@ -108,8 +108,11 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       $account = culturefeed_create_user($cf_account, $user);
     }
     else {
-      // If the drupal user already exist we update the reference in the culturefeed_user table
-      if ($user->uid && $user->uid != $uid) {
+      
+      $cf_uid = db_query("SELECT cf_uid FROM {culturefeed_user} cfu WHERE cfu.uid = :uid", array(':uid' => $user->uid))->fetchField();
+      
+      // If the drupal user already exist with another cf_uid we update the reference 
+      if (!$cf_uid && $user->uid && $user->uid != $uid) {
         $query = db_update('culturefeed_user')
           ->condition('cf_uid', $cf_account->id)
           ->fields(array('uid' => $user->uid))
