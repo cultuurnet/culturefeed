@@ -73,10 +73,6 @@
   clear: left;
 }
 
-#when-ajax-wrapper {
-  clear: left;
-}
-
 .link-field {
   float: left;
 }
@@ -154,41 +150,6 @@ input.add-more-link:hover {
 #edit-language .form-type-select {
   width: 35%;
   float: left;
-}
-
-/* dates */
-
-.when-datetimes .container-inline-date .date-padding {
-  padding: 0;
-  float: none;
-}
-
-.when-datetimes input.add-more-link {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.when-datetimes-table {
-  width: auto !important;
-}
-
-.when-datetimes-table td {
-  white-space: nowrap;
-  padding: 4px;
-  vertical-align: top;
-}
-
-.when-datetimes-table td .container-inline-date .form-item .form-item {
-  display: inline-block;
-  float: none;
-}
-
-.when-datetimes-table td .container-inline-date .form-item {
-  vertical-align: top;
-}
-
-.when-datetimes-table .ui-icon {
-  display: inline-block;
 }
 
 /* Photo */

@@ -5,6 +5,19 @@
  **/
 
 /**
+ * Return all the known agenda entity types.
+ */
+function culturefeed_agenda_known_entity_types() {
+
+  return array(
+    'event' => t('event', array(), array('context' => 'culturefeed-facets')),
+    'production' => t('production', array(), array('context' => 'culturefeed-facets')),
+    'actor' => t('actor', array(), array('context' => 'culturefeed-facets')),
+  );
+
+}
+
+/**
  * Get the current active agenda object.
  * @param $path
  *   Path to load the active object of. Defaults to current path.
@@ -260,7 +273,7 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'city' => isset($location['city']) ? $location['city'] : '',
       'venue' => isset($location['title']) ? $location['title'] : '',
     );
-    
+
     // Extend with an url to the actor.
     // This can be an organiser, or a location.
     $organiser = $cdb_item->getOrganiser();
@@ -543,8 +556,8 @@ function culturefeed_agenda_load_events_of_production($production, $future_only 
 function culturefeed_agenda_parse_weekscheme(CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme) {
 
   $weekscheme_array = array();
-  
-  foreach ($weekscheme->getDays() as $day) {  
+
+  foreach ($weekscheme->getDays() as $day) {
     $weekscheme_array[$day->getDayName()] = array(
       'type' => $day->getOpenType(),
     );
@@ -602,14 +615,14 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 }
 
 function culturefeed_agenda_group_timestamps(&$timestamps) {
-  
+
   for ($i=0; $i<count($timestamps); $i++) {
     if (isset($timestamps[$i+1])) {
       $this_timestamp = $timestamps[$i];
       $next_timestamp = $timestamps[$i+1];
 
       if ($this_timestamp['date'] == $next_timestamp['date']) {
-        if (!is_array($timestamps[$i]['begintime'])){  
+        if (!is_array($timestamps[$i]['begintime'])){
           unset($timestamps[$i]['begintime']);
           $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
           $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
@@ -633,33 +646,33 @@ function culturefeed_agenda_parse_calendar($calendar) {
   $calendar->rewind();
 
   if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
-    
+
     $calendar_array = array(
       'type' => 'period',
       'period_start' => $calendar->current()->getDateFrom(),
       'period_end' => $calendar->current()->getDateTo(),
     );
 
-    if ($calendar->current()->getWeekScheme()) {  
+    if ($calendar->current()->getWeekScheme()) {
       $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->current()->getWeekScheme());
     }
     if ($calendar->current()->getExceptions()) {
       $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->current()->getExceptions());
     }
-   
+
   }
   elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $calendar_array = array(
       'type' => 'permanent',
     );
-  
+
     if ($calendar->getWeekScheme()) {
       $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->getWeekScheme());
     }
     if ($calendar->getExceptions()) {
       $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->getExceptions());
     }
-  
+
   }
   elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
     $calendar_array = array(
@@ -669,4 +682,48 @@ function culturefeed_agenda_parse_calendar($calendar) {
     $calendar_array['timestamps'] = culturefeed_agenda_group_timestamps($calendar_array['timestamps']);
   }
   return $calendar_array;
+}
+
+/**
+ * Function to search for 5 actors in the neighbourhood for a given eventtype.
+ * @param type $event
+ *  The tid of the eventtype.
+ * @return string
+ *  A string with html links.
+ */
+function culturefeed_agenda_get_actors_nearby_for_event($event) {
+
+  $type = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $event, ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+  $coordinates = json_decode($_COOKIE['uitid_location']);
+  $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->latitude, $coordinates->longitude);
+  $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+  $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(5);
+  $parameters[] = new \CultuurNet\Search\Parameter\Query($type);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+
+  try {
+
+    $result = culturefeed_get_search_service()->search($parameters);
+
+    if ($result->getTotalCount() == 0) {
+      return;
+    }
+
+    $items = $result->getItems();
+
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  $actors = array(
+    '#theme' => 'culturefeed_agenda_actors_nearby',
+    '#items' => $items,
+  );
+
+  return $actors;
 }

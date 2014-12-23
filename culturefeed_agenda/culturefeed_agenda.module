@@ -90,6 +90,13 @@ function culturefeed_agenda_theme() {
     'path' => $path,
   );
 
+  $theme['culturefeed_agenda_actors_nearby'] = array(
+    'variables' => array('items' => array()),
+    'template' => 'culturefeed-agenda-actors-nearby',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
   return $theme;
 
 }
@@ -172,6 +179,15 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['admin/config/culturefeed/agenda'] = array(
+    'title' => 'CultureFeed Agenda',
+    'description' => 'Change CultureFeed Agenda settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_agenda_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
+
   // Autocomplete for event / production suggestions
   $items['autocomplete/culturefeed/activity-suggestion'] = array(
     'page callback' => 'culturefeed_agenda_activity_suggestion_autocomplete_page',
@@ -192,6 +208,14 @@ function culturefeed_agenda_menu() {
   $items['ajax/culturefeed/related-activities/%'] = array(
     'page callback' => 'culturefeed_agenda_page_ajax_related_activities',
     'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['autocomplete/culturefeed/agenda/actor-search'] = array(
+    'page callback' => 'culturefeed_agenda_actor_search_autocomplete',
+    'page arguments' => array(4, TRUE),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -284,6 +308,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  $blocks['agenda-actor-search'] = array(
+    'info' => t('Culturefeed agenda: actor search'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
   return $blocks;
 
 }
@@ -359,6 +388,29 @@ function culturefeed_agenda_block_configure($delta) {
     );
 
   }
+  elseif ($delta == 'agenda-actor-search') {
+
+    $options = culturefeed_search_get_actortype_categories();
+    asort($options);
+    $form['agenda_actor_search'] = array(
+      '#title' => t('Available actortype categories.'),
+      '#description' => t('Select the actortype categories that will be used to filter the autocomplete.'),
+      '#type' => 'checkboxes',
+      '#options' => $options,
+      '#default_value' => variable_get('agenda_actor_search'),
+    );
+
+    $visibility_options = culturefeed_search_get_categories_by_domain('eventtype');
+    asort($visibility_options);
+    $form['agenda_actor_search_visibility'] = array(
+      '#title' => t('Visibility settings.'),
+      '#description' => t('Select the eventtypes where tis block may be visible.'),
+      '#type' => 'checkboxes',
+      '#options' => $visibility_options,
+      '#default_value' => variable_get('agenda_actor_search_visibility'),
+    );
+
+  }
 
   return $form;
 
@@ -379,6 +431,10 @@ function culturefeed_agenda_block_save($delta, $edit) {
   }
   elseif ($delta == 'agenda-search-block') {
     variable_set('agenda_search_block_domain_id', $edit['agenda_search_block_domain_id']);
+  }
+  elseif ($delta == 'agenda-actor-search') {
+    variable_set('agenda_actor_search', $edit['agenda_actor_search']);
+    variable_set('agenda_actor_search_visibility', $edit['agenda_actor_search_visibility']);
   }
 
 }
@@ -406,6 +462,8 @@ function culturefeed_agenda_block_view($delta) {
     case 'production-program':
       return culturefeed_agenda_block_production_program();
 
+    case 'agenda-actor-search':
+      return culturefeed_agenda_block_actor_search_facet();
   }
 
   return $block;
@@ -429,7 +487,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
       unset($search_query['actor']);
       $url = url($path, array('query' => $search_query));
       $build['nearby'] = array(
-        '#theme' => 'culturefeed_search_active_filters_item',
+        '#theme' => 'cul  turefeed_search_active_filters_item',
         '#label' => check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
         '#url' => $url,
       );

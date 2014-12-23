@@ -134,7 +134,7 @@ function culturefeed_messages_new_message_form($form, &$form_state, $object = NU
         }
 
         // Always use recipientPage as senderPage in replies
-        if ($object instanceof CultureFeed_Messages_Message && !empty($object->recipientPage)) {
+        if ($object instanceof CultureFeed_Messages_Message && $object->recipientPage instanceof CultureFeed_Cdb_Item_Page) {
               $form['send_as'] = array(
                 '#type' => 'hidden',
                 '#default_value' => $object->recipientPage->getId(),

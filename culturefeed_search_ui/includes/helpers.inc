@@ -7,7 +7,7 @@
 /**
  * Convert a given url to a youtube embed.
  */
-function _culturefeed_search_ui_video_url_to_embed($url, $width, $height) {
+function _culturefeed_search_ui_video_url_to_embed($url) {
 
   // Construct embed url.
   $embed_url = str_replace('watch', 'v', $url);
@@ -21,14 +21,9 @@ function _culturefeed_search_ui_video_url_to_embed($url, $width, $height) {
   $embed_url .= '?fs=1&showinfo=0';
 
   $embed = '';
-  $embed .= '<object width="' . $width . '" height="' . $height . '">';
-  $embed .= '<param name="movie" value="' .  $embed_url . '"></param>';
-  $embed .= '<param name="allowFullScreen" value="true"></param>';
-  $embed .= '<param name="wmode" value="transparent"></param>';
-  $embed .= '<embed src="' .  $embed_url . '"';
-  $embed .= 'type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" allowfullscreen="true" wmode="transparent">';
-  $embed .= '</embed>';
-  $embed .= '</object>';
+  $embed .= '<div class="embed-container">';
+  $embed .= '<iframe src="' .  $embed_url . '" frameborder="0" allowfullscreen></iframe>';
+  $embed .= '</div>';
 
   return $embed;
 
@@ -103,27 +98,19 @@ function culturefeed_search_ui_get_age_range_facet_options() {
   return array(
     0 => array(
       'name' => '0-2 ' . t('year'),
-      'query' => '(agefrom:[0 TO 2])',
+      'query' => '(agefrom:[0 TO 2] OR keywords:"ook voor kinderen")',
     ),
     3 => array(
       'name' => '3-5 ' . t('year'),
-      'query' => '(agefrom:[3 TO 5])',
+      'query' => '(agefrom:[3 TO 5] OR keywords:"ook voor kinderen")',
     ),
     6 => array(
       'name' => '6-8 ' . t('year'),
-      'query' => '(agefrom:[6 TO 8])',
+      'query' => '(agefrom:[6 TO 8] OR keywords:"ook voor kinderen")',
     ),
     9 => array(
       'name' => '9-11 ' . t('year'),
-      'query' => '(agefrom:[9 TO 11])',
-    ),
-    12 => array(
-      'name' => '12-14 ' . t('year'),
-      'query' => '(agefrom:[12 TO 14])',
-    ),
-    15 => array(
-      'name' => '15-17 ' . t('year'),
-      'query' => '(agefrom:[15 TO 17])',
+      'query' => '(agefrom:[9 TO 11] OR keywords:"ook voor kinderen")',
     ),
   );
 }
@@ -317,7 +304,7 @@ function culturefeed_get_search_page($search_type) {
     $pages[$class_name] = new $search_type['class_name']();
     $pages[$class_name]->setResultsPerPage(variable_get('culturefeed_search_ui_pager_items_per_page', CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE));
     $pages[$class_name]->setDefaultSort($search_type['sort_default']);
-    $pages[$class_name]->setGroup(variable_get('culturefeed_search_group', TRUE));
+    $pages[$class_name]->setGroup(variable_get('culturefeed_search_group', 'event_production'));
     $pages[$class_name]->initialize();
   }
   return $pages[$class_name];

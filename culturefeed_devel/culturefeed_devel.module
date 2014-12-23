@@ -107,15 +107,35 @@ function culturefeed_devel_shutdown() {
   }
 
   // Don't add output on ajax / drush / xml requests.
-  $content_type = drupal_get_http_header('content-type');
-  if (drupal_is_cli() || $content_type == 'text/xml' || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-    return;
-  }
-
-  if (variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
+  if (culturefeed_devel_show_log() && variable_get('culturefeed_devel_show_requests', TRUE) && user_access('access culturefeed devel information')) {
     print culturefeed_devel_requests_table($requests, $max_time);
   }
 
+}
+
+/**
+ * Check if the log should be shown.
+ * @return bool
+ */
+function culturefeed_devel_show_log() {
+
+  $content_type = drupal_get_http_header('content-type');
+  if (strpos($content_type, 'text/html') === FALSE || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+    return FALSE;
+  }
+
+  return !(
+    function_exists('drupal_is_cli') && drupal_is_cli() ||
+    (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== FALSE) ||
+    !empty($_REQUEST['XDEBUG_PROFILE']) ||
+    isset($GLOBALS['devel_shutdown']) ||
+    strstr($_SERVER['PHP_SELF'], 'update.php') ||
+    (isset($_GET['q']) && (
+      in_array($_GET['q'], array( 'admin/content/node-settings/rebuild')) ||
+      substr($_GET['q'], 0, strlen('system/files')) == 'system/files' ||
+      substr($_GET['q'], 0, strlen('batch')) == 'batch' ||
+      substr($_GET['q'], 0, strlen('file/ajax')) == 'file/ajax')
+  ));
 }
 
 /**

@@ -259,6 +259,13 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   }
 
   /**
+   * @see CultureFeed_Pages::addValidatedAdmin()
+   */
+  public function addValidatedAdmin($id) {
+    return $this->realCultureFeedPages->addValidatedAdmin($id);
+  }
+
+  /**
    * @see CultureFeed_Pages::getTimeline()
    */
   public function getTimeline($id, $dateFrom = NULL, $activityTypes = array()) {

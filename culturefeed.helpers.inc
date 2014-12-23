@@ -58,8 +58,10 @@ function culturefeed_create_user($cf_account, $user = NULL) {
     if (!$cf_account || empty($cf_account->nick)) {
       return FALSE;
     }
+    
+    $uid = db_query("SELECT uid FROM {culturefeed_user} cfu WHERE cfu.uid = :uid", array(':uid' => $user->uid))->fetchField();
 
-    if (isset($user->uid) && $user->uid) {
+    if (isset($user->uid) && $user->uid && $user->uid != $uid) {
       // User is already Drupaluser, so map his Drupal and CultureFeed account
       $account = $user;
     }

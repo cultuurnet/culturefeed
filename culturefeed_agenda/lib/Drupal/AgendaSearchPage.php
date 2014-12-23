@@ -37,12 +37,32 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $this->addQueryTerm(preg_replace("/\/\b|\b:/x", "", $params['search']));
       }
 
+      $add_type_filter = TRUE;
+      if (isset($params['facet']['type'])) {
+        $active_types = $params['facet']['type'];
+        unset($params['facet']['type']);
+      }
+      else {
+        $active_types = variable_get('culturefeed_agenda_active_entity_types', array('event', 'production'));
+        // If all active types are selected, don't add filter.
+        if (count($active_types) == count(culturefeed_agenda_known_entity_types())) {
+          $add_type_filter = FALSE;
+        }
+      }
+
+      if ($add_type_filter) {
+        array_walk($active_types, function(&$active_type) {
+          $active_type = 'type:' . $active_type;
+        });
+        $this->parameters[] = new Parameter\FilterQuery(implode(' OR ', $active_types));
+      }
+
       $this->addFacetFilters($params);
 
-      $this->parameters[] = new Parameter\FilterQuery('type:event OR type:production');
       $this->parameters[] = $this->facetComponent->facetField('category');
       $this->parameters[] = $this->facetComponent->facetField('datetype');
       $this->parameters[] = $this->facetComponent->facetField('city');
+      $this->parameters[] = $this->facetComponent->facetField('location_category_facility_id');
 
       $this->execute($params);
 
@@ -181,8 +201,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $translated_terms = array();
     $facets = $this->facetComponent->getFacets();
     foreach ($facets as $key => $facet) {
-      // The key should start with 'category_'
-      if (substr($key, 0, 9) == 'category_') {
+      // The key should start with 'category_' or 'location_'
+      $start = substr($key, 0, 9);
+      if (in_array($start, array('category_', 'location_'))) {
         $items = $facet->getResult()->getItems();
         foreach ($items as $item) {
           $found_ids[$item->getValue()] = $item->getValue();
@@ -198,8 +219,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
       // Translate the facets labels.
       foreach ($facets as $key => $facet) {
-        // The key should start with 'category_'
-        if (substr($key, 0, 9) == 'category_') {
+        // The key should start with 'category_' or 'location_'
+        $start = substr($key, 0, 9);
+        if (in_array($start, array('category_', 'location_'))) {
           $items = $facet->getResult()->getItems();
           foreach ($items as $item) {
             // Translate if found.
