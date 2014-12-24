@@ -375,6 +375,7 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
   $parameters[] = new \CultuurNet\Search\Parameter\Start($page_nr);
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
 
   try {
     return culturefeed_get_search_service()->search($parameters);
