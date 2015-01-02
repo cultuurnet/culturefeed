@@ -516,7 +516,7 @@ function culturefeed_search_ui_block_configure($delta) {
         'links' => t('As links'),
         'checkboxes' => t('As checkboxes with submit button'),
       ),
-      '#default_value' => variable_get($display_variable, 'links'),
+      '#default_value' => variable_get($display_variable, 'checkboxes'),
     );
     $form[$operator_label] = array(
       '#title' => t('How to apply filters on the query'),
@@ -526,7 +526,7 @@ function culturefeed_search_ui_block_configure($delta) {
         'and' => t('Use AND-operator'),
         'or' => t('Use OR-operator'),
       ),
-      '#default_value' => variable_get($operator_variable, 'or'),
+      '#default_value' => variable_get($operator_variable, 'and'),
     );
 
     $options = variable_get($config_variable, culturefeed_search_ui_default_filter_options());
@@ -691,7 +691,7 @@ function culturefeed_search_ui_block_view($delta) {
       }
 
       $variable_name = 'culturefeed_search_filter_options' . (($delta == 'filter-form-2') ? '_2' : '');
-      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''));
+      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''), 'checkboxes');
       $filter_options = variable_get($variable_name, culturefeed_search_ui_default_filter_options());
       $filter_options = array_filter($filter_options, function($option) {
         return !isset($option['exposed']) || !empty($option['exposed']);
@@ -755,21 +755,10 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     ),
   );
   foreach ($filter_blocks as $delta => $variables) {
-    // Only add the filters if the block is set.
-    if (culturefeed_search_ui_block_is_visible($delta)) {
-      culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
-        variable_get($variables['operator'], 'and'),
-        variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options())
-      );
-    }
-  }
-
-
-  // Add filters from second filter block.
-  if (culturefeed_search_ui_block_is_visible('filter-form-2')) {
-    $operator = variable_get('culturefeed_search_filter_operator_2', 'and');
-    $filter_options = variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
-    culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);
+    culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
+      variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options()),
+      variable_get($variables['operator'], 'and')
+    );
   }
 
   // If group = event_production exclude productions (already included in group)
@@ -1036,7 +1025,7 @@ function culturefeed_search_ui_register_deletions() {
  * @param array $filter_options
  * @param string $operator
  */
-function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInterface &$culturefeedSearchPage, $filter_options, $operator) {
+function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInterface &$culturefeedSearchPage, $filter_options, $operator = 'and') {
 
   if ($operator == 'and') {
     foreach ($filter_options as $option) {

@@ -383,25 +383,3 @@ function culturefeed_search_ui_get_sort_options_for_page($search_page) {
   return $sort_options;
 
 }
-
-/**
- * Check if a block has been assigned to a region.
- *
- * @global type $theme
- * @param type $delta
- * @return type
- */
-function culturefeed_search_ui_block_is_visible($delta) {
-
-  global $theme;
-
-  $region = db_select('block', 'b')
-    ->condition('b.delta', $delta)
-    ->condition('b.theme', $theme)
-    ->fields('b', array('region'))
-    ->execute()
-    ->fetchField();
-
-  return ($region !== '-1');
-
-}
