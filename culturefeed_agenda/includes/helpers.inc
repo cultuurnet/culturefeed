@@ -714,3 +714,36 @@ function culturefeed_agenda_get_actors_nearby_for_event($event) {
 
   return $actors;
 }
+
+/**
+ * Get the category list for a given item, for a given category type.
+ * @return array
+ *   Array that contains list of plain text names (key = text) and a list of links for the category (key = links).
+ */
+function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item) {
+
+  $text_list = array();
+  $links_list = array();
+
+  $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
+  foreach ($categories as $category) {
+
+    $options = array(
+      'query' => array(
+        'facet' => array(
+          'category_' . $category_type . '_id' => array($category->getId()),
+        ),
+      ),
+    );
+
+    $text_list[] = check_plain($category->getName());
+    $links_list[] = l($category->getName(), 'agenda/search', $options);
+
+  }
+
+  return array(
+    'text' => $text_list,
+    'links' => $links_list,
+  );
+
+}

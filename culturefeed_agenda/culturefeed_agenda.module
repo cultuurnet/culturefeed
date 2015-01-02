@@ -567,7 +567,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     }
 
     // Rewrite facet on theme.
-    if (isset($facets['category_theme_id'][0])) {
+    if (isset($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0])) {
 
       if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
         $term_slugs[$facets['category_theme_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_theme_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
