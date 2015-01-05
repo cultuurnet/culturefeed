@@ -277,25 +277,15 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
 
-  // Themes from this item.
-  $variables['themes'] = array();
-  $themes = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME);
-  if ($themes) {
-    array_walk($themes, function(&$item) {
-      $item = check_plain($item->getName());
-    });
-    $variables['themes'] = $themes;
-  }
+  // Themes of this item (as plain text and as links).
+  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
+  $variables['themes'] = $themes['text'];
+  $variables['themes_links'] = $themes['links'];
 
-  // Types from this item.
-  $variables['types'] = array();
-  $types = $cdb_item->getCategories()->getCategoriesByType(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE);
-  if ($types) {
-    array_walk($types, function(&$item) {
-      $item = check_plain($item->getName());
-    });
-    $variables['types'] = $types;
-  }
+  // Types of this item (plain text and links).
+  $types = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $types['text'];
+  $variables['types_links'] = $types['links'];
 
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
