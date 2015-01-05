@@ -17,7 +17,7 @@ define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
 define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
 
-use Cultuurnet\Search\Parameter;
+use CultuurNet\Search\Parameter;
 
 /**
  * Implements hook_init().
@@ -324,6 +324,11 @@ function culturefeed_search_ui_block_info() {
 
   $blocks['culturefeed-search-activefilters'] = array(
     'info' => t('Culturefeed search: active filters'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['facet-type'] = array(
+    'info' => t('Culturefeed search: facet entity type'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -636,6 +641,10 @@ function culturefeed_search_ui_block_view($delta) {
       $block = culturefeed_search_ui_block_age_range_facet();
     break;
 
+    case 'facet-type':
+      $block = culturefeed_search_ui_block_entity_type_facet();
+    break;
+
     case 'filter-form':
 
       $search_result = culturefeed_get_search_result();
@@ -712,10 +721,11 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     $culturefeedSearchPage->addParameter(new \Cultuurnet\Search\Parameter\FilterQuery('!type:production'));
   }
 
-  // Add facet on agefrom.
+  // Add facet on agefrom and type.
   $facet_component = culturefeed_get_facet_component();
   if ($facet_component) {
     $culturefeedSearchPage->addParameter($facet_component->facetField('agefrom'));
+    $culturefeedSearchPage->addParameter($facet_component->facetField('type'));
   }
 
   // Add min age filter. This is always the requested age and count till 12.

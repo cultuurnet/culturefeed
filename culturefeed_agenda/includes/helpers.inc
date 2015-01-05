@@ -5,6 +5,19 @@
  **/
 
 /**
+ * Return all the known agenda entity types.
+ */
+function culturefeed_agenda_known_entity_types() {
+
+  return array(
+    'event' => t('event', array(), array('context' => 'culturefeed-facets')),
+    'production' => t('production', array(), array('context' => 'culturefeed-facets')),
+    'actor' => t('actor', array(), array('context' => 'culturefeed-facets')),
+  );
+
+}
+
+/**
  * Get the current active agenda object.
  * @param $path
  *   Path to load the active object of. Defaults to current path.

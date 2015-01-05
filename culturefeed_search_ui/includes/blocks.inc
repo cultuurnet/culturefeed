@@ -133,10 +133,17 @@ function culturefeed_search_ui_search_facets_block($facet_name, $domain_id = '',
   else {
     $items = $facet->getResult()->getItems();
 
+    // type facet should go through t()
+    if ($facet_name == 'type') {
+      foreach ($items as $item) {
+        $item->setLabel(t($item->getLabel(), array(), array('context' => 'culturefeed-facets')));
+      }
+    }
     // If the facet is one of the category facets. Translate the items.
-    if (substr($facet_name, strlen($facet_name) - 3) == '_id') {
+    elseif (substr($facet_name, strlen($facet_name) - 3) == '_id') {
       culturefeed_search_translate_facet($items);
     }
+
   }
 
   if (!empty($items)) {
@@ -601,6 +608,24 @@ function culturefeed_search_ui_city_only_facet_form_submit($form, &$form_state) 
       $_GET['q'],
       array('query' => $query)
   );
+
+}
+
+/**
+ * Show the entity type facet.
+ */
+function culturefeed_search_ui_block_entity_type_facet() {
+
+  $block_settings = array(
+    'sort' => variable_get('culturefeed_search_sort_facet-type', CULTUREFEED_SEARCH_SORT_ALPHABETICALLY),
+    'highest_level' => variable_get('culturefeed_facet_highest_level_facet-type', 1),
+    'show_subitems' => variable_get('culturefeed_facet_show_subitems_facet-type', FALSE),
+  );
+
+  $block = culturefeed_search_ui_search_facets_block('type', '', array(), $block_settings);
+  $block['subject'] = t('Type');
+
+  return $block;
 
 }
 
