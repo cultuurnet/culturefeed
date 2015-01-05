@@ -158,7 +158,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
 
       // Get the allowed actor types.
       $parameters = array();
-      $allowed_categories = variable_get('culturefeed_facet_city_actor_search', NULL);
+      $allowed_categories = variable_get('culturefeed_location_search_actortypes', NULL);
       if (!empty($allowed_categories)) {
         array_walk($allowed_categories, function(&$item) {
           $item = '"' . $item . '"';

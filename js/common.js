@@ -1,6 +1,7 @@
 (function ($) {
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
+  Drupal.CultureFeed.uiAutocomplete = Drupal.CultureFeed.uiAutocomplete || {};
 
   /**
    * Geolocate current position.
@@ -93,6 +94,45 @@
       $(this.ariaLive).empty();
     };
 
+  }
+
+  // Create a custom autocomplete widget that supports categorisation of data.
+  if ($.ui.autocomplete) {
+    $.widget("custom.categorisedAutocomplete", $.ui.autocomplete, {
+      _create: function() {
+        this._super();
+        this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+      },
+      _renderMenu: function(ul, items) {
+
+        $(this.element).removeClass('throbbing');
+
+        var that = this,
+        currentCategory = "";
+        $.each(items, function(index, item) {
+          var li;
+          if (!item.label) {
+            if (item.category != currentCategory) {
+              ul.append("<li class='ui-autocomplete-category " + item.type+ "'>" + item.category + "</li>");
+              currentCategory = item.category;
+            }
+          } else {
+            if (item.category != currentCategory) {
+              ul.append("<li class='ui-autocomplete-category " + item.type+ "'>" + item.category + "</li>");
+              currentCategory = item.category;
+            }
+            li = that._renderItemData(ul, item);
+            if (item.category) {
+              li.attr("aria-label", item.category + " : " + item.label);
+            }
+          }
+        });
+      },
+      search: function() {
+        $(this.element).addClass('throbbing');
+        this._super();
+      },
+    });
   }
 
 })(jQuery);
