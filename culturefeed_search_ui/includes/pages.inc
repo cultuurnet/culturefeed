@@ -147,7 +147,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
         );
       }
       $city_suggestions = array_slice($city_suggestions, 0, 5);
-      foreach ($city_suggestions as $city_key => $city_suggestion) {
+      foreach ($city_suggestions as $city_suggestion) {
         $matches[] = array(
           'label' => check_plain($city_suggestion),
           'category' => '',
@@ -187,6 +187,27 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
     catch (ClientErrorResponseException $e) {
       watchdog_exception('culturefeed_search_ui', $e);
     }
+
+    // If only one city was found. Add a link to search on all actors in this city.
+    if (count($city_suggestions) == 1) {
+
+      $city = reset($city_suggestions);
+
+      $query = array(
+        'location' => $city,
+        'facet' => array(
+          'type' => array('actor'),
+        ),
+      );
+
+      $matches[] = array(
+        'label' => t('Show all locations in !city', array('!city' => $city)),
+        'category' => $actor_suggestions->hasSuggestions() ? t('Directly to') : '',
+        'suggestion' => url('agenda/search', array('query' => $query)),
+        'type' => 'actor',
+      );
+    }
+
   }
 
   drupal_json_output($matches);
