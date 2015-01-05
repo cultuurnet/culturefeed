@@ -48,6 +48,17 @@ function culturefeed_search_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_group', 'event_production'),
   );
 
+  $form['culturefeed_search_query_operator'] = array(
+    '#type' => 'select',
+    '#title' => t('Search query operator'),
+    '#description' => t('Determine which operator to use in the search query.'),
+    '#options' => array(
+      'and' => t('Use \'AND\' operator'),
+      'or' => t('Use \'OR\' operator'),
+    ),
+    '#default_value' => variable_get('culturefeed_search_query_operator', 'and'),
+  );
+
   return system_settings_form($form);
 
 }
