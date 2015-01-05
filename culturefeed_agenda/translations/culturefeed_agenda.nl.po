@@ -169,8 +169,8 @@ msgid "Search string"
 msgstr "Zoekopdracht"
 
 #: includes/blocks.inc:154
-msgid "Activities near my current location:"
-msgstr "Activiteiten in de buurt van mijn huidige locatie:"
+msgid "Use my current location"
+msgstr "Gebruik mijn huidige locatie"
 
 #: includes/blocks.inc:172
 msgid "Search"

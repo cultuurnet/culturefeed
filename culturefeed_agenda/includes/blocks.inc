@@ -108,7 +108,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $form['nearby'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Activities near my current location'),
+      '#title' => t('Use my current location'),
     );
 
     // Add js for geolocate.
