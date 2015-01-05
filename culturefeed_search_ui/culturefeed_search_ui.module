@@ -688,7 +688,7 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
 
   // If group = event_production exclude productions (already included in group)
   if ($culturefeedSearchPage->getGroup() == 'event_production') {
-    $culturefeedSearchPage->addParameter(new \Cultuurnet\Search\Parameter\FilterQuery('!type:production'));
+    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery('!type:production'));
   }
 
   // Add facet on agefrom and type.
