@@ -2269,6 +2269,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Keywords.
   $keywords_form = array();
+  $custom_entry_api_tags = array();
   if ($values['keywords']) {    
     $keywords_form = explode(';', $values['keywords']);
   }
