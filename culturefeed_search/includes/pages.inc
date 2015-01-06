@@ -42,12 +42,19 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
         $client = new Client();
         $client->setDefaultHeaders(array('Accept' => 'application/json'));
         $body = json_decode($client->get('http://search-prod.lodgon.com/search/rest/search/suggest/item?title=' . $search_string . '&fq=type:actor%20asset:true')->send()->getBody(TRUE));
-        foreach ($body->suggestions as $suggestion) {
-          $suffix = '';
-          if (!empty($suggestion->zipcode)) {
-            $suffix .= ' - (' . $suggestion->zipcode . ')';
+        if ($body->suggestions) {
+          foreach ($body->suggestions as $suggestion) {
+            $title = $location_title = check_plain($suggestion->value);
+            $location = $suggestion->zipcode;
+            if (!empty($location)) {
+              $location_title .= ' - <small class="muted">(' . $location->zipcode . ')<small>';
+            }
+            $object = new stdClass();
+            $object->title = $title;
+            $object->key = $suggestion->cdbid;
+            $object->locationTitle = $location_title;
+            $matches[$suggestion->cdbid] = $object;
           }
-          $matches[$suggestion->cdbid] = $suggestion->value . $suffix;
         }
       }
 

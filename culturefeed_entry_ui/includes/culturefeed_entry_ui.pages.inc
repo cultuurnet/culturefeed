@@ -2296,10 +2296,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
+      watchdog('culturefeed_entry_ui', 'Event %eventid updated.', array('%eventid' => $form_state['#event_id']));
       cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
     }
     else {
       $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event);
+      watchdog('culturefeed_entry_ui', 'Event %eventid created.', array('%eventid' => $form_state['#event_id']));
     }
 
     $form_state['#update_event'] = $update;
@@ -2450,7 +2452,7 @@ function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
   try {
     Drupalculturefeed_EntryApi::deleteEvent($form_state['values']['id']);
     drupal_set_message(t('Event successfully deleted'));
-    $form_state['redirect'] = '<front>';
+    $form_state['redirect'] = 'agenda/edit';
   } catch (Exception $e) {
     watchdog_exception(WATCHDOG_ERROR, $e);
     drupal_set_message(t('An error occurred while deleting the event'), 'error');
