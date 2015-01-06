@@ -9,9 +9,9 @@
  */
 function culturefeed_saved_searches_block_cta() {
 
-  $query = culturefeed_saved_searches_construct_query();
-  if (!empty($query)) {
-    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results'), 'query' => $query));
+  if (culturefeed_saved_searches_show_cta()) {
+    $query = drupal_get_query_parameters(NULL, array('q'));
+    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results')));
   }
 
 }
@@ -24,9 +24,8 @@ function culturefeed_saved_searches_block_cta_bottom() {
   $results = culturefeed_get_search_result();
 
   if ($results && $results->getCurrentCount() > 0) {
-    $query = culturefeed_saved_searches_construct_query();
-    if (!empty($query)) {
-      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time'), 'query' => $query));
+    if (culturefeed_saved_searches_show_cta()) {
+      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time')));
     }
   }
 
@@ -35,11 +34,11 @@ function culturefeed_saved_searches_block_cta_bottom() {
 /**
  * Helper function taht constructs the 'save search'-link.
  */
-function culturefeed_saved_searches_construct_query() {
+function culturefeed_saved_searches_show_cta() {
 
   $query = drupal_static(__FUNCTION__, NULL);
   if ($query != NULL) {
-    return;
+    return $query;
   }
 
   $query = array();

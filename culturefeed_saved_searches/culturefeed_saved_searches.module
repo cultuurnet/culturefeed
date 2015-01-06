@@ -46,7 +46,6 @@ function culturefeed_saved_searches_theme() {
     ),
     'culturefeed_saved_searches_cta' => array(
       'variables' => array(
-        'query' => array(),
         'text' => '',
       ),
       'path' => $path,
@@ -63,13 +62,13 @@ function culturefeed_saved_searches_menu() {
 
   $items = array();
 
-  $items['culturefeed/search/save'] = array(
+  $items['culturefeed/savesearch'] = array(
     'title' => 'Save search',
     'title callback' => FALSE,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_saved_searches_save_search_form'),
     'file' => 'includes/pages.inc',
-    'access callback' => 'culturefeed_is_culturefeed_user',
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
 
