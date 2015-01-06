@@ -64,7 +64,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
         '#type' => 'select',
         '#options' => $options,
         '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
-        '#weight' => $active_fields['types'] * 10,
+        '#weight' => $active_fields['types'],
       );
 
       $form_state['#domain_id'] = $domain_id;
@@ -80,7 +80,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#size' => 28,
       '#title' => t('Search string'),
       '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-      '#weight' => $active_fields['what'] * 10,
+      '#weight' => $active_fields['what'],
     );
   }
 
@@ -91,25 +91,29 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#title' => t('When'),
       '#options' => array('' => t('All dates')) + culturefeed_search_ui_get_date_facet_options(),
       '#default_value' => isset($_GET['facet']['datetype'][0]) ? $_GET['facet']['datetype'][0] : NULL,
-      '#weight' => $active_fields['when'] * 10,
+      '#weight' => $active_fields['when'],
     );
   }
 
   // Location search.
   if (isset($active_fields['where'])) {
-    $form['where'] = array(
+
+    $form['location'] = array(
+      '#type' => 'placeholder',
+      '#weight' => $active_fields['where'],
+    );
+
+    $form['location']['where'] = array(
       '#type' => 'textfield',
       '#title' => t('Where'),
       '#default_value' => isset($_GET['location']) ? $_GET['location'] : NULL,
-      '#weight' => $active_fields['where'] * 10,
       '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
       '#attributes' => array('placeholder' => t('Zipcode or city')),
     );
 
-    $form['nearby'] = array(
+    $form['location']['nearby'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use my current location'),
-      '#weight' => $form['where']['#weight'] + 1,
     );
 
     // Add js for geolocate.
@@ -125,7 +129,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
-    '#weight' => 20,
+    '#weight' => 200,
   );
 
   global $user;
