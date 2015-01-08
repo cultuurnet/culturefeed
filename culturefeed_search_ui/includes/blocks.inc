@@ -728,7 +728,7 @@ function culturefeed_search_ui_block_location_search() {
   if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
     return;
   }
-  
+
   if ($culturefeedSearchResult->getTotalCount() == 0) {
     return;
   }
@@ -773,6 +773,7 @@ function culturefeed_search_ui_block_location_search_form($form, $form_state) {
   $form = array();
 
   $form['#attached']['library'][] = array('system', 'ui.autocomplete');
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/common.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/location_autocomplete.js';
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/location_search.css';
