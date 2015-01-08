@@ -7,55 +7,25 @@
 use \CultuurNet\Search\Parameter;
 
 /**
- * Block to show the related events from an item.
- */
-function culturefeed_agenda_block_related_activities() {
-
-  // Try to load the agenda detail.
-  $item = culturefeed_agenda_get_active_object();
-  if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
-    return;
-  }
-
-  $config = array(
-    'title' => t('Related activities'),
-    'id' => 'related-activities',
-    'path' => 'ajax/culturefeed/related-activities/' . $item->getId(),
-  );
-
-  return culturefeed_ui_block_ajaxload($config);
-
-}
-
-/**
- * Block to show the nearby events for the user's location.
+ * Show a block with nearby activities for current user.
  */
 function culturefeed_agenda_block_nearby_activities() {
 
-  // Block title.
-  $title = t('Near you');
-
-  // Ensure location is set in the cookie.
-  drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
-  drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/common.js');
-  drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/my_location.js');
-
-  // Get location info form cookie.
-  if (isset($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    $title .= ' ' . '<span class="text-muted">// ' . $user_location->postal . ' ' . $user_location->city .'</span>';
-  }
-
-  // Load the block.
-  $config = array(
-    'title' => $title,
-    'id' => 'nearby-activities',
-    'path' => 'ajax/culturefeed/nearby-activities',
+  // Start with an empty list. On page load, the suggestions will be loaded through ajax.
+  return array(
+    'subject' => t('Near you'),
+    'content' => array(
+      '#theme' => 'culturefeed_agenda_block_nearby_activities',
+      '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',
+        )
+      ),
+    ),
   );
-
-  return culturefeed_ui_block_ajaxload($config);
-
 }
+
 
 /**
  * Form callback to show the agenda search block.

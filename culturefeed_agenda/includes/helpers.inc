@@ -683,3 +683,72 @@ function culturefeed_agenda_parse_calendar($calendar) {
   }
   return $calendar_array;
 }
+
+/**
+ * Get the themed list of page suggestions.
+ */
+function culturefeed_agenda_page_ajax_nearby_activities_list() {
+
+  $city = '';
+  $postal = '';
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    $city = trim($user_location->city);
+    $postal = trim($user_location->postal);
+  }
+
+  // Compose the search query.
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+//  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
+//  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
+  $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc,weight desc');
+
+  try {
+    $search = culturefeed_get_search_service();
+    $result = $search->searchPages($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  return theme('culturefeed_agenda_nearby_activities_list', array('results' => $result->getItems()));
+
+}
+
+
+/*
+  // Compose the search query.
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+
+  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, variable_get('agenda_nearby_activities_distance', 5));
+  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+
+  // Add other configurable parameters.
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
+  if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
+  }
+
+  // Add sort options.
+  $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc,weight desc');
+  if (!empty($sort_options_string)) {
+    $sort_options = explode(',', $sort_options_string);
+    foreach ($sort_options as $sort_option) {
+      $sort_option_values = explode(' ', $sort_option);
+      $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_option_values[0], $sort_option_values[1]);
+    }
+  }
+
+  try {
+    $search = culturefeed_get_search_service();
+    $result = $search->searchPages($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+  */

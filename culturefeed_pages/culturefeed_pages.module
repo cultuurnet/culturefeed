@@ -1101,7 +1101,7 @@ function culturefeed_pages_page_suggestions_filter_form() {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Ok'),
+    '#value' => t('Save location'),
     '#ajax' => array(
       'callback' => 'culturefeed_pages_page_suggestions_ajax_filter_submit',
     ),

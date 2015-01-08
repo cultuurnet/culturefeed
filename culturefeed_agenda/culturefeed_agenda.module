@@ -77,9 +77,21 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
-  $theme['culturefeed_agenda_nearby_activities'] = array(
-    'variables' => array('results' => array()),
-    'template' => 'culturefeed-agenda-nearby-activities',
+  $theme['culturefeed_agenda_block_nearby_activities'] = array(
+    'variables' => array('nearby_activities' => '', 'filter_form' => NULL),
+    'template' => 'culturefeed-agenda-block-nearby-activities',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+  $theme['culturefeed_agenda_nearby_activities_list'] = array(
+    'variables' => array('nearby_activities' => array()),
+    'template' => 'culturefeed-agenda-nearby-activities-list',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+  $theme['culturefeed_agenda_nearby_activities_list_item'] = array(
+    'variables' => array('item' => array()),
+    'template' => 'culturefeed-agenda-nearby-activities-list-item',
     'path' => $path,
     'file' => 'theme.inc',
   );
@@ -227,11 +239,13 @@ function culturefeed_agenda_menu() {
   );
 
   $items['ajax/culturefeed/nearby-activities'] = array(
-    'page callback' => 'culturefeed_agenda_page_ajax_nearby_activities',
+    'page callback' => 'culturefeed_agenda_block_ajax_nearby_activities',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+
+  /*
   $items['culturefeed/agenda/set-user-location/%'] = array(
     'title' => t('Set your location'),
     'page callback' => 'culturefeed_agenda_page_set_user_location',
@@ -239,6 +253,7 @@ function culturefeed_agenda_menu() {
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
+   */
 
   $items['ajax/culturefeed-agenda/actor-suggest'] = array(
     'page callback' => 'culturefeed_agenda_page_ajax_actor_suggest',
@@ -891,4 +906,78 @@ function culturefeed_agenda_actor_load($cdb_id) {
  */
 function culturefeed_agenda_production_load($cdb_id) {
   return culturefeed_search_item_load($cdb_id, 'production');
+}
+
+
+
+
+
+
+/**
+ * Show a filter form for the page suggestions block.
+ */
+function culturefeed_agenda_nearby_activities_filter_form() {
+
+  $where = '';
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    $where = trim($user_location->postal) . ' ' . trim($user_location->city);
+  }
+
+  $form = array();
+  $form['where'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Your Location'),
+    '#default_value' => $where,
+    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+    '#attributes' => array(
+      'placeholder' => t('Zipcode or city'),
+      'class' => array('auto_submit')
+  ));
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+    '#ajax' => array(
+      'callback' => 'culturefeed_agenda_nearby_activities_ajax_filter_submit',
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the ajax filter form for suggestions. Return the new list.
+ */
+function culturefeed_agenda_nearby_activities_ajax_filter_submit($form, $form_state) {
+
+  // Also set $_COOKIE for later use in code.
+  $where = $form_state['values']['where'];
+  $postal_length = 4;
+  $postal = substr($where, 0, $postal_length);
+  $city = substr($where, $postal_length);
+  // Store in cookie.
+  $values = array(
+    'uitid.userLocation' => json_encode(
+      array(
+        'latitude' => '',
+        'longitude' => '',
+        'city' => $city,
+        'postal' => $postal,
+      )
+    ),
+  );
+  user_cookie_save($values);
+
+  $build = array();
+  $build[] = array(
+    '#markup' => culturefeed_agenda_page_ajax_nearby_activities_list(),
+  );
+
+  $commands = array(ajax_command_html('#nearby-activities', render($build)));
+
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands,
+  );
 }

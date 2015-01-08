@@ -827,6 +827,16 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
   }
 }
 
+function culturefeed_agenda_preprocess_culturefeed_agenda_nearby_activities_list(&$variables) {
+  $results = $variables['results'];
+  $variables['items'] = array();
+
+  foreach ($results as $result) {
+    dsm($result->getType(), 'type');
+    $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
+  }
+}
+
 /**
  * Implements hook_preprocess_culturefeed_agenda_de_lijn_widget().
  */
