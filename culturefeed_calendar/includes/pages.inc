@@ -10,7 +10,7 @@
  */
 function culturefeed_calendar_page_my_activities() {
 
-  $activities = culturefeed_calendar_get_user_activities();
+  $activities = culturefeed_calendar_get_user_activities(TRUE);
   return theme('culturefeed_calendar_page', array('activities' => $activities));
 
 }
@@ -629,5 +629,5 @@ function culturefeed_calendar_share_calendar_button_form($form, &$form_state) {
  * Submit the share calendar button form.
  */
 function culturefeed_calendar_share_calendar_button_form_submit($form, &$form_state) {
-  
+
 }
