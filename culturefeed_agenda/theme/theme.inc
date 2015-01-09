@@ -827,15 +827,17 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
   }
 }
 
-function culturefeed_agenda_preprocess_culturefeed_agenda_nearby_activities_list(&$variables) {
-  $results = $variables['results'];
-  $variables['items'] = array();
+/**
+ * Preprocess the variables for a nearby activities list item.
+ * @see culturefeed-agenda-nearby-activities-list-item.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_nearby_activities_list_item(&$variables) {
 
-  foreach ($results as $result) {
-    dsm($result->getType(), 'type');
-    $variables['items'][] = theme('culturefeed_' . $result->getType() . '_short_summary', array('item' => $result));
-  }
+  _culturefeed_agenda_preprocess_agenda($variables);
+  _culturefeed_agenda_preprocess_event($variables);
+
 }
+
 
 /**
  * Implements hook_preprocess_culturefeed_agenda_de_lijn_widget().

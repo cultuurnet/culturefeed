@@ -687,34 +687,43 @@ function culturefeed_agenda_parse_calendar($calendar) {
 /**
  * Get the themed list of page suggestions.
  */
-function culturefeed_agenda_page_ajax_nearby_activities_list() {
+function culturefeed_agenda_get_nearby_activities_list() {
+  /*
+    $city = '';
+    $postal = '';
+    if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+      $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+      $city = trim($user_location->city);
+      $postal = trim($user_location->postal);
+    }
+  */
 
-  $city = '';
-  $postal = '';
-  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    $city = trim($user_location->city);
-    $postal = trim($user_location->postal);
+  $city = 'Antwerpen';
+  $postal = '2000';
+
+  if (!empty($_COOKIE['culturefeed_agenda_nearby_activities'])) {
+    $location = $_COOKIE['culturefeed_agenda_nearby_activities'];
   }
 
+  $parameters = array();
   // Compose the search query.
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
-//  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
-//  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
+  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
   $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc,weight desc');
 
   try {
     $search = culturefeed_get_search_service();
-    $result = $search->searchPages($parameters);
+    $result = $search->search($parameters);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_agenda', $e);
     return;
   }
 
-  return theme('culturefeed_agenda_nearby_activities_list', array('results' => $result->getItems()));
+  return theme('culturefeed_agenda_nearby_activities_list', array('activities' => $result->getItems()));
 
 }
 

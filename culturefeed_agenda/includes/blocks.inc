@@ -11,12 +11,38 @@ use \CultuurNet\Search\Parameter;
  */
 function culturefeed_agenda_block_nearby_activities() {
 
+  drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
+
+  // If there a location stored in cookie, add to the title.
+  if (!empty($_COOKIE['culturefeed_agenda_nearby_activities'])) {
+    $location = $_COOKIE['culturefeed_agenda_nearby_activities'];
+  }
+
+  $change_location_link = l(t('Change location'), '',
+      array('attributes' => array('id' => 'change-location-link', 'class' => 'text-muted change-location-link'), 'fragment' => 'change-location'));
+
+  // TODO Get location from cookie to add all locations link.
+  $city = 'gent';
+  $postal = '9000';
+  $text = t('Everything in');
+  $location = '';
+  if ($postal) {
+    $location .= $postal;
+  }
+  if ($city) {
+    $location .= (isset($postal) ? ' ' : '') . $city;
+  }
+  $all_activities_for_location_link  = l($text . ' ' . $location, 'agenda/search',
+      array('class' => 'text-muted all-events-for-locaton-link', 'query' => array('location' => $location)));
+
+
   // Start with an empty list. On page load, the suggestions will be loaded through ajax.
   return array(
-    'subject' => t('Near you'),
     'content' => array(
       '#theme' => 'culturefeed_agenda_block_nearby_activities',
       '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
+      '#change_location_link' => $change_location_link,
+      '#all_activities_for_location_link' => $all_activities_for_location_link,
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',
@@ -24,6 +50,7 @@ function culturefeed_agenda_block_nearby_activities() {
       ),
     ),
   );
+
 }
 
 

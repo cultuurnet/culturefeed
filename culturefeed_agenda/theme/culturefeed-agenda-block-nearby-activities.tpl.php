@@ -6,8 +6,24 @@
  */
 ?>
 
-<?php print drupal_render($filter_form); ?>
+<div class="container">
 
-<div id="nearby-activities">
-  <p class="text-muted"><i class="fa fa-refresh fa-spin"></i>Loading</p>
+  <p class="block-title">In jouw buurt <span class="text-muted">// CITY & POSTAL FROM COOKIE</span></p>
+
+  <?php if (!empty($change_location_link)): ?>
+    <?php print $change_location_link; ?>
+  <?php endif; ?>
+
+  <?php if (!empty($all_activities_for_location_link)): ?>
+    <?php print $all_activities_for_location_link; ?>
+  <?php endif; ?>
+
+  <div class="hidden" id="nearby-activities-filter-form-wrapper">
+    <?php print drupal_render($filter_form); ?>
+  </div>
+
+  <div id="nearby-activities">
+    <p class="text-muted"><i class="fa fa-refresh fa-spin"></i>Loading</p>
+  </div>
+
 </div>
