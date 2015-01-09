@@ -174,7 +174,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
           if  ($actor_key < 5) {
             $actor_path = culturefeed_search_detail_url('actor', $actor_suggestion->getCdbid(), $actor_suggestion->getTitle());
             $matches[] = array(
-              'label' => check_plain($actor_suggestion->getTitle()),
+              'label' => $actor_suggestion->getTitle(),
               'category' => t('Directly to'),
               'suggestion' => $actor_path,
               'type' => 'actor',

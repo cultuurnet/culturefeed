@@ -590,7 +590,7 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   }
 
   if (isset($edit['culturefeed-location-search-actortypes'])) {
-    variable_set('culturefeed_location_search_actortypes', $edit['culturefeed-location-search-actortypes']);
+    variable_set('culturefeed_location_search_actortypes', array_filter($edit['culturefeed-location-search-actortypes']));
   }
 }
 
