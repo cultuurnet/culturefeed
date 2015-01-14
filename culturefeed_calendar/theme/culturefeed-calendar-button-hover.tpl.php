@@ -3,6 +3,6 @@
   <hr>
   <p>
     <span><strong><?php print l(t('Log in'), $url, $options) ?></strong></span>
-    <span><?php print l(t('View your OuTcalendar'), 'culturefeed/calendar') ?></span>
+    <span><?php print l(t('View your calendar'), 'culturefeed/calendar') ?></span>
   </p>
 </div>
