@@ -47,6 +47,22 @@ services:
     factory_service: culturefeed_udb3.udb2_entry_api_improved_factory
     factory_method: get
 
+  # Factory for event busses.
+  # Allows for subscribing Drupal services to the event bus on first publication
+  # of an event.
+  culturefeed_udb3.event_bus_factory:
+    class: Drupal\culturefeed_udb3\EventBusFactory
+
+  # General services for read models
+  # Event bus to which read models can emit events.
+  culturefeed_udb3.read_models_event_bus:
+    class: CultuurNet\UDB3\SimpleEventBus
+    factory_service: culturefeed_udb3.event_bus_factory
+    factory_method: get
+    # A list of event bus subscribers that are subscribed to the event bus on first publication.
+    # Don't use @ in front of them, these services will be loaded on-demand.
+    arguments: [['culturefeed_udb3.eventld_projector']]
+
   # Place
   # Place: ld repository
   culturefeed_udb3.place.ld_repository:
@@ -61,11 +77,14 @@ services:
     arguments: ['@url_generator', 'culturefeed_udb3.place']
   culturefeed_udb3.place.ld_projector:
     class: CultuurNet\UDB3\Place\PlaceLDProjector
-    arguments: ['@culturefeed_udb3.place.ld_repository', '@culturefeed_udb3.place.iri_generator']
+    arguments: ['@culturefeed_udb3.place.ld_repository', '@culturefeed_udb3.place.iri_generator', '@culturefeed_udb3.read_models_event_bus']
   culturefeed_udb3.place.event_bus:
-    class: Broadway\EventHandling\SimpleEventBus
-    calls:
-      - [subscribe, ['@culturefeed_udb3.place.ld_projector']]
+    class: CultuurNet\UDB3\SimpleEventBus
+    factory_service: culturefeed_udb3.event_bus_factory
+    factory_method: get
+    # A list of event bus subscribers that are subscribed to the event bus on first publication.
+    # Don't use @ in front of them, these services will be loaded on-demand.
+    arguments: [['culturefeed_udb3.place.ld_projector']]
   culturefeed_udb3.place.local_repository:
     class: CultuurNet\UDB3\Place\PlaceRepository
     arguments: ['@culturefeed_udb3.place.store', '@culturefeed_udb3.place.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
@@ -78,8 +97,8 @@ services:
     factory_method: get
   # Place: service
   culturefeed_udb3.place.service:
-    class: CultuurNet\UDB3\LocalEntityService
-    arguments: ['@culturefeed_udb3.place.ld_repository', '@culturefeed_udb3.place.repository']
+    class: CultuurNet\UDB3\PlaceService
+    arguments: ['@culturefeed_udb3.place.ld_repository', '@culturefeed_udb3.place.repository', '@culturefeed_udb3.place.iri_generator']
 
   # Organizer
   # Organizer: ld repository
@@ -97,9 +116,12 @@ services:
     class: CultuurNet\UDB3\Organizer\OrganizerLDProjector
     arguments: ['@culturefeed_udb3.organizer.ld_repository', '@culturefeed_udb3.organizer.iri_generator']
   culturefeed_udb3.organizer.event_bus:
-    class: Broadway\EventHandling\SimpleEventBus
-    calls:
-      - [subscribe, ['@culturefeed_udb3.organizer.ld_projector']]
+    class: CultuurNet\UDB3\SimpleEventBus
+    factory_service: culturefeed_udb3.event_bus_factory
+    factory_method: get
+    # A list of event bus subscribers that are subscribed to the event bus on first publication.
+    # Don't use @ in front of them, these services will be loaded on-demand.
+    arguments: [['culturefeed_udb3.organizer.ld_projector']]
   culturefeed_udb3.organizer.local_repository:
     class: CultuurNet\UDB3\Organizer\OrganizerRepository
     arguments: ['@culturefeed_udb3.organizer.store', '@culturefeed_udb3.organizer.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
@@ -112,8 +134,8 @@ services:
     factory_method: get
   # Organizer: service
   culturefeed_udb3.organizer.service:
-    class: CultuurNet\UDB3\LocalEntityService
-    arguments: ['@culturefeed_udb3.organizer.ld_repository', '@culturefeed_udb3.organizer.repository']
+    class: CultuurNet\UDB3\OrganizerService
+    arguments: ['@culturefeed_udb3.organizer.ld_repository', '@culturefeed_udb3.organizer.repository', '@culturefeed_udb3.organizer.iri_generator']
 
   # Event
   culturefeed_udb3.eventld_repository:
@@ -123,9 +145,12 @@ services:
     class: CultuurNet\UDB3\Event\EventLDProjector
     arguments: ['@culturefeed_udb3.eventld_repository', '@culturefeed_udb3.iri_generator', '@culturefeed_udb3.place.ld_projector', '@culturefeed_udb3.organizer.ld_projector']
   culturefeed_udb3.event_bus:
-    class: Broadway\EventHandling\SimpleEventBus
-    calls:
-      - [subscribe, ['@culturefeed_udb3.eventld_projector']]
+    class: CultuurNet\UDB3\SimpleEventBus
+    factory_service: culturefeed_udb3.event_bus_factory
+    factory_method: get
+    # A list of event bus subscribers that are subscribed to the event bus on first publication.
+    # Don't use @ in front of them, these services will be loaded on-demand.
+    arguments: [['culturefeed_udb3.eventld_projector']]
   culturefeed_udb3.event_store:
     class: Drupal\culturefeed_udb3\EventStore
     arguments: ['event_store', '@entity.manager', '@entity.query', '@culturefeed_udb3.serialize', '@culturefeed_udb3.serialize']
@@ -134,7 +159,7 @@ services:
     arguments: ['@culturefeed_udb3.event_store', '@culturefeed_udb3.event_bus', ['@culturefeed_udb3.event_stream_metadata_enricher']]
   culturefeed_udb3.event_repository.factory:
     class: Drupal\culturefeed_udb3\EventRepositoryFactory
-    arguments: ['@culturefeed_udb3.local_event_repository', '@culturefeed_udb3.search_api_2', '@culturefeed_udb3.udb2_entry_api_improved', '@culturefeed_udb3.event_stream_metadata_enricher', '@config.factory']
+    arguments: ['@culturefeed_udb3.local_event_repository', '@culturefeed_udb3.search_api_2', '@culturefeed_udb3.udb2_entry_api_improved', '@culturefeed_udb3.place.service', '@culturefeed_udb3.organizer.service', '@culturefeed_udb3.event_stream_metadata_enricher', '@config.factory']
   culturefeed_udb3.event_repository:
     class: CultuurNet\UDB3\UDB2\EventRepository
     factory_service: culturefeed_udb3.event_repository.factory

@@ -8,6 +8,8 @@
 namespace Drupal\culturefeed_udb3;
 
 use CultuurNet\UDB3\Event\EventRepository;
+use CultuurNet\UDB3\OrganizerService;
+use CultuurNet\UDB3\PlaceService;
 use CultuurNet\UDB3\SearchAPI2\DefaultSearchService;
 use CultuurNet\UDB3\UDB2\EntryAPIFactory;
 use CultuurNet\UDB3\UDB2\EntryAPIImprovedFactory;
@@ -57,6 +59,16 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
   protected $config;
 
   /**
+   * @var OrganizerService
+   */
+  protected $organizerService;
+
+  /**
+   * @var PlaceService
+   */
+  protected $placeService;
+
+  /**
    * Constructs an event repository factory.
    *
    * @param EventRepository $local_event_repository
@@ -65,6 +77,8 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
    *   The search api.
    * @param EntryAPIImprovedFactory $improved_entry_api
    *   The improved entry api.
+   * @param PlaceService $place_service
+   * @param OrganizerService $organizer_service
    * @param MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher
    *   The event stream metadata enricher.
    * @param ConfigFactory $config
@@ -74,12 +88,16 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
     EventRepository $local_event_repository,
     DefaultSearchService $search_api,
     EntryAPIImprovedFactory $improved_entry_api,
+    PlaceService $place_service,
+    OrganizerService $organizer_service,
     MetadataEnrichingEventStreamDecorator $event_stream_metadata_enricher,
     ConfigFactory $config
   ) {
     $this->localEventRepository = $local_event_repository;
     $this->searchApi = $search_api;
     $this->improvedEntryApi = $improved_entry_api;
+    $this->organizerService = $organizer_service;
+    $this->placeService = $place_service;
     $this->eventStreamMetadataEnricher = $event_stream_metadata_enricher;
     $this->config = $config->get('culturefeed_udb3.settings');
   }
@@ -93,6 +111,8 @@ class EventRepositoryFactory implements EventRepositoryFactoryInterface {
       $this->localEventRepository,
       $this->searchApi,
       $this->improvedEntryApi,
+      $this->placeService,
+      $this->organizerService,
       array($this->eventStreamMetadataEnricher)
     );
 
