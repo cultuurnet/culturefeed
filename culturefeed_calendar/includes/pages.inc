@@ -187,10 +187,16 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   $edit = !empty($selected_date) ? TRUE : FALSE;
 
   drupal_set_title($params['title']);
-
+  
+  // Only show possible dates for periods where calendar summary is available
+  $possible_dates = '';
+  if (($params['type'] == 'period') && $params['calendar_summary']) {
+    $info = '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>';
+  }
+  
   $form['info'] = array(
     '#type' => 'markup',
-    '#markup' => $params['calendar_summary'] ? '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>' : '',
+    '#markup' => $possible_dates,
   );
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
