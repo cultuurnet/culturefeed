@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * CultureFeed Calendar allows users to manage their own activities in a calendar.
+ * CultureFeed Calendar allows users to manage their own events in a calendar.
  */
 
 require_once 'includes/helpers.inc';

@@ -28,6 +28,6 @@
     <?php print $not_yet_planned ?>
     <?php print $planned ?>
   <?php else: ?>
-    <h3><?php print t('No activities added to your calendar yet.') ?></h3>
+    <h3><?php print t('No events added to your calendar yet.') ?></h3>
   <?php endif; ?>
 </div>
