@@ -157,7 +157,7 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $event = culturefeed_agenda_event_load($activity->nodeId);
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Change !title in your calendar', array('!title' => $params['node_title']));
+  $params['title'] = t('Reschedule !title in your calendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Update event');
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
@@ -190,7 +190,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 
   $form['info'] = array(
     '#type' => 'markup',
-    '#markup' => '<label>' . t($params['node_title'] . t(' runs ') . $params['calendar_summary']  . '.') . '</label>',
+    '#markup' => $params['calendar_summary'] ? '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>' : '',
   );
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {

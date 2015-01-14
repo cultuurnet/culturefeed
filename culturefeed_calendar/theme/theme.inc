@@ -82,7 +82,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
       $variables['button']['text'] = t('View calendar');
     }
     elseif ($variables['button']['location'] == 'footer') {
-      $variables['button']['text'] = t('Added to calendar');
+      $variables['button']['text'] = t('to your calendar');
     }
 
   }
