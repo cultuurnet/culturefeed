@@ -1,5 +1,5 @@
 parameters:
-  command_bus.queue_name: event
+  command_bus.queue_name: culturefeed-udb3
   resque.command.bus.event_command_context_set: broadway.command_handling.context
 
 services:
