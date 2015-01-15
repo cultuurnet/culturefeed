@@ -47,6 +47,7 @@ Resque_Event::listen('afterFork', function() use ($autoloader) {
   catch (Exception $e) {
 
     $message = 'Error';
+    print $e->getTraceAsString();
     print $message;
     throw $e;
 
