@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * CultureFeed Calendar allows users to manage their own activities in a calendar.
+ * CultureFeed Calendar allows users to manage their own events in a calendar.
  */
 
 require_once 'includes/helpers.inc';
@@ -24,6 +24,7 @@ function culturefeed_calendar_menu() {
   $items = array();
 
   $items['culturefeed/calendar'] = array(
+    'title' => t('My calendar'),
     'page callback' => 'culturefeed_calendar_page_my_activities',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',

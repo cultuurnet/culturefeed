@@ -123,7 +123,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Add !title to your OutCalendar', array('!title' => $params['node_title']));
+  $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
@@ -134,10 +134,10 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   else {
     try {
       culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
-      drupal_set_message(t('The event has been added to your OuTcalendar.'));
+      drupal_set_message(t('The event has been added to your calendar.'));
     }
     catch (Exception $e) {
-      drupal_set_message(t('There was an error while adding to your OuTcalendar'), 'error');
+      drupal_set_message(t('There was an error while adding to your calendar'), 'error');
     }
   }
 
@@ -176,7 +176,7 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $event = culturefeed_agenda_event_load($activity->nodeId);
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Change !title in your OutCalendar', array('!title' => $params['node_title']));
+  $params['title'] = t('Reschedule !title in your calendar', array('!title' => $params['node_title']));
   $params['button_text'] = t('Update event');
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
@@ -206,10 +206,16 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   $edit = !empty($selected_date) ? TRUE : FALSE;
 
   drupal_set_title($params['title']);
-
+  
+  // Only show possible dates for periods where calendar summary is available
+  $possible_dates = '';
+  if (($params['type'] == 'period') && $params['calendar_summary']) {
+    $info = '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>';
+  }
+  
   $form['info'] = array(
     '#type' => 'markup',
-    '#markup' => '<label>' . t($params['node_title'] . t(' runs ') . $params['calendar_summary']  . '.') . '</label>',
+    '#markup' => $possible_dates,
   );
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
@@ -365,10 +371,10 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 
     try {
       culturefeed_calendar_add_activity($node_id, $node_title, $date);
-      drupal_set_message(t('The event has been added to your OuTcalendar.'));
+      drupal_set_message(t('The event has been added to your calendar.'));
     }
     catch (Exception $e) {
-      drupal_set_message(t('There was an error while adding to your OuTcalendar'), 'error');
+      drupal_set_message(t('There was an error while adding to your calendar'), 'error');
     }
 
   }

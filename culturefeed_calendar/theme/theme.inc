@@ -106,11 +106,11 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     $variables['button']['class'] = 'view-calendar';
     $variables['button']['path'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
-      $variables['button']['description'] = t('This activity is added to your OuTcalendar.');
-      $variables['button']['text'] = t('View OuTcalendar');
+      $variables['button']['description'] = t('This event is added to your calendar.');
+      $variables['button']['text'] = t('View calendar');
     }
     elseif ($variables['button']['location'] == 'footer') {
-      $variables['button']['text'] = t('To your OuTcalendar');
+      $variables['button']['text'] = t('to your calendar');
     }
 
   }
@@ -119,10 +119,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     $variables['button']['class'] = 'add-to-calendar';
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
     if ($variables['button']['location'] == 'content') {
-      $variables['button']['text'] = t('Add to my OuTcalendar');
+      $variables['button']['text'] = t('Add to my calendar');
     }
     elseif ($variables['button']['location'] == 'footer') {
-      $variables['button']['text'] = t('Add');
+      $variables['button']['text'] = t('Add to calendar');
     }
 
   }
@@ -133,7 +133,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
  * Theme the total activities profile box item.
  */
 function theme_culturefeed_calendar_total_activities_profile_box_item($variables) {
-  return l(format_plural($variables['total'], '<small class="activity-count">@count</small> unsaved activity', '<small class="activity-count">@count</small> unsaved activities'), 'culturefeed/calendar', array('html' => TRUE));
+  return l(format_plural($variables['total'], '<small class="activity-count">@count</small> unsaved event', '<small class="activity-count">@count</small> unsaved events'), 'culturefeed/calendar', array('html' => TRUE));
 }
 
 /**
