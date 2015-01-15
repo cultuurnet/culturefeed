@@ -12,7 +12,7 @@
       <div class="calendar-activity-wrapper">
         <?php if (!empty($activities)): ?>
         <?php foreach ($activities as $activity): ?>
-          <?php print theme('culturefeed_calendar_activity_summary', array('activity' => $activity)) ?>
+          <?php print theme('culturefeed_calendar_activity_summary', array('activity' => $activity, 'my_calendar' => $my_calendar)) ?>
         <?php endforeach; ?>
         <?php else: ?>
           <p><?php print t('No events this month'); ?></p>

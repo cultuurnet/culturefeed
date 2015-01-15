@@ -16,6 +16,25 @@ function culturefeed_calendar_page_my_activities() {
 }
 
 /**
+ * Page callback to show a users shared calendar page.
+ */
+function culturefeed_calendar_page_user_activities($user_id) {
+
+  $activities = culturefeed_calendar_get_user_activities(TRUE, $user_id);
+  return theme('culturefeed_calendar_page', array('activities' => $activities, 'user_id' => $user_id));
+
+}
+
+/**
+ * Page callback to show the calendar share page.
+ */
+function culturefeed_calendar_page_share_my_calendar() {
+
+  return theme('culturefeed_calendar_share_page');
+
+}
+
+/**
  * Form to add a button to save the cookie events to the calendar.
  */
 function culturefeed_calendar_save_cookie_form($form, &$form_state) {
@@ -610,24 +629,4 @@ function _culturefeed_calendar_get_nav_months() {
   }
 
   return $months;
-}
-
-/**
- * Form to add a button to go to share the calendar page.
- */
-function culturefeed_calendar_share_calendar_button_form($form, &$form_state) {
-  $form['share_calendar'] = array(
-    '#type' => 'submit',
-    '#value' => t('Share'),
-    '#disabled' => FALSE,
-  );
-
-  return $form;
-}
-
-/**
- * Submit the share calendar button form.
- */
-function culturefeed_calendar_share_calendar_button_form_submit($form, &$form_state) {
-
 }

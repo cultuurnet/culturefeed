@@ -8,6 +8,28 @@
 
 function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
 
+
+  // Check if we need to show the calendar for the logged in user or for another user.
+  if (isset($variables['user_id'])) {
+    $my_calendar = FALSE;
+    $user = DrupalCultureFeed::getUser($variables['user_id']);
+  }
+  else {
+    $my_calendar = TRUE;
+    $user = DrupalCultureFeed::getLoggedInUser();
+  }
+
+  // Check if another persons calendar is shared.
+  if (!$my_calendar && empty($user->calendarid)) {
+    $variables['deny_access'] = TRUE;
+  }
+  else {
+    $variables['deny_access'] = FALSE;
+  }
+
+  // Set username.
+  $variables['user_name'] = $user->givenName . ' ' . $user->familyName;
+
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $variables['sidebar'] = 'empty';
 
@@ -32,24 +54,30 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
   $variables['planned'] = '';
   if (!empty($activities_by_type)) {
     // Print the 'LIKED' activities.
-    if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE])) {
+    if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE]) && $my_calendar) {
       $variables['not_yet_planned'] = theme('culturefeed_calendar_activities_liked',
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
     }
     // Print the 'IK GA' activities.
     if (isset($activities_by_type[CultureFeed_Activity::TYPE_IK_GA])) {
       $variables['planned'] = theme('culturefeed_calendar_activities_going',
-        array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months));
+        array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months, 'my_calendar' => $my_calendar));
     }
     // Print the save cookie button.
-    if (!$authenticated && !empty($activities->objects)) {
+    if (!$authenticated && !empty($activities->objects) && $my_calendar) {
       $save_cookie_button_form = drupal_get_form('culturefeed_calendar_save_cookie_form');
       $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
     }
   }
-  if ($authenticated) {
-    $share_calendar_button_form = drupal_get_form('culturefeed_calendar_share_calendar_button_form');
-    $variables['share_calendar_button'] = drupal_render($share_calendar_button_form);
+  if ($authenticated && $my_calendar) {
+    $variables['share_calendar_url'] = 'calendar/share';
+    if (!empty($user->calendarid)) {
+      $variables['shared'] = TRUE;
+    }
+    else {
+      $variables['shared'] = FALSE;
+      $variables['data_content'] = theme('culturefeed_calendar_share_page');
+    }
   }
 
 }
@@ -200,6 +228,48 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$var
       'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
     ),
   );
+}
+
+/**
+ * Preprocess for share calendar page.
+ *
+ * @param type $variables
+ */
+function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$variables) {
+
+  $user = DrupalCultureFeed::getUser(DrupalCultureFeed::getLoggedInUserId());
+  global $base_url;
+  $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
+
+  $variables['shared'] = $user->calendarid;
+  // Calendar is public.
+  if ($user->calendarid != '') {
+
+    $variables['calendar_share_url'] = 'culturefeed/calendar/' . $user->id;
+
+    $fb_app_id = variable_get('culturefeed_calendar_fbAppId', '');
+    if (isset($fb_app_id) && !empty($fb_app_id)) {
+      drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/facebook_share.js');
+      drupal_add_js(array('culturefeed' => array('fbAppId' => $fb_app_id)), 'setting');
+    }
+
+    $variables['facebook']['url'] = 'https://www.facebook.com/sharer/sharer.php';
+    $variables['facebook']['attr'] = array(
+      'query' => array('u' => $base_url . '/' . $variables['calendar_share_url']),
+      'attributes' => array('class' => 'facebook-share'),
+      );
+
+    $variables['googleplus']['url'] = 'https://plus.google.com/share';
+    $variables['googleplus']['attr'] = array('query' => array('url' => $base_url . '/' .  $variables['calendar_share_url']));
+
+    $variables['twitter']['url'] = 'https://twitter.com/intent/tweet';
+    $variables['twitter']['attr'] = array('query' => array('text' => $base_url . '/' .  $variables['calendar_share_url']));
+
+    $variables['mail']['enabled'] = module_exists('forward');
+    $variables['mail']['url'] = $base_url . '/forward';
+    $variables['mail']['attr'] = array('query' => array('path' => $variables['calendar_share_url']));
+
+  }
 }
 
 

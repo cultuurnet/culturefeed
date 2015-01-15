@@ -7,7 +7,7 @@
 /**
  * Get the users activities.
  */
-function culturefeed_calendar_get_user_activities($use_search = FALSE) {
+function culturefeed_calendar_get_user_activities($use_search = FALSE, $user_id = '') {
 
   $activities = &drupal_static(__FUNCTION__, NULL);
 
@@ -19,7 +19,7 @@ function culturefeed_calendar_get_user_activities($use_search = FALSE) {
   $activities->objects = array();
   $activities->total = 0;
 
-  $uid = DrupalCultureFeed::getLoggedInUserId();
+  $uid = !empty($user_id) ? $user_id : DrupalCultureFeed::getLoggedInUserId();
 
   if ($uid) {
 
@@ -33,7 +33,7 @@ function culturefeed_calendar_get_user_activities($use_search = FALSE) {
     $query->max = 500;
     $query->type = $activity_options;
     $query->contentType = 'event';
-    $query->userId = DrupalCultureFeed::getLoggedInUserId();
+    $query->userId = $uid;
 
     // Search on the service for attends or likes of this user.
     if ($use_search) {

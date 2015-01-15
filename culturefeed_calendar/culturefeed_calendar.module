@@ -24,8 +24,21 @@ function culturefeed_calendar_menu() {
   $items = array();
 
   $items['culturefeed/calendar'] = array(
-    'title' => t('UitKalendar'),
     'page callback' => 'culturefeed_calendar_page_my_activities',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/share'] = array(
+    'title' => t('Share your OutCalendar'),
+    'page callback' => 'culturefeed_calendar_page_share_my_calendar',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/%'] = array(
+    'page callback' => 'culturefeed_calendar_page_user_activities',
+    'page arguments' => array(2),
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
@@ -59,6 +72,14 @@ function culturefeed_calendar_menu() {
     'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
+  );
+  $items['admin/config/culturefeed/calendar'] = array(
+    'title' => 'CultureFeed Calendar',
+    'description' => 'Change CultureFeed Calendar settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_calendar_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
   );
 
   return $items;
@@ -136,6 +157,12 @@ function culturefeed_calendar_theme() {
     'path' => $path,
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button-hover',
+  );
+
+  $items['culturefeed_calendar_share_page'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-share-page',
   );
 
   return $items;
