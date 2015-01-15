@@ -29,6 +29,17 @@ chdir($root);
 $autoloader = require $autoloader_path;
 require $root . '/sites/all/vendor/autoload.php';
 
+$request = Request::createFromGlobals();
+$kernel = DrupalKernel::createFromRequest($request, $autoloader, 'prod');
+$kernel->prepareLegacyRequest($request);
+
+$queue_name = $kernel->getContainer()->getParameter('command_bus.queue_name');
+
+// We need to close the database connection here, otherwise
+// the worker child process will kill it when the process finishes, and the
+// next worker child process won't be able to use the database.
+\Drupal\Core\Database\Database::closeConnection();
+
 // Bootstrap drupal after the parent forks its process and is ready to perform.
 Resque_Event::listen('afterFork', function() use ($autoloader) {
 
@@ -55,7 +66,7 @@ Resque_Event::listen('afterFork', function() use ($autoloader) {
 
 });
 
-$worker = new Resque_Worker(array('event'));
+$worker = new Resque_Worker(array($queue_name));
 $worker->logLevel = Resque_Worker::LOG_VERBOSE;
 fwrite(STDOUT, '*** Starting worker ' . $worker . "\n");
 $worker->work(5);
