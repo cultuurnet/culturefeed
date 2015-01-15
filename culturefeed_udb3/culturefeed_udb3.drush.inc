@@ -50,6 +50,7 @@ function drush_culturefeed_udb3_udb3_delete_data() {
     'place_document_repository',
     'place_store',
     'used_keywords_memory_event_store',
+    'event_relations',
   );
 
   foreach ($entities as $entity_type) {
