@@ -1,5 +1,5 @@
 parameters:
-  command_bus.parameter: event
+  command_bus.queue_name: event
   resque.command.bus.event_command_context_set: broadway.command_handling.context
 
 services:
@@ -176,7 +176,7 @@ services:
     factory_method: get
   culturefeed_udb3.event_command_bus:
     class: CultuurNet\UDB3\CommandHandling\ResqueCommandBus
-    arguments: ['@culturefeed_udb3.main_command_bus', '%command_bus.parameter%', '@culturefeed_udb3.command_bus_event_dispatcher']
+    arguments: ['@culturefeed_udb3.main_command_bus', '%command_bus.queue_name%', '@culturefeed_udb3.command_bus_event_dispatcher']
     calls:
       - [setLogger, ['@culturefeed_udb3.logger.command_bus']]
       - [subscribe, ['@culturefeed_udb3.event_command_handler']]
