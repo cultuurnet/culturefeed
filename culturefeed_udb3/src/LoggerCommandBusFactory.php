@@ -98,7 +98,10 @@ class LoggerCommandBusFactory implements LoggerCommandBusFactoryInterface {
 
       }
 
-      $emitter = new Emitter($redis);
+      $opts = array();
+      $opts['key'] = $config->get('log.command_bus.socketioemitter_redis_key');
+
+      $emitter = new Emitter($redis, $opts);
       $handlers[] = new SocketIOEmitterHandler($emitter);
 
     }

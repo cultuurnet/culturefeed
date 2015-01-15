@@ -141,6 +141,19 @@ class SettingsForm extends ConfigFormBase {
         ),
       ),
     );
+    $form['log.command_bus']['socketioemitter']['socketioemitter_redis_key'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Redis key'),
+      '#default_value' => $config->get('log.command_bus.socketioemitter_redis_key'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => FALSE),
+        ),
+        'required' => array(
+          ':input[name="socketioemitter_type"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
 
     $form['log.command_bus']['level'] = array(
       '#type' => 'select',
@@ -170,6 +183,7 @@ class SettingsForm extends ConfigFormBase {
       ->set('log.command_bus.socketioemitter', $values['socketioemitter_type'])
       ->set('log.command_bus.socketioemitter_redis_host', $values['socketioemitter_redis_host'])
       ->set('log.command_bus.socketioemitter_redis_port', $values['socketioemitter_redis_port'])
+      ->set('log.command_bus.socketioemitter_redis_key', $values['socketioemitter_redis_key'])
       ->set('log.command_bus.level', $values['level'])
       ->save();
     parent::submitForm($form, $form_state);
