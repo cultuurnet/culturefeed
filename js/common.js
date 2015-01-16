@@ -61,6 +61,12 @@
      * If an input has autosubmit as class. Redirect to the selected value.
      */
     Drupal.jsAC.prototype.select = function (node) {
+
+      if (jQuery(this.input).hasClass('auto-submit')) {
+        var $submit = $(this.input).parents('form').find('#edit-submit');
+        $submit.trigger('mousedown');
+      }
+      
       if ($(this.input).hasClass('auto-submit-field')) {
         window.location.href = $(node).data('autocompleteValue');
       }

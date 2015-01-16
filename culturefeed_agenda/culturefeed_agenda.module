@@ -665,7 +665,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
  * Implements hook_url_outbound_alter().
  */
 function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path) {
-
+/*
   if ($path == 'agenda/search') {
 
     $type = '';
@@ -769,7 +769,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     }
 
   }
-
+*/
 }
 
 /**
@@ -914,15 +914,13 @@ function culturefeed_agenda_production_load($cdb_id) {
 function culturefeed_agenda_nearby_activities_filter_form() {
 
   $location = '';
-  /*
-    if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-      $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-      $where = trim($user_location->postal) . ' ' . trim($user_location->city);
-    }
-  */
 
-  if (!empty($_COOKIE['culturefeed_agenda_nearby_activities'])) {
-    $location = $_COOKIE['culturefeed_agenda_nearby_activities'];
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+
+    if (isset($location_cookie['postal']) && isset($location_cookie['city'])) {
+      $location = trim($user_location->postal) . ' ' . trim($user_location->city);
+    }
   }
 
   $form = array();
@@ -951,29 +949,6 @@ function culturefeed_agenda_nearby_activities_filter_form() {
  * Submit the ajax filter form for suggestions. Return the new list.
  */
 function culturefeed_agenda_nearby_activities_ajax_filter_submit($form, $form_state) {
-  /*
-    // Also set $_COOKIE for later use in code.
-    $where = $form_state['values']['where'];
-    $postal_length = 4;
-    $postal = substr($where, 0, $postal_length);
-    $city = substr($where, $postal_length);
-    // Store in cookie.
-    $values = array(
-      'uitid.userLocation' => json_encode(
-        array(
-          'latitude' => '',
-          'longitude' => '',
-          'city' => $city,
-          'postal' => $postal,
-        )
-      ),
-    );
-    user_cookie_save($values);
-  */
-
-  // Also set $_COOKIE for later use in code.
-  setcookie('culturefeed_agenda_nearby_activities', $form_state['values']['location'], $_SERVER['REQUEST_TIME'] + 60 * 60 * 24 * 30, '/');
-  $_COOKIE['culturefeed_agenda_nearby_activities'] = $form_state['values']['location'];
 
   $build = array();
   $build[] = array(

@@ -8,7 +8,7 @@
 
 <div class="container">
 
-  <p class="block-title">In jouw buurt <span class="text-muted">// CITY & POSTAL FROM COOKIE</span></p>
+  <p class="block-title">In jouw buurt <span id="nearby-activities-title-location" class="text-muted" /></p>
 
   <?php if (!empty($change_location_link)): ?>
     <?php print $change_location_link; ?>
