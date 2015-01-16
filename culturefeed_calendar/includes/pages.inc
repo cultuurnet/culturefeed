@@ -385,7 +385,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
     catch (Exception $e) {
       drupal_set_message(t('There was an error while adding to your calendar'), 'error');
     }
-
+    
   }
 }
 
