@@ -233,30 +233,45 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
-      '#default_value' => $edit ? date('Y-m-d H:i', $selected_date) : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
   }
   // timestamps.
   else {
     foreach ($params['dates'] as $key => $date) {
-      $time_string = "";
+
+      $full_date = $date['date'];
       if (!empty($date['start'])) {
-        $time_string .= t(" from ") . $date['start'];
+        $full_date .= ' ' . $date['start'];
+      }
+
+      // Don't add if date is in the past.
+      $timestamp = strtotime($full_date);
+      if ($timestamp < $_SERVER['REQUEST_TIME']) {
+        continue;
+      }
+
+      if (!empty($date['start'])) {
+        $starthour = format_date($timestamp, 'custom', 'H:i');
         if (!empty($date['end'])) {
-          $time_string .= t(" to ") . $date['end'];
+          $endhour = format_date(strtotime($date['date'] . ' ' . $date['end']), 'custom', 'H:i');
+          $dates[$date['date']] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
+        }
+        else {
+          $dates[$date['date']] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
         }
       }
-      $date_formatted = date('d-m-Y', strtotime($date['date']));
-      if(strtotime($date['date']) >= time()) {
-        $dates[$date['date']] = date('d-m-Y', strtotime($date_formatted)) . $time_string;
+      else {
+        $dates[$date['date']] = t('!date', array('!date' => $date['date']));
       }
+
     }
 
     $form['date'] = array(
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
-      '#default_value' => $edit ? date('Y-m-d', $selected_date) : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d') : '',
     );
   }
 
@@ -385,7 +400,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
     catch (Exception $e) {
       drupal_set_message(t('There was an error while adding to your calendar'), 'error');
     }
-    
+
   }
 }
 
