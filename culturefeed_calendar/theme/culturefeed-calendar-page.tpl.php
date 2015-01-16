@@ -6,10 +6,10 @@
 ?>
 
 <div>
-  <span<h1><?php print t('OuTcalendar') ?></h1>
-    <?php if (!empty($user_name)) : ?>
-      <?php print $user_name ?>
-    <?php endif; ?>
+  <h1><?php print t('OuTcalendar') ?></h1>
+  <?php if (!empty($user_name)) : ?>
+    <?php print $user_name ?>
+  <?php endif; ?>
 </div>
 
 <?php if ($deny_access) : ?>

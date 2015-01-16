@@ -66,20 +66,22 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
       $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
     }
   }
-  if ($authenticated) {
+
+  if ($authenticated || (!$authenticated && !$my_calendar)) {
     // Set username.
     $variables['user_name'] = $cf_user->givenName . ' ' . $cf_user->familyName;
-    if ($my_calendar) {
-      $variables['share_calendar_url'] = 'calendar/share';
-      $variables['calendar_settings_url'] = 'calendar/settings';
+  }
 
-      if (!empty($cf_user->calendarId)) {
-        $variables['shared'] = TRUE;
-      }
-      else {
-        $variables['shared'] = FALSE;
-        $variables['data_content'] = theme('culturefeed_calendar_share_page');
-      }
+  if ($authenticated && $my_calendar) {
+    $variables['share_calendar_url'] = 'calendar/share';
+    $variables['calendar_settings_url'] = 'calendar/settings';
+
+    if (!empty($cf_user->calendarId)) {
+      $variables['shared'] = TRUE;
+    }
+    else {
+      $variables['shared'] = FALSE;
+      $variables['data_content'] = theme('culturefeed_calendar_share_page');
     }
   }
 
