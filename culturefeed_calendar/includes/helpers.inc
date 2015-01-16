@@ -119,13 +119,13 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       }
 
       $button['action'] = $action;
-      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
+      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
     }
     // Show both buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
       }
     }
   }
