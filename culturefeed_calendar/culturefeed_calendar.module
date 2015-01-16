@@ -24,7 +24,6 @@ function culturefeed_calendar_menu() {
   $items = array();
 
   $items['culturefeed/calendar'] = array(
-    'title' => t('My calendar'),
     'page callback' => 'culturefeed_calendar_page_my_activities',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
@@ -33,6 +32,13 @@ function culturefeed_calendar_menu() {
   $items['culturefeed/calendar/share'] = array(
     'title' => t('Share your OutCalendar'),
     'page callback' => 'culturefeed_calendar_page_share_my_calendar',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/settings'] = array(
+    'title' => t('OutCalendar Settings'),
+    'page callback' => 'culturefeed_calendar_page_settings',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
@@ -159,11 +165,15 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button-hover',
   );
-
   $items['culturefeed_calendar_share_page'] = array(
     'path' => $path,
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-share-page',
+  );
+  $items['culturefeed_calendar_settings_page'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-settings-page',
   );
 
   return $items;

@@ -35,6 +35,15 @@ function culturefeed_calendar_page_share_my_calendar() {
 }
 
 /**
+ * Page callback to show the calendar settings page.
+ */
+function culturefeed_calendar_page_settings() {
+
+  return theme('culturefeed_calendar_settings_page');
+
+}
+
+/**
  * Form to add a button to save the cookie events to the calendar.
  */
 function culturefeed_calendar_save_cookie_form($form, &$form_state) {
@@ -206,13 +215,13 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   $edit = !empty($selected_date) ? TRUE : FALSE;
 
   drupal_set_title($params['title']);
-  
+
   // Only show possible dates for periods where calendar summary is available
   $possible_dates = '';
   if (($params['type'] == 'period') && $params['calendar_summary']) {
     $info = '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>';
   }
-  
+
   $form['info'] = array(
     '#type' => 'markup',
     '#markup' => $possible_dates,
@@ -635,4 +644,71 @@ function _culturefeed_calendar_get_nav_months() {
   }
 
   return $months;
+}
+
+/**
+ * Form to delete a calendar event.
+ */
+function culturefeed_calendar_settings_form($form, &$form_state) {
+
+  try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $ex) {
+    drupal_set_message(t('There was an error while searching the user'), 'error');
+  }
+
+
+  $form['privacy_share'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Privacy & share'),
+    '#tree' => TRUE,
+  );
+
+  $form['privacy_share']['visibility'] = array(
+    '#type' => 'radios',
+    '#title' => t('Who can see your OuTcalendar'),
+    '#default_value' => $cf_user->privacyConfig->calendarId,
+    '#options' => array(
+      CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE => t('Only me'),
+      CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC => t('Everyone'),
+    ),
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save',
+    '#submit' => array('culturefeed_calendar_settings_form_submit'),
+  );
+
+
+  return $form;
+
+}
+
+/**
+ * Submit handler for the calendar settings form.
+ */
+function culturefeed_calendar_settings_form_submit($form, &$form_state) {
+  try {
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
+
+    $cf_user->privacyConfig->calendarId = $form_state['values']['privacy_share']['visibility'];
+    DrupalCultureFeed::updateUserPrivacy($cf_user->id, $cf_user->privacyConfig);
+
+    if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
+      $cf_user->calendarId = $cf_user->id;
+    }
+    else {
+      $cf_user->calendarId = '';
+    }
+    DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
+
+  }
+  catch (Exception $ex) {
+    drupal_set_message(t('There was an error while saving the form'), 'error');
+  }
+
+
 }

@@ -10,7 +10,7 @@
 
   <h3><?php print t('Share your OuTcalendar with your friends'); ?></h3>
   <p><?php print t('You can share this link with your friends'); ?></p>
-  <p><?php print $calendar_share_url; ?></p>
+  <p><?php print $calendar_full_share_url; ?></p>
   <p><?php print l(t('Facebook'), $facebook['url'], $facebook['attr']); ?></p>
   <p><?php print l(t('Google+'), $googleplus['url'], $googleplus['attr']); ?></p>
   <p><?php print l(t('Twitter'), $twitter['url'], $twitter['attr']); ?></p>
@@ -25,7 +25,7 @@
 
   <p><?php print t('You have chosen earlier to not share your Outcalendar. You can change this in your settings.'); ?></p>
   <p>
-    <?php print l(t('Adjust settings'), ''); ?>
+    <?php print l(t('Adjust settings'), 'culturefeed/calendar/settings'); ?>
   </p>
 
 <?php endif; ?>

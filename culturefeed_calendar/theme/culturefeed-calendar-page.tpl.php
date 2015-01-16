@@ -7,7 +7,9 @@
 
 <div>
   <span<h1><?php print t('OuTcalendar') ?></h1>
-  <?php print $user_name ?>
+    <?php if (!empty($user_name)) : ?>
+      <?php print $user_name ?>
+    <?php endif; ?>
 </div>
 
 <?php if ($deny_access) : ?>
@@ -15,6 +17,10 @@
 <?php else : ?>
   <?php if (!empty($save_cookie_button)) : ?>
     <?php print $save_cookie_button ?>
+  <?php endif; ?>
+
+  <?php if (!empty($calendar_settings_url)) : ?>
+    <?php print l(t('Settings'), $calendar_settings_url) ?>
   <?php endif; ?>
 
   <?php if (!empty($share_calendar_url)) : ?>

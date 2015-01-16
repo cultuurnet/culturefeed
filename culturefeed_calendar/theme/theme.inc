@@ -12,23 +12,20 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
   // Check if we need to show the calendar for the logged in user or for another user.
   if (isset($variables['user_id'])) {
     $my_calendar = FALSE;
-    $user = DrupalCultureFeed::getUser($variables['user_id']);
+    $cf_user = DrupalCultureFeed::getUser($variables['user_id']);
   }
   else {
     $my_calendar = TRUE;
-    $user = DrupalCultureFeed::getLoggedInUser();
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
   }
 
   // Check if another persons calendar is shared.
-  if (!$my_calendar && empty($user->calendarid)) {
+  if (!$my_calendar && empty($cf_user->calendarId)) {
     $variables['deny_access'] = TRUE;
   }
   else {
     $variables['deny_access'] = FALSE;
   }
-
-  // Set username.
-  $variables['user_name'] = $user->givenName . ' ' . $user->familyName;
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $variables['sidebar'] = 'empty';
@@ -69,14 +66,20 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
       $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
     }
   }
-  if ($authenticated && $my_calendar) {
-    $variables['share_calendar_url'] = 'calendar/share';
-    if (!empty($user->calendarid)) {
-      $variables['shared'] = TRUE;
-    }
-    else {
-      $variables['shared'] = FALSE;
-      $variables['data_content'] = theme('culturefeed_calendar_share_page');
+  if ($authenticated) {
+    // Set username.
+    $variables['user_name'] = $cf_user->givenName . ' ' . $cf_user->familyName;
+    if ($my_calendar) {
+      $variables['share_calendar_url'] = 'calendar/share';
+      $variables['calendar_settings_url'] = 'calendar/settings';
+
+      if (!empty($cf_user->calendarId)) {
+        $variables['shared'] = TRUE;
+      }
+      else {
+        $variables['shared'] = FALSE;
+        $variables['data_content'] = theme('culturefeed_calendar_share_page');
+      }
     }
   }
 
@@ -231,21 +234,28 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$var
 }
 
 /**
- * Preprocess for share calendar page.
+ * Preprocess the share calendar page.
  *
  * @param type $variables
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$variables) {
 
-  $user = DrupalCultureFeed::getUser(DrupalCultureFeed::getLoggedInUserId());
+  try {
+    $cf_user = DrupalCultureFeed::getUser(DrupalCultureFeed::getLoggedInUserId());
+  }
+  catch (Exception $ex) {
+    drupal_set_message(t('There was an error while searching the user'), 'error');
+  }
+
   global $base_url;
   $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
 
-  $variables['shared'] = $user->calendarid;
+  $variables['shared'] = $cf_user->calendarId;
   // Calendar is public.
-  if ($user->calendarid != '') {
+  if ($cf_user->calendarId != '') {
 
-    $variables['calendar_share_url'] = 'culturefeed/calendar/' . $user->id;
+    $variables['calendar_share_url'] = 'culturefeed/calendar/' . $cf_user->id;
+    $variables['calendar_full_share_url'] = $base_url . '/culturefeed/calendar/' . $cf_user->id;
 
     $fb_app_id = variable_get('culturefeed_calendar_fbAppId', '');
     if (isset($fb_app_id) && !empty($fb_app_id)) {
@@ -270,6 +280,17 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
     $variables['mail']['attr'] = array('query' => array('path' => $variables['calendar_share_url']));
 
   }
+}
+
+/**
+ * Preprocess the calendar settings page.
+ *
+ * @param type $variables
+ */
+function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$variables) {
+  global $base_url;
+  $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
+  $variables['calendar_settings_form'] = drupal_get_form('culturefeed_calendar_settings_form');
 }
 
 
