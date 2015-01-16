@@ -692,7 +692,7 @@ function culturefeed_agenda_get_startdate($dates) {
   
   for ($i = 0; $i < 1; $i++) {
     $date = $dates->current();
-    $startdate = $date->getDate();
+    $startdate = $date->getDate() . ' ' . $date->getStartTime();
   }
   return $startdate;
 }
