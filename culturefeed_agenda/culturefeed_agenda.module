@@ -665,7 +665,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
  * Implements hook_url_outbound_alter().
  */
 function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path) {
-/*
+
   if ($path == 'agenda/search') {
 
     $type = '';
@@ -769,7 +769,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     }
 
   }
-*/
+
 }
 
 /**
