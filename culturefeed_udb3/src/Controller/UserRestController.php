@@ -56,9 +56,13 @@ class UserRestController extends ControllerBase {
    *   A json response.
    */
   public function info() {
+    // Remove circular dependencies from the CultureFeed_User instance,
+    // otherwise encoding it as JSON will fail.
+    $user = clone $this->user;
+    unset($user->following);
 
     $response = JsonLdResponse::create()
-      ->setData($this->user)
+      ->setData($user)
       ->setPublic()
       ->setClientTtl(60 * 30)
       ->setTtl(60 * 5);
