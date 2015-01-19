@@ -301,6 +301,13 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Get all the parameters for current search.
+   */
+  public function getParameters() {
+    return $this->parameters;
+  }
+
+  /**
    * Get the group value.
    * @return mixed boolean|string
    */

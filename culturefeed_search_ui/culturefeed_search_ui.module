@@ -884,9 +884,6 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     if (!empty($query['facet']['datetype'])) {
       $human_names['datetype'] = culturefeed_search_ui_get_date_facet_options();
     }
-    if (!empty($query['facet']['agefrom'])) {
-      $human_names['agefrom'] = culturefeed_search_ui_get_agefrom_facet_options();
-    }
 
     $facets = $culturefeedFacetingComponent->getFacets();
     // Loop through all active facets, and generate a remove link.

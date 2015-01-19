@@ -1,0 +1,286 @@
+<?php
+/**
+ * @file
+ * CultureFeed Saved Search allows users to save their search and get notifications when new search results become available.
+ */
+
+require_once 'includes/helpers.inc';
+
+/**
+ * Implements hook_permission().
+ */
+function culturefeed_saved_searches_permission() {
+
+  return array(
+    'save culturefeed searches' => array(
+      'title' => t('Save searches'),
+      'description' => t('Allows the user to save his searches'),
+    )
+  );
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_saved_searches_theme() {
+
+  $path = drupal_get_path('module', 'culturefeed_saved_searches') . '/theme';
+
+  return array(
+    'culturefeed_saved_searches_manage_list' => array(
+      'variables' => array(
+        'searches' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-saved-searches-manage-list',
+    ),
+    'culturefeed_saved_searches_list' => array(
+      'variables' => array(
+        'searches' => array(),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-saved-searches-list',
+    ),
+    'culturefeed_saved_searches_cta' => array(
+      'variables' => array(
+        'text' => '',
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_saved_searches_menu() {
+
+  $items = array();
+
+  $items['culturefeed/savesearch'] = array(
+    'title' => 'Save search',
+    'title callback' => FALSE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_saved_searches_save_search_form'),
+    'file' => 'includes/pages.inc',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['culturefeed/searches'] = array(
+    'title' => 'Saved searches',
+    'page callback' => 'culturefeed_saved_searches_page_my_searches',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['culturefeed/searches/%culturefeed_saved_searches_search/delete'] = array(
+    'title' => 'Delete saved search',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_saved_searches_delete_form', 2),
+    'access callback' => 'culturefeed_is_culturefeed_user', // access check is done on service.
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_saved_searches_culturefeed_ui_profile_menu() {
+
+  return array(
+    'pages' => array(
+      'title' => t('Saved searches'),
+      'url' => 'culturefeed/searches',
+      'description' => t('Manage the searches that you saved.'),
+      'weight' => -14,
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function culturefeed_saved_searches_block_info() {
+
+  $blocks = array();
+
+  $blocks['culturefeed-saved-searches-cta'] = array(
+    'info' => t('Saved searches CTA:  always shown'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['culturefeed-saved-searches-cta-2'] = array(
+    'info' => t('Saved searches CTA: only shown when results'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['saved-searches-teaser-list'] = array(
+    'info' => t('Saved searches: list'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function culturefeed_saved_searches_block_view($delta) {
+
+  module_load_include('inc', 'culturefeed_saved_searches', 'includes/blocks');
+
+  $block = array();
+
+  switch ($delta) {
+
+    case 'culturefeed-saved-searches-cta':
+      $block['content'] = culturefeed_saved_searches_block_cta();
+      break;
+
+    case 'culturefeed-saved-searches-cta-2':
+      $block['content'] = culturefeed_saved_searches_block_cta_bottom();
+      break;
+
+    case 'saved-searches-teaser-list':
+      $block['content'] = culturefeed_saved_searches_block_teaser();
+      break;
+
+  }
+
+  return $block;
+
+}
+
+/**
+ * Form callback to show the edit frequency form of a saved search.
+ */
+function culturefeed_saved_searches_edit_frequency_form($form, &$form_state, CultureFeed_SavedSearches_SavedSearch $saved_search) {
+
+  $id = 'change-frequency-' . $saved_search->id;
+  $options = culturefeed_saved_searches_frequency_options();
+
+  if (!isset($form_state['saved_search'])) {
+    $form_state['saved_search'] = $saved_search;
+  }
+
+  $form['container'] = array(
+    '#prefix' => '<div id="' . $id . '">',
+    '#suffix' => '</div>',
+  );
+
+  // Show textual version at load.
+  if (!isset($form_state['triggering_element']) || $form_state['triggering_element']['#name'] != 'change') {
+
+    $label = isset($options[$saved_search->frequency]) ? $options[$saved_search->frequency] : CultureFeed_SavedSearches_SavedSearch::ASAP;
+    $form['container']['frequency'] = array(
+      '#markup' => '<span>' . $label . '</span>',
+    );
+
+    $form['container']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Change'),
+      '#ajax' => array(
+        'callback' => 'culturefeed_saved_searches_ajax_edit_frequency_form',
+        'wrapper' => $id,
+      ),
+      '#submit' => array('culturefeed_saved_searches_edit_frequency_form_submit'),
+      '#name' => 'change',
+    );
+
+  }
+  // Show dropdown if change was clicked.
+  else {
+
+    $form['container']['frequency'] = array(
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => $saved_search->frequency,
+    );
+
+    $form['container']['save'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#ajax' => array(
+        'callback' => 'culturefeed_saved_searches_ajax_edit_frequency_form',
+        'wrapper' => $id,
+      ),
+      '#submit' => array('culturefeed_saved_searches_edit_frequency_form_submit'),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Submit the edit frequency form.
+ */
+function culturefeed_saved_searches_edit_frequency_form_submit($form, &$form_state) {
+
+  $form_state['rebuild'] = TRUE;
+
+  if ($form_state['triggering_element']['#name'] == 'op') {
+    try {
+
+      $search_service = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches();
+      $search_service->changeFrequency($form_state['saved_search']->id, $form_state['values']['frequency']);
+      drupal_set_message(t('Your change was saved successfully'));
+      $form_state['saved_search']->frequency = $form_state['values']['frequency'];
+
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('Something went wrong during the saving. Please try again later.'), 'error');
+    }
+  }
+
+}
+
+/**
+ * Callback for the submit buttons of the edit frequency form.
+ */
+function culturefeed_saved_searches_ajax_edit_frequency_form($form, $form_state) {
+
+  $commands = array();
+
+  $commands[] = ajax_command_replace('#change-frequency-' . $form_state['saved_search']->id, drupal_render($form['container']));
+  $commands[] = ajax_command_html('#saved-searches-messages', theme('status_messages'));
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+
+}
+
+/**
+ * Load a saved search.
+ */
+function culturefeed_saved_searches_search_load($id) {
+
+  $items = &drupal_static(__FUNCTION__, array());
+  if (isset($items[$id])) {
+    return $items[$id];
+  }
+
+  try {
+    $search = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getSavedSearch($id);
+    return empty($search) ? FALSE : $search;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_saved_searches', $e);
+  }
+
+  $items[$id] = FALSE;
+
+  return FALSE;
+
+}
