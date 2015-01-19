@@ -58,7 +58,7 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&
  */
 function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_cta(&$vars) {
 
-    $vars['path'] = 'culture/savesearch';
+    $vars['path'] = 'culturefeed/savesearch';
   if (!culturefeed_is_culturefeed_user()) {
 
     // If not logged in, go to authenticated page.
