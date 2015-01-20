@@ -9,7 +9,7 @@
  * Page callback to show the calendar page.
  */
 function culturefeed_calendar_page_my_activities() {
-
+  
   $activities = culturefeed_calendar_get_user_activities(TRUE);
   return theme('culturefeed_calendar_page', array('activities' => $activities));
 
@@ -235,6 +235,16 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
+    $form['no_date'] = array(
+    '#type' => 'submit',
+    '#value' => t("I don't know yet"),
+    '#name' => 'add',
+    '#submit' => array('culturefeed_calendar_add_to_calendar_form_submit'),
+    '#validate' => array('culturefeed_calendar_form_validate'),
+    '#attributes' => array(
+      'class' => array('btn', 'btn-link')
+      ),
+  );
   }
   // timestamps.
   else {
