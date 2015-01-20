@@ -151,7 +151,8 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     $query['search'] = $form_state['values']['search'];
   }
 
-  $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
+  $active_filters = variable_get('culturefeed_agenda_search_block_active_fields', array());
+
   if (isset($active_filters['when'])) {
     unset($query['facet']['datetype']);
     if (!empty($form_state['values']['when'])) {
