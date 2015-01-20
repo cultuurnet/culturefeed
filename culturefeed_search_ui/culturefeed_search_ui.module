@@ -491,13 +491,12 @@ function culturefeed_search_ui_block_configure($delta) {
   }
   elseif ($delta == 'location-search') {
     $options = culturefeed_search_get_actortype_categories();
-    asort($options);
     $form['culturefeed-location-search-actortypes'] = array(
       '#title' => t('Available actortype categories.'),
       '#description' => t('Select the actortype categories that can be shown in the autocomplete. If none selected, all actors will be searched.'),
       '#type' => 'checkboxes',
       '#options' => $options,
-      '#default_value' => variable_get('culturefeed_location_search_actortypes'),
+      '#default_value' => variable_get('culturefeed_location_search_actortypes', array()),
     );
   }
   elseif ($delta == 'filter-form') {
