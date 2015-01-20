@@ -11,6 +11,7 @@
       $nearby_checkbox.bind('change', function() {
 
         if (this.checked) {
+          $('label[for="edit-nearby"]').append('<span id="current-location" class="loading-location throbber">Loading...</span>');
           Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.setLocationAutocomplete);
        }
 
@@ -48,6 +49,7 @@
     }
 
     $('#culturefeed-agenda-search-block-form').find('input[name="where"]').val(postal + ' ' + city);
+    $('#current-location').remove();
   }
 
 })(jQuery);

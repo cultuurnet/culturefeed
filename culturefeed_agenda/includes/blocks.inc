@@ -142,18 +142,23 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   // Location search.
   if (isset($active_fields['where'])) {
-    $form['where'] = array(
+
+    $form['location'] = array(
+      '#type' => 'placeholder',
+      '#weight' => $active_fields['where'],
+    );
+
+    $form['location']['where'] = array(
       '#type' => 'textfield',
       '#title' => t('Where'),
       '#default_value' => isset($_GET['location']) ? $_GET['location'] : NULL,
-      '#weight' => $active_fields['where'],
       '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
       '#attributes' => array('placeholder' => t('Zipcode or city')),
     );
 
-    $form['nearby'] = array(
+    $form['location']['nearby'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Activities near my current location'),
+      '#title' => t('Use my current location'),
     );
 
     // Add js for geolocate.
@@ -169,7 +174,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
-    '#weight' => 20,
+    '#weight' => 200,
   );
 
   global $user;
@@ -191,7 +196,8 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     $query['search'] = $form_state['values']['search'];
   }
 
-  $active_filters = variable_get('culturefeed_agenda_search_block_active_filters', array());
+  $active_filters = variable_get('culturefeed_agenda_search_block_active_fields', array());
+
   if (isset($active_filters['when'])) {
     unset($query['facet']['datetype']);
     if (!empty($form_state['values']['when'])) {
