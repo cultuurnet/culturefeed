@@ -217,7 +217,10 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
-    $term = str_replace(' ',' AND ', trim($term));
+
+    // Replace special characters with normal ones.
+    $term = culturefeed_search_transliterate($term);
+
     $this->query[] = $term;
     return $this->query;
   }
@@ -394,7 +397,7 @@ class CultureFeedSearchPage {
     if (isset($params['coordinates'])) {
 
       $coordinates = explode(',', $params['coordinates']);
-      
+
       if (isset($params['distance'])) {
         $distance = new Parameter\Spatial\Distance($params['distance']);
       }
