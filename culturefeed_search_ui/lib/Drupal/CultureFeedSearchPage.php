@@ -220,7 +220,6 @@ class CultureFeedSearchPage {
 
     // Replace special characters with normal ones.
     $term = culturefeed_search_transliterate($term);
-
     $this->query[] = $term;
     return $this->query;
   }
