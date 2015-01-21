@@ -217,9 +217,9 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
-
     // Replace special characters with normal ones.
     $term = culturefeed_search_transliterate($term);
+    
     $this->query[] = $term;
     return $this->query;
   }
