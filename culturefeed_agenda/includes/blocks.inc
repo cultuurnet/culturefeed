@@ -19,16 +19,25 @@ function culturefeed_agenda_block_nearby_activities() {
     $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
   }
 
-  // Add extra links in block header.
-  $location_string = '>';
-  $class = 'all-events-for-locaton-link';
+  // Add link to show all events for the location.
+  $location_string = '';
+  $url = '';
+  $classes = 'all-activities-link';
   if (isset($location_cookie['postal']) && isset($location_cookie['city'])) {
     $location_string = $location_cookie['postal'] . ' ' . $location_cookie['city'];
   }
   else {
-    $class .= ' hidden';
+    $classes .= ' hidden';
   }
 
+  $all_activities_for_location_link = l(t('Everything for <span class="location-string">!location</span> ->', array('!location' => $location_string)), 'agenda/search',
+    array(
+      'query' => array('location' => $location_string),
+      'html' => TRUE,
+      'attributes' => array('id' => 'all-activities-link', 'class' => $classes))
+  );
+
+  // Construct the toggle for the location form visbility.
   $change_location_link = l(t('Change location'), '',
     array(
       'attributes' => array('id' => 'change-location-link', 'class' => 'change-location-link'),
@@ -41,6 +50,7 @@ function culturefeed_agenda_block_nearby_activities() {
       '#theme' => 'culturefeed_agenda_block_nearby_activities',
       '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
       '#change_location_link' => $change_location_link,
+      '#all_activities_for_location_link' => $all_activities_for_location_link,
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',

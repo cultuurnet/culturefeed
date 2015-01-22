@@ -3,7 +3,7 @@
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
   Drupal.CultureFeed.Agenda = Drupal.CultureFeed.Agenda || {};
-  Drupal.CultureFeed.Agenda.dummy = Drupal.CultureFeed.Agenda.updateLocationForm || {};
+  Drupal.CultureFeed.Agenda.updateLocationForm = Drupal.CultureFeed.Agenda.updateLocationForm || {};
 
   Drupal.behaviors.nearbyActivites = {
     attach: function(context, settings) {
@@ -13,7 +13,7 @@
         $submit.once('nearby-activities', function() {
 
           var cookie = $.cookie('Drupal.visitor.uitid.userLocation');
-          cookie = null;
+
           if (cookie) {
             cookieParsed = JSON.parse(cookie);
             city = cookieParsed.city;
@@ -23,9 +23,7 @@
             $('#culturefeed-agenda-nearby-activities-filter-form').find('#edit-location').val(postal + ' ' + city);
             // Set location in the block title.
             $('#nearby-activities-title-location').html('// ' + postal + ' ' + city);
-
             $(this).trigger('mousedown');
-
           }
           else {
             Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.updateLocationForm);
@@ -48,8 +46,9 @@
 
   });
 
+
   /*
-   * Updte the location form and the bock-title with the new location.
+   * Update the location form and the bock-title with the new location.
    */
   Drupal.CultureFeed.Agenda.updateLocationForm = function(response) {
     var place = response[0];
@@ -67,20 +66,25 @@
 
     }
 
-    // Set the autocomplete input value.
-    var $form = $('#culturefeed-agenda-nearby-activities-filter-form');
-    $form.find('input[name="location"]').val(postal + ' ' + city);
+    $location_string = postal + ' ' + city;
 
-    // Update the block title with the location.
-    if ($('#nearby-activities-title-location').length) {
-      $('#nearby-activities-title-location').html('// ' + postal + ' ' + city + ' ');
-    }
+    // Set the input value.
+    var $form = $('#culturefeed-agenda-nearby-activities-filter-form');
+    $form.find('input[name="location"]').val($location_string);
 
     // Submit the form.
     $form.find('#edit-submit').trigger('mousedown');
 
-    // Update the link to all events for ths location.
+    // Update the block title with the location.
+    if ($('#nearby-activities-title-location').length) {
+      $('#nearby-activities-title-location').html('// ' + $location_string + ' ');
+    }
 
+    // Update the link to all events for ths location.
+    var $everything_link = $("#all-activities-link");
+    $everything_link.find('.location-string').text($location_string);
+    $everything_link.attr('href', 'agenda/search/' + $location_string);
+    $everything_link.removeClass("hidden");
   }
 
 })(jQuery);

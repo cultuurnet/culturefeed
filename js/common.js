@@ -17,7 +17,7 @@
         var lng = parseFloat(position.coords.longitude);
         var latlng = new google.maps.LatLng(lat, lng);
 
-        // execute the request and send the respons to addpostalcode function
+        // Execute the request and send the respons to addpostalcode function
         geocoder.geocode({'latLng': latlng}, function(response) {
 
           // Set the info also in a cookie.
@@ -55,6 +55,37 @@
 
   }
 
+  /**
+   * Get the latitude and longitude for a given place (postal + city).
+   */
+  Drupal.CultureFeed.getLatLonFromAddress = function(address, response_callback) {
+
+    var geocoder = new google.maps.Geocoder();
+
+    current_postal = address.substring(0, 4);
+    current_city = address.substring(5);
+
+    geocoder.geocode( { 'address': address}, function(response, status) {
+      var place = response[0];
+      if (status == google.maps.GeocoderStatus.OK) {
+
+        var location = {
+          latitude : response[0].geometry.location.lat(),
+          longitude : response[0].geometry.location.lng(),
+          city : current_city,
+          postal : current_postal
+        }
+
+        $.cookie('Drupal.visitor.uitid.userLocation', JSON.stringify(location), { path : '/' });
+
+        // Call the response callback function.
+        if (response_callback) {
+          response_callback(response);
+        }
+      }
+    });
+  }
+
   if (Drupal.jsAC) {
 
     /**
@@ -64,9 +95,11 @@
 
       if (jQuery(this.input).hasClass('auto-submit')) {
         var $submit = $(this.input).parents('form').find('#edit-submit');
-        $submit.trigger('mousedown');
+
+        // Set user input in cookie and location form.
+        Drupal.CultureFeed.getLatLonFromAddress($(node).data('autocompleteValue'), Drupal.CultureFeed.Agenda.updateLocationForm);
       }
-      
+
       if ($(this.input).hasClass('auto-submit-field')) {
         window.location.href = $(node).data('autocompleteValue');
       }

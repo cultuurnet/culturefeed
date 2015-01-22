@@ -694,18 +694,29 @@ function culturefeed_agenda_get_nearby_activities_list() {
     return '';
   }
   else {
-    $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    $city = $location_cookie['city'];
-    $postal = $location_cookie['postal'];
-
-    $parameters = array();
     // Compose the search query.
+    $parameters = array();
     $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
     $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-    $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
-    $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
     $parameters[] = new \CultuurNet\Search\Parameter\Group();
     $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
+
+    // Add location filter from cookie.
+    $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    $lon = $location_cookie['longitude'];
+    $lat = $location_cookie['latitude'];
+    $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(40);
+    $point = new \CultuurNet\Search\Parameter\Spatial\Point($lat, $lon);
+    $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+
+    // Alternatively, search on city and postal.
+    // $city = $location_cookie['city'];
+    // $postal = $location_cookie['postal'];
+    // $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
+    // $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+
+    // Optional query params from block config.
     if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
       $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
     }

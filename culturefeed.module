@@ -9,7 +9,7 @@ define('CULTUREFEED_CACHE_EXPIRES', 3600);
 
 define('CULTUREFEED_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_API_PATH', 'entry/test.rest.uitdatabank.be/api/v2/');
-define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js?sensor=true&v=3.5&region=BE&hl=nl');
+define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js?sensor=true&v=3.5&region=BE&hl=nl&language=nl');
 
 define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
 
@@ -221,7 +221,7 @@ function culturefeed_page_build(&$page) {
   // Check if it is a detail page.
   $gtm_globals['is_detail'] = (arg(0) == 'agenda' && in_array(arg(1), array('e', 'a', 'p', 'g')));
   if ($gtm_globals['is_detail']) {
-    
+
     // Make this backwards compatible
     $gtm_globals['is_event_detail'] = TRUE;
 
