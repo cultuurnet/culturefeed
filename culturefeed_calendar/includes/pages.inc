@@ -9,7 +9,7 @@
  * Page callback to show the calendar page.
  */
 function culturefeed_calendar_page_my_activities() {
-  
+
   $activities = culturefeed_calendar_get_user_activities(TRUE);
   return theme('culturefeed_calendar_page', array('activities' => $activities));
 
@@ -39,7 +39,9 @@ function culturefeed_calendar_page_share_my_calendar() {
  */
 function culturefeed_calendar_page_settings() {
 
-  return theme('culturefeed_calendar_settings_page');
+  $form = drupal_get_form('culturefeed_calendar_settings_form');
+
+  return theme('culturefeed_calendar_settings_page', array('settings_form' => $form));
 
 }
 
@@ -680,9 +682,9 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $ex) {
-    drupal_set_message(t('There was an error while searching the user'), 'error');
+    drupal_set_message(t('There was an error while loading the user information'), 'error');
+    return $form;
   }
-
 
   $form['privacy_share'] = array(
     '#type' => 'fieldset',
@@ -707,7 +709,6 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     '#submit' => array('culturefeed_calendar_settings_form_submit'),
   );
 
-
   return $form;
 
 }
@@ -719,9 +720,11 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
   try {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
 
+    // Update the user privacy.
     $cf_user->privacyConfig->calendarId = $form_state['values']['privacy_share']['visibility'];
     DrupalCultureFeed::updateUserPrivacy($cf_user->id, $cf_user->privacyConfig);
 
+    // If the privacy is set to not published, unset the calenderId.
     if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
       $cf_user->calendarId = $cf_user->id;
     }

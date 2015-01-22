@@ -164,15 +164,20 @@ function culturefeed_calendar_theme() {
     'path' => $path,
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button-hover',
+    'variables' => array(),
   );
   $items['culturefeed_calendar_share_page'] = array(
     'path' => $path,
     'file' => 'theme.inc',
+    'variables' => array(),
     'template' => 'culturefeed-calendar-share-page',
   );
   $items['culturefeed_calendar_settings_page'] = array(
     'path' => $path,
     'file' => 'theme.inc',
+    'variables' => array(
+      'settings_form' => array(),
+    ),
     'template' => 'culturefeed-calendar-settings-page',
   );
 

@@ -292,7 +292,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
 function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$variables) {
   global $base_url;
   $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
-  $variables['calendar_settings_form'] = drupal_get_form('culturefeed_calendar_settings_form');
+  
 }
 
 
