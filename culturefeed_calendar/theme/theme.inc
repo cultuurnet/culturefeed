@@ -79,8 +79,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
   }
 
   if ($authenticated && $my_calendar) {
-    $variables['share_calendar_url'] = 'calendar/share';
-    $variables['calendar_settings_url'] = 'calendar/settings';
+    $variables['share_calendar_path'] = 'culturefeed/calendar/share';
+    $variables['calendar_settings_path'] = 'culturefeed/calendar/settings';
 
     if (!empty($cf_user->calendarId)) {
       $variables['shared'] = TRUE;

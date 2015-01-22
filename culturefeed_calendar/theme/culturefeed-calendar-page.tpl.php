@@ -19,12 +19,12 @@
     <?php print $save_cookie_button ?>
   <?php endif; ?>
 
-  <?php if (!empty($calendar_settings_url)) : ?>
-    <?php print l(t('Settings'), $calendar_settings_url) ?>
+  <?php if (!empty($calendar_settings_path)) : ?>
+    <?php print l(t('Settings'), $calendar_settings_path) ?>
   <?php endif; ?>
 
-  <?php if (!empty($share_calendar_url)) : ?>
-    <?php print l(t('Share'), $share_calendar_url) ?>
+  <?php if (!empty($share_calendar_path)) : ?>
+    <?php print l(t('Share'), $share_calendar_path) ?>
   <?php endif; ?>
 
   <div>
