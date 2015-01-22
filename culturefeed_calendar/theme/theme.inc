@@ -69,7 +69,13 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
 
   if ($authenticated || (!$authenticated && !$my_calendar)) {
     // Set username.
-    $variables['user_name'] = $cf_user->givenName . ' ' . $cf_user->familyName;
+    if (empty($cf_user->givenName)) {
+      $name = $cf_user->nick;
+    }
+    else {
+      $name = $cf_user->givenName . ' ' . $cf_user->familyName;
+    }
+    $variables['user_name'] = $name;
   }
 
   if ($authenticated && $my_calendar) {
