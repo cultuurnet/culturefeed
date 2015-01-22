@@ -6,9 +6,9 @@
 ?>
 <?php if ($shared) : ?>
 
-  <?php print l(t('< Back to my OuTcalendar'), $back_to_calendar_path); ?>
+  <?php print l(t('Back to my calendar'), $back_to_calendar_path); ?>
 
-  <h3><?php print t('Share your OuTcalendar with your friends'); ?></h3>
+  <h3><?php print t('Share your calendar with your friends'); ?></h3>
   <p><?php print t('You can share this link with your friends'); ?></p>
   <p><?php print $calendar_share_url; ?></p>
   <p><a href="<?php print $facebook_url; ?>" class="facebook-share"><?php print t('Facebook') ?></a></p>
@@ -21,9 +21,9 @@
 
 <?php else : ?>
 
-  <p><?php print t('You have chosen earlier to not share your Outcalendar. You can change this in your settings.'); ?></p>
+  <p><?php print t('You have chosen earlier to not share your calendar. You can change this in your settings.'); ?></p>
   <p>
-    <?php print l(t('Adjust settings'), 'culturefeed/calendar/settings'); ?>
+    <?php print l(t('Edit settings'), 'culturefeed/calendar/settings'); ?>
   </p>
 
 <?php endif; ?>

@@ -694,7 +694,7 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
 
   $form['privacy_share']['visibility'] = array(
     '#type' => 'radios',
-    '#title' => t('Who can see your OuTcalendar'),
+    '#title' => t('Who can see your calendar'),
     '#default_value' => $cf_user->privacyConfig->calendarId,
     '#options' => array(
       CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE => t('Only me'),

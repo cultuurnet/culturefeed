@@ -30,14 +30,14 @@ function culturefeed_calendar_menu() {
     'type' => MENU_CALLBACK,
   );
   $items['culturefeed/calendar/share'] = array(
-    'title' => t('Share your OutCalendar'),
+    'title' => t('Share your calendar'),
     'page callback' => 'culturefeed_calendar_page_share_my_calendar',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
   $items['culturefeed/calendar/settings'] = array(
-    'title' => t('OutCalendar Settings'),
+    'title' => t('Calendar Settings'),
     'page callback' => 'culturefeed_calendar_page_settings',
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
