@@ -169,6 +169,8 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       drupal_get_path('module', 'culturefeed') . '/js/common.js',
     );
 
+    $form['#attached']['library'][] = array('system', 'jquery.cookie');
+
   }
 
   $form['submit'] = array(

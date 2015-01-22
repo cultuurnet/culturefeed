@@ -97,7 +97,7 @@
   }
 
   // Create a custom autocomplete widget that supports categorisation of data.
-  if ($.ui.autocomplete) {
+  if ($.ui && $.ui.autocomplete) {
     $.widget("custom.categorisedAutocomplete", $.ui.autocomplete, {
       _create: function() {
         this._super();
