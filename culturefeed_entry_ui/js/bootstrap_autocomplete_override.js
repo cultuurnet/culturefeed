@@ -4,7 +4,7 @@
     /**
      * Hides the autocomplete suggestions.
      */
-    Drupal.jsAC.prototype.hidePopup = function (keycode) {
+    Drupal.jsAC.prototype.hidePopup = function (keycode, op) {
         // Select item if the right key or mousebutton was pressed.
         if (this.selected && ((keycode && keycode != 46 && keycode != 8 && keycode != 27) || !keycode)) {
             this.input.value = $(this.selected).data('autocompleteValue');
@@ -19,7 +19,9 @@
         $(this.ariaLive).empty();
 
         // Workaround for bootstrap losing tabindex on autocomplete popup.
-        $(this.input).parents('.form-item').next().find(':tabbable').focus();
+        if ((!op || op != 'empty') && this.input.value) {
+            $(this.input).parents('.form-item').next().find(':tabbable').focus();
+        }
 
     };
 
@@ -79,7 +81,7 @@
             }
             else {
                 $(this.popup).css({ visibility: 'hidden' });
-                this.hidePopup();
+                this.hidePopup(null, 'empty');
                 if (this.input.name == 'organiser[actor][organiser_actor_label]') {
                     $('#edit-organiser-add-new-actor').css({ display: 'block' });
                     $('#organiser_actor_id').val('');
