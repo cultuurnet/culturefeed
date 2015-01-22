@@ -733,6 +733,8 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     }
     DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
 
+    drupal_set_message(t('Changes succesfully saved.'));
+
   }
   catch (Exception $ex) {
     drupal_set_message(t('There was an error while saving the form'), 'error');

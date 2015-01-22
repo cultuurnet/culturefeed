@@ -249,37 +249,30 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
     drupal_set_message(t('There was an error while searching the user'), 'error');
   }
 
-  global $base_url;
-  $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
+  $variables['back_to_calendar_url'] =  url('culturefeed/calendar');
 
   $variables['shared'] = $cf_user->calendarId;
   // Calendar is public.
   if ($cf_user->calendarId != '') {
 
-    $variables['calendar_share_url'] = 'culturefeed/calendar/' . $cf_user->id;
-    $variables['calendar_full_share_url'] = $base_url . '/culturefeed/calendar/' . $cf_user->id;
+    $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
+    $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
 
-    $fb_app_id = variable_get('culturefeed_calendar_fbAppId', '');
-    if (isset($fb_app_id) && !empty($fb_app_id)) {
-      drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/facebook_share.js');
-      drupal_add_js(array('culturefeed' => array('fbAppId' => $fb_app_id)), 'setting');
-    }
+    culturefeed_search_ui_add_facebook_share();
 
     $variables['facebook']['url'] = 'https://www.facebook.com/sharer/sharer.php';
     $variables['facebook']['attr'] = array(
-      'query' => array('u' => $base_url . '/' . $variables['calendar_share_url']),
+      'query' => array('u' => $variables['calendar_share_url']),
       'attributes' => array('class' => 'facebook-share'),
       );
 
-    $variables['googleplus']['url'] = 'https://plus.google.com/share';
-    $variables['googleplus']['attr'] = array('query' => array('url' => $base_url . '/' .  $variables['calendar_share_url']));
+    $variables['facebook_url'] = 'https://www.facebook.com/sharer/sharer.php?u=' . $variables['calendar_share_url'];
+    $variables['googleplus_url'] = 'https://plus.google.com/share?url=' . $variables['calendar_share_url'];
+    $variables['twitter_url'] = 'https://twitter.com/intent/tweet?text=' . $variables['calendar_share_url'];
 
-    $variables['twitter']['url'] = 'https://twitter.com/intent/tweet';
-    $variables['twitter']['attr'] = array('query' => array('text' => $base_url . '/' .  $variables['calendar_share_url']));
-
-    $variables['mail']['enabled'] = module_exists('forward');
-    $variables['mail']['url'] = $base_url . '/forward';
-    $variables['mail']['attr'] = array('query' => array('path' => $variables['calendar_share_url']));
+    if (module_exists('forward')) {
+      $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['calendar_share_path'])));
+    }
 
   }
 }
@@ -292,7 +285,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
 function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$variables) {
   global $base_url;
   $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
-  
+
 }
 
 

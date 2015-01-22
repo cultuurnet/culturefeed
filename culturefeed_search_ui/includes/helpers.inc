@@ -392,3 +392,16 @@ function culturefeed_search_ui_get_sort_options_for_page($search_page) {
   return $sort_options;
 
 }
+
+/**
+ * Add facebook JS share if an app id is configured.
+ */
+function culturefeed_search_ui_add_facebook_share() {
+
+  $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
+  if (!empty($fb_app_id)) {
+    drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/facebook_share.js');
+    drupal_add_js(array('culturefeed' => array('fbAppId' => $fb_app_id)), 'setting');
+  }
+
+}
