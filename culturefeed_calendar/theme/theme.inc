@@ -249,7 +249,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
     drupal_set_message(t('There was an error while searching the user'), 'error');
   }
 
-  $variables['back_to_calendar_url'] =  url('culturefeed/calendar');
+  $variables['back_to_calendar_path'] =  'culturefeed/calendar';
 
   $variables['shared'] = $cf_user->calendarId;
   // Calendar is public.
