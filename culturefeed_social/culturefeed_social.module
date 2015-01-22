@@ -897,7 +897,14 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
-    '#attributes' => array('class' => array('btn-primary')),
+  );
+  
+  $destination = drupal_get_destination();
+  
+  $form['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => url($GLOBALS['base_url'] . '/' . $destination['destination']),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';
