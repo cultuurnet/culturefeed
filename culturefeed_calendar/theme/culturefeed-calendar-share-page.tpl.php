@@ -6,7 +6,7 @@
 ?>
 <?php if ($shared) : ?>
 
-  <?php print l(t('< Back to my OuTcalendar'), $back_to_calendar_url); ?>
+  <?php print l(t('< Back to my OuTcalendar'), $back_to_calendar_path); ?>
 
   <h3><?php print t('Share your OuTcalendar with your friends'); ?></h3>
   <p><?php print t('You can share this link with your friends'); ?></p>
