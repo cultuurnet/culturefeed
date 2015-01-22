@@ -7,7 +7,7 @@
 /**
  * Form callback: Create a new event, or edit an existing.
  */
-function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
+function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
 
   $form = array();
 
@@ -110,8 +110,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
         $custom_location_street = $address->getStreet();
         $custom_location_number = $address->getHouseNumber();
         $custom_location_zip = $address->getZip();
-        $custom_location_city = $address->getCity();
         $custom_location_country = $address->getCountry();
+        if ($custom_location_country == 'BE') {
+          $custom_location_city = $custom_location_zip . ' ' . $address->getCity();
+        }
       }
     }
 
