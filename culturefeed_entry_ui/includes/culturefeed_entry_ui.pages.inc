@@ -2037,17 +2037,12 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   // Photo
   if ($values['photo']['upload']) {
-  
-    
 
     // Save to Drupal
     $drupal_file = file_load($values['photo']['upload']);
-    $drupal_file->status = FILE_STATUS_PERMANENT;    
-    $drupal_file->filename = urlencode($drupal_file->filename); //fix filenames with spaces
-    $drupal_file->uri = 'public://uploads/' . $drupal_file->filename;
+    $drupal_file->status = FILE_STATUS_PERMANENT;
     file_save($drupal_file);
     file_usage_add($drupal_file, 'culturefeed_entry_ui', 'event', $drupal_file->fid);
-    
 
     // Add to detail
     $file = new CultureFeed_Cdb_Data_File();
