@@ -61,7 +61,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     /**
      * Hides the autocomplete suggestions.
      */
-    Drupal.jsAC.prototype.hidePopup = function (keycode) {
+    Drupal.jsAC.prototype.hidePopup = function (keycode, op) {
 
         // Select item if the right key or mousebutton was pressed.
         if (this.selected && ((keycode && keycode != 46 && keycode != 8 && keycode != 27) || !keycode)) {
@@ -93,6 +93,13 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         }
         this.selected = false;
         $(this.ariaLive).empty();
+
+        // Workaround for bootstrap losing tabindex on autocomplete popup.
+        if ((!op || op != 'empty') && this.input.value) {
+            $(this.input).parents('.form-item').next().find(':tabbable').focus();
+        }
+
+
     };
 
     /**

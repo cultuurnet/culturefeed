@@ -2,30 +2,6 @@
 (function ($) {
 
     /**
-     * Hides the autocomplete suggestions.
-     */
-    Drupal.jsAC.prototype.hidePopup = function (keycode, op) {
-        // Select item if the right key or mousebutton was pressed.
-        if (this.selected && ((keycode && keycode != 46 && keycode != 8 && keycode != 27) || !keycode)) {
-            this.input.value = $(this.selected).data('autocompleteValue');
-        }
-        // Hide popup.
-        var popup = this.popup;
-        if (popup) {
-            this.popup = null;
-            $(popup).fadeOut('fast', function () { $(popup).remove(); });
-        }
-        this.selected = false;
-        $(this.ariaLive).empty();
-
-        // Workaround for bootstrap losing tabindex on autocomplete popup.
-        if ((!op || op != 'empty') && this.input.value) {
-            $(this.input).parents('.form-item').next().find(':tabbable').focus();
-        }
-
-    };
-
-    /**
      * Fills the suggestion popup with any matches received.
      */
     Drupal.jsAC.prototype.found = function (matches) {
