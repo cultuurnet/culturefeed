@@ -115,7 +115,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
   if ($variables['button']['action'] == 'view') {
 
     $variables['button']['options'] = array(
-      'attributes' => array('class' => 'view-calendar')
+      'attributes' => array('class' => array('view-calendar'))
     );
     $variables['button']['path'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
@@ -128,10 +128,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 
   }
   elseif ($variables['button']['action'] == 'add') {
-    
+
     $variables['button']['options'] = array(
       'query' => drupal_get_destination(),
-      'attributes' => array('class' => 'add-to-calendar')
+      'attributes' => array('class' => array('add-to-calendar'))
     );
 
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
