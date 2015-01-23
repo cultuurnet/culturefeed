@@ -34,13 +34,13 @@ function culturefeed_agenda_block_nearby_activities() {
     array(
       'query' => array('location' => $location_string),
       'html' => TRUE,
-      'attributes' => array('id' => 'all-activities-link', 'class' => $classes))
+      'attributes' => array('id' => 'all-activities-link', 'class' => array($classes)))
   );
 
   // Construct the toggle for the location form visbility.
   $change_location_link = l(t('Change location'), '',
     array(
-      'attributes' => array('id' => 'change-location-link', 'class' => 'change-location-link'),
+      'attributes' => array('id' => 'change-location-link', 'class' => array('change-location-link')),
       'fragment' => 'change-location')
   );
 
