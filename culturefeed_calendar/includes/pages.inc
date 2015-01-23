@@ -213,8 +213,13 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
 function culturefeed_calendar_form($form, &$form_state, $params) {
 
   // Activity is passed when editing.
-  $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
-  $edit = !empty($selected_date) ? TRUE : FALSE;
+  if (!empty($params['activity'])) {
+    $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
+    $edit = !empty($selected_date) ? TRUE : FALSE;
+  }
+  else {
+    $edit = FALSE;
+  }
 
   drupal_set_title($params['title']);
 
@@ -240,7 +245,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     $form['no_date'] = array(
     '#type' => 'submit',
     '#value' => t("I don't know yet"),
-    '#name' => 'add',
+    '#name' => 'no_idea_yet',
     '#submit' => array('culturefeed_calendar_add_to_calendar_form_submit'),
     '#validate' => array('culturefeed_calendar_form_validate'),
     '#attributes' => array(
@@ -364,13 +369,18 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
 
   $form_state['params']['validation_error'] = FALSE;
 
+  // No idea yet => reset date.
+  if ($form_state['clicked_button']['#name'] == 'no_idea_yet') {
+    $form_state['values']['date'] = '';
+  }
+
   if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
 
     $date = strtotime($form_state['values']['date']);
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
 
-    if ($date <= time()) {
+    if ($date <= $_SERVER['REQUEST_TIME']) {
       form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
       $form_state['params']['validation_error'] = TRUE;
     }
@@ -400,20 +410,22 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 
   $node_title = $form_state['params']['node_title'];
   $node_id = $form_state['params']['node_id'];
-  $form_state['redirect'] = 'agenda/e/' . $node_title . '/' . $node_id;
+  $form_state['redirect'] = culturefeed_search_detail_path('event', $node_id, $node_title);
+
+  if ($form_state['triggering_element']['#name'] == 'cancel') {
+    return;
+  }
 
   $date = $form_state['values']['date'];
-  if ($form_state['triggering_element']['#name'] == 'add') {
 
-    try {
-      culturefeed_calendar_add_activity($node_id, $node_title, $date);
-      drupal_set_message(t('The event has been added to your calendar.'));
-    }
-    catch (Exception $e) {
-      drupal_set_message(t('There was an error while adding to your calendar'), 'error');
-    }
-
+  try {
+    culturefeed_calendar_add_activity($node_id, $node_title, $date);
+    drupal_set_message(t('The event has been added to your calendar.'));
   }
+  catch (Exception $e) {
+    drupal_set_message(t('There was an error while adding to your calendar'), 'error');
+  }
+
 }
 
 /**
@@ -421,8 +433,8 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
  */
 function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_state) {
 
+  $form_state['redirect'] = 'culturefeed/calendar';
   if ($form_state['triggering_element']['#name'] == 'cancel') {
-    $form_state['redirect'] = 'culturefeed/calendar';
     return;
   }
 
@@ -460,10 +472,6 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
   }
   else {
     drupal_set_message(t('An error occured while saving your calendar'), 'error');
-  }
-
-  if (!$form_state['params']['use_ajax']) {
-    $form_state['redirect'] = 'culturefeed/calendar';
   }
 
 }

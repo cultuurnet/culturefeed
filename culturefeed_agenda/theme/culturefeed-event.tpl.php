@@ -74,7 +74,12 @@
   <?php else: ?>
     <dd><?php print $when; ?></dd>
   <?php endif; ?>
-  <?php print $personal_calendar['button_content']; ?>
+
+   <?php if (!empty($personal_calendar_buttons)): ?>
+   <?php foreach ($personal_calendar_buttons['content'] as $button) : ?>
+     <?php print $button; ?>
+    <?php endforeach; ?>
+   <?php endif; ?>
 
   <?php if ($organiser): ?>
   <dt><?php print t('Organization'); ?></dt>
@@ -175,4 +180,9 @@
 <?php endif; ?>
 
 <?php print $recommend_link; ?>
-<?php print $personal_calendar['button_footer']; ?>
+
+<?php if (!empty($personal_calendar_buttons)): ?>
+<?php foreach ($personal_calendar_buttons['footer'] as $button) : ?>
+  <?php print $button; ?>
+<?php endforeach; ?>
+<?php endif; ?>
