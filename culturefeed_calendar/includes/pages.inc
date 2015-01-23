@@ -160,7 +160,12 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
     }
     else {
-      $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
+      if (isset($_GET['destination'])) {
+        $url = url($_GET['destination']);
+      }
+      else {
+        $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
+      }
       $commands[] = culturefeed_ajax_command_goto($url);
     }
 
@@ -341,7 +346,10 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 function culturefeed_calendar_form_ajax($form, $form_state) {
 
   // When editing, activity is passed; after edit, return to the calendar page.
-  if (isset($form_state['params']['activity'])) {
+  if (isset($_GET['destination'])) {
+    $url = url($_GET['destination']);
+  }
+  elseif (isset($form_state['params']['activity'])) {
     $url = url('culturefeed/calendar');
   }
   // After adding, return to event detail.
