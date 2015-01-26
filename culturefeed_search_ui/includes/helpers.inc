@@ -165,7 +165,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
   // Add the "noindex, follow" meta tag if needed.
   if ($noindex) {
-    culturefeed_set_noindex_metatag();
+    culturefeed_search_set_noindex_metatag();
   }
 
 }
