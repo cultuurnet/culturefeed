@@ -99,12 +99,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
  */
 function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables) {
 
-  drupal_add_js(array(
-    'culturefeed' => array(
-      'currentEventId' => $variables['button']['item_id'],
-    ),
-  ), 'setting');
-
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.cookie');
 
@@ -143,6 +137,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     }
 
   }
+
+  $variables['event_id'] = $variables['button']['item_id'];
 
 }
 

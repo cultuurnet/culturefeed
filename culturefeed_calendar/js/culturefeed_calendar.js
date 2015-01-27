@@ -28,17 +28,25 @@
         ids.push(value["nodeId"]);
       });
 
-      // Change buttons if needed.
-      if ($.inArray(Drupal.settings.culturefeed.currentEventId, ids) !== -1) {
-        $(".add-to-calendar").hide();
-        $(".view-calendar").show();
-      }
-      else {
-        $(".add-to-calendar").show();
-        $(".view-calendar").hide();
-      }
+        // Change buttons if needed.
+        $('.calendar-button').each(function() {
+
+          var $this = $(this);
+          var eventid = $this.data('eventid');
+          if ($.inArray(eventid, ids) !== -1) {
+            $this.find(".add-to-calendar").hide();
+            $this.find(".view-calendar").show();
+          }
+          else {
+            $this.find(".add-to-calendar").show();
+            $this.find(".view-calendar").hide();
+          }
+
+      })
+
     }
     else {
+      // No cookie => show all add to calendars.
       $(".add-to-calendar").show();
     }
   }
