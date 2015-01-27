@@ -767,8 +767,8 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     // Only add the filters if the block is set.
     if (culturefeed_search_ui_block_is_visible($delta)) {
       culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
-        variable_get($variables['operator'], 'and'),
-        variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options())
+        variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options()),
+        variable_get($variables['operator'], 'and')
       );
     }
   }
@@ -1059,7 +1059,11 @@ function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInter
         $filter_queries[] = $option['api-filter-query'];
       }
     }
-    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery(implode(' OR ', $filter_queries)));
+
+    if (!empty($filter_queries)) {
+      $culturefeedSearchPage->addParameter(new Parameter\FilterQuery(implode(' OR ', $filter_queries)));
+    }
+
   }
 
 }
