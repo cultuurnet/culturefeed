@@ -9,9 +9,8 @@
  */
 function culturefeed_saved_searches_block_cta() {
 
-  if (culturefeed_saved_searches_show_cta()) {
-    $query = drupal_get_query_parameters(NULL, array('q'));
-    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results')));
+  if ($query = culturefeed_saved_searches_get_cta_query()) {
+    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results'), 'query' => $query));
   }
 
 }
@@ -24,17 +23,17 @@ function culturefeed_saved_searches_block_cta_bottom() {
   $results = culturefeed_get_search_result();
 
   if ($results && $results->getCurrentCount() > 0) {
-    if (culturefeed_saved_searches_show_cta()) {
-      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time')));
+    if ($query = culturefeed_saved_searches_get_cta_query()) {
+      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time'), 'query' => $query));
     }
   }
 
 }
 
 /**
- * Helper function taht constructs the 'save search'-link.
+ * Helper function that constructs the 'save search' query string.
  */
-function culturefeed_saved_searches_show_cta() {
+function culturefeed_saved_searches_get_cta_query() {
 
   $query = drupal_static(__FUNCTION__, NULL);
   if ($query != NULL) {
