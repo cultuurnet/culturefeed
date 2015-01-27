@@ -1,0 +1,13 @@
+{
+  "name": "udb-drupal-app",
+  "version": "0.0.0",
+  "authors": [
+    "Bram Cordie <bramcordie@gmail.com>"
+  ],
+  "dependencies": {
+    "udb3-angular": "cultuurnet/udb3-angular"
+  },
+  "description": "udb3 Drupal App",
+  "license": "MIT",
+  "private": true
+}

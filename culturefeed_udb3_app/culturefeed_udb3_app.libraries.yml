@@ -1,0 +1,33 @@
+udb3-drupal-app:
+  version: 0.0.0
+  js:
+    bower_components/jquery/dist/jquery.js: {}
+    bower_components/angular/angular.js: {}
+    bower_components/angular-animate/angular-animate.js: {}
+    bower_components/angular-bootstrap/ui-bootstrap.js: {}
+    bower_components/angular-bootstrap/ui-bootstrap-tpls.js: {}
+    bower_components/angular-cookies/angular-cookies.js: {}
+    bower_components/angular-i18n/angular-locale_nl-be.js: {}
+    bower_components/angular-sanitize/angular-sanitize.js: {}
+    bower_components/angular-socket-io/socket.js: {}
+    bower_components/angular-translate/angular-translate.js: {}
+    bower_components/angular-ui-select/dist/select.js: {}
+    bower_components/lodash/dist/lodash.js: {}
+    bower_components/moment/moment.js: {}
+    bower_components/socket.io-client/socket.io.js: {}
+    bower_components/accounting/accounting.js: {}
+    udb3-angular.js: {}
+    app.js: {}
+  css:
+    theme:
+      bower_components/bootstrap/dist/css/bootstrap.css: {}
+      bower_components/bootstrap/dist/css/bootstrap-theme.css: {}
+      bower_components/angular-ui-select/dist/select.css: {}
+      udb3-angular.css: {}
+      bower_components/components-font-awesome/css/font-awesome.css: {}
+  stylesheets-remove:
+    - css/layout.css
+    - css/style.css
+    - css/colors.css
+
+

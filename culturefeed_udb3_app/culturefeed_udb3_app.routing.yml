@@ -1,0 +1,9 @@
+culturefeed_udb3_app.search:
+  path: '/udb3/search'
+  defaults:
+    _title: 'Evenementen zoeken'
+    _content: '\Drupal\culturefeed_udb3_app\Controller\SearchController::search'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _access: 'TRUE'

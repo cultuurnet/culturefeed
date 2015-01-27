@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_udb3_app_theme() {
+  return array(
+    'udb_search' => array(
+      'render element' => 'elements',
+    ),
+    'page' => array(
+      'render element' => 'elements',
+    )
+  );
+}
