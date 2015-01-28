@@ -6,4 +6,4 @@ culturefeed_udb3_app.search:
   options:
     _access_mode: 'ANY'
   requirements:
-    _access: 'TRUE'
+    _culturefeed_current_user: 'TRUE'
