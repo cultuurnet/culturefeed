@@ -143,15 +143,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 }
 
 /**
- * Theme the total activities profile box item.
+ * Theme the profile box item for calendar.
  */
-function theme_culturefeed_calendar_total_activities_profile_box_item($variables) {
+function theme_culturefeed_calendar_profile_box_item($variables) {
 
   if (culturefeed_is_culturefeed_user()) {
     return l(t('Go to your calendar'), 'culturefeed/calendar');
   }
   else {
-    return l(format_plural($variables['total'], '<small class="activity-count">@count</small> unsaved event', '<small class="activity-count">@count</small> unsaved events'), 'culturefeed/calendar', array('html' => TRUE));
+    return l(t('unsaved events: <small class="activity-count">0</small>'), 'culturefeed/calendar', array('html' => TRUE));
   }
 
 }

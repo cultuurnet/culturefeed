@@ -86,6 +86,9 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   $cookie_activities = array();
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
     $cookie_activities = json_decode($_COOKIE['Drupal_visitor_calendar']);
+    if (!is_array($cookie_activities)) {
+      $cookie_activities = array();
+    }
   }
 
   // Get activities from calendar.
@@ -217,6 +220,8 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
  */
 function culturefeed_calendar_form($form, &$form_state, $params) {
 
+  $submit_function = isset($params['activity']) ? 'culturefeed_calendar_edit_calendar_event_form_submit' : 'culturefeed_calendar_add_to_calendar_form_submit';
+
   // Activity is passed when editing.
   if (!empty($params['activity'])) {
     $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
@@ -251,7 +256,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#type' => 'submit',
     '#value' => t("I don't know yet"),
     '#name' => 'no_idea_yet',
-    '#submit' => array('culturefeed_calendar_add_to_calendar_form_submit'),
+    '#submit' => array($submit_function),
     '#validate' => array('culturefeed_calendar_form_validate'),
     '#attributes' => array(
       'class' => array('btn', 'btn-link')
@@ -307,7 +312,6 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#type' => 'actions',
   );
 
-  $submit_function = isset($params['activity']) ? 'culturefeed_calendar_edit_calendar_event_form_submit' : 'culturefeed_calendar_add_to_calendar_form_submit';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => $params['button_text'],

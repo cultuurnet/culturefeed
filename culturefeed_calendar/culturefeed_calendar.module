@@ -98,8 +98,8 @@ function culturefeed_calendar_theme() {
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button',
   );
-  $items['culturefeed_calendar_total_activities_profile_box_item'] = array(
-    'variables' => array('total' => 0),
+  $items['culturefeed_calendar_profile_box_item'] = array(
+    'variables' => array(),
     'path' => $path,
     'file' => 'theme.inc',
   );
@@ -185,8 +185,8 @@ function culturefeed_calendar_culturefeed_ui_profile_box_main_items() {
   $items = array();
 
   $items['activities'] = array(
-    'data' => theme('culturefeed_calendar_total_activities_profile_box_item', array(
-      'total' => culturefeed_calendar_get_total_unread_activities(),
+    'data' => theme('culturefeed_calendar_profile_box_item', array(
+      'total' => 0,
     )),
     'class' => 'activities',
     'weight' => -10,
@@ -203,10 +203,9 @@ function culturefeed_calendar_culturefeed_ui_anonymous_profile_box_main_items() 
 
   $items = array();
 
+  // JS sets the real value, don't add total.
   $items['activities'] = array(
-    'data' => theme('culturefeed_calendar_total_activities_profile_box_item', array(
-      'total' => culturefeed_calendar_get_total_unread_activities(),
-    )),
+    'data' => theme('culturefeed_calendar_profile_box_item'),
     'class' => 'activities',
     'weight' => -10,
   );
@@ -225,7 +224,7 @@ function culturefeed_calendar_activity_load($activity_id) {
 
     if (isset($_COOKIE['Drupal_visitor_calendar'])) {
       $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
-      if (isset($calendar[$activity_id])) {
+      if (is_array($calendar) && isset($calendar[$activity_id])) {
         return $calendar[$activity_id];
       }
     }
