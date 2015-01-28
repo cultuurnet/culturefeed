@@ -27,7 +27,7 @@ class SearchController extends ControllerBase implements ContainerInjectionInter
       '#content' => Array('Hello', 'world'),
       '#attached' => [
         'library' => [
-          'culturefeed_udb3_app/udb3-drupal-app'
+          'culturefeed_udb3_app/udb3-angular'
         ]
       ]
     ];

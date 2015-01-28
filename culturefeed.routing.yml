@@ -1,7 +1,7 @@
 culturefeed.overview:
   path: '/admin/config/culturefeed'
   defaults:
-    _content: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Culturefeed'
   requirements:
     _permission: 'administer site configuration'
@@ -17,15 +17,16 @@ culturefeed.api:
 culturefeed.oauth.connect:
   path: '/culturefeed/oauth/connect'
   defaults:
-    _content: '\Drupal\culturefeed\Controller\AuthenticationController::connect'
+    _controller: '\Drupal\culturefeed\Controller\AuthenticationController::connect'
     _title: 'Connect'
   requirements:
     _access: 'TRUE'
+    _user_is_logged_in: 'FALSE'
 
 culturefeed.oauth.authorize:
   path: '/culturefeed/oauth/authorize'
   defaults:
-    _content: '\Drupal\culturefeed\Controller\AuthenticationController::authorize'
+    _controller: '\Drupal\culturefeed\Controller\AuthenticationController::authorize'
     _title: 'Connect'
   requirements:
     _access: 'TRUE'

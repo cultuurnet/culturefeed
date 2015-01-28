@@ -1,4 +1,4 @@
-udb3-drupal-app:
+udb3-angular:
   version: 0.0.0
   js:
     bower_components/jquery/dist/jquery.js: {}
@@ -23,11 +23,8 @@ udb3-drupal-app:
       bower_components/bootstrap/dist/css/bootstrap.css: {}
       bower_components/bootstrap/dist/css/bootstrap-theme.css: {}
       bower_components/angular-ui-select/dist/select.css: {}
-      udb3-angular.css: {}
       bower_components/components-font-awesome/css/font-awesome.css: {}
-  stylesheets-remove:
-    - css/layout.css
-    - css/style.css
-    - css/colors.css
+      udb3-angular.css: {}
+
 
 
