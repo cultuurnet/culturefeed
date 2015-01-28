@@ -7,3 +7,13 @@ culturefeed_udb3_app.search:
     _access_mode: 'ANY'
   requirements:
     _culturefeed_current_user: 'TRUE'
+
+culturefeed_udb3_app.landing:
+  path: '/udb3'
+  defaults:
+    _title: 'UDB3'
+    _controller: '\Drupal\culturefeed_udb3_app\Controller\AppController::landing'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _access: 'TRUE'

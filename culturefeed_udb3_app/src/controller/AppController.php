@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains Drupal\culturefeed_udb3_app\Controller\SearchController.
+ * Contains Drupal\culturefeed_udb3_app\Controller\AppController.
  */
 
 namespace Drupal\culturefeed_udb3_app\Controller;
@@ -9,9 +9,9 @@ namespace Drupal\culturefeed_udb3_app\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
-class SearchController extends ControllerBase implements ContainerInjectionInterface {
+class AppController extends ControllerBase implements ContainerInjectionInterface {
 
-  public function search() {
+  public function landing() {
 
     $baseTag = [
       '#type' => 'html_tag',
@@ -20,7 +20,7 @@ class SearchController extends ControllerBase implements ContainerInjectionInter
     ];
 
     $renderArray = [
-      '#theme' => 'udb3_search',
+      '#theme' => 'udb3_landing',
       '#content' => Array('Hello', 'world'),
       '#attached' => [
         'library' => [
@@ -28,7 +28,7 @@ class SearchController extends ControllerBase implements ContainerInjectionInter
         ]
       ]
     ];
-    
+
     return $renderArray;
 
   }
