@@ -5,7 +5,7 @@
     "Bram Cordie <bramcordie@gmail.com>"
   ],
   "dependencies": {
-    "udb3-angular": "cultuurnet/udb3-angular#feature/III-139"
+    "udb3-angular": "cultuurnet/udb3-angular"
   },
   "description": "udb3 Drupal App",
   "license": "MIT",
