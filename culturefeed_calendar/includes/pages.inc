@@ -252,16 +252,20 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
-    $form['no_date'] = array(
-    '#type' => 'submit',
-    '#value' => t("I don't know yet"),
-    '#name' => 'no_idea_yet',
-    '#submit' => array($submit_function),
-    '#validate' => array('culturefeed_calendar_form_validate'),
-    '#attributes' => array(
-      'class' => array('btn', 'btn-link')
-      ),
-  );
+
+    if (!$edit) {
+      $form['no_date'] = array(
+        '#type' => 'submit',
+        '#value' => t("I don't know yet"),
+        '#name' => 'no_idea_yet',
+        '#submit' => array($submit_function),
+        '#validate' => array('culturefeed_calendar_form_validate'),
+        '#attributes' => array(
+          'class' => array('btn', 'btn-link')
+        ),
+      );
+    }
+
   }
   // timestamps.
   else {
