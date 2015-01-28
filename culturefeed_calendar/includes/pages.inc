@@ -450,7 +450,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'culturefeed/calendar';
-  if ($form_state['triggering_element']['#name'] == 'cancel') {
+  if ($form_state['triggering_element']['#name'] == 'cancel' || empty($form_state['values']['date'])) {
     return;
   }
 
