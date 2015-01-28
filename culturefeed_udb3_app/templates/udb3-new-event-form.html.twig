@@ -1,7 +1,30 @@
 {% extends "modules/culturefeed/culturefeed_udb3_app/templates/udb-page.html.twig" %}
 
 {% block content %}
-    <form>
-    <label for="event-name">Event name</label><input type="text" id="event-name" />
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="event-name">Name</label>
+
+            <div class="col-sm-11">
+                <input type="text" id="event-name" class="form-control"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"
+                   for="event-location">Location</label>
+
+            <div class="col-sm-11">
+                <input type="text"
+                       class="form-control"
+                       id="event-location"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="event-date">Date</label>
+
+            <div class="col-sm-11">
+                <input type="text" id="event-date" class="form-control"/>
+            </div>
+        </div>
     </form>
 {% endblock %}
