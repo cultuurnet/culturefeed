@@ -8,6 +8,7 @@
 namespace Drupal\culturefeed_udb3\Controller;
 
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
+use CultuurNet\UDB3\Event\Title;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultuurNet\UDB3\Search\PullParsingSearchService;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class EventRestController extends ControllerBase {
+class EventRestController extends ControllerBase{
 
   /**
    * The search service.
@@ -149,8 +150,7 @@ class EventRestController extends ControllerBase {
       );
 
       $response->setData(['commandId' => $command_id]);
-    }
-    catch (\Exception $e) {
+    } catch (\Exception $e) {
       $response->setStatusCode(400);
       $response->setData(['error' => $e->getMessage()]);
     }
@@ -189,8 +189,7 @@ class EventRestController extends ControllerBase {
       );
 
       $response->setData(['commandId' => $command_id]);
-    }
-    catch (\Exception $e) {
+    } catch (\Exception $e) {
       $response->setStatusCode(400);
       $response->setData(['error' => $e->getMessage()]);
     }
@@ -230,8 +229,7 @@ class EventRestController extends ControllerBase {
       );
 
       $response->setData(['commandId' => $command_id]);
-    }
-    catch (\Exception $e) {
+    } catch (\Exception $e) {
       $response->setStatusCode(400);
       $response->setData(['error' => $e->getMessage()]);
     }
@@ -264,14 +262,38 @@ class EventRestController extends ControllerBase {
       );
 
       $response->setData(['commandId' => $command_id]);
-    }
-    catch (\Exception $e) {
+    } catch (\Exception $e) {
       $response->setStatusCode(400);
       $response->setData(['error' => $e->getMessage()]);
     }
 
     return $response;
 
+  }
+
+  public function newEvent(Request $request) {
+    $response = new JsonResponse();
+    $body_content = json_decode($request->getContent());
+
+    try {
+      $event_id = $this->eventEditor->createEvent(
+        new Title($body_content->name),
+        $body_content->location,
+        \DateTime::createFromFormat(
+          \DateTime::ISO8601,
+          $body_content->date
+        )
+      );
+
+      $response->setData(
+        ['eventId' => $event_id]
+      );
+    } catch (\Exception $e) {
+      $response->setStatusCode(400);
+      $response->setData(['error' => $e->getMessage()]);
+    }
+
+    return $response;
   }
 
 }

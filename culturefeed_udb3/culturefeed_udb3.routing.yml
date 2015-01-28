@@ -84,6 +84,16 @@ culturefeed_udb3.events.tag:
     _format: json
     _method: POST
 
+culturefeed_udb3.events:
+  path: '/udb3/api/1.0/events'
+  defaults:
+    _controller: '\Drupal\culturefeed_udb3\Controller\EventRestController::newEvent'
+    _title: 'New event'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _format: json
+    _method: POST
+
 culturefeed_udb3.query.tag:
   path: '/udb3/api/1.0/query/tag'
   defaults:
