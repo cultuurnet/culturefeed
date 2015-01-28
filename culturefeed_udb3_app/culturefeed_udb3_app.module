@@ -10,6 +10,9 @@ function culturefeed_udb3_app_theme() {
     ),
     'page' => array(
       'render element' => 'elements',
-    )
+    ),
+    'udb3_new_event_form' => array(
+
+    ),
   );
 }
