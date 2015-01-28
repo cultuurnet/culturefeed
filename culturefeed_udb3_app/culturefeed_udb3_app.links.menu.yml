@@ -1,0 +1,5 @@
+culturefeed_udb3_app.settings:
+  title: UDB3 AngularJS App Settings
+  description: Configure UDB3 AngularJS App settings.
+  parent: culturefeed.overview
+  route_name: culturefeed_udb3_app.settings

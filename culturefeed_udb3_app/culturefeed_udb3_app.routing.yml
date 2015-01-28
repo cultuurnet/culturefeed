@@ -1,3 +1,11 @@
+culturefeed_udb3_app.settings:
+  path: '/admin/config/culturefeed/udb3_app'
+  defaults:
+    _form: 'Drupal\culturefeed_udb3_app\Form\SettingsForm'
+    _title: 'Culturefeed udb3 Angular app settings'
+  requirements:
+    _permission: 'administer site configuration'
+
 culturefeed_udb3_app.search:
   path: '/udb3/search'
   defaults:
