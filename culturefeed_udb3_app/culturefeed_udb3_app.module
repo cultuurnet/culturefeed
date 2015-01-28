@@ -5,7 +5,10 @@
  */
 function culturefeed_udb3_app_theme() {
   return array(
-    'udb_search' => array(
+    'udb3_search' => array(
+      'render element' => 'elements',
+    ),
+    'udb3_landing' => array(
       'render element' => 'elements',
     ),
     'page' => array(

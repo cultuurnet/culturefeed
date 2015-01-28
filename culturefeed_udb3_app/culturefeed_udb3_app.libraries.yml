@@ -17,14 +17,11 @@ udb3-angular:
     bower_components/socket.io-client/socket.io.js: {}
     bower_components/accounting/accounting.js: {}
     udb3-angular.js: {}
-    app.js: {}
+    angular/app.js: {}
+    angular/app.controller.js: {}
+    angular/header.controller.js: {}
+    angular/main.controller.js: {}
   css:
     theme:
-      bower_components/bootstrap/dist/css/bootstrap.css: {}
-      bower_components/bootstrap/dist/css/bootstrap-theme.css: {}
       bower_components/angular-ui-select/dist/select.css: {}
       bower_components/components-font-awesome/css/font-awesome.css: {}
-      udb3-angular.css: {}
-
-
-
