@@ -24,7 +24,7 @@
       'baseUrl': 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
       'baseApiUrl': 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
       'authUrl': 'http://culudb-drupal.dev:8080/culturefeed/oauth/connect',
-      'socketUrl': 'http://culudb-websocket-server.dev:3000/'
+      'socketUrl': 'http://culudb-websocket-server.dev:3001/'
     });
 
   udbAppConfig.$inject = ['$sceDelegateProvider', '$translateProvider', 'uiSelectConfig', 'appConfig',
