@@ -19,3 +19,15 @@ function culturefeed_udb3_app_theme() {
     ),
   );
 }
+
+/**
+ * Implements hook_page_attachments().
+ */
+function culturefeed_udb3_app_page_attachments(array &$page) {
+  $page['#attached']['drupalSettings']['culturefeed_udb3_app']['appConfig'] = [
+    'baseUrl' => 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
+    'baseApiUrl' => 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
+    'authUrl' => 'http://culudb-drupal.dev:8080/culturefeed/oauth/connect',
+    'socketUrl' => 'http://culudb-websocket-server.dev:3001/'
+  ];
+}

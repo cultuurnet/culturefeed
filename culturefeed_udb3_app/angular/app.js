@@ -1,4 +1,4 @@
-(function() {
+(function(settings) {
   'use strict';
 
   /**
@@ -20,12 +20,7 @@
     .run(function (udbApi) {
       udbApi.getMe();
     })
-    .constant('appConfig', {
-      'baseUrl': 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
-      'baseApiUrl': 'http://culudb-drupal.dev:8080/udb3/api/1.0/',
-      'authUrl': 'http://culudb-drupal.dev:8080/culturefeed/oauth/connect',
-      'socketUrl': 'http://culudb-websocket-server.dev:3001/'
-    });
+    .constant('appConfig', settings.appConfig);
 
   udbAppConfig.$inject = ['$sceDelegateProvider', '$translateProvider', 'uiSelectConfig', 'appConfig',
     'queryFieldTranslations', 'dutchTranslations'];
@@ -50,4 +45,4 @@
 
     uiSelectConfig.theme = 'bootstrap';
   }
-})();
+})(drupalSettings.culturefeed_udb3_app);
