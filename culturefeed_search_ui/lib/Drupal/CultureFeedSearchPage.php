@@ -217,9 +217,39 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
+
+    /*$quotationMarks = '"\'';
+    $tokens = array();
+    for ($nextToken=strtok($term, ' '); $nextToken!==false; $nextToken=strtok(' ')) {
+        if (strpos($quotationMarks, $nextToken[0]) !== false) {
+            if (strpos($quotationMarks, $nextToken[strlen($nextToken)-1]) !== false) {
+                $tokens[] = substr($nextToken, 1, -1);
+            } else {
+                $tokens[] = substr($nextToken, 1) . ' ' . strtok($nextToken[0]);
+            }
+        } elseif (preg_match('[AND|OR]', $nextToken)) {
+            $tokens[] = $nextToken;
+        } else {
+      $tokens[] = str_replace(' ',' OR ', $nextToken);
+    }
+    }
+    dsm($tokens);*/
+    // Check if the complete search string is enclosed by double qoutes.
+   /* if (preg_match('/^(["\']).*\1$/m', $term)) {
+      $term = str_replace(array('\'', '"'), '', $term);
+    }
+    // Check if the search string contains logical operators.
+    elseif (preg_match('[AND|OR]', $term)) {
+      $term = trim($term);
+    }
+    // Replace spaces between multiple search words by 'OR'.
+    else {
+      $term = str_replace(' ',' OR ', trim($term));
+    }*/
+
     // Replace special characters with normal ones.
     $term = culturefeed_search_transliterate($term);
-    
+
     $this->query[] = $term;
     return $this->query;
   }
