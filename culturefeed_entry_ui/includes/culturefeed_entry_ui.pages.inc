@@ -1847,8 +1847,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             array_push($phones, $phone);
             break;
           case '1':
-            $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
-            array_push($mails, $mail);
+            if ($extra['channel_input']) {
+              $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
+              array_push($mails, $mail);
+            }
             break;
         }
       }
