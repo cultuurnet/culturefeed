@@ -189,7 +189,8 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       $default_long_description = $event_details->getLongDescription();
       $source_text = '/<p class="uiv-source">(.*)<\/p>/';
       $default_long_description = preg_replace($source_text, '', $default_long_description);
-      $default_long_description = filter_xss($default_long_description, array());
+      $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr');
+      $default_long_description = filter_xss($default_long_description, $allowed_tags);
       //$default_long_description = substr($default_long_description, 0, -169);
       $form_state['#ld_needed'] = TRUE;
     }
