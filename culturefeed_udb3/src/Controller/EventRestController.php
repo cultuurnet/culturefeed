@@ -286,7 +286,14 @@ class EventRestController extends ControllerBase{
       );
 
       $response->setData(
-        ['eventId' => $event_id]
+        [
+          'eventId' => $event_id,
+          'url' => $this->getUrlGenerator()->generateFromRoute(
+            'culturefeed_udb3.event',
+            ['cdbid' => $event_id],
+            ['absolute' => TRUE]
+          ),
+        ]
       );
     } catch (\Exception $e) {
       $response->setStatusCode(400);
