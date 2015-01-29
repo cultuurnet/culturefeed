@@ -50,7 +50,7 @@
     }
     else {
       // No cookie => show all add to calendars.
-      $(".btn-view-calendar").show();
+      $(".btn-add-calendar").show();
     }
   }
 
