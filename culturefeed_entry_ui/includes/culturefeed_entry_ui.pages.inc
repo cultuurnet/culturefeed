@@ -710,10 +710,9 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#rows' => 4,
     '#maxlength' => 400,
-    //'#description' => t('Maximum 400 characters'),
+    '#description' => t('Maximum 400 characters'),
     '#default_value' => $default_short_description,
     '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
-    '#suffix' => '<span id="edit-description-sd-short-description-maxlength-counter"></span>',
   );
 
   $form['extra']['description']['ld'] = array(

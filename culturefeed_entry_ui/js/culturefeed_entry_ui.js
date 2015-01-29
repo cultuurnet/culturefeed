@@ -65,7 +65,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         attach: function (context, settings) {
             $('#edit-description-sd-short-description').maxlength({
                 max: 400,
-                feedbackTarget: '#edit-description-sd-short-description-maxlength-counter'
+                feedbackTarget: '#edit-description-sd .help-block, #edit-description-sd .description'
             });
         }
     }
