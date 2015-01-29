@@ -21,6 +21,7 @@ udb3-angular:
     angular/app.controller.js: {}
     angular/header.controller.js: {}
     angular/main.controller.js: {}
+    angular/new-event.controller.js: {}
   css:
     theme:
       bower_components/angular-ui-select/dist/select.css: {}

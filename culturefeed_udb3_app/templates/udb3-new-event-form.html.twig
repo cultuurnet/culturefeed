@@ -1,32 +1,40 @@
-<form class="form-horizontal" style="padding-top:5em;margin-bottom:5em;">
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="event-name">Name</label>
+<div ng-controller="NewEventCtrl">
+    <form class="form-horizontal" style="padding-top:5em;margin-bottom:5em;">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="event-name">Name</label>
 
-        <div class="col-sm-6">
-            <input type="text" id="event-name" class="form-control"/>
-            <p class="help-block">The name of the event.</p>
+            <div class="col-sm-6">
+                <input type="text" id="event-name" class="form-control"
+                       ng-model="name"/>
+
+                <p class="help-block">The name of the event.</p>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label"
-               for="event-location">Location</label>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"
+                   for="event-location">Location</label>
 
-        <div class="col-sm-6">
-            <input type="text"
-                   class="form-control"
-                   id="event-location"/>
-            <p class="help-block">The cdbid of the location where the event takes place.</p>
+            <div class="col-sm-6">
+                <input type="text"
+                       class="form-control"
+                       id="event-location"
+                       ng-model="location"/>
+
+                <p class="help-block">The cdbid of the location where the event
+                    takes place.</p>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="event-date">Date</label>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="event-date">Date</label>
 
-        <div class="col-sm-6">
-            <datepicker id="event-date" />
+            <div class="col-sm-6">
+                <datepicker id="event-date" ng-model="date"/>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-6 col-sm-offset-3">
-        <input type="submit" class="button" />
-    </div>
-</form>
+        <div class="col-sm-6 col-sm-offset-3">
+            <input type="submit" class="button"
+                   ng-click="newEvent(name, location, date)"/>
+        </div>
+    </form>
+</div>
