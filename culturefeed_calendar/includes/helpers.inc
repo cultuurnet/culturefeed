@@ -176,20 +176,23 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $button['item_id'] = $id;
 
+  $ids_to_check = array();
+  $activities = NULL;
+  if ($authenticated) {
+    $activities = culturefeed_calendar_get_user_activities();
+    if (isset($activities->objects)) {
+      foreach($activities->objects as $key => $activity) {
+        $ids_to_check[] = $activity->nodeId;
+      }
+    }
+  }
+
   foreach ($locations as $location) {
 
     $button['location'] = $location;
 
     // Show the correct button for authenticated users.
     if ($authenticated) {
-
-      $ids_to_check = array();
-      $activities = culturefeed_calendar_get_user_activities();
-      if (isset($activities->objects)) {
-        foreach($activities->objects as $key => $activity) {
-          $ids_to_check[] = $activity->nodeId;
-        }
-      }
 
       if (in_array($id, $ids_to_check)) {
         $action = 'view';

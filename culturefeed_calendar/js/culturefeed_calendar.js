@@ -28,18 +28,21 @@
         ids.push(value["nodeId"]);
       });
 
-        // Change buttons if needed.
+        // Show the correct buttons.
         $('.calendar-button').each(function() {
 
           var $this = $(this);
           var eventid = $this.data('eventid');
+          // When item is added, only show btn-view-calendar.
           if ($.inArray(eventid, ids) !== -1) {
-            $this.find(".add-to-calendar").hide();
-            $this.find(".view-calendar").show();
+            if ($this.hasClass('btn-view-calendar')) {
+              $this.show();
+            }
           }
           else {
-            $this.find(".add-to-calendar").show();
-            $this.find(".view-calendar").hide();
+            if (!$this.hasClass('btn-view-calendar')) {
+              $this.show();
+            }
           }
 
       })
@@ -47,7 +50,7 @@
     }
     else {
       // No cookie => show all add to calendars.
-      $(".add-to-calendar").show();
+      $(".btn-view-calendar").show();
     }
   }
 

@@ -53,18 +53,22 @@
   <dt><?php print t('When'); ?></dt>
   <?php if ($calendar['type'] == 'timestamps'): ?>
     <?php if (count($calendar['timestamps']) > 0): ?>
+
       <?php foreach ($calendar['timestamps'] as $timestamp): ?>
-        <?php if (!is_array($timestamp['begintime'])): ?>
+        <?php if (isset($timestamp['begintime']) && !is_array($timestamp['begintime'])): ?>
           <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
         <?php else: ?>
           <?php $i = 0; ?>
-          <dd><?php print $timestamp['date'] . t(' at '); ?>
+          <dd><?php print $timestamp['date'] ?>
+            <?php if (isset($timestamp['begintime'])): ?>
+            <?php print t(' at '); ?>
             <?php foreach ($timestamp['begintime'] as $begintime): ?>
               <?php print $begintime; ?>
               <?php if (++$i !== count($timestamp['begintime'])): ?>
                 <?php print ' | '; ?>
               <?php endif; ?>
             <?php endforeach; ?>
+            <?php endif; ?>
           </dd>
         <?php endif; ?>
       <?php endforeach; ?>

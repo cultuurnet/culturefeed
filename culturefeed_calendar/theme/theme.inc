@@ -5,7 +5,10 @@
  * Theming / preprocess functions for culturefeed_calendar.
  */
 
-
+/**
+ * Preprocess the calendar page.
+ * @see culturefeed-calendar-page.tpl.php
+ */
 function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
 
 
@@ -106,11 +109,16 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     drupal_add_css(drupal_get_path('module', 'culturefeed_calendar') . '/css/culturefeed_calendar_anonymous.css');
   }
 
+  $variables['classes_array'] = array(
+    'calendar-button',
+    'calendar-button-' . $variables['button']['location'],
+  );
+
   if ($variables['button']['action'] == 'view') {
 
-    $variables['button']['options'] = array(
-      'attributes' => array('class' => array('view-calendar'))
-    );
+    $variables['classes_array'][] = 'btn-view-calendar';
+
+    $variables['button']['options'] = array();
     $variables['button']['path'] = 'culturefeed/calendar';
     if ($variables['button']['location'] == 'content') {
       $variables['button']['description'] = t('This event is added to your calendar.');
@@ -123,9 +131,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
   }
   elseif ($variables['button']['action'] == 'add') {
 
+    $variables['classes_array'][] = 'btn-add-calendar';
+
     $variables['button']['options'] = array(
       'query' => drupal_get_destination(),
-      'attributes' => array('class' => array('add-to-calendar'))
     );
 
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
@@ -139,6 +148,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
   }
 
   $variables['event_id'] = $variables['button']['item_id'];
+  $variables['classes'] = implode(' ', $variables['classes_array']);
 
 }
 
@@ -151,7 +161,7 @@ function theme_culturefeed_calendar_profile_box_item($variables) {
     return l(t('Go to your calendar'), 'culturefeed/calendar');
   }
   else {
-    return l(t('unsaved events: <small class="activity-count">0</small>'), 'culturefeed/calendar', array('html' => TRUE));
+    return l(t('unsaved events: <span class="unread-activities">0</small>'), 'culturefeed/calendar', array('html' => TRUE));
   }
 
 }
