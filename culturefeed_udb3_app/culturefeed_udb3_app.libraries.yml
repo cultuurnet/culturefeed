@@ -16,7 +16,7 @@ udb3-angular:
     bower_components/moment/moment.js: {}
     bower_components/socket.io-client/socket.io.js: {}
     bower_components/accounting/accounting.js: {}
-    udb3-angular.js: {}
+    bower_components/udb3-angular/dist/udb3-angular.js: {}
     angular/app.js: {}
     angular/app.controller.js: {}
     angular/header.controller.js: {}
