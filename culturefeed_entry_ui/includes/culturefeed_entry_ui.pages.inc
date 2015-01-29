@@ -189,6 +189,8 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       $default_long_description = $event_details->getLongDescription();
       $source_text = '/<p class="uiv-source">(.*)<\/p>/';
       $default_long_description = preg_replace($source_text, '', $default_long_description);
+      $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr');
+      $default_long_description = filter_xss($default_long_description, $allowed_tags);
       //$default_long_description = substr($default_long_description, 0, -169);
       $form_state['#ld_needed'] = TRUE;
     }
@@ -259,6 +261,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
         if ($default_image) {
           file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
           $default_image_hlink = $main_image->getHLink();
+          $default_copyright = $main_image->getCopyright();
         }
       } catch (Exception $e) {
         watchdog_exception('culturefeed_entry_ui', $e);
@@ -840,7 +843,15 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       '#value' => $default_image_hlink,
     );
   }
-
+  
+  // Copyright
+  $form['extra']['photo']['copyright_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Copyright'),
+    '#description' => t('Name of the copyright owner of this image.'),
+    '#default_value' => isset($default_copyright) ? $default_copyright : '',
+    '#size' => 30,
+  );
   $form['extra']['photo']['copyright'] = array(
     '#type' => 'checkbox',
     '#default_value' => isset($default_image->fid) ? 1 : 0,
@@ -1380,6 +1391,8 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   else {
     $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   }
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.plugin.js';
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength.js';
   return $form;
 
 }
@@ -1671,6 +1684,9 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   if (!empty($values['photo']['upload']) && $values['photo']['copyright'] != 1) {
     form_set_error('photo', t('Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank.'));
   }
+  if (!empty($values['photo']['upload']) && empty($values['photo']['copyright_text'])) {
+    form_set_error('photo', t('Copyright field is required.'));
+  }
 
   // Validate categories
   if (empty($values['what'])) {
@@ -1847,8 +1863,10 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
             array_push($phones, $phone);
             break;
           case '1':
-            $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
-            array_push($mails, $mail);
+            if ($extra['channel_input']) {
+              $mail = new CultureFeed_Cdb_Data_Mail($extra['channel_input'], FALSE, FALSE);
+              array_push($mails, $mail);
+            }
             break;
         }
       }
@@ -2029,13 +2047,13 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     // Save to Drupal
     $drupal_file = file_load($values['photo']['upload']);
     $drupal_file->status = FILE_STATUS_PERMANENT;
-
     file_save($drupal_file);
     file_usage_add($drupal_file, 'culturefeed_entry_ui', 'event', $drupal_file->fid);
 
     // Add to detail
     $file = new CultureFeed_Cdb_Data_File();
     $file->setMediaType($file::MEDIA_TYPE_PHOTO);
+    $file->setCopyright($values['photo']['copyright_text']);
     $file->setMain(TRUE);
     switch ($drupal_file->filemime) {
       case 'image/gif':
