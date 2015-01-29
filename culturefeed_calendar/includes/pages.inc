@@ -127,6 +127,9 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   // Delete the cookie.
   user_cookie_delete('calendar');
 
+  // Add a timeout of 5 second, this gives index the time to place the new activity into the search index.
+  sleep(5);
+
   // Proceed to the calendar.
   drupal_goto('culturefeed/calendar');
 }
@@ -472,6 +475,10 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
       $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
 
       DrupalCultureFeed::createActivity($new_activity);
+
+      // Add a timeout of 5 second, this gives index the time to place the new activity into the search index.
+      sleep(5);
+
     }
     catch (Exception $e) {
       $success = FALSE;

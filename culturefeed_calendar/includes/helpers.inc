@@ -50,6 +50,10 @@ function culturefeed_calendar_get_culturefeed_user_activities($use_search, $user
   // Use search for facet support.
   if ($use_search) {
 
+    // No search cache for the calendar page.
+    global $conf;
+    $conf['culturefeed_search_cache_enabled'] = FALSE;
+
     $service = culturefeed_get_search_service();
     $parameters[] = new CultuurNet\Search\Parameter\Group();
     $parameters[] = new CultuurNet\Search\Parameter\Rows(500);
