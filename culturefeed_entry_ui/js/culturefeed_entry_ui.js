@@ -59,7 +59,18 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
   };
 
     /**
-    *
+     * Maxlength
+     */
+    Drupal.behaviors.maxlength = {
+        attach: function (context, settings) {
+            $('#edit-description-sd-short-description').maxlength({
+                max: 400,
+                feedbackTarget: '#edit-description-sd-short-description-maxlength-counter'
+            });
+        }
+    }
+
+    /**
     * Fire the autocomplete on paste.
     */
     Drupal.behaviors.autocomplete_paste = {

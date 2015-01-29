@@ -189,6 +189,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       $default_long_description = $event_details->getLongDescription();
       $source_text = '/<p class="uiv-source">(.*)<\/p>/';
       $default_long_description = preg_replace($source_text, '', $default_long_description);
+      $default_long_description = filter_xss($default_long_description, array());
       //$default_long_description = substr($default_long_description, 0, -169);
       $form_state['#ld_needed'] = TRUE;
     }
@@ -709,9 +710,10 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     '#title' => t('Short description'),
     '#rows' => 4,
     '#maxlength' => 400,
-    '#description' => t('Maximum 400 characters'),
+    //'#description' => t('Maximum 400 characters'),
     '#default_value' => $default_short_description,
     '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
+    '#suffix' => '<span id="edit-description-sd-short-description-maxlength-counter"></span>',
   );
 
   $form['extra']['description']['ld'] = array(
@@ -1380,6 +1382,8 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   else {
     $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   }
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.plugin.js';
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength.js';
   return $form;
 
 }
