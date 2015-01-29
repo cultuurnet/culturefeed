@@ -59,6 +59,18 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
   };
 
     /**
+    *
+    * Fire the autocomplete on paste.
+    */
+    Drupal.behaviors.autocomplete_paste = {
+        attach: function (context, settings) {
+            $('.form-autocomplete input').bind("paste", function () {
+                $(this).populatePopup();
+            });
+        }
+    }
+
+    /**
      * Hides the autocomplete suggestions.
      */
     Drupal.jsAC.prototype.hidePopup = function (keycode, op) {
