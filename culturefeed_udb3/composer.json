@@ -4,7 +4,7 @@
     "license": "GPLv3",
     "minimum-stability": "dev",
     "require": {
-        "cultuurnet/udb3": "dev-feature/III-137 as 0.1",
+        "cultuurnet/udb3": "~0.0@dev",
         "cultuurnet/udb3-symfony": "~0.0@dev",
         "monolog/monolog": "~1.11",
         "chrisboulton/php-resque": "~1.2",
