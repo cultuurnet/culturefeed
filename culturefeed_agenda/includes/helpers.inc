@@ -703,18 +703,8 @@ function culturefeed_agenda_get_nearby_activities_list() {
 
     // Add location filter from cookie.
     $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    $lon = $location_cookie['longitude'];
-    $lat = $location_cookie['latitude'];
-    $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(40);
-    $point = new \CultuurNet\Search\Parameter\Spatial\Point($lat, $lon);
-    $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
-    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
-
-    // Alternatively, search on city and postal.
-    // $city = $location_cookie['city'];
-    // $postal = $location_cookie['postal'];
-    // $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($postal, 5);
-    // $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
+     $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($location_cookie['postal'], 5);
+     $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $location_cookie['city']);
 
     // Optional query params from block config.
     if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {

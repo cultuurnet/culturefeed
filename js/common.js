@@ -93,9 +93,7 @@
      */
     Drupal.jsAC.prototype.select = function (node) {
 
-      if (jQuery(this.input).hasClass('auto-submit')) {
-        var $submit = $(this.input).parents('form').find('#edit-submit');
-
+      if (jQuery(this.input).hasClass('location-form-autocomplete-submit')) {
         // Set user input in cookie and location form.
         Drupal.CultureFeed.getLatLonFromAddress($(node).data('autocompleteValue'), Drupal.CultureFeed.Agenda.updateLocationForm);
       }
@@ -115,8 +113,13 @@
       // Select item if the right key or mousebutton was pressed.
       if (this.selected && ((keycode && keycode != 46 && keycode != 8 && keycode != 27) || !keycode)) {
 
+        if (jQuery(this.input).hasClass('location-form-autocomplete-submit')) {
+          // Set user input in cookie and location form.
+          Drupal.CultureFeed.getLatLonFromAddress($(this.selected).data('autocompleteValue'), Drupal.CultureFeed.Agenda.updateLocationForm);
+        }
+
         if ($(this.input).hasClass('auto-submit-field')) {
-          window.location.href = $(node).data('autocompleteValue');
+          window.location.href = $(this.selected).data('autocompleteValue');
         }
         else {
           this.input.value = $(this.selected).data('autocompleteValue');

@@ -40,8 +40,8 @@ function culturefeed_agenda_block_nearby_activities() {
   // Construct the toggle for the location form visbility.
   $change_location_link = l(t('Change location'), '',
     array(
-      'attributes' => array('id' => 'change-location-link', 'class' => array('change-location-link')),
-      'fragment' => 'change-location')
+      'attributes' => array('id' => 'change-location-link'),
+    )
   );
 
   // Start with an empty list. On page load, the suggestions will be loaded through ajax.

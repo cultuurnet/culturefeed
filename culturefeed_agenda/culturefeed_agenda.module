@@ -931,12 +931,13 @@ function culturefeed_agenda_nearby_activities_filter_form() {
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#attributes' => array(
       'placeholder' => t('Zipcode or city'),
-      'class' => array('auto-submit')
+      'class' => array('location-form-autocomplete-submit')
   ));
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#id' => 'change-location-submit',
     '#ajax' => array(
       'callback' => 'culturefeed_agenda_nearby_activities_ajax_filter_submit',
     ),

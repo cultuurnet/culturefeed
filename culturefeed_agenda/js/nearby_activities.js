@@ -5,10 +5,10 @@
   Drupal.CultureFeed.Agenda = Drupal.CultureFeed.Agenda || {};
   Drupal.CultureFeed.Agenda.updateLocationForm = Drupal.CultureFeed.Agenda.updateLocationForm || {};
 
-  Drupal.behaviors.nearbyActivites = {
+  Drupal.behaviors.nearbyActivities = {
     attach: function(context, settings) {
 
-      var $submit = $('#culturefeed-agenda-nearby-activities-filter-form').find('#edit-submit');
+      var $submit = $('#culturefeed-agenda-nearby-activities-filter-form').find('#change-location-submit');
       if ($submit.hasClass('ajax-processed')) {
         $submit.once('nearby-activities', function() {
 
@@ -73,7 +73,7 @@
     $form.find('input[name="location"]').val($location_string);
 
     // Submit the form.
-    $form.find('#edit-submit').trigger('mousedown');
+    $form.find('#change-location-submit').trigger('mousedown');
 
     // Update the block title with the location.
     if ($('#nearby-activities-title-location').length) {
