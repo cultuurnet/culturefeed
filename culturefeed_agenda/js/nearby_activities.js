@@ -75,6 +75,7 @@
     // Submit the form.
     $form.find('#change-location-submit').trigger('mousedown');
 
+
     // Update the block title with the location.
     if ($('#nearby-activities-title-location').length) {
       $('#nearby-activities-title-location').html('// ' + $location_string + ' ');
@@ -85,6 +86,9 @@
     $everything_link.find('.location-string').text($location_string);
     $everything_link.attr('href', 'agenda/search/' + $location_string);
     $everything_link.removeClass("hidden");
+
+    //hide the form;
+    $('#nearby-activities-filter-form-wrapper').hide();
   }
 
 })(jQuery);
