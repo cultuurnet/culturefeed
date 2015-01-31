@@ -58,17 +58,12 @@ function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_list(&
  */
 function culturefeed_saved_searches_preprocess_culturefeed_saved_searches_cta(&$vars) {
 
-    $vars['path'] = 'culturefeed/savesearch';
+  $vars['path'] = 'culturefeed/savesearch';
+
   if (!culturefeed_is_culturefeed_user()) {
 
     // If not logged in, go to authenticated page.
-    $path = $vars['path'];
-    $query = drupal_http_build_query(drupal_get_query_parameters());
-    if ($query != '') {
-      $path .= '?' . $query;
-    }
-
-    $vars['query'] = array('destination' => $path);
+    $vars['query'] = array('destination' => $vars['path'] . '?' . drupal_http_build_query($vars['query']));
     $vars['path'] = 'authenticated';
 
   }

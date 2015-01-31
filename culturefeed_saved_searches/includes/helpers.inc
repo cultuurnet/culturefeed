@@ -25,6 +25,7 @@ function culturefeed_saved_search_get_search_url_query($search) {
 
   // Check for custom filter options.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+  $filter_options += variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
   $known_queries = array();
   foreach ($filter_options as $filter) {
     $known_queries[$filter['api-filter-query']] = $filter['query-string'];
@@ -61,12 +62,18 @@ function culturefeed_saved_search_get_search_url_query($search) {
       $conditions = explode(' OR ', $param[1]);
       foreach ($conditions as $condition) {
 
+        // Also check for every part of the condition.
+        if (isset($known_queries[$condition])) {
+          $query[$known_queries[$condition]] = TRUE;
+          continue;
+        }
+
         $search_on = explode(':', $condition);
 
         $facet_field = $search_on[0];
         $facet_field = str_replace(array('(', ')', '"'), '', $facet_field);
 
-        $facet_value = $search_on[1];
+        $facet_value = isset($search_on[1]) ? $search_on[1] : '';
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
 
         // Check what type of filter it is.

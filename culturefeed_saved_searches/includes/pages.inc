@@ -10,6 +10,10 @@
 function culturefeed_saved_searches_save_search_form() {
 
   $params = drupal_get_query_parameters();
+  if (!isset($params['query'])) {
+    drupal_set_message(t('No query to save was given'), 'error');
+    drupal_goto();
+  }
 
   $form = array();
   $form['save_search_title'] = array(
@@ -54,6 +58,11 @@ function culturefeed_saved_searches_save_search_form() {
     ),
   );
 
+  $form['query'] = array(
+    '#type' => 'value',
+    '#value' => $params['query'],
+  );
+
   $form['save_search_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Bewaar'),
@@ -85,11 +94,10 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
   $savedSearch = new CultureFeed_SavedSearches_SavedSearch();
-  $params = drupal_get_query_parameters();
 
   $savedSearch->userId = $cf_account->id;
-  $savedSearch->name = $params['title'];
-  $savedSearch->query = $params['query'];
+  $savedSearch->name = $form_state['values']['save_search_title'];
+  $savedSearch->query = $form_state['values']['query'];
   $savedSearch->frequency = $form_state['values']['save_search_notification_frequency'];
 
   try {
