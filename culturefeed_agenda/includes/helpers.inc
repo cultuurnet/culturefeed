@@ -274,6 +274,10 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'venue' => isset($location['title']) ? $location['title'] : '',
     );
 
+    if (module_exists('culturefeed_agenda')) {
+      $data['personal_calendar_buttons'] = culturefeed_calendar_render_calendar_buttons($item);
+    }
+
     // Extend with an url to the actor.
     // This can be an organiser, or a location.
     $organiser = $cdb_item->getOrganiser();

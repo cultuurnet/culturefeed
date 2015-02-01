@@ -59,6 +59,13 @@ function culturefeed_search_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_query_operator', 'and'),
   );
 
+  $form['culturefeed_search_ui_fb_app_id'] = array(
+    '#title' => t('facebook App Id'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('culturefeed_search_ui_fb_app_id'),
+    '#description' => t('Enter the facebook app id. When share links are clicked, the javascript SDK will be used instead of redirecting to facebook.'),
+  );
+
   return system_settings_form($form);
 
 }

@@ -478,6 +478,10 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
   }
 
+  // Personal calendar buttons.
+  if (module_exists('culturefeed_calendar')) {
+    $variables['personal_calendar_buttons'] = culturefeed_calendar_render_calendar_buttons($variables['item']);
+  }
 }
 
 /**
