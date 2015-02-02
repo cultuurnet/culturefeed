@@ -37,11 +37,11 @@
 
   // On page load.
   $(document).ready(function() {
-
+    $('#nearby-activities-filter-form-wrapper').hide();
     // Show/hide the location form.
     $('#change-location-link').click(function(e) {
       e.preventDefault();
-      $('#nearby-activities-filter-form-wrapper').toggleClass('hidden');
+      $('#nearby-activities-filter-form-wrapper').toggle();
     });
 
   });

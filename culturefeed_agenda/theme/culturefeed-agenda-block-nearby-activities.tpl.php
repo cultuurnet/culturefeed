@@ -6,9 +6,9 @@
  */
 ?>
 
-<div class="container">
+<div>
 
-    <p class="block-title">In jouw buurt <span id="nearby-activities-title-location" class="text-muted" /></p>
+  <p>In jouw buurt <span id="nearby-activities-title-location"></span></p>
 
     <p>
       <?php if (!empty($change_location_link)): ?>
@@ -20,12 +20,12 @@
       <?php endif; ?>
     </p>
 
-    <div class="hidden" id="nearby-activities-filter-form-wrapper">
+    <div id="nearby-activities-filter-form-wrapper">
       <?php print drupal_render($filter_form); ?>
     </div>
 
     <div id="nearby-activities">
-      <p class="text-muted"><i class="fa fa-refresh fa-spin"></i>Loading</p>
+      <p>Loading</p>
     </div>
 
 </div>
