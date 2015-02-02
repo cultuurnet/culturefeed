@@ -277,7 +277,7 @@ function culturefeed_messages_culturefeed_ui_profile_menu_alter(&$items) {
       'title' => t('My messages'),
       'url' => 'culturefeed/messages',
       'description' => t('Read and reply to your messages'),
-      'weight' => -16,
+      'weight' => -15,
     ),
   );
 

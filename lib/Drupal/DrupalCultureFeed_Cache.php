@@ -9,6 +9,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   protected $realCultureFeed;
   protected $pages;
   protected $messages;
+  protected $savedSearches;
 
   public function __construct(CultureFeed $realCultureFeed, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
@@ -16,7 +17,7 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
   }
 
   public function getRealCultureFeed() {
-    return $this->realCultureFeed();
+    return $this->realCultureFeed;
   }
 
   protected function getCachePrefix() {
@@ -162,6 +163,11 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
     }
 
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
+    }
+
     return $result;
   }
 
@@ -179,6 +185,11 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     // Also clear the timelines.
     if (module_exists('culturefeed_pages')) {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
+
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
     }
 
     return $result;
@@ -430,6 +441,22 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     public function messages() {
       return $this->realCultureFeed->messages();
     }
+
+    /**
+     * Get the savedSearches service.
+     *
+     * @return DrupalCultureFeedSavedSearches_Cache
+     */
+    public function savedSearches() {
+
+      if (!$this->savedSearches) {
+        $this->savedSearches = new DrupalCultureFeedSavedSearches_Cache($this->realCultureFeed->savedSearches());
+      }
+
+      return $this->savedSearches;
+
+    }
+
 
     public function getClient() {
       return $this->realCultureFeed->getClient();
