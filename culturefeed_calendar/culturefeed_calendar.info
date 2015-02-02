@@ -1,0 +1,8 @@
+name = CultureFeed Calendar
+description = CultureFeed Calendar allows users to manage their own events in a calendar.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+dependencies[] = culturefeed
+dependencies[] = date_popup

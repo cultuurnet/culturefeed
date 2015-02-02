@@ -425,6 +425,15 @@ function culturefeed_pages_menu() {
     'file' => 'includes/members.inc',
   );
 
+  $items['pages/%culturefeed_pages_page/membership/request-validated-admin/%'] = array(
+    'title' => 'Request to become validated admin',
+    'page callback' => 'culturefeed_pages_page_request_validated_admin',
+    'page arguments' => array(1, 4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/members.inc',
+  );
+
   $items['pages/switch/%culturefeed_pages_page'] = array(
     'title' => 'Change active page',
     'page callback' => 'culturefeed_pages_switch_page',
@@ -437,6 +446,14 @@ function culturefeed_pages_menu() {
   $items['ajax/culturefeed/pages/page-suggestion'] = array(
     'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
     'page arguments' => array(4),
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  $items['ajax/culturefeed/pages/page-suggestion/ids'] = array(
+    'page callback' => 'culturefeed_pages_page_suggestion_autocomplete_page',
+    'page arguments' => array(5, TRUE),
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -1123,6 +1140,7 @@ function culturefeed_pages_timeline_filter_form($form, $form_state, $default_fil
     CultureFeed_Activity::TYPE_REVIEW => t('Review'),
     CultureFeed_Activity::TYPE_PAGE_MEMBER => t('Membership'),
     CultureFeed_Activity::TYPE_FOLLOW => t('Follow'),
+    CultureFeed_Activity::TYPE_NEWS => t('News'),
   );
 
   $form['filter'] = array(

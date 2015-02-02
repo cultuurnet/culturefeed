@@ -86,6 +86,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
 
   $time = isset($hybrid['start_time']) && $hybrid['start_time'] ? culturefeed_date_control_implode_time($hybrid['start_time'], $date) : '';
   $element['start_time'] = array(
+    '#attributes' => array('class' => array('time-select-complete-minutes')),
     '#date_format' => 'H:i',
     '#date_increment' => 30,
     '#default_value' => $time,
@@ -110,6 +111,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
 
   $element['end_time'] = array(
     '#access' => TRUE,
+    '#attributes' => array('class' => array('time-select-complete-minutes')),
     '#ajax' => $ajax_settings,
     '#date_format' => 'H:i',
     '#date_increment' => 30,
@@ -129,6 +131,12 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     '#title' => t('Permanent'),
     '#type' => 'checkbox',
     '#value' => 0,
+  );
+
+  $element['#attached'] = array(
+    'js' => array(
+      drupal_get_path('module', 'culturefeed_date_control') . '/js/culturefeed_date_control_time_select.js',
+    ),
   );
 
   return $element;

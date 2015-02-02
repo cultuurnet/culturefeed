@@ -28,8 +28,6 @@ Drupal.behaviors.culturefeedPopupConnect = {
   }
 };
 
-
-
 if (Drupal.ajax) {
 
   /**

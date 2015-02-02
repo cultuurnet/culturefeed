@@ -13,6 +13,7 @@ files[] = views/handlers/filter/views_handler_filter_culturefeed_search_type.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_category.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_agefrom.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_city.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_tags.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_createdby.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_createdbycurrentuser.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_free.inc

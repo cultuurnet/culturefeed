@@ -21,7 +21,6 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     $options[$key] = $type['search_title'];
   }
   $active_page = _culturefeed_search_ui_get_active_search_page();
-
   $form['#action'] = url('culturefeed/search');
 
   $form['type'] = array(
@@ -670,9 +669,6 @@ function culturefeed_search_ui_search_active_filters_block() {
 
 }
 
-/**
- * Show the filter form for the search ui.
- */
 function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
 
   $form = array();
@@ -692,6 +688,32 @@ function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_opt
   );
 
   return $form;
+}
+
+/**
+ * Show the filter form for the search ui.
+ */
+function culturefeed_search_ui_block_filter_block($filter_options, $display_type) {
+
+  if ($display_type == 'checkboxes') {
+    // Show filters as checkboxes with submit button.
+    return drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
+  }
+  elseif ($display_type == 'links') {
+    // Show filters as links.
+    $searches = culturefeed_get_searchable_types();
+    $path = isset($searches['path']) ? $searches['path'] : NULL;
+    $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+    return  theme('culturefeed_search_block_filter_links',
+      array(
+        'filter_options' => $filter_options,
+        'query' => $query,
+        'path' => $path
+      )
+     );
+  }
+
 }
 
 /**
