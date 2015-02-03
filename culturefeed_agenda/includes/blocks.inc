@@ -392,6 +392,7 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
       'data' => CULTUREFEED_GOOGLE_MAPS_JS_API,
       'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/actor_autocomplete.js',
+    drupal_get_path('module', 'culturefeed') . '/js/common.js',
     array(
       'data' => array(
         'culturefeed' => array(
