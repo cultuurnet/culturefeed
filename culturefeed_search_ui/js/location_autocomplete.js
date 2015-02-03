@@ -27,6 +27,22 @@
         },
       });
 
+      $("#edit-where").once('location-search-init').categorisedAutocomplete({
+        source: Drupal.CulturefeedSearch.getLocationData,
+        select: function(event, ui) {
+
+          // Actors are direct links.
+          if (ui.item.type == 'actor') {
+            window.location.href = ui.item.suggestion;
+          }
+          // Trigger location search.
+          else {
+            $(this).val(ui.item.suggestion);
+          }
+
+        },
+      });
+
     }
   };
 

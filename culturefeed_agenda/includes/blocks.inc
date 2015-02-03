@@ -159,10 +159,10 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $form['location']['where'] = array(
       '#type' => 'textfield',
+      '#size' => 28,
       '#title' => t('Where'),
-      '#default_value' => isset($_GET['location']) ? $_GET['location'] : NULL,
-      '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
-      '#attributes' => array('placeholder' => t('Zipcode or city')),
+      '#title_display' => 'invisible',
+      '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
     );
 
     $form['location']['nearby'] = array(
@@ -179,6 +179,9 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     );
 
     $form['#attached']['library'][] = array('system', 'jquery.cookie');
+    $form['#attached']['library'][] = array('system', 'ui.autocomplete');
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/location_autocomplete.js';
+    $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/location_search.css';
 
   }
 
@@ -218,6 +221,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   if (isset($active_filters['where'])) {
     unset($query['where']);
+
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
     }
