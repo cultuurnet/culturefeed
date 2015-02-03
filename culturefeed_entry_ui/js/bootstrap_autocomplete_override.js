@@ -30,7 +30,7 @@ jQuery(function($) {
                     .appendTo(ul);
             }
             else if (typeof(matches[key]) == "object") {
-                value = matches[key].title;
+                value = matches[key].locationTitle;
                 $('<li></li>')
                     .html($('<a href="#"></a>').html(value).click(function (e) { e.preventDefault(); }))
                     .mousedown(function () { ac.select(this); })
