@@ -14,17 +14,14 @@ function culturefeed_agenda_block_nearby_activities() {
   drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
 
   // If there is a location stored in cookie, add to the block title.
-  $location_cookie = array();
-  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-  }
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
 
   // Add link to show all events for the location.
   $location_string = '';
   $url = '';
   $classes = 'all-activities-link';
-  if (isset($location_cookie['postal']) && isset($location_cookie['city'])) {
-    $location_string = $location_cookie['postal'] . ' ' . $location_cookie['city'];
+  if (isset($user_location->postal) && isset($user_location->city)) {
+    $location_string = check_plain($user_location->postal . ' ' . $user_location->city);
   }
   else {
     $classes .= ' hidden';

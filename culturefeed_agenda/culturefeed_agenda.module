@@ -929,24 +929,15 @@ function culturefeed_agenda_production_load($cdb_id) {
   return culturefeed_search_item_load($cdb_id, 'production');
 }
 
-
-
-
-
-
 /**
  * Show a filter form for the page suggestions block.
  */
 function culturefeed_agenda_nearby_activities_filter_form() {
 
   $location = '';
-
-  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-
-    if (isset($location_cookie['postal']) && isset($location_cookie['city'])) {
-      $location = trim($user_location->postal) . ' ' . trim($user_location->city);
-    }
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+  if (isset($user_location->postal) && isset($user_location->city)) {
+    $location = trim(check_plain($user_location->postal)) . ' ' . trim(check_plain($user_location->city));
   }
 
   $form = array();

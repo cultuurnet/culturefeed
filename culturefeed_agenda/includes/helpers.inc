@@ -694,47 +694,46 @@ function culturefeed_agenda_parse_calendar($calendar) {
 function culturefeed_agenda_get_nearby_activities_list() {
 
   $location_cookie = array();
-  if (empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+  if (empty($user_location->postal) && empty($user_location->city)) {
     return '';
   }
-  else {
-    // Compose the search query.
-    $parameters = array();
-    $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
-    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-    $parameters[] = new \CultuurNet\Search\Parameter\Group();
-    $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
 
-    // Add location filter from cookie.
-    $location_cookie = drupal_json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-     $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($location_cookie['postal'], 5);
-     $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $location_cookie['city']);
+  // Compose the search query.
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
 
-    // Optional query params from block config.
-    if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
-      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
-    }
-    $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc, weight desc');
-    if (!empty($sort_options_string)) {
-      $sort_options = explode(',', $sort_options_string);
-      foreach ($sort_options as $sort_option) {
-        $sort_option_values = explode(' ', $sort_option);
-        $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_option_values[0], $sort_option_values[1]);
-      }
-    }
+  // Add location filter from cookie.
+  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($user_location->postal, 5);
+  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $user_location->city);
 
-    try {
-      $search = culturefeed_get_search_service();
-      $result = $search->search($parameters);
+  // Optional query params from block config.
+  if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
+  }
+  $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc, weight desc');
+  if (!empty($sort_options_string)) {
+    $sort_options = explode(',', $sort_options_string);
+    foreach ($sort_options as $sort_option) {
+      $sort_option_values = explode(' ', $sort_option);
+      $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_option_values[0], $sort_option_values[1]);
     }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_agenda', $e);
-      return;
-    }
+  }
 
-    if (isset($result)) {
-      return theme('culturefeed_agenda_nearby_activities_list', array('activities' => $result->getItems()));
-    }
+  try {
+    $search = culturefeed_get_search_service();
+    $result = $search->search($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  if (isset($result)) {
+    return theme('culturefeed_agenda_nearby_activities_list', array('activities' => $result->getItems()));
   }
 
   $actors = array(

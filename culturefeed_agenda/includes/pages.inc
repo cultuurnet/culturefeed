@@ -265,9 +265,9 @@ function culturefeed_agenda_page_ajax_actor_suggest() {
 
   $parameters = array();
 
-  if (isset($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $coordinates = json_decode($_COOKIE['Drupal_visitor_uitid.userLocation']);
-    $point = new \CultuurNet\Search\Parameter\Spatial\Point($coordinates->latitude, $coordinates->longitude);
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+  if (isset($user_location->latitude) && isset($user_location->longitude)) {
+    $point = new \CultuurNet\Search\Parameter\Spatial\Point($user_location->latitude, $user_location->longitude);
     $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
     $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('physical_gis');
     $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
