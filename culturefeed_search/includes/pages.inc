@@ -47,7 +47,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
             $title = $location_title = check_plain($suggestion->value);
             $location = $suggestion->zipcode;
             if (!empty($location)) {
-              $location_title .= ' - <small class="muted">(' . $location->zipcode . ')<small>';
+              $location_title .= ' - <small class="muted">(' . $location . ')<small>';
             }
             $object = new stdClass();
             $object->title = $title;
