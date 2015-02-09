@@ -1,9 +1,0 @@
-name: Culturefeed UDB3
-type: module
-description: CultureFeed UDB3.
-package: Culturefeed
-version: 1.x-dev
-core: 8.x
-dependencies:
-  - culturefeed
-  - culturefeed_search
