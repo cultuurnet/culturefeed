@@ -114,6 +114,9 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
         if ($custom_location_country == 'BE') {
           $custom_location_city = $custom_location_zip . ' ' . $address->getCity();
         }
+        else {
+          $custom_location_city = $address->getCity();
+        }
       }
     }
 
