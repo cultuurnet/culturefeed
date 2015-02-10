@@ -1698,18 +1698,18 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if (empty($values['location']['new']['location_title'])) {
       form_set_error('location_title', t('A title is required for a custom location'));
     }
-    /*if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
+    if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
       if (empty($values['location']['new']['citywrapper']['zip_code'])) {
         form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
       }
-    }*/
+    }
     if (empty($values['location']['new']['citywrapper']['city'])) {
       form_set_error('city', t('A city is required for a custom location'));
     }
-    else {
+    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
       $available_city = culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE);
       if (!isset($available_city[$values['location']['new']['citywrapper']['city']])) {
-        form_set_error('location', t('A valid location is required.'));
+        form_set_error('location', t('A valid city is required for a custom location'));
       }
     }
     $location = NULL;
