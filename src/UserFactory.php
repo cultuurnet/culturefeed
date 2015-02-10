@@ -64,7 +64,8 @@ class UserFactory implements UserFactoryInterface {
 
     try {
       $uitid = $this->userMap->getCulturefeedId($this->account->id());
-      return $this->instance->getUser($uitid);
+      $private = true;
+      return $this->instance->getUser($uitid, $private);
     }
     catch (\Exception $e) {
       return new CultureFeed_User();
