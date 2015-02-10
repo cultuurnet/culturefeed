@@ -22,17 +22,17 @@ function culturefeed_entry_ui_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Events created by me';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['use_more_text'] = 'meer';
+  $handler->display->display_options['use_more_text'] = t('more');
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'create culturefeed events';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Toepassen';
-  $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Opnieuw instellen';
-  $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = 'Sorteren op';
-  $handler->display->display_options['exposed_form']['options']['sort_asc_label'] = 'Oplopend';
-  $handler->display->display_options['exposed_form']['options']['sort_desc_label'] = 'Aflopend';
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = t('Select');
+  $handler->display->display_options['exposed_form']['options']['reset_button_label'] = t('Reset');
+  $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = t('Sort');
+  $handler->display->display_options['exposed_form']['options']['sort_asc_label'] = t('Ascending');
+  $handler->display->display_options['exposed_form']['options']['sort_desc_label'] = t('Descending');
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
@@ -45,9 +45,9 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'Notification that no results were found';
+  $handler->display->display_options['empty']['area']['label'] = t('Notification that no results were found');
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'Unable to find any events created by you.';
+  $handler->display->display_options['empty']['area']['content'] = t('Unable to find any events created by you.');
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Veld: Cdb items: Titel */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -118,30 +118,30 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['filters']['createdbycurrentuser']['field'] = 'createdbycurrentuser';
   $handler->display->display_options['filters']['createdbycurrentuser']['exposed'] = TRUE;
   $handler->display->display_options['filters']['createdbycurrentuser']['expose']['operator_id'] = 'createdbycurrentuser_op';
-  $handler->display->display_options['filters']['createdbycurrentuser']['expose']['label'] = 'Created by current user';
+  $handler->display->display_options['filters']['createdbycurrentuser']['expose']['label'] = t('Created by current user');
   $handler->display->display_options['filters']['createdbycurrentuser']['expose']['operator'] = 'createdbycurrentuser_op';
   $handler->display->display_options['filters']['createdbycurrentuser']['expose']['identifier'] = 'createdbycurrentuser';
   
   /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block');
+  $handler = $view->new_display('block', t('Block'), 'block');
   
   /* Display: Pagina */
-  $handler = $view->new_display('page', 'Pagina', 'page_1');
+  $handler = $view->new_display('page', t('Page'), 'page_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Edit events';
+  $handler->display->display_options['title'] = t('Edit events');
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Items per pagina';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = '- Alle -';
-  $handler->display->display_options['pager']['options']['expose']['offset_label'] = 'Startpunt';
-  $handler->display->display_options['pager']['options']['tags']['first'] = '« eerste';
-  $handler->display->display_options['pager']['options']['tags']['previous'] = '‹ vorige';
-  $handler->display->display_options['pager']['options']['tags']['next'] = 'volgende ›';
-  $handler->display->display_options['pager']['options']['tags']['last'] = 'laatste »';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = t('Items on page');
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = t('- All -');
+  $handler->display->display_options['pager']['options']['expose']['offset_label'] = t('Start');
+  $handler->display->display_options['pager']['options']['tags']['first'] = t('« first');
+  $handler->display->display_options['pager']['options']['tags']['previous'] = t('‹ previous');
+  $handler->display->display_options['pager']['options']['tags']['next'] = t('next ›');
+  $handler->display->display_options['pager']['options']['tags']['last'] = t('last »');
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filtercriterium: Cdb items: Type */
@@ -156,26 +156,26 @@ function culturefeed_entry_ui_views_default_views() {
   $translatables['culturefeed_events_createdbycurrentuser'] = array(
     t('Master'),
     t('Events created by me'),
-    t('meer'),
-    t('Toepassen'),
-    t('Opnieuw instellen'),
-    t('Sorteren op'),
-    t('Oplopend'),
-    t('Aflopend'),
+    t('more'),
+    t('Select'),
+    t('Reset'),
+    t('Sort'),
+    t('Ascending'),
+    t('Descending'),
     t('Notification that no results were found'),
     t('Unable to find any events created by you.'),
-    t('Laatst bijgewerkt'),
+    t('Last updated'),
     t('Created by current user'),
     t('Block'),
-    t('Pagina'),
+    t('Page'),
     t('Edit events'),
-    t('Items per pagina'),
-    t('- Alle -'),
-    t('Startpunt'),
-    t('« eerste'),
-    t('‹ vorige'),
-    t('volgende ›'),
-    t('laatste »'),
+    t('Items on page'),
+    t('- All -'),
+    t('Start'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
   );
 
   $views[$view->name] = $view;
