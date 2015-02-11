@@ -83,7 +83,7 @@ class Authentication implements AuthenticationInterface {
   /**
    * {@inheritdoc}
    */
-  public function connect(Request $request, LanguageInterface $language) {
+  public function connect(Request $request, LanguageInterface $language, $type) {
 
     $options = array('absolute' => TRUE);
     if ($request->query->get('destination')) {
@@ -111,7 +111,7 @@ class Authentication implements AuthenticationInterface {
     $_SESSION['oauth_token'] = $token['oauth_token'];
     $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-    return $instance->getUrlAuthorize($token, $callback_url, NULL, FALSE, NULL, NULL, $language->getId());
+    return $instance->getUrlAuthorize($token, $callback_url, $type, FALSE, NULL, NULL, $language->getId());
 
   }
 

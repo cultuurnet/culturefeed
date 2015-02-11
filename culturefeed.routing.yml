@@ -21,6 +21,17 @@ culturefeed.oauth.connect:
     _title: 'Connect'
   requirements:
     _access: 'TRUE'
+    _culturefeed_current_user: 'FALSE'
+
+culturefeed.oauth.register:
+  path: '/culturefeed/oauth/connect/register'
+  defaults:
+    _controller: '\Drupal\culturefeed\Controller\AuthenticationController::connect'
+    _title: 'Register'
+    type: 'register'
+  requirements:
+    _access: 'TRUE'
+    _culturefeed_current_user: 'FALSE'
     _user_is_logged_in: 'FALSE'
 
 culturefeed.oauth.authorize:

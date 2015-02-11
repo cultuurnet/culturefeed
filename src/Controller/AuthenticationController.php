@@ -55,10 +55,10 @@ class AuthenticationController extends ControllerBase {
    * @return RedirectResponse
    *   A redirect.
    */
-  public function connect(Request $request) {
+  public function connect(Request $request, $type = \CultureFeed::AUTHORIZE_TYPE_REGULAR) {
 
     $language = $this->languageManager()->getCurrentLanguage();
-    $auth_url = $this->authentication->connect($request, $language);
+    $auth_url = $this->authentication->connect($request, $language, $type);
     if ($auth_url == '<front>') {
       $auth_url = $this->getUrlGenerator()->generateFromRoute('<front>');
     }

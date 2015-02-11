@@ -7,9 +7,11 @@
 
 namespace Drupal\culturefeed\Access;
 
-use Drupal\Core\Routing\Access\AccessInterface;
 use CultureFeed_User;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Routing\Access\AccessInterface;
+use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * Class UserAccess.
@@ -37,8 +39,13 @@ class UserAccess implements AccessInterface {
   /**
    * Checks access based on Culturefeed user.
    */
-  public function access() {
-    return AccessResult::allowedIf($this->user->id)->setCacheable(FALSE);
+  public function access(AccountInterface $account, Route $route) {
+
+    $required_status = filter_var($route->getRequirement('_user_is_logged_in'), FILTER_VALIDATE_BOOLEAN);
+    $actual_status = !empty($this->user->id);
+
+    return AccessResult::allowedIf($required_status === $actual_status)->setCacheable(FALSE);
+
   }
 
 }
