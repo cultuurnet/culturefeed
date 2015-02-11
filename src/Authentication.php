@@ -134,9 +134,9 @@ class Authentication implements AuthenticationInterface {
 
       }
       catch (Exception $e) {
-
         drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
         watchdog_exception('culturefeed', $e);
+        return;
 
       }
 

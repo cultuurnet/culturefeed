@@ -30,3 +30,14 @@ function culturefeed_user_delete(Drupal\Core\Entity\EntityInterface $entity) {
   }
 
 }
+
+/**
+ * Implements hook_template_preprocess_default_variables_alter().
+ */
+function culturefeed_template_preprocess_default_variables_alter(&$variables) {
+
+  // Make culturefeed_logged_in a default variable in every template.
+  $culturefeed_user = \Drupal::service('culturefeed.current_user');
+  $variables['culturefeed_logged_in'] = !empty($culturefeed_user->id);
+
+}
