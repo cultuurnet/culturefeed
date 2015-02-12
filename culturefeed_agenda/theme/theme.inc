@@ -822,6 +822,14 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_related_activities(&$v
 }
 
 /**
+ * Preprocess event types.
+ * @see culturefeed-agenda-event-types.tpl.php
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_event_types(&$variables) {
+
+}
+
+/**
  * Preprocess the variables for a nearby activities list item.
  * @see culturefeed-agenda-nearby-activities-list-item.tpl.php
  */

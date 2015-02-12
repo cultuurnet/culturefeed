@@ -7,6 +7,27 @@
 use \CultuurNet\Search\Parameter;
 
 /**
+ * Block to show the related events from an item.
+ */
+function culturefeed_agenda_block_related_activities() {
+
+  // Try to load the agenda detail.
+  $item = culturefeed_agenda_get_active_object();
+  if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
+    return;
+  }
+
+  $config = array(
+    'title' => t('Related activities'),
+    'id' => 'related-activities',
+    'path' => 'ajax/culturefeed/related-activities/' . $item->getId(),
+  );
+
+  return culturefeed_ui_block_ajaxload($config);
+
+}
+
+/**
  * Show a block with nearby activities for current user.
  */
 function culturefeed_agenda_block_nearby_activities() {
@@ -418,4 +439,48 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
   $form['#suffix'] = '<div id="actor-search-suggest"></div>';
 
   return $form;
+}
+
+/**
+ * Show a block with event types.
+ */
+function culturefeed_agenda_block_event_types() {
+
+  $eventtypes = variable_get('agenda_menu_event_types', array());
+  if (empty($eventtypes)) {
+    return;
+  }
+
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name', 'slug', 'p1'));
+  $query->condition("cst.did", "eventtype");
+  $query->condition("cst.language", culturefeed_search_get_preferred_language());
+  $db_or = db_or();
+  $db_or->condition('cst.tid', $eventtypes, 'IN');
+  $db_or->condition('cst.p1', $eventtypes, 'IN');
+
+  $query->condition($db_or);
+  $result = $query->execute();
+
+  $items = array();
+  foreach ($result as $row) {
+    if (empty($row->p1)) {
+      $items[$row->tid]['item'] = $row;
+    }
+    else {
+      $items[$row->p1]['children'][$row->tid]['item'] = $row;
+    }
+  }
+
+  if (!empty($items)) {
+    return array(
+      'content' => array(
+        '#theme' => 'culturefeed_agenda_event_types',
+        '#items' => $items,
+      ),
+    );
+  }
+
+  return;
+
 }
