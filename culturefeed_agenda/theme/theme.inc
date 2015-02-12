@@ -314,7 +314,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $keywords = $cdb_item->getKeywords();
   $variables['keywords'] = '';
   if ($keywords) {
-    $variables['keywords'] = implode(', ', $keywords);
+
+    $linked_keywords = array();
+    foreach ($keywords as $keyword) {
+      $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
+    }
+
+    $variables['keywords'] = implode(', ', $linked_keywords);
     // check if event is suitable for kids
     if (array_key_exists('ook voor kinderen', $keywords)) {
       $variables['forkids'] = TRUE;

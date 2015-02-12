@@ -822,6 +822,11 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     }
   }
 
+  // If keywords are given, filter the search query with keywords.
+  if (!empty($_GET['keyword'])) {
+    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery('keywords:' . urldecode($_GET['keyword'])));
+  }
+
 }
 
 /**
