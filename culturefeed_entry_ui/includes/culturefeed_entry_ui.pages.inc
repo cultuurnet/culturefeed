@@ -1712,7 +1712,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
     if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
       $available_city = culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE);
       if (!isset($available_city[$values['location']['new']['citywrapper']['city']])) {
-        form_set_error('location', t('A valid city is required for a custom location'));
+        form_set_error('location][new][citywrapper][city', t('A valid city is required for a custom location.'));
       }
     }
     $location = NULL;

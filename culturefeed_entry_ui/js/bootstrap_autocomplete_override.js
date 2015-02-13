@@ -36,7 +36,7 @@ jQuery(function($) {
                     .mousedown(function () { ac.select(this); })
                     .mouseover(function () { ac.highlight(this); })
                     .mouseout(function () { ac.unhighlight(this); })
-                    .data('autocompleteTitle', value)
+                    .data('autocompleteTitle', matches[key].title)
                     .data('autocompleteValue', matches[key].key)
                     .appendTo(ul);
             }
