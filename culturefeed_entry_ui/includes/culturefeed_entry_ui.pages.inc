@@ -1489,7 +1489,7 @@ function culturefeed_entry_ui_attach_language_elements(&$form, $i, $info = NULL)
  */
 function culturefeed_entry_ui_attach_contacts_elements(&$form, $i, $info = NULL) {
 
-  $options = array(0 => 'Phone', 1 => 'Email');
+  $options = array(0 => t('Phone'), 1 => t('E-mail'));
   $contact_type = 0;
 
   if ($info[0] == 'phone') {
@@ -1699,15 +1699,18 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   // Validate location
   if (isset($form_state['#location_needed']) && $form_state['#location_needed']) {
     if (empty($values['location']['new']['location_title'])) {
-      form_set_error('location_title', t('A title is required for a custom location'));
+      form_set_error('location][new][location_title', t('A title is required for a custom location'));
     }
     if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
       if (empty($values['location']['new']['citywrapper']['zip_code'])) {
-        form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
+        form_set_error('location][new][citywrapper][zip_code', t('A zip code is required for a custom location'));
+      }
+      if (strlen($values['location']['new']['citywrapper']['zip_code']) < 5 || strlen($values['location']['new']['citywrapper']['zip_code']) > 15) {
+        form_set_error('location][new][citywrapper][zip_code', t('A zip code has minimum 4 characters'));
       }
     }
     if (empty($values['location']['new']['citywrapper']['city'])) {
-      form_set_error('city', t('A city is required for a custom location'));
+      form_set_error('location][new][citywrapper][city', t('A city is required for a custom location'));
     }
     if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
       $available_city = culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE);

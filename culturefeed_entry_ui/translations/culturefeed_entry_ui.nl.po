@@ -22,18 +22,19 @@
 #  js/culturefeed_entry_ui.js: n/a
 #  views/culturefeed_entry_ui.views.inc: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2015-02-10 12:25+0100\n"
-"PO-Revision-Date: 2015-02-10 12:25+0100\n"
+"PO-Revision-Date: 2015-02-10 15:54+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: nl\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #: culturefeed_entry_ui.module:18
 msgid "Manage object tags"
@@ -41,9 +42,7 @@ msgstr "Beheer object tags"
 
 #: culturefeed_entry_ui.module:19
 msgid "Manage all the tags from the objects on culturefeed (events, actors, ...)."
-msgstr ""
-"Beheer alle tags van objecten op culture feed (activiteiten, actoren "
-"...)."
+msgstr "Beheer alle tags van objecten op culture feed (activiteiten, actoren ...)."
 
 #: culturefeed_entry_ui.module:22
 msgid "Manage custom tags"
@@ -95,9 +94,7 @@ msgstr "Voeg activiteit toe"
 
 #: culturefeed_entry_ui.module:401
 msgid "Some disallowed html tags will be removed in the %field_name field. The allowed tags are %allowed_tags"
-msgstr ""
-"Niet toegelaten html-tags zullen verwijderd worden in het veld "
-"%field_name. De toegelaten tags zijn %allowed_tags"
+msgstr "Niet toegelaten html-tags zullen verwijderd worden in het veld %field_name. De toegelaten tags zijn %allowed_tags"
 
 #: culturefeed_entry_ui.module:71
 msgid "New event"
@@ -121,9 +118,7 @@ msgstr ""
 
 #: culturefeed_entry_ui.info:0
 msgid "Multilingual forms to post, update and delete events to UiTDatabank Entry API"
-msgstr ""
-"Meertalig invoerformulier om activiteiten aan te maken, aan te passen "
-"en verwijderen in UiTdatabank via Entry API"
+msgstr "Meertalig invoerformulier om activiteiten aan te maken, aan te passen en verwijderen in UiTdatabank via Entry API"
 
 #: culturefeed_entry_ui.info:0 culturefeed_date_control/culturefeed_date_control.info:0
 msgid "CultureFeed"
@@ -251,9 +246,7 @@ msgstr "Voorkeur taal"
 
 #: includes/culturefeed_entry_ui.admin.inc:23
 msgid "Use the preferred language of the UiTID user, with the Drupal UI language as fallback"
-msgstr ""
-"Gebruik de voorkeurstaal van de UiTiD gebruiker, met de Drupal UI taal "
-"als backup"
+msgstr "Gebruik de voorkeurstaal van de UiTiD gebruiker, met de Drupal UI taal als backup"
 
 #: includes/culturefeed_entry_ui.admin.inc:30
 msgid "Custom options on the /tags page"
@@ -381,19 +374,17 @@ msgstr "Ondersteunde bestandsformaten: gif, png, jpg, jpeg"
 
 #: includes/culturefeed_entry_ui.pages.inc:853
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: includes/culturefeed_entry_ui.pages.inc:854
 msgid "Name of the copyright owner of this image."
-msgstr ""
+msgstr "Naam van de copyright eigenaar van deze afbeelding"
 
 #: includes/culturefeed_entry_ui.pages.inc:861
 msgid "I agree to the <a href=\"http://www.uitdatabank.be/uitportal/legal.aspx\">terms & conditions</a> and I declare that I have the necessary rights or permissions to distribute the image."
 msgstr ""
-"Ik ga akkoord met de <a "
-"href=\"http://www.uitdatabank.be/uitportal/legal.aspx\">algemene "
-"voorwaarden van UiTdatabank</a> en verklaar dat ik over de nodige "
-"rechten beschik om de afbeelding te verspreiden."
+"Ik ga akkoord met de <a href=\"http://www.uitdatabank.be/uitportal/legal.aspx\">algemene voorwaarden van UiTdatabank</a> en verklaar dat ik over de nodige rechten beschik om de afbeelding "
+"te verspreiden."
 
 #: includes/culturefeed_entry_ui.pages.inc:868;873;905
 msgid "Price"
@@ -573,14 +564,11 @@ msgstr "Geef de juiste datum en tijdstip op"
 
 #: includes/culturefeed_entry_ui.pages.inc:1688
 msgid "Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank."
-msgstr ""
-"Geef aan dat je akkoord gaat met de algemene voorwaarden van "
-"UiTdatabank en dat je over de nodige rechten of toestemmingen beschikt "
-"om de afbeelding te verspreiden via UiTdatabank."
+msgstr "Geef aan dat je akkoord gaat met de algemene voorwaarden van UiTdatabank en dat je over de nodige rechten of toestemmingen beschikt om de afbeelding te verspreiden via UiTdatabank."
 
 #: includes/culturefeed_entry_ui.pages.inc:1691
 msgid "Copyright field is required."
-msgstr ""
+msgstr "Het veld 'copyright' is verplicht."
 
 #: includes/culturefeed_entry_ui.pages.inc:1696
 msgid "A category is required."
@@ -600,7 +588,7 @@ msgstr "Een stad is verplicht voor een nieuwe locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1715
 msgid "A valid city is required for a custom location"
-msgstr ""
+msgstr "Een geldige stad/gemeente is verplicht voor een nieuwe locatie"
 
 #: includes/culturefeed_entry_ui.pages.inc:1723
 msgid "A location is required."
@@ -684,23 +672,15 @@ msgstr "Voeg toe"
 
 #: includes/culturefeed_entry_ui.pages.inc:2557
 msgid "Tag @tag is not permitted because it's already a custom tag."
-msgstr ""
-"Trefwoord @tag is niet toegelaten aangezien het al een bestaande "
-"marker is."
+msgstr "Trefwoord @tag is niet toegelaten aangezien het al een bestaande marker is."
 
 #: includes/culturefeed_entry_ui.pages.inc:2604
 msgid "The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the \"View\" tab"
-msgstr ""
-"De labels werden aangepast. Het kan echter een half uur duren "
-"vooraleer deze wijzigingen op alle kanalen (waaronder UiTinVlaanderen) "
-"zichtbaar zijn."
+msgstr "De labels werden aangepast. Het kan echter een half uur duren vooraleer deze wijzigingen op alle kanalen (waaronder UiTinVlaanderen) zichtbaar zijn."
 
 #: includes/culturefeed_entry_ui.pages.inc:2609
 msgid "You tried to add a tag that should not be added by anyone. If you still wish to add this or have other questions about this, please email to \"vragen@uitdatabank.be\"."
-msgstr ""
-"Je hebt niet de juiste rechten om dit trefwoord toe te voegen. Als je "
-"hier vragen bij hebt, contacteer dan onze helpdesk via "
-"\"vragen@uitdatabank.be\"."
+msgstr "Je hebt niet de juiste rechten om dit trefwoord toe te voegen. Als je hier vragen bij hebt, contacteer dan onze helpdesk via \"vragen@uitdatabank.be\"."
 
 #: includes/culturefeed_entry_ui.pages.inc:2612
 msgid "Error occured while saving the tags"
@@ -800,7 +780,7 @@ msgstr ""
 
 #: views/culturefeed_entry_ui.views_default.inc:140;174
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: views/culturefeed_entry_ui.views_default.inc:141;175
 msgid "« first"
@@ -832,6 +812,4 @@ msgstr "Laatst bijgewerkt"
 
 #: views/handlers/views_handler_field_cdb_item_operations.inc:47
 msgid "No permission to edit event"
-msgstr ""
-
-<div class="culturefeed-dev-query">Requested 0 API calls in 0 ms Queries exceeding 100 ms are <span class="slow-query">highlighted</span>.</div>
+msgstr "Geen toelating om event aan te passen"
