@@ -74,9 +74,9 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     * Fire the autocomplete on paste.
     */
     Drupal.behaviors.autocomplete_paste = {
-        attach: function (context, settings) {
-            $('.form-autocomplete input').bind("paste", function () {
-                $(this).populatePopup();
+        attach: function () {
+            $('input.form-autocomplete, .form-autocomplete input.form-text').bind("input propertychange", function (event) {
+              $(this).trigger('keyup');
             });
         }
     }
