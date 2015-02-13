@@ -624,7 +624,7 @@ msgstr "Er is een fout opgetreden tijdens het opslaan van de activiteit"
 
 #: includes/culturefeed_entry_ui.pages.inc:2441
 msgid "Saving the event"
-msgstr "gfh"
+msgstr "Evenement aan het bewaren"
 
 #: includes/culturefeed_entry_ui.pages.inc:2448
 msgid "Initializing."
