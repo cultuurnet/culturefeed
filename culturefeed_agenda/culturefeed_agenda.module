@@ -552,14 +552,30 @@ function culturefeed_agenda_block_configure($delta) {
   }
   elseif ($delta == 'agenda-event-types') {
 
-    $visibility_options = culturefeed_search_get_categories_by_domain('eventtype');
+    $visibility_options = array();
+    $query = db_select('culturefeed_search_terms', 'cst');
+    $query->fields('cst', array('tid', 'name'));
+    $query->condition('cst.did', 'eventtype');
+    $query->isNull('cst.p1');
+    $query->condition('language', culturefeed_search_get_preferred_language());
+
+    $result = $query->execute();
+
+    foreach ($result as $row) {
+      // Don't show 'type onbepaald'.
+      if ($row->tid != '0.51.0.0.0') {
+        $visibility_options[$row->tid] = $row->name;
+        $defaults[] = $row->tid;
+      }
+    }
+
     asort($visibility_options);
     $form['agenda_menu_event_types'] = array(
       '#title' => t('Event types as menu item.'),
       '#description' => t('Select the eventtypes as main menu items.'),
       '#type' => 'checkboxes',
       '#options' => $visibility_options,
-      '#default_value' => variable_get('agenda_menu_event_types', array()),
+      '#default_value' => variable_get('agenda_menu_event_types', $defaults),
     );
 
   }
