@@ -56,6 +56,12 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     $this->cacheClear($cid_base, TRUE);
   }
 
+  protected function cacheClearTemplates() {
+    $cid_base = 'template:';
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
+  }
+
   protected function cacheClearMailings() {
     $cid_base = 'mailing:';
     $cid_base = $this->getCacheCidBase($cid_base);
@@ -248,12 +254,38 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
     return $this->realCultureFeed->cashInPromotion($userId, $promotionId, $promotionCount);
   }
 
+  public function getTemplate($id) {
+    return $this->realCultureFeed->getTemplate($id);
+  }
+
+  public function createTemplate(CultureFeed_Template $template) {
+    $this->realCultureFeed->createTemplate($template);
+
+    $this->cacheClearTemplates();
+  }
+
+  public function updateTemplate(CultureFeed_Template $template, $fields = array()) {
+    $this->realCultureFeed->updateTemplate($template, $fields);
+
+    $this->cacheClearTemplates();
+  }
+
+  public function getTemplateList() {
+    return $this->realCultureFeed->getTemplateList();
+  }
+
+  public function deleteTemplate($id) {
+    $this->realCultureFeed->deleteTemplate($id);
+
+    $this->cacheClearTemplates();
+  }
+
   public function getMailing($id) {
     return $this->realCultureFeed->getMailing($id);
   }
 
   public function createMailing(CultureFeed_Mailing $mailing) {
-    return $this->realCultureFeed->createMailing($mailing);
+    $this->realCultureFeed->createMailing($mailing);
 
     $this->cacheClearMailings();
   }
@@ -403,6 +435,10 @@ class DrupalCultureFeed_Cache implements ICultureFeed {
 
     public function updateServiceConsumer(CultureFeed_Consumer $consumer) {
       $this->realCultureFeed->updateServiceConsumer($consumer);
+    }
+
+    public function getServiceConsumer($consumerKey) {
+      return $this->realCultureFeed->getServiceConsumer($consumerKey);
     }
 
     public function uitpas() {
