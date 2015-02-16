@@ -993,7 +993,7 @@ function culturefeed_agenda_nearby_activities_filter_form() {
   $form = array();
   $form['location'] = array(
     '#type' => 'textfield',
-    '#title' => t('Your Location'),
+    '#title' => t('Set location'),
     '#default_value' => $location,
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#attributes' => array(
