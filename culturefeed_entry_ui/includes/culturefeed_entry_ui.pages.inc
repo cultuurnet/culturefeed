@@ -597,10 +597,14 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
 
     $country = isset($form_state['values']['location']['new']['citywrapper']['country_select']) && $form_state['values']['location']['new']['citywrapper']['country_select'] ? $form_state['values']['location']['new']['citywrapper']['country_select'] : ($custom_location_country ? $custom_location_country : 'BE');
 
+    $default_location_title = $custom_location_title ? $custom_location_title : '';
+    if (isset($form_state['#location_actor_label'])) {
+      $default_location_title = $form_state['#location_actor_label'];
+    }
     $form['basic']['location']['new']['location_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Location Title'),
-      '#default_value' => $custom_location_title ? $custom_location_title : '',
+      '#default_value' => $default_location_title,
       '#required' => FALSE,
       '#size' => 80,
     );
@@ -1001,9 +1005,11 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   );
 
   if (isset($form_state['#actor_needed'])) {
+    $default_actor = isset($form_state['#actor_label']) ? $form_state['#actor_label'] : '';
     $form['extra']['organiser']['new_actor'] = array(
       '#type' => 'textfield',
       '#title' => t('Name new organizer'),
+      '#default_value' => $default_actor,
     );
   }
 
