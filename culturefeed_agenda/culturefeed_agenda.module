@@ -588,6 +588,7 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_nearby_activities_extra_query', $edit['agenda_nearby_activities_extra_query']);
     variable_set('agenda_nearby_activities_sort', $edit['agenda_nearby_activities_sort']);
     variable_set('agenda_nearby_activities_amount', $edit['agenda_nearby_activities_amount']);
+    variable_set('agenda_nearby_activities_distance', $edit['agenda_nearby_activities_distance']);
 
   }
   elseif ($delta == 'agenda-search-block') {
