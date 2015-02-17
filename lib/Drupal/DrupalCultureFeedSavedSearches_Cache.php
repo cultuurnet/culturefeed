@@ -15,9 +15,9 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
    * Constructor.
    *
    * Culturefeed savedSearches instance to be called.
-   * @param CultureFeed_SavedSearches_Default $realCultureFeedSavedSearches
+   * @param CultureFeed_SavedSearches $realCultureFeedSavedSearches
    */
-  public function __construct(CultureFeed_SavedSearches_Default $realCultureFeedSavedSearches) {
+  public function __construct(CultureFeed_SavedSearches $realCultureFeedSavedSearches) {
     $this->realCultureFeedSavedSearches = $realCultureFeedSavedSearches;
   }
 
