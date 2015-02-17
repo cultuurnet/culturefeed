@@ -867,11 +867,13 @@ function culturefeed_search_ui_page_alter(&$variables) {
   if (drupal_get_http_header('Status') == '404 Not Found') {
 
     // Only for event details / production details and page details.
-    if (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a')) {
+    if (arg(0) == 'permalink' || (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a'))) {
+
+      $cdbid_arg = arg(0) == 'permalink' ? arg(1) : arg(3);
 
       // Check if this object was deleted. If it was found, set the 410.
       $cdbid = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid ', array(
-        ':cdbid' => arg(3),)
+        ':cdbid' => $cdbid_arg,)
       )->fetchField();
 
       if ($cdbid) {

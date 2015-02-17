@@ -145,6 +145,16 @@ function culturefeed_agenda_menu() {
 
   $items = array();
 
+  // Menu path for permalinks, redirects to correct one.
+  $items['permalink/%culturefeed_search_item'] = array(
+    'title' => 'Permalink',
+    'page callback' => 'culturefeed_agenda_permalink_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Menu path for detail pages.
   $items['agenda/a/%/%culturefeed_agenda_actor'] = array(
     'title callback' => 'culturefeed_agenda_detail_title',
