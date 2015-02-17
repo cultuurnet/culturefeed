@@ -41,7 +41,7 @@ class UserAccess implements AccessInterface {
    */
   public function access(AccountInterface $account, Route $route) {
 
-    $required_status = filter_var($route->getRequirement('_user_is_logged_in'), FILTER_VALIDATE_BOOLEAN);
+    $required_status = filter_var($route->getRequirement('_culturefeed_current_user'), FILTER_VALIDATE_BOOLEAN);
     $actual_status = !empty($this->user->id);
 
     return AccessResult::allowedIf($required_status === $actual_status)->setCacheable(FALSE);
