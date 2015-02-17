@@ -8,6 +8,9 @@
       "cultuurnet/cdb": "~2.0",
       "cultuurnet/culturefeed-php": "dev-feature/iculturefeed-decorator as 1.1.0"
     },
+    "require-dev": {
+      "phing/phing": "~2.10"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
