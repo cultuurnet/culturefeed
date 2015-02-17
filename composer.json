@@ -4,14 +4,10 @@
     "description": "CultuurNet culturefeed Drupal module",
     "license": "Apache-2.0",
     "require": {
-        "cultuurnet/cdb": "master@dev",
-        "cultuurnet/search": "master@dev",
-        "cultuurnet/culturefeed-php": "~1.0"
+      "cultuurnet/search": "~1.0",
+      "cultuurnet/cdb": "~2.0",
+      "cultuurnet/culturefeed-php": "dev-feature/iculturefeed-decorator as 1.1.0"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
-        }
-    },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

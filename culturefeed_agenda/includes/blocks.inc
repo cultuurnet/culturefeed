@@ -4,6 +4,8 @@
  * Block callbacks for culturefeed agenda.
  */
 
+use \CultuurNet\Search\Parameter;
+
 /**
  * Block to show the related events from an item.
  */
@@ -55,10 +57,20 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     }
     asort($options);
 
+    if (isset($_GET['facet']['category_' . $domain_id . '_id'][0])) {
+      $default = $_GET['facet']['category_' . $domain_id . '_id'][0];
+    }
+    elseif (isset($_GET['facet']['category_id'][0])) {
+      $default = $_GET['facet']['category_id'][0];
+    }
+    else {
+      $default = NULL;
+    }
+
     $form['category'] = array(
       '#type' => 'select',
       '#options' => $options,
-      '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
+      '#default_value' => $default,
     );
 
     $form_state['#domain_id'] = $domain_id;
@@ -246,3 +258,76 @@ function culturefeed_agenda_block_production_program() {
   return $block;
 
 }
+
+function culturefeed_agenda_block_actor_search_facet() {
+
+  // Only go if we're on an agenda search page.
+  if (current_path() != 'agenda/search') {
+    return;
+  }
+
+  // Only show this block if allowed in the block settings.
+  if (isset($_GET['facet']['category_eventtype_id'][0])) {
+    $current_event = $_GET['facet']['category_eventtype_id'][0];
+  }
+  elseif (isset($_GET['facet']['category_id'][0])) {
+    $current_event = $_GET['facet']['category_id'][0];
+  }
+  else {
+    $current_event = '';
+  }
+
+  $saved_events = variable_get('agenda_actor_search_visibility');
+  $allowed_events = array();
+
+  foreach ($saved_events as $saved_event) {
+    if ($saved_event != 0) {
+      $allowed_events[] = $saved_event;
+    }
+  }
+
+  if (!in_array($current_event, $allowed_events)) {
+    return;
+  }
+
+  // Create build array with actor search form and nearby actors.
+  $build = array();
+  $build['form'] = drupal_get_form('culturefeed_agenda_block_actor_search_form');
+  $build['actors_nearby'] = culturefeed_agenda_get_actors_nearby_for_event($current_event);
+
+  return array(
+    'subject' => t('Actor'),
+    'content' => $build,
+  );
+}
+
+/**
+ * Form callback to show the agenda actor search block.
+ */
+function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
+  $form = array();
+
+  $form['#attached']['js'] = array(
+    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+    drupal_get_path('module', 'culturefeed_agenda') . '/js/autocomplete_autosubmit.js',
+  );
+  $form['#attached']['library'] = array(
+    array('system', 'jquery.cookie'),
+  );
+
+  $form['search'] = array(
+    '#type' => 'textfield',
+    '#size' => 28,
+    '#title' => t('Search string'),
+    '#title_display' => 'invisible',
+    '#attributes' => array('class' => array('auto-submit-field'), 'placeholder' => t('Plaats of naam')),
+    '#autocomplete_path' => 'autocomplete/culturefeed/agenda/actor-search'
+  );
+
+  return $form;
+}
+
+
+
+
+

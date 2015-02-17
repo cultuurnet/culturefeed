@@ -22,8 +22,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.admin.inc',
   );
   $items['culturefeed/profile/edit'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Edit profile'),
+    'title' => 'Edit profile',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -31,24 +30,21 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/account/edit'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Edit account'),
+    'title' => 'Edit account',
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/mboxverify/resend'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Resend email confirmation'),
+    'title' => 'Resend email confirmation',
     'page callback' => 'culturefeed_ui_page_mboxverify_resend',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/users/search'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Search users'),
+    'title' => 'Search users',
     'page callback' => 'culturefeed_ui_page_users_search',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -56,16 +52,14 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/serviceconsumers'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Connected channels'),
+    'title' => 'Connected channels',
     'page callback' => 'culturefeed_ui_page_serviceconsumers',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/serviceconsumers/revoke/%/%'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Remove UiTiD channel'),
+    'title' => 'Remove UiTiD channel',
     'page callback' => 'culturefeed_ui_page_serviceconsumer_revoke',
     'page arguments' => array(3, 4),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -73,8 +67,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/onlineaccounts/delete/%/%/%'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Remove social account'),
+    'title' => 'Remove social account',
     'page callback' => 'culturefeed_ui_page_online_account_delete',
     'page arguments' => array(3, 4, 5),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -82,8 +75,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/onlineaccounts/privacy/%/%/%/%'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Configure privacy social account'),
+    'title' => 'Configure privacy social account',
     'page callback' => 'culturefeed_ui_page_online_account_update_privacy',
     'page arguments' => array(3, 4, 5, 6),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -91,8 +83,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/toggle/privacy/facebook/%/%/%'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Configure privacy social account'),
+    'title' => 'Configure privacy social account',
     'page callback' => 'culturefeed_ui_page_online_account_toggle_facebook_privacy',
     'page arguments' => array(3, 4, 5, 6),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -100,8 +91,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/users/mostactive'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Most active user'),
+    'title' => 'Most active user',
     'page callback' => 'culturefeed_ui_page_users_most_active',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
@@ -109,8 +99,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/removeaccount'] = array(
-    'title callback' => 'culturefeed_ui_default_title_callback',
-    'title arguments' => array('Delete account'),
+    'title' => 'Delete account',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_ui_page_remove_account_form'),
     'access callback' => 'culturefeed_is_culturefeed_user',
@@ -149,10 +138,6 @@ function culturefeed_ui_init() {
   }
 }
 
-function culturefeed_ui_default_title_callback($title = '') {
-  return $title;
-}
-
 /**
  * Implements hook_theme().
  */
@@ -172,7 +157,9 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-profile-box',
     ),
     'culturefeed_ui_anonymous_profile_box' => array(
-      'variables' => array(),
+      'variables' => array(
+        'main_items' => array(),
+      ),
       'template' => 'culturefeed-ui-anonymous-profile-box',
     ),
     'culturefeed_ui_most_active_user' => array(

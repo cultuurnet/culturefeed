@@ -11,10 +11,13 @@ define('CULTUREFEED_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_API_PATH', 'entry/test.rest.uitdatabank.be/api/v2/');
 define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js?sensor=true&v=3.5&region=BE&hl=nl');
 
+define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
+
 /**
  * Implements hook_init().
  */
 function culturefeed_init() {
+
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
 
   if (isset($_GET['closepopup'])) {
@@ -216,20 +219,54 @@ function culturefeed_page_build(&$page) {
     $gtm_globals['search_query'] = json_encode(drupal_get_query_parameters());
   }
 
-  // Check if it is an event detail page.
-  $gtm_globals['is_event_detail'] = (arg(0) == 'agenda' && arg(1) == 'e');
-  if ($gtm_globals['is_event_detail']) {
+  // Check if it is a detail page.
+  $gtm_globals['is_detail'] = (arg(0) == 'agenda' && in_array(arg(1), array('e', 'a', 'p', 'g')));
+  if ($gtm_globals['is_detail']) {
+    
+    // Make this backwards compatible
+    $gtm_globals['is_event_detail'] = TRUE;
 
-    $event = menu_get_object('culturefeed_agenda_event', 3);
-    if ($event) {
-      $gtm_globals['event_detail_title'] = culturefeed_agenda_detail_title($event);
-      $gtm_globals['cdbid'] = arg(3);
+    if (arg(1) == 'e') {
+      $event = menu_get_object('culturefeed_agenda_event', 3);
+      if ($event) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($event);
+        $gtm_globals['detail_type'] = 'event';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'a') {
+      $actor = menu_get_object('culturefeed_agenda_actor', 3);
+      if ($actor) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($actor);
+        $gtm_globals['detail_type'] = 'actor';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'p') {
+      $production = menu_get_object('culturefeed_agenda_production', 3);
+      if ($production) {
+        $gtm_globals['detail_title'] = culturefeed_agenda_detail_title($production);
+        $gtm_globals['detail_type'] = 'production';
+        $gtm_globals['cdbid'] = arg(3);
+      }
+    }
+
+    else if (arg(1) == 'g') {
+      $cfpage = menu_get_object('culturefeed_pages_page', 3);
+      if ($cfpage) {
+        $gtm_globals['detail_title'] = culturefeed_pages_detail_title($cfpage);
+        $gtm_globals['detail_type'] = 'page';
+        $gtm_globals['cdbid'] = arg(3);
+      }
     }
 
   }
 
   // Add custom dimensions.
   $gtm_globals['consumer_key'] = variable_get('culturefeed_api_application_key', '');
+  $gtm_globals['consumer_name'] = variable_get('site_name', '');
   $gtm_globals['login_status'] = user_is_logged_in();
 
   // Set the script code.
@@ -251,4 +288,34 @@ function culturefeed_page_build(&$page) {
   $page['page_top']['google_tag_manager'] = array(
     '#markup' => $snippet,
   );
+}
+
+/**
+ * Prepares an object to upload with CURL, based on a Drupal managed file.
+ *
+ * @param object $file
+ *   A Drupal managed file object.
+ *
+ * @return CultureFeed_FileUpload|CURLFile
+ *   A CURLFile on PHP 5.5 +, or a CultureFeed_FileUpload object on older PHP
+ *   versions.
+ */
+function culturefeed_prepare_curl_upload_from_file($file) {
+// Make use of PHPs CURLFile when it's available (>= PHP 5.5).
+  if (class_exists('CURLFile')) {
+    $file_upload = new CURLFile(
+      drupal_realpath($file->uri),
+      $file->filemime,
+      $file->filename
+    );
+  }
+  else {
+    $file_upload = new CultureFeed_FileUpload(
+      drupal_realpath($file->uri),
+      $file->filemime,
+      $file->filename
+    );
+  }
+
+  return $file_upload;
 }

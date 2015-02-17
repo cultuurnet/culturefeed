@@ -517,6 +517,9 @@ function culturefeed_social_block_view($delta) {
 
     case 'attended-by':
       $object = culturefeed_search_get_active_object();
+      if (!$object || !method_exists($object, 'getType') || $object->getType() == 'node') {
+        return;
+      }
       return culturefeed_social_user_list_block_for_activity($object, CultureFeed_Activity::TYPE_IK_GA);
 
     case 'comments':

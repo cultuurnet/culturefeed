@@ -645,7 +645,10 @@ function culturefeed_social_warmup_activities_cache($items) {
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->nodeId = $nodeIds;
     $query->userId = $userId;
-    $query->private = TRUE;
+
+    if ($userId) {
+      $query->private = TRUE;
+    }
 
     $activities = DrupalCultureFeed::searchActivities($query);
     foreach ($activities->objects as $activity) {

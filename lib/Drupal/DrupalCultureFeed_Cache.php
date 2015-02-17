@@ -11,6 +11,7 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
    * @var DrupalCultureFeedPages_Cache
    */
   protected $pages;
+  protected $savedSearches;
 
   public function __construct(ICultureFeed $realCultureFeed, $loggedInUserId) {
     $this->loggedInUserId = $loggedInUserId;
@@ -19,7 +20,7 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
   }
 
   public function getRealCultureFeed() {
-    return $this->realCultureFeed();
+    return $this->realCultureFeed;
   }
 
   protected function getCachePrefix() {
@@ -81,6 +82,11 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
     }
 
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
+    }
+
     return $result;
   }
 
@@ -98,6 +104,11 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
     // Also clear the timelines.
     if (module_exists('culturefeed_pages')) {
       cache_clear_all('culturefeed:pages:timeline:', 'cache_culturefeed', TRUE);
+    }
+
+    // Also clear searches (people can search on user attend_users, like_users, ...
+    if (module_exists('culturefeed_search')) {
+      cache_clear_all('culturefeed:results:', 'cache_culturefeed_search', TRUE);
     }
 
     return $result;
@@ -227,4 +238,20 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
       return $this->pages;
 
     }
+
+    /**
+     * Get the savedSearches service.
+     *
+     * @return DrupalCultureFeedSavedSearches_Cache
+     */
+    public function savedSearches() {
+
+      if (!$this->savedSearches) {
+        $this->savedSearches = new DrupalCultureFeedSavedSearches_Cache($this->realCultureFeed->savedSearches());
+      }
+
+      return $this->savedSearches;
+
+    }
+
 }

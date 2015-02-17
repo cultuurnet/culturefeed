@@ -301,6 +301,13 @@ class CultureFeedSearchPage {
   }
 
   /**
+   * Get all the parameters for current search.
+   */
+  public function getParameters() {
+    return $this->parameters;
+  }
+
+  /**
    * Get the group value.
    * @return mixed boolean|string
    */
@@ -387,8 +394,13 @@ class CultureFeedSearchPage {
     if (isset($params['coordinates'])) {
 
       $coordinates = explode(',', $params['coordinates']);
-
-      $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      
+      if (isset($params['distance'])) {
+        $distance = new Parameter\Spatial\Distance($params['distance']);
+      }
+      else {
+        $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      }
       $point = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $field = new Parameter\Spatial\SpatialField('physical_gis');
       $this->parameters[] = new Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
@@ -457,6 +469,9 @@ class CultureFeedSearchPage {
         // Datetype is not a real facet, but a search field.
         if ($facetFieldName == 'datetype') {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
+        }
+        elseif ($facetFieldName == 'location_category_facility_id') {
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
         }
         else {
 
