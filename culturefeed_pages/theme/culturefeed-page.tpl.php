@@ -47,7 +47,7 @@
     </ul>
   </dd>
   <?php endif;?>
-  
+
   <dt><?php print t('Members'); ?></dt>
   <dd>
     <?php if ($members): ?>
@@ -64,7 +64,7 @@
     <?php if (!empty($become_member_link)): ?>
     <?php print $become_member_link ?>
     <?php endif; ?>
-  </dd>  
+  </dd>
 
 </dl>
 
@@ -72,6 +72,6 @@
   <img src="<?php print $image ?>?maxwidth=240&maxheight=240" />
 <?php endif; ?>
 
-<?php 
+<?php
 print culturefeed_pages_block_request_admin_membership($item);
  ?>

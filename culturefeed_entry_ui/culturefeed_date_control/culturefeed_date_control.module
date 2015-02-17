@@ -1,0 +1,282 @@
+<?php
+
+/**
+ * @file
+ * Contains the culturefeed date control module.
+ */
+
+require_once 'form/date_control.inc';
+require_once 'form/hybrid.inc';
+require_once 'form/opening_times.inc';
+require_once 'form/period.inc';
+require_once 'form/timestamps.inc';
+
+/**
+ * Ajax callback for the date control element.
+ */
+function culturefeed_date_control_ajax_callback() {
+
+  list($form, $form_state, $form_id, $form_build_id, $commands) = ajax_get_form();
+  drupal_process_form($form['#form_id'], $form, $form_state);
+  $parents = func_get_args();
+
+  $form = drupal_array_get_nested_value($form, $parents);
+  $output = drupal_render($form);
+  $result = array(
+    '#type' => 'ajax',
+    '#commands' => ajax_prepare_response($output),
+  );
+  return $result;
+
+}
+
+/**
+ * Checks if the triggering element is part of the element.
+ *
+ * @param array $triggering_element
+ *   The triggering element.
+ * @param array $element
+ *   The element.
+ *
+ * @return bool
+ *   True or false.
+ */
+function culturefeed_date_control_check_trigger_element(array $triggering_element, array $element) {
+  return array_intersect($triggering_element['#parents'], $element['#parents']) == $element['#parents'];
+}
+
+/**
+ * Adds a span element for a calendar icon on date popup fields.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The element.
+ */
+function culturefeed_date_control_element_date_popup_after_build(array $element, array $form_state) {
+  if (isset($element['date']) && isset($element['#icon']) && $element['#icon']) {
+    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_element_info().
+ *
+ * This is a complex ajax driven form element.  Several new ajax buttons are
+ * added based on initial interaction or default value.  Most of the logic is
+ * taken from the core managed file field.
+ *
+ * - To ensure all buttons remain registered in the form, visibility is set
+ *   through access in a pre render function.
+ * - Element validation functions are used to set the data.
+ * - A custom ajax callback path to ensure the form is rerenderd.
+ *
+ * @see file_managed_file_pre_render()
+ * @see file_managed_file_value()
+ */
+function culturefeed_date_control_element_info() {
+  return array(
+    'culturefeed_date_control' => array(
+      '#element_validate' => array('culturefeed_date_control_date_control_validate'),
+      '#input' => TRUE,
+      '#process' => array('culturefeed_date_control_date_control_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_date_control_value_callback',
+    ),
+    'culturefeed_date_control_hybrid' => array(
+      '#element_validate' => array('culturefeed_date_control_hybrid_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_date_control_hybrid_pre_render'),
+      '#process' => array('culturefeed_date_control_hybrid_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_hybrid_table',
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_hybrid_value_callback',
+    ),
+    'culturefeed_date_control_opening_times' => array(
+      '#input' => TRUE,
+      '#process' => array('culturefeed_date_control_opening_times_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_opening_times_value_callback',
+    ),
+    'culturefeed_date_control_period' => array(
+      '#element_validate' => array('culturefeed_date_control_period_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_date_control_period_pre_render'),
+      '#process' => array('culturefeed_date_control_period_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_period_table',
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_period_value_callback',
+    ),
+    'culturefeed_date_control_timestamps' => array(
+      '#cell_count' => 4,
+      '#element_validate' => array('culturefeed_date_control_timestamps_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_date_control_timestamps_pre_render'),
+      '#process' => array('culturefeed_date_control_timestamps_process', 'ajax_process_form'),
+      '#theme' => 'culturefeed_date_control_timestamps_table',
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_date_control_timestamps_value_callback',
+    ),
+  );
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function culturefeed_date_control_element_info_alter(&$types) {
+  if (isset($types['date_popup'])) {
+    $types['date_popup']['#after_build'][] = 'culturefeed_date_control_element_date_popup_after_build';
+  }
+}
+
+/**
+ * Explodes a date string into array components.
+ *
+ * @param array $element
+ *   The element.
+ * @param string $date_string
+ *   The date.
+ *
+ * @return array
+ *   The exploded date.
+ */
+function culturefeed_date_control_explode_date(array $element, $date_string) {
+
+  $date_element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#popup_date_format'],
+    '#date_increment' => $element['#popup_date_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $date_string,
+  );
+
+  $date = date_default_date($date_element);
+  $date = array(
+    'date' => date_format_date($date, 'custom', $element['#popup_date_format']),
+  );
+
+  return $date;
+
+}
+
+/**
+ * Explodes a time string into array components.
+ *
+ * @param array $element
+ *   The element.
+ * @param string $time_string
+ *   The time.
+ * @param string $date_string
+ *   The date.
+ *
+ * @return array
+ *   The exploded time.
+ */
+function culturefeed_date_control_explode_time(array $element, $time_string, $date_string) {
+
+  $time_element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#select_time_format'],
+    '#date_increment' => $element['#select_time_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $date_string . ' ' . $time_string,
+  );
+
+  return date_select_element_value_callback($time_element);
+
+}
+
+/**
+ * Implodes a date array into string.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $date_array
+ *   The date array.
+ *
+ * @return string
+ *   The imploded date.
+ */
+function culturefeed_date_control_implode_date(array $element, array $date_array) {
+
+  $element = array(
+    '#date_flexible' => 0,
+    '#date_format' => $element['#popup_date_format'],
+    '#date_increment' => $element['#popup_date_increment'],
+    '#date_timezone' => date_default_timezone(),
+    '#default_value' => $date_array,
+  );
+  $date = date_popup_input_date($element, $date_array);
+  return date_format_date($date, 'custom', 'Y-m-d');
+
+}
+
+/**
+ * Implodes a time array into string.
+ *
+ * @param array $time_array
+ *   The time array.
+ * @param string $date_string
+ *   The date string.
+ *
+ * @return string
+ *   The imploded time.
+ */
+function culturefeed_date_control_implode_time(array $time_array, $date_string) {
+
+  $time = '';
+  if (isset($time_array['hour']) && isset($time_array['minute']) && $date_string) {
+    $time = new DateObject(
+      array(
+        'hour' => $time_array['hour'],
+        'minute' => $time_array['minute'],
+      ),
+      date_default_timezone()
+    );
+    $time = $date_string . ' ' . $time->format(DATE_FORMAT_DATETIME);
+  }
+  return $time;
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_date_control_menu() {
+
+  return array(
+    'culturefeed_elements/ajax' => array(
+      'title' => 'AHAH callback',
+      'page callback' => 'culturefeed_date_control_ajax_callback',
+      'delivery callback' => 'ajax_deliver',
+      'access callback' => TRUE,
+      'theme callback' => 'ajax_base_page_theme',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_date_control_theme() {
+
+  $settings = array(
+    'file' => 'theme.inc',
+    'path' => drupal_get_path('module', 'culturefeed_date_control') . '/theme',
+    'render element' => 'form',
+  );
+
+  return array(
+    'culturefeed_date_control_hybrid_table' => $settings,
+    'culturefeed_date_control_opening_times_table' => $settings,
+    'culturefeed_date_control_period_table' => $settings,
+    'culturefeed_date_control_timestamps_table' => $settings,
+  );
+
+}

@@ -150,7 +150,7 @@ function template_preprocess_culturefeed_ui_anonymous_profile_box(&$variables) {
   $query = drupal_get_destination();
   $query['via'] = 'facebook';
   $variables['link_login_facebook'] = l('Facebook', 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect connect-facebook'), 'rel' => 'nofollow'), 'query' => $query));
-
+  uasort($variables['main_items'], 'drupal_sort_weight');
 }
 
 /**

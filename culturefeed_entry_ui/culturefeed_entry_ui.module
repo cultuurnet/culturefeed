@@ -43,14 +43,6 @@ function culturefeed_entry_ui_permission() {
 function culturefeed_entry_ui_theme() {
 
   return array(
-    'culturefeed_entry_ui_opening_times_table' => array(
-      'file' => 'theme/theme.inc',
-      'render element' => 'element',
-    ),
-    'culturefeed_entry_ui_when_datetimes_table' => array(
-      'file' => 'theme/theme.inc',
-      'render element' => 'form',
-    ),
     'culturefeed_entry_ui_event_form' => array(
       'render element' => 'form',
       'template' => 'culturefeed-entry-ui-event-form',
@@ -227,42 +219,6 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'datetimes_add_child':
-      //  No need to add as the the add more button is already counted.
-      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes']));
-      break;
-
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
-      $remove = explode('datetimes_remove_child_', $form_state['input']['_triggering_element_name']);
-      $remove = $remove[1];
-
-      // Unset and reindex.
-      unset($form_state['values']['datetimes'][$remove]);
-      $datetimes = array();
-      foreach ($form_state['values']['datetimes'] as $key => $datetime) {
-
-        if (is_numeric($key)) {
-          $datetimes[] = $datetime;
-        }
-        else {
-          $datetimes[$key] = $datetime;
-        }
-
-      }
-      $form_state['values']['datetimes'] = $datetimes;
-      unset($form_state['input']['datetimes'][$remove]);
-      $form_state['input']['datetimes'] = array_values($form_state['input']['datetimes']);
-      // Don't forget to count the add more button.
-      $form_state['#dates_needed'] = count(element_children($form['basic']['when']['datetimes'])) - 2;
-      break;
-
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_end_') === 0):
-      $remove = explode('datetimes_remove_end_', $form_state['input']['_triggering_element_name']);
-      $remove = $remove[1];
-      unset($form_state['values']['datetimes'][$remove]['end']);
-      unset($form_state['input']['datetimes'][$remove]['end']);
-      break;
-
     case 'links_add_more':
       $form_state['#links_needed'] = count(element_children($form['extra']['links'])) + 1;
       break;
@@ -312,24 +268,8 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
-  // Rebuild the form:
-  $form = drupal_rebuild_form($form['#form_id'], $form_state, $form);
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'begindates_add_more':
-    case 'enddates_add_more':
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_add_end_') === 0):
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_end_') === 0):
-    case (strpos($form_state['input']['_triggering_element_name'], 'datetimes_remove_child_') === 0):
-    case 'datetimes[0][begin][date]':
-    case 'datetimes[0][end][date]':
-    case 'datetimes_add_child':
-    case 'permanent':
-      return $form['basic']['when'];
-
-    case 'timestamps_add_more':
-      return $form['basic']['timestamps'];
-      
     case 'location[new][citywrapper][country_select]':
       return $form['basic']['location']['new']['citywrapper'];
 
@@ -442,25 +382,6 @@ function culturefeed_entry_ui_culturefeed_ui_profile_box_main_items() {
   }
 
   return $items;
-}
-
-/**
- * Implements hook_element_info_alter().
- */
-function culturefeed_entry_ui_element_info_alter(&$types) {
-  if (isset($types['date_popup'])) {
-    $types['date_popup']['#after_build'][] = 'culturefeed_entry_ui_element_date_popup_after_build';
-  }
-}
-
-/**
- * Adds a span element for a calendar icon on date popup fields.
- */
-function culturefeed_entry_ui_element_date_popup_after_build($element, $form_state) {
-  if (isset($element['date'])) {
-    $element['date']['#suffix'] = "<span class=\"ui-icon ui-icon-calendar\"></span>";
-  }
-  return $element;
 }
 
 /**

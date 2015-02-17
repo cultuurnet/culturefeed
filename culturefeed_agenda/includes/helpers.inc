@@ -5,6 +5,19 @@
  **/
 
 /**
+ * Return all the known agenda entity types.
+ */
+function culturefeed_agenda_known_entity_types() {
+
+  return array(
+    'event' => t('event', array(), array('context' => 'culturefeed-facets')),
+    'production' => t('production', array(), array('context' => 'culturefeed-facets')),
+    'actor' => t('actor', array(), array('context' => 'culturefeed-facets')),
+  );
+
+}
+
+/**
  * Get the current active agenda object.
  * @param $path
  *   Path to load the active object of. Defaults to current path.
@@ -260,7 +273,11 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'city' => isset($location['city']) ? $location['city'] : '',
       'venue' => isset($location['title']) ? $location['title'] : '',
     );
-    
+
+    if (module_exists('culturefeed_calendar')) {
+      $data['personal_calendar_buttons'] = culturefeed_calendar_render_calendar_buttons($item);
+    }
+
     // Extend with an url to the actor.
     // This can be an organiser, or a location.
     $organiser = $cdb_item->getOrganiser();
@@ -543,8 +560,8 @@ function culturefeed_agenda_load_events_of_production($production, $future_only 
 function culturefeed_agenda_parse_weekscheme(CultureFeed_Cdb_Data_Calendar_Weekscheme $weekscheme) {
 
   $weekscheme_array = array();
-  
-  foreach ($weekscheme->getDays() as $day) {  
+
+  foreach ($weekscheme->getDays() as $day) {
     $weekscheme_array[$day->getDayName()] = array(
       'type' => $day->getOpenType(),
     );
@@ -602,14 +619,14 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 }
 
 function culturefeed_agenda_group_timestamps(&$timestamps) {
-  
+
   for ($i=0; $i<count($timestamps); $i++) {
     if (isset($timestamps[$i+1])) {
       $this_timestamp = $timestamps[$i];
       $next_timestamp = $timestamps[$i+1];
 
       if ($this_timestamp['date'] == $next_timestamp['date']) {
-        if (!is_array($timestamps[$i]['begintime'])){  
+        if (!is_array($timestamps[$i]['begintime'])){
           unset($timestamps[$i]['begintime']);
           $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
           $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
@@ -633,33 +650,33 @@ function culturefeed_agenda_parse_calendar($calendar) {
   $calendar->rewind();
 
   if ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_PeriodList') {
-    
+
     $calendar_array = array(
       'type' => 'period',
       'period_start' => $calendar->current()->getDateFrom(),
       'period_end' => $calendar->current()->getDateTo(),
     );
 
-    if ($calendar->current()->getWeekScheme()) {  
+    if ($calendar->current()->getWeekScheme()) {
       $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->current()->getWeekScheme());
     }
     if ($calendar->current()->getExceptions()) {
       $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->current()->getExceptions());
     }
-   
+
   }
   elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $calendar_array = array(
       'type' => 'permanent',
     );
-  
+
     if ($calendar->getWeekScheme()) {
       $calendar_array['weekscheme'] = culturefeed_agenda_parse_weekscheme($calendar->getWeekScheme());
     }
     if ($calendar->getExceptions()) {
       $calendar_array['exceptions'] = culturefeed_agenda_parse_timestamps($calendar->getExceptions());
     }
-  
+
   }
   elseif ($calendar_class == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
     $calendar_array = array(
@@ -670,3 +687,93 @@ function culturefeed_agenda_parse_calendar($calendar) {
   }
   return $calendar_array;
 }
+
+/**
+ * Get the themed list of page suggestions.
+ */
+function culturefeed_agenda_get_nearby_activities_list() {
+
+  $location_cookie = array();
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+  if (empty($user_location->postal) && empty($user_location->city)) {
+    return '';
+  }
+
+  // Compose the search query.
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
+
+  // Optional query params from block config.
+  if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
+  }
+
+  // Add location filter from cookie.
+  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($user_location->postal, variable_get('agenda_nearby_activities_distance', 25));
+
+  $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc, weight desc');
+  if (!empty($sort_options_string)) {
+    $sort_options = explode(',', $sort_options_string);
+    foreach ($sort_options as $sort_option) {
+      $sort_option_values = explode(' ', $sort_option);
+      $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort_option_values[0], $sort_option_values[1]);
+    }
+  }
+
+  try {
+    $search = culturefeed_get_search_service();
+    $result = $search->search($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_agenda', $e);
+    return;
+  }
+
+  if (isset($result)) {
+    return theme('culturefeed_agenda_nearby_activities_list', array('activities' => $result->getItems()));
+  }
+
+  $actors = array(
+    '#theme' => 'culturefeed_agenda_actors_nearby',
+    '#items' => $items,
+  );
+
+  return $actors;
+}
+
+/**
+ * Get the category list for a given item, for a given category type.
+ * @return array
+ *   Array that contains list of plain text names (key = text) and a list of links for the category (key = links).
+ */
+function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item) {
+
+  $text_list = array();
+  $links_list = array();
+
+  $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
+  foreach ($categories as $category) {
+
+    $options = array(
+      'query' => array(
+        'facet' => array(
+          'category_' . $category_type . '_id' => array($category->getId()),
+        ),
+      ),
+    );
+
+    $text_list[] = check_plain($category->getName());
+    $links_list[] = l($category->getName(), 'agenda/search', $options);
+
+  }
+
+  return array(
+    'text' => $text_list,
+    'links' => $links_list,
+  );
+
+}
+

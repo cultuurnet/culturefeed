@@ -35,7 +35,7 @@ function culturefeed_get_search_service() {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity.
  */
-function culturefeed_search_item_load($cdb_id, $type = '') {
+function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
 
   $items = &drupal_static(__FUNCTION__, array());
 
@@ -66,7 +66,9 @@ function culturefeed_search_item_load($cdb_id, $type = '') {
       return $items[$cdb_id];
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_search', $e);
+      if ($watchdog) {
+        watchdog_exception('culturefeed_search', $e);
+      }
     }
   }
 
@@ -740,6 +742,23 @@ function culturefeed_search_get_preferred_language() {
     return culturefeed_get_preferred_language();
   }
 
+
+}
+
+/**
+ * Get a term by id.
+ */
+function culturefeed_search_get_term_by_id($id, $lang = NULL) {
+
+  if (empty($lang)) {
+    $lang = culturefeed_search_get_preferred_language();
+  }
+
+  return db_select('culturefeed_search_terms', 't')
+    ->condition('tid', $id)
+    ->condition('language', array($lang), 'IN')
+    ->fields('t')
+    ->execute()->fetchObject();
 
 }
 

@@ -217,8 +217,39 @@ class CultureFeedSearchPage {
    *   The updated search query array.
    */
   public function addQueryTerm($term) {
-    $term = str_replace(' ',' AND ', trim($term));
-    $this->query[] = $term;
+
+    // Replace special characters with normal ones.
+    $term = culturefeed_search_transliterate($term);
+
+    // Replace AND to a space.
+    $term = str_replace(' AND ', ' ', $term);
+
+    $query_parts = explode(' OR ', $term);
+    array_walk($query_parts, function(&$part) {
+
+      // Strip of words between quotes. The spaces don't need to be replaced to AND for them.
+      preg_match_all('/".*?"/', $part, $matches);
+      foreach ($matches[0] as $match) {
+        $part = str_replace($match, '', $part);
+      }
+
+      // Replace spaces between multiple search words by 'AND'.
+      $part = str_replace(' ',' AND ', trim($part));
+
+      // Add back the words between quotes.
+      if (!empty($matches[0])) {
+        if (empty($part)) {
+          $part .= implode(' AND ', $matches[0]);
+        }
+        else {
+          $part .= ' AND ' . implode(' AND ', $matches[0]);
+        }
+      }
+
+    });
+
+    $this->query[] = implode(' OR ', $query_parts);
+    
     return $this->query;
   }
 
@@ -297,6 +328,13 @@ class CultureFeedSearchPage {
    */
   public function unsetParameter($key) {
     unset($this->parameters[$key]);
+    return $this->parameters;
+  }
+
+  /**
+   * Get all the parameters for current search.
+   */
+  public function getParameters() {
     return $this->parameters;
   }
 
@@ -388,7 +426,12 @@ class CultureFeedSearchPage {
 
       $coordinates = explode(',', $params['coordinates']);
 
-      $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      if (isset($params['distance'])) {
+        $distance = new Parameter\Spatial\Distance($params['distance']);
+      }
+      else {
+        $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+      }
       $point = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $field = new Parameter\Spatial\SpatialField('physical_gis');
       $this->parameters[] = new Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
@@ -457,6 +500,9 @@ class CultureFeedSearchPage {
         // Datetype is not a real facet, but a search field.
         if ($facetFieldName == 'datetype') {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
+        }
+        elseif ($facetFieldName == 'location_category_facility_id') {
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
         }
         else {
 
