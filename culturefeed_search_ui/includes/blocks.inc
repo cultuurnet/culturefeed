@@ -365,7 +365,10 @@ function culturefeed_search_ui_city_facet_form() {
     '#size' => 28,
     '#title' => t('Where'),
     '#title_display' => 'invisible',
-    '#attributes' => array('class' => array('city-facet', 'form-autocomplete'), 'placeholder' => t('Zipcode or city')),
+    '#attributes' => array(
+      'class' => array('city-facet', 'form-autocomplete'),
+      'placeholder' => t('Zipcode or city')
+    ),
   );
 
   $form['submit'] = array(
@@ -731,4 +734,102 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
     $_GET['q'],
     array('query' => $query)
   );
+}
+
+/**
+ * Block callback for the city and actor search.
+ */
+function culturefeed_search_ui_block_location_search() {
+
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  $culturefeedSearchResult = culturefeed_get_search_result();
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  if ($culturefeedSearchResult->getTotalCount() == 0) {
+    return;
+  }
+
+  $build = array();
+
+  // Show facet layout for location.
+  if (!empty($_GET['location'])) {
+
+    // Build facet for location.
+    $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
+
+    // Make a result item for location search.
+    global $pager_total_items;
+    $items = array(
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
+    );
+
+    $build = array();
+    $build[] = array(
+      '#theme' => 'culturefeed_search_facet',
+      '#facet' => $facet,
+      '#items' => $items,
+    );
+
+  }
+
+  $build['form'] = drupal_get_form('culturefeed_search_ui_block_location_search_form');
+
+  return array(
+    'subject' => t('Where'),
+    'content' => $build,
+  );
+}
+
+/**
+ * Show the filter form for the city and actor search.
+ */
+function culturefeed_search_ui_block_location_search_form($form, $form_state) {
+
+  $form = array();
+
+  $form['#attached']['library'][] = array('system', 'ui.autocomplete');
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed') . '/js/common.js';
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/location_autocomplete.js';
+
+  $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/location_search.css';
+
+  $form['block-location-search'] = array(
+    '#type' => 'textfield',
+    '#size' => 28,
+    '#title' => t('Where'),
+    '#title_display' => 'invisible',
+    '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+    '#attributes' => array('class' => array('location-search-submit')),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit the location search form.
+ */
+function culturefeed_search_ui_block_location_search_form_submit($form, &$form_state) {
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+  if (!empty($form_state['values']['block-location-search'])) {
+    $query['location'] = $form_state['values']['block-location-search'];
+    $form_state['redirect'] = array(
+      $_GET['q'],
+      array('query' => $query)
+    );
+  }
+
 }

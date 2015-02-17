@@ -427,3 +427,19 @@ function culturefeed_search_ui_add_facebook_share() {
   }
 
 }
+
+/**
+ * Get the user location cookie.
+ */
+function culturefeed_search_ui_get_user_location_cookie() {
+
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    if ($user_location instanceof stdClass) {
+      return $user_location;
+    }
+  }
+
+  return new stdClass();
+
+}

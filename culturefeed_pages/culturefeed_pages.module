@@ -1111,14 +1111,14 @@ function culturefeed_pages_page_suggestions_filter_form() {
     '#attributes' => array(
       'placeholder' => t('Zipcode or city'),
       // This class is used to enable the autosubmit.
-      'class' => array('auto_submit'),
+      'class' => array('auto-submit'),
     ),
     '#default_value' => $postal,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Ok'),
+    '#value' => t('Save location'),
     '#ajax' => array(
       'callback' => 'culturefeed_pages_page_suggestions_ajax_filter_submit',
     ),
