@@ -5,7 +5,7 @@
  */
 ?>
 
-<?php 
+<?php
 /* print '<h1>' . $title . '</h1>'; */
 ?>
 
@@ -53,18 +53,22 @@
   <dt><?php print t('When'); ?></dt>
   <?php if ($calendar['type'] == 'timestamps'): ?>
     <?php if (count($calendar['timestamps']) > 0): ?>
+
       <?php foreach ($calendar['timestamps'] as $timestamp): ?>
-        <?php if (!is_array($timestamp['begintime'])): ?>
+        <?php if (isset($timestamp['begintime']) && !is_array($timestamp['begintime'])): ?>
           <dd><?php print $timestamp['date'] . t(' at ') . $timestamp['begintime']; ?></dd>
         <?php else: ?>
           <?php $i = 0; ?>
-          <dd><?php print $timestamp['date'] . t(' at '); ?>
+          <dd><?php print $timestamp['date'] ?>
+            <?php if (isset($timestamp['begintime'])): ?>
+            <?php print t(' at '); ?>
             <?php foreach ($timestamp['begintime'] as $begintime): ?>
               <?php print $begintime; ?>
               <?php if (++$i !== count($timestamp['begintime'])): ?>
                 <?php print ' | '; ?>
               <?php endif; ?>
             <?php endforeach; ?>
+            <?php endif; ?>
           </dd>
         <?php endif; ?>
       <?php endforeach; ?>
@@ -74,6 +78,12 @@
   <?php else: ?>
     <dd><?php print $when; ?></dd>
   <?php endif; ?>
+
+   <?php if (!empty($personal_calendar_buttons)): ?>
+   <?php foreach ($personal_calendar_buttons['content'] as $button) : ?>
+     <?php print $button; ?>
+    <?php endforeach; ?>
+   <?php endif; ?>
 
   <?php if ($organiser): ?>
   <dt><?php print t('Organization'); ?></dt>
@@ -174,3 +184,9 @@
 <?php endif; ?>
 
 <?php print $recommend_link; ?>
+
+<?php if (!empty($personal_calendar_buttons)): ?>
+<?php foreach ($personal_calendar_buttons['footer'] as $button) : ?>
+  <?php print $button; ?>
+<?php endforeach; ?>
+<?php endif; ?>

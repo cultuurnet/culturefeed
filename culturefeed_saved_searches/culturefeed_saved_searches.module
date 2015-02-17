@@ -68,7 +68,7 @@ function culturefeed_saved_searches_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_saved_searches_save_search_form'),
     'file' => 'includes/pages.inc',
-    'access callback' => TRUE,
+    'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
   );
 
