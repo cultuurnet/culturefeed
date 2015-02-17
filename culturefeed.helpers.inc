@@ -429,3 +429,4 @@ function culturefeed_ajax_command_goto($url) {
     'url' => $url,
   );
 }
+

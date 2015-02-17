@@ -1,0 +1,15 @@
+/*styles for jquery ui dropdown with categories */
+
+.ui-autocomplete-category.actor {
+  font-weight: bold;
+  padding-top: 10px;
+  margin-top: 10px;
+  line-height: 1.5;
+  border-top: 1px solid;
+}
+
+.ui-autocomplete-category.empty {
+  font-weight: bold;
+  color: #999;
+  line-height: 1.5;
+}
