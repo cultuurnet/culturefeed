@@ -702,18 +702,18 @@ function culturefeed_agenda_get_nearby_activities_list() {
   // Compose the search query.
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(variable_get('agenda_nearby_activities_amount', 8));
-
-  // Add location filter from cookie.
-  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($user_location->postal, 5);
-  $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $user_location->city);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
   // Optional query params from block config.
   if ($extra_query = variable_get('agenda_nearby_activities_extra_query', '')) {
     $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($extra_query);
   }
+
+  // Add location filter from cookie.
+  $parameters[] = new CultuurNet\Search\Parameter\Spatial\Zipcode($user_location->postal, variable_get('agenda_nearby_activities_distance', 25));
+
   $sort_options_string = variable_get('agenda_nearby_activities_sort', 'permanent asc, startdateday asc, weight desc');
   if (!empty($sort_options_string)) {
     $sort_options = explode(',', $sort_options_string);
