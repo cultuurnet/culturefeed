@@ -329,10 +329,7 @@ function culturefeed_search_ui_block_city_facet() {
 
   }
 
-  // If facet filter on province is active, hide the city filter.
-  if (!(isset($_GET['facet']) && isset($_GET['facet']['category_flandersregion_id']))) {
-    $build['form'] = drupal_get_form('culturefeed_search_ui_city_facet_form');
-  }
+  $build['form'] = drupal_get_form('culturefeed_search_ui_city_facet_form');
 
   return array(
     'subject' => t('Where'),
@@ -564,10 +561,7 @@ function culturefeed_search_ui_block_city_only_facet() {
 
   }
 
-  // If facet filter on province is active, hide the city filter.
-  if (!(isset($_GET['facet']) && isset($_GET['facet']['category_flandersregion_id']))) {
-    $build['form'] = drupal_get_form('culturefeed_search_ui_city_only_facet_form');
-  }
+  $build['form'] = drupal_get_form('culturefeed_search_ui_city_only_facet_form');
 
   return array(
     'subject' => t('Where'),
