@@ -581,7 +581,6 @@ function culturefeed_agenda_parse_weekscheme(CultureFeed_Cdb_Data_Calendar_Weeks
 function culturefeed_agenda_parse_timestamps($timestamps) {
 
   $timestamps_array = array();
-
   $timestamps_count = iterator_count($timestamps);
   $timestamps->rewind();
   $current_timestamp = 0;
@@ -678,10 +677,24 @@ function culturefeed_agenda_parse_calendar($calendar) {
     $calendar_array = array(
       'type' => 'timestamps',
     );
+    $calendar_array['start_date'] = culturefeed_agenda_get_startdate($calendar);
     $calendar_array['timestamps'] = culturefeed_agenda_parse_timestamps($calendar);
     $calendar_array['timestamps'] = culturefeed_agenda_group_timestamps($calendar_array['timestamps']);
   }
   return $calendar_array;
+}
+
+/**
+ * Get the startdate if its a timestamplist
+ */
+function culturefeed_agenda_get_startdate($dates) {
+  $dates->rewind();
+  
+  for ($i = 0; $i < 1; $i++) {
+    $date = $dates->current();
+    $startdate = $date->getDate() . ' ' . $date->getStartTime();
+  }
+  return $startdate;
 }
 
 /**
