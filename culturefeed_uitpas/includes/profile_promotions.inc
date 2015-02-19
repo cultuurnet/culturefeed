@@ -64,7 +64,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
   }
 
   // Solution csdco on from https://www.drupal.org/node/1049354
-  $_GET['q'] = 'promotions';
+  $_GET['q'] = 'culturefeed/profile/uitpas/promotions';
 
   return array(
     array(
