@@ -127,14 +127,13 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     '#markup' => '<li><a href="/culturefeed/profile/uitpas/advantages">' . t('Welcome Advantages') . '</a></li>',
   );
 
-  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-
-  $card_systems = $uitpas_user->passholder->cardSystemSpecific;
+	$cf = DrupalCultureFeed::getConsumerInstance();
+	$card_systems = $cf->uitpas()->getCardSystems();
 
   $options = array();
-  foreach ($card_systems as $system) {
-    $options[$system->cardSystem->id] = $system->cardSystem->name;
-  }
+	foreach ($card_systems as $system) {
+		$options[$system->id] = $system->name;
+	}
 
   $id = drupal_html_id('profile-promotions-filter-sort');
   $form['profile_promotions']['#prefix'] = '<div id="' . $id . '">';
