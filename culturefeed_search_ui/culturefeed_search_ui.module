@@ -1012,6 +1012,17 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     );
   }
 
+  if (!empty($query['keyword'])) {
+    $keyword = $query['keyword'];
+    unset($query['keyword']);
+    $url = url($path, array('query' => $query));
+    $build['keyword'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => $keyword,
+      '#url' => $url
+    );
+  }
+
   // Check if form filters are selected.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
   foreach ($filter_options as $option) {
