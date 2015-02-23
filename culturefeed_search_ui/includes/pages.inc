@@ -122,3 +122,94 @@ function culturefeed_search_ui_city_suggestion_autocomplete_page($search_string,
   drupal_json_output($matches);
 
 }
+
+/**
+ * Page callback for the city and actor suggestions autocomplete.
+ *
+ * (using jquery ui autocomplete format).
+ */
+function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string) {
+
+  $matches = array();
+
+  if ($search_string) {
+    try {
+
+      // Get the list of city suggestions from service.
+      $city_suggestions = culturefeed_search_get_city_suggestions($search_string, TRUE);
+      // We only need the 5 first suggestions.
+      if (empty($city_suggestions)) {
+        $matches[] = array(
+          'label' => '',
+          'category' => t('No postal or city found.'),
+          'suggestion' => '',
+          'type' => 'empty',
+        );
+      }
+      $city_suggestions = array_slice($city_suggestions, 0, 5);
+      foreach ($city_suggestions as $city_suggestion) {
+        $matches[] = array(
+          'label' => check_plain($city_suggestion),
+          'category' => '',
+          'suggestion' => $city_suggestion,
+          'type' => 'city',
+        );
+      }
+
+      // Get the allowed actor types.
+      $parameters = array();
+      $allowed_categories = variable_get('culturefeed_location_search_actortypes', NULL);
+      if (!empty($allowed_categories)) {
+        array_walk($allowed_categories, function(&$item) {
+          $item = '"' . $item . '"';
+        });
+        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_actortype_id:(' . implode(' OR ', $allowed_categories) . ')');
+      }
+
+      // Get the list of actor suggestions from service.
+      $actor_suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, array('actor'), FALSE, $parameters);
+      if ($actor_suggestions->hasSuggestions()) {
+        foreach ($actor_suggestions as $actor_key => $actor_suggestion) {
+          // We only need the 5 first suggestions.
+          if  ($actor_key < 5) {
+            $actor_path = culturefeed_search_detail_url('actor', $actor_suggestion->getCdbid(), $actor_suggestion->getTitle());
+            $matches[] = array(
+              'label' => $actor_suggestion->getTitle(),
+              'category' => t('Directly to'),
+              'suggestion' => $actor_path,
+              'type' => 'actor',
+            );
+          }
+        }
+      }
+
+    }
+    catch (ClientErrorResponseException $e) {
+      watchdog_exception('culturefeed_search_ui', $e);
+    }
+
+    // If only one city was found. Add a link to search on all actors in this city.
+    if (count($city_suggestions) == 1) {
+
+      $city = reset($city_suggestions);
+
+      $query = array(
+        'location' => $city,
+        'facet' => array(
+          'type' => array('actor'),
+        ),
+      );
+
+      $matches[] = array(
+        'label' => t('Show all locations in !city', array('!city' => $city)),
+        'category' => $actor_suggestions->hasSuggestions() ? t('Directly to') : '',
+        'suggestion' => url('agenda/search', array('query' => $query)),
+        'type' => 'actor',
+      );
+    }
+
+  }
+
+  drupal_json_output($matches);
+
+}
