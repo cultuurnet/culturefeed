@@ -140,9 +140,10 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
   
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
   
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)) {
+  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox || $ubd_permission[$event->getId()] == 'true')) {
 
     $link = array(
       'href' => $path . '/edit',
