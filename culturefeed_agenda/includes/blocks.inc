@@ -48,7 +48,7 @@ function culturefeed_agenda_block_nearby_activities() {
     $classes .= ' hidden';
   }
 
-  $all_activities_for_location_link = l(t('Everything for <span class="location-string">!location</span> ->', array('!location' => $location_string)), 'agenda/search',
+  $all_activities_for_location_link = l(t('Everything for <span class="location-string">!location</span>', array('!location' => $location_string)), 'agenda/search',
     array(
       'query' => array('location' => $location_string),
       'html' => TRUE,

@@ -8,7 +8,7 @@
 
 <div>
 
-  <p>In jouw buurt <span id="nearby-activities-title-location"></span></p>
+  <p><?php print (t('Events nearby')); ?><span id="nearby-activities-title-location"></span></p>
 
     <p>
       <?php if (!empty($change_location_link)): ?>
