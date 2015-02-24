@@ -148,10 +148,13 @@ class DrupalCultureFeedSearchService_Cache extends DrupalCultureFeedSearchServic
 
     $cid = sprintf('detail:%s:%s', $type, $id);
     if ($cache = $this->cacheGet($cid)) {
+      DrupalCultureFeedSearchService::translateCategories(array($cache->data));
       return $cache->data;
     }
 
     $detail = $this->realSearchService->detail($type, $id);
+    DrupalCultureFeedSearchService::translateCategories(array($detail));
+
     $this->cacheSet($cid, $detail, REQUEST_TIME + CULTUREFEED_SEARCH_CACHE_EXPIRES);
 
     return $detail;

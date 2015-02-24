@@ -2,7 +2,7 @@
 /**
  * @file
  * Template for the summary of an event.
- * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking. 
+ * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking.
  * Some day your client will benefit from our aggregated insights & benchmarks too.
  * See https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-tracking
  * Thanks!

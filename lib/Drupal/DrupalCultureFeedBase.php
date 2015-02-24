@@ -114,7 +114,7 @@ abstract class DrupalCultureFeedBase {
     if (!empty($pageFollowing)) {
       foreach ($user->following as $key => $following) {
 
-        $categories = $membership->page->getCategories();
+        $categories = $following->page->getCategories();
 
         // Set a flag to indicate this page can be used.
         $use = FALSE;

@@ -5,6 +5,17 @@
  */
 
 /**
+ * Page callback to redirect to a real agenda item.
+ * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
+ *   Extended entity to view.
+ */
+function culturefeed_agenda_permalink_page(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+  $url = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
+  $query_string = drupal_get_query_parameters();
+  drupal_goto($url, array('query' => $query_string), '301');
+}
+
+/**
  * Page callback to show the detail from an agenda item.
  * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
  *   Extended entity to view.
@@ -220,7 +231,10 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
 
 }
 
-function culturefeed_agenda_actor_search_autocomplete($search, $past) {
+/**
+ * Autocomplete callback for actor search.
+ */
+function culturefeed_agenda_actor_search_autocomplete($search) {
 
   $matches = array();
 
@@ -228,9 +242,17 @@ function culturefeed_agenda_actor_search_autocomplete($search, $past) {
 
     try {
 
+      $parameters = array();
+      $allowed_categories = variable_get('agenda_actor_autocomplete_categories', NULL);
+      if (!empty($allowed_categories)) {
+        array_walk($allowed_categories, function(&$item) {
+          $item = '"' . $item . '"';
+        });
+        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_actortype_id:(' . implode(' OR ', $allowed_categories) . ')');
+      }
+
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search, array('actor'), $past);
-      // @todo: only use suggestions for the actortypes saved in block configure.
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search, array('actor'), TRUE, $parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $path = culturefeed_search_detail_url('actor', $suggestion->getCdbid(), $suggestion->getTitle());
@@ -245,4 +267,60 @@ function culturefeed_agenda_actor_search_autocomplete($search, $past) {
 
   }
   drupal_json_output($matches);
+}
+
+/**
+ * Search for nearby actors.
+ */
+function culturefeed_agenda_page_ajax_actor_suggest() {
+
+  $parameters = array();
+
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+  if (isset($user_location->latitude) && isset($user_location->longitude)) {
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Point($user_location->latitude, $user_location->longitude);
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\SpatialField('contactinfo_physical_gis');
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+//    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+    $parameters[] = new \CultuurNet\Search\Parameter\Sort('geodist()', \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(5);
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+
+  $all_categories = culturefeed_search_get_actortype_categories();
+  $allowed_categories = variable_get('agenda_actor_autocomplete_categories', array());
+  if (count($allowed_categories) != count($all_categories)) {
+    if (!empty($allowed_categories)) {
+      array_walk($allowed_categories, function(&$item) {
+        $item = '"' . $item . '"';
+      });
+      $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_actortype_id:(' . implode(' OR ', $allowed_categories) . ')');
+    }
+  }
+
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+
+  $output = new stdClass();
+  $output->success = TRUE;
+  $output->data = '';
+
+  try {
+
+    $result = culturefeed_get_search_service()->search($parameters);
+
+    if ($result->getTotalCount() > 0) {
+      $items = $result->getItems();
+      $output->data = theme('culturefeed_agenda_actors_nearby', array('items' => $items));
+    }
+
+  }
+  catch (Exception $e) {
+    $output->success = FALSE;
+    watchdog_exception('culturefeed_agenda', $e);
+  }
+
+  drupal_json_output($output);
+  exit();
+
 }

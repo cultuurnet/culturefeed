@@ -227,7 +227,7 @@ function culturefeed_pages_page_follow($request_type, $page, $follow = TRUE) {
 /**
  * Page callback for the page suggestions autocomplete.
  */
-function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
+function culturefeed_pages_page_suggestion_autocomplete_page($search_string, $return_ids = FALSE) {
 
   $matches = array();
   if ($search_string) {
@@ -244,7 +244,11 @@ function culturefeed_pages_page_suggestion_autocomplete_page($search_string) {
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $page = culturefeed_pages_page_load($suggestion->getCdbid());
-          $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
+          if ($return_ids) {
+            $matches[$suggestion->getCdbid()] = check_plain($suggestion->getTitle());
+          } else {
+            $matches[$suggestion->getTitle()] = check_plain($suggestion->getTitle());
+          }
         }
 
       }

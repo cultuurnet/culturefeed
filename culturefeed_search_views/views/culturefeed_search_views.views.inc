@@ -46,6 +46,15 @@ function culturefeed_search_views_data() {
       ),
     );
   }
+  
+  // Keywords
+  $data['cdb_items']['tags'] = array(
+    'title' => t('Tags'),
+    'help' => t('Tags'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_tags',
+    ),
+  );
 
   // Type
   $data['cdb_items']['type'] = array(

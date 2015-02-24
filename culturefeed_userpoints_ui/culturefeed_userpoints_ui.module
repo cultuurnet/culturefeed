@@ -354,7 +354,7 @@ function culturefeed_userpoints_ui_culturefeed_ui_profile_menu() {
       'title' => t('My points balance'),
       'url' => 'culturefeed/userpoints',
       'description' => t('See the overview of your earned points'),
-      'weight' => -15,
+      'weight' => -13,
     ),
   );
 
