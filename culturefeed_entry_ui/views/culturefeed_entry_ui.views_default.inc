@@ -37,10 +37,10 @@ function culturefeed_entry_ui_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
   /* Kop: Cdb items: Maak activiteit aan */
-  $handler->display->display_options['header']['create']['id'] = 'create';
-  $handler->display->display_options['header']['create']['table'] = 'cdb_items';
-  $handler->display->display_options['header']['create']['field'] = 'create';
-  $handler->display->display_options['header']['create']['empty'] = TRUE;
+  $handler->display->display_options['footer']['create']['id'] = 'create';
+  $handler->display->display_options['footer']['create']['table'] = 'cdb_items';
+  $handler->display->display_options['footer']['create']['field'] = 'create';
+  $handler->display->display_options['footer']['create']['empty'] = TRUE;
   /* Gedrag bij ontbreken van resultaten: Algemeen: Tekstveld */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
