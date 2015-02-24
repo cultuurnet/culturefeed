@@ -7,6 +7,7 @@ dependencies[] = culturefeed_search
 dependencies[] = culturefeed_search_views
 dependencies[] = culturefeed
 dependencies[] = culturefeed_date_control
+dependencies[] = culturefeed_location_control
 dependencies[] = file
 dependencies[] = date
 dependencies[] = date_api
