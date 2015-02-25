@@ -58,4 +58,5 @@ function culturefeed_search_update_8001() {
   $schema = culturefeed_search_schema();
   db_drop_table('culturefeed_search_cities');
   db_create_table('culturefeed_search_cities', $schema['culturefeed_search_cities']);
+  drupal_set_message(t('Culturefeed search city tables are reïnstalled. Please run the drush import again.'));
 }
