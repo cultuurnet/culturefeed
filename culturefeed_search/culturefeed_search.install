@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Install file for culturefeed search API.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function culturefeed_search_schema() {
+  $schema['culturefeed_search_cities'] = array(
+    'description' => 'Cities for the CultuurNet Search API.',
+    'fields' => array(
+      'cid' => array(
+        'description' => 'The primary identifier for a city.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'City.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'zip' => array(
+        'description' => 'Zip of the city.',
+        'type' => 'char',
+        'length' => 4,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'slug' => array(
+        'description' => 'slug of the city',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'cid' => array('cid'),
+      'zip' => array('zip'),
+    ),
+    'primary key' => array('cid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Re-creates the culturefeed_search_cities table.
+ */
+function culturefeed_search_update_8001() {
+  $schema = culturefeed_search_schema();
+  db_drop_table('culturefeed_search_cities');
+  db_create_table('culturefeed_search_cities', $schema['culturefeed_search_cities']);
+}

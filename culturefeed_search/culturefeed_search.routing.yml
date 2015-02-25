@@ -5,3 +5,30 @@ culturefeed_search.api:
     _title: 'Culturefeed Search'
   requirements:
     _permission: 'administer site configuration'
+
+culturefeed_search.city_autocomplete_page:
+  path: '/autocomplete/culturefeed/city-suggestion/{search_string}'
+  defaults:
+    _controller: 'Drupal\culturefeed_search\Controller\AutocompleteController::cityAutocompletePage'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_search.city_locations_autocomplete_page:
+  path: '/autocomplete/culturefeed/city-locations-suggestion/{search_string}'
+  defaults:
+    _controller: 'Drupal\culturefeed_search\Controller\AutocompleteController::locationsForCityAutocompletePage'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_search.category_autocomplete_page:
+  path: '/autocomplete/culturefeed/category-suggestion'
+  defaults:
+    _controller: 'Drupal\culturefeed_search\Controller\AutocompleteController::categoryAutocompletePage'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
