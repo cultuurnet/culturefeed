@@ -350,7 +350,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   // Eventtypes
   $form['basic']['what'] = array(
     '#type' => 'container',
-    '#prefix' => '<div id="what-ajax-wrapper">',
+    '#prefix' => '<div id="what-ajax-wrapper" class="clearfix">',
     '#suffix' => '</div>'
   );
 

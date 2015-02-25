@@ -48,6 +48,7 @@ function culturefeed_location_control_location_control_process(array $element, a
 
   $element['location_control'] = array(
     '#attributes' => array(
+      'class' => array('clearfix'),
       'id' => $element['#id'] . '-ajax-wrapper',
     ),
     '#type' => 'container',

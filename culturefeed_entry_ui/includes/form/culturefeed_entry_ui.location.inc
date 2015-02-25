@@ -120,7 +120,7 @@ function culturefeed_entry_ui_location_form_validate(array $form, array &$form_s
       }
       $city = preg_replace($pattern, '', $values['custom']['city']);
       if (!in_array($city, $cities)) {
-        form_set_error('location[location_control][custom][city', t('Please select a city from the list.'));
+        form_set_error('location][location_control][custom][city', t('Please select a city from the list.'));
       }
 
     }

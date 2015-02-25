@@ -131,7 +131,11 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
     // Workaround for bootstrap losing tabindex on autocomplete popup.
     if ((!op || op != 'empty') && this.input.value) {
-      $(this.input).parents('.form-item').next().find(':tabbable').focus();
+
+      var inputs = $(this.input).closest('form').find(':input:visible');
+      var index = inputs.index($(this.input));
+      inputs.eq(index + 1).focus();
+
     }
 
   };
