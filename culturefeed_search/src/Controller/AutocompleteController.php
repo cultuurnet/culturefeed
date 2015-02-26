@@ -28,14 +28,14 @@ class AutocompleteController extends ControllerBase {
     if ($search_string) {
 
       $query = db_select('culturefeed_search_cities', 'csc');
-      $query->fields('csc', array('name', 'zip'));
+      $query->fields('csc', array('cid', 'name', 'zip'));
       $query->condition('cid', '%' . db_like($search_string) . '%', 'LIKE');
       $query->condition('cid', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
 
       $result = $query->execute();
 
       foreach ($result as $row) {
-        $matches[] = $row->zip . ' ' . $row->name;
+        $matches[] = array('key' => $row->cid,'label' => $row->zip . ' ' . $row->name);
       }
 
     }
@@ -67,24 +67,6 @@ class AutocompleteController extends ControllerBase {
     return new JsonResponse($matches);
   }
 
-  /**
-   * Page callback for the locations suggestions autocomplete.
-   */
-  function categoryAutocompletePage() {
-console.log('page');
-    $matches = array();
-
-    $query = db_select('culturefeed_search_cities', 'csc');
-    $query->fields('csc', array('cid', 'name', 'zip'));
-
-    $result = $query->execute();
-
-    foreach ($result as $row) {
-      $matches[$row->cid] = $row->zip . ' ' . $row->name;
-    }
-
-    return new JsonResponse($matches);
-  }
 }
 
 

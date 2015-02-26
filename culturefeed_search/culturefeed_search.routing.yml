@@ -23,12 +23,3 @@ culturefeed_search.city_locations_autocomplete_page:
     _access_mode: 'ANY'
   requirements:
     _culturefeed_current_user: 'TRUE'
-
-culturefeed_search.category_autocomplete_page:
-  path: '/autocomplete/culturefeed/category-suggestion'
-  defaults:
-    _controller: 'Drupal\culturefeed_search\Controller\AutocompleteController::categoryAutocompletePage'
-  options:
-    _access_mode: 'ANY'
-  requirements:
-    _culturefeed_current_user: 'TRUE'
