@@ -1714,8 +1714,8 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
       form_set_error('location][new][citywrapper][city', t('A city is required for a custom location'));
     }
     if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
-      $available_city = culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE);
-      if (!isset($available_city[$values['location']['new']['citywrapper']['city']])) {
+      $available_city = array_change_key_case(culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE));
+      if (!isset($available_city[strtolower($values['location']['new']['citywrapper']['city'])])) {
         form_set_error('location][new][citywrapper][city', t('A valid city is required for a custom location.'));
       }
     }
