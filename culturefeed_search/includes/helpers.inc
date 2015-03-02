@@ -879,3 +879,45 @@ function culturefeed_search_block_ajaxload($config) {
 
   return $block;
 }
+
+/**
+ * Check if we are connected to acceptance API.
+ */
+function culturefeed_search_acceptance_mode() {
+
+  // Get culturefeed_search_api_location
+  $location = variable_get('culturefeed_search_api_location');
+  if (strpos($location,'www') === false) {
+    return TRUE;
+  }
+
+  // Check for acc or dev environments that are connected with production
+  else {
+    global $base_root;
+    $dev_ids = array('culturefeed', 'dev.', 'acc.');
+    foreach($dev_ids as $id) {
+      if (stripos($base_root, $id) !== false) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+}
+
+/**
+ * Set the "noindex, follow" meta tag when needed.
+ */
+function culturefeed_search_set_noindex_metatag() {
+
+  $element = array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'robots',
+      'content' => 'noindex, follow',
+    ),
+  );
+
+  drupal_add_html_head($element, 'robots');
+
+}
