@@ -20,7 +20,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-    $uitpas_number = 0;
+
     if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
       $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
     }
@@ -128,7 +128,8 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
   );
 
 	$cf = DrupalCultureFeed::getConsumerInstance();
-	$card_systems = $cf->uitpas()->getCardSystems();
+	$kind_of_card_systems = 'permanent';
+	$card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
 
   $options = array();
 	foreach ($card_systems as $system) {

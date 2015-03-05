@@ -145,8 +145,8 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   );
 
   $cf = DrupalCultureFeed::getConsumerInstance();
-
-  $card_systems = $cf->uitpas()->getCardSystems();
+	$kind_of_card_systems = 'permanent';
+  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
 
   $options = array();
   foreach ($card_systems as $system) {
