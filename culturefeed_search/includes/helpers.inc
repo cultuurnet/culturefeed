@@ -908,19 +908,6 @@ function culturefeed_search_acceptance_mode() {
     return TRUE;
   }
 
-  // Check for acc or dev environments that are connected with production
-  else {
-    global $base_root;
-    $staging = FALSE;
-    $dev_ids = array('culturefeed', 'dev.', 'acc.');
-    foreach($dev_ids as $id) {
-      if (stripos($base_root, $id) > -1) {
-        $staging = TRUE;
-      }
-    }
-    return $staging;
-  }
-
 }
 
 /**
