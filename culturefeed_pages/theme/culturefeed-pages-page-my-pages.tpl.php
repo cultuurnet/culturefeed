@@ -20,6 +20,8 @@
 <h2><?php print t('Search new pages:'); ?></h2>
 <?php print $search_pages; ?>
 
-<div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-body outer"></div>
+<div id="page_confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
 </div>
