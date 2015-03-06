@@ -116,7 +116,15 @@ function culturefeed_pages_manage_members_list(CultureFeed_Cdb_Item_Page $page, 
         $row['delete'] = theme('culturefeed_pages_membership_delete_not_possible', array('page' => $page));
       }
       else {
-        $row['delete'] = l(t('Remove as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs');
+        $delete_options = array(
+          'attributes' => array(
+            'role' => 'button',
+            'data-toggle' => 'modal',
+            'data-target' => '#page_confirm',
+            'data-remote' => url('pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/ajax'),
+          ),
+        );
+        $row['delete'] = l(t('Remove as member'), 'pages/' . $page->getId() . '/membership/' . $member->user->id . '/delete/nojs', $delete_options);
       }
     }
     // Show the edit form.
