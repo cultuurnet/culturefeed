@@ -163,21 +163,8 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
   }
 
-  // Check if we are not on a staging environment
-  global $base_root;
-  watchdog('culturefeed_search_ui', '$base_root: ' . $base_root);
-  $staging = FALSE;
-  $dev_ids = array('culturefeed', 'dev.', 'acc.');
-  foreach($dev_ids as $id) {
-    if (stripos($base_root, $id) !== FALSE) {
-      $staging = TRUE;
-      watchdog('culturefeed_search_ui', 'stripos($base_root, $id): ' . stripos($base_root, $id));
-    }
-  }
-  watchdog('culturefeed_search_ui', '$staging: ' . $staging);
-
   // Add the "noindex, follow" meta tag if needed.
-  if ($noindex || $staging) {
+  if ($noindex) {
     culturefeed_search_set_noindex_metatag();
   }
 
