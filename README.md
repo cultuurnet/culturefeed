@@ -110,9 +110,9 @@ Integration of all UiTID API calls.
 [https://github.com/cultuurnet/culturefeed-php](https://github.com/cultuurnet/culturefeed-php)
 
 
-## Culturefeed_bootstrap
+## Theme
 
-Culturefeed Bootstrap is a responsive, mobile first subtheme of the Bootstrap Framework.
+__Culturefeed Bootstrap__ is the only supported and recommended base theme for Culturefeed. It's a responsive subtheme of the Bootstrap Framework and has it's own subtheme to start from. But of course you can implement Culturefeed in your prefered theme as well.
 
 [https://github.com/cultuurnet/culturefeed_bootstrap](https://github.com/cultuurnet/culturefeed_bootstrap)
 
