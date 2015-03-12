@@ -112,16 +112,9 @@ Integration of all UiTID API calls.
 
 ## Culturefeed_bootstrap
 
-Culturefeed Bootstrap is a responsive, mobile first __subtheme of the Bootstrap Framework__. 
+Culturefeed Bootstrap is a responsive, mobile first subtheme of the Bootstrap Framework.
 
-### Customize it
-Culturefeed Bootstrap has some basic theme settings (admin/appearance/settings/culturefeed_bootstrap) where you can customize branding colors, font-family, border-radius, navbars, etc. to your own needs. If you are a Drupal themer you can - of course - change all possible less variables and bootstrap overrides or kick everything out and build your own theme :-)
-
-### Bootstrap 3.0.2
-If you like the Culturefeed Bootstrap theme or plan to build your own [Bootstrap subtheme](https://www.drupal.org/project/bootstrap) some knowledge about the [Bootstrap Framework](http://getbootstrap.com/) (version 3.0.2) will come in handy. Good to know: Culturefeed Bootstrap uses [Less](https://www.drupal.org/project/less) to compile the CSS.
-
-###  Font Awesome 4.0.3
-We chose to make use of the [Font Awesome Icon library](http://fortawesome.github.io/Font-Awesome/) (version 4.0.3) instead of the Glyphicons that are built in with Bootstrap. Here's an overview of all icons and examples.
+[https://github.com/cultuurnet/culturefeed_bootstrap](https://github.com/cultuurnet/culturefeed_bootstrap)
 
 
 ## Modules
