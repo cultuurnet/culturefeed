@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fc775804a65cfeba2c7aef49a7f984d8",
+    "hash": "844d8eae6070fb1ce7b5e02ced48d285",
     "packages": [
         {
             "name": "cultuurnet/auth",
@@ -89,25 +89,28 @@
         },
         {
             "name": "cultuurnet/culturefeed-php",
-            "version": "v1.1.0",
+            "version": "dev-feature/iculturefeed-decorator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b"
+                "reference": "3685a6dcc8eaef8cca1722334c851d78b1639cd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b",
-                "reference": "d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b",
+                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/3685a6dcc8eaef8cca1722334c851d78b1639cd9",
+                "reference": "3685a6dcc8eaef8cca1722334c851d78b1639cd9",
                 "shasum": ""
             },
             "require": {
                 "cultuurnet/cdb": "~2.0"
             },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4.0"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-develop": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -148,7 +151,7 @@
                 }
             ],
             "description": "Culturefeed PHP library",
-            "time": "2014-10-30 13:44:06"
+            "time": "2015-02-04 14:42:31"
         },
         {
             "name": "cultuurnet/search",
@@ -776,20 +779,111 @@
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "phing/phing",
+            "version": "2.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phingofficial/phing.git",
+                "reference": "4927448a7bda2e1408d5fcbf7f725dc5bdcaf76d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/4927448a7bda2e1408d5fcbf7f725dc5bdcaf76d",
+                "reference": "4927448a7bda2e1408d5fcbf7f725dc5bdcaf76d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "lastcraft/simpletest": "@dev",
+                "pdepend/pdepend": "2.x",
+                "pear-pear.php.net/http_request2": "2.2.x",
+                "pear-pear.php.net/net_growl": "2.7.x",
+                "pear-pear.php.net/pear_packagefilemanager": "1.7.x",
+                "pear-pear.php.net/pear_packagefilemanager2": "1.0.x",
+                "pear-pear.php.net/xml_serializer": "0.20.x",
+                "pear/pear_exception": "@dev",
+                "pear/versioncontrol_git": "@dev",
+                "pear/versioncontrol_svn": "@dev",
+                "phpdocumentor/phpdocumentor": "2.x",
+                "phploc/phploc": "2.x",
+                "phpmd/phpmd": "~2.2",
+                "phpunit/phpunit": ">=3.7",
+                "sebastian/phpcpd": "2.x",
+                "squizlabs/php_codesniffer": "~2.2"
+            },
+            "suggest": {
+                "pdepend/pdepend": "PHP version of JDepend",
+                "pear/archive_tar": "Tar file management class",
+                "pear/versioncontrol_git": "A library that provides OO interface to handle Git repository",
+                "pear/versioncontrol_svn": "A simple OO-style interface for Subversion, the free/open-source version control system",
+                "phpdocumentor/phpdocumentor": "Documentation Generator for PHP",
+                "phploc/phploc": "A tool for quickly measuring the size of a PHP project",
+                "phpmd/phpmd": "PHP version of PMD tool",
+                "phpunit/php-code-coverage": "Library that provides collection, processing, and rendering functionality for PHP code coverage information",
+                "phpunit/phpunit": "The PHP Unit Testing Framework",
+                "sebastian/phpcpd": "Copy/Paste Detector (CPD) for PHP code",
+                "tedivm/jshrink": "Javascript Minifier built in PHP"
+            },
+            "bin": [
+                "bin/phing"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.9.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "classes/phing/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "classes"
+            ],
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Phing Community",
+                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
+                },
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net"
+                }
+            ],
+            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
+            "homepage": "http://www.phing.info/",
+            "keywords": [
+                "build",
+                "phing",
+                "task",
+                "tool"
+            ],
+            "time": "2015-02-09 20:05:38"
+        }
     ],
     "aliases": [
-
+        {
+            "alias": "1.3.0",
+            "alias_normalized": "1.3.0.0",
+            "version": "dev-feature/iculturefeed-decorator",
+            "package": "cultuurnet/culturefeed-php"
+        }
     ],
-    "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
-    "prefer-stable": false,
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "cultuurnet/culturefeed-php": 20
+    },
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
 }

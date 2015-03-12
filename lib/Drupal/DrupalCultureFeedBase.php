@@ -137,7 +137,7 @@ abstract class DrupalCultureFeedBase {
   /**
    * @param string|null $application_key
    * @param string|null $shared_secret
-   * @return ICultureFeed
+   * @return static
    * @throws Exception
    */
   public static function getLoggedInUserInstance($application_key = NULL, $shared_secret = NULL) {
