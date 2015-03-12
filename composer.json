@@ -6,7 +6,7 @@
     "require": {
       "cultuurnet/search": "~1.0",
       "cultuurnet/cdb": "~2.0",
-      "cultuurnet/culturefeed-php": "dev-feature/iculturefeed-decorator as 1.3.0"
+      "cultuurnet/culturefeed-php": "dev-develop as 1.3.0"
     },
     "require-dev": {
       "phing/phing": "~2.10"
