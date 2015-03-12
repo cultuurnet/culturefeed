@@ -57,42 +57,17 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
       }
     }
 
-    $tmp_q = $_GET['q']; // Store the current value of $_GET['q'].
-    $_GET['q'] = 'my/custom/callback'; // Change the value of $_GET['q'] to the "correct" path you want the pager to link to.
-
-    pager_default_initialize($result->total, $promotions_max);
-
-
-    $_GET['q'] = $tmp_q; // Return $_GET['q'] to the proper value.
-
   }
   catch (Exception $e) {
 
     watchdog_exception('culturefeed_uitpas_promotions', $e);
-    pager_default_initialize(0, $promotions_max);
 
-  }
-
-  // Solution csdco on from https://www.drupal.org/node/1049354
-  $_GET['q'] = 'promotions';
-
-  $promotions_pager_min = ($promotions_page * $promotions_max) + 1;
-  $promotions_pager_max = ($promotions_page * $promotions_max) + $promotions_max;
-  if ($promotions_pager_max > $promotions_total) {
-    $promotions_pager_max = $promotions_total;
   }
 
   return array(
-    array(
-      '#theme' => 'culturefeed_uitpas_promotions',
-      '#promotions' => $promotions,
-      '#promotions_total' => $promotions_total,
-      '#promotions_pager_min' => $promotions_pager_min,
-      '#promotions_pager_max' => $promotions_pager_max,
-    ),
-    array(
-      '#theme' => 'pager',
-    ),
+    '#theme' => 'culturefeed_uitpas_promotions',
+    '#promotions' => $promotions,
+    '#promotions_total' => $promotions_total,
   );
 
 }
@@ -148,6 +123,8 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
   $card_systems = $cf->uitpas()->getCardSystems();
 
+  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
+
   $options = array();
   foreach ($card_systems as $system) {
     $options[$system->id] = $system->name;
@@ -171,15 +148,26 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
   $results = culturefeed_uitpas_promotions_get($filter);
   $form['promotions']['result'] = array(
     '#markup' => drupal_render($results),
   );
 
+  // Pager.
+  $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);
+
+  pager_default_initialize($results['#promotions_total'], $promotions_max);
+
+  // Solution csdco on from https://www.drupal.org/node/1049354
+  $tmp_q = $_GET['q'];
+  $_GET['q'] = 'promotions';
+  $form['promotions']['pager']['#markup'] = theme('pager', array('parameters' => array('filter' => $filter)));
+  $_GET['q'] = $tmp_q;
+
   $form['promotions']['#attached']['css'][] = drupal_get_path('module', 'culturefeed_uitpas') . '/css/culturefeed_uitpas.css';
 
   return $form;
+
 }
 
 function culturefeed_uitpas_promotions_ajax_callback($form, $form_state) {
