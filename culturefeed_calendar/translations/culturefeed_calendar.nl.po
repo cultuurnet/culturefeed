@@ -1,0 +1,337 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed_calendar.module: n/a
+#  theme/theme.inc: n/a
+#  culturefeed_calendar.info: n/a
+#  includes/pages.inc: n/a
+#  theme/culturefeed-calendar-activities-going.tpl.php: n/a
+#  theme/culturefeed-calendar-activities-liked.tpl.php: n/a
+#  theme/culturefeed-calendar-activity-summary.tpl.php: n/a
+#  theme/culturefeed-calendar-button-hover.tpl.php: n/a
+#  theme/culturefeed-calendar-page.tpl.php: n/a
+#  theme/culturefeed-calendar-settings-page.tpl.php: n/a
+#  theme/culturefeed-calendar-share-page.tpl.php: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-03-17 15:11+0100\n"
+"PO-Revision-Date: 2015-03-17 16:14+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed_calendar.module:33
+msgid "Share your calendar"
+msgstr "Deel je kalender"
+
+#: culturefeed_calendar.module:40
+msgid "Calendar Settings"
+msgstr "Instellingen"
+
+#: culturefeed_calendar.module:54 theme/theme.inc:145
+msgid "Add to calendar"
+msgstr "Toevoegen aan mijn UiTkalender"
+
+#: culturefeed_calendar.module:62
+msgid "Edit event in calendar"
+msgstr "Wijzig in kalender"
+
+#: culturefeed_calendar.module:70
+msgid "Delete event from calendar"
+msgstr "Verwijder uit kalender"
+
+#: culturefeed_calendar.module:78
+msgid "Add cookie events to calendar"
+msgstr ""
+
+#: culturefeed_calendar.info:0
+msgid "CultureFeed Calendar"
+msgstr ""
+
+#: culturefeed_calendar.info:0
+msgid ""
+"CultureFeed Calendar allows users to manage their own events in a calendar."
+msgstr ""
+
+#: culturefeed_calendar.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"
+
+#: includes/pages.inc:54;738
+msgid "Save"
+msgstr "Opslaan"
+
+#: includes/pages.inc:143
+msgid "Add !title to your calendar"
+msgstr "!title toevoegen aan je UiTkalender"
+
+#: includes/pages.inc:144
+msgid "Add"
+msgstr "Toevoegen"
+
+#: includes/pages.inc:154;442
+msgid "The event has been added to your calendar."
+msgstr "Dit event is reeds toegevoegd aan je kalender"
+
+#: includes/pages.inc:157;445
+msgid "There was an error while adding to your calendar"
+msgstr "Fout bij het toevoegen aan je kalender"
+
+#: includes/pages.inc:201
+msgid "Reschedule !title in your calendar"
+msgstr "!title opnieuw inplannen"
+
+#: includes/pages.inc:202
+msgid "Update event"
+msgstr "Bewaren"
+
+#: includes/pages.inc:242
+msgid "Possible dates"
+msgstr ""
+
+#: includes/pages.inc:252;305
+msgid "When do you want to go?"
+msgstr "Wanneer wil je gaan?"
+
+#: includes/pages.inc:262
+msgid "I don't know yet"
+msgstr "Ik weet het nog niet"
+
+#: includes/pages.inc:292
+msgid "!date from !starthour to !endhour"
+msgstr "!date van !starthour tot !endhour"
+
+#: includes/pages.inc:295
+msgid "!date from !starthour"
+msgstr "!date om !starthour"
+
+#: includes/pages.inc:299
+msgid "!date"
+msgstr "!date"
+
+#: includes/pages.inc:332;560
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: includes/pages.inc:403
+msgid "You selected a date in the past. Please select a date in the future."
+msgstr ""
+"Je koos een datum in het verleden. Gelieve een datum in de toekomst te "
+"selecteren."
+
+#: includes/pages.inc:408
+msgid "Enter a date between "
+msgstr "Kies een datum "
+
+#: includes/pages.inc:408
+msgid " and "
+msgstr " en "
+
+#: includes/pages.inc:419
+msgid "The event is closed on "
+msgstr "Dit event is gesloten op "
+
+#: includes/pages.inc:494
+msgid "Your calendar event was updated."
+msgstr "Je aanpassingen zijn bewaard."
+
+#: includes/pages.inc:497
+msgid "An error occured while saving your calendar"
+msgstr "Fout bij het bewaren in je kalender"
+
+#: includes/pages.inc:509
+msgid "Evenement verwijderen"
+msgstr ""
+
+#: includes/pages.inc:537
+msgid "Are you sure you want to delete '!title' from your UiTkalender?"
+msgstr "Ben je zeker dat je '!title' wil verwijderen uit je kalender?"
+
+#: includes/pages.inc:546 theme/theme.inc:210;244
+msgid "Verwijderen"
+msgstr ""
+
+#: includes/pages.inc:614
+msgid "Your calendar event was deleted."
+msgstr "Dit evenement is verwijderd."
+
+#: includes/pages.inc:617
+msgid "An error occured while deleting the event from your calendar"
+msgstr "Fout bij het verwijderen uit je kalender."
+
+#: includes/pages.inc:716
+msgid "There was an error while loading the user information"
+msgstr "Fout bij het laden van de gebruikersgegevens"
+
+#: includes/pages.inc:722
+msgid "Privacy & share"
+msgstr "Privacy & delen"
+
+#: includes/pages.inc:728
+msgid "Who can see your calendar"
+msgstr "Wie kan je UiTkalender zien?"
+
+#: includes/pages.inc:731
+msgid "Only me"
+msgstr "Alleen ik"
+
+#: includes/pages.inc:732
+msgid "Everyone"
+msgstr "Iedereen"
+
+#: includes/pages.inc:767
+msgid "Changes succesfully saved."
+msgstr "Jouw wijzigingen werden bewaard."
+
+#: includes/pages.inc:771
+msgid "There was an error while saving the form"
+msgstr "Fout bij het verzenden van dit formulier"
+
+#: theme/culturefeed-calendar-activities-going.tpl.php:18
+msgid "No events this month"
+msgstr "Nog geen evenementen deze maand"
+
+#: theme/culturefeed-calendar-activities-liked.tpl.php:9
+msgid "Unscheduled events"
+msgstr "Nog niet ingepland"
+
+#: theme/culturefeed-calendar-activity-summary.tpl.php:25
+msgid "Where"
+msgstr "Waar"
+
+#: theme/culturefeed-calendar-activity-summary.tpl.php:45
+msgid "Price"
+msgstr "Prijs"
+
+#: theme/culturefeed-calendar-activity-summary.tpl.php:57
+msgid "Phone"
+msgstr "Telefoon"
+
+#: theme/culturefeed-calendar-activity-summary.tpl.php:63
+msgid "More info"
+msgstr "Meer info"
+
+#: theme/culturefeed-calendar-button-hover.tpl.php:2
+msgid ""
+"You have temporarily added events to your calendar. Log in and save the "
+"events to you personal calendar."
+msgstr ""
+"Je hebt activiteit(en) toegevoegd aan je UiTkalender. Meld je aan om deze te "
+"bewaren in je persoonlijke kalender."
+
+#: theme/culturefeed-calendar-button-hover.tpl.php:5
+msgid "Log in"
+msgstr "Aanmelden"
+
+#: theme/culturefeed-calendar-button-hover.tpl.php:6
+msgid "View your calendar"
+msgstr "Kalender bekijken"
+
+#: theme/culturefeed-calendar-page.tpl.php:9
+msgid "Calendar"
+msgstr "Agenda"
+
+#: theme/culturefeed-calendar-page.tpl.php:16
+msgid "This calendar has not been shared yet."
+msgstr "Je kalender is ingesteld als privé."
+
+#: theme/culturefeed-calendar-page.tpl.php:23
+msgid "Settings"
+msgstr "Instellingen"
+
+#: theme/culturefeed-calendar-page.tpl.php:27
+msgid "Share"
+msgstr "Deel"
+
+#: theme/culturefeed-calendar-page.tpl.php:45
+msgid "No activities added to your calendar yet."
+msgstr "Je hebt nog geen activiteiten toegevoegd aan je UiTkalender."
+
+#: theme/culturefeed-calendar-settings-page.tpl.php:8
+#: theme/culturefeed-calendar-share-page.tpl.php:9
+msgid "Back to my calendar"
+msgstr "Terug naar kalender"
+
+#: theme/culturefeed-calendar-settings-page.tpl.php:9
+msgid "Settings for your calendar"
+msgstr "Instellingen"
+
+#: theme/culturefeed-calendar-share-page.tpl.php:11
+msgid "Share your calendar with your friends"
+msgstr "Deel je UiTkalender delen met je vrienden"
+
+#: theme/culturefeed-calendar-share-page.tpl.php:12
+msgid "You can share this link with your friends"
+msgstr "Gebruik deze link om je kalender te delen"
+
+#: theme/culturefeed-calendar-share-page.tpl.php:14
+msgid "Facebook"
+msgstr ""
+
+#: theme/culturefeed-calendar-share-page.tpl.php:15
+msgid "Google+"
+msgstr ""
+
+#: theme/culturefeed-calendar-share-page.tpl.php:16
+msgid "Twitter"
+msgstr ""
+
+#: theme/culturefeed-calendar-share-page.tpl.php:19
+msgid "Mail"
+msgstr "Mail"
+
+#: theme/culturefeed-calendar-share-page.tpl.php:24
+msgid ""
+"You have chosen earlier to not share your calendar. You can change this in "
+"your settings."
+msgstr ""
+"Je kalender is ingesteld als privé. Wijzig de instellingen van je kalender."
+
+#: theme/culturefeed-calendar-share-page.tpl.php:26
+msgid "Edit settings"
+msgstr "Wijzig instellingen"
+
+#: theme/theme.inc:124
+msgid "This event is added to your calendar."
+msgstr "Deze activiteit is toegevoegd aan je UiTkalender."
+
+#: theme/theme.inc:125
+msgid "View calendar"
+msgstr "Bekijk kalender"
+
+#: theme/theme.inc:128
+msgid "to your calendar"
+msgstr "in je kalender"
+
+#: theme/theme.inc:142
+msgid "Add to my calendar"
+msgstr "Voeg toe aan kalender"
+
+#: theme/theme.inc:161
+msgid "Go to your calendar"
+msgstr "Ga naar kalender"
+
+#: theme/theme.inc:164
+msgid "unsaved events: <span class=\"unread-activities\">0</small>"
+msgstr ""
+"niet bewaarde activiteiten: <span class=\"unread-activities\">0</small>"
+
+#: theme/theme.inc:207
+msgid "Inplannen"
+msgstr ""
+
+#: theme/theme.inc:240
+msgid "Verplaatsen"
+msgstr ""
+
+#: theme/theme.inc:274
+msgid "There was an error while searching the user"
+msgstr "Fout bij het zoeken naar gebruiker"
