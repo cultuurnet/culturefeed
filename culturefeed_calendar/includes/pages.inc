@@ -506,7 +506,7 @@ function culturefeed_calendar_delete_calendar_event($activity, $request_type = '
 
   $event = culturefeed_agenda_event_load($activity->nodeId);
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Evenement verwijderen');
+  $params['title'] = t('Remove event');
   $params['activity'] = $activity;
   $params['use_ajax'] = $request_type == 'ajax';
 
@@ -534,7 +534,7 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
 
   $form['info'] = array(
     '#type' => 'markup',
-    '#markup' => '<label>' . t('Are you sure you want to delete \'!title\' from your UiTkalender?', array('!title' => $params['node_title'])) . '</label>',
+    '#markup' => '<label>' . t('Are you sure you want to remove \'!title\' from your calender?', array('!title' => $params['node_title'])) . '</label>',
   );
 
   $form['actions'] = array(
@@ -543,7 +543,7 @@ function culturefeed_calendar_delete_form($form, &$form_state, $params) {
 
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Verwijderen'),
+    '#value' => t('Remove'),
     '#name' => 'delete',
     '#submit' => array('culturefeed_calendar_delete_form_submit'),
   );
