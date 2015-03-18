@@ -432,6 +432,11 @@ class CultureFeedSearchPage {
       else {
         $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
       }
+      
+      if (isset($params['sort']) && $params['sort'] == 'geodist') {
+        $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
+      }
+      
       $point = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $field = new Parameter\Spatial\SpatialField('physical_gis');
       $this->parameters[] = new Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
