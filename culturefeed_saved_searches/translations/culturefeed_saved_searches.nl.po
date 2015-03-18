@@ -4,9 +4,9 @@
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_saved_searches.module: n/a
+#  includes/pages.inc: n/a
 #  culturefeed_saved_searches.info: n/a
 #  includes/blocks.inc: n/a
-#  includes/pages.inc: n/a
 #  includes/helpers.inc: n/a
 #  theme/culturefeed-saved-searches-manage-list.tpl.php: n/a
 #  theme/culturefeed-saved-searches-list.tpl.php: n/a
@@ -15,8 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-03-18 17:49+0100\n"
-"PO-Revision-Date: 2015-03-18 18:00+0100\n"
+"POT-Creation-Date: 2015-03-18 19:52+0100\n"
+"PO-Revision-Date: 2015-03-18 19:56+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr ""
 msgid "Change"
 msgstr "Wijzig"
 
-#: culturefeed_saved_searches.module:213
+#: culturefeed_saved_searches.module:213 includes/pages.inc:68
 msgid "Save"
 msgstr "Opslaan"
 
@@ -127,31 +127,29 @@ msgid "No query to save was given"
 msgstr "Er waren geen zoekparameters om te bewaren"
 
 #: includes/pages.inc:27
-msgid "Stuur UiTalerts bij nieuwe resultaten:"
-msgstr ""
+msgid "Send mailalert with new results:"
+msgstr "Stuur een e-mail met nieuwe resultaten:"
 
 #: includes/pages.inc:43
-msgid "UiTalerts worden verstuurd naar:"
-msgstr ""
+msgid "Mailalerts will be sent to:"
+msgstr "E-mails worden verstuurd naar:"
 
 #: includes/pages.inc:53
-msgid "Als er geen nieuwe resultaten zijn, sturen we geen UiTalert"
-msgstr ""
+msgid "We won't send emails when there are no new results"
+msgstr "Als er geen nieuwe resultaten zijn, sturen we geen e-mail"
 
 #: includes/pages.inc:53
-msgid "Je kan je via elke UiTalert uitschrijven voor deze dienst"
-msgstr ""
-
-#: includes/pages.inc:68
-msgid "Bewaar"
-msgstr ""
+msgid "You can unsubscribe for this service in any mail you will receive"
+msgstr "Je kan je via elke e-mail weer uitschrijven voor deze dienst"
 
 #: includes/pages.inc:75
 msgid ""
-"We sturen een UiTalert zodra er een nieuwe activiteit verschijnt binnen je "
-"bewaarde zoekopdracht. Hierbij wordt geen rekening gehouden met de "
-"datumfilter in je zoekopdracht."
+"We will send a mailalert as soon as there are new results for your search. "
+"Therefore we will ignore any date filters in your search"
 msgstr ""
+"We sturen een e-mailalert zodra er nieuwe resultaten zijn binnen je "
+"zoekopdracht. We houden dus geen rekening met de huidige datumfilter in je "
+"zoekopdracht."
 
 #: includes/pages.inc:105
 msgid "You search has been saved"
