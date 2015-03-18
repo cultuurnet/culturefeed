@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2015-03-18 19:52+0100\n"
-"PO-Revision-Date: 2015-03-18 19:56+0100\n"
+"PO-Revision-Date: 2015-03-18 21:14+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,7 @@ msgstr "en ontvang een e-mail als er nieuwe resultaten zijn"
 
 #: includes/blocks.inc:27
 msgid "to search faster next time"
-msgstr "om volgende keer sneller te kunnen zoeken"
+msgstr "om sneller te kunnen zoeken"
 
 #: includes/blocks.inc:132 includes/pages.inc:133
 msgid "A problem occurred while loading your searches. Please try again later."
