@@ -564,10 +564,15 @@ function culturefeed_pages_get_page_suggestions_list() {
     else {
       $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
     }
+    
+    // Sort on proximity.
+    $parameters[] = new CultuurNet\Search\Parameter\Sort('geodist()', CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
+    
   }
-
-  // Sort on total followers.
-  $parameters[] = new CultuurNet\Search\Parameter\Sort('pagefollow_count', CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+  else {
+    // Sort on total followers.
+    $parameters[] = new CultuurNet\Search\Parameter\Sort('pagefollow_count', CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+  }
 
   // Add max items.
   $parameters[] = new CultuurNet\Search\Parameter\Rows(variable_get('pages_block_page_suggestions_total', 10));
