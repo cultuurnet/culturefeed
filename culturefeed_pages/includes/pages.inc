@@ -828,7 +828,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   );
 
   if ($page->isVisible()) {
-    $form['remove-link'] = array(
+    $form['remove_link'] = array(
       '#type' => 'link',
       '#title' => t('Remove page'),
       '#href' => 'pages/' . $page->getId() . '/remove/nojs',
@@ -842,7 +842,7 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
   }
   else {
     // @todo We can use this to quickly reinvoke the status.
-    /*$form['publish-link'] = array(
+    /*$form['publish_link'] = array(
       '#type' => 'link',
       '#title' => 'Pagina opnieuw publiceren',
       '#href' => 'pages/' . $page->getId() . '/publish/nojs',
@@ -855,10 +855,11 @@ function culturefeed_pages_configuration_page_form($form, & $form_state, Culture
     );*/
   }
 
-  $form['#suffix'] = '
-    <div id="page_confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-body outer"></div>
-    </div>';
+  $form['#suffix'] = '<div id="page_confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+  </div>';
 
   culturefeed_pages_set_page_breadcrumb($page);
 
