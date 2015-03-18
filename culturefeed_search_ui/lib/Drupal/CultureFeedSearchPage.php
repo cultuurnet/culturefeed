@@ -427,20 +427,18 @@ class CultureFeedSearchPage {
       $coordinates = explode(',', $params['coordinates']);
 
       if (isset($params['distance'])) {
-        $distance = new Parameter\Spatial\Distance($params['distance']);
+        $this->parameters[] = new Parameter\Spatial\Distance($params['distance']);
       }
       else {
-        $distance = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
+        $this->parameters[] = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
       }
       
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
       }
       
-      $point = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
-      $field = new Parameter\Spatial\SpatialField('physical_gis');
-      $this->parameters[] = new Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
-
+      $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
+      $this->parameters[] = new Parameter\Spatial\SpatialField('physical_gis');
     }
 
     // Add the location facet. Only use the location if a distance is set.
