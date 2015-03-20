@@ -195,6 +195,9 @@ function culturefeed_mailing_lists_overview() {
       if (!empty($list->template)) {
         $template = $list->template;
       }
+      else {
+        $template = '';
+      }
 
       $edit = array(
         '#type' => 'link',
@@ -313,7 +316,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#default_value' => !empty($list) ? $list->name : '',
+    '#default_value' => !empty($list->name) ? $list->name : '',
     '#size' => 60,
     '#maxlength' => 128,
     '#required' => TRUE,
@@ -322,7 +325,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
   $form['description'] = array(
     '#type' => 'textarea',
     '#title' => t('Description'),
-    '#default_value' => !empty($list) ? $list->description : '',
+    '#default_value' => !empty($list->description) ? $list->description : '',
     '#rows' => 5,
     '#required' => TRUE,
   );
@@ -357,22 +360,24 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
 
   $templates = DrupalCultureFeed::getTemplateList();
   $template_options = array();
-  foreach ($templates->objects as $key => $template) {
-    $template_options[$template->id] = $template->name;
+  $template_options[0] = t('- Select -');
+  if (!empty($templates)) {
+    foreach ($templates->objects as $key => $template) {
+      $template_options[$template->id] = $template->name;
+    }
   }
 
   $form['template'] = array(
     '#type' => 'select',
     '#title' => t('Template'),
     '#options' => $template_options,
-    '#default_value' => !empty($list) ? $list->template->id : '',
-    '#required' => TRUE,
+    '#default_value' => !empty($list->template->id) ? $list->template->id : '',
   );
 
 
   $form['id'] = array(
     '#type' => 'value',
-    '#value' => !empty($list) ? $list->id : NULL,
+    '#value' => !empty($list->id) ? $list->id : NULL,
   );
 
   $form['submit'] = array(
