@@ -15,9 +15,9 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
    * Constructor.
    *
    * Culturefeed pages instance to be called.
-   * @param CultureFeed_Pages_Default $realCultureFeed
+   * @param CultureFeed_Pages $realCultureFeed
    */
-  public function __construct(CultureFeed_Pages_Default $realCultureFeedPages) {
+  public function __construct(CultureFeed_Pages $realCultureFeedPages) {
     $this->realCultureFeedPages = $realCultureFeedPages;
   }
 

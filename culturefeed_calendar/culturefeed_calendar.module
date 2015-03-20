@@ -1,0 +1,246 @@
+<?php
+/**
+ * @file
+ * CultureFeed Calendar allows users to manage their own events in a calendar.
+ */
+
+require_once 'includes/helpers.inc';
+
+/**
+ * Implements hook_init().
+ */
+function culturefeed_calendar_init() {
+  if (!culturefeed_is_culturefeed_user()) {
+    drupal_add_library('system', 'jquery.cookie');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar.js');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_calendar_menu() {
+
+  $items = array();
+
+  $items['culturefeed/calendar'] = array(
+    'page callback' => 'culturefeed_calendar_page_my_activities',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/share'] = array(
+    'title' => t('Share your calendar'),
+    'page callback' => 'culturefeed_calendar_page_share_my_calendar',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/settings'] = array(
+    'title' => t('Calendar Settings'),
+    'page callback' => 'culturefeed_calendar_page_settings',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/%'] = array(
+    'page callback' => 'culturefeed_calendar_page_user_activities',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/add/%culturefeed_agenda_event/%'] = array(
+    'title' => t('Add to calendar'),
+    'page callback' => 'culturefeed_calendar_add_to_calendar',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/edit/%culturefeed_calendar_activity/%'] = array(
+    'title' => t('Edit event in calendar'),
+    'page callback' => 'culturefeed_calendar_edit_calendar_event',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/delete/%culturefeed_calendar_activity/%'] = array(
+    'title' => t('Delete event from calendar'),
+    'page callback' => 'culturefeed_calendar_delete_calendar_event',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/add-cookie-to-calendar'] = array(
+    'title' => t('Add cookie events to calendar'),
+    'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_calendar_theme() {
+
+  $items = array();
+
+  $path = drupal_get_path('module', 'culturefeed_calendar') . '/theme';
+
+  $items['culturefeed_calendar_button'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-button',
+  );
+  $items['culturefeed_calendar_profile_box_item'] = array(
+    'variables' => array(),
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+  $items['culturefeed_calendar_page'] = array(
+    'variables' => array(
+      'activities' => NULL
+    ),
+    'template' => 'culturefeed-calendar-page',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+  $items['culturefeed_calendar_activity_summary'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activity-summary',
+    'variables' => array(
+      'activity' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_activity_mini'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activity-mini',
+    'variables' => array(
+      'activity' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_activities_going'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activities-going',
+    'variables' => array(
+      'activities' => NULL,
+      'month_names' => array(),
+    ),
+  );
+  $items['culturefeed_calendar_activities_liked'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-activities-liked',
+    'variables' => array(
+      'activities' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_nav_months'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-nav-months',
+    'variables' => array(
+      'activities' => NULL
+    ),
+  );
+  $items['culturefeed_calendar_button_hover'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'template' => 'culturefeed-calendar-button-hover',
+    'variables' => array(),
+  );
+  $items['culturefeed_calendar_share_page'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'variables' => array(),
+    'template' => 'culturefeed-calendar-share-page',
+  );
+  $items['culturefeed_calendar_settings_page'] = array(
+    'path' => $path,
+    'file' => 'theme.inc',
+    'variables' => array(
+      'settings_form' => array(),
+    ),
+    'template' => 'culturefeed-calendar-settings-page',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_main_items().
+ */
+function culturefeed_calendar_culturefeed_ui_profile_box_main_items() {
+
+  $items = array();
+
+  $items['activities'] = array(
+    'data' => theme('culturefeed_calendar_profile_box_item', array(
+      'total' => 0,
+    )),
+    'class' => 'activities',
+    'weight' => -10,
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_anonymous_profile_box_main_items().
+ */
+function culturefeed_calendar_culturefeed_ui_anonymous_profile_box_main_items() {
+
+  $items = array();
+
+  // JS sets the real value, don't add total.
+  $items['activities'] = array(
+    'data' => theme('culturefeed_calendar_profile_box_item'),
+    'class' => 'activities',
+    'weight' => -10,
+  );
+
+  return $items;
+
+}
+
+/**
+ * Load the calendar activity.
+ */
+function culturefeed_calendar_activity_load($activity_id) {
+
+  // No uuid = anonymous user. Get it in the cookie.
+  if (is_numeric($activity_id)) {
+
+    if (isset($_COOKIE['Drupal_visitor_calendar'])) {
+      $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
+      if (is_array($calendar) && isset($calendar[$activity_id])) {
+        return $calendar[$activity_id];
+      }
+    }
+
+  }
+  // Uuid = load with API.
+  else {
+    try {
+      return DrupalCultureFeed::loadActivity($activity_id);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_calendar', $e);
+    }
+
+  }
+
+  return FALSE;
+
+}

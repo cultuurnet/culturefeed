@@ -1111,14 +1111,14 @@ function culturefeed_pages_page_suggestions_filter_form() {
     '#attributes' => array(
       'placeholder' => t('Zipcode or city'),
       // This class is used to enable the autosubmit.
-      'class' => array('auto_submit'),
+      'class' => array('auto-submit'),
     ),
     '#default_value' => $postal,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Ok'),
+    '#value' => t('Save location'),
     '#ajax' => array(
       'callback' => 'culturefeed_pages_page_suggestions_ajax_filter_submit',
     ),
@@ -1132,15 +1132,22 @@ function culturefeed_pages_page_suggestions_filter_form() {
  */
 function culturefeed_pages_timeline_filter_form($form, $form_state, $default_filter, $page_id) {
 
-  culturefeed_social_get_activity_filter_options();
-
+  $types = culturefeed_social_get_activity_filter_options(TRUE);
+   
   $options = array(
     'all' => t('All'),
-    CultureFeed_Activity::TYPE_RECOMMEND => t('Recommend'),
-    CultureFeed_Activity::TYPE_REVIEW => t('Review'),
-    CultureFeed_Activity::TYPE_PAGE_MEMBER => t('Membership'),
-    CultureFeed_Activity::TYPE_FOLLOW => t('Follow'),
   );
+
+  foreach ($types as $key => $type) {
+    if ($key == CultureFeed_Activity::TYPE_IK_GA) {
+      $options[$key] = $type->subject;
+    } else {
+      $options[$key] = $type->label;
+    }
+  }
+  
+  // Options we don't need here
+  unset($options[CultureFeed_Activity::TYPE_PAGE_CREATED]);
 
   $form['filter'] = array(
     '#type' => 'select',

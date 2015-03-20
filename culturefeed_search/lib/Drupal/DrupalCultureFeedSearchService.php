@@ -71,7 +71,7 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
 
     DrupalCultureFeedSearchService::addLanguageParameter($parameters);
     $result = $this->service->search($parameters);
-    DrupalCultureFeedSearchService::translateCategories($result);
+    DrupalCultureFeedSearchService::translateCategories($result->getItems());
 
     DrupalCultureFeedSearchService::setDetailCache($result);
 
@@ -97,7 +97,9 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   }
 
   public function detail($type, $id) {
-    return $this->service->detail($type, $id);
+    $item = $this->service->detail($type, $id);
+    DrupalCultureFeedSearchService::translateCategories(array($item));
+    return $item;
   }
 
   /**
@@ -117,9 +119,8 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
   /**
    * Translates the categories.
    */
-  public static function translateCategories(CultuurNet\Search\SearchResult $result) {
+  public static function translateCategories($items = array()) {
 
-    $items = $result->getItems();
     $tids = array();
     foreach ($items as $item) {
       $categories = $item->getEntity()->getCategories();

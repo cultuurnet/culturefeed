@@ -28,34 +28,104 @@ function culturefeed_agenda_block_related_activities() {
 }
 
 /**
+ * Show a block with nearby activities for current user.
+ */
+function culturefeed_agenda_block_nearby_activities() {
+
+  drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
+
+  // If there is a location stored in cookie, add to the block title.
+  $user_location = culturefeed_search_ui_get_user_location_cookie();
+
+  // Add link to show all events for the location.
+  $location_string = '';
+  $url = '';
+  $classes = 'all-activities-link';
+  if (isset($user_location->postal) && isset($user_location->city)) {
+    $location_string = check_plain($user_location->postal . ' ' . $user_location->city);
+  }
+  else {
+    $classes .= ' hidden';
+  }
+
+  $all_activities_for_location_link = l(t('Everything for <span class="location-string">!location</span>', array('!location' => $location_string)), 'agenda/search',
+    array(
+      'query' => array('location' => $location_string),
+      'html' => TRUE,
+      'attributes' => array('id' => 'all-activities-link', 'class' => array($classes)))
+  );
+
+  // Construct the toggle for the location form visbility.
+  $change_location_link = l(t('Change location'), '',
+    array(
+      'attributes' => array('id' => 'change-location-link'),
+    )
+  );
+
+  // Start with an empty list. On page load, the suggestions will be loaded through ajax.
+  return array(
+    'content' => array(
+      '#theme' => 'culturefeed_agenda_block_nearby_activities',
+      '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
+      '#change_location_link' => $change_location_link,
+      '#all_activities_for_location_link' => $all_activities_for_location_link,
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',
+          drupal_get_path('module', 'culturefeed') . '/js/common.js',
+        )
+      ),
+    ),
+  );
+
+}
+
+
+/**
  * Form callback to show the agenda search block.
  */
 function culturefeed_agenda_search_block_form($form, &$form_state) {
+
+  $active_fields = variable_get('culturefeed_agenda_search_block_active_fields', array());
 
   $form = array();
 
   // Always submit to front, so that searches on a 404 would work.
   // $form['#action'] = url('<front>');
 
-  $domain_id = variable_get('agenda_search_block_domain_id');
-  if (!empty($domain_id)) {
+  // Category search.
+  if (isset($active_fields['types'])) {
 
-    $options = array('' => t('All categories'));
-    $categories = culturefeed_search_get_categories_by_domain($domain_id);
+    $domain_id = variable_get('agenda_search_block_domain_id');
+    if (!empty($domain_id)) {
 
-    if ($domain_id == 'eventtype') {
-      $categories_remove = array(
-        '0.100.0.0.0' => 'Kijken en luisteren',
-        '0.100.1.0.0' => 'Doen',
-        '0.100.2.0.0' => 'Bezoeken',
-        '0.51.0.0.0' => 'Type onbepaald',
+      $options = array('' => t('All categories'));
+      $categories = culturefeed_search_get_categories_by_domain($domain_id);
+
+      if ($domain_id == 'eventtype') {
+        $categories_remove = array(
+          '0.100.0.0.0' => 'Kijken en luisteren',
+          '0.100.1.0.0' => 'Doen',
+          '0.100.2.0.0' => 'Bezoeken',
+          '0.51.0.0.0' => 'Type onbepaald',
+        );
+        $categories = array_diff_key($categories, $categories_remove);
+      }
+      foreach ($categories as $id => $category) {
+        $options[$id] = $category;
+      }
+      asort($options);
+
+      $form['category'] = array(
+        '#type' => 'select',
+        '#options' => $options,
+        '#default_value' => isset($_GET['facet']['category_' . $domain_id . '_id'][0]) ? $_GET['facet']['category_' . $domain_id . '_id'][0] : NULL,
+        '#weight' => $active_fields['types'],
       );
-      $categories = array_diff_key($categories, $categories_remove);
+
+      $form_state['#domain_id'] = $domain_id;
+
     }
-    foreach ($categories as $id => $category) {
-      $options[$id] = $category;
-    }
-    asort($options);
 
     if (isset($_GET['facet']['category_' . $domain_id . '_id'][0])) {
       $default = $_GET['facet']['category_' . $domain_id . '_id'][0];
@@ -73,52 +143,70 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#default_value' => $default,
     );
 
-    $form_state['#domain_id'] = $domain_id;
+  }
+
+  // Free text search.
+  if (isset($active_fields['what'])) {
+    $form['search'] = array(
+      '#type' => 'textfield',
+      '#size' => 28,
+      '#title' => t('Search string'),
+      '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
+      '#weight' => $active_fields['what'],
+    );
+  }
+
+  // Datetype search.
+  if (isset($active_fields['when'])) {
+    $form['when'] = array(
+      '#type' => 'select',
+      '#title' => t('When'),
+      '#options' => array('' => t('All dates')) + culturefeed_search_ui_get_date_facet_options(),
+      '#default_value' => isset($_GET['facet']['datetype'][0]) ? $_GET['facet']['datetype'][0] : NULL,
+      '#weight' => $active_fields['when'],
+    );
+  }
+
+  // Location search.
+  if (isset($active_fields['where'])) {
+
+    $form['location'] = array(
+      '#type' => 'placeholder',
+      '#weight' => $active_fields['where'],
+    );
+
+    $form['location']['where'] = array(
+      '#type' => 'textfield',
+      '#size' => 28,
+      '#title' => t('Where'),
+      '#title_display' => 'invisible',
+      '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
+    );
+
+    $form['location']['nearby'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use my current location'),
+    );
+
+    // Add js for geolocate.
+    global $language;
+    $form['#attached']['js'] = array(
+      array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+      drupal_get_path('module', 'culturefeed_agenda') . '/js/search_block.js',
+      drupal_get_path('module', 'culturefeed') . '/js/common.js',
+    );
+
+    $form['#attached']['library'][] = array('system', 'jquery.cookie');
+    $form['#attached']['library'][] = array('system', 'ui.autocomplete');
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/js/location_autocomplete.js';
+    $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_search_ui') . '/css/location_search.css';
 
   }
 
-  $form['search'] = array(
-    '#type' => 'textfield',
-    '#size' => 28,
-    '#title' => t('Search string'),
-    '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
-  );
-
-  $location = isset($_GET['nearby']) ? $_GET['nearby'] : '';
-  $form['nearby'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Activities near my current location:') . ' <span id="current-location">' . check_plain($location) . '</span>',
-    '#default_value' => !empty($location),
-  );
-
-  $form['coordinates'] = array(
-    '#type' => 'hidden',
-    '#default_value' => isset($_GET['coordinates']) ? $_GET['coordinates'] : '',
-    '#attributes' => array('id' => 'geolocate-coordinates'),
-  );
-
-  $form['city'] = array(
-    '#type' => 'hidden',
-    '#default_value' => $location,
-    '#attributes' => array('id' => 'geolocate-city'),
-  );
-
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search'),
-  );
-
-  global $language;
-  $query = array(
-    'sensor' => 'true',
-    'v' => '3.5',
-    'region' => 'BE',
-    'hl' => $language->language,
-  );
-  $form['#attached']['js'] = array(
-    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
-    drupal_get_path('module', 'culturefeed_agenda') . '/js/search_block.js',
-    drupal_get_path('module', 'culturefeed') . '/js/common.js',
+    '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
+    '#weight' => 200,
   );
 
   global $user;
@@ -138,6 +226,23 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
   if (!empty($form_state['values']['search'])) {
     $query['search'] = $form_state['values']['search'];
+  }
+
+  $active_filters = variable_get('culturefeed_agenda_search_block_active_fields', array());
+
+  if (isset($active_filters['when'])) {
+    unset($query['facet']['datetype']);
+    if (!empty($form_state['values']['when'])) {
+      $query['facet']['datetype'][0] = $form_state['values']['when'];
+    }
+  }
+
+  if (isset($active_filters['where'])) {
+    unset($query['where']);
+
+    if (!empty($form_state['values']['where'])) {
+      $query['location'] = $form_state['values']['where'];
+    }
   }
 
   if (!empty($form_state['#domain_id'])) {
@@ -259,7 +364,10 @@ function culturefeed_agenda_block_production_program() {
 
 }
 
-function culturefeed_agenda_block_actor_search_facet() {
+/**
+ * Show the actor search block.
+ */
+function culturefeed_agenda_block_actor_search() {
 
   // Only go if we're on an agenda search page.
   if (current_path() != 'agenda/search') {
@@ -268,32 +376,25 @@ function culturefeed_agenda_block_actor_search_facet() {
 
   // Only show this block if allowed in the block settings.
   if (isset($_GET['facet']['category_eventtype_id'][0])) {
-    $current_event = $_GET['facet']['category_eventtype_id'][0];
+    $current_category = $_GET['facet']['category_eventtype_id'][0];
   }
   elseif (isset($_GET['facet']['category_id'][0])) {
-    $current_event = $_GET['facet']['category_id'][0];
+    $current_category = $_GET['facet']['category_id'][0];
   }
   else {
-    $current_event = '';
+    $current_category = '';
   }
 
-  $saved_events = variable_get('agenda_actor_search_visibility');
-  $allowed_events = array();
-
-  foreach ($saved_events as $saved_event) {
-    if ($saved_event != 0) {
-      $allowed_events[] = $saved_event;
+  $allowed_categories = variable_get('agenda_actor_search_visibility', NULL);
+  if ($allowed_categories !== NULL) {
+    if (!in_array($current_category, $allowed_categories)) {
+      return;
     }
-  }
-
-  if (!in_array($current_event, $allowed_events)) {
-    return;
   }
 
   // Create build array with actor search form and nearby actors.
   $build = array();
   $build['form'] = drupal_get_form('culturefeed_agenda_block_actor_search_form');
-  $build['actors_nearby'] = culturefeed_agenda_get_actors_nearby_for_event($current_event);
 
   return array(
     'subject' => t('Actor'),
@@ -308,8 +409,19 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
   $form = array();
 
   $form['#attached']['js'] = array(
-    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
-    drupal_get_path('module', 'culturefeed_agenda') . '/js/autocomplete_autosubmit.js',
+    array(
+      'data' => CULTUREFEED_GOOGLE_MAPS_JS_API,
+      'type' => 'external'),
+    drupal_get_path('module', 'culturefeed_agenda') . '/js/actor_autocomplete.js',
+    drupal_get_path('module', 'culturefeed') . '/js/common.js',
+    array(
+      'data' => array(
+        'culturefeed' => array(
+          'actorsSuggestUrl' => url('ajax/culturefeed-agenda/actor-suggest'),
+        ),
+      ),
+      'type' => 'setting',
+    ),
   );
   $form['#attached']['library'] = array(
     array('system', 'jquery.cookie'),
@@ -324,10 +436,51 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
     '#autocomplete_path' => 'autocomplete/culturefeed/agenda/actor-search'
   );
 
+  $form['#suffix'] = '<div id="actor-search-suggest"></div>';
+
   return $form;
 }
 
+/**
+ * Show a block with event types.
+ */
+function culturefeed_agenda_block_event_types() {
 
+  $eventtypes = variable_get('agenda_menu_event_types', array());
+  if (empty($eventtypes)) {
+    return;
+  }
 
+  $query = db_select('culturefeed_search_terms', 'cst');
+  $query->fields('cst', array('tid', 'name', 'slug', 'p1'));
+  $query->condition("cst.did", "eventtype");
+  $query->condition("cst.language", culturefeed_search_get_preferred_language());
+  $db_or = db_or();
+  $db_or->condition('cst.tid', $eventtypes, 'IN');
+  $db_or->condition('cst.p1', $eventtypes, 'IN');
 
+  $query->condition($db_or);
+  $result = $query->execute();
 
+  $items = array();
+  foreach ($result as $row) {
+    if (empty($row->p1)) {
+      $items[$row->tid]['item'] = $row;
+    }
+    else {
+      $items[$row->p1]['children'][$row->tid]['item'] = $row;
+    }
+  }
+
+  if (!empty($items)) {
+    return array(
+      'content' => array(
+        '#theme' => 'culturefeed_agenda_event_types',
+        '#items' => $items,
+      ),
+    );
+  }
+
+  return;
+
+}

@@ -9,6 +9,7 @@ files[] = lib/Drupal/DrupalCultureFeed.php
 files[] = lib/Drupal/DrupalCultureFeed_EntryApi.php
 files[] = lib/Drupal/DrupalCultureFeed_Cache.php
 files[] = lib/Drupal/DrupalCultureFeedPages_Cache.php
+files[] = lib/Drupal/DrupalCultureFeedSavedSearches_Cache.php
 
 configure = admin/config/culturefeed/culturefeed
 

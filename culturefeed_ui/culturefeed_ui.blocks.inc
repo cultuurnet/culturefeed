@@ -145,9 +145,14 @@ function culturefeed_ui_block_profile_box_view() {
     }
   }
   else {
+    // Get the main items. These are always visible.
+    $main_items = module_invoke_all('culturefeed_ui_anonymous_profile_box_main_items');
+    drupal_alter('culturefeed_ui_anonymous_profile_box_main_items', $main_items);
+
     $content = array(
       '#theme' => 'culturefeed_ui_anonymous_profile_box',
       '#account' => isset($cf_account) ? $cf_account : FALSE,
+      '#main_items' => $main_items,
     );
   }
 

@@ -18,9 +18,9 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
 
   // Construct the callback url.
   $options = array('absolute' => TRUE);
-
+  // Get all query params, so they are available after login.
+  $options['query'] = drupal_get_query_parameters(NULL, array('q'));
   if (isset($_GET['destination'])) {
-    $options['query']['destination'] = $_GET['destination'];
     unset($_GET['destination']);
   }
 
@@ -28,15 +28,20 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $options['query']['closepopup'] = 'true';
   }
 
-  if (isset($_GET['dob'])) {
-    $options['query']['dob'] = $_GET['dob'];
+  $skip_authorization = FALSE;
+  if (isset($_GET['skipAuthorization'])) {
+    $skip_authorization = TRUE;
   }
 
-  $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
+  $via = NULL;
+  if (isset($_GET['via'])) {
+    $via = $_GET['via'];
+  }
 
+  $full_callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), $options);
   // Fetch the request token.
   try {
-    $token = $cf->getRequestToken($callback_url);
+    $token = $cf->getRequestToken($full_callback_url);
   }
   catch (Exception $e) {
     drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
@@ -54,17 +59,8 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
   $_SESSION['oauth_token'] = $token['oauth_token'];
   $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
-  $via = NULL;
-  if (isset($_GET['via'])) {
-    $via = $_GET['via'];
-  }
-
-  $skip_authorization = FALSE;
-  if (isset($_GET['skipAuthorization'])) {
-    $skip_authorization = TRUE;
-  }
-
   // Fetch the authorisation url...
+  $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), array('absolute' => TRUE));
   $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via, culturefeed_get_preferred_language(), variable_get('culturefeed_api_application_key', ''));
 
   // ... and redirect the user to it.
@@ -78,6 +74,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
   $conf['cache'] = FALSE;
 
   if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
+
     // If an application key was passed, fetch the shared secret for it.
     $shared_secret = NULL;
 
@@ -97,7 +94,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
       watchdog_exception('culturefeed', $e);
 
-      drupal_goto();
+      drupal_goto('');
     }
 
     // Check if the user is already known in our system.
@@ -108,10 +105,10 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       $account = culturefeed_create_user($cf_account, $user);
     }
     else {
-      
+
       $cf_uid = db_query("SELECT cf_uid FROM {culturefeed_user} cfu WHERE cfu.uid = :uid", array(':uid' => $user->uid))->fetchField();
-      
-      // If the drupal user already exist with another cf_uid we update the reference 
+
+      // If the drupal user already exist with another cf_uid we update the reference
       if (!$cf_uid && $user->uid && $user->uid != $uid) {
         $query = db_update('culturefeed_user')
           ->condition('cf_uid', $cf_account->id)
@@ -153,9 +150,8 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       user_login_finalize();
 
       if (isset($_GET['closepopup'])) {
-
         if (isset($_GET['destination'])) {
-          $action = 'window.opener.location.href="' . url($_GET['destination'], array('absolute' => TRUE)) . '";';
+          $action = 'window.opener.location.href="' . url($_GET['destination']) . '";';
         }
         else {
 
@@ -163,7 +159,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
           drupal_alter('culturefeed_login_redirect_destination', $destination);
 
           if (!empty($destination)) {
-            $action = 'window.opener.location.href="' . url($destination, array('absolute' => TRUE)) . '";';
+            $action = 'window.opener.location.href="' . url($destination) . '";';
           }
           else {
             $action = 'window.opener.location.reload();';
@@ -185,7 +181,7 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       }
       else {
         if (isset($_GET['destination'])) {
-          drupal_goto($_GET['destination']);
+          drupal_goto();
         }
         else {
           $destination = '';

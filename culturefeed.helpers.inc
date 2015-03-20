@@ -275,7 +275,7 @@ function culturefeed_acceptance_mode() {
 
   // Get culturefeed_api_location
   $location = variable_get('culturefeed_api_location');
-  if (strpos($location,'www') === false) {
+  if (strpos($location,'www') === FALSE) {
     return TRUE;
   }
 
@@ -418,3 +418,27 @@ function culturefeed_external_image_style($image_url, $image_style) {
   return image_style_url($image_style, $local_uri);
 
 }
+
+/**
+ * Ajax command for a modal.
+ * This will check if culturefeed_bootstrap's modal command is available.
+ * If not, it will do a html insert.
+ */
+function culturefeed_ajax_command_modal($selector, $html) {
+  return array(
+    'command' => 'culturefeedModal',
+    'selector' => $selector,
+    'data' => $html,
+  );
+}
+
+/**
+ * Ajax command to reload current page.
+ */
+function culturefeed_ajax_command_goto($url) {
+  return array(
+    'command' => 'culturefeedGoto',
+    'url' => $url,
+  );
+}
+
