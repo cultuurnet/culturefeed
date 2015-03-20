@@ -24,7 +24,6 @@ function culturefeed_uitpas_toggle_reminder() {
 
   user_cookie_save($values);
 
-  dpm($_SERVER['HTTP_REFERER']);
   $referrer = $_SERVER['HTTP_REFERER'];
 
   if (!$referrer) {

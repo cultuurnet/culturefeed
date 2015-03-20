@@ -59,6 +59,12 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
     $cid_base = $this->getCacheCidBase($cid_base);
     $this->cacheClear($cid_base, TRUE);
   }
+  
+  protected function cacheClearTemplates() {
+    $cid_base = 'template:';
+    $cid_base = $this->getCacheCidBase($cid_base);
+    $this->cacheClear($cid_base, TRUE);
+  }
 
   protected function cacheClearMailings() {
     $cid_base = 'mailing:';
@@ -145,6 +151,24 @@ class DrupalCultureFeed_Cache extends CultureFeed_ICultureFeedDecoratorBase {
     $this->cacheSet($cid, $data, REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
 
     return $data;
+  }
+  
+  public function createTemplate(CultureFeed_Template $template) {
+    parent::createTemplate($template);
+
+    $this->cacheClearTemplates();
+  }
+
+  public function updateTemplate(CultureFeed_Template $template, $fields = array()) {
+    parent::updateTemplate($template, $fields);
+
+    $this->cacheClearTemplates();
+  }
+
+  public function deleteTemplate($id) {
+    parent::deleteTemplate($id);
+
+    $this->cacheClearTemplates();
   }
 
   public function createMailing(CultureFeed_Mailing $mailing) {
