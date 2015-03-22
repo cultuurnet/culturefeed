@@ -605,7 +605,8 @@ function culturefeed_search_ui_block_configure($delta) {
       $form[$config_label][$i]['api-filter-query'] = array(
         '#title' => t('Filterquery for API'),
         '#type' => 'textfield',
-        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
+        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : '', 
+        '#maxlength' => 255
       );
     }
 
