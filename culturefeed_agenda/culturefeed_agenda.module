@@ -424,18 +424,8 @@ function culturefeed_agenda_block_configure($delta) {
     $form['agenda_related_activities_sort'] = array(
       '#title' => t('Sort field'),
       '#type' => 'textfield',
-      '#default_value' => variable_get('agenda_related_activities_sort'),
+      '#default_value' => variable_get('agenda_related_activities_sort') . (!empty(variable_get('agenda_related_activities_sort_direction')) ? ' ' . variable_get('agenda_related_activities_sort_direction') : ''),
       '#description' => t('Field to sort on. Example startdate'),
-    );
-
-    $form['agenda_related_activities_sort_direction'] = array(
-      '#title' => t('Sort direction'),
-      '#type' => 'select',
-      '#options' => array(
-        \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC => t('Ascending'),
-        \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC => t('Descending'),
-      ),
-      '#default_value' => variable_get('agenda_related_activities_sort_direction', 'asc'),
     );
 
     $form['agenda_related_activities_total_items'] = array(
@@ -605,7 +595,7 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_related_activities_range', $edit['agenda_related_activities_range']);
     variable_set('agenda_related_activities_extra_query', $edit['agenda_related_activities_extra_query']);
     variable_set('agenda_related_activities_sort', $edit['agenda_related_activities_sort']);
-    variable_set('agenda_related_activities_sort_direction', $edit['agenda_related_activities_sort_direction']);
+    variable_set('agenda_related_activities_sort_direction', '');
     variable_set('agenda_related_activities_total_items', $edit['agenda_related_activities_total_items']);
 
   }
