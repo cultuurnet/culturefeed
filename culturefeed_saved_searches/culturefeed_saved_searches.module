@@ -89,6 +89,15 @@ function culturefeed_saved_searches_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  $items['culturefeed/searches/%culturefeed_saved_searches_search'] = array(
+    'title' => 'saved search',
+    'page callback' => 'culturefeed_saved_searches_redirect',
+    'page arguments' => array(2),
+    'access callback' => 'culturefeed_is_culturefeed_user', // access check is done on service.
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   return $items;
 
 }
@@ -99,7 +108,7 @@ function culturefeed_saved_searches_menu() {
 function culturefeed_saved_searches_culturefeed_ui_profile_menu() {
 
   return array(
-    'pages' => array(
+    'saved_searched_pages' => array(
       'title' => t('Saved searches'),
       'url' => 'culturefeed/searches',
       'description' => t('Manage the searches that you saved.'),

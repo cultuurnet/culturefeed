@@ -127,6 +127,7 @@ function culturefeed_saved_searches_page_my_searches() {
       '#theme' => 'culturefeed_saved_searches_manage_list',
       '#searches' => DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList(),
     );
+    dsm(DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList());
 
   }
   catch (Exception $e) {
@@ -135,6 +136,13 @@ function culturefeed_saved_searches_page_my_searches() {
 
   return $build;
 
+}
+
+/**
+ * Page callback to view a given search.
+ */
+function culturefeed_saved_searches_redirect(CultureFeed_SavedSearches_SavedSearch $search) {
+  drupal_goto('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search)));
 }
 
 /**
