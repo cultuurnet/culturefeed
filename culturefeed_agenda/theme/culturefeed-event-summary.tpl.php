@@ -11,7 +11,7 @@
 
 <div class="event-teaser">
 
-  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid))); ?></h2>
+  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid), 'html' => TRUE)); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">

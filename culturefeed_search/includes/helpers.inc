@@ -904,8 +904,20 @@ function culturefeed_search_acceptance_mode() {
 
   // Get culturefeed_search_api_location
   $location = variable_get('culturefeed_search_api_location');
-  if (strpos($location,'www') === FALSE) {
+  if (strpos($location,'www') === false) {
     return TRUE;
+  }
+
+  // Check for acc or dev environments that are connected with production
+  else {
+    global $base_root;
+    $dev_ids = array('culturefeed', 'dev.', 'acc.');
+    foreach($dev_ids as $id) {
+      if (stripos($base_root, $id) !== false) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
 }
