@@ -354,11 +354,10 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     /*if ($info = $event->getAvailableFrom()) {
 	  $publication_date = $event->getAvailableFrom();
     }
-    
-    var_dump($publication_date);*/
-
+   */
   }
 
+  /**
   // Build the form.
 
   // Basic.
@@ -842,7 +841,7 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('I agree to the <a href="http://www.uitdatabank.be/uitportal/legal.aspx">terms & conditions</a> and I declare that I have the necessary rights or permissions to distribute the image.'),
   );
 
-  // Price  
+  // Price
   $form['extra']['price'] = array(
     '#tree' => TRUE,
     '#type' => 'container',
@@ -2205,7 +2204,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     else {
       $physical_address->setCity($values['location']['new']['citywrapper']['city']);
       if(empty($values['location']['new']['citywrapper']['zip_code'])) {
-        $physical_address->setZip('0000');  
+        $physical_address->setZip('0000');
       }
       else {
         $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
@@ -2295,7 +2294,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     form_set_error('', t('An error occurred while saving the event'));
   }
 
-  // Delete files from file system 
+  // Delete files from file system
   if ($form_state['values']['photo']['upload']) {
     $file = file_load($form_state['values']['photo']['upload']);
     file_delete($file);
