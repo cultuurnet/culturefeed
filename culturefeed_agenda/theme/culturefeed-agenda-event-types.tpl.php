@@ -6,10 +6,10 @@
  */
 
 ?>
-<div class="row">
+<div>
 <?php foreach ($items as $tid => $item) : ?>
 
-  <div class="col-xs-12 col-md-4">
+  <div>
     <h2><?php print $item['item']->name; ?></h2>
     <?php if (!empty($item['children'])): ?>
     <ul>
