@@ -1,13 +1,13 @@
 Culturefeed
 ===========
 
-[![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
+[![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://api.travis-ci.org/cultuurnet/culturefeed.svg?branch=master)
 
 Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. For this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
 
-__[Live demo connecting production API](http://www.culturefeed.be/)__
+__[Live demo connecting production API](http://www.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__
 
-__[Live demo connecting acceptance API](http://acc.culturefeed.be/)__
+__[Live demo connecting acceptance API](http://acc.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__
 
 
 
