@@ -280,7 +280,11 @@ msgstr "Wijzig plaats"
 msgid "All categories"
 msgstr "Alle categorieën"
 
-#: includes/blocks.inc:153;433
+#: includes/blocks.inc:153
+msgid "What"
+msgstr "Wat"
+
+#: includes/blocks.inc:433
 msgid "Search string"
 msgstr "Zoekopdracht"
 
