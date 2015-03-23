@@ -7,8 +7,12 @@
 ?>
 
 <div class="<?php print $classes; ?>" data-eventid="<?php print $event_id; ?>">
-  <?php if (isset($button['description'])) : ?>
-    <?php print $button['description']; ?>
+  <?php if ($finished) : ?>
+    <?php print $finished_message; ?>
+  <?php else : ?>
+    <?php if (isset($button['description'])) : ?>
+      <?php print $button['description']; ?>
+    <?php endif; ?>
+    <?php print l($button['text'], $button['path'], $button['options']); ?>
   <?php endif; ?>
-  <?php print l($button['text'], $button['path'], $button['options']); ?>
 </div>

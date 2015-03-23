@@ -190,6 +190,28 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       }
     }
   }
+  
+  $event_is_passed = FALSE;
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      if ($event->getAvailableTo() < $objDateTime->format('c')) {
+        $event_is_passed = TRUE;
+      }
+      /*$calendar = $event->getCalendar();
+      foreach ($calendar as $calendar_item) {
+        print(get_class($calendar_item));
+        if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && $calendar_item->getDateTo() < $objDateTime->format('c')) {
+          //OPEN_TYPE_CLOSED
+          dsm($calendar_item->getDateTo());
+        }
+        elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
+          dsm($calendar_item->getDate());
+        }
+      }*/
+    }
+  }
 
   foreach ($locations as $location) {
 
@@ -206,13 +228,13 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       }
 
       $button['action'] = $action;
-      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
+      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
     }
     // Show both buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
       }
     }
   }
