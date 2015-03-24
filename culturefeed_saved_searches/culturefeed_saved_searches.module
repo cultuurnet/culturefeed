@@ -64,7 +64,6 @@ function culturefeed_saved_searches_menu() {
 
   $items['culturefeed/savesearch'] = array(
     'title' => 'Save search',
-    'title callback' => FALSE,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_saved_searches_save_search_form'),
     'file' => 'includes/pages.inc',
