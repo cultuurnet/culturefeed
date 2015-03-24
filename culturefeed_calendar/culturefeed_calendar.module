@@ -183,9 +183,9 @@ function culturefeed_calendar_theme() {
 function culturefeed_calendar_culturefeed_ui_profile_menu() {
 	return array(
 		'calendar' => array(
-			'title' => t('My Calendar'),
+			'title' => t('My calendar'),
 			'url' => 'culturefeed/calendar',
-			'description' => t('View & manage your favorite events in your personal calendar'),
+			'description' => t('Manage your favorite events in your personal calendar'),
 			'weight' => 5,
 		),
 	);
