@@ -19,42 +19,22 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
     try {
 
       $types = !empty($type) ? array($type) : array();
+      $extra_parameters[] = !empty($all) ? new \CultuurNet\Search\Parameter\Parameter('admin','true') : array();
       
-      if (!$all) {
-        // Get the list of suggestions from service.
-        $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
-        if ($suggestions->hasSuggestions()) {
-          foreach ($suggestions as $suggestion) {
-            $title = $location_title = check_plain($suggestion->getTitle());
-            $location = $suggestion->getLocation();
-            if (!empty($location)) {
-              $location_title .= ' - <small class="muted">(' . $location . ')<small>';
-            }
-            $object = new stdClass();
-            $object->title = $title;
-            $object->key = $suggestion->getCdbId();
-            $object->locationTitle = $location_title;
-            $matches[$suggestion->getCdbId()] = $object;
+      // Get the list of suggestions from service.
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past, $extra_parameters);
+      if ($suggestions->hasSuggestions()) {
+        foreach ($suggestions as $suggestion) {
+          $title = $location_title = check_plain($suggestion->getTitle());
+          $location = $suggestion->getLocation();
+          if (!empty($location)) {
+            $location_title .= ' - <small class="muted">(' . $location . ')<small>';
           }
-        }
-      }
-      else {
-        $client = new Client();
-        $client->setDefaultHeaders(array('Accept' => 'application/json'));
-        $body = json_decode($client->get('http://search-prod.lodgon.com/search/rest/search/suggest/item?title=' . $search_string . '&fq=type:actor%20asset:true')->send()->getBody(TRUE));
-        if ($body->suggestions) {
-          foreach ($body->suggestions as $suggestion) {
-            $title = $location_title = check_plain($suggestion->value);
-            $location = $suggestion->zipcode;
-            if (!empty($location)) {
-              $location_title .= ' - <small class="muted">(' . $location . ')<small>';
-            }
-            $object = new stdClass();
-            $object->title = $title;
-            $object->key = $suggestion->cdbid;
-            $object->locationTitle = $location_title;
-            $matches[$suggestion->cdbid] = $object;
-          }
+          $object = new stdClass();
+          $object->title = $title;
+          $object->key = $suggestion->getCdbId();
+          $object->locationTitle = $location_title;
+          $matches[$suggestion->getCdbId()] = $object;
         }
       }
 
