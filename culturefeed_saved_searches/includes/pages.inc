@@ -127,7 +127,6 @@ function culturefeed_saved_searches_page_my_searches() {
       '#theme' => 'culturefeed_saved_searches_manage_list',
       '#searches' => DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList(),
     );
-    dsm(DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList());
 
   }
   catch (Exception $e) {
