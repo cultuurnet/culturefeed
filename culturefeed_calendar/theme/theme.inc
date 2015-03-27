@@ -113,6 +113,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     'calendar-button',
     'calendar-button-' . $variables['button']['location'],
   );
+  $variables['finished'] = FALSE;
 
   if ($variables['closed']) {
     $variables['finished_message'] = '';

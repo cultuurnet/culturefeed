@@ -173,7 +173,6 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $locations = array('content', 'footer');
   $actions = array('view', 'add');
   $buttons = array();
   $button = array();
@@ -190,7 +189,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       }
     }
   }
-  
+
   $event_is_passed = FALSE;
   if ($item->getType() == 'event') {
     $event = $item->getEntity();
@@ -199,20 +198,37 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       if ($event->getAvailableTo() < $objDateTime->format('c')) {
         $event_is_passed = TRUE;
       }
-      /*$calendar = $event->getCalendar();
-      foreach ($calendar as $calendar_item) {
-        print(get_class($calendar_item));
-        if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && $calendar_item->getDateTo() < $objDateTime->format('c')) {
-          //OPEN_TYPE_CLOSED
-          dsm($calendar_item->getDateTo());
+      $calendar = $event->getCalendar();
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        $event_is_passed = TRUE;
+        foreach ($calendar as $calendar_item) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && $calendar_item->getDateTo() < $objDateTime->format('c')) {
+            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $_SERVER['REQUEST_TIME']) {
+              $event_is_passed = FALSE;
+              break;
+            }
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
+            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $_SERVER['REQUEST_TIME']) {
+              $event_is_passed = FALSE;
+              break;
+            }
+          }
         }
-        elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
-          dsm($calendar_item->getDate());
-        }
-      }*/
+
+      }
     }
   }
 
+  // When event is passed, show only a message in the footer.
+  if ($event_is_passed) {
+    $locations = array('footer');
+  }
+  else {
+    $locations = array('content', 'footer');
+  }
   foreach ($locations as $location) {
 
     $button['location'] = $location;
