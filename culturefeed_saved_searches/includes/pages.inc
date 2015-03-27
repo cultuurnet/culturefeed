@@ -138,6 +138,13 @@ function culturefeed_saved_searches_page_my_searches() {
 }
 
 /**
+ * Page callback to view a given search.
+ */
+function culturefeed_saved_searches_redirect(CultureFeed_SavedSearches_SavedSearch $search) {
+  drupal_goto('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search)));
+}
+
+/**
  * Form callback to delete a given search.
  */
 function culturefeed_saved_searches_delete_form($form, &$form_state, CultureFeed_SavedSearches_SavedSearch $search) {
