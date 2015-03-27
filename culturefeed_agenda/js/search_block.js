@@ -5,25 +5,17 @@
 
   $(document).ready(function() {
 
-    var $nearby_checkbox = $('#culturefeed-agenda-search-block-form').find('input[name="nearby"]');
+    var $nearby_link = $('#culturefeed-agenda-search-block-form').find('.search-find-location');
     if (navigator.geolocation) {
 
-      $nearby_checkbox.bind('change', function() {
-
-        if (this.checked) {
-          $('label[for="edit-nearby"]').append('<span id="current-location" class="loading-location throbber">Loading...</span>');
-          Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.setLocationAutocomplete);
-       }
-
+      $nearby_link.bind('click', function() {
+        $nearby_link.append(' <span id="current-location" class="loading-location throbber">Loading...</span>');
+        Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.setLocationAutocomplete);
      });
-
-     if ($nearby_checkbox.is(':checked')) {
-       $nearby_checkbox.trigger('change');
-     }
 
     }
     else {
-      $nearby_checkbox.parent().hide();
+      $nearby_link.hide();
     }
 
   });
