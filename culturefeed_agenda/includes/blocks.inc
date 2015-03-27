@@ -183,7 +183,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     );
 
     $form['location']['nearby'] = array(
-      '#markup' => '<a href="#" class="search-find-location">' . check_plain(t('Use my current location')) . '</a>',
+      '#markup' => '<a href="#" class="search-find-location"><span>' . check_plain(t('Use my current location')) . '</span></a>',
     );
 
     // Add js for geolocate.
