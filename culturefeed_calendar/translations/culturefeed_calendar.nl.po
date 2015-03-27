@@ -87,7 +87,7 @@ msgstr "Toevoegen"
 
 #: includes/pages.inc:154;442
 msgid "The event has been added to your calendar."
-msgstr "Dit event is reeds toegevoegd aan je kalender"
+msgstr "Dit event is toegevoegd aan je kalender"
 
 #: includes/pages.inc:157;445
 msgid "There was an error while adding to your calendar"
