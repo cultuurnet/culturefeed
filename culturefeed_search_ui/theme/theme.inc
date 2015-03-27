@@ -406,8 +406,8 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   }
 
   // When the facet is datetype, we don't want to keep a date range filter..
-  if ($facet_key == 'datetype' && isset($query['date_range'])) {
-    unset($query['date_range']);
+  if ($facet_key == 'datetype') {
+    unset($query['date_from'], $query['date_to']);
   }
 
   // Agefrom facet is active when min_age is given.

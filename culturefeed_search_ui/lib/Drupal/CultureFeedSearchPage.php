@@ -398,27 +398,16 @@ class CultureFeedSearchPage {
   protected function addFacetFilters($params) {
 
     // Add the date range facet.
-    if (isset($params['date_range'])) {
+    if (!empty($params['date_from']) && !empty($params['date_to'])
+        && ($startDate = DateTime::createFromFormat('d/m/Y', $params['date_from']))
+        && ($endDate = DateTime::createFromFormat('d/m/Y', $params['date_to']))) {
+      // Set start date time on beginning of the day.
+      $startDate->setTime(0, 0, 1);
 
-      $dates = explode('-', $params['date_range']);
-      $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-      if ($startDate) {
-        $endDate = clone $startDate;
-        if (isset($dates[1])) {
-          $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
-          if ($endDateTime) {
-            $endDate = $endDateTime;
-          }
-        }
+      // Set end date time to end of the day day, to it searches on full day.
+      $endDate->setTime(23, 59, 59);
 
-        // Set start date time on beginning of the day.
-        $startDate->setTime(0, 0, 1);
-
-        // Set end date time to end of the day day, to it searches on full day.
-        $endDate->setTime(23, 59, 59);
-
-        $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
-      }
+      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
     }
 
     // Add search on coordinates.

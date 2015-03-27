@@ -967,13 +967,15 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if user is filtering on date range.
-  if (!empty($query['date_range'])) {
+  if (!empty($query['date_from']) && !empty($query['date_to'])
+      && DateTime::createFromFormat('d/m/Y', $query['date_from'])
+      && DateTime::createFromFormat('d/m/Y', $query['date_to'])) {
     $search_query = $query;
-    unset($search_query['date_range']);
+    unset($search_query['date_from'], $search_query['date_to']);
     $url = url($path, array('query' => $search_query));
     $build['date_search'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $query['date_range'],
+      '#label' => $query['date_from'] . ' - ' . $query['date_to'],
       '#url' => $url
     );
   }
