@@ -228,10 +228,17 @@ function culturefeed_search_ui_date_facet_form() {
     '#default_value' => isset($_GET['date_to']) ? $_GET['date_to'] : '',
     '#attributes' => array('placeholder' => t('And'), 'autocomplete' => 'off'),
   );
-
+  $form['date_range'] = array(
+    '#markup' => l('<span>' . t('Specific dates') . '</span>', 'javascript:', array(
+      'html' => TRUE,
+      'external' => TRUE,
+      'attributes' => array('id' => 'specific-dates-range'),
+    )),
+  );
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#attributes' => array('id' => 'submit-specific-dates'),
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
