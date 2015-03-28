@@ -13,13 +13,19 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
 
 
   // Check if we need to show the calendar for the logged in user or for another user.
-  if (isset($variables['user_id'])) {
-    $my_calendar = FALSE;
-    $cf_user = DrupalCultureFeed::getUser($variables['user_id']);
+  try {
+    if (isset($variables['user_id'])) {
+      $my_calendar = FALSE;
+      $cf_user = DrupalCultureFeed::getUser($variables['user_id']);
+    }
+    else {
+      $my_calendar = TRUE;
+      $cf_user = DrupalCultureFeed::getLoggedInUser();
+    }
   }
-  else {
-    $my_calendar = TRUE;
-    $cf_user = DrupalCultureFeed::getLoggedInUser();
+  catch (Exception $e) {
+    $variables['deny_access'] = TRUE;
+    return;
   }
 
   // Check if another persons calendar is shared.
@@ -85,7 +91,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $variables['share_calendar_path'] = 'culturefeed/calendar/share';
     $variables['calendar_settings_path'] = 'culturefeed/calendar/settings';
 
-    if (!empty($cf_user->calendarId)) {
+    if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
       $variables['shared'] = TRUE;
     }
     else {
@@ -268,18 +274,18 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$var
 function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$variables) {
 
   try {
-    $cf_user = DrupalCultureFeed::getUser(DrupalCultureFeed::getLoggedInUserId());
+    $cf_user = DrupalCultureFeed::getLoggedInUser();
   }
-  catch (Exception $ex) {
+  catch (Exception $e) {
     drupal_set_message(t('There was an error while searching the user'), 'error');
   }
 
   $variables['back_to_calendar_path'] =  'culturefeed/calendar';
-
-  $variables['shared'] = $cf_user->calendarId;
+  $variables['shared'] = FALSE;
   // Calendar is public.
-  if ($cf_user->calendarId != '') {
+  if ($cf_user && $cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
 
+    $variables['shared'] = TRUE;
     $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
     $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
 
