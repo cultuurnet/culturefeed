@@ -27,8 +27,10 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
    */
   Drupal.CulturefeedSearch.bindDatePicker = function() {
     var format = 'DD/MM/YYYY';
-    var from = $('#edit-date-from').val();
-    var to = $('#edit-date-to').val();
+    var from = moment($('#edit-date-from').val(), format, true).isValid()
+      ? $('#edit-date-from').val() : null;
+    var to = moment($('#edit-date-to').val(), format, true).isValid()
+      ? $('#edit-date-to').val() : null;
 
     $('#edit-date-from').hide();
     $('#edit-date-to').hide();
