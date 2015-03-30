@@ -178,6 +178,35 @@ function culturefeed_calendar_theme() {
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_menu().
+ */
+function culturefeed_calendar_culturefeed_ui_profile_menu() {
+	return array(
+		'calendar' => array(
+			'title' => t('My Calendar'),
+			'url' => 'culturefeed/calendar',
+			'description' => t('View & manage your favorite events in your personal calendar'),
+			'weight' => 5,
+		),
+	);
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_calendar_culturefeed_ui_profile_box_dropdown_items() {
+	$items = array();
+
+	$items['calendar'] = array(
+		'data' => l(t('My calendar'), 'culturefeed/calendar'),
+		'class' => 'calendar',
+		'weight' => 15,
+	);
+
+	return $items;
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_box_main_items().
  */
 function culturefeed_calendar_culturefeed_ui_profile_box_main_items() {

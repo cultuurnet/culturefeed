@@ -46,7 +46,7 @@ function culturefeed_search_views_data() {
       ),
     );
   }
-  
+
   // Keywords
   $data['cdb_items']['tags'] = array(
     'title' => t('Tags'),
@@ -85,7 +85,7 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_filter_culturefeed_search_city',
     ),
   );
-  
+
   // Created by field.
   $data['cdb_items']['createdby'] = array(
     'title' => t('Created by'),
@@ -143,6 +143,15 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_filter_culturefeed_search_free',
     ),
   );
+
+	// Filter on events with images.
+	$data['cdb_items']['hasimage'] = array(
+		'title' => t('Has Image'),
+		'help' => t('Perform a search on events with images.'),
+		'filter' => array(
+			'handler' => 'views_handler_filter_culturefeed_search_hasimage',
+		),
+	);
 
   // Filter on dates
   $data['cdb_items']['datetype'] = array(

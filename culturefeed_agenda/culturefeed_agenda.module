@@ -724,7 +724,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
       unset($search_query['actor']);
       $url = url($path, array('query' => $search_query));
       $build['nearby'] = array(
-        '#theme' => 'cul  turefeed_search_active_filters_item',
+        '#theme' => 'culturefeed_search_active_filters_item',
         '#label' => check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
         '#url' => $url,
       );

@@ -267,7 +267,7 @@ function culturefeed_social_page_activity_delete_confirm_form($form, &$form_stat
   $form['decline'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
-    '#href' => url($destination['destination']),
+    '#href' => url($GLOBALS['base_url'] . '/' . $destination['destination']),
     '#attributes' => array('class' => array('button-decline')),
   );
 

@@ -24,7 +24,7 @@ function culturefeed_saved_searches_save_search_form() {
     '#default_value' => isset($params['title']) ? $params['title'] : '',
   );
   $form['save_search_notification_frequency'] = array(
-    '#title' => t('Stuur UiTalerts bij nieuwe resultaten:'),
+    '#title' => t('Send mailalert with new results:'),
     '#type' => 'select',
     '#options' => culturefeed_saved_searches_frequency_options(),
   );
@@ -40,7 +40,7 @@ function culturefeed_saved_searches_save_search_form() {
   );
   $form['save_search_email']['pre'] = array(
     '#type' => 'item',
-    '#markup' => '<span>' . t('UiTalerts worden verstuurd naar:') .'</span>',
+    '#markup' => '<span>' . t('Mailalerts will be sent to:') .'</span>',
   );
   $form['save_search_email']['email'] = array(
     '#type' => 'item',
@@ -50,7 +50,7 @@ function culturefeed_saved_searches_save_search_form() {
 
   $form['save_search_info'] = array(
     '#type' => 'item',
-    '#markup' => '<ul><li>' . t('Als er geen nieuwe resultaten zijn, sturen we geen UiTalert') . '</li><li>' . t('Je kan je via elke UiTalert uitschrijven voor deze dienst') . '</li></ul>',
+    '#markup' => '<ul><li>' . t('We won\'t send emails when there are no new results') . '</li><li>' . t('You can unsubscribe for this service in any mail you will receive') . '</li></ul>',
     '#states' => array(
       'invisible' => array(
         ':input[name="save_search_notification_frequency"]' => array('value' => 'NEVER'),
@@ -65,14 +65,14 @@ function culturefeed_saved_searches_save_search_form() {
 
   $form['save_search_submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Bewaar'),
+    '#value' => t('Save'),
   );
 
   // Show the date tooltip only if filter on date was set.
   if (isset($params['datefilter'])) {
     $form['save_search_date_info'] = array(
       '#type' => 'item',
-      '#markup' => t('We sturen een UiTalert zodra er een nieuwe activiteit verschijnt binnen je bewaarde zoekopdracht. Hierbij wordt geen rekening gehouden met de datumfilter in je zoekopdracht.'),
+      '#markup' => t('We will send a mailalert as soon as there are new results for your search. Therefore we will ignore any date filters in your search'),
       '#states' => array(
         'invisible' => array(
           ':input[name="save_search_notification_frequency"]' => array('value' => 'NEVER'),

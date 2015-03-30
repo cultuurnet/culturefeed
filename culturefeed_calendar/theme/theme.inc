@@ -204,10 +204,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_mini(&$va
 
   // Plan link.
   $variables['edit_link']['url'] = url('culturefeed/calendar/edit/'. $activity_id . '/nojs');
-  $variables['edit_link']['text'] = t('Inplannen');
+  $variables['edit_link']['text'] = t('Schedule');
   // Remove link.
   $variables['delete_link']['url'] = url('culturefeed/calendar/delete/'. $activity_id . '/nojs');
-  $variables['delete_link']['text'] = t('Verwijderen');
+  $variables['delete_link']['text'] = t('Remove');
 
 }
 
@@ -237,11 +237,11 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Edit link.
   $variables['edit_link']['url'] = url('culturefeed/calendar/edit/'. $activity_id . '/nojs');
-  $variables['edit_link']['text'] = t('Verplaatsen');
+  $variables['edit_link']['text'] = t('Reschedule');
   $variables['edit_link']['show'] = culturefeed_calendar_event_has_multiple_dates($variables['calendar']);
   // Remove link.
   $variables['delete_link']['url'] = url('culturefeed/calendar/delete/'. $activity_id . '/nojs');
-  $variables['delete_link']['text'] = t('Verwijderen');
+  $variables['delete_link']['text'] = t('Remove');
 
 }
 
