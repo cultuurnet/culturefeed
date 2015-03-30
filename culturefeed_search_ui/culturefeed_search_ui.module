@@ -344,7 +344,10 @@ function culturefeed_search_ui_library() {
       $path . '/js/daterangepicker.js' => array(),
     ),
     'css' => array(
-      $path . '/css/daterangepicker-bs3.css' => array(),
+      $path . '/css/daterangepicker-bs3.css' => array(
+        'weight' => 100,
+        'group' => CSS_THEME,
+      ),
     ),
     'dependencies' => array(
       array('culturefeed_search_ui', 'ui.moment'),
