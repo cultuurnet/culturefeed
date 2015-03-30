@@ -1,10 +1,13 @@
 /**
-* @version: 1.3.19
+* @version: 1.3.17
 * @author: Dan Grossman http://www.dangrossman.info/
-* @copyright: Copyright (c) 2012-2015 Dan Grossman. All rights reserved.
+* @date: 2014-11-25
+* @copyright: Copyright (c) 2012-2014 Dan Grossman. All rights reserved.
 * @license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
-* @website: https://www.improvely.com/
+* @website: http://www.improvely.com/
 */
+
+/* TEMPLATE */
 
 (function(root, factory) {
 
@@ -44,23 +47,42 @@
         this.isShowing = false;
 
         //create the picker HTML object
-        var DRPTemplate = '<div class="daterangepicker dropdown-menu">' +
-                '<div class="calendar first left"></div>' +
-                '<div class="calendar second right"></div>' +
-                '<div class="ranges">' +
-                  '<div class="range_inputs">' +
-                    '<div class="daterangepicker_start_input">' +
-                      '<label for="daterangepicker_start"></label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" />' +
-                    '</div>' +
-                    '<div class="daterangepicker_end_input">' +
-                      '<label for="daterangepicker_end"></label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" />' +
-                    '</div>' +
-                    '<button class="applyBtn" disabled="disabled"></button>&nbsp;' +
-                    '<button class="cancelBtn"></button>' +
+        var DRPTemplate = '';
+
+        //create the picker HTML object
+        DRPTemplate =
+              '<div class="daterangepicker dropdown-menu">' +
+              '<div class="row">' +
+                '<div class="col-sm-6 col-xs-12">'+
+                  '<div class="daterangepicker_start_input">' +
+                    '<label for="daterangepicker_start"></label>' +
                   '</div>' +
+                  '<div class="form-group">' +
+                    '<div class="calendar first left"></div>'+
+                  '</div>'+
+                  '<div class="form-group">'+
+                  '<input class="form-control" type="text" name="daterangepicker_start" value="" />' +
+                  '</div>'+
                 '</div>' +
+                '<div class="col-sm-6 col-xs-12">' +
+                  '<div class="daterangepicker_end_input">' +
+                    '<label for="daterangepicker_end"></label>' +
+                  '</div>' +
+                  '<div class="form-group">' +
+                    '<div class="calendar second right"></div>'+
+                  '</div>'+
+                  '<div class="form-group">'+
+                  '<input class="form-control" type="text" name="daterangepicker_end" value="" />' +
+                  '</div>'+
+                '</div>' +
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-xs-12 ranges">' +
+                  '<button class="applyBtn" disabled="disabled"></button>' +
+                  ' ' +
+                  '<button class="cancelBtn"></button>' +
+                '</div>' +
+              '</div>' +
               '</div>';
 
         //custom options
@@ -128,7 +150,7 @@
 
             this.startDate = moment().startOf('day');
             this.endDate = moment().endOf('day');
-            this.timeZone = moment().utcOffset();
+            this.timeZone = moment().zone();
             this.minDate = false;
             this.maxDate = false;
             this.dateLimit = false;
@@ -146,7 +168,7 @@
             if (this.element.hasClass('pull-right'))
                 this.opens = 'left';
 
-            this.buttonClasses = ['btn', 'btn-small btn-sm'];
+            this.buttonClasses = ['btn', ''];
             this.applyClass = 'btn-success';
             this.cancelClass = 'btn-default';
 
@@ -325,10 +347,10 @@
             // bind the time zone used to build the calendar to either the timeZone passed in through the options or the zone of the startDate (which will be the local time zone by default)
             if (typeof options.timeZone === 'string' || typeof options.timeZone === 'number') {
                 this.timeZone = options.timeZone;
-                this.startDate.utcOffset(this.timeZone);
-                this.endDate.utcOffset(this.timeZone);
+                this.startDate.zone(this.timeZone);
+                this.endDate.zone(this.timeZone);
             } else {
-                this.timeZone = moment(this.startDate).utcOffset();
+                this.timeZone = moment(this.startDate).zone();
             }
 
             if (typeof options.ranges === 'object') {
@@ -415,6 +437,9 @@
             };
 
             if (this.opens == 'right' || this.opens == 'center') {
+
+                /*
+
                 //swap calendar positions
                 var first = this.container.find('.calendar.first');
                 var second = this.container.find('.calendar.second');
@@ -431,6 +456,8 @@
                     first.show();
                     second.hide();
                 }
+
+                */
             }
 
             if (typeof options.ranges === 'undefined' && !this.singleDatePicker) {
@@ -446,7 +473,7 @@
 
         setStartDate: function(startDate) {
             if (typeof startDate === 'string')
-                this.startDate = moment(startDate, this.format).utcOffset(this.timeZone);
+                this.startDate = moment(startDate, this.format).zone(this.timeZone);
 
             if (typeof startDate === 'object')
                 this.startDate = moment(startDate);
@@ -463,7 +490,7 @@
 
         setEndDate: function(endDate) {
             if (typeof endDate === 'string')
-                this.endDate = moment(endDate, this.format).utcOffset(this.timeZone);
+                this.endDate = moment(endDate, this.format).zone(this.timeZone);
 
             if (typeof endDate === 'object')
                 this.endDate = moment(endDate);
@@ -504,12 +531,12 @@
                 end = null;
 
             if(dateString.length === 2) {
-                start = moment(dateString[0], this.format).utcOffset(this.timeZone);
-                end = moment(dateString[1], this.format).utcOffset(this.timeZone);
+                start = moment(dateString[0], this.format).zone(this.timeZone);
+                end = moment(dateString[1], this.format).zone(this.timeZone);
             }
 
             if (this.singleDatePicker || start === null || end === null) {
-                start = moment(this.element.val(), this.format).utcOffset(this.timeZone);
+                start = moment(this.element.val(), this.format).zone(this.timeZone);
                 end = start;
             }
 
@@ -678,11 +705,11 @@
 
             var startDate, endDate;
             if (el.attr('name') === 'daterangepicker_start') {
-                startDate = (false !== this.minDate && date.isBefore(this.minDate)) ? this.minDate : date;
+                startDate = date;
                 endDate = this.endDate;
             } else {
                 startDate = this.startDate;
-                endDate = (false !== this.maxDate && date.isAfter(this.maxDate)) ? this.maxDate : date;
+                endDate = date;
             }
             this.setCustomDates(startDate, endDate);
         },
@@ -697,10 +724,8 @@
         updateInputText: function() {
             if (this.element.is('input') && !this.singleDatePicker) {
                 this.element.val(this.startDate.format(this.format) + this.separator + this.endDate.format(this.format));
-                this.element.trigger('change');
             } else if (this.element.is('input')) {
                 this.element.val(this.endDate.format(this.format));
-                this.element.trigger('change');
             }
         },
 
@@ -771,7 +796,7 @@
                 var difference = this.endDate.diff(this.startDate);
                 endDate = moment(startDate).add(difference, 'ms');
                 if (this.maxDate && endDate.isAfter(this.maxDate)) {
-                  endDate = this.maxDate.clone();
+                  endDate = this.maxDate;
                 }
             }
             this.startDate = startDate;
@@ -851,28 +876,6 @@
             // Month must be Number for new moment versions
             var month = parseInt(cal.find('.monthselect').val(), 10);
             var year = cal.find('.yearselect').val();
-
-            if (!isLeft && !this.singleDatePicker) {
-                if (year < this.startDate.year() || (year == this.startDate.year() && month < this.startDate.month())) {
-                    month = this.startDate.month();
-                    year = this.startDate.year();
-                }
-            }
-
-            if (this.minDate) {
-                if (year < this.minDate.year() || (year == this.minDate.year() && month < this.minDate.month())) {
-                    month = this.minDate.month();
-                    year = this.minDate.year();
-                }
-            }
-
-            if (this.maxDate) {
-                if (year > this.maxDate.year() || (year == this.maxDate.year() && month > this.maxDate.month())) {
-                    month = this.maxDate.month();
-                    year = this.maxDate.year();
-                }
-            }
-
 
             this[leftOrRight+'Calendar'].month.month(month).year(year);
             this.updateCalendars();
@@ -985,7 +988,7 @@
             if (dayOfWeek == this.locale.firstDay)
                 startDay = daysInLastMonth - 6;
 
-            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]).utcOffset(this.timeZone);
+            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]).zone(this.timeZone);
 
             var col, row;
             for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
