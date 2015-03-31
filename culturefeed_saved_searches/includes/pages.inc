@@ -97,7 +97,7 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
 
   $savedSearch->userId = $cf_account->id;
   $savedSearch->name = $form_state['values']['save_search_title'];
-  $savedSearch->query = $form_state['values']['query'] . '&group=true';
+  $savedSearch->query = $form_state['values']['query'] . '&group=true&rows=100&sort=creationdate desc';
   $savedSearch->frequency = $form_state['values']['save_search_notification_frequency'];
 
   try {
