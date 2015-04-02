@@ -195,26 +195,19 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     $event = $item->getEntity();
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
       $objDateTime = new DateTime('NOW');
-      if ($event->getAvailableTo() < $objDateTime->format('c')) {
-        $event_is_passed = TRUE;
-      }
       $calendar = $event->getCalendar();
       if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
 
         // Check if 1 of the items is still in the future.
         $event_is_passed = TRUE;
         foreach ($calendar as $calendar_item) {
-          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && $calendar_item->getDateTo() < $objDateTime->format('c')) {
-            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $_SERVER['REQUEST_TIME']) {
-              $event_is_passed = FALSE;
-              break;
-            }
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
           }
-          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
-            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $_SERVER['REQUEST_TIME']) {
-              $event_is_passed = FALSE;
-              break;
-            }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
           }
         }
 
