@@ -8,7 +8,7 @@
 
 <div class="<?php print $classes; ?>" data-eventid="<?php print $event_id; ?>">
   <?php if ($finished) : ?>
-    <?php print $finished_message; ?>
+    <?php print t('This event is already finished'); ?>
   <?php else : ?>
     <?php if (isset($button['description'])) : ?>
       <?php print $button['description']; ?>
