@@ -2,6 +2,10 @@ services:
   logger.channel.culturefeed:
     parent: logger.channel_base
     arguments: ['culturefeed']
+  culturefeed:
+    class: CultureFeed
+    factory_service: culturefeed.factory
+    factory_method: createAuthenticated
   culturefeed.oauth_client:
     class: Drupal\culturefeed\OAuthClientFactory
     arguments: ['@config.factory']
@@ -42,6 +46,10 @@ services:
     class: CultuurNet\Auth\ConsumerCredentials
     factory_service: culturefeed.consumer_credentials.factory
     factory_method: get
+  culturefeed.uitpas:
+    class: CultureFeed_Uitpas
+    factory_service: culturefeed
+    factory_method: uitpas
 
   access_check.culturefeed.current_user:
     class: Drupal\culturefeed\Access\UserAccess
