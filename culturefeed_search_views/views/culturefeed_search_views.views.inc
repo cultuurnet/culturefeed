@@ -201,6 +201,15 @@ function culturefeed_search_views_data() {
     ),
   );
 
+	// Category.
+	$data['cdb_items']['category'] = array(
+		'title' => t('Category'),
+		'help' => t('Category of the cdb item'),
+		'field' => array(
+			'handler' => 'views_handler_field_cdb_item_category',
+		),
+	);
+
   // Organiser.
   $data['cdb_items']['organiser'] = array(
     'title' => t('Organiser'),
