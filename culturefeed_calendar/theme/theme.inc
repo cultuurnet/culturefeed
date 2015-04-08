@@ -236,7 +236,12 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Activity details.
   if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
-    $variables['date'] = format_date($selected_date, 'custom', 'l j F Y H:i');
+    if (format_date($selected_date, 'custom', 'H:i') == '00:00') {
+      $variables['date'] = format_date($selected_date, 'custom', 'l j F Y');
+    }
+    else {
+      $variables['date'] = format_date($selected_date, 'custom', 'l j F Y H:i');
+    }
   }
 
   $activity_id = $activity->id;
