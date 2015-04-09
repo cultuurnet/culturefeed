@@ -55,16 +55,13 @@ function culturefeed_search_ui_init() {
 
   // Check if we are not on a staging environment
   global $base_root;
-  watchdog('culturefeed_search_ui', '$base_root: ' . $base_root);
   $staging = FALSE;
   $dev_ids = array('culturefeed', 'dev.', 'acc.');
   foreach($dev_ids as $id) {
     if (stripos($base_root, $id) !== FALSE) {
       $staging = TRUE;
-      watchdog('culturefeed_search_ui', 'stripos($base_root, $id): ' . stripos($base_root, $id));
     }
   }
-  watchdog('culturefeed_search_ui', '$staging: ' . $staging);
   if ($staging) {
     culturefeed_search_set_noindex_metatag();
   }
@@ -586,7 +583,7 @@ function culturefeed_search_ui_block_configure($delta) {
       '#tree' => TRUE,
     );
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 20; $i++) {
       $form[$config_label][$i]['exposed'] = array(
         '#title' => t('Exposed'),
         '#type' => 'checkbox',
@@ -605,7 +602,8 @@ function culturefeed_search_ui_block_configure($delta) {
       $form[$config_label][$i]['api-filter-query'] = array(
         '#title' => t('Filterquery for API'),
         '#type' => 'textfield',
-        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
+        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : '', 
+        '#maxlength' => 255
       );
     }
 

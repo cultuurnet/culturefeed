@@ -92,6 +92,11 @@ function culturefeed_saved_search_get_search_url_query($search) {
           case 'category_flandersregion_name':
             $query['location'] = $facet_value;
             break;
+            
+          // Filter location category facility Id.
+          case 'location_category_facility_id':
+            $query['facet']['location_category_facility_id'][0] = $facet_value;
+            break;
 
           // Normal facets.
           case 'category_id':
@@ -168,12 +173,9 @@ function culturefeed_saved_search_get_search_url_query($search) {
  */
 function culturefeed_saved_search_get_agefrom_value($facet_value) {
 
-  $facet_value = 'agefrom:' . $facet_value;
-
   $options = culturefeed_search_ui_get_age_range_facet_options();
   foreach ($options as $key => $option) {
-    $option['query'] = str_replace(array('(', ')', '"'), '', $option['query']);
-    if ($option['query'] == $facet_value) {
+    if ($option['range'] == $facet_value) {
       return $key;
     }
   }

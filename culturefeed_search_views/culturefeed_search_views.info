@@ -20,6 +20,7 @@ files[] = views/handlers/filter/views_handler_filter_culturefeed_search_free.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_datetype.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc
 files[] = views/handlers/filter/views_handler_filter_culturefeed_search_group.inc
+files[] = views/handlers/filter/views_handler_filter_culturefeed_search_hasimage.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_base.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_date.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_recommends.inc

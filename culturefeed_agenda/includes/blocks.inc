@@ -150,7 +150,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     $form['search'] = array(
       '#type' => 'textfield',
       '#size' => 28,
-      '#title' => t('Search string'),
+      '#title' => t('What'),
       '#default_value' => isset($_GET['search']) ? $_GET['search'] : '',
       '#weight' => $active_fields['what'],
     );
@@ -179,13 +179,11 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#type' => 'textfield',
       '#size' => 28,
       '#title' => t('Where'),
-      '#title_display' => 'invisible',
       '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
     );
 
     $form['location']['nearby'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Use my current location'),
+      '#markup' => '<a href="#" class="search-find-location"><span>' . check_plain(t('Use my current location')) . '</span></a>',
     );
 
     // Add js for geolocate.
