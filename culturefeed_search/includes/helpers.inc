@@ -823,7 +823,7 @@ function culturefeed_search_get_term_translation($tid) {
   $terms = culturefeed_search_term_translations(array($tid), TRUE);
 
   if (!isset($terms[$tid])) {
-    return false;
+    return $tid;
   }
 
   if (isset($terms[$tid][culturefeed_search_get_preferred_language()])) {
