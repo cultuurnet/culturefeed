@@ -481,6 +481,76 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     // When.
     $variables['when'] = check_plain($event_detail->getCalendarSummary());
+    
+    // Format Calendar details to readable & themable HTML.
+    $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+    
+    // Large Calendar format (for detail pages).
+    $variables['when_lg'] = '';
+    try {
+      $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    } 
+    
+    // Medium Calendar format (for event-summary on search result pages).
+    $variables['when_md'] = '';
+    try {
+      $variables['when_md'] = $html_formatter->format($calendar, 'md');
+    }
+    catch (Exception $e) {
+    }
+    
+    // Small Calendar format (for mini-summary in event teasers).
+    $variables['when_sm'] = '';
+    try {
+      $variables['when_sm'] = $html_formatter->format($calendar, 'sm');
+    }
+    catch (Exception $e) {
+    }
+    
+    // Extra Small Calendar format (for teasers that need specific "DD/MM" layout).
+    $variables['when_xs'] = '';
+    try {
+      $variables['when_xs'] = $html_formatter->format($calendar, 'xs');
+    }
+    catch (Exception $e) {
+    }
+    
+    // Format calendar to TXT
+    $txt_formatter = culturefeed_agenda_get_plain_text_calendar_formatter();
+    
+    // Large Calendar format (for detail pages).
+    $variables['when_lg_txt'] = '';
+    try {
+      $variables['when_lg_txt'] = $txt_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    } 
+    
+    // Medium Calendar format (for event-summary on search result pages).
+    $variables['when_md_txt'] = '';
+    try {
+      $variables['when_md_txt'] = $txt_formatter->format($calendar, 'md');
+    }
+    catch (Exception $e) {
+    }
+    
+    // Small Calendar format (for mini-summary in event teasers).
+    $variables['when_sm_txt'] = '';
+    try {
+      $variables['when_sm_txt'] = $txt_formatter->format($calendar, 'sm');
+    }
+    catch (Exception $e) {
+    }
+    
+    // Extra Small Calendar format (for teasers that need specific "DD/MM" layout).
+    $variables['when_xs_txt'] = '';
+    try {
+      $variables['when_xs_txt'] = $txt_formatter->format($calendar, 'xs');
+    }
+    catch (Exception $e) {
+    }
 
   }
 
@@ -523,7 +593,24 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
       if ($event) {
         $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
         if ($event_detail) {
+        
+          // Calendar.
+          if ($calendar = $event->getEntity()->getCalendar()) {
+            $variables['calendar'] = culturefeed_agenda_parse_calendar($calendar);
+          }
+
           $variables['when'] = $event_detail->getCalendarSummary();
+        
+          // Format Calendar details to readable & themable HTML.
+          $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+          
+          // Large Calendar format (for detail pages).
+          $variables['when_lg'] = '';
+          try {
+            $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
+          }
+          catch (Exception $e) {
+          } 
         }
 
         // Add location information from the event.
