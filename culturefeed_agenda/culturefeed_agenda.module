@@ -425,7 +425,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#title' => t('Sort field'),
       '#type' => 'textfield',
       '#default_value' => variable_get('agenda_related_activities_sort') . (!empty(variable_get('agenda_related_activities_sort_direction')) ? ' ' . variable_get('agenda_related_activities_sort_direction') : ''),
-      '#description' => t('Field to sort on. Example startdate'),
+      '#description' => t('Field + direction to sort on. Example permanent asc, availableto asc, weight desc'),
     );
 
     $form['agenda_related_activities_total_items'] = array(
