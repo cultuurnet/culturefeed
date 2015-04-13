@@ -863,7 +863,7 @@ function culturefeed_search_translate_facet(&$facet_items) {
     if ($facet_item->hasSubItems()) {
       $sub_items = $facet_item->getSubItems();
       foreach ($sub_items as $key => $sub_item) {
-        if (culturefeed_search_get_term_translation($sub_item->getValue())) {
+        if ($sub_item->getLabel() == culturefeed_search_get_term_translation($sub_item->getValue())) {
           $sub_item->setLabel(culturefeed_search_get_term_translation($sub_item->getValue()));
         }
         else {
