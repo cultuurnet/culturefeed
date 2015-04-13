@@ -97,7 +97,7 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
 
   $savedSearch->userId = $cf_account->id;
   $savedSearch->name = $form_state['values']['save_search_title'];
-  $savedSearch->query = $form_state['values']['query'];
+  $savedSearch->query = $form_state['values']['query'] . '&group=true&rows=100&sort=creationdate desc';
   $savedSearch->frequency = $form_state['values']['save_search_notification_frequency'];
 
   try {
@@ -135,6 +135,13 @@ function culturefeed_saved_searches_page_my_searches() {
 
   return $build;
 
+}
+
+/**
+ * Page callback to view a given search.
+ */
+function culturefeed_saved_searches_redirect(CultureFeed_SavedSearches_SavedSearch $search) {
+  drupal_goto('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search)));
 }
 
 /**

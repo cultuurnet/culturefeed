@@ -173,7 +173,6 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $locations = array('content', 'footer');
   $actions = array('view', 'add');
   $buttons = array();
   $button = array();
@@ -191,6 +190,38 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     }
   }
 
+  $event_is_passed = FALSE;
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        $event_is_passed = TRUE;
+        foreach ($calendar as $calendar_item) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+        }
+
+      }
+    }
+  }
+
+  // When event is passed, show only a message in the footer.
+  if ($event_is_passed) {
+    $locations = array('footer');
+  }
+  else {
+    $locations = array('content', 'footer');
+  }
   foreach ($locations as $location) {
 
     $button['location'] = $location;
@@ -206,13 +237,13 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       }
 
       $button['action'] = $action;
-      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
+      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
     }
     // Show both buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
       }
     }
   }

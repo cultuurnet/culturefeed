@@ -99,20 +99,25 @@ function culturefeed_search_ui_get_age_range_facet_options() {
     0 => array(
       'name' => '0-2 ' . t('year'),
       'query' => '(agefrom:[0 TO 2] OR keywords:"ook voor kinderen")',
+      'range' => '[0 TO 2]',
     ),
     3 => array(
       'name' => '3-5 ' . t('year'),
       'query' => '(agefrom:[3 TO 5] OR keywords:"ook voor kinderen")',
+      'range' => '[3 TO 5]',
     ),
     6 => array(
       'name' => '6-8 ' . t('year'),
       'query' => '(agefrom:[6 TO 8] OR keywords:"ook voor kinderen")',
+      'range' => '[6 TO 8]',
     ),
     9 => array(
       'name' => '9-11 ' . t('year'),
       'query' => '(agefrom:[9 TO 11] OR keywords:"ook voor kinderen")',
+      'range' => '[9 TO 11]',
     ),
   );
+
 }
 
 /**
@@ -390,28 +395,6 @@ function culturefeed_search_ui_get_sort_options_for_page($search_page) {
   }
 
   return $sort_options;
-
-}
-
-/**
- * Check if a block has been assigned to a region.
- *
- * @global type $theme
- * @param type $delta
- * @return type
- */
-function culturefeed_search_ui_block_is_visible($delta) {
-
-  global $theme;
-
-  $region = db_select('block', 'b')
-    ->condition('b.delta', $delta)
-    ->condition('b.theme', $theme)
-    ->fields('b', array('region'))
-    ->execute()
-    ->fetchField();
-
-  return ($region !== '-1');
 
 }
 

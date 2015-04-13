@@ -150,7 +150,14 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   }
   else {
     try {
-      culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $params['dates'][0]['date']);
+      if (!empty($params['dates'][0]['date'])) {
+        $date = $params['dates'][0]['date'];
+        if (!empty($params['dates'][0]['start'])) {
+          $date .= ' ' . $params['dates'][0]['start'];
+        }
+      }
+
+      culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $date);
       drupal_set_message(t('The event has been added to your calendar.'));
     }
     catch (Exception $e) {
@@ -289,10 +296,10 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $starthour = format_date($timestamp, 'custom', 'H:i');
         if (!empty($date['end'])) {
           $endhour = format_date(strtotime($date['date'] . ' ' . $date['end']), 'custom', 'H:i');
-          $dates[$date['date']] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
+          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
         }
         else {
-          $dates[$date['date']] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
+          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
         }
       }
       else {
@@ -726,7 +733,7 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
   $form['privacy_share']['visibility'] = array(
     '#type' => 'radios',
     '#title' => t('Who can see your calendar'),
-    '#default_value' => $cf_user->privacyConfig->calendarId,
+    '#default_value' => !empty($cf_user->privacyConfig->calendarId) ? $cf_user->privacyConfig->calendarId : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC,
     '#options' => array(
       CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE => t('Only me'),
       CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC => t('Everyone'),

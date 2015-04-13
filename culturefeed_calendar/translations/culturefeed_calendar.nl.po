@@ -18,8 +18,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-03-18 12:43+0100\n"
-"PO-Revision-Date: 2015-03-18 12:49+0100\n"
+"POT-Creation-Date: 2015-03-24 13:57+0100\n"
+"PO-Revision-Date: 2015-03-24 14:00+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,15 @@ msgstr "Verwijder uit kalender"
 
 #: culturefeed_calendar.module:78
 msgid "Add cookie events to calendar"
-msgstr ""
+msgstr "Tijdelijk opgeslagen events toevoegen aan kalender"
+
+#: culturefeed_calendar.module:186;201
+msgid "My calendar"
+msgstr "Mijn UiTkalender"
+
+#: culturefeed_calendar.module:188
+msgid "Manage your favorite events in your personal calendar"
+msgstr "Beheer je favoriete activiteiten in je persoonlijke UiTkalender"
 
 #: culturefeed_calendar.info:0
 msgid "CultureFeed Calendar"
@@ -79,7 +87,7 @@ msgstr "Toevoegen"
 
 #: includes/pages.inc:154;442
 msgid "The event has been added to your calendar."
-msgstr "Dit event is reeds toegevoegd aan je kalender"
+msgstr "Dit event is toegevoegd aan je kalender"
 
 #: includes/pages.inc:157;445
 msgid "There was an error while adding to your calendar"
@@ -196,8 +204,8 @@ msgid "There was an error while saving the form"
 msgstr "Fout bij het verzenden van dit formulier"
 
 #: theme/culturefeed-calendar-activities-going.tpl.php:18
-msgid "No events this month"
-msgstr "Nog geen evenementen deze maand"
+msgid "No events scheduled in this month"
+msgstr "Er werden nog geen activiteiten ingepland deze maand"
 
 #: theme/culturefeed-calendar-activities-liked.tpl.php:9
 msgid "Unscheduled events"
@@ -222,10 +230,10 @@ msgstr "Meer info"
 #: theme/culturefeed-calendar-button-hover.tpl.php:2
 msgid ""
 "You have temporarily added events to your calendar. Log in and save the "
-"events to you personal calendar."
+"events to your personal calendar."
 msgstr ""
-"Je hebt activiteit(en) toegevoegd aan je UiTkalender. Meld je aan om deze te "
-"bewaren in je persoonlijke kalender."
+"Je hebt activiteiten toegevoegd aan je UiTkalender. Meld je aan om deze te "
+"bewaren."
 
 #: theme/culturefeed-calendar-button-hover.tpl.php:5
 msgid "Log in"
