@@ -264,6 +264,14 @@ function culturefeed_search_views_data() {
     ),
   );
 
+	$data['cdb_items']['weight_sort'] = array(
+		'title' => t('Weight'),
+		'help' => t('Sort on weight.'),
+		'sort' => array(
+			'handler' => 'views_handler_sort_culturefeed_search_weight'
+		),
+	);
+
   return $data;
 
 }

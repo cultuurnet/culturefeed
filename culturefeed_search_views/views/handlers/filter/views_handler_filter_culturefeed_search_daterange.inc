@@ -166,14 +166,22 @@ class views_handler_filter_culturefeed_search_daterange extends views_handler_fi
 			}
 
 			// Set start date time on beginning of the day.
-			$startDate->setTime(0, 0, 1);
+			if (!empty($startDate)) {
+				$startDate->setTime(0, 0, 1);
+			}
 
 			// Set end date time to end of the day day, to it searches on full day.
-			$endDate->setTime(23, 59, 59);
+			if (!empty($endDate)) {
+				$endDate->setTime(23, 59, 59);
+			}
 
-			$parameter = new \CultuurNet\Search\Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
+			if (!empty($startDate) && !empty($endDate)) {
+				$parameter = new \CultuurNet\Search\Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
+			}
 
-			$this->query->add_parameter($parameter);
+			if (isset($parameter)) {
+				$this->query->add_parameter($parameter);
+			}
 		}
 		else if ($this->option_absolute == 1) {
 			$now = new DateTime();
