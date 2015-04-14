@@ -34,7 +34,7 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
     $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
     // Temporary workaround to set CDB to 3.3
     $clientFactory = $service->getHttpClientFactory();
-    $clientFactory->addSubscriber(new \CultuurNet\Cdb\CdbEventSubscriber());
+    $clientFactory->addSubscriber(new CdbEventSubscriber());
     $service->setHttpClientFactory($clientFactory);
 
     module_invoke_all('culturefeed_search_service_created', $service);

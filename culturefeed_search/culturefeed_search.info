@@ -11,3 +11,4 @@ files[] = lib/Drupal/DrupalCultureFeedSearchService.php
 files[] = lib/Drupal/DrupalCultureFeedSearchService_Cache.php
 files[] = lib/Drupal/DrupalNodeExtendedEntity.php
 files[] = lib/Drupal/GenericContentExtendedEntity.php
+files[] = lib/Drupal/CdbEventSubscriber.php
