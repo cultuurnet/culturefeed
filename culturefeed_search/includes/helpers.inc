@@ -609,7 +609,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
-  $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+	$query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
   if(!$include_regions) {
     $query->isNotNull('p1');
@@ -634,6 +634,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
   }
+
+	foreach ($suggestions as $key => $suggestion) {
+		if (strtolower($suggestion) == strtolower($search_string)) {
+			$val = $suggestion;
+			unset($suggestion);
+			$suggestions = array($key => $val) + $suggestions;
+		}
+	}
 
   return $suggestions;
 
