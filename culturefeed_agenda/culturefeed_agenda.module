@@ -420,11 +420,15 @@ function culturefeed_agenda_block_configure($delta) {
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
       '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
+    
+    // sort_direction is no longer a seperate field. Add it to the sort field if variable exists.
+    $sort_direction = variable_get('agenda_related_activities_sort_direction', '');
+    $default_sort = variable_get('agenda_related_activities_sort') . ' ' . $sort_direction;
 
     $form['agenda_related_activities_sort'] = array(
       '#title' => t('Sort field'),
       '#type' => 'textfield',
-      '#default_value' => variable_get('agenda_related_activities_sort') . (!empty(variable_get('agenda_related_activities_sort_direction')) ? ' ' . variable_get('agenda_related_activities_sort_direction') : ''),
+      '#default_value' => $default_sort,
       '#description' => t('Field + direction to sort on. Example permanent asc, availableto asc, weight desc'),
     );
 
