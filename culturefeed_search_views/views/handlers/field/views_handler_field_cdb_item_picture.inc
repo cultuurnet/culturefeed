@@ -11,9 +11,10 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
   function option_definition() {
     $options = parent::option_definition();
 
+    $options['override'] = array('default' => FALSE);
     $options['width'] = array('default' => 100);
     $options['height'] = array('default' => 100);
-		$options['format'] = array('default' => 'image');
+    $options['format'] = array('default' => 'image');
     $options['link'] = array('default' => FALSE);
 
     return $options;
@@ -23,6 +24,13 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
    * @see views_handler_field::options_form()
    */
   function options_form(&$form, &$form_state) {
+
+    $form['override'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Override with collaboration data'),
+      '#description' => t('If collaboration data is provided content of this field will be overriden when this is checked.'),
+      '#default_value' => isset($this->options['override']) ? $this->options['override'] : FALSE,
+    );
 
     $form['width'] = array(
       '#type' => 'textfield',
@@ -69,10 +77,16 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
     }
 
     $main_picture = '';
-    $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-    foreach ($pictures as $picture) {
-      if ($picture->isMain()) {
-        $main_picture = $picture->getHLink();
+
+    if ($this->options['override']) {
+      $main_picture = 'This picture is overriden';
+    }
+    else {
+      $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+      foreach ($pictures as $picture) {
+        if ($picture->isMain()) {
+          $main_picture = $picture->getHLink();
+        }
       }
     }
 
