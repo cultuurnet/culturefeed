@@ -134,6 +134,13 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
+	$theme['culturefeed_agenda_organiser_events'] = array(
+		'variables' => array('items' => array(), 'organiser' => NULL),
+		'template' => 'culturefeed-agenda-organiser-events',
+		'path' => $path,
+		'file' => 'theme.inc',
+	);
+
   return $theme;
 
 }
@@ -384,6 +391,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+	$blocks['agenda-organiser-events'] = array(
+		'info' => t('Culturefeed agenda: Organiser events'),
+		'cache' => DRUPAL_CACHE_PER_PAGE,
+	);
+
   return $blocks;
 
 }
@@ -583,6 +595,14 @@ function culturefeed_agenda_block_configure($delta) {
     );
 
   }
+	elseif ($delta == 'agenda-organiser-events') {
+		$form['agenda_organiser_event_amount'] = array(
+			'#title' => t('Amount of results to show'),
+			'#type' => 'textfield',
+			'#default_value' => variable_get('agenda_organiser_event_amount', 10),
+			'#description' => t('Enter the number of results to show in the block.'),
+		);
+	}
 
   return $form;
 
@@ -637,6 +657,11 @@ function culturefeed_agenda_block_save($delta, $edit) {
 
   }
 
+	elseif ($delta == 'agenda-organiser-events') {
+
+		variable_set('agenda_organiser_event_amount', $edit['agenda_organiser_event_amount']);
+	}
+
 }
 
 /**
@@ -667,6 +692,9 @@ function culturefeed_agenda_block_view($delta) {
 
     case  'agenda-event-types':
       return culturefeed_agenda_block_event_types();
+
+		case 'agenda-organiser-events':
+			return culturefeed_agenda_block_organiser_events();
   }
 
   return $block;

@@ -313,10 +313,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $keywords = $cdb_item->getKeywords();
   $variables['keywords'] = '';
-  if ($keywords) {
 
+  if ($keywords) {
+		$variables['raw_keywords'] = array();
     $linked_keywords = array();
     foreach ($keywords as $keyword) {
+			$variables['raw_keywords'][] = $keyword;
       $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
     }
 
@@ -971,5 +973,39 @@ function theme_culturefeed_agenda_search_block_field_settings($variables) {
   drupal_add_tabledrag('enabled-fields', 'order', 'sibling', 'enabled-fields-order-weight');
 
   return theme('table', $table_variables);
+
+}
+
+/**
+ * Preprocess the agenda organiser events block.
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_organiser_events(&$variables) {
+	$items = array();
+	foreach ($variables['items'] as $item) {
+		/*$items[] = theme('culturefeed_agenda_organiser_events_item', array(
+			'item' => $item,
+		));*/
+		$type = $item->getType();
+		if ($type == 'event') {
+			$type = 'e';
+		}
+		else if ($type == 'production') {
+			$type = 'p';
+		}
+
+		$event = $item->getEntity();
+		$event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+		$title = $event_detail->getTitle();
+		$cdbid = $event->getCdbid();
+
+		$items[] = '<a href="/agenda/' . $type . '/slug/' . $cdbid . '">' . $title . '</a>';
+	}
+	$variables['items'] = $items;
+
+	$organiser = $variables['organiser']->getLabel();
+	$organiser_id = $variables['organiser']->getCdbid();
+	$variables['organiser_link'] = '<a href="/agenda/a/' . $organiser . '/' . $organiser_id . '">' . $organiser . '</a>';
+
 
 }
