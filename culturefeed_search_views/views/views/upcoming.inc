@@ -41,7 +41,6 @@ $handler->display->display_options['fields']['picture']['element_default_classes
 $handler->display->display_options['fields']['picture']['override'] = 0;
 $handler->display->display_options['fields']['picture']['width'] = '300';
 $handler->display->display_options['fields']['picture']['height'] = '300';
-$handler->display->display_options['fields']['picture']['format'] = 'url';
 $handler->display->display_options['fields']['picture']['link'] = 0;
 /* Veld: UDB items: Titel */
 $handler->display->display_options['fields']['title']['id'] = 'title';
