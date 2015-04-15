@@ -119,8 +119,10 @@ class views_handler_filter_culturefeed_search_tags extends views_handler_filter_
 			}
 		}
 
-		$parameter = new \CultuurNet\Search\Parameter\FilterQuery($value);
-		$this->query->add_parameter($parameter);
+    if (isset($value)) {
+      $parameter = new \CultuurNet\Search\Parameter\FilterQuery($value);
+      $this->query->add_parameter($parameter);
+    }
 
   }
 
