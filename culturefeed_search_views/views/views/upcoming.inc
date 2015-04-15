@@ -5,7 +5,7 @@ $view->name = 'upcoming';
 $view->description = '';
 $view->tag = 'default';
 $view->base_table = 'cdb_items';
-$view->human_name = 'Binnenkort';
+$view->human_name = 'upcoming';
 $view->core = 7;
 $view->api_version = '3.0';
 $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -28,16 +28,12 @@ $handler->display->display_options['pager']['type'] = 'some';
 $handler->display->display_options['pager']['options']['items_per_page'] = '5';
 $handler->display->display_options['style_plugin'] = 'default';
 $handler->display->display_options['row_plugin'] = 'fields';
-$handler->display->display_options['row_options']['default_field_elements'] = FALSE;
 /* Veld: UDB items: Afbeelding */
 $handler->display->display_options['fields']['picture']['id'] = 'picture';
 $handler->display->display_options['fields']['picture']['table'] = 'cdb_items';
 $handler->display->display_options['fields']['picture']['field'] = 'picture';
 $handler->display->display_options['fields']['picture']['label'] = '';
-$handler->display->display_options['fields']['picture']['element_type'] = '0';
-$handler->display->display_options['fields']['picture']['element_class'] = 'img-responsive';
 $handler->display->display_options['fields']['picture']['element_label_colon'] = FALSE;
-$handler->display->display_options['fields']['picture']['element_default_classes'] = FALSE;
 $handler->display->display_options['fields']['picture']['override'] = 0;
 $handler->display->display_options['fields']['picture']['width'] = '300';
 $handler->display->display_options['fields']['picture']['height'] = '300';
@@ -101,24 +97,27 @@ $handler->display->display_options['sorts']['date']['order'] = 'ASC';
 $handler->display->display_options['filters']['hasimage']['id'] = 'hasimage';
 $handler->display->display_options['filters']['hasimage']['table'] = 'cdb_items';
 $handler->display->display_options['filters']['hasimage']['field'] = 'hasimage';
+$handler->display->display_options['filters']['hasimage']['group'] = 1;
 /* Filter criterion: UDB items: Datum */
 $handler->display->display_options['filters']['date']['id'] = 'date';
 $handler->display->display_options['filters']['date']['table'] = 'cdb_items';
 $handler->display->display_options['filters']['date']['field'] = 'date';
+$handler->display->display_options['filters']['date']['group'] = 1;
 $handler->display->display_options['filters']['date']['option_absolute'] = '1';
 $handler->display->display_options['filters']['date']['relative_date'] = '+2 weeks';
 /* Filter criterion: UDB items: Labels */
 $handler->display->display_options['filters']['tags']['id'] = 'tags';
 $handler->display->display_options['filters']['tags']['table'] = 'cdb_items';
 $handler->display->display_options['filters']['tags']['field'] = 'tags';
+$handler->display->display_options['filters']['tags']['group'] = 1;
 $handler->display->display_options['filters']['tags']['keyword'] = array(
   0 => array(
-    'value' => 'erkend scvw',
+    'value' => '',
     'not' => 0,
   ),
   1 => array(
-    'value' => 'pretting_geleerd_niet_binnenkort',
-    'not' => 1,
+    'value' => '',
+    'not' => 0,
   ),
   2 => array(
     'value' => '',
@@ -156,7 +155,7 @@ $handler->display->display_options['filters']['tags']['keyword'] = array(
 
 /* Display: Block */
 $handler = $view->new_display('block', 'Block', 'block');
-$translatables['binnenkort'] = array(
+$translatables['upcoming'] = array(
   t('Master'),
   t('Binnenkort'),
   t('meer'),
