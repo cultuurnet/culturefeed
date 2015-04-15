@@ -1347,6 +1347,12 @@ function culturefeed_entry_ui_event_form($form, $form_state, $event = NULL) {
     '#title' => t('Public'),
   );*/
 
+  // Add collaboration data.
+  if (user_access('manage culturefeed collaborative info')) {
+    form_load_include($form_state, 'inc', 'culturefeed_entry_ui', 'includes/culturefeed_entry_ui.collaboration');
+    culturefeed_entry_ui_attach_collaboration_elements($form, $form_state, (isset($event_details)) ? $event_details : NULL);
+  }
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),

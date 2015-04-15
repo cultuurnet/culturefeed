@@ -34,6 +34,10 @@ function culturefeed_entry_ui_permission() {
       'title' => t('Delete events'),
       'description' => t('Delete events through the entity api.'),
     ),
+    'manage culturefeed collaborative info' => array(
+      'title' => t('Manage culturefeed collaborative info'),
+      'description' => t('Manage culturefeed collaborative info through the entity api.'),
+    ),
   );
 }
 
