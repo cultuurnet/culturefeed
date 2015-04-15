@@ -17,14 +17,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $category_defaults = array();
   $eventtype_default = '';
   $themetype_default = '';
-  $default_location_label = '';
-  $default_location_id = '';
-  $custom_location_title = '';
-  $custom_location_street = '';
-  $custom_location_number = '';
-  $custom_location_zip = '';
-  $custom_location_city = '';
-  $custom_location_country = '';
   $default_organiser_label = '';
   $default_organiser_id = '';
   $publication_date = '';
@@ -48,11 +40,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   if (!isset($form_state['#themes_needed'])) {
     $form_state['#themes_needed'] = '';
   }
-
-  if (!isset($form_state['#location_needed'])) {
-    $form_state['#location_needed'] = FALSE;
-  }
-  $form_state['#zip_needed'] = FALSE;
 
   // Language vars
   $nl_title = '';
@@ -93,30 +80,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
           $themetype_default = $category->getId();
         }
 
-      }
-    }
-
-    // Default location.
-    if ($location = $event->getLocation()) {
-      $address = $location->getAddress()->getPhysicalAddress();
-      if ($location->getCdbId()) {
-        $default_location_id = $location->getCdbId();
-        $default_location_label = $location->getLabel();
-        $form_state['#location_needed'] = FALSE;
-      }
-      else {
-        $form_state['#location_needed'] = TRUE;
-        $custom_location_title = $location->getLabel();
-        $custom_location_street = $address->getStreet();
-        $custom_location_number = $address->getHouseNumber();
-        $custom_location_zip = $address->getZip();
-        $custom_location_country = $address->getCountry();
-        if ($custom_location_country == 'BE') {
-          $custom_location_city = $custom_location_zip . ' ' . $address->getCity();
-        }
-        else {
-          $custom_location_city = $address->getCity();
-        }
       }
     }
 
@@ -387,7 +350,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   // Eventtypes
   $form['basic']['what'] = array(
     '#type' => 'container',
-    '#prefix' => '<div id="what-ajax-wrapper">',
+    '#prefix' => '<div id="what-ajax-wrapper" class="clearfix">',
     '#suffix' => '</div>'
   );
 
@@ -531,150 +494,9 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     );
   }
 
-  $form['basic']['location'] = array(
-    '#prefix' => '<div id="location-ajax-wrapper">',
-    '#suffix' => '</div>',
-    '#type' => 'container',
-    '#tree' => TRUE,
-  );
-
-  if (!$form_state['#location_needed']) {
-    $form['basic']['location']['actor'] = array(
-      '#tree' => TRUE,
-      '#type' => 'container',
-      '#prefix' => '<div id="known-location-wrapper">',
-      '#suffix' => '</div>',
-    );
-
-    $form['basic']['location']['actor']['location_actor_label'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Location'),
-      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions/all',
-      '#required' => FALSE,
-      '#default_value' => isset($default_location_label) ? $default_location_label : '',
-      '#size' => 80,
-    );
-
-    $form['basic']['location']['actor']['location_actor_id'] = array(
-      '#id' => 'location_actor_id',
-      '#type' => 'hidden',
-      '#default_value' => isset($default_location_id) ? $default_location_id : '',
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'location-ajax-wrapper',
-        'event' => 'location_eventsearch',
-      ),
-      '#attributes' => array(
-        'id' => 'location_actor_id',
-      ),
-    );
-  }
-
-  $form['basic']['location']['new'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="new-location-wrapper">',
-    '#suffix' => '</div>',
-  );
-
-  if (!$form_state['#location_needed']) {
-    $form['basic']['location']['new']['add_new_location'] = array(
-      '#type' => 'submit',
-      '#name' => 'location_add_more',
-      '#value' => t('Location not found, add location'),
-      '#attributes' => array(
-        'class' => array('add-more-link btn-link'),
-        'style' => array('display:none'),
-      ),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'location-ajax-wrapper',
-        'effect' => 'none',
-      ),
-      '#limit_validation_errors' => array(array('location')),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
-  }
-
-  if ($form_state['#location_needed']) {
-
-    $country = isset($form_state['values']['location']['new']['citywrapper']['country_select']) && $form_state['values']['location']['new']['citywrapper']['country_select'] ? $form_state['values']['location']['new']['citywrapper']['country_select'] : ($custom_location_country ? $custom_location_country : 'BE');
-
-    $default_location_title = $custom_location_title ? $custom_location_title : '';
-    if (isset($form_state['#location_actor_label'])) {
-      $default_location_title = $form_state['#location_actor_label'];
-    }
-    $form['basic']['location']['new']['location_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Location Title'),
-      '#default_value' => $default_location_title,
-      '#required' => FALSE,
-      '#size' => 80,
-    );
-
-    $form['basic']['location']['new']['citywrapper'] = array(
-      '#tree' => TRUE,
-      '#type' => 'container',
-      '#prefix' => '<div id="citywrapper-ajax-wrapper">',
-      '#suffix' => '</div>',
-    );
-
-    $form['basic']['location']['new']['citywrapper']['country_select'] = array(
-      '#type' => 'select',
-      '#title' => t('Country'),
-      '#options' => country_get_list(),
-      '#default_value' => $custom_location_country ? $custom_location_country : 'BE',
-      '#required' => FALSE,
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'citywrapper-ajax-wrapper',
-        'effect' => 'none',
-      ),
-    );
-
-    $form['basic']['location']['new']['citywrapper']['zip_code'] = array(
-      '#type' => 'textfield',
-      '#title' => ($country == 'BE') ? '' : t('ZIP Code'),
-      '#default_value' => $custom_location_zip ? $custom_location_zip : '',
-      '#required' => FALSE,
-      '#size' => 10,
-      '#attributes' => array(
-        'style' => array(
-          ($country == 'BE') ? 'display:none;' : 'display:block;margin-right:30px;',
-        ),
-      ),
-    );
-
-    $form['basic']['location']['new']['citywrapper']['city'] = array(
-      '#type' => 'textfield',
-      '#title' => t('City'),
-      '#default_value' => $custom_location_city ? $custom_location_city : '',
-      '#autocomplete_path' => ($country == 'BE') ? 'autocomplete/culturefeed/city-suggestion' : '',
-      '#required' => FALSE,
-      '#size' => 60,
-    );
-
-    $form['basic']['location']['new']['citywrapper']['street'] = array(
-      '#type' => 'textfield',
-      '#title' => ($country == 'BE') ? t('Street') : t('Street and House Number'),
-      '#default_value' => $custom_location_street ? $custom_location_street : '',
-      '#required' => FALSE,
-      '#size' => 60,
-    );
-
-    $form['basic']['location']['new']['citywrapper']['house_number'] = array(
-      '#type' => 'textfield',
-      '#title' => ($country == 'BE') ? t('House Number') : '',
-      '#default_value' => $custom_location_number ? $custom_location_number : '',
-      '#required' => FALSE,
-      '#size' => 10,
-      '#attributes' => array(
-        'style' => array(
-          ($country == 'BE') ? 'display:block;' : 'display:none;',
-        ),
-      ),
-    );
-  }
+  // Location control.
+  form_load_include($form_state, 'inc', 'culturefeed_entry_ui', 'includes/form/culturefeed_entry_ui.location');
+  culturefeed_entry_ui_location_form($form, $form_state, $event);
 
   // Date control
   $form['basic']['when'] = array(
@@ -1703,71 +1525,7 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
   }
 
   // Validate location
-  if (isset($form_state['#location_needed']) && $form_state['#location_needed']) {
-    if (empty($values['location']['new']['location_title'])) {
-      form_set_error('location][new][location_title', t('A title is required for a custom location'));
-    }
-    if ($values['location']['new']['citywrapper']['country_select'] != 'BE') {
-      if (empty($values['location']['new']['citywrapper']['zip_code'])) {
-        form_set_error('location][new][citywrapper][zip_code', t('A zip code is required for a custom location'));
-      }
-      if (strlen($values['location']['new']['citywrapper']['zip_code']) < 5 || strlen($values['location']['new']['citywrapper']['zip_code']) > 15) {
-        form_set_error('location][new][citywrapper][zip_code', t('A zip code has minimum 4 characters'));
-      }
-    }
-    if (empty($values['location']['new']['citywrapper']['city'])) {
-      form_set_error('location][new][citywrapper][city', t('A city is required for a custom location'));
-    }
-    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
-      $available_city = array_change_key_case(culturefeed_search_get_city_suggestions($values['location']['new']['citywrapper']['city'], TRUE));
-      if (!isset($available_city[strtolower($values['location']['new']['citywrapper']['city'])])) {
-        form_set_error('location][new][citywrapper][city', t('A valid city is required for a custom location.'));
-      }
-    }
-    $location = NULL;
-  }
-  else {
-    try {
-      if ($values['location']['actor']['location_actor_label'] == '') {
-        form_set_error('location', t('A location is required.'));
-      }
-      else {
-        $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
-        if (!$location) {
-          form_set_error('location', t('We could not validate the location'));
-        }
-      }
-    } catch (Exception $e) {
-      form_set_error('location', t('We could not validate the location'));
-    }
-  }
-
-
-  /*if (!empty($values['location']['actor']['location_actor_id'])) {
-
-    try {
-      $location = culturefeed_search_item_load($values['location']['actor']['location_actor_id'], 'actor');
-      if (!$location) {
-        form_set_error('location', t('We could not validate the location'));
-      }
-    } catch (Exception $e) {
-      form_set_error('location', t('We could not validate the location'));
-    }
-  }
-  else {
-    if (empty($values['location']['location_title'])) {
-      form_set_error('location_title', t('A title is required for a custom location'));
-    }
-    if ($values['location']['citywrapper']['country'] != 'BE') {
-      if (empty($values['location']['citywrapper']['zip_code'])) {
-        form_set_error('basic[zip_code]', t('A zip code is required for a custom location'));
-      }
-    }
-    if (empty($values['location']['citywrapper']['city'])) {
-      form_set_error('city', t('A city is required for a custom location'));
-    }
-    $location = NULL;
-  }*/
+  $location = culturefeed_entry_ui_location_form_validate($form, $form_state);
 
   // Validate Links
   $i = 0;
@@ -2216,56 +1974,8 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $event->setDetails($details);
 
-  // Asset Location / Address.
-  if ($location) {
-    $addresses = $location->getEntity()->getContactInfo()->getAddresses();
-
-    /* @var CultureFeed_Cdb_Data_Address $address */
-    $address = $addresses[0];
-    $location_detail = $location->getEntity()->getDetails()
-      ->getDetailByLanguage(culturefeed_search_get_preferred_language());
-    if (!$location_detail) {
-      $location_detail = $location->getEntity()->getDetails()
-        ->getDetailByLanguage("nl");
-    }
-
-    $cdb_location = new CultureFeed_Cdb_Data_Location($address);
-    $cdb_location->setLabel($location_detail->getTitle());
-    $cdb_location->setCdbid($location->getEntity()->getCdbId());
-    $event->setLocation($cdb_location);
-  }
-  else {
-    $address = new CultureFeed_Cdb_Data_Address();
-    $physical_address = new CultureFeed_Cdb_Data_Address_PhysicalAddress();
-    $physical_address->setStreet($values['location']['new']['citywrapper']['street']);
-    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
-      $physical_address->setHouseNumber($values['location']['new']['citywrapper']['house_number']);
-    }
-    else {
-      $physical_address->setHouseNumber('');
-    }
-    if ($values['location']['new']['citywrapper']['country_select'] == 'BE') {
-      $physical_address->setZip(substr($values['location']['new']['citywrapper']['city'], 0, 4));
-      $physical_address->setCity(substr($values['location']['new']['citywrapper']['city'], 5));
-    }
-    else {
-      $physical_address->setCity($values['location']['new']['citywrapper']['city']);
-      if(empty($values['location']['new']['citywrapper']['zip_code'])) {
-        $physical_address->setZip('0000');
-      }
-      else {
-        $physical_address->setZip($values['location']['new']['citywrapper']['zip_code']);
-      }
-    }
-    $physical_address->setCountry($values['location']['new']['citywrapper']['country_select']);
-    $address->setLabel($values['location']['new']['location_title']);
-    $address->setPhysicalAddress($physical_address);
-    $address->setLabel($values['location']['new']['location_title']);
-
-    $cdb_location = new CultureFeed_Cdb_Data_Location($address);
-    $cdb_location->setLabel($values['location']['new']['location_title']);
-    $event->setLocation($cdb_location);
-  }
+  // Location.
+  $address = culturefeed_entry_ui_location_form_save($event, $location, $form_state);
 
   // Event organiser.
   if ($organiser) {
