@@ -54,24 +54,37 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         }
       });
       
-      $('.link-field').focusout(function() {
-        if($(this).val() != '') {
-          console.log(this);
-          if($(this).val().indexOf('http://') == -1 || $(this).val().indexOf('https://') == -1) {
-            if($(this).val().substring(0,7) != 'http://' && $(this).val().substring(0,8) != 'https://') {
-	          $(this).val('http://' + $(this).val());
-	        }
-	      }
-	    }
-      });
 	}
 
   };
 
     /**
+     * Maxlength
+     */
+    Drupal.behaviors.maxlength = {
+        attach: function (context, settings) {
+            $('#edit-description-sd-short-description').maxlength({
+                max: 400,
+                feedbackTarget: '#edit-description-sd .help-block, #edit-description-sd .description'
+            });
+        }
+    }
+
+    /**
+    * Fire the autocomplete on paste.
+    */
+    Drupal.behaviors.autocomplete_paste = {
+        attach: function (context, settings) {
+            $('.form-autocomplete input').bind("paste", function () {
+                $(this).populatePopup();
+            });
+        }
+    }
+
+    /**
      * Hides the autocomplete suggestions.
      */
-    Drupal.jsAC.prototype.hidePopup = function (keycode) {
+    Drupal.jsAC.prototype.hidePopup = function (keycode, op) {
 
         // Select item if the right key or mousebutton was pressed.
         if (this.selected && ((keycode && keycode != 46 && keycode != 8 && keycode != 27) || !keycode)) {
@@ -79,7 +92,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
                 this.input.value = $(this.selected).data('autocompleteTitle');
                 
-                if (this.input.name == 'actor[location_actor_label]') {
+                if (this.input.name == 'location[actor][location_actor_label]') {
 				  $('#location_actor_id').val($(this.selected).data('autocompleteValue'));
 				}
 		  
@@ -103,6 +116,13 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         }
         this.selected = false;
         $(this.ariaLive).empty();
+
+        // Workaround for bootstrap losing tabindex on autocomplete popup.
+        if ((!op || op != 'empty') && this.input.value) {
+            $(this.input).parents('.form-item').next().find(':tabbable').focus();
+        }
+
+
     };
 
     /**
@@ -200,5 +220,54 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
             this.input.value = $(node).data('autocompleteValue');
         }
     };
+
+  /**
+   * Performs a cached and delayed search.
+   */
+  Drupal.ACDB.prototype.search = function (searchString) {console.log(searchString);
+    var db = this;
+    searchString = searchString.replace(/^\s+|\s+$/, '');
+    this.searchString = searchString;
+
+    // See if this string needs to be searched for anyway.
+    if (searchString.length <= 0 ||
+      searchString.charAt(searchString.length - 1) == ',') {
+      return;
+    }
+
+    // See if this key has been searched for before.
+    if (this.cache[searchString]) {
+      return this.owner.found(this.cache[searchString]);
+    }
+
+    // Initiate delayed search.
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(function () {
+      db.owner.setStatus('begin');
+
+      // Ajax GET request for autocompletion. We use Drupal.encodePath instead of
+      // encodeURIComponent to allow autocomplete search terms to contain slashes.
+      $.ajax({
+        type: 'GET',
+        url: db.uri + '/' + Drupal.encodePath(searchString),
+        dataType: 'json',
+        success: function (matches) {
+          if (typeof matches.status == 'undefined' || matches.status != 0) {
+            db.cache[searchString] = matches;
+            // Verify if these are still the matches the user wants to see.
+            //if (db.searchString == searchString) {
+            db.owner.found(matches);
+            //}
+            db.owner.setStatus('found');
+          }
+        },
+        error: function (xmlhttp) {
+          alert(Drupal.ajaxError(xmlhttp, db.uri));
+        }
+      });
+    }, this.delay);
+  };
 
 })(jQuery);

@@ -11,6 +11,7 @@ dependencies[] = file
 dependencies[] = date
 dependencies[] = date_api
 dependencies[] = date_popup
+dependencies[] = transliteration
 
 files[] = views/handlers/views_handler_field_cdb_item_operations.inc
 files[] = views/handlers/views_handler_area_cdb_item_create.inc
