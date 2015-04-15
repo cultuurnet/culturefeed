@@ -238,7 +238,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
 
     // Default price
     if ($info = $event_details->getPrice()) {
-      $default_price = $info->getValue();
+      $default_price = str_replace('.',',', $info->getValue());
       $default_free_price = 0;
       $default_price_description = $info->getDescription();
       if ($default_price == '0.00') {
@@ -1874,7 +1874,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   }
   else {
     if (!empty($values['price']['amount'])) {
-      $price = new CultureFeed_Cdb_Data_Price(floatval($values['price']['amount']));
+      $price = new CultureFeed_Cdb_Data_Price(floatval(str_replace(',','.', $values['price']['amount'])));
       if (!empty($values['price']['extra']['extra_info'])) {
         $price->setDescription($values['price']['extra']['extra_info']);
       }
