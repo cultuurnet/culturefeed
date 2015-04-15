@@ -240,10 +240,17 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
     
     case 'location_add_more':
       $form_state['#location_needed'] = TRUE;
+      if (isset($form_state['values']['location']['actor']['location_actor_label']) && $form_state['values']['location']['actor']['location_actor_label']) {
+        $form_state['#location_actor_label'] = $form_state['values']['location']['actor']['location_actor_label'];
+      }
+
       break;
       
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
+      if (isset($form_state['input']['organiser']['actor']['organiser_actor_label']) && $form_state['input']['organiser']['actor']['organiser_actor_label']) {
+        $form_state['#actor_label'] = $form_state['input']['organiser']['actor']['organiser_actor_label'];
+      }
       break;
       
     case 'performers_add_more':
