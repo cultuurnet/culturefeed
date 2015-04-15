@@ -327,10 +327,9 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     /*if ($info = $event->getAvailableFrom()) {
 	  $publication_date = $event->getAvailableFrom();
     }
-   */
+    */
   }
 
-  /**
   // Build the form.
 
   // Basic.
@@ -598,12 +597,12 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     '#title' => t('Links'),
   );
 
-  /*if ($default_links) {
+  if ($default_links) {
     $links_count = count($default_links);
   }
-  else {*/
-  $links_count = 0;
-  //}
+  else {
+    $links_count = 0;
+  }
   // Add link type selections.
   if ($default_links) {
     foreach ($default_links as $i => $info) {
