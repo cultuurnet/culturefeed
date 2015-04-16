@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_content.install.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function culturefeed_tips_install() {
+
+  node_types_rebuild();
+  $types = node_type_get_types();
+  $tip = $types['culturefeed_tip'];
+
+}

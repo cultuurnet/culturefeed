@@ -1,0 +1,6 @@
+name = CultureFeed Tips
+description = Content type to highlight specific events.
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed

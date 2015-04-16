@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_content.module.
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function culturefeed_content_field_formatter_info() {
+
+  return array(
+    'culturefeed_content_default' => array(
+      'label' => t('Default CultureFeed content formatter'),
+      'field types' => array('culturefeed_content'),
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function culturefeed_content_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+
+  $element = array();
+
+  switch ($display['type']) {
+
+    case 'culturefeed_content_default':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array('#markup' => 'test:' . $delta);
+      }
+      break;
+
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function culturefeed_content_field_info() {
+
+  return array(
+    'culturefeed_content' => array(
+      'label' => t('CultureFeed content'),
+      'description' => t('Renders a CultureFeed search.'),
+      'settings' => array(),
+      'instance_settings' => array(),
+      'default_widget' => 'culturefeed_content_default',
+      'default_formatter' => 'culturefeed_content_default',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function culturefeed_content_field_is_empty($item, $field) {
+
+  if (empty($item['value']) && (string) $item['value'] !== '0') {
+    return TRUE;
+  }
+  return FALSE;
+
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  $element['filter_query'] = array(
+    '#title' => t('Filter query'),
+    '#type' => 'textarea',
+  );
+
+  return $element;
+
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function culturefeed_content_field_widget_info() {
+
+  return array(
+    'culturefeed_content_default' => array(
+      'label' => t('Default CultureFeed content widget'),
+      'field types' => array('culturefeed_content'),
+      'settings' => array(),
+      'behaviors' => array(
+        'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+        'default value' => FIELD_BEHAVIOR_DEFAULT,
+      ),
+    ),
+  );
+
+}

@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_content.module.
+ */
+
+/**
+ * Implements hook_node_info().
+ */
+function culturefeed_tips_node_info() {
+
+  return array(
+    'culturefeed_tip' => array(
+      'base' => 'node_content',
+      'description' => t('Content type to highlight specific events.'),
+      'has_title' => TRUE,
+      'locked' => FALSE,
+      'name' => t('Culturefeed tip'),
+    ),
+  );
+
+}
