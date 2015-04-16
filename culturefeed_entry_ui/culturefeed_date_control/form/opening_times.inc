@@ -56,14 +56,14 @@ function culturefeed_date_control_opening_times_process(array $element, array &$
     );
 
     $element['days'][$day][0]['open_from'] = array(
-      '#default_value' => isset($opening_times['days'][$day][0]['open_from']) ? $opening_times['days'][$day][0]['open_from'] : '',
+      '#default_value' => isset($opening_times['days'][$day]) && isset($opening_times['days'][$day][0]['open_from']) ? $opening_times['days'][$day][0]['open_from'] : '',
       '#description' => t('Format') . ': 12:00',
       '#size' => 12,
       '#type' => 'textfield',
     );
 
     $element['days'][$day][0]['open_till'] = array(
-      '#default_value' => isset($opening_times['days'][$day][0]['open_till']) ? $opening_times['days'][$day][0]['open_till'] : '',
+      '#default_value' => isset($opening_times['days'][$day]) && isset($opening_times['days'][$day][0]['open_till']) ? $opening_times['days'][$day][0]['open_till'] : '',
       '#description' => t('Format') . ': 12:00',
       '#size' => 12,
       '#type' => 'textfield',

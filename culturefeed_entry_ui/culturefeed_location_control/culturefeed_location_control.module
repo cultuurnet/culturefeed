@@ -1,0 +1,113 @@
+<?php
+
+/**
+ * @file
+ * Contains the culturefeed location control module.
+ */
+
+require_once 'form/asset.inc';
+require_once 'form/custom.inc';
+require_once 'form/location_control.inc';
+
+/**
+ * Ajax callback for the location control element.
+ *
+ * @todo move to a more general module, culturefeed date control does the same.
+ */
+function culturefeed_location_control_ajax_callback() {
+
+  list($form, $form_state, $form_id, $form_build_id, $commands) = ajax_get_form();
+  drupal_process_form($form['#form_id'], $form, $form_state);
+  $parents = func_get_args();
+
+  $form = drupal_array_get_nested_value($form, $parents);
+  $output = drupal_render($form);
+  $result = array(
+    '#type' => 'ajax',
+    '#commands' => ajax_prepare_response($output),
+  );
+  return $result;
+
+}
+
+/**
+ * Checks if the triggering element is part of the element.
+ *
+ * @todo move to a more general module, culturefeed date control does the same.
+ *
+ * @param array $triggering_element
+ *   The triggering element.
+ * @param array $element
+ *   The element.
+ *
+ * @return bool
+ *   True or false.
+ */
+function culturefeed_location_control_check_trigger_element(array $triggering_element, array $element) {
+  return array_intersect($triggering_element['#parents'], $element['#parents']) == $element['#parents'];
+}
+
+/**
+ * Implements hook_element_info().
+ *
+ * This is a complex ajax driven form element.  Several new ajax buttons are
+ * added based on initial interaction or default value.  Most of the logic is
+ * taken from the core managed file field.
+ *
+ * - To ensure all buttons remain registered in the form, visibility is set
+ *   through access in a pre render function.
+ * - Element validation functions are used to set the data.
+ * - A custom ajax callback path to ensure the form is rerenderd.
+ *
+ * @see file_managed_file_pre_render()
+ * @see file_managed_file_value()
+ */
+function culturefeed_location_control_element_info() {
+
+  return array(
+    'culturefeed_location_control' => array(
+      '#element_validate' => array('culturefeed_location_control_location_control_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_location_control_location_control_pre_render'),
+      '#process' => array('culturefeed_location_control_location_control_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_location_control_value_callback',
+    ),
+    'culturefeed_location_control_asset' => array(
+      '#element_validate' => array('culturefeed_location_control_asset_validate'),
+      '#input' => TRUE,
+      '#process' => array('culturefeed_location_control_asset_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_asset_value_callback',
+    ),
+    'culturefeed_location_control_custom' => array(
+      '#element_validate' => array('culturefeed_location_control_custom_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_location_control_custom_pre_render'),
+      '#process' => array('culturefeed_location_control_custom_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_custom_value_callback',
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * @todo move to a more general module, culturefeed date control does the same.
+ */
+function culturefeed_location_control_menu() {
+
+  return array(
+    'culturefeed_elements/location/ajax' => array(
+      'title' => 'AHAH callback',
+      'page callback' => 'culturefeed_location_control_ajax_callback',
+      'delivery callback' => 'ajax_deliver',
+      'access callback' => TRUE,
+      'theme callback' => 'ajax_base_page_theme',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+
+}
