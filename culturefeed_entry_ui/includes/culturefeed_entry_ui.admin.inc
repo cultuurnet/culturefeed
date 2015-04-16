@@ -27,9 +27,16 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
 
   $form['culturefeed_entry_ui_custom_tags'] = array(
     '#type' => 'textarea',
-    '#title' => t('Custom tags'),
+    '#title' => t('Custom options on the /tags page'),
     '#default_value' => variable_get('culturefeed_entry_ui_custom_tags'),
     '#description' => t('Custom tags specific for this site. Use a new line for each tag.'),
+  );
+  
+  $form['culturefeed_entry_ui_custom_entry_api_tags'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Custom tags to push to entry API'),
+    '#default_value' => variable_get('culturefeed_entry_ui_custom_entry_api_tags'),
+    '#description' => t('Tags pushed under the hood to Entry API. Use a new line for each tag.'),
   );
 
   return system_settings_form($form);

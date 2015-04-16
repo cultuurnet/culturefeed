@@ -45,7 +45,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#popup_date_format' => 'd-m-Y',
     '#popup_date_increment' => 1,
     '#select_time_format' => 'H:i',
-    '#select_time_increment' => 30,
+    '#select_time_increment' => 15,
     '#type' => 'culturefeed_date_control_hybrid',
   );
 
@@ -58,7 +58,7 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#popup_date_format' => 'd-m-Y',
     '#popup_date_increment' => 1,
     '#select_time_format' => 'H:i',
-    '#select_time_increment' => 30,
+    '#select_time_increment' => 15,
     '#type' => 'culturefeed_date_control_timestamps',
   );
 
@@ -171,7 +171,11 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
       }
 
       // Timestamps.
-      if ($triggering_parent == 'add_date' || $triggering_parent == 'hour' || $triggering_parent == 'minute') {
+      if (
+        $triggering_parent == 'add_date' || $triggering_parent == 'hour' || $triggering_parent == 'minute' ||
+        ($triggering_parent == 'end_date' && isset($date_control['period']['start_date']) && isset($date_control['period']['end_date']) &&
+          $date_control['period']['start_date'] == $date_control['period']['end_date'])
+      ) {
 
         $type = 'timestamps';
         $date_control['timestamps']['stamps'] = array(
