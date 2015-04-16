@@ -6,6 +6,37 @@
  */
 
 /**
+ * Implements hook_field_create_instance().
+ */
+function culturefeed_content_field_create_instance($instance) {
+
+  // Set some default values.
+  $instance['default_value'] = array(
+    array(
+      'rows' => 50,
+      'sort' => 'permanent asc,availableto asc,weight desc',
+    ),
+  );
+  field_update_instance($instance);
+
+}
+
+/**
+ * Validation handler for the CultureFeed content field.
+ */
+function culturefeed_content_field_culturefeed_content_validate($element, &$form_state, $form) {
+
+  $items = array(
+    'filter_query' => $element['wrapper']['filter_query']['#value'],
+    'query_string' => $element['wrapper']['query_string']['#value'],
+    'rows' => $element['wrapper']['rows']['#value'],
+    'sort' => $element['wrapper']['sort']['#value'],
+  );
+  form_set_value($element, $items, $form_state);
+
+}
+
+/**
  * Implements hook_field_formatter_info().
  */
 function culturefeed_content_field_formatter_info() {
@@ -25,18 +56,68 @@ function culturefeed_content_field_formatter_info() {
 function culturefeed_content_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
 
   $element = array();
-
   switch ($display['type']) {
 
     case 'culturefeed_content_default':
+
       foreach ($items as $delta => $item) {
-        $element[$delta] = array('#markup' => 'test:' . $delta);
+
+        $filter_query = $item['filter_query'];
+        $query_string = $item['query_string'];
+        $rows = isset($item['rows']) ? $item['rows'] : 'permanent asc,availableto asc,weight desc';
+        $sort = isset($item['sort']) ? $item['sort'] : 50;
+
+        if (empty($query_string)) {
+          $query_string = '*:*';
+        }
+
+        $parameters = array();
+        if ($query_string) {
+          $parameters[] = new \CultuurNet\Search\Parameter\Query($query_string);
+        }
+        if ($filter_query) {
+          $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($filter_query);
+        }
+
+        $parameters[] = new \CultuurNet\Search\Parameter\Parameter('sort', $sort);
+        $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
+        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+        $parameters[] = new \CultuurNet\Search\Parameter\Group();
+
+        // Execute search.
+        try {
+          $result = culturefeed_get_search_service()->search($parameters);
+        }
+        catch (Exception $e) {
+          watchdog_exception('culturefeed_content', $e);
+          return FALSE;
+        }
+
+        $search_results = $result->getItems();
+
+        // Render the results.
+        $build = array();
+
+        if ($result->getTotalCount() > 0) {
+
+          foreach ($search_results as $search_result) {
+            $build[] = array(
+              '#theme' => 'culturefeed_' . $search_result->getType() . '_summary',
+              '#item' => $search_result,
+            );
+          }
+
+        }
+
+        $element[$delta] = $build;
+
       }
       break;
 
   }
 
   return $element;
+
 }
 
 /**
@@ -49,7 +130,6 @@ function culturefeed_content_field_info() {
       'label' => t('CultureFeed content'),
       'description' => t('Renders a CultureFeed search.'),
       'settings' => array(),
-      'instance_settings' => array(),
       'default_widget' => 'culturefeed_content_default',
       'default_formatter' => 'culturefeed_content_default',
     ),
@@ -62,7 +142,7 @@ function culturefeed_content_field_info() {
  */
 function culturefeed_content_field_is_empty($item, $field) {
 
-  if (empty($item['value']) && (string) $item['value'] !== '0') {
+  if (empty($item)) {
     return TRUE;
   }
   return FALSE;
@@ -74,10 +154,45 @@ function culturefeed_content_field_is_empty($item, $field) {
  */
 function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 
-  $element['filter_query'] = array(
+  $filter_query = isset($items[$delta]['filter_query']) ? $items[$delta]['filter_query'] : '';
+  $query_string = isset($items[$delta]['query_string']) ? $items[$delta]['query_string'] : '';
+  $rows = isset($items[$delta]['rows']) ? $items[$delta]['rows'] : '';
+  $sort = isset($items[$delta]['sort']) ? $items[$delta]['sort'] : '';
+
+  $element['wrapper'] = array(
+    '#title' => t('CultureFeed content'),
+    '#type' => 'fieldset',
+  );
+
+  $element['wrapper']['filter_query'] = array(
+    '#default_value' => $filter_query,
+    '#required' => $element['#required'],
     '#title' => t('Filter query'),
     '#type' => 'textarea',
   );
+
+  $element['wrapper']['query_string'] = array(
+    '#default_value' => $query_string,
+    '#required' => $element['#required'],
+    '#title' => t('Query string'),
+    '#type' => 'textarea',
+  );
+
+  $element['wrapper']['rows'] = array(
+    '#default_value' => $rows,
+    '#required' => $element['#required'],
+    '#title' => t('Rows'),
+    '#type' => 'textfield',
+  );
+
+  $element['wrapper']['sort'] = array(
+    '#default_value' => $sort,
+    '#required' => $element['#required'],
+    '#title' => t('Sort'),
+    '#type' => 'textfield',
+  );
+
+  $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
 
   return $element;
 
