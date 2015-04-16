@@ -358,6 +358,35 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       }
     }
 
+    // Absolute link to detail.
+    $variables['share_url'] = url($variables['url'], array('absolute' => TRUE));
+
+    // Set prefix for share URL's.
+    $variables['facebook_prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
+    $variables['googleplus_prefix'] = 'https://plus.google.com/share?url=';
+    $variables['twitter_prefix'] = 'https://twitter.com/intent/tweet?text=';
+    $variables['whatsapp_prefix'] = 'whatsapp://send?text=';
+
+    // Share URL's.      
+    $variables['facebook_url'] = $variables['facebook_prefix'] . $variables['share_url'];
+    $variables['googleplus_url'] = $variables['googleplus_prefix'] . $variables['share_url'];
+    $variables['twitter_url'] = $variables['twitter_prefix'] . $variables['share_url'];
+    $variables['whatsapp_url'] = $variables['whatsapp_prefix'] . $variables['share_url'];
+
+    if (module_exists('forward')) {
+      $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['url'])));
+    }
+    else {
+      $variables['mail_url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . $variables['share_url']; 
+    }
+
+    // Share Links.      
+    $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook_url'], array('attributes' => array('class' => array('share-link','facebook-share'))));
+    $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus_url'], array('attributes' => array('class' => array('share-link','googleplus-share'))));
+    $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter_url'], array('attributes' => array('class' => array('share-link','twitter-share'))));
+    $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp_url'], array('attributes' => array('class' => array('share-link','whatsapp-share')), 'external' => TRUE));
+    $variables['mail_link'] = l(t('Mail this page'), $variables['mail_url'], array('attributes' => array('class' => array('share-link','forward-mail'))));
+
   }
 
   // All categories.
