@@ -28,3 +28,14 @@ culturefeed_ui.account_form:
   requirements:
     _culturefeed_current_user: 'TRUE'
 
+culturefeed_ui.delete_account_form:
+  path: '/culturefeed/removeaccount'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\DeleteAccountForm'
+    _title: 'Delete account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+

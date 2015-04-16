@@ -122,11 +122,10 @@ class AccountForm extends FormBase
             '#suffix' => '</div>',
         );
 
+        $deleteAccountUrl = new Url('culturefeed_ui.delete_account_form');
         $form['remove_account'] = array(
             '#prefix' => '<div id="remove-account">',
-            // Switch out $profileUrl for a remove account link once a
-            // route is available for it.
-            '#markup' => \Drupal::l(t('Delete account'), $profileUrl),
+            '#markup' => \Drupal::l(t('Delete account'), $deleteAccountUrl),
             '#suffix' => '</div>',
         );
 
