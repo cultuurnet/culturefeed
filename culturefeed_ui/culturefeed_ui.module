@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_ui.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function culturefeed_ui_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the culturefeed_ui module.
+    case 'help.page.culturefeed_ui':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('CultureFeed UI') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_ui_theme() {
+  $theme = [
+      'ui_profile' => array(
+          'variables' => array(
+              'user' => NULL,
+          ),
+      ),
+      'ui_profile_form' => array(
+          'render element' => 'form',
+      ),
+  ];
+
+  return $theme;
+}

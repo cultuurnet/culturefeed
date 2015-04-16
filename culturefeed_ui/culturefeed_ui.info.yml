@@ -1,0 +1,9 @@
+name: Culturefeed UI
+type: module
+description: CultureFeed UI.
+core: 8.x
+version: 1.x-dev
+package: Culturefeed
+dependencies:
+  - culturefeed
+

@@ -1,0 +1,20 @@
+culturefeed_ui.user_controller_profile:
+  path: '/culturefeed/profile'
+  defaults:
+    _controller: '\Drupal\culturefeed_ui\Controller\UserController::profile'
+    _title: 'Culturefeed profile'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_ui.profile_form:
+  path: '/culturefeed/profile/edit'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\ProfileForm'
+    _title: 'Edit profile'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
