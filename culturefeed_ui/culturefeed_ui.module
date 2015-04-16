@@ -36,6 +36,9 @@ function culturefeed_ui_theme() {
       'ui_profile_form' => array(
           'render element' => 'form',
       ),
+      'ui_account_form' => array(
+          'render element' => 'form',
+      ),
   ];
 
   return $theme;

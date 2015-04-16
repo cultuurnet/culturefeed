@@ -18,3 +18,13 @@ culturefeed_ui.profile_form:
   requirements:
     _culturefeed_current_user: 'TRUE'
 
+culturefeed_ui.account_form:
+  path: '/culturefeed/account/edit'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\AccountForm'
+    _title: 'Edit account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+

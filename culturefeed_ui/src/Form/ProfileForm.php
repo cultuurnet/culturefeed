@@ -20,7 +20,7 @@ use CultureFeed_UserPrivacyConfig;
 use CultureFeed;
 
 /**
- * Class ProfileForm.
+ * Provides a profile editing form.
  */
 class ProfileForm extends FormBase
 {
@@ -89,12 +89,7 @@ class ProfileForm extends FormBase
 
         $form['#theme'] = 'ui_profile_form';
 
-        $profileUrl = Url::fromRoute(
-            'culturefeed_ui.user_controller_profile',
-            [
-                'uitid' => $this->user->id
-            ]
-        );
+        $profileUrl = Url::fromRoute('culturefeed_ui.user_controller_profile');
         $form['view-profile'] = array(
             '#prefix' => '<div id="view-profile">',
             '#markup' => \Drupal::l(t('View profile'), $profileUrl),
