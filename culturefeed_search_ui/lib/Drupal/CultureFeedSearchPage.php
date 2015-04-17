@@ -435,6 +435,7 @@ class CultureFeedSearchPage {
       
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
+        $this->parameters[] = new Parameter\FilterQuery('{!geofilt}');
       }
       
       $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
