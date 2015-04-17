@@ -385,10 +385,20 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $variables['mail_url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . $variables['share_url']; 
     }
 
+    // Prepare to push share activities to Culturefeed.
+    if (culturefeed_is_culturefeed_user()) {
+      $track = TRUE;
+      $content_type = culturefeed_get_content_type($item->getType());
+      $id = $item->getId();
+      $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    }
+    
     // Add options.  
     $variables['facebook']['options'] = array(
       'attributes' => array(
         'class' => array('share-link','facebook-share'),
+        'rel' => $track ? $track_facebook : '' ,
         'target' => '_blank',
       ),
     );
@@ -401,6 +411,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['twitter']['options'] = array(
       'attributes' => array(
         'class' => array('share-link','twitter-share'),
+        'rel' => $track ? $track_twitter : '' ,
         'target' => '_blank',
       ),
     );
