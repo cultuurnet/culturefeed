@@ -399,20 +399,17 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       'attributes' => array(
         'class' => array('share-link','facebook-share'),
         'rel' => $track ? $track_facebook : '' ,
-        'target' => '_blank',
       ),
     );
     $variables['googleplus']['options'] = array(
       'attributes' => array(
         'class' => array('share-link','googleplus-share'),
-        'target' => '_blank',
       ),
     );
     $variables['twitter']['options'] = array(
       'attributes' => array(
         'class' => array('share-link','twitter-share'),
         'rel' => $track ? $track_twitter : '' ,
-        'target' => '_blank',
       ),
     );
     $variables['whatsapp']['options'] = array(
