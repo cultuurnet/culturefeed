@@ -423,6 +423,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
     $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
     $variables['mail_link'] = l(t('Mail'), $variables['mail_url'], $variables['mail']['options']);
+    
+    // Use dialog when Facebook app id is set.
+    culturefeed_search_ui_add_facebook_share();
 
   }
 
