@@ -835,7 +835,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $description_parts[] = t('Location: @location', array('@location' => $variables['location']['title'] . ', ' . $variables['location']['city']));
   }
   if (!empty($variables['when'])) {
-    $description_parts[] = t('When: @when', array('@when' => $variables['when']));
+    $description_parts[] = t('When: @when', array('@when' => $variables['when_md_txt']));
   }
   if (!empty($variables['organiser'])) {
     $description_parts[] = t('Organisation: @organisation', array('@organisation' => $variables['organiser']['title']));
