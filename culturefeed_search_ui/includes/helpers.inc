@@ -204,6 +204,18 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     }
   }
 
+  // Query is now search.
+  if (isset($_GET['query'])) {
+    $query = $_GET['query'];
+    $new_query['search'] = $query;
+  }
+
+  // K is now keyword.
+  if (isset($_GET['k'])) {
+    $k = $_GET['k'];
+    $new_query['keyword'] = $k;
+  }
+
   if (!empty($new_query)) {
     drupal_goto(current_path(), array('query' => $new_query), 301);
   }
