@@ -102,27 +102,43 @@ function culturefeed_entry_ui_location_form_validate(array $form, array &$form_s
   // Custom.
   if ($values['type'] == 'custom') {
 
+    
     if (empty($values['custom']['title'])) {
       form_set_error('location][location_control][custom][title', t('A title is required for a custom location'));
     }
-
-    if (empty($values['custom']['city'])) {
-      form_set_error('location][location_control][custom][city', t('A city is required for a custom location'));
+     
+    if ($values['custom']['country'] != 'BE') {
+      if (empty($values['custom']['zip'])) {
+        form_set_error('location][location_control][custom][zip', t('A zip code is required for a custom location'));
+      }
+      
+      if (strlen($values['custom']['zip']) < 4 || strlen($values['custom']['zip']) > 15) {
+        form_set_error('location][location_control][custom][zip', t('A zip code has minimum 4 characters'));
+      }
     }
-    else {
-
-      // If an existing event is edited, the main city is not shown.
-      $available_cities = culturefeed_search_get_city_suggestions($values['custom']['city'], TRUE);
-      $cities = array();
-      $pattern = '/ \(.*?\)/';
-      foreach ($available_cities as $available_city) {
-        $cities[] = preg_replace($pattern, '', $available_city);
+    
+    if ($values['custom']['country'] == 'BE') {
+  
+      $available_city = array_change_key_case(culturefeed_search_get_city_suggestions($values['custom']['city'], TRUE));
+      if (!isset($available_city[strtolower($values['custom']['city'])])) {
+        form_set_error('location][location_control][custom][city', t('A valid city is required for a custom location.'));
       }
-      $city = preg_replace($pattern, '', $values['custom']['city']);
-      if (!in_array($city, $cities)) {
-        form_set_error('location][location_control][custom][city', t('Please select a city from the list.'));
-      }
+      else {
 
+        // If an existing event is edited, the main city is not shown.
+        $available_cities = culturefeed_search_get_city_suggestions($values['custom']['city'], TRUE);
+        $cities = array();
+        $pattern = '/ \(.*?\)/';
+        foreach ($available_cities as $available_city) {
+          $cities[] = preg_replace($pattern, '', $available_city);
+        }
+        $city = preg_replace($pattern, '', $values['custom']['city']);
+        if (!in_array($city, $cities)) {
+          form_set_error('location][location_control][custom][city', t('Please select a city from the list.'));
+        }
+        
+      } 
+      
     }
 
   }
