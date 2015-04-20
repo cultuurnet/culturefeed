@@ -44,9 +44,9 @@
   </dd>
   <?php endif; ?>
 
-  <?php if (!empty($when)): ?>
+  <?php if (!empty($when_lg)): ?>
   <dt><?php print t('When'); ?></dt>
-  <dd><?php print $when; ?></dd>
+  <dd><?php print $when_lg; ?></dd>
   <?php endif; ?>
 
   <?php if ($organiser): ?>
