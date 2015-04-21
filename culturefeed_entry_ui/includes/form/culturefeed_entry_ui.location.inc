@@ -46,6 +46,9 @@ function culturefeed_entry_ui_location_form(array &$form, array &$form_state, \C
         if ($custom_location_country == 'BE') {
           $custom_location_city = $custom_location_zip . ' ' . $address->getCity();
         }
+        else {
+          $custom_location_city = $address->getCity();
+        }
 
       }
 
@@ -115,6 +118,11 @@ function culturefeed_entry_ui_location_form_validate(array $form, array &$form_s
       if (strlen($values['custom']['zip']) < 4 || strlen($values['custom']['zip']) > 15) {
         form_set_error('location][location_control][custom][zip', t('A zip code has minimum 4 characters'));
       }
+      
+      if (empty($values['custom']['city'])) {
+        form_set_error('location][location_control][custom][city', t('A city is required for a custom location'));
+      }
+      
     }
     
     if ($values['custom']['country'] == 'BE') {
