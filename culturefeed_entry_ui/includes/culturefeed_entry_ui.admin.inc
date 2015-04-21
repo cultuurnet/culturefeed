@@ -43,7 +43,7 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     '#type' => 'select',
     '#options' => country_get_list(),
     '#title' => t('Default country'),
-    '#default_value' => variable_get('culturefeed_entry_ui_default_country'),
+    '#default_value' => variable_get('culturefeed_entry_ui_default_country') ? variable_get('culturefeed_entry_ui_default_country') : 'BE',
     '#description' => t('Select the default country for the entry form.'),
   );
 
