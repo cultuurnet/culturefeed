@@ -113,11 +113,11 @@ function culturefeed_uitpas_block_view($delta = '') {
     case 'uitpas_event_details_advantages':
       module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
       $content = culturefeed_uitpas_event_details_advantages_get();
+
       if ($content) {
 
         $block['subject'] = t("UiTPAS Advantages");
         $block['content'] = $content;
-
       }
       break;
 
