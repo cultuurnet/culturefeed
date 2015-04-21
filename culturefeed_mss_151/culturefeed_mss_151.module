@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_mss_151.module.
+ */
+
+/**
+ * Implements hook_culturefeed_search_service_created().
+ */
+function culturefeed_mss_151_culturefeed_search_service_created($service) {
+
+  /** @var \CultuurNet\Search\Guzzle\Service $service */
+  // Temporary workaround to set CDB to 3.3
+  $client_factory = $service->getHttpClientFactory();
+  $client_factory->addSubscriber(new CdbEventSubscriber());
+  $service->setHttpClientFactory($client_factory);
+
+}
