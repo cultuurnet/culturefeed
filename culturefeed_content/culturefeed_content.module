@@ -1,11 +1,12 @@
 <?php
 
-define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 50);
-define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'permanent asc,availableto asc,weight desc');
 /**
  * @file
  * Contains culturefeed_content.module.
  */
+
+define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 50);
+define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'permanent asc,availableto asc,weight desc');
 
 /**
  * Implements hook_field_create_instance().
@@ -111,6 +112,29 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
               '#item' => $search_result,
             );
           }
+
+          if ($result->getTotalCount() > $rows && module_exists('culturefeed_agenda')) {
+
+            if (function_exists('culturefeed_search_get_search_url_query')) {
+
+              $query = 'q=' . html_entity_decode($query_string) . ($filter_query ? '&fq=' . html_entity_decode($filter_query) : '');
+
+              $build[] = array(
+                '#theme' => 'culturefeed_content_all_results_link',
+                '#query' => culturefeed_search_get_search_url_query($query),
+              );
+
+            }
+
+          }
+
+        }
+
+        else {
+
+          $build[] = array(
+            '#theme' => 'culturefeed_content_empty_text',
+          );
 
         }
 
@@ -219,5 +243,81 @@ function culturefeed_content_field_widget_info() {
       ),
     ),
   );
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_content_theme() {
+
+  return array(
+    'culturefeed_content_empty_text' => array(
+      'variables' => array(
+        'empty_text' => t('No results found.'),
+      ),
+    ),
+    'culturefeed_content_all_results_link' => array(
+      'variables' => array(
+        'link_text' => t('Show all events'),
+        'query' => '',
+        'classes' => array(),
+      ),
+    ),
+  );
+
+}
+
+/**
+ * Returns HTML for the all results link.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_content_all_results_link(array $variables) {
+
+  $build[] = array(
+    '#markup' => l(
+      $variables['link_text'],
+      'agenda/search',
+      array(
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => $variables['classes'],
+        ),
+        'query' => $variables['query'],
+      )
+    ),
+  );
+
+  return drupal_render($build);
+
+}
+
+/**
+ * Returns HTML for the empty text.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_content_empty_text(array $variables) {
+
+  $build = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array('alert', 'alert-info'),
+    ),
+    'empty_text' => array(
+      '#markup' => $variables['empty_text'],
+    ),
+  );
+
+  return drupal_render($build);
 
 }
