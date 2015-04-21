@@ -8,6 +8,7 @@
 namespace Drupal\culturefeed_ui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\culturefeed_ui\Plugin\Block\ProfileMenuBlock;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultureFeed_User;
 
@@ -53,9 +54,6 @@ class UserController extends ControllerBase
      */
     public function profile()
     {
-//        var_dump($this->user);
-//        die();
-
         $renderArray = [
             '#theme' => 'ui_profile',
             '#user' => $this->user,

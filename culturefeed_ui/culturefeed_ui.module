@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_help().
@@ -28,17 +29,20 @@ function culturefeed_ui_help($route_name, RouteMatchInterface $route_match) {
  */
 function culturefeed_ui_theme() {
   $theme = [
-      'ui_profile' => array(
-          'variables' => array(
-              'user' => NULL,
-          ),
+    'ui_profile' => array(
+      'variables' => array(
+        'user' => NULL
       ),
-      'ui_profile_form' => array(
-          'render element' => 'form',
-      ),
-      'ui_account_form' => array(
-          'render element' => 'form',
-      ),
+    ),
+    'ui_profile_form' => array(
+      'render element' => 'form',
+    ),
+    'ui_account_form' => array(
+      'render element' => 'form',
+    ),
+    'culturefeed_ui_profile_menu_item' => array(
+      'variables' => array('title' => '', 'url' => '', 'description' => ''),
+    ),
   ];
 
   return $theme;
