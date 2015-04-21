@@ -1,5 +1,7 @@
 <?php
 
+define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 50);
+define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'permanent asc,availableto asc,weight desc');
 /**
  * @file
  * Contains culturefeed_content.module.
@@ -13,8 +15,8 @@ function culturefeed_content_field_create_instance($instance) {
   // Set some default values.
   $instance['default_value'] = array(
     array(
-      'rows' => 50,
-      'sort' => 'permanent asc,availableto asc,weight desc',
+      'rows' => CULTUREFEED_CONTENT_DEFAULT_ROWS,
+      'sort' => CULTUREFEED_CONTENT_DEFAULT_SORT,
     ),
   );
   field_update_instance($instance);
@@ -26,11 +28,14 @@ function culturefeed_content_field_create_instance($instance) {
  */
 function culturefeed_content_field_culturefeed_content_validate($element, &$form_state, $form) {
 
+  $parents = $element['#parents'];
+  $parents[] = 'wrapper';
+  $values = drupal_array_get_nested_value($form_state['values'], $parents);
   $items = array(
-    'filter_query' => $element['wrapper']['filter_query']['#value'],
-    'query_string' => $element['wrapper']['query_string']['#value'],
-    'rows' => $element['wrapper']['rows']['#value'],
-    'sort' => $element['wrapper']['sort']['#value'],
+    'filter_query' => $values['filter_query'],
+    'query_string' => $values['query_string'],
+    'rows' => ($values['rows']) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
+    'sort' => $values['sort'],
   );
   form_set_value($element, $items, $form_state);
 
@@ -64,8 +69,8 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
 
         $filter_query = $item['filter_query'];
         $query_string = $item['query_string'];
-        $rows = isset($item['rows']) ? $item['rows'] : 'permanent asc,availableto asc,weight desc';
-        $sort = isset($item['sort']) ? $item['sort'] : 50;
+        $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
+        $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
 
         if (empty($query_string)) {
           $query_string = '*:*';
@@ -168,14 +173,14 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $filter_query,
     '#required' => $element['#required'],
     '#title' => t('Filter query'),
-    '#type' => 'textarea',
+    '#type' => 'textfield',
   );
 
   $element['wrapper']['query_string'] = array(
     '#default_value' => $query_string,
     '#required' => $element['#required'],
     '#title' => t('Query string'),
-    '#type' => 'textarea',
+    '#type' => 'textfield',
   );
 
   $element['wrapper']['rows'] = array(
