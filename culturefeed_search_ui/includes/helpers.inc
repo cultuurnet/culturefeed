@@ -216,6 +216,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     $new_query['keyword'] = $k;
   }
 
+  // Datetype is now facet[datetype][0].
+  if (isset($_GET['datetype'])) {
+    $datetype = $_GET['datetype'];
+    $new_query['facet']['datetype'][0] = $datetype;
+  }
+
   if (!empty($new_query)) {
     drupal_goto(current_path(), array('query' => $new_query), 301);
   }
