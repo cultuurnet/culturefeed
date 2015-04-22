@@ -17,7 +17,7 @@
 function culturefeed_location_control_custom_pre_render(array $element) {
 
   $custom = $element['#value'];
-  $country = isset($custom['country']) && $custom['country'] ? $custom['country'] : 'BE';
+  $country = isset($custom['country']) && $custom['country'] ? $custom['country'] : variable_get('culturefeed_entry_ui_default_country');
 
   if ($country == 'BE') {
     $element['zip']['#access'] = FALSE;
@@ -60,7 +60,7 @@ function culturefeed_location_control_custom_process(array $element, array &$for
     'wrapper' => $element_id . '-ajax-wrapper',
   );
 
-  $country = isset($custom['country']) && $custom['country'] ? $custom['country'] : 'BE';
+  $country = isset($custom['country']) && $custom['country'] ? $custom['country'] : variable_get('culturefeed_entry_ui_default_country');
 
   $element['title'] = array(
     '#type' => 'textfield',

@@ -2,7 +2,7 @@
 /**
  * @file
  * Page callbacks for the entry api ui.
- */ 
+ */
 
 /**
  * Form callback: Create a new event, or edit an existing.
@@ -224,7 +224,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
 
       try {
         $default_image = system_retrieve_file('http:' . $main_image->getHLink(), 'public://uploads/', TRUE);
-        
+
         if ($default_image) {
           file_usage_add($default_image, 'culturefeed_entry_ui', 'event', $default_image->fid);
           $default_image_hlink = $main_image->getHLink();
@@ -671,7 +671,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       '#value' => $default_image_hlink,
     );
   }
-  
+
   // Copyright
   $form['extra']['photo']['copyright_text'] = array(
     '#type' => 'textfield',
@@ -1201,26 +1201,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/css/culturefeed_entry_ui.css';
-  global $theme;
-  if ($theme == 'culturefeed_bootstrap') {
-    // Ensure the javascript files are added after the bootstrap js files as
-    // these override the custom entury ui autocomplete js.
-    $form['#attached']['js'][] = array(
-      'data' => drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js',
-      'group' => JS_THEME,
-      'every_page' => FALSE,
-      'weight' => 5,
-    );
-    $form['#attached']['js'][] = array(
-      'data' => drupal_get_path('module', 'culturefeed_entry_ui') . '/js/bootstrap_autocomplete_override.js',
-      'group' => JS_THEME,
-      'every_page' => FALSE,
-      'weight' => 6,
-    );
-  }
-  else {
-    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
-  }
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.plugin.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength.js';
   return $form;
@@ -2017,7 +1998,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   // Keywords.
   $keywords_form = array();
   $custom_entry_api_tags = array();
-  if ($values['keywords']) {    
+  if ($values['keywords']) {
     $keywords_form = explode(';', $values['keywords']);
   }
   if (variable_get('culturefeed_entry_ui_custom_entry_api_tags')) {
