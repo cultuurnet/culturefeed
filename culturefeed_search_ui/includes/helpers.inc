@@ -229,10 +229,10 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     $new_query['date_range'] = $new_date;
   }
   
-  // Headingid's
-  if (isset($_GET['headingid'])) {
+  // Headings are now a combination of facets.
+  if (isset($_GET['heading'])) {
     
-    $mapping = culturefeed_search_ui_get_headings_mapping($_GET['headingid']);
+    $mapping = culturefeed_search_ui_get_headings_mapping($_GET['heading']);
     
     // Voor kinderen is not a facet
     if (isset($mapping['voorkinderen'])) {
@@ -250,11 +250,10 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
 
 }
 
-
 /**
  * Helper fucntion to redirect all old headingid's
  */
-function culturefeed_search_ui_get_headings_mapping($headingid) {
+function culturefeed_search_ui_get_headings_mapping($heading) {
 
   $mapping = array(
     44 => array('eventtype' => '0.50.4.0.0'),
@@ -377,7 +376,7 @@ function culturefeed_search_ui_get_headings_mapping($headingid) {
     206 => array('eventtype' => '0.3.1.0.0','theme' => '1.65.0.0.0')
   );
 
-  return $mapping[$headingid];
+  return $mapping[$heading];
 
 }
 
