@@ -8,7 +8,7 @@
 /**
  * Implements hook_culturefeed_search_service_created().
  */
-function culturefeed_mss_151_culturefeed_search_service_created($service) {
+function culturefeed_cdb_upgrade_culturefeed_search_service_created($service) {
 
   /** @var \CultuurNet\Search\Guzzle\Service $service */
   // Temporary workaround to set CDB to 3.3
