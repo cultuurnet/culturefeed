@@ -1,4 +1,4 @@
-name = CultureFeed MSS 151
+name = CultureFeed Cdb Upgrade
 description = Temporary module to enable cdb v 3.3.
 package = CultureFeed
 version = VERSION
