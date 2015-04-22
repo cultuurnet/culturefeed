@@ -235,9 +235,9 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     $mapping = culturefeed_search_ui_get_headings_mapping($_GET['heading']);
     
     // Voor kinderen is not a facet
-    if (isset($mapping['voorkinderen'])) {
+    if (isset($mapping['voor_kinderen'])) {
       $new_query['voor-kinderen'] = '1';
-      unset($mapping['voorkinderen']);
+      unset($mapping['voor_kinderen']);
     }
     foreach ($mapping as $category => $id) {
       $new_query['facet'][$category][0] = $id;
@@ -547,6 +547,12 @@ function culturefeed_search_ui_default_filter_options() {
       'title' => 'For toddlers',
       'query-string' => 'for-toddlers',
       'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
+    ),
+    array(
+      'exposed' => TRUE,
+      'title' => 'Geschikt voor kinderen',
+      'query-string' => 'voor-kinderen',
+      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
     ),
   );
 }
