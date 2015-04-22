@@ -221,6 +221,13 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     $datetype = $_GET['datetype'];
     $new_query['facet']['datetype'][0] = $datetype;
   }
+
+  // Date is now date_range.
+  if (isset($_GET['date'])) {
+    $date = $_GET['date'];
+    $new_date = date("d/m/Y", strtotime($date));
+    $new_query['date_range'] = $new_date;
+  }
   
   // Headingid's
   if (isset($_GET['headingid'])) {
@@ -236,7 +243,6 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
       $new_query['facet'][$category][0] = $id;
     }
   }
-  
 
   if (!empty($new_query)) {
     drupal_goto(current_path(), array('query' => $new_query), 301);
