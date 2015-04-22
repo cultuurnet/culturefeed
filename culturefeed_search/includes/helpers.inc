@@ -609,7 +609,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
-  $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+	$query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
   if(!$include_regions) {
     $query->isNotNull('p1');
@@ -634,6 +634,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
   }
+
+	foreach ($suggestions as $key => $suggestion) {
+		if (strtolower($suggestion) == strtolower($search_string)) {
+			$val = $suggestion;
+			unset($suggestion);
+			$suggestions = array($key => $val) + $suggestions;
+		}
+	}
 
   return $suggestions;
 
@@ -823,7 +831,7 @@ function culturefeed_search_get_term_translation($tid) {
   $terms = culturefeed_search_term_translations(array($tid), TRUE);
 
   if (!isset($terms[$tid])) {
-    return false;
+    return $tid;
   }
 
   if (isset($terms[$tid][culturefeed_search_get_preferred_language()])) {
@@ -863,7 +871,7 @@ function culturefeed_search_translate_facet(&$facet_items) {
     if ($facet_item->hasSubItems()) {
       $sub_items = $facet_item->getSubItems();
       foreach ($sub_items as $key => $sub_item) {
-        if (culturefeed_search_get_term_translation($sub_item->getValue())) {
+        if ($sub_item->getLabel() == culturefeed_search_get_term_translation($sub_item->getValue())) {
           $sub_item->setLabel(culturefeed_search_get_term_translation($sub_item->getValue()));
         }
         else {

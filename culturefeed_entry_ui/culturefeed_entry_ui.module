@@ -140,9 +140,12 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
   
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  if ($culturefeed_user) {
+    $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
+  }
   
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)) {
+  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox || (isset($ubd_permission) && $ubd_permission[$event->getId()] == 'true'))) {
 
     $link = array(
       'href' => $path . '/edit',
@@ -235,12 +238,11 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       $form_state['#price_needed'] = TRUE;
       break;
     
-    case 'location_add_more':
-      $form_state['#location_needed'] = TRUE;
-      break;
-      
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
+      if (isset($form_state['input']['organiser']['actor']['organiser_actor_label']) && $form_state['input']['organiser']['actor']['organiser_actor_label']) {
+        $form_state['#actor_label'] = $form_state['input']['organiser']['actor']['organiser_actor_label'];
+      }
       break;
       
     case 'performers_add_more':
@@ -270,40 +272,30 @@ function culturefeed_entry_ui_add_more_js($form, $form_state) {
 
   switch ($form_state['input']['_triggering_element_name']) {
 
-    case 'location[new][citywrapper][country_select]':
-      return $form['basic']['location']['new']['citywrapper'];
-
     case 'links_add_more':
       return $form['extra']['links'];
 
     case 'opening_times_add_more':
       return $form['basic']['period_or_permanent']['opening_times'];
-      
+
     case 'price_add_more':
       return $form['extra']['price']['extra'];
-      
+
     case 'ld_add_more':
       return $form['extra']['description']['ld'];
-    
-    case 'location_add_more':
-      //$form['basic']['location']['add_new_location']['#attributes'] = array('style' => array('display:none;'));
-      return $form['basic']['location'];
-      
+
     case 'actor_add_more':
       return $form['extra']['organiser'];
-    
+
     case 'performers_add_more':
       return $form['extra']['performers']['wrapper'];
-      
+
     case 'contacts_add_more':
       return $form['extra']['contacts']['wrapper'];
-    
+
     case 'languages_add_more':
       return $form['extra']['language']['wrapper'];
-      
-    case 'location[actor][location_actor_id]':
-      return $form['basic']['location']['actor'];
-      
+
     case 'organiser_actor_id':
       return $form['extra']['organiser']['actor'];
   }
