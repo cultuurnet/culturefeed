@@ -166,6 +166,18 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     }
 
+    // No index is FALSE, if user is filtering on keyword without additional facets.
+    elseif (isset($query['keyword'])) {
+
+      unset($query['keyword']);
+
+      // If keyword was the only filter set noindex to false.
+      if (count($query) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
   }
 
   // Add the "noindex, follow" meta tag if needed.
