@@ -17,7 +17,7 @@ class views_handler_filter_culturefeed_search_group extends views_handler_filter
         'event' => 'event',
         'event_production' => 'event_production',
       ),
-      '#description' => t('If one or more events are related to a production, they can be grouped by production by choosing "event_produciton".'),
+      '#description' => t('If one or more events are related to a production, they can be grouped by production by choosing "event_production".'),
       '#default_value' => isset($this->value) ? $this->value : 'event',
     );
   }
