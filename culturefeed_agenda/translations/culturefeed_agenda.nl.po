@@ -125,7 +125,7 @@ msgid ""
 "Search on the given radius. Leave empty to skip radius search. Radius search "
 "will only be done when viewing an event."
 msgstr ""
-"Storteer op straal. Laat leeg om straal niet op te nemen in de zoekopdracht. "
+"Sorteer op straal. Laat leeg om straal niet op te nemen in de zoekopdracht. "
 "Zoek op straal gebeurt enkel wanneer je een activiteit bekijkt. "
 
 #: culturefeed_agenda.module:418
