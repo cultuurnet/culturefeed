@@ -412,7 +412,7 @@ class CultureFeedSearchPage {
         }
 
         // Set start date time on beginning of the day.
-        $startDate->setTime(0, 0, 1);
+        $startDate->setTime(0, 0, 0);
 
         // Set end date time to end of the day day, to it searches on full day.
         $endDate->setTime(23, 59, 59);
