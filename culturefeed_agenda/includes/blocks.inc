@@ -473,7 +473,7 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
     '#size' => 28,
     '#title' => t('Search string'),
     '#title_display' => 'invisible',
-    '#attributes' => array('class' => array('auto-submit-field'), 'placeholder' => t('Plaats of naam')),
+    '#attributes' => array('class' => array('auto-submit-field'), 'placeholder' => t('Venue name or location')),
     '#autocomplete_path' => 'autocomplete/culturefeed/agenda/actor-search'
   );
 
