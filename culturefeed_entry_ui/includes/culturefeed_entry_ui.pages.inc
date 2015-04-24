@@ -2194,47 +2194,85 @@ function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
 function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
   $form = array();
+  /** @var \CultuurNet\Search\ActivityStatsExtendedEntity $event */
   $event = $event->getEntity();
-  $event_tags = $event->getKeywords();
-  $form['#old_tags'] = $event_tags;
 
-  $custom_tags = array();
+  // CDB Scheme < 3.3.
+  if (version_compare(culturefeed_cdb_upgrade_get_schema_version_number(), '3.3')) {
 
-  // Get options from variable.
-  if (variable_get('culturefeed_entry_ui_custom_tags')) {
-    $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
-  }
+    /** @var \CultureFeed_Cdb_Item_Event $event */
+    $event_tags = $event->getKeywords();
+    $form['#old_tags'] = $event_tags;
+    $custom_tags = array();
 
-  // Filter out custom tags.
-  if ($event_tags) {
-    foreach ($event_tags as $tag) {
-      if (isset($custom_options) && array_key_exists($tag, $custom_options)) {
-        unset($event_tags[$tag]);
-        $custom_tags[$tag] = $tag;
+    // Get options from variable.
+    if (variable_get('culturefeed_entry_ui_custom_tags')) {
+      $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
+    }
+
+    // Filter out custom tags.
+    if ($event_tags) {
+      foreach ($event_tags as $tag) {
+        if (isset($custom_options) && array_key_exists($tag, $custom_options)) {
+          unset($event_tags[$tag]);
+          $custom_tags[$tag] = $tag;
+        }
       }
     }
-  }
-  else {
-    $event_tags = array();
-  }
+    else {
+      $event_tags = array();
+    }
 
-  $form['#object_id'] = $event->getCdbId();
+    $form['#object_id'] = $event->getCdbId();
 
-  if (user_access('manage custom tags') && !empty($custom_options)) {
-    $form['custom_tags'] = array(
-      '#type' => 'checkboxes',
-      '#options' => $custom_options,
-      '#title' => t('Custom tags'),
-      '#default_value' => $custom_tags,
+    if (user_access('manage custom tags') && !empty($custom_options)) {
+      $form['custom_tags'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $custom_options,
+        '#title' => t('Custom tags'),
+        '#default_value' => $custom_tags,
+      );
+    }
+
+    $form['tags'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Tags'),
+      '#default_value' => implode(';', $event_tags),
+      '#description' => t('Seperate multiple tags by ;'),
     );
+
   }
 
-  $form['tags'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tags'),
-    '#default_value' => implode(';', $event_tags),
-    '#description' => t('Seperate multiple tags by ;'),
-  );
+  // CDB Scheme >= 3.3.
+  else {
+
+    /** @var \CultureFeed_Cdb_Item_Event $event */
+    $event_tags = $event->getKeywords(TRUE);
+    /** @var \CultureFeed_Cdb_Data_Keyword[] $event_tags */
+
+    $form['#old_tags'] = $event_tags;
+
+    $form['tags'] = array(
+      '#type' => 'fieldset',
+    );
+
+    foreach ($event_tags as $tag) {
+
+      $form['tags'][$tag->getValue()] = array(
+        '#type' => 'fieldset',
+        'value' => array(
+          '#type' => 'textfield',
+          '#default_value' => $tag->getValue(),
+        ),
+        'visible' => array(
+          '#type' => 'checkbox',
+          '#default_value' => $tag->isVisible(),
+        ),
+      );
+
+    }
+
+  }
 
   $form['submit'] = array(
     '#type' => 'submit',
