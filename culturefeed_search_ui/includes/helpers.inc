@@ -10,7 +10,7 @@
 function _culturefeed_search_ui_video_url_to_embed($url) {
 
   // Construct embed url.
-  $embed_url = str_replace('watch', 'v', $url);
+  $embed_url = str_replace('watch', 'embed', $url);
 
   $video_parts = explode('?v=', $embed_url);
 
@@ -240,12 +240,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     $new_date = date("d/m/Y", strtotime($date));
     $new_query['date_range'] = $new_date;
   }
-  
+
   // Headings are now a combination of facets.
   if (isset($_GET['heading'])) {
-    
+
     $mapping = culturefeed_search_ui_get_headings_mapping($_GET['heading']);
-    
+
     // Voor kinderen is not a facet
     if (isset($mapping['voor_kinderen'])) {
       $new_query['voor-kinderen'] = '1';
