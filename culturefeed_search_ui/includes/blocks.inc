@@ -293,7 +293,7 @@ function culturefeed_search_ui_block_city_facet() {
   }
 
   if ($culturefeedSearchResult->getTotalCount() == 0) {
-    return;
+    $noresults = TRUE;
   }
 
   $build = array();
@@ -319,6 +319,7 @@ function culturefeed_search_ui_block_city_facet() {
       '#theme' => 'culturefeed_search_facet',
       '#facet' => $facet,
       '#items' => $items,
+      '#noresults' => $noresults,
     );
 
     // If a postal was given. We can add proximity search.
