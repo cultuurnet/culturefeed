@@ -457,6 +457,11 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
     return;
   }
 
+  $search_result = culturefeed_get_search_result();
+  if ($search_result->getTotalCount() == 0) {
+    return;
+  }
+
   $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_page);
   $current_sort = isset($_GET['sort']) ? $_GET['sort'] : $sort_options[$sort_options['default']]['value'];
 
