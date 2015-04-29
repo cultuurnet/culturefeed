@@ -82,12 +82,13 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
 
   if (is_array($facet_links)) {
     $count_facets = count($facet_links);
-    $classes[] = "facet-search";
-    $classes[] = ($count_facets > 10 ? "many-facets" : "");
+    $classes[] = 'facet-search';
+    $classes[] = ($count_facets > 10 ? 'many-facets' : '');
     return theme('item_list', array(
       'items' => $facet_links,
       'type' => 'ul',
-      'attributes' => array("class" => $classes, "data-size" => $count_facets)));
+      'attributes' => array('class' => $classes, 'data-size' => $count_facets)
+    ));
   }
 }
 
