@@ -20,7 +20,7 @@ function culturefeed_uitpas_profile_advantages_get() {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-    $uitpas_number = 0;
+
     if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
       $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
     }
@@ -49,7 +49,7 @@ function culturefeed_uitpas_profile_advantages_get() {
     drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
 
   }
-  
+
   // Solution csdco on from https://www.drupal.org/node/1049354
   $_GET['q'] = 'promotions';
 

@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_content.install.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function culturefeed_content_field_schema($field) {
+
+  if ($field['type'] == 'culturefeed_content') {
+
+    return array(
+      'columns' => array(
+        'filter_query' => array(
+          'type' => 'text',
+          'size' => 'medium',
+        ),
+        'query_string' => array(
+          'type' => 'text',
+          'size' => 'medium',
+        ),
+        'rows' => array(
+          'type' => 'int',
+          'size' => 'medium',
+        ),
+        'sort' => array(
+          'type' => 'text',
+          'size' => 'medium',
+        ),
+      ),
+    );
+
+  }
+
+}
