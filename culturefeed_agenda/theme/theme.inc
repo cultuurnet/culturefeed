@@ -371,6 +371,83 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       }
     }
 
+    // Absolute link to detail.
+    $variables['share_url'] = url($variables['url'], array('absolute' => TRUE));
+    
+    $variables['facebook'] = array();
+    $variables['googleplus'] = array();
+    $variables['twitter'] = array();
+    $variables['whatsapp'] = array();
+
+    // Set prefix for share URL's.
+    $variables['facebook']['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
+    $variables['googleplus']['prefix'] = 'https://plus.google.com/share?url=';
+    $variables['twitter']['prefix'] = 'https://twitter.com/intent/tweet?text=';
+    $variables['whatsapp']['prefix'] = 'whatsapp://send?text=';
+
+    // Share URL's.      
+    $variables['facebook']['url'] = $variables['facebook']['prefix'] . $variables['share_url'];
+    $variables['googleplus']['url'] = $variables['googleplus']['prefix'] . $variables['share_url'];
+    $variables['twitter']['url'] = $variables['twitter']['prefix'] . $variables['share_url'];
+    $variables['whatsapp']['url'] = $variables['whatsapp']['prefix'] . $variables['share_url'];
+
+    if (module_exists('forward')) {
+      $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['url'])));
+    }
+    else {
+      $variables['mail_url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . $variables['share_url']; 
+    }
+
+    // Prepare to push share activities to Culturefeed.
+    if (culturefeed_is_culturefeed_user()) {
+      $track = TRUE;
+      $content_type = culturefeed_get_content_type($item->getType());
+      $id = $item->getId();
+      $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    }
+    
+    // Add options.  
+    $variables['facebook']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','facebook-share'),
+        'rel' => $track ? $track_facebook : '' ,
+      ),
+    );
+    $variables['googleplus']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','googleplus-share'),
+      ),
+    );
+    $variables['twitter']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','twitter-share'),
+        'rel' => $track ? $track_twitter : '' ,
+      ),
+    );
+    $variables['whatsapp']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','whatsapp-share'),
+      ),
+      'external' => TRUE,
+    );
+    $variables['mail']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','forward-mail'),
+      ),
+      'external' => TRUE,
+    );
+
+    // Share Links.      
+    $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
+    $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
+    $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
+    $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
+    $variables['mail_link'] = l(t('Mail'), $variables['mail_url'], $variables['mail']['options']);
+    
+    // Use dialog when Facebook app id is set.
+    culturefeed_search_ui_add_facebook_share();
+
   }
 
   // All categories.
