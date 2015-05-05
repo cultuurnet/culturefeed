@@ -17,6 +17,13 @@ class culturefeed_search_views_query extends views_plugin_query {
 
   }
 
+  /*
+   * return $parameters
+   */
+  function getParameters() {
+    return $this->parameters;
+  }
+
   /**
    * @see views_plugin_query::build()
    */
