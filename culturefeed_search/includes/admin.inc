@@ -36,7 +36,7 @@ function culturefeed_search_admin_settings() {
   );
 
   $form['culturefeed_search_cdb_version'] = array(
-    '#default_value' => variable_get('culturefeed_search_cdb_version', '3.2'),
+    '#default_value' => variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),
     '#description' => t('The culturefeed cdb schema version.'),
     '#title' => t('Cdb schema version'),
     '#type' => 'select',
