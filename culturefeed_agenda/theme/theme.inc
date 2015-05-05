@@ -399,6 +399,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
 
     // Prepare to push share activities to Culturefeed.
+    $track = FALSE;
     if (culturefeed_is_culturefeed_user()) {
       $track = TRUE;
       $content_type = culturefeed_get_content_type($item->getType());
