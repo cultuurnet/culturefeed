@@ -77,6 +77,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
     }
 
     $main_picture = '';
+    $alt_pic = FALSE;
 
     if ($this->options['override']) {
       $media = $detail->getMedia();
@@ -104,6 +105,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
         if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
           $picture = $collaboration_data->image;
           if (isset($picture)) {
+            $alt_pic = TRUE;
             $main_picture = $picture;
           }
         }
@@ -134,10 +136,25 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
 
     if (!empty($main_picture)) {
 			if ($this->options['format'] == 'image') {
-				$image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+        if ($alt_pic) {
+          $image = theme('image', array(
+            'path' => $main_picture,
+            'width' => $this->options['width'],
+            'height' => $this->options['height'],
+            )
+          );
+        }
+        else {
+          $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+        }
 			}
 			else if ($this->options['format'] == 'url') {
-				$image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
+        if ($alt_pic) {
+          $image = $main_picture;
+        }
+        else {
+          $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
+        }
 			}
 
       if ($this->options['link']) {
