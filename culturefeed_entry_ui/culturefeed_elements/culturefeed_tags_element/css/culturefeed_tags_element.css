@@ -1,0 +1,21 @@
+table.edit-tags-form-table {
+  margin-bottom: 10px;
+}
+
+.edit-tags-form-table td.edit-tags-form-cell {
+  vertical-align: middle;
+  border-top: none;
+}
+
+.edit-tags-form-table td.edit-tags-form-cell .form-group {
+  margin: 0px;
+}
+
+.edit-tags-form-table input.form-checkbox {
+  max-width: inherit;
+  margin-right: 0;
+}
+
+button.edit-tags-add-tag {
+  margin: 0px 0px 10px 8px;
+}

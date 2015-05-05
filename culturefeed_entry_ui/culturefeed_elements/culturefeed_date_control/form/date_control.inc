@@ -141,7 +141,7 @@ function culturefeed_date_control_date_control_validate(array $element, array &$
   $values = drupal_array_get_nested_value($form_state['input'], $element['#parents']);
   $date_control = $values['date_control'];
 
-  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     $type = $date_control['type'];
 
