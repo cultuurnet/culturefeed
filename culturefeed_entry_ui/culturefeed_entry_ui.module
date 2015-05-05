@@ -49,11 +49,6 @@ function culturefeed_entry_ui_theme() {
       'path' => drupal_get_path('module', 'culturefeed_entry_ui') . '/theme',
       'file' => 'theme.inc',
     ),
-    'culturefeed_entry_ui_edit_tag_objects_form_table' => array(
-      'render element' => 'form',
-      'path' => drupal_get_path('module', 'culturefeed_entry_ui') . '/theme',
-      'file' => 'theme.inc',
-    ),
   );
 }
 

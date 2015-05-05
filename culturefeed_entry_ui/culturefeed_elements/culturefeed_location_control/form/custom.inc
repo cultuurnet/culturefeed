@@ -55,7 +55,7 @@ function culturefeed_location_control_custom_process(array $element, array &$for
 
   $ajax_settings = array(
     'effect' => 'none',
-    'path' => 'culturefeed_elements/location/ajax/' . implode('/', $array_parents),
+    'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
     'progress' => array('type' => 'throbber'),
     'wrapper' => $element_id . '-ajax-wrapper',
   );
@@ -125,7 +125,7 @@ function culturefeed_location_control_custom_process(array $element, array &$for
   $element['custom_remove'] = array(
     '#access' => TRUE,
     '#ajax' => array(
-      'path' => 'culturefeed_elements/location/ajax/' . implode('/', $array_parents),
+      'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
       'wrapper' => $element_id . '-ajax-wrapper',
     ) + $ajax_settings,
     '#attributes' => array('class' => array('add-more-link btn-link')),
@@ -154,7 +154,7 @@ function culturefeed_location_control_custom_validate(array &$element, array &$f
   $triggering_parent = array_pop($triggering_element['#parents']);
   $custom = $element['#value'];
 
-  if (culturefeed_location_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 

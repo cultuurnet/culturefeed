@@ -1,0 +1,6 @@
+name = CultureFeed Tags element
+description = Form element to manage keywords in the Entry UI.
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed_elements
