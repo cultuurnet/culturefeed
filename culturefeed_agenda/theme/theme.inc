@@ -311,7 +311,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
-  $version = variable_get('culturefeed_search_cdb_version', '3.2');
+  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
   // -1 if first version is lower as second.
   if (version_compare($version, '3.3') !== -1) {
 
