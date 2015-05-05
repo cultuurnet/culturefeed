@@ -35,6 +35,19 @@ function culturefeed_search_admin_settings() {
     '#maxlength' => 40,
   );
 
+  $form['culturefeed_search_cdb_version'] = array(
+    '#default_value' => variable_get('culturefeed_search_cdb_version', '3.2'),
+    '#description' => t('The culturefeed cdb schema version.'),
+    '#title' => t('Cdb schema version'),
+    '#type' => 'select',
+    '#options' => array(
+      '3.0' => '3.0',
+      '3.1' => '3.1',
+      '3.2' => '3.2',
+      '3.3' => '3.3',
+    ),
+  );
+
   return system_settings_form($form);
 
 }
