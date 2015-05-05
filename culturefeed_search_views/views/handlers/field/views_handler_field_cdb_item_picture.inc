@@ -89,13 +89,15 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       foreach ($parameters as $i => $parameter) {
         $key = $parameter->getKey();
         $value = $parameter->getValue();
-        if ($key != 'fq' || empty($value)) {
+        if ($key != 'fq' || empty($value) || 0 !== strpos($value, 'keyword')) {
           unset($parameters[$i]);
         }
       }
 
       // If more filterquery's are defined, take first one.
-      $parameter = substr(substr($parameters[0]->getValue(), 10), 0, -1);
+      if (count($parameters) > 0) {
+        $parameter = substr(substr($parameters[0]->getValue(), 10), 0, -1);
+      }
 
       foreach ($roadmaps as $roadmap) {
         $subbrand = $roadmap->getSubbrand();
