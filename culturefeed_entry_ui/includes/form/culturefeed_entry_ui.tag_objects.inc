@@ -58,7 +58,7 @@ function culturefeed_entry_ui_edit_tag_objects_form($form, &$form_state, $event)
     'submit' => array(
       '#type' => 'submit',
       '#validate' => array('culturefeed_entry_ui_edit_tag_objects_form_submit_validate'),
-      '#value' => t('Submit'),
+      '#value' => t('Save'),
     ),
   );
 
@@ -74,12 +74,27 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
   // Merge custom tags into all tags.
   $keywords = array();
   foreach ($form_state['values']['tags'] as $tag) {
-    $keywords[] = new CultureFeed_Cdb_Data_Keyword($tag['value'], isset($tag['visible']) ? $tag['visible'] : TRUE);
+    $keywords[$tag['value']] = new CultureFeed_Cdb_Data_Keyword($tag['value'], isset($tag['visible']) ? $tag['visible'] : TRUE);
   }
-  $custom_tags = variable_get('culturefeed_entry_ui_custom_tags', array());
-  foreach ($form_state['values']['custom_tags'] as $tag) {
-    if (isset($custom_tags[$tag])) {
-      $keywords[] = new CultureFeed_Cdb_Data_Keyword($custom_tags[$tag]['value'], isset($custom_tags[$tag]['visible']) ? $custom_tags[$tag]['visible'] : TRUE);
+
+  if (isset($form_state['values']['custom_tags'])) {
+
+    $custom_tags = variable_get('culturefeed_entry_ui_custom_tags', array());
+    foreach ($form_state['values']['custom_tags'] as $tag) {
+      if (isset($custom_tags[$tag])) {
+        $keywords[$custom_tags[$tag]['value']] = new CultureFeed_Cdb_Data_Keyword($custom_tags[$tag]['value'], isset($custom_tags[$tag]['visible']) ? $custom_tags[$tag]['visible'] : TRUE);
+      }
+    }
+
+  }
+
+  // Check what tags are removed.
+  $removed_tags = array();
+  if (!empty($form['#old_tags'])) {
+    foreach (array_keys($form['#old_tags']) as $tag) {
+      if (!in_array($tag, array_keys($keywords))) {
+        $removed_tags[] = $tag;
+      }
     }
   }
 
@@ -91,6 +106,13 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
     // Add new tags.
     if ($keywords) {
       Drupalculturefeed_EntryApi::addTagToEvent($event, $keywords);
+    }
+
+    // Remove old tags.
+    if ($removed_tags) {
+      foreach ($removed_tags as $removed_tag) {
+        Drupalculturefeed_EntryApi::removeTagFromEvent($event, $removed_tag);
+      }
     }
 
     drupal_set_message(t('The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the "View" tab'));
