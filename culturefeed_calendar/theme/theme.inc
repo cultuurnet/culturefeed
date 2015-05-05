@@ -298,8 +298,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
     $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
     $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
 
-    culturefeed_search_ui_add_facebook_share();
-
     $variables['facebook']['url'] = 'https://www.facebook.com/sharer/sharer.php';
     $variables['facebook']['attr'] = array(
       'query' => array('u' => $variables['calendar_share_url']),
