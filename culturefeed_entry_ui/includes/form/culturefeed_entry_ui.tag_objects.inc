@@ -15,21 +15,43 @@ function culturefeed_entry_ui_edit_tag_objects_form($form, &$form_state, $event)
   /* @var \CultureFeed_Cdb_Item_Event $event */
   /* @var \CultureFeed_Cdb_Data_Keyword[] $event_tags */
   $event_tags = $event->getKeywords(TRUE);
-
-  $tags = array();
-  foreach ($event_tags as $tag) {
-    $tags[] = array(
-      'value' => $tag->getValue(),
-      'visible' => $tag->isVisible(),
-    );
-  }
-
+  $custom_tags = variable_get('culturefeed_entry_ui_custom_tags', array());
+  $form['#old_tags'] = $event_tags;
   $form['#object_id'] = $event->getCdbId();
 
+  // Tags.
+  $tags = array();
+  foreach ($event_tags as $tag) {
+
+    $value = $tag->getValue();
+
+    if (!in_array($value, array_keys($custom_tags))) {
+
+      $tags[] = array(
+        'value' => $tag->getValue(),
+        'visible' => $tag->isVisible(),
+      );
+
+    }
+
+  }
+
   $form['tags'] = array(
-    '#type' => 'culturefeed_tags_element',
     '#default_value' => $tags,
+    '#title' => t('Tags'),
+    '#type' => 'culturefeed_tags_element',
   );
+
+  if (user_access('manage custom tags') && !empty($custom_tags)) {
+
+    $form['custom_tags'] = array(
+      '#default_value' => array_intersect(array_keys($event_tags), array_keys($custom_tags)),
+      '#options' => array_combine(array_keys($custom_tags), array_keys($custom_tags)),
+      '#title' => t('Custom tags'),
+      '#type' => 'checkboxes',
+    );
+
+  }
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -50,12 +72,15 @@ function culturefeed_entry_ui_edit_tag_objects_form($form, &$form_state, $event)
 function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) {
 
   // Merge custom tags into all tags.
-  $tags = $form_state['values']['tags'];
   $keywords = array();
-  $visibles = array();
-  foreach ($tags as $tag) {
-    $keywords[] = $tag['value'];
-    $visibles[] = (isset($tag['visible']) && $tag['visible']) ? TRUE : FALSE;
+  foreach ($form_state['values']['tags'] as $tag) {
+    $keywords[] = new CultureFeed_Cdb_Data_Keyword($tag['value'], isset($tag['visible']) ? $tag['visible'] : TRUE);
+  }
+  $custom_tags = variable_get('culturefeed_entry_ui_custom_tags', array());
+  foreach ($form_state['values']['custom_tags'] as $tag) {
+    if (isset($custom_tags[$tag])) {
+      $keywords[] = new CultureFeed_Cdb_Data_Keyword($custom_tags[$tag]['value'], isset($custom_tags[$tag]['visible']) ? $custom_tags[$tag]['visible'] : TRUE);
+    }
   }
 
   $event = new CultureFeed_Cdb_Item_Event();
@@ -65,7 +90,7 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
 
     // Add new tags.
     if ($keywords) {
-      Drupalculturefeed_EntryApi::addTagToEvent($event, $keywords, $visibles);
+      Drupalculturefeed_EntryApi::addTagToEvent($event, $keywords);
     }
 
     drupal_set_message(t('The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the "View" tab'));
@@ -92,9 +117,12 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
  */
 function culturefeed_entry_ui_edit_tag_objects_form_submit_validate($form, &$form_state) {
 
-  foreach ($form_state['values']['tags'] as $key => $tag) {
-    if (!$tag['value']) {
-      form_set_error('tags][keywords][' . $key . '][value', t('The tag should have a value.'));
+  $tags = $form_state['values']['tags'];
+  $custom_tags = variable_get('culturefeed_entry_ui_custom_tags', array());
+
+  foreach (array_keys($tags) as $key => $tag) {
+    if (in_array($tag, array_keys($custom_tags))) {
+      form_set_error('tags][keywords][' . $key, t("Tag @tag is not permitted because it's already a custom tag.", array('@tag' => $tag)));
     }
   }
 

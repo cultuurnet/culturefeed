@@ -22,15 +22,15 @@ function theme_culturefeed_tags_element_tags_element_form_table(&$vars) {
       'data' => array(
         array(
           'data' => drupal_render($form[$row]['value']),
-          'class' => 'edit-tags-form-cell',
+          'class' => 'tags-element-form-cell',
         ),
         array(
-          'data' => drupal_render($form[$row]['visible']),
-          'class' => 'edit-tags-form-cell',
+          'data' => drupal_render($form[$row]['hidden']),
+          'class' => 'tags-element-form-cell',
         ),
         array(
           'data' => drupal_render($form[$row]['remove']),
-          'class' => 'edit-tags-form-cell',
+          'class' => 'tags-element-form-cell',
         ),
       ),
       'no_striping' => TRUE,

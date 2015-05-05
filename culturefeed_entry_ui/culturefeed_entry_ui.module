@@ -63,7 +63,9 @@ function culturefeed_entry_ui_menu() {
     'argument' => 'culturefeed_entry_ui_edit_tags_form',
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
-  if (!version_compare(culturefeed_cdb_upgrade_get_schema_version_number(), '3.3')) {
+  $version = variable_get('culturefeed_search_cdb_version', '3.2');
+  // -1 if first version is lower as second.
+  if (version_compare($version, '3.3') !== -1) {
     $tags_form['argument'] = 'culturefeed_entry_ui_edit_tag_objects_form';
     $tags_form['file'] = 'includes/form/culturefeed_entry_ui.tag_objects.inc';
   }
