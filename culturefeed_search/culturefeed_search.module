@@ -8,6 +8,9 @@
 define('CULTUREFEED_SEARCH_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
+// Default cdb schema version.  Can be overridden in settings form.
+define('CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION', '3.2');
+
 // Default proximity search range.
 define('CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE', 20);
 
@@ -22,7 +25,7 @@ module_load_include('inc', 'culturefeed_search', 'includes/helpers');
 function culturefeed_search_culturefeed_search_service_created($service) {
 
   // Temporary workaround to set CDB to 3.3
-  $version = variable_get('culturefeed_search_cdb_version', '3.2');
+  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
 
   // -1 if first version is lower as second.
   if (version_compare($version, '3.3') !== -1) {
