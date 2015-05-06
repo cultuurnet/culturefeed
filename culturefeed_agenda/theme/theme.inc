@@ -426,10 +426,10 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['whatsapp']['url'] = $whatsapp['prefix'] . urlencode(url($variables['share_url'], array('query' => $whatsapp['utm'])));
 
     if (module_exists('forward')) {
-      $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['url'], array('query' => $mail['utm']))));
+      $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
     }
     else {
-      $variables['mail_url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . $variables['share_url'], array('query' => $mail['utm']); 
+      $variables['mail']['url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($variables['share_url'], array('query' => $mail['utm']))); 
     }
 
     // Prepare to push share activities to Culturefeed.
@@ -478,7 +478,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
     $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
     $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
-    $variables['mail_link'] = l(t('Mail'), $variables['mail_url'], $variables['mail']['options']);
+    $variables['mail_link'] = l(t('Mail'), $variables['mail']['url'], $variables['mail']['options']);
     
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
