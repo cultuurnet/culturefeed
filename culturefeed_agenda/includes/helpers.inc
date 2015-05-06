@@ -600,6 +600,8 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
       $timestamps_array[$current_timestamp] = array(
         'day' => date('D', strtotime($date)),
         'date' => date('d/m', strtotime($date)),
+				'year' => date('Y', strtotime($date)),
+				'countable_date' => date('Y-m-d', strtotime($date)),
       );
       if ($timestamp->getStartTime()) {
         $timestamps_array[$current_timestamp]['begintime'] = date('H:i', strtotime($timestamp->getStartTime()));

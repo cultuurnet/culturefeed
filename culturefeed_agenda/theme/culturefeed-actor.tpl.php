@@ -73,3 +73,15 @@
 <?php endforeach; ?>
 
 <?php print $recommend_link; ?>
+
+<div>
+  <?php print $facebook_link; ?>
+  <br>
+  <?php print $googleplus_link; ?>
+  <br>
+  <?php print $twitter_link; ?>
+  <br>
+  <?php print $whatsapp_link; ?>
+  <br>
+  <?php print $mail_link; ?>
+</div>

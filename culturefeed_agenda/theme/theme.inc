@@ -313,10 +313,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $keywords = $cdb_item->getKeywords();
   $variables['keywords'] = '';
-  if ($keywords) {
 
+  if ($keywords) {
+		$variables['raw_keywords'] = array();
     $linked_keywords = array();
     foreach ($keywords as $keyword) {
+			$variables['raw_keywords'][] = $keyword;
       $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
     }
 
@@ -325,6 +327,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     if (array_key_exists('ook voor kinderen', $keywords)) {
       $variables['forkids'] = TRUE;
     }
+  }
+  
+  $detect = culturefeed_mobile_detect_get_object();
+
+  if ($detect) {
+    $device = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+    $variables['device'] = $device;
+
+    $is_ios = $detect->isiOS();
+    $variables['is_ios'] = $is_ios;
+
+    $is_android = $detect->isAndroidOS();
+    $variables['is_android'] = $is_android;
   }
 
 }
@@ -355,6 +370,83 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['videos'][] = $video_embed;
       }
     }
+
+    // Absolute link to detail.
+    $variables['share_url'] = url($variables['url'], array('absolute' => TRUE));
+    
+    $variables['facebook'] = array();
+    $variables['googleplus'] = array();
+    $variables['twitter'] = array();
+    $variables['whatsapp'] = array();
+
+    // Set prefix for share URL's.
+    $variables['facebook']['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
+    $variables['googleplus']['prefix'] = 'https://plus.google.com/share?url=';
+    $variables['twitter']['prefix'] = 'https://twitter.com/intent/tweet?text=';
+    $variables['whatsapp']['prefix'] = 'whatsapp://send?text=';
+
+    // Share URL's.      
+    $variables['facebook']['url'] = $variables['facebook']['prefix'] . $variables['share_url'];
+    $variables['googleplus']['url'] = $variables['googleplus']['prefix'] . $variables['share_url'];
+    $variables['twitter']['url'] = $variables['twitter']['prefix'] . $variables['share_url'];
+    $variables['whatsapp']['url'] = $variables['whatsapp']['prefix'] . $variables['share_url'];
+
+    if (module_exists('forward')) {
+      $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['url'])));
+    }
+    else {
+      $variables['mail_url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . $variables['share_url']; 
+    }
+
+    // Prepare to push share activities to Culturefeed.
+    if (culturefeed_is_culturefeed_user()) {
+      $track = TRUE;
+      $content_type = culturefeed_get_content_type($item->getType());
+      $id = $item->getId();
+      $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    }
+    
+    // Add options.  
+    $variables['facebook']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','facebook-share'),
+        'rel' => $track ? $track_facebook : '' ,
+      ),
+    );
+    $variables['googleplus']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','googleplus-share'),
+      ),
+    );
+    $variables['twitter']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','twitter-share'),
+        'rel' => $track ? $track_twitter : '' ,
+      ),
+    );
+    $variables['whatsapp']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','whatsapp-share'),
+      ),
+      'external' => TRUE,
+    );
+    $variables['mail']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link','forward-mail'),
+      ),
+      'external' => TRUE,
+    );
+
+    // Share Links.      
+    $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
+    $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
+    $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
+    $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
+    $variables['mail_link'] = l(t('Mail'), $variables['mail_url'], $variables['mail']['options']);
+    
+    // Use dialog when Facebook app id is set.
+    culturefeed_search_ui_add_facebook_share();
 
   }
 
@@ -389,7 +481,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
   $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $variables['agefrom'] = check_plain($event->getAgeFrom());
-  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() <= 12)) {
+  if (is_numeric($event->getAgeFrom()) && ($event->getAgeFrom() < 12)) {
     $variables['forkids'] = TRUE;
   }
   $variables['location'] = culturefeed_agenda_get_location_of_event($event);
@@ -1058,5 +1150,39 @@ function theme_culturefeed_agenda_search_block_field_settings($variables) {
   drupal_add_tabledrag('enabled-fields', 'order', 'sibling', 'enabled-fields-order-weight');
 
   return theme('table', $table_variables);
+
+}
+
+/**
+ * Preprocess the agenda organiser events block.
+ */
+function culturefeed_agenda_preprocess_culturefeed_agenda_organiser_events(&$variables) {
+	$items = array();
+	foreach ($variables['items'] as $item) {
+		/*$items[] = theme('culturefeed_agenda_organiser_events_item', array(
+			'item' => $item,
+		));*/
+		$type = $item->getType();
+		if ($type == 'event') {
+			$type = 'e';
+		}
+		else if ($type == 'production') {
+			$type = 'p';
+		}
+
+		$event = $item->getEntity();
+		$event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+		$title = $event_detail->getTitle();
+		$cdbid = $event->getCdbid();
+
+		$items[] = '<a href="/agenda/' . $type . '/slug/' . $cdbid . '">' . $title . '</a>';
+	}
+	$variables['items'] = $items;
+
+	$organiser = $variables['organiser']->getLabel();
+	$organiser_id = $variables['organiser']->getCdbid();
+	$variables['organiser_link'] = '<a href="/agenda/a/' . $organiser . '/' . $organiser_id . '">' . $organiser . '</a>';
+
 
 }

@@ -88,7 +88,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
   $element['start_time'] = array(
     '#attributes' => array('class' => array('time-select-complete-minutes')),
     '#date_format' => 'H:i',
-    '#date_increment' => 30,
+    '#date_increment' => 15,
     '#default_value' => $time,
     '#title' => '',
     '#type' => 'date_select',
@@ -114,7 +114,7 @@ function culturefeed_date_control_hybrid_process(array $element, array &$form_st
     '#attributes' => array('class' => array('time-select-complete-minutes')),
     '#ajax' => $ajax_settings,
     '#date_format' => 'H:i',
-    '#date_increment' => 30,
+    '#date_increment' => 15,
     '#default_value' => '',
     '#title' => '',
     '#type' => 'date_select',

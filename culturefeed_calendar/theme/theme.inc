@@ -119,8 +119,12 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     'calendar-button',
     'calendar-button-' . $variables['button']['location'],
   );
+  $variables['finished'] = FALSE;
 
-  if ($variables['button']['action'] == 'view') {
+  if ($variables['closed']) {
+    $variables['finished'] = TRUE;
+  }
+  elseif ($variables['button']['action'] == 'view') {
 
     $variables['classes_array'][] = 'btn-view-calendar';
 
@@ -236,7 +240,12 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activity_summary(&
 
   // Activity details.
   if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
-    $variables['date'] = format_date($selected_date, 'custom', 'l j F Y H:i');
+    if (format_date($selected_date, 'custom', 'H:i') == '00:00') {
+      $variables['date'] = format_date($selected_date, 'custom', 'l j F Y');
+    }
+    else {
+      $variables['date'] = format_date($selected_date, 'custom', 'l j F Y H:i');
+    }
   }
 
   $activity_id = $activity->id;

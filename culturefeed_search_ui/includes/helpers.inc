@@ -10,7 +10,7 @@
 function _culturefeed_search_ui_video_url_to_embed($url) {
 
   // Construct embed url.
-  $embed_url = str_replace('watch', 'v', $url);
+  $embed_url = str_replace('watch', 'embed', $url);
 
   $video_parts = explode('?v=', $embed_url);
 
@@ -166,6 +166,18 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     }
 
+    // No index is FALSE, if user is filtering on keyword without additional facets.
+    elseif (isset($query['keyword'])) {
+
+      unset($query['keyword']);
+
+      // If keyword was the only filter set noindex to false.
+      if (count($query) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
   }
 
   // Add the "noindex, follow" meta tag if needed.
@@ -204,9 +216,179 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     }
   }
 
+  // Query is now search.
+  if (isset($_GET['query'])) {
+    $query = $_GET['query'];
+    $new_query['search'] = $query;
+  }
+
+  // K is now keyword.
+  if (isset($_GET['k'])) {
+    $k = $_GET['k'];
+    $new_query['keyword'] = $k;
+  }
+
+  // Datetype is now facet[datetype][0].
+  if (isset($_GET['datetype'])) {
+    $datetype = $_GET['datetype'];
+    $new_query['facet']['datetype'][0] = $datetype;
+  }
+
+  // Date is now date_range.
+  if (isset($_GET['date'])) {
+    $date = $_GET['date'];
+    $new_date = date("d/m/Y", strtotime($date));
+    $new_query['date_range'] = $new_date;
+  }
+
+  // Headings are now a combination of facets.
+  if (isset($_GET['heading'])) {
+
+    $mapping = culturefeed_search_ui_get_headings_mapping($_GET['heading']);
+
+    // Voor kinderen is not a facet
+    if (isset($mapping['voor_kinderen'])) {
+      $new_query['voor-kinderen'] = '1';
+      unset($mapping['voor_kinderen']);
+    }
+    foreach ($mapping as $category => $id) {
+      $new_query['facet'][$category][0] = $id;
+    }
+  }
+
   if (!empty($new_query)) {
     drupal_goto(current_path(), array('query' => $new_query), 301);
   }
+
+}
+
+/**
+ * Helper fucntion to redirect all old headingid's
+ */
+function culturefeed_search_ui_get_headings_mapping($heading) {
+
+  $mapping = array(
+    44 => array('category_eventtype_id' => '0.50.4.0.0'),
+    45 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.1.0.0'),
+    46 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.2.0.0'),
+    47 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.3.1.0'),
+    48 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.3.2.0'),
+    49 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.3.3.0'),
+    50 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.4.0.0'),
+    51 => array('category_eventtype_id' => '0.50.4.0.0','category_theme_id' => '1.8.3.5.0'),
+    52 => array('category_eventtype_id' => '0.54.0.0.0'),
+    53 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.1.0.0'),
+    54 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.2.0.0'),
+    55 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.3.0.0'),
+    56 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.5.0.0'),
+    57 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
+    58 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
+    59 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.10.0.0'),
+    60 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.4.0.0.0'),
+    61 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.5.0.0'),
+    62 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.5.0.0.0'),
+    63 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.4.0.0'),
+    64 => array('category_eventtype_id' => '0.50.6.0.0'),
+    65 => array('category_eventtype_id' => '0.3.2.0.0'),
+    66 => array('category_eventtype_id' => '0.5.0.0.0'),
+    67 => array('category_eventtype_id' => '0.5.0.0.0','category_theme_id' => '1.8.1.0.0'),
+    68 => array('category_eventtype_id' => '0.5.0.0.0','category_theme_id' => '1.3.1.0.0 '),
+    69 => array('category_eventtype_id' => '0.5.0.0.0','category_theme_id' => '1.9.1.0.0'),
+    70 => array('category_eventtype_id' => '0.5.0.0.0','category_theme_id' => '1.7.2.0.0'),
+    71 => array('category_eventtype_id' => '0.5.0.0.0','category_theme_id' => '1.10.0.0.0'),
+    73 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.13.0.0'),
+    74 => array('category_eventtype_id' => '0.0.0.0.0'),
+    75 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.1.0.0.0'),
+    76 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.0.2.0.0'),
+    77 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.0.1.0.0'),
+    78 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.0.3.0.0'),
+    79 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.2.1.0.0'),
+    80 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.2.2.0.0'),
+    81 => array('category_eventtype_id' => '0.14.0.0.0'),
+    82 => array('category_eventtype_id' => '0.15.0.0.0'),
+    83 => array('category_eventtype_id' => '0.6.0.0.0'),
+    84 => array('category_eventtype_id' => '0.37.0.0.0'),
+    85 => array('category_eventtype_id' => '0.3.1.0.0'),
+    86 => array('category_eventtype_id' => '0.50.21.0.0'),
+    87 => array('category_eventtype_id' => '0.49.0.0.0'),
+    89 => array('category_eventtype_id' => '0.53.0.0.0'),
+    90 => array('category_eventtype_id' => '0.28.0.0.0'),
+    91 => array('category_eventtype_id' => '0.7.0.0.0'),
+    92 => array('category_eventtype_id' => '0.59.0.0.0'),
+    93 => array('category_eventtype_id' => '0.17.0.0.0'),
+    94 => array('category_umv_id' => 'umv.6','voor_kinderen' => '1'),
+    95 => array('category_eventtype_id' => '0.50.4.0.0','voor_kinderen' => '1'),
+    96 => array('category_eventtype_id' => '0.54.0.0.0','voor_kinderen' => '1'),
+    97 => array('category_eventtype_id' => '0.55.0.0.0','voor_kinderen' => '1'),
+    98 => array('category_eventtype_id' => '0.50.6.0.0','voor_kinderen' => '1'),
+    99 => array('category_umv_id' => 'umv.1','voor_kinderen' => '1'),
+    100 => array('category_eventtype_id' => '0.5.0.0.0','voor_kinderen' => '1'),
+    101 => array('category_umv_id' => 'umv.2','voor_kinderen' => '1'),
+    102 => array('category_umv_id' => 'umv.8','voor_kinderen' => '1'),
+    103 => array('category_umv_id' => 'umv.4','voor_kinderen' => '1'),
+    104 => array('category_umv_id' => 'umv.5','voor_kinderen' => '1'),
+    121 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.4.0.0.0'),
+    122 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.5.0.0.0'),
+    125 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.2.0.0'),
+    126 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.12.0.0'),
+    127 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.1.0.0'),
+    128 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.6.0.0 '),
+    129 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.8.0.0'),
+    130 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.3.0.0'),
+    131 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.13.0.0'),
+    132 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.10.0.0'),
+    133 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.4.0.0'),
+    134 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.7.0.0'),
+    135 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.11.0.0'),
+    136 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.14.0.0'),
+    137 => array('category_eventtype_id' => '0.3.2.0.0'),
+    138 => array('category_eventtype_id' => '0.3.2.0.0'),
+    139 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.13.0.0'),
+    140 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.3.0.0'),
+    141 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.6.0.0'),
+    142 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.11.0.0'),
+    143 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.58.8.0.0'),
+    144 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.10.0.0'),
+    145 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.12.0.0'),
+    146 => array('category_eventtype_id' => '0.19.0.0.0','category_theme_id' => '1.51.14.0.0'),
+    147 => array('category_eventtype_id' => '0.56.0.0.0'),
+    148 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.0.5.0.0'),
+    149 => array('category_eventtype_id' => '0.0.0.0.0','category_theme_id' => '1.0.9.0.0'),
+    150 => array('category_eventtype_id' => '0.15.0.0.0'),
+    151 => array('category_eventtype_id' => '0.16.0.0.0'),
+    152 => array('category_eventtype_id' => '0.12.0.0.0'),
+    153 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.42.0.0.0'),
+    154 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.21.0.0.0'),
+    155 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.37.0.0.0'),
+    156 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.61.0.0.0'),
+    157 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.43.0.0.0'),
+    158 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.41.0.0.0'),
+    159 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.37.1.0.0'),
+    160 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.37.2.0.0'),
+    161 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.44.0.0.0'),
+    162 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.64.0.0.0'),
+    163 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.25.0.0.0'),
+    164 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.51.13.0.0'),
+    165 => array('category_eventtype_id' => '0.57.0.0.0'),
+    166 => array('category_eventtype_id' => '1.50.0.0.0'),
+    167 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.13.0.0'),
+    168 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.14.0.0'),
+    169 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.3.0.0'),
+    170 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.6.0.0'),
+    171 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.11.0.0'),
+    172 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.58.8.0.0'),
+    173 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.10.0.0'),
+    174 => array('category_eventtype_id' => '0.59.0.0.0','category_theme_id' => '1.51.12.0.0'),
+    175 => array('category_umv_id' => 'umv.9','voor_kinderen' => '1'),
+    176 => array('category_eventtype_id' => '0.100.0.0.0'),
+    177 => array('category_eventtype_id' => '0.100.2.0.0'),
+    178 => array('category_eventtype_id' => '0.100.1.0.0'),
+    179 => array('voor_kinderen' => '1'),
+    205 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.15.0.0'),
+    206 => array('category_eventtype_id' => '0.3.1.0.0','category_theme_id' => '1.65.0.0.0')
+  );
+
+  return $mapping[$heading];
 
 }
 
@@ -378,6 +560,12 @@ function culturefeed_search_ui_default_filter_options() {
       'query-string' => 'for-toddlers',
       'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
     ),
+    array(
+      'exposed' => TRUE,
+      'title' => 'Geschikt voor kinderen',
+      'query-string' => 'voor-kinderen',
+      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+    ),
   );
 }
 
@@ -395,28 +583,6 @@ function culturefeed_search_ui_get_sort_options_for_page($search_page) {
   }
 
   return $sort_options;
-
-}
-
-/**
- * Check if a block has been assigned to a region.
- *
- * @global type $theme
- * @param type $delta
- * @return type
- */
-function culturefeed_search_ui_block_is_visible($delta) {
-
-  global $theme;
-
-  $region = db_select('block', 'b')
-    ->condition('b.delta', $delta)
-    ->condition('b.theme', $theme)
-    ->fields('b', array('region'))
-    ->execute()
-    ->fetchField();
-
-  return ($region !== '-1');
 
 }
 

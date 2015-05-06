@@ -412,7 +412,7 @@ class CultureFeedSearchPage {
         }
 
         // Set start date time on beginning of the day.
-        $startDate->setTime(0, 0, 1);
+        $startDate->setTime(0, 0, 0);
 
         // Set end date time to end of the day day, to it searches on full day.
         $endDate->setTime(23, 59, 59);
@@ -435,6 +435,7 @@ class CultureFeedSearchPage {
       
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
+        $this->parameters[] = new Parameter\FilterQuery('{!geofilt}');
       }
       
       $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);

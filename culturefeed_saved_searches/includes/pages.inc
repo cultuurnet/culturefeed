@@ -45,7 +45,7 @@ function culturefeed_saved_searches_save_search_form() {
   $form['save_search_email']['email'] = array(
     '#type' => 'item',
     '#title' => $cf_account->mbox,
-    '#markup' => '<span>' . l('change', 'culturefeed/profile/edit') .'</span>',
+    '#markup' => '<span>' . l(t('Change'), 'culturefeed/account/edit') .'</span>',
   );
 
   $form['save_search_info'] = array(
@@ -110,7 +110,7 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
   }
 
   // Construct URL redirect with same search params.
-  $form_state['redirect'] = array('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($savedSearch)));
+  $form_state['redirect'] = array('agenda/search', array('query' => culturefeed_search_get_search_url_query($savedSearch->query)));
 
 }
 
@@ -141,7 +141,7 @@ function culturefeed_saved_searches_page_my_searches() {
  * Page callback to view a given search.
  */
 function culturefeed_saved_searches_redirect(CultureFeed_SavedSearches_SavedSearch $search) {
-  drupal_goto('agenda/search', array('query' => culturefeed_saved_search_get_search_url_query($search)));
+  drupal_goto('agenda/search', array('query' => culturefeed_search_get_search_url_query($search->query)));
 }
 
 /**

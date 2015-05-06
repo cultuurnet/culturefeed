@@ -234,9 +234,10 @@ function _culturefeed_pages_preprocess_culturefeed_page(&$variables) {
     $variables['contact']['mail'] = check_plain($page->getEmail());
   }
 
-  // Check if page has activities
+  // Check if page has activities if we are bot on a searchable page.
+  $current_search_page = culturefeed_get_searchable_type_by_path();
   $variables['has_activities'] = FALSE;
-  if (module_exists('culturefeed_agenda')) {
+  if (module_exists('culturefeed_agenda' && !$current_search_page)) {
     $result = culturefeed_pages_get_activities_from_page($page, variable_get('pages_block_agenda_total_items', 5));
     $variables['has_activities'] = ($result && $result->getTotalCount() > 0);
   }

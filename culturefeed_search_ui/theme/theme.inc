@@ -81,9 +81,13 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
   drupal_alter('culturefeed_search_ui_' . $facet_key . '_facet_links', $facet_links);
 
   if (is_array($facet_links)) {
+    $count_facets = count($facet_links);
+    $classes[] = 'facet-search';
+    $classes[] = ($count_facets > 10 ? 'many-facets' : '');
     return theme('item_list', array(
       'items' => $facet_links,
       'type' => 'ul',
+      'attributes' => array('class' => $classes, 'data-size' => $count_facets)
     ));
   }
 }

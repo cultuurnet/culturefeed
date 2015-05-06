@@ -201,6 +201,15 @@ function culturefeed_search_views_data() {
     ),
   );
 
+	// Category.
+	$data['cdb_items']['category'] = array(
+		'title' => t('Category'),
+		'help' => t('Category of the cdb item'),
+		'field' => array(
+			'handler' => 'views_handler_field_cdb_item_category',
+		),
+	);
+
   // Organiser.
   $data['cdb_items']['organiser'] = array(
     'title' => t('Organiser'),
@@ -254,6 +263,14 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_sort_culturefeed_search_comments',
     ),
   );
+
+	$data['cdb_items']['weight_sort'] = array(
+		'title' => t('Weight'),
+		'help' => t('Sort on weight.'),
+		'sort' => array(
+			'handler' => 'views_handler_sort_culturefeed_search_weight'
+		),
+	);
 
   return $data;
 

@@ -25,12 +25,13 @@
 #  theme/culturefeed-agenda-actor-program.tpl.php: n/a
 #  theme/culturefeed-agenda-block-nearby-activities.tpl.php: n/a
 #  theme/culturefeed-agenda-nearby-activities-list.tpl.php: n/a
+#  theme/culturefeed-agenda-organiser-events.tpl.php: n/a
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-03-18 20:21+0100\n"
-"PO-Revision-Date: 2015-03-18 20:33+0100\n"
+"POT-Creation-Date: 2015-04-23 11:36+0200\n"
+"PO-Revision-Date: 2015-04-23 11:37+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -39,76 +40,80 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: culturefeed_agenda.module:297
+#: culturefeed_agenda.module:304
 msgid "Agenda"
 msgstr "Agenda"
 
-#: culturefeed_agenda.module:298
+#: culturefeed_agenda.module:305
 msgid "Activities"
 msgstr "Activiteiten"
 
-#: culturefeed_agenda.module:303
+#: culturefeed_agenda.module:310
 msgid "Relevance"
 msgstr "Relevantie"
 
-#: culturefeed_agenda.module:310
+#: culturefeed_agenda.module:317
 msgid "Date"
 msgstr "Datum"
 
-#: culturefeed_agenda.module:316 theme/culturefeed-event.tpl.php:138
+#: culturefeed_agenda.module:323 theme/culturefeed-event.tpl.php:138
 msgid "Age"
 msgstr "Leeftijd"
 
-#: culturefeed_agenda.module:322
+#: culturefeed_agenda.module:329
 msgid "Popularity"
 msgstr "Waardering"
 
-#: culturefeed_agenda.module:328 theme/culturefeed-event.tpl.php:12
+#: culturefeed_agenda.module:335 theme/culturefeed-event.tpl.php:12
 #: theme/culturefeed-production.tpl.php:12
 msgid "Reactions"
 msgstr "Aantal reacties"
 
-#: culturefeed_agenda.module:334
+#: culturefeed_agenda.module:341
 msgid "Importance"
 msgstr "Relevantie"
 
-#: culturefeed_agenda.module:353
+#: culturefeed_agenda.module:360
 msgid "Culturefeed agenda: related activities"
 msgstr ""
 
-#: culturefeed_agenda.module:358
+#: culturefeed_agenda.module:365
 msgid "Culturefeed agenda: nearby activities"
 msgstr ""
 
-#: culturefeed_agenda.module:363
+#: culturefeed_agenda.module:370
 msgid "Culturefeed agenda: search events"
 msgstr ""
 
-#: culturefeed_agenda.module:368
+#: culturefeed_agenda.module:375
 msgid "Culturefeed agenda: actor program"
 msgstr ""
 
-#: culturefeed_agenda.module:373
+#: culturefeed_agenda.module:380
 msgid "Culturefeed agenda: production program"
 msgstr ""
 
-#: culturefeed_agenda.module:378
+#: culturefeed_agenda.module:385
 msgid "Culturefeed agenda: actor search"
 msgstr ""
 
-#: culturefeed_agenda.module:383
+#: culturefeed_agenda.module:390
 msgid "Culturefeed agenda: Event types"
 msgstr ""
 
-#: culturefeed_agenda.module:400;517
+#: culturefeed_agenda.module:395
+msgid "Culturefeed agenda: Organiser events"
+msgstr ""
+
+#: culturefeed_agenda.module:412;523
 msgid "None"
 msgstr "Geen"
 
-#: culturefeed_agenda.module:403
+#: culturefeed_agenda.module:415
 msgid "Category type to search related events"
 msgstr "Categorie om relevante gegevens op te zoeken"
 
-#: culturefeed_agenda.module:407
+#: culturefeed_agenda.module:419
 msgid ""
 "The category type to use for searching related activities. Leave empty if "
 "you only want to search on range."
@@ -116,135 +121,125 @@ msgstr ""
 "De categorie om relevantie activiteiten op te zoeken. Je kan dit veld ook "
 "leeg laten."
 
-#: culturefeed_agenda.module:411
+#: culturefeed_agenda.module:423
 msgid "Radius to search in km"
 msgstr "In een straal van"
 
-#: culturefeed_agenda.module:414
+#: culturefeed_agenda.module:426
 msgid ""
 "Search on the given radius. Leave empty to skip radius search. Radius search "
 "will only be done when viewing an event."
 msgstr ""
-"Storteer op straal. Laat leeg om straal niet op te nemen in de zoekopdracht. "
+"Sorteer op straal. Laat leeg om straal niet op te nemen in de zoekopdracht. "
 "Zoek op straal gebeurt enkel wanneer je een activiteit bekijkt. "
 
-#: culturefeed_agenda.module:418
+#: culturefeed_agenda.module:430
 msgid "Extra filter query for the result set"
 msgstr "Verfijn je zoekopdracht"
 
-#: culturefeed_agenda.module:421;455
+#: culturefeed_agenda.module:433;461
 msgid "Make sure this is a correct solr query. Example title:mytitle"
 msgstr "Zorg ervoor dat de solr query juist is. Bijvoorbeeld title:mytitle"
 
-#: culturefeed_agenda.module:425
+#: culturefeed_agenda.module:441
 msgid "Sort field"
 msgstr "Sorteer veld"
 
-#: culturefeed_agenda.module:428
-msgid "Field to sort on. Example startdate"
-msgstr "Te sorteren veld. Bijvoorbeeld startdatum"
+#: culturefeed_agenda.module:444
+msgid ""
+"Field + direction to sort on. Example permanent asc, availableto asc, weight "
+"desc"
+msgstr ""
 
-#: culturefeed_agenda.module:432
-msgid "Sort direction"
-msgstr "Volgorde"
-
-#: culturefeed_agenda.module:435
-msgid "Ascending"
-msgstr "Oplopend"
-
-#: culturefeed_agenda.module:436
-msgid "Descending"
-msgstr "Aflopend"
-
-#: culturefeed_agenda.module:442
+#: culturefeed_agenda.module:448
 msgid "Items to show"
 msgstr "Te tonen items"
 
-#: culturefeed_agenda.module:452
+#: culturefeed_agenda.module:458
 msgid "Extra filter query"
 msgstr ""
 
-#: culturefeed_agenda.module:458
+#: culturefeed_agenda.module:464
 msgid "Distance for search area"
 msgstr ""
 
-#: culturefeed_agenda.module:461
+#: culturefeed_agenda.module:467
 msgid "Enter the number of kilometers to determine search reach."
 msgstr ""
 
-#: culturefeed_agenda.module:464
+#: culturefeed_agenda.module:470
 msgid "Results sort option"
 msgstr ""
 
-#: culturefeed_agenda.module:467
+#: culturefeed_agenda.module:473
 msgid "Enter the solr sort option."
 msgstr ""
 
-#: culturefeed_agenda.module:470
+#: culturefeed_agenda.module:476;600
 msgid "Amount of results to show"
 msgstr ""
 
-#: culturefeed_agenda.module:473
+#: culturefeed_agenda.module:479;603
 msgid "Enter the number of results to show in the block."
 msgstr ""
 
-#: culturefeed_agenda.module:497 theme/theme.inc:963
+#: culturefeed_agenda.module:503 theme/theme.inc:965
 msgid "Enabled"
 msgstr "Ingeschakeld"
 
-#: culturefeed_agenda.module:521
+#: culturefeed_agenda.module:527
 msgid "Categories to show in the dropdown"
 msgstr "Te tonen categorieën in de keuzelijst"
 
-#: culturefeed_agenda.module:533
+#: culturefeed_agenda.module:539
 msgid "Text to be shown on the search button"
 msgstr ""
 
-#: culturefeed_agenda.module:545
+#: culturefeed_agenda.module:551
 msgid "Search following types."
 msgstr ""
 
-#: culturefeed_agenda.module:546
+#: culturefeed_agenda.module:552
 msgid "Select the types of that can be shown in the autocomplete."
 msgstr ""
 
-#: culturefeed_agenda.module:555
+#: culturefeed_agenda.module:561
 msgid "Visibility settings."
 msgstr ""
 
-#: culturefeed_agenda.module:556
+#: culturefeed_agenda.module:562
 msgid "Select the eventtypes where tis block may be visible."
 msgstr ""
 
-#: culturefeed_agenda.module:584
+#: culturefeed_agenda.module:590
 msgid "Event types as menu item."
 msgstr ""
 
-#: culturefeed_agenda.module:585
+#: culturefeed_agenda.module:591
 msgid "Select the eventtypes as main menu items."
 msgstr ""
 
-#: culturefeed_agenda.module:1006
+#: culturefeed_agenda.module:1028
 msgid "Set location"
 msgstr "Kies andere plaats"
 
-#: culturefeed_agenda.module:1010 includes/blocks.inc:183
+#: culturefeed_agenda.module:1032 includes/blocks.inc:182
 msgid "Zipcode or city"
 msgstr "Postcode of gemeente"
 
-#: culturefeed_agenda.module:1016
+#: culturefeed_agenda.module:1038
 msgid "Ok"
 msgstr "Ok"
 
-#: culturefeed_agenda.module:150
+#: culturefeed_agenda.module:157
 msgid "Permalink"
 msgstr "Permalink"
 
-#: culturefeed_agenda.module:230 culturefeed_agenda.info:0
+#: culturefeed_agenda.module:237 culturefeed_agenda.info:0
 msgid "CultureFeed Agenda"
 msgstr "CultureFeed Agenda"
 
-#: culturefeed_agenda.module:231
+#: culturefeed_agenda.module:238
 msgid "Change CultureFeed Agenda settings"
 msgstr ""
 
@@ -284,10 +279,6 @@ msgstr "Alle categorieën"
 msgid "What"
 msgstr "Wat"
 
-#: includes/blocks.inc:433
-msgid "Search string"
-msgstr "Zoekopdracht"
-
 #: includes/blocks.inc:163
 #: theme/culturefeed-agenda-production-program.tpl.php:21
 #: theme/culturefeed-event-summary.tpl.php:51
@@ -310,21 +301,25 @@ msgstr "Alle data"
 msgid "Where"
 msgstr "Waar"
 
-#: includes/blocks.inc:188
+#: includes/blocks.inc:186
 msgid "Use my current location"
 msgstr "Gebruik mijn huidige locatie"
 
-#: includes/blocks.inc:356
+#: includes/blocks.inc:397
 msgid "Program schedule"
 msgstr "Programmatie"
 
-#: includes/blocks.inc:400
+#: includes/blocks.inc:441
 msgid "Actor"
 msgstr ""
 
-#: includes/blocks.inc:435
-msgid "Plaats of naam"
-msgstr ""
+#: includes/blocks.inc:474
+msgid "Search string"
+msgstr "Zoekopdracht"
+
+#: includes/blocks.inc:476
+msgid "Venue name or location"
+msgstr "Plaats of naam van locatie"
 
 #: includes/helpers.inc:13
 msgctxt "culturefeed-facets"
@@ -372,6 +367,10 @@ msgstr " van het type @type"
 #: lib/Drupal/AgendaSearchPage.php:317
 msgid " with theme @theme"
 msgstr " (@theme)"
+
+#: lib/Drupal/AgendaSearchPage.php:322
+msgid " with keyword @keyword"
+msgstr " met trefwoord @keyword"
 
 #: theme/culturefeed-actor-short-summary.tpl.php:17
 #: theme/culturefeed-actor-summary.tpl.php:36
@@ -426,6 +425,10 @@ msgstr "In jouw buurt"
 #: theme/culturefeed-agenda-nearby-activities-list.tpl.php:19
 msgid "No nearby activities found"
 msgstr "Er werden geen activiteiten in jouw buurt gevonden"
+
+#: theme/culturefeed-agenda-organiser-events.tpl.php:14
+msgid "More of "
+msgstr "Meer van "
 
 #: theme/culturefeed-agenda-production-program.tpl.php:26;29
 #: theme/culturefeed-event.tpl.php:59;64
@@ -518,58 +521,58 @@ msgstr "gratis"
 msgid "Buy tickets"
 msgstr "Bestel tickets"
 
-#: theme/theme.inc:513
+#: theme/theme.inc:515
 msgid "multiple locations"
 msgstr "meerdere locaties"
 
-#: theme/theme.inc:514
+#: theme/theme.inc:516
 msgid "multiple dates"
 msgstr "meerdere data"
 
-#: theme/theme.inc:551;566
+#: theme/theme.inc:553;568
 msgid "on location in"
 msgstr "op locatie in"
 
-#: theme/theme.inc:573
+#: theme/theme.inc:575
 msgid "by appointment"
 msgstr "op afspraak"
 
-#: theme/theme.inc:687
+#: theme/theme.inc:689
 msgid "Other"
 msgstr "Andere"
 
-#: theme/theme.inc:748
+#: theme/theme.inc:750
 msgid "Location: @location"
 msgstr "Plaats: @location"
 
-#: theme/theme.inc:751
+#: theme/theme.inc:753
 msgid "When: @when"
 msgstr "Wanneer: @when"
 
-#: theme/theme.inc:754
+#: theme/theme.inc:756
 msgid "Organisation: @organisation"
 msgstr "Organisatie: @organisation"
 
-#: theme/theme.inc:757
+#: theme/theme.inc:759
 msgid "Price: € @price"
 msgstr "Prijs: € @price"
 
-#: theme/theme.inc:760
+#: theme/theme.inc:762
 msgid "Order your tickets"
 msgstr "Bestel hier tickets"
 
-#: theme/theme.inc:797
+#: theme/theme.inc:799
 msgid "Address: @location"
 msgstr "Adres: @location"
 
-#: theme/theme.inc:800
+#: theme/theme.inc:802
 msgid "Phone number: @number"
 msgstr "Telefoon: @number"
 
-#: theme/theme.inc:964
+#: theme/theme.inc:966
 msgid "Filter"
 msgstr "Filter"
 
-#: theme/theme.inc:965
+#: theme/theme.inc:967
 msgid "Weight"
 msgstr "Gewicht"
