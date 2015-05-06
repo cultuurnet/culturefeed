@@ -472,7 +472,7 @@ class CultureFeedSearchPage {
 
       // Check if postal was present.
       $city_parts = explode(' ', $params['location']);
-      if (is_numeric($city_parts[0])) {
+      if (is_numeric($city_parts[0]) && empty($params['wregIds'])) {
         $distance = isset($params['distance']) ? $params['distance'] : FALSE;
 
         // If category_actortype_id we assume that we search on pages (on day we have to fix)
@@ -486,7 +486,7 @@ class CultureFeedSearchPage {
       }
       else {
         $location = '"' . str_replace('"', '\"', $params['location']) . '"';
-        
+
         // Also here add wregs if in params
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
