@@ -445,9 +445,6 @@ class CultureFeedSearchPage {
     // Add the location facet. Only use the location if a distance is set.
     // all other cases will search for a category Id of the type flandersregion
     // or workingregion.
-    
-    echo '<pre>';print_r($params);echo '</pre>';
-    
     if (!empty($params['regId']) && !isset($params['distance'])) {
 
       $regFilter = array();
