@@ -778,15 +778,20 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
       $city_parts = explode(' ', $location);
 
       // The search contains a zip code. Search city by zip + name.
-      if (is_numeric($city_parts[0])) {
+      if (is_numeric($city_parts[0]) && isset($city_parts[1])) {
 
+        // Search on city or city + (city)
         if (count($city_parts) == 2) {
-          // Static cache the result.
-          if (!isset($city_slugs[$city_parts[0]][$city_parts[1]])) {
-            $city_slugs[$city_parts[0]][$city_parts[1]] = db_query('SELECT slug FROM {culturefeed_search_cities} WHERE zip = :zip AND name = :name', array(':zip' => $city_parts[0], ':name' => $city_parts[1]))->fetchField();
-          }
-          $location_slug = $city_slugs[$city_parts[0]][$city_parts[1]];
+          $name = $city_parts[1];
         }
+        else {
+          $name = $city_parts[1] . ' ' . $city_parts[2];
+        }
+        // Static cache the result.
+        if (!isset($city_slugs[$city_parts[0]][$city_parts[1]])) {
+          $city_slugs[$city_parts[0]][$city_parts[1]] = db_query('SELECT slug FROM {culturefeed_search_cities} WHERE zip = :zip AND name = :name', array(':zip' => $city_parts[0], ':name' => $name))->fetchField();
+        }
+        $location_slug = $city_slugs[$city_parts[0]][$city_parts[1]];
       }
       // The search contains only a city / region name. Search on full name.
       else {
