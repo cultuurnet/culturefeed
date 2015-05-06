@@ -779,3 +779,22 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
 }
 
+/**
+ * A function to initiate a HTML calendar formatter.
+ * @return \CultuurNet\CalendarSummary\CalendarHTMLFormatter
+ */
+function culturefeed_agenda_get_html_calendar_formatter() {
+  $formatter = new CultuurNet\CalendarSummary\CalendarHTMLFormatter();
+
+  return $formatter;
+}
+
+/**
+ * A function to initiate a plain text calendar formatter.
+ * @return \CultuurNet\CalendarSummary\CalendarPlainTextFormatter
+ */
+function culturefeed_agenda_get_plain_text_calendar_formatter() {
+  $formatter = new CultuurNet\CalendarSummary\CalendarPlainTextFormatter();
+
+  return $formatter;
+}

@@ -14,6 +14,6 @@
   <?php print $location['city']; ?>
 <?php endif;?>
 
-<?php if (isset($when)): ?>
-  <?php print $when; ?>
+<?php if (isset($when_md)): ?>
+  <?php print $when_md; ?>
 <?php endif;?>
