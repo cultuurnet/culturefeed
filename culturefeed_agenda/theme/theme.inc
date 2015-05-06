@@ -372,7 +372,8 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
 
     // Absolute link to detail.
-    $variables['share_url'] = url($variables['url'], array('absolute' => TRUE));
+    global $base_root;
+    $variables['share_url'] = $base_root . $variables['url'];
     
     $facebook = array();
     $googleplus = array();
