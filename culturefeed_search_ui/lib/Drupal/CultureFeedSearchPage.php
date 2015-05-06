@@ -445,6 +445,9 @@ class CultureFeedSearchPage {
     // Add the location facet. Only use the location if a distance is set.
     // all other cases will search for a category Id of the type flandersregion
     // or workingregion.
+    
+    echo '<pre>';print_r($params);echo '</pre>';
+    
     if (!empty($params['regId']) && !isset($params['distance'])) {
 
       $regFilter = array();
@@ -486,7 +489,24 @@ class CultureFeedSearchPage {
       }
       else {
         $location = '"' . str_replace('"', '\"', $params['location']) . '"';
-        $this->parameters[] = new Parameter\FilterQuery('category_flandersregion_name' . ':' . $location);
+        
+        // Also here add wregs if in params
+        if (!empty($params['wregIds'])) {
+          $regFilter[] = array_shift($params['wregIds']);
+  
+          $wregFilters = array();
+          foreach ($params['wregIds'] as $wregId) {
+            $wregFilters[] = $wregId;
+          }
+        }
+  
+        $regFilterQuery = '(';
+        $regFilterQuery .= 'category_flandersregion_name' . ':' . $location;
+        if (!empty($wregFilters)) {
+          $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
+        }
+        $regFilterQuery .= ')';
+        $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
       }
 
     }
