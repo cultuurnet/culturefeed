@@ -328,7 +328,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $variables['forkids'] = TRUE;
     }
   }
-  
+
   $detect = culturefeed_mobile_detect_get_object();
 
   if ($detect) {
@@ -374,7 +374,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // Absolute link to detail.
     global $base_root;
     $variables['share_url'] = $base_root . $variables['url'];
-    
+
     $facebook = array();
     $googleplus = array();
     $twitter = array();
@@ -389,38 +389,38 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     // Set UTM parameters for share URL's.
     $utm['campaign'] = 'share';
     $utm['medium'] = 'social';
-    
+
     $facebook['utm'] = array (
       'utm_campaign' => $utm['campaign'],
       'utm_medium' => $utm['medium'],
       'utm_source' => 'facebook.com',
     );
-    
+
     $googleplus['utm'] = array (
       'utm_campaign' => $utm['campaign'],
       'utm_medium' => $utm['medium'],
       'utm_source' => 'plus.google.com',
     );
-    
+
     $twitter['utm'] = array (
       'utm_campaign' => $utm['campaign'],
       'utm_medium' => $utm['medium'],
       'utm_source' => 'twitter.com',
     );
-    
+
     $whatsapp['utm'] = array (
       'utm_campaign' => $utm['campaign'],
       'utm_medium' => $utm['medium'],
       'utm_source' => 'whatsapp',
     );
-    
+
     $mail['utm'] = array (
       'utm_campaign' => $utm['campaign'],
       'utm_medium' => 'email',
       'utm_source' => 'forward-mail',
     );
 
-    // Build share URL's.      
+    // Build share URL's.
     $variables['facebook']['url'] = $facebook['prefix'] . urlencode(url($variables['share_url'], array('query' => $facebook['utm'])));
     $variables['googleplus']['url'] = $googleplus['prefix'] . urlencode(url($variables['share_url'], array('query' => $googleplus['utm'])));
     $variables['twitter']['url'] = $twitter['prefix'] . urlencode(url($variables['share_url'], array('query' => $twitter['utm'])));
@@ -430,7 +430,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
     }
     else {
-      $variables['mail']['url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($variables['share_url'], array('query' => $mail['utm']))); 
+      $variables['mail']['url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($variables['share_url'], array('query' => $mail['utm'])));
     }
 
     // Prepare to push share activities to Culturefeed.
@@ -441,9 +441,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $id = $item->getId();
       $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
       $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
-    }    
+    }
 
-    // Add options.  
+    // Add options.
     $variables['facebook']['options'] = array(
       'attributes' => array(
         'class' => array('share-link', 'facebook-share'),
@@ -474,13 +474,13 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       'external' => TRUE,
     );
 
-    // Share Links.      
+    // Share Links.
     $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
     $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
     $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
     $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
     $variables['mail_link'] = l(t('Mail'), $variables['mail']['url'], $variables['mail']['options']);
-    
+
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
 
@@ -609,18 +609,18 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     // When.
     $variables['when'] = check_plain($event_detail->getCalendarSummary());
-    
+
     // Format Calendar details to readable & themable HTML.
     $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
-    
+
     // Large Calendar format (for detail pages).
     $variables['when_lg'] = '';
     try {
       $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
     }
     catch (Exception $e) {
-    } 
-    
+    }
+
     // Medium Calendar format (for event-summary on search result pages).
     $variables['when_md'] = '';
     try {
@@ -628,7 +628,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Small Calendar format (for mini-summary in event teasers).
     $variables['when_sm'] = '';
     try {
@@ -636,7 +636,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Extra Small Calendar format (for teasers that need specific "DD/MM" layout).
     $variables['when_xs'] = '';
     try {
@@ -644,18 +644,18 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Format calendar to TXT
     $txt_formatter = culturefeed_agenda_get_plain_text_calendar_formatter();
-    
+
     // Large Calendar format (for detail pages).
     $variables['when_lg_txt'] = '';
     try {
       $variables['when_lg_txt'] = $txt_formatter->format($calendar, 'lg');
     }
     catch (Exception $e) {
-    } 
-    
+    }
+
     // Medium Calendar format (for event-summary on search result pages).
     $variables['when_md_txt'] = '';
     try {
@@ -663,7 +663,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Small Calendar format (for mini-summary in event teasers).
     $variables['when_sm_txt'] = '';
     try {
@@ -671,7 +671,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Extra Small Calendar format (for teasers that need specific "DD/MM" layout).
     $variables['when_xs_txt'] = '';
     try {
@@ -721,24 +721,24 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
       if ($event) {
         $event_detail = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
         if ($event_detail) {
-        
+
           // Calendar.
           if ($calendar = $event->getEntity()->getCalendar()) {
             $variables['calendar'] = culturefeed_agenda_parse_calendar($calendar);
           }
 
           $variables['when'] = $event_detail->getCalendarSummary();
-        
+
           // Format Calendar details to readable & themable HTML.
           $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
-          
+
           // Large Calendar format (for detail pages).
           $variables['when_lg'] = '';
           try {
             $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
           }
           catch (Exception $e) {
-          } 
+          }
         }
 
         // Add location information from the event.
@@ -852,6 +852,9 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $variables['contact']['fax'] = check_plain(implode(', ', $faxes));
 
   }
+
+  // Actor type.
+  $variables['actor_categories'] = $actor->getCategories()->getCategoriesByType('actortype');
 
   // Link to detail.
   $actor_detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
