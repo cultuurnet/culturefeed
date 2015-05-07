@@ -448,7 +448,6 @@ class CultureFeedSearchPage {
     if (!empty($params['regId']) && !isset($params['distance'])) {
 
       $regFilter = array();
-      $regFilter[] = $params['regId'];
 
       if (!empty($params['wregIds'])) {
         $regFilter[] = array_shift($params['wregIds']);
@@ -457,6 +456,10 @@ class CultureFeedSearchPage {
         foreach ($params['wregIds'] as $wregId) {
           $wregFilters[] = $wregId;
         }
+      }
+      
+      if (!empty($_GET['only-wregs'])) {
+        $regFilter[] = $params['regId'];
       }
 
       $regFilterQuery = '(';
@@ -498,7 +501,17 @@ class CultureFeedSearchPage {
         }
   
         $regFilterQuery = '(';
-        $regFilterQuery .= 'category_flandersregion_name' . ':' . $location;
+        
+        if (empty($_GET['only-wregs'])) {
+          $regFilterQuery .= 'category_flandersregion_name' . ':' . $location;
+        }
+        else {
+          $working_region_id = key(culturefeed_search_get_workingregion_categories(array('name_like' => $params['location'])));
+          if ($working_region_id) {
+            $regFilterQuery .= 'category_id' . ':' . $working_region_id;
+          }
+        }
+        
         if (!empty($wregFilters)) {
           $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
         }
