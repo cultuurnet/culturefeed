@@ -27,8 +27,7 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_entry_ui_preferred_language', ''),
   );
 
-  // -1 if first version is lower as second.
-  if (version_compare($cdb_version, '3.3') !== -1) {
+  if (version_compare($cdb_version, '3.3', '>=')) {
 
     $form['culturefeed_entry_ui_custom_tags'] = array(
       '#default_value' => variable_get('culturefeed_entry_ui_custom_tags'),
@@ -50,8 +49,7 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
 
   }
 
-  // -1 if first version is lower as second.
-  if (version_compare($cdb_version, '3.3') !== -1) {
+  if (version_compare($cdb_version, '3.3', '>=')) {
 
     $form['culturefeed_entry_ui_custom_entry_api_tags'] = array(
       '#default_value' => variable_get('culturefeed_entry_ui_custom_entry_api_tags'),

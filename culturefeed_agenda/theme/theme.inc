@@ -312,8 +312,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   }
 
   $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
-  // -1 if first version is lower as second.
-  if (version_compare($version, '3.3') !== -1) {
+  if (version_compare($version, '3.3', '>=')) {
 
     /* @var CultureFeed_Cdb_Data_Keyword[] $keywords */
     $keywords = $cdb_item->getKeywords(TRUE);
