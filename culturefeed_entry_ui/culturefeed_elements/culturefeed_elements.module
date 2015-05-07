@@ -36,6 +36,7 @@ function culturefeed_elements_ajax_callback() {
  *   True or false.
  */
 function culturefeed_elements_check_trigger_element(array $triggering_element, array $element) {
+  $test = array_intersect($triggering_element['#parents'], $element['#parents']);
   return array_intersect($triggering_element['#parents'], $element['#parents']) == $element['#parents'];
 }
 

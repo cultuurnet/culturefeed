@@ -45,8 +45,8 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::createEvent()
    */
-  public static function createEvent(CultureFeed_Cdb_Item_Event $event) {
-    return self::getLoggedInUserInstance()->createEvent($event);
+  public static function createEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
+    return self::getLoggedInUserInstance()->createEvent($event, $cdb_schema_version);
   }
 
   /**
@@ -66,8 +66,8 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::updateEvent()
    */
-  public static function updateEvent(CultureFeed_Cdb_Item_Event $event) {
-    self::getLoggedInUserInstance()->updateEvent($event);
+  public static function updateEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
+    self::getLoggedInUserInstance()->updateEvent($event, $cdb_schema_version);
   }
 
   /**
