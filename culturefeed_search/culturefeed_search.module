@@ -27,8 +27,7 @@ function culturefeed_search_culturefeed_search_service_created($service) {
   // Temporary workaround to set CDB to 3.3
   $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
 
-  // -1 if first version is lower as second.
-  if (version_compare($version, '3.3') !== -1) {
+  if (version_compare($version, '3.3', '>=')) {
 
     $client_factory = $service->getHttpClientFactory();
     $client_factory->addSubscriber(new CdbEventSubscriber());
