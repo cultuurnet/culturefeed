@@ -45,7 +45,7 @@ function culturefeed_saved_searches_save_search_form() {
   $form['save_search_email']['email'] = array(
     '#type' => 'item',
     '#title' => $cf_account->mbox,
-    '#markup' => '<span>' . l('change', 'culturefeed/profile/edit') .'</span>',
+    '#markup' => '<span>' . l(t('Change'), 'culturefeed/account/edit') .'</span>',
   );
 
   $form['save_search_info'] = array(
