@@ -445,52 +445,17 @@ class CultureFeedSearchPage {
     // Add the location facet. Only use the location if a distance is set.
     // all other cases will search for a category Id of the type flandersregion
     // or workingregion.
-    if (!empty($params['regId']) && !isset($params['distance'])) {
-
-      $regFilter = array();
-
-      if (!empty($params['wregIds'])) {
-        $regFilter[] = array_shift($params['wregIds']);
-
-        $wregFilters = array();
-        foreach ($params['wregIds'] as $wregId) {
-          $wregFilters[] = $wregId;
-        }
-      }
+    if (!empty($params['regId']) || !empty($params['location'])) {
       
-      if (!empty($_GET['only-wregs'])) {
-        $regFilter[] = $params['regId'];
-      }
-
-      $regFilterQuery = '(';
-      $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
-      if (!empty($wregFilters)) {
-        $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
-      }
-      $regFilterQuery .= ')';
-      $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
-
-    }
-    elseif (!empty($params['location'])) {
-
-      // Check if postal was present.
-      $city_parts = explode(' ', $params['location']);
-      if (is_numeric($city_parts[0]) && empty($params['wregIds'])) {
-        $distance = isset($params['distance']) ? $params['distance'] : FALSE;
-
-        // If category_actortype_id we assume that we search on pages (on day we have to fix)
-        if (isset($params['facet']['category_actortype_id'])) {
-          $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+      if (!isset($params['distance'])) {
+      
+        $regFilter = array();
+        
+        if (empty($params['regId']) && !empty($params['location'])) {
+          $location = culturefeed_search_get_category_by_name($params['location']);
+          $params['regId'] = $location->tid;
         }
-        else {
-          $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
-        }
-
-      }
-      else {
-        $location = '"' . str_replace('"', '\"', $params['location']) . '"';
-
-        // Also here add wregs if in params
+  
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
   
@@ -499,26 +464,39 @@ class CultureFeedSearchPage {
             $wregFilters[] = $wregId;
           }
         }
-  
-        $regFilterQuery = '(';
         
         if (empty($_GET['only-wregs'])) {
-          $regFilterQuery .= 'category_flandersregion_name' . ':' . $location;
+          $regFilter[] = $params['regId'];
         }
-        else {
-          $working_region_id = key(culturefeed_search_get_workingregion_categories(array('name_like' => $params['location'])));
-          if ($working_region_id) {
-            $regFilterQuery .= 'category_id' . ':' . $working_region_id;
-          }
-        }
-        
+  
+        $regFilterQuery = '(';
+        $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
         if (!empty($wregFilters)) {
           $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
         }
         $regFilterQuery .= ')';
         $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
+  
       }
-
+      elseif (!empty($params['location'])) {
+  
+        // Check if postal was present.
+        $city_parts = explode(' ', $params['location']);
+        if (is_numeric($city_parts[0]) && empty($params['wregIds'])) {
+          $distance = isset($params['distance']) ? $params['distance'] : FALSE;
+  
+          // If category_actortype_id we assume that we search on pages (on day we have to fix)
+          if (isset($params['facet']['category_actortype_id'])) {
+            $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+          }
+          else {
+            $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+          }
+  
+        }
+        
+      }
+  
     }
 
     // Calculate actor if available.
