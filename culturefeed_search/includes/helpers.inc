@@ -729,6 +729,28 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
 }
 
 /**
+ * Get a category by name.
+ */
+function culturefeed_search_get_category_by_name($name, $domain = '') {
+
+  $query = db_select('culturefeed_search_terms', 'ct');
+  $query->condition('name', $name);
+  $query->range(0, 1);
+  $query->addField('ct', 'tid');
+  $query->addField('ct', 'slug');
+  $query->addField('ct', 'p1');
+  $query->addField('ct', 'p2');
+  $query->addField('ct', 'p3');
+  $query->addField('ct', 'p4');
+  if (!empty($domain)) {
+    $query->condition('did', $domain);
+  }
+
+  return $query->execute()->fetchObject();
+
+}
+
+/**
  * Get a city by slug.
  */
 function culturefeed_search_get_city_by_slug($slug) {
