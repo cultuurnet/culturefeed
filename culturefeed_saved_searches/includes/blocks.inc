@@ -92,7 +92,15 @@ function culturefeed_saved_searches_get_cta_query() {
     $savedSearchList = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
     $exists = FALSE;
     foreach ($savedSearchList as $savedSearch) {
-      if ($savedSearch->query == $query['query']) {
+      $saved_query = explode('&', $savedSearch->query);
+      foreach ($saved_query as $key => $val) {
+        if (strpos($val,'group') !== FALSE || strpos($val,'rows') !== FALSE || strpos($val,'sort') !== FALSE) {
+          unset($saved_query[$key]);
+        }
+      }
+      $saved_query = implode('&', $saved_query);
+
+      if ($saved_query == $query['query']) {
         $exists = TRUE;
       }
     }
