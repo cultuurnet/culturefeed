@@ -111,6 +111,14 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-profile-summary',
     ),
+		'culturefeed_uitpas_event_details_advantages' => array(
+			'variables' => array(
+        'items' => array(),
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-event-details-advantages',
+		),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
