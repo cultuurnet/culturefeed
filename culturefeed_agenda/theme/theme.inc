@@ -286,10 +286,15 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['themes'] = $themes['text'];
   $variables['themes_links'] = $themes['links'];
 
-  // Types of this item (plain text and links).
-  $types = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
-  $variables['types'] = $types['text'];
-  $variables['types_links'] = $types['links'];
+  // Eventtypes of this item (plain text and links).
+  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $eventtypes['text'];
+  $variables['types_links'] = $eventtypes['links'];
+
+  // Actortypes of this item (plain text and links).
+  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
+  $variables['actortypes'] = $actortypes['text'];
+  $variables['actortypes_links'] = $actortypes['links'];
 
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
@@ -966,7 +971,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $title_parts[] = $variables['location']['city'];
     $description_parts[] = t('Location: @location', array('@location' => $variables['location']['title'] . ', ' . $variables['location']['city']));
   }
-  if (!empty($variables['when'])) {
+  if (!empty($variables['when_md_txt'])) {
     $description_parts[] = t('When: @when', array('@when' => $variables['when_md_txt']));
   }
   if (!empty($variables['organiser'])) {
