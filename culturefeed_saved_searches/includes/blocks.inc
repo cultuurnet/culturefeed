@@ -60,7 +60,7 @@ function culturefeed_saved_searches_get_cta_query() {
     }
 
     // Add page title.
-    $query['title'] = drupal_get_title();
+    $query['title'] = $page->getPageTitle(TRUE);
 
     // Add search parameters in string.
     $supported_parameters = array('fq', 'q', 'zipcode');

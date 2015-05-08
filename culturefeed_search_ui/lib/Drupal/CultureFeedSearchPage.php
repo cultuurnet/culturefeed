@@ -249,7 +249,7 @@ class CultureFeedSearchPage {
     });
 
     $this->query[] = implode(' OR ', $query_parts);
-    
+
     return $this->query;
   }
 
@@ -432,12 +432,12 @@ class CultureFeedSearchPage {
       else {
         $this->parameters[] = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
       }
-      
+
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
         $this->parameters[] = new Parameter\FilterQuery('{!geofilt}');
       }
-      
+
       $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $this->parameters[] = new Parameter\Spatial\SpatialField('physical_gis');
     }
@@ -698,7 +698,7 @@ class CultureFeedSearchPage {
    *   and the page number with the page parameter increased by one,
    *   surrounded by parentheses.
    */
-  public function getPageTitle() {
+  public function getPageTitle($ignore_datetype = FALSE) {
 
     // Return the title that has been explicitly set with $this->setTitle().
     if (!empty($this->title)) {
@@ -707,11 +707,19 @@ class CultureFeedSearchPage {
 
     // Otherwise the framework version will be used.
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
+
+    if ($ignore_datetype) {
+      foreach($active_filters as $key => $active_filter) {
+        if ($key == 'item_datetype') {
+          unset ($active_filters[$key]);
+        }
+      }
+    }
+
     if (!empty($active_filters)) {
 
       $labels = array();
       foreach ($active_filters as $active_filter) {
-
         if (!isset($active_filter['#label'])) {
           foreach ($active_filter as $subitem) {
             $labels[] = $subitem['#label'];
@@ -720,7 +728,6 @@ class CultureFeedSearchPage {
         else {
           $labels[] = $active_filter['#label'];
         }
-
       }
 
     }
