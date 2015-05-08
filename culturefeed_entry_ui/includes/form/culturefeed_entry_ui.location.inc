@@ -12,7 +12,7 @@
  * @param array $form_state
  *   The form state.
  * @param \CultureFeed_Cdb_Item_Event $event
- *   The extended event.
+ *   The event.
  */
 function culturefeed_entry_ui_location_form(array &$form, array &$form_state, \CultureFeed_Cdb_Item_Event $event = NULL) {
 

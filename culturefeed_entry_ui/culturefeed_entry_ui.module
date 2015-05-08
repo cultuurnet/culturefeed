@@ -63,12 +63,22 @@ function culturefeed_entry_ui_menu() {
 
   $items = array();
 
+  $tags_form = array(
+    'argument' => 'culturefeed_entry_ui_edit_tags_form',
+    'file' => 'includes/culturefeed_entry_ui.pages.inc',
+  );
+  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
+  if (version_compare($version, '3.3', '>=')) {
+    $tags_form['argument'] = 'culturefeed_entry_ui_edit_tag_objects_form';
+    $tags_form['file'] = 'includes/form/culturefeed_entry_ui.tag_objects.inc';
+  }
+
   $items['agenda/e/%/%culturefeed_agenda_event/tags'] = array(
     'title' => 'Tags',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_ui_edit_tags_form', 3),
+    'page arguments' => array($tags_form['argument'], 3),
     'access callback' => 'culturefeed_entry_ui_manage_tags_access',
-    'file' => 'includes/culturefeed_entry_ui.pages.inc',
+    'file' => $tags_form['file'],
   );
 
   $items['agenda/e/add'] = array(

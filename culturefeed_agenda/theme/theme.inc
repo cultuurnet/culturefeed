@@ -311,21 +311,54 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
-  $keywords = $cdb_item->getKeywords();
-  $variables['keywords'] = '';
+  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
+  if (version_compare($version, '3.3', '>=')) {
 
-  if ($keywords) {
-		$variables['raw_keywords'] = array();
-    $linked_keywords = array();
-    foreach ($keywords as $keyword) {
-			$variables['raw_keywords'][] = $keyword;
-      $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
+    /* @var CultureFeed_Cdb_Data_Keyword[] $keywords */
+    $keywords = $cdb_item->getKeywords(TRUE);
+    $variables['keywords'] = '';
+
+    if ($keywords) {
+
+      $variables['raw_keywords'] = array();
+      $linked_keywords = array();
+
+      foreach ($keywords as $keyword) {
+
+        if ($keyword->isVisible()) {
+          $variables['raw_keywords'][] = $keyword->getValue();
+          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => urlencode($keyword->getValue()))));
+        }
+
+        $variables['keywords'] = implode(', ', $linked_keywords);
+        // check if event is suitable for kids
+        if (array_key_exists('ook voor kinderen', $keywords)) {
+          $variables['forkids'] = TRUE;
+        }
+
+      }
+
     }
 
-    $variables['keywords'] = implode(', ', $linked_keywords);
-    // check if event is suitable for kids
-    if (array_key_exists('ook voor kinderen', $keywords)) {
-      $variables['forkids'] = TRUE;
+  }
+  else {
+
+    $keywords = $cdb_item->getKeywords();
+    $variables['keywords'] = '';
+
+    if ($keywords) {
+      $variables['raw_keywords'] = array();
+      $linked_keywords = array();
+      foreach ($keywords as $keyword) {
+        $variables['raw_keywords'][] = $keyword;
+        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
+      }
+
+      $variables['keywords'] = implode(', ', $linked_keywords);
+      // check if event is suitable for kids
+      if (array_key_exists('ook voor kinderen', $keywords)) {
+        $variables['forkids'] = TRUE;
+      }
     }
   }
 
