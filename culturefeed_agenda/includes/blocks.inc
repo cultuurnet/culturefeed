@@ -182,6 +182,11 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
     );
 
+    $form['location']['radius'] = array(
+      '#type' => 'hidden',
+      '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : NULL,
+    );
+
     $form['location']['nearby'] = array(
       '#markup' => '<a href="#" class="search-find-location"><span>' . check_plain(t('Use my current location')) . '</span></a>',
     );
@@ -240,6 +245,10 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
+    }
+
+    if (!empty($form_state['values']['radius'])) {
+      $query['distance'] = $form_state['values']['radius'];
     }
   }
 

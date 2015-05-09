@@ -42,6 +42,11 @@
     }
 
     $('#culturefeed-agenda-search-block-form').find('input[name="where"]').val(postal + ' ' + city);
+    
+    // Add default radius when searching on current location
+    if ($('#culturefeed-agenda-search-block-form').find('input[name="radius"]').val() == '') {
+      $('#culturefeed-agenda-search-block-form').find('input[name="radius"]').val('10');
+    }
     $('#current-location').remove();
   }
 
