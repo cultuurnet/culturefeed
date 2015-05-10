@@ -292,6 +292,7 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
+  $noresults = FALSE;
   if ($culturefeedSearchResult->getTotalCount() == 0) {
     $noresults = TRUE;
     // Hide location selector for empty results only when no location was set.
