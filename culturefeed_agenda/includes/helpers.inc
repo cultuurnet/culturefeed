@@ -622,24 +622,34 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
 function culturefeed_agenda_group_timestamps(&$timestamps) {
 
-  for ($i=0; $i<count($timestamps); $i++) {
-    if (isset($timestamps[$i+1])) {
-      $this_timestamp = $timestamps[$i];
-      $next_timestamp = $timestamps[$i+1];
+  if (count($timestamps) > 1) {
+    for ($i = 0; $i < count($timestamps); $i++) {
+      if (isset($timestamps[$i + 1])) {
+        $this_timestamp = $timestamps[$i];
+        $next_timestamp = $timestamps[$i + 1];
 
-      if ($this_timestamp['date'] == $next_timestamp['date']) {
-        if (!is_array($timestamps[$i]['begintime'])){
-          unset($timestamps[$i]['begintime']);
-          $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
-          $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
+        if ($this_timestamp['date'] == $next_timestamp['date']) {
+          if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
+            unset($timestamps[$i]['begintime']);
+            if (isset($this_timestamp['begintime'])) {
+              $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
+            }
+            if (isset($next_timestamp['begintime'])) {
+              $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
+            }
+          }
+          else {
+            if (isset($next_timestamp['begintime'])) {
+              $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+            }
+          }
+          if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
+            sort($timestamps[$i]['begintime']);
+          }
+          unset($timestamps[$i + 1]);
+          $timestamps = array_values($timestamps);
+          $i--;
         }
-        else {
-          $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
-        }
-        sort($timestamps[$i]['begintime']);
-        unset($timestamps[$i+1]);
-        $timestamps = array_values($timestamps);
-        $i--;
       }
     }
   }
