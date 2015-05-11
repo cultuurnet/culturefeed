@@ -71,6 +71,18 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
 
   }
 
+  if (version_compare($cdb_version, '3.3', '>=')) {
+
+    $form['culturefeed_entry_ui_custom_collaboration_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_collaboration_tags'),
+      '#description' => t('Tags used for the collaboration tab.'),
+      '#title' => t('Custom tags to use as collaboration data'),
+      '#type' => 'culturefeed_tags_element',
+      '#visible_default' => FALSE,
+    );
+
+  }
+
   $form['culturefeed_entry_ui_default_country'] = array(
     '#type' => 'select',
     '#options' => country_get_list(),

@@ -81,6 +81,14 @@ function culturefeed_entry_ui_menu() {
     'file' => $tags_form['file'],
   );
 
+  $items['agenda/e/%/%culturefeed_agenda_event/collaboration'] = array(
+    'title' => 'Collaboration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_entry_ui_edit_collaboration_data_form', 3),
+    'access callback' => 'culturefeed_entry_ui_manage_collaboration_access',
+    'file' => 'includes/form/culturefeed_entry_ui.collaboration.inc',
+  );
+
   $items['agenda/e/add'] = array(
     'title' => 'New event',
     'page callback' => 'drupal_get_form',
@@ -152,7 +160,20 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
 
   }
-  
+
+  // Add tab for collaboration info.
+  if (culturefeed_entry_ui_manage_collaboration_access()) {
+
+    $link = array(
+      'href' => $path . '/collaboration',
+      'localized_options' => array(),
+      'title' => t('Collaboration'),
+    );
+
+    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
+
+  }
+
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   if ($culturefeed_user) {
     $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
@@ -227,6 +248,13 @@ function entry_api_event_load($id) {
  */
 function culturefeed_entry_ui_manage_tags_access() {
   return user_access('manage custom tags') || user_access('manage object tags');
+}
+
+/**
+ * Access callback, to check if a user has access to the manage collaboration screen.
+ */
+function culturefeed_entry_ui_manage_collaboration_access() {
+  return user_access('manage culturefeed collaborative info');
 }
 
 /**

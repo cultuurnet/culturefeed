@@ -122,8 +122,30 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::addLinkToEvent()
    */
-  public static function addLinkToEvent(CultureFeed_Cdb_Item_Event $event, $link, $linktype = '', $lang = '') {
-    self::getLoggedInUserInstance()->addLinkToEvent($event, $link, $linktype, $lang);
+  public static function addLinkToEvent(
+    CultureFeed_Cdb_Item_Event $event,
+    $link = '',
+    $linktype = '',
+    $lang = '',
+    $title = '',
+    $copyright = '',
+    $plaintext = '',
+    $subbrand = '',
+    $description = ''
+  ) {
+
+    self::getLoggedInUserInstance()->addLinkToEvent(
+      $event,
+      $link,
+      $linktype,
+      $lang,
+      $title,
+      $copyright,
+      $plaintext,
+      $subbrand,
+      $description
+    );
+
   }
 
   /**
