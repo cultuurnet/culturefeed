@@ -328,7 +328,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $variables['forkids'] = TRUE;
     }
   }
-  
+
+  $variables['device'] = '(not set)';
+  $variables['is_ios'] = FALSE;
+  $variables['is_android'] = FALSE;  
   $detect = culturefeed_mobile_detect_get_object();
 
   if ($detect) {
@@ -426,7 +429,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['twitter']['url'] = $twitter['prefix'] . urlencode(url($variables['share_url'], array('query' => $twitter['utm'])));
     $variables['whatsapp']['url'] = $whatsapp['prefix'] . urlencode(url($variables['share_url'], array('query' => $whatsapp['utm'])));
 
-    if (module_exists('forward')) {
+    if (module_exists('forward') && ($device == 'computer')) {
       $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
     }
     else {
