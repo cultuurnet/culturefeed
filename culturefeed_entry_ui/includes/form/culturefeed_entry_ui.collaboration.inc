@@ -142,6 +142,7 @@ function culturefeed_entry_ui_edit_collaboration_data_form(array $form, array &$
   if (!count($custom_tags)) {
     $tag = variable_get('site_name') . ' selectie';
     $custom_tags[$tag] = array('value' => $tag, 'visible' => FALSE);
+    variable_set('culturefeed_entry_ui_custom_collaboration_tags', $custom_tags);
   }
 
   // Start vertical tabs.
