@@ -249,7 +249,7 @@ class CultureFeedSearchPage {
     });
 
     $this->query[] = implode(' OR ', $query_parts);
-    
+
     return $this->query;
   }
 
@@ -398,27 +398,17 @@ class CultureFeedSearchPage {
   protected function addFacetFilters($params) {
 
     // Add the date range facet.
-    if (isset($params['date_range'])) {
+    if (!empty($params['date_from']) && !empty($params['date_to'])
+        && ($startDate = DateTime::createFromFormat('d/m/Y', $params['date_from']))
+        && ($endDate = DateTime::createFromFormat('d/m/Y', $params['date_to']))) {
 
-      $dates = explode('-', $params['date_range']);
-      $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-      if ($startDate) {
-        $endDate = clone $startDate;
-        if (isset($dates[1])) {
-          $endDateTime = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
-          if ($endDateTime) {
-            $endDate = $endDateTime;
-          }
-        }
+      // Set start date time on beginning of the day.
+      $startDate->setTime(0, 0, 0);
 
-        // Set start date time on beginning of the day.
-        $startDate->setTime(0, 0, 0);
+      // Set end date time to end of the day day, to it searches on full day.
+      $endDate->setTime(23, 59, 59);
 
-        // Set end date time to end of the day day, to it searches on full day.
-        $endDate->setTime(23, 59, 59);
-
-        $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
-      }
+      $this->parameters[] = new Parameter\DateRangeFilterQuery('startdate', $startDate->getTimestamp(), $endDate->getTimestamp());
     }
 
     // Add search on coordinates.
@@ -432,12 +422,12 @@ class CultureFeedSearchPage {
       else {
         $this->parameters[] = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
       }
-      
+
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
         $this->parameters[] = new Parameter\FilterQuery('{!geofilt}');
       }
-      
+
       $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $this->parameters[] = new Parameter\Spatial\SpatialField('physical_gis');
     }
@@ -706,7 +696,7 @@ class CultureFeedSearchPage {
    *   and the page number with the page parameter increased by one,
    *   surrounded by parentheses.
    */
-  public function getPageTitle() {
+  public function getPageTitle($ignore_datetype = FALSE) {
 
     // Return the title that has been explicitly set with $this->setTitle().
     if (!empty($this->title)) {
@@ -715,11 +705,19 @@ class CultureFeedSearchPage {
 
     // Otherwise the framework version will be used.
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
+
+    if ($ignore_datetype) {
+      foreach($active_filters as $key => $active_filter) {
+        if ($key == 'item_datetype') {
+          unset ($active_filters[$key]);
+        }
+      }
+    }
+
     if (!empty($active_filters)) {
 
       $labels = array();
       foreach ($active_filters as $active_filter) {
-
         if (!isset($active_filter['#label'])) {
           foreach ($active_filter as $subitem) {
             $labels[] = $subitem['#label'];
@@ -728,7 +726,6 @@ class CultureFeedSearchPage {
         else {
           $labels[] = $active_filter['#label'];
         }
-
       }
 
     }

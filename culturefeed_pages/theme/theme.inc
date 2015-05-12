@@ -151,6 +151,7 @@ function culturefeed_pages_preprocess_culturefeed_page(&$variables) {
       $member['relation'] = check_plain($membership->relation);
       $member['role'] = check_plain($membership->role);
       $member['picture'] = check_plain($membership->user->depiction);
+      $member['validated'] = $membership->validated;
 
       $variables['members'][] = $member;
     }
