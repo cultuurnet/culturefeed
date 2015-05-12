@@ -640,7 +640,9 @@ function culturefeed_agenda_group_timestamps(&$timestamps) {
           }
           else {
             if (isset($next_timestamp['begintime'])) {
-              $timestamps[$i]['begintime'] = $next_timestamp['begintime'];
+              unset($timestamps[$i]['begintime']);
+              $timestamps[$i]['begintime'][] = $this_timestamp['begintime'];
+              $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
             }
           }
           if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
