@@ -36,12 +36,12 @@ function culturefeed_entry_ui_collaboration_get_data_by_keyword(\CultureFeed_Cdb
       if ($link->getSubBrand() && $link->getSubBrand() == $consumer_key) {
 
         $description = drupal_json_decode($link->getDescription());
-        $title = $link->getTitle();
 
         if (isset($description['keyword']) && $description['keyword'] == $keyword) {
 
+          $info['copyright'] = $link->getCopyright();
           $info['description'] = $description;
-          $info['title'] = $title;
+          $info['title'] = $link->getTitle();
 
         }
 

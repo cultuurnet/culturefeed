@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_entry_ui.install.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function culturefeed_entry_ui_install() {
+
+  $site_name = variable_get('site_name') . ' selectie';
+  variable_set('culturefeed_entry_ui_custom_collaboration_tags', array(
+    $site_name => array(
+      'value' => $site_name,
+      'visible' => FALSE,
+    ),
+  ));
+
+}
