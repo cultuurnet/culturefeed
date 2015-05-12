@@ -58,7 +58,6 @@ function culturefeed_mailing_menu() {
   );
 
   $items['culturefeed/mailing'] = array(
-    'title callback' => FALSE,
     'title' => 'Newsletters',
     'page callback' => 'culturefeed_mailing_page_my_newsletters',
     'access callback' => 'culturefeed_is_culturefeed_user',
