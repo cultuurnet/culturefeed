@@ -76,96 +76,96 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       return;
     }
 
+    $image = '';
     $main_picture = '';
+    $no_main_picture = '';
     $alt_pic = FALSE;
 
     if ($this->options['override']) {
-      $media = $detail->getMedia();
-      $roadmaps = $media->byMediaType('roadmap');
 
-      $parameters = $this->query->getParameters();
-      $consumer_id = variable_get('culturefeed_api_application_key');
-
-      foreach ($parameters as $i => $parameter) {
-        $key = $parameter->getKey();
-        $value = $parameter->getValue();
-        if ($key != 'fq' || empty($value) || 0 !== strpos($value, 'keyword')) {
-          unset($parameters[$i]);
-        }
+      module_load_include('inc', 'culturefeed_search_views', 'views/helpers/culturefeed_search_views_helper_collaboration');
+      $data = culturefeed_search_views_helper_collaboration_get_data($extended_entity, $this->view);
+      if ($data && isset($data['description']->image) && $data['description']->image) {
+        $main_picture = $data['description']->image;
+        $alt_pic = TRUE;
       }
 
-      // If more filterquery's are defined, take first one.
-      if (count($parameters) > 0) {
-        $parameter = substr(substr($parameters[0]->getValue(), 10), 0, -1);
-      }
-
-      foreach ($roadmaps as $roadmap) {
-        $subbrand = $roadmap->getSubbrand();
-        $collaboration_data = json_decode($roadmap->getDescription());
-        $collaboration_keyword = strtolower($collaboration_data->keyword);
-
-        if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
-          $picture = $collaboration_data->image;
-          if (isset($picture)) {
-            $alt_pic = TRUE;
-            $main_picture = $picture;
-          }
-        }
-      }
-      if(empty($main_picture)) {
-        $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
-        foreach ($pictures as $picture) {
-          if ($picture->isMain()) {
-            $main_picture = $picture->getHLink();
-          }
-        }
-      }
     }
-    else {
+
+    if (!$main_picture) {
+
       $pictures = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
       foreach ($pictures as $picture) {
+
+        if (!$no_main_picture) {
+          $no_main_picture = $picture->getHLink();
+        }
         if ($picture->isMain()) {
           $main_picture = $picture->getHLink();
         }
+
       }
+
+      if (!$main_picture && $no_main_picture) {
+        $main_picture = $no_main_picture;
+      }
+
     }
 
-    if (empty($main_picture) && $pictures && $pictures->count() > 0) {
-      $pictures->rewind();
-      $picture = $pictures->current();
-      $main_picture = $picture->getHLink();
-    }
+    // Render the main picture according the settings.
+    if ($main_picture) {
 
-    if (!empty($main_picture)) {
-			if ($this->options['format'] == 'image') {
+      if ($this->options['format'] == 'image') {
+
         if ($alt_pic) {
-          $image = theme('image', array(
-            'path' => $main_picture,
-            'width' => $this->options['width'],
-            'height' => $this->options['height'],
-            )
-          );
+
+          if ($this->options['width'] >= $this->options['height']) {
+            $image = theme('image', array(
+              'path' => $main_picture,
+              'width' => $this->options['width'],
+            ));
+          }
+          else {
+            $image = theme('image', array(
+              'path' => $main_picture,
+              'height' => $this->options['height'],
+            ));
+          }
+
         }
         else {
           $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
         }
-			}
-			else if ($this->options['format'] == 'url') {
-        if ($alt_pic) {
-          $image = $main_picture;
-        }
-        else {
-          $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
-        }
-			}
 
-      if ($this->options['link']) {
-        $path = culturefeed_search_detail_path($extended_entity->getType(), $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()));
-        return l($image, $path, array('html' => TRUE, ));
       }
       else {
-        return $image;
+
+        if ($this->options['format'] == 'url') {
+
+          if ($alt_pic) {
+            $image = $main_picture;
+          }
+          else {
+            $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
+          }
+
+        }
+
       }
+
+      // Return the image if set.
+      if ($image) {
+
+        if ($this->options['link']) {
+          $path = culturefeed_search_detail_path($extended_entity->getType(), $extended_entity->getId(), $extended_entity->getTitle(culturefeed_search_get_preferred_language()));
+          return l($image, $path, array('html' => TRUE,));
+        }
+        else {
+          return $image;
+        }
+
+      }
+
     }
 
   }

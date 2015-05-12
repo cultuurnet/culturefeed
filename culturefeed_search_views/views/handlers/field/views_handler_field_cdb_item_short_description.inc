@@ -36,46 +36,29 @@ class views_handler_field_cdb_item_short_description extends views_handler_field
    */
   function render($extended_entity) {
 
+    $short_description = '';
+
     if ($this->options['override']) {
-      $media = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getMedia();
-      $roadmaps = $media->byMediaType('roadmap');
 
-      $parameters = $this->query->getParameters();
-      $consumer_id = variable_get('culturefeed_api_application_key');
-
-      foreach ($parameters as $i => $parameter) {
-        $key = $parameter->getKey();
-        $value = $parameter->getValue();
-        if ($key != 'fq' || empty($value) || 0 !== strpos($value, 'keyword')) {
-          unset($parameters[$i]);
-        }
+      module_load_include('inc', 'culturefeed_search_views', 'views/helpers/culturefeed_search_views_helper_collaboration');
+      $data = culturefeed_search_views_helper_collaboration_get_data($extended_entity, $this->view);
+      if ($data && isset($data['description']->text) && $data['description']->text) {
+        $short_description = $data['description']->text;
       }
 
-      // If more filterquery's are defined, take first one.
-      if (count($parameters) > 0) {
-        $parameter = substr(substr($parameters[0]->getValue(), 10), 0, -1);
-      }
-
-      foreach ($roadmaps as $roadmap) {
-        $subbrand = $roadmap->getSubbrand();
-        $collaboration_keyword = json_decode($roadmap->getDescription());
-        $collaboration_keyword = strtolower($collaboration_keyword->keyword);
-
-        if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
-          $short_description = $roadmap->getPlainText();
-        }
-      }
-      if(!isset($short_description)) {
-        $short_description = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getShortDescription();
-      }
     }
-    else {
+
+    if (!$short_description) {
+
       $details = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       if ($details) {
         $short_description = $details->getShortDescription();
       }
+
     }
+
     return $short_description;
+
   }
 
 }
