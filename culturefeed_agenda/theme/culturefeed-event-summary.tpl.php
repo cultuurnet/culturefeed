@@ -47,9 +47,9 @@
     <dd><?php if (!empty($location['title'])): print $location['title']; endif; ?> <?php if (!empty($location['city'])): print $location['city']; endif; ?></dd>
     <?php endif; ?>
 
-    <?php if (!empty($when)): ?>
+    <?php if (!empty($when_md)): ?>
     <dt><?php print t('When'); ?></dt>
-    <dd><?php print $when; ?></dd>
+    <dd><?php print $when_md; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($organiser)): ?>

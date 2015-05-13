@@ -188,6 +188,10 @@ msgstr ""
 "eens."
 
 #: theme/culturefeed-saved-searches-list.tpl.php:10
+msgid "1 saved search"
+msgstr "1 bewaarde zoekopdracht"
+
+#: theme/culturefeed-saved-searches-list.tpl.php:10
 msgid "@total saved searches"
 msgstr "@total bewaarde zoekopdrachten"
 

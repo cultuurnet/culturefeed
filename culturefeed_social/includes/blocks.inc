@@ -372,6 +372,7 @@ function culturefeed_social_user_list_block_for_activity($object, $activity_type
 
   $content = array();
   $content['#theme'] = 'culturefeed_social_user_list_block_for_activity';
+  $content['#activity_type'] = $activity_type;
 
   if ($activities->total > 0) {
 

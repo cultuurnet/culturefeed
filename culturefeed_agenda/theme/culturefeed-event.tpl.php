@@ -76,7 +76,7 @@
       <dd><?php print t('This event is finished.'); ?></dd>
     <?php endif; ?>
   <?php else: ?>
-    <dd><?php print $when; ?></dd>
+    <dd><?php print $when_lg; ?></dd>
   <?php endif; ?>
 
    <?php if (!empty($personal_calendar_buttons)): ?>
@@ -190,3 +190,15 @@
   <?php print $button; ?>
 <?php endforeach; ?>
 <?php endif; ?>
+
+<div>
+  <?php print $facebook_link; ?>
+  <br>
+  <?php print $googleplus_link; ?>
+  <br>
+  <?php print $twitter_link; ?>
+  <br>
+  <?php print $whatsapp_link; ?>
+  <br>
+  <?php print $mail_link; ?>
+</div>

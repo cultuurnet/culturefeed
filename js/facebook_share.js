@@ -1,7 +1,7 @@
 (function($) {
   Drupal.behaviors.culturefeed_calendar_facebook_share = {
     attach: function(context, settings) {
-      $('a.facebook-share').bind('click', function(e) {
+      $('a.facebook-share', context).bind('click', function(e) {
         e.preventDefault();
         FB.ui(
          {
@@ -13,7 +13,6 @@
   };
 
 })(jQuery);
-
 
 window.fbAsyncInit = function() {
   FB.init({
@@ -30,6 +29,6 @@ window.fbAsyncInit = function() {
   }
   js = d.createElement(s);
   js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js";
+  js.src = "//connect.facebook.net/nl_BE/sdk.js";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));

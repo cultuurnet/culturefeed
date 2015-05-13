@@ -89,7 +89,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       foreach ($parameters as $i => $parameter) {
         $key = $parameter->getKey();
         $value = $parameter->getValue();
-        if ($key != 'fq' || empty($value) || 0 !== strpos($value, 'keyword')) {
+        if ($key != 'fq' || empty($value) || false === strpos($value, 'keyword')) {
           unset($parameters[$i]);
         }
       }
