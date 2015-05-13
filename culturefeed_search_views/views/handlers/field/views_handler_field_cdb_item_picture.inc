@@ -102,13 +102,15 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       foreach ($roadmaps as $roadmap) {
         $subbrand = $roadmap->getSubbrand();
         $collaboration_data = json_decode($roadmap->getDescription());
-        $collaboration_keyword = strtolower($collaboration_data->keyword);
+        if (!empty($collaboration_data)) {
+          $collaboration_keyword = strtolower($collaboration_data->keyword);
 
-        if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
-          $picture = $collaboration_data->image;
-          if (isset($picture)) {
-            $alt_pic = TRUE;
-            $main_picture = $picture;
+          if ($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
+            $picture = $collaboration_data->image;
+            if (isset($picture)) {
+              $alt_pic = TRUE;
+              $main_picture = $picture;
+            }
           }
         }
       }
