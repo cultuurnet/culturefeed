@@ -1,4 +1,13 @@
 (function($) {
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: Drupal.settings.culturefeed.fbAppId,
+      xfbml: true,
+      version: 'v2.1'
+    });
+  };
+
   Drupal.behaviors.culturefeed_calendar_facebook_share = {
     attach: function(context, settings) {
       $('a.facebook-share', context).bind('click', function(e) {
@@ -13,14 +22,6 @@
   };
 
 })(jQuery);
-
-window.fbAsyncInit = function() {
-  FB.init({
-    appId: Drupal.settings.culturefeed.fbAppId,
-    xfbml: true,
-    version: 'v2.1'
-  });
-};
 
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
