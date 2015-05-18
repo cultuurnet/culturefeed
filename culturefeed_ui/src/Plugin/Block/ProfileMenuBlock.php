@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Block(
  *  id = "ui_profile_menu",
- *  admin_label = @Translation("profile_menu_block"),
+ *  admin_label = @Translation("Profile menu block"),
  * )
  */
 class ProfileMenuBlock extends BlockBase implements ContainerFactoryPluginInterface {
@@ -113,14 +113,16 @@ class ProfileMenuBlock extends BlockBase implements ContainerFactoryPluginInterf
         '#title' => $menu_item['title'],
         '#url' => $menu_item['url'],
         '#description' => $menu_item['description'],
-        '#attribute_wrapper' => array (
-          'class' => $class
-        )
       ];
 
       $renderedItemContent = \Drupal::service('renderer')->render($itemContent);
 
-      $items[] = $renderedItemContent;
+      $items[] = array(
+        '#markup' => $renderedItemContent,
+        '#wrapper_attributes' => array(
+          'class' => $class,
+        ),
+      );
     }
 
     $block = array(
