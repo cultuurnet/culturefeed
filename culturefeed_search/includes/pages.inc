@@ -5,11 +5,12 @@
  */
 
 use \Guzzle\Http\Exception;
+use \Guzzle\Http\Client;
 
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE) {
 
   $matches = array();
 
@@ -18,9 +19,10 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
     try {
 
       $types = !empty($type) ? array($type) : array();
-
+      $extra_parameters[] = !empty($all) ? new \CultuurNet\Search\Parameter\Parameter('admin','true') : array();
+      
       // Get the list of suggestions from service.
-      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past);
+      $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past, $extra_parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $title = $location_title = check_plain($suggestion->getTitle());

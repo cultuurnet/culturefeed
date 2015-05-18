@@ -7,10 +7,13 @@ dependencies[] = culturefeed_search
 dependencies[] = culturefeed_search_views
 dependencies[] = culturefeed
 dependencies[] = culturefeed_date_control
+dependencies[] = culturefeed_location_control
+dependencies[] = culturefeed_tags_element
 dependencies[] = file
 dependencies[] = date
 dependencies[] = date_api
 dependencies[] = date_popup
+dependencies[] = transliteration
 
 files[] = views/handlers/views_handler_field_cdb_item_operations.inc
 files[] = views/handlers/views_handler_area_cdb_item_create.inc

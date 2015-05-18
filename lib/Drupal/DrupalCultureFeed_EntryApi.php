@@ -45,8 +45,8 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::createEvent()
    */
-  public static function createEvent(CultureFeed_Cdb_Item_Event $event) {
-    return self::getLoggedInUserInstance()->createEvent($event);
+  public static function createEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
+    return self::getLoggedInUserInstance()->createEvent($event, $cdb_schema_version);
   }
 
   /**
@@ -66,8 +66,8 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::updateEvent()
    */
-  public static function updateEvent(CultureFeed_Cdb_Item_Event $event) {
-    self::getLoggedInUserInstance()->updateEvent($event);
+  public static function updateEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
+    self::getLoggedInUserInstance()->updateEvent($event, $cdb_schema_version);
   }
 
   /**
@@ -122,8 +122,30 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::addLinkToEvent()
    */
-  public static function addLinkToEvent(CultureFeed_Cdb_Item_Event $event, $link, $linktype = '', $lang = '') {
-    self::getLoggedInUserInstance()->addLinkToEvent($event, $link, $linktype, $lang);
+  public static function addLinkToEvent(
+    CultureFeed_Cdb_Item_Event $event,
+    $link = '',
+    $linktype = '',
+    $lang = '',
+    $title = '',
+    $copyright = '',
+    $plaintext = '',
+    $subbrand = '',
+    $description = ''
+  ) {
+
+    self::getLoggedInUserInstance()->addLinkToEvent(
+      $event,
+      $link,
+      $linktype,
+      $lang,
+      $title,
+      $copyright,
+      $plaintext,
+      $subbrand,
+      $description
+    );
+
   }
 
   /**
@@ -229,6 +251,23 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
    */
   public static function removeTranslationFromActor(CultureFeed_Cdb_Item_Actor $actor, $lang) {
     self::getLoggedInUserInstance()->removeTranslationFromActor($actor, $lang);
+  }
+  
+  /**
+   * @see CultureFeed_EntryApi::checkPermission()
+   */
+  public static function checkPermission($userid, $email, $ids) {
+    $permissions = (array)self::getLoggedInUserInstance()->checkPermission($userid, $email, $ids);
+    $parsed_permissons = array();
+    if (is_array($permissions['event'])) {
+      foreach ($permissions['event'] as $permission) {
+        $parsed_permissons[$permission->cdbid->__toString()] = $permission->editable->__toString();
+      }
+    }
+    else {
+      $parsed_permissons[$permissions['event']->cdbid->__toString()] = $permissions['event']->editable->__toString();
+    }
+    return $parsed_permissons;
   }
 
 }

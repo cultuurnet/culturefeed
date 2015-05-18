@@ -1,0 +1,6 @@
+name = CultureFeed Entry UI Location control
+description = Form element to manage locations in the Entry UI.
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed_elements

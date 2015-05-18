@@ -25,6 +25,7 @@
           }
 
         },
+        autoFocus: true,
       });
 
       $("#edit-where").once('location-search-init').categorisedAutocomplete({
@@ -41,6 +42,7 @@
           }
 
         },
+        autoFocus: true,
       });
 
     }

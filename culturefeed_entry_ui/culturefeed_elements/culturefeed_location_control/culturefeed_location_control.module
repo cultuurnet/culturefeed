@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Contains the culturefeed location control module.
+ */
+
+require_once 'form/asset.inc';
+require_once 'form/custom.inc';
+require_once 'form/location_control.inc';
+
+/**
+ * Implements hook_element_info().
+ *
+ * This is a complex ajax driven form element.  Several new ajax buttons are
+ * added based on initial interaction or default value.  Most of the logic is
+ * taken from the core managed file field.
+ *
+ * - To ensure all buttons remain registered in the form, visibility is set
+ *   through access in a pre render function.
+ * - Element validation functions are used to set the data.
+ * - A custom ajax callback path to ensure the form is rerenderd.
+ *
+ * @see file_managed_file_pre_render()
+ * @see file_managed_file_value()
+ */
+function culturefeed_location_control_element_info() {
+
+  return array(
+    'culturefeed_location_control' => array(
+      '#element_validate' => array('culturefeed_location_control_location_control_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_location_control_location_control_pre_render'),
+      '#process' => array('culturefeed_location_control_location_control_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_location_control_value_callback',
+    ),
+    'culturefeed_location_control_asset' => array(
+      '#element_validate' => array('culturefeed_location_control_asset_validate'),
+      '#input' => TRUE,
+      '#process' => array('culturefeed_location_control_asset_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_asset_value_callback',
+    ),
+    'culturefeed_location_control_custom' => array(
+      '#element_validate' => array('culturefeed_location_control_custom_validate'),
+      '#input' => TRUE,
+      '#pre_render' => array('culturefeed_location_control_custom_pre_render'),
+      '#process' => array('culturefeed_location_control_custom_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_location_control_custom_value_callback',
+    ),
+  );
+
+}

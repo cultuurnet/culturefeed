@@ -4,6 +4,7 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 
+files[] = lib/CdbEventSubscriber.php
 files[] = lib/Drupal/Import/CultureFeedDomainImport.php
 files[] = lib/Drupal/Import/CultureFeedCityImport.php
 files[] = lib/Drupal/Import/CnapiHeadingImport.php
