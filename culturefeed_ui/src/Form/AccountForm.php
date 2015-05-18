@@ -80,25 +80,45 @@ class AccountForm extends FormBase
 
         $form['#theme'] = 'ui_account_form';
 
-        $profileUrl = Url::fromRoute('culturefeed_ui.user_controller_profile');
-        $form['view-profile'] = array(
-            '#prefix' => '<div id="view-profile">',
-            '#markup' => \Drupal::l(t('View profile'), $profileUrl),
-            '#suffix' => '</div>',
+        $form['view-profile-link'] = array(
+            '#id' => 'view-profile-link',
+            '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
+            '#title' => t('My profile'),
+            '#type' => 'link'
         );
 
-        $form['nick'] = array(
+        $form['delete-account-link'] = array(
+            '#id' => 'delete-account-link',
+            '#url' => Url::fromRoute('culturefeed_ui.delete_account_form'),
+            '#title' => t('Delete account'),
+            '#type' => 'link'
+        );
+
+        // Account fieldset
+        $form['account'] = array (
+            '#type' => 'fieldset',
+            '#title' => t('My UiTiD'),
+        );
+        $form['account']['nick'] = array(
             '#type' => 'textfield',
             '#title' => t('Username'),
             '#disabled' => TRUE,
             '#value' => $cf_account->nick,
         );
-
-        $form['mbox'] = array(
+        $form['account']['mbox'] = array(
             '#type' => 'email',
             '#title' => t('Email address'),
             '#default_value' => $cf_account->mbox,
             '#required' => TRUE,
+        );
+
+        // 'Connected accounts' fieldset
+        $form['connected-accounts'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Connected accounts'),
+            '#attributes' => array(
+                'collapsable' => 'collapsed'
+            )
         );
 
         $form['submit'] = array(
@@ -106,27 +126,24 @@ class AccountForm extends FormBase
             '#value' => t('Save'),
         );
 
+        // change password link
         $returnUrl = Url::fromRoute(
             'culturefeed_ui.account_form',
             [],
             ['absolute' => TRUE]
         );
-        $changePasswordUrl = Url::fromUri($this->culturefeed->getUrlChangePassword($cf_account->id, $returnUrl));
         $options = array(
             'attributes' => array('class' => array('culturefeedconnect')),
             'query' => drupal_get_destination()
         );
-        $form['change_password'] = array(
-            '#prefix' => '<div id="change-password">',
-            '#markup' => \Drupal::l(t('Change password'), $changePasswordUrl, $options),
-            '#suffix' => '</div>',
-        );
-
-        $deleteAccountUrl = new Url('culturefeed_ui.delete_account_form');
-        $form['remove_account'] = array(
-            '#prefix' => '<div id="remove-account">',
-            '#markup' => \Drupal::l(t('Delete account'), $deleteAccountUrl),
-            '#suffix' => '</div>',
+        $form['change-password-link'] = array(
+            '#id' => 'change-password-link',
+            '#title' => t('Change password'),
+            '#type' => 'link',
+            '#url' => Url::fromUri(
+                $this->culturefeed->getUrlChangePassword($cf_account->id, $returnUrl),
+                $options
+            ),
         );
 
         return $form;

@@ -89,8 +89,8 @@ class ProfileForm extends FormBase
 
         $form['#theme'] = 'ui_profile_form';
 
-        $form['view-profile'] = array(
-            '#id' => 'view-profile',
+        $form['view-profile-link'] = array(
+            '#id' => 'view-profile-link',
             '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
             '#title' => t('My profile'),
             '#type' => 'link'
