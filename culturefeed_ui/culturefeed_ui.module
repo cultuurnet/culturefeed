@@ -29,9 +29,12 @@ function culturefeed_ui_help($route_name, RouteMatchInterface $route_match) {
  */
 function culturefeed_ui_theme() {
   $theme = [
-    'ui_profile' => array(
+    'culturefeed_ui_profile' => array(
       'variables' => array(
-        'user' => NULL
+        'user' => NULL,
+        'title' => NULL,
+        'edit_profile_link' => NULL,
+        'edit_profile_title' => NULL,
       ),
     ),
     'ui_profile_form' => array(

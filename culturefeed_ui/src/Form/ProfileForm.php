@@ -84,54 +84,51 @@ class ProfileForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-        $cf_account = $this->user;
+        $user = $this->user;
         $form = array();
 
         $form['#theme'] = 'ui_profile_form';
 
-        $profileUrl = Url::fromRoute('culturefeed_ui.user_controller_profile');
         $form['view-profile'] = array(
-            '#prefix' => '<div id="view-profile">',
-            '#markup' => \Drupal::l(t('View profile'), $profileUrl),
-            '#suffix' => '</div>',
+            '#id' => 'view-profile',
+            '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
+            '#title' => t('My profile'),
+            '#type' => 'link'
         );
 
-        // Firstname.
-        $form['givenName'] = array(
+        // 'About me' fieldset
+        $form['about-me'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('About me')
+        );
+        $form['about-me']['givenName'] = array(
             '#type' => 'textfield',
             '#title' => t('First name'),
-            '#default_value' => $cf_account->givenName,
+            '#default_value' => $user->givenName,
         );
-        $form['givenNamePrivacy'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Hide \'first name\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-        );
-
-        // Name.
-        $form['familyName'] = array(
+        $form['about-me']['familyName'] = array(
             '#type' => 'textfield',
             '#title' => t('Family name'),
-            '#default_value' => $cf_account->familyName,
+            '#default_value' => $user->familyName,
         );
-        $form['familyNamePrivacy'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Hide \'family name\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+        $form['about-me']['bio'] = array(
+            '#type' => 'textarea',
+            '#title' => t('Biography'),
+            '#default_value' => $user->bio,
+            '#description' => t('Maximum 250 characters'),
         );
-
         // Picture.
-        $form_state->set('#old_picture', 0);
-        $form['picture'] = array(
-            '#type' => 'managed_file',
-            '#title' => t('Choose picture'),
-            '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
-            '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
-            '#upload_validators' => array(
-                'file_validate_extensions' => array('jpg jpeg png gif'),
-            ),
-            '#upload_location' => 'public://culturefeed',
-        );
+//        $form_state->set('#old_picture', 0);
+//        $form['picture'] = array(
+//            '#type' => 'managed_file',
+//            '#title' => t('Choose picture'),
+//            '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+//            '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
+//            '#upload_validators' => array(
+//                'file_validate_extensions' => array('jpg jpeg png gif'),
+//            ),
+//            '#upload_location' => 'public://culturefeed',
+//        );
 
 // TODO: find an alternative for the helper function "culturefeed_create_temporary_image".
 // I think a library like flysystem would be more suitable to manage these local images.
@@ -143,85 +140,107 @@ class ProfileForm extends FormBase
 //                $form['picture']['#default_value'] = $file->fid;
 //            }
 //        }
-
-        // Gender.
-        $form['gender'] = array(
-            '#type' => 'radios',
-            '#title' => t('Gender'),
-            '#options' => array('male' => t('Male'), 'female' => t('Female')),
-            '#default_value' => $cf_account->gender,
-        );
-        $form['genderPrivacy'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Hide \'gender\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-        );
-
-        // Address
-        $form['street'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Street and number'),
-            '#default_value' => $cf_account->street,
-        );
-        $form['zip'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Zipcode'),
-            '#default_value' => $cf_account->zip,
-        );
-        $form['city'] = array(
-            '#type' => 'textfield',
-            '#title' => t('City'),
-            '#default_value' => $cf_account->city,
-        );
-        $form['country'] = array(
-            '#type' => 'select',
-            '#options' => $this->countryManager->getList(),
-            '#title' => t('Country'),
-            '#default_value' => !empty($cf_account->country) ? $cf_account->country : 'BE',
-        );
-        $form['homeAddressPrivacy'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Hide \'address\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-        );
-
-        // Date of birth.
-        $form['dob'] = array(
+        $form['about-me']['dob'] = array(
             '#title' => t('Date of birth'),
             '#type' => 'textfield',
-            '#default_value' => $cf_account->dob ? date('d/m/Y', $cf_account->dob) : '',
+            '#default_value' => $user->dob ? date('d/m/Y', $user->dob) : '',
             '#description' => t('Format : dd/mm/yyyy'),
             '#size' => 10,
         );
-        $form['dobPrivacy'] = array(
+        $form['about-me']['gender'] = array(
+            '#type' => 'radios',
+            '#title' => t('Gender'),
+            '#options' => array('male' => t('Male'), 'female' => t('Female')),
+            '#default_value' => $user->gender,
+        );
+
+        // Address fieldset
+        $form['address'] = array (
+            '#type' => 'fieldset',
+            '#title' => t('Address'),
+            '#attributes' => array(
+                'collapsable' => '',
+            )
+        );
+        $form['address']['street'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Street and number'),
+            '#default_value' => $user->street,
+        );
+        $form['address']['zip'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Zipcode'),
+            '#default_value' => $user->zip,
+        );
+        $form['address']['city'] = array(
+            '#type' => 'textfield',
+            '#title' => t('City'),
+            '#default_value' => $user->city,
+        );
+        $form['address']['country'] = array(
+            '#type' => 'select',
+            '#options' => $this->countryManager->getList(),
+            '#title' => t('Country'),
+            '#default_value' => !empty($user->country) ? $user->country : 'BE',
+        );
+
+        // 'Privacy settings' fieldset
+
+        $form['privacy-settings'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Privacy settings'),
+            '#attributes' => array(
+                'collapsable' => 'collapsed'
+            )
+        );
+        $form['privacy-settings']['givenNamePrivacy'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Hide \'first name\' in public profile'),
+            '#default_value' => $user->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+        );
+        $form['privacy-settings']['familyNamePrivacy'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Hide \'family name\' in public profile'),
+            '#default_value' => $user->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+        );
+        $form['privacy-settings']['genderPrivacy'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Hide \'gender\' in public profile'),
+            '#default_value' => $user->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+        );
+        $form['privacy-settings']['homeAddressPrivacy'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Hide \'address\' in public profile'),
+            '#default_value' => $user->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+        );
+        $form['privacy-settings']['dobPrivacy'] = array(
             '#type' => 'checkbox',
             '#title' => t('Hide \'date of birth\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+            '#default_value' => $user->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
         );
-
-        // Bio
-        $form['bio'] = array(
-            '#type' => 'textarea',
-            '#title' => t('Biography'),
-            '#default_value' => $cf_account->bio,
-            '#description' => t('Maximum 250 characters'),
-        );
-        $form['bioPrivacy'] = array(
+        $form['privacy-settings']['bioPrivacy'] = array(
             '#type' => 'checkbox',
             '#title' => t('Hide \'biography\' in public profile'),
-            '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
+            '#default_value' => $user->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
         );
 
-        // Default language.
-        $form['preferredLanguage'] = array(
+        // 'Language settings' fieldset
+        $form['language-settings'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Language settings'),
+            '#attributes' => array(
+                'collapsable' => 'collapsed'
+            )
+        );
+        $form['language-settings']['preferredLanguageField'] = array(
             '#type' => 'select',
             '#title' => t('Preferred language'),
-            '#default_value' => !empty($cf_account->preferredLanguage) ? $cf_account->preferredLanguage : '',
+            '#default_value' => !empty($user->preferredLanguage) ? $user->preferredLanguage : '',
             '#options' => array(
-                'nl' => t('Dutch'),
-                'fr' => t('French'),
-                'en' => t('English'),
-                'de' => t('German'),
+              'nl' => t('Dutch'),
+              'fr' => t('French'),
+              'en' => t('English'),
+              'de' => t('German'),
             ),
         );
 
