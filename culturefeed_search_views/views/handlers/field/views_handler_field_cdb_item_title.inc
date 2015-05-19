@@ -45,14 +45,50 @@ class views_handler_field_cdb_item_title extends views_handler_field {
   function render($extended_entity) {
 
     if ($this->options['override']) {
-      $title = 'This title is overriden';
+      $media = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getMedia();
+      $roadmaps = $media->byMediaType('roadmap');
+
+      $parameters = $this->query->getParameters();
+      $consumer_id = variable_get('culturefeed_api_application_key');
+
+      foreach ($parameters as $i => $parameter) {
+        $key = $parameter->getKey();
+        $value = $parameter->getValue();
+        if ($key != 'fq' || empty($value) || false === strpos($value, 'keyword') ) {
+          unset($parameters[$i]);
+        }
+      }
+
+      // If more filterquery's are defined, take first one.
+      if (count($parameters) > 0) {
+        $parameter = substr(substr($parameters[0]->getValue(), 10), 0, -1);
+      }
+
+      foreach ($roadmaps as $roadmap) {
+        $subbrand = $roadmap->getSubbrand();
+        $collaboration_keyword = json_decode($roadmap->getDescription());
+        $collaboration_keyword = strtolower($collaboration_keyword->keyword);
+
+        if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
+          $title = $roadmap->getTitle();
+          $original_title = $extended_entity->getTitle(culturefeed_search_get_preferred_language());
+        }
+      }
+      if(!isset($title)) {
+        $title = $extended_entity->getTitle(culturefeed_search_get_preferred_language());
+      }
     }
     else {
       $title = $extended_entity->getTitle(culturefeed_search_get_preferred_language());
     }
 
     if ($this->options['link']) {
-      return culturefeed_search_detail_l($extended_entity->getType(), $extended_entity->getId(), $title, $title);
+      if (isset($original_title)) {
+        return culturefeed_search_detail_l($extended_entity->getType(), $extended_entity->getId(), $original_title, $title);
+      }
+      else {
+        return culturefeed_search_detail_l($extended_entity->getType(), $extended_entity->getId(), $title, $title);
+      }
     }
     else {
       return $title;

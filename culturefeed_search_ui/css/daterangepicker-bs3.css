@@ -1,0 +1,151 @@
+/* */
+/* */
+/*!
+* Stylesheet for the Date Range Picker, for use with Bootstrap 3.x
+*
+* Copyright 2013-2015 Dan Grossman ( http://www.dangrossman.info )
+* Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
+*
+* Built for http://www.improvely.com
+*/
+.daterangepicker.dropdown-menu {
+  max-width: none;
+  z-index: 3000;
+}
+.daterangepicker .ranges .range_inputs .btn-block {
+  clear: both;
+  position: relative;
+}
+.daterangepicker .calendar {
+  display: none;
+}
+.daterangepicker.show-calendar .calendar {
+  display: block;
+}
+.daterangepicker .calendar.single .calendar-date {
+  border: none;
+}
+.daterangepicker .calendar th,
+.daterangepicker .calendar td {
+  white-space: nowrap;
+  text-align: center;
+  min-width: 32px;
+}
+.daterangepicker .ranges ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.daterangepicker .ranges li {
+  font-size: 13px;
+  background: #f5f5f5;
+  border: 1px solid #f5f5f5;
+  color: #08c;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.daterangepicker .ranges li.active,
+.daterangepicker .ranges li:hover {
+  background: #08c;
+  border: 1px solid #08c;
+  color: #fff;
+}
+.daterangepicker .calendar-date {
+  border: 1px solid #ddd;
+  padding: 4px;
+  border-radius: 1px;
+  background: #fff;
+}
+.daterangepicker .calendar-time {
+  text-align: center;
+  margin: 8px auto 0 auto;
+  line-height: 30px;
+}
+.daterangepicker {
+  position: absolute;
+  top: 100px;
+  left: 20px;
+  padding: 15px;
+  margin-top: 1px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+  background-color: #F3F3F3;
+}
+.daterangepicker table {
+  width: 100%;
+  margin: 0;
+}
+.daterangepicker td,
+.daterangepicker th {
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.daterangepicker td.off {
+  color: #999;
+}
+.daterangepicker td.disabled,
+.daterangepicker option.disabled {
+  color: #999;
+}
+.daterangepicker td.available:hover,
+.daterangepicker th.available:hover {
+  background: #eee;
+}
+.daterangepicker td.in-range {
+  background: #c7e5ff;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.daterangepicker td.start-date.end-date {
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #004f94;
+  border-color: #3071a9;
+  color: #fff;
+}
+.daterangepicker td.week,
+.daterangepicker th.week {
+  font-size: 80%;
+  color: #ccc;
+}
+.daterangepicker select.monthselect,
+.daterangepicker select.yearselect {
+  font-size: 12px;
+  padding: 1px;
+  height: auto;
+  margin: 0;
+  cursor: default;
+}
+.daterangepicker select.monthselect {
+  margin-right: 2%;
+  width: 56%;
+}
+.daterangepicker select.yearselect {
+  width: 40%;
+}
+.daterangepicker select.hourselect,
+.daterangepicker select.minuteselect,
+.daterangepicker select.secondselect,
+.daterangepicker select.ampmselect {
+  width: 50px;
+  margin-bottom: 0;
+}
+.daterangepicker th.month {
+  width: auto;
+}

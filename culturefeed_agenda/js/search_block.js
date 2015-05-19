@@ -9,6 +9,7 @@
     if (navigator.geolocation) {
 
       $nearby_link.bind('click', function() {
+        $(this).unbind('click');
         $nearby_link.append(' <span id="current-location" class="loading-location throbber">Loading...</span>');
         Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.setLocationAutocomplete);
      });
@@ -41,6 +42,11 @@
     }
 
     $('#culturefeed-agenda-search-block-form').find('input[name="where"]').val(postal + ' ' + city);
+    
+    // Add default radius when searching on current location
+    if ($('#culturefeed-agenda-search-block-form').find('input[name="radius"]').val() == '') {
+      $('#culturefeed-agenda-search-block-form').find('input[name="radius"]').val('10');
+    }
     $('#current-location').remove();
   }
 

@@ -244,8 +244,8 @@ msgid "View your calendar"
 msgstr "Kalender bekijken"
 
 #: theme/culturefeed-calendar-page.tpl.php:9
-msgid "Calendar"
-msgstr "Agenda"
+msgid "Personal calendar"
+msgstr "UiTkalender"
 
 #: theme/culturefeed-calendar-page.tpl.php:16
 msgid "This calendar has not been shared yet."

@@ -140,7 +140,7 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
   
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
-  if ($culturefeed_user) {
+  if ($culturefeed_user && user_access('edit culturefeed events')) {
     $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
   }
   

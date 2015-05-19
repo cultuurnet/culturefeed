@@ -86,7 +86,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     // Default organiser.
     if ($organiser = $event->getOrganiser()) {
       $default_organiser_label = $organiser->getLabel();
-      $default_organiser_id = $location->getCdbId();
+      $default_organiser_id = $organiser->getCdbId();
     }
 
     // Default calendar type, start / end date, weekscheme data.
