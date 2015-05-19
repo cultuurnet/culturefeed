@@ -26,18 +26,19 @@ function culturefeed_sitemap_menu() {
   );
 
   foreach ($sitemap_types as $sitemap_type) {
-    $subtypes = culturefeed_sitemap_get_subtypes($sitemap_type);
     $items['sitemap-' . $sitemap_type . '.xml'] = array(
       'access callback' => TRUE,
-      'page callback' => 'culturefeed_sitemap_get_variable_sitemap',
+      'page callback' => 'culturefeed_sitemap_get_subtypes_sitemap',
       'page arguments' => array($sitemap_type),
       'type' => MENU_CALLBACK,
     );
+
+    $subtypes = culturefeed_sitemap_get_subtypes($sitemap_type);
     foreach ($subtypes as $subtype_id => $subtype_name) {
       $subtype_name = drupal_html_class(strtolower($subtype_name));
       $items['sitemap-' . $sitemap_type . '-' . $subtype_name . '.xml'] = array(
         'access callback' => TRUE,
-        'page callback' => 'culturefeed_sitemap_get_variable_sitemap',
+        'page callback' => 'culturefeed_sitemap_get_entries_sitemap',
         'page arguments' => array($sitemap_type, $subtype_id),
         'type' => MENU_CALLBACK,
       );
@@ -74,42 +75,7 @@ function culturefeed_sitemap_get_main_sitemap(array $sitemap_types) {
   culturefeed_sitemap_index_xml($sitemap_links);
 }
 
-function culturefeed_sitemap_get_variable_sitemap($type, $subtype = NULL) {
-  $sitemap_links = array();
-
-  switch ($type) {
-    case 'events':
-      if ($subtype) {
-        $sitemap_links = culturefeed_sitemap_get_event_subtype_items($subtype);
-      }
-      else {
-        $sitemap_links = culturefeed_sitemap_get_subtype_links($type);
-      }
-      break;
-
-    case 'actors':
-      if ($subtype) {
-        $sitemap_links = culturefeed_sitemap_get_actor_subtype_items($subtype);
-      }
-      else {
-        $sitemap_links = culturefeed_sitemap_get_subtype_links($type);
-      }
-      break;
-
-    case 'productions':
-      $sitemap_links = array('get_production_links');
-      break;
-  }
-
-  if ($subtype) {
-    culturefeed_sitemap_urlset_xml($sitemap_links);
-  }
-  else {
-    culturefeed_sitemap_index_xml($sitemap_links);
-  }
-}
-
-function culturefeed_sitemap_get_subtype_links($type) {
+function culturefeed_sitemap_get_subtypes_sitemap($type) {
   $sitemap_links = array();
 
   foreach (culturefeed_sitemap_get_subtypes($type) as $subtype_id => $subtype_name) {
@@ -118,7 +84,25 @@ function culturefeed_sitemap_get_subtype_links($type) {
     );
   }
 
-  return $sitemap_links;
+  culturefeed_sitemap_index_xml($sitemap_links);
+}
+
+function culturefeed_sitemap_get_entries_sitemap($type, $subtype) {
+  $sitemap_links = array();
+
+  switch ($type) {
+    case 'events':
+      $sitemap_links = culturefeed_sitemap_get_event_subtype_items($subtype);
+      break;
+    case 'actors':
+      $sitemap_links = culturefeed_sitemap_get_actor_subtype_items($subtype);
+      break;
+    case 'productions':
+      $sitemap_links = array('get_production_links');
+      break;
+  }
+
+  culturefeed_sitemap_urlset_xml($sitemap_links);
 }
 
 function culturefeed_sitemap_get_event_subtype_items($subtype) {
