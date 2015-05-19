@@ -76,7 +76,6 @@ function culturefeed_sitemap_get_main_sitemap(array $sitemap_types) {
 
 function culturefeed_sitemap_get_variable_sitemap($type, $subtype = NULL) {
   $sitemap_links = array();
-  dpm($subtype);
 
   switch ($type) {
     case 'events':
@@ -158,7 +157,6 @@ function culturefeed_sitemap_get_actor_subtype_items($subtype) {
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
 
-  dpm($subtype, 'actor with subtype');
   // Execute search.
   $items = array();
   $sitemap_links = array();
