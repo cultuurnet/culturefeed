@@ -17,19 +17,13 @@ function culturefeed_search_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
-  $cdb_xml_versions = array(
-    '3.0',
-    '3.1',
-    '3.2',
-    '3.3',
-  );
-
+  $cdb_xml_versions = culturefeed_cdb_xml_versions();
   $form['culturefeed_search_cdb_version'] = array(
     '#default_value' => variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),
     '#description' => t('The culturefeed cdb schema version used by the search API.'),
     '#title' => t('Cdb schema version'),
     '#type' => 'select',
-    '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions)
+    '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions),
   );
 
   $form['culturefeed_search_api_application_key'] = array(
