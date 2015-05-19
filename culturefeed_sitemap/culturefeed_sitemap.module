@@ -4,6 +4,12 @@
  * Creates a sitemap for the events, productions and actors.
  */
 
+use CultuurNet\SiteMapXml\SiteMapIndexXmlWriter;
+use CultuurNet\SiteMapXml\SiteMapUrlSetXmlWriter;
+use CultuurNet\SiteMapXml\SiteMapXmlEntry;
+use CultuurNet\SiteMapXml\SiteMapXmlWriterInterface;
+use ValueObjects\Web\Url;
+
 /**
  * Implements hook_menu().
  */
@@ -65,7 +71,8 @@ function culturefeed_sitemap_get_main_sitemap(array $sitemap_types) {
     );
   }
 
-  return culturefeed_sitemap_get_sitemap_xml_from_links_array($sitemap_links);
+  header("Content-Type:text/xml");
+  culturefeed_sitemap_index_xml($sitemap_links);
 }
 
 function culturefeed_sitemap_get_variable_sitemap($type, $subtype = NULL) {
@@ -96,7 +103,13 @@ function culturefeed_sitemap_get_variable_sitemap($type, $subtype = NULL) {
       break;
   }
 
-  return culturefeed_sitemap_get_sitemap_xml_from_links_array($sitemap_links);
+  header("Content-Type:text/xml");
+  if ($subtype) {
+    culturefeed_sitemap_urlset_xml($sitemap_links);
+  }
+  else {
+    culturefeed_sitemap_index_xml($sitemap_links);
+  }
 }
 
 function culturefeed_sitemap_get_subtype_links($type) {
@@ -109,10 +122,6 @@ function culturefeed_sitemap_get_subtype_links($type) {
   }
 
   return $sitemap_links;
-}
-
-function culturefeed_sitemap_get_sitemap_xml_from_links_array(array $links) {
-  return '<pre>' . print_r($links, TRUE) . '</pre>';
 }
 
 function culturefeed_sitemap_get_event_subtype_items($subtype) {
@@ -172,4 +181,42 @@ function culturefeed_sitemap_get_actor_subtype_items($subtype) {
     watchdog_exception('Culturefeed Search Sitemap', $e);
     return array();
   }
+}
+
+/**
+ * Prints the XML for a urlset sitemap.
+ *
+ * @param array $links
+ */
+function culturefeed_sitemap_urlset_xml(array $links) {
+  $writer = new SiteMapUrlSetXmlWriter();
+  culturefeed_sitemap_xml($writer, $links);
+}
+
+/**
+ * Prints the XML for a sitemap index.
+ *
+ * @param array $links
+ */
+function culturefeed_sitemap_index_xml(array $links) {
+  $writer = new SiteMapIndexXmlWriter();
+  culturefeed_sitemap_xml($writer, $links);
+}
+
+/**
+ * Prints entries to sitemap XML.
+ *
+ * @param SiteMapXmlWriterInterface $writer
+ * @param $links
+ */
+function culturefeed_sitemap_xml(SiteMapXmlWriterInterface $writer, $links) {
+  $writer->open();
+
+  foreach ($links as $link) {
+    $location = Url::fromNative($link['loc']);
+    $entry = new SiteMapXmlEntry($location);
+    $writer->write($entry);
+  }
+
+  $writer->close();
 }
