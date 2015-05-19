@@ -157,7 +157,7 @@ function culturefeed_date_control_hybrid_validate(array &$element, array &$form_
   $triggering_parent = array_pop($triggering_element['#parents']);
   $hybrid = $element['#value'];
 
-  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 

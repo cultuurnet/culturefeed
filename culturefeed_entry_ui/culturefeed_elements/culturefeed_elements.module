@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Contains the culturefeed elements module.
+ */
+
+/**
+ * Ajax callback for the date control element.
+ */
+function culturefeed_elements_ajax_callback() {
+
+  list($form, $form_state, $form_id, $form_build_id, $commands) = ajax_get_form();
+  drupal_process_form($form['#form_id'], $form, $form_state);
+  $parents = func_get_args();
+
+  $form = drupal_array_get_nested_value($form, $parents);
+  $output = drupal_render($form);
+  $result = array(
+    '#type' => 'ajax',
+    '#commands' => ajax_prepare_response($output),
+  );
+  return $result;
+
+}
+
+/**
+ * Checks if the triggering element is part of the element.
+ *
+ * @param array $triggering_element
+ *   The triggering element.
+ * @param array $element
+ *   The element.
+ *
+ * @return bool
+ *   True or false.
+ */
+function culturefeed_elements_check_trigger_element(array $triggering_element, array $element) {
+  $test = array_intersect($triggering_element['#parents'], $element['#parents']);
+  return array_intersect($triggering_element['#parents'], $element['#parents']) == $element['#parents'];
+}
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_elements_menu() {
+
+  return array(
+    'culturefeed_elements/ajax' => array(
+      'title' => 'AHAH callback',
+      'page callback' => 'culturefeed_elements_ajax_callback',
+      'delivery callback' => 'ajax_deliver',
+      'access callback' => TRUE,
+      'theme callback' => 'ajax_base_page_theme',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+
+}

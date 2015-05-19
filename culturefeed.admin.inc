@@ -41,6 +41,15 @@ function culturefeed_admin_settings() {
     '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
   );
 
+  $cdb_xml_versions = culturefeed_cdb_xml_versions();
+  $form['culturefeed_cdb_version'] = array(
+    '#default_value' => variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION),
+    '#description' => t('The culturefeed cdb schema version used by the entry API.'),
+    '#title' => t('Cdb schema version'),
+    '#type' => 'select',
+    '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions),
+  );
+
   $form['culturefeed_http_client_timeout'] = array(
     '#type' => 'textfield',
     '#title' => t('HTTP client timeout'),

@@ -66,12 +66,14 @@ class views_handler_field_cdb_item_title extends views_handler_field {
 
       foreach ($roadmaps as $roadmap) {
         $subbrand = $roadmap->getSubbrand();
-        $collaboration_keyword = json_decode($roadmap->getDescription());
-        $collaboration_keyword = strtolower($collaboration_keyword->keyword);
+        $collaboration_data = json_decode($roadmap->getDescription());
+        if (!empty($collaboration_data)) {
+          $collaboration_keyword = strtolower($collaboration_data->keyword);
 
-        if($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
-          $title = $roadmap->getTitle();
-          $original_title = $extended_entity->getTitle(culturefeed_search_get_preferred_language());
+          if ($consumer_id == $subbrand && $collaboration_keyword == $parameter) {
+            $title = $roadmap->getTitle();
+            $original_title = $extended_entity->getTitle(culturefeed_search_get_preferred_language());
+          }
         }
       }
       if(!isset($title)) {

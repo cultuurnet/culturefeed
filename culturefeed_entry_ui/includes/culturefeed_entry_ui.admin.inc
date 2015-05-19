@@ -17,6 +17,8 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     $language_options[$language->language] = $language->name;
   }
 
+  $cdb_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
+
   $form['culturefeed_entry_ui_preferred_language'] = array(
     '#title' => t('Preferred language'),
     '#type' => 'select',
@@ -25,19 +27,61 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_entry_ui_preferred_language', ''),
   );
 
-  $form['culturefeed_entry_ui_custom_tags'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Custom options on the /tags page'),
-    '#default_value' => variable_get('culturefeed_entry_ui_custom_tags'),
-    '#description' => t('Custom tags specific for this site. Use a new line for each tag.'),
-  );
+  if (version_compare($cdb_version, '3.3', '>=')) {
 
-  $form['culturefeed_entry_ui_custom_entry_api_tags'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Custom tags to push to entry API'),
-    '#default_value' => variable_get('culturefeed_entry_ui_custom_entry_api_tags'),
-    '#description' => t('Tags pushed under the hood to Entry API. Use a new line for each tag.'),
-  );
+    $form['culturefeed_entry_ui_custom_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_tags'),
+      '#description' => t('Custom tags specific for this site.'),
+      '#title' => t('Custom options on the /tags page'),
+      '#type' => 'culturefeed_tags_element',
+      '#visible_default' => FALSE,
+    );
+
+  }
+  else {
+
+    $form['culturefeed_entry_ui_custom_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_tags'),
+      '#description' => t('Custom tags specific for this site. Use a new line for each tag.'),
+      '#title' => t('Custom options on the /tags page'),
+      '#type' => 'textarea',
+    );
+
+  }
+
+  if (version_compare($cdb_version, '3.3', '>=')) {
+
+    $form['culturefeed_entry_ui_custom_entry_api_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_entry_api_tags'),
+      '#description' => t('Tags pushed under the hood to Entry API.'),
+      '#title' => t('Custom tags to push to entry API'),
+      '#type' => 'culturefeed_tags_element',
+      '#visible_default' => FALSE,
+    );
+
+  }
+  else {
+
+    $form['culturefeed_entry_ui_custom_entry_api_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_entry_api_tags'),
+      '#description' => t('Tags pushed under the hood to Entry API. Use a new line for each tag.'),
+      '#title' => t('Custom tags to push to entry API'),
+      '#type' => 'textarea',
+    );
+
+  }
+
+  if (version_compare($cdb_version, '3.3', '>=')) {
+
+    $form['culturefeed_entry_ui_custom_collaboration_tags'] = array(
+      '#default_value' => variable_get('culturefeed_entry_ui_custom_collaboration_tags'),
+      '#description' => t('Tags used for the collaboration tab.'),
+      '#title' => t('Custom tags to use as collaboration data'),
+      '#type' => 'culturefeed_tags_element',
+      '#visible_default' => FALSE,
+    );
+
+  }
 
   $form['culturefeed_entry_ui_default_country'] = array(
     '#type' => 'select',

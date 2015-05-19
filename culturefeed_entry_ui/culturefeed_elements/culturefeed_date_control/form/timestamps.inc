@@ -173,7 +173,7 @@ function culturefeed_date_control_timestamps_validate(array $element, array &$fo
   $triggering_parent = array_pop($triggering_element['#parents']);
   $timestamps = $element['#value'];
 
-  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 

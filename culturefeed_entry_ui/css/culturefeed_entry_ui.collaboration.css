@@ -1,0 +1,26 @@
+
+.edit-collaboration-data fieldset .panel-body {
+  padding-top: 0px;
+}
+
+.edit-collaboration-data fieldset .no-top-margin {
+  margin-top: 0px;
+}
+
+.edit-collaboration-data fieldset.vertical-tabs-pane > legend.panel-heading {
+  display: none;
+}
+
+.edit-collaboration-data .form-item-image-upload > .row > .col-md-6 {
+  width: auto;
+}
+
+.edit-collaboration-data img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.edit-collaboration-data .btn-danger {
+  margin-left: 15px;
+  margin-top: 5px;
+}

@@ -15,9 +15,11 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
     $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
     $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
 
+    $cdb_xml_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);;
+
     $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 
-    return new CultureFeed_EntryApi($oauth_client);
+    return new CultureFeed_EntryApi($oauth_client, $cdb_xml_version);
 
   }
 
@@ -122,8 +124,30 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::addLinkToEvent()
    */
-  public static function addLinkToEvent(CultureFeed_Cdb_Item_Event $event, $link, $linktype = '', $lang = '') {
-    self::getLoggedInUserInstance()->addLinkToEvent($event, $link, $linktype, $lang);
+  public static function addLinkToEvent(
+    CultureFeed_Cdb_Item_Event $event,
+    $link = '',
+    $linktype = '',
+    $lang = '',
+    $title = '',
+    $copyright = '',
+    $plaintext = '',
+    $subbrand = '',
+    $description = ''
+  ) {
+
+    self::getLoggedInUserInstance()->addLinkToEvent(
+      $event,
+      $link,
+      $linktype,
+      $lang,
+      $title,
+      $copyright,
+      $plaintext,
+      $subbrand,
+      $description
+    );
+
   }
 
   /**

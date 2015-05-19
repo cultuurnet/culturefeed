@@ -1,0 +1,245 @@
+<?php
+/**
+ * @file
+ * Contains the CultureFeed Tags element module.
+ */
+
+/**
+ * Implements hook_element_info().
+ */
+function culturefeed_tags_element_element_info() {
+
+  return array(
+    'culturefeed_tags_element' => array(
+      '#element_validate' => array('culturefeed_tags_element_tags_element_validate'),
+      '#input' => TRUE,
+      '#process' => array('culturefeed_tags_element_tags_element_process', 'ajax_process_form'),
+      '#tree' => TRUE,
+      '#value_callback' => 'culturefeed_tags_element_tags_element_value_callback',
+    ),
+  );
+
+}
+
+/**
+ * Process function for the culturefeed keywords element.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $form_state
+ *   The form state.
+ * @param array $form
+ *   The form.
+ *
+ * @return array
+ *   The processed element.
+ */
+function culturefeed_tags_element_tags_element_process(array $element, array &$form_state, array $form) {
+
+  $element_id = $element['#id'];
+  $array_parents = $element['#array_parents'];
+
+  // Title.
+  if (isset($element['#title'])) {
+    $element['title'] = array(
+      '#markup' => theme('form_element_label', array('element' => $element)),
+    );
+  }
+
+  // Default visibility.
+  if (!isset($element['#visible_default'])) {
+    $element['#visible_default'] = TRUE;
+  }
+
+  // Ajax wrapper.
+  $element['#prefix'] = "<div id=\"" . $element_id . "-ajax-wrapper\">";
+  $element['#suffix'] = "</div>";
+
+  // Tags.
+  $tags = $element['#value'];
+  if (empty($tags['keywords'])) {
+    $tags['keywords'] = array(
+      array('value' => '', 'hidden' => !$element['#visible_default']),
+    );
+  }
+
+  $element['keywords'] = array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_tags_element') . '/css/culturefeed_tags_element.css',
+      ),
+    ),
+    '#attributes' => array('class' => array('tags-element-form-table')),
+    '#theme' => 'culturefeed_tags_element_tags_element_form_table',
+  );
+
+  foreach ($tags['keywords'] as $key => $tag) {
+
+    $element['keywords'][$key] = array(
+      'value' => array(
+        '#default_value' => $tag['value'],
+        '#type' => 'textfield',
+      ),
+      'hidden' => array(
+        '#default_value' => isset($tag['hidden']) && $tag['hidden'] ? 1 : 0,
+        '#title' => t('Hide tag'),
+        '#type' => 'checkbox',
+      ),
+      'remove' => array(
+        '#ajax' => array(
+          'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
+          'wrapper' => $element_id . '-ajax-wrapper',
+        ),
+        '#name' => $element_id . '-remove-' . $key,
+        '#submit' => array('culturefeed_tags_element_tags_element_process_submit'),
+        '#type' => 'submit',
+        '#value' => t('Remove tag'),
+      ),
+    );
+
+  }
+
+  $element['add_tag'] = array(
+    '#ajax' => array(
+      'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
+      'wrapper' => $element_id . '-ajax-wrapper',
+    ),
+    '#attributes' => array(
+      'class' => array('tags-element-add-tag'),
+    ),
+    '#name' => $element_id . '-add-tag',
+    '#submit' => array('culturefeed_tags_element_tags_element_process_submit'),
+    '#type' => 'submit',
+    '#value' => t('Add tag'),
+  );
+
+  return $element;
+
+}
+
+/**
+ * Validation handler for the culturefeed keywords element.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_tags_element_tags_element_validate(array &$element, array &$form_state) {
+
+  // Triggering data.
+  $triggering_element = (isset($form_state['triggering_element'])) ? $form_state['triggering_element'] : '';
+  $triggering_parent = array_pop($triggering_element['#array_parents']);
+  $tags = $element['#value'];
+
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
+
+    // Check if a tag needs to be added.
+    if ($triggering_parent == 'add_tag') {
+      $tag = array('value' => '', 'hidden' => !$element['#visible_default']);
+      $tags['keywords'][] = $tag;
+    }
+
+    // Check if a tag needs to be removed.  This is done here as renumbering
+    // needs to be ensured.
+    if ($triggering_parent == 'remove') {
+
+      $index = array_pop($triggering_element['#array_parents']);
+      array_splice($tags['keywords'], $index, 1);
+
+    }
+
+  }
+
+  // The form element works with $element['#value']
+  // (and thus $form_state['input']).
+  drupal_array_set_nested_value($form_state['input'], $element['#parents'], $tags);
+
+  // The form works with $form_state['values'].  Drop the keywords wrapper so
+  // clean tags are returned to the form and set the hidden property as visible.
+  $values = array();
+  foreach ($tags['keywords'] as $tag) {
+
+    if (isset($tag['value']) && $tag['value']) {
+      $values[$tag['value']] = array(
+        'value' => $tag['value'],
+        'visible' => !(isset($tag['hidden']) && $tag['hidden']),
+      );
+    }
+  }
+
+  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $values);
+
+}
+
+/**
+ * Submit handler for the culturefeed keywords element.
+ */
+function culturefeed_tags_element_tags_element_process_submit($form, &$form_state) {
+
+  $form_state['rebuild'] = TRUE;
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culturefeed_tags_element_theme() {
+
+  return array(
+    'culturefeed_tags_element_tags_element_form_table' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'culturefeed_tags_element') . '/theme',
+      'file' => 'theme.inc',
+    ),
+  );
+}
+
+/**
+ * Value callback for the culturefeed date control timestamps element.
+ *
+ * @param array $element
+ *   The element.
+ * @param mixed $input
+ *   The input.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return mixed
+ *   The value.
+ */
+function culturefeed_tags_element_tags_element_value_callback(array $element, $input, array $form_state) {
+
+  if ($input) {
+    return $input;
+  }
+
+  else {
+
+    $value = array('keywords' => array());
+
+    if (isset($element['#default_value']) && $element['#default_value']) {
+
+      $keywords = array();
+      foreach ($element['#default_value'] as $tag) {
+
+        if (isset($tag['value']) && $tag['value']) {
+
+          $keywords[] = array(
+            'value' => $tag['value'],
+            'hidden' => (isset($tag['visible']) && !$tag['visible']) ? 1 : 0,
+          );
+
+        }
+
+      }
+
+      $value['keywords'] = $keywords;
+
+    }
+
+    return $value;
+
+  }
+
+}
