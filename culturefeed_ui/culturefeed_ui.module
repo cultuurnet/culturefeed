@@ -46,6 +46,16 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_profile_menu_item' => array(
       'variables' => array('title' => '', 'url' => '', 'description' => ''),
     ),
+    'culturefeed_ui_connected_account' => array(
+      'variables' => array(
+        'account' => NULL,
+        'accountType' => NULL,
+        'publishLink' => '',
+        'disconnectLink' => '',
+        'connectLink' => '',
+        'privacyStatement' => ''
+      ),
+    ),
   ];
 
   return $theme;

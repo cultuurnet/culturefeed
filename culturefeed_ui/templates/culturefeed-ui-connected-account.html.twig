@@ -1,0 +1,26 @@
+{% if accountType %}
+<div class="type {{ accountType }}"><span>{{ accountType }}</span></div>
+{%- endif -%}
+
+{% if picture %}
+<div class="depiction">{{ picture }}</div>
+{%- endif -%}
+
+{% if name or nick %}
+<span class="small quiet">{{ 'Connected to:'|t }}</span>
+{%- endif -%}
+{% if name %}<div class="name">{{ name }}</div>{%- endif -%}
+{% if nick %}<div class="nick">{{ nick }}</div>{%- endif -%}
+
+{% if publishLink %}
+<div class="publish">{{ publishLink }}</div>
+<div class="privacy-statement">{{ privacyStatement }}</div>
+{%- endif -%}
+
+{% if connectLink and not disconnectLink %}
+<div class="connect">{{ connectLink }}</div>
+{%- endif -%}
+
+{% if disconnectLink %}
+<div class="delete">{{ disconnectLink }}</div>
+{%- endif -%}

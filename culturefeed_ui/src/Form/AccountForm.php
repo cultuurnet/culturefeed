@@ -7,7 +7,9 @@
 
 namespace Drupal\culturefeed_ui\Form;
 
+use Drupal\Component\Utility\String;
 use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -39,12 +41,24 @@ class AccountForm extends FormBase
     protected $culturefeed;
 
     /**
+     * A list of valid culturefeed connected account types.
+     * @var string[]
+     */
+    protected $connectedAccountTypes;
+
+    /**
+     * @var \Drupal\Core\Config\Config|\Drupal\Core\Config\ImmutableConfig
+     */
+    protected $siteConfig;
+
+    /**
      * {@inheritdoc}
      */
     public static function create(ContainerInterface $container) {
         return new static(
             $container->get('culturefeed.current_user'),
-            $container->get('culturefeed')
+            $container->get('culturefeed'),
+            $container->get('config.factory')
         );
     }
 
@@ -56,10 +70,13 @@ class AccountForm extends FormBase
      */
     public function __construct(
         CultureFeed_User $user,
-        CultureFeed $culturefeedService
+        CultureFeed $culturefeedService,
+        ConfigFactory $config
     ) {
         $this->user = $user;
         $this->culturefeed = $culturefeedService;
+        $this->connectedAccountTypes = ['twitter', 'facebook', 'google'];
+        $this->siteConfig = $config->get('core.site_information');
     }
 
     /**
@@ -80,24 +97,22 @@ class AccountForm extends FormBase
 
         $form['#theme'] = 'ui_account_form';
 
-        $form['view-profile-link'] = array(
+        // Account fieldset
+        $form['account'] = array (
+            '#type' => 'fieldset',
+            '#title' => t('My UiTiD'),
+        );
+        $form['account']['view-profile-link'] = array(
             '#id' => 'view-profile-link',
             '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
             '#title' => t('My profile'),
             '#type' => 'link'
         );
-
-        $form['delete-account-link'] = array(
+        $form['account']['delete-account-link'] = array(
             '#id' => 'delete-account-link',
             '#url' => Url::fromRoute('culturefeed_ui.delete_account_form'),
             '#title' => t('Delete account'),
             '#type' => 'link'
-        );
-
-        // Account fieldset
-        $form['account'] = array (
-            '#type' => 'fieldset',
-            '#title' => t('My UiTiD'),
         );
         $form['account']['nick'] = array(
             '#type' => 'textfield',
@@ -120,6 +135,7 @@ class AccountForm extends FormBase
                 'collapsable' => 'collapsed'
             )
         );
+        $form['connected-accounts']['accounts'] = $this->getConnectedAccountFields($this->connectedAccountTypes);
 
         $form['submit'] = array(
             '#type' => 'submit',
@@ -176,6 +192,110 @@ class AccountForm extends FormBase
             watchdog_exception('culturefeed_ui', $e);
             drupal_set_message(t('Error occurred'), 'error');
         }
+    }
+
+    public function getConnectedAccountFields($accountTypes) {
+
+      $items = array();
+        /** @var \CultureFeed_OnlineAccount[] $userAccounts */
+        $userAccounts = $this->user->holdsAccount;
+        $connectedAccounts = array();
+        foreach ($userAccounts as $userAccount) {
+            $connectedAccounts[$userAccount->accountType] = $userAccount;
+        }
+
+      foreach ($accountTypes as $accountType) {
+
+        $renderedAccount = $this->renderConnectedAccount($accountType, $connectedAccounts[$accountType]);
+
+        $items[] = array(
+          '#markup' => $renderedAccount,
+          '#id' => 'onlineaccount-' . $accountType,
+        );
+      }
+
+      return array(
+        '#theme' => 'item_list',
+        '#items' => $items,
+      );
+    }
+
+    /**
+     * @param $connectedAccountType
+     * @param \CultureFeed_OnlineAccount||null $connectedAccount
+     * @return mixed
+     */
+    private function renderConnectedAccount($connectedAccountType, $connectedAccount = NULL) {
+        $disconnectLink = '';
+
+        if ($connectedAccount) {
+            $disconnectUrl = new Url('culturefeed_ui.connected_accounts.disconnect', array(
+              'account_type' => $connectedAccountType,
+              'account_name' => $connectedAccount->accountName
+            ));
+            $disconnectLink = array(
+              '#type' => 'link',
+              '#title' => t('Disconnect'),
+              '#url' => $disconnectUrl,
+              '#attributes' => array('class' => 'delete-link'),
+              '#options' => array('query' => drupal_get_destination()),
+
+            );
+
+            $disconnectLink = \Drupal::service('renderer')->render($disconnectLink);
+        }
+
+        $privacyStatement = t('I accept that my UiTiD actions on ')
+          . ($this->siteConfig->get('site_name') ?: 'Drupal')
+          . t(' will be published automatically on ')
+          . $connectedAccountType . '.';
+        // user agreement was linked to this specific node: l(t('User agreement'), 'node/2512')
+
+        $publishLink = '';
+        $makePrivateUrl = new Url('culturefeed_ui.connected_accounts.make_private', array(
+          'account_type' => $connectedAccountType,
+          'account_name' => $connectedAccount->accountName
+        ));
+        $makePublicUrl = new Url('culturefeed_ui.connected_accounts.make_public', array(
+          'account_type' => $connectedAccountType,
+          'account_name' => $connectedAccount->accountName
+        ));
+        if ($connectedAccount) {
+            $publishLink = array(
+              '#type' => 'link',
+              '#title' => $connectedAccount->publishActivities ? t('Public') : t('Private'),
+              '#url' => ($connectedAccount->publishActivities ? $makePublicUrl : $makePrivateUrl),
+              '#attributes' => array('id' => 'onlineaccount-privacy-' . $connectedAccount->accountName, 'class' => 'privacy-link ' . ($connectedAccount->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($connectedAccount->publishActivities ? t('Switch off') : t('Switch on'))),
+              '#options' => array('query' => drupal_get_destination()),
+              '#ajax' => array(),
+            );
+
+            $publishLink = \Drupal::service('renderer')->render($publishLink);
+        }
+
+        $redirectUrl = new Url('culturefeed_ui.account_form', [], array('absolute' => true));
+        $connectLinkUri = $this->culturefeed->getUrlAddSocialNetwork(
+          $connectedAccountType,
+          $redirectUrl->toString(),
+          array('attributes' => array('class' => 'culturefeedconnect'))
+        );
+        $connectLink = array(
+            '#type' => 'link',
+            '#url' => Url::fromUri($connectLinkUri),
+            '#title' => t('Add account'),
+        );
+
+        $connectedAccountVariables = array(
+          '#accountType'      => $connectedAccountType,
+          '#account'          => $connectedAccount,
+          '#publishLink'      => $publishLink,
+          '#disconnectLink'   => $disconnectLink,
+          '#connectLink'      => $connectLink,
+          '#privacyStatement' => $privacyStatement,
+          '#theme'            => 'culturefeed_ui_connected_account',
+        );
+
+        return \Drupal::service('renderer')->render($connectedAccountVariables);
     }
 
 }
