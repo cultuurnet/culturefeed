@@ -315,3 +315,4 @@ function culturefeed_search_get_search_url_query($search_query) {
   return $query;
 
 }
+

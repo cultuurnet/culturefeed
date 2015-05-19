@@ -443,6 +443,22 @@ function culturefeed_ajax_command_goto($url) {
 }
 
 /**
+ * Known versions of cdb xml.
+ *
+ * @return array
+ */
+function culturefeed_cdb_xml_versions() {
+  $cdb_xml_versions = array(
+    '3.0',
+    '3.1',
+    '3.2',
+    '3.3',
+  );
+
+  return $cdb_xml_versions;
+}
+
+/**
  * Getter function to retrieve a Mobile_Detect() singleton.
  * @return object
  * Instance of Mobile_Detect(), NULL if failure.
