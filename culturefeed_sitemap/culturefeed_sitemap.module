@@ -92,10 +92,8 @@ function culturefeed_sitemap_get_entries_sitemap($type, $subtype) {
 
   switch ($type) {
     case 'events':
-      $sitemap_links = culturefeed_sitemap_get_event_subtype_items($subtype);
-      break;
     case 'actors':
-      $sitemap_links = culturefeed_sitemap_get_actor_subtype_items($subtype);
+      $sitemap_links = culturefeed_sitemap_get_subtype_entries($type, $subtype);
       break;
     case 'productions':
       $sitemap_links = array('get_production_links');
@@ -105,53 +103,46 @@ function culturefeed_sitemap_get_entries_sitemap($type, $subtype) {
   culturefeed_sitemap_urlset_xml($sitemap_links);
 }
 
-function culturefeed_sitemap_get_event_subtype_items($subtype) {
+function culturefeed_sitemap_get_subtype_entries($type, $subtype) {
+  // TODO: Filter by subtype, as it is unused?
+
+  // TODO: Use singular version everywhere so we don't need to convert from
+  // plural so singular.
+  $types = array(
+    'events' => 'event',
+    'actors' => 'actor',
+    'productions' => 'production',
+  );
+  $type = $types[$type];
+
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Group('true');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
   $parameters[] = new \CultuurNet\Search\Parameter\Sort('creationdate', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
 
-  // Execute search.
-  $items = array();
-  $sitemap_links = array();
+  if ($type == 'event') {
+    $parameters[] = new \CultuurNet\Search\Parameter\Group('true');
+  }
 
+  // Execute search.
   try {
+    $sitemap_links = array();
     $result = culturefeed_get_search_service()->search($parameters);
     $items = $result->getItems();
 
     foreach ($items as $item) {
+      $type = $item->getType();
+      $id = $item->getId();
+      $title = $item->getTitle(culturefeed_search_get_preferred_language());
+      $options = array();
+
+      if ($type == 'event') {
+        $options['absolute'] = TRUE;
+      }
+
       $sitemap_links[] = array(
-        'loc' => culturefeed_search_detail_url($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()), array('absolute' => TRUE)),
-      );
-    }
-
-    return $sitemap_links;
-  }
-  catch (Exception $e) {
-    watchdog_exception('Culturefeed Search Sitemap', $e);
-    return array();
-  }
-}
-
-function culturefeed_sitemap_get_actor_subtype_items($subtype) {
-  $parameters = array();
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
-
-  // Execute search.
-  $items = array();
-  $sitemap_links = array();
-
-  try {
-    $result = culturefeed_get_search_service()->search($parameters);
-    $items = $result->getItems();
-
-    foreach ($items as $item) {
-      $sitemap_links[] = array(
-        'loc' => culturefeed_search_detail_url('actor', $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language())),
+        'loc' => culturefeed_search_detail_url($type, $id, $title, $options),
       );
     }
 
