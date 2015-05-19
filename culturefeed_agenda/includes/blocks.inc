@@ -504,6 +504,7 @@ function culturefeed_agenda_block_event_types() {
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name', 'slug', 'p1'));
   $query->condition("cst.did", "eventtype");
+  $query->condition("cst.show_term", 1);
   $query->condition("cst.language", culturefeed_search_get_preferred_language());
   $db_or = db_or();
   $db_or->condition('cst.tid', $eventtypes, 'IN');
