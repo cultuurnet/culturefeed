@@ -67,7 +67,7 @@ function culturefeed_entry_ui_menu() {
     'argument' => 'culturefeed_entry_ui_edit_tags_form',
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
-  $version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
+
   if (culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3()) {
     $tags_form['argument'] = 'culturefeed_entry_ui_edit_tag_objects_form';
     $tags_form['file'] = 'includes/form/culturefeed_entry_ui.tag_objects.inc';

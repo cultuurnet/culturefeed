@@ -15,9 +15,7 @@
  *   The event.
  */
 function culturefeed_entry_ui_tags_form(array &$form, array &$form_state, \CultureFeed_Cdb_Item_Event $event = NULL) {
-
-  $version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
-  if (version_compare($version, '3.3', '>=')) {
+  if (culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3()) {
 
     // Default values.
     $keywords = array();
