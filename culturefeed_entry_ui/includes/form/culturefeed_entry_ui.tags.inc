@@ -16,7 +16,7 @@
  */
 function culturefeed_entry_ui_tags_form(array &$form, array &$form_state, \CultureFeed_Cdb_Item_Event $event = NULL) {
 
-  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
+  $version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
   if (version_compare($version, '3.3', '>=')) {
 
     // Default values.
@@ -78,7 +78,7 @@ function culturefeed_entry_ui_tags_form(array &$form, array &$form_state, \Cultu
  */
 function culturefeed_entry_ui_tags_form_save(\CultureFeed_Cdb_Item_Event &$event, array $form_state) {
 
-  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
+  $version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
   if (version_compare($version, '3.3', '>=')) {
 
     $tags = $form_state['values']['tags'];

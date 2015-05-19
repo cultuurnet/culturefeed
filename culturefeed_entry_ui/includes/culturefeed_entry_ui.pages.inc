@@ -2000,16 +2000,14 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $form_state['submit_time'] = time();
 
   try {
-
-    $cdb_version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
     if ($update) {
-      Drupalculturefeed_EntryApi::updateEvent($event, $cdb_version);
+      Drupalculturefeed_EntryApi::updateEvent($event);
       $form_state['#event_id'] = $event->getCdbId();
       watchdog('culturefeed_entry_ui', 'Event %eventid updated.', array('%eventid' => $form_state['#event_id']));
       cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
     }
     else {
-      $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event, $cdb_version);
+      $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event);
       watchdog('culturefeed_entry_ui', 'Event %eventid created.', array('%eventid' => $form_state['#event_id']));
     }
 
