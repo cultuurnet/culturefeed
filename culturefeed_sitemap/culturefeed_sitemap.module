@@ -3,3 +3,173 @@
  * @file
  * Creates a sitemap for the events, productions and actors.
  */
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_sitemap_menu() {
+  $items = array();
+
+  $sitemap_types = array('events', 'productions', 'actors');
+
+  $items['sitemap.xml'] = array(
+    'access callback' => TRUE,
+    'page callback' => 'culturefeed_sitemap_get_main_sitemap',
+    'page arguments' => array($sitemap_types),
+    'type' => MENU_CALLBACK,
+  );
+
+  foreach ($sitemap_types as $sitemap_type) {
+    $subtypes = culturefeed_sitemap_get_subtypes($sitemap_type);
+    $items['sitemap-' . $sitemap_type . '.xml'] = array(
+      'access callback' => TRUE,
+      'page callback' => 'culturefeed_sitemap_get_variable_sitemap',
+      'page arguments' => array($sitemap_type),
+      'type' => MENU_CALLBACK,
+    );
+    foreach ($subtypes as $subtype_id => $subtype_name) {
+      $subtype_name = drupal_html_class(strtolower($subtype_name));
+      $items['sitemap-' . $sitemap_type . '-' . $subtype_name . '.xml'] = array(
+        'access callback' => TRUE,
+        'page callback' => 'culturefeed_sitemap_get_variable_sitemap',
+        'page arguments' => array($sitemap_type, $subtype_id),
+        'type' => MENU_CALLBACK,
+      );
+    }
+  }
+
+  return $items;
+}
+
+function culturefeed_sitemap_get_subtypes($type) {
+  switch ($type) {
+    case 'events':
+      return culturefeed_search_get_eventtype_categories();
+      break;
+
+    case 'actors':
+      return culturefeed_search_get_actortype_categories();
+      break;
+
+    default:
+      return array();
+  }
+}
+
+function culturefeed_sitemap_get_main_sitemap(array $sitemap_types) {
+  $sitemap_links = array();
+
+  foreach ($sitemap_types as $sitemap_type) {
+    $sitemap_links[] = array(
+      'loc' => url('sitemap-' . $sitemap_type . '.xml', array('absolute' => TRUE)),
+    );
+  }
+
+  return culturefeed_sitemap_get_sitemap_xml_from_links_array($sitemap_links);
+}
+
+function culturefeed_sitemap_get_variable_sitemap($type, $subtype = NULL) {
+  $sitemap_links = array();
+  dpm($subtype);
+
+  switch ($type) {
+    case 'events':
+      if ($subtype) {
+        $sitemap_links = culturefeed_sitemap_get_event_subtype_items($subtype);
+      }
+      else {
+        $sitemap_links = culturefeed_sitemap_get_subtype_links($type);
+      }
+      break;
+
+    case 'actors':
+      if ($subtype) {
+        $sitemap_links = culturefeed_sitemap_get_actor_subtype_items($subtype);
+      }
+      else {
+        $sitemap_links = culturefeed_sitemap_get_subtype_links($type);
+      }
+      break;
+
+    case 'productions':
+      $sitemap_links = array('get_production_links');
+      break;
+  }
+
+  return culturefeed_sitemap_get_sitemap_xml_from_links_array($sitemap_links);
+}
+
+function culturefeed_sitemap_get_subtype_links($type) {
+  $sitemap_links = array();
+
+  foreach (culturefeed_sitemap_get_subtypes($type) as $subtype_id => $subtype_name) {
+    $sitemap_links[] = array(
+      'loc' => url('sitemap-' . $type . '-' . drupal_html_class(strtolower($subtype_name)) . '.xml', array('absolute' => TRUE)),
+    );
+  }
+
+  return $sitemap_links;
+}
+
+function culturefeed_sitemap_get_sitemap_xml_from_links_array(array $links) {
+  return '<pre>' . print_r($links, TRUE) . '</pre>';
+}
+
+function culturefeed_sitemap_get_event_subtype_items($subtype) {
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
+  $parameters[] = new \CultuurNet\Search\Parameter\Group('true');
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('creationdate', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+
+  // Execute search.
+  $items = array();
+  $sitemap_links = array();
+
+  try {
+    $result = culturefeed_get_search_service()->search($parameters);
+    $items = $result->getItems();
+
+    foreach ($items as $item) {
+      $sitemap_links[] = array(
+        'loc' => culturefeed_search_detail_url($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()), array('absolute' => TRUE)),
+      );
+    }
+
+    return $sitemap_links;
+  }
+  catch (Exception $e) {
+    watchdog_exception('Culturefeed Search Sitemap', $e);
+    return array();
+  }
+}
+
+function culturefeed_sitemap_get_actor_subtype_items($subtype) {
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+
+  dpm($subtype, 'actor with subtype');
+  // Execute search.
+  $items = array();
+  $sitemap_links = array();
+
+  try {
+    $result = culturefeed_get_search_service()->search($parameters);
+    $items = $result->getItems();
+
+    foreach ($items as $item) {
+      $sitemap_links[] = array(
+        'loc' => culturefeed_search_detail_url('actor', $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language())),
+      );
+    }
+
+    return $sitemap_links;
+  }
+  catch (Exception $e) {
+    watchdog_exception('Culturefeed Search Sitemap', $e);
+    return array();
+  }
+}
