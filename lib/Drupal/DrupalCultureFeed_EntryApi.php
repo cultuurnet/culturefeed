@@ -55,7 +55,7 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
    * @see CultureFeed_EntryApi::createActor()
    */
   public static function createActor(CultureFeed_Cdb_Item_Actor $actor) {
-    return self::getLoggedInUserInstance()->createActor($event);
+    return self::getLoggedInUserInstance()->createActor($actor);
   }
 
   /**
@@ -126,25 +126,22 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
    */
   public static function addLinkToEvent(
     CultureFeed_Cdb_Item_Event $event,
-    $link = '',
-    $linktype = '',
+    $link,
+    $linkType = '',
     $lang = '',
     $title = '',
     $copyright = '',
-    $plaintext = '',
-    $subbrand = '',
+    $subBrand = '',
     $description = ''
   ) {
-
     self::getLoggedInUserInstance()->addLinkToEvent(
       $event,
       $link,
-      $linktype,
+      $linkType,
       $lang,
       $title,
       $copyright,
-      $plaintext,
-      $subbrand,
+      $subBrand,
       $description
     );
 
