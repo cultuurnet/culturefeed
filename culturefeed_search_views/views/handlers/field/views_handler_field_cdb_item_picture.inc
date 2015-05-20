@@ -79,7 +79,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
     $image = '';
     $main_picture = '';
     $no_main_picture = '';
-    $alt_pic = FALSE;
+    $override_picture = FALSE;
 
     if ($this->options['override']) {
 
@@ -87,7 +87,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       $data = culturefeed_search_views_helper_collaboration_get_data($extended_entity, $this->view);
       if ($data && isset($data['description']->image) && $data['description']->image) {
         $main_picture = $data['description']->image;
-        $alt_pic = TRUE;
+        $override_picture = TRUE;
       }
 
     }
@@ -117,54 +117,24 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
 
       if ($this->options['format'] == 'image') {
 
-        if ($alt_pic) {
+        // In case of an override.
+        if ($override_picture) {
 
-          if (module_exists('image')) {
-
-            module_load_include('inc', 'culturefeed_entry_ui', 'includes/helpers/culturefeed_entry_ui.collaboration');
-            $file = culturefeed_entry_ui_collaboration_get_image_from_url($main_picture);
-            if ($file) {
-
-              $style = array(
-                'effects' => array(
-                  array(
-                    'effect callback' => 'image_scale_effect',
-                    'data' => array(
-                      'width' => $this->options['width'],
-                      'height' => $this->options['height'],
-                    ),
-                  ),
-                ),
-              );
-              $main_picture = 'public://uploads/derivative_' . $file->filename;
-              file_unmanaged_delete($main_picture);
-              image_style_create_derivative($style, $file->uri, $main_picture);
-              $image = theme('image', array(
-                'path' => $main_picture,
-              ));
-
-            }
-
+          if ($this->options['width'] >= $this->options['height'])  {
+            $image = theme('image', array(
+              'path' => $main_picture,
+              'width' => $this->options['width'],
+            ));
           }
-
           else {
-
-            if ($this->options['width'] >= $this->options['height']) {
-              $image = theme('image', array(
-                'path' => $main_picture,
-                'width' => $this->options['width'],
-              ));
-            }
-            else {
-              $image = theme('image', array(
-                'path' => $main_picture,
-                'height' => $this->options['height'],
-              ));
-            }
-
+            $image = theme('image', array(
+              'path' => $main_picture,
+              'height' => $this->options['height'],
+            ));
           }
 
         }
+
         else {
           $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
         }
@@ -174,7 +144,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
 
         if ($this->options['format'] == 'url') {
 
-          if ($alt_pic) {
+          if ($override_picture) {
             $image = $main_picture;
           }
           else {
