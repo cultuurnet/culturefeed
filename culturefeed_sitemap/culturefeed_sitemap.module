@@ -9,6 +9,7 @@ use CultuurNet\SiteMapXml\SiteMapUrlSetXmlWriter;
 use CultuurNet\SiteMapXml\SiteMapXmlEntry;
 use CultuurNet\SiteMapXml\SiteMapXmlWriterInterface;
 use ValueObjects\Web\Url;
+use ValueObjects\DateTime\Date;
 
 /**
  * Implements hook_menu().
@@ -134,29 +135,19 @@ function culturefeed_sitemap_get_secondary_sitemap($type) {
  * @param null $subtype
  */
 function culturefeed_sitemap_get_entries_sitemap($type, $subtype = null) {
-  // TODO: Use singular version everywhere so we don't need to convert from
-  // plural so singular.
-  $types = array(
-    'events' => 'event',
-    'actors' => 'actor',
-    'productions' => 'production',
-  );
-  $type = $types[$type];
-
   $sitemap_links = culturefeed_sitemap_get_entries($type, $subtype);
 
   foreach ($sitemap_links as $index => $sitemap_link) {
     $linkType = $sitemap_link->getType();
     $id = $sitemap_link->getId();
     $title = $sitemap_link->getTitle(culturefeed_search_get_preferred_language());
-    $options = array();
-
-    if ($type == 'event') {
-      $options['absolute'] = TRUE;
-    }
+    $options = array(
+      'absolute' => TRUE,
+    );
 
     $sitemap_links[$index] = array(
       'loc' => culturefeed_search_detail_url($linkType, $id, $title, $options),
+      'lastmod' => $sitemap_link->getEntity()->getLastUpdated(),
     );
   }
 
@@ -174,13 +165,22 @@ function culturefeed_sitemap_get_entries_sitemap($type, $subtype = null) {
  * @return CultuurNet\Search\ActivityStatsExtendedEntity[]
  */
 function culturefeed_sitemap_get_entries($type, $subtype = null) {
-  // TODO: Filter by subtype if provided. (Not the case for productions.)
+  $types = array(
+    'events' => 'event',
+    'actors' => 'actor',
+    'productions' => 'production',
+  );
+  $type = $types[$type];
 
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
-  $parameters[] = new \CultuurNet\Search\Parameter\Sort('creationdate', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('lastupdated', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+
+  if ($subtype) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . $subtype . ')');
+  }
 
   if ($type == 'event') {
     $parameters[] = new \CultuurNet\Search\Parameter\Group('true');
@@ -230,6 +230,13 @@ function culturefeed_sitemap_xml(SiteMapXmlWriterInterface $writer, $links) {
   foreach ($links as $link) {
     $location = Url::fromNative($link['loc']);
     $entry = new SiteMapXmlEntry($location);
+
+    if (isset($link['lastmod'])) {
+      $dateTime = new \DateTime($link['lastmod']);
+      $entryModified = Date::fromNativeDateTime($dateTime);
+      $entry->setLastModified($entryModified);
+    }
+
     $writer->write($entry);
   }
 
