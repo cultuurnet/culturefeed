@@ -21,52 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  admin_label = @Translation("Profile menu block"),
  * )
  */
-class ProfileMenuBlock extends BlockBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The route match.
-   *
-   * @var \Drupal\Core\Routing\RouteMatchInterface
-   */
-  protected $routeMatch;
-
-  /**
-   * Constructs a new UserLoginBlock instance.
-   *
-   * @param array $configuration
-   *   The plugin configuration, i.e. an array with configuration values keyed
-   *   by configuration option name. The special key 'context' may be used to
-   *   initialize the defined contexts by setting it to an array of context
-   *   values keyed by context names.
-   * @param string $plugin_id
-   *   The plugin_id for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
-   *   The route match.
-   */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    RouteMatchInterface $route_match
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-
-    $this->routeMatch = $route_match;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('current_route_match')
-    );
-  }
+class ProfileMenuBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
@@ -94,41 +49,24 @@ class ProfileMenuBlock extends BlockBase implements ContainerFactoryPluginInterf
       ),
     );
 
-//    $menu = module_invoke_all('culturefeed_ui_profile_menu');
-//    drupal_alter('culturefeed_ui_profile_menu', $menu);
-//    uasort($menu, 'drupal_sort_weight');
-
     $items = array();
 
     foreach ($menuItems as $menu_item) {
-
-      $currentRouteName = $this->routeMatch->getRouteName();
       /** @var Url $itemUrl */
       $itemUrl = $menu_item['url'];
+      $itemUrl->setOption('set_active_class', TRUE);
 
-      $class = $currentRouteName == $itemUrl->getRouteName() ? array('active') : array();
-
-      $itemContent = [
+      $items[] = [
         '#theme' => 'culturefeed_ui_profile_menu_item',
         '#title' => $menu_item['title'],
         '#url' => $menu_item['url'],
         '#description' => $menu_item['description'],
       ];
-
-      $renderedItemContent = \Drupal::service('renderer')->render($itemContent);
-
-      $items[] = array(
-        '#markup' => $renderedItemContent,
-        '#wrapper_attributes' => array(
-          'class' => $class,
-        ),
-      );
     }
 
     $block = array(
       '#theme' => 'item_list',
       '#items' => $items,
-      '#title' => t('Manage profile')
     );
 
     return $block;
