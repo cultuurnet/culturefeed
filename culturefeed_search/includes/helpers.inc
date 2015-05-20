@@ -433,6 +433,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', $domain);
+  $query->condition('cst.show_term', 1);
 
   // Add parent condition.
   if (!empty($conditions['parent'])) {
