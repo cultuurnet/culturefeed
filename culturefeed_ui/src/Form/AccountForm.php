@@ -102,35 +102,35 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     // Account fieldset
     $form['account'] = array(
       '#type' => 'fieldset',
-      '#title' => t('My UiTiD'),
+      '#title' => $this->t('My UiTiD'),
     );
     $form['account']['view-profile-link'] = array(
       '#id' => 'view-profile-link',
       '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
-      '#title' => t('My profile'),
+      '#title' => $this->t('My profile'),
       '#type' => 'link'
     );
     $form['account']['delete-account-link'] = array(
       '#id' => 'delete-account-link',
       '#url' => Url::fromRoute('culturefeed_ui.delete_account_form'),
-      '#title' => t('Delete account'),
+      '#title' => $this->t('Delete account'),
       '#type' => 'link'
     );
     $form['account']['nick'] = array(
       '#type' => 'textfield',
-      '#title' => t('Username'),
+      '#title' => $this->t('Username'),
       '#disabled' => TRUE,
       '#value' => $cf_account->nick,
     );
     $form['account']['mbox'] = array(
       '#type' => 'email',
-      '#title' => t('Email address'),
+      '#title' => $this->t('Email address'),
       '#default_value' => $cf_account->mbox,
       '#required' => TRUE,
     );
     $form['account']['submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Change Email address'),
+      '#value' => $this->t('Change Email address'),
     );
     // change password link
     $returnUrl = Url::fromRoute(
@@ -144,7 +144,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     );
     $form['account']['change-password-link'] = array(
       '#id' => 'change-password-link',
-      '#title' => t('Change password'),
+      '#title' => $this->t('Change password'),
       '#type' => 'link',
       '#url' => Url::fromUri(
         $this->culturefeed->getUrlChangePassword($cf_account->id, $returnUrl),
@@ -155,7 +155,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     // 'Connected accounts' fieldset
     $form['connected-accounts'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Connected accounts'),
+      '#title' => $this->t('Connected accounts'),
       '#attributes' => array(
         'collapsable' => 'collapsed'
       )
@@ -172,7 +172,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     if (\Drupal::service('email.validator')
       ->isValid($form_state->getValue('mbox'))
     ) {
-      $form_state->setErrorByName('mbox', t('Invalid email'));
+      $form_state->setErrorByName('mbox', $this->t('Invalid email'));
     }
   }
 
@@ -186,7 +186,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
 
     try {
       $this->culturefeed->updateUser($cf_account);
-      drupal_set_message(t('Changes successfully saved.'));
+      drupal_set_message($this->t('Changes successfully saved.'));
     } catch (\Exception $e) {
       if ($this->logger) {
         $this->logger->error(
@@ -194,7 +194,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
           array('exception' => $e)
         );
       }
-      drupal_set_message(t('Error occurred'), 'error');
+      drupal_set_message($this->t('Error occurred'), 'error');
     }
   }
 
@@ -245,7 +245,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
         ));
       $disconnectLink = array(
         '#type' => 'link',
-        '#title' => t('Disconnect'),
+        '#title' => $this->t('Disconnect'),
         '#url' => $disconnectUrl,
         '#attributes' => array('class' => 'disconnect-link'),
         '#options' => array('query' => drupal_get_destination()),
@@ -254,10 +254,12 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
       $disconnectLink = \Drupal::service('renderer')->render($disconnectLink);
     }
 
-    $privacyStatement = t('I accept that my UiTiD actions on ')
-      . ($this->siteConfig->get('site_name') ?: 'Drupal')
-      . t(' will be published automatically on ')
-      . $connectedAccountType . '.';
+    $translationReplacements =  [
+      '@site_name' => $this->siteConfig->get('site_name') ?: 'Drupal',
+      '@connected_account_type' => $connectedAccountType,
+    ];
+    $privacyStatement = $this->t('I accept that my UiTiD actions on @site_name will be published automatically on @connected_account_type.', $translationReplacements);
+
     // user agreement was linked to this specific node: l(t('User agreement'), 'node/2512')
 
     $publishLink = '';
@@ -274,12 +276,12 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     if ($connectedAccount) {
       $publishLink = array(
         '#type' => 'link',
-        '#title' => $connectedAccount->publishActivities ? t('Public') : t('Private'),
+        '#title' => $connectedAccount->publishActivities ? $this->t('Public') : $this->t('Private'),
         '#url' => ($connectedAccount->publishActivities ? $makePrivateUrl : $makePublicUrl),
         '#attributes' => array(
           'id' => 'onlineaccount-privacy-' . $connectedAccount->accountName,
           'class' => 'privacy-link ' . ($connectedAccount->publishActivities ? 'status-publiek' : 'status-prive'),
-          'title' => ($connectedAccount->publishActivities ? t('Switch off') : t('Switch on'))
+          'title' => ($connectedAccount->publishActivities ? $this->t('Switch off') : $this->t('Switch on'))
         ),
         '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
@@ -298,7 +300,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     $connectLink = array(
       '#type' => 'link',
       '#url' => Url::fromUri($connectLinkUri),
-      '#title' => t('Add account'),
+      '#title' => $this->t('Add account'),
     );
 
     $connectedAccountVariables = array(
