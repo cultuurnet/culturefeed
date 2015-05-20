@@ -22,110 +22,109 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  *
  * @package Drupal\culturefeed_ui\Controller
  */
-class ConnectedAccountsController extends ControllerBase implements LoggerAwareInterface
-{
-    use LoggerAwareTrait;
+class ConnectedAccountsController extends ControllerBase implements LoggerAwareInterface {
 
-    /**
-     * The culturefeed user service.
-     *
-     * @var CultureFeed_User;
-     */
-    protected $user;
+  use LoggerAwareTrait;
 
-    /**
-     * The culturefeed service
-     *
-     * @var CultureFeed
-     */
-    protected $culturefeed;
+  /**
+   * The culturefeed user service.
+   *
+   * @var CultureFeed_User;
+   */
+  protected $user;
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function create(ContainerInterface $container) {
-        return new static(
-          $container->get('culturefeed.current_user'),
-          $container->get('culturefeed'),
-          $container->get('logger.channel.culturefeed')
-        );
-    }
+  /**
+   * The culturefeed service
+   *
+   * @var CultureFeed
+   */
+  protected $culturefeed;
 
-    /**
-     * Constructs a ProfileForm
-     *
-     * @param CultureFeed_User $user
-     * @param CultureFeed $culturefeed
-     * @param LoggerInterface $logger
-     */
-    public function __construct(
-      CultureFeed_User $user,
-      CultureFeed $culturefeed,
-      LoggerInterface $logger
-    ) {
-        $this->user = $user;
-        $this->culturefeed = $culturefeed;
-        $this->setLogger($logger);
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('culturefeed.current_user'),
+      $container->get('culturefeed'),
+      $container->get('logger.channel.culturefeed')
+    );
+  }
 
-    /**
-     * Disconnect an external account from a culturefeed user.
-     *
-     * @param $account_type
-     * @param $account_name
-     *
-     * @return RedirectResponse
-     */
-    public function disconnect($account_type, $account_name)
-    {
-        $userId = $this->user->id;
-        try {
-            $this->culturefeed->deleteUserOnlineAccount($userId, $account_type, $account_name);
-        }
-        catch (Exception $e) {
-            $this->logger->error(
-              'An error occurred when trying to disconnect an external account.',
-              array('exception' => $e)
-            );
-            drupal_set_message(t('Error occurred'), 'error');
-        };
+  /**
+   * Constructs a ProfileForm
+   *
+   * @param CultureFeed_User $user
+   * @param CultureFeed $culturefeed
+   * @param LoggerInterface $logger
+   */
+  public function __construct(
+    CultureFeed_User $user,
+    CultureFeed $culturefeed,
+    LoggerInterface $logger
+  ) {
+    $this->user = $user;
+    $this->culturefeed = $culturefeed;
+    $this->setLogger($logger);
+  }
 
-        return $this->redirect('culturefeed_ui.account_form');
-    }
+  /**
+   * Disconnect an external account from a culturefeed user.
+   *
+   * @param $account_type
+   * @param $account_name
+   *
+   * @return RedirectResponse
+   */
+  public function disconnect($account_type, $account_name) {
+    $userId = $this->user->id;
+    try {
+      $this->culturefeed->deleteUserOnlineAccount($userId, $account_type,
+        $account_name);
+    } catch (\Exception $e) {
+      $this->logger->error(
+        'An error occurred when trying to disconnect an external account.',
+        array('exception' => $e)
+      );
+      drupal_set_message(t('Error occurred'), 'error');
+    };
 
-    public function makePrivate($account_type, $account_name)
-    {
-        $userId = $this->user->id;
-        $connectedAccount = $this->getConnectedAccount($account_type, $account_name);
+    return $this->redirect('culturefeed_ui.account_form');
+  }
 
-        $connectedAccount->publishActivities = false;
-        $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
+  public function makePrivate($account_type, $account_name) {
+    $userId = $this->user->id;
+    $connectedAccount = $this->getConnectedAccount($account_type,
+      $account_name);
 
-        return $this->redirect('culturefeed_ui.account_form');
-    }
+    $connectedAccount->publishActivities = FALSE;
+    $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
 
-    public function makePublic($account_type, $account_name)
-    {
-        $userId = $this->user->id;
-        $connectedAccount = $this->getConnectedAccount($account_type, $account_name);
+    return $this->redirect('culturefeed_ui.account_form');
+  }
 
-        $connectedAccount->publishActivities = true;
-        $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
+  public function makePublic($account_type, $account_name) {
+    $userId = $this->user->id;
+    $connectedAccount = $this->getConnectedAccount($account_type,
+      $account_name);
 
-        return $this->redirect('culturefeed_ui.account_form');
-    }
+    $connectedAccount->publishActivities = TRUE;
+    $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
 
-    /**
-     * @param $accountType
-     * @param $accountName
-     * @return CultureFeed_OnlineAccount
-     */
-    private function getConnectedAccount($accountType, $accountName) {
-        $connectedAccount = new CultureFeed_OnlineAccount();
-        $connectedAccount->accountName = $accountName;
-        $connectedAccount->accountType = $accountType;
+    return $this->redirect('culturefeed_ui.account_form');
+  }
 
-        return $connectedAccount;
-    }
+  /**
+   * @param $accountType
+   * @param $accountName
+   * @return CultureFeed_OnlineAccount
+   */
+  private function getConnectedAccount($accountType, $accountName) {
+    $connectedAccount = new CultureFeed_OnlineAccount();
+    $connectedAccount->accountName = $accountName;
+    $connectedAccount->accountType = $accountType;
+
+    return $connectedAccount;
+  }
 
 }

@@ -6,10 +6,13 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Url;
 
 /**
  * Implements hook_help().
+ *
+ * @param $route_name
+ * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+ * @return string
  */
 function culturefeed_ui_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
