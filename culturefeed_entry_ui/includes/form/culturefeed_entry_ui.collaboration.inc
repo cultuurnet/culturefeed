@@ -37,17 +37,7 @@ function culturefeed_entry_ui_attach_collaboration_element(array &$form, array $
   $default_image = '';
   if (isset($info['description']['image']) && $info['description']['image']) {
 
-    // See if the image is stored on the local url.
-    $base_path = $GLOBALS['base_url'] . '/' . variable_get('file_public_path', conf_path() . '/files') . '/';
-    $parts = explode($base_path, $info['description']['image']);
-    if (count($parts) == 2 && $parts[1]) {
-
-      $files = entity_load('file', FALSE, array('uri' => 'public://' . $parts[1]));
-      if (!empty($files)) {
-        $default_image = reset($files);
-      }
-
-    }
+    $default_image = culturefeed_entry_ui_collaboration_get_image_from_url($info['description']['image']);
 
     // @codingStandardsIgnoreStart
     // $default_image = system_retrieve_file($info['description']['image'], 'public://uploads/', TRUE);

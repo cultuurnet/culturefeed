@@ -119,17 +119,49 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
 
         if ($alt_pic) {
 
-          if ($this->options['width'] >= $this->options['height']) {
-            $image = theme('image', array(
-              'path' => $main_picture,
-              'width' => $this->options['width'],
-            ));
+          if (module_exists('image')) {
+
+            module_load_include('inc', 'culturefeed_entry_ui', 'includes/helpers/culturefeed_entry_ui.collaboration');
+            $file = culturefeed_entry_ui_collaboration_get_image_from_url($main_picture);
+            if ($file) {
+
+              $style = array(
+                'effects' => array(
+                  array(
+                    'effect callback' => 'image_scale_effect',
+                    'data' => array(
+                      'width' => $this->options['width'],
+                      'height' => $this->options['height'],
+                    ),
+                  ),
+                ),
+              );
+              $main_picture = 'public://uploads/derivative_' . $file->filename;
+              file_unmanaged_delete($main_picture);
+              image_style_create_derivative($style, $file->uri, $main_picture);
+              $image = theme('image', array(
+                'path' => $main_picture,
+              ));
+
+            }
+
           }
+
           else {
-            $image = theme('image', array(
-              'path' => $main_picture,
-              'height' => $this->options['height'],
-            ));
+
+            if ($this->options['width'] >= $this->options['height']) {
+              $image = theme('image', array(
+                'path' => $main_picture,
+                'width' => $this->options['width'],
+              ));
+            }
+            else {
+              $image = theme('image', array(
+                'path' => $main_picture,
+                'height' => $this->options['height'],
+              ));
+            }
+
           }
 
         }

@@ -269,6 +269,23 @@ function culturefeed_entry_ui_views_default_views() {
     $handler->display->display_options['fields']['category']['label'] = '';
     $handler->display->display_options['fields']['category']['element_label_colon'] = FALSE;
     $handler->display->display_options['fields']['category']['link'] = 1;
+    /* Sort criterion: UDB items: Gewicht */
+    $handler->display->display_options['sorts']['weight_sort']['id'] = 'weight_sort';
+    $handler->display->display_options['sorts']['weight_sort']['table'] = 'cdb_items';
+    $handler->display->display_options['sorts']['weight_sort']['field'] = 'weight_sort';
+    $handler->display->display_options['sorts']['weight_sort']['order'] = 'DESC';
+    /* Sort criterion: UDB items: Datum */
+    $handler->display->display_options['sorts']['date']['id'] = 'date';
+    $handler->display->display_options['sorts']['date']['table'] = 'cdb_items';
+    $handler->display->display_options['sorts']['date']['field'] = 'date';
+    $handler->display->display_options['sorts']['date']['order'] = 'ASC';
+    /* Filter criterion: UDB items: Datum */
+    $handler->display->display_options['filters']['date']['id'] = 'date';
+    $handler->display->display_options['filters']['date']['table'] = 'cdb_items';
+    $handler->display->display_options['filters']['date']['field'] = 'date';
+    $handler->display->display_options['filters']['date']['group'] = 1;
+    $handler->display->display_options['filters']['date']['option_absolute'] = '1';
+    $handler->display->display_options['filters']['date']['relative_date'] = '+2 weeks';
     /* Filter criterion: UDB items: Labels */
     $handler->display->display_options['filters']['tags']['id'] = 'tags';
     $handler->display->display_options['filters']['tags']['table'] = 'cdb_items';
@@ -317,12 +334,6 @@ function culturefeed_entry_ui_views_default_views() {
         'not' => 0,
       ),
     );
-    /* Filter criterion: UDB items: Zoekopdracht */
-    $handler->display->display_options['filters']['q']['id'] = 'q';
-    $handler->display->display_options['filters']['q']['table'] = 'cdb_items';
-    $handler->display->display_options['filters']['q']['field'] = 'q';
-    $handler->display->display_options['filters']['q']['value'] = $tag_name;
-    $handler->display->display_options['filters']['q']['group'] = 1;
 
     /* Display: Block */
     $handler = $view->new_display('block', 'Block', 'block');
