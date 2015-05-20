@@ -2,15 +2,13 @@
 <div class="type {{ accountType }}"><span>{{ accountType }}</span></div>
 {%- endif -%}
 
-{% if picture %}
-<div class="depiction">{{ picture }}</div>
+{% if account.accountDepiction %}
+<img class="depiction" src="{{ account.accountDepiction }}?maxwidth=50&maxheight=50&crop=auto">
 {%- endif -%}
 
-{% if name or nick %}
-<span class="small quiet">{{ 'Connected to:'|t }}</span>
+{% if account.accountNick %}
+<span class="small quiet">{{ 'Connected to:'|t }} {{ account.accountNick }}</span>
 {%- endif -%}
-{% if name %}<div class="name">{{ name }}</div>{%- endif -%}
-{% if nick %}<div class="nick">{{ nick }}</div>{%- endif -%}
 
 {% if publishLink %}
 <div class="publish">{{ publishLink }}</div>
@@ -22,5 +20,5 @@
 {%- endif -%}
 
 {% if disconnectLink %}
-<div class="delete">{{ disconnectLink }}</div>
+<div class="disconnect">{{ disconnectLink }}</div>
 {%- endif -%}
