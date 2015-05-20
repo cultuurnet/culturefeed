@@ -17,7 +17,7 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     $language_options[$language->language] = $language->name;
   }
 
-  $cdb_version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
+  $cdb_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
 
   $form['culturefeed_entry_ui_preferred_language'] = array(
     '#title' => t('Preferred language'),

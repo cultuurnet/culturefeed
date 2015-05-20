@@ -25,11 +25,11 @@ function culturefeed_entry_ui_collaboration_get_data_by_keyword(\CultureFeed_Cdb
   $consumer_key = variable_get('culturefeed_api_application_key', '');
 
   /* @var \CultureFeed_Cdb_Data_EventDetail $event_details */
-  $event_details = $event->getDetails()->current();
-  $event->getDetails()->rewind();
+  $event_details = $event->getDetails()->getDetailByLanguage(
+    culturefeed_entry_ui_get_preferred_language()
+  );
 
   if ($event_details) {
-
     $media_links = $event_details->getMedia()->byMediaTypes(array(CultureFeed_Cdb_Data_File::MEDIA_TYPE_ROADMAP));
     foreach ($media_links as $link) {
 

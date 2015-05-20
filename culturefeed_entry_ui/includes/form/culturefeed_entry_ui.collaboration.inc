@@ -224,14 +224,15 @@ function culturefeed_entry_ui_edit_collaboration_data_form_submit(array &$form, 
         'article' => $collaboration['article'],
       ));
 
-      Drupalculturefeed_EntryApi::addLinkToEvent(
+      /** @var CultureFeed_EntryApi $entryApi */
+      $entryApi = Drupalculturefeed_EntryApi::getLoggedInUserInstance();
+
+      $entryApi->addCollaborationLinkToEvent(
         $event,
-        '',
-        CultureFeed_Cdb_Data_File::MEDIA_TYPE_ROADMAP,
-        culturefeed_get_preferred_language(),
+        culturefeed_entry_ui_get_preferred_language(),
+        $plain_text,
         $title,
         $copyright,
-        $plain_text,
         $consumer_key,
         $description
       );
@@ -251,7 +252,7 @@ function culturefeed_entry_ui_edit_collaboration_data_form_submit(array &$form, 
       $keywords = array(
         $keyword => new CultureFeed_Cdb_Data_Keyword($keyword, FALSE),
       );
-      Drupalculturefeed_EntryApi::addTagToEvent($event, $keywords);
+      $entryApi->addTagToEvent($event, $keywords);
 
     }
 

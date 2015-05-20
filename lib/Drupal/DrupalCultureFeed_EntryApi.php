@@ -15,9 +15,11 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
     $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
     $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
 
+    $cdb_xml_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);;
+
     $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 
-    return new CultureFeed_EntryApi($oauth_client);
+    return new CultureFeed_EntryApi($oauth_client, $cdb_xml_version);
 
   }
 
@@ -45,15 +47,15 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::createEvent()
    */
-  public static function createEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
-    return self::getLoggedInUserInstance()->createEvent($event, $cdb_schema_version);
+  public static function createEvent(CultureFeed_Cdb_Item_Event $event) {
+    return self::getLoggedInUserInstance()->createEvent($event);
   }
 
   /**
    * @see CultureFeed_EntryApi::createActor()
    */
   public static function createActor(CultureFeed_Cdb_Item_Actor $actor) {
-    return self::getLoggedInUserInstance()->createActor($event);
+    return self::getLoggedInUserInstance()->createActor($actor);
   }
 
   /**
@@ -66,8 +68,8 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   /**
    * @see CultureFeed_EntryApi::updateEvent()
    */
-  public static function updateEvent(CultureFeed_Cdb_Item_Event $event, $cdb_schema_version = NULL) {
-    self::getLoggedInUserInstance()->updateEvent($event, $cdb_schema_version);
+  public static function updateEvent(CultureFeed_Cdb_Item_Event $event) {
+    self::getLoggedInUserInstance()->updateEvent($event);
   }
 
   /**
@@ -124,25 +126,22 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
    */
   public static function addLinkToEvent(
     CultureFeed_Cdb_Item_Event $event,
-    $link = '',
-    $linktype = '',
+    $link,
+    $linkType = '',
     $lang = '',
     $title = '',
     $copyright = '',
-    $plaintext = '',
-    $subbrand = '',
+    $subBrand = '',
     $description = ''
   ) {
-
     self::getLoggedInUserInstance()->addLinkToEvent(
       $event,
       $link,
-      $linktype,
+      $linkType,
       $lang,
       $title,
       $copyright,
-      $plaintext,
-      $subbrand,
+      $subBrand,
       $description
     );
 

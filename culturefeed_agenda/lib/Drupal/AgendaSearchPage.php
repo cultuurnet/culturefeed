@@ -317,6 +317,11 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $message .= t(" with theme @theme", array('@theme' => $term));
       }
 
+      if (!empty($query['keyword'])) {
+        $keyword = $query['keyword'];
+        $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
+      }
+
     }
 
     return $message;

@@ -67,8 +67,8 @@ function culturefeed_entry_ui_menu() {
     'argument' => 'culturefeed_entry_ui_edit_tags_form',
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
-  $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
-  if (version_compare($version, '3.3', '>=')) {
+
+  if (culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3()) {
     $tags_form['argument'] = 'culturefeed_entry_ui_edit_tag_objects_form';
     $tags_form['file'] = 'includes/form/culturefeed_entry_ui.tag_objects.inc';
   }
@@ -175,7 +175,7 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
-  if ($culturefeed_user) {
+  if ($culturefeed_user && user_access('edit culturefeed events')) {
     $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
   }
   
@@ -252,9 +252,28 @@ function culturefeed_entry_ui_manage_tags_access() {
 
 /**
  * Access callback, to check if a user has access to the manage collaboration screen.
+ *
+ * The collaboration screen will only work properly if also the search module
+ * is configured to use cdb xml version 3.3.
  */
 function culturefeed_entry_ui_manage_collaboration_access() {
-  return user_access('manage culturefeed collaborative info');
+  return
+    culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3() &&
+    user_access('manage culturefeed collaborative info');
+}
+
+function culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3() {
+  return
+    version_compare(
+      variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),
+      '3.3',
+      '>='
+    ) &&
+    version_compare(
+      variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION),
+      '3.3',
+      '>='
+    );
 }
 
 /**

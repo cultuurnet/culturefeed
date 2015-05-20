@@ -81,9 +81,13 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
   drupal_alter('culturefeed_search_ui_' . $facet_key . '_facet_links', $facet_links);
 
   if (is_array($facet_links)) {
+    $count_facets = count($facet_links);
+    $classes[] = 'facet-search';
+    $classes[] = ($count_facets > 10 ? 'many-facets' : '');
     return theme('item_list', array(
       'items' => $facet_links,
       'type' => 'ul',
+      'attributes' => array('class' => $classes, 'data-size' => $count_facets)
     ));
   }
 }
@@ -406,8 +410,8 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   }
 
   // When the facet is datetype, we don't want to keep a date range filter..
-  if ($facet_key == 'datetype' && isset($query['date_range'])) {
-    unset($query['date_range']);
+  if ($facet_key == 'datetype') {
+    unset($query['date_from'], $query['date_to']);
   }
 
   // Agefrom facet is active when min_age is given.
@@ -454,6 +458,11 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
 
   $search_page = culturefeed_get_searchable_type($type);
   if (empty($search_page)) {
+    return;
+  }
+
+  $search_result = culturefeed_get_search_result();
+  if ($search_result->getTotalCount() == 0) {
     return;
   }
 
