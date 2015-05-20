@@ -76,7 +76,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
    * @param CultureFeed $culturefeedService
    * @param ConfigFactory $config
    * @param LoggerInterface $logger
-   * @param
+   * @param RedirectDestinationInterface $destination
    */
   public function __construct(
     CultureFeed_User $user,
