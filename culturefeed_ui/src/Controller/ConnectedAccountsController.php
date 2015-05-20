@@ -82,10 +82,12 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
       $this->culturefeed->deleteUserOnlineAccount($userId, $account_type,
         $account_name);
     } catch (\Exception $e) {
-      $this->logger->error(
-        'An error occurred when trying to disconnect an external account.',
-        array('exception' => $e)
-      );
+      if ($this->logger) {
+        $this->logger->error(
+          'An error occurred when trying to disconnect an external account.',
+          array('exception' => $e)
+        );
+      }
       drupal_set_message(t('Error occurred'), 'error');
     };
 

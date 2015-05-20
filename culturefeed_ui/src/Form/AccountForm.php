@@ -12,13 +12,19 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use CultureFeed_User;
 use Drupal\Core\Url;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultureFeed;
 
 /**
  * Provides an account editing form.
  */
-class AccountForm extends FormBase {
+class AccountForm extends FormBase implements LoggerAwareInterface {
+
+  use LoggerAwareTrait;
+
   /**
    * The culturefeed user service.
    *
@@ -51,7 +57,8 @@ class AccountForm extends FormBase {
     return new static(
       $container->get('culturefeed.current_user'),
       $container->get('culturefeed'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('logger.channel.culturefeed')
     );
   }
 
@@ -61,16 +68,19 @@ class AccountForm extends FormBase {
    * @param CultureFeed_User $user
    * @param CultureFeed $culturefeedService
    * @param ConfigFactory $config
+   * @param LoggerInterface $logger
    */
   public function __construct(
     CultureFeed_User $user,
     CultureFeed $culturefeedService,
-    ConfigFactory $config
+    ConfigFactory $config,
+    LoggerInterface $logger
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
     $this->connectedAccountTypes = ['twitter', 'facebook', 'google'];
     $this->siteConfig = $config->get('core.site_information');
+    $this->setLogger($logger);
   }
 
   /**
@@ -178,7 +188,12 @@ class AccountForm extends FormBase {
       $this->culturefeed->updateUser($cf_account);
       drupal_set_message(t('Changes successfully saved.'));
     } catch (\Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
+      if ($this->logger) {
+        $this->logger->error(
+          'Error occurred while updating user account',
+          array('exception' => $e)
+        );
+      }
       drupal_set_message(t('Error occurred'), 'error');
     }
   }

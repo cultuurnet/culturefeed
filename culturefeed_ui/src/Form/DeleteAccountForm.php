@@ -5,11 +5,17 @@ namespace Drupal\culturefeed_ui\Form;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultureFeed;
 use CultureFeed_User;
 
-class DeleteAccountForm extends ConfirmFormBase {
+class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface {
+
+  use LoggerAwareTrait;
+
   /**
    * The culturefeed user service.
    *
@@ -30,7 +36,8 @@ class DeleteAccountForm extends ConfirmFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('culturefeed.current_user'),
-      $container->get('culturefeed')
+      $container->get('culturefeed'),
+      $container->get('logger.channel.culturefeed')
     );
   }
 
@@ -39,13 +46,16 @@ class DeleteAccountForm extends ConfirmFormBase {
    *
    * @param CultureFeed_User $user
    * @param CultureFeed $culturefeedService
+   * @param LoggerInterface $logger
    */
   public function __construct(
     CultureFeed_User $user,
-    CultureFeed $culturefeedService
+    CultureFeed $culturefeedService,
+    LoggerInterface $logger
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
+    $this->setLogger($logger);
   }
 
   /**
@@ -105,7 +115,12 @@ class DeleteAccountForm extends ConfirmFormBase {
     try {
       $this->culturefeed->deleteUser($this->user->id);
     } catch (\Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
+      if ($this->logger) {
+        $this->logger->error(
+          'Error occurred while deleting user account',
+          array('exception' => $e)
+        );
+      }
       drupal_set_message(t('An error occurred while deleting your account.'));
       return;
     }

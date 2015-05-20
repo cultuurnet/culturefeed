@@ -13,6 +13,9 @@ use Drupal\Core\Form\FormStateInterface;
 use CultureFeed_User;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Url;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use CultureFeed_UserPrivacyConfig;
 use CultureFeed;
@@ -20,7 +23,10 @@ use CultureFeed;
 /**
  * Provides a profile editing form.
  */
-class ProfileForm extends FormBase {
+class ProfileForm extends FormBase implements LoggerAwareInterface {
+
+  use LoggerAwareTrait;
+
   /**
    * The culturefeed user service.
    *
@@ -47,7 +53,8 @@ class ProfileForm extends FormBase {
     return new static(
       $container->get('culturefeed.current_user'),
       $container->get('culturefeed'),
-      $container->get('country_manager')
+      $container->get('country_manager'),
+      $container->get('logger.channel.culturefeed')
     );
   }
 
@@ -57,15 +64,18 @@ class ProfileForm extends FormBase {
    * @param CultureFeed_User $user
    * @param CultureFeed $culturefeedService
    * @param CountryManagerInterface $countryManager
+   * @param LoggerInterface $logger
    */
   public function __construct(
     CultureFeed_User $user,
     CultureFeed $culturefeedService,
-    CountryManagerInterface $countryManager
+    CountryManagerInterface $countryManager,
+    LoggerInterface $logger
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
     $this->countryManager = $countryManager;
+    $this->setLogger($logger);
   }
 
   /**
@@ -308,7 +318,12 @@ class ProfileForm extends FormBase {
     try {
       $culturefeed->updateUser($user_update, $fields);
     } catch (\Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
+      if ($this->logger) {
+        $this->logger->error(
+          'Error occurred while updating user',
+          array('exception' => $e)
+        );
+      }
       $form_state->setErrorByName('submit',
         t('Error occurred while saving your personal data.'));
     }
@@ -318,7 +333,12 @@ class ProfileForm extends FormBase {
       try {
         $culturefeed->removeUserDepiction($this->user->id);
       } catch (\Exception $e) {
-        watchdog_exception('culturefeed_ui', $e);
+        if ($this->logger) {
+          $this->logger->error(
+            'Error occurred while removing the user depiction',
+            array('exception' => $e)
+          );
+        }
       }
     }
 
