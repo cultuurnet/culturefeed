@@ -97,7 +97,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     $cf_account = $this->user;
     $form = array();
 
-    $form['#theme'] = 'ui_account_form';
+    $form['#theme'] = 'culturefeed_ui_account_form';
 
     // Account fieldset
     $form['account'] = array(
