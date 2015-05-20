@@ -172,11 +172,13 @@ function culturefeed_sitemap_get_entries($type, $subtype = null) {
   );
   $type = $types[$type];
 
+  $sort = culturefeed_sitemap_sort_config();
+
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
   $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
-  $parameters[] = new \CultuurNet\Search\Parameter\Sort('lastupdated', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort['column'], $sort['direction']);
 
   if ($subtype) {
     $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . $subtype . ')');
@@ -195,6 +197,28 @@ function culturefeed_sitemap_get_entries($type, $subtype = null) {
     watchdog_exception('Culturefeed Search Sitemap', $e);
     return array();
   }
+}
+
+/**
+ * Returns sorting configuration.
+ *
+ * @return array
+ *   - column: column to sort
+ *   - direction: asc or desc
+ */
+function culturefeed_sitemap_sort_config() {
+  $column = variable_get('culturefeed_sitemap_sort_field', 'creationdate');
+  $direction = variable_get('culturefeed_sitemap_sort_direction', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+
+  if ($direction != \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC &&
+      $direction != \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC) {
+    $direction = \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC;
+  }
+
+  return array(
+    'column' => $column,
+    'direction' => $direction,
+  );
 }
 
 /**
