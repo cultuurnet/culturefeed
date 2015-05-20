@@ -207,7 +207,7 @@ function culturefeed_sitemap_get_entries($type, $subtype = null) {
  *   - direction: asc or desc
  */
 function culturefeed_sitemap_sort_config() {
-  $column = variable_get('culturefeed_sitemap_sort_field', 'creationdate');
+  $column = variable_get('culturefeed_sitemap_sort_column', 'creationdate');
   $direction = variable_get('culturefeed_sitemap_sort_direction', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
 
   if ($direction != \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC &&
