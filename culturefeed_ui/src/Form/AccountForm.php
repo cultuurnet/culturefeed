@@ -264,7 +264,7 @@ class AccountForm extends FormBase
             $publishLink = array(
               '#type' => 'link',
               '#title' => $connectedAccount->publishActivities ? t('Public') : t('Private'),
-              '#url' => ($connectedAccount->publishActivities ? $makePublicUrl : $makePrivateUrl),
+              '#url' => ($connectedAccount->publishActivities ? $makePrivateUrl : $makePublicUrl),
               '#attributes' => array('id' => 'onlineaccount-privacy-' . $connectedAccount->accountName, 'class' => 'privacy-link ' . ($connectedAccount->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($connectedAccount->publishActivities ? t('Switch off') : t('Switch on'))),
               '#options' => array('query' => drupal_get_destination()),
               '#ajax' => array(),

@@ -122,8 +122,8 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
      */
     private function getConnectedAccount($accountType, $accountName) {
         $connectedAccount = new CultureFeed_OnlineAccount();
-        $connectedAccount->accountName = $accountType;
-        $connectedAccount->accountType = $accountName;
+        $connectedAccount->accountName = $accountName;
+        $connectedAccount->accountType = $accountType;
 
         return $connectedAccount;
     }
