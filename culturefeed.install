@@ -142,6 +142,124 @@ function culturefeed_requirements($phase) {
     else {
       $requirements['culturefeed_api_location']['value'] = variable_get('culturefeed_api_location');
     }
+
+    // Raise warning if CultureFeed library versions do not match the required
+    // versions defined by the module.
+    $requirements = array_merge($requirements, culturefeed_libraries_requirements());
+  }
+
+  return $requirements;
+}
+
+/**
+ * Returns the minimum required versions for the culturefeed libraries.
+ *
+ * @return array
+ */
+function culturefeed_libraries_required_versions() {
+  return array(
+    "cultuurnet/search" => "1.2",
+    "cultuurnet/cdb" => "2.1",
+    "cultuurnet/culturefeed-php" => "1.5",
+    "cultuurnet/calendar-summary" => "1.0",
+    "cultuurnet/sitemap-xml" => "1.0.1",
+  );
+}
+
+/**
+ * Verifies that the required versions of the CultureFeed libraries are present.
+ *
+ * @return array
+ *   List of requirements.
+ */
+function culturefeed_libraries_requirements() {
+  $t = get_t();
+  $requirements = array();
+
+  // Get the path to the composer lock file, and remove any trailing slashes.
+  $composer_lock_path = variable_get('culturefeed_composer_lock_path', CULTUREFEED_DEFAULT_COMPOSER_LOCK_PATH);
+  $composer_lock_path = rtrim($composer_lock_path, '/');
+
+  // Set the complete file path.
+  $composer_lock_file = $composer_lock_path . '/composer.json';
+
+  // Check that the composer.lock file can be found.
+  if (!file_exists($composer_lock_file)) {
+    $requirements[] = array(
+      'title' => $t('Composer.lock'),
+      'description' => $t('The location of the composer.lock file is not set or incorrect. Please configure its location from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed'))),
+      'severity' => REQUIREMENT_ERROR,
+      'value' => $t('Not configured'),
+    );
+    return $requirements;
+  }
+
+  // Check that the Composer library has been installed. If this is not the
+  // case, the libraries are out of date anyway.
+  if (!class_exists('\\Composer\\Factory')) {
+    $requirements[] = array(
+      'title' => $t('PHP library :library', array(':library' => 'composer/composer')),
+      'severity' => REQUIREMENT_ERROR,
+      'value' => 'Missing',
+    );
+    return $requirements;
+  }
+
+  // Verify that all versions match the required versions of the module.
+  putenv('COMPOSER_HOME=' . $composer_lock_path);
+  $io = new \Composer\IO\NullIO();
+  $composer = \Composer\Factory::create($io);
+
+  $packages = array();
+  $repository = $composer->getRepositoryManager()->getLocalRepository();
+
+  /* @var Composer\Package\CompletePackage $package */
+  foreach ($repository->getPackages() as $package) {
+    $packages[$package->getName()] = $package;
+  }
+
+  $dependencies = culturefeed_libraries_required_versions();
+
+  foreach ($dependencies as $dependency => $minimum) {
+    $title = $t('CultureFeed dependency :library', array(':library' => $dependency));
+
+    if (!isset($packages[$dependency])) {
+      $requirements[] = array(
+        'title' => $title,
+        'severity' => REQUIREMENT_ERROR,
+        'value' => 'Missing',
+      );
+    }
+    else {
+      $package = $packages[$dependency];
+
+      $version = $package->getVersion();
+      $stability = $package->getStability();
+
+      if (version_compare($version, $minimum) < 0) {
+        $requirements[] = array(
+          'title' => $title,
+          'severity' => REQUIREMENT_ERROR,
+          'description' => $t('Version :version installed, while at least :minimum is required.', array(':version' => $version, ':minimum' => $minimum)),
+          'value' => $t('Out of date') . ' (' . $version . ')',
+        );
+      }
+      elseif ($stability != 'stable') {
+        $requirements[] = array(
+          'title' => $title,
+          'severity' => REQUIREMENT_WARNING,
+          'description' => $t('Stability is :stability.', array(':stability' => $stability)),
+          'value' => $t('Unstable') . ' (' . $version . ')',
+        );
+      }
+      else {
+        $requirements[] = array(
+          'title' => $title,
+          'severity' => REQUIREMENT_OK,
+          'value' => $t('Up to date') . ' (' . $version . ')',
+        );
+      }
+    }
   }
 
   return $requirements;
