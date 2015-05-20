@@ -7,16 +7,17 @@
 
 namespace Drupal\culturefeed_ui\Form;
 
+use CultureFeed;
+use CultureFeed_User;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use CultureFeed_User;
+use Drupal\Core\Routing\RedirectDestinationInterface;
 use Drupal\Core\Url;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use CultureFeed;
 
 /**
  * Provides an account editing form.
@@ -51,6 +52,11 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
   protected $siteConfig;
 
   /**
+   * @var RedirectDestinationInterface
+   */
+  protected $destination;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -58,7 +64,8 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
       $container->get('culturefeed.current_user'),
       $container->get('culturefeed'),
       $container->get('config.factory'),
-      $container->get('logger.channel.culturefeed')
+      $container->get('logger.channel.culturefeed'),
+      $container->get('redirect.destination')
     );
   }
 
@@ -69,18 +76,21 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
    * @param CultureFeed $culturefeedService
    * @param ConfigFactory $config
    * @param LoggerInterface $logger
+   * @param
    */
   public function __construct(
     CultureFeed_User $user,
     CultureFeed $culturefeedService,
     ConfigFactory $config,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    RedirectDestinationInterface $destination
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
     $this->connectedAccountTypes = ['twitter', 'facebook', 'google'];
     $this->siteConfig = $config->get('core.site_information');
     $this->setLogger($logger);
+    $this->destination = $destination;
   }
 
   /**
@@ -140,7 +150,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     );
     $options = array(
       'attributes' => array('class' => array('culturefeedconnect')),
-      'query' => drupal_get_destination()
+      'query' => $this->destination->getAsArray()
     );
     $form['account']['change-password-link'] = array(
       '#id' => 'change-password-link',
@@ -248,7 +258,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
         '#title' => $this->t('Disconnect'),
         '#url' => $disconnectUrl,
         '#attributes' => array('class' => 'disconnect-link'),
-        '#options' => array('query' => drupal_get_destination()),
+        '#options' => array('query' => $this->destination->getAsArray()),
       );
 
       $disconnectLink = \Drupal::service('renderer')->render($disconnectLink);
@@ -280,10 +290,13 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
         '#url' => ($connectedAccount->publishActivities ? $makePrivateUrl : $makePublicUrl),
         '#attributes' => array(
           'id' => 'onlineaccount-privacy-' . $connectedAccount->accountName,
-          'class' => 'privacy-link ' . ($connectedAccount->publishActivities ? 'status-publiek' : 'status-prive'),
+          'class' => [
+            'privacy-link',
+            $connectedAccount->publishActivities ? 'status-public' : 'status-private',
+          ],
           'title' => ($connectedAccount->publishActivities ? $this->t('Switch off') : $this->t('Switch on'))
         ),
-        '#options' => array('query' => drupal_get_destination()),
+        '#options' => array('query' => $this->destination->getAsArray()),
         '#ajax' => array(),
       );
 
