@@ -1,0 +1,7 @@
+name = CultureFeed Cdb Upgrade
+description = Temporary module to enable cdb v 3.3.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+files[] = CdbEventSubscriber.php

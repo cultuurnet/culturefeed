@@ -6,7 +6,7 @@
 ?>
 
 <div>
-  <h1><?php print t('Calendar') ?></h1>
+  <h1><?php print t('Personal calendar') ?></h1>
   <?php if (!empty($user_name)) : ?>
     <?php print $user_name ?>
   <?php endif; ?>

@@ -230,5 +230,22 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
   public static function removeTranslationFromActor(CultureFeed_Cdb_Item_Actor $actor, $lang) {
     self::getLoggedInUserInstance()->removeTranslationFromActor($actor, $lang);
   }
+  
+  /**
+   * @see CultureFeed_EntryApi::checkPermission()
+   */
+  public static function checkPermission($userid, $email, $ids) {
+    $permissions = (array)self::getLoggedInUserInstance()->checkPermission($userid, $email, $ids);
+    $parsed_permissons = array();
+    if (is_array($permissions['event'])) {
+      foreach ($permissions['event'] as $permission) {
+        $parsed_permissons[$permission->cdbid->__toString()] = $permission->editable->__toString();
+      }
+    }
+    else {
+      $parsed_permissons[$permissions['event']->cdbid->__toString()] = $permissions['event']->editable->__toString();
+    }
+    return $parsed_permissons;
+  }
 
 }
