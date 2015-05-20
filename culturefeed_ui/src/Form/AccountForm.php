@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RedirectDestinationInterface;
 use Drupal\Core\Url;
+use Egulias\EmailValidator\EmailValidator;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -57,6 +58,11 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
   protected $destination;
 
   /**
+   * @var EmailValidator
+   */
+  protected $emailValidator;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -65,7 +71,8 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
       $container->get('culturefeed'),
       $container->get('config.factory'),
       $container->get('logger.channel.culturefeed'),
-      $container->get('redirect.destination')
+      $container->get('redirect.destination'),
+      $container->get('email.validator')
     );
   }
 
@@ -83,7 +90,8 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     CultureFeed $culturefeedService,
     ConfigFactory $config,
     LoggerInterface $logger,
-    RedirectDestinationInterface $destination
+    RedirectDestinationInterface $destination,
+    EmailValidator $emailValidator
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
@@ -91,6 +99,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     $this->siteConfig = $config->get('core.site_information');
     $this->setLogger($logger);
     $this->destination = $destination;
+    $this->emailValidator = $emailValidator;
   }
 
   /**
@@ -179,9 +188,7 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (\Drupal::service('email.validator')
-      ->isValid($form_state->getValue('mbox'))
-    ) {
+    if (!$this->emailValidator->isValid($form_state->getValue('mbox'))) {
       $form_state->setErrorByName('mbox', $this->t('Invalid email'));
     }
   }
