@@ -34,6 +34,10 @@ function culturefeed_entry_ui_permission() {
       'title' => t('Delete events'),
       'description' => t('Delete events through the entity api.'),
     ),
+    'manage culturefeed collaborative info' => array(
+      'title' => t('Manage culturefeed collaborative info'),
+      'description' => t('Manage culturefeed collaborative info through the entity api.'),
+    ),
   );
 }
 
@@ -59,12 +63,30 @@ function culturefeed_entry_ui_menu() {
 
   $items = array();
 
+  $tags_form = array(
+    'argument' => 'culturefeed_entry_ui_edit_tags_form',
+    'file' => 'includes/culturefeed_entry_ui.pages.inc',
+  );
+
+  if (culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3()) {
+    $tags_form['argument'] = 'culturefeed_entry_ui_edit_tag_objects_form';
+    $tags_form['file'] = 'includes/form/culturefeed_entry_ui.tag_objects.inc';
+  }
+
   $items['agenda/e/%/%culturefeed_agenda_event/tags'] = array(
     'title' => 'Tags',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_ui_edit_tags_form', 3),
+    'page arguments' => array($tags_form['argument'], 3),
     'access callback' => 'culturefeed_entry_ui_manage_tags_access',
-    'file' => 'includes/culturefeed_entry_ui.pages.inc',
+    'file' => $tags_form['file'],
+  );
+
+  $items['agenda/e/%/%culturefeed_agenda_event/collaboration'] = array(
+    'title' => 'Collaboration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_entry_ui_edit_collaboration_data_form', 3),
+    'access callback' => 'culturefeed_entry_ui_manage_collaboration_access',
+    'file' => 'includes/form/culturefeed_entry_ui.collaboration.inc',
   );
 
   $items['agenda/e/add'] = array(
@@ -138,7 +160,20 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
 
   }
-  
+
+  // Add tab for collaboration info.
+  if (culturefeed_entry_ui_manage_collaboration_access()) {
+
+    $link = array(
+      'href' => $path . '/collaboration',
+      'localized_options' => array(),
+      'title' => t('Collaboration'),
+    );
+
+    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
+
+  }
+
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   if ($culturefeed_user && user_access('edit culturefeed events')) {
     $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
@@ -213,6 +248,32 @@ function entry_api_event_load($id) {
  */
 function culturefeed_entry_ui_manage_tags_access() {
   return user_access('manage custom tags') || user_access('manage object tags');
+}
+
+/**
+ * Access callback, to check if a user has access to the manage collaboration screen.
+ *
+ * The collaboration screen will only work properly if also the search module
+ * is configured to use cdb xml version 3.3.
+ */
+function culturefeed_entry_ui_manage_collaboration_access() {
+  return
+    culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3() &&
+    user_access('manage culturefeed collaborative info');
+}
+
+function culturefeed_entry_ui_is_capable_of_cdbxml_version_3_3() {
+  return
+    version_compare(
+      variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),
+      '3.3',
+      '>='
+    ) &&
+    version_compare(
+      variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION),
+      '3.3',
+      '>='
+    );
 }
 
 /**

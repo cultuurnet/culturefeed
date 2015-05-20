@@ -8,6 +8,9 @@
 define('CULTUREFEED_SEARCH_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
 
+// Default cdb schema version.  Can be overridden in settings form.
+define('CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION', '3.2');
+
 // Default proximity search range.
 define('CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE', 20);
 

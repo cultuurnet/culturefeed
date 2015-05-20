@@ -30,8 +30,22 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    */
   private function __construct(ConsumerCredentials $consumerCredentials) {
 
-    $endpoint = variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION);
-    $service = new \CultuurNet\Search\Guzzle\Service($endpoint, $consumerCredentials);
+    $endpoint = variable_get(
+      'culturefeed_search_api_location',
+      CULTUREFEED_SEARCH_API_LOCATION
+    );
+
+    $cdbXmlVersion = variable_get(
+      'culturefeed_search_cdb_version',
+      CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION
+    );
+
+    $service = new \CultuurNet\Search\Guzzle\Service(
+      $endpoint,
+      $consumerCredentials,
+      NULL,
+      $cdbXmlVersion
+    );
 
     module_invoke_all('culturefeed_search_service_created', $service);
 

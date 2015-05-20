@@ -114,7 +114,7 @@ function culturefeed_location_control_location_control_validate(array $element, 
   $values = drupal_array_get_nested_value($form_state['input'], $element['#parents']);
   $location_control = $values['location_control'];
 
-  if (culturefeed_location_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     $type = $location_control['type'];
 

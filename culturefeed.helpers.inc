@@ -468,3 +468,18 @@ function culturefeed_mobile_detect_get_object() {
   return $detect;
 }
 
+/**
+ * Known versions of cdb xml.
+ *
+ * @return array
+ */
+function culturefeed_cdb_xml_versions() {
+  $cdb_xml_versions = array(
+    '3.0',
+    '3.1',
+    '3.2',
+    '3.3',
+  );
+
+  return $cdb_xml_versions;
+}

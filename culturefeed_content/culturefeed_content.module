@@ -197,6 +197,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $filter_query,
     '#required' => $element['#required'],
     '#title' => t('Filter query'),
+    '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
     '#type' => 'textfield',
   );
 
@@ -204,6 +205,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $query_string,
     '#required' => $element['#required'],
     '#title' => t('Query string'),
+    '#description' => t('Free text search, used for the SOLR query (q) parameter'),
     '#type' => 'textfield',
   );
 
@@ -211,6 +213,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $rows,
     '#required' => $element['#required'],
     '#title' => t('Rows'),
+    '#description' => t('Number of results to show, defaults on "50"'),
     '#type' => 'textfield',
   );
 
@@ -218,6 +221,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $sort,
     '#required' => $element['#required'],
     '#title' => t('Sort'),
+    '#description' => t('How to sort the results, defaults on "permanent asc,availableto asc,weight desc"'),
     '#type' => 'textfield',
   );
 

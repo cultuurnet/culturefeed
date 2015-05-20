@@ -35,7 +35,7 @@ function culturefeed_location_control_asset_process(array $element, array &$form
 
   $ajax_settings = array(
     'effect' => 'none',
-    'path' => 'culturefeed_elements/location/ajax/' . implode('/', $array_parents),
+    'path' => 'culturefeed_elements/ajax/' . implode('/', $array_parents),
     'progress' => array('type' => 'throbber'),
     'wrapper' => $element_id . '-ajax-wrapper',
   );
@@ -106,7 +106,7 @@ function culturefeed_location_control_asset_validate(array &$element, array &$fo
   $triggering_parent = array_pop($triggering_element['#parents']);
   $asset = $element['#value'];
 
-  if (culturefeed_location_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 

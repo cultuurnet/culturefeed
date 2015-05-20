@@ -1,0 +1,13 @@
+.edit-tag-objects-form-table td.edit-tag-objects-form-cell {
+  vertical-align: middle;
+  border-top: none;
+}
+
+.edit-tag-objects-form-table td.edit-tag-objects-form-cell .form-group {
+  margin: 0px;
+}
+
+.edit-tag-objects-form-table input.form-checkbox {
+  max-width: inherit;
+  margin-right: 0;
+}

@@ -30,7 +30,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $default_short_description = '';
   $default_long_description = '';
   $default_image = '';
-  $keywords = '';
   $default_links = array();
   $default_links_reservation = array();
   $phone_contacts = array();
@@ -159,12 +158,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       $default_long_description = filter_xss($default_long_description, $allowed_tags);
       //$default_long_description = substr($default_long_description, 0, -169);
       $form_state['#ld_needed'] = TRUE;
-    }
-
-    // Default keywords
-    if ($event->getKeywords()) {
-      $keywords = $event->getKeywords();
-      $keywords = implode(';', $keywords);
     }
 
     // Default mails, phones, urls
@@ -581,12 +574,8 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   }
 
   // Tags
-  $form['extra']['keywords'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tags'),
-    '#description' => t('Add multiple tags seperated by a ";"'),
-    '#default_value' => $keywords,
-  );
+  form_load_include($form_state, 'inc', 'culturefeed_entry_ui', 'includes/form/culturefeed_entry_ui.tags');
+  culturefeed_entry_ui_tags_form($form, $form_state, $event);
 
   // Links
   $form['extra']['links'] = array(
@@ -1996,18 +1985,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   $event->setContactInfo($contact_object);
 
   // Keywords.
-  $keywords_form = array();
-  $custom_entry_api_tags = array();
-  if ($values['keywords']) {
-    $keywords_form = explode(';', $values['keywords']);
-  }
-  if (variable_get('culturefeed_entry_ui_custom_entry_api_tags')) {
-    $custom_entry_api_tags = explode("\n", variable_get('culturefeed_entry_ui_custom_entry_api_tags'));
-  }
-  $keywords = array_map('trim',array_unique(array_merge($keywords_form,$custom_entry_api_tags)));
-  foreach ($keywords as $keyword) {
-    $event->addKeyword($keyword);
-  }
+  culturefeed_entry_ui_tags_form_save($event, $form_state);
 
   // Members.
   if ($values['members']) {
@@ -2020,6 +1998,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
   //}
 
   $form_state['submit_time'] = time();
+
   try {
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
@@ -2193,11 +2172,12 @@ function culturefeed_entry_ui_delete_event_form_submit($form, &$form_state) {
  */
 function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
-  $form = array();
+  /** @var \CultuurNet\Search\ActivityStatsExtendedEntity $event */
   $event = $event->getEntity();
+
+  /** @var \CultureFeed_Cdb_Item_Event $event */
   $event_tags = $event->getKeywords();
   $form['#old_tags'] = $event_tags;
-
   $custom_tags = array();
 
   // Get options from variable.
@@ -2235,6 +2215,7 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
     '#default_value' => implode(';', $event_tags),
     '#description' => t('Seperate multiple tags by ;'),
   );
+
 
   $form['submit'] = array(
     '#type' => 'submit',
