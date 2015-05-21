@@ -4,6 +4,7 @@ namespace Drupal\culturefeed_ui\Form;
 
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -31,13 +32,19 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
   protected $culturefeed;
 
   /**
+   * @var AccountProxyInterface
+   */
+  protected $drupalUser;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('culturefeed.current_user'),
       $container->get('culturefeed'),
-      $container->get('logger.channel.culturefeed')
+      $container->get('logger.channel.culturefeed'),
+      $container->get('current_user')
     );
   }
 
@@ -47,15 +54,18 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
    * @param CultureFeed_User $user
    * @param CultureFeed $culturefeedService
    * @param LoggerInterface $logger
+   * @param AccountProxyInterface $drupalUser
    */
   public function __construct(
     CultureFeed_User $user,
     CultureFeed $culturefeedService,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    AccountProxyInterface $drupalUser
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
     $this->setLogger($logger);
+    $this->drupalUser = $drupalUser;
   }
 
   /**
@@ -125,11 +135,7 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
       return;
     }
 
-    // TODO: Figure out what should happen to the Drupal user
-    // The old Culturefeed changes the status of the user and does some
-    // database deletes but does not really delete it.
-    $drupalUser = \Drupal::currentUser();
-    user_delete($drupalUser->id());
+    user_delete($this->drupalUser->id());
     user_logout();
   }
 
