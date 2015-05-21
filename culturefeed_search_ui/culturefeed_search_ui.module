@@ -53,6 +53,19 @@ function culturefeed_search_ui_init() {
     culturefeed_search_ui_set_noindex_metatag();
   }
 
+  // Check if we are not on a staging environment
+  global $base_root;
+  $staging = FALSE;
+  $dev_ids = array('culturefeed', 'dev.', 'acc.');
+  foreach($dev_ids as $id) {
+    if (stripos($base_root, $id) !== FALSE) {
+      $staging = TRUE;
+    }
+  }
+  if ($staging) {
+    culturefeed_search_set_noindex_metatag();
+  }
+
 }
 
 /**
@@ -309,19 +322,32 @@ function culturefeed_search_ui_library() {
 
   $path = drupal_get_path('module', 'culturefeed_search_ui');
 
-  // Date range picker
-  $libraries['ui.daterangepicker'] = array(
-    'title' => 'Datejs',
-    'website' => 'http://filamentgroup.com/lab/date_range_picker_using_jquery_ui_16_and_jquery_ui_css_framework/',
-    'version' => '1',
+  // Moment.js: Parse, validate, manipulate, and display dates in JavaScript.
+  $libraries['ui.moment'] = array(
+    'title' => 'Moment.js',
+    'website' => 'http://momentjs.com/',
+    'version' => '2.8.1',
     'js' => array(
-      $path . '/js/daterangepicker.jQuery.compressed.js' => array(),
+      $path . '/js/moment.min.js' => array(),
+    ),
+  );
+
+  // Date Range Picker: A JavaScript widget for choosing date ranges.
+  $libraries['ui.daterangepicker'] = array(
+    'title' => 'Date Range Picker',
+    'website' => 'http://www.daterangepicker.com/',
+    'version' => '1.3.17',
+    'js' => array(
+      $path . '/js/daterangepicker.js' => array(),
     ),
     'css' => array(
-      $path . '/css/ui.daterangepicker.css' => array(),
+      $path . '/css/daterangepicker-bs3.css' => array(
+        'weight' => 100,
+        'group' => CSS_THEME,
+      ),
     ),
     'dependencies' => array(
-      array('system', 'ui.datepicker'),
+      array('culturefeed_search_ui', 'ui.moment'),
     ),
   );
 
@@ -543,7 +569,7 @@ function culturefeed_search_ui_block_configure($delta) {
         'links' => t('As links'),
         'checkboxes' => t('As checkboxes with submit button'),
       ),
-      '#default_value' => variable_get($display_variable, 'links'),
+      '#default_value' => variable_get($display_variable, 'checkboxes'),
     );
     $form[$operator_label] = array(
       '#title' => t('How to apply filters on the query'),
@@ -553,7 +579,7 @@ function culturefeed_search_ui_block_configure($delta) {
         'and' => t('Use AND-operator'),
         'or' => t('Use OR-operator'),
       ),
-      '#default_value' => variable_get($operator_variable, 'or'),
+      '#default_value' => variable_get($operator_variable, 'and'),
     );
 
     $options = variable_get($config_variable, culturefeed_search_ui_default_filter_options());
@@ -570,7 +596,7 @@ function culturefeed_search_ui_block_configure($delta) {
       '#tree' => TRUE,
     );
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 20; $i++) {
       $form[$config_label][$i]['exposed'] = array(
         '#title' => t('Exposed'),
         '#type' => 'checkbox',
@@ -589,7 +615,8 @@ function culturefeed_search_ui_block_configure($delta) {
       $form[$config_label][$i]['api-filter-query'] = array(
         '#title' => t('Filterquery for API'),
         '#type' => 'textfield',
-        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : ''
+        '#default_value' => isset($options[$i]['api-filter-query']) ? $options[$i]['api-filter-query'] : '',
+        '#maxlength' => 255
       );
     }
 
@@ -726,13 +753,14 @@ function culturefeed_search_ui_block_view($delta) {
       }
 
       $variable_name = 'culturefeed_search_filter_options' . (($delta == 'filter-form-2') ? '_2' : '');
-      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''));
+      $display_type = variable_get('culturefeed_search_filter_display_options' . (($delta == 'filter-form-2') ? '_2' : ''), 'checkboxes');
       $filter_options = variable_get($variable_name, culturefeed_search_ui_default_filter_options());
       $filter_options = array_filter($filter_options, function($option) {
         return !isset($option['exposed']) || !empty($option['exposed']);
       });
       if (!empty($filter_options)) {
-        $block['content'] = culturefeed_search_ui_block_filter_block($filter_options, $display_type);
+        $form_id = $delta == 'filter-form-2' ? '2' : '';
+        $block['content'] = culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id);
       }
       break;
 
@@ -794,20 +822,10 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     ),
   );
   foreach ($filter_blocks as $delta => $variables) {
-    // Only add the filters if the block is set.
-    if (culturefeed_search_ui_block_is_visible($delta)) {
-      culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
-        variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options()),
-        variable_get($variables['operator'], 'and')
-      );
-    }
-  }
-
-  // Add filters from second filter block.
-  if (culturefeed_search_ui_block_is_visible('filter-form-2')) {
-    $operator = variable_get('culturefeed_search_filter_operator_2', 'and');
-    $filter_options = variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
-    culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage, $filter_options, $operator);
+    culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
+      variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options()),
+      variable_get($variables['operator'], 'and')
+    );
   }
 
   // If group = event_production exclude productions (already included in group)
@@ -851,6 +869,11 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     }
   }
 
+  // If keywords are given, filter the search query with keywords.
+  if (!empty($_GET['keyword'])) {
+    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery('keywords:' . urldecode($_GET['keyword'])));
+  }
+
 }
 
 /**
@@ -862,11 +885,13 @@ function culturefeed_search_ui_page_alter(&$variables) {
   if (drupal_get_http_header('Status') == '404 Not Found') {
 
     // Only for event details / production details and page details.
-    if (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a')) {
+    if (arg(0) == 'permalink' || (arg(0) == 'agenda' && (arg(1) == 'e' || arg(1) == 'p' || arg(1) == 'a'))) {
+
+      $cdbid_arg = arg(0) == 'permalink' ? arg(1) : arg(3);
 
       // Check if this object was deleted. If it was found, set the 410.
       $cdbid = db_query('SELECT cdbid FROM {culturefeed_search_deleted_objects} WHERE cdbid = :cdbid ', array(
-        ':cdbid' => arg(3),)
+        ':cdbid' => $cdbid_arg,)
       )->fetchField();
 
       if ($cdbid) {
@@ -874,6 +899,41 @@ function culturefeed_search_ui_page_alter(&$variables) {
       }
 
     }
+
+  }
+
+}
+
+/**
+ * Implements hook_metatag_page_cache_cid_parts_alter().
+ */
+function culturefeed_search_ui_metatag_page_cache_cid_parts_alter(&$cid_parts) {
+
+  // Add active facets to the metatag cid, this is needed for unique titels per active facet.
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  // Add the value of every active filter to the metadata cid.
+  $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+  if (!empty($active_filters)) {
+
+    $values = array();
+    foreach ($active_filters as $key => $active_filter) {
+
+      if (!isset($active_filter['#label'])) {
+        foreach ($active_filter as $subkey => $subitem) {
+          $values[] = $key . ':' . $subkey;
+        }
+      }
+      else {
+        $values[] = $key;
+      }
+
+    }
+
+    $cid_parts['active_cf_filters'] = implode(',', $values);
 
   }
 
@@ -943,13 +1003,15 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if user is filtering on date range.
-  if (!empty($query['date_range'])) {
+  if (!empty($query['date_from']) && !empty($query['date_to'])
+      && DateTime::createFromFormat('d/m/Y', $query['date_from'])
+      && DateTime::createFromFormat('d/m/Y', $query['date_to'])) {
     $search_query = $query;
-    unset($search_query['date_range']);
+    unset($search_query['date_from'], $search_query['date_to']);
     $url = url($path, array('query' => $search_query));
     $build['date_search'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $query['date_range'],
+      '#label' => $query['date_from'] . ' - ' . $query['date_to'],
       '#url' => $url
     );
   }
@@ -1007,8 +1069,22 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     );
   }
 
+  if (!empty($query['keyword'])) {
+    $keyword = $query['keyword'];
+    unset($query['keyword']);
+    $url = url($path, array('query' => $query));
+    $build['keyword'] = array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => $keyword,
+      '#url' => $url
+    );
+  }
+
   // Check if form filters are selected.
-  $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
+  $default_filter_options = culturefeed_search_ui_default_filter_options();
+  $filter_options = variable_get('culturefeed_search_filter_options', $default_filter_options);
+  $filter_options2 = variable_get('culturefeed_search_filter_options_2', $default_filter_options);
+  $filter_options = array_merge($filter_options, $filter_options2);
   foreach ($filter_options as $option) {
     if (!empty($query[$option['query-string']])) {
       $search_query = $query;
@@ -1072,7 +1148,7 @@ function culturefeed_search_ui_register_deletions() {
  * @param array $filter_options
  * @param string $operator
  */
-function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInterface &$culturefeedSearchPage, $filter_options, $operator) {
+function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInterface &$culturefeedSearchPage, $filter_options, $operator = 'and') {
 
   if ($operator == 'and') {
     foreach ($filter_options as $option) {

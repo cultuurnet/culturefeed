@@ -433,6 +433,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', $domain);
+  $query->condition('cst.show_term', 1);
 
   // Add parent condition.
   if (!empty($conditions['parent'])) {
@@ -609,7 +610,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
-  $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+	$query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
   if(!$include_regions) {
     $query->isNotNull('p1');
@@ -634,6 +635,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
   }
+
+	foreach ($suggestions as $key => $suggestion) {
+		if (strtolower($suggestion) == strtolower($search_string)) {
+			$val = $suggestion;
+			unset($suggestion);
+			$suggestions = array($key => $val) + $suggestions;
+		}
+	}
 
   return $suggestions;
 
@@ -708,6 +717,28 @@ function culturefeed_search_get_category_by_slug($slug, $domain = '') {
   $query->range(0, 1);
   $query->addField('ct', 'tid');
   $query->addField('ct', 'name');
+  $query->addField('ct', 'p1');
+  $query->addField('ct', 'p2');
+  $query->addField('ct', 'p3');
+  $query->addField('ct', 'p4');
+  if (!empty($domain)) {
+    $query->condition('did', $domain);
+  }
+
+  return $query->execute()->fetchObject();
+
+}
+
+/**
+ * Get a category by name.
+ */
+function culturefeed_search_get_category_by_name($name, $domain = '') {
+
+  $query = db_select('culturefeed_search_terms', 'ct');
+  $query->condition('name', $name);
+  $query->range(0, 1);
+  $query->addField('ct', 'tid');
+  $query->addField('ct', 'slug');
   $query->addField('ct', 'p1');
   $query->addField('ct', 'p2');
   $query->addField('ct', 'p3');
@@ -810,6 +841,30 @@ function culturefeed_search_term_translations($tids = array(), $return_tids = FA
 }
 
 /**
+ * Get the agefrom querystring to be set active.
+ *
+ * @param string $facet_value
+ *   The facet value.
+ *
+ * @return int
+ *   The key.
+ */
+function culturefeed_search_get_agefrom_value($facet_value) {
+
+  if (module_exists('culturefeed_search_ui')) {
+
+    $options = culturefeed_search_ui_get_age_range_facet_options();
+    foreach ($options as $key => $option) {
+      if ($option['range'] == $facet_value) {
+        return $key;
+      }
+    }
+
+  }
+
+}
+
+/**
  * Get the translation for a term.
  *
  * @param string $tid
@@ -862,8 +917,13 @@ function culturefeed_search_translate_facet(&$facet_items) {
     // Add the subitems from this facet item.
     if ($facet_item->hasSubItems()) {
       $sub_items = $facet_item->getSubItems();
-      foreach ($sub_items as $sub_item) {
-        $sub_item->setLabel(culturefeed_search_get_term_translation($sub_item->getValue()));
+      foreach ($sub_items as $key => $sub_item) {
+        if ($sub_item->getLabel() == culturefeed_search_get_term_translation($sub_item->getValue())) {
+          $sub_item->setLabel(culturefeed_search_get_term_translation($sub_item->getValue()));
+        }
+        else {
+          $facet_item->removeSubItem($key);
+        }
       }
     }
   }
@@ -895,4 +955,34 @@ function culturefeed_search_block_ajaxload($config) {
   $block['content'] = ajax_pre_render_element($block['content']);
 
   return $block;
+}
+
+/**
+ * Check if we are connected to acceptance API.
+ */
+function culturefeed_search_acceptance_mode() {
+
+  // Get culturefeed_search_api_location
+  $location = variable_get('culturefeed_search_api_location');
+  if (strpos($location,'www') === FALSE) {
+    return TRUE;
+  }
+
+}
+
+/**
+ * Set the "noindex, follow" meta tag when needed.
+ */
+function culturefeed_search_set_noindex_metatag() {
+
+  $element = array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'robots',
+      'content' => 'noindex, follow',
+    ),
+  );
+
+  drupal_add_html_head($element, 'robots');
+
 }

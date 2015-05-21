@@ -2,7 +2,7 @@
 /**
  * @file
  * Template for the summary of a production.
- * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking. 
+ * Please don't remove the cf- prefixed id's. This is used by GTM for user behavior tracking.
  * Some day your client will benefit from our aggregated insights & benchmarks too.
  * See https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-tracking
  * Thanks!
@@ -11,7 +11,7 @@
 
 <div class="event-teaser">
 
-  <h2><?php print culturefeed_search_detail_l('production', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid))); ?></h2>
+  <h2><?php print culturefeed_search_detail_l('production', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid), 'html' => TRUE)); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
@@ -47,8 +47,8 @@
     <dd><?php if (!empty($location['title'])): print $location['title']; endif; ?> <?php if (!empty($location['city'])): print $location['city']; endif; ?></dd>
     <?php endif; ?>
 
-    <?php if (!empty($when)): ?>
-    <dt><?php print t('When'); ?></dt>
+    <?php if (!empty($when_md)): ?>
+    <dt><?php print t('When_md'); ?></dt>
     <dd><?php print $when; ?></dd>
     <?php endif; ?>
 

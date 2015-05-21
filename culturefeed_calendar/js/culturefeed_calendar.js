@@ -59,7 +59,7 @@
    */
   Drupal.CultureFeed.Calendar.showTotalAdded = function() {
 
-    var $calendarItem = $('#block-culturefeed-ui-profile-box').find('li.activities');
+    var $calendarItem = $('#block-culturefeed-ui-profile-box').find('.activities');
     $calendarItem.hide();
 
     // Get cookie calendar information.

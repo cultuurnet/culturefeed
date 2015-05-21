@@ -1,13 +1,13 @@
 Culturefeed
 ===========
 
-[![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
+[![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://api.travis-ci.org/cultuurnet/culturefeed.svg?branch=master)
 
 Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. For this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
 
-__[Live demo connecting production API](http://www.culturefeed.be/)__
+__[Live demo connecting production API](http://www.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__
 
-__[Live demo connecting acceptance API](http://acc.culturefeed.be/)__
+__[Live demo connecting acceptance API](http://acc.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__
 
 
 
@@ -110,18 +110,11 @@ Integration of all UiTID API calls.
 [https://github.com/cultuurnet/culturefeed-php](https://github.com/cultuurnet/culturefeed-php)
 
 
-## Culturefeed_bootstrap
+## Theme
 
-Culturefeed Bootstrap is a responsive, mobile first __subtheme of the Bootstrap Framework__. 
+__Culturefeed Bootstrap__ is the only supported and recommended base theme for Culturefeed. It's a responsive subtheme of the Bootstrap Framework and has it's own subtheme to start from. But of course you can implement Culturefeed in your prefered theme as well.
 
-### Customize it
-Culturefeed Bootstrap has some basic theme settings (admin/appearance/settings/culturefeed_bootstrap) where you can customize branding colors, font-family, border-radius, navbars, etc. to your own needs. If you are a Drupal themer you can - of course - change all possible less variables and bootstrap overrides or kick everything out and build your own theme :-)
-
-### Bootstrap 3.0.2
-If you like the Culturefeed Bootstrap theme or plan to build your own [Bootstrap subtheme](https://www.drupal.org/project/bootstrap) some knowledge about the [Bootstrap Framework](http://getbootstrap.com/) (version 3.0.2) will come in handy. Good to know: Culturefeed Bootstrap uses [Less](https://www.drupal.org/project/less) to compile the CSS.
-
-###  Font Awesome 4.0.3
-We chose to make use of the [Font Awesome Icon library](http://fortawesome.github.io/Font-Awesome/) (version 4.0.3) instead of the Glyphicons that are built in with Bootstrap. Here's an overview of all icons and examples.
+[https://github.com/cultuurnet/culturefeed_bootstrap](https://github.com/cultuurnet/culturefeed_bootstrap)
 
 
 ## Modules

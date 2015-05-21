@@ -46,7 +46,7 @@ function culturefeed_search_views_data() {
       ),
     );
   }
-  
+
   // Keywords
   $data['cdb_items']['tags'] = array(
     'title' => t('Tags'),
@@ -85,7 +85,7 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_filter_culturefeed_search_city',
     ),
   );
-  
+
   // Created by field.
   $data['cdb_items']['createdby'] = array(
     'title' => t('Created by'),
@@ -144,6 +144,15 @@ function culturefeed_search_views_data() {
     ),
   );
 
+	// Filter on events with images.
+	$data['cdb_items']['hasimage'] = array(
+		'title' => t('Has Image'),
+		'help' => t('Perform a search on events with images.'),
+		'filter' => array(
+			'handler' => 'views_handler_filter_culturefeed_search_hasimage',
+		),
+	);
+
   // Filter on dates
   $data['cdb_items']['datetype'] = array(
     'title' => t('Date type'),
@@ -191,6 +200,15 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_field_cdb_item_location',
     ),
   );
+
+	// Category.
+	$data['cdb_items']['category'] = array(
+		'title' => t('Category'),
+		'help' => t('Category of the cdb item'),
+		'field' => array(
+			'handler' => 'views_handler_field_cdb_item_category',
+		),
+	);
 
   // Organiser.
   $data['cdb_items']['organiser'] = array(
@@ -245,6 +263,14 @@ function culturefeed_search_views_data() {
       'handler' => 'views_handler_sort_culturefeed_search_comments',
     ),
   );
+
+	$data['cdb_items']['weight_sort'] = array(
+		'title' => t('Weight'),
+		'help' => t('Sort on weight.'),
+		'sort' => array(
+			'handler' => 'views_handler_sort_culturefeed_search_weight'
+		),
+	);
 
   return $data;
 

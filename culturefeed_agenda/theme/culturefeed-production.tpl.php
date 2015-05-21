@@ -44,9 +44,9 @@
   </dd>
   <?php endif; ?>
 
-  <?php if (!empty($when)): ?>
+  <?php if (!empty($when_lg)): ?>
   <dt><?php print t('When'); ?></dt>
-  <dd><?php print $when; ?></dd>
+  <dd><?php print $when_lg; ?></dd>
   <?php endif; ?>
 
   <?php if ($organiser): ?>
@@ -94,3 +94,15 @@
 <?php foreach ($pictures as $picture): ?>
   <img src="<?php print $picture; ?>?width=160&height=120&crop=auto" />
 <?php endforeach; ?>
+
+<div>
+  <?php print $facebook_link; ?>
+  <br>
+  <?php print $googleplus_link; ?>
+  <br>
+  <?php print $twitter_link; ?>
+  <br>
+  <?php print $whatsapp_link; ?>
+  <br>
+  <?php print $mail_link; ?>
+</div>

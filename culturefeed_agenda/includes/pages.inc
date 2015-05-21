@@ -5,6 +5,17 @@
  */
 
 /**
+ * Page callback to redirect to a real agenda item.
+ * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
+ *   Extended entity to view.
+ */
+function culturefeed_agenda_permalink_page(\CultuurNet\Search\ActivityStatsExtendedEntity $item) {
+  $url = culturefeed_search_detail_path($item->getType(), $item->getId(), $item->getTitle(culturefeed_search_get_preferred_language()));
+  $query_string = drupal_get_query_parameters();
+  drupal_goto($url, array('query' => $query_string), '301');
+}
+
+/**
  * Page callback to show the detail from an agenda item.
  * @param \CultuurNet\Search\ActivityStatsExtendedEntity $item
  *   Extended entity to view.

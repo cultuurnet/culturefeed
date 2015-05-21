@@ -109,6 +109,7 @@ class CultureFeedDomainImport {
         'name' => (string) $termAttributes['label'],
         'did' => (string) $termAttributes['domain'],
         'parent' => empty($parentId) ? $parentId : NULL,
+        'show_term' => $termAttributes['show'] == 'true' ? 1 : 0,
         'slug' => culturefeed_search_slug((string) $termAttributes['label'], 128),
       );
 

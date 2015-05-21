@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fc775804a65cfeba2c7aef49a7f984d8",
+    "hash": "7e73278254ab3e5ef75fbb23d6f7dc1c",
     "packages": [
         {
             "name": "cultuurnet/auth",
@@ -54,25 +54,67 @@
             "time": "2014-10-28 13:01:49"
         },
         {
-            "name": "cultuurnet/cdb",
-            "version": "v2.0.1",
+            "name": "cultuurnet/calendar-summary",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/cultuurnet/Cdb.git",
-                "reference": "c91b6131ae5f03ab071b68d5ce7efa02d71de032"
+                "url": "https://github.com/cultuurnet/calendar-summary.git",
+                "reference": "b91af20bf82e3fbc4fcd677c03df7020bd00e85c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/Cdb/zipball/c91b6131ae5f03ab071b68d5ce7efa02d71de032",
-                "reference": "c91b6131ae5f03ab071b68d5ce7efa02d71de032",
+                "url": "https://api.github.com/repos/cultuurnet/calendar-summary/zipball/b91af20bf82e3fbc4fcd677c03df7020bd00e85c",
+                "reference": "b91af20bf82e3fbc4fcd677c03df7020bd00e85c",
                 "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*"
+            },
+            "require-dev": {
+                "phing/phing": "~2.10",
+                "phpunit/phpunit": "~4.5",
+                "squizlabs/php_codesniffer": "~2.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-release/2.x": "2.x-dev"
+                    "dev-master": "1.0.x-dev",
+                    "dev-develop": "1.1.x-dev"
                 }
             },
+            "autoload": {
+                "psr-4": {
+                    "CultuurNet\\CalendarSummary\\": [
+                        "src"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Library to convert a cdbXML input to a readable summary",
+            "time": "2015-05-08 14:46:28"
+        },
+        {
+            "name": "cultuurnet/cdb",
+            "version": "2.1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cultuurnet/Cdb.git",
+                "reference": "0ad82c83c02bd52e1e0dcfc1176e6967df4d8715"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cultuurnet/Cdb/zipball/0ad82c83c02bd52e1e0dcfc1176e6967df4d8715",
+                "reference": "0ad82c83c02bd52e1e0dcfc1176e6967df4d8715",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.3",
+                "satooshi/php-coveralls": "~0.7"
+            },
+            "type": "library",
             "autoload": {
                 "psr-0": {
                     "CultureFeed_Cdb_": [
@@ -85,29 +127,33 @@
                 "Apache-2.0"
             ],
             "description": "PHP library for hydrating/manipulating CultuurNet's Cdb XML documents",
-            "time": "2014-10-28 13:19:31"
+            "time": "2015-05-19 11:04:57"
         },
         {
             "name": "cultuurnet/culturefeed-php",
-            "version": "v1.1.0",
+            "version": "1.5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b"
+                "reference": "8b44c643afd66acd19bf01150811c51dd43d3364"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b",
-                "reference": "d4c74f5ac5bf605f19cc1ab65a6d1c923e63902b",
+                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/8b44c643afd66acd19bf01150811c51dd43d3364",
+                "reference": "8b44c643afd66acd19bf01150811c51dd43d3364",
                 "shasum": ""
             },
             "require": {
-                "cultuurnet/cdb": "~2.0"
+                "cultuurnet/cdb": "~2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4.0",
+                "satooshi/php-coveralls": "~0.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-develop": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -148,20 +194,20 @@
                 }
             ],
             "description": "Culturefeed PHP library",
-            "time": "2014-10-30 13:44:06"
+            "time": "2015-05-19 18:46:34"
         },
         {
             "name": "cultuurnet/search",
-            "version": "v1.1.0",
+            "version": "1.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/Search.git",
-                "reference": "773c8cbb26e358ad0f1a0e45e9d81957dc42d167"
+                "reference": "048ad13ac386c3676dd3236c064f4184a10c1d73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/Search/zipball/773c8cbb26e358ad0f1a0e45e9d81957dc42d167",
-                "reference": "773c8cbb26e358ad0f1a0e45e9d81957dc42d167",
+                "url": "https://api.github.com/repos/cultuurnet/Search/zipball/048ad13ac386c3676dd3236c064f4184a10c1d73",
+                "reference": "048ad13ac386c3676dd3236c064f4184a10c1d73",
                 "shasum": ""
             },
             "require": {
@@ -194,7 +240,7 @@
                 "Apache-2.0"
             ],
             "description": "CultuurNet search service",
-            "time": "2014-10-22 07:19:56"
+            "time": "2015-04-24 10:53:19"
         },
         {
             "name": "guzzle/common",
@@ -202,12 +248,12 @@
             "target-dir": "Guzzle/Common",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/common.git",
+                "url": "https://github.com/Guzzle3/common.git",
                 "reference": "2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/common/zipball/2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc",
+                "url": "https://api.github.com/repos/Guzzle3/common/zipball/2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc",
                 "reference": "2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc",
                 "shasum": ""
             },
@@ -246,12 +292,12 @@
             "target-dir": "Guzzle/Http",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/http.git",
+                "url": "https://github.com/Guzzle3/http.git",
                 "reference": "1e8dd1e2ba9dc42332396f39fbfab950b2301dc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/http/zipball/1e8dd1e2ba9dc42332396f39fbfab950b2301dc5",
+                "url": "https://api.github.com/repos/Guzzle3/http/zipball/1e8dd1e2ba9dc42332396f39fbfab950b2301dc5",
                 "reference": "1e8dd1e2ba9dc42332396f39fbfab950b2301dc5",
                 "shasum": ""
             },
@@ -303,12 +349,12 @@
             "target-dir": "Guzzle/Log",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/log.git",
+                "url": "https://github.com/Guzzle3/log.git",
                 "reference": "679d41f51bbd65d3868eeedfa33235039a57f6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/log/zipball/679d41f51bbd65d3868eeedfa33235039a57f6ab",
+                "url": "https://api.github.com/repos/Guzzle3/log/zipball/679d41f51bbd65d3868eeedfa33235039a57f6ab",
                 "reference": "679d41f51bbd65d3868eeedfa33235039a57f6ab",
                 "shasum": ""
             },
@@ -355,12 +401,12 @@
             "target-dir": "Guzzle/Parser",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/parser.git",
+                "url": "https://github.com/Guzzle3/parser.git",
                 "reference": "6874d171318a8e93eb6d224cf85e4678490b625c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/parser/zipball/6874d171318a8e93eb6d224cf85e4678490b625c",
+                "url": "https://api.github.com/repos/Guzzle3/parser/zipball/6874d171318a8e93eb6d224cf85e4678490b625c",
                 "reference": "6874d171318a8e93eb6d224cf85e4678490b625c",
                 "shasum": ""
             },
@@ -399,12 +445,12 @@
             "target-dir": "Guzzle/Plugin/Cookie",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/plugin-cookie.git",
+                "url": "https://github.com/Guzzle3/plugin-cookie.git",
                 "reference": "d8c3bee4152e7888d7bd7b1718f0ec40ee7d6589"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/plugin-cookie/zipball/d8c3bee4152e7888d7bd7b1718f0ec40ee7d6589",
+                "url": "https://api.github.com/repos/Guzzle3/plugin-cookie/zipball/d8c3bee4152e7888d7bd7b1718f0ec40ee7d6589",
                 "reference": "d8c3bee4152e7888d7bd7b1718f0ec40ee7d6589",
                 "shasum": ""
             },
@@ -448,12 +494,12 @@
             "target-dir": "Guzzle/Plugin/Log",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/plugin-log.git",
+                "url": "https://github.com/Guzzle3/plugin-log.git",
                 "reference": "499132cb94017cff2b498c3cf2dcf2f46bb89b1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/plugin-log/zipball/499132cb94017cff2b498c3cf2dcf2f46bb89b1d",
+                "url": "https://api.github.com/repos/Guzzle3/plugin-log/zipball/499132cb94017cff2b498c3cf2dcf2f46bb89b1d",
                 "reference": "499132cb94017cff2b498c3cf2dcf2f46bb89b1d",
                 "shasum": ""
             },
@@ -499,12 +545,12 @@
             "target-dir": "Guzzle/Plugin/Oauth",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/plugin-oauth.git",
+                "url": "https://github.com/Guzzle3/plugin-oauth.git",
                 "reference": "c56d7fcb046e24852e13be5ef6a315200207eaf3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/plugin-oauth/zipball/c56d7fcb046e24852e13be5ef6a315200207eaf3",
+                "url": "https://api.github.com/repos/Guzzle3/plugin-oauth/zipball/c56d7fcb046e24852e13be5ef6a315200207eaf3",
                 "reference": "c56d7fcb046e24852e13be5ef6a315200207eaf3",
                 "shasum": ""
             },
@@ -549,12 +595,12 @@
             "target-dir": "Guzzle/Stream",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/stream.git",
+                "url": "https://github.com/Guzzle3/stream.git",
                 "reference": "60c7fed02e98d2c518dae8f97874c8f4622100f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/stream/zipball/60c7fed02e98d2c518dae8f97874c8f4622100f0",
+                "url": "https://api.github.com/repos/Guzzle3/stream/zipball/60c7fed02e98d2c518dae8f97874c8f4622100f0",
                 "reference": "60c7fed02e98d2c518dae8f97874c8f4622100f0",
                 "shasum": ""
             },
@@ -598,16 +644,16 @@
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "1.3.7",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "87b54b460febed69726c781ab67462084e97a105"
+                "reference": "2465fe486c864e30badaa4d005ebdf89dbc503f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/87b54b460febed69726c781ab67462084e97a105",
-                "reference": "87b54b460febed69726c781ab67462084e97a105",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/2465fe486c864e30badaa4d005ebdf89dbc503f3",
+                "reference": "2465fe486c864e30badaa4d005ebdf89dbc503f3",
                 "shasum": ""
             },
             "require": {
@@ -660,21 +706,21 @@
                 "json",
                 "schema"
             ],
-            "time": "2014-08-25 02:48:14"
+            "time": "2015-03-27 16:41:39"
         },
         {
             "name": "symfony/console",
-            "version": "v2.5.6",
+            "version": "v2.6.7",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "6f177fca24200a5b97aef5ce7a5c98124a0f0db0"
+                "reference": "ebc5679854aa24ed7d65062e9e3ab0b18a917272"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/6f177fca24200a5b97aef5ce7a5c98124a0f0db0",
-                "reference": "6f177fca24200a5b97aef5ce7a5c98124a0f0db0",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/ebc5679854aa24ed7d65062e9e3ab0b18a917272",
+                "reference": "ebc5679854aa24ed7d65062e9e3ab0b18a917272",
                 "shasum": ""
             },
             "require": {
@@ -682,16 +728,19 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1"
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/process": "~2.1"
             },
             "suggest": {
                 "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": ""
+                "symfony/event-dispatcher": "",
+                "symfony/process": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -705,31 +754,31 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-10-05 13:57:04"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-02 15:18:45"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.5.6",
+            "version": "v2.6.7",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "804eb28dbbfba9ffdab21fe2066744906cea2212"
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/804eb28dbbfba9ffdab21fe2066744906cea2212",
-                "reference": "804eb28dbbfba9ffdab21fe2066744906cea2212",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/672593bc4b0043a0acf91903bb75a1c82d8f2e02",
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02",
                 "shasum": ""
             },
             "require": {
@@ -737,9 +786,11 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/config": "~2.0",
-                "symfony/dependency-injection": "~2.0,<2.6.0",
-                "symfony/stopwatch": "~2.2"
+                "symfony/config": "~2.0,>=2.0.5",
+                "symfony/dependency-injection": "~2.6",
+                "symfony/expression-language": "~2.6",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/stopwatch": "~2.3"
             },
             "suggest": {
                 "symfony/dependency-injection": "",
@@ -748,7 +799,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -762,34 +813,116 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony EventDispatcher Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-10-01 15:43:05"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-02 15:18:45"
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "phing/phing",
+            "version": "2.10.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phingofficial/phing.git",
+                "reference": "f6c25373cbce5e042dddd9b951a3d5638bb78f67"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/f6c25373cbce5e042dddd9b951a3d5638bb78f67",
+                "reference": "f6c25373cbce5e042dddd9b951a3d5638bb78f67",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "lastcraft/simpletest": "@dev",
+                "pdepend/pdepend": "2.x",
+                "pear-pear.php.net/http_request2": "2.2.x",
+                "pear-pear.php.net/net_growl": "2.7.x",
+                "pear-pear.php.net/pear_packagefilemanager": "1.7.x",
+                "pear-pear.php.net/pear_packagefilemanager2": "1.0.x",
+                "pear-pear.php.net/xml_serializer": "0.20.x",
+                "pear/pear_exception": "~1.0",
+                "pear/versioncontrol_git": "@dev",
+                "pear/versioncontrol_svn": "~0.5",
+                "phpdocumentor/phpdocumentor": "2.x",
+                "phploc/phploc": "2.x",
+                "phpmd/phpmd": "~2.2",
+                "phpunit/phpunit": ">=3.7",
+                "sebastian/phpcpd": "2.x",
+                "squizlabs/php_codesniffer": "~2.2"
+            },
+            "suggest": {
+                "pdepend/pdepend": "PHP version of JDepend",
+                "pear/archive_tar": "Tar file management class",
+                "pear/versioncontrol_git": "A library that provides OO interface to handle Git repository",
+                "pear/versioncontrol_svn": "A simple OO-style interface for Subversion, the free/open-source version control system",
+                "phpdocumentor/phpdocumentor": "Documentation Generator for PHP",
+                "phploc/phploc": "A tool for quickly measuring the size of a PHP project",
+                "phpmd/phpmd": "PHP version of PMD tool",
+                "phpunit/php-code-coverage": "Library that provides collection, processing, and rendering functionality for PHP code coverage information",
+                "phpunit/phpunit": "The PHP Unit Testing Framework",
+                "sebastian/phpcpd": "Copy/Paste Detector (CPD) for PHP code",
+                "tedivm/jshrink": "Javascript Minifier built in PHP"
+            },
+            "bin": [
+                "bin/phing"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.10.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "classes/phing/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "classes"
+            ],
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Phing Community",
+                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
+                },
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net"
+                }
+            ],
+            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
+            "homepage": "http://www.phing.info/",
+            "keywords": [
+                "build",
+                "phing",
+                "task",
+                "tool"
+            ],
+            "time": "2015-02-19 15:49:46"
+        }
     ],
-    "aliases": [
-
-    ],
-    "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
-    "prefer-stable": false,
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
 }

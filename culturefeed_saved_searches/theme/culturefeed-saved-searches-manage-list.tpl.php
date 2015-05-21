@@ -17,7 +17,7 @@
         <a href="<?php print $item['search_url']; ?>"><?php print $item['title']; ?></a>
       </td>
       <td>
-        <?php print t('frequency e-mail alerts') ?>:
+        <?php print t('alert frequency') ?>:
         <?php print drupal_render($item['form']); ?>
       </td>
       <td>

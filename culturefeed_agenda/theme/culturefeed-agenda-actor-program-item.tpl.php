@@ -6,8 +6,8 @@
 
 ?>
 <div>
-    <?php if (!empty($when)): ?>
-    <?php print $when; ?>
+    <?php if (!empty($when_md)): ?>
+    <?php print $when_md; ?>
     <?php endif; ?>
 
     <a href="<?php print $url ?>"><?php print $title; ?></a>

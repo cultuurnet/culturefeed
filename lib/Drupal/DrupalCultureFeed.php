@@ -231,6 +231,34 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getLoggedInUserInstance()->cashInPromotion($userId, $promotionId, $promotionCount);
   }
 
+  public static function getTemplate($id) {
+    return self::getLoggedInUserInstance()->getTemplate($id);
+  }
+
+  public static function createTemplate(CultureFeed_Template $template) {
+    return self::getLoggedInUserInstance()->createTemplate($template);
+  }
+
+  public static function updateTemplate(CultureFeed_Template $template, $fields = array()) {
+    self::getLoggedInUserInstance()->updateTemplate($template, $fields);
+  }
+
+  public static function getTemplateList() {
+    return self::getLoggedInUserInstance()->getTemplateList();
+  }
+
+  public static function deleteTemplate($id) {
+    self::getLoggedInUserInstance()->deleteTemplate($id);
+  }
+
+  public static function getServiceConsumer($consumerKey) {
+    return self::getLoggedInUserInstance()->getServiceConsumer($consumerKey);
+  }
+
+  public static function getServiceConsumers($start = 0, $max = NULL) {
+    return self::getLoggedInUserInstance()->getServiceConsumers($start, $max);
+  }
+
   public static function getMailing($id) {
     return self::getLoggedInUserInstance()->getMailing($id);
   }

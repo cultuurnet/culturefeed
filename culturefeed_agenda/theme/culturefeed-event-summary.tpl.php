@@ -11,7 +11,7 @@
 
 <div class="event-teaser">
 
-  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid))); ?></h2>
+  <h2><?php print culturefeed_search_detail_l('event', $cdbid, $title, $title, array('attributes' => array('id' => 'cf-title_' . $cdbid), 'html' => TRUE)); ?></h2>
 
   <div class="activity-wrapper">
     <div class="comment-wrapper">
@@ -47,9 +47,9 @@
     <dd><?php if (!empty($location['title'])): print $location['title']; endif; ?> <?php if (!empty($location['city'])): print $location['city']; endif; ?></dd>
     <?php endif; ?>
 
-    <?php if (!empty($when)): ?>
+    <?php if (!empty($when_md)): ?>
     <dt><?php print t('When'); ?></dt>
-    <dd><?php print $when; ?></dd>
+    <dd><?php print $when_md; ?></dd>
     <?php endif; ?>
 
     <?php if (!empty($organiser)): ?>

@@ -132,7 +132,7 @@ function culturefeed_date_control_period_validate(array $element, array &$form_s
   $triggering_parent = array_pop($triggering_element['#parents']);
   $dates = $element['#value'];
 
-  if (culturefeed_date_control_check_trigger_element($triggering_element, $element)) {
+  if (culturefeed_elements_check_trigger_element($triggering_element, $element)) {
 
     switch ($triggering_parent) {
 

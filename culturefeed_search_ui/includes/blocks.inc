@@ -212,18 +212,33 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['#attributes']['class'][] = 'append-button';
 
-  $form['date_range'] = array(
+  $form['date_from'] = array(
     '#type' => 'textfield',
     '#size' => 28,
-    '#title' => t('Choose a date'),
+    '#title' => t('Between'),
     '#title_display' => 'invisible',
-    '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
-    '#attributes' => array('placeholder' => t('Or choose a custom date'), 'autocomplete' => 'off'),
+    '#default_value' => isset($_GET['date_from']) ? $_GET['date_from'] : '',
+    '#attributes' => array('placeholder' => t('Between'), 'autocomplete' => 'off'),
   );
-
+  $form['date_to'] = array(
+    '#type' => 'textfield',
+    '#size' => 28,
+    '#title' => t('And'),
+    '#title_display' => 'invisible',
+    '#default_value' => isset($_GET['date_to']) ? $_GET['date_to'] : '',
+    '#attributes' => array('placeholder' => t('And'), 'autocomplete' => 'off'),
+  );
+  $form['date_range'] = array(
+    '#markup' => l('<span>' . t('Specific dates') . '</span>', 'javascript:', array(
+      'html' => TRUE,
+      'external' => TRUE,
+      'attributes' => array('id' => 'specific-dates-range'),
+    )),
+  );
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#attributes' => array('id' => 'submit-specific-dates'),
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
@@ -238,21 +253,14 @@ function culturefeed_search_ui_date_facet_form() {
  */
 function culturefeed_search_ui_date_facet_form_validate($form, &$form_state) {
 
-  if (!empty($form_state['values']['date_range'])) {
-
-    $form_state['values']['date_range'] = str_replace(t('till'), '-', $form_state['values']['date_range']);
-    $dates = explode('-', $form_state['values']['date_range']);
-    $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
-    if (!$startDate) {
-      form_set_error('date_range', t('Please enter a valid date'));
-    }
-    elseif (isset($dates[1])) {
-      $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
-      if (!$endDate) {
-        form_set_error('date_range', t('Please enter a valid date'));
-      }
+  $error = FALSE;
+  foreach (array('date_from', 'date_to') as $key) {
+    if (!empty($form_state['values'][$key]) && !DateTime::createFromFormat('d/m/Y', $form_state['values'][$key])) {
+      form_set_error($key, !$error ? t('Please enter a valid date') : '');
+      $error = TRUE;
     }
   }
+
 }
 
 /**
@@ -267,8 +275,10 @@ function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
     unset($query['facet']);
   }
 
-  if (!empty($form_state['values']['date_range'])) {
-    $query['date_range'] = $form_state['values']['date_range'];
+  foreach (array('date_from', 'date_to') as $key) {
+    if (!empty($form_state['values'][$key])) {
+      $query[$key] = $form_state['values'][$key];
+    }
   }
 
   $form_state['redirect'] = array(
@@ -292,8 +302,13 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
+  $noresults = FALSE;
   if ($culturefeedSearchResult->getTotalCount() == 0) {
-    return;
+    $noresults = TRUE;
+    // Hide location selector for empty results only when no location was set.
+    if (empty($_GET['location'])) {
+      return;
+    }
   }
 
   $build = array();
@@ -319,6 +334,7 @@ function culturefeed_search_ui_block_city_facet() {
       '#theme' => 'culturefeed_search_facet',
       '#facet' => $facet,
       '#items' => $items,
+      '#noresults' => $noresults,
     );
 
     // If a postal was given. We can add proximity search.
@@ -388,6 +404,11 @@ function culturefeed_search_ui_city_facet_form() {
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'nearby', 'coordinates'));
+  
+  // Remove the region filter so choosing a city has results.
+  if (isset($query['facet']['category_flandersregion_id'])) {
+    unset($query['facet']['category_flandersregion_id']);
+  }
 
   if (!empty($form_state['values']['location'])) {
     $query['location'] = $form_state['values']['location'];
@@ -669,6 +690,39 @@ function culturefeed_search_ui_search_active_filters_block() {
 
 }
 
+/**
+ * Show the filter form for the search ui.
+ */
+function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id = '') {
+
+  if ($display_type == 'checkboxes') {
+    // Show filters as checkboxes with submit button.
+    return drupal_get_form('culturefeed_search_ui_block_filter_form' . $form_id, $filter_options);
+  }
+  elseif ($display_type == 'links') {
+    // Show filters as links.
+    $searches = culturefeed_get_searchable_types();
+    $path = isset($searches['path']) ? $searches['path'] : NULL;
+    $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+    return  theme('culturefeed_search_block_filter_links',
+      array(
+        'filter_options' => $filter_options,
+        'query' => $query,
+        'path' => $path
+      )
+     );
+  }
+
+}
+
+/**
+ * Form to filter search queries by webmaster driven settings.
+ * @param type $form
+ * @param type $form_state
+ * @param type $filter_options
+ * @return string
+ */
 function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
 
   $form = array();
@@ -691,29 +745,11 @@ function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_opt
 }
 
 /**
- * Show the filter form for the search ui.
+ * Form alias with unique form_id for culturefeed_search_ui_block_filter_form().
+ * @see culturefeed_search_ui_block_filter_form().
  */
-function culturefeed_search_ui_block_filter_block($filter_options, $display_type) {
-
-  if ($display_type == 'checkboxes') {
-    // Show filters as checkboxes with submit button.
-    return drupal_get_form('culturefeed_search_ui_block_filter_form', $filter_options);
-  }
-  elseif ($display_type == 'links') {
-    // Show filters as links.
-    $searches = culturefeed_get_searchable_types();
-    $path = isset($searches['path']) ? $searches['path'] : NULL;
-    $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-
-    return  theme('culturefeed_search_block_filter_links',
-      array(
-        'filter_options' => $filter_options,
-        'query' => $query,
-        'path' => $path
-      )
-     );
-  }
-
+function culturefeed_search_ui_block_filter_form2($form, $form_state, $filter_options) {
+  return culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options);
 }
 
 /**
@@ -734,6 +770,13 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
     $_GET['q'],
     array('query' => $query)
   );
+}
+/**
+ * Alias for the submit handler of culturefeed_search_ui_block_filter_form().
+ * @see culturefeed_search_ui_block_filter_form_submit().
+ */
+function culturefeed_search_ui_block_filter_form2_submit($form, &$form_state) {
+  culturefeed_search_ui_block_filter_form_submit($form, $form_state);
 }
 
 /**

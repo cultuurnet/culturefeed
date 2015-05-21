@@ -274,7 +274,7 @@ function culturefeed_agenda_get_production_program_data_for_item(Cultuurnet\Sear
       'venue' => isset($location['title']) ? $location['title'] : '',
     );
 
-    if (module_exists('culturefeed_agenda')) {
+    if (module_exists('culturefeed_calendar')) {
       $data['personal_calendar_buttons'] = culturefeed_calendar_render_calendar_buttons($item);
     }
 
@@ -600,6 +600,8 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
       $timestamps_array[$current_timestamp] = array(
         'day' => date('D', strtotime($date)),
         'date' => date('d/m', strtotime($date)),
+				'year' => date('Y', strtotime($date)),
+				'countable_date' => date('Y-m-d', strtotime($date)),
       );
       if ($timestamp->getStartTime()) {
         $timestamps_array[$current_timestamp]['begintime'] = date('H:i', strtotime($timestamp->getStartTime()));
@@ -620,24 +622,36 @@ function culturefeed_agenda_parse_timestamps($timestamps) {
 
 function culturefeed_agenda_group_timestamps(&$timestamps) {
 
-  for ($i=0; $i<count($timestamps); $i++) {
-    if (isset($timestamps[$i+1])) {
-      $this_timestamp = $timestamps[$i];
-      $next_timestamp = $timestamps[$i+1];
+  if (count($timestamps) > 1) {
+    for ($i = 0; $i < count($timestamps); $i++) {
+      if (isset($timestamps[$i + 1])) {
+        $this_timestamp = $timestamps[$i];
+        $next_timestamp = $timestamps[$i + 1];
 
-      if ($this_timestamp['date'] == $next_timestamp['date']) {
-        if (!is_array($timestamps[$i]['begintime'])){
-          unset($timestamps[$i]['begintime']);
-          $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
-          $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
+        if ($this_timestamp['date'] == $next_timestamp['date']) {
+          if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
+            unset($timestamps[$i]['begintime']);
+            if (isset($this_timestamp['begintime'])) {
+              $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
+            }
+            if (isset($next_timestamp['begintime'])) {
+              $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
+            }
+          }
+          else {
+            if (isset($next_timestamp['begintime']) && $this_timestamp['begintime'] != $next_timestamp['begintime']) {
+              unset($timestamps[$i]['begintime']);
+              $timestamps[$i]['begintime'][] = $this_timestamp['begintime'];
+              $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+            }
+          }
+          if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
+            sort($timestamps[$i]['begintime']);
+          }
+          unset($timestamps[$i + 1]);
+          $timestamps = array_values($timestamps);
+          $i--;
         }
-        else {
-          $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
-        }
-        sort($timestamps[$i]['begintime']);
-        unset($timestamps[$i+1]);
-        $timestamps = array_values($timestamps);
-        $i--;
       }
     }
   }
@@ -777,3 +791,22 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
 }
 
+/**
+ * A function to initiate a HTML calendar formatter.
+ * @return \CultuurNet\CalendarSummary\CalendarHTMLFormatter
+ */
+function culturefeed_agenda_get_html_calendar_formatter() {
+  $formatter = new CultuurNet\CalendarSummary\CalendarHTMLFormatter();
+
+  return $formatter;
+}
+
+/**
+ * A function to initiate a plain text calendar formatter.
+ * @return \CultuurNet\CalendarSummary\CalendarPlainTextFormatter
+ */
+function culturefeed_agenda_get_plain_text_calendar_formatter() {
+  $formatter = new CultuurNet\CalendarSummary\CalendarPlainTextFormatter();
+
+  return $formatter;
+}

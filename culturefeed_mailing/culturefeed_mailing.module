@@ -18,7 +18,11 @@ function culturefeed_mailing_permission() {
     'manage mailing lists' => array(
       'title' => t('Manage mailing lists'),
       'description' => t('Allows the user to manage mailing lists & templates'),
-    )
+    ),
+    'delete mail template' => array(
+      'title' => t('Delete mail template'),
+      'description' => t('Allows the user to delete mailing lists & templates'),
+    ),
   );
 }
 
@@ -54,8 +58,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['culturefeed/mailing'] = array(
-    'title callback' => FALSE,
-    'title' => 'Emails',
+    'title' => 'Newsletters',
     'page callback' => 'culturefeed_mailing_page_my_newsletters',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -91,7 +94,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/edit/%culturefeed_mailing'] = array(
-    'title' => 'Add mailing list',
+    'title' => 'Edit mailing list',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_lists_form', 4),
     'access arguments' => array('manage mailing lists'),
@@ -100,10 +103,12 @@ function culturefeed_mailing_menu() {
 
   $items['admin/content/mailing-lists/test/%culturefeed_mailing'] = array(
     'title' => 'Test mailing list',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_mailing_test_list_form', 4),
+    'delivery callback' => 'ajax_deliver',
+    'page callback' => 'culturefeed_mailing_test_list',
+    'page arguments' => array(4),
     'access arguments' => array('manage mailing lists'),
     'file' => 'culturefeed_mailing.pages.inc',
+    'type' => MENU_CALLBACK,
   );
 
   $items['admin/content/mailing-lists/send/%culturefeed_mailing'] = array(
@@ -123,10 +128,43 @@ function culturefeed_mailing_menu() {
   );
 
   $items['admin/content/mailing-lists/delete/%culturefeed_mailing'] = array(
-    'title' => 'Add mailing list',
+    'title' => 'Delete mailing',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_delete_form', 4),
+    'access arguments' => array('delete mail template'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
+  $items['admin/content/templates'] = array(
+    'title' => 'Templates',
+    'page callback' => 'culturefeed_template_list_overview',
     'access arguments' => array('manage mailing lists'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
+  $items['admin/content/templates/add'] = array(
+    'title' => 'Add template',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_templates_form'),
+    'access arguments' => array('manage mailing lists'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
+  $items['admin/content/templates/edit/%culturefeed_template'] = array(
+    'title' => 'Edit template',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_templates_form', 4),
+    'access arguments' => array('manage mailing lists'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
+  $items['admin/content/templates/delete/%culturefeed_template'] = array(
+    'title' => 'Delete template',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_templates_delete_form', 4),
+    'access arguments' => array('delete mail template'),
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
@@ -293,12 +331,32 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
 /**
  * Load a culturefeed mailing.
+ *
  * @param $id
  *   Mailing id
+ * @return Culturefeed_Mailing
+ *   Returns a mailing if found, else FALSE.
  */
 function culturefeed_mailing_load($id) {
   try {
     return DrupalCultureFeed::getMailing($id);
+  }
+  catch (Exception $e) {
+    return FALSE;
+  }
+}
+
+/**
+ * Load a culturefeed template.
+ *
+ * @param $id
+ *   Template id
+ * @return CultureFeed_Template
+ *   Returns a template if found, else FALSE.
+ */
+function culturefeed_template_load($id) {
+  try {
+    return DrupalCultureFeed::getTemplate($id);
   }
   catch (Exception $e) {
     return FALSE;

@@ -134,6 +134,13 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
+	$theme['culturefeed_agenda_organiser_events'] = array(
+		'variables' => array('items' => array(), 'organiser' => NULL),
+		'template' => 'culturefeed-agenda-organiser-events',
+		'path' => $path,
+		'file' => 'theme.inc',
+	);
+
   return $theme;
 
 }
@@ -144,6 +151,16 @@ function culturefeed_agenda_theme() {
 function culturefeed_agenda_menu() {
 
   $items = array();
+
+  // Menu path for permalinks, redirects to correct one.
+  $items['permalink/%culturefeed_search_item'] = array(
+    'title' => 'Permalink',
+    'page callback' => 'culturefeed_agenda_permalink_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
 
   // Menu path for detail pages.
   $items['agenda/a/%/%culturefeed_agenda_actor'] = array(
@@ -293,13 +310,13 @@ function culturefeed_agenda_culturefeed_search_page_info() {
           'label' => t('Relevance'),
           'exposed' => TRUE,
           'query' => '',
+          'default' => TRUE,
         ),
         array(
           'value' => 'date',
           'label' => t('Date'),
           'exposed' => TRUE,
-          'query' => 'permanent asc,startdateday asc,weight desc',
-          'default' => TRUE,
+          'query' => 'permanent asc,availableto asc,weight desc',
         ),
         array(
           'value' => 'agefrom',
@@ -308,21 +325,21 @@ function culturefeed_agenda_culturefeed_search_page_info() {
           'query' => 'agefrom asc',
         ),
         array(
-          'value' => 'recommend_count',
-          'label' => t('Recommended'),
+          'value' => 'likes',
+          'label' => t('Popularity'),
           'exposed' => TRUE,
-          'query' => 'recommend_count desc',
+          'query' => 'like_count desc',
         ),
         array(
-          'value' => 'comment_count',
+          'value' => 'comments',
           'label' => t('Reactions'),
-          'exposed' => TRUE,
+          'exposed' => FALSE,
           'query' => 'comment_count desc',
         ),
         array(
-          'value' => 'weight',
-          'label' => t('Weight'),
-          'exposed' => TRUE,
+          'value' => 'importance',
+          'label' => t('Importance'),
+          'exposed' => FALSE,
           'query' => 'weight desc',
         ),
       ),
@@ -374,6 +391,11 @@ function culturefeed_agenda_block_info() {
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+	$blocks['agenda-organiser-events'] = array(
+		'info' => t('Culturefeed agenda: Organiser events'),
+		'cache' => DRUPAL_CACHE_PER_PAGE,
+	);
+
   return $blocks;
 
 }
@@ -410,22 +432,16 @@ function culturefeed_agenda_block_configure($delta) {
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
       '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
+    
+    // sort_direction is no longer a seperate field. Add it to the sort field if variable exists.
+    $sort_direction = variable_get('agenda_related_activities_sort_direction', '');
+    $default_sort = variable_get('agenda_related_activities_sort') . ' ' . $sort_direction;
 
     $form['agenda_related_activities_sort'] = array(
       '#title' => t('Sort field'),
       '#type' => 'textfield',
-      '#default_value' => variable_get('agenda_related_activities_sort'),
-      '#description' => t('Field to sort on. Example startdate'),
-    );
-
-    $form['agenda_related_activities_sort_direction'] = array(
-      '#title' => t('Sort direction'),
-      '#type' => 'select',
-      '#options' => array(
-        \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC => t('Ascending'),
-        \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC => t('Descending'),
-      ),
-      '#default_value' => variable_get('agenda_related_activities_sort_direction', 'asc'),
+      '#default_value' => $default_sort,
+      '#description' => t('Field + direction to sort on. Example permanent asc, availableto asc, weight desc'),
     );
 
     $form['agenda_related_activities_total_items'] = array(
@@ -579,6 +595,14 @@ function culturefeed_agenda_block_configure($delta) {
     );
 
   }
+	elseif ($delta == 'agenda-organiser-events') {
+		$form['agenda_organiser_event_amount'] = array(
+			'#title' => t('Amount of results to show'),
+			'#type' => 'textfield',
+			'#default_value' => variable_get('agenda_organiser_event_amount', 10),
+			'#description' => t('Enter the number of results to show in the block.'),
+		);
+	}
 
   return $form;
 
@@ -595,7 +619,7 @@ function culturefeed_agenda_block_save($delta, $edit) {
     variable_set('agenda_related_activities_range', $edit['agenda_related_activities_range']);
     variable_set('agenda_related_activities_extra_query', $edit['agenda_related_activities_extra_query']);
     variable_set('agenda_related_activities_sort', $edit['agenda_related_activities_sort']);
-    variable_set('agenda_related_activities_sort_direction', $edit['agenda_related_activities_sort_direction']);
+    variable_set('agenda_related_activities_sort_direction', '');
     variable_set('agenda_related_activities_total_items', $edit['agenda_related_activities_total_items']);
 
   }
@@ -633,6 +657,11 @@ function culturefeed_agenda_block_save($delta, $edit) {
 
   }
 
+	elseif ($delta == 'agenda-organiser-events') {
+
+		variable_set('agenda_organiser_event_amount', $edit['agenda_organiser_event_amount']);
+	}
+
 }
 
 /**
@@ -663,6 +692,9 @@ function culturefeed_agenda_block_view($delta) {
 
     case  'agenda-event-types':
       return culturefeed_agenda_block_event_types();
+
+		case 'agenda-organiser-events':
+			return culturefeed_agenda_block_organiser_events();
   }
 
   return $block;
@@ -686,7 +718,7 @@ function culturefeed_agenda_culturefeed_search_ui_active_filters($culturefeedFac
       unset($search_query['actor']);
       $url = url($path, array('query' => $search_query));
       $build['nearby'] = array(
-        '#theme' => 'cul  turefeed_search_active_filters_item',
+        '#theme' => 'culturefeed_search_active_filters_item',
         '#label' => check_plain($actor->getTitle(culturefeed_search_get_preferred_language())),
         '#url' => $url,
       );
@@ -746,15 +778,20 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
       $city_parts = explode(' ', $location);
 
       // The search contains a zip code. Search city by zip + name.
-      if (is_numeric($city_parts[0])) {
+      if (is_numeric($city_parts[0]) && isset($city_parts[1])) {
 
+        // Search on city or city + (city)
         if (count($city_parts) == 2) {
-          // Static cache the result.
-          if (!isset($city_slugs[$city_parts[0]][$city_parts[1]])) {
-            $city_slugs[$city_parts[0]][$city_parts[1]] = db_query('SELECT slug FROM {culturefeed_search_cities} WHERE zip = :zip AND name = :name', array(':zip' => $city_parts[0], ':name' => $city_parts[1]))->fetchField();
-          }
-          $location_slug = $city_slugs[$city_parts[0]][$city_parts[1]];
+          $name = $city_parts[1];
         }
+        else {
+          $name = $city_parts[1] . ' ' . $city_parts[2];
+        }
+        // Static cache the result.
+        if (!isset($city_slugs[$city_parts[0]][$city_parts[1]])) {
+          $city_slugs[$city_parts[0]][$city_parts[1]] = db_query('SELECT slug FROM {culturefeed_search_cities} WHERE zip = :zip AND name = :name', array(':zip' => $city_parts[0], ':name' => $name))->fetchField();
+        }
+        $location_slug = $city_slugs[$city_parts[0]][$city_parts[1]];
       }
       // The search contains only a city / region name. Search on full name.
       else {
@@ -772,6 +809,21 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
         $type = $type ? : 'alle';
         $path = 'agenda/' . $type . '/' . $location_slug;
       }
+    }
+
+    // Rewrite facet on flanders region.
+    if (isset($facets['category_flandersregion_id']) && is_array($facets['category_flandersregion_id']) && isset($facets['category_flandersregion_id'][0])) {
+
+      if (!isset($term_slugs[$facets['category_flandersregion_id'][0]])) {
+        $term_slugs[$facets['category_flandersregion_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_flandersregion_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      }
+
+      $type = $type ? : 'alle';
+      $path = 'agenda/' . $type . '/' . $term_slugs[$facets['category_flandersregion_id'][0]];
+
+      // Remove the facet.
+      unset($options['query']['facet']['category_flandersregion_id']);
+
     }
 
     // Rewrite facet on theme.

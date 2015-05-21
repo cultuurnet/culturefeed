@@ -67,6 +67,12 @@ function culturefeed_search_schema() {
         'length' => 150,
         'default' => NULL
       ),
+      'show_term' => array(
+        'description' => 'False if the term is a system term',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1
+      ),
       'slug' => array(
         'description' => 'Slug of the term name.',
         'type' => 'varchar',
@@ -184,6 +190,7 @@ function culturefeed_search_update_7001() {
   $schema = culturefeed_search_schema();
   db_drop_table('culturefeed_search_terms');
   db_create_table('culturefeed_search_terms', $schema['culturefeed_search_terms']);
+  drupal_set_message(t('Culturefeed terms Table reïnstalled. Please run the drush csit again'));
 }
 
 /**
@@ -219,5 +226,12 @@ function culturefeed_search_update_7006() {
  */
 function culturefeed_search_update_7007() {
   culturefeed_search_update_7003();
+}
+
+/**
+ * Re-creates the culturefeed_search_terms table so it contains the show column.
+ */
+function culturefeed_search_update_7008() {
+  culturefeed_search_update_7001();
 }
 

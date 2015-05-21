@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Culturefeed" default="test">
+    <target name="test">
+        <phplint>
+            <fileset dir=".">
+                <include name="**/*.php"/>
+                <include name="**/*.module" />
+                <include name="**/*.inc" />
+                <exclude name="vendor/" />
+            </fileset>
+        </phplint>
+    </target>
+</project>

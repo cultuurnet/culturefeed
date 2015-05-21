@@ -275,8 +275,20 @@ function culturefeed_acceptance_mode() {
 
   // Get culturefeed_api_location
   $location = variable_get('culturefeed_api_location');
-  if (strpos($location,'www') === false) {
+  if (strpos($location,'www') === FALSE) {
     return TRUE;
+  }
+
+  // Check for acc or dev environments that are connected with production
+  else {
+    global $base_root;
+    $dev_ids = array('culturefeed', 'dev.', 'acc.');
+    foreach($dev_ids as $id) {
+      if (stripos($base_root, $id) !== false) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
 }
@@ -430,3 +442,44 @@ function culturefeed_ajax_command_goto($url) {
   );
 }
 
+/**
+ * Getter function to retrieve a Mobile_Detect() singleton.
+ * @return object
+ * Instance of Mobile_Detect(), NULL if failure.
+ */
+function culturefeed_mobile_detect_get_object() {
+  $detect = &drupal_static(__FUNCTION__);
+
+  if (!isset($detect)) {
+    if (class_exists('Mobile_Detect')) {
+      try {
+        $detect = new Mobile_Detect();
+      } catch (Exception $e) {
+        $detect = NULL;
+        watchdog('mobile_detect', 'Could not instantiate Mobile_Detect(): %message',
+          array('%message' => $e->getMessage()), WATCHDOG_ALERT);
+      }
+    } else {
+      $detect = NULL;
+      watchdog('mobile_detect', 'Mobile_Detect() class does not exist', array(), WATCHDOG_ALERT);
+    }
+  }
+
+  return $detect;
+}
+
+/**
+ * Known versions of cdb xml.
+ *
+ * @return array
+ */
+function culturefeed_cdb_xml_versions() {
+  $cdb_xml_versions = array(
+    '3.0',
+    '3.1',
+    '3.2',
+    '3.3',
+  );
+
+  return $cdb_xml_versions;
+}

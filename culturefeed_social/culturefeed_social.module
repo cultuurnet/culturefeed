@@ -350,6 +350,7 @@ function culturefeed_social_theme() {
       'variables' => array(
         'activities_total' => NULL,
         'activity_link' => NULL,
+        'activity_type' => NULL,
         'list' => NULL,
       ),
       'template' => 'culturefeed-social-user-list-block-for-activity',
@@ -897,7 +898,16 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
-    '#attributes' => array('class' => array('btn-primary')),
+    '#attributes' => array('style' => array('float:left')),
+  );
+
+  $destination = drupal_get_destination();
+
+  $form['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => url($GLOBALS['base_url'] . '/' . $destination['destination']),
+    '#attributes' => array('class' => array('abuse-button-decline')),
   );
 
   $form['#theme'] = 'culturefeed_social_report_abuse_form';
