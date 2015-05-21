@@ -13,6 +13,15 @@
               if (data.length === 0) {
                 widget.removeClass('throbbing');
               }
+              else {
+                $.each(data, function(index, element) {
+                  if (!(element.label.match(/^\d+/))) {
+                    if (!(element.label.match(/^Provinc|Regio+/))) {
+                      element.label += ' (+ ' + Drupal.t('boroughs') + ')';
+                    }
+                  }
+                });
+              }
               callback(data);
             },
             error: function () {
