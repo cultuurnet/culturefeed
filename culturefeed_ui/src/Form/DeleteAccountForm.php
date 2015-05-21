@@ -121,7 +121,7 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
           array('exception' => $e)
         );
       }
-      drupal_set_message(t('An error occurred while deleting your account.'));
+      drupal_set_message($this->t('An error occurred while deleting your account.'));
       return;
     }
 

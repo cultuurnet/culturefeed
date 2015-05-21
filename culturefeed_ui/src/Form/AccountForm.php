@@ -259,8 +259,6 @@ class AccountForm extends FormBase implements LoggerAwareInterface {
     ];
     $privacyStatement = $this->t('I accept that my UiTiD actions on @site_name will be published automatically on @connected_account_type.', $translationReplacements);
 
-    // user agreement was linked to this specific node: l(t('User agreement'), 'node/2512')
-
     $publishLink = '';
     $makePrivateUrl = new Url('culturefeed_ui.connected_accounts.make_private',
       array(

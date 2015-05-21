@@ -88,7 +88,7 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
           array('exception' => $e)
         );
       }
-      drupal_set_message(t('Error occurred'), 'error');
+      drupal_set_message($this->t('Error occurred'), 'error');
     };
 
     return $this->redirect('culturefeed_ui.account_form');
