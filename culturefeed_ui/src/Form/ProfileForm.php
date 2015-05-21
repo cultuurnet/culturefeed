@@ -7,7 +7,6 @@
 
 namespace Drupal\culturefeed_ui\Form;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use CultureFeed_User;
@@ -121,6 +120,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       '#title' => $this->t('Biography'),
       '#default_value' => $user->bio,
       '#description' => $this->t('Maximum 250 characters'),
+      '#maxlength' => 250,
     );
     // Picture.
 //        $form_state->set('#old_picture', 0);
@@ -264,13 +264,6 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
     $culturefeed = $this->culturefeed;
     $values = $form_state->getValues();
 
-    // Custom validations first.
-    if (Unicode::strlen($values['bio']) > 250) {
-      $form_state->setErrorByName('bio',
-        $this->t('The maximum of 250 characters is exceeded'));
-      return;
-    }
-
     // Update profile information.
     $user_update = new CultureFeed_User();
 
@@ -315,17 +308,21 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       'dob'
     );
 
-    try {
-      $culturefeed->updateUser($user_update, $fields);
-    } catch (\Exception $e) {
-      if ($this->logger) {
-        $this->logger->error(
-          'Error occurred while updating user',
-          array('exception' => $e)
+    if (!$form_state->hasAnyErrors()) {
+      try {
+        $culturefeed->updateUser($user_update, $fields);
+      } catch (\Exception $e) {
+        if ($this->logger) {
+          $this->logger->error(
+            'Error occurred while updating user',
+            array('exception' => $e)
+          );
+        }
+        $form_state->setErrorByName(
+          'submit',
+          $this->t('Error occurred while saving your personal data.')
         );
       }
-      $form_state->setErrorByName('submit',
-        $this->t('Error occurred while saving your personal data.'));
     }
 
     // Remove the profile picture if requested.
@@ -361,21 +358,25 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
 //      }
 //    }
 
-    // Update field privacy status.
-    $privacy_config = new CultureFeed_UserPrivacyConfig();
+    if (!$form_state->hasAnyErrors()) {
+      // Update field privacy status.
+      $privacy_config = new CultureFeed_UserPrivacyConfig();
 
-    $privacy_config->givenName = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->familyName = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->gender = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->homeAddress = $values['homeAddressPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->dob = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->bio = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->givenName = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->familyName = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->gender = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->homeAddress = $values['homeAddressPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->dob = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+      $privacy_config->bio = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
 
-    try {
-      $culturefeed->updateUserPrivacy($this->user->id, $privacy_config);
-    } catch (\Exception $e) {
-      $form_state->setErrorByName('submit',
-        $this->t('Error occurred while saving your privacy settings.'));
+      try {
+        $culturefeed->updateUserPrivacy($this->user->id, $privacy_config);
+      } catch (\Exception $e) {
+        $form_state->setErrorByName(
+          'submit',
+          $this->t('Error occurred while saving your privacy settings.')
+        );
+      }
     }
   }
 
