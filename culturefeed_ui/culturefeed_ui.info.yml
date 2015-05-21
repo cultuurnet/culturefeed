@@ -6,4 +6,5 @@ version: 1.x-dev
 package: Culturefeed
 dependencies:
   - culturefeed
-
+'interface translation project': culturefeed_ui
+'interface translation server pattern': modules/culturefeed/culturefeed_ui/translations/%project.%language.po

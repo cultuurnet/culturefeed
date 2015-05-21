@@ -1,0 +1,695 @@
+# $Id$
+#
+# German translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  culturefeed-ui-connect-hover.tpl.php: n/a
+#  culturefeed-ui-connect.tpl.php: n/a
+#  culturefeed-ui-something-for-you.tpl.php: n/a
+#  culturefeed-ui-mbox-confirmation-reminder.tpl.php: n/a
+#  culturefeed-ui-my-uitid.tpl.php: n/a
+#  culturefeed-ui-online-account.tpl.php: n/a
+#  culturefeed-ui-page-account-edit.tpl.php: n/a
+#  culturefeed-ui-ranked-user-summary.tpl.php: n/a
+#  culturefeed_ui.admin.inc: n/a
+#  culturefeed_ui.blocks.inc: n/a
+#  culturefeed_ui.preprocess.inc: n/a
+#  culturefeed_ui.helpers.inc: n/a
+#  culturefeed_ui.module: n/a
+#  culturefeed_ui.forms.inc: n/a
+#  culturefeed_ui.pages.inc: n/a
+#  culturefeed_ui.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-01-30 14:20+0100\n"
+"PO-Revision-Date: 2014-01-30 14:50+0100\n"
+"Last-Translator: Sven Houtmeyers <sven@cultuurnet.be>\n"
+"Language-Team: German <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: culturefeed-ui-connect-hover.tpl.php:2
+msgid "To continue you have to be logged on with your UiTiD."
+msgstr "Um weiterzumachen, müssen Sie mit Ihrer UiTiD angemeldet sein."
+
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
+#: culturefeed-ui-something-for-you.tpl.php:3
+msgid "Or via"
+msgstr "Oder über"
+
+#: culturefeed-ui-connect-hover.tpl.php:4 culturefeed-ui-connect.tpl.php:13
+#: culturefeed-ui-something-for-you.tpl.php:3
+msgid "or"
+msgstr "oder"
+
+#: culturefeed-ui-connect.tpl.php:2
+msgid "Choosing your events will be simplified"
+msgstr "Die Entscheidung wird leichter"
+
+#: culturefeed-ui-connect.tpl.php:3
+msgid "thanks to UiTiD"
+msgstr "dank UiTID"
+
+#: culturefeed-ui-connect.tpl.php:5
+msgid "Create an UiTiD account and:"
+msgstr "Legen Sie eine UiTiD an und:"
+
+#: culturefeed-ui-connect.tpl.php:7
+msgid "receive <strong>personal tips</strong> only for you"
+msgstr "Erhalten Sie <strong>persönliche Tipps</strong> genau nach Maß"
+
+#: culturefeed-ui-connect.tpl.php:8
+msgid "discover what <string>your friends and similar users</strong> like"
+msgstr ""
+"Entdecken Sie, was <strong>Freunden und ähnlichen Nutzern</strong> gefällt"
+
+#: culturefeed-ui-connect.tpl.php:9
+msgid ""
+"be <strong>the first to know</strong> updates about your favorite activities"
+msgstr ""
+"sein <strong> der ersten, </strong> Aktuelles über Ihre Lieblings-"
+"Aktivitäten wissen"
+
+#: culturefeed-ui-mbox-confirmation-reminder.tpl.php:1
+msgid "Confirm your email address to use all UiTiD features"
+msgstr ""
+"Bestätigen Sie Ihre E-Mail-Adresse, um alle Funktionen von UiTiD zu nutzen."
+
+#: culturefeed-ui-mbox-confirmation-reminder.tpl.php:3
+msgid "A confirmation email has been send to"
+msgstr "Eine Bestätigungsmail wurde versendet an"
+
+#: culturefeed-ui-my-uitid.tpl.php:40
+msgid "Amount of actions"
+msgstr "Anzahl Aktionen"
+
+#: culturefeed-ui-my-uitid.tpl.php:42
+msgid ""
+"The more items you like or events you attend, the more tips will have a "
+"personal touch"
+msgstr ""
+"Je öfter Sie mitteilen, ob Ihnen eine Aktivität gefällt, oder ob Sie dort "
+"hingehen, umso besser werden Ihre persönlichen Tipps."
+
+#: culturefeed-ui-my-uitid.tpl.php:46
+msgid "likes"
+msgstr "gefällt"
+
+#: culturefeed-ui-my-uitid.tpl.php:52
+msgid "attends"
+msgstr "gehe ich hin"
+
+#: culturefeed-ui-my-uitid.tpl.php:69
+msgid "Pages of which i'm a member"
+msgstr "Seiten, deren Mitglied ich bin:"
+
+#: culturefeed-ui-my-uitid.tpl.php:69
+msgid "Pages of which @username is a member"
+msgstr "Seiten, von denen @ username ist Mitglied"
+
+#: culturefeed-ui-online-account.tpl.php:8
+msgid "Connected to:"
+msgstr "Verknüpft mit:"
+
+#: culturefeed-ui-page-account-edit.tpl.php:14
+msgid "Connected accounts"
+msgstr "Verknüpfte Konten"
+
+#: culturefeed-ui-page-account-edit.tpl.php:19
+msgid "Connected applications"
+msgstr "verbunden Anwendungen"
+
+#: culturefeed-ui-page-account-edit.tpl.php:20
+msgid "Manage all"
+msgstr "alle verwalten"
+
+#: culturefeed-ui-page-account-edit.tpl.php:20
+msgid "websites and applications"
+msgstr "Websites und Anwendungen,"
+
+#: culturefeed-ui-page-account-edit.tpl.php:20
+msgid "who uses your UiTiD profile."
+msgstr "die Ihre UiTiD Profil verwendet."
+
+#: culturefeed-ui-ranked-user-summary.tpl.php:8
+msgid "actions"
+msgstr "Aktionen"
+
+#: culturefeed-ui-something-for-you.tpl.php:1
+msgid ""
+"Create an UiTiD account, let us know what you like and receive more personal "
+"tips."
+msgstr ""
+"Legen Sie eine UiTiD an, teilen Sie uns mit, was Ihnen gefällt, und Sie "
+"erhalten noch mehr Tipps genau nach Maß."
+
+#: culturefeed_ui.admin.inc:17
+msgid "Number of activities"
+msgstr "Anzahl Aktivitäten"
+
+#: culturefeed_ui.admin.inc:18
+msgid "Number of likes"
+msgstr "Anzahl Gefällt-mir"
+
+#: culturefeed_ui.admin.inc:19
+msgid "Number of Facebook shares"
+msgstr "Anzahl Male auf Facebook geteilt"
+
+#: culturefeed_ui.admin.inc:20
+msgid "Number of Twitter shares"
+msgstr "Anzahl Tweets"
+
+#: culturefeed_ui.admin.inc:21
+msgid "Number of attends"
+msgstr "Anzahl Gehe-ich-hin"
+
+#: culturefeed_ui.admin.inc:22
+msgid "Number of activities (aggregate)"
+msgstr "Anzahl Aktivitäten (gesamt)"
+
+#: culturefeed_ui.admin.inc:27
+msgid "Most active user block : Sort by"
+msgstr ""
+
+#: culturefeed_ui.blocks.inc:38
+msgid "Similar users"
+msgstr "Ähnliche Nutzer"
+
+#: culturefeed_ui.blocks.inc:68 culturefeed_ui.preprocess.inc:221
+msgid "Most active user"
+msgstr "Aktivster Nutzer der Woche"
+
+#: culturefeed_ui.blocks.inc:79
+msgid "Search users"
+msgstr "Nutzer suchen"
+
+#: culturefeed_ui.blocks.inc:94
+msgid "UiTiD connect"
+msgstr "Zu viel zu tun?"
+
+#: culturefeed_ui.blocks.inc:205
+msgid "Manage profile"
+msgstr "Ihr Profil verwalten"
+
+#: culturefeed_ui.blocks.inc:259 culturefeed_ui.helpers.inc:208
+#: culturefeed_ui.module:440
+msgid "My profile"
+msgstr "Mein Profil"
+
+#: culturefeed_ui.blocks.inc:281
+msgid "Something for you?"
+msgstr "Wäre das was für Sie?"
+
+#: culturefeed_ui.forms.inc:8
+msgid "Name"
+msgstr "Name"
+
+#: culturefeed_ui.forms.inc:14
+msgid "Search"
+msgstr "Suchen"
+
+#: culturefeed_ui.helpers.inc:48
+msgid "Loading"
+msgstr "Laden"
+
+#: culturefeed_ui.helpers.inc:84 culturefeed_ui.pages.inc:8;658
+msgid "Delete"
+msgstr "Löschen"
+
+#: culturefeed_ui.helpers.inc:94
+msgid "I accept that my UiTiD actions on "
+msgstr "Ich erteile UiTiD Zustimmung, meine Aktionen auf"
+
+#: culturefeed_ui.helpers.inc:94
+msgid " will be published automatically on "
+msgstr " automatisch zu veröffentlichen auf"
+
+#: culturefeed_ui.helpers.inc:94
+msgid "User agreement"
+msgstr "Nutzungsbedingungen"
+
+#: culturefeed_ui.helpers.inc:100
+msgid "Public"
+msgstr "Öffentlich"
+
+#: culturefeed_ui.helpers.inc:100
+msgid "Private"
+msgstr "Privat"
+
+#: culturefeed_ui.helpers.inc:102;167;169
+msgid "Switch off"
+msgstr "Ausschalten"
+
+#: culturefeed_ui.helpers.inc:102;167;169
+msgid "Switch on"
+msgstr "Einschalten"
+
+#: culturefeed_ui.helpers.inc:111
+msgid "Add account"
+msgstr "Konto hinzufügen"
+
+#: culturefeed_ui.helpers.inc:126
+msgid "Like"
+msgstr "Gefällt mir"
+
+#: culturefeed_ui.helpers.inc:127
+msgid "Attend"
+msgstr "Ich gehe hierhin"
+
+#: culturefeed_ui.helpers.inc:128
+msgid "Share on Facebook"
+msgstr "Über Facebook teilen"
+
+#: culturefeed_ui.helpers.inc:129
+msgid "Share on Twitter"
+msgstr "Auf Twitter teilen"
+
+#: culturefeed_ui.helpers.inc:163
+msgid "ON"
+msgstr "ON"
+
+#: culturefeed_ui.helpers.inc:163
+msgid "OFF"
+msgstr "OFF"
+
+#: culturefeed_ui.helpers.inc:174
+msgid "Post my actions to Facebook"
+msgstr "Meine Aktionen auf Facebook veröffentlichen"
+
+#: culturefeed_ui.helpers.inc:184
+#: culturefeed_ui.pages.inc:66;105;115;176;503;518;566;603;634;646;713
+msgid "Error occurred"
+msgstr "Es ist ein Fehler aufgetreten."
+
+#: culturefeed_ui.helpers.inc:200
+msgid "Home"
+msgstr "Home"
+
+#: culturefeed_ui.pages.inc:5
+msgid "Are you sure you want to delete your account?"
+msgstr "Sind Sie sicher, dass Sie Ihre UiTiD löschen möchten?"
+
+#: culturefeed_ui.pages.inc:7
+msgid "This action cannot be undone."
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: culturefeed_ui.pages.inc:9
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: culturefeed_ui.pages.inc:21
+msgid "An error occurred while deleting your account."
+msgstr "Beim Löschen Ihres Kontos ist ein Fehler aufgetreten."
+
+#: culturefeed_ui.pages.inc:76
+msgid "No results found."
+msgstr "Keine Ergebnisse gefunden."
+
+#: culturefeed_ui.pages.inc:124
+msgid "No users found"
+msgstr "Keine Nutzer gefunden"
+
+#: culturefeed_ui.pages.inc:145;155
+msgid "Error occurred, please try again later"
+msgstr "Es ist ein Fehler aufgetreten. Versuchen Sie es später erneut."
+
+#: culturefeed_ui.pages.inc:151
+msgid "Confirmation mail succesfully sended"
+msgstr "Die Bestätigungsmail wurde erfolgreich verschickt."
+
+#: culturefeed_ui.pages.inc:159
+msgid "Email address of this account is already confirmed."
+msgstr ""
+"Die mit diesem Konto verknüpfte E-Mail-Adresse wurde bereits bestätigt."
+
+#: culturefeed_ui.pages.inc:182;442
+msgid "View profile"
+msgstr "Profil ansehen"
+
+#: culturefeed_ui.pages.inc:189
+msgid "First name"
+msgstr "Vorname"
+
+#: culturefeed_ui.pages.inc:194
+msgid "Hide 'first name' in public profile"
+msgstr "„Vorname“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:201
+msgid "Family name"
+msgstr "Name"
+
+#: culturefeed_ui.pages.inc:206
+msgid "Hide 'family name' in public profile"
+msgstr "„Name“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:214
+msgid "Choose picture"
+msgstr "Ein Foto auswählen"
+
+#: culturefeed_ui.pages.inc:215
+msgid "Allowed extensions: jpg, jpeg, gif or png"
+msgstr "Erweiterungen erlaubt: jpg, jpeg, gif oder png"
+
+#: culturefeed_ui.pages.inc:234
+msgid "Gender"
+msgstr "Geschlecht"
+
+#: culturefeed_ui.pages.inc:235 culturefeed_ui.preprocess.inc:33
+msgid "Male"
+msgstr "Mann"
+
+#: culturefeed_ui.pages.inc:235 culturefeed_ui.preprocess.inc:33
+msgid "Female"
+msgstr "Frau"
+
+#: culturefeed_ui.pages.inc:240
+msgid "Hide 'gender' in public profile"
+msgstr "„Geschlecht“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:247
+msgid "Street and number"
+msgstr "Straßenname und Hausnummer"
+
+#: culturefeed_ui.pages.inc:252
+msgid "Zipcode"
+msgstr "Postleitzahl"
+
+#: culturefeed_ui.pages.inc:257
+msgid "City"
+msgstr "Stadt oder Ort"
+
+#: culturefeed_ui.pages.inc:263
+msgid "Country"
+msgstr "Land"
+
+#: culturefeed_ui.pages.inc:268
+msgid "Hide 'address' in public profile"
+msgstr "„Wohnort“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:274
+msgid "Date of birth"
+msgstr "Geburtsdatum"
+
+#: culturefeed_ui.pages.inc:277
+msgid "Format : dd/mm/yyyy"
+msgstr "Format: TT/MM/JJJJ"
+
+#: culturefeed_ui.pages.inc:282
+msgid "Hide 'date of birth' in public profile"
+msgstr "„Geburtsdatum“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:289
+msgid "Biography"
+msgstr "Beschreiben Sie sich selbst"
+
+#: culturefeed_ui.pages.inc:291
+msgid "Maximum 250 characters"
+msgstr "Maximal 250 Zeichen"
+
+#: culturefeed_ui.pages.inc:295
+msgid "Hide 'biography' in public profile"
+msgstr "„Selbstbeschreibung“ im öffentlichen Profil verbergen"
+
+#: culturefeed_ui.pages.inc:302
+msgid "Preferred language"
+msgstr "Sprachpräferenz"
+
+#: culturefeed_ui.pages.inc:305
+msgid "Dutch"
+msgstr "Niederländisch"
+
+#: culturefeed_ui.pages.inc:306
+msgid "French"
+msgstr "Französisch"
+
+#: culturefeed_ui.pages.inc:307
+msgid "English"
+msgstr "Englisch"
+
+#: culturefeed_ui.pages.inc:308
+msgid "German"
+msgstr "Deutsch"
+
+#: culturefeed_ui.pages.inc:314;462
+msgid "Save"
+msgstr "Speichern"
+
+#: culturefeed_ui.pages.inc:329
+msgid "The maximum of 250 characters is exceeded"
+msgstr "Das Maximum von 250 Zeichen überschritten wird"
+
+#: culturefeed_ui.pages.inc:371
+msgid "Error occurred while saving your personal data."
+msgstr "Beim Speichern Ihrer Angaben ist ein Fehler aufgetreten."
+
+#: culturefeed_ui.pages.inc:385
+msgid "Error occurred while saving your picture."
+msgstr "Beim Hochladen Ihres Bildes ist ein Fehler aufgetreten."
+
+#: culturefeed_ui.pages.inc:404
+msgid "Error occurred while saving your privacy settings."
+msgstr ""
+"Beim Speichern Ihrer Datenschutzeinstellungen ist ein Fehler aufgetreten."
+
+#: culturefeed_ui.pages.inc:412;499
+msgid "Changes succesfully saved."
+msgstr "Ihre Änderungen wurden gespeichert."
+
+#: culturefeed_ui.pages.inc:436
+msgid "An error occurred while loading your account, please try again later."
+msgstr ""
+"Beim Laden Ihres Kontos ist ein Fehler aufgetreten. Versuchen Sie es später "
+"erneut."
+
+#: culturefeed_ui.pages.inc:448
+msgid "Username"
+msgstr "Nutzername"
+
+#: culturefeed_ui.pages.inc:455
+msgid "Email address"
+msgstr "E-Mail-Adresse"
+
+#: culturefeed_ui.pages.inc:473
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: culturefeed_ui.pages.inc:479
+msgid "Delete account"
+msgstr "Konto löschen"
+
+#: culturefeed_ui.pages.inc:488
+msgid "Invalid email"
+msgstr "Ungültige E-Mail-Adresse"
+
+#: culturefeed_ui.pages.inc:676
+msgid "No channels found."
+msgstr "Keine Kanäle gefunden."
+
+#: culturefeed_ui.preprocess.inc:13
+msgid "My UiTiD"
+msgstr "Meine UiTiD"
+
+#: culturefeed_ui.preprocess.inc:60
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: culturefeed_ui.preprocess.inc:82
+msgid "Resend email confirmation"
+msgstr "E-Mail-Bestätigung erneut versenden"
+
+#: culturefeed_ui.preprocess.inc:83
+msgid "Change Email address"
+msgstr "E-Mail-Adresse ändern"
+
+#: culturefeed_ui.preprocess.inc:84
+msgid "More info about UiTiD"
+msgstr "Mehr Info über UiTiD"
+
+#: culturefeed_ui.preprocess.inc:148
+msgid "Log in"
+msgstr "Einloggen"
+
+#: culturefeed_ui.preprocess.inc:149
+msgid "Sign up"
+msgstr "Anmelden"
+
+#: culturefeed_ui.preprocess.inc:178
+msgid "Log out"
+msgstr "Ausloggen"
+
+#: culturefeed_ui.preprocess.inc:198;213
+msgid "actions</strong> done"
+msgstr "Aktionen</strong> ausgeführt"
+
+#: culturefeed_ui.preprocess.inc:201
+msgid "pages</strong> liked"
+msgstr "Seiten</strong> mit „Gefällt mir“ markiert"
+
+#: culturefeed_ui.preprocess.inc:204
+msgid "pagess</strong> shared on Facebook"
+msgstr "Seiten</strong> über Facebook geteilt"
+
+#: culturefeed_ui.preprocess.inc:207
+msgid "pages</strong> shared on Twitter"
+msgstr "Seiten</strong> auf Twitter geteilt"
+
+#: culturefeed_ui.preprocess.inc:210
+msgid "events</strong> to attend"
+msgstr "Aktivitäten</strong> markiert, zu denen Sie gehen werden"
+
+#: culturefeed_ui.preprocess.inc:224
+msgid ""
+"!nick did <strong>!sort_value !type and is the !uitslover of the week. "
+"Congratulations!"
+msgstr ""
+
+#: culturefeed_ui.preprocess.inc:239
+msgid "Connected to"
+msgstr "Verknüpft mit"
+
+#: culturefeed_ui.preprocess.inc:250 culturefeed_ui.module:417;449
+msgid "Edit profile"
+msgstr "Profil bearbeiten"
+
+#: culturefeed_ui.preprocess.inc:251
+msgid "Manage actions"
+msgstr "Aktionen verwalten"
+
+#: culturefeed_ui.preprocess.inc:252 culturefeed_ui.module:423
+msgid "Edit account"
+msgstr "Konto bearbeiten"
+
+#: culturefeed_ui.preprocess.inc:310
+msgid "Action searcher"
+msgstr "Action-Sucher"
+
+#: culturefeed_ui.preprocess.inc:313
+msgid "Leisure searcher"
+msgstr "Aktiver Erholer"
+
+#: culturefeed_ui.preprocess.inc:316
+msgid "Discoverer"
+msgstr "Entdecker"
+
+#: culturefeed_ui.preprocess.inc:319
+msgid "Connoisseur"
+msgstr "Feinschmecker"
+
+#: culturefeed_ui.preprocess.inc:383
+msgid "your email"
+msgstr "Ihre E-Mail-Adresse"
+
+#: culturefeed_ui.module:230
+msgid "Culturefeed ui: teaser (formerly connect)"
+msgstr ""
+
+#: culturefeed_ui.module:233
+msgid "Culturefeed ui: most active user"
+msgstr ""
+
+#: culturefeed_ui.module:236
+msgid "Culturefeed ui: login (formerly profile box)"
+msgstr ""
+
+#: culturefeed_ui.module:239
+msgid "Culturefeed ui: profile menu"
+msgstr ""
+
+#: culturefeed_ui.module:242
+msgid "Culturefeed ui: e-mail confirmation reminder"
+msgstr ""
+
+#: culturefeed_ui.module:245
+msgid "Culturefeed ui: search users"
+msgstr ""
+
+#: culturefeed_ui.module:248
+msgid "Culturefeed ui: similar users"
+msgstr ""
+
+#: culturefeed_ui.module:251
+msgid "Culturefeed ui: profile summary (formerly My UiTiD)"
+msgstr ""
+
+#: culturefeed_ui.module:254
+msgid "Culturefeed ui: something for you?"
+msgstr ""
+
+#: culturefeed_ui.module:411
+msgid "My profile"
+msgstr "Mein Profil"
+
+#: culturefeed_ui.module:413
+msgid "How other users will see your profile"
+msgstr "Wie andere Benutzer sehen, wird Ihr Profil"
+
+#: culturefeed_ui.module:419
+msgid "Change name, address, profile picture, …"
+msgstr "Name, Adresse, Profilbild, ändern ..."
+
+#: culturefeed_ui.module:425
+msgid "Change password, email address, connected channels, …"
+msgstr ""
+"Ändern Sie Passwort, E-Mail-Adresse, mit Ihrem Konto verknüpfte "
+"Anwendungen..."
+
+#: culturefeed_ui.module:455
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: culturefeed_ui.module:476
+msgid "CultuurNet User Interface cache"
+msgstr "CultuurNet User Interface Cache"
+
+#: culturefeed_ui.module:478
+msgid ""
+"Enabling the CultuurNet User Interface cache will cache all parsed results "
+"of requests to the enrichments API. This will reduce the number of requests "
+"made directly to the API service."
+msgstr ""
+"Wenn Sie den CultuurNet User Interface Cache aktivieren, werden alle "
+"verarbeiteten Ergebnisse jeder Anfrage gecacht. Dies verringert die Zahl der "
+"direkten Anfragen an die API."
+
+#: culturefeed_ui.module:481
+msgid "none"
+msgstr "keine"
+
+#: culturefeed_ui.module:485
+msgid "Minimum cache lifetime for the similar users block"
+msgstr "Mindest-Cachedauer des Blocks „Ähnliche Nutzer“"
+
+#: culturefeed_ui.module:488
+msgid ""
+"The minimum cache lifetime is the minimum amount of time that will elapse "
+"before the cache is emptied and recreated"
+msgstr ""
+"Die Mindest-Cachedauer ist der Mindestzeitraum, der vergeht, bis der Cache "
+"geleert und erneut gefüllt wurde."
+
+#: culturefeed_ui.module:16 culturefeed_ui.info:0
+msgid "CultureFeed User Interface"
+msgstr "CultureFeed User Interface"
+
+#: culturefeed_ui.module:17
+msgid "Change CultureFeed User Interface settings."
+msgstr ""
+
+#: culturefeed_ui.info:0
+msgid "Creates a default user interface for CultureFeed"
+msgstr "Erstellen Sie ein Standard-User-Interface für CultureFeed"
+
+#: culturefeed_ui.info:0
+msgid "CultureFeed"
+msgstr "CultureFeed"
+
+msgid "About me"
+msgstr "Über mich"
+
+msgid "Manage websites and applications"
+msgstr "Websites und Anwendungen verwalten"
