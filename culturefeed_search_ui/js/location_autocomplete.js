@@ -34,7 +34,10 @@
 
           // Actors are direct links.
           if (ui.item.type == 'actor') {
+            // Go to the actor page aftoer selecting an actor.
             window.location.href = ui.item.suggestion;
+            // Disable form submission after selection of an actor item.
+            $(this).parents('form').find('button').attr('disabled', true);
           }
           // Trigger location search.
           else {
