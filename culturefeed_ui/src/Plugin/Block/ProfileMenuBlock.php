@@ -30,21 +30,21 @@ class ProfileMenuBlock extends BlockBase {
 
     $menuItems = array(
       'uitid' => array(
-        'title' => t('My profile'),
+        'title' => $this->t('My profile'),
         'url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
-        'description' => t('How other users will see your profile'),
+        'description' => $this->t('How other users will see your profile'),
         'weight' => -20,
       ),
       'profile' => array(
-        'title' => t('Edit profile'),
+        'title' => $this->t('Edit profile'),
         'url' => Url::fromRoute('culturefeed_ui.profile_form'),
-        'description' => t('Change name, address, profile picture, …'),
+        'description' => $this->t('Change name, address, profile picture, …'),
         'weight' => -19,
       ),
       'account' => array(
-        'title' => t('Edit account'),
+        'title' => $this->t('Edit account'),
         'url' => Url::fromRoute('culturefeed_ui.account_form'),
-        'description' => t('Change password, email address, connected channels, …'),
+        'description' => $this->t('Change password, email address, connected channels, …'),
         'weight' => -18,
       ),
     );

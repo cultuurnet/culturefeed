@@ -97,37 +97,37 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
     $form['view-profile-link'] = array(
       '#id' => 'view-profile-link',
       '#url' => Url::fromRoute('culturefeed_ui.user_controller_profile'),
-      '#title' => t('My profile'),
+      '#title' => $this->t('My profile'),
       '#type' => 'link'
     );
 
     // 'About me' fieldset
     $form['about-me'] = array(
       '#type' => 'fieldset',
-      '#title' => t('About me')
+      '#title' => $this->t('About me')
     );
     $form['about-me']['givenName'] = array(
       '#type' => 'textfield',
-      '#title' => t('First name'),
+      '#title' => $this->t('First name'),
       '#default_value' => $user->givenName,
     );
     $form['about-me']['familyName'] = array(
       '#type' => 'textfield',
-      '#title' => t('Family name'),
+      '#title' => $this->t('Family name'),
       '#default_value' => $user->familyName,
     );
     $form['about-me']['bio'] = array(
       '#type' => 'textarea',
-      '#title' => t('Biography'),
+      '#title' => $this->t('Biography'),
       '#default_value' => $user->bio,
-      '#description' => t('Maximum 250 characters'),
+      '#description' => $this->t('Maximum 250 characters'),
     );
     // Picture.
 //        $form_state->set('#old_picture', 0);
 //        $form['picture'] = array(
 //            '#type' => 'managed_file',
-//            '#title' => t('Choose picture'),
-//            '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
+//            '#title' => $this->t('Choose picture'),
+//            '#description' => $this->t('Allowed extensions: jpg, jpeg, gif or png'),
 //            '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
 //            '#upload_validators' => array(
 //                'file_validate_extensions' => array('jpg jpeg png gif'),
@@ -146,46 +146,46 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
 //            }
 //        }
     $form['about-me']['dob'] = array(
-      '#title' => t('Date of birth'),
+      '#title' => $this->t('Date of birth'),
       '#type' => 'textfield',
       '#default_value' => $user->dob ? date('d/m/Y', $user->dob) : '',
-      '#description' => t('Format : dd/mm/yyyy'),
+      '#description' => $this->t('Format : dd/mm/yyyy'),
       '#size' => 10,
     );
     $form['about-me']['gender'] = array(
       '#type' => 'radios',
-      '#title' => t('Gender'),
-      '#options' => array('male' => t('Male'), 'female' => t('Female')),
+      '#title' => $this->t('Gender'),
+      '#options' => array('male' => $this->t('Male'), 'female' => $this->t('Female')),
       '#default_value' => $user->gender,
     );
 
     // Address fieldset
     $form['address'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Address'),
+      '#title' => $this->t('Address'),
       '#attributes' => array(
         'collapsable' => '',
       )
     );
     $form['address']['street'] = array(
       '#type' => 'textfield',
-      '#title' => t('Street and number'),
+      '#title' => $this->t('Street and number'),
       '#default_value' => $user->street,
     );
     $form['address']['zip'] = array(
       '#type' => 'textfield',
-      '#title' => t('Zipcode'),
+      '#title' => $this->t('Zipcode'),
       '#default_value' => $user->zip,
     );
     $form['address']['city'] = array(
       '#type' => 'textfield',
-      '#title' => t('City'),
+      '#title' => $this->t('City'),
       '#default_value' => $user->city,
     );
     $form['address']['country'] = array(
       '#type' => 'select',
       '#options' => $this->countryManager->getList(),
-      '#title' => t('Country'),
+      '#title' => $this->t('Country'),
       '#default_value' => !empty($user->country) ? $user->country : 'BE',
     );
 
@@ -193,65 +193,65 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
 
     $form['privacy-settings'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Privacy settings'),
+      '#title' => $this->t('Privacy settings'),
       '#attributes' => array(
         'collapsable' => 'collapsed'
       )
     );
     $form['privacy-settings']['givenNamePrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'first name\' in public profile'),
+      '#title' => $this->t('Hide \'first name\' in public profile'),
       '#default_value' => $user->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
     $form['privacy-settings']['familyNamePrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'family name\' in public profile'),
+      '#title' => $this->t('Hide \'family name\' in public profile'),
       '#default_value' => $user->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
     $form['privacy-settings']['genderPrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'gender\' in public profile'),
+      '#title' => $this->t('Hide \'gender\' in public profile'),
       '#default_value' => $user->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
     $form['privacy-settings']['homeAddressPrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'address\' in public profile'),
+      '#title' => $this->t('Hide \'address\' in public profile'),
       '#default_value' => $user->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
     $form['privacy-settings']['dobPrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'date of birth\' in public profile'),
+      '#title' => $this->t('Hide \'date of birth\' in public profile'),
       '#default_value' => $user->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
     $form['privacy-settings']['bioPrivacy'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Hide \'biography\' in public profile'),
+      '#title' => $this->t('Hide \'biography\' in public profile'),
       '#default_value' => $user->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
     );
 
     // 'Language settings' fieldset
     $form['language-settings'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Language settings'),
+      '#title' => $this->t('Language settings'),
       '#attributes' => array(
         'collapsable' => 'collapsed'
       )
     );
     $form['language-settings']['preferredLanguageField'] = array(
       '#type' => 'select',
-      '#title' => t('Preferred language'),
+      '#title' => $this->t('Preferred language'),
       '#default_value' => !empty($user->preferredLanguage) ? $user->preferredLanguage : '',
       '#options' => array(
-        'nl' => t('Dutch'),
-        'fr' => t('French'),
-        'en' => t('English'),
-        'de' => t('German'),
+        'nl' => $this->t('Dutch'),
+        'fr' => $this->t('French'),
+        'en' => $this->t('English'),
+        'de' => $this->t('German'),
       ),
     );
 
     $form['submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Save'),
+      '#value' => $this->t('Save'),
     );
 
     return $form;
@@ -267,7 +267,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
     // Custom validations first.
     if (Unicode::strlen($values['bio']) > 250) {
       $form_state->setErrorByName('bio',
-        t('The maximum of 250 characters is exceeded'));
+        $this->t('The maximum of 250 characters is exceeded'));
       return;
     }
 
@@ -325,7 +325,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
         );
       }
       $form_state->setErrorByName('submit',
-        t('Error occurred while saving your personal data.'));
+        $this->t('Error occurred while saving your personal data.'));
     }
 
     // Remove the profile picture if requested.
@@ -356,7 +356,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
 //        } catch (\Exception $e) {
 //          watchdog_exception('culturefeed_ui', $e);
 //          $form_state->setErrorByName('picture',
-//            t('Error occurred while saving your picture.'));
+//            $this->t('Error occurred while saving your picture.'));
 //        }
 //      }
 //    }
@@ -375,7 +375,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       $culturefeed->updateUserPrivacy($this->user->id, $privacy_config);
     } catch (\Exception $e) {
       $form_state->setErrorByName('submit',
-        t('Error occurred while saving your privacy settings.'));
+        $this->t('Error occurred while saving your privacy settings.'));
     }
   }
 

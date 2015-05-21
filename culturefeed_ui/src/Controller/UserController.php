@@ -56,8 +56,8 @@ class UserController extends ControllerBase {
       '#theme' => 'culturefeed_ui_profile',
       '#user' => $this->user,
       '#edit_profile_link' => Url::fromRoute('culturefeed_ui.profile_form'),
-      '#edit_profile_title' => t('Edit'),
-      '#title' => t('My UiTiD')
+      '#edit_profile_title' => $this->t('Edit'),
+      '#title' => $this->t('My UiTiD')
     ];
 
     return $renderArray;

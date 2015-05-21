@@ -62,7 +62,7 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Are you sure you want to delete your account?');
+    return $this->t('Are you sure you want to delete your account?');
   }
 
   /**
@@ -84,21 +84,21 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
    * {@inheritdoc}
    */
   public function getDescription() {
-    return t('This action cannot be undone.');
+    return $this->t('This action cannot be undone.');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getConfirmText() {
-    return t('Delete');
+    return $this->t('Delete');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelText() {
-    return t('Cancel');
+    return $this->t('Cancel');
   }
 
   /**
