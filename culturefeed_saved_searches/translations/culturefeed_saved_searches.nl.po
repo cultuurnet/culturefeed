@@ -93,12 +93,12 @@ msgid "CultureFeed"
 msgstr "CultureFeed"
 
 #: includes/blocks.inc:13
-msgid "and receive an email when there are new results"
-msgstr "en ontvang een e-mail als er nieuwe resultaten zijn"
+msgid "Receive an email when there are new results"
+msgstr "Ontvang een e-mail als er nieuwe resultaten zijn"
 
 #: includes/blocks.inc:27
-msgid "to search faster next time"
-msgstr "om sneller te kunnen zoeken"
+msgid "Search faster next time"
+msgstr "Zoek sneller volgende keer"
 
 #: includes/blocks.inc:132 includes/pages.inc:133
 msgid "A problem occurred while loading your searches. Please try again later."
