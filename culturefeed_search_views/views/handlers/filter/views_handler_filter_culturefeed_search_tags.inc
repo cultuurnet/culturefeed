@@ -90,13 +90,13 @@ class views_handler_filter_culturefeed_search_tags extends views_handler_filter_
 
 		if ($operator == 'and') {
 			if (!empty($keywords)) {
-				$value_keywords = '(keywords:' . implode(' AND ', $keywords) . ')';
+				$value_keywords = '(keywords:"' . implode('" AND "', $keywords) . '")';
 				$value = $value_keywords;
 			}
 			if (!empty($keywords_inverse)) {
-				$value_inverse_keywords = '(!keywords:' . implode(' AND ', $keywords_inverse) . ')';
+				$value_inverse_keywords = '(!keywords:"' . implode('" AND "', $keywords_inverse) . '")';
 				if (!empty($keywords)) {
-					$value .= ' AND ' . $value_inverse_keywords;
+					$value .= '" AND "' . $value_inverse_keywords;
 				}
 				else {
 					$value = $value_inverse_keywords;
@@ -105,13 +105,13 @@ class views_handler_filter_culturefeed_search_tags extends views_handler_filter_
 		}
 		else if ($operator == 'or') {
 			if (!empty($keywords)) {
-				$value_keywords = '(keywords:' . implode(' OR ', $keywords) . ')';
+				$value_keywords = '(keywords:"' . implode('" OR "', $keywords) . '")';
 				$value = $value_keywords;
 			}
 			if (!empty($keywords_inverse)) {
-				$value_inverse_keywords = '(!keywords:' . implode(' OR ', $keywords_inverse) . ')';
+				$value_inverse_keywords = '(!keywords:"' . implode('" OR "', $keywords_inverse) . '")';
 				if (!empty($keywords)) {
-					$value .= ' OR ' . $value_inverse_keywords;
+					$value .= '" OR "' . $value_inverse_keywords;
 				}
 				else {
 					$value = $value_inverse_keywords;

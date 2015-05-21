@@ -678,6 +678,10 @@ msgstr "Trefwoord @tag is niet toegelaten aangezien het al een bestaande marker 
 msgid "The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the \"View\" tab"
 msgstr "De labels werden aangepast. Het kan echter een half uur duren vooraleer deze wijzigingen op alle kanalen (waaronder UiTinVlaanderen) zichtbaar zijn."
 
+#: includes/culturefeed_entry_ui.pages.inc:2604
+msgid "The tags were adjusted."
+msgstr "De labels werden aangepast."
+
 #: includes/culturefeed_entry_ui.pages.inc:2609
 msgid "You tried to add a tag that should not be added by anyone. If you still wish to add this or have other questions about this, please email to \"vragen@uitdatabank.be\"."
 msgstr "Je hebt niet de juiste rechten om dit trefwoord toe te voegen. Als je hier vragen bij hebt, contacteer dan onze helpdesk via \"vragen@uitdatabank.be\"."
