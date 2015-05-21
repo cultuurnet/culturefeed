@@ -250,7 +250,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
         'collapsable' => 'collapsed'
       )
     );
-    $form['language-settings']['preferredLanguageField'] = array(
+    $form['language-settings']['preferredLanguage'] = array(
       '#type' => 'select',
       '#title' => $this->t('Preferred language'),
       '#default_value' => !empty($user->preferredLanguage) ? $user->preferredLanguage : '',
