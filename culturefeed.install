@@ -187,7 +187,7 @@ function culturefeed_libraries_requirements() {
   if (!file_exists($composer_lock_file)) {
     $requirements[] = array(
       'title' => $t('Composer.lock'),
-      'description' => $t('The location of the composer.lock file is not set or incorrect. Please configure its location from the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed'))),
+      'description' => $t('The location of the composer.lock file is not set or incorrect. Please configure its location on the <a href="@url">CultureFeed settings page</a>.', array('@url' => url('admin/config/culturefeed/culturefeed'))),
       'severity' => REQUIREMENT_ERROR,
       'value' => $t('Not configured'),
     );
@@ -201,6 +201,7 @@ function culturefeed_libraries_requirements() {
       'title' => $t('PHP library :library', array(':library' => 'composer/composer')),
       'severity' => REQUIREMENT_ERROR,
       'value' => 'Missing',
+      'description' => $t('Install the composer/composer PHP library')
     );
     return $requirements;
   }
@@ -227,6 +228,13 @@ function culturefeed_libraries_requirements() {
       $requirements[] = array(
         'title' => $title,
         'severity' => REQUIREMENT_ERROR,
+        'description' => $t(
+          'According to composer.lock the :package-name PHP library is missing, while at least version :minimum is required. Please install the library.',
+          array(
+            ':minimum' => $minimum,
+            ':package-name' => $dependency
+          )
+        ),
         'value' => 'Missing',
       );
     }
@@ -240,23 +248,36 @@ function culturefeed_libraries_requirements() {
         $requirements[] = array(
           'title' => $title,
           'severity' => REQUIREMENT_ERROR,
-          'description' => $t('Version :version installed, while at least :minimum is required.', array(':version' => $version, ':minimum' => $minimum)),
-          'value' => $t('Out of date') . ' (' . $version . ')',
+          'description' => $t(
+            'According to composer.lock version :version of the :package-name PHP library is in use, while at least version :minimum is required. Please upgrade the library to a compatible version.',
+            array(
+              ':version' => $version,
+              ':minimum' => $minimum,
+              ':package-name' => $dependency
+            )
+          ),
+          'value' => $t('Incompatible version detected (@version)', array('@version' => $version)),
         );
       }
       elseif ($stability != 'stable') {
         $requirements[] = array(
           'title' => $title,
           'severity' => REQUIREMENT_WARNING,
-          'description' => $t('Stability is :stability.', array(':stability' => $stability)),
-          'value' => $t('Unstable') . ' (' . $version . ')',
+          'description' => $t(
+            'According to composer.lock an unstable (:stability) version of the :package-name PHP library is in use. It is advisable to upgrade to a stable release.',
+            array(
+              ':stability' => $stability,
+              ':package-name' => $dependency
+            )
+          ),
+          'value' => $t('Unstable version detected (@version)', array('@version' => $version)),
         );
       }
       else {
         $requirements[] = array(
           'title' => $title,
           'severity' => REQUIREMENT_OK,
-          'value' => $t('Up to date') . ' (' . $version . ')',
+          'value' => $t('Compatible version detected (@version)', array('@version' => $version)),
         );
       }
     }
