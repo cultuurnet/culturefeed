@@ -12,6 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use CultureFeed_User;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Url;
+use Drupal\file\FileInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -44,6 +45,11 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
    * @var CultureFeed
    */
   protected $culturefeed;
+
+  /**
+   * @var FileInterface
+   */
+  protected $picture;
 
   /**
    * {@inheritdoc}
@@ -122,18 +128,24 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       '#description' => $this->t('Maximum 250 characters'),
       '#maxlength' => 250,
     );
-    // Picture.
-//        $form_state->set('#old_picture', 0);
-//        $form['picture'] = array(
-//            '#type' => 'managed_file',
-//            '#title' => $this->t('Choose picture'),
-//            '#description' => $this->t('Allowed extensions: jpg, jpeg, gif or png'),
-//            '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
-//            '#upload_validators' => array(
-//                'file_validate_extensions' => array('jpg jpeg png gif'),
-//            ),
-//            '#upload_location' => 'public://culturefeed',
-//        );
+
+    $file_validators = array(
+      'file_validate_extensions' => array('jpg jpeg gif png'),
+      'file_validate_size' => array(file_upload_max_size()),
+    );
+
+    $form['about-me']['picture'] = array(
+      '#type' => 'managed_image',
+      '#title' => $this->t('Picture'),
+      '#description' => array(
+        '#theme' => 'file_upload_help',
+        '#description' => $this->t('An image file.'),
+        '#upload_validators' => $file_validators,
+      ),
+      '#size' => 50,
+      '#upload_validators' => $file_validators,
+      '#upload_location' => 'public://culturefeed'
+    );
 
 // TODO: find an alternative for the helper function "culturefeed_create_temporary_image".
 // I think a library like flysystem would be more suitable to manage these local images.
@@ -145,6 +157,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
 //                $form['picture']['#default_value'] = $file->fid;
 //            }
 //        }
+
     $form['about-me']['dob'] = array(
       '#title' => $this->t('Date of birth'),
       '#type' => 'textfield',
