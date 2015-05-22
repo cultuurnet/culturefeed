@@ -40,13 +40,13 @@ Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
       constrainDates : true,
       appendTo: '.form-item-date-range'
     });
-  }
+  };
 
   /**
    * Click listener on autosubmit fields.
    */
   Drupal.CulturefeedSearch.autoSubmit = function() {
     $(this).parents('form').submit();
-  }
+  };
 
 })(jQuery);
