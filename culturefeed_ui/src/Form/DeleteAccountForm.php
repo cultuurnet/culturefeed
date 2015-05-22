@@ -2,9 +2,11 @@
 
 namespace Drupal\culturefeed_ui\Form;
 
+use Drupal\Core\Entity\EntityManager;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\user\UserInterface;
 use Drupal\Core\Url;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -32,9 +34,14 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
   protected $culturefeed;
 
   /**
-   * @var AccountProxyInterface
+   * @var UserInterface
    */
   protected $drupalUser;
+
+  /**
+   * @var EntityManager
+   */
+  protected $entityManager;
 
   /**
    * {@inheritdoc}
@@ -44,7 +51,8 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
       $container->get('culturefeed.current_user'),
       $container->get('culturefeed'),
       $container->get('logger.channel.culturefeed'),
-      $container->get('current_user')
+      $container->get('current_user'),
+      $container->get('entity.manager')
     );
   }
 
@@ -55,17 +63,20 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
    * @param CultureFeed $culturefeedService
    * @param LoggerInterface $logger
    * @param AccountProxyInterface $drupalUser
+   * @param EntityManager $entityManager
    */
   public function __construct(
     CultureFeed_User $user,
     CultureFeed $culturefeedService,
     LoggerInterface $logger,
-    AccountProxyInterface $drupalUser
+    AccountProxyInterface $drupalUser,
+    EntityManager $entityManager
   ) {
     $this->user = $user;
     $this->culturefeed = $culturefeedService;
     $this->setLogger($logger);
-    $this->drupalUser = $drupalUser;
+    $this->drupalUser = $entityManager->getStorage('user')->load($drupalUser->id());
+    $this->entityManager = $entityManager;
   }
 
   /**
@@ -122,8 +133,10 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $uitId = $this->user->id;
+
     try {
-      $this->culturefeed->deleteUser($this->user->id);
+      $this->culturefeed->deleteUser($uitId);
     } catch (\Exception $e) {
       if ($this->logger) {
         $this->logger->error(
@@ -135,7 +148,12 @@ class DeleteAccountForm extends ConfirmFormBase implements LoggerAwareInterface 
       return;
     }
 
-    user_delete($this->drupalUser->id());
+    db_query("DELETE FROM {culturefeed_token} WHERE uitid = :uitid", array(':uitid' => $uitId));
+    db_query("DELETE FROM {culturefeed_user} WHERE uitid = :uitid", array(':uitid' => $uitId));
+
+    $this->drupalUser->set('status', 0);
+    $this->drupalUser->save();
+
     user_logout();
   }
 
