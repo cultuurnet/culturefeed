@@ -49,9 +49,12 @@ function culturefeed_entry_ui_tags_form(array &$form, array &$form_state, \Cultu
   else {
 
     // Default values.
-    if ($event->getKeywords()) {
+    if ($event && $event->getKeywords()) {
       $keywords = $event->getKeywords();
       $keywords = implode(';', $keywords);
+    }
+    else {
+      $keywords = '';
     }
 
     // Form element.
