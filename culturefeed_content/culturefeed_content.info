@@ -4,3 +4,4 @@ package = CultureFeed
 version = VERSION
 core = 7.x
 dependencies[] = culturefeed
+dependencies[] = culturefeed_agenda

@@ -23,6 +23,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
 
   // First check if there are any collaboration tags used in the view.
   $collaboration_tags = array_keys(variable_get('culturefeed_entry_ui_custom_collaboration_tags', array()));
+  $collaboration_tags = array_map('strtolower', $collaboration_tags);
   $keywords = array();
   if (count($collaboration_tags)) {
 
@@ -37,7 +38,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
 
         foreach ($filter['keyword'] as $keyword) {
 
-          if (in_array($keyword['value'], $collaboration_tags)) {
+          if (in_array(strtolower($keyword['value']), $collaboration_tags)) {
             $keywords[] = $keyword['value'];
           }
 
@@ -53,7 +54,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
       // If there are multiple matches, we take the first one.
       $keyword = $keywords[0];
       $media = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getMedia();
-      $cdb_files = $media->byMediaType('roadmap');
+      $cdb_files = $media->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_COLLABORATION);
       $consumer_id = variable_get('culturefeed_api_application_key');
 
       foreach ($cdb_files as $cdb_file) {
@@ -61,7 +62,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
         $sub_brand = $cdb_file->getSubbrand();
         $description = json_decode($cdb_file->getDescription());
 
-        if ($consumer_id == $sub_brand && $keyword == $description->keyword) {
+        if ($consumer_id == $sub_brand && $keyword == strtolower($description->keyword)) {
 
           return array(
             'copyright' => $cdb_file->getCopyright(),

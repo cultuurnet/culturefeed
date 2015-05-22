@@ -30,7 +30,7 @@ function culturefeed_entry_ui_collaboration_get_data_by_keyword(\CultureFeed_Cdb
   );
 
   if ($event_details) {
-    $media_links = $event_details->getMedia()->byMediaTypes(array(CultureFeed_Cdb_Data_File::MEDIA_TYPE_ROADMAP));
+    $media_links = $event_details->getMedia()->byMediaTypes(array(CultureFeed_Cdb_Data_File::MEDIA_TYPE_COLLABORATION));
     foreach ($media_links as $link) {
 
       if ($link->getSubBrand() && $link->getSubBrand() == $consumer_key) {
