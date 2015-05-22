@@ -8,6 +8,7 @@
 namespace Drupal\culturefeed_ui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Routing\RouteMatch;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -16,6 +17,7 @@ use CultureFeed_User;
 use CultureFeed;
 use CultureFeed_OnlineAccount;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ConnectedAccountsController.
@@ -73,10 +75,11 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
    *
    * @param $account_type
    * @param $account_name
+   * @param Request $request
    *
    * @return RedirectResponse
    */
-  public function disconnect($account_type, $account_name) {
+  public function disconnect(Request $request, $account_type, $account_name) {
     $userId = $this->user->id;
     try {
       $this->culturefeed->deleteUserOnlineAccount($userId, $account_type,
@@ -91,10 +94,20 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
       drupal_set_message($this->t('Error occurred'), 'error');
     };
 
-    return $this->redirect('culturefeed_ui.account_form');
+    $route_match = RouteMatch::createFromRequest($request);
+    return $this->redirect($route_match->getRouteName(), $route_match->getRawParameters()->all());
   }
 
-  public function makePrivate($account_type, $account_name) {
+  /**
+   * Makes culturefeed activities private for a connected account.
+   *
+   * @param $account_type
+   * @param $account_name
+   * @param Request $request
+   *
+   * @return RedirectResponse
+   */
+  public function makePrivate(Request $request, $account_type, $account_name) {
     $userId = $this->user->id;
     $connectedAccount = $this->getConnectedAccount($account_type,
       $account_name);
@@ -102,10 +115,20 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
     $connectedAccount->publishActivities = FALSE;
     $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
 
-    return $this->redirect('culturefeed_ui.account_form');
+    $route_match = RouteMatch::createFromRequest($request);
+    return $this->redirect($route_match->getRouteName(), $route_match->getRawParameters()->all());
   }
 
-  public function makePublic($account_type, $account_name) {
+  /**
+   * Make culturefeed activities public for a connected account.
+   *
+   * @param $account_type
+   * @param $account_name
+   * @param Request $request
+   *
+   * @return RedirectResponse
+   */
+  public function makePublic(Request $request, $account_type, $account_name) {
     $userId = $this->user->id;
     $connectedAccount = $this->getConnectedAccount($account_type,
       $account_name);
@@ -113,7 +136,8 @@ class ConnectedAccountsController extends ControllerBase implements LoggerAwareI
     $connectedAccount->publishActivities = TRUE;
     $this->culturefeed->updateUserOnlineAccount($userId, $connectedAccount);
 
-    return $this->redirect('culturefeed_ui.account_form');
+    $route_match = RouteMatch::createFromRequest($request);
+    return $this->redirect($route_match->getRouteName(), $route_match->getRawParameters()->all());
   }
 
   /**
