@@ -54,7 +54,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
       // If there are multiple matches, we take the first one.
       $keyword = $keywords[0];
       $media = $extended_entity->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getMedia();
-      $cdb_files = $media->byMediaType('roadmap');
+      $cdb_files = $media->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_COLLABORATION);
       $consumer_id = variable_get('culturefeed_api_application_key');
 
       foreach ($cdb_files as $cdb_file) {
