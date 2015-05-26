@@ -10,7 +10,7 @@
 function culturefeed_saved_searches_block_cta() {
 
   if ($query = culturefeed_saved_searches_get_cta_query()) {
-    return theme('culturefeed_saved_searches_cta', array('text' => t('and receive an email when there are new results'), 'query' => $query));
+    return theme('culturefeed_saved_searches_cta', array('text' => t('Receive an email when there are new results'), 'query' => $query));
   }
 
 }
@@ -24,7 +24,7 @@ function culturefeed_saved_searches_block_cta_bottom() {
 
   if ($results && $results->getCurrentCount() > 0) {
     if ($query = culturefeed_saved_searches_get_cta_query()) {
-      return theme('culturefeed_saved_searches_cta', array('text' => t('to search faster next time'), 'query' => $query));
+      return theme('culturefeed_saved_searches_cta', array('text' => t('Search faster next time'), 'query' => $query));
     }
   }
 

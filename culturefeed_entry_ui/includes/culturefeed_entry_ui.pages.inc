@@ -2281,7 +2281,7 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
       }
     }
 
-    drupal_set_message(t('The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the "View" tab'));
+    drupal_set_message(t('The tags were adjusted.'));
 
   } catch (Exception $e) {
 
