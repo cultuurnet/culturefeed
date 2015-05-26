@@ -1,0 +1,268 @@
+<?php
+/**
+ * @file
+ * Creates a sitemap for the events, productions and actors.
+ */
+
+use CultuurNet\SiteMapXml\SiteMapIndexXmlWriter;
+use CultuurNet\SiteMapXml\SiteMapUrlSetXmlWriter;
+use CultuurNet\SiteMapXml\SiteMapXmlEntry;
+use CultuurNet\SiteMapXml\SiteMapXmlWriterInterface;
+use ValueObjects\Web\Url;
+use ValueObjects\DateTime\Date;
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_sitemap_menu() {
+  $items = array();
+
+  $items['sitemap.xml'] = array(
+    'access callback' => TRUE,
+    'page callback' => 'culturefeed_sitemap_get_primary_sitemap',
+    'type' => MENU_CALLBACK,
+  );
+
+  $sitemap_types = culturefeed_sitemap_get_types();
+  foreach ($sitemap_types as $sitemap_type) {
+    $items['sitemap-' . $sitemap_type . '.xml'] = array(
+      'access callback' => TRUE,
+      'page callback' => 'culturefeed_sitemap_get_secondary_sitemap',
+      'page arguments' => array($sitemap_type),
+      'type' => MENU_CALLBACK,
+    );
+
+    $subtypes = culturefeed_sitemap_get_subtypes($sitemap_type);
+    foreach ($subtypes as $subtype_id => $subtype_name) {
+      $subtype_name = drupal_html_class(strtolower($subtype_name));
+      $items['sitemap-' . $sitemap_type . '-' . $subtype_name . '.xml'] = array(
+        'access callback' => TRUE,
+        'page callback' => 'culturefeed_sitemap_get_entries_sitemap',
+        'page arguments' => array($sitemap_type, $subtype_id),
+        'type' => MENU_CALLBACK,
+      );
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * Returns the primary types of sitemaps.
+ *
+ * @return array
+ */
+function culturefeed_sitemap_get_types() {
+  return array(
+    'events',
+    'productions',
+    'actors',
+  );
+}
+
+/**
+ * Returns the subtypes (if any) of a specific type.
+ *
+ * @param $type
+ * @return array
+ */
+function culturefeed_sitemap_get_subtypes($type) {
+  switch ($type) {
+    case 'events':
+      return culturefeed_search_get_eventtype_categories();
+      break;
+
+    case 'actors':
+      return culturefeed_search_get_actortype_categories();
+      break;
+
+    default:
+      return array();
+  }
+}
+
+/**
+ * Page callback for the primary sitemap.
+ *
+ * This sitemap contains links to the three secondary sitemaps:
+ *   - events
+ *   - actors
+ *   - productions
+ */
+function culturefeed_sitemap_get_primary_sitemap() {
+  $sitemap_types = culturefeed_sitemap_get_types();
+  $sitemap_links = array();
+
+  foreach ($sitemap_types as $sitemap_type) {
+    $sitemap_links[] = array(
+      'loc' => url('sitemap-' . $sitemap_type . '.xml', array('absolute' => TRUE)),
+    );
+  }
+
+  culturefeed_sitemap_index_xml($sitemap_links);
+}
+
+/**
+ * Page callback for the secondary sitemaps.
+ *
+ * These are either links to sitemaps of subtypes if the type has any subtypes,
+ * or all entries of the type otherwise.
+ *
+ * @param string $type
+ */
+function culturefeed_sitemap_get_secondary_sitemap($type) {
+  $subtypes = culturefeed_sitemap_get_subtypes($type);
+  if (!empty($subtypes)) {
+    $sitemap_links = array();
+
+    foreach ($subtypes as $subtype_id => $subtype_name) {
+      $sitemap_links[] = array(
+        'loc' => url('sitemap-' . $type . '-' . drupal_html_class(strtolower($subtype_name)) . '.xml', array('absolute' => TRUE)),
+      );
+    }
+
+    culturefeed_sitemap_index_xml($sitemap_links);
+  }
+  else {
+    culturefeed_sitemap_get_entries_sitemap($type);
+  }
+}
+
+/**
+ * Prints a sitemap of entries for a specific type and optionally subtype.
+ *
+ * @param $type
+ * @param null $subtype
+ */
+function culturefeed_sitemap_get_entries_sitemap($type, $subtype = null) {
+  $sitemap_links = culturefeed_sitemap_get_entries($type, $subtype);
+
+  foreach ($sitemap_links as $index => $sitemap_link) {
+    $link_type = $sitemap_link->getType();
+    $id = $sitemap_link->getId();
+    $title = $sitemap_link->getTitle(culturefeed_search_get_preferred_language());
+    $options = array(
+      'absolute' => TRUE,
+    );
+
+    $sitemap_links[$index] = array(
+      'loc' => culturefeed_search_detail_url($link_type, $id, $title, $options),
+      'lastmod' => $sitemap_link->getEntity()->getLastUpdated(),
+    );
+  }
+
+  culturefeed_sitemap_urlset_xml($sitemap_links);
+}
+
+/**
+ * Returns the 100 latest created entries for an entry type.
+ *
+ * Optionally the entries can be filtered by subtype as well.
+ *
+ * @param string $type
+ * @param string $subtype
+ *
+ * @return CultuurNet\Search\ActivityStatsExtendedEntity[]
+ */
+function culturefeed_sitemap_get_entries($type, $subtype = null) {
+  $types = array(
+    'events' => 'event',
+    'actors' => 'actor',
+    'productions' => 'production',
+  );
+  $type = $types[$type];
+
+  $sort = culturefeed_sitemap_sort_config();
+
+  $parameters = array();
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(100);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort($sort['column'], $sort['direction']);
+
+  if ($subtype) {
+    $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('category_id' . ':(' . $subtype . ')');
+  }
+
+  if ($type == 'event') {
+    $parameters[] = new \CultuurNet\Search\Parameter\Group('true');
+  }
+
+  // Execute search.
+  try {
+    $result = culturefeed_get_search_service()->search($parameters);
+    return $result->getItems();
+  }
+  catch (Exception $e) {
+    watchdog_exception('Culturefeed Search Sitemap', $e);
+    return array();
+  }
+}
+
+/**
+ * Returns sorting configuration.
+ *
+ * @return array
+ *   - column: column to sort
+ *   - direction: asc or desc
+ */
+function culturefeed_sitemap_sort_config() {
+  $column = variable_get('culturefeed_sitemap_sort_column', 'creationdate');
+  $direction = variable_get('culturefeed_sitemap_sort_direction', \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC);
+
+  if ($direction != \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC &&
+      $direction != \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC) {
+    $direction = \CultuurNet\Search\Parameter\Sort::DIRECTION_DESC;
+  }
+
+  return array(
+    'column' => $column,
+    'direction' => $direction,
+  );
+}
+
+/**
+ * Prints the XML for a urlset sitemap.
+ *
+ * @param array $links
+ */
+function culturefeed_sitemap_urlset_xml(array $links) {
+  $writer = new SiteMapUrlSetXmlWriter();
+  culturefeed_sitemap_xml($writer, $links);
+}
+
+/**
+ * Prints the XML for a sitemap index.
+ *
+ * @param array $links
+ */
+function culturefeed_sitemap_index_xml(array $links) {
+  $writer = new SiteMapIndexXmlWriter();
+  culturefeed_sitemap_xml($writer, $links);
+}
+
+/**
+ * Prints entries to sitemap XML.
+ *
+ * @param SiteMapXmlWriterInterface $writer
+ * @param $links
+ */
+function culturefeed_sitemap_xml(SiteMapXmlWriterInterface $writer, $links) {
+  header("Content-Type:text/xml");
+  $writer->open();
+
+  foreach ($links as $link) {
+    $location = Url::fromNative($link['loc']);
+    $entry = new SiteMapXmlEntry($location);
+
+    if (isset($link['lastmod'])) {
+      $dateTime = new \DateTime($link['lastmod']);
+      $entryModified = Date::fromNativeDateTime($dateTime);
+      $entry->setLastModified($entryModified);
+    }
+
+    $writer->write($entry);
+  }
+
+  $writer->close();
+}
