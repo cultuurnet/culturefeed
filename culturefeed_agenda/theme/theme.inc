@@ -204,13 +204,17 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Pictures
     $main_picture = '';
+    $main_picture_cr = '';
     $pictures = array();
+    $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     foreach ($photos as $photo) {
       $pictures[] = $photo->getHLink();
+      $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
         $main_picture = $photo->getHLink();
+        $main_picture_cr = $photo->getCopyright();
       }
     }
 
@@ -220,6 +224,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $pictures[] = $image->getHLink();
       if ($image->isMain() && empty($main_picture)) {
         $main_picture = $image->getHLink();
+        $main_picture_cr = $image->getCopyright();
       }
     }
 
@@ -233,6 +238,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $pictures[] = $photo->getHLink();
           if ($photo->isMain()) {
             $main_picture = $photo->getHLink();
+            $main_picture_cr = $photo->getCopyright();
           }
         }
 
@@ -242,6 +248,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = $image->getHLink();
+            $main_picture_cr = $photo->getCopyright();
           }
         }
       }
@@ -250,15 +257,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
+      $main_picture_cr = $copyrights[0];
     }
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
       unset($pictures[0]);
+      unset($copyrights[0]);
     }
 
     $variables['main_picture'] = $main_picture;
+    $variables['main_picture_cr'] = $main_picture_cr;
     $variables['pictures'] = $pictures;
+    $variables['copyrights'] = $copyrights;
 
     // Make sure usage of thumbnail is backwards compatible
     $variables['thumbnail'] = $variables['main_picture'];
@@ -373,7 +384,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
-  $variables['is_android'] = FALSE;  
+  $variables['is_android'] = FALSE;
   $detect = culturefeed_mobile_detect_get_object();
 
   if ($detect) {
