@@ -1202,7 +1202,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actors_nearby(&$variab
     $actors[] = l($title, $GLOBALS['base_url'] . $url);
   }
 
-  $variables['links'] = implode(', ', $actors);
+  $variables['links'] = $actors;
 
 }
 
