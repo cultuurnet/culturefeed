@@ -662,3 +662,15 @@ msgstr "Retrait adresse"
 #: culturefeed_elements/culturefeed_location_control/form/custom.inc:136
 msgid "Remove address"
 msgstr "Retrait adresse"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:85
+msgid "Hide tag"
+msgstr "Masquer tag"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:96
+msgid "Remove tag"
+msgstr "Retirer tag"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:113
+msgid "Add tag"
+msgstr "Ajouter un tag"
