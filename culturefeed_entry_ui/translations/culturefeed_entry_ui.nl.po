@@ -817,3 +817,11 @@ msgstr "Laatst bijgewerkt"
 #: views/handlers/views_handler_field_cdb_item_operations.inc:47
 msgid "No permission to edit event"
 msgstr "Geen toelating om event aan te passen"
+
+#: culturefeed_elements/culturefeed_location_control/form/asset.inc:78
+msgid "Remove address"
+msgstr "Adres verwijderen"
+
+#: culturefeed_elements/culturefeed_location_control/form/custom.inc:136
+msgid "Remove address"
+msgstr "Adres verwijderen"
