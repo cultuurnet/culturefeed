@@ -7,651 +7,670 @@ msgstr ""
 "Project-Id-Version: CFK - translations\n"
 "Language: fr-be\n"
 
-#: 
+#:
 msgid "Manage object tags"
 msgstr "Gérer les tags  objet"
 
-#: 
+#:
 msgid "Manage all the tags from the objects on culturefeed (events, actors, ...)."
 msgstr "Gérer tous les tags des objets sur culturefeed (événements, acteurs…)"
 
-#: 
+#:
 msgid "Manage custom tags"
 msgstr "Gérer les tags personnalisés"
 
-#: 
+#:
 msgid "Manage custom tags from the objects on culturefeed (events, actors, ...) managed on the admin section."
 msgstr "Gérer les tags personnalisés des objets sur culturefeed (événements, acteurs...) gérés dans la section admin."
 
-#: 
+#:
 msgid "Create events"
 msgstr "Créer des événements"
 
-#: 
+#:
 msgid "Create new events through the entity api."
 msgstr "Créer de nouveaux événements via l'Entity API"
 
-#: 
+#:
 msgid "Edit events"
 msgstr "Modifier les événements"
 
-#: 
+#:
 msgid "Edit events through the entity api."
 msgstr "Modifier des événements via l'Entity API"
 
-#: 
+#:
 msgid "Delete events"
 msgstr "Supprimer des événements"
 
-#: 
+#:
 msgid "Delete events through the entity api."
 msgstr "Supprimer des événements via l'Entity API"
 
-#: 
+#:
 msgid "Tags"
 msgstr "Tags"
 
-#: 
+#:
 msgid "Edit"
 msgstr "Modifier"
 
-#: 
+#:
 msgid "View"
 msgstr "Voir"
 
-#: 
+#:
 msgid "ZIP Code"
 msgstr "Code postal"
 
-#: 
+#:
 msgid "New event"
 msgstr "Nouvelle activité"
 
-#: 
+#:
 msgid "Edit event"
 msgstr "Modifier activité"
 
-#: 
+#:
 msgid "Delete event"
 msgstr "Supprimer activité"
 
-#: 
+#:
 msgid "CultureFeed Entry UI"
 msgstr "Entrée UI CultureFeed"
 
-#: 
+#:
 msgid "All configurations to entry api for this site"
 msgstr "Toutes les configurations pour l'entrée API concernant ce site"
 
-#: 
+#:
 msgid "Multilingual forms to post, update and delete events to UiTDatabank Entry API"
 msgstr "Formulaires multilingues permettant de poster, mettre à jour et supprimer des événements de l'entrée UiTDatabank de l'API"
 
-#: 
+#:
 msgid "CultureFeed"
 msgstr "CultureFeed"
 
-#: 
+#:
 msgid "Preferred language"
 msgstr "Préférence linguistique"
 
-#: 
+#:
 msgid "Use the preferred language of the UiTID user, with the Drupal UI language as fallback"
 msgstr "Utiliser la préférence linguistique de l'utilisateur UiTID et la langue UI Drupal comme alternative"
 
-#: 
+#:
 msgid "Custom tags"
 msgstr "Tags personnalisés"
 
-#: 
+#:
 msgid "Custom tags specific for this site. Use a new line for each tag."
 msgstr "Tags personnalisés propres à ce site. Utiliser une nouvelle ligne pour chaque tag."
 
-#: 
+#:
 msgid "mon"
 msgstr "lun"
 
-#: 
+#:
 msgid "tue"
 msgstr "mar"
 
-#: 
+#:
 msgid "wed"
 msgstr "mer"
 
-#: 
+#:
 msgid "thu"
 msgstr "jeu"
 
-#: 
+#:
 msgid "fri"
 msgstr "ven"
 
-#: 
+#:
 msgid "sat"
 msgstr "sam"
 
-#: 
+#:
 msgid "sun"
 msgstr "dim"
 
-#: 
+#:
 msgid "Basic info"
 msgstr "Information de base"
 
-#: 
+#:
 msgid "Event title"
 msgstr "Titre"
 
-#: 
+#:
 msgid "Concerts"
 msgstr "Concerts"
 
-#: 
+#:
 msgid "Dance"
 msgstr "Danse"
 
-#: 
+#:
 msgid "Film"
 msgstr "Cinéma"
 
-#: 
+#:
 msgid "Theatre"
 msgstr "Théâtre"
 
-#: 
+#:
 msgid "Sport"
 msgstr "Sport"
 
-#: 
+#:
 msgid "Location"
 msgstr "Emplacement"
 
-#: 
+#:
 msgid "Location not found, add location"
 msgstr "L'emplacement n'a pas pu être trouvé. Veuillez ajouter un emplacement."
 
-#: 
+#:
 msgid "Location Title"
 msgstr "Titre de l'emplacement"
 
-#: 
+#:
 msgid "Street"
 msgstr "Rue"
 
-#: 
+#:
 msgid "House Number"
 msgstr "Numéro"
 
-#: 
+#:
 msgid "City"
 msgstr "Ville ou commune"
 
-#: 
+#:
 msgid "Country"
 msgstr "Pays"
 
-#: 
+#:
 msgid "Dates"
 msgstr "Dates"
 
-#: 
+#:
 msgid "Permanent"
 msgstr "Permanent"
 
-#: 
+#:
 msgid "remove date"
 msgstr "retirer date"
 
-#: 
+#:
 msgid "Date"
 msgstr "Date de début"
 
-#: 
+#:
 msgid "+ add end date or time"
 msgstr "+ ajouter fin"
 
-#: 
+#:
 msgid "End date"
 msgstr "Date de fin"
 
-#: 
+#:
 msgid "remove end date"
 msgstr "retirer fin"
 
-#: 
+#:
 msgid "+ add date"
 msgstr "+ ajouter date"
 
-#: 
+#:
 msgid "Open all day?"
 msgstr "Ouvert toute la journée ?"
 
-#: 
+#:
 msgid "Yes"
 msgstr "Oui"
 
-#: 
+#:
 msgid "No"
 msgstr "Non"
 
-#: 
+#:
 msgid "Extra info"
 msgstr "Informations complémentaires"
 
-#: 
+#:
 msgid "Description"
 msgstr "Description"
 
-#: 
+#:
 msgid "Short description"
 msgstr "Brève description"
 
-#: 
+#:
 msgid "+ add long description"
 msgstr "+ ajouter longue description"
 
-#: 
+#:
 msgid "Long description"
 msgstr "Longue description"
 
-#: 
+#:
 msgid "Add multiple tags seperated by a \";\""
 msgstr "Ajouter plusieurs tags séparés par un \";\""
 
-#: 
+#:
 msgid "Links"
 msgstr "Liens"
 
-#: 
+#:
 msgid "+ add another link"
 msgstr "+ ajouter un autre lien"
 
-#: 
+#:
 msgid "Image"
 msgstr "Image"
 
-#: 
+#:
 msgid "Image upload"
 msgstr "Télécharger une image"
 
-#: 
+#:
 msgid "Allowed extensions: gif png jpg jpeg"
 msgstr "Extensions autorisées : gif png jpg jpeg"
 
-#: 
+#:
 msgid "I agree to the <a href="http://www.uitdatabank.be/uitportal/legal.aspx">terms & conditions of UiTdatabank</a> and I declare that I have the necessary rights or permissions to distribute the image."
 msgstr "Je marque mon accord avec les <a href="http://www.uitdatabank.be/uitportal/legal.aspx">conditions générales</a> et déclare détenir les droits ou autorisations nécessaires pour diffuser l'image."
 
-#: 
+#:
 msgid "Price"
 msgstr "Prix"
 
-#: 
+#:
 msgid "Free event"
 msgstr "Événement gratuit"
 
-#: 
+#:
 msgid "+ add conditions & discounts"
 msgstr "+ ajouter tarifs et réductions"
 
-#: 
+#:
 msgid "Price conditions & discounts"
 msgstr "Tarifs spéciaux et réductions"
 
-#: 
+#:
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: 
+#:
 msgid "Organizer not found, add organizer"
 msgstr "L'organisateur n'a pu être trouvée. Ajouter une organisateur"
 
-#: 
+#:
 msgid "Name new organizer"
 msgstr "Nom nouvel organisateur"
 
-#: 
+#:
 msgid "Age"
 msgstr "Âge"
 
-#: 
+#:
 msgid "For everyone"
 msgstr "Tous âges"
 
-#: 
+#:
 msgid "For children (between 1 and 12 years)"
 msgstr "Pour les enfants (entre 1 et 12 ans)"
 
-#: 
+#:
 msgid "For youth (between 12 and 18 years)"
 msgstr "Pour les adolescents (entre 12 et 18 ans)"
 
-#: 
+#:
 msgid "For adults (18+)"
 msgstr "Pour les adultes (+ de 18 ans)"
 
-#: 
+#:
 msgid "Suitable for ages from"
 msgstr "Convient aux âges dès"
 
-#: 
+#:
 msgid "Activities for children will get the 'Fly' label"
 msgstr "Les activités pour les enfants recevront le label \"Fly\""
 
-#: 
+#:
 msgid "Contact"
 msgstr "Coordonnées"
 
-#: 
+#:
 msgid "+ add contact option"
 msgstr "+ ajouter des coordonnées"
 
-#: 
+#:
 msgid "Performers"
 msgstr "Artistes"
 
-#: 
+#:
 msgid "+ add another performer"
 msgstr "+ ajouter un autre artiste"
 
-#: 
+#:
 msgid "Language"
 msgstr "Langue"
 
-#: 
+#:
 msgid "+ add more language info"
 msgstr "+ ajouter plus d'informations linguistiques"
 
-#: 
+#:
 msgid "Access"
 msgstr "Accès"
 
-#: 
+#:
 msgid "Open for everyone"
 msgstr "Accessible à tous"
 
-#: 
+#:
 msgid "Only for members"
 msgstr "Réservé aux membres"
 
-#: 
+#:
 msgid "Translations"
 msgstr "Traductions"
 
-#: 
+#:
 msgid "Dutch"
 msgstr "Néerlandais"
 
-#: 
+#:
 msgid "English"
 msgstr "Anglais"
 
-#: 
+#:
 msgid "French"
 msgstr "Français"
 
-#: 
+#:
 msgid "German"
 msgstr "Allemand"
 
-#: 
+#:
 msgid "Publication date"
 msgstr "Date de publication"
 
-#: 
+#:
 msgid "Save"
 msgstr "Enregistrer"
 
-#: 
+#:
 msgid "Start time"
 msgstr "Heure de début"
 
-#: 
+#:
 msgid "End time"
 msgstr "Heure de fin"
 
-#: 
+#:
 msgid "Spoken"
 msgstr "Parlé"
 
-#: 
+#:
 msgid "Dubbed"
 msgstr "Doublé"
 
-#: 
+#:
 msgid "Subtitled"
 msgstr "Sous-titré"
 
-#: 
+#:
 msgid "in"
 msgstr "en"
 
-#: 
+#:
 msgid "Contact"
 msgstr "Contact"
 
-#: 
+#:
 msgid "Input"
 msgstr "Input"
 
-#: 
+#:
 msgid "Performer"
 msgstr "Artiste"
 
-#: 
+#:
 msgid "Role"
 msgstr "Rôle"
 
-#: 
+#:
 msgid "Link"
 msgstr "Lien"
 
-#: 
+#:
 msgid "for reservation"
 msgstr "pour la réservation"
 
-#: 
+#:
 msgid "Format"
 msgstr "Format"
 
-#: 
+#:
 msgid "Please fill in correct age"
 msgstr "Veuillez indiquer l'âge correct"
 
-#: 
+#:
 msgid "Please fill in correct date and time"
 msgstr "Veuillez indiquer la date et l'heure correctes"
 
-#: 
+#:
 msgid "A date is required."
 msgstr "Veuillez indiquer une date."
 
-#: 
+#:
 msgid "Date field is invalid. The end date is earlier than the beginning date."
 msgstr "Cette date n'est pas correcte. La date de fin est antérieure à la date de début."
 
-#: 
+#:
 msgid "Date field is invalid. The end time is earlier than the beginning time."
 msgstr "Cette date n'est pas correcte. L'heure de fin est antérieure à l'heure de début."
 
-#: 
+#:
 msgid "Please fill in correct date"
 msgstr "Veuillez indiquer la date correcte"
 
-#: 
+#:
 msgid "Please agree to the general conditions of UiTdatabank and declare that you have the necessary rights or permissions to distribute the image through UiTdatabank."
 msgstr "Veuillez marquer votre accord avec les conditions générales de UiTdatabank et déclarer que vous détenez les droits ou autorisations nécessaires pour diffuser l'image via UiTdatabank."
 
-#: 
+#:
 msgid "A category is required."
 msgstr "Veuillez indiquer une catégorie."
 
-#: 
+#:
 msgid "A title is required for a custom location"
 msgstr "Veuillez indiquer un titre pour un emplacement personnalisé"
 
-#: 
+#:
 msgid "A zip code is required for a custom location"
 msgstr "Veuillez indiquer un code postal pour un emplacement personnalisé"
 
-#: 
+#:
 msgid "A city is required for a custom location"
 msgstr "Veuillez indiquer une ville pour un emplacement personnalisé"
 
-#: 
+#:
 msgid "A location is required."
 msgstr "Veuillez indiquer un emplacement."
 
-#: 
+#:
 msgid "We could not validate the location"
 msgstr "Cet emplacement n'a pas pu être validé"
 
-#: 
+#:
 msgid "Not a valid URL"
 msgstr "Cette URL n'est pas valide"
 
-#: 
+#:
 msgid "We could not validate the organizer"
 msgstr "L'organisateur n'a pas pu être validée"
 
-#: 
+#:
 msgid "Not a valid email address"
 msgstr "Cette adresse électronique n'est pas valide"
 
-#: 
+#:
 msgid "Order tickets"
 msgstr "Commander des billets"
 
-#: 
+#:
 msgid "An error occurred while saving the event"
 msgstr "Une erreur s'est produite lors de l'enregistrement de l'événement"
 
-#: 
+#:
 msgid "Event successfully updated"
 msgstr "L'événement a été correctement mis à jour"
 
-#: 
+#:
 msgid "Click here to update"
 msgstr "Cliquez ici pour mettre à jour"
 
-#: 
+#:
 msgid "Are you sure you want to delete the event?"
 msgstr "Êtes-vous sûr de vouloir supprimer l'événement ?"
 
-#: 
+#:
 msgid "This action cannot be undone"
 msgstr "Cette action ne peut être annulée"
 
-#: 
+#:
 msgid "Delete"
 msgstr "Supprimer"
 
-#: 
+#:
 msgid "Cancel"
 msgstr "Annuler"
 
-#: 
+#:
 msgid "Event successfully deleted"
 msgstr "Cet événement a été correctement supprimé"
 
-#: 
+#:
 msgid "An error occurred while deleting the event"
 msgstr "Une erreur s'est produite lors de la suppression de l'événement"
 
-#: 
+#:
 msgid "Seperate multiple tags by ;"
 msgstr "Insérez un ; entre plusieurs tags"
 
-#: 
+#:
 msgid "Submit"
 msgstr "Ajouter"
 
-#: 
+#:
 msgid "Tag @tag is not permitted because it's already a custom tag."
 msgstr "Le tag @tag n'est pas autorisé car ce tag est déjà personnalisé."
 
-#: 
+#:
 msgid "Autocomplete popup"
 msgstr "Pop-up automatique"
 
-#: 
+#:
 msgid "open"
 msgstr "ouvert"
 
-#: 
+#:
 msgid "from"
 msgstr "de"
 
-#: 
+#:
 msgid "to"
 msgstr "à"
 
-#: 
+#:
 msgid "Operations"
 msgstr "Opérations"
 
-#: 
+#:
 msgid "Links to operations that can be performed"
 msgstr "Liens vers les opérations pouvant être accomplies"
 
-#: 
+#:
 msgid "Create event"
 msgstr "Créer un événement"
 
-#: 
+#:
 msgid "Link to create event"
 msgstr "Lien vers la création d'un événement"
 
-#: 
+#:
 msgid "Master"
 msgstr "Master"
 
-#: 
+#:
 msgid "Events created by me"
 msgstr "Mes événements créés"
 
-#: 
+#:
 msgid "more"
 msgstr "plus"
 
-#: 
+#:
 msgid "Apply"
 msgstr "Appliquer"
 
-#: 
+#:
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: 
+#:
 msgid "Sort by"
 msgstr "Trier par"
 
-#: 
+#:
 msgid "Asc"
 msgstr "Ordre croissant"
 
-#: 
+#:
 msgid "Desc"
 msgstr "Ordre décroissant"
 
-#: 
+#:
 msgid "Notification that no results were found"
 msgstr "Notification d'absence de résultats"
 
-#: 
+#:
 msgid "Unable to find any events created by you."
 msgstr "Aucun événement créé par vous n'a pu être trouvé"
 
-#: 
+#:
 msgid "Last updated"
 msgstr "Dernière mise à jour"
 
-#: 
+#:
 msgid "Block"
 msgstr "Bloquer"
 
-#: 
+#:
 msgid "Add event"
 msgstr "Ajouter événement"
 
+#: culturefeed_elements/culturefeed_location_control/form/asset.inc:78
+msgid "Remove address"
+msgstr "Retrait adresse"
+
+#: culturefeed_elements/culturefeed_location_control/form/custom.inc:136
+msgid "Remove address"
+msgstr "Retrait adresse"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:85
+msgid "Hide tag"
+msgstr "Masquer tag"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:96
+msgid "Remove tag"
+msgstr "Retirer tag"
+
+#: culturefeed_elements/culturefeed_tags_element/culturefeed_tags_element.module:113
+msgid "Add tag"
+msgstr "Ajouter un tag"
