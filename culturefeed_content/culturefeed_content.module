@@ -233,7 +233,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   foreach ($sort_options as $key => $option) {
 
-    if ($key === 'default' || !$option['exposed']) {
+    if ($key === 'default') {
       continue;
     }
     $options[$option['value']] = $option['label'];
