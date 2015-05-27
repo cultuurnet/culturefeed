@@ -9,6 +9,7 @@ namespace Drupal\culturefeed_ui\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
 use CultureFeed_User;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Url;
@@ -134,6 +135,14 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       'file_validate_size' => array(file_upload_max_size()),
     );
 
+    $depictionDestination = 'public://culturefeed/user_depictions/' . $user->id . '.jpg';
+    /** @var File $currentDepiction */
+    $currentDepiction = system_retrieve_file(
+      'http:' . $user->depiction,
+      $depictionDestination,
+      true,
+      FILE_EXISTS_REPLACE
+    );
     $form['about-me']['picture'] = array(
       '#type' => 'managed_image',
       '#title' => $this->t('Picture'),
@@ -144,19 +153,10 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       ),
       '#size' => 50,
       '#upload_validators' => $file_validators,
-      '#upload_location' => 'public://culturefeed'
+      '#upload_location' => $depictionDestination,
+      '#multiple' => FALSE,
+      '#default_value' => [$currentDepiction->id()],
     );
-
-// TODO: find an alternative for the helper function "culturefeed_create_temporary_image".
-// I think a library like flysystem would be more suitable to manage these local images.
-//        // Check if the depiction is not the default one.
-//        if (!empty($cf_account->depiction) && !strstr($cf_account->depiction, '/' . CULTUREFEED_UI_DEFAULT_DEPICTION)) {
-//            $file = culturefeed_create_temporary_image($cf_account->depiction, file_default_scheme() . '://culturefeed');
-//            if ($file) {
-//                $form_state->set('#old_picture', $file->fid);
-//                $form['picture']['#default_value'] = $file->fid;
-//            }
-//        }
 
     $form['about-me']['dob'] = array(
       '#title' => $this->t('Date of birth'),
@@ -338,8 +338,8 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
       }
     }
 
-    // Remove the profile picture if requested.
-    if (empty($values['picture']) && $form_state->getValue('#old_picture') > 0) {
+    // Remove or update the profile picture
+    if (empty($values['picture'])) {
       try {
         $culturefeed->removeUserDepiction($this->user->id);
       } catch (\Exception $e) {
@@ -350,26 +350,29 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
           );
         }
       }
-    }
+    } else {
+      $depictionFid = $values['picture'][0];
+      if ($depictionFid) {
 
-    // Upload profile picture.
-//    $picture = $form_state->getValue('picture');
-//    $oldPicture = $form_state->getValue('#old_picture');
-//
-//    if ($picture && $oldPicture != $picture) {
-//
-//      $file = file_load($picture);
-//      if ($file) {
-//        try {
-//          $file_upload = culturefeed_prepare_curl_upload_from_file($file);
-//          $culturefeed->uploadUserDepiction($this->user->id, $file_upload);
-//        } catch (\Exception $e) {
-//          watchdog_exception('culturefeed_ui', $e);
-//          $form_state->setErrorByName('picture',
-//            $this->t('Error occurred while saving your picture.'));
-//        }
-//      }
-//    }
+        /** @var FileInterface $file **/
+        $file = File::load($depictionFid);
+        if ($file) {
+          try {
+            $depictionContent = file_get_contents($file->getFileUri());
+            $culturefeed->uploadUserDepiction($this->user->id, $depictionContent);
+          } catch (\Exception $e) {
+            if ($this->logger) {
+              $this->logger->error(
+                'Error occurred while saving the user depiction',
+                array('exception' => $e)
+              );
+            }
+            $form_state->setErrorByName('picture',
+              $this->t('Error occurred while saving your picture.'));
+          }
+        }
+      }
+    }
 
     if (!$form_state->hasAnyErrors()) {
       // Update field privacy status.
@@ -397,7 +400,7 @@ class ProfileForm extends FormBase implements LoggerAwareInterface {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message($this->t('Changes successfully saved.'));
+    drupal_set_message($this->t('Changes succesfully saved.'));
   }
 
 }
