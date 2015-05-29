@@ -168,6 +168,14 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['admin/content/mailing_content'] = array(
+    'title' => 'Mailing content',
+    'page callback' => 'culturefeed_mailing_page_five_tips_markup',
+    'access arguments' => array('manage mailing lists'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   return $items;
 
 }
@@ -196,6 +204,11 @@ function culturefeed_mailing_theme() {
       'template' => 'culturefeed-mailing-user-profile-admin-item',
       'path' => $path,
       'file' => 'theme.inc',
+    ),
+    'culturefeed_mailing_tips_row' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-tips-row',
+      'path' => $path,
     ),
   );
 }

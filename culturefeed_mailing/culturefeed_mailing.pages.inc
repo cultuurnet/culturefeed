@@ -1374,3 +1374,64 @@ function _culturefeed_mailing_get_day_of_the_month() {
 
   return $daysofmonth;
 }
+
+/**
+ * Page callback for the 5 tips mail items markup
+ */
+function culturefeed_mailing_page_five_tips_markup() {
+
+  $output = '';
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node');
+  $query->entityCondition('bundle', 'mail_item');
+  //$query->propertyCondition('status', 1);
+  $query->entityOrderBy('entity_id', 'DESC');
+  $query->range(0, 5);
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  if ($nids) {
+    $nodes = node_load_multiple($nids);
+    foreach ($nodes as $node) {
+      $link = field_view_field('node', $node, 'field_link');
+      $image = field_view_field('node', $node, 'field_image');
+      $intro = field_view_field('node', $node, 'field_intro');
+      
+      $link_options = drupal_parse_url($link['#items'][0]['display_url']);
+      $link_path = $link_options['path'];
+      $link_query = $link_options['query'];
+      
+      $utm = array(
+        'utm_campaign' => 'UiTmail',
+        'utm_medium' => 'email',
+        'utm_source' => 'newsletter',
+      );
+      
+      $utm_title = array('utm_content' => 'red-teaser-title');
+      $query_title = array_merge($link_query, $utm, $utm_title);
+      
+      $utm_image = array('utm_content' => 'red-teaser-image');
+      $query_image = array_merge($link_query, $utm, $utm_image);
+      
+      $utm_readon = array('utm_content' => 'red-teaser-read-more');
+      $query_readon = array_merge($link_query, $utm, $utm_readon);
+      
+      $variables = array(
+        'url_title' => url($link_path, array('query' => $query_title)),
+        'url_image' => url($link_path, array('query' => $query_image)),
+        'url_readon' => url($link_path, array('query' => $query_readon)),
+        'title' => $node->title,
+        'intro' => $intro['#items'][0]['value'],
+        'link_title' => $link['#items'][0]['title'],
+        'image' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $image['#items'][0]['uri'], 'attributes' => array('style' => 'border: none; margin:0 !important; height:100px; width: 100px;'), 'alt' => $node->title)),
+      );
+
+      $output .= theme('culturefeed_mailing_tips_row', $variables);
+    }
+
+  }
+
+  return '<p>' . theme('textarea', array('element' => array('#value' => $output, '#rows' => 10))) . '</p><p>' . $output . '</p>';
+}
+
+
