@@ -1,0 +1,27 @@
+<?php
+/**
+ * @file
+ * Code for the culturefeed_mailing module.
+ */
+
+include_once 'culturefeed_mailing.field_base.inc';
+include_once 'culturefeed_mailing.field_instance.inc';
+
+/**
+ * Implements hook_install().
+ */
+function culturefeed_mailing_install() {
+  node_types_rebuild();
+  foreach (_culturefeed_mailing_installed_fields() as $field) {
+    $check_field = field_info_field($field['field_name']);
+    if (empty($check_field)) {
+      field_create_field($field);
+    }
+  }
+  foreach (_culturefeed_mailing_installed_instances() as $fieldinstance) {
+    $check_instance = field_info_instance($fieldinstance['entity_type'], $fieldinstance['field_name'], $fieldinstance['bundle']);
+    if (empty($check_instance)) {
+      field_create_instance($fieldinstance);
+    }
+  }
+}
