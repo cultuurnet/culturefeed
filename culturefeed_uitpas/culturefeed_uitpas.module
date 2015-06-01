@@ -55,6 +55,40 @@ function culturefeed_uitpas_module_implements_alter(&$implementations, $hook) {
   }
 }
 
+
+/**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {
+
+  $items['uitpas-divider'] = array(
+    'data' => '',
+    'class' => 'divider',
+    'weight' => 9,
+  );
+
+  $items['my-uitpas'] = array(
+    'data' => l(t('My UiTpas'), 'culturefeed/profile/uitpas'),
+    'class' => 'my-uitpas',
+    'weight' => 10,
+  );
+
+  $items['uitpas-advantages'] = array(
+    'data' => l(t('UiTpas advantages'), 'culturefeed/profile/uitpas/advantages'),
+    'class' => 'uitpas-advantages',
+    'weight' => 10,
+  );
+
+  $items['uitpas-history'] = array(
+    'data' => l(t('UiTpas history'), 'culturefeed/profile/uitpas/history'),
+    'class' => 'uitpas-history',
+    'weight' => 10,
+  );
+
+  return $items;
+
+}
+
 /**
  * Implements hook_init().
  */

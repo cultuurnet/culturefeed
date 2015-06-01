@@ -426,23 +426,26 @@ function culturefeed_ui_culturefeed_ui_profile_menu() {
 /**
  * Implements hook_culturefeed_ui_profile_box_dropdown_items().
  */
-function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
+function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {
 
   $items = array();
 
   $items['my-profile'] = array(
-    'data' => t('My profile'),
+    'data' => l(t('My profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
     'class' => 'my-profile',
-    'children' => array(
-      array('data' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick))),
-    ),
     'weight' => -20,
   );
 
-  $items['settings'] = array(
-    'data' => l(t('Edit profile'), 'culturefeed/profile/edit'),
-    'class' => 'settings',
-    'weight' => 19,
+  $items['user-history'] = array(
+    'data' => l(t('User history'), 'culturefeed/profile/edit'),
+    'class' => 'user-history',
+    'weight' => -19,
+  );
+
+  $items['logout_divider'] = array(
+    'data' => '',
+    'class' => 'divider',
+    'weight' => 20,
   );
 
   $items['logout'] = array(
