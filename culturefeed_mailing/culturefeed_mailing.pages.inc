@@ -1380,7 +1380,12 @@ function _culturefeed_mailing_get_day_of_the_month() {
  */
 function culturefeed_mailing_page_mailing_content() {
 
-  $output = '';
+  $output_block_1 = '';
+  $output_block_2 = '';
+  $output_block_3 = '';
+  $output_block_4 = '';
+  $output_block_5 = '';
+  $output_block_6 = '';
 
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node');
