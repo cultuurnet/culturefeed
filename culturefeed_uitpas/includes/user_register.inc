@@ -37,24 +37,33 @@ function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user)
   $form['link'] = array(
     '#type' => 'value',
   );
-  $form['username'] = array(
+  $form['wrapper'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Register your UiTpas'),
+  );
+  $form['wrapper']['username'] = array(
     '#type' => 'textfield',
     '#title' => t('Username'),
     '#value' => $username_to_use,
     '#disabled' => TRUE,
   );
-  $form['uitpasnumber'] = array(
+  $form['wrapper']['uitpasnumber'] = array(
     '#type' => 'textfield',
     '#title' => variable_get('culturefeed_uitpas_user_register_number_label', t('UiTPAS number')),
     '#required' => TRUE,
   );
-  $form['dob'] = array(
+  $form['wrapper']['dob'] = array(
     '#type' => 'date',
     '#title' => t('Date of birth'),
     '#after_build' => array('culturefeed_uitpas_user_register_form_process_year'),
+    '#default_value' => array(
+      'year' => date('Y', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : time()),
+      'month' => date('n', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : time()),
+      'day' => date('j', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : time()),
+    ),
     '#required' => TRUE,
   );
-  $form['actions'] = array(
+  $form['wrapper']['actions'] = array(
     'submit' => array(
       '#type' => 'submit',
       '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Register UiTpas')),
