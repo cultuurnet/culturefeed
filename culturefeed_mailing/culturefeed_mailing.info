@@ -5,6 +5,7 @@ version = VERSION
 core = 7.x
 dependencies[] = image
 dependencies[] = link
+dependencies[] = list
 dependencies[] = node
 dependencies[] = text
 dependencies[] = culturefeed
