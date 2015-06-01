@@ -24,11 +24,24 @@ function culturefeed_uitpas_user_register_get() {
  */
 function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user) {
 
+  if (isset($uitpas_user->user->givenName) && isset($uitpas_user->user->familyName)) {
+    $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+  }
+  else {
+    $username_to_use = $uitpas_user->user->nick;
+  }
+
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
 
   $form['prefix']['#markup'] = variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.'));
   $form['link'] = array(
     '#type' => 'value',
+  );
+  $form['username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#value' => $username_to_use,
+    '#disabled' => TRUE,
   );
   $form['uitpasnumber'] = array(
     '#type' => 'textfield',
@@ -44,7 +57,7 @@ function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user)
   $form['actions'] = array(
     'submit' => array(
       '#type' => 'submit',
-      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Continue')),
+      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Register UiTpas')),
     ),
   );
 

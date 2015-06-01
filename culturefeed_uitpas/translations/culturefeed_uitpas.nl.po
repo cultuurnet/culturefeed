@@ -970,3 +970,7 @@ msgstr "Nu"
 #: includes/user_register.inc:29;180
 msgid "Register here, so you can follow your UiTPAS advantages and points balance online."
 msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."
+
+#: /register_uitpas
+msgid "Register UiTpas"
+msgstr "Registreer UiTpas"
