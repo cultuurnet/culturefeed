@@ -128,5 +128,36 @@ function _culturefeed_mailing_installed_fields() {
     'type' => 'link_field',
   );
 
+  // Exported field_base: 'field_region'
+  $field_bases['field_region'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_region',
+    'foreign keys' => array(),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        'block_1' => 'block_1 (make me readable)',
+        'block_2' => 'block_2 (make me readable)',
+        'block_3' => 'block_3 (make me readable)',
+        'block_4' => 'block_4 (make me readable)',
+        'block_5' => 'block_5 (make me readable)',
+        'block_6' => 'block_6 (make me readable)',
+      ),
+      'allowed_values_function' => '',
+      'allowed_values_php' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_text',
+  );
+
   return $field_bases;
 }

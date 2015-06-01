@@ -207,13 +207,59 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-mail_item-field_region'
+  $field_instances['node-mail_item-field_region'] = array(
+    'bundle' => 'mail_item',
+    'default_value' => array(
+      0 => array(
+        'value' => 'block_1',
+      ),
+    ),
+    'default_value_function' => '',
+    'default_value_php' => '',
+    'deleted' => 0,
+    'description' => 'Choose in which HTML field I should be displayed. Block 1 to 6 should be given a readable value.',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 5,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_region',
+    'label' => 'Region',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 5,
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   t('Add an optional teaser image to the mail item');
+  t('Choose in which HTML field I should be displayed. Block 1 to 6 should be given a readable value.');
   t('Image');
   t('Intro');
   t('Label');
   t('Link');
+  t('Region');
   t('This field can be used to provide a short label above the intro text');
   t('This field contains the URL to your website and text for the CTA-button');
   t('This field is used as teaser text for your mail items');
