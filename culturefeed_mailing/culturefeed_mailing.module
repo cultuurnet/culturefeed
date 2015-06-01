@@ -210,6 +210,31 @@ function culturefeed_mailing_theme() {
       'template' => 'culturefeed-mailing-content-block-1',
       'path' => $path,
     ),
+    'culturefeed_mailing_content_block_2' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-2',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_3' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-3',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_4' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-4',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_5' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-5',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_6' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-6',
+      'path' => $path,
+    ),
   );
 }
 
