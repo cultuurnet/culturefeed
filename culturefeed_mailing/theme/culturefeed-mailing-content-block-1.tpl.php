@@ -12,7 +12,7 @@
             </a>
             <br>
             <span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; font-weight: normal; line-height: 120%; text-align: left;">
-              <?php print $teaser; ?>
+              <?php print $intro; ?>
             </span>
             <br>
             <a href="<?php print $url_readon; ?>" style="color: #F10B0D; font-family: Arial, sans-serif; font-size: 13px; font-weight: normal; line-height: 200%; text-decoration: none; border-bottom: 1px dotted #F10B0D;">
@@ -25,13 +25,13 @@
   </td>
 </tr>
 <tr>
-    <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><img src="http://www.uitinvlaanderen.be/sites/default/files/uitmail/spacer.gif" height="10" width="1" />
+    <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><?php print $spacer; ?>
     </td>
 </tr>                           
 <tr>
     <td bgcolor="#efeeec" height="1" width="600"></td>
 </tr>	
 <tr>
-    <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><img src="http://www.uitinvlaanderen.be/sites/default/files/uitmail/spacer.gif" height="10" width="1" />
+    <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><?php print $spacer; ?>
     </td>
 </tr>
