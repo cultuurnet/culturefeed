@@ -30,7 +30,7 @@ function culturefeed_ui_menu() {
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/account/edit'] = array(
-    'title' => 'Edit account',
+    'title callback' => 'culturefeed_ui_profile_name_title_callback',
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -139,6 +139,24 @@ function culturefeed_ui_init() {
 }
 
 /**
+ * Returns the current user name.
+ */
+function culturefeed_ui_profile_name_title_callback() {
+
+  try {
+    /* @var CultureFeed_User $cf_account */
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    return $cf_account->nick;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
+    return;
+  }
+
+}
+
+/**
  * Implements hook_theme().
  */
 function culturefeed_ui_theme() {
@@ -146,6 +164,9 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_profile' => array(
       'variables' => array('user' => NULL),
       'template' => 'culturefeed-ui-profile',
+    ),
+    'culturefeed_ui_profile_menu' => array(
+      'variables' => array(),
     ),
     'culturefeed_ui_profile_box' => array(
       'variables' => array(

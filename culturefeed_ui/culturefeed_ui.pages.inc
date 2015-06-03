@@ -450,24 +450,19 @@ function culturefeed_ui_page_account_edit_form() {
     return;
   }
 
-  $form['view-profile'] = array(
-    '#prefix' => '<div id="view-profile">',
-    '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
-    '#suffix' => '</div>',
-  );
-
   $form['nick'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Username'),
     '#disabled' => TRUE,
+    '#title' => t('Username'),
+    '#type' => 'textfield',
     '#value' => $cf_account->nick,
   );
 
   $form['mbox'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Email address'),
     '#default_value' => $cf_account->mbox,
+    '#description' => variable_get('culturefeed_ui_account_edit_email_description', ''),
     '#required' => TRUE,
+    '#title' => t('Email address'),
+    '#type' => 'textfield',
   );
 
   $form['submit'] = array(
@@ -476,20 +471,12 @@ function culturefeed_ui_page_account_edit_form() {
   );
 
   $destination = url('culturefeed/account/edit', array('absolute' => TRUE));
-
   $url = DrupalCultureFeed::getUrlChangePassword($cf_account->id, $destination);
-
   $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
 
   $form['change_password'] = array(
     '#prefix' => '<div id="change-password">',
     '#markup' => l(t('Change password'), $url, $options),
-    '#suffix' => '</div>',
-  );
-
-  $form['remove_account'] = array(
-    '#prefix' => '<div id="remove-account">',
-    '#markup' => l(t('Delete account'), 'culturefeed/removeaccount'),
     '#suffix' => '</div>',
   );
 

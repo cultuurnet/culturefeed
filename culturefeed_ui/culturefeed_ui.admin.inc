@@ -46,5 +46,17 @@ function culturefeed_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_ui_cookie_path', ''),
   );
 
+  $form['culturefeed_ui_account_edit_intro'] = array(
+    '#default_value' => variable_get('culturefeed_ui_account_edit_intro', ''),
+    '#title' => t('Account edit page: intro'),
+    '#type' => 'textarea',
+  );
+
+  $form['culturefeed_ui_account_edit_email_description'] = array(
+    '#default_value' => variable_get('culturefeed_ui_account_edit_email_description', ''),
+    '#title' => t('Account edit page: email description'),
+    '#type' => 'textarea',
+  );
+
   return system_settings_form($form);
 }

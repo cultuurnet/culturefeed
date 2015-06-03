@@ -6,6 +6,14 @@
  */
 ?>
 
+<?php if ($intro): ?>
+<div id="account-edit-intro">
+  <?php print $intro; ?>
+</div>
+<?php endif; ?>
+
+<?php print $profile_menu; ?>
+
 <div id="account-edit-form">
   <?php print $account ?>
 </div><hr />
@@ -17,5 +25,5 @@
 
 <div id="manage-consumers">
   <h3><?php print t('Connected applications'); ?></h3>
-  <?php print t('Manage all'); ?> <?php print l(t('websites and applications'), 'culturefeed/serviceconsumers'); ?> <?php print t('who uses your UiTiD profile.'); ?>
+  <?php print $connected_applications; ?>
 </div>
