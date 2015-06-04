@@ -1,0 +1,34 @@
+.details-form * {
+  box-sizing: border-box;
+}
+
+.details-form .form-row {
+  margin: 0 -10px 0 -10px;
+}
+
+.details-form .form-item,
+.details-form .form-actions {
+  width: 50%;
+  float: left;
+  padding: 0 10px 0 10px;
+}
+
+.details-form .form-item input {
+  width: 100%;
+}
+
+.details-form .form-item-street {
+  width: 80%;
+}
+
+.details-form .form-item-nr {
+  width: 20%;
+}
+
+.details-form .form-item-zip {
+  width: 20%;
+}
+
+.details-form .form-item-city {
+  width: 80%;
+}

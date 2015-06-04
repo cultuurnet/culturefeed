@@ -218,8 +218,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   // @codingStandardsIgnoreEnd
   $card_system = $uitpas_user->card_system;
 
-  // Details.
+  // Title.
   $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
+
+  // Intro.
+  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
+
+  // Card numbers.
   $uitpas_numbers = array(
     'items' => array(),
     'type' => 'ul',
@@ -233,23 +238,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     }
 
   }
-  $vars['uitpas_numbers'] = '<label>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</label> ' . theme_item_list($uitpas_numbers);
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
-  $vars['first_name'] = '<label>' . t('First name') . ':</label> ' . $passholder->firstName;
-  $vars['last_name'] = '<label>' . t('Name') . ':</label> ' . $passholder->name;
-  $vars['dob'] = '<label>' . t('Date of birth') . ':</label> ' . date('j/m/Y', $passholder->dateOfBirth);
-  $vars['pob'] = '<label>' . t('Place of birth') . ':</label> ' . $passholder->placeOfBirth;
-  $gender = ($passholder->gender == 'MALE') ? t('Male') : t('Female');
-  $vars['gender'] = '<label>' . t('Gender') . ':</label> ' . $gender;
-  $vars['nationality'] = '<label>' . t('Nationality') . ':</label> ' . $passholder->nationality;
-  $vars['street'] = '<label>' . t('Street') . ':</label> ' . $passholder->street;
-  $vars['nr'] = '<label>' . t('Nr') . ':</label> ' . $passholder->number;
-  $vars['bus'] = '<label>' . t('Bus') . ':</label> ' . $passholder->box;
-  $vars['zip'] = '<label>' . t('Zip') . ':</label> ' . $passholder->postalCode;
-  $vars['city'] = '<label>' . t('City') . ':</label> ' . $passholder->city;
-  $vars['tel'] = '<label>' . t('Telephone') . ':</label> ' . $passholder->telephone;
-  $vars['mobile'] = '<label>' . t('Mobile') . ':</label> ' . $passholder->gsm;
-  $vars['email'] = '<label>' . t('Email') . ':</label> ' . $passholder->email;
+  $uitpas_numbers_output = '<h3>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</h3> ';
+  $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
+  $uitpas_numbers_output .= l(t('Register new UiTpas'), 'register_uitpas');
+  $vars['uitpas_numbers'] = $uitpas_numbers_output;
+
+  $vars['form_title'] = variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal data'));
+  $vars['form_intro'] = variable_get('culturefeed_uitpas_profile_details_form_intro');
+  $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
+  $vars['form'] = drupal_render($form);
 
   $vars['status_title'] = t('Status');
   $vars['kansen_statuut'] = '';
@@ -286,6 +283,40 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   }
 
   $vars['outro'] = variable_get('culturefeed_uitpas_profile_details_outro');
+
+}
+
+/**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_details().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details_form(&$vars) {
+
+  $form = $vars['form'];
+
+  $vars['first_name'] = drupal_render($form['first_name']);
+  $vars['last_name'] = drupal_render($form['last_name']);
+  $vars['dob'] = drupal_render($form['dob']);
+  $vars['pob'] = drupal_render($form['pob']);
+  $vars['gender'] = drupal_render($form['gender']);
+  $vars['nationality'] = drupal_render($form['nationality']);
+  $vars['street'] = drupal_render($form['street']);
+  $vars['nr'] = drupal_render($form['nr']);
+  $vars['zip'] = drupal_render($form['zip']);
+  $vars['city'] = drupal_render($form['city']);
+  $vars['tel'] = drupal_render($form['tel']);
+  $vars['mobile'] = drupal_render($form['mobile']);
+  $vars['actions'] = drupal_render($form['actions']);
+
+  $vars['main_form'] = drupal_render_children($form);
+
+  $attached = array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_uitpas') . '/css/profile_details_form.css',
+      ),
+    ),
+  );
+  drupal_render($attached);
 
 }
 

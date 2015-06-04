@@ -99,6 +99,12 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-profile-details',
     ),
+    'culturefeed_uitpas_profile_details_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-profile-details-form',
+    ),
     'culturefeed_uitpas_profile_summary' => array(
       'variables' => array(
         'uitpas_user' => NULL,

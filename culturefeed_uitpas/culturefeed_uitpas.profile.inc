@@ -42,13 +42,3 @@ function culturefeed_uitpas_culturefeed_ui_profile_menu() {
  */
 function culturefeed_uitpas_culturefeed_ui_profile_menu_alter(&$menu) {
 }
-
-/**
- * Implements hook_user_view().
- */
-function culturefeed_uitpas_user_view($account) {
-
-  module_load_include('inc', 'culturefeed_uitpas', 'includes/profile_details');
-  $account->content['uitpas'] = culturefeed_uitpas_profile_details_get();
-
-}

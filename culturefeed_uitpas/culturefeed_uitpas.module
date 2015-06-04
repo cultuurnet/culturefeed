@@ -42,21 +42,6 @@ function culturefeed_uitpas_views_api() {
 }
 
 /**
- * Implements hook_module_implements_alter().
- */
-function culturefeed_uitpas_module_implements_alter(&$implementations, $hook) {
-
-  if ($hook == 'user_view') {
-
-    $group = $implementations['culturefeed_uitpas'];
-    unset($implementations['culturefeed_uitpas']);
-    $implementations['culturefeed_uitpas'] = $group;
-
-  }
-}
-
-
-/**
  * Implements hook_culturefeed_ui_profile_box_dropdown_items().
  */
 function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {

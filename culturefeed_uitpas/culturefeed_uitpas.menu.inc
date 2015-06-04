@@ -41,6 +41,12 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/promotions.inc',
       'access arguments' => array('access content'),
     ),
+    'culturefeed/profile/uitpas' => array(
+      'title callback' => 'culturefeed_ui_title_callback_profile_name',
+      'page callback' => 'culturefeed_uitpas_profile_details_get',
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_details.inc',
+    ),
     'culturefeed/profile/uitpas/actions' => array(
       'title callback' => 'culturefeed_uitpas_profile_actions_title',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),

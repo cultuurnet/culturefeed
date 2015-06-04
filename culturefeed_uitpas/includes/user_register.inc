@@ -11,11 +11,7 @@
 function culturefeed_uitpas_user_register_get() {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-  if (!user_is_logged_in() || !$uitpas_user->passholder) {
-
-    return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
-
-  }
+  return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
 
 }
 

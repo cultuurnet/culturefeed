@@ -6,6 +6,177 @@
  */
 
 /**
+ * Form constructor for profile details.
+ */
+function culturefeed_uitpas_profile_details_form($form, &$form_state) {
+
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+
+  if ($uitpas_user->user && $uitpas_user->passholder && $uitpas_user->card_system) {
+
+    /* @var CultureFeed_Uitpas_Passholder $passholder */
+    $passholder = $uitpas_user->passholder;
+
+    /* @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $card_system */
+    $card_system = $uitpas_user->card_system;
+
+
+    $form['#theme'] = 'culturefeed_uitpas_profile_details_form';
+
+    $form['uitpas_number'] = array(
+      '#type' => 'value',
+      '#value' => $card_system->currentCard->uitpasNumber,
+    );
+
+    $form['first_name'] = array(
+      '#default_value' => $passholder->firstName,
+      '#disabled' => TRUE,
+      '#title' =>  t('First name'),
+      '#type' => 'textfield',
+    );
+
+    $form['last_name'] = array(
+      '#default_value' => $passholder->name,
+      '#disabled' => TRUE,
+      '#title' =>  t('Name'),
+      '#type' => 'textfield',
+    );
+
+    $form['dob'] = array(
+      '#default_value' => date('j/m/Y', $passholder->dateOfBirth),
+      '#disabled' => TRUE,
+      '#title' =>  t('Date of birth'),
+      '#type' => 'textfield',
+    );
+
+    $form['pob'] = array(
+      '#default_value' => $passholder->placeOfBirth,
+      '#disabled' => TRUE,
+      '#title' =>  t('Place of birth'),
+      '#type' => 'textfield',
+    );
+
+    $form['gender'] = array(
+      '#default_value' => ($passholder->gender == 'MALE') ? t('Male') : t('Female'),
+      '#disabled' => TRUE,
+      '#title' =>  t('Gender'),
+      '#type' => 'textfield',
+    );
+
+    $form['nationality'] = array(
+      '#default_value' => $passholder->nationality,
+      '#disabled' => TRUE,
+      '#title' =>  t('Nationality'),
+      '#type' => 'textfield',
+    );
+
+    $form['street'] = array(
+      '#default_value' => $passholder->street,
+      '#disabled' => TRUE,
+      '#title' =>  t('Street'),
+      '#type' => 'textfield',
+    );
+
+    $form['nr'] = array(
+      '#default_value' => $passholder->number,
+      '#disabled' => TRUE,
+      '#title' =>  t('Nr'),
+      '#type' => 'textfield',
+    );
+
+    $form['zip'] = array(
+      '#default_value' => $passholder->postalCode,
+      '#disabled' => TRUE,
+      '#title' =>  t('Zip'),
+      '#type' => 'textfield',
+    );
+
+    $form['city'] = array(
+      '#default_value' => $passholder->city,
+      '#disabled' => TRUE,
+      '#title' =>  t('City'),
+      '#type' => 'textfield',
+    );
+
+    $form['tel'] = array(
+      '#default_value' => $passholder->telephone,
+      '#disabled' => TRUE,
+      '#title' =>  t('Telephone'),
+      '#type' => 'textfield',
+    );
+
+    $form['mobile'] = array(
+      '#default_value' => $passholder->gsm,
+      '#disabled' => TRUE,
+      '#title' =>  t('Mobile'),
+      '#type' => 'textfield',
+    );
+
+    $form['email'] = array(
+      '#default_value' => $passholder->email,
+      '#description' => variable_get('culturefeed_uitpas_profile_details_email_description'),
+      '#required' => TRUE,
+      '#title' =>  t('Email'),
+      '#type' => 'textfield',
+    );
+
+    $form['actions'] = array(
+      '#type' => 'actions',
+      'submit' => array(
+        '#value' =>  t('Save'),
+        '#type' => 'submit',
+      ),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Validation handler for culturefeed_uitpas_profile_details_form_().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_uitpas_profile_details_form_validate(array $form, array &$form_state) {
+
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('The email address is not valid.'));
+  }
+
+}
+
+/**
+ * Submit handler for culturefeed_uitpas_profile_details_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_uitpas_profile_details_form_submit(array $form, array &$form_state) {
+
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+
+  $passholder = new CultureFeed_Uitpas_Passholder();
+  $passholder->uitpasNumber = $form_state['values']['uitpas_number'];
+  $passholder->email = $form_state['values']['email'];
+
+  try {
+    $uitpas_user->cf->uitpas()->updatePassholder($passholder);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_uitpas_profile_details', $e);
+    drupal_set_message(t('An error occurred.'), 'error');
+  }
+
+}
+
+/**
  * Returns profile details.
  */
 function culturefeed_uitpas_profile_details_get() {
@@ -78,6 +249,21 @@ function culturefeed_uitpas_profile_details_settings_get(&$form) {
     '#type' => 'textarea',
     '#title' => t('Intro'),
     '#default_value' => variable_get('culturefeed_uitpas_profile_details_intro'),
+  );
+  $form['profile_details']['culturefeed_uitpas_profile_details_form_title'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Form title'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_title'),
+  );
+  $form['profile_details']['culturefeed_uitpas_profile_details_form_intro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Form intro'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_intro'),
+  );
+  $form['profile_details']['culturefeed_uitpas_profile_details_email_description'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Email description'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_email_description'),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_outro'] = array(
     '#type' => 'textarea',
