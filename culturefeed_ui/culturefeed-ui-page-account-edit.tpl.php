@@ -24,6 +24,6 @@
 </div><hr />
 
 <div id="manage-consumers">
-  <h3><?php print t('Connected applications'); ?></h3>
+  <h3><?php print t('Connected applications'); ?> <span><?php print l(t('User history'), 'culturefeed/activities'); ?></span></h3>
   <?php print $connected_applications; ?>
 </div>
