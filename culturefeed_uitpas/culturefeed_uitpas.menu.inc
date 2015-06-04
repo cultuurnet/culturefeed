@@ -107,9 +107,9 @@ function culturefeed_uitpas_menu() {
       'type' => MENU_CALLBACK,
     ),
     'register_uitpas' => array(
+      'access callback' => 'culturefeed_is_culturefeed_user',
       'title callback' => 'culturefeed_ui_title_callback_profile_name',
       'page callback' => 'culturefeed_uitpas_user_register_get',
-      'access callback' => TRUE,
       'file' => 'includes/user_register.inc',
       'type' => MENU_CALLBACK,
     ),
