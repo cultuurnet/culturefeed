@@ -941,7 +941,18 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
  * Preprocess the agenda actor program.
  */
 function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program_item(&$variables) {
-  culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+
+  switch ($variables['item']->getType()) {
+
+    case 'event':
+      culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+      break;
+
+    case 'production':
+      culturefeed_agenda_preprocess_culturefeed_production_summary($variables);
+      break;
+  }
+  
 }
 
 /**
