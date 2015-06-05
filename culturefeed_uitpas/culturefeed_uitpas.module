@@ -65,7 +65,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
   );
 
   $items['uitpas-history'] = array(
-    'data' => l(t('UiTpas history'), 'culturefeed/profile/uitpas/history'),
+    'data' => l(t('UiTpas history'), 'culturefeed/profile/uitpas/actions'),
     'class' => 'uitpas-history',
     'weight' => 10,
   );
