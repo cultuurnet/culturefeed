@@ -735,6 +735,29 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
+    
+    $event_is_passed = FALSE;
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        $event_is_passed = TRUE;
+        foreach ($calendar as $calendar_item) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+        }
+
+      }
+    }
+    $variables['event_is_passed'] = $event_is_passed;
 
   }
 
