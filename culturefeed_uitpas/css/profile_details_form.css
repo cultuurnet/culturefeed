@@ -13,6 +13,10 @@
   padding: 0 10px 0 10px;
 }
 
+.details-form .btn-primary {
+  margin-left: 10px;
+}
+
 .details-form .form-item input {
   width: 100%;
 }
