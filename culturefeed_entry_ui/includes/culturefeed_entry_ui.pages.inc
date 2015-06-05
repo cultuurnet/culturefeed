@@ -1193,6 +1193,15 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.plugin.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength.js';
+  if (culturefeed_search_get_preferred_language() == 'nl') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-nl.js';
+  }
+  elseif (culturefeed_search_get_preferred_language() == 'fr') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-fr.js';
+  }
+  elseif (culturefeed_search_get_preferred_language() == 'de') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-de.js';
+  }
   return $form;
 
 }
