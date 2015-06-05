@@ -736,6 +736,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     catch (Exception $e) {
     }
     
+    // Check if event has finished or not.
     $event_is_passed = FALSE;
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
       $objDateTime = new DateTime('NOW');
