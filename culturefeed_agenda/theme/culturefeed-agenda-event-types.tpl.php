@@ -6,6 +6,21 @@
  */
 
 ?>
+<<<<<<< HEAD
+
+<?php foreach ($items as $tid => $item) : ?>
+
+  <h2><?php print $item['item']->name; ?></h2>
+  <?php if (!empty($item['children'])): ?>
+  <ul>
+  <?php foreach ($item['children'] as $child_tid => $child_item) : ?>
+  <li><?php print l($child_item['item']->name, 'agenda/search', array('query' => array('facet' => array('category_eventtype_id' => array($child_item['item']->tid))))); ?></li>
+  <?php endforeach; ?>
+  </ul>
+  <?php endif; ?>
+
+<?php endforeach; ?>
+=======
 <div>
 <?php foreach ($items as $tid => $item) : ?>
 
@@ -22,3 +37,4 @@
 
 <?php endforeach; ?>
 </div>
+>>>>>>> feature/UIT-42
