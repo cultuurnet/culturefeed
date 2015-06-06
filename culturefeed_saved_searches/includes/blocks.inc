@@ -89,27 +89,20 @@ function culturefeed_saved_searches_get_cta_query() {
     }
 
     // We need to fetch the whole list of saved searches since we don't have ID.
+    $savedSearchList = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
     $exists = FALSE;
-    try {
-
-      $savedSearchList = DrupalCultureFeed::getLoggedInUserInstance()->savedSearches()->getList();
-      foreach ($savedSearchList as $savedSearch) {
-        $saved_query = explode('&', $savedSearch->query);
-        foreach ($saved_query as $key => $val) {
-          if (strpos($val,'group') !== FALSE || strpos($val,'rows') !== FALSE || strpos($val,'sort') !== FALSE) {
-            unset($saved_query[$key]);
-          }
-        }
-        $saved_query = implode('&', $saved_query);
-
-        if ($saved_query == $query['query']) {
-          $exists = TRUE;
+    foreach ($savedSearchList as $savedSearch) {
+      $saved_query = explode('&', $savedSearch->query);
+      foreach ($saved_query as $key => $val) {
+        if (strpos($val,'group') !== FALSE || strpos($val,'rows') !== FALSE || strpos($val,'sort') !== FALSE) {
+          unset($saved_query[$key]);
         }
       }
+      $saved_query = implode('&', $saved_query);
 
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_saved_searches', $e);
+      if ($saved_query == $query['query']) {
+        $exists = TRUE;
+      }
     }
 
     if (!$exists) {

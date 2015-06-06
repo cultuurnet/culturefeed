@@ -419,7 +419,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     $variables['active'] = TRUE;
   }
 
-  if ($facet_key == 'location' && (isset($_GET['location']) || isset($_GET['facet']['category_flandersregion_id']))) {
+  if ($facet_key == 'location' && isset($_GET['location'])) {
     // Location facet items are always active when location is in query string.
     $variables['active'] = TRUE;
     // When the facet is location, we don't need location/distance in the query.
