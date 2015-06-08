@@ -954,6 +954,7 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
     if (!empty($city_slug)) {
 
       $city_parts = explode('-', $city_slug);
+      $flanders_region = NULL;
       // Slug contains postal. Search city.
       if (is_numeric($city_parts[0])) {
         /*$city = culturefeed_search_get_city_by_slug($city_slug);
@@ -962,18 +963,18 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
         }*/
         $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
         if ($flanders_region) {
-          $location = $flanders_region->name;
-          $regId = $flanders_region->tid;
+          $rewrite = TRUE;
         }
       }
       // No postal, search flanders region.
       else {
         $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
-        if ($flanders_region) {
-          $_GET['facet']['category_flandersregion_id'][] = $flanders_region->tid;
-          $_REQUEST['facet']['category_flandersregion_id'][] = $flanders_region->tid;
-          $rewrite = TRUE;
-        }
+      }
+
+      if ($flanders_region) {
+        $_GET['facet']['category_flandersregion_id'][] = $flanders_region->tid;
+        $_REQUEST['facet']['category_flandersregion_id'][] = $flanders_region->tid;
+        $rewrite = TRUE;
       }
 
     }
