@@ -6,11 +6,11 @@
 Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
 (function ($) {
-  
+
   Drupal.behaviors.price = {
 
     attach: function (context, settings) {
-    
+
       $(window).bind('load', function() {
         if($("#edit-price-free").attr("checked")==true) {
           $('#edit-price-amount').val('0');
@@ -23,10 +23,10 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
           //$('#edit-price-amount').val('');
           $('#edit-price-amount').removeAttr('disabled');
           $('#edit-price-amount').css('color','#000');
-          $('#edit-price-extra').css('display','block');  
+          $('#edit-price-extra').css('display','block');
         }
       });
-      
+
       $('#edit-price-free').change(function () {
         if($("#edit-price-free").attr("checked")==true) {
           $('#edit-price-amount').val('0');
@@ -39,16 +39,16 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
           $('#edit-price-amount').val('');
           $('#edit-price-amount').removeAttr('disabled');
           $('#edit-price-amount').css('color','#000');
-          $('#edit-price-extra').css('display','block');  
+          $('#edit-price-extra').css('display','block');
         }
       });
-      
+
       $('#edit-location-actor-location-actor-label').change(function() {
         if($("[name='location[location_control][asset][label]']").val() == '') {
           $('#location_actor_id').val('');
         }
       });
-      
+
       $('#edit-organiser-actor-organiser-actor-label').change(function() {
         if($('#edit-organiser-actor-organiser-actor-label').val() == '') {
           $('#organiser_actor_id').val('');
@@ -241,7 +241,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     if ($(node).data('autocompleteTitle') != undefined) {
 
       this.input.value = $(node).data('autocompleteTitle');
-          
+
       if (this.input.name == 'location[location_control][asset][label]') {
         $('#location_actor_id').val($(node).data('autocompleteValue'));
         $('#location_asset_remove').show();

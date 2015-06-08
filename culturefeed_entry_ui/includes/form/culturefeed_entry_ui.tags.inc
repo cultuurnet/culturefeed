@@ -35,7 +35,7 @@ function culturefeed_entry_ui_tags_form(array &$form, array &$form_state, \Cultu
     $form['extra']['tags'] = array(
       '#type' => 'culturefeed_tags_element',
       '#title' => t('Tags'),
-      '#description' => t('Add multiple tags'),
+      '#description' => t('Add Add tags'),
       '#default_value' => $keywords,
     );
 
