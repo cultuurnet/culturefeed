@@ -58,5 +58,11 @@ function culturefeed_ui_admin_settings() {
     '#type' => 'textarea',
   );
 
+  $form['culturefeed_ui_privacy_settings_intro'] = array(
+    '#default_value' => variable_get('culturefeed_ui_privacy_settings_intro', ''),
+    '#title' => t('Privacy settings: intro'),
+    '#type' => 'textarea',
+  );
+
   return system_settings_form($form);
 }

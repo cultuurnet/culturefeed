@@ -29,6 +29,13 @@ function culturefeed_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
+  $items['culturefeed/profile/privacy'] = array(
+    'title callback' => 'culturefeed_ui_title_callback_profile_name',
+    'page callback' => 'culturefeed_ui_page_privacy_settings',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
   $items['culturefeed/account/edit'] = array(
     'title callback' => 'culturefeed_ui_title_callback_profile_name',
     'page callback' => 'culturefeed_ui_page_account_edit',
@@ -182,6 +189,14 @@ function culturefeed_ui_theme() {
         'main_items' => array(),
       ),
       'template' => 'culturefeed-ui-anonymous-profile-box',
+    ),
+    'culturefeed_ui_privacy_settings' => array(
+      'variables' => array(
+        'form' => '',
+        'intro' => '',
+        'profile_menu' => '',
+      ),
+      'template' => 'culturefeed-ui-privacy-settings',
     ),
     'culturefeed_ui_most_active_user' => array(
       'variables' => array('account' => NULL, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),

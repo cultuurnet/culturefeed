@@ -426,6 +426,122 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
 }
 
 /**
+ * Form constructor for the profile privacy form.
+ *
+ * @return array
+ *   The render array.
+ */
+function culturefeed_ui_page_privacy_settings() {
+
+  try {
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
+    return array();
+  }
+
+  $form = drupal_get_form('culturefeed_ui_privacy_settings_form', $culturefeed_user);
+
+  return array(
+    '#intro' => variable_get('culturefeed_ui_privacy_settings_intro', ''),
+    '#form' => drupal_render($form),
+    '#profile_menu' => theme('culturefeed_ui_profile_menu'),
+    '#theme' => 'culturefeed_ui_privacy_settings',
+  );
+
+}
+
+/**
+ * Form constructor for the profile privacy form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, $culturefeed_user) {
+
+  $options = culturefeed_ui_privacy_settings_get_options($culturefeed_user);
+  $default_value = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);
+
+  $form['culturefeed_user'] = array(
+    '#type' => 'value',
+    '#value' => $culturefeed_user,
+  );
+
+  $form['setting'] = array(
+    '#default_value' => $default_value,
+    '#options' => $options,
+    '#title' => t('Select they way your user name is displayed'),
+    '#type' => 'radios',
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit handler for culturefeed_ui_privacy_settings_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_state) {
+
+  /* @var CultureFeed_User $culturefeed_user */
+  $culturefeed_user = $form_state['values']['culturefeed_user'];
+
+  $setting = $form_state['values']['setting'];
+
+  $privacy_config = new CultureFeed_UserPrivacyConfig();
+
+  // Always on.
+  $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+
+  // Depending on setting.
+  $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  if ($setting == 'age_location' || $setting == 'location') {
+    $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  }
+  $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  if ($setting == 'age_location' || $setting == 'age') {
+    $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  }
+
+  // Not used ?
+  $privacy_config->gender = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+
+  try {
+    DrupalCultureFeed::updateUserPrivacy($culturefeed_user->id, $privacy_config);
+    drupal_set_message(t('Your privacy settings have been saved.'));
+    $form_state['redirect'] = 'user';
+  }
+  catch (Exception $e) {
+    form_set_error('submit', t('Error occurred while saving your privacy settings.'));
+  }
+
+}
+
+/**
  * Page callback to theme the account page.
  * @return type
  */

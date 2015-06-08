@@ -1,6 +1,124 @@
 <?php
 
 /**
+ * Returns the options for the user name based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ *
+ * @return array
+ *   The display options.
+ */
+function culturefeed_ui_privacy_settings_get_options(CultureFeed_User $culturefeed_user) {
+
+  return array(
+    'age_location' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'age_location', TRUE),
+    'location' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'location', TRUE),
+    'age' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'age', TRUE),
+    'nick' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'nick', TRUE),
+  );
+
+}
+
+/**
+ * Returns the current setting for the user name based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ *
+ * @return string
+ *   The current setting.
+ */
+function culturefeed_ui_privacy_settings_current_setting(CultureFeed_User $culturefeed_user) {
+
+  $privacy_config = $culturefeed_user->privacyConfig;
+
+  // Default.
+  $privacy_setting = 'nick';
+
+  if ($privacy_config->dob == 'public' && $privacy_config->homeAddress == 'public') {
+    $privacy_setting = 'age_location';
+  }
+
+  elseif ($privacy_config->homeAddress == 'public') {
+    $privacy_setting = 'location';
+  }
+
+  elseif ($privacy_config->dob == 'public') {
+    $privacy_setting = 'age';
+  }
+
+  return $privacy_setting;
+
+}
+
+/**
+ * Returns the username based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ * @param string $setting
+ *   The selected setting (only needed for form options).
+ * @param bool $use_placeholders
+ *   Use placeholders for missing data (only needed for form options).
+ *
+ * @return string
+ *   The username.
+ */
+function culturefeed_ui_privacy_settings_get_display(
+  CultureFeed_User $culturefeed_user,
+  $setting = NULL,
+  $use_placeholders = FALSE
+) {
+
+  if (!isset($setting)) {
+    $setting = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);
+  }
+
+  $display = array();
+
+  // City.
+  if ($setting == 'age_location' || $setting == 'location') {
+
+    if ($culturefeed_user->city) {
+      $display[] = $culturefeed_user->city;
+    }
+    else if ($use_placeholders) {
+      $display[] = '<em>' . t('City - currently not provided') . '</em>';
+    }
+  }
+
+  // Age.
+  if ($setting == 'age_location' || $setting == 'age') {
+
+    if ($culturefeed_user->dob) {
+
+      $dob = date_create();
+      $dob->setTimestamp($culturefeed_user->dob);
+      $today = date_create();
+      $interval = date_diff($dob, $today);
+      $years = $interval->format('%y');
+      $display[] = t('!years years', array('!years' => $years));
+
+    }
+    else if ($use_placeholders) {
+      $display[] = '<em>' . t('Age - currently not provided') . '</em>';
+    }
+  }
+
+  // Name with nick as fallback.
+  if ($culturefeed_user->givenName && $culturefeed_user->familyName) {
+    $display[] = $culturefeed_user->givenName . ' ' . $culturefeed_user->familyName;
+  }
+  else {
+    $display[] = $culturefeed_user->nick;
+  }
+
+  return implode(', ', array_reverse($display));
+
+}
+
+/**
  * Put noindex and canonical metatags for SEO on relevant culturefeed pages.
  */
 function culturefeed_ui_set_canonical_and_noindex() {

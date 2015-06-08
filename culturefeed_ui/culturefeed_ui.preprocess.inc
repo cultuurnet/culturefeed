@@ -464,7 +464,7 @@ function theme_culturefeed_ui_profile_menu() {
     ),
     'privacy_settings' => array(
       'title' => t('Privacy settings'),
-      'href' => 'culturefeed/account/privacy_settings',
+      'href' => 'culturefeed/profile/privacy',
     ),
   );
 
