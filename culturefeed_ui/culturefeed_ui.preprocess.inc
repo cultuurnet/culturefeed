@@ -236,7 +236,7 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100')) : '';
   $variables['name'] = isset($consumer->name) ? check_plain($consumer->name) : '';
   $variables['description'] = isset($consumer->description) ? check_plain($consumer->description) : '';
-  $variables['creation_date'] = t('Connected to') . format_date($consumer->creationDate, 'custom', 'j F Y');
+  $variables['creation_date'] = t('Connected to') . ' ' . format_date($consumer->creationDate, 'custom', 'j F Y');
 }
 
 /**
@@ -417,43 +417,25 @@ function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-page-account-edit.tpl.php.
- *
- * @see culturefeed-ui-page-account-edit.tpl.php
- */
-function template_preprocess_culturefeed_ui_page_account_edit(&$variables) {
-
-  $variables['intro'] = variable_get('culturefeed_ui_account_edit_intro', '');
-
-  $variables['profile_menu'] = theme('culturefeed_ui_profile_menu');
-
-  $account_form = drupal_get_form('culturefeed_ui_page_account_edit_form');
-  $variables['account'] = render($account_form);
-
-  $online_accounts = culturefeed_ui_online_accounts();
-  $variables['online_accounts'] = render($online_accounts);
-
-  $connected_applications = culturefeed_ui_page_serviceconsumers();
-  $variables['connected_applications'] = drupal_render($connected_applications);
-
-  $assets = array(
-    '#attached' => array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/css/account_edit.css',
-      ),
-    ),
-  );
-  // The only way to get #attached to be processed.
-  drupal_render($assets);
-
-}
-
-/**
  * Preprocess variables for culturefeed_ui_profile_menu
  */
 function theme_culturefeed_ui_profile_menu() {
 
-  $links = array(
+  $build = array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/profile_menu.css',
+      ),
+    ),
+    'menu' => array(
+      '#attributes' => array(
+        'class' => array('culturefeed-profile-menu', 'clearfix'),
+      ),
+      '#theme' => 'links',
+    ),
+  );
+
+  $build['menu']['#links'] = array(
     'personal_data' => array(
       'title' => t('Personal data'),
       'href' => 'user',
@@ -468,21 +450,6 @@ function theme_culturefeed_ui_profile_menu() {
     ),
   );
 
-  $assets = array(
-    '#attached' => array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/css/profile_menu.css',
-      ),
-    ),
-  );
-  // The only way to get #attached to be processed.
-  drupal_render($assets);
-
-  return theme('links', array(
-    'links' => $links,
-    'attributes' => array(
-      'class' => array('culturefeed-profile-menu', 'clearfix'),
-    ),
-  ));
+  return drupal_render($build);
 
 }

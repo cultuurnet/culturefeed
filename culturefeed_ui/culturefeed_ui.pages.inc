@@ -426,7 +426,7 @@ function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
 }
 
 /**
- * Form constructor for the profile privacy form.
+ * Page callback the profile privacy.
  *
  * @return array
  *   The render array.
@@ -442,9 +442,16 @@ function culturefeed_ui_page_privacy_settings() {
     return array();
   }
 
+  culturefeed_ui_set_profile_breadcrumb();
+
   $form = drupal_get_form('culturefeed_ui_privacy_settings_form', $culturefeed_user);
 
   return array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/privacy_settings.css',
+      ),
+    ),
     '#intro' => variable_get('culturefeed_ui_privacy_settings_intro', ''),
     '#form' => drupal_render($form),
     '#profile_menu' => theme('culturefeed_ui_profile_menu'),
@@ -454,82 +461,42 @@ function culturefeed_ui_page_privacy_settings() {
 }
 
 /**
- * Page callback to theme the account page.
- * @return type
+ * Page callback for the account edit page.
+ *
+ * @return array
+ *   The render array.
  */
 function culturefeed_ui_page_account_edit() {
-  return array(
-    '#theme' => 'culturefeed_ui_page_account_edit',
-  );
-}
-
-function culturefeed_ui_page_account_edit_form() {
-
-  culturefeed_ui_set_profile_breadcrumb();
-
-  $form = array();
 
   try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message(t('An error occurred while loading your account, please try again later.'));
-    return;
+    return array();
   }
 
-  $form['nick'] = array(
-    '#disabled' => TRUE,
-    '#title' => t('Username'),
-    '#type' => 'textfield',
-    '#value' => $cf_account->nick,
+  culturefeed_ui_set_profile_breadcrumb();
+
+  $connected_applications = culturefeed_ui_page_serviceconsumers();
+  $form = drupal_get_form('culturefeed_ui_account_edit_form', $culturefeed_user);
+  $online_accounts = culturefeed_ui_online_accounts();
+
+  return array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/account_edit.css',
+      ),
+    ),
+    '#connected_applications' => drupal_render($connected_applications),
+    '#form' => drupal_render($form),
+    '#intro' => variable_get('culturefeed_ui_account_edit_intro', ''),
+    '#online_accounts' => drupal_render($online_accounts),
+    '#profile_menu' => theme('culturefeed_ui_profile_menu'),
+    '#theme' => 'culturefeed_ui_page_account_edit',
   );
 
-  $form['mbox'] = array(
-    '#default_value' => $cf_account->mbox,
-    '#description' => variable_get('culturefeed_ui_account_edit_email_description', ''),
-    '#required' => TRUE,
-    '#title' => t('Email address'),
-    '#type' => 'textfield',
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-
-  $destination = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $url = DrupalCultureFeed::getUrlChangePassword($cf_account->id, $destination);
-  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
-
-  $form['change_password'] = array(
-    '#prefix' => '<div id="change-password">',
-    '#markup' => l(t('Change password'), $url, $options),
-    '#suffix' => '</div>',
-  );
-
-  return $form;
-}
-
-function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
-  if (!valid_email_address($form_state['values']['mbox'])) {
-    form_set_error('mbox', t('Invalid email'));
-  }
-}
-
-function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
-  $cf_account = new CultureFeed_User();
-  $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
-  $cf_account->mbox = $form_state['values']['mbox'];
-
-  try {
-    DrupalCultureFeed::updateUser($cf_account);
-    drupal_set_message(t('Changes succesfully saved.'));
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred'), 'error');
-  }
 }
 
 function culturefeed_ui_online_accounts() {

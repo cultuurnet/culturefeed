@@ -192,9 +192,9 @@ function culturefeed_ui_theme() {
     ),
     'culturefeed_ui_privacy_settings' => array(
       'variables' => array(
-        'form' => '',
-        'intro' => '',
-        'profile_menu' => '',
+        'form' => NULL,
+        'intro' => NULL,
+        'profile_menu' => NULL,
       ),
       'template' => 'culturefeed-ui-privacy-settings',
     ),
@@ -247,7 +247,13 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-my-uitid',
     ),
     'culturefeed_ui_page_account_edit' => array(
-      'variables' => array(),
+      'variables' => array(
+        'connected_applications' => NULL,
+        'form' => NULL,
+        'intro' => NULL,
+        'online_accounts' => NULL,
+        'profile_menu' => NULL,
+      ),
       'template' => 'culturefeed-ui-page-account-edit',
     ),
   );

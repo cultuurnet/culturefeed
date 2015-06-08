@@ -1,6 +1,97 @@
 <?php
 
 /**
+ * Form constructor for the account edit form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ * @param CultureFeed_User $culturefeed_user
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_account_edit_form(array $form, array $form_state, CultureFeed_User $culturefeed_user) {
+
+  $form['culturefeed_user'] = array(
+    '#type' => 'value',
+    '#value' => $culturefeed_user,
+  );
+
+  $form['nick'] = array(
+    '#disabled' => TRUE,
+    '#title' => t('Username'),
+    '#type' => 'textfield',
+    '#value' => $culturefeed_user->nick,
+  );
+
+  $form['mbox'] = array(
+    '#default_value' => $culturefeed_user->mbox,
+    '#description' => variable_get('culturefeed_ui_account_edit_email_description', ''),
+    '#required' => TRUE,
+    '#title' => t('Email address'),
+    '#type' => 'textfield',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  $destination = url('culturefeed/account/edit', array('absolute' => TRUE));
+  $url = DrupalCultureFeed::getUrlChangePassword($culturefeed_user->id, $destination);
+  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
+
+  $form['change_password'] = array(
+    '#prefix' => '<div id="change-password">',
+    '#markup' => l(t('Change password'), $url, $options),
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+/**
+ * Validation handler for culturefeed_ui_account_edit_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
+  if (!valid_email_address($form_state['values']['mbox'])) {
+    form_set_error('mbox', t('Invalid email'));
+  }
+}
+
+/**
+ * Submit handler for culturefeed_ui_account_edit_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
+
+  $culturefeed_user = new CultureFeed_User();
+  $culturefeed_user->id = $form_state['values']['culturefeed_user']->id;
+  $culturefeed_user->mbox = $form_state['values']['mbox'];
+
+  try {
+    DrupalCultureFeed::updateUser($culturefeed_user);
+    drupal_set_message(t('Changes succesfully saved.'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('Error occurred'), 'error');
+  }
+
+}
+
+/**
  * Form constructor for the profile privacy form.
  *
  * @param array $form
@@ -13,7 +104,7 @@
  * @return array
  *   The form.
  */
-function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, $culturefeed_user) {
+function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, CultureFeed_User $culturefeed_user) {
 
   $options = culturefeed_ui_privacy_settings_get_options($culturefeed_user);
   $default_value = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);

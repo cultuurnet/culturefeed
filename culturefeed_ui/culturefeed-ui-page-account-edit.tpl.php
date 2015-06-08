@@ -15,7 +15,7 @@
 <?php print $profile_menu; ?>
 
 <div id="account-edit-form">
-  <?php print $account ?>
+  <?php print $form ?>
 </div><hr />
 
 <div id="online-accounts">
