@@ -64,5 +64,11 @@ function culturefeed_ui_admin_settings() {
     '#type' => 'textarea',
   );
 
+  $form['culturefeed_ui_profile_edit_intro'] = array(
+    '#default_value' => variable_get('culturefeed_ui_profile_edit_intro', ''),
+    '#title' => t('Profile edit page: intro'),
+    '#type' => 'textarea',
+  );
+
   return system_settings_form($form);
 }

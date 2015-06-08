@@ -23,8 +23,7 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/profile/edit'] = array(
     'title' => 'Edit profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
+    'page callback' => 'culturefeed_ui_page_profile_edit',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
@@ -255,6 +254,14 @@ function culturefeed_ui_theme() {
         'profile_menu' => NULL,
       ),
       'template' => 'culturefeed-ui-page-account-edit',
+    ),
+    'culturefeed_ui_page_profile_edit' => array(
+      'variables' => array(
+        'form' => NULL,
+        'intro' => NULL,
+        'profile_menu' => NULL,
+      ),
+      'template' => 'culturefeed-ui-page-profile-edit',
     ),
   );
 }

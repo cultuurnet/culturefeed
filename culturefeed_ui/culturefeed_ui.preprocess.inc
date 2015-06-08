@@ -438,7 +438,7 @@ function theme_culturefeed_ui_profile_menu() {
   $build['menu']['#links'] = array(
     'personal_data' => array(
       'title' => t('Personal data'),
-      'href' => 'user',
+      'href' => 'culturefeed/profile/edit',
     ),
     'login_data' => array(
       'title' => t('Login data'),
