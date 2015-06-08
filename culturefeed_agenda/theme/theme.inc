@@ -414,17 +414,20 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   if ($detail) {
 
     // Add videos.
     $variables['videos'] = array();
+    $variables['videos_id'] = array();
+
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
     foreach ($videos as $video) {
       if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink())) {
         $variables['videos'][] = $video_embed;
       }
+      $variables['videos_id'][] = _culturefeed_search_ui_video_url_to_id($video->getHLink());
     }
 
     // Absolute link to detail.
