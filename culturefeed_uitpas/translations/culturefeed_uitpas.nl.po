@@ -749,17 +749,13 @@ msgstr "Geldig tot !date"
 msgid "Opportunity status"
 msgstr "Kansentarief"
 
-#: theme/theme.inc:265;338;537
-msgid "point"
-msgstr "punt"
+#: /promotions
+msgid "@count points"
+msgstr "@count punten"
 
-#: theme/theme.inc:266;339;538
-msgid "points"
-msgstr "punten"
-
-#: theme/theme.inc:295;312
-msgid "!points points"
-msgstr "!points punten"
+#: /promotion/gratis-koffie-bij-statik/480
+msgid "1 point"
+msgstr "1 punt"
 
 #: theme/theme.inc:338;339
 msgid "Needed points"

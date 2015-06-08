@@ -16,9 +16,6 @@
  */
 ?>
 <div class="promotion_details">
-  <?php if ($image): ?>
-  <div class="image"><?php print $image; ?></div>
-  <?php endif; ?>
   <div class="points"><?php print $points; ?></div>
   <?php if ($period): ?>
   <div class="period"><?php print $period; ?></div>
@@ -35,5 +32,10 @@
   <?php endif; ?>
   <?php if ($description2): ?>
   <div class="description2"><?php print $description2; ?></div>
+  <?php endif; ?>
+</div>
+<div class="promotion-media">
+  <?php if ($images_list): ?>
+    <?php print $images_list; ?>
   <?php endif; ?>
 </div>

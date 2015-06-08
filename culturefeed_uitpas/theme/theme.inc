@@ -402,19 +402,36 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
  * Implements hook_preprocess_culturefeed_uitpas_promotion().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
-
   $promotion = $vars['promotion'];
 
   // Image.
   $vars['image'] = '';
+  $images = array();
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    foreach ($promotion->pictures as $key => $picture) {
+      $images[] = l(
+        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        $promotion->pictures[$key],
+        array('html' => TRUE)
+      );
+    }
+    $vars['images_list'] = theme('item_list', array('items' => $images));
   }
 
   // Points.
-  $singular = '@count ' . t('point');
-  $plural = '@count ' . t('points');
-  $vars['points'] = format_plural($promotion->points, $singular, $plural);
+  $vars['points'] = format_plural($promotion->points, '1 point', '@count points');
+
+  // Get the counters information.
+  if (isset($promotion->counters[0])) {
+    foreach ($promotion->counters as $key => $counter) {
+      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
+      $new_counter = array('item' => $extendedCounter);
+      module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+      culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
+      $promotion->counters[$key] = $new_counter;
+    }
+  }
 
   // Period.
   $vars['period'] = '';
@@ -430,7 +447,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     }
     $vars['period'] = $period;
 
-  } else {
+  }
+  else {
     if ($promotion->cashingPeriodEnd) {
       $period = t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
@@ -440,7 +458,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Location.
   $location = array();
   foreach ($promotion->counters as $counter) {
-    $location[] = $counter->name;
+    $location[] = $counter['title'];
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
 
@@ -448,6 +466,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['provider'] = '';
   if (isset($promotion->owningCardSystem->name)) {
     $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($promotion->owningCardSystem)));
+    $vars['provider_raw'] = culturefeed_uitpas_cardsystem_name($promotion->owningCardSystem);
   }
 
   // Available.
@@ -478,7 +497,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
 }
-
 
 /**
  * Implements hook_preprocess_culturefeed_uitpas_promotions_highlight().
@@ -596,7 +614,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
 }
 
-
 /**
  * Implements hook_preprocess_culturefeed_uitpas_recent_actions().
  */
@@ -685,7 +702,6 @@ function theme_culturefeed_uitpas_advantages_table(&$vars) {
   if (count($advantages)) {
 
     foreach ($advantages as $advantage) {
-
       $advantage_path = 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id;
 
       // Counters.
@@ -706,6 +722,15 @@ function theme_culturefeed_uitpas_advantages_table(&$vars) {
         ));
         $picture = l($picture, $advantage_path, array('html' => TRUE));
 
+      }
+      else {
+        $picture = theme('culturefeed_uitpas_promotion_image', array(
+          'path' => 'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2012/9/4/1346760810915/Toshiro-Mifune-008.jpg',
+          'maxwidth' => 100,
+          'maxheight' => 100,
+          'attributes' => array(),
+        ));
+        $picture = l($picture, $advantage_path, array('html' => TRUE));
       }
 
       // Rows.
@@ -792,9 +817,7 @@ function theme_culturefeed_uitpas_promotions_table(&$vars) {
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
 
       // Points.
-      $singular = '@count point';
-      $plural = '@count points';
-      $points = format_plural($promotion->points, $singular, $plural);
+      $points = format_plural($promotion->points, '1 point', '@count points');
 
       // Counters.
       $counters = array();
