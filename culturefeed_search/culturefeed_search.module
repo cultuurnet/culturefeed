@@ -187,6 +187,11 @@ function culturefeed_search_get_search_url_query($search_query) {
       continue;
     }
 
+    // Sort.
+    if ($param[0] == 'sort') {
+      $query['sort'] = $param[1];
+    }
+
     // Param q = the search
     if ($param[0] == 'q') {
       if ($param[1] == '*:*') {

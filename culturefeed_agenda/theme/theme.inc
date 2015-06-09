@@ -204,13 +204,17 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // Pictures
     $main_picture = '';
+    $main_picture_cr = '';
     $pictures = array();
+    $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     foreach ($photos as $photo) {
       $pictures[] = $photo->getHLink();
+      $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
         $main_picture = $photo->getHLink();
+        $main_picture_cr = $photo->getCopyright();
       }
     }
 
@@ -220,6 +224,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $pictures[] = $image->getHLink();
       if ($image->isMain() && empty($main_picture)) {
         $main_picture = $image->getHLink();
+        $main_picture_cr = $image->getCopyright();
       }
     }
 
@@ -233,6 +238,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $pictures[] = $photo->getHLink();
           if ($photo->isMain()) {
             $main_picture = $photo->getHLink();
+            $main_picture_cr = $photo->getCopyright();
           }
         }
 
@@ -242,6 +248,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = $image->getHLink();
+            $main_picture_cr = $photo->getCopyright();
           }
         }
       }
@@ -250,15 +257,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
+      $main_picture_cr = $copyrights[0];
     }
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
       unset($pictures[0]);
+      unset($copyrights[0]);
     }
 
     $variables['main_picture'] = $main_picture;
+    $variables['main_picture_cr'] = $main_picture_cr;
     $variables['pictures'] = $pictures;
+    $variables['copyrights'] = $copyrights;
 
     // Make sure usage of thumbnail is backwards compatible
     $variables['thumbnail'] = $variables['main_picture'];
@@ -373,7 +384,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
-  $variables['is_android'] = FALSE;  
+  $variables['is_android'] = FALSE;
   $detect = culturefeed_mobile_detect_get_object();
 
   if ($detect) {
@@ -403,17 +414,20 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   if ($detail) {
 
     // Add videos.
     $variables['videos'] = array();
+    $variables['videos_id'] = array();
+
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
     foreach ($videos as $video) {
       if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink())) {
         $variables['videos'][] = $video_embed;
       }
+      $variables['videos_id'][] = _culturefeed_search_ui_video_url_to_id($video->getHLink());
     }
 
     // Absolute link to detail.
@@ -471,7 +485,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['twitter']['url'] = $twitter['prefix'] . urlencode(url($variables['share_url'], array('query' => $twitter['utm'])));
     $variables['whatsapp']['url'] = $whatsapp['prefix'] . urlencode(url($variables['share_url'], array('query' => $whatsapp['utm'])));
 
-    if (module_exists('forward') && ($device == 'computer')) {
+    if (module_exists('forward') && (isset($variables['device']) && $variables['device'] == 'computer')) {
       $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
     }
     else {
@@ -724,6 +738,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
+    
+    // Check if event has finished or not.
+    $event_is_passed = FALSE;
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        $event_is_passed = TRUE;
+        foreach ($calendar as $calendar_item) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() >= $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+        }
+
+      }
+    }
+    $variables['event_is_passed'] = $event_is_passed;
 
   }
 
@@ -930,7 +968,18 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
  * Preprocess the agenda actor program.
  */
 function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program_item(&$variables) {
-  culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+
+  switch ($variables['item']->getType()) {
+
+    case 'event':
+      culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+      break;
+
+    case 'production':
+      culturefeed_agenda_preprocess_culturefeed_production_summary($variables);
+      break;
+  }
+  
 }
 
 /**
@@ -1191,7 +1240,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actors_nearby(&$variab
     $actors[] = l($title, $GLOBALS['base_url'] . $url);
   }
 
-  $variables['links'] = implode(', ', $actors);
+  $variables['links'] = $actors;
 
 }
 

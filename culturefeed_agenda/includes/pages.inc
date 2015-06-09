@@ -285,7 +285,7 @@ function culturefeed_agenda_page_ajax_actor_suggest() {
     $parameters[] = new \CultuurNet\Search\Parameter\Sort('geodist()', \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
   }
 
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(5);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(15);
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
 
   $all_categories = culturefeed_search_get_actortype_categories();

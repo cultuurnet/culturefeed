@@ -212,33 +212,18 @@ function culturefeed_search_ui_date_facet_form() {
 
   $form['#attributes']['class'][] = 'append-button';
 
-  $form['date_from'] = array(
-    '#type' => 'textfield',
-    '#size' => 28,
-    '#title' => t('Between'),
-    '#title_display' => 'invisible',
-    '#default_value' => isset($_GET['date_from']) ? $_GET['date_from'] : '',
-    '#attributes' => array('placeholder' => t('Between'), 'autocomplete' => 'off'),
-  );
-  $form['date_to'] = array(
-    '#type' => 'textfield',
-    '#size' => 28,
-    '#title' => t('And'),
-    '#title_display' => 'invisible',
-    '#default_value' => isset($_GET['date_to']) ? $_GET['date_to'] : '',
-    '#attributes' => array('placeholder' => t('And'), 'autocomplete' => 'off'),
-  );
   $form['date_range'] = array(
-    '#markup' => l('<span>' . t('Specific dates') . '</span>', 'javascript:', array(
-      'html' => TRUE,
-      'external' => TRUE,
-      'attributes' => array('id' => 'specific-dates-range'),
-    )),
+    '#type' => 'textfield',
+    '#size' => 28,
+    '#title' => t('Choose a date'),
+    '#title_display' => 'invisible',
+    '#default_value' => isset($_GET['date_range']) ? $_GET['date_range'] : '',
+    '#attributes' => array('placeholder' => t('Or choose a custom date'), 'autocomplete' => 'off'),
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Ok'),
-    '#attributes' => array('id' => 'submit-specific-dates'),
   );
 
   $form['#attached']['library'][] = array('culturefeed_search_ui', 'ui.daterangepicker');
@@ -253,14 +238,21 @@ function culturefeed_search_ui_date_facet_form() {
  */
 function culturefeed_search_ui_date_facet_form_validate($form, &$form_state) {
 
-  $error = FALSE;
-  foreach (array('date_from', 'date_to') as $key) {
-    if (!empty($form_state['values'][$key]) && !DateTime::createFromFormat('d/m/Y', $form_state['values'][$key])) {
-      form_set_error($key, !$error ? t('Please enter a valid date') : '');
-      $error = TRUE;
+  if (!empty($form_state['values']['date_range'])) {
+
+    $form_state['values']['date_range'] = str_replace(t('till'), '-', $form_state['values']['date_range']);
+    $dates = explode('-', $form_state['values']['date_range']);
+    $startDate = DateTime::createFromFormat('d/m/Y', trim($dates[0]));
+    if (!$startDate) {
+      form_set_error('date_range', t('Please enter a valid date'));
+    }
+    elseif (isset($dates[1])) {
+      $endDate = DateTime::createFromFormat('d/m/Y', trim($dates[1]));
+      if (!$endDate) {
+        form_set_error('date_range', t('Please enter a valid date'));
+      }
     }
   }
-
 }
 
 /**
@@ -275,10 +267,8 @@ function culturefeed_search_ui_date_facet_form_submit($form, &$form_state) {
     unset($query['facet']);
   }
 
-  foreach (array('date_from', 'date_to') as $key) {
-    if (!empty($form_state['values'][$key])) {
-      $query[$key] = $form_state['values'][$key];
-    }
+  if (!empty($form_state['values']['date_range'])) {
+    $query['date_range'] = $form_state['values']['date_range'];
   }
 
   $form_state['redirect'] = array(
@@ -302,22 +292,11 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
-  $location = '';
-  if (!empty($_GET['facet']['category_flandersregion_id'])) {
-    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
-    $location = $flanders_region->name;
-  }
-
-  // Show facet layout for location.
-  elseif (!empty($_GET['location'])) {
-    $location = $_GET['location'];
-  }
-
   $noresults = FALSE;
   if ($culturefeedSearchResult->getTotalCount() == 0) {
     $noresults = TRUE;
     // Hide location selector for empty results only when no location was set.
-    if (empty($location)) {
+    if (empty($_GET['location'])) {
       return;
     }
   }
@@ -325,18 +304,19 @@ function culturefeed_search_ui_block_city_facet() {
   $build = array();
 
   // Show facet layout for location.
-  if (!empty($location)) {
+  if (!empty($_GET['location'])) {
 
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
     if (isset($_GET['distance'])) {
-      $location .= ' + ' . $_GET['distance'] . ' km';
+      $label .= ' + ' . $_GET['distance'] . ' km';
     }
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
     );
 
     $build = array();
@@ -414,7 +394,7 @@ function culturefeed_search_ui_city_facet_form() {
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'nearby', 'coordinates'));
-
+  
   // Remove the region filter so choosing a city has results.
   if (isset($query['facet']['category_flandersregion_id'])) {
     unset($query['facet']['category_flandersregion_id']);
@@ -566,26 +546,16 @@ function culturefeed_search_ui_block_city_only_facet() {
   $build = array();
 
   // Show facet layout for location.
-  $location = '';
-  if (!empty($_GET['facet']['category_flandersregion_id'])) {
-    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
-    $location = $flanders_region->name;
-  }
-
-  // Show facet layout for location.
-  elseif (!empty($_GET['location'])) {
-    $location = $_GET['location'];
-  }
-
-  if (!empty($location)) {
+  if (!empty($_GET['location'])) {
 
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
     );
 
     $build = array();
@@ -820,25 +790,17 @@ function culturefeed_search_ui_block_location_search() {
 
   $build = array();
 
-  $location = '';
-  if (!empty($_GET['facet']['category_flandersregion_id'])) {
-    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
-    $location = $flanders_region->name;
-  }
-
   // Show facet layout for location.
-  elseif (!empty($_GET['location'])) {
-    $location = $_GET['location'];
-  }
+  if (!empty($_GET['location'])) {
 
-  if (!empty($location)) {
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
+    $label = $_GET['location'];
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
     );
 
     $build = array();

@@ -410,8 +410,8 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   }
 
   // When the facet is datetype, we don't want to keep a date range filter..
-  if ($facet_key == 'datetype') {
-    unset($query['date_from'], $query['date_to']);
+  if ($facet_key == 'datetype' && isset($query['date_range'])) {
+    unset($query['date_range']);
   }
 
   // Agefrom facet is active when min_age is given.
@@ -419,7 +419,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     $variables['active'] = TRUE;
   }
 
-  if ($facet_key == 'location' && (isset($_GET['location']) || isset($_GET['facet']['category_flandersregion_id']))) {
+  if ($facet_key == 'location' && isset($_GET['location'])) {
     // Location facet items are always active when location is in query string.
     $variables['active'] = TRUE;
     // When the facet is location, we don't need location/distance in the query.

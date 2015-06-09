@@ -9,9 +9,9 @@
 #  culturefeed_search_ui.info: n/a
 #  culturefeed_search_ui.install: n/a
 #  includes/blocks.inc: n/a
-#  js/search_ui.js: n/a
 #  includes/helpers.inc: n/a
 #  includes/pages.inc: n/a
+#  js/search_ui.js: n/a
 #  lib/Drupal/CultureFeedSearchPage.php: n/a
 #  theme/culturefeed-search-list.tpl.php: n/a
 #  theme/culturefeed-search-block-filter-links-item.tpl.php: n/a
@@ -22,8 +22,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-05-11 16:43+0200\n"
-"PO-Revision-Date: 2015-05-12 08:16+0100\n"
+"POT-Creation-Date: 2015-03-18 20:21+0100\n"
+"PO-Revision-Date: 2015-03-18 20:36+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -46,165 +46,165 @@ msgstr ""
 msgid "Change CultureFeed Search UI sort settings."
 msgstr ""
 
-#: culturefeed_search_ui.module:367
+#: culturefeed_search_ui.module:354
 msgid "Culturefeed search: search events and pages"
 msgstr "Culturefeed search: zoek activiteiten en pagina's"
 
-#: culturefeed_search_ui.module:372
+#: culturefeed_search_ui.module:359
 msgid "Culturefeed search: sort order"
 msgstr "Culturefeed search: zoekresultaten sorteren"
 
-#: culturefeed_search_ui.module:377
+#: culturefeed_search_ui.module:364
 msgid "Culturefeed search: active filters"
 msgstr "Culturefeed search: actieve filters"
 
-#: culturefeed_search_ui.module:382
+#: culturefeed_search_ui.module:369
 msgid "Culturefeed search: facet entity type"
 msgstr ""
 
-#: culturefeed_search_ui.module:387
+#: culturefeed_search_ui.module:374
 msgid "Culturefeed search: facet when"
 msgstr "Culturefeed search: facet wanneer"
 
-#: culturefeed_search_ui.module:392
+#: culturefeed_search_ui.module:379
 msgid "Culturefeed search: facet where"
 msgstr "Culturefeed search: facet waar"
 
-#: culturefeed_search_ui.module:397
+#: culturefeed_search_ui.module:384
 msgid "Culturefeed search: facet where - search only on cities and zipcodes"
 msgstr ""
 
-#: culturefeed_search_ui.module:402
+#: culturefeed_search_ui.module:389
 msgid "Facet: Age range"
 msgstr ""
 
-#: culturefeed_search_ui.module:407
+#: culturefeed_search_ui.module:394
 msgid "Culturefeed search: Filter form"
 msgstr ""
 
-#: culturefeed_search_ui.module:413
+#: culturefeed_search_ui.module:400
 msgid "Culturefeed search: location search"
 msgstr ""
 
-#: culturefeed_search_ui.module:417
+#: culturefeed_search_ui.module:404
 msgid "Culturefeed search: Filter form 2"
 msgstr ""
 
-#: culturefeed_search_ui.module:425
+#: culturefeed_search_ui.module:412
 msgid "Culturefeed search: facet @label"
 msgstr ""
 
-#: culturefeed_search_ui.module:444
+#: culturefeed_search_ui.module:431
 msgid "Sort facet on"
 msgstr ""
 
-#: culturefeed_search_ui.module:446
+#: culturefeed_search_ui.module:433
 msgid "Default sorting"
 msgstr ""
 
-#: culturefeed_search_ui.module:447
+#: culturefeed_search_ui.module:434
 msgid "Alphabetically"
 msgstr ""
 
-#: culturefeed_search_ui.module:448
+#: culturefeed_search_ui.module:435
 msgid "Total results"
 msgstr ""
 
-#: culturefeed_search_ui.module:455
+#: culturefeed_search_ui.module:442
 msgid "Highest facet level"
 msgstr ""
 
-#: culturefeed_search_ui.module:457
+#: culturefeed_search_ui.module:444
 msgid "Level 1"
 msgstr ""
 
-#: culturefeed_search_ui.module:458
+#: culturefeed_search_ui.module:445
 msgid "Level 2"
 msgstr ""
 
-#: culturefeed_search_ui.module:459
+#: culturefeed_search_ui.module:446
 msgid "Level 3"
 msgstr ""
 
-#: culturefeed_search_ui.module:460
+#: culturefeed_search_ui.module:447
 msgid "Level 4"
 msgstr ""
 
-#: culturefeed_search_ui.module:462
+#: culturefeed_search_ui.module:449
 msgid ""
 "The highest level of facets to show. Should probably be level 1. If the "
 "highest level does not exist, the level above it will be used."
 msgstr ""
 
-#: culturefeed_search_ui.module:467
+#: culturefeed_search_ui.module:454
 msgid "Show subitems"
 msgstr ""
 
-#: culturefeed_search_ui.module:468
+#: culturefeed_search_ui.module:455
 msgid ""
 "Check this if the facets of lower levels should be shown when a facet option "
 "is selected."
 msgstr ""
 
-#: culturefeed_search_ui.module:482
+#: culturefeed_search_ui.module:469
 msgid "Show only selected options"
 msgstr ""
 
-#: culturefeed_search_ui.module:491
+#: culturefeed_search_ui.module:478
 msgid "Show the facet only when an eventtype is chosen"
 msgstr "Toon de facet enkel wanneer een eventtype is gekozen"
 
-#: culturefeed_search_ui.module:500
+#: culturefeed_search_ui.module:487
 msgid "Limit autocomplete options to selected parents"
 msgstr ""
 
-#: culturefeed_search_ui.module:551
+#: culturefeed_search_ui.module:538
 msgid "Available actortype categories."
 msgstr ""
 
-#: culturefeed_search_ui.module:552
+#: culturefeed_search_ui.module:539
 msgid ""
 "Select the actortype categories that can be shown in the autocomplete. If "
 "none selected, all actors will be searched."
 msgstr ""
 
-#: culturefeed_search_ui.module:568
+#: culturefeed_search_ui.module:555
 msgid "How to display the filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:569
+#: culturefeed_search_ui.module:556
 msgid "Select how to display the search filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:572
+#: culturefeed_search_ui.module:559
 msgid "As links"
 msgstr ""
 
-#: culturefeed_search_ui.module:573
+#: culturefeed_search_ui.module:560
 msgid "As checkboxes with submit button"
 msgstr ""
 
-#: culturefeed_search_ui.module:578
+#: culturefeed_search_ui.module:565
 msgid "How to apply filters on the query"
 msgstr ""
 
-#: culturefeed_search_ui.module:579
+#: culturefeed_search_ui.module:566
 msgid "Select the operator for the search filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:582
+#: culturefeed_search_ui.module:569
 msgid "Use AND-operator"
 msgstr ""
 
-#: culturefeed_search_ui.module:583
+#: culturefeed_search_ui.module:570
 msgid "Use OR-operator"
 msgstr ""
 
-#: culturefeed_search_ui.module:591
+#: culturefeed_search_ui.module:578
 msgid "Possible filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:593
+#: culturefeed_search_ui.module:580
 msgid ""
 "<p>\n"
 "        Define the different filter options you want. Filters that are not "
@@ -216,48 +216,48 @@ msgid ""
 "      </p>"
 msgstr ""
 
-#: culturefeed_search_ui.module:604 includes/admin.inc:122
+#: culturefeed_search_ui.module:591 includes/admin.inc:122
 #: theme/theme.inc:607;641
 msgid "Exposed"
 msgstr ""
 
-#: culturefeed_search_ui.module:609 theme/theme.inc:608
+#: culturefeed_search_ui.module:596 theme/theme.inc:608
 msgid "Human name"
 msgstr ""
 
-#: culturefeed_search_ui.module:614
+#: culturefeed_search_ui.module:601
 msgid "Querystring for url"
 msgstr ""
 
-#: culturefeed_search_ui.module:619 theme/theme.inc:610
+#: culturefeed_search_ui.module:606 theme/theme.inc:610
 msgid "Filterquery for API"
 msgstr ""
 
-#: culturefeed_search_ui.module:725
+#: culturefeed_search_ui.module:711
 msgid "You searched for:"
 msgstr "Je zocht op:"
 
-#: culturefeed_search_ui.module:1004
+#: culturefeed_search_ui.module:988
 msgid "Near"
 msgstr "In de buurt van"
 
-#: culturefeed_search_ui.module:1034
+#: culturefeed_search_ui.module:1018
 msgid "All ages"
 msgstr "Alle leeftijden"
 
-#: culturefeed_search_ui.module:1088;1109;1113
+#: culturefeed_search_ui.module:1072;1093;1097
 msgid "culturefeed_search_ui"
 msgstr ""
 
-#: culturefeed_search_ui.module:1088
+#: culturefeed_search_ui.module:1072
 msgid "Fetching deleted objects from API for cleanup."
 msgstr ""
 
-#: culturefeed_search_ui.module:1109
+#: culturefeed_search_ui.module:1093
 msgid "Finished registration of deleted objects."
 msgstr ""
 
-#: culturefeed_search_ui.module:1113
+#: culturefeed_search_ui.module:1097
 msgid "Failed registration of deleted objects. Retrying again on the next run."
 msgstr ""
 
@@ -428,55 +428,55 @@ msgstr "Zoeken"
 msgid "When"
 msgstr "Wanneer"
 
-#: includes/blocks.inc:218;221 js/search_ui.js:0
-msgid "Between"
-msgstr "Tussen"
+#: includes/blocks.inc:218
+msgid "Choose a date"
+msgstr "Datum"
 
-#: includes/blocks.inc:226;229 js/search_ui.js:0
-msgid "And"
-msgstr "En"
+#: includes/blocks.inc:221
+msgid "Or choose a custom date"
+msgstr "Of kies zelf een datum"
 
-#: includes/blocks.inc:232
-msgid "Specific dates"
-msgstr "Specifieke datum"
-
-#: includes/blocks.inc:240;386;603;828
+#: includes/blocks.inc:226;376;593;818
 msgid "Ok"
 msgstr "Ok"
 
-#: includes/blocks.inc:259
+#: includes/blocks.inc:243
+msgid "till"
+msgstr "tot"
+
+#: includes/blocks.inc:247;252
 msgid "Please enter a valid date"
 msgstr "Gelieve een geldige datum in te voeren"
 
-#: includes/blocks.inc:345;376;577;595;800;821
+#: includes/blocks.inc:335;366;567;585;790;811
 msgid "Where"
 msgstr "Waar"
 
-#: includes/blocks.inc:380;598;823
+#: includes/blocks.inc:370;588;813
 msgid "Zipcode or city"
 msgstr "Postcode of gemeente"
 
-#: includes/blocks.inc:440
+#: includes/blocks.inc:430
 msgid "Change radius"
 msgstr "Wijzig straal"
 
-#: includes/blocks.inc:443
+#: includes/blocks.inc:433
 msgid "Choose another location"
 msgstr "Kies andere plaats"
 
-#: includes/blocks.inc:522
+#: includes/blocks.inc:512
 msgid "Age"
 msgstr "Leeftijd"
 
-#: includes/blocks.inc:640
+#: includes/blocks.inc:630
 msgid "Type"
 msgstr "Type"
 
-#: includes/blocks.inc:660
+#: includes/blocks.inc:650
 msgid "Remove all filters"
 msgstr "Alle filters verwijderen"
 
-#: includes/blocks.inc:702
+#: includes/blocks.inc:692
 msgid "Filter"
 msgstr "Filter"
 
@@ -525,109 +525,45 @@ msgid "Show all locations in !city"
 msgstr "Toon alle locaties in !city"
 
 #: js/search_ui.js:0
-msgid "Cancel"
-msgstr "Annuleren"
+msgid "Specific date"
+msgstr "Specifieke datum"
 
 #: js/search_ui.js:0
-msgid "Apply"
-msgstr "Toepassen"
+msgid "Period from/to"
+msgstr "van / tot"
 
 #: js/search_ui.js:0
-msgid "January"
-msgstr "januari"
+msgid "Start date"
+msgstr "Begindatum"
 
 #: js/search_ui.js:0
-msgid "February"
-msgstr "februari"
+msgid "End date"
+msgstr "Einddatum"
 
 #: js/search_ui.js:0
-msgid "March"
-msgstr "maart"
+msgid "OK"
+msgstr "Ok"
 
-#: js/search_ui.js:0
-msgid "April"
-msgstr "april"
-
-#: js/search_ui.js:0
-msgid "May"
-msgstr "mei"
-
-#: js/search_ui.js:0
-msgid "June"
-msgstr "juni"
-
-#: js/search_ui.js:0
-msgid "July"
-msgstr "juli"
-
-#: js/search_ui.js:0
-msgid "August"
-msgstr "augustus"
-
-#: js/search_ui.js:0
-msgid "September"
-msgstr "september"
-
-#: js/search_ui.js:0
-msgid "October"
-msgstr "oktober"
-
-#: js/search_ui.js:0
-msgid "November"
-msgstr "november"
-
-#: js/search_ui.js:0
-msgid "December"
-msgstr "december"
-
-#: js/search_ui.js:0
-msgid "Sun"
-msgstr "zo"
-
-#: js/search_ui.js:0
-msgid "Mon"
-msgstr "ma"
-
-#: js/search_ui.js:0
-msgid "Tue"
-msgstr "di"
-
-#: js/search_ui.js:0
-msgid "Wed"
-msgstr "wo"
-
-#: js/search_ui.js:0
-msgid "Thu"
-msgstr "do"
-
-#: js/search_ui.js:0
-msgid "Fri"
-msgstr "vr"
-
-#: js/search_ui.js:0
-msgid "Sat"
-msgstr "za"
-
-#: lib/Drupal/CultureFeedSearchPage.php:643
+#: lib/Drupal/CultureFeedSearchPage.php:651
 msgid "More results"
 msgstr "Meer resultaten"
 
-#: lib/Drupal/CultureFeedSearchPage.php:654
+#: lib/Drupal/CultureFeedSearchPage.php:662
 #: theme/culturefeed-search-list.tpl.php:14
 msgid "perform a new search."
 msgstr "voer een nieuwe zoekopdracht uit."
 
-#: lib/Drupal/CultureFeedSearchPage.php:656
+#: lib/Drupal/CultureFeedSearchPage.php:664
 #: theme/culturefeed-search-list.tpl.php:19
 msgid "There are no more search results."
 msgstr "Er zijn geen zoekresultaten meer."
 
-#: lib/Drupal/CultureFeedSearchPage.php:657
+#: lib/Drupal/CultureFeedSearchPage.php:665
 #: theme/culturefeed-search-list.tpl.php:19
 msgid "Refine your search results or"
 msgstr "Verfijn jouw zoekopdracht of"
 
-#: lib/Drupal/CultureFeedSearchPage.php:720
+#: lib/Drupal/CultureFeedSearchPage.php:728
 msgid "page"
 msgstr "pagina"
 
@@ -655,3 +591,7 @@ msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count resultaat"
 msgstr[1] "@range van @count resultaten"
+
+#: sites/all/modules/culturefeed/culturefeed_search_ui/js/location_autocomplete.js; sites/all/modules/culturefeed/culturefeed_search_ui/js/city_facet.js
+msgid "boroughs"
+msgstr "deelgemeenten"

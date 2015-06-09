@@ -102,12 +102,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/Cdb.git",
-                "reference": "0ad82c83c02bd52e1e0dcfc1176e6967df4d8715"
+                "reference": "1273c561d60a5d548260f3184312f0c7bbe81ea4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/Cdb/zipball/0ad82c83c02bd52e1e0dcfc1176e6967df4d8715",
-                "reference": "0ad82c83c02bd52e1e0dcfc1176e6967df4d8715",
+                "url": "https://api.github.com/repos/cultuurnet/Cdb/zipball/1273c561d60a5d548260f3184312f0c7bbe81ea4",
+                "reference": "1273c561d60a5d548260f3184312f0c7bbe81ea4",
                 "shasum": ""
             },
             "require-dev": {
@@ -127,7 +127,7 @@
                 "Apache-2.0"
             ],
             "description": "PHP library for hydrating/manipulating CultuurNet's Cdb XML documents",
-            "time": "2015-05-19 11:04:57"
+            "time": "2015-05-22 08:48:28"
         },
         {
             "name": "cultuurnet/culturefeed-php",
@@ -135,12 +135,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "8b44c643afd66acd19bf01150811c51dd43d3364"
+                "reference": "30d031f18a518737ce2ade78216d6b77f188acde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/8b44c643afd66acd19bf01150811c51dd43d3364",
-                "reference": "8b44c643afd66acd19bf01150811c51dd43d3364",
+                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/30d031f18a518737ce2ade78216d6b77f188acde",
+                "reference": "30d031f18a518737ce2ade78216d6b77f188acde",
                 "shasum": ""
             },
             "require": {
@@ -194,7 +194,7 @@
                 }
             ],
             "description": "Culturefeed PHP library",
-            "time": "2015-05-19 18:46:34"
+            "time": "2015-05-22 08:54:51"
         },
         {
             "name": "cultuurnet/search",
@@ -202,17 +202,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/Search.git",
-                "reference": "048ad13ac386c3676dd3236c064f4184a10c1d73"
+                "reference": "fa5c1037f53542f81ee28ade0bf86c5afed3b800"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/Search/zipball/048ad13ac386c3676dd3236c064f4184a10c1d73",
-                "reference": "048ad13ac386c3676dd3236c064f4184a10c1d73",
+                "url": "https://api.github.com/repos/cultuurnet/Search/zipball/fa5c1037f53542f81ee28ade0bf86c5afed3b800",
+                "reference": "fa5c1037f53542f81ee28ade0bf86c5afed3b800",
                 "shasum": ""
             },
             "require": {
                 "cultuurnet/auth": "~1.1",
-                "cultuurnet/cdb": "~2.0",
+                "cultuurnet/cdb": "~2.1",
                 "php": ">=5.3.0",
                 "symfony/console": "~2.5"
             },
@@ -240,7 +240,7 @@
                 "Apache-2.0"
             ],
             "description": "CultuurNet search service",
-            "time": "2015-04-24 10:53:19"
+            "time": "2015-05-22 09:05:22"
         },
         {
             "name": "guzzle/common",
@@ -284,6 +284,7 @@
                 "event",
                 "exception"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-08-11 04:32:36"
         },
         {
@@ -341,6 +342,7 @@
                 "http",
                 "http client"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-08-11 04:32:36"
         },
         {
@@ -393,6 +395,7 @@
                 "adapter",
                 "log"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-03-26 17:15:28"
         },
         {
@@ -437,6 +440,7 @@
                 "message",
                 "url"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-02-05 18:29:46"
         },
         {
@@ -486,6 +490,7 @@
                 "Guzzle",
                 "plugin"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-02-07 18:36:58"
         },
         {
@@ -537,6 +542,7 @@
                 "log",
                 "plugin"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-01-08 21:45:39"
         },
         {
@@ -587,6 +593,7 @@
                 "oauth",
                 "plugin"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-04-16 13:26:19"
         },
         {
@@ -640,6 +647,7 @@
                 "component",
                 "stream"
             ],
+            "abandoned": "guzzle/guzzle",
             "time": "2014-05-01 21:36:02"
         },
         {
@@ -829,16 +837,16 @@
     "packages-dev": [
         {
             "name": "phing/phing",
-            "version": "2.10.1",
+            "version": "2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phingofficial/phing.git",
-                "reference": "f6c25373cbce5e042dddd9b951a3d5638bb78f67"
+                "reference": "a185fef6df7241e540466b67486a4c4b552260e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/f6c25373cbce5e042dddd9b951a3d5638bb78f67",
-                "reference": "f6c25373cbce5e042dddd9b951a3d5638bb78f67",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/a185fef6df7241e540466b67486a4c4b552260e1",
+                "reference": "a185fef6df7241e540466b67486a4c4b552260e1",
                 "shasum": ""
             },
             "require": {
@@ -882,7 +890,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.10.x-dev"
+                    "dev-master": "2.11.x-dev"
                 }
             },
             "autoload": {
@@ -899,23 +907,23 @@
             ],
             "authors": [
                 {
-                    "name": "Phing Community",
-                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
-                },
-                {
                     "name": "Michiel Rook",
                     "email": "mrook@php.net"
+                },
+                {
+                    "name": "Phing Community",
+                    "homepage": "https://www.phing.info/trac/wiki/Development/Contributors"
                 }
             ],
             "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
-            "homepage": "http://www.phing.info/",
+            "homepage": "https://www.phing.info/",
             "keywords": [
                 "build",
                 "phing",
                 "task",
                 "tool"
             ],
-            "time": "2015-02-19 15:49:46"
+            "time": "2015-05-20 13:04:38"
         }
     ],
     "aliases": [],

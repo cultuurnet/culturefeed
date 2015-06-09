@@ -295,3 +295,7 @@ msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count Ergebnis"
 msgstr[1] "@range van @count Ergebnisse"
+
+#: sites/all/modules/culturefeed/culturefeed_search_ui/js/location_autocomplete.js; sites/all/modules/culturefeed/culturefeed_search_ui/js/city_facet.js
+msgid "boroughs"
+msgstr "Stadtgemeinden"

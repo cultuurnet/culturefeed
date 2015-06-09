@@ -6,7 +6,7 @@
  */
 
 define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 50);
-define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'permanent asc,availableto asc,weight desc');
+define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'date');
 
 /**
  * Implements hook_field_create_instance().
@@ -85,7 +85,15 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
           $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($filter_query);
         }
 
-        $parameters[] = new \CultuurNet\Search\Parameter\Parameter('sort', $sort);
+        $search_type = culturefeed_get_searchable_type('activiteiten');
+        $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_type);
+        foreach ($sort_options as $option) {
+          if ($option['value'] == $sort) {
+            $parameters[] = new \CultuurNet\Search\Parameter\Parameter('sort', $option['query']);
+            break;
+          }
+        }
+
         $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
         $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
         $parameters[] = new \CultuurNet\Search\Parameter\Group();
@@ -113,11 +121,12 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
             );
           }
 
-          if ($result->getTotalCount() > $rows && module_exists('culturefeed_agenda')) {
+          if ($result->getTotalCount() > $rows) {
 
             if (function_exists('culturefeed_search_get_search_url_query')) {
 
               $query = 'q=' . html_entity_decode($query_string) . ($filter_query ? '&fq=' . html_entity_decode($filter_query) : '');
+              $query .= '&sort=' . $sort;
 
               $build[] = array(
                 '#theme' => 'culturefeed_content_all_results_link',
@@ -217,12 +226,26 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'textfield',
   );
 
+  // Sort.
+  $search_type = culturefeed_get_searchable_type('activiteiten');
+  $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_type);
+  $options = array();
+
+  foreach ($sort_options as $key => $option) {
+
+    if ($key === 'default') {
+      continue;
+    }
+    $options[$option['value']] = $option['label'];
+
+  }
+
   $element['wrapper']['sort'] = array(
     '#default_value' => $sort,
+    '#options' => $options,
     '#required' => $element['#required'],
     '#title' => t('Sort'),
-    '#description' => t('How to sort the results, defaults on "permanent asc,availableto asc,weight desc"'),
-    '#type' => 'textfield',
+    '#type' => 'radios',
   );
 
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
