@@ -328,7 +328,7 @@ function culturefeed_search_ui_block_city_facet() {
     );
 
     // If a postal was given. We can add proximity search.
-    $city_parts = explode(' ', $_GET['location']);
+    $city_parts = explode(' ', $location);
     if (is_numeric($city_parts[0])) {
       $build['distance-form'] = drupal_get_form('culturefeed_search_ui_proximity_distance_form');
     }
