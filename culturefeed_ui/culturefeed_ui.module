@@ -480,13 +480,13 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items(CultureFeed_Us
   $items = array();
 
   $items['my-profile'] = array(
-    'data' => l(t('My profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
+    'data' => l(t('My profile'), 'culturefeed/profile/edit'),
     'class' => 'my-profile',
     'weight' => -20,
   );
 
   $items['user-history'] = array(
-    'data' => l(t('User history'), 'culturefeed/profile/edit'),
+    'data' => l(t('User history'), 'culturefeed/activities'),
     'class' => 'user-history',
     'weight' => -19,
   );
