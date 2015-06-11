@@ -120,6 +120,13 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/reminder.inc',
       'type' => MENU_CALLBACK,
     ),
+    'culturefeed/uitpas/synchronization' => array(
+      'access callback' => TRUE,
+      'file' => 'includes/synchronization.inc',
+      'page callback' => 'culturefeed_uitpas_synchronization',
+      'title' => 'Sync UiTpas data',
+      'type' => MENU_CALLBACK,
+    ),
   );
 
 }

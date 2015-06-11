@@ -260,6 +260,7 @@ function culturefeed_ui_theme() {
         'form' => NULL,
         'intro' => NULL,
         'profile_menu' => NULL,
+        'synchronization' => NULL,
       ),
       'template' => 'culturefeed-ui-page-profile-edit',
     ),

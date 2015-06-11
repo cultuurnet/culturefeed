@@ -257,7 +257,7 @@ function culturefeed_ui_page_profile_edit() {
 
   $form = drupal_get_form('culturefeed_ui_profile_edit_form', $culturefeed_user);
 
-  return array(
+  $build = array(
     '#attached' => array(
       'css' => array(
         drupal_get_path('module', 'culturefeed_ui') . '/css/profile_edit.css',
@@ -268,6 +268,30 @@ function culturefeed_ui_page_profile_edit() {
     '#profile_menu' => theme('culturefeed_ui_profile_menu'),
     '#theme' => 'culturefeed_ui_page_profile_edit',
   );
+
+  if (module_exists('culturefeed_uitpas')) {
+
+    $path = 'culturefeed/uitpas/synchronization';
+    $item = menu_get_item($path);
+    $build['#attached']['js'] = array(
+      drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
+    );
+    $build['#attached']['library'] = array(
+      array('system', 'ui.dialog'),
+    );
+    $build['#synchronization'] = l(
+      t('Sync uitid'),
+      $path,
+      array(
+        'attributes' => array(
+          'title' => $item['title'],
+        ),
+      )
+    );
+
+  }
+
+  return $build;
 
 }
 

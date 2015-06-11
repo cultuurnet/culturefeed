@@ -31,12 +31,20 @@
   </div>
   <div class="clearfix form-row">
     <?php print $tel; ?>
-    <?php print $mobile; ?>
+    <div class="form-grouped">
+      <?php print $mobile; ?>
+      <?php print $mobile_notifications; ?>
+    </div>
+  </div>
+  <div class="clearfix form-row">
+    <div class="form-grouped">
+      <?php print $email; ?>
+      <?php print $email_notifications; ?>
+    </div>
+    <?php print $email_description; ?>
   </div>
   <div class="clearfix form-row">
     <?php print $main_form; ?>
-  </div>
-  <div class="clearfix form-row">
     <?php print $actions; ?>
   </div>
 

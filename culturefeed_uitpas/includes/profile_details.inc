@@ -17,15 +17,11 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
     /* @var CultureFeed_Uitpas_Passholder $passholder */
     $passholder = $uitpas_user->passholder;
 
-    /* @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $card_system */
-    $card_system = $uitpas_user->card_system;
-
-
     $form['#theme'] = 'culturefeed_uitpas_profile_details_form';
 
-    $form['uitpas_number'] = array(
+    $form['uitpas_user'] = array(
       '#type' => 'value',
-      '#value' => $card_system->currentCard->uitpasNumber,
+      '#value' => $uitpas_user,
     );
 
     $form['first_name'] = array(
@@ -100,24 +96,52 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
 
     $form['tel'] = array(
       '#default_value' => $passholder->telephone,
-      '#disabled' => TRUE,
       '#title' =>  t('Telephone'),
       '#type' => 'textfield',
     );
 
     $form['mobile'] = array(
       '#default_value' => $passholder->gsm,
-      '#disabled' => TRUE,
+      '#states' => array(
+        'required' => array(
+          ':input[name="mobile_notifications"]' => array('checked' => TRUE),
+        ),
+      ),
       '#title' =>  t('Mobile'),
       '#type' => 'textfield',
     );
 
+    $form['mobile_notifications'] = array(
+      '#default_value' => '',
+      '#title' => t('Keep me informed via sms'),
+      '#type' => 'checkbox',
+    );
+
     $form['email'] = array(
       '#default_value' => $passholder->email,
-      '#description' => variable_get('culturefeed_uitpas_profile_details_email_description'),
       '#required' => TRUE,
+      '#states' => array(
+        'required' => array(
+          ':input[name="email_notifications"]' => array('checked' => TRUE),
+        ),
+      ),
       '#title' =>  t('Email'),
       '#type' => 'textfield',
+    );
+
+    $form['email_description'] = array(
+      '#attributes' => array('class' => array('form-item', 'form-item-email-description')),
+      '#type' => 'container',
+      '#title' => ' ',
+      'markup' => array(
+        '#markup' => variable_get('culturefeed_uitpas_profile_details_email_description'),
+      ),
+    );
+
+    $form['email_notifications'] = array(
+      '#default_value' => '',
+      '#title' => t('Keep me informed via email'),
+      '#type' => 'checkbox',
     );
 
     $form['actions'] = array(
@@ -135,7 +159,7 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
 }
 
 /**
- * Validation handler for culturefeed_uitpas_profile_details_form_().
+ * Validation handler for culturefeed_uitpas_profile_details_form().
  *
  * @param array $form
  *   The form.
@@ -144,8 +168,12 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
  */
 function culturefeed_uitpas_profile_details_form_validate(array $form, array &$form_state) {
 
-  if (!valid_email_address($form_state['values']['email'])) {
-    form_set_error('email', t('The email address is not valid.'));
+  if (!empty($form_state['values']['email']) && !valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('Invalid e-mail address'));
+  }
+
+  if ($form_state['values']['mobile_notifications'] && !$form_state['values']['mobile']) {
+    form_set_error('mobile', t('Mobile number field is required.'));
   }
 
 }
@@ -160,18 +188,61 @@ function culturefeed_uitpas_profile_details_form_validate(array $form, array &$f
  */
 function culturefeed_uitpas_profile_details_form_submit(array $form, array &$form_state) {
 
-  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  $uitpas_user = $form_state['values']['uitpas_user'];
+  /* @var CultureFeed_User $culturefeed_user */
+  $culturefeed_user = $uitpas_user->user;
+  /* @var CultureFeed_Uitpas_Passholder $passholder */
+  $passholder = $uitpas_user->passholder;
+  /* @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $card_system */
+  $card_system = $uitpas_user->card_system;
 
-  $passholder = new CultureFeed_Uitpas_Passholder();
-  $passholder->uitpasNumber = $form_state['values']['uitpas_number'];
-  $passholder->email = $form_state['values']['email'];
+  $error = FALSE;
 
-  try {
-    $uitpas_user->cf->uitpas()->updatePassholder($passholder);
+  if ($uitpas_user->user && $uitpas_user->passholder && $uitpas_user->card_system) {
+
+    // Passholder.
+    $passholder_update = new CultureFeed_Uitpas_Passholder();
+    $passholder_update->uitpasNumber = $card_system->currentCard->uitpasNumber;
+    $passholder_update->email = $form_state['values']['email'];
+    if ($form_state['values']['tel']) {
+      $passholder_update->telephone = $form_state['values']['tel'];
+    }
+    if ($form_state['values']['mobile']) {
+      $passholder_update->gsm = $form_state['values']['mobile'];
+    }
+
+    try {
+      $uitpas_user->cf->uitpas()->updatePassholder($passholder_update);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_uitpas_profile_details_uitpas', $e);
+      $error = TRUE;
+    }
+
+    // CultureFeed user.
+    $culturefeed_user_update = new CultureFeed_User();
+    $culturefeed_user_update->id = $culturefeed_user->id;
+    $culturefeed_user_update->mbox = $form_state['values']['email'];
+
+    try {
+      DrupalCultureFeed::updateUser($culturefeed_user_update);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_uitpas_profile_details_account', $e);
+      $error = TRUE;
+    }
+
   }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_uitpas_profile_details', $e);
+
+  else {
+    $error = TRUE;
+  }
+
+  if ($error) {
     drupal_set_message(t('An error occurred.'), 'error');
+  }
+  else {
+    drupal_set_message(t('Your changes have been saved.'));
   }
 
 }

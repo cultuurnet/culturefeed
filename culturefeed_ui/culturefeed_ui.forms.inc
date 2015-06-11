@@ -453,7 +453,7 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
  * @param array $form_state
  *   The form state.
  */
-function culturefeed_ui_page_profile_edit_form_submit(array $form, array &$form_state) {
+function culturefeed_ui_profile_edit_form_submit(array $form, array &$form_state) {
   drupal_set_message(t('Changes succesfully saved.'));
 }
 
