@@ -280,7 +280,7 @@ function culturefeed_ui_page_profile_edit() {
       array('system', 'ui.dialog'),
     );
     $build['#synchronization'] = l(
-      t('Sync uitid'),
+      t('Update your profile with your eid data.'),
       $path,
       array(
         'attributes' => array(

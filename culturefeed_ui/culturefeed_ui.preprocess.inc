@@ -94,6 +94,18 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
 }
 
 /**
+ * Preprocess variables for culturefeed-ui-profile-edit-form.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_profile_edit_form(&$vars) {
+
+  $vars['form'] = drupal_render_children($vars['form']);
+
+}
+
+/**
  * Preprocess variables for culturefeed-ui-online-account.tpl.php.
  *
  * @see culturefeed-ui-online-account.tpl.php
