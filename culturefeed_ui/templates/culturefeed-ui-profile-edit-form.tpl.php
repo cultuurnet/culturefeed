@@ -7,4 +7,4 @@
 
 ?>
 
-<?php print $form; ?>
+<?php print $rendered_form; ?>

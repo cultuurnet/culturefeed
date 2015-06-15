@@ -420,14 +420,7 @@ function culturefeed_ui_profile_edit_form_submit(array $form, array &$form_state
 
   /* @var CultureFeed_User $culturefeed_user */
   $culturefeed_user = $form['#culturefeed_user'];
-  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
-
-  $message = t('Changes saved successfully.') . ' ';
-  $message .= t(
-    "<a href=\"@profile\">View your profile</a> as shown to others.",
-    array('@profile' => url('user/' . $user_id))
-  );
-
+  $message = culturefeed_ui_profile_edit_message($culturefeed_user);
   drupal_set_message($message);
 
 }

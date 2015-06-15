@@ -119,6 +119,29 @@ function culturefeed_ui_privacy_settings_get_display(
 }
 
 /**
+ * Returns the drupal message after making profile changes.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The CultureFeed user.
+ *
+ * @return string
+ *   The message.
+ */
+function culturefeed_ui_profile_edit_message($culturefeed_user) {
+
+  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
+
+  $message = t('Changes saved successfully.') . ' ';
+  $message .= t(
+    "<a href=\"@profile\">View your profile</a> as shown to others.",
+    array('@profile' => url('user/' . $user_id))
+  );
+
+  return $message;
+
+}
+
+/**
  * Put noindex and canonical metatags for SEO on relevant culturefeed pages.
  */
 function culturefeed_ui_set_canonical_and_noindex() {

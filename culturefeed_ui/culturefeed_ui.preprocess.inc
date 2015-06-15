@@ -101,7 +101,8 @@ function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
  */
 function culturefeed_ui_preprocess_culturefeed_ui_profile_edit_form(&$vars) {
 
-  $vars['form'] = drupal_render_children($vars['form']);
+  $form = $vars['form'];
+  $vars['rendered_form'] = drupal_render_children($form);
 
 }
 

@@ -124,8 +124,12 @@ function culturefeed_uitpas_synchronization_synchronize() {
     $culturefeed_user_update->street = $passholder->street;
     $culturefeed_user_update->zip = $passholder->postalCode;
     $culturefeed_user_update->city = $passholder->city;
-    /* @todo not correct */
-    /* $culturefeed_user_update->country = $passholder->nationality; */
+    $belgian_nationalities = array(
+      'belg', 'belgisch', 'belgische',
+    );
+    if (in_array(strtolower($passholder->nationality), $belgian_nationalities)) {
+      $culturefeed_user_update->country = 'BE';
+    }
     $culturefeed_user_update->dob = $passholder->dateOfBirth;
     $culturefeed_user_update->gender = strtolower($passholder->gender);
 
@@ -147,7 +151,18 @@ function culturefeed_uitpas_synchronization_synchronize() {
     drupal_set_message(t('An error occurred.'), 'error');
   }
   else {
-    drupal_set_message(t('Your changes have been saved.'));
+
+    if (module_exists('culturefeed_ui')) {
+
+      /* @var CultureFeed_User $culturefeed_user */
+      $message = culturefeed_ui_profile_edit_message($culturefeed_user);
+      drupal_set_message($message);
+
+    }
+    else {
+      drupal_set_message(t('Your changes have been saved.'));
+    }
+
   }
 
 }
