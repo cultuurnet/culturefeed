@@ -14,10 +14,8 @@
  */
 function culturefeed_ui_account_edit_form(array $form, array $form_state, CultureFeed_User $culturefeed_user) {
 
-  $form['culturefeed_user'] = array(
-    '#type' => 'value',
-    '#value' => $culturefeed_user,
-  );
+  $form['#culturefeed_user'] = $culturefeed_user;
+  $form['#theme'] = 'culturefeed_ui_account_edit_form';
 
   $form['nick'] = array(
     '#disabled' => TRUE,
@@ -50,6 +48,7 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
   );
 
   return $form;
+
 }
 
 /**
@@ -61,9 +60,11 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
  *   The form state.
  */
 function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
+
   if (!valid_email_address($form_state['values']['mbox'])) {
     form_set_error('mbox', t('Invalid email'));
   }
+
 }
 
 /**
@@ -76,17 +77,52 @@ function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
  */
 function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
 
-  $culturefeed_user = new CultureFeed_User();
-  $culturefeed_user->id = $form_state['values']['culturefeed_user']->id;
-  $culturefeed_user->mbox = $form_state['values']['mbox'];
+  /* @var CultureFeed_User $culturefeed_user */
+  $culturefeed_user = $form['#culturefeed_user'];
+
+  $error = FALSE;
+
+  // User.
+  $culturefeed_user_update = new CultureFeed_User();
+  $culturefeed_user_update->id = $culturefeed_user->id;
+  $culturefeed_user_update->mbox = $form_state['values']['mbox'];
 
   try {
-    DrupalCultureFeed::updateUser($culturefeed_user);
-    drupal_set_message(t('Changes succesfully saved.'));
+    DrupalCultureFeed::updateUser($culturefeed_user_update);
   }
   catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred'), 'error');
+    watchdog_exception('culturefeed_ui_account_edit_user', $e);
+    $error = TRUE;
+  }
+
+  // Passholder.
+  /* @var CultureFeed $cf */
+  $cf = DrupalCultureFeed::getLoggedInUserInstance();
+  $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
+  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+  if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
+
+    $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+
+    $passholder_update = new CultureFeed_Uitpas_Passholder();
+    $passholder_update->uitpasNumber = $uitpas_number;
+    $passholder_update->email = $form_state['values']['mbox'];
+
+    try {
+      $cf->uitpas()->updatePassholder($passholder_update);
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui_account_edit_uitpas', $e);
+      $error = TRUE;
+    }
+
+  }
+
+  if ($error) {
+    drupal_set_message(t('An error occurred.'), 'error');
+  }
+  else {
+    drupal_set_message(t('Changes saved successfully.'));
   }
 
 }
@@ -109,10 +145,7 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
   $options = culturefeed_ui_privacy_settings_get_options($culturefeed_user);
   $default_value = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);
 
-  $form['culturefeed_user'] = array(
-    '#type' => 'value',
-    '#value' => $culturefeed_user,
-  );
+  $form['#culturefeed_user'] = $culturefeed_user;
 
   $form['setting'] = array(
     '#default_value' => $default_value,
@@ -144,7 +177,7 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
 function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_state) {
 
   /* @var CultureFeed_User $culturefeed_user */
-  $culturefeed_user = $form_state['values']['culturefeed_user'];
+  $culturefeed_user = $form['#culturefeed_user'];
 
   $setting = $form_state['values']['setting'];
 

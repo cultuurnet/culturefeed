@@ -1,6 +1,32 @@
 <?php
 
 /**
+ * Preprocess variables for culturefeed-ui-profile-edit-form.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_profile_edit_form(&$vars) {
+
+  $form = $vars['form'];
+  $vars['rendered_form'] = drupal_render_children($form);
+
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-account-edit-form.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_account_edit_form(&$vars) {
+
+  $form = $vars['form'];
+  $vars['rendered_form'] = drupal_render_children($form);
+
+}
+
+/**
  * Preprocess variables for culturefeed-ui-profile.tpl.php.
  *
  * @see culturefeed-ui-profile.tpl.php
@@ -91,19 +117,6 @@ function template_preprocess_culturefeed_ui_mbox_confirmation_reminder(&$variabl
  */
 function template_preprocess_culturefeed_ui_profile_menu_item(&$variables) {
   $variables['link'] = l($variables['title'], $variables['url']);
-}
-
-/**
- * Preprocess variables for culturefeed-ui-profile-edit-form.
- *
- * @param array $vars
- *   The variables.
- */
-function culturefeed_ui_preprocess_culturefeed_ui_profile_edit_form(&$vars) {
-
-  $form = $vars['form'];
-  $vars['rendered_form'] = drupal_render_children($form);
-
 }
 
 /**
