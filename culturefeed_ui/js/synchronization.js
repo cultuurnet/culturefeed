@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.exampleModule = {
+  Drupal.behaviors.culturefeed_ui_synchronization = {
 
     attach: function (context, settings) {
 
@@ -28,6 +28,7 @@
                 throbber.remove();
               }
             };
+
             container.html(data).dialog(modal).dialog('open');
 
           }
