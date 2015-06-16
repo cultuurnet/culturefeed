@@ -100,7 +100,7 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
   $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
   $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-  if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
+  if ($passholder && $card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
 
     $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
 
@@ -142,8 +142,13 @@ function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
  */
 function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, CultureFeed_User $culturefeed_user) {
 
+  form_load_include($form_state, 'inc', 'culturefeed_ui', 'includes/privacy_settings');
+
   $options = culturefeed_ui_privacy_settings_get_options($culturefeed_user);
-  $default_value = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);
+  $default_value = culturefeed_ui_privacy_settings_get_current_setting($culturefeed_user);
+  if (!in_array($default_value, array_keys($options))) {
+    $default_value = 'nick';
+  }
 
   $form['#culturefeed_user'] = $culturefeed_user;
 
@@ -180,31 +185,13 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
   $culturefeed_user = $form['#culturefeed_user'];
 
   $setting = $form_state['values']['setting'];
-
   $privacy_config = new CultureFeed_UserPrivacyConfig();
+  culturefeed_ui_privacy_settings_set_options($privacy_config, $setting);
 
-  // Always on.
-  $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-
-  // Depending on setting.
-  $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-  if ($setting == 'age_location' || $setting == 'location') {
-    $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  }
-  $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-  if ($setting == 'age_location' || $setting == 'age') {
-    $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  }
-
-  // Not used ?
-  $privacy_config->gender = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-  $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
 
   try {
     DrupalCultureFeed::updateUserPrivacy($culturefeed_user->id, $privacy_config);
     drupal_set_message(t('Your privacy settings have been saved.'));
-    $form_state['redirect'] = 'user';
   }
   catch (Exception $e) {
     form_set_error('submit', t('Error occurred while saving your privacy settings.'));
