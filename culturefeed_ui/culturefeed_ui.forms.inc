@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains culturefeed_ui.forms.inc.
+ */
+
+/**
  * Form constructor for the account edit form.
  *
  * @param array $form
@@ -8,6 +13,7 @@
  * @param array $form_state
  *   The form state.
  * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
  *
  * @return array
  *   The form.
@@ -59,7 +65,7 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
  * @param array $form_state
  *   The form state.
  */
-function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
+function culturefeed_ui_account_edit_form_validate(array $form, array &$form_state) {
 
   if (!valid_email_address($form_state['values']['mbox'])) {
     form_set_error('mbox', t('Invalid email'));
@@ -75,7 +81,7 @@ function culturefeed_ui_account_edit_form_validate($form, &$form_state) {
  * @param array $form_state
  *   The form state.
  */
-function culturefeed_ui_account_edit_form_submit($form, &$form_state) {
+function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state) {
 
   /* @var CultureFeed_User $culturefeed_user */
   $culturefeed_user = $form['#culturefeed_user'];
@@ -167,8 +173,8 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
     ),
   );
 
-  // Tooltip
-  $info = variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip');
+  // Tooltip.
+  $info = variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip', '');
   if ($info) {
 
     $form['#attached'] = array(
@@ -262,7 +268,7 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
  * @return array
  *   The form.
  */
-function culturefeed_ui_profile_edit_form($form, &$form_state, CultureFeed_User $culturefeed_user) {
+function culturefeed_ui_profile_edit_form(array $form, array &$form_state, CultureFeed_User $culturefeed_user) {
 
   $form['#culturefeed_user'] = $culturefeed_user;
   $form['#theme'] = 'culturefeed_ui_profile_edit_form';
@@ -320,7 +326,7 @@ function culturefeed_ui_profile_edit_form($form, &$form_state, CultureFeed_User 
     }
   }
 
-  // Address
+  // Address.
   $form['street'] = array(
     '#type' => 'textfield',
     '#title' => t('Street and number'),
@@ -343,7 +349,7 @@ function culturefeed_ui_profile_edit_form($form, &$form_state, CultureFeed_User 
     '#default_value' => !empty($culturefeed_user->country) ? $culturefeed_user->country : 'BE',
   );
 
-  // Bio
+  // Bio.
   $form['bio'] = array(
     '#type' => 'textarea',
     '#title' => t('Biography'),
@@ -427,7 +433,10 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
     }
   }
 
-  $fields = array('id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city', 'country', 'dob');
+  $fields = array(
+    'id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city',
+    'country', 'dob',
+  );
 
   try {
     DrupalCultureFeed::updateUser($culturefeed_user_update, $fields);
@@ -495,8 +504,18 @@ function culturefeed_ui_profile_edit_form_submit(array $form, array &$form_state
 
 }
 
-function culturefeed_ui_users_search_form() {
-  $form = array();
+/**
+ * Form constructor for the users search form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_users_search_form(array $form, array $form_state) {
 
   $form['name'] = array(
     '#type' => 'textfield',
@@ -510,9 +529,19 @@ function culturefeed_ui_users_search_form() {
   );
 
   return $form;
+
 }
 
-function culturefeed_ui_users_search_form_submit($form, &$form_state) {
+/**
+ * Submit handler for culturefeed_ui_profile_edit_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ */
+function culturefeed_ui_users_search_form_submit(array $form, array &$form_state) {
+
   $name = trim($form_state['values']['name']);
 
   if (!empty($name)) {
@@ -521,4 +550,5 @@ function culturefeed_ui_users_search_form_submit($form, &$form_state) {
   else {
     $form_state['redirect'] = 'culturefeed/users/search';
   }
+
 }
