@@ -167,6 +167,25 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
     ),
   );
 
+  // Tooltip
+  $info = variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip');
+  if ($info) {
+
+    $form['#attached'] = array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/privacy_tooltip.js',
+        array(
+          'type' => 'setting',
+          'data' => array('culturefeed_ui_privacy_settings_anonymous_tooltip' => $info),
+        ),
+      ),
+      'library' => array(
+        array('system', 'ui.tooltip'),
+      ),
+    );
+
+  }
+
   return $form;
 
 }
@@ -187,7 +206,6 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
   $setting = $form_state['values']['setting'];
   $privacy_config = new CultureFeed_UserPrivacyConfig();
   culturefeed_ui_privacy_settings_set_options($privacy_config, $setting);
-
 
   try {
     DrupalCultureFeed::updateUserPrivacy($culturefeed_user->id, $privacy_config);
