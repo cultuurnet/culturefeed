@@ -207,6 +207,38 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
   $privacy_config = new CultureFeed_UserPrivacyConfig();
   culturefeed_ui_privacy_settings_set_options($privacy_config, $setting);
 
+  if ($setting == 'anonymous') {
+
+    // Activities.
+    $query = new CultureFeed_SearchActivitiesQuery();
+    $query->userId = $culturefeed_user->id;
+
+    /* @var CultureFeed_ResultSet $activities */
+    $activities = DrupalCultureFeed::searchActivities($query);
+    if ($activities->total > 0) {
+      /* @var CultureFeed_Activity $activity */
+      foreach ($activities->objects as $activity) {
+        DrupalCultureFeed::updateActivity($activity->id, TRUE);
+      }
+    }
+
+    // Preferences.
+    $reflection = new ReflectionClass('CultureFeed_Activity');
+    $constants = $reflection->getConstants();
+    $types = array_filter($constants, function($key) {
+      return (strpos($key, 'TYPE_') === 0);
+    }, ARRAY_FILTER_USE_KEY);
+
+    $preferences = new CultureFeed_Preferences();
+    $preferences->uid = $culturefeed_user->id;
+    foreach ($types as $type => $id) {
+      $preference = new CultureFeed_ActivityPrivacyPreference($id, TRUE);
+      $preferences->activityPrivacyPreferences[$id] = $preference;
+    }
+    DrupalCultureFeed::setUserPreferences($culturefeed_user->id, $preferences);
+
+  }
+
   try {
     DrupalCultureFeed::updateUserPrivacy($culturefeed_user->id, $privacy_config);
     drupal_set_message(t('Your privacy settings have been saved.'));
