@@ -660,82 +660,70 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_advantages_table(&$vars) {
-
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$vars) {
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_WelcomeAdvantage[] $advantages */
   // @codingStandardsIgnoreEnd
   $advantages = $vars['advantages'];
   $advantages_total = $vars['advantages_total'];
   $advantages_pager_element = $vars['advantages_pager_element'];
-
-  $table = array(
-    'attributes' => array(),
-    'caption' => '',
-    'colgroups' => array(),
-    'sticky' => '',
-    'empty' => '',
-  );
-
-  $header = array(
-    t('Welcome advantages'),
-    t('Valid till'),
-    t('Description'),
-    t('Counters'),
-    '',
-  );
-  $rows = array();
+  $items = array();
 
   if (count($advantages)) {
-
     foreach ($advantages as $advantage) {
-
       $advantage_path = 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id;
 
-      // Counters.
-      $counters = array();
-      foreach ($advantage->counters as $counter) {
-        $counters[] = $counter->name;
-      }
-
-      // Picture.
-      $picture = '';
+      // Get the first image or fall back to a default.
       if (isset($advantage->pictures[0])) {
-
-        $picture = theme('culturefeed_uitpas_promotion_image', array(
+        $image = theme('culturefeed_uitpas_promotion_image', array(
           'path' => $advantage->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
           'attributes' => array(),
         ));
-        $picture = l($picture, $advantage_path, array('html' => TRUE));
+      }
+      else {
+        $image = theme('image', array(
+          'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
+          'width' => 100,
+          'height' => 100,
+        ));
+      }
+      $item['image'] = l($image, $advantage_path, array('html' => TRUE));
 
+      $item['cardsystem'] = array(
+        'class' => drupal_html_class($advantage->owningCardSystem->name),
+        'name' => $advantage->owningCardSystem->name,
+      );
+      $item['title'] = l($advantage->title, $advantage_path);
+
+      foreach ($advantage->counters as $counter) {
+        $item['counters'][] = array(
+          'class' => drupal_html_class($counter->name),
+          'name' => $counter->name,
+        );
       }
 
-      // Rows.
-      $rows[] = array(
-        l($advantage->title, $advantage_path),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
-        ($advantage->description1) ? $advantage->description1 : '',
-        implode(', ', $counters),
-        $picture,
+      $item['availability'] = ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock');
+      $item['points'] = array(
+        'value' => format_plural($advantage->points, '1 point', '@count points'),
+        'remark' => t('This is a welcome advantage'),
       );
 
+      $items[] = $item;
     }
-
   }
   else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 5));
+    $items[] = '<div class="no-results no-advantages">' . t('No results found') . '</div>';
   }
+  $vars['items'] = $items;
 
-  $table += array('header' => $header, 'rows' => $rows);
   $pager = array(
     'element' => $advantages_pager_element,
     'quantity' => $advantages_total,
   );
-
-  return theme_table($table) . theme('pager', $pager);
-
+  $vars['pager'] = theme('pager', $pager);
+  drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/advantages.css');
 }
 
 /**
@@ -750,6 +738,8 @@ function theme_culturefeed_uitpas_advantages_table(&$vars) {
 function theme_culturefeed_uitpas_promotion_image($vars) {
 
   $vars['path'] .= '?maxheight=' . $vars['maxheight'] . '&maxwidth=' . $vars['maxwidth'];
+  $vars['width'] = $vars['maxwidth'];
+  $vars['height'] = $vars['maxheight'];
   return theme('image', $vars);
 
 }
