@@ -174,6 +174,11 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-register-where',
     ),
+    'culturefeed_uitpas_filter_labels' => array(
+      'render element' => 'element',
+      'template' => 'culturefeed-uitpas-filter-labels',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+    )
 
   );
 
@@ -225,4 +230,27 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
   }
 
+}
+
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_filter_labels(&$variables) {
+  $attributes = array();
+  if (isset($variables['element']['#id'])) {
+    $attributes['id'] = $variables['element']['#id'];
+  }
+  $attributes['class'] = 'form-radios';
+  if (!empty($variables['element']['#attributes']['class'])) {
+    $attributes['class'] .= ' ' . implode(' ', $variables['element']['#attributes']['class']);
+  }
+  if (isset($variables['element']['#attributes']['title'])) {
+    $attributes['title'] = $variables['element']['#attributes']['title'];
+  }
+  foreach (element_children($variables['element']) as $child) {
+    $variables['element'][$child]['#prefix'] = '<span class="' . drupal_html_class($variables['element'][$child]['#title']) . '">';
+    $variables['element'][$child]['#suffix'] = '</span>';
+    $variables['element'][$child]['#attributes']['data-counter'] = drupal_html_class($variables['element'][$child]['#title']);
+    $rendered_child = drupal_render($variables['element'][$child]);
+
+    $variables['element']['#children'] .= $rendered_child;
+  }
+  $variables['#attributes'] = $attributes;
 }

@@ -106,6 +106,22 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
     '#title' => t('Number of promotions to display'),
     '#default_value' => variable_get('culturefeed_uitpas_promotions_promotions_max', 20),
   );
+  $form['promotions']['culturefeed_uitpas_show_advantages_above_promotions']= array(
+    '#type' => 'checkbox',
+    '#title' => t('Show advantages above the promotions list.'),
+    '#default_value' => variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE),
+  );
+  $form['promotions']['culturefeed_uitpas_number_advantages_above_promotions'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of advantages to show above the promotions list'),
+    '#default_value' => variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2),
+    '#options' => range(0, 15),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="culturefeed_uitpas_show_advantages_above_promotions"]' =>array('checked' => TRUE)
+      ),
+    ),
+  );
 
 }
 
@@ -114,24 +130,12 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  */
 function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
-  $form['promotions_link'] = array(
-    '#prefix' => '<div id="promotions_link"><ul>',
-    '#suffix' => '</ul></div>',
-  );
-
-  $form['promotions_link']['promotions'] = array(
-    '#markup' => '<li><a href="/promotions">' . t('Promotions') . '</a></li>',
-  );
-
-  $form['promotions_link']['advantages'] = array(
-    '#markup' => '<li><a href="/advantages">' . t('Welcome Advantages') . '</a></li>',
-  );
-
   $cf = DrupalCultureFeed::getConsumerInstance();
-	$kind_of_card_systems = 'permanent';
+  $kind_of_card_systems = 'permanent';
   $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
 
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
+  $promotions = culturefeed_uitpas_promotions_get($filter);
 
   $options = array();
   foreach ($card_systems as $system) {
@@ -143,36 +147,59 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $form['promotions']['#prefix'] = "<div id=\"" . $id . "\">";
   $form['promotions']["#suffix"] = "</div>";
 
+  $promotions_intro = variable_get('culturefeed_uitpas_promotions_info');
+  if (trim($promotions_intro)) {
+    $form['promotions']['intro']['#markup'] = $promotions_intro;
+  }
+
   $form['promotions']['filter'] = array(
-    '#type' => 'select',
-    '#title' => t('Filter'),
+    '#type' => 'radios',
+    '#title' => t('Filter by'),
     '#default_value' => isset($filter) ? $filter : 0,
     '#empty_option' => t('All card systems'),
     '#options' => $options,
+    '#theme' => 'culturefeed_uitpas_filter_labels',
     '#ajax' => array(
       'event' => 'change',
       'wrapper' => $id,
       'callback' => 'culturefeed_uitpas_promotions_ajax_callback',
     ),
   );
+  $title = t('Found %count promotions', array('%count' => $promotions['#promotions_total']));
+  $filter_reset_link = l(t('Show all'), '/promotions');
+  if ($filter) {
+    object_log('filters at: ' . date('H:i:s'), $filter);
+    $form['promotions']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
+  }
+  else {
+    $form['promotions']['title']['#markup'] = '<h2>' . $title . '</h2>';
+  }
 
-  $results = culturefeed_uitpas_promotions_get($filter);
+  // Only show the advantages if the settings allow it.
+  // Only show the advantages on the first page.
+  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE) &&
+      ((isset($_GET['page']) && $_GET['page'] == 0) || !isset($_GET['page']))) {
+    module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
+    $advantages = culturefeed_uitpas_advantages_get();
+    $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
+    $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
+    $form['promotions']['advantages']['#markup'] .= '<p>' . l(t('Show all advantages'), '/advantages') . '</p>';
+  }
+
   $form['promotions']['result'] = array(
-    '#markup' => drupal_render($results),
+    '#markup' => drupal_render($promotions),
   );
 
   // Pager.
   $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);
 
-  pager_default_initialize($results['#promotions_total'], $promotions_max);
+  pager_default_initialize($promotions['#promotions_total'], $promotions_max);
 
-  // Solution csdco on from https://www.drupal.org/node/1049354
+  // Solution csdco on from https://www.drupal.org/node/1049354#comment-6253362
   $tmp_q = $_GET['q'];
   $_GET['q'] = 'promotions';
   $form['promotions']['pager']['#markup'] = theme('pager', array('parameters' => array('filter' => $filter)));
   $_GET['q'] = $tmp_q;
-
-  $form['promotions']['#attached']['css'][] = drupal_get_path('module', 'culturefeed_uitpas') . '/css/culturefeed_uitpas.css';
 
   return $form;
 
