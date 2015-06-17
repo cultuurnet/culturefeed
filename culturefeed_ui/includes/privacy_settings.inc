@@ -191,57 +191,54 @@ function culturefeed_ui_privacy_settings_get_display_name(
 function culturefeed_ui_privacy_settings_set_options(CultureFeed_UserPrivacyConfig &$privacy_config, $setting) {
 
   // Defaults.
-  $privacy_config->gender = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
   $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->gender = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+  $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
 
   if ($setting == 'age_location') {
 
-    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
 
   }
 
   if ($setting == 'location') {
 
-    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
 
   }
 
   if ($setting == 'name') {
 
-    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-    $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
 
   }
 
   if ($setting == 'nick') {
 
-    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-    $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
 
   }
 
   if ($setting == 'anonymous') {
 
-    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
-    $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
 
   }
 
