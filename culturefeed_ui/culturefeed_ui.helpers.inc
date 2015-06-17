@@ -310,11 +310,12 @@ function culturefeed_ui_set_cookies_message() {
 function culturefeed_ui_user_view_apply_privacy_settings($account) {
 
   $culturefeed_user = NULL;
-  try {
-    $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
+  if (isset($account->culturefeed_uid)) {
+    try {
+      $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid);
+    } catch (Exception $e) {
+      watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
+    }
   }
 
   /* @var CultureFeed_User $culturefeed_user */
