@@ -6,33 +6,30 @@
  */
 
 /**
- * Returns the options for the user name based on privacy settings.
+ * Get the age for a culturefeed user.
  *
  * @param CultureFeed_User $culturefeed_user
  *   The culturefeed user.
  *
- * @return array
- *   The display options.
+ * @return string
+ *   The age.
  */
-function culturefeed_ui_privacy_settings_get_options(CultureFeed_User $culturefeed_user) {
+function culturefeed_ui_privacy_settings_get_age(CultureFeed_User $culturefeed_user) {
 
-  $options = array(
-    'age_location', 'location', 'name', 'nick',
-  );
+  $age = '';
 
-  // Only show the options that have all values.
-  $display_options = array();
-  foreach ($options as $option) {
-    $display = culturefeed_ui_privacy_settings_get_display_name($culturefeed_user, $option, FALSE);
-    if ($display) {
-      $display_options[$option] = $display;
-    }
+  if ($culturefeed_user->dob) {
+
+    $dob = date_create();
+    $dob->setTimestamp($culturefeed_user->dob);
+    $today = date_create();
+    $interval = date_diff($dob, $today);
+    $years = $interval->format('%y');
+    $age = t('!years years', array('!years' => $years));
+
   }
 
-  // Add in anonymous.
-  $display_options['anonymous'] = t('Anonymous');
-
-  return $display_options;
+  return $age;
 
 }
 
@@ -118,15 +115,9 @@ function culturefeed_ui_privacy_settings_get_display_name(
       $display[] = $name;
 
       // Age.
-      if ($culturefeed_user->dob) {
-
-        $dob = date_create();
-        $dob->setTimestamp($culturefeed_user->dob);
-        $today = date_create();
-        $interval = date_diff($dob, $today);
-        $years = $interval->format('%y');
-        $display[] = t('!years years', array('!years' => $years));
-
+      $age = culturefeed_ui_privacy_settings_get_age($culturefeed_user);
+      if ($age) {
+        $display[] = $age;
       }
 
       // City.
@@ -177,6 +168,37 @@ function culturefeed_ui_privacy_settings_get_display_name(
   }
   // Fallback.
   return ($use_fallback) ? $culturefeed_user->nick : '';
+
+}
+
+/**
+ * Returns the options for the user name based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ *
+ * @return array
+ *   The display options.
+ */
+function culturefeed_ui_privacy_settings_get_options(CultureFeed_User $culturefeed_user) {
+
+  $options = array(
+    'age_location', 'location', 'name', 'nick',
+  );
+
+  // Only show the options that have all values.
+  $display_options = array();
+  foreach ($options as $option) {
+    $display = culturefeed_ui_privacy_settings_get_display_name($culturefeed_user, $option, FALSE);
+    if ($display) {
+      $display_options[$option] = $display;
+    }
+  }
+
+  // Add in anonymous.
+  $display_options['anonymous'] = t('Anonymous');
+
+  return $display_options;
 
 }
 

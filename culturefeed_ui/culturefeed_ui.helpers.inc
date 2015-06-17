@@ -9,15 +9,40 @@
  * @return string
  *   The display name.
  */
-function culturefeed_ui_get_display_name(CultureFeed_User $culturefeed_user = NULL) {
+function culturefeed_ui_get_display_name(CultureFeed_User $culturefeed_user) {
 
-  if (!isset($culturefeed_user)) {
-    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  // Build the display name based on available fields
+  // (set through privacy settings).
+  $display = array();
+
+  if ($culturefeed_user->givenName) {
+
+    // Name.
+    $name = $culturefeed_user->givenName;
+    if ($culturefeed_user->familyName) {
+      $name .= ' ' . $culturefeed_user->familyName;
+    }
+    $display[] = $name;
+
+    // Age.
+    module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
+    $age = culturefeed_ui_privacy_settings_get_age($culturefeed_user);
+    if ($age) {
+      $display[] = $age;
+    }
+
+    // City.
+    if ($culturefeed_user->city) {
+      $display[] = $culturefeed_user->city;
+    }
+
+    return implode(', ', $display);
+
   }
 
-  module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
-
-  return culturefeed_ui_privacy_settings_get_display_name($culturefeed_user);
+  else {
+    return $culturefeed_user->nick;
+  }
 
 }
 
@@ -276,3 +301,40 @@ function culturefeed_ui_set_cookies_message() {
   }
 }
 
+/**
+ * Applies the privacy settings on the user view.
+ *
+ * @param object $account
+ *   The drupal user.
+ */
+function culturefeed_ui_user_view_apply_privacy_settings($account) {
+
+  $culturefeed_user = NULL;
+  try {
+    $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid);
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
+  }
+
+  /* @var CultureFeed_User $culturefeed_user */
+  if ($culturefeed_user) {
+
+    // Anonymous.
+    if (!$culturefeed_user->nick) {
+
+      $title = t('Anonymous');
+      $account->content['anonymous'] = array(
+        '#markup' => t('This profile is private.'),
+      );
+
+    }
+    else {
+      $title = culturefeed_ui_get_display_name($culturefeed_user);
+    }
+
+    drupal_set_title($title);
+
+  }
+
+}
