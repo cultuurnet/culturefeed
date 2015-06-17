@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Returns the drupal message after making profile changes.
+ * Returns the user display name based on privacy settings.
  *
  * @param CultureFeed_User $culturefeed_user
  *   The CultureFeed user.
@@ -18,6 +18,27 @@ function culturefeed_ui_get_display_name(CultureFeed_User $culturefeed_user = NU
   module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
 
   return culturefeed_ui_privacy_settings_get_display_name($culturefeed_user);
+
+}
+
+/**
+ * Returns the user display name setting based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The CultureFeed user.
+ *
+ * @return string
+ *   The display name.
+ */
+function culturefeed_ui_get_privacy_setting(CultureFeed_User $culturefeed_user = NULL) {
+
+  if (!isset($culturefeed_user)) {
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  }
+
+  module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
+
+  return culturefeed_ui_privacy_settings_get_current_setting($culturefeed_user);
 
 }
 

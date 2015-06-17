@@ -171,6 +171,10 @@ function culturefeed_ui_privacy_settings_get_display_name(
     return $culturefeed_user->nick;
   }
 
+  // Nick.
+  if ($setting == 'anonymous') {
+    return t('Anonymous');
+  }
   // Fallback.
   return ($use_fallback) ? $culturefeed_user->nick : '';
 
