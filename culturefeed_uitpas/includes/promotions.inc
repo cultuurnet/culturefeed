@@ -16,7 +16,6 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
   $promotions_total = 0;
 
   try {
-
     $cf = DrupalCultureFeed::getConsumerInstance();
 
     // Promotions.
@@ -25,6 +24,7 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
     $query->max = $promotions_max;
     $query->unexpired = TRUE;
     $query->cashingPeriodBegin = time();
+    $query->published = TRUE;
     $query->cashInState = array(
       CultureFeed_Uitpas_Passholder_PointsPromotion::CASHIN_POSSIBLE,
       // Also show items that are not any longer in stock.
@@ -45,23 +45,9 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
 
     $promotions = $result->objects;
     $promotions_total = $result->total;
-
-    foreach ($promotions as $key => $promotion) {
-      if ($promotion->publicationPeriodBegin != NULL && $promotion->publicationPeriodBegin > time()) {
-        unset($promotions[$key]);
-        $promotions_total--;
-      }
-      if ($promotion->publicationPeriodEnd != NULL && $promotion->publicationPeriodEnd < time()) {
-        unset($promotions[$key]);
-        $promotions_total--;
-      }
-    }
-
   }
   catch (Exception $e) {
-
     watchdog_exception('culturefeed_uitpas_promotions', $e);
-
   }
 
   $promotions_pager_min = ($promotions_page * $promotions_max) + 1;
@@ -149,7 +135,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
   $promotions_intro = variable_get('culturefeed_uitpas_promotions_info');
   if (trim($promotions_intro)) {
-    $form['promotions']['intro']['#markup'] = $promotions_intro;
+    $form['promotions']['intro']['#markup'] = '<div class="promotions-intro">' . $promotions_intro . '</div>';
   }
 
   $form['promotions']['filter'] = array(
@@ -168,7 +154,6 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $title = t('Found %count promotions', array('%count' => $promotions['#promotions_total']));
   $filter_reset_link = l(t('Show all'), '/promotions');
   if ($filter) {
-    object_log('filters at: ' . date('H:i:s'), $filter);
     $form['promotions']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
   }
   else {
@@ -181,15 +166,20 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
       ((isset($_GET['page']) && $_GET['page'] == 0) || !isset($_GET['page']))) {
     module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
     $advantages = culturefeed_uitpas_advantages_get();
-    $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
-    $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
-    $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
-    $form['promotions']['advantages']['#markup'] .= '<p>' . l(t('Show all advantages'), '/advantages') . '</p>';
+    if (count($advantages['#advantages'])) {
+      $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
+      $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
+      $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
+      $form['promotions']['advantages']['#markup'] .= '<p>' . l(t('Show all advantages'), '/advantages') . '</p>';
+    }
   }
 
-  $form['promotions']['result'] = array(
-    '#markup' => drupal_render($promotions),
-  );
+  if (count($promotions['#promotions'])) {
+    $form['promotions']['result']['#markup'] = theme('culturefeed_uitpas_promotions_table', $promotions);
+  }
+  else {
+    $form['promotions']['result']['#markup'] = '<div class="no-results no-promotions">' . t('No results found') . '</div>';
+  }
 
   // Pager.
   $promotions_max = variable_get('culturefeed_uitpas_promotions_promotions_max', 20);

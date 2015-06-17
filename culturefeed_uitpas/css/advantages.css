@@ -1,5 +1,15 @@
 .advantages-overview article {
-  margin-bottom: 10px;
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  padding: 10px;
+}
+
+.advantages-overview article:hover {
+  border-color: #D0D0D0;
+}
+
+.advantages-overview article.even {
+  background-color: #F0F0F0;
 }
 
 .advantages-overview article:before,
@@ -31,6 +41,6 @@
   width: 24%;
 }
 
-.advantages-overview article aside .points {
+.advantages-overview article aside.points {
   display: block;
 }

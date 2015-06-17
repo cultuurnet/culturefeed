@@ -1,4 +1,4 @@
-<section class="advantages-overview">
+<section class="promotions-overview">
   <?php foreach($items as $item): ?>
   <article class="<?php print implode(' ', $item['classes']); ?>">
     <main>
@@ -19,10 +19,9 @@
     <aside class="points <?php print $item['points']['classes']; ?>">
       <span class="points-value"><?php print $item['points']['value']; ?></span>
       <?php if ($item['points']['remark']): ?>
-        <span class="points-remark"><?php print $item['points']['remark']; ?></span>
+      <span class="points-remark"><?php print $item['points']['remark']; ?></span>
       <?php endif; ?>
     </aside>
   </article>
   <?php endforeach; ?>
 </section>
-<?php print $pager; ?>

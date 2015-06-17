@@ -9,7 +9,6 @@
  * Implements hook_theme().
  */
 function culturefeed_uitpas_theme() {
-
   return array(
     'culturefeed_uitpas_advantage' => array(
       'variables' => array('advantage' => NULL),
@@ -40,6 +39,21 @@ function culturefeed_uitpas_theme() {
       'template' => 'culturefeed-uitpas-advantages-table',
       'file' => 'theme.inc',
     ),
+    'culturefeed_uitpas_promotion' => array(
+      'variables' => array('promotion' => NULL),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-promotion',
+    ),
+    'culturefeed_uitpas_promotion_image' => array(
+      'variables' => array(
+        'path' => NULL,
+        'maxheight' => 120,
+        'maxwidth' => 120,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+    ),
     'culturefeed_uitpas_promotions' => array(
       'variables' => array(
         'promotions' => array(),
@@ -59,9 +73,18 @@ function culturefeed_uitpas_theme() {
         'promotions' => array(),
         'promotions_total' => 0,
         'promotions_pager_element' => 0,
+        'items' => array(),
+        'pager' => FALSE,
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-promotions-table',
       'file' => 'theme.inc',
+    ),
+    'culturefeed_uitpas_promotions_highlight' => array(
+      'variables' => array('promotions' => array()),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-promotions-highlight',
     ),
     'culturefeed_uitpas_profile_actions' => array(
       'variables' => array(
@@ -120,7 +143,7 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-profile-summary',
     ),
-		'culturefeed_uitpas_event_details_advantages' => array(
+    'culturefeed_uitpas_event_details_advantages' => array(
 			'variables' => array(
         'items' => array(),
       ),
@@ -128,37 +151,6 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-event-details-advantages',
 		),
-    'culturefeed_uitpas_promotion' => array(
-      'variables' => array('promotion' => NULL),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-      'template' => 'culturefeed-uitpas-promotion',
-    ),
-    'culturefeed_uitpas_promotion_image' => array(
-      'variables' => array(
-        'path' => NULL,
-        'maxheight' => 120,
-        'maxwidth' => 120,
-      ),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-    ),
-    /*'culturefeed_uitpas_promotions' => array(
-      'variables' => array(
-        'title' => t('Promotions'),
-        'promotions' => array(),
-        'promotions_total' => 0,
-        'promotions_pager_element' => 0,
-      ),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-    ),*/
-    'culturefeed_uitpas_promotions_highlight' => array(
-      'variables' => array('promotions' => array()),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-      'template' => 'culturefeed-uitpas-promotions-highlight',
-    ),
     'culturefeed_uitpas_recent_actions' => array(
       'variables' => array('actions' => array()),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
@@ -182,9 +174,7 @@ function culturefeed_uitpas_theme() {
       'template' => 'culturefeed-uitpas-filter-labels',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     )
-
   );
-
 }
 
 /**
@@ -235,6 +225,9 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
 }
 
+/**
+ * Preprocess function to add classes to radio input elements.
+ */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_filter_labels(&$variables) {
   $attributes = array();
   if (isset($variables['element']['#id'])) {
