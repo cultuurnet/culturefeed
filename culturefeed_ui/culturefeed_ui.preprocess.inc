@@ -277,7 +277,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $contextual_links[] = l(t('Edit profile'), 'culturefeed/profile/edit');
 
   if (module_exists('culturefeed_social')) {
-    $contextual_links[] = l(t('Manage actions'), 'culturefeed/activities');
+    $contextual_links[] = l(t('User history'), 'culturefeed/activities');
   }
 
   if (module_exists('culturefeed_messages')) {
