@@ -89,10 +89,6 @@ msgstr "nieuwe meldingen"
 msgid "Everything"
 msgstr "Alles"
 
-#: culturefeed_social.module:467
-msgid "Filter events on"
-msgstr "Filter activiteiten op"
-
 #: culturefeed_social.module:485
 msgid "Filter"
 msgstr "Filter"
@@ -299,9 +295,13 @@ msgstr "Maak publiek"
 msgid "Make private"
 msgstr "Maak onzichtbaar"
 
-#: includes/pages.inc:165
-msgid "ago <br />on"
-msgstr "geleden <br />op"
+#: /culturefeed/activities
+msgid "@time_ago ago <br />on @created_via"
+msgstr "@time_ago geleden <br />op @created_via"
+
+#: /culturefeed/activities
+msgid "Filter actions"
+msgstr "Filter acties"
 
 #: includes/pages.inc:174
 msgid "Page"

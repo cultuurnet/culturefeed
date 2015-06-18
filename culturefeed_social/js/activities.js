@@ -32,6 +32,10 @@
        Drupal.CulturefeedSearch.Activities.filterSelect.bind('change', Drupal.CulturefeedSearch.Activities.filterListener);
      }
 
+     $('#activities-table tr').hover(function () {
+       $(this).toggleClass("hover");
+     });
+
    }
   };
 
