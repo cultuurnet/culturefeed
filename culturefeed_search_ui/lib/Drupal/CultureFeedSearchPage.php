@@ -457,9 +457,7 @@ class CultureFeedSearchPage {
     // all other cases will search for a category Id of the type flandersregion
     // or workingregion.
     if (!empty($params['facet']['category_flandersregion_id'][0])) {
-    
-      echo '<pre>';print_r($params['facet']['category_flandersregion_id'][0]);echo '</pre>';
-      
+
       if (!isset($params['distance'])) {
 
         $regFilter = array();
