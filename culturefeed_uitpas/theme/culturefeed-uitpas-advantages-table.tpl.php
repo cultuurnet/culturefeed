@@ -9,12 +9,12 @@
         <div class="content">
           <span class="provider <?php print $item['cardsystem']['class']; ?>"><?php print $item['cardsystem']['name']; ?></span>
           <h2 class="title"><?php print $item['title']; ?></h2>
-          <ul class="locations">
+          <ul class="locations list-unstyled">
             <?php foreach($item['counters'] as $counter): ?>
             <li class="<?php print $counter['class']; ?>"><?php print $counter['name']; ?></li>
             <?php endforeach; ?>
           </ul>
-          <span class="availability"><?php print $item['availability']; ?></span>
+          <span class="availability"><i class="fa fa-exclamation-circle"></i></a><?php print $item['availability']; ?></span>
         </div>
       </div> <!--/ end .main -->
       <aside class="points <?php print $item['points']['classes']; ?> col-md-4 col-lg-3">
@@ -27,4 +27,6 @@
   </article> <!--/ end article -->
   <?php endforeach; ?>
 </section>
+<div class="pager clearfix">
 <?php print $pager; ?>
+</div>

@@ -170,7 +170,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
       $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
       $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
       $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
-      $form['promotions']['advantages']['#markup'] .= '<p>' . l(t('Show all advantages'), '/advantages') . '</p>';
+      $form['promotions']['advantages']['#markup'] .= '<p class="link link-more">' . l(t('Show all advantages'), '/advantages') . '<i class="fa fa-angle-right"></i></p>';
     }
   }
 
@@ -189,7 +189,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   // Solution csdco on from https://www.drupal.org/node/1049354#comment-6253362
   $tmp_q = $_GET['q'];
   $_GET['q'] = 'promotions';
-  $form['promotions']['pager']['#markup'] = theme('pager', array('parameters' => array('filter' => $filter)));
+  $form['promotions']['pager']['#markup'] = '<div class="pager clearfix">' . theme('pager', array('parameters' => array('filter' => $filter))) . '</div>';
   $_GET['q'] = $tmp_q;
 
   return $form;
