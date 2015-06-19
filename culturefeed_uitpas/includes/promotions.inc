@@ -170,7 +170,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
       $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
       $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
       $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
-      $form['promotions']['advantages']['#markup'] .= '<p class="link link-more">' . l(t('Show all advantages'), '/advantages') . '<i class="fa fa-angle-right"></i></p>';
+      $form['promotions']['advantages']['#markup'] .= '<p class="link-more">' . l(t('Show all advantages'), '/advantages',  array('attributes' => array('class' => 'link-primary'))) . '</p>';
     }
   }
 
