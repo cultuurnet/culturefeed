@@ -305,22 +305,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details_form(&
   $vars['city'] = drupal_render($form['city']);
   $vars['tel'] = drupal_render($form['tel']);
   $vars['mobile'] = drupal_render($form['mobile']);
-  $vars['mobile_notifications'] = drupal_render($form['mobile_notifications']);
   $vars['email'] = drupal_render($form['email']);
   $vars['email_description'] = drupal_render($form['email_description']);
-  $vars['email_notifications'] = drupal_render($form['email_notifications']);
   $vars['actions'] = drupal_render($form['actions']);
 
   $vars['main_form'] = drupal_render_children($form);
-
-  $attached = array(
-    '#attached' => array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_uitpas') . '/css/profile_details_form.css',
-      ),
-    ),
-  );
-  drupal_render($attached);
 
 }
 

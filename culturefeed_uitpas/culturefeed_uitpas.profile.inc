@@ -27,12 +27,6 @@ function culturefeed_uitpas_culturefeed_ui_profile_menu() {
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),
       'weight' => -11,
     ),
-    'notifications' => array(
-      'title' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_title', t('My notifications')),
-      'url' => 'culturefeed/profile/uitpas/notifications',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
-      'weight' => -10,
-    ),
   );
 
 }

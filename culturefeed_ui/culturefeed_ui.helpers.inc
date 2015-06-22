@@ -312,7 +312,7 @@ function culturefeed_ui_user_view_apply_privacy_settings($account) {
   $culturefeed_user = NULL;
   if (isset($account->culturefeed_uid)) {
     try {
-      $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid);
+      $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid, TRUE);
     } catch (Exception $e) {
       watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
     }
