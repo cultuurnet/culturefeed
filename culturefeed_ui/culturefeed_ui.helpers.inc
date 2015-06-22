@@ -47,6 +47,23 @@ function culturefeed_ui_get_display_name(CultureFeed_User $culturefeed_user) {
 }
 
 /**
+ * Returns the different types of preferences.
+ *
+ * @return array
+ *   The preference types.
+ */
+function culturefeed_ui_get_preference_types() {
+
+  $reflection = new ReflectionClass('CultureFeed_Activity');
+  $constants = $reflection->getConstants();
+  $types = array_filter($constants, function($key) {
+    return (strpos($key, 'TYPE_') === 0);
+  }, ARRAY_FILTER_USE_KEY);
+  return $types;
+
+}
+
+/**
  * Returns the user display name setting based on privacy settings.
  *
  * @param CultureFeed_User $culturefeed_user
@@ -291,6 +308,30 @@ function culturefeed_ui_set_profile_breadcrumb() {
   menu_set_active_trail($active_trail);
 
 }
+
+/**
+ * Sets all the activity privacy preferences.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
+ *
+ * @param boolean $private
+ *   The privacy setting.
+ */
+function culturefeed_ui_set_all_activity_privacy_preferences(CultureFeed_User $culturefeed_user, $private) {
+
+  $types = culturefeed_ui_get_preference_types();
+
+  $preferences = new CultureFeed_Preferences();
+  $preferences->uid = $culturefeed_user->id;
+  foreach ($types as $type => $id) {
+    $preference = new CultureFeed_ActivityPrivacyPreference($id, $private);
+    $preferences->activityPrivacyPreferences[$id] = $preference;
+  }
+  DrupalCultureFeed::setUserPreferences($culturefeed_user->id, $preferences);
+
+}
+
 
 function culturefeed_ui_set_cookies_message() {
   if (!path_is_admin(current_path()) && variable_get('culturefeed_ui_cookie_bool') == TRUE) {

@@ -214,6 +214,7 @@ function culturefeed_ui_privacy_settings_set_options(CultureFeed_UserPrivacyConf
 
   // Defaults.
   $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
+  $privacy_config->depiction = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
   $privacy_config->gender = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
   $privacy_config->nick = CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
 
@@ -257,6 +258,7 @@ function culturefeed_ui_privacy_settings_set_options(CultureFeed_UserPrivacyConf
 
     $privacy_config->bio = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->dob = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
+    $privacy_config->depiction = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->familyName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->givenName = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;
     $privacy_config->homeAddress = CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE;

@@ -229,19 +229,14 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
     }
 
     // Preferences.
-    $reflection = new ReflectionClass('CultureFeed_Activity');
-    $constants = $reflection->getConstants();
-    $types = array_filter($constants, function($key) {
-      return (strpos($key, 'TYPE_') === 0);
-    }, ARRAY_FILTER_USE_KEY);
+    culturefeed_ui_set_all_activity_privacy_preferences($culturefeed_user, TRUE);
 
-    $preferences = new CultureFeed_Preferences();
-    $preferences->uid = $culturefeed_user->id;
-    foreach ($types as $type => $id) {
-      $preference = new CultureFeed_ActivityPrivacyPreference($id, TRUE);
-      $preferences->activityPrivacyPreferences[$id] = $preference;
-    }
-    DrupalCultureFeed::setUserPreferences($culturefeed_user->id, $preferences);
+  }
+
+  else {
+
+    // Preferences.
+    culturefeed_ui_set_all_activity_privacy_preferences($culturefeed_user, FALSE);
 
   }
 
