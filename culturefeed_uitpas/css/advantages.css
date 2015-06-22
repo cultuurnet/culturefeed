@@ -1,0 +1,46 @@
+.advantages-overview article {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  padding: 10px;
+}
+
+.advantages-overview article:hover {
+  border-color: #D0D0D0;
+}
+
+.advantages-overview article.even {
+  background-color: #F0F0F0;
+}
+
+.advantages-overview article:before,
+.advantages-overview article:after {
+  content: " ";
+  display: table;
+}
+
+.advantages-overview article:after {
+  clear: both;
+}
+
+.advantages-overview article main {
+  float: left;
+  width: 74%;
+}
+
+.advantages-overview article main figure {
+  float: left;
+  margin: 0.4em;
+}
+
+.advantages-overview article main .content {
+  float: left;
+}
+
+.advantages-overview article aside {
+  float: right;
+  width: 24%;
+}
+
+.advantages-overview article aside.points {
+  display: block;
+}

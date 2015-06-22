@@ -102,7 +102,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotion_advantage.css');
   drupal_add_js(drupal_get_path('module', 'culturefeed_uitpas') . '/js/script.js');
-dpm($vars);
 }
 
 /**
@@ -136,10 +135,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
 
   // Page elements.
-  $min = $vars['promotions_pager_min'];
-  $max = $vars['promotions_pager_max'];
-  $total = $vars['promotions_total'];
-  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+  $vars['page_elements'] = t('@min - @max of @total promotions',
+    array(
+      '@min' => $vars['promotions_pager_min'],
+      '@max' => $vars['promotions_pager_max'],
+      '@total' => $vars['promotions_total']
+    )
+  );
 
   // Promotions.
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
@@ -333,18 +335,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details_form(&
   $vars['city'] = drupal_render($form['city']);
   $vars['tel'] = drupal_render($form['tel']);
   $vars['mobile'] = drupal_render($form['mobile']);
+  $vars['email'] = drupal_render($form['email']);
+  $vars['email_description'] = drupal_render($form['email_description']);
   $vars['actions'] = drupal_render($form['actions']);
 
   $vars['main_form'] = drupal_render_children($form);
-
-  $attached = array(
-    '#attached' => array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_uitpas') . '/css/profile_details_form.css',
-      ),
-    ),
-  );
-  drupal_render($attached);
 
 }
 
@@ -705,8 +700,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_recent_actions(&$vars)
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_advantages_table(&$vars) {
-
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$vars) {
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_WelcomeAdvantage[] $advantages */
   // @codingStandardsIgnoreEnd
@@ -714,81 +708,71 @@ function theme_culturefeed_uitpas_advantages_table(&$vars) {
   $advantages_total = $vars['advantages_total'];
   $advantages_pager_element = $vars['advantages_pager_element'];
 
-  $table = array(
-    'attributes' => array(),
-    'caption' => '',
-    'colgroups' => array(),
-    'sticky' => '',
-    'empty' => '',
-  );
-
-  $header = array(
-    t('Welcome advantages'),
-    t('Valid till'),
-    t('Description'),
-    t('Counters'),
-    '',
-  );
-  $rows = array();
-
   if (count($advantages)) {
+    $items = array();
 
-    foreach ($advantages as $advantage) {
+    foreach ($advantages as $key => $advantage) {
+      $item = array();
       $advantage_path = 'advantage/' . culturefeed_search_slug($advantage->title) . '/' . $advantage->id;
 
-      // Counters.
-      $counters = array();
-      foreach ($advantage->counters as $counter) {
-        $counters[] = $counter->name;
-      }
-
-      // Picture.
-      $picture = '';
+      // Get the first image or fall back to a default.
       if (isset($advantage->pictures[0])) {
-
-        $picture = theme('culturefeed_uitpas_promotion_image', array(
+        $image = theme('culturefeed_uitpas_promotion_image', array(
           'path' => $advantage->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
           'attributes' => array(),
         ));
-        $picture = l($picture, $advantage_path, array('html' => TRUE));
-
       }
       else {
-        $picture = theme('culturefeed_uitpas_promotion_image', array(
-          'path' => 'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2012/9/4/1346760810915/Toshiro-Mifune-008.jpg',
-          'maxwidth' => 100,
-          'maxheight' => 100,
-          'attributes' => array(),
+        $image = theme('image', array(
+          'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
+          'width' => 100,
+          'height' => 100,
         ));
-        $picture = l($picture, $advantage_path, array('html' => TRUE));
+      }
+      $item['image'] = l($image, $advantage_path, array('html' => TRUE));
+      $item['classes'][] = ($key % 2) ? 'even' : 'odd';
+
+      $item['cardsystem'] = array(
+        'class' => drupal_html_class($advantage->owningCardSystem->name),
+        'name' => $advantage->owningCardSystem->name,
+      );
+      $item['title'] = l($advantage->title, $advantage_path);
+
+      foreach ($advantage->counters as $counter) {
+        $item['counters'][] = array(
+          'class' => drupal_html_class($counter->name),
+          'name' => $counter->name,
+        );
       }
 
-      // Rows.
-      $rows[] = array(
-        l($advantage->title, $advantage_path),
-        ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock'),
-        ($advantage->description1) ? $advantage->description1 : '',
-        implode(', ', $counters),
-        $picture,
+      $points_classes = array();
+      if ($advantage->cashingPeriodEnd) {
+        $item['availability'] = date('j/n/Y', $advantage->cashingPeriodEnd);
+      }
+      else {
+        $item['availability'] = t('end of stock');
+        $points_classes[] = 'out-of-stock';
+      }
+      $item['availability'] = ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock');
+      $item['points'] = array(
+        'value' => format_plural($advantage->points, '1 point', '@count points'),
+        'remark' => t('This is a welcome advantage'),
+        'classes' => implode(' ', $points_classes),
       );
 
+      $items[] = $item;
     }
 
+    $vars['items'] = $items;
+    $pager = array(
+      'element' => $advantages_pager_element,
+      'quantity' => $advantages_total,
+    );
+    $vars['pager'] = theme('pager', $pager);
+    drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/advantages.css');
   }
-  else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 5));
-  }
-
-  $table += array('header' => $header, 'rows' => $rows);
-  $pager = array(
-    'element' => $advantages_pager_element,
-    'quantity' => $advantages_total,
-  );
-
-  return theme_table($table) . theme('pager', $pager);
-
 }
 
 /**
@@ -801,10 +785,8 @@ function theme_culturefeed_uitpas_advantages_table(&$vars) {
  *   The HTML.
  */
 function theme_culturefeed_uitpas_promotion_image($vars) {
-
   $vars['path'] .= '?maxheight=' . $vars['maxheight'] . '&maxwidth=' . $vars['maxwidth'];
   return theme('image', $vars);
-
 }
 
 /**
@@ -816,97 +798,83 @@ function theme_culturefeed_uitpas_promotion_image($vars) {
  * @return string
  *   The HTML.
  */
-function theme_culturefeed_uitpas_promotions_table(&$vars) {
-
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$vars) {
   // @codingStandardsIgnoreStart
   /** @var CultureFeed_Uitpas_Passholder_PointsPromotion[] $promotions */
   // @codingStandardsIgnoreEnd
   $promotions = $vars['promotions'];
-  $promotions_total = $vars['promotions_total'];
-  $promotions_pager_element = $vars['promotions_pager_element'];
-
-  $table = array(
-    'attributes' => array(),
-    'caption' => '',
-    'colgroups' => array(),
-    'sticky' => '',
-    'empty' => '',
-  );
-
-  $header = array(
-    array('data' => $vars['title'], 'colspan' => 2),
-    t('Valid till'),
-    t('Description'),
-    t('Counters'),
-    '',
-  );
-  $rows = array();
 
   if (count($promotions)) {
+    $items = array();
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
 
-    foreach ($promotions as $promotion) {
-
+    foreach ($promotions as $key => $promotion) {
+      $item = array();
       $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
 
-      // Points.
-      $points = format_plural($promotion->points, '1 point', '@count points');
-
-      // Counters.
-      $counters = array();
-      foreach ($promotion->counters as $counter) {
-        $counters[] = $counter->name;
-      }
-
-      // Picture.
-      $picture = '';
+      // Get the first image or fall back to a default.
       if (isset($promotion->pictures[0])) {
-
-        $picture = theme('culturefeed_uitpas_promotion_image', array(
+        $image = theme('culturefeed_uitpas_promotion_image', array(
           'path' => $promotion->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
           'attributes' => array(),
         ));
-        $picture = l($picture, $promotion_path, array('html' => TRUE));
-
-      }
-
-      if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
-        $validness = t('not any longer in stock');
-      }
-      else if ($promotion->cashingPeriodEnd) {
-        $validness = date('j/n/Y', $promotion->cashingPeriodEnd);
       }
       else {
-        $validness = t('end of stock');
+        $image = theme('image', array(
+          'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
+          'width' => 100,
+          'height' => 100,
+        ));
+      }
+      $item['image'] = l($image, $promotion_path, array('html' => TRUE));
+      $item['classes'][] = ($key % 2) ? 'even' : 'odd';
+      $item['classes'][] = drupal_clean_css_identifier('cashin-' . drupal_strtolower($promotion->cashInState));
+
+      $item['cardsystem'] = array(
+        'class' => drupal_html_class($promotion->owningCardSystem->name),
+        'name' => $promotion->owningCardSystem->name,
+      );
+      $item['title'] = l($promotion->title, $promotion_path);
+
+      $item['counters'] = array();
+      foreach ($promotion->counters as $counter) {
+        $item['counters'][] = array(
+          'class' => drupal_html_class($counter->name),
+          'name' => $counter->name,
+        );
       }
 
-      // Rows.
-      $rows[] = array(
-        'class' => array(drupal_clean_css_identifier('cashin-' . drupal_strtolower($promotion->cashInState))),
-        'data' => array(
-          array('data' => $points, 'class' => array('points')),
-          l($promotion->title, $promotion_path),
-          $validness,
-          ($promotion->description1) ? $promotion->description1 : '',
-          implode(', ', $counters),
-          $picture,
-        ),
+      $points_classes = array();
+      if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
+        $item['availability'] = t('not any longer in stock');
+        $points_classes[] = 'out-of-stock';
+      }
+      else if ($promotion->cashingPeriodEnd) {
+        $item['availability'] = date('j/n/Y', $promotion->cashingPeriodEnd);
+      }
+      else {
+        $item['availability'] = t('end of stock');
+      }
+
+      $points_remark = FALSE;
+      if ($cf_account) {
+        if ($cf_account->points < $promotion->points) {
+          $points_remark = t('You have insufficient points');
+          $points_classes[] = 'insufficient-points';
+        }
+      }
+      $item['points'] = array(
+        'value' => format_plural($promotion->points, '1 point', '@count points'),
+        'remark' => $points_remark,
+        'classes' => implode(' ', $points_classes),
       );
 
+      $items[] = $item;
     }
 
+    $vars['items'] = $items;
+    drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotions.css');
   }
-  else {
-    $rows[] = array(array('data' => t('No results found'), 'colspan' => 6));
-  }
-
-  $table += array('header' => $header, 'rows' => $rows);
-  $pager = array(
-    'element' => $promotions_pager_element,
-    'quantity' => $promotions_total,
-  );
-
-  return theme_table($table);
-
 }

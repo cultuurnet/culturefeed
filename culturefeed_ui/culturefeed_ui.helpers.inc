@@ -1,120 +1,92 @@
 <?php
 
 /**
- * Returns the options for the user name based on privacy settings.
+ * Returns the user display name based on privacy settings.
  *
  * @param CultureFeed_User $culturefeed_user
- *   The culturefeed user.
- *
- * @return array
- *   The display options.
- */
-function culturefeed_ui_privacy_settings_get_options(CultureFeed_User $culturefeed_user) {
-
-  return array(
-    'age_location' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'age_location', TRUE),
-    'location' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'location', TRUE),
-    'age' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'age', TRUE),
-    'nick' => culturefeed_ui_privacy_settings_get_display($culturefeed_user, 'nick', TRUE),
-  );
-
-}
-
-/**
- * Returns the current setting for the user name based on privacy settings.
- *
- * @param CultureFeed_User $culturefeed_user
- *   The culturefeed user.
+ *   The CultureFeed user.
  *
  * @return string
- *   The current setting.
+ *   The display name.
  */
-function culturefeed_ui_privacy_settings_current_setting(CultureFeed_User $culturefeed_user) {
+function culturefeed_ui_get_display_name(CultureFeed_User $culturefeed_user) {
 
-  $privacy_config = $culturefeed_user->privacyConfig;
-
-  // Default.
-  $privacy_setting = 'nick';
-
-  if ($privacy_config->dob == 'public' && $privacy_config->homeAddress == 'public') {
-    $privacy_setting = 'age_location';
-  }
-
-  elseif ($privacy_config->homeAddress == 'public') {
-    $privacy_setting = 'location';
-  }
-
-  elseif ($privacy_config->dob == 'public') {
-    $privacy_setting = 'age';
-  }
-
-  return $privacy_setting;
-
-}
-
-/**
- * Returns the username based on privacy settings.
- *
- * @param CultureFeed_User $culturefeed_user
- *   The culturefeed user.
- * @param string $setting
- *   The selected setting (only needed for form options).
- * @param bool $use_placeholders
- *   Use placeholders for missing data (only needed for form options).
- *
- * @return string
- *   The username.
- */
-function culturefeed_ui_privacy_settings_get_display(
-  CultureFeed_User $culturefeed_user,
-  $setting = NULL,
-  $use_placeholders = FALSE
-) {
-
-  if (!isset($setting)) {
-    $setting = culturefeed_ui_privacy_settings_current_setting($culturefeed_user);
-  }
-
+  // Build the display name based on available fields
+  // (set through privacy settings).
   $display = array();
 
-  // City.
-  if ($setting == 'age_location' || $setting == 'location') {
+  if ($culturefeed_user->givenName) {
 
+    // Name.
+    $name = $culturefeed_user->givenName;
+    if ($culturefeed_user->familyName) {
+      $name .= ' ' . $culturefeed_user->familyName;
+    }
+    $display[] = $name;
+
+    // Age.
+    module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
+    $age = culturefeed_ui_privacy_settings_get_age($culturefeed_user);
+    if ($age) {
+      $display[] = $age;
+    }
+
+    // City.
     if ($culturefeed_user->city) {
       $display[] = $culturefeed_user->city;
     }
-    else if ($use_placeholders) {
-      $display[] = '<em>' . t('City - currently not provided') . '</em>';
-    }
+
+    return implode(', ', $display);
+
   }
 
-  // Age.
-  if ($setting == 'age_location' || $setting == 'age') {
-
-    if ($culturefeed_user->dob) {
-
-      $dob = date_create();
-      $dob->setTimestamp($culturefeed_user->dob);
-      $today = date_create();
-      $interval = date_diff($dob, $today);
-      $years = $interval->format('%y');
-      $display[] = t('!years years', array('!years' => $years));
-
-    }
-    else if ($use_placeholders) {
-      $display[] = '<em>' . t('Age - currently not provided') . '</em>';
-    }
-  }
-
-  // Name with nick as fallback.
-  if ($culturefeed_user->givenName && $culturefeed_user->familyName) {
-    $display[] = $culturefeed_user->givenName . ' ' . $culturefeed_user->familyName;
-  }
   else {
-    $display[] = $culturefeed_user->nick;
+    return $culturefeed_user->nick;
   }
 
-  return implode(', ', array_reverse($display));
+}
+
+/**
+ * Returns the user display name setting based on privacy settings.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The CultureFeed user.
+ *
+ * @return string
+ *   The display name.
+ */
+function culturefeed_ui_get_privacy_setting(CultureFeed_User $culturefeed_user = NULL) {
+
+  if (!isset($culturefeed_user)) {
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  }
+
+  module_load_include('inc', 'culturefeed_ui', 'includes/privacy_settings');
+
+  return culturefeed_ui_privacy_settings_get_current_setting($culturefeed_user);
+
+}
+
+/**
+ * Returns the drupal message after making profile changes.
+ *
+ * @param CultureFeed_User $culturefeed_user
+ *   The CultureFeed user.
+ *
+ * @return string
+ *   The message.
+ */
+function culturefeed_ui_profile_edit_message(CultureFeed_User $culturefeed_user) {
+
+  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
+
+  $message = t('Changes saved successfully.') . ' ';
+  $message .= t(
+    "<a href=\"@profile\">View your profile</a> as shown to others.",
+    array('@profile' => url('user/' . $user_id))
+  );
+
+  return $message;
 
 }
 
@@ -329,3 +301,41 @@ function culturefeed_ui_set_cookies_message() {
   }
 }
 
+/**
+ * Applies the privacy settings on the user view.
+ *
+ * @param object $account
+ *   The drupal user.
+ */
+function culturefeed_ui_user_view_apply_privacy_settings($account) {
+
+  $culturefeed_user = NULL;
+  if (isset($account->culturefeed_uid)) {
+    try {
+      $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid, TRUE);
+    } catch (Exception $e) {
+      watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
+    }
+  }
+
+  /* @var CultureFeed_User $culturefeed_user */
+  if ($culturefeed_user) {
+
+    // Anonymous.
+    if (!$culturefeed_user->nick) {
+
+      $title = t('Anonymous');
+      $account->content['anonymous'] = array(
+        '#markup' => t('This profile is private.'),
+      );
+
+    }
+    else {
+      $title = culturefeed_ui_get_display_name($culturefeed_user);
+    }
+
+    drupal_set_title($title);
+
+  }
+
+}

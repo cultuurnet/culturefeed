@@ -69,13 +69,6 @@ function culturefeed_uitpas_menu() {
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_advantages.inc',
     ),
-    'culturefeed/profile/uitpas/notifications' => array(
-      'title callback' => 'culturefeed_uitpas_profile_notifications_title',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
-      'page callback' => 'culturefeed_uitpas_profile_notifications_get',
-      'access callback' => 'culturefeed_uitpas_is_passholder',
-      'file' => 'includes/profile_notifications.inc',
-    ),
     'promotion/%/%uitpas_promotion' => array(
       'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
       'title arguments' => array(2),
@@ -118,6 +111,13 @@ function culturefeed_uitpas_menu() {
       'page callback' => 'culturefeed_uitpas_toggle_reminder',
       'access callback' => 'user_is_logged_in',
       'file' => 'includes/reminder.inc',
+      'type' => MENU_CALLBACK,
+    ),
+    'culturefeed/uitpas/synchronization' => array(
+      'access callback' => TRUE,
+      'file' => 'includes/synchronization.inc',
+      'page callback' => 'culturefeed_uitpas_synchronization',
+      'title' => 'Update your profile with your eid data',
       'type' => MENU_CALLBACK,
     ),
   );

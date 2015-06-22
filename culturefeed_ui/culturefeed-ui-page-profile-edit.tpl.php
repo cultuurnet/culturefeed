@@ -4,6 +4,7 @@
  * @file
  * Template to render the page account edit page.
  */
+
 ?>
 
 <?php if ($intro): ?>

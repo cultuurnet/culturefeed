@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Default theme implementation to display culturefeed uitpas advantage details.

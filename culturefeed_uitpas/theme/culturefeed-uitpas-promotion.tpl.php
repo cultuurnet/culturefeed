@@ -1,5 +1,4 @@
 <?php
-dpm(get_defined_vars(), 'the defined vars');
 /**
  * @file
  * Default theme implementation to display culturefeed uitpas promotion.

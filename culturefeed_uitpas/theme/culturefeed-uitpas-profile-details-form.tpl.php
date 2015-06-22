@@ -9,35 +9,21 @@
 
 <div class="details-form">
 
-  <div class="clearfix form-row">
-    <?php print $first_name; ?>
-    <?php print $last_name; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $dob; ?>
-    <?php print $pob; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $gender; ?>
-    <?php print $nationality; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $street; ?>
-    <?php print $nr; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $zip; ?>
-    <?php print $city; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $tel; ?>
-    <?php print $mobile; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $main_form; ?>
-  </div>
-  <div class="clearfix form-row">
-    <?php print $actions; ?>
-  </div>
+  <?php print $first_name; ?>
+  <?php print $last_name; ?>
+  <?php print $dob; ?>
+  <?php print $pob; ?>
+  <?php print $gender; ?>
+  <?php print $nationality; ?>
+  <?php print $street; ?>
+  <?php print $nr; ?>
+  <?php print $zip; ?>
+  <?php print $city; ?>
+  <?php print $tel; ?>
+  <?php print $mobile; ?>
+  <?php print $email; ?>
+  <?php print $email_description; ?>
+  <?php print $actions; ?>
+  <?php print $main_form; ?>
 
 </div>

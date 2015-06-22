@@ -970,3 +970,27 @@ msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."
 #: /register_uitpas
 msgid "Register UiTpas"
 msgstr "Registreer UiTpas"
+
+#: /promotions
+msgid "Filter by"
+msgstr "Filter op"
+
+#: /promotions?filter=
+msgid "Show all advantages"
+msgstr "Toon alle welkomstgeschenken"
+
+#: /promotions
+msgid "Found %count promotions"
+msgstr "%count voordelen gevonden"
+
+#: /promotions
+msgid "This is a welcome advantage"
+msgstr "Dit is een welkomstgeschenk"
+
+#: /promotions
+msgid "@min - @max of @total promotions"
+msgstr "@min - @max van @total voordelen"
+
+#: /promotions
+msgid "You have insufficient points"
+msgstr "Je hebt onvoldoende punten"
