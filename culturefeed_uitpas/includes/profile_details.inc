@@ -102,29 +102,13 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
 
     $form['mobile'] = array(
       '#default_value' => $passholder->gsm,
-      '#states' => array(
-        'required' => array(
-          ':input[name="mobile_notifications"]' => array('checked' => TRUE),
-        ),
-      ),
       '#title' =>  t('Mobile'),
       '#type' => 'textfield',
-    );
-
-    $form['mobile_notifications'] = array(
-      '#default_value' => '',
-      '#title' => t('Keep me informed via sms'),
-      '#type' => 'checkbox',
     );
 
     $form['email'] = array(
       '#default_value' => $passholder->email,
       '#required' => TRUE,
-      '#states' => array(
-        'required' => array(
-          ':input[name="email_notifications"]' => array('checked' => TRUE),
-        ),
-      ),
       '#title' =>  t('Email'),
       '#type' => 'textfield',
     );
@@ -136,12 +120,6 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
       'markup' => array(
         '#markup' => variable_get('culturefeed_uitpas_profile_details_email_description'),
       ),
-    );
-
-    $form['email_notifications'] = array(
-      '#default_value' => '',
-      '#title' => t('Keep me informed via email'),
-      '#type' => 'checkbox',
     );
 
     $form['actions'] = array(
@@ -170,10 +148,6 @@ function culturefeed_uitpas_profile_details_form_validate(array $form, array &$f
 
   if (!empty($form_state['values']['email']) && !valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Invalid e-mail address'));
-  }
-
-  if ($form_state['values']['mobile_notifications'] && !$form_state['values']['mobile']) {
-    form_set_error('mobile', t('Mobile number field is required.'));
   }
 
 }

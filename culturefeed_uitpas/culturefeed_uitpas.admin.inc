@@ -82,10 +82,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_details');
   culturefeed_uitpas_profile_details_settings_get($form);
 
-  // Profile notifications.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
-  culturefeed_uitpas_profile_notifications_settings_get($form);
-
   // Register where.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/register_where');
   culturefeed_uitpas_register_where_settings_get($form);
