@@ -4,17 +4,11 @@
 
     attach: function (context, settings) {
 
-      $('#profile-edit-synchronization').find('a').click(function (event) {
+      if ($.cookie('profile-synchronization') === null) {
 
-        var link = $(this);
         var container = $("<div></div>");
-        var url = link.attr('href');
-        var title = link.attr('title');
-        var throbber_html = "&nbsp;<span class=\"ajax-progress ajax-progress-throbber\">";
-        throbber_html += "<span class=\"throbber\">&nbsp;</span></span>";
-        var throbber = $(throbber_html);
-
-        link.append(throbber);
+        var url = Drupal.settings.culturefeed_ui_synchronization.url;
+        var title = Drupal.settings.culturefeed_ui_synchronization.title;
 
         $.ajax({
           url: url,
@@ -25,7 +19,7 @@
               modal: true,
               title: title,
               open: function() {
-                throbber.remove();
+                $.cookie('profile-synchronization', 1);
               }
             };
 
@@ -35,9 +29,7 @@
 
         });
 
-        event.preventDefault();
-
-      });
+      }
 
     }
 

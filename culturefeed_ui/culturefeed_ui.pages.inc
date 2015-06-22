@@ -275,18 +275,18 @@ function culturefeed_ui_page_profile_edit() {
     $item = menu_get_item($path);
     $build['#attached']['js'] = array(
       drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
+      array(
+        'type' => 'setting',
+        'data' => array(
+          'culturefeed_ui_synchronization' => array(
+            'url' => url('culturefeed/uitpas/synchronization'),
+            'title' => $item['title'],
+          ),
+        ),
+      ),
     );
     $build['#attached']['library'] = array(
       array('system', 'ui.dialog'),
-    );
-    $build['#synchronization'] = l(
-      t('Update your profile with your eid data.'),
-      $path,
-      array(
-        'attributes' => array(
-          'title' => $item['title'],
-        ),
-      )
     );
 
   }

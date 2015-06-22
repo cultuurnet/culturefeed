@@ -4,6 +4,7 @@
  * @file
  * Template to render the page account edit page.
  */
+
 ?>
 
 <?php if ($intro): ?>
@@ -13,12 +14,6 @@
 <?php endif; ?>
 
 <?php print $profile_menu; ?>
-
-<?php if ($synchronization): ?>
-<div id="profile-edit-synchronization">
-  <?php print $synchronization; ?>
-</div>
-<?php endif; ?>
 
 <div id="profile-edit-form">
   <?php print $form ?>
