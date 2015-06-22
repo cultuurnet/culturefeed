@@ -397,7 +397,8 @@ function culturefeed_agenda_block_info() {
     'info' => t('Culturefeed agenda: Event types'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
-
+  
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Organiser-Events
 	$blocks['agenda-organiser-events'] = array(
 		'info' => t('Culturefeed agenda: Organiser events'),
 		'cache' => DRUPAL_CACHE_PER_PAGE,
