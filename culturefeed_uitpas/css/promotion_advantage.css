@@ -1,0 +1,22 @@
+.page-advantage .advantage_details,
+.page-promotion .promotion_details {
+    float: left;
+    width: 70%;
+}
+
+.how-to-exchange .exchange-info {
+    display: none;
+}
+
+.page-advantage .advantage_media,
+.page-promotion .promotion_media {
+    float: left;
+    width: 30%;
+}
+
+.page-advantage .advantage_media ul,
+.page-promotion .promotion_media ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}

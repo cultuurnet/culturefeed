@@ -14,8 +14,29 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   // Image.
   $vars['image'] = '';
+  $vars['images_list'] = '';
+  $images = array();
   if (isset($advantage->pictures[0])) {
     $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+    foreach ($advantage->pictures as $key => $picture) {
+      $images[] = l(
+        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        $advantage->pictures[$key],
+        array('html' => TRUE)
+      );
+    }
+    $vars['images_list'] = theme('item_list', array('items' => $images));
+  }
+
+  // Get the counters information.
+  if (isset($advantage->counters[0])) {
+    foreach ($advantage->counters as $key => $counter) {
+      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
+      $new_counter = array('item' => $extendedCounter);
+      module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+      culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
+      $advantage->counters[$key] = $new_counter;
+    }
   }
 
   // Period.
@@ -31,20 +52,24 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
       $period .= t('valid until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
-
   }
 
   // Location.
-  $location = array();
+  $locations = array();
+  $location_links = array();
   foreach ($advantage->counters as $counter) {
-    $location[] = $counter->name;
+    $locations[] = $counter['title'];
+    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
   }
-  $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['location'] = t('At') . " " . implode(', ', $locations);
+  $vars['location_raw'] = $locations;
+  $vars['location_links'] = $location_links;
 
   // Provider.
   $vars['provider'] = '';
   if (isset($advantage->owningCardSystem->name)) {
     $vars['provider'] = t('Provided by @provider', array('@provider' => culturefeed_uitpas_cardsystem_name($advantage->owningCardSystem)));
+    $vars['provider_raw'] = culturefeed_uitpas_cardsystem_name($advantage->owningCardSystem);
   }
 
   // Availability.
@@ -75,6 +100,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     $vars['description2'] = $advantage->description2;
   }
 
+  drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotion_advantage.css');
+  drupal_add_js(drupal_get_path('module', 'culturefeed_uitpas') . '/js/script.js');
+dpm($vars);
 }
 
 /**
@@ -406,6 +434,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   // Image.
   $vars['image'] = '';
+  $vars['images_list'] = '';
   $images = array();
   if (isset($promotion->pictures[0])) {
     $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
@@ -446,7 +475,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
       $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
-
   }
   else {
     if ($promotion->cashingPeriodEnd) {
@@ -456,11 +484,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
 
   // Location.
-  $location = array();
+  $locations = array();
+  $location_links = array();
   foreach ($promotion->counters as $counter) {
-    $location[] = $counter['title'];
+    $locations[] = $counter['title'];
+    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
   }
-  $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['location'] = t('At') . " " . implode(', ', $locations);
+  $vars['location_raw'] = $locations;
+  $vars['location_links'] = $location_links;
 
   // Provider.
   $vars['provider'] = '';
@@ -472,10 +504,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Available.
   $vars['available'] = '';
   if (count($promotion->validForCities)) {
-
     $valid_for_cities = $promotion->validForCities;
     $vars['available'] = t('Only available for') . " " . implode(', ', $valid_for_cities);
-
   }
 
   // Description1.
@@ -496,6 +526,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $vars['stock'] = TRUE;
   }
 
+  drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotion_advantage.css');
+  drupal_add_js(drupal_get_path('module', 'culturefeed_uitpas') . '/js/script.js');
 }
 
 /**
