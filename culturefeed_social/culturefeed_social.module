@@ -39,7 +39,7 @@ function culturefeed_social_menu() {
   );
 
   $items['culturefeed/activities'] = array(
-    'title' => 'Administer actions',
+    'title' => 'User history',
     'page callback' => 'culturefeed_social_page_activities',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -625,7 +625,7 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
   $form['filter'] = array(
     '#type' => 'select',
     '#options' => $options,
-    '#title' => t('Filter events on'),
+    '#title' => t('Filter actions'),
     '#default_value' => $active_filter,
   );
 
@@ -646,6 +646,8 @@ function culturefeed_social_user_activity_filter_form($form, $form_state, $activ
       '#value' => t('Filter'),
     );
   }
+
+  $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_social') . '/js/activities.js';
 
   return $form;
 }

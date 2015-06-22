@@ -1,0 +1,50 @@
+.promotions-overview article {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  padding: 10px;
+}
+
+.promotions-overview article:hover {
+  border-color: #D0D0D0;
+}
+
+.promotions-overview article.even {
+  background-color: #F0F0F0;
+}
+
+.promotions-overview article:before,
+.promotions-overview article:after {
+  content: " ";
+  display: table;
+}
+
+.promotions-overview article:after {
+  clear: both;
+}
+
+.promotions-overview article main {
+  float: left;
+  width: 74%;
+}
+
+.promotions-overview article main figure {
+  float: left;
+  margin: 0.4em;
+}
+
+.promotions-overview article main .content {
+  float: left;
+}
+
+.promotions-overview article aside {
+  float: right;
+  width: 24%;
+}
+
+.promotions-overview article aside.points .points-value {
+  display: block;
+}
+
+.promotions-overview article aside.points.insufficient-points {
+  color: #B0B0B0;
+}
