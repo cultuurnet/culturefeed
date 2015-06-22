@@ -630,13 +630,14 @@ function culturefeed_agenda_group_timestamps(&$timestamps) {
 
         if ($this_timestamp['date'] == $next_timestamp['date']) {
           if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
-            unset($timestamps[$i]['begintime']);
-            if (isset($this_timestamp['begintime'])) {
+            //unset($timestamps[$i]['begintime']);
+            $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+            /*if (isset($this_timestamp['begintime'])) {
               $timestamps[$i]['begintime'][0] = $this_timestamp['begintime'];
             }
             if (isset($next_timestamp['begintime'])) {
               $timestamps[$i]['begintime'][1] = $next_timestamp['begintime'];
-            }
+            }*/
           }
           else {
             if (isset($next_timestamp['begintime']) && $this_timestamp['begintime'] != $next_timestamp['begintime']) {

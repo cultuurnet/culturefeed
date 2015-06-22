@@ -149,7 +149,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
       $city_suggestions = array_slice($city_suggestions, 0, 5);
       foreach ($city_suggestions as $city_suggestion) {
         $matches[] = array(
-          'label' => check_plain($city_suggestion),
+          'label' => str_replace("&#039;","'",check_plain($city_suggestion)),
           'category' => '',
           'suggestion' => $city_suggestion,
           'type' => 'city',

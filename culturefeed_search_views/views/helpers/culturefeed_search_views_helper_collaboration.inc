@@ -62,15 +62,15 @@ function culturefeed_search_views_helper_collaboration_get_data(
         $sub_brand = $cdb_file->getSubbrand();
         $description = json_decode($cdb_file->getDescription());
 
-        if ($consumer_id == $sub_brand && $keyword == strtolower($description->keyword)) {
-
-          return array(
-            'copyright' => $cdb_file->getCopyright(),
-            'description' => $description,
-            'title' => $cdb_file->getTitle(),
-          );
-          break;
-
+        if ($consumer_id == $sub_brand && !is_null($description)) {
+          if ($keyword == strtolower($description->keyword)) {
+            return array(
+              'copyright' => $cdb_file->getCopyright(),
+              'description' => $description,
+              'title' => $cdb_file->getTitle(),
+            );
+            break;
+          }
         }
 
       }
