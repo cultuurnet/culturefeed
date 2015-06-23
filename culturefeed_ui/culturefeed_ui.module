@@ -171,7 +171,7 @@ function culturefeed_ui_theme() {
       'variables' => array('user' => NULL),
       'template' => 'culturefeed-ui-profile',
     ),
-    'culturefeed_ui_profile_menu' => array(
+    'culturefeed_ui_profile_shortcuts' => array(
       'variables' => array(),
     ),
     'culturefeed_ui_profile_box' => array(
@@ -193,7 +193,7 @@ function culturefeed_ui_theme() {
       'variables' => array(
         'form' => NULL,
         'intro' => NULL,
-        'profile_menu' => NULL,
+        'profile_shortcuts' => NULL,
       ),
       'template' => 'culturefeed-ui-privacy-settings',
     ),
@@ -251,7 +251,7 @@ function culturefeed_ui_theme() {
         'form' => NULL,
         'intro' => NULL,
         'online_accounts' => NULL,
-        'profile_menu' => NULL,
+        'profile_shortcuts' => NULL,
       ),
       'template' => 'culturefeed-ui-page-account-edit',
     ),
@@ -259,7 +259,7 @@ function culturefeed_ui_theme() {
       'variables' => array(
         'form' => NULL,
         'intro' => NULL,
-        'profile_menu' => NULL,
+        'profile_shortcuts' => NULL,
         'synchronization' => NULL,
       ),
       'template' => 'culturefeed-ui-page-profile-edit',

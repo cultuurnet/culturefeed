@@ -13,7 +13,7 @@
 </div>
 <?php endif; ?>
 
-<?php print $profile_menu; ?>
+<?php print $profile_shortcuts; ?>
 
 <div id="profile-edit-form">
   <?php print $form ?>
