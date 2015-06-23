@@ -739,6 +739,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
         'name' => $advantage->owningCardSystem->name,
       );
       $item['title'] = l($advantage->title, $advantage_path);
+      $item['overlay_link'] = l('<span class="hyperspan"></span>', $advantage_path, array('html' => TRUE, 'attributes' => array('class' => 'hulk-link')));
 
       foreach ($advantage->counters as $counter) {
         $item['counters'][] = array(
@@ -837,6 +838,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
         'name' => $promotion->owningCardSystem->name,
       );
       $item['title'] = l($promotion->title, $promotion_path);
+      $item['overlay_link'] = l('<span class="hyperspan"></span>', $promotion_path, array('html' => TRUE, 'attributes' => array('class' => 'hulk-link')));
 
       $item['counters'] = array();
       foreach ($promotion->counters as $counter) {

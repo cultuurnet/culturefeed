@@ -2,6 +2,7 @@
   <?php foreach($items as $item): ?>
   <article class="<?php print implode(' ', $item['classes']); ?> clearfix">
     <div class="row">
+      <?php print $item['overlay_link']; ?>
       <div class="main col-md-8 col-lg-9" role="main">
         <div class="row">
           <figure class="col-xs-3 col-lg-2">
