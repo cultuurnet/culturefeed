@@ -191,7 +191,7 @@ function culturefeed_ui_page_privacy_settings() {
     ),
     '#intro' => variable_get('culturefeed_ui_privacy_settings_intro', ''),
     '#form' => drupal_render($form),
-    '#profile_menu' => theme('culturefeed_ui_profile_menu'),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_privacy_settings',
   );
 
@@ -230,7 +230,7 @@ function culturefeed_ui_page_account_edit() {
     '#form' => drupal_render($form),
     '#intro' => variable_get('culturefeed_ui_account_edit_intro', ''),
     '#online_accounts' => drupal_render($online_accounts),
-    '#profile_menu' => theme('culturefeed_ui_profile_menu'),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_page_account_edit',
   );
 
@@ -265,7 +265,7 @@ function culturefeed_ui_page_profile_edit() {
     ),
     '#form' => drupal_render($form),
     '#intro' => variable_get('culturefeed_ui_profile_edit_intro', ''),
-    '#profile_menu' => theme('culturefeed_ui_profile_menu'),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_page_profile_edit',
   );
 

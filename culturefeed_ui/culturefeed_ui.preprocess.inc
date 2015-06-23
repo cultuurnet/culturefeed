@@ -445,23 +445,16 @@ function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
 /**
  * Preprocess variables for culturefeed_ui_profile_menu
  */
-function theme_culturefeed_ui_profile_menu() {
+function theme_culturefeed_ui_profile_shortcuts() {
 
   $build = array(
-    '#attached' => array(
-      'css' => array(
-        drupal_get_path('module', 'culturefeed_ui') . '/css/profile_menu.css',
-      ),
+    '#attributes' => array(
+      'class' => array('culturefeed-profile-shortcuts'),
     ),
-    'menu' => array(
-      '#attributes' => array(
-        'class' => array('culturefeed-profile-menu', 'clearfix'),
-      ),
-      '#theme' => 'links',
-    ),
+    '#theme' => 'links',
   );
 
-  $build['menu']['#links'] = array(
+  $build['#links'] = array(
     'personal_data' => array(
       'title' => t('Personal data'),
       'href' => 'culturefeed/profile/edit',
