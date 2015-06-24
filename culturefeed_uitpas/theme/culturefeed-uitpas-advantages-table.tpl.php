@@ -33,3 +33,23 @@
 <div class="pager clearfix">
 <?php print $pager; ?>
 </div>
+<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-use-bootstrap-modal="false">
+<!-- The container for the modal slides -->
+<div class="slides"></div>
+<h3 class="title"></h3>
+<a class="prev">‹</a>
+<a class="next">›</a>
+<a class="close">×</a>
+<a class="play-pause"></a>
+<ol class="indicator"></ol>
+<!-- The modal dialog, which will be used to wrap the lightbox content -->
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+
+      </div>
+    </div>
+  </div>
+</div>

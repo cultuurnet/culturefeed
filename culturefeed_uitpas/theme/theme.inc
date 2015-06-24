@@ -22,7 +22,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
       $images[] = l(
         theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
         $advantage->pictures[$key],
-        array('html' => TRUE)
+        array('html' => TRUE, 'attributes' => array('data-gallery' => 'data-gallery'))
       );
     }
     $vars['images_list'] = theme('item_list', array('items' => $images));
@@ -437,7 +437,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
       $images[] = l(
         theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
         $promotion->pictures[$key],
-        array('html' => TRUE)
+        array('html' => TRUE, 'attributes' => array('data-gallery' => 'data-gallery'))
       );
     }
     $vars['images_list'] = theme('item_list', array('items' => $images));

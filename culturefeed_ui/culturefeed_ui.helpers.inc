@@ -166,26 +166,26 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   if ($online_account) {
     $delete_link = array(
       '#type' => 'link',
-      '#title' => t('Delete'),
+      '#title' => t('Delete @account_type account', array('@account_type' => $online_account_type)),
       '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
       '#attributes' => array('class' => 'delete-link'),
-      '#options' => array('query' => drupal_get_destination()),
+      '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
       '#ajax' => array(),
     );
 
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512');
+  $statement = '<span class="statement">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
 
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
-      '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
+      '#title' => ($online_account->publishActivities ? t('Private') : t('Public')) . ' <i class="fa fa-angle-down"></i>',
       '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
-      '#options' => array('query' => drupal_get_destination()),
+      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'btn btn-default privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
+      '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
       '#ajax' => array(),
     );
 
@@ -193,7 +193,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l(t('Add account'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Add @account_type account', array('@account_type' => $online_account_type)), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
@@ -221,9 +221,7 @@ function culturefeed_ui_users_list($users) {
 
 function _culturefeed_ui_users_list($user_objects) {
   $items = array();
-
   $accounts = culturefeed_get_uids_for_users($user_objects);
-
   foreach ($user_objects as $user) {
     if (!isset($accounts[$user->id])) {
       continue;
@@ -231,11 +229,10 @@ function _culturefeed_ui_users_list($user_objects) {
 
     $items[] = theme('culturefeed_ui_user_summary', array('user' => $user, 'uid' => $accounts[$user->id]));
   }
-
   return $items;
 }
 
-
+    
 /**
  * Helper function to build facebook privacy toggle
  */

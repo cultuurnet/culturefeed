@@ -131,7 +131,7 @@ function culturefeed_social_page_activities($type = NULL) {
     // Add the delete link.
     $delete = array(
       '#type' => 'link',
-      '#title' => '<i class="fa fa-trash-o"></i> ' . t('Remove'),
+      '#title' => t('Remove') . ' <i class="fa fa-trash-o"></i>',
       '#href' => $remove_path . '/nojs',
       '#attributes' => $attributes,
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),

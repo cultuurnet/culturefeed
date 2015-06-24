@@ -322,6 +322,9 @@ function culturefeed_ui_online_accounts() {
   return array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array(
+    'class' => 'user-accounts list-unstyled',
+    ),
   );
 }
 
@@ -472,6 +475,9 @@ function culturefeed_ui_page_serviceconsumers() {
     $content['consumers'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array(
+        'class' => 'user-applications list-unstyled',
+      ),
     );
   }
 
