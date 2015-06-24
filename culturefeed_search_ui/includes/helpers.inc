@@ -235,6 +235,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     }
   }
 
+  // City can be mapped to location.
+  if (isset($_GET['city'])) {
+    $query = $_GET['city'];
+    $new_query['location'] = $query;
+  }
+
   // Query is now search.
   if (isset($_GET['query'])) {
     $query = $_GET['query'];
