@@ -176,7 +176,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = '<span class="small">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
+  $statement = '<span class="statement">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
 
   $publish_link = '';
   if ($online_account) {

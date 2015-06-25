@@ -450,10 +450,10 @@ function culturefeed_ui_page_serviceconsumers() {
     if ($consumer->consumerKey != variable_get('culturefeed_api_application_key', '')) {
       $revoke_link = array(
         '#type' => 'link',
-        '#title' => t('Delete') . ' <i class="fa fa-trash-o"></i>',
+        '#title' => t('Delete'),
         '#href' => 'culturefeed/serviceconsumers/revoke/' . $consumer->id . '/nojs',
         '#attributes' => array('class' => 'revoke-link'),
-        '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
+        '#options' => array('query' => drupal_get_destination()),
         '#ajax' => array(),
       );
 
