@@ -15,6 +15,13 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id'),
   );
 
+  $form['culturefeed_uitpas_card_name'] = array(
+    '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPas'),
+    '#description' => t('The card name, used as title in profile sections block.'),
+    '#title' => t('Card name'),
+    '#type' => 'textfield',
+  );
+
   $form['culturefeed_uitpas_remind_user_without_uitpas'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show message to users without UiTPAS'),

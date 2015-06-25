@@ -27,6 +27,20 @@ function culturefeed_ui_preprocess_culturefeed_ui_account_edit_form(&$vars) {
 }
 
 /**
+ * Preprocess variables for culturefeed-ui-profile-sections.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_profile_section(&$vars) {
+
+  if (isset($vars['classes'])) {
+    $vars['classes_array'] = array_merge($vars['classes_array'], $vars['classes']);
+  }
+
+}
+
+/**
  * Preprocess variables for culturefeed-ui-profile.tpl.php.
  *
  * @see culturefeed-ui-profile.tpl.php

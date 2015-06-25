@@ -216,6 +216,47 @@ function culturefeed_ui_block_profile_menu_view() {
   return $block;
 }
 
+/**
+ * Returns the profile sections block.
+ *
+ * @return array
+ *   The block.
+ */
+function culturefeed_ui_block_profile_sections_view() {
+
+  $sections = array();
+  $hook = 'culturefeed_ui_profile_sections';
+  foreach(module_implements($hook) as $module) {
+    $function = $module . '_' . $hook;
+    if (function_exists($function)) {
+      $sections[] =  call_user_func($function);
+    }
+  };
+
+  if (count($sections)) {
+
+    $build = array();
+
+    foreach($sections as $section) {
+
+      $build[] = array(
+        '#classes' => isset($section['classes']) ? $section['classes'] : array(),
+        '#content' => $section['content'],
+        '#theme' => 'culturefeed_ui_profile_section',
+        '#title' => $section['title'],
+      );
+
+    }
+
+    $block['subject'] = '';
+    $block['content'] = $build;
+
+    return $block;
+
+  }
+
+}
+
 function culturefeed_ui_block_mbox_confirmation_reminder_view() {
   if (!DrupalCultureFeed::isCultureFeedUser()) {
     return;
