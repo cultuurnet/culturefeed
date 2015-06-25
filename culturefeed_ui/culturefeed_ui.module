@@ -171,6 +171,15 @@ function culturefeed_ui_theme() {
       'variables' => array('user' => NULL),
       'template' => 'culturefeed-ui-profile',
     ),
+    'culturefeed_ui_profile_section' => array(
+      'path' => drupal_get_path('module', 'culturefeed_ui') . '/templates',
+      'template' => 'culturefeed-ui-profile-section',
+      'variables' => array(
+        'title' => '',
+        'content' => '',
+        'classes' => array(),
+      ),
+    ),
     'culturefeed_ui_profile_shortcuts' => array(
       'variables' => array(),
     ),
@@ -292,6 +301,9 @@ function culturefeed_ui_block_info() {
 
   $block['profile_menu']['info'] = t('Culturefeed ui: profile menu');
   $block['profile_menu']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['profile_sections']['info'] = t('Culturefeed ui: profile sections');
+  $block['profile_sections']['cache'] = DRUPAL_NO_CACHE;
 
   $block['mbox_confirmation_reminder']['info'] = t('Culturefeed ui: e-mail confirmation reminder');
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
@@ -460,28 +472,53 @@ function culturefeed_ui_user_view_alter(&$build) {
  */
 function culturefeed_ui_culturefeed_ui_profile_menu() {
 
-  global $user;
-
   return array(
     'uitid' => array(
       'title' => t('My profile'),
-      'url' => 'user/' . $user->uid,
-      'description' => t('How other users will see your profile'),
-      'weight' => -20,
-    ),
-    'profile' => array(
-      'title' => t('Edit profile'),
       'url' => 'culturefeed/profile/edit',
       'description' => t('Change name, address, profile picture, …'),
       'weight' => -19,
     ),
-    'account' => array(
-      'title' => t('Edit account'),
-      'url' => 'culturefeed/account/edit',
-      'description' => t('Change password, email address, connected channels, …'),
-      'weight' => -18,
-    ),
   );
+
+}
+
+/**
+ * Implements hook_culturefeed_ui_profile_sections().
+ */
+function culturefeed_ui_culturefeed_ui_profile_sections() {
+
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+
+    // Get the links.
+    $menu = module_invoke_all('culturefeed_ui_profile_menu');
+    drupal_alter('culturefeed_ui_profile_menu', $menu);
+    uasort($menu, 'drupal_sort_weight');
+
+    $links = array();
+
+    foreach ($menu as $menu_item) {
+
+      $links[] = array(
+        'title' => $menu_item['title'],
+        'href' => $menu_item['url'],
+        'attributes' => array(
+          'title' => $menu_item['description'],
+        ),
+      );
+
+    }
+
+    /* @var CultureFeed_User $culturefeed_user */
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+
+    return array(
+      'classes' => array('profile-menu'),
+      'content' => theme('links', array('links' => $links)),
+      'title' => culturefeed_ui_get_display_name($culturefeed_user),
+    );
+
+  }
 
 }
 

@@ -39,6 +39,10 @@ function culturefeed_uitpas_theme() {
       'template' => 'culturefeed-uitpas-advantages-table',
       'file' => 'theme.inc',
     ),
+    'culturefeed_uitpas_profile_section' => array(
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-profile-section',
+    ),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
