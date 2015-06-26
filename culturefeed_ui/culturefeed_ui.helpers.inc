@@ -176,13 +176,13 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = '<span class="small">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
+  $statement = '<span class="statement">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
 
   $publish_link = '';
   if ($online_account) {
     $publish_link = array(
       '#type' => 'link',
-      '#title' => ($online_account->publishActivities ? t('Private') : t('Public')) . ' <i class="fa fa-angle-down"></i>',
+      '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
       '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'btn btn-default privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),

@@ -131,7 +131,7 @@ function culturefeed_social_page_activities($type = NULL) {
     // Add the delete link.
     $delete = array(
       '#type' => 'link',
-      '#title' => t('Remove') . ' <i class="fa fa-trash-o"></i>',
+      '#title' => t('Remove'),
       '#href' => $remove_path . '/nojs',
       '#attributes' => $attributes,
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
@@ -140,7 +140,7 @@ function culturefeed_social_page_activities($type = NULL) {
     // Add the privacy toggle link.
     $privacy = array(
       '#type' => 'link',
-      '#title' => ($activity->private ? t('Private') : t('Public')) . ' <i class="fa fa-angle-down"></i>',
+      '#title' => $activity->private  ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Make public') : t('Make private'))),
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),

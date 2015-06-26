@@ -1,6 +1,8 @@
-<div class="row">
-  <div class="col-xs-12"><i class="fa fa-link"></i>&nbsp;<?php print $name ?></div>
-  <!--<div class="col-sm-4 small"><?php print $logo ?></div>-->
+<div class="teaser-sc">
+  <h2><?php print $name ?></h2>
+  <div class="teaser-sc-info">
+    <div class="image"><?php print $logo ?></div>
+    <div class="date"><?php print $creation_date ?></div>
+    <div class="action-links"><?php print $revoke_link ?></div>
+  </div>
 </div>
-<div class="col-xs-12 date"><?php print $creation_date ?></div>
-<div class="col-xs-12"><?php print $revoke_link ?></div>
