@@ -390,7 +390,9 @@ function culturefeed_agenda_block_production_program() {
   $preferred_language = culturefeed_search_get_preferred_language();
   $query = db_select('culturefeed_search_terms', 't');
   $query->innerJoin('culturefeed_search_terms', 'province', 'province.tid = t.p1');
-  $query->condition('t.tid', $region_ids);
+  if ($region_ids) {
+    $query->condition('t.tid', $region_ids);
+  }
   $query->condition('t.language', $preferred_language);
   $query->condition('province.language', $preferred_language);
   $query->addField('province', 'name', 'province_name');

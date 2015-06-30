@@ -30,6 +30,25 @@ function _culturefeed_search_ui_video_url_to_embed($url) {
 }
 
 /**
+ * Strips a given url to a youtube id.
+ */
+
+function _culturefeed_search_ui_video_url_to_id($url) {
+
+  // Construct embed url.
+  $embed_url = str_replace('watch', 'embed', $url);
+
+  $video_parts = explode('?v=', $embed_url);
+
+  if (count($video_parts) < 2) {
+    return FALSE;
+  }
+
+  return  $video_parts[1];
+
+}
+
+/**
  * Get the key value from the currently active search page.
  */
 function _culturefeed_search_ui_get_active_search_page() {
@@ -214,6 +233,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
     if ($result) {
       $new_query['location'] = $result->zip . ' ' . $result->name;
     }
+  }
+
+  // City can be mapped to location.
+  if (isset($_GET['city'])) {
+    $query = $_GET['city'];
+    $new_query['location'] = $query;
   }
 
   // Query is now search.

@@ -171,6 +171,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
+    $variables['ticket_links'] = array();
 
     foreach ($ticket_links as $link) {
       $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
@@ -181,6 +182,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
+      $variables['ticket_links'][] = $link->getHLink();
     }
 
     // Performers
@@ -414,17 +416,20 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
-  $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   if ($detail) {
 
     // Add videos.
     $variables['videos'] = array();
+    $variables['videos_id'] = array();
+
     $videos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO);
     foreach ($videos as $video) {
       if ($video_embed = _culturefeed_search_ui_video_url_to_embed($video->getHLink())) {
         $variables['videos'][] = $video_embed;
       }
+      $variables['videos_id'][] = _culturefeed_search_ui_video_url_to_id($video->getHLink());
     }
 
     // Absolute link to detail.
@@ -630,10 +635,12 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation url
       if (isset($reservation_info['url'])) {
         foreach ($reservation_info['url'] as $url) {
-          // clean up link text
-          $url_text = str_replace('http://', '', $url);
-          $url_text = str_replace('https://', '', $url_text);
-          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
+          if(!in_array($url, $variables['ticket_links'])){
+            // clean up link text
+            $url_text = str_replace('http://', '', $url);
+            $url_text = str_replace('https://', '', $url_text);
+            $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
+          }
         }
         $variables['reservation']['url'] = implode(', ', $reservation_urls);
       }
@@ -735,6 +742,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
+
+    // Check if event has finished or not.
+    $event_is_passed = FALSE;
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        $event_is_passed = TRUE;
+        foreach ($calendar as $calendar_item) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() >= $objDateTime->getTimestamp()) {
+            $event_is_passed = FALSE;
+            break;
+          }
+        }
+
+      }
+    }
+    $variables['event_is_passed'] = $event_is_passed;
 
   }
 
@@ -941,7 +972,18 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program(&$variab
  * Preprocess the agenda actor program.
  */
 function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program_item(&$variables) {
-  culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+
+  switch ($variables['item']->getType()) {
+
+    case 'event':
+      culturefeed_agenda_preprocess_culturefeed_event_summary($variables);
+      break;
+
+    case 'production':
+      culturefeed_agenda_preprocess_culturefeed_production_summary($variables);
+      break;
+  }
+
 }
 
 /**
