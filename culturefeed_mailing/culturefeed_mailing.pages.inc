@@ -1400,7 +1400,7 @@ function culturefeed_mailing_page_mailing_content() {
     foreach ($nodes as $node) {
       $link = field_view_field('node', $node, 'field_link');
       $image = field_view_field('node', $node, 'field_image');
-      $intro = field_view_field('node', $node, 'field_intro');
+      $intro = field_view_field('node', $node, 'field_teaser');
       $region = field_view_field('node', $node, 'field_region');
       
       $link_options = drupal_parse_url($link['#items'][0]['display_url']);
