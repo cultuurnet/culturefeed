@@ -88,7 +88,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         $search_type = culturefeed_get_searchable_type('activiteiten');
         $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_type);
         foreach ($sort_options as $option) {
-          if ($option['value'] == $sort) {
+          if (isset($option['value']) == $sort) {
             $parameters[] = new \CultuurNet\Search\Parameter\Parameter('sort', $option['query']);
             break;
           }
