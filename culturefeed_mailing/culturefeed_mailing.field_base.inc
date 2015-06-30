@@ -11,12 +11,12 @@ function _culturefeed_mailing_installed_fields() {
   $field_bases = array();
 
   // Exported field_base: 'field_intro'
-  $field_bases['field_intro'] = array(
+  $field_bases['field_teaser'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_intro',
+    'field_name' => 'field_teaser',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -33,7 +33,7 @@ function _culturefeed_mailing_installed_fields() {
     'locked' => 0,
     'module' => 'text',
     'settings' => array(
-      'max_length' => 100,
+      'max_length' => 255,
     ),
     'translatable' => 0,
     'type' => 'text_long',

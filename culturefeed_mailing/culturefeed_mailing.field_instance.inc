@@ -61,8 +61,8 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-mail_item-field_intro'
-  $field_instances['node-mail_item-field_intro'] = array(
+  // Exported field_instance: 'node-mail_item-field_teaser'
+  $field_instances['node-mail_item-field_teaser'] = array(
     'bundle' => 'mail_item',
     'default_value' => NULL,
     'deleted' => 0,
@@ -84,7 +84,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_intro',
+    'field_name' => 'field_teaser',
     'label' => 'Intro',
     'required' => 0,
     'settings' => array(
