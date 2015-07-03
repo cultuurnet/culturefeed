@@ -116,6 +116,7 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
     }
 
     drupal_set_message(t('The tags were adjusted and will be available under the "View" tab.'));
+    drupal_goto(culturefeed_search_detail_path('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language())));
 
   }
 
