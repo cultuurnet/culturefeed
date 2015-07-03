@@ -811,8 +811,8 @@ msgid "We could not validate the location"
 msgstr "We kunnen de locatie niet bevestigen"
 
 #: includes/form/culturefeed_entry_ui.tag_objects.inc:118
-msgid "The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the \"View\" tab"
-msgstr "De labels werden aangepast. Het kan echter een half uur duren vooraleer deze wijzigingen op alle kanalen (waaronder UiTinVlaanderen) zichtbaar zijn."
+msgid "The tags were adjusted and will be available under the \"View\" tab."
+msgstr "De labels werden aangepast en zijn te bekijken onder de 'Weergeven' tab."
 
 #: includes/form/culturefeed_entry_ui.tags.inc:38
 msgid "Add Add tags"
