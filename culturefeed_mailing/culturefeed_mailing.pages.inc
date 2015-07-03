@@ -1427,7 +1427,7 @@ function culturefeed_mailing_page_mailing_content() {
         'url_image' => url($link_path, array('query' => $query_image)),
         'url_readon' => url($link_path, array('query' => $query_readon)),
         'title' => $node->title,
-        'intro' => $intro['#items'][0]['value'],
+        'intro' => isset($intro['#items'][0]['value']) ? $intro['#items'][0]['value'] : '',
         'link_title' => $link['#items'][0]['title'],
         'image' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $image['#items'][0]['uri'], 'attributes' => array('style' => 'border: none; margin:0 !important; height:100px; width: 100px;'), 'alt' => $node->title)),
         'spacer' => theme_image(array('path' => drupal_get_path('module', 'culturefeed_mailing') . '/theme/img/spacer.gif', 'attributes' => array('style' => 'LINE-HEIGHT: 1px; FONT-SIZE: 1px;', 'width' => '1', 'height' => '10'))),
