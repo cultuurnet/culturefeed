@@ -810,10 +810,6 @@ msgstr "Een locatie is verplicht"
 msgid "We could not validate the location"
 msgstr "We kunnen de locatie niet bevestigen"
 
-#: includes/form/culturefeed_entry_ui.tag_objects.inc:118
-msgid "The tags were adjusted and will be available under the \"View\" tab."
-msgstr "De labels werden aangepast en zijn te bekijken onder de 'Weergeven' tab."
-
 #: includes/form/culturefeed_entry_ui.tags.inc:38
 msgid "Add Add tags"
 msgstr "Labels toevoegen"
