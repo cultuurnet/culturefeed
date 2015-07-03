@@ -11,6 +11,7 @@ class views_handler_field_cdb_item_category extends views_handler_field {
 	function option_definition() {
 		$options = parent::option_definition();
 
+    $options['type'] = array('default' => 'eventtype');
 		$options['link'] = array('default' => FALSE);
 
 		return $options;
@@ -20,6 +21,24 @@ class views_handler_field_cdb_item_category extends views_handler_field {
 	 * @see views_handler_field::options_form()
 	 */
 	function options_form(&$form, &$form_state) {
+
+    $form['type'] = array(
+      '#type' => 'radios',
+      '#title' => t('Type'),
+      '#description' => t('What kind of categories do you want to show?'),
+      '#options' => array(
+        'theme' => t('Theme'),
+        'publicscope' => t('Public scope'),
+        'targetaudience' => t('Target audience'),
+        'eventtype' => t('Event type'),
+        'actortype' => t('Actor type'),
+        'educationfield' => t('Education field'),
+        'educationlevel' => t('Education Level'),
+        'facility' => t('Facility'),
+        'flandersregion' => t('Flanders region'),
+      ),
+      '#default_value' => isset($this->options['format']) ? $this->options['format'] : 'image',
+    );
 
 		$form['link'] = array(
 			'#type' => 'checkbox',
@@ -40,7 +59,7 @@ class views_handler_field_cdb_item_category extends views_handler_field {
       return;
     }
 
-		$categories = culturefeed_agenda_get_category_list_of_item('eventtype', $extended_entity->getEntity());
+		$categories = culturefeed_agenda_get_category_list_of_item($this->options['type'], $extended_entity->getEntity());
 
     if (!$categories) {
       return;
