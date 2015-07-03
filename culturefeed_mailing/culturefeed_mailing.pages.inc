@@ -1403,9 +1403,8 @@ function culturefeed_mailing_page_mailing_content() {
       $intro = field_view_field('node', $node, 'field_teaser');
       $region = field_view_field('node', $node, 'field_region');
       
-      $link_options = drupal_parse_url($link['#items'][0]['display_url']);
-      $link_path = $link_options['path'];
-      $link_query = $link_options['query'];
+      $link_path = $link['#items'][0]['url'];
+      $link_query = array($link['#items'][0]['query']);
       
       $utm = array(
         'utm_campaign' => 'UiTmail',
