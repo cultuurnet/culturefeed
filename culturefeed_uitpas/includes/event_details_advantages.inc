@@ -30,6 +30,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
         foreach ($distribution_key->conditions as $condition) {
           if ($condition->definition == $condition::DEFINITION_KANSARM) {
             $distribution_keys[] = array(
+              'name' => $distribution_key->name,
               'tariff' => $distribution_key->tariff,
             );
           }
@@ -42,7 +43,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
       $item_list = $default_item_list;
       foreach ($distribution_keys as $distribution_key) {
         $item_list['#items'][] = array(
-          'data' => t('Price at underprivileged tariff: € @tariff', array('@tariff' => $distribution_key['tariff'])),
+          'data' => t('Price at underprivileged tariff: € @tariff', array('@tariff' => $distribution_key['tariff'])) . '<br />' . $distribution_key['name'],
           'class' => array('uitpas_underprivileged_tariff'),
         );
       }
