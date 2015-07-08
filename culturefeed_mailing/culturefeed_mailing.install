@@ -25,3 +25,10 @@ function culturefeed_mailing_install() {
     }
   }
 }
+
+/**
+ * Add the mailing item content type.
+ */
+function culturefeed_mailing_update_7001() {
+  culturefeed_mailing_install();
+}
