@@ -407,7 +407,7 @@ function culturefeed_template_load($id) {
 function culturefeed_mailing_node_info() {
   $items = array(
     'mail_item' => array(
-      'name' => t('mail item'),
+      'name' => t('Mail item'),
       'base' => 'node_content',
       'description' => t('Mail items can be used to create content for culturefeed_mailing newsletters'),
       'has_title' => '1',
