@@ -10,13 +10,13 @@
 function _culturefeed_mailing_installed_fields() {
   $field_bases = array();
 
-  // Exported field_base: 'field_intro'
-  $field_bases['field_teaser'] = array(
+  // Exported field_base: 'field_mail_item_teaser'
+  $field_bases['field_mail_item_teaser'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_teaser',
+    'field_name' => 'field_mail_item_teaser',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -39,13 +39,13 @@ function _culturefeed_mailing_installed_fields() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_image'
-  $field_bases['field_image'] = array(
+  // Exported field_base: 'field_mail_item_image'
+  $field_bases['field_mail_item_image'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_image',
+    'field_name' => 'field_mail_item_image',
     'foreign keys' => array(
       'fid' => array(
         'columns' => array(
@@ -69,13 +69,13 @@ function _culturefeed_mailing_installed_fields() {
     'type' => 'image',
   );
 
-  // Exported field_base: 'field_label'
-  $field_bases['field_label'] = array(
+  // Exported field_base: 'field_mail_item_label'
+  $field_bases['field_mail_item_label'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_label',
+    'field_name' => 'field_mail_item_label',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -98,13 +98,13 @@ function _culturefeed_mailing_installed_fields() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_link'
-  $field_bases['field_link'] = array(
+  // Exported field_base: 'field_mail_item_link'
+  $field_bases['field_mail_item_link'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_link',
+    'field_name' => 'field_mail_item_link',
     'foreign keys' => array(),
     'indexes' => array(),
     'locked' => 0,
@@ -128,13 +128,13 @@ function _culturefeed_mailing_installed_fields() {
     'type' => 'link_field',
   );
 
-  // Exported field_base: 'field_region'
-  $field_bases['field_region'] = array(
+  // Exported field_base: 'field_mail_item_region'
+  $field_bases['field_mail_item_region'] = array(
     'active' => 1,
     'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_region',
+    'field_name' => 'field_mail_item_region',
     'foreign keys' => array(),
     'indexes' => array(
       'value' => array(

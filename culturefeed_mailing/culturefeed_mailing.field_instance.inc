@@ -10,8 +10,8 @@
 function _culturefeed_mailing_installed_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-mail_item-field_image'
-  $field_instances['node-mail_item-field_image'] = array(
+  // Exported field_instance: 'node-mail_item-field_mail_item_image'
+  $field_instances['node-mail_item-field_mail_item_image'] = array(
     'bundle' => 'mail_item',
     'deleted' => 0,
     'description' => 'Add an optional teaser image to the mail item',
@@ -35,7 +35,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_image',
+    'field_name' => 'field_mail_item_image',
     'label' => 'Image',
     'required' => 0,
     'settings' => array(
@@ -61,8 +61,8 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-mail_item-field_teaser'
-  $field_instances['node-mail_item-field_teaser'] = array(
+  // Exported field_instance: 'node-mail_item-field_mail_item_teaser'
+  $field_instances['node-mail_item-field_mail_item_teaser'] = array(
     'bundle' => 'mail_item',
     'default_value' => NULL,
     'deleted' => 0,
@@ -84,7 +84,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_teaser',
+    'field_name' => 'field_mail_item_teaser',
     'label' => 'Intro',
     'required' => 0,
     'settings' => array(
@@ -106,8 +106,8 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-mail_item-field_label'
-  $field_instances['node-mail_item-field_label'] = array(
+  // Exported field_instance: 'node-mail_item-field_mail_item_label'
+  $field_instances['node-mail_item-field_mail_item_label'] = array(
     'bundle' => 'mail_item',
     'default_value' => NULL,
     'deleted' => 0,
@@ -129,7 +129,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_label',
+    'field_name' => 'field_mail_item_label',
     'label' => 'Label',
     'required' => 0,
     'settings' => array(
@@ -149,8 +149,8 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-mail_item-field_link'
-  $field_instances['node-mail_item-field_link'] = array(
+  // Exported field_instance: 'node-mail_item-field_mail_item_link'
+  $field_instances['node-mail_item-field_mail_item_link'] = array(
     'bundle' => 'mail_item',
     'default_value' => NULL,
     'deleted' => 0,
@@ -172,7 +172,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_link',
+    'field_name' => 'field_mail_item_link',
     'label' => 'Link',
     'required' => 1,
     'settings' => array(
@@ -207,8 +207,8 @@ function _culturefeed_mailing_installed_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-mail_item-field_region'
-  $field_instances['node-mail_item-field_region'] = array(
+  // Exported field_instance: 'node-mail_item-field_mail_item_region'
+  $field_instances['node-mail_item-field_mail_item_region'] = array(
     'bundle' => 'mail_item',
     'default_value' => array(
       0 => array(
@@ -236,7 +236,7 @@ function _culturefeed_mailing_installed_instances() {
     ),
     'ds_extras_field_template' => '',
     'entity_type' => 'node',
-    'field_name' => 'field_region',
+    'field_name' => 'field_mail_item_region',
     'label' => 'Region',
     'required' => 0,
     'settings' => array(
