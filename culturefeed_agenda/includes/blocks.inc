@@ -182,6 +182,11 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
     );
 
+    $form['location']['radius'] = array(
+      '#type' => 'hidden',
+      '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : NULL,
+    );
+
     $form['location']['nearby'] = array(
       '#markup' => '<a href="#" class="search-find-location"><span>' . check_plain(t('Use my current location')) . '</span></a>',
     );
@@ -241,6 +246,10 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
     }
+
+    if (!empty($form_state['values']['radius'])) {
+      $query['distance'] = $form_state['values']['radius'];
+    }
   }
 
   if (!empty($form_state['#domain_id'])) {
@@ -261,6 +270,49 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     array('query' => $query),
   );
 
+}
+
+function culturefeed_agenda_block_organiser_events() {
+	$item = culturefeed_agenda_get_active_object();
+	if (!$item || $item->getType() == 'actor') {
+		return;
+	}
+
+	$organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+	$amount = variable_get('agenda_organiser_event_amount', 10);
+
+	$parameters = array();
+	$parameters[] = new \CultuurNet\Search\Parameter\Query('organiser_cdbid:' . $organiser_id);
+	$parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+	$parameters[] = new \CultuurNet\Search\Parameter\Group();
+	$parameters[] = new \CultuurNet\Search\Parameter\Rows($amount);
+
+	try {
+
+		$result = culturefeed_get_search_service()->search($parameters);
+
+		if ($result->getTotalCount() == 0) {
+			return;
+		}
+
+	}
+	catch (Exception $e) {
+		watchdog_exception('culturefeed_agenda', $e);
+		return;
+	}
+
+	$content = array(
+		'#theme' => 'culturefeed_agenda_organiser_events',
+		'#organiser' => $item->getEntity()->getOrganiser(),
+		'#items' => $result->getItems(),
+	);
+
+	$block = array(
+		'subject' => '',
+		'content' => $content,
+	);
+
+	return $block;
 }
 
 /**
@@ -338,7 +390,9 @@ function culturefeed_agenda_block_production_program() {
   $preferred_language = culturefeed_search_get_preferred_language();
   $query = db_select('culturefeed_search_terms', 't');
   $query->innerJoin('culturefeed_search_terms', 'province', 'province.tid = t.p1');
-  $query->condition('t.tid', $region_ids);
+  if ($region_ids) {
+    $query->condition('t.tid', $region_ids);
+  }
   $query->condition('t.language', $preferred_language);
   $query->condition('province.language', $preferred_language);
   $query->addField('province', 'name', 'province_name');
@@ -430,7 +484,7 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
     '#size' => 28,
     '#title' => t('Search string'),
     '#title_display' => 'invisible',
-    '#attributes' => array('class' => array('auto-submit-field'), 'placeholder' => t('Plaats of naam')),
+    '#attributes' => array('class' => array('auto-submit-field'), 'placeholder' => t('Venue name or location')),
     '#autocomplete_path' => 'autocomplete/culturefeed/agenda/actor-search'
   );
 
@@ -452,6 +506,7 @@ function culturefeed_agenda_block_event_types() {
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name', 'slug', 'p1'));
   $query->condition("cst.did", "eventtype");
+  $query->condition("cst.show_term", 1);
   $query->condition("cst.language", culturefeed_search_get_preferred_language());
   $db_or = db_or();
   $db_or->condition('cst.tid', $eventtypes, 'IN');

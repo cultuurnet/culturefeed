@@ -292,26 +292,41 @@ function culturefeed_search_ui_block_city_facet() {
     return;
   }
 
+  $location = '';
+  if (!empty($_GET['facet']['category_flandersregion_id'])) {
+    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
+    $location = $flanders_region->name;
+  }
+
+  // Show facet layout for location.
+  elseif (!empty($_GET['location'])) {
+    $location = $_GET['location'];
+  }
+
+  $noresults = FALSE;
   if ($culturefeedSearchResult->getTotalCount() == 0) {
-    return;
+    $noresults = TRUE;
+    // Hide location selector for empty results only when no location was set.
+    if (empty($location)) {
+      return;
+    }
   }
 
   $build = array();
 
   // Show facet layout for location.
-  if (!empty($_GET['location'])) {
+  if (!empty($location)) {
 
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
-    $label = $_GET['location'];
     if (isset($_GET['distance'])) {
-      $label .= ' + ' . $_GET['distance'] . ' km';
+      $location .= ' + ' . $_GET['distance'] . ' km';
     }
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
     );
 
     $build = array();
@@ -319,10 +334,11 @@ function culturefeed_search_ui_block_city_facet() {
       '#theme' => 'culturefeed_search_facet',
       '#facet' => $facet,
       '#items' => $items,
+      '#noresults' => $noresults,
     );
 
     // If a postal was given. We can add proximity search.
-    $city_parts = explode(' ', $_GET['location']);
+    $city_parts = explode(' ', $location);
     if (is_numeric($city_parts[0])) {
       $build['distance-form'] = drupal_get_form('culturefeed_search_ui_proximity_distance_form');
     }
@@ -388,7 +404,7 @@ function culturefeed_search_ui_city_facet_form() {
 function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'nearby', 'coordinates'));
-  
+
   // Remove the region filter so choosing a city has results.
   if (isset($query['facet']['category_flandersregion_id'])) {
     unset($query['facet']['category_flandersregion_id']);
@@ -540,16 +556,26 @@ function culturefeed_search_ui_block_city_only_facet() {
   $build = array();
 
   // Show facet layout for location.
-  if (!empty($_GET['location'])) {
+  $location = '';
+  if (!empty($_GET['facet']['category_flandersregion_id'])) {
+    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
+    $location = $flanders_region->name;
+  }
+
+  // Show facet layout for location.
+  elseif (!empty($_GET['location'])) {
+    $location = $_GET['location'];
+  }
+
+  if (!empty($location)) {
 
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
-    $label = $_GET['location'];
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
     );
 
     $build = array();
@@ -784,17 +810,25 @@ function culturefeed_search_ui_block_location_search() {
 
   $build = array();
 
-  // Show facet layout for location.
-  if (!empty($_GET['location'])) {
+  $location = '';
+  if (!empty($_GET['facet']['category_flandersregion_id'])) {
+    $flanders_region = culturefeed_search_get_term_by_id($_GET['facet']['category_flandersregion_id'][0]);
+    $location = $flanders_region->name;
+  }
 
+  // Show facet layout for location.
+  elseif (!empty($_GET['location'])) {
+    $location = $_GET['location'];
+  }
+
+  if (!empty($location)) {
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
-    $label = $_GET['location'];
 
     // Make a result item for location search.
     global $pager_total_items;
     $items = array(
-      new \CultuurNet\Search\Component\Facet\FacetResultItem($label, $label, $pager_total_items[0]),
+      new \CultuurNet\Search\Component\Facet\FacetResultItem($location, $location, $pager_total_items[0]),
     );
 
     $build = array();

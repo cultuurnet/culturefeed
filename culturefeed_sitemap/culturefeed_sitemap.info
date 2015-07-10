@@ -1,0 +1,8 @@
+name = CultureFeed Search Sitemap
+description = Creates a sitemap for the events, productions and actors.
+package = CultureFeed
+version = 7.x-1.0
+core = 7.x
+
+dependencies[] = culturefeed_search
+dependencies[] = culturefeed_agenda

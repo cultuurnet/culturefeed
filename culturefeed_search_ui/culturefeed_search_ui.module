@@ -892,6 +892,41 @@ function culturefeed_search_ui_page_alter(&$variables) {
 }
 
 /**
+ * Implements hook_metatag_page_cache_cid_parts_alter().
+ */
+function culturefeed_search_ui_metatag_page_cache_cid_parts_alter(&$cid_parts) {
+
+  // Add active facets to the metatag cid, this is needed for unique titels per active facet.
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return;
+  }
+
+  // Add the value of every active filter to the metadata cid.
+  $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+  if (!empty($active_filters)) {
+
+    $values = array();
+    foreach ($active_filters as $key => $active_filter) {
+
+      if (!isset($active_filter['#label'])) {
+        foreach ($active_filter as $subkey => $subitem) {
+          $values[] = $key . ':' . $subkey;
+        }
+      }
+      else {
+        $values[] = $key;
+      }
+
+    }
+
+    $cid_parts['active_cf_filters'] = implode(',', $values);
+
+  }
+
+}
+
+/**
  * Implements hook_culturefeed_search_ui_active_filters().
  */
 function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeedFacetingComponent) {
@@ -944,6 +979,11 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
           // Get translated label from terms.
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
+          if ($active_facet_name == 'category_flandersregion_id' && !empty($query['distance'])) {
+            $label .= ' + ' . check_plain($query['distance']) . ' km';
+            unset($search_query['distance']);
+          }
+
           $build['item_' . $active_facet_name][$value] = array(
             '#theme' => 'culturefeed_search_active_filters_item',
             '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
@@ -980,7 +1020,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   }
 
   // Check if user is searching on a location.
-  if (!empty($query['location'])) {
+  if (!empty($query['location']) && !isset($query['facet']['category_flandersregion_id'])) {
     $search_query = $query;
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));

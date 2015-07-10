@@ -306,9 +306,9 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
       'attributes' => array('class' => 'facebook-share'),
       );
 
-    $variables['facebook_url'] = 'https://www.facebook.com/sharer/sharer.php?u=' . $variables['calendar_share_url'];
-    $variables['googleplus_url'] = 'https://plus.google.com/share?url=' . $variables['calendar_share_url'];
-    $variables['twitter_url'] = 'https://twitter.com/intent/tweet?text=' . $variables['calendar_share_url'];
+    $variables['facebook_url'] = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($variables['calendar_share_url']);
+    $variables['googleplus_url'] = 'https://plus.google.com/share?url=' . urlencode($variables['calendar_share_url']);
+    $variables['twitter_url'] = 'https://twitter.com/intent/tweet?text=' . urlencode($variables['calendar_share_url']);
 
     if (module_exists('forward')) {
       $variables['mail_url'] = url('forward', array('query' => array('path' => $variables['calendar_share_path'])));

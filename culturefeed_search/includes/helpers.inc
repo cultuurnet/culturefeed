@@ -433,6 +433,7 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
   $query = db_select('culturefeed_search_terms', 'cst');
   $query->fields('cst', array('tid', 'name'));
   $query->condition('cst.did', $domain);
+  $query->condition('cst.show_term', 1);
 
   // Add parent condition.
   if (!empty($conditions['parent'])) {
@@ -609,7 +610,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
-  $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+	$query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
   $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
   if(!$include_regions) {
     $query->isNotNull('p1');
@@ -634,6 +635,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
   }
+
+	foreach ($suggestions as $key => $suggestion) {
+		if (strtolower($suggestion) == strtolower($search_string)) {
+			$val = $suggestion;
+			unset($suggestion);
+			$suggestions = array($key => $val) + $suggestions;
+		}
+	}
 
   return $suggestions;
 
@@ -829,6 +838,30 @@ function culturefeed_search_term_translations($tids = array(), $return_tids = FA
 
   // Return whether we have translations currently or not.
   return !empty($terms) ? TRUE : FALSE;
+}
+
+/**
+ * Get the agefrom querystring to be set active.
+ *
+ * @param string $facet_value
+ *   The facet value.
+ *
+ * @return int
+ *   The key.
+ */
+function culturefeed_search_get_agefrom_value($facet_value) {
+
+  if (module_exists('culturefeed_search_ui')) {
+
+    $options = culturefeed_search_ui_get_age_range_facet_options();
+    foreach ($options as $key => $option) {
+      if ($option['range'] == $facet_value) {
+        return $key;
+      }
+    }
+
+  }
+
 }
 
 /**

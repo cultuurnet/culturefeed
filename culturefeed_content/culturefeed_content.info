@@ -1,0 +1,7 @@
+name = CultureFeed Content
+description = Field to render a CultureFeed search.
+package = CultureFeed
+version = VERSION
+core = 7.x
+dependencies[] = culturefeed
+dependencies[] = culturefeed_agenda

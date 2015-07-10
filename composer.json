@@ -4,9 +4,11 @@
     "description": "CultuurNet culturefeed Drupal module",
     "license": "Apache-2.0",
     "require": {
-      "cultuurnet/search": "~1.0",
-      "cultuurnet/cdb": "~2.0",
-      "cultuurnet/culturefeed-php": "~1.0"
+      "cultuurnet/search": "~1.2",
+      "cultuurnet/cdb": "~2.1",
+      "cultuurnet/culturefeed-php": "~1.5",
+      "cultuurnet/calendar-summary": "~1.0",
+      "cultuurnet/sitemap-xml": "~1.0"
     },
     "require-dev": {
       "phing/phing": "~2.10"

@@ -13,6 +13,8 @@ define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/j
 
 define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
 
+define('CULTUREFEED_CDB_DEFAULT_VERSION', '3.2');
+
 /**
  * Implements hook_init().
  */

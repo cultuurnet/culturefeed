@@ -249,7 +249,7 @@ class CultureFeedSearchPage {
     });
 
     $this->query[] = implode(' OR ', $query_parts);
-    
+
     return $this->query;
   }
 
@@ -432,43 +432,50 @@ class CultureFeedSearchPage {
       else {
         $this->parameters[] = new Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
       }
-      
+
       if (isset($params['sort']) && $params['sort'] == 'geodist') {
         $this->parameters[] = new Parameter\Sort('geodist()', 'asc');
         $this->parameters[] = new Parameter\FilterQuery('{!geofilt}');
       }
-      
+
       $this->parameters[] = new Parameter\Spatial\Point($coordinates[0], $coordinates[1]);
       $this->parameters[] = new Parameter\Spatial\SpatialField('physical_gis');
+    }
+
+    if (empty($params['facet']['category_flandersregion_id'][0]) && !empty($params['location'])) {
+      $flanders_region = culturefeed_search_get_category_by_slug($params['location'], 'flandersregion')->tid;
+      // Backwards compatiblity for sites without clean urls: make sure location is mapped to flandersregion.
+      if (empty($flanders_region)) {
+        $flanders_region = key(culturefeed_search_get_categories_by_domain('flandersregion', array('name_like' => $params['location'])));
+      }
+      if ($flanders_region) {
+        $params['facet']['category_flandersregion_id'][0] = $flanders_region;
+      }
     }
 
     // Add the location facet. Only use the location if a distance is set.
     // all other cases will search for a category Id of the type flandersregion
     // or workingregion.
-    if (!empty($params['regId']) || !empty($params['location'])) {
-      
+    if (!empty($params['facet']['category_flandersregion_id'][0])) {
+
       if (!isset($params['distance'])) {
-      
+
         $regFilter = array();
-        
-        if (empty($params['regId']) && !empty($params['location'])) {
-          $location = culturefeed_search_get_category_by_name($params['location']);
-          $params['regId'] = $location->tid;
-        }
-  
+        $params['regId'] = $params['facet']['category_flandersregion_id'][0];
+
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
-  
+
           $wregFilters = array();
           foreach ($params['wregIds'] as $wregId) {
             $wregFilters[] = $wregId;
           }
         }
-        
+
         if (empty($_GET['only-wregs'])) {
           $regFilter[] = $params['regId'];
         }
-  
+
         $regFilterQuery = '(';
         $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
         if (!empty($wregFilters)) {
@@ -476,27 +483,33 @@ class CultureFeedSearchPage {
         }
         $regFilterQuery .= ')';
         $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
-  
+
       }
-      elseif (!empty($params['location'])) {
-  
+      else {
+
+        $location = culturefeed_search_get_term_by_id($params['facet']['category_flandersregion_id'][0]);
+
         // Check if postal was present.
-        $city_parts = explode(' ', $params['location']);
-        if (is_numeric($city_parts[0]) && empty($params['wregIds'])) {
-          $distance = isset($params['distance']) ? $params['distance'] : FALSE;
-  
-          // If category_actortype_id we assume that we search on pages (on day we have to fix)
-          if (isset($params['facet']['category_actortype_id'])) {
-            $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+        if ($location) {
+          $city_parts = explode(' ', $location->name);
+          if (is_numeric($city_parts[0]) && empty($params['wregIds'])) {
+            $distance = isset($params['distance']) ? $params['distance'] : FALSE;
+
+            // If category_actortype_id we assume that we search on pages (on day we have to fix)
+            if (isset($params['facet']['category_actortype_id'])) {
+              $this->parameters[] = new Parameter\FilterQuery('zipcode' . ':' . $city_parts[0]);
+            }
+            else {
+              $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
+            }
+
           }
-          else {
-            $this->parameters[] = new Parameter\Spatial\Zipcode($city_parts[0], $distance);
-          }
-  
         }
-        
+
       }
-  
+
+      unset($params['facet']['category_flandersregion_id']);
+
     }
 
     // Calculate actor if available.
@@ -706,7 +719,7 @@ class CultureFeedSearchPage {
    *   and the page number with the page parameter increased by one,
    *   surrounded by parentheses.
    */
-  public function getPageTitle() {
+  public function getPageTitle($ignore_datetype = FALSE) {
 
     // Return the title that has been explicitly set with $this->setTitle().
     if (!empty($this->title)) {
@@ -715,11 +728,19 @@ class CultureFeedSearchPage {
 
     // Otherwise the framework version will be used.
     $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $this->facetComponent);
+
+    if ($ignore_datetype) {
+      foreach($active_filters as $key => $active_filter) {
+        if ($key == 'item_datetype') {
+          unset ($active_filters[$key]);
+        }
+      }
+    }
+
     if (!empty($active_filters)) {
 
       $labels = array();
       foreach ($active_filters as $active_filter) {
-
         if (!isset($active_filter['#label'])) {
           foreach ($active_filter as $subitem) {
             $labels[] = $subitem['#label'];
@@ -728,7 +749,6 @@ class CultureFeedSearchPage {
         else {
           $labels[] = $active_filter['#label'];
         }
-
       }
 
     }

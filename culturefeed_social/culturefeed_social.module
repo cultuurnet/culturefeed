@@ -147,7 +147,7 @@ function culturefeed_social_menu() {
   );
 
   $items['culturefeed/activities/recent'] = array(
-    'title arguments' => array('Most recent actions'),
+    'title' => 'Most recent actions',
     'page callback' => 'culturefeed_social_page_recent_activities',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -350,6 +350,7 @@ function culturefeed_social_theme() {
       'variables' => array(
         'activities_total' => NULL,
         'activity_link' => NULL,
+        'activity_type' => NULL,
         'list' => NULL,
       ),
       'template' => 'culturefeed-social-user-list-block-for-activity',
@@ -899,9 +900,9 @@ function culturefeed_social_base_report_abuse_form($form, &$form_state, $activit
     '#value' => t('Submit'),
     '#attributes' => array('style' => array('float:left')),
   );
-  
+
   $destination = drupal_get_destination();
-  
+
   $form['cancel'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),

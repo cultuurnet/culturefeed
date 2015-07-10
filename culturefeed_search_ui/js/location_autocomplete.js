@@ -25,6 +25,7 @@
           }
 
         },
+        autoFocus: true,
       });
 
       $("#edit-where").once('location-search-init').categorisedAutocomplete({
@@ -33,14 +34,23 @@
 
           // Actors are direct links.
           if (ui.item.type == 'actor') {
+            // Go to the actor page aftoer selecting an actor.
             window.location.href = ui.item.suggestion;
+            // Disable form submission after selection of an actor item.
+            $(this).parents('form').find('button').attr('disabled', true);
           }
           // Trigger location search.
           else {
+            if (ui.item.value.indexOf(' (+ ') != -1) {
+              // Reset value and label to remove the boroughs text.
+              ui.item.value = ui.item.suggestion;
+              ui.item.label = ui.item.suggestion;
+            }
             $(this).val(ui.item.suggestion);
           }
 
         },
+        autoFocus: true
       });
 
     }
@@ -56,6 +66,15 @@
       success: function(data) {
         if (data.length === 0) {
           widget.removeClass('throbbing');
+        }
+        else {
+          $.each(data, function(index, element) {
+            if (element.type == 'city' && !(element.label.match(/^\d+/))) {
+              if (!(element.label.match(/^Provinc|Regio+/))) {
+                element.label += ' (+ ' + Drupal.t('boroughs') + ')';
+              }
+            }
+          });
         }
         callback(data);
       },
