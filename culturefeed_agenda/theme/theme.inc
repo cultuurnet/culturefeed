@@ -603,7 +603,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        $phones[] = $phone->getNumber();
+        if($variables['device'] == 'phone')
+        {
+          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+        }
+        else {
+          $phones[] = $phone->getNumber();
+        }
       }
       else {
         $faxes[] = $phone->getNumber();
@@ -627,7 +633,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          $reservation_phones[] = $phone;
+          if($variables['device'] == 'phone')
+          {
+            $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
+          }
+          else {
+            $reservation_phones[] = $phone;
+          }
         }
         $variables['reservation']['phone'] = implode(', ', $reservation_phones);
       }
@@ -929,7 +941,13 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        $phones[] = $phone->getNumber();
+        if($variables['device'] == 'phone')
+        {
+          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+        }
+        else {
+          $phones[] = $phone->getNumber();
+        }
       }
       else {
         $faxes[] = $phone->getNumber();
