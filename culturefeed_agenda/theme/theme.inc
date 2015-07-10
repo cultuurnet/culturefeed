@@ -838,6 +838,14 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
           }
           catch (Exception $e) {
           }
+
+          // Medium Calendar format (for search results).
+          $variables['when_md'] = '';
+          try {
+            $variables['when_md'] = $html_formatter->format($calendar, 'md');
+          }
+          catch (Exception $e) {
+          }
         }
 
         // Add location information from the event.
