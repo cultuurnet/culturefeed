@@ -160,6 +160,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       unset($facets['category_eventtype_id']);
       unset($facets['category_theme_id']);
+      unset($facets['category_flandersregion_id']);
 
       unset($query['location']);
       unset($query['regId']);
@@ -172,14 +173,48 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     }
 
+    // No index is FALSE, if user is filtering on umv category and/or region.
+    elseif (isset($query['facet']['category_umv_id'])) {
+
+      $facets = $query['facet'];
+      unset($facets['category_umv_id']);
+      unset($facets['category_flandersregion_id']);
+
+      unset($query['location']);
+      unset($query['regId']);
+      unset($query['facet']);
+
+      // If regId was the only extra facet / parameters, set noindex to false.
+      if (count($facets) == 0 && count($query) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
+    // No index is FALSE, if user is filtering on flandersregion Id without additional facets.
+    elseif (isset($query['facet']['category_flandersregion_id']) && count($query) == 1) {
+
+      $facets = $query['facet'];
+      unset($facets['category_flandersregion_id']);
+
+      // If flandersregion was the only filter set noindex to false.
+      if (count($facets) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
     // No index is FALSE, if user is filtering on region Id without additional facets.
-    elseif ((isset($query['regId']) || isset($query['location'])) && !isset($query['facet'])) {
+    elseif (isset($query['regId']) || isset($query['location']) || isset($query['facet']['category_flandersregion_id'])) {
+
+      $facets = $query['facet'];
+      unset($facets['category_flandersregion_id']);
 
       unset($query['location']);
       unset($query['regId']);
 
-      // If regId was the only filter set noindex to false.
-      if (count($query) == 0) {
+      // If regId, location or flandersregion was the only filter set noindex to false.
+      if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }
 
