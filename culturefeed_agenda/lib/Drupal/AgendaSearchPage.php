@@ -306,9 +306,18 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       elseif (!empty($query['location'])) {
         $message .= t(" in @region", array('@region' => $query['location']));
       }
+      elseif (!empty($query['facet']['category_flandersregion_id'][0])) {
+        $term = culturefeed_search_get_term_translation($query['facet']['category_flandersregion_id'][0]);
+        $message .= t(" in @region", array('@region' => $term));
+      }
 
       if (!empty($query['facet']['category_eventtype_id'][0])) {
         $term = culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]);
+        $message .= t(" of the type @type", array('@type' => $term));
+      }
+
+      elseif (!empty($query['facet']['category_umv_id'][0])) {
+        $term = culturefeed_search_get_term_translation($query['facet']['category_umv_id'][0]);
         $message .= t(" of the type @type", array('@type' => $term));
       }
 
