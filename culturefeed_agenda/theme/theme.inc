@@ -349,7 +349,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
         if ($keyword->isVisible()) {
           $variables['raw_keywords'][] = $keyword->getValue();
-          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => urlencode($keyword->getValue()))));
+          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => '"' . $keyword->getValue() . '"')));
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
@@ -373,7 +373,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $linked_keywords = array();
       foreach ($keywords as $keyword) {
         $variables['raw_keywords'][] = $keyword;
-        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
+        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => '"' . $keyword . '"')));
       }
 
       $variables['keywords'] = implode(', ', $linked_keywords);
