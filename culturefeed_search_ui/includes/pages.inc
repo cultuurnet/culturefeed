@@ -146,7 +146,8 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
           'type' => 'empty',
         );
       }
-      $city_suggestions = array_slice($city_suggestions, 0, 5);
+      // UIV-1352 We want all results instead of the first 5.
+      //$city_suggestions = array_slice($city_suggestions, 0, 5);
       foreach ($city_suggestions as $city_suggestion) {
         $matches[] = array(
           'label' => str_replace("&#039;","'",check_plain($city_suggestion)),
