@@ -1082,7 +1082,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
-    $og_tags['og:title'] = $variables['title'];
+    $og_tags['og:title'] = html_entity_decode($variables['title']);
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];
