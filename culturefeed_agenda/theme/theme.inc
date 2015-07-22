@@ -1122,7 +1122,9 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
-    $path = str_replace(' ', '%20', $variables['main_picture']);
+    $colonpos = strpos($variables['main_picture'], ':');
+    $path = ($colonpos == FALSE) ? 'http:' : '' ;
+    $path .= str_replace(' ', '%20', $variables['main_picture']);
     $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
   }
   else {
