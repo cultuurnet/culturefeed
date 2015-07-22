@@ -1129,7 +1129,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   }
   else {
     $path = drupal_get_path('module', 'culturefeed_agenda');
-    $og_tags['og:image'] = url($path . '/images/no-thumbnail.gif', array('absolute' => TRUE));
+    $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
   
   foreach ($og_tags as $property => $content) {
