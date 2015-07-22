@@ -1122,10 +1122,12 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
-    $og_tags['og:image'] = $variables['main_picture'] . '?width=200&height=200&crop=auto&scale=both';
+    $path = str_replace(' ', '%20', $variables['main_picture']);
+    $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
   }
   else {
-    $og_tags['og:image'] = url(drupal_get_path('module', 'culturefeed_agenda') . '/images/no-thumbnail.gif', array('absolute' => TRUE));
+    $path = drupal_get_path('module', 'culturefeed_agenda');
+    $og_tags['og:image'] = url($path . '/images/no-thumbnail.gif', array('absolute' => TRUE));
   }
   
   foreach ($og_tags as $property => $content) {
