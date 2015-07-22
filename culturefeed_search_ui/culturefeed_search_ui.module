@@ -583,7 +583,7 @@ function culturefeed_search_ui_block_configure($delta) {
       '#tree' => TRUE,
     );
 
-    for ($i = 0; $i < 20; $i++) {
+    for ($i = 0; $i < 50; $i++) {
       $form[$config_label][$i]['exposed'] = array(
         '#title' => t('Exposed'),
         '#type' => 'checkbox',
