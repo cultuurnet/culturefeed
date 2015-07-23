@@ -376,6 +376,10 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     
     // Add additional facet information to the meta description
     // Only needed for indexable paths, see culturefeed_search_ui_set_noindex_metatag()
+    if (!empty($query['voor-kinderen'])) {
+      $message .= t(" for kids");
+    }
+
     if (!empty($query['facet']['category_actortype_id'][0])) {
       $term = culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]);
       $message .= t(" of the type @type", array('@type' => $term));

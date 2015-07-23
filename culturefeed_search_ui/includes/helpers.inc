@@ -259,30 +259,29 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     }
 
-    // No index is FALSE, if user is filtering on flandersregion Id without additional facets.
-    elseif (isset($query['facet']['category_flandersregion_id']) && count($query) == 1) {
+    // No index is FALSE, if user is filtering on flandersregion Id.
+    elseif (isset($query['facet']['category_flandersregion_id'])) {
 
       $facets = $query['facet'];
       unset($facets['category_flandersregion_id']);
+      unset($query['keyword']);
+      unset($query['facet']);
 
-      // If flandersregion was the only filter set noindex to false.
-      if (count($facets) == 0) {
+      // If keyword was the only extra filter set noindex to false.
+      if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }
 
     }
 
-    // No index is FALSE, if user is filtering on region Id without additional facets.
-    elseif (isset($query['regId']) || isset($query['location']) || isset($query['facet']['category_flandersregion_id'])) {
-
-      $facets = $query['facet'];
-      unset($facets['category_flandersregion_id']);
+    // No index is FALSE, if user is filtering on location or region Id without additional facets.
+    elseif (isset($query['regId']) || isset($query['location'])) {
 
       unset($query['location']);
       unset($query['regId']);
 
-      // If regId, location or flandersregion was the only filter set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
+      // If location or regId was the only filter set noindex to false.
+      if (count($query) == 0) {
         $noindex = FALSE;
       }
 
@@ -298,6 +297,28 @@ function culturefeed_search_ui_set_noindex_metatag() {
         $noindex = FALSE;
       }
 
+    }
+
+    // No index is FALSE, if user is filtering on voor-kinderen.
+    if (isset($query['voor-kinderen'])) {
+  
+      unset($query['voor-kinderen']);
+      
+      // Unset all facets that can be indexed in combination with voor-kinderen
+      if (isset($query['facet'])) {
+        $facets = $query['facet'];
+        unset($facets['category_umv_id']);
+        unset($facets['category_flandersregion_id']);
+        unset($facets['category_eventtype_id']);  
+        unset($facets['category_theme_id']);
+        unset($query['facet']);
+      }
+  
+      // If voor-kinderen was the only filter set noindex to false.
+      if (count($query) == 0) {
+        $noindex = FALSE;
+      }
+  
     }
 
   }
