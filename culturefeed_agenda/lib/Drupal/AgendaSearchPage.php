@@ -297,7 +297,15 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $message = t("A summary of all events and productions");
     }
     else {
-      $message = t("A summary of all events and productions");
+
+      if (!empty($query['facet']['category_actortype_id'][0])) {
+        $message = t("A summary of all actors");
+        $term = culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]);
+        $message .= t(" of the type @type", array('@type' => $term));
+      }
+      else {
+        $message = t("A summary of all events and productions");
+      }
 
       if (!empty($query['regId'])) {
         $term = culturefeed_search_get_term_translation($query['regId']);
