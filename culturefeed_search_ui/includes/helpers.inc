@@ -154,8 +154,28 @@ function culturefeed_search_ui_set_noindex_metatag() {
   }
   else {
 
+    // No index is FALSE, if user is filtering on actor type.
+    if (isset($query['facet']['category_actortype_id'])) {
+
+      $facets = $query['facet'];
+      unset($facets['category_actortype_id']);
+      unset($facets['type']);
+      unset($facets['category_flandersregion_id']);
+
+      unset($query['location']);
+      unset($query['regId']);
+      unset($query['actors']);
+      unset($query['facet']);
+
+      // If theme_id and/or regId was the only extra facet / parameters, set noindex to false.
+      if (count($facets) == 0 && count($query) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
     // No index is FALSE, if user is filtering on event type.
-    if (isset($query['facet']['category_eventtype_id'])) {
+    elseif (isset($query['facet']['category_eventtype_id'])) {
 
       $facets = $query['facet'];
       unset($facets['category_eventtype_id']);
