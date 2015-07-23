@@ -154,6 +154,21 @@ function culturefeed_search_ui_set_noindex_metatag() {
   }
   else {
 
+    // No index is FALSE, if user is filtering on entity type actor.
+    if (isset($query['facet']['type'])) {
+
+      $facets = $query['facet'];
+      if ($query['facet']['type'][0] == 'actor') {
+        unset($facets['type']);
+      }
+
+      // If type=actor is the only parameter, set noindex to false.
+      if (count($facets) == 0) {
+        $noindex = FALSE;
+      }
+
+    }
+
     // No index is FALSE, if user is filtering on actor type.
     if (isset($query['facet']['category_actortype_id'])) {
 
@@ -167,7 +182,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($query['actors']);
       unset($query['facet']);
 
-      // If theme_id and/or regId was the only extra facet / parameters, set noindex to false.
+      // If type, flandersregion, location and/or regId was the only extra facet / parameters, set noindex to false.
       if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }
@@ -186,7 +201,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($query['regId']);
       unset($query['facet']);
 
-      // If theme_id and/or regId was the only extra facet / parameters, set noindex to false.
+      // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
       if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }
@@ -204,7 +219,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($query['regId']);
       unset($query['facet']);
 
-      // If regId was the only extra facet / parameters, set noindex to false.
+      // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
       if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }

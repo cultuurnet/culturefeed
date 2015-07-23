@@ -99,7 +99,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     );
 
     $active_trail[] = array(
-      'title' => t('All activities'),
+      'title' => t('Agenda'),
       'href' => 'agenda/search',
       'link_path' => '',
       'localized_options' => array(),
@@ -144,6 +144,44 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
           'type' => 0,
         );
       }
+
+    }
+
+    // Show entity type in breadcrumb for actors.
+    if (isset($query['facet']['type'])) {
+
+      if ($query['facet']['type'][0] == 'actor') {
+        $facet['type'] = $query['facet']['type'];
+        $active_trail[] = array(
+          'title' => t('Places & organisers'),
+          'href' => 'agenda/search',
+          'link_path' => '',
+          'localized_options' => array(
+            'query' => array(
+              'facet' => $facet,
+            ),
+          ),
+          'type' => 0,
+        );
+      }
+
+    }
+
+    // Show actor type in breadcrumb.
+    if (isset($query['facet']['category_actortype_id'])) {
+
+      $facet['category_actortype_id'] = $query['facet']['category_actortype_id'];
+      $active_trail[] = array(
+        'title' => culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]),
+        'href' => 'agenda/search',
+        'link_path' => '',
+        'localized_options' => array(
+          'query' => array(
+            'facet' => $facet,
+          ),
+        ),
+        'type' => 0,
+      );
 
     }
 
@@ -296,7 +334,22 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     if (empty($query)) {
       $message = t("A summary of all events and productions");
     }
+    
     else {
+
+      if (!empty($query['facet']['type'][0])) {
+  
+        if ($query['facet']['type'][0] == 'actor') {
+          $message = t("A summary of all actors");
+        }
+        elseif ($query['facet']['type'][0] == 'event') {
+          $message = t("A summary of all events");
+        }
+        elseif ($query['facet']['type'][0] == 'production') {
+          $message = t("A summary of all productions");
+        }
+  
+      }
 
       if (!empty($query['facet']['category_actortype_id'][0])) {
         $message = t("A summary of all actors");
