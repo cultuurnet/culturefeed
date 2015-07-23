@@ -350,67 +350,66 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     $query = drupal_get_query_parameters(NULL, array('q'));
 
+    // Set prefix of the meta description based on entity type
     if (empty($query)) {
+      $message = t("A summary of all events and productions");
+    }    
+    elseif (!empty($query['facet']['type'][0])) {
+  
+      if ($query['facet']['type'][0] == 'actor') {
+        $message = t("A summary of all actors");
+      }
+      elseif ($query['facet']['type'][0] == 'event') {
+        $message = t("A summary of all events");
+      }
+      elseif ($query['facet']['type'][0] == 'production') {
+        $message = t("A summary of all productions");
+      }
+
+    }
+    elseif (!empty($query['facet']['category_actortype_id'][0])) {
+      $message = t("A summary of all actors");
+    }
+    else {
       $message = t("A summary of all events and productions");
     }
     
-    else {
+    // Add additional facet information to the meta description
+    // Only needed for indexable paths, see culturefeed_search_ui_set_noindex_metatag()
+    if (!empty($query['facet']['category_actortype_id'][0])) {
+      $term = culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]);
+      $message .= t(" of the type @type", array('@type' => $term));
+    }
 
-      if (!empty($query['facet']['type'][0])) {
-  
-        if ($query['facet']['type'][0] == 'actor') {
-          $message = t("A summary of all actors");
-        }
-        elseif ($query['facet']['type'][0] == 'event') {
-          $message = t("A summary of all events");
-        }
-        elseif ($query['facet']['type'][0] == 'production') {
-          $message = t("A summary of all productions");
-        }
-  
-      }
+    if (!empty($query['regId'])) {
+      $term = culturefeed_search_get_term_translation($query['regId']);
+      $message .= t(" in @region", array('@region' => $term));
+    }
+    elseif (!empty($query['location'])) {
+      $message .= t(" in @region", array('@region' => $query['location']));
+    }
+    elseif (!empty($query['facet']['category_flandersregion_id'][0])) {
+      $term = culturefeed_search_get_term_translation($query['facet']['category_flandersregion_id'][0]);
+      $message .= t(" in @region", array('@region' => $term));
+    }
 
-      if (!empty($query['facet']['category_actortype_id'][0])) {
-        $message = t("A summary of all actors");
-        $term = culturefeed_search_get_term_translation($query['facet']['category_actortype_id'][0]);
-        $message .= t(" of the type @type", array('@type' => $term));
-      }
-      else {
-        $message = t("A summary of all events and productions");
-      }
+    if (!empty($query['facet']['category_eventtype_id'][0])) {
+      $term = culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]);
+      $message .= t(" of the type @type", array('@type' => $term));
+    }
+    elseif (!empty($query['facet']['category_umv_id'][0])) {
+      $term = culturefeed_search_get_term_translation($query['facet']['category_umv_id'][0]);
+      $message .= t(" of the type @type", array('@type' => $term));
+    }
 
-      if (!empty($query['regId'])) {
-        $term = culturefeed_search_get_term_translation($query['regId']);
-        $message .= t(" in @region", array('@region' => $term));
-      }
-      elseif (!empty($query['location'])) {
-        $message .= t(" in @region", array('@region' => $query['location']));
-      }
-      elseif (!empty($query['facet']['category_flandersregion_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_flandersregion_id'][0]);
-        $message .= t(" in @region", array('@region' => $term));
-      }
+    if (!empty($query['facet']['category_theme_id'][0])) {
+      $term = culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]);
+      $message .= t(" with theme @theme", array('@theme' => $term));
+    }
 
-      if (!empty($query['facet']['category_eventtype_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]);
-        $message .= t(" of the type @type", array('@type' => $term));
-      }
-
-      elseif (!empty($query['facet']['category_umv_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_umv_id'][0]);
-        $message .= t(" of the type @type", array('@type' => $term));
-      }
-
-      if (!empty($query['facet']['category_theme_id'][0])) {
-        $term = culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]);
-        $message .= t(" with theme @theme", array('@theme' => $term));
-      }
-
-      if (!empty($query['keyword'])) {
-        $keyword = $query['keyword'];
-        $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
-      }
-
+    if (!empty($query['keyword'])) {
+      $keyword = $query['keyword'];
+      $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
     }
 
     return $message;

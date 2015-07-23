@@ -160,9 +160,10 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       if ($query['facet']['type'][0] == 'actor') {
         unset($facets['type']);
+        unset($facets['category_flandersregion_id']);
       }
 
-      // If type=actor is the only parameter, set noindex to false.
+      // If type=actor is the only parameter with flandersregion, set noindex to false.
       if (count($facets) == 0) {
         $noindex = FALSE;
       }
