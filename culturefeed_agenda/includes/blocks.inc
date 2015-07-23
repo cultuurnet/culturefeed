@@ -208,7 +208,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
+    '#value' => variable_get('agenda_search_block_submit_value', t('Search')),
     '#weight' => 200,
   );
 
