@@ -185,6 +185,25 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
     }
 
+    // Show flandersregion in breadcrumb.
+    if (isset($query['facet']['category_flandersregion_id'])) {
+
+      $facet['category_flandersregion_id'] = $query['facet']['category_flandersregion_id'];
+
+      $active_trail[] = array(
+        'title' => culturefeed_search_get_term_translation($query['facet']['category_flandersregion_id'][0]),
+        'href' => 'agenda/search',
+        'link_path' => '',
+        'localized_options' => array(
+          'query' => array(
+            'facet' => $facet,
+          ),
+        ),
+        'type' => 0,
+      );
+
+    }
+
     if (isset($query['location'])) {
 
       $active_trail[] = array(
