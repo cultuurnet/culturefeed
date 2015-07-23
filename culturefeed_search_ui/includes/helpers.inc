@@ -140,6 +140,38 @@ function culturefeed_search_ui_get_age_range_facet_options() {
 }
 
 /**
+ * Put noindex and canonical metatags for search pages.
+ */
+function culturefeed_search_ui_set_canonical_metatag() {
+
+  $canonical = FALSE;
+
+  $query = drupal_get_query_parameters(NULL, array('q'));
+  // If user is filtering on actor type, unset redundant facets for canonical metatag
+  if (isset($query['facet']['category_actortype_id'])) {
+
+    if (isset($query['facet']['type']) || isset($query['actors'])) {
+      $canonical = array();
+  
+      $facets = $query['facet'];
+      unset($facets['type']);
+      unset($query['actors']);
+  
+      $canonical['path'] = 'agenda/search';
+      $canonical['options']['query']['facet'] = $facets;
+    }
+
+  }
+
+  // Add the rel="canonical" tag if needed.
+  if ($canonical) {
+    $canonical['options']['absolute'] = TRUE;
+    drupal_add_html_head_link(array('rel' => 'canonical', 'href' => url($canonical['path'], $canonical['options'])), TRUE);
+  }
+
+}
+
+/**
  * Set the correct metatags for search pages.
  */
 function culturefeed_search_ui_set_noindex_metatag() {
