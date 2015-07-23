@@ -16,8 +16,8 @@
 #  theme/culturefeed-actor-summary.tpl.php: n/a
 #  theme/culturefeed-actor.tpl.php: n/a
 #  theme/culturefeed-production-summary.tpl.php: n/a
-#  includes/helpers.inc: n/a
 #  js/map.js: n/a
+#  includes/helpers.inc: n/a
 #  theme/culturefeed-actor-short-summary.tpl.php: n/a
 #  theme/culturefeed-event-short-summary.tpl.php: n/a
 #  theme/culturefeed-production-short-summary.tpl.php: n/a
@@ -30,8 +30,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-07-23 11:09+0200\n"
-"PO-Revision-Date: 2015-07-23 11:11+0100\n"
+"POT-Creation-Date: 2015-07-23 16:06+0200\n"
+"PO-Revision-Date: 2015-07-23 16:06+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -303,6 +303,10 @@ msgstr "Waar"
 msgid "Use my current location"
 msgstr "Gebruik mijn huidige locatie"
 
+#: includes/blocks.inc:211 js/map.js:0
+msgid "Search"
+msgstr "Zoeken"
+
 #: includes/blocks.inc:408
 msgid "Program schedule"
 msgstr "Programmatie"
@@ -342,43 +346,43 @@ msgstr "Home"
 msgid "Directions"
 msgstr ""
 
-#: js/map.js:0
-msgid "Search"
-msgstr "Zoeken"
-
 #: lib/Drupal/AgendaSearchPage.php:156
 msgid "Places & organisers"
 msgstr "Plaatsen & organisatoren"
 
-#: lib/Drupal/AgendaSearchPage.php:354;379
+#: lib/Drupal/AgendaSearchPage.php:355;374
 msgid "A summary of all events and productions"
 msgstr "Overzicht van alle activiteiten en uitstappen"
 
-#: lib/Drupal/AgendaSearchPage.php:362;374
+#: lib/Drupal/AgendaSearchPage.php:360;371
 msgid "A summary of all actors"
 msgstr "Overzicht van alle plaatsen"
 
-#: lib/Drupal/AgendaSearchPage.php:365
+#: lib/Drupal/AgendaSearchPage.php:363
 msgid "A summary of all events"
 msgstr ""
 
-#: lib/Drupal/AgendaSearchPage.php:368
+#: lib/Drupal/AgendaSearchPage.php:366
 msgid "A summary of all productions"
 msgstr ""
 
-#: lib/Drupal/AgendaSearchPage.php:376;396;401
+#: lib/Drupal/AgendaSearchPage.php:380
+msgid " for kids"
+msgstr " voor kinderen"
+
+#: lib/Drupal/AgendaSearchPage.php:385;402;406
 msgid " of the type @type"
 msgstr " van het type @type"
 
-#: lib/Drupal/AgendaSearchPage.php:384;387;391
+#: lib/Drupal/AgendaSearchPage.php:390;393;397
 msgid " in @region"
 msgstr " in @region"
 
-#: lib/Drupal/AgendaSearchPage.php:406
+#: lib/Drupal/AgendaSearchPage.php:411
 msgid " with theme @theme"
 msgstr " (@theme)"
 
-#: lib/Drupal/AgendaSearchPage.php:411
+#: lib/Drupal/AgendaSearchPage.php:416
 msgid " with keyword @keyword"
 msgstr " met trefwoord @keyword"
 
