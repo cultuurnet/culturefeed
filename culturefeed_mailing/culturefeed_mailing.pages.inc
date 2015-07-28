@@ -1398,10 +1398,10 @@ function culturefeed_mailing_page_mailing_content() {
   if ($nids) {
     $nodes = node_load_multiple($nids);
     foreach ($nodes as $node) {
-      $link = field_view_field('node', $node, 'field_link');
-      $image = field_view_field('node', $node, 'field_image');
-      $intro = field_view_field('node', $node, 'field_teaser');
-      $region = field_view_field('node', $node, 'field_region');
+      $link = field_view_field('node', $node, 'field_mail_item_link');
+      $image = field_view_field('node', $node, 'field_mail_item_image');
+      $intro = field_view_field('node', $node, 'field_mail_item_teaser');
+      $region = field_view_field('node', $node, 'field_mail_item_region');
       
       $link_path = $link['#items'][0]['url'];
       $link_query = array($link['#items'][0]['query']);
