@@ -214,9 +214,11 @@ function culturefeed_authenticated_action_page() {
       $redirect = $_GET['destination'];
     }
 
-    // Check if the user will have access to the redirect.
+    $url = drupal_parse_url($redirect);
+
+    // Check if the user will have access to the redirect path.
     // If not it will cause endless loop.
-    if (!drupal_valid_path($redirect)) {
+    if (!drupal_valid_path($url['path'])) {
       drupal_set_title(t('Access denied'));
       return t('You are not authorized to access this page.');
     }
