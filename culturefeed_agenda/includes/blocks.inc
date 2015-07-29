@@ -184,7 +184,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $form['location']['radius'] = array(
       '#type' => 'hidden',
-      '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : NULL,
+      '#default_value' => isset($_GET['distance']) && !isset($_GET['facet']['category_flandersregion_id']) ? $_GET['distance'] : NULL,
     );
 
     $form['location']['nearby'] = array(
@@ -252,7 +252,6 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
     if (isset($query['distance'])) {
       unset($query['distance']);
     }
-
 
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
