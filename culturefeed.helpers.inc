@@ -504,7 +504,11 @@ function culturefeed_share_link($share_url, $platform, $title, $device) {
       break;
     case 'mail' :
       if (module_exists('forward') && $device == 'computer') {
-        return url('forward', array('query' => array('path' => url($share_url, array('query' => $mail['utm'])))));
+        // We can't forward external URL's
+        $share_url = url(current_path(), array('query' => $mail['utm']));
+        // strip leading slash
+        $share_url = ltrim($share_url, '/');
+        return url('forward', array('query' => array('path' => $share_url)));
       }
       else {
         return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url($share_url, array('query' => $mail['utm'])));
