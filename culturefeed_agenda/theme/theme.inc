@@ -437,11 +437,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['share_url'] = $base_root . $variables['url'];
 
     // Build share URL's.
-    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook');
-    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus');
-    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter');
-    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp');
-    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail');
+    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
+    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
+    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
+    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
     // Prepare to push share activities to Culturefeed.
     $track = FALSE;

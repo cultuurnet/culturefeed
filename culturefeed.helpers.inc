@@ -446,8 +446,7 @@ function culturefeed_ajax_command_goto($url) {
 /*
 f
 */
-function culturefeed_share_link($share_url, $platform)
-{
+function culturefeed_share_link($share_url, $platform, $title, $device) {
 
   // Set prefix for share URL's.
   $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
@@ -491,29 +490,27 @@ function culturefeed_share_link($share_url, $platform)
 
   switch($platform)
   {
-    case "facebook":
+    case 'facebook' :
       return $facebook['prefix'] . urlencode(url($share_url, array('query' => $facebook['utm'])));
       break;
-    case "googleplus":
+    case 'googleplus' :
       return $googleplus['prefix'] . urlencode(url($share_url, array('query' => $googleplus['utm'])));
       break;
-    case "twitter":
+    case 'twitter' :
       return $twitter['prefix'] . urlencode(url($share_url, array('query' => $twitter['utm'])));
       break;
-    case "whatsapp":
+    case 'whatsapp' :
       return $whatsapp['prefix'] . urlencode(url($share_url, array('query' => $whatsapp['utm'])));
       break;
-    case "mail":
-      if (module_exists('forward') && (isset($variables['device']) && $variables['device'] == 'computer')) {
+    case 'mail' :
+      if (module_exists('forward') && $device == 'computer') {
         return url('forward', array('query' => array('path' => url($share_url, array('query' => $mail['utm'])))));
       }
       else {
-        return 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($share_url, array('query' => $mail['utm'])));
+        return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url($share_url, array('query' => $mail['utm'])));
       }
       break;
   }
-
-
 
 }
 
