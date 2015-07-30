@@ -436,63 +436,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     global $base_root;
     $variables['share_url'] = $base_root . $variables['url'];
 
-    $facebook = array();
-    $googleplus = array();
-    $twitter = array();
-    $whatsapp = array();
-
-    // Set prefix for share URL's.
-    $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
-    $googleplus['prefix'] = 'https://plus.google.com/share?url=';
-    $twitter['prefix'] = 'https://twitter.com/intent/tweet?text=';
-    $whatsapp['prefix'] = 'whatsapp://send?text=';
-
-    // Set UTM parameters for share URL's.
-    $utm['campaign'] = 'share';
-    $utm['medium'] = 'social';
-
-    $facebook['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'facebook.com',
-    );
-
-    $googleplus['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'plus.google.com',
-    );
-
-    $twitter['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'twitter.com',
-    );
-
-    $whatsapp['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'whatsapp',
-    );
-
-    $mail['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => 'email',
-      'utm_source' => 'forward-mail',
-    );
-
     // Build share URL's.
-    $variables['facebook']['url'] = $facebook['prefix'] . urlencode(url($variables['share_url'], array('query' => $facebook['utm'])));
-    $variables['googleplus']['url'] = $googleplus['prefix'] . urlencode(url($variables['share_url'], array('query' => $googleplus['utm'])));
-    $variables['twitter']['url'] = $twitter['prefix'] . urlencode(url($variables['share_url'], array('query' => $twitter['utm'])));
-    $variables['whatsapp']['url'] = $whatsapp['prefix'] . urlencode(url($variables['share_url'], array('query' => $whatsapp['utm'])));
-
-    if (module_exists('forward') && (isset($variables['device']) && $variables['device'] == 'computer')) {
-      $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
-    }
-    else {
-      $variables['mail']['url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($variables['share_url'], array('query' => $mail['utm'])));
-    }
+    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
+    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
+    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
+    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
     // Prepare to push share activities to Culturefeed.
     $track = FALSE;
