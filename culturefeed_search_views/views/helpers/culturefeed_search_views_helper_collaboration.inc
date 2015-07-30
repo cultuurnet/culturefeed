@@ -23,7 +23,6 @@ function culturefeed_search_views_helper_collaboration_get_data(
 
   // First check if there are any collaboration tags used in the view.
   $collaboration_tags = array_keys(variable_get('culturefeed_entry_ui_custom_collaboration_tags', array()));
-  $collaboration_tags = array_map('strtolower', $collaboration_tags);
   $keywords = array();
   if (count($collaboration_tags)) {
 
@@ -38,7 +37,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
 
         foreach ($filter['keyword'] as $keyword) {
 
-          if (in_array(strtolower($keyword['value']), $collaboration_tags)) {
+          if (in_array($keyword['value'], $collaboration_tags)) {
             $keywords[] = $keyword['value'];
           }
 
@@ -63,7 +62,7 @@ function culturefeed_search_views_helper_collaboration_get_data(
         $description = json_decode($cdb_file->getDescription());
 
         if ($consumer_id == $sub_brand && !is_null($description)) {
-          if ($keyword == strtolower($description->keyword)) {
+          if ($keyword == $description->keyword) {
             return array(
               'copyright' => $cdb_file->getCopyright(),
               'description' => $description,

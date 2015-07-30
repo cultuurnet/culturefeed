@@ -2192,6 +2192,7 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   // Get options from variable.
   if (variable_get('culturefeed_entry_ui_custom_tags')) {
     $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
+    $custom_options = array_combine ($custom_options, $custom_options);
   }
 
   // Filter out custom tags.
@@ -2291,6 +2292,8 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
     }
 
     drupal_set_message(t('The tags were adjusted.'));
+    cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
+    drupal_goto(culturefeed_search_detail_path('event', $event->getCdbId(), ''));
 
   } catch (Exception $e) {
 
