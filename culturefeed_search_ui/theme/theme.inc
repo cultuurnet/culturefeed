@@ -305,7 +305,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'facet_item' => $sub_item,
           'facet_key' => $facet->getKey(),
           'query' => $query,
-          'path' => $path,
+          'path' => url($path),
           'active' => $sub_item_active,
         ));
 
@@ -328,7 +328,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'facet_item' => $facet_item,
       'facet_key' => $facet->getKey(),
       'query' => $query,
-      'path' => $path,
+      'path' => url($path),
       'active' => $item_active,
     ));
 
