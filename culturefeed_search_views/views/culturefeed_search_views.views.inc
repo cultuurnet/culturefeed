@@ -82,10 +82,14 @@ function culturefeed_search_views_data() {
     'title' => t('Title'),
     'help' => t('Title of the cdb item'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'views_handler_field_cdb_item_title',
     ),
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_filter_query',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_title',
     ),
   );
 
@@ -116,6 +120,21 @@ function culturefeed_search_views_data() {
         'views_handler_filter_culturefeed_search_createdbycurrentuser',
     ),
   );
+
+
+  // Creation date.
+  $data['cdb_items']['creation_date'] = array(
+    'title' => t('Creation date'),
+    'help' => t('Perform a search on the creation date.'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_creation_date',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_creation_date',
+    ),
+  );
+
 
   // Filter on location name.
   $data['cdb_items']['location_label'] = array(
@@ -209,6 +228,7 @@ function culturefeed_search_views_data() {
     'title' => t('Location'),
     'help' => t('Location of the cdb item'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'views_handler_field_cdb_item_location',
     ),
   );
@@ -252,6 +272,7 @@ function culturefeed_search_views_data() {
     'title' => t('Last updated'),
     'help' => t('Last updated date/time of the cdb item'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'views_handler_field_cdb_item_lastupdated',
     ),
     'sort' => array(

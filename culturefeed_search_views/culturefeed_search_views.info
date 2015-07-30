@@ -25,8 +25,10 @@ files[] = views/handlers/sort/views_handler_sort_culturefeed_search_base.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_date.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_recommends.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_comments.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_creation_date.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_agefrom.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_lastupdated.inc
+files[] = views/handlers/sort/views_handler_sort_culturefeed_search_title.inc
 files[] = views/handlers/sort/views_handler_sort_culturefeed_search_weight.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_cdbid.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_title.inc
@@ -38,6 +40,7 @@ files[] = views/handlers/field/views_handler_field_cdb_item_organiser.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_picture.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_short_description.inc
 files[] = views/handlers/field/views_handler_field_cdb_item_category.inc
+files[] = views/handlers/field/views_handler_field_cdb_item_creation_date.inc
 
 
 dependencies[] = culturefeed_search

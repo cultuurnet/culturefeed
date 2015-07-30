@@ -1,5 +1,7 @@
 <?php
 
+use \CultuurNet\Search\Parameter;
+
 /**
  * A handler to provide proper displays for titles of a cdb item.
  */
@@ -64,6 +66,16 @@ class views_handler_field_cdb_item_title extends views_handler_field {
     else {
       return $title;
     }
+
+  }
+
+  /**
+   * Called to determine what to tell the clicksorter.
+   */
+  function click_sort($order) {
+
+    $parameter = new Parameter\Sort('title_sort', strtolower($order));
+    $this->query->add_parameter($parameter);
 
   }
 
