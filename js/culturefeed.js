@@ -38,12 +38,10 @@ Drupal.behaviors.culturefeedPushActivityToUitId = {
         if ($(this).hasClass("print-link")) {
           print = true;
         }
-        console.log(rel);
         $.ajax({
           url: rel,
           async: false,
           complete: function() {
-            console.log($(this));
             if (print) {
               window.print();
             } else {
