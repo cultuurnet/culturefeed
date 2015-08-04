@@ -28,6 +28,33 @@ Drupal.behaviors.culturefeedPopupConnect = {
   }
 };
 
+Drupal.behaviors.culturefeedPushActivityToUitId = {
+    attach: function(context, settings) {
+      $('a.share-link', context).bind('click', function(e) {
+        e.preventDefault();
+        var rel = $(this).prop('rel');
+        var href = $(this).attr('href');
+        var print = false;
+        if ($(this).hasClass("print-link")) {
+          print = true;
+        }
+        console.log(rel);
+        $.ajax({
+          url: rel,
+          async: false,
+          complete: function() {
+            console.log($(this));
+            if (print) {
+              window.print();
+            } else {
+              location.href = href;
+            }
+          }
+        });
+      });
+    }
+  };
+
 if (Drupal.ajax) {
 
   /**

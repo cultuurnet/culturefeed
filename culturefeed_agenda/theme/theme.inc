@@ -294,6 +294,16 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
 
+  // More info link.
+  $variables['track_moreinfo'] = '';
+  $variables['track_classes'] = '';
+  if (culturefeed_is_culturefeed_user()) {
+    $content_type = culturefeed_get_content_type($item->getType());
+    $id = $item->getId();
+    $variables['track_moreinfo_rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    $variables['track_moreinfo_classes'] = 'share-link moreinfo-link';
+  }
+
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -438,7 +448,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
     // Build share URL's.
     $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
-    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title'], $variables['device']);
     $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
     $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
     $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
@@ -451,24 +461,25 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $id = $item->getId();
       $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
       $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $track_mail = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MAIL .'/' . $content_type . '/' . urlencode($id) . '/ajax');
     }
 
     // Add options.
     $variables['facebook']['options'] = array(
       'attributes' => array(
         'class' => array('share-link', 'facebook-share'),
-        //'rel' => $track ? $track_facebook : '' ,
-      ),
-    );
-    $variables['googleplus']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'googleplus-share'),
+        'rel' => $track ? $track_facebook : '' ,
       ),
     );
     $variables['twitter']['options'] = array(
       'attributes' => array(
         'class' => array('share-link', 'twitter-share'),
-        //'rel' => $track ? $track_twitter : '' ,
+        'rel' => $track ? $track_twitter : '' ,
+      ),
+    );
+    $variables['googleplus']['options'] = array(
+      'attributes' => array(
+        'class' => array('share-link', 'googleplus-share'),
       ),
     );
     $variables['whatsapp']['options'] = array(
@@ -480,6 +491,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['mail']['options'] = array(
       'attributes' => array(
         'class' => array('share-link', 'forward-mail'),
+        'rel' => $track ? $track_mail : '' ,
       ),
       'external' => TRUE,
     );
@@ -1065,10 +1077,10 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   // Add open graph meta tags.
   $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
   if (!empty($fb_app_id)) {
-    $og_tags['fb:app_id'] = $fb_app_id; 
-  }  
-  $og_tags['og:site_name'] = variable_get('site_name', '');  
-  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
     $colonpos = strpos($variables['main_picture'], ':');
@@ -1080,7 +1092,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
-  
+
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(
       '#tag' => 'meta',
@@ -1136,10 +1148,10 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
   // Add open graph meta tags.
   $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
   if (!empty($fb_app_id)) {
-    $og_tags['fb:app_id'] = $fb_app_id; 
-  }  
-  $og_tags['og:site_name'] = variable_get('site_name', '');  
-  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
     $colonpos = strpos($variables['main_picture'], ':');
@@ -1151,7 +1163,7 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
-  
+
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(
       '#tag' => 'meta',
