@@ -355,7 +355,7 @@ function culturefeed_agenda_culturefeed_search_page_info() {
 function culturefeed_agenda_block_info() {
 
   $blocks = array();
-  
+
   // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Related-activities
   $blocks['agenda-related-activities'] = array(
     'info' => t('Culturefeed agenda: related activities'),
@@ -379,7 +379,7 @@ function culturefeed_agenda_block_info() {
     'info' => t('Culturefeed agenda: actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Production-program
   $blocks['production-program'] = array(
     'info' => t('Culturefeed agenda: production program'),
@@ -397,7 +397,7 @@ function culturefeed_agenda_block_info() {
     'info' => t('Culturefeed agenda: Event types'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
-  
+
   // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Organiser-Events
 	$blocks['agenda-organiser-events'] = array(
 		'info' => t('Culturefeed agenda: Organiser events'),

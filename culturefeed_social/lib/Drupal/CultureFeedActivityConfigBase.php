@@ -148,6 +148,10 @@ class CultureFeedActivityConfigBase {
         $config = new CultureFeedActivityConfigMoreInfo();
         break;
 
+      case CultureFeed_Activity::TYPE_ROUTE:
+        $config = new CultureFeedActivityConfigRoute();
+        break;
+
       default:
         return NULL;
 
