@@ -1026,7 +1026,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));
 
-    $label = check_plain($query['location']);
+    $label = $query['location'];
     if (!empty($query['distance'])) {
       $label .= ' + ' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);
