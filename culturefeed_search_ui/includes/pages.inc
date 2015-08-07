@@ -207,7 +207,6 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
 
     // If only one city was found. Add a link to search on all actors in this city.
     if (count($city_suggestions) == 1) {
-
       $city = reset($city_suggestions);
 
       $query = array(
