@@ -206,7 +206,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
     }
 
     // If only one city was found. Add a link to search on all actors in this city.
-    if (count($city_suggestions) == 1) {
+    if (count($city_suggestions) == 1 && $actor_suggestions->hasSuggestions()) {
 
       $city = reset($city_suggestions);
 
@@ -219,7 +219,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
 
       $matches[] = array(
         'label' => t('Show all locations in !city', array('!city' => $city)),
-        'category' => $actor_suggestions->hasSuggestions() ? t('Directly to') : '',
+        'category' => t('Directly to'),
         'suggestion' => url('agenda/search', array('query' => $query)),
         'type' => 'actor',
       );
