@@ -295,7 +295,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   }
 
   // More info link.
-  $moreinfo_options = array(
+  $variables['moreinfo_options'] = array(
     'html' => TRUE,
     'attributes' => array(
       'class' => array('btn', 'btn-default'),
@@ -306,10 +306,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   if (culturefeed_is_culturefeed_user()) {
     $content_type = culturefeed_get_content_type($item->getType());
     $id = $item->getId();
-    $moreinfo_options['attributes']['rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
-    $moreinfo_options['attributes']['class'][] = 'share-link moreinfo-link';
+    $variables['moreinfo_options']['attributes']['rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    $variables['moreinfo_options']['attributes']['class'][] = 'share-link moreinfo-link';
   }
-  $variables['moreinfo_link'] = culturefeed_search_detail_l($item->getType(), $cdb_item->getCdbid(), $variables['title'], t('More info') . ' &rarr;', $moreinfo_options);
 
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
