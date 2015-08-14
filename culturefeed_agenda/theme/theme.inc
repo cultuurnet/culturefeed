@@ -295,14 +295,21 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   }
 
   // More info link.
-  $variables['track_moreinfo'] = '';
-  $variables['track_classes'] = '';
+  $moreinfo_options = array(
+    'html' => TRUE,
+    'attributes' => array(
+      'class' => array('btn', 'btn-default'),
+      'id' => 'cf-readmore_' . $cdb_item->getCdbid()
+      )
+    );
+
   if (culturefeed_is_culturefeed_user()) {
     $content_type = culturefeed_get_content_type($item->getType());
     $id = $item->getId();
-    $variables['track_moreinfo_rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
-    $variables['track_moreinfo_classes'] = 'share-link moreinfo-link';
+    $moreinfo_options['attributes']['rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+    $moreinfo_options['attributes']['class'][] = 'share-link moreinfo-link';
   }
+  $variables['moreinfo_link'] = culturefeed_search_detail_l($item->getType(), $cdb_item->getCdbid(), $variables['title'], t('More info') . ' &rarr;', $moreinfo_options);
 
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
@@ -453,6 +460,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
     $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
+    $variables['facebook']['options'] = array();
+    $variables['twitter']['options'] = array();
+    $variables['googleplus']['options'] = array();
+    $variables['whatsapp']['options'] = array();
+    $variables['mail']['options'] = array();
+
     // Prepare to push share activities to Culturefeed.
     $track = FALSE;
     if (culturefeed_is_culturefeed_user()) {
@@ -462,39 +475,39 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
       $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
       $track_mail = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MAIL .'/' . $content_type . '/' . urlencode($id) . '/ajax');
-    }
 
-    // Add options.
-    $variables['facebook']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'facebook-share'),
-        'rel' => $track ? $track_facebook : '' ,
-      ),
-    );
-    $variables['twitter']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'twitter-share'),
-        'rel' => $track ? $track_twitter : '' ,
-      ),
-    );
-    $variables['googleplus']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'googleplus-share'),
-      ),
-    );
-    $variables['whatsapp']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'whatsapp-share'),
-      ),
-      'external' => TRUE,
-    );
-    $variables['mail']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'forward-mail'),
-        'rel' => $track ? $track_mail : '' ,
-      ),
-      'external' => TRUE,
-    );
+      // Add options.
+      $variables['facebook']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'facebook-share'),
+          'rel' => $track ? $track_facebook : '' ,
+        ),
+      );
+      $variables['twitter']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'twitter-share'),
+          'rel' => $track ? $track_twitter : '' ,
+        ),
+      );
+      $variables['googleplus']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'googleplus-share'),
+        ),
+      );
+      $variables['whatsapp']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'whatsapp-share'),
+        ),
+        'external' => TRUE,
+      );
+      $variables['mail']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'forward-mail'),
+          'rel' => $track ? $track_mail : '' ,
+        ),
+        'external' => TRUE,
+      );
+    }
 
     // Share Links.
     $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
@@ -564,7 +577,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if($variables['device'] == 'phone')
+        if (isset($variables['device']) && $variables['device'] == 'phone')
         {
           $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
         }
