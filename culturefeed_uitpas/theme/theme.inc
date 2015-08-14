@@ -36,10 +36,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   // Location.
   $location = array();
+  $locations_array = array();
   foreach ($advantage->counters as $counter) {
     $location[] = $counter->name;
+    $locations_array[] = array('name' => $counter->name, 'id' => $counter->id);
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['locations_array'] = $locations_array;
 
   // Provider.
   $vars['provider'] = '';
@@ -408,10 +411,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   // Location.
   $location = array();
+  $locations_array = array();
   foreach ($promotion->counters as $counter) {
     $location[] = $counter->name;
+    $locations_array[] = array('name' => $counter->name, 'id' => $counter->id);
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['locations_array'] = $locations_array;
 
   // Provider.
   $vars['provider'] = '';
