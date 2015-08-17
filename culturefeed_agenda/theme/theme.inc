@@ -259,7 +259,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
-      $main_picture_cr = $copyrights[0];
+      if (isset($copyrights[0])) {
+        $main_picture_cr = $copyrights[0];
+      }
     }
 
     // we don't want the main picture to show twice
@@ -1065,10 +1067,10 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   // Add open graph meta tags.
   $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
   if (!empty($fb_app_id)) {
-    $og_tags['fb:app_id'] = $fb_app_id; 
-  }  
-  $og_tags['og:site_name'] = variable_get('site_name', '');  
-  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
     $colonpos = strpos($variables['main_picture'], ':');
@@ -1080,7 +1082,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
-  
+
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(
       '#tag' => 'meta',
@@ -1136,10 +1138,10 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
   // Add open graph meta tags.
   $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
   if (!empty($fb_app_id)) {
-    $og_tags['fb:app_id'] = $fb_app_id; 
-  }  
-  $og_tags['og:site_name'] = variable_get('site_name', '');  
-  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE)); 
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
     $colonpos = strpos($variables['main_picture'], ':');
@@ -1151,7 +1153,7 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
-  
+
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(
       '#tag' => 'meta',
