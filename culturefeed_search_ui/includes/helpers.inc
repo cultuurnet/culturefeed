@@ -152,11 +152,11 @@ function culturefeed_search_ui_set_canonical_metatag() {
 
     if (isset($query['facet']['type']) || isset($query['actors'])) {
       $canonical = array();
-  
+
       $facets = $query['facet'];
       unset($facets['type']);
       unset($query['actors']);
-  
+
       $canonical['path'] = 'agenda/search';
       $canonical['options']['query']['facet'] = $facets;
     }
@@ -301,24 +301,24 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     // No index is FALSE, if user is filtering on voor-kinderen.
     if (isset($query['voor-kinderen'])) {
-  
+
       unset($query['voor-kinderen']);
-      
+
       // Unset all facets that can be indexed in combination with voor-kinderen
       if (isset($query['facet'])) {
         $facets = $query['facet'];
         unset($facets['category_umv_id']);
         unset($facets['category_flandersregion_id']);
-        unset($facets['category_eventtype_id']);  
+        unset($facets['category_eventtype_id']);
         unset($facets['category_theme_id']);
         unset($query['facet']);
       }
-  
+
       // If voor-kinderen was the only filter set noindex to false.
       if (count($query) == 0) {
         $noindex = FALSE;
       }
-  
+
     }
 
   }
@@ -393,7 +393,15 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
   // Headings are now a combination of facets.
   if (isset($_GET['heading'])) {
 
-    $mapping = culturefeed_search_ui_get_headings_mapping($_GET['heading']);
+    if (strpos($_GET['heading'], ';') !== false) {
+      $heading = explode(';', $_GET['heading']);
+      $heading = $heading[0];
+    }
+    else {
+      $heading = $_GET['heading'];
+    }
+
+    $mapping = culturefeed_search_ui_get_headings_mapping($heading);
 
     // Voor kinderen is not a facet
     if (isset($mapping['voor_kinderen'])) {

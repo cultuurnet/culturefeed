@@ -164,7 +164,9 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
       foreach ($city_suggestions as $key => $row) {
         $stripos[$key]  = $row['stripos'];
       }
-      array_multisort($stripos, SORT_ASC, $city_suggestions);
+      if (isset($stripos)) {
+        array_multisort($stripos, SORT_ASC, $city_suggestions);
+      }
 
       foreach ($city_suggestions as $city_suggestion) {
         $matches[] = array(

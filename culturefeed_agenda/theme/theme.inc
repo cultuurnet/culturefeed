@@ -440,7 +440,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
     // Build share URL's.
     $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
-    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title'], $variables['device']);
     $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
     $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
     $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
@@ -554,7 +554,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if($variables['device'] == 'phone')
+        if(isset($variables['device']) && $variables['device'] == 'phone')
         {
           $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
         }
@@ -598,14 +598,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation url
       if (isset($reservation_info['url'])) {
         foreach ($reservation_info['url'] as $url) {
-          if(!in_array($url, $variables['ticket_links'])){
+          if(isset($variables['ticket_links']) && !in_array($url, $variables['ticket_links'])){
             // clean up link text
             $url_text = str_replace('http://', '', $url);
             $url_text = str_replace('https://', '', $url_text);
             $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
           }
         }
-        $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        if (isset($reservation_urls)) {
+          $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        }
+        else {
+          $variables['reservation']['url'] = implode(', ', $reservation_info['url']);
+        }
       }
 
     // Coordinates.

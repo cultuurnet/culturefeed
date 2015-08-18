@@ -676,7 +676,9 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
   foreach ($region_suggestions as $key => $row) {
     $stripos[$key]  = $row['stripos'];
   }
-  array_multisort($stripos, SORT_ASC, $region_suggestions);
+  if (isset($stripos)) {
+    array_multisort($stripos, SORT_ASC, $region_suggestions);
+  }
 
   $region_suggestions = array_slice($region_suggestions, 0, 20);
 
