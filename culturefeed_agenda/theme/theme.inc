@@ -584,7 +584,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          if($variables['device'] == 'phone')
+          if(isset($variables['device']) && $variables['device'] == 'phone')
           {
             $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
           }
