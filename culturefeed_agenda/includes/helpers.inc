@@ -4,6 +4,18 @@
  * Helper functions for the culturefeed agenda.
  **/
 
+ /**
+  * Return a phone number without spaces, dashes, slashes, characters
+  */
+ function culturefeed_valid_phone($raw_phone) {
+
+   $phone = str_replace(' ', '-', $raw_phone);
+   $phone = preg_replace('/[^0-9\+\(\)]/', '', $phone);
+
+   return $phone;
+
+}
+
 /**
  * Return all the known agenda entity types.
  */

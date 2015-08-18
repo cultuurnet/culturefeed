@@ -14,8 +14,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   // Image.
   $vars['image'] = '';
+  $vars['image2'] = '';
   if (isset($advantage->pictures[0])) {
     $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+  }
+  if (isset($advantage->pictures[1])) {
+    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'attributes' => array()));
   }
 
   // Period.
@@ -36,10 +40,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   // Location.
   $location = array();
+  $locations_array = array();
   foreach ($advantage->counters as $counter) {
     $location[] = $counter->name;
+    $locations_array[] = array('name' => $counter->name, 'id' => $counter->id);
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['locations_array'] = $locations_array;
 
   // Provider.
   $vars['provider'] = '';
@@ -376,8 +383,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   // Image.
   $vars['image'] = '';
+  $vars['image2'] = '';
   if (isset($promotion->pictures[0])) {
     $vars['image'] = theme_image(array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+  }
+
+  if (isset($promotion->pictures[1])) {
+    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'attributes' => array()));
   }
 
   // Points.
@@ -408,10 +420,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
 
   // Location.
   $location = array();
+  $locations_array = array();
   foreach ($promotion->counters as $counter) {
     $location[] = $counter->name;
+    $locations_array[] = array('name' => $counter->name, 'id' => $counter->id);
   }
   $vars['location'] = t('At') . " " . implode(', ', $location);
+  $vars['locations_array'] = $locations_array;
 
   // Provider.
   $vars['provider'] = '';

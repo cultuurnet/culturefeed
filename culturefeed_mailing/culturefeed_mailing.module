@@ -168,6 +168,14 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['admin/content/mailing_content'] = array(
+    'title' => 'Mailing content',
+    'page callback' => 'culturefeed_mailing_page_mailing_content',
+    'access arguments' => array('manage mailing lists'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   return $items;
 
 }
@@ -196,6 +204,36 @@ function culturefeed_mailing_theme() {
       'template' => 'culturefeed-mailing-user-profile-admin-item',
       'path' => $path,
       'file' => 'theme.inc',
+    ),
+    'culturefeed_mailing_content_block_1' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-1',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_2' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-2',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_3' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-3',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_4' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-4',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_5' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-5',
+      'path' => $path,
+    ),
+    'culturefeed_mailing_content_block_6' => array(
+      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'template' => 'culturefeed-mailing-content-block-6',
+      'path' => $path,
     ),
   );
 }
@@ -361,4 +399,22 @@ function culturefeed_template_load($id) {
   catch (Exception $e) {
     return FALSE;
   }
+}
+
+/**
+ * Implements hook_node_info().
+ */
+function culturefeed_mailing_node_info() {
+  $items = array(
+    'mail_item' => array(
+      'name' => t('Mail item'),
+      'base' => 'node_content',
+      'description' => t('Mail items can be used to create content for culturefeed_mailing newsletters'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+  );
+  drupal_alter('node_info', $items);
+  return $items;
 }
