@@ -905,7 +905,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if($variables['device'] == 'phone')
+        if(isset($variables['device']) && $variables['device'] == 'phone')
         {
           $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
         }
