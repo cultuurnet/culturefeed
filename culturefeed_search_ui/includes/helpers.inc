@@ -395,7 +395,12 @@ function culturefeed_search_ui_redirect_cnapi_urls() {
 
     if (strpos($_GET['heading'], ';') !== false) {
       $heading = explode(';', $_GET['heading']);
-      $heading = $heading[0];
+      if ($heading[0] !== '') {
+        $heading = $heading[0];
+      }
+      else {
+        $heading = $heading[1];
+      }
     }
     else {
       $heading = $_GET['heading'];
