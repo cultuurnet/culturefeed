@@ -24,6 +24,10 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     unset($_GET['destination']);
   }
 
+  if (isset($_GET['redirect'])) {
+    unset($_GET['redirect']);
+  }
+
   if (isset($_GET['closepopup'])) {
     $options['query']['closepopup'] = 'true';
   }
@@ -214,14 +218,16 @@ function culturefeed_authenticated_action_page() {
       $redirect = $_GET['destination'];
     }
 
-    // Check if the user will have access to the redirect.
+    $url = drupal_parse_url($redirect);
+
+    // Check if the user will have access to the redirect path.
     // If not it will cause endless loop.
-    if (!drupal_valid_path($redirect)) {
+    if (!drupal_valid_path($url['path'])) {
       drupal_set_title(t('Access denied'));
       return t('You are not authorized to access this page.');
     }
 
-    drupal_goto($redirect, array('query' => $query));
+    drupal_goto($url['path'], array('query' => $url['query'], 'fragment' => $url['fragment']));
 
   }
 

@@ -201,11 +201,11 @@ function culturefeed_calendar_render_calendar_buttons($item) {
         // Check if 1 of the items is still in the future.
         $event_is_passed = TRUE;
         foreach ($calendar as $calendar_item) {
-          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() > $objDateTime->getTimestamp()) {
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp()) {
             $event_is_passed = FALSE;
             break;
           }
-          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() > $objDateTime->getTimestamp()) {
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() >= $objDateTime->getTimestamp()) {
             $event_is_passed = FALSE;
             break;
           }

@@ -131,7 +131,7 @@ function culturefeed_social_page_activities($type = NULL) {
     // Add the delete link.
     $delete = array(
       '#type' => 'link',
-      '#title' => t('Remove'),
+      '#title' => t('Remove activity'),
       '#href' => $remove_path . '/nojs',
       '#attributes' => $attributes,
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
@@ -154,9 +154,7 @@ function culturefeed_social_page_activities($type = NULL) {
     $data = l($activity->nodeTitle, $url);
 
     $wrapper = '
-      <div id="delete-wrapper-' . $activity->id . '" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-body outer"></div>
-      </div>';
+      <div id="delete-wrapper-' . $activity->id . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>';
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(

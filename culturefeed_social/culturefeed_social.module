@@ -147,7 +147,7 @@ function culturefeed_social_menu() {
   );
 
   $items['culturefeed/activities/recent'] = array(
-    'title arguments' => array('Most recent actions'),
+    'title' => 'Most recent actions',
     'page callback' => 'culturefeed_social_page_recent_activities',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,

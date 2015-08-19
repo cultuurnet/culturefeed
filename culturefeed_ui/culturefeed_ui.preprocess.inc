@@ -185,7 +185,7 @@ function template_preprocess_culturefeed_ui_user_summary(&$variables) {
  */
 function template_preprocess_culturefeed_ui_anonymous_profile_box(&$variables) {
 
-  $variables['link_login'] = l(t('Log in'), 'culturefeed/oauth/connect', array('attributes' => array('class' => array('culturefeedconnect'), 'rel' => 'nofollow'), 'query' => drupal_get_destination()));
+  $variables['link_login'] = l('<span>'.t('Log in').'</span>', 'culturefeed/oauth/connect', array('html' => TRUE,'attributes' => array('class' => array('culturefeedconnect'), 'rel' => 'nofollow'), 'query' => drupal_get_destination()));
   $variables['link_register'] = l(t('Sign up'), 'culturefeed/oauth/connect/register', array('attributes' => array('class' => array('culturefeedconnect'), 'rel' => 'nofollow'), 'query' => drupal_get_destination()));
   $query = drupal_get_destination();
   $query['via'] = 'facebook';

@@ -65,6 +65,18 @@ function culturefeed_search_views_data() {
     ),
   );
 
+  // Cdbid field
+  $data['cdb_items']['cdbid'] = array(
+    'title' => t('Cdbid'),
+    'help' => t('Cdbid of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_cdbid',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_culturefeed_search_filter_query',
+    ),
+  );
+
   // Title field
   $data['cdb_items']['title'] = array(
     'title' => t('Title'),

@@ -14,6 +14,7 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
     $options['override'] = array('default' => FALSE);
     $options['width'] = array('default' => 100);
     $options['height'] = array('default' => 100);
+    $options['scale'] = array('default' => 'none');
     $options['format'] = array('default' => 'image');
     $options['link'] = array('default' => FALSE);
 
@@ -44,6 +45,19 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
       '#title' => t('Height'),
       '#default_value' => isset($this->options['height']) ? $this->options['height'] : '',
       '#required' => TRUE,
+    );
+
+    $form['scale'] = array(
+      '#type' => 'radios',
+      '#title' => t('Scale'),
+      '#options' => array(
+        'none' => t('None'),
+        'downscaleonly' => t('Downscale only'),
+        'upscaleonly' => t('Upscale only'),
+        'both' => t('Both'),
+        'upscalecanvas' => t('Upscale canvas'),
+      ),
+      '#default_value' => isset($this->options['scale']) ? $this->options['scale'] : 'none',
     );
 
 		$form['format'] = array(
@@ -136,7 +150,12 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
         }
 
         else {
-          $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+          if ($this->options['scale'] != 'none') {
+            $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'] . '&scale=' . $this->options['scale']));
+          }
+          else {
+            $image = theme('image', array('path' => $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height']));
+          }
         }
 
       }
@@ -148,7 +167,12 @@ class views_handler_field_cdb_item_picture extends views_handler_field {
             $image = $main_picture;
           }
           else {
-            $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
+            if ($this->options['scale'] != 'none') {
+              $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'] . '&scale=' . $this->options['scale'];
+            }
+            else {
+              $image = $main_picture . '?crop=auto&width=' . $this->options['width'] . '&height=' . $this->options['height'];
+            }
           }
 
         }

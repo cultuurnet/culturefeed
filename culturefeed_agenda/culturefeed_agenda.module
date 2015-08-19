@@ -355,42 +355,50 @@ function culturefeed_agenda_culturefeed_search_page_info() {
 function culturefeed_agenda_block_info() {
 
   $blocks = array();
-
+  
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Related-activities
   $blocks['agenda-related-activities'] = array(
     'info' => t('Culturefeed agenda: related activities'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Nearby-activities
   $blocks['agenda-nearby-activities'] = array(
     'info' => t('Culturefeed agenda: nearby activities'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Search-events
   $blocks['agenda-search-block'] = array(
     'info' => t('Culturefeed agenda: search events'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Actor-program
   $blocks['actor-program'] = array(
     'info' => t('Culturefeed agenda: actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
-
+  
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Production-program
   $blocks['production-program'] = array(
     'info' => t('Culturefeed agenda: production program'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Actor-search
   $blocks['agenda-actor-search'] = array(
     'info' => t('Culturefeed agenda: actor search'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Event-types
   $blocks['agenda-event-types'] = array(
     'info' => t('Culturefeed agenda: Event types'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
-
+  
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Organiser-Events
 	$blocks['agenda-organiser-events'] = array(
 		'info' => t('Culturefeed agenda: Organiser events'),
 		'cache' => DRUPAL_CACHE_PER_PAGE,
@@ -432,7 +440,7 @@ function culturefeed_agenda_block_configure($delta) {
       '#default_value' => variable_get('agenda_related_activities_extra_query'),
       '#description' => t('Make sure this is a correct solr query. Example title:mytitle'),
     );
-    
+
     // sort_direction is no longer a seperate field. Add it to the sort field if variable exists.
     $sort_direction = variable_get('agenda_related_activities_sort_direction', '');
     $default_sort = variable_get('agenda_related_activities_sort') . ' ' . $sort_direction;
@@ -954,6 +962,7 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
     if (!empty($city_slug)) {
 
       $city_parts = explode('-', $city_slug);
+      $flanders_region = NULL;
       // Slug contains postal. Search city.
       if (is_numeric($city_parts[0])) {
         /*$city = culturefeed_search_get_city_by_slug($city_slug);
@@ -962,27 +971,17 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
         }*/
         $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
         if ($flanders_region) {
-          $location = $flanders_region->name;
-          $regId = $flanders_region->tid;
+          $rewrite = TRUE;
         }
       }
       // No postal, search flanders region.
       else {
         $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
-        if ($flanders_region) {
-          $location = $flanders_region->name;
-        }
       }
 
-      if (!empty($location)) {
-        $_GET['location'] = $location;
-        $_REQUEST['location'] = $location;
-        $rewrite = TRUE;
-      }
-
-      if (!empty($regId)) {
-        $_GET['regId'] = $regId;
-        $_REQUEST['regId'] = $regId;
+      if ($flanders_region) {
+        $_GET['facet']['category_flandersregion_id'][] = $flanders_region->tid;
+        $_REQUEST['facet']['category_flandersregion_id'][] = $flanders_region->tid;
         $rewrite = TRUE;
       }
 

@@ -1193,6 +1193,15 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/culturefeed_entry_ui.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.plugin.js';
   $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength.js';
+  if (culturefeed_search_get_preferred_language() == 'nl') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-nl.js';
+  }
+  elseif (culturefeed_search_get_preferred_language() == 'fr') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-fr.js';
+  }
+  elseif (culturefeed_search_get_preferred_language() == 'de') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'culturefeed_entry_ui') . '/js/maxlength/jquery.maxlength-de.js';
+  }
   return $form;
 
 }
@@ -2183,6 +2192,7 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
   // Get options from variable.
   if (variable_get('culturefeed_entry_ui_custom_tags')) {
     $custom_options = explode("\n", variable_get('culturefeed_entry_ui_custom_tags'));
+    $custom_options = array_combine ($custom_options, $custom_options);
   }
 
   // Filter out custom tags.
@@ -2282,6 +2292,8 @@ function culturefeed_entry_ui_edit_tags_form_submit($form, &$form_state) {
     }
 
     drupal_set_message(t('The tags were adjusted.'));
+    cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
+    drupal_goto(culturefeed_search_detail_path('event', $event->getCdbId(), ''));
 
   } catch (Exception $e) {
 

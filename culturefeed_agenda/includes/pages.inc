@@ -278,14 +278,14 @@ function culturefeed_agenda_page_ajax_actor_suggest() {
 
   $user_location = culturefeed_search_ui_get_user_location_cookie();
   if (isset($user_location->latitude) && isset($user_location->longitude)) {
-    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Point($user_location->latitude, $user_location->longitude);
-    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\SpatialField('contactinfo_physical_gis');
-    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Distance(CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE);
-//    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
-    $parameters[] = new \CultuurNet\Search\Parameter\Sort('geodist()', \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
+    $point = new \CultuurNet\Search\Parameter\Spatial\Point($user_location->latitude, $user_location->longitude);
+    $field = new \CultuurNet\Search\Parameter\Spatial\SpatialField('contactinfo_physical_gis');
+    $distance = new \CultuurNet\Search\Parameter\Spatial\Distance(10);
+    $parameters[] = new \CultuurNet\Search\Parameter\Spatial\GeoFilterQuery($point, $distance, $field);
+    //$parameters[] = new \CultuurNet\Search\Parameter\Sort('geodist()', \CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
   }
 
-  $parameters[] = new \CultuurNet\Search\Parameter\Rows(15);
+  $parameters[] = new \CultuurNet\Search\Parameter\Rows(20);
   $parameters[] = new \CultuurNet\Search\Parameter\Query('*:*');
 
   $all_categories = culturefeed_search_get_actortype_categories();
