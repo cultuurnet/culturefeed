@@ -30,8 +30,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-07-23 16:06+0200\n"
-"PO-Revision-Date: 2015-07-23 16:06+0100\n"
+"POT-Creation-Date: 2015-08-20 10:54+0200\n"
+"PO-Revision-Date: 2015-08-20 10:55+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Enter the number of results to show in the block."
 msgstr ""
 
-#: culturefeed_agenda.module:511 theme/theme.inc:1364
+#: culturefeed_agenda.module:511 theme/theme.inc:1320
 msgid "Enabled"
 msgstr "Ingeschakeld"
 
@@ -307,19 +307,19 @@ msgstr "Gebruik mijn huidige locatie"
 msgid "Search"
 msgstr "Zoeken"
 
-#: includes/blocks.inc:408
+#: includes/blocks.inc:418
 msgid "Program schedule"
 msgstr "Programmatie"
 
-#: includes/blocks.inc:452
+#: includes/blocks.inc:462
 msgid "Actor"
 msgstr ""
 
-#: includes/blocks.inc:485
+#: includes/blocks.inc:495
 msgid "Search string"
 msgstr "Zoekopdracht"
 
-#: includes/blocks.inc:487
+#: includes/blocks.inc:497
 msgid "Venue name or location"
 msgstr "Plaats of naam van locatie"
 
@@ -386,6 +386,10 @@ msgstr " (@theme)"
 msgid " with keyword @keyword"
 msgstr " met trefwoord @keyword"
 
+#: lib/Drupal/AgendaSearchPage.php:420
+msgid "Discover what to do today, tomorrow, this weekend or later on."
+msgstr "Ontdek wat te doen vandaag, morgen, dit weekend of later."
+
 #: theme/culturefeed-actor-short-summary.tpl.php:17
 #: theme/culturefeed-actor-summary.tpl.php:36
 #: theme/culturefeed-event-short-summary.tpl.php:21
@@ -407,7 +411,7 @@ msgstr "Trefwoorden"
 msgid "Contact"
 msgstr "Contact"
 
-#: theme/culturefeed-actor.tpl.php:41 theme/theme.inc:543
+#: theme/culturefeed-actor.tpl.php:41 theme/theme.inc:494
 msgid "Mail"
 msgstr "Mail"
 
@@ -539,74 +543,74 @@ msgstr "gratis"
 msgid "Buy tickets"
 msgstr "Bestel tickets"
 
-#: theme/theme.inc:539
+#: theme/theme.inc:490
 msgid "Share on Facebook"
 msgstr "Delen op Facebook"
 
-#: theme/theme.inc:540
+#: theme/theme.inc:491
 msgid "Share on Google+"
 msgstr "Delen op Google+"
 
-#: theme/theme.inc:541
+#: theme/theme.inc:492
 msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
-#: theme/theme.inc:542
+#: theme/theme.inc:493
 msgid "Share on Whatsapp"
 msgstr "Delen op Whatsapp"
 
-#: theme/theme.inc:810
+#: theme/theme.inc:766
 msgid "multiple locations"
 msgstr "meerdere locaties"
 
-#: theme/theme.inc:811
+#: theme/theme.inc:767
 msgid "multiple dates"
 msgstr "meerdere data"
 
-#: theme/theme.inc:873;888
+#: theme/theme.inc:829;844
 msgid "on location in"
 msgstr "op locatie in"
 
-#: theme/theme.inc:895
+#: theme/theme.inc:851
 msgid "by appointment"
 msgstr "op afspraak"
 
-#: theme/theme.inc:1026
+#: theme/theme.inc:982
 msgid "Other"
 msgstr "Andere"
 
-#: theme/theme.inc:1089
+#: theme/theme.inc:1045
 msgid "Location: @location"
 msgstr "Plaats: @location"
 
-#: theme/theme.inc:1092
+#: theme/theme.inc:1048
 msgid "When: @when"
 msgstr "Wanneer: @when"
 
-#: theme/theme.inc:1095
+#: theme/theme.inc:1051
 msgid "Organisation: @organisation"
 msgstr "Organisatie: @organisation"
 
-#: theme/theme.inc:1098
+#: theme/theme.inc:1054
 msgid "Price: € @price"
 msgstr "Prijs: € @price"
 
-#: theme/theme.inc:1101
+#: theme/theme.inc:1057
 msgid "Order your tickets"
 msgstr "Bestel hier tickets"
 
-#: theme/theme.inc:1169
+#: theme/theme.inc:1125
 msgid "Address: @location"
 msgstr "Adres: @location"
 
-#: theme/theme.inc:1172
+#: theme/theme.inc:1128
 msgid "Phone number: @number"
 msgstr "Telefoon: @number"
 
-#: theme/theme.inc:1365
+#: theme/theme.inc:1321
 msgid "Filter"
 msgstr "Filter"
 
-#: theme/theme.inc:1366
+#: theme/theme.inc:1322
 msgid "Weight"
 msgstr "Gewicht"
