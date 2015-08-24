@@ -2008,6 +2008,9 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
 
   $form_state['submit_time'] = time();
 
+  // Allow alterations by other modules.
+  drupal_alter('culturefeed_entry_ui_event_pre_save', $event, $form, $form_state);
+
   try {
     if ($update) {
       Drupalculturefeed_EntryApi::updateEvent($event);
