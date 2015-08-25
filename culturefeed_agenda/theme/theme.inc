@@ -148,6 +148,22 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+  // Themes of this item (as plain text and as links).
+  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
+  $variables['themes'] = $themes['text'];
+  $variables['themes_links'] = $themes['links'];
+
+  // Eventtypes of this item (plain text and links).
+  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $eventtypes['text'];
+  $variables['types_links'] = $eventtypes['links'];
+
+  // Actortypes of this item (plain text and links).
+  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
+  $variables['actortypes'] = $actortypes['text'];
+  $variables['actortypes_links'] = $actortypes['links'];
+
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
@@ -172,13 +188,27 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
     $variables['ticket_links'] = array();
+    $cto_tickets = '';
+
+    if ($eventtypes['text'][0] == 'Cursus of workshop' ||
+    $eventtypes['text'][0] == 'Begeleide uitstap of rondleiding' ||
+    $eventtypes['text'][0] == 'Kamp of vakantie' ||
+    $eventtypes['text'][0] == 'Sportactiviteit' ||
+    $eventtypes['text'][0] == 'Fiets- of wandelroute' ||
+    $eventtypes['text'][0] == 'Spel of quiz' ||
+    $eventtypes['text'][0] == 'Lezing of congres') {
+      $cto_tickets = t('Subscribe');
+    }
+    else {
+      $cto_tickets = t('Buy tickets');
+    }
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
+      $variables['tickets'][] = l($cto_tickets, $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
-      $button['text'] = t('Buy tickets');
+      $button['text'] = $cto_tickets;
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
@@ -295,21 +325,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
-
-  // Themes of this item (as plain text and as links).
-  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
-  $variables['themes'] = $themes['text'];
-  $variables['themes_links'] = $themes['links'];
-
-  // Eventtypes of this item (plain text and links).
-  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
-  $variables['types'] = $eventtypes['text'];
-  $variables['types_links'] = $eventtypes['links'];
-
-  // Actortypes of this item (plain text and links).
-  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
-  $variables['actortypes'] = $actortypes['text'];
-  $variables['actortypes_links'] = $actortypes['links'];
 
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
