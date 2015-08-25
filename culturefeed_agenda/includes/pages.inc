@@ -31,11 +31,15 @@ function culturefeed_agenda_detail_page(\CultuurNet\Search\ActivityStatsExtended
     culturefeed_agenda_set_activity_breadcrumb($item);
   }
 
-  $available_to = strtotime($item->getEntity()->getAvailableTo());
-  $previous_month = time() - (30 * 24 * 60 * 60);
+  // Set noindex on events that are finished for more than 30 days
 
-  if ($available_to < $previous_month) {
-    culturefeed_set_noindex_metatag();
+  if ($item->getType() == 'event') {
+    $available_to = strtotime($item->getEntity()->getAvailableTo());
+    $previous_month = time() - (30 * 24 * 60 * 60);
+  
+    if ($available_to < $previous_month) {
+      culturefeed_set_noindex_metatag();
+    }
   }
 
   return array(
