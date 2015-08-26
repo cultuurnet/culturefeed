@@ -784,6 +784,7 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
   $text_list = array();
   $links_list = array();
+  $id_list = array();
 
   $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
   foreach ($categories as $category) {
@@ -798,12 +799,14 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
     $text_list[] = check_plain($category->getName());
     $links_list[] = l($category->getName(), 'agenda/search', $options);
+    $id_list[] = check_plain($category->getId());
 
   }
 
   return array(
     'text' => $text_list,
     'links' => $links_list,
+    'id' => $id_list,
   );
 
 }

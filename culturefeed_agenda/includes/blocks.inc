@@ -227,6 +227,18 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
+  $destination = drupal_get_destination();
+
+  // UIV-1406 reset $query if http headers return 404.
+  $status = drupal_get_http_header();
+
+  if ($status['status'] == '404 Not Found') {
+    $_GET['q'] = 'agenda/search';
+    unset($_GET['destination']);
+    $query = array();
+  }
+
+
   if (!empty($form_state['values']['search'])) {
     $query['search'] = $form_state['values']['search'];
   }
