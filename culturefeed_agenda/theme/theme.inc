@@ -188,27 +188,31 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
     $variables['ticket_links'] = array();
-    $cto_tickets = '';
+    $cta_tickets = '';
+    $cta_array = array(
+      '0.3.1.0.0',
+      '0.7.0.0.0',
+      '0.57.0.0.0',
+      '0.59.0.0.0',
+      '0.17.0.0.0',
+      '0.50.21.0.0',
+      '0.3.2.0.0',
+    );
 
-    if ($eventtypes['text'][0] == 'Cursus of workshop' ||
-    $eventtypes['text'][0] == 'Begeleide uitstap of rondleiding' ||
-    $eventtypes['text'][0] == 'Kamp of vakantie' ||
-    $eventtypes['text'][0] == 'Sportactiviteit' ||
-    $eventtypes['text'][0] == 'Fiets- of wandelroute' ||
-    $eventtypes['text'][0] == 'Spel of quiz' ||
-    $eventtypes['text'][0] == 'Lezing of congres') {
-      $cto_tickets = t('Subscribe');
+
+    if (in_array($eventtypes['id'][0], $cta_array)) {
+      $cta_tickets = t('Sign Up');
     }
     else {
-      $cto_tickets = t('Buy tickets');
+      $cta_tickets = t('Buy tickets');
     }
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l($cto_tickets, $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
+      $variables['tickets'][] = l($cta_tickets, $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
-      $button['text'] = $cto_tickets;
+      $button['text'] = $cta_tickets;
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
