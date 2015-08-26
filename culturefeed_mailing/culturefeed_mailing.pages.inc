@@ -553,7 +553,7 @@ function culturefeed_mailing_page_my_newsletters() {
   $query->max = 999;
   $query->consumerKey = variable_get('culturefeed_api_application_key', '');
   $mailings = DrupalCultureFeed::searchMailings($query);
-  
+
   $build = array();
   $build['intro'] = array(
     '#markup' => '',
@@ -1402,25 +1402,25 @@ function culturefeed_mailing_page_mailing_content() {
       $image = field_view_field('node', $node, 'field_mail_item_image');
       $intro = field_view_field('node', $node, 'field_mail_item_teaser');
       $region = field_view_field('node', $node, 'field_mail_item_region');
-      
+
       $link_path = $link['#items'][0]['url'];
       $link_query = array($link['#items'][0]['query']);
-      
+
       $utm = array(
         'utm_campaign' => 'UiTmail',
         'utm_medium' => 'email',
         'utm_source' => 'newsletter',
       );
-      
+
       $utm_title = array('utm_content' => 'red-teaser-title');
       $query_title = array_merge($link_query, $utm, $utm_title);
-      
+
       $utm_image = array('utm_content' => 'red-teaser-image');
       $query_image = array_merge($link_query, $utm, $utm_image);
-      
+
       $utm_readon = array('utm_content' => 'red-teaser-read-more');
       $query_readon = array_merge($link_query, $utm, $utm_readon);
-      
+
       $variables = array(
         'url_title' => url($link_path, array('query' => $query_title)),
         'url_image' => url($link_path, array('query' => $query_image)),
@@ -1473,7 +1473,7 @@ function culturefeed_mailing_page_mailing_content() {
 
   $output .= '<h3>BLOCK 6</h3>';
   $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_6, '#rows' => 5))) . '</p><p>' . $output_block_6 . '</p>';
-  
+
   return $output;
 
 }

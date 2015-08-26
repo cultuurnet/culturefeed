@@ -614,3 +614,11 @@ msgstr "Filter"
 #: theme/theme.inc:1322
 msgid "Weight"
 msgstr "Gewicht"
+
+#: theme/theme.inc:204
+msgid "Sign Up"
+msgstr "Inschrijven"
+
+#: theme/theme.inc:207
+msgid "Buy tickets"
+msgstr "Bestel tickets"
