@@ -4,6 +4,18 @@
  * Helper functions for the culturefeed agenda.
  **/
 
+ /**
+  * Return a phone number without spaces, dashes, slashes, characters
+  */
+ function culturefeed_valid_phone($raw_phone) {
+
+   $phone = str_replace(' ', '-', $raw_phone);
+   $phone = preg_replace('/[^0-9\+\(\)]/', '', $phone);
+
+   return $phone;
+
+}
+
 /**
  * Return all the known agenda entity types.
  */
@@ -640,10 +652,14 @@ function culturefeed_agenda_group_timestamps(&$timestamps) {
             }*/
           }
           else {
-            if (isset($next_timestamp['begintime']) && $this_timestamp['begintime'] != $next_timestamp['begintime']) {
+            if (isset($next_timestamp['begintime']) && isset($this_timestamp['begintime']) && $this_timestamp['begintime'] != $next_timestamp['begintime']) {
               unset($timestamps[$i]['begintime']);
-              $timestamps[$i]['begintime'][] = $this_timestamp['begintime'];
-              $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+              if (isset($this_timestamp['begintime'])) {
+                $timestamps[$i]['begintime'][] = $this_timestamp['begintime'];
+              }
+              if (isset($next_timestamp['begintime'])) {
+                $timestamps[$i]['begintime'][] = $next_timestamp['begintime'];
+              }
             }
           }
           if (isset($timestamps[$i]['begintime']) && is_array($timestamps[$i]['begintime'])) {
@@ -768,6 +784,7 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
   $text_list = array();
   $links_list = array();
+  $id_list = array();
 
   $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
   foreach ($categories as $category) {
@@ -782,12 +799,14 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
     $text_list[] = check_plain($category->getName());
     $links_list[] = l($category->getName(), 'agenda/search', $options);
+    $id_list[] = check_plain($category->getId());
 
   }
 
   return array(
     'text' => $text_list,
     'links' => $links_list,
+    'id' => $id_list,
   );
 
 }

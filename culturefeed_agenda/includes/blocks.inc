@@ -55,6 +55,12 @@ function culturefeed_agenda_block_nearby_activities() {
       'attributes' => array('id' => 'all-activities-link', 'class' => array($classes)))
   );
 
+  $all_activities_for_location_raw_link = url('agenda/search',
+    array(
+      'query' => array('location' => $location_string),
+    )
+  );
+
   // Construct the toggle for the location form visbility.
   $change_location_link = l(t('Change location'), '',
     array(
@@ -69,6 +75,8 @@ function culturefeed_agenda_block_nearby_activities() {
       '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
       '#change_location_link' => $change_location_link,
       '#all_activities_for_location_link' => $all_activities_for_location_link,
+      '#all_activities_for_location_raw_link' => $all_activities_for_location_raw_link,
+      '#location_string' => $location_string,
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',
@@ -184,7 +192,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
     $form['location']['radius'] = array(
       '#type' => 'hidden',
-      '#default_value' => isset($_GET['distance']) ? $_GET['distance'] : NULL,
+      '#default_value' => isset($_GET['distance']) && !isset($_GET['facet']['category_flandersregion_id']) ? $_GET['distance'] : NULL,
     );
 
     $form['location']['nearby'] = array(
@@ -208,7 +216,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t(variable_get('agenda_search_block_submit_value', 'Search')),
+    '#value' => variable_get('agenda_search_block_submit_value', t('Search')),
     '#weight' => 200,
   );
 
@@ -227,6 +235,18 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
+  $destination = drupal_get_destination();
+
+  // UIV-1406 reset $query if http headers return 404.
+  $status = drupal_get_http_header();
+
+  if ($status['status'] == '404 Not Found') {
+    $_GET['q'] = 'agenda/search';
+    unset($_GET['destination']);
+    $query = array();
+  }
+
+
   if (!empty($form_state['values']['search'])) {
     $query['search'] = $form_state['values']['search'];
   }
@@ -242,6 +262,16 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   if (isset($active_filters['where'])) {
     unset($query['where']);
+
+    // Remove the region filter.
+    if (isset($query['facet']['category_flandersregion_id'])) {
+      unset($query['facet']['category_flandersregion_id']);
+    }
+
+    // Remove the distance filter.
+    if (isset($query['distance'])) {
+      unset($query['distance']);
+    }
 
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];

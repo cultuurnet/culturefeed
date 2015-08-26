@@ -90,6 +90,8 @@ function culturefeed_agenda_theme() {
       'filter_form' => NULL,
       'change_location_link' => '',
       'all_activities_for_location_link' => '',
+      'all_activities_for_location_raw_link' => '',
+      'location_string' => '',
     ),
     'template' => 'culturefeed-agenda-block-nearby-activities',
     'path' => $path,
@@ -356,41 +358,49 @@ function culturefeed_agenda_block_info() {
 
   $blocks = array();
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Related-activities
   $blocks['agenda-related-activities'] = array(
     'info' => t('Culturefeed agenda: related activities'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Nearby-activities
   $blocks['agenda-nearby-activities'] = array(
     'info' => t('Culturefeed agenda: nearby activities'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Search-events
   $blocks['agenda-search-block'] = array(
     'info' => t('Culturefeed agenda: search events'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Actor-program
   $blocks['actor-program'] = array(
     'info' => t('Culturefeed agenda: actor program'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Production-program
   $blocks['production-program'] = array(
     'info' => t('Culturefeed agenda: production program'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Actor-search
   $blocks['agenda-actor-search'] = array(
     'info' => t('Culturefeed agenda: actor search'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Event-types
   $blocks['agenda-event-types'] = array(
     'info' => t('Culturefeed agenda: Event types'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
 
+  // More info https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Agenda-Block-Organiser-Events
 	$blocks['agenda-organiser-events'] = array(
 		'info' => t('Culturefeed agenda: Organiser events'),
 		'cache' => DRUPAL_CACHE_PER_PAGE,

@@ -148,6 +148,22 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+  // Themes of this item (as plain text and as links).
+  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
+  $variables['themes'] = $themes['text'];
+  $variables['themes_links'] = $themes['links'];
+
+  // Eventtypes of this item (plain text and links).
+  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $eventtypes['text'];
+  $variables['types_links'] = $eventtypes['links'];
+
+  // Actortypes of this item (plain text and links).
+  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
+  $variables['actortypes'] = $actortypes['text'];
+  $variables['actortypes_links'] = $actortypes['links'];
+
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
@@ -171,16 +187,36 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
+    $variables['ticket_links'] = array();
+    $cta_tickets = '';
+    $cta_array = array(
+      '0.3.1.0.0',
+      '0.7.0.0.0',
+      '0.57.0.0.0',
+      '0.59.0.0.0',
+      '0.17.0.0.0',
+      '0.50.21.0.0',
+      '0.3.2.0.0',
+    );
+
+
+    if (in_array($eventtypes['id'][0], $cta_array)) {
+      $cta_tickets = t('Sign Up');
+    }
+    else {
+      $cta_tickets = t('Buy tickets');
+    }
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
+      $variables['tickets'][] = l($cta_tickets, $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
-      $button['text'] = t('Buy tickets');
+      $button['text'] = $cta_tickets;
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
+      $variables['ticket_links'][] = $link->getHLink();
     }
 
     // Performers
@@ -257,7 +293,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
-      $main_picture_cr = $copyrights[0];
+      if (isset($copyrights[0])) {
+        $main_picture_cr = $copyrights[0];
+      }
     }
 
     // we don't want the main picture to show twice
@@ -291,21 +329,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
-
-  // Themes of this item (as plain text and as links).
-  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
-  $variables['themes'] = $themes['text'];
-  $variables['themes_links'] = $themes['links'];
-
-  // Eventtypes of this item (plain text and links).
-  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
-  $variables['types'] = $eventtypes['text'];
-  $variables['types_links'] = $eventtypes['links'];
-
-  // Actortypes of this item (plain text and links).
-  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
-  $variables['actortypes'] = $actortypes['text'];
-  $variables['actortypes_links'] = $actortypes['links'];
 
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
@@ -347,7 +370,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
         if ($keyword->isVisible()) {
           $variables['raw_keywords'][] = $keyword->getValue();
-          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => urlencode($keyword->getValue()))));
+          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => '"' . $keyword->getValue() . '"')));
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
@@ -371,7 +394,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $linked_keywords = array();
       foreach ($keywords as $keyword) {
         $variables['raw_keywords'][] = $keyword;
-        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => urlencode($keyword))));
+        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => '"' . $keyword . '"')));
       }
 
       $variables['keywords'] = implode(', ', $linked_keywords);
@@ -434,63 +457,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     global $base_root;
     $variables['share_url'] = $base_root . $variables['url'];
 
-    $facebook = array();
-    $googleplus = array();
-    $twitter = array();
-    $whatsapp = array();
-
-    // Set prefix for share URL's.
-    $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
-    $googleplus['prefix'] = 'https://plus.google.com/share?url=';
-    $twitter['prefix'] = 'https://twitter.com/intent/tweet?text=';
-    $whatsapp['prefix'] = 'whatsapp://send?text=';
-
-    // Set UTM parameters for share URL's.
-    $utm['campaign'] = 'share';
-    $utm['medium'] = 'social';
-
-    $facebook['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'facebook.com',
-    );
-
-    $googleplus['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'plus.google.com',
-    );
-
-    $twitter['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'twitter.com',
-    );
-
-    $whatsapp['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => $utm['medium'],
-      'utm_source' => 'whatsapp',
-    );
-
-    $mail['utm'] = array (
-      'utm_campaign' => $utm['campaign'],
-      'utm_medium' => 'email',
-      'utm_source' => 'forward-mail',
-    );
-
     // Build share URL's.
-    $variables['facebook']['url'] = $facebook['prefix'] . urlencode(url($variables['share_url'], array('query' => $facebook['utm'])));
-    $variables['googleplus']['url'] = $googleplus['prefix'] . urlencode(url($variables['share_url'], array('query' => $googleplus['utm'])));
-    $variables['twitter']['url'] = $twitter['prefix'] . urlencode(url($variables['share_url'], array('query' => $twitter['utm'])));
-    $variables['whatsapp']['url'] = $whatsapp['prefix'] . urlencode(url($variables['share_url'], array('query' => $whatsapp['utm'])));
-
-    if (module_exists('forward') && (isset($variables['device']) && $variables['device'] == 'computer')) {
-      $variables['mail']['url'] = url('forward', array('query' => array('path' => url($variables['url'], array('query' => $mail['utm'])))));
-    }
-    else {
-      $variables['mail']['url'] = 'mailto:?subject=' . $variables['title'] . '&body=' . urlencode(url($variables['share_url'], array('query' => $mail['utm'])));
-    }
+    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title'], $variables['device']);
+    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
+    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
+    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
     // Prepare to push share activities to Culturefeed.
     $track = FALSE;
@@ -601,7 +573,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        $phones[] = $phone->getNumber();
+        if(isset($variables['device']) && $variables['device'] == 'phone')
+        {
+          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+        }
+        else {
+          $phones[] = $phone->getNumber();
+        }
       }
       else {
         $faxes[] = $phone->getNumber();
@@ -625,7 +603,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          $reservation_phones[] = $phone;
+          if(isset($variables['device']) && $variables['device'] == 'phone')
+          {
+            $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
+          }
+          else {
+            $reservation_phones[] = $phone;
+          }
         }
         $variables['reservation']['phone'] = implode(', ', $reservation_phones);
       }
@@ -633,12 +617,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation url
       if (isset($reservation_info['url'])) {
         foreach ($reservation_info['url'] as $url) {
-          // clean up link text
-          $url_text = str_replace('http://', '', $url);
-          $url_text = str_replace('https://', '', $url_text);
-          $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
+          if(isset($variables['ticket_links']) && !in_array($url, $variables['ticket_links'])){
+            // clean up link text
+            $url_text = str_replace('http://', '', $url);
+            $url_text = str_replace('https://', '', $url_text);
+            $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
+          }
         }
-        $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        if (isset($reservation_urls)) {
+          $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        }
+        else {
+          $variables['reservation']['url'] = implode(', ', $reservation_info['url']);
+        }
       }
 
     // Coordinates.
@@ -738,7 +729,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     }
     catch (Exception $e) {
     }
-    
+
     // Check if event has finished or not.
     $event_is_passed = FALSE;
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
@@ -819,6 +810,14 @@ function _culturefeed_agenda_preprocess_production(&$variables) {
           $variables['when_lg'] = '';
           try {
             $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
+          }
+          catch (Exception $e) {
+          }
+
+          // Medium Calendar format (for search results).
+          $variables['when_md'] = '';
+          try {
+            $variables['when_md'] = $html_formatter->format($calendar, 'md');
           }
           catch (Exception $e) {
           }
@@ -925,7 +924,13 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        $phones[] = $phone->getNumber();
+        if(isset($variables['device']) && $variables['device'] == 'phone')
+        {
+          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+        }
+        else {
+          $phones[] = $phone->getNumber();
+        }
       }
       else {
         $faxes[] = $phone->getNumber();
@@ -979,7 +984,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_actor_program_item(&$v
       culturefeed_agenda_preprocess_culturefeed_production_summary($variables);
       break;
   }
-  
+
 }
 
 /**
@@ -1048,9 +1053,11 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   $title_parts = array();
   $description_parts = array();
+  $og_tags = array();
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
+    $og_tags['og:title'] = html_entity_decode($variables['title']);
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];
@@ -1081,6 +1088,35 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     ),
   ), 'meta_description');
 
+  // Add open graph meta tags.
+  $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
+  if (!empty($fb_app_id)) {
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
+  $og_tags['og:description'] = implode(' - ', $description_parts);
+  if ($variables['main_picture']) {
+    $colonpos = strpos($variables['main_picture'], ':');
+    $path = ($colonpos == FALSE) ? 'http:' : '' ;
+    $path .= str_replace(' ', '%20', $variables['main_picture']);
+    $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
+  }
+  else {
+    $path = drupal_get_path('module', 'culturefeed_agenda');
+    $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
+  }
+
+  foreach ($og_tags as $property => $content) {
+    drupal_add_html_head(array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => $property,
+        'content' => $content,
+      ),
+    ), $property);
+  }
+
 }
 
 /**
@@ -1091,9 +1127,11 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
 
   $title_parts = array();
   $description_parts = array();
+  $og_tags = array();
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
+    $og_tags['og:title'] = html_entity_decode($variables['title']);
   }
   if (!empty($variables['location']) && !empty($variables['location']['street'])) {
     $location = $variables['location']['street'];
@@ -1120,6 +1158,35 @@ function _culturefeed_agenda_preprocess_actor_page_metatags($variables) {
       'content' => implode(' - ', $description_parts),
     ),
   ), 'meta_description');
+
+  // Add open graph meta tags.
+  $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
+  if (!empty($fb_app_id)) {
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
+  $og_tags['og:description'] = implode(' - ', $description_parts);
+  if ($variables['main_picture']) {
+    $colonpos = strpos($variables['main_picture'], ':');
+    $path = ($colonpos == FALSE) ? 'http:' : '' ;
+    $path .= str_replace(' ', '%20', $variables['main_picture']);
+    $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
+  }
+  else {
+    $path = drupal_get_path('module', 'culturefeed_agenda');
+    $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
+  }
+
+  foreach ($og_tags as $property => $content) {
+    drupal_add_html_head(array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => $property,
+        'content' => $content,
+      ),
+    ), $property);
+  }
 }
 
 /**

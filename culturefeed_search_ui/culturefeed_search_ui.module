@@ -47,10 +47,11 @@ function culturefeed_search_ui_init() {
     culturefeed_search_ui_redirect_cnapi_urls();
   }
 
-  // Set correct robot metatag.
+  // Set correct metatags.
   $active_page = _culturefeed_search_ui_get_active_search_page();
   if ($active_page) {
     culturefeed_search_ui_set_noindex_metatag();
+    culturefeed_search_ui_set_canonical_metatag();
   }
 
   // Check if we are not on a staging environment
@@ -583,7 +584,7 @@ function culturefeed_search_ui_block_configure($delta) {
       '#tree' => TRUE,
     );
 
-    for ($i = 0; $i < 20; $i++) {
+    for ($i = 0; $i < 50; $i++) {
       $form[$config_label][$i]['exposed'] = array(
         '#title' => t('Exposed'),
         '#type' => 'checkbox',
@@ -1025,7 +1026,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));
 
-    $label = check_plain($query['location']);
+    $label = $query['location'];
     if (!empty($query['distance'])) {
       $label .= ' + ' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);

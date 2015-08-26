@@ -553,7 +553,7 @@ function culturefeed_mailing_page_my_newsletters() {
   $query->max = 999;
   $query->consumerKey = variable_get('culturefeed_api_application_key', '');
   $mailings = DrupalCultureFeed::searchMailings($query);
-  
+
   $build = array();
   $build['intro'] = array(
     '#markup' => '',
@@ -1374,3 +1374,108 @@ function _culturefeed_mailing_get_day_of_the_month() {
 
   return $daysofmonth;
 }
+
+/**
+ * Page callback for the mailing content items markup for each block
+ */
+function culturefeed_mailing_page_mailing_content() {
+
+  $output_block_1 = '';
+  $output_block_2 = '';
+  $output_block_3 = '';
+  $output_block_4 = '';
+  $output_block_5 = '';
+  $output_block_6 = '';
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node');
+  $query->entityCondition('bundle', 'mail_item');
+  //$query->propertyCondition('status', 1);
+  $query->entityOrderBy('entity_id', 'DESC');
+  $query->range(0, 5);
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  if ($nids) {
+    $nodes = node_load_multiple($nids);
+    foreach ($nodes as $node) {
+      $link = field_view_field('node', $node, 'field_mail_item_link');
+      $image = field_view_field('node', $node, 'field_mail_item_image');
+      $intro = field_view_field('node', $node, 'field_mail_item_teaser');
+      $region = field_view_field('node', $node, 'field_mail_item_region');
+
+      $link_path = $link['#items'][0]['url'];
+      $link_query = array($link['#items'][0]['query']);
+
+      $utm = array(
+        'utm_campaign' => 'UiTmail',
+        'utm_medium' => 'email',
+        'utm_source' => 'newsletter',
+      );
+
+      $utm_title = array('utm_content' => 'red-teaser-title');
+      $query_title = array_merge($link_query, $utm, $utm_title);
+
+      $utm_image = array('utm_content' => 'red-teaser-image');
+      $query_image = array_merge($link_query, $utm, $utm_image);
+
+      $utm_readon = array('utm_content' => 'red-teaser-read-more');
+      $query_readon = array_merge($link_query, $utm, $utm_readon);
+
+      $variables = array(
+        'url_title' => url($link_path, array('query' => $query_title)),
+        'url_image' => url($link_path, array('query' => $query_image)),
+        'url_readon' => url($link_path, array('query' => $query_readon)),
+        'title' => $node->title,
+        'intro' => isset($intro['#items'][0]['value']) ? $intro['#items'][0]['value'] : '',
+        'link_title' => $link['#items'][0]['title'],
+        'image' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $image['#items'][0]['uri'], 'attributes' => array('style' => 'border: none; margin:0 !important; height:100px; width: 100px;'), 'alt' => $node->title)),
+        'spacer' => theme_image(array('path' => drupal_get_path('module', 'culturefeed_mailing') . '/theme/img/spacer.gif', 'attributes' => array('style' => 'LINE-HEIGHT: 1px; FONT-SIZE: 1px;', 'width' => '1', 'height' => '10'))),
+      );
+
+      foreach ($region['#items'] as $region_block) {
+        if ($region_block['value'] == 'block_1') {
+          $output_block_1 .= theme('culturefeed_mailing_content_block_1', $variables);
+        }
+        if ($region_block['value'] == 'block_2') {
+          $output_block_2 .= theme('culturefeed_mailing_content_block_2', $variables);
+        }
+        if ($region_block['value'] == 'block_3') {
+          $output_block_3 .= theme('culturefeed_mailing_content_block_3', $variables);
+        }
+        if ($region_block['value'] == 'block_4') {
+          $output_block_4 .= theme('culturefeed_mailing_content_block_4', $variables);
+        }
+        if ($region_block['value'] == 'block_5') {
+          $output_block_5 .= theme('culturefeed_mailing_content_block_5', $variables);
+        }
+        if ($region_block['value'] == 'block_6') {
+          $output_block_6 .= theme('culturefeed_mailing_content_block_6', $variables);
+        }
+      }
+    }
+
+  }
+
+  $output = '<h3>BLOCK 1</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_1, '#rows' => 5))) . '</p><p>' . $output_block_1 . '</p>';
+
+  $output .= '<h3>BLOCK 2</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_2, '#rows' => 5))) . '</p><p>' . $output_block_2 . '</p>';
+
+  $output .= '<h3>BLOCK 3</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_3, '#rows' => 5))) . '</p><p>' . $output_block_3 . '</p>';
+
+  $output .= '<h3>BLOCK 4</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_4, '#rows' => 5))) . '</p><p>' . $output_block_4 . '</p>';
+
+  $output .= '<h3>BLOCK 5</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_5, '#rows' => 5))) . '</p><p>' . $output_block_5 . '</p>';
+
+  $output .= '<h3>BLOCK 6</h3>';
+  $output .= '<p>' . theme('textarea', array('element' => array('#value' => $output_block_6, '#rows' => 5))) . '</p><p>' . $output_block_6 . '</p>';
+
+  return $output;
+
+}
+
+

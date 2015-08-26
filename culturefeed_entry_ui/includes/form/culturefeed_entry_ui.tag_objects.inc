@@ -115,7 +115,9 @@ function culturefeed_entry_ui_edit_tag_objects_form_submit($form, &$form_state) 
       }
     }
 
-    drupal_set_message(t('The tags were adjusted. However, it takes half an hour before these changes on all channels (including Uitinvlaanderen) will be. Available under the "View" tab'));
+    drupal_set_message(t('The tags were adjusted.'));
+    cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
+    drupal_goto(culturefeed_search_detail_path('event', $event->getCdbId(), ''));
 
   }
 

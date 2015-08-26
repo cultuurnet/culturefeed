@@ -442,11 +442,17 @@ class CultureFeedSearchPage {
       $this->parameters[] = new Parameter\Spatial\SpatialField('physical_gis');
     }
 
-    // Backwards compatiblity for sites without clean urls: make sure location is mapped to flandersregion.
     if (empty($params['facet']['category_flandersregion_id'][0]) && !empty($params['location'])) {
       $flanders_region = culturefeed_search_get_category_by_slug($params['location'], 'flandersregion');
+      if (!empty($flanders_region)) {
+        $flanders_region = $flanders_region->tid;
+      }
+      // Backwards compatiblity for sites without clean urls: make sure location is mapped to flandersregion.
+      if (empty($flanders_region)) {
+        $flanders_region = key(culturefeed_search_get_categories_by_domain('flandersregion', array('name_like' => $params['location'])));
+      }
       if ($flanders_region) {
-        $params['facet']['category_flandersregion_id'][0] = $flanders_region->tid;
+        $params['facet']['category_flandersregion_id'][0] = $flanders_region;
       }
     }
 

@@ -624,7 +624,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
     $or->condition('p2', $parents, 'IN');
     $query->condition($or);
   }
-  $query->range(0, 20);
+  //$query->range(0, 20);
 
   // Order by parent, so that provinces appear at top of list.
   $query->orderBy('parent', 'ASC');
@@ -662,8 +662,28 @@ function culturefeed_search_get_city_suggestions($search_string, $include_region
   $old_parts = count($parts) > 0 ? (trim(implode(", ", $parts)) . ', ') : '';
 
   $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents);
+
+  // Fix for UIV-1403 order by match of $search_string.
+  // Change the structure of the $city_suggestions array.
+  // Add stripos element to it.
+  foreach ($region_suggestions as $key => $region_order_suggestion) {
+    unset($region_suggestions[$key]);
+    $region_suggestions[$key]['name'] = $region_order_suggestion;
+    $region_suggestions[$key]['stripos'] = stripos($region_order_suggestion, $search_string);
+  }
+
+  // Order the $city_suggestions array by its element stripos.
+  foreach ($region_suggestions as $key => $row) {
+    $stripos[$key]  = $row['stripos'];
+  }
+  if (isset($stripos)) {
+    array_multisort($stripos, SORT_ASC, $region_suggestions);
+  }
+
+  $region_suggestions = array_slice($region_suggestions, 0, 20);
+
   foreach ($region_suggestions as $region) {
-    $suggestions[$old_parts . $region] = $region;
+    $suggestions[$old_parts . $region['name']] = $region['name'];
   }
 
   return $suggestions;

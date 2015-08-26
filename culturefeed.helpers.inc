@@ -442,6 +442,80 @@ function culturefeed_ajax_command_goto($url) {
   );
 }
 
+
+/*
+f
+*/
+function culturefeed_share_link($share_url, $platform, $title, $device) {
+
+  // Set prefix for share URL's.
+  $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
+  $googleplus['prefix'] = 'https://plus.google.com/share?url=';
+  $twitter['prefix'] = 'https://twitter.com/intent/tweet?text=';
+  $whatsapp['prefix'] = 'whatsapp://send?text=';
+
+  // Set UTM parameters for share URL's.
+  $utm['campaign'] = 'share';
+  $utm['medium'] = 'social';
+
+  $facebook['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'facebook.com',
+  );
+
+  $googleplus['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'plus.google.com',
+  );
+
+  $twitter['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'twitter.com',
+  );
+
+  $whatsapp['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'whatsapp',
+  );
+
+  $mail['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => 'email',
+    'utm_source' => 'forward-mail',
+  );
+
+  switch($platform)
+  {
+    case 'facebook' :
+      return $facebook['prefix'] . urlencode(url($share_url, array('query' => $facebook['utm'])));
+      break;
+    case 'googleplus' :
+      return $googleplus['prefix'] . urlencode(url($share_url, array('query' => $googleplus['utm'])));
+      break;
+    case 'twitter' :
+      return $twitter['prefix'] . urlencode(url($share_url, array('query' => $twitter['utm'])));
+      break;
+    case 'whatsapp' :
+      return $whatsapp['prefix'] . urlencode(url($share_url, array('query' => $whatsapp['utm'])));
+      break;
+    case 'mail' :
+      if (module_exists('forward') && $device == 'computer') {
+        // We can't forward external URL's
+        $share_url = current_path();
+        return url('forward', array('query' => array('path' => $share_url)));
+      }
+      else {
+        return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url($share_url, array('query' => $mail['utm'])));
+      }
+      break;
+  }
+
+}
+
 /**
  * Getter function to retrieve a Mobile_Detect() singleton.
  * @return object
