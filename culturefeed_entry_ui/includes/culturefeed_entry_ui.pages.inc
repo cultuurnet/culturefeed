@@ -2017,6 +2017,7 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
       $form_state['#event_id'] = $event->getCdbId();
       watchdog('culturefeed_entry_ui', 'Event %eventid updated.', array('%eventid' => $form_state['#event_id']));
       cache_clear_all('culturefeed:results:detail:event:' . $event->getCdbId(), 'cache_culturefeed_search');
+      module_invoke_all('culturefeed_entry_ui_event_post_save', $event, $form, $form_state);
     }
     else {
       $form_state['#event_id'] = Drupalculturefeed_EntryApi::createEvent($event);
