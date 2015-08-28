@@ -164,6 +164,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['actortypes'] = $actortypes['text'];
   $variables['actortypes_links'] = $actortypes['links'];
 
+  // Facilitytypes of this item (plain text and links).
+  $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
+  $variables['facilities'] = $facilities['text'];
+  $variables['facilities_links'] = $facilities['links'];
+
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
