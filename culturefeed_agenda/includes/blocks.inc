@@ -308,7 +308,13 @@ function culturefeed_agenda_block_organiser_events() {
 		return;
 	}
 
-	$organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  if (is_null($item->getEntity()->getOrganiser())) {
+    return;
+  }
+  else {
+    $organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  }
+
 	$amount = variable_get('agenda_organiser_event_amount', 10);
 
 	$parameters = array();
