@@ -200,7 +200,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     );
 
 
-    if (in_array($eventtypes['id'][0], $cta_array)) {
+    if (isset($eventtypes['id'][0]) && in_array($eventtypes['id'][0], $cta_array)) {
       $cta_tickets = t('Sign Up');
     }
     else {
