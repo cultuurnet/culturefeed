@@ -77,7 +77,7 @@ function culturefeed_location_control_location_control_process(array $element, a
   );
 
   if (isset($element['#description'])) {
-    $element['description'] = array(
+    $element['location_control']['description'] = array(
       '#attributes' => array(
         'class' => array('description'),
       ),
