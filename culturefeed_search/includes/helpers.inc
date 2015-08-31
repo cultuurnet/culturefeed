@@ -606,7 +606,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
 
   $query = db_select('culturefeed_search_terms', 'cst');
-  $query->fields('cst', array('tid', 'name'));
+  $query->fields('cst', array('tid', 'name', 'p3'));
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
@@ -634,6 +634,17 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $suggestions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
+
+    //When searching on postal and a full postal is entered, add the parent.
+    if (is_numeric($search_string) && strlen($search_string) == 4) {
+      $parent_query = db_select('culturefeed_search_terms', 'cst');
+      $parent_query->fields('cst', array('tid', 'name'));
+      $parent_query->condition('did', 'flandersregion');
+      $parent_query->condition('language', 'und');
+      $parent_query->condition('tid', $row->p3);
+      $parent_result = $parent_query->execute()->fetch();
+      $suggestions[$parent_result->name] = $parent_result->name;
+    }
   }
 
 	foreach ($suggestions as $key => $suggestion) {
