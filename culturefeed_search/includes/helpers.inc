@@ -601,6 +601,8 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
  */
 function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
 
+  $postal_search = (is_numeric($search_string) && strlen($search_string) >= 3) ? TRUE : FALSE;
+
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (implode(", ", $parts) . ', ') : '';
@@ -610,8 +612,15 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $query->condition('did', 'flandersregion');
   //$query->condition('language', culturefeed_search_get_preferred_language());
   $query->condition('language', 'und');
-	$query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
-  $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
+
+  if ($postal_search) {
+    $query->condition('name', db_like($search_string) . '%', 'LIKE');
+  }
+  else {
+    $query->condition('name', '%' . db_like($search_string) . '%', 'LIKE');
+    $query->condition('name', '%(' . db_like($search_string) . '%)', 'NOT LIKE');
+  }
+
   if(!$include_regions) {
     $query->isNotNull('p1');
     $query->isNotNull('p2');
@@ -636,7 +645,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
     $suggestions[$old_parts . $row->name] = $row->name;
 
     //When searching on postal and a full postal is entered, add the parent.
-    if (is_numeric($search_string) && strlen($search_string) == 4) {
+    if ($postal_search) {
       $parent_query = db_select('culturefeed_search_terms', 'cst');
       $parent_query->fields('cst', array('tid', 'name'));
       $parent_query->condition('did', 'flandersregion');
