@@ -9,6 +9,9 @@ __[Live demo connecting production API](http://www.culturefeed.be/) only availab
 
 __[Live demo connecting acceptance API](http://acc.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__
 
+| Important note   | 
+|----------|
+| Since the culturefeed 3.6 release __PHP v5.5__ is the minimum requirement and also the __PHP INTL extension__ is needed. To install the extension on your system take a look at [this blogpost](http://asdqwe.net/blog/enabling-installing-intl-package-php-from-terminal). |
 
 
 ## Culturefeed-kickstart
@@ -23,6 +26,8 @@ When you start with a clean Drupal install or just for setting up a quick demo s
 - vendor/cultuurnet/auth
 - vendor/cultuurnet/search
 - vendor/cultuurnet/culturefeed-php
+- vendor/cultuurnet/calendar-summary
+- vendor/cultuurnet/sitemap-xml
 - lessphp
 
 
@@ -30,6 +35,7 @@ When you start with a clean Drupal install or just for setting up a quick demo s
 
 Prerequisites:
 
+- php > v5.5 and the php intl extension (see important note above) 
 - git installed
 - drush installed
 - composer installed (http://getcomposer.org/doc/00-intro.md#downloading-the-composer-executable)
@@ -45,14 +51,20 @@ Afterwards copy the composer.json file from the root of the module suite to the 
 {
     "name": "cultuurnet/culturefeed",
     "type": "drupal-module",
-    "description": "CultuurNet culturefeed PHP library & Drupal module",
+    "description": "CultuurNet culturefeed Drupal module",
     "license": "Apache-2.0",
     "require": {
-      "cultuurnet/search": "~1.0",
-      "cultuurnet/cdb": "~2.0",
-      "cultuurnet/culturefeed-php": "~1.0"
+      "cultuurnet/search": "~1.2",
+      "cultuurnet/cdb": "~2.1",
+      "cultuurnet/culturefeed-php": "~1.5",
+      "cultuurnet/calendar-summary": "~1.0",
+      "cultuurnet/sitemap-xml": "~1.0"
     },
-    "minimum-stability": "stable"
+    "require-dev": {
+      "phing/phing": "~2.10"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
 ```
 
@@ -108,6 +120,17 @@ solid base for consumers of various OAuth-protected resources provided by Cultuu
 Integration of all UiTID API calls.
 
 [https://github.com/cultuurnet/culturefeed-php](https://github.com/cultuurnet/culturefeed-php)
+
+###CultuurNet\calendar-summary
+The calendar-summary PHP takes a CultureFeed_Cdb_Data_Calendar object (hence the dependency on cultuurnet/cdb, and formats it. Right now there's a HTML formatter and a plain text formatter. Current options: 'lg' (for permanent events only this option is available), 'md', 'md', 'sm', 'xs'.
+
+
+[https://github.com/cultuurnet/calendar-summary](https://github.com/cultuurnet/calendar-summary)
+
+###CultuurNet\sitemap-xml-php
+PHP library for writing sitemap XML conform with the sitemaps.org schema. Example see http://www.uitinvlaanderen.be/sitemap.xml. Only needed when you turn on the culturefeed_sitemap module.
+
+[https://github.com/cultuurnet/sitemap-xml-php](https://github.com/cultuurnet/sitemap-xml-php)
 
 
 ## Theme
@@ -195,12 +218,12 @@ __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Cultur
 
 To integrate UiTID we also wrote a [Tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI)
 
-### culturefeed_social
+### Culturefeed_social
 All ‘social’ features: likes, comments, attends, etc.
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Social)__
 
-### culturefeed_uitpas
+### Culturefeed_uitpas
 Integration with the UiTPAS card system. It contains multiple pages and blocks that can be used to build an interface that allows:
 
 - easy access to the advantages and promotions a passholder has access to,
@@ -223,14 +246,26 @@ Collect on line userpoints (for specific actions like writing reviews) and claim
 ### Culturefeed_roles
 Pre-assign roles to UiTID users that have not logged in yet. Drush integration.
 
+### Culturefeed_calendar
+UiTkalender functionality not yet released on UiTinVlaanderen (some extra features are going to be added in next release)
+
+### Culturefeed_content
+Adds a CultureFeed content field to add a search query to any of your content types.
+
+### Culturefeed_saved_searches
+With this functionality your user can save a search and create alerts from it.
+
+### Culturefeed_sitemap
+Creates a sitemap for events, productions and actors, see example http://www.uitinvlaanderen.be/sitemap.xml.
+
 ### Examples
 
 There already a lot of integrations live on the 3.x version (and still counting):
 
+- http://www.uitinvlaanderen.be
 - http://www.uitinmechelen.be
 - http://www.uitinsint-niklaas.be
 - http://www.2014-18.be
-- http://m.uitinvlaanderen.be
 - http://agenda.hbvl.be
 - http://agenda.gva.be
 - https://www.uitpas.be
@@ -238,6 +273,8 @@ There already a lot of integrations live on the 3.x version (and still counting)
 - http://www.starttoswim.com
 - http://www.cultuurkuur.be
 - http://www.uitmetvlieg.be
+- http://agenda.besteburen.eu
+- http://uitinemmen.com
 
 
 ## License

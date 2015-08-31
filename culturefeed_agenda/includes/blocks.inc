@@ -240,7 +240,7 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
   // UIV-1406 reset $query if http headers return 404.
   $status = drupal_get_http_header();
 
-  if ($status['status'] == '404 Not Found') {
+  if (isset($status['status']) && $status['status'] == '404 Not Found') {
     $_GET['q'] = 'agenda/search';
     unset($_GET['destination']);
     $query = array();
@@ -308,7 +308,13 @@ function culturefeed_agenda_block_organiser_events() {
 		return;
 	}
 
-	$organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  if (is_null($item->getEntity()->getOrganiser())) {
+    return;
+  }
+  else {
+    $organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  }
+
 	$amount = variable_get('agenda_organiser_event_amount', 10);
 
 	$parameters = array();
