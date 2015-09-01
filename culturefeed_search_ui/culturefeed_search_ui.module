@@ -363,6 +363,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['culturefeed-search-regionsuggest'] = array(
+    'info' => t('Culturefeed search: region suggestion'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   $blocks['facet-type'] = array(
     'info' => t('Culturefeed search: facet entity type'),
     'cache' => DRUPAL_NO_CACHE,
@@ -709,6 +714,10 @@ function culturefeed_search_ui_block_view($delta) {
     case 'culturefeed-search-activefilters':
       $block['subject'] = t('You searched for:');
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
+    break;
+
+    case 'culturefeed-search-regionsuggest':
+      $block['content'] = culturefeed_search_ui_search_parent_region_suggestion_block();
     break;
 
     case 'facet-datetype':

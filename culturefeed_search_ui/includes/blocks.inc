@@ -706,6 +706,64 @@ function culturefeed_search_ui_search_active_filters_block() {
 }
 
 /**
+ * Block callback for the suggestion of the parent region during flandersregion/location search.
+ */
+function culturefeed_search_ui_search_parent_region_suggestion_block() {
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return '';
+  }
+
+  $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
+
+  // Get the parent tid for the current location or flandersregion filter.
+  $parent_tid_query = db_select('culturefeed_search_terms', 'cst');
+  $parent_tid_query->fields('cst', array('p3'));
+  $parent_tid_query->condition('did', 'flandersregion');
+  $parent_tid_query->condition('language', 'und');
+
+  if (array_key_exists('item_category_flandersregion_id', $active_filters)) {
+
+    $active_flandersregion_tid = key($active_filters['item_category_flandersregion_id']);
+    $parent_tid_query->condition('tid', $active_flandersregion_tid);
+
+  }
+  elseif (array_key_exists('location', $active_filters)) {
+
+    $active_location_filter = $_GET['location'];
+    $parent_tid_query->condition('name', db_like($active_location_filter) . '%', 'LIKE');
+
+  }
+
+  $parent_tid_result = $parent_tid_query->execute()->fetch();
+
+  // Do nothing if we already are on a parent region.
+  if (empty($parent_tid_result->p3)) {
+    return;
+  }
+
+  // Get the parent region.
+  $parent_query = db_select('culturefeed_search_terms', 'cst');
+  $parent_query->fields('cst', array('tid', 'name'));
+  $parent_query->condition('did', 'flandersregion');
+  $parent_query->condition('language', 'und');
+  $parent_query->condition('tid', $parent_tid_result->p3);
+  $parent_result = $parent_query->execute()->fetch();
+
+  $parent = strtolower($parent_result->name);
+
+  $parent_link_text = $parent . ' (+ ' . t('boroughs') . ')';
+  $parent_link_url = 'agenda/alle/' . $parent;
+  $parent_link_options = array('html' => TRUE, 'attributes' => array('class' => array('parent-region-link')));
+
+  $parent_link = l($parent_link_text, $parent_link_url, $parent_link_options);
+
+  return t('Did you mean') . ' ' . $parent_link;
+
+}
+
+/**
  * Show the filter form for the search ui.
  */
 function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id = '') {
