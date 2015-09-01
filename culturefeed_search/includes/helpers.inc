@@ -641,28 +641,29 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   $result = $query->execute();
 
   $suggestions = array();
+  $postal_regions = array();
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
 
-    //When searching on postal and a full postal is entered, add the parent.
-    if ($postal_search) {
+    //When searching on postal and a full postal is entered, add the parent (if not added yet).
+    if ($postal_search && !isset($postal_regions[$row->p3])) {
       $parent_query = db_select('culturefeed_search_terms', 'cst');
       $parent_query->fields('cst', array('tid', 'name'));
       $parent_query->condition('did', 'flandersregion');
       $parent_query->condition('language', 'und');
       $parent_query->condition('tid', $row->p3);
-      $parent_result = $parent_query->execute()->fetch();
-      $suggestions[$parent_result->name] = $parent_result->name;
+      $postal_regions[$row->p3] = $parent_query->execute()->fetch();
+      $suggestions[] = $postal_regions[$row->p3]->name;
     }
   }
 
-	foreach ($suggestions as $key => $suggestion) {
-		if (strtolower($suggestion) == strtolower($search_string)) {
-			$val = $suggestion;
-			unset($suggestion);
-			$suggestions = array($key => $val) + $suggestions;
-		}
-	}
+  foreach ($suggestions as $key => $suggestion) {
+    if (strtolower($suggestion) == strtolower($search_string)) {
+      $val = $suggestion;
+      unset($suggestion);
+      $suggestions = array($key => $val) + $suggestions;
+    }
+  }
 
   return $suggestions;
 
