@@ -64,10 +64,17 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->parameters[] = $this->facetComponent->facetField('city');
       $this->parameters[] = $this->facetComponent->facetField('location_category_facility_id');
 
-      $this->execute($params);
+      try {
+        $this->execute($params);
 
-      // Warm up cache.
-      $this->warmupCache();
+        // Warm up cache.
+        $this->warmupCache();
+      }
+      // Store the exception for later use. The loadPage will throw it.
+      catch (Exception $e) {
+        $this->exception = $e;
+      }
+
     }
   }
 
@@ -353,9 +360,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     // Set prefix of the meta description based on entity type
     if (empty($query)) {
       $message = t("A summary of all events and productions");
-    }    
+    }
     elseif (!empty($query['facet']['type'][0])) {
-  
+
       if ($query['facet']['type'][0] == 'actor') {
         $message = t("A summary of all actors");
       }
@@ -373,7 +380,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     else {
       $message = t("A summary of all events and productions");
     }
-    
+
     // Add additional facet information to the meta description
     // Only needed for indexable paths, see culturefeed_search_ui_set_noindex_metatag()
     if (!empty($query['voor-kinderen'])) {
@@ -416,7 +423,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
     }
 
-    $message .= ". ";  
+    $message .= ". ";
     $message .= t("Discover what to do today, tomorrow, this weekend or later on.");
 
     return $message;

@@ -380,7 +380,14 @@ class CultureFeedSearchPage {
       $this->addFacetFilters($params);
       $this->addSort($params);
 
-      $this->execute($params);
+      try {
+        $this->execute($params);
+      }
+      // Store the exception for later use. The loadPage will throw it.
+      catch (Exception $e) {
+        $this->exception = $e;
+      }
+
     }
   }
 
@@ -389,6 +396,13 @@ class CultureFeedSearchPage {
    */
   public function loadPage() {
     $this->initialize();
+
+    // There was an exception while loading the search results.
+    // Throw the exception, so page callbacks can show a nice message.
+    if (!empty($this->exception)) {
+      throw $this->exception;
+    }
+
     return $this->build();
   }
 
