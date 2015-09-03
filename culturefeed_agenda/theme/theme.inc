@@ -154,6 +154,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
 
+    // Add options for the readmore link to send an activity to the profile.
+    if (culturefeed_is_culturefeed_user()) {
+      $content_type = culturefeed_get_content_type($item->getType());
+      $id = $item->getId();
+      $variables['readmore_options']['rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $variables['readmore_options']['classes'] = array('share-link', 'moreinfo-link');
+    }
+
     // Ad id / title to Drupal settings for easy reference in GTM.
     drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
       'events' => array(
@@ -302,13 +310,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       'id' => 'cf-readmore_' . $cdb_item->getCdbid()
       )
     );
-
-  if (culturefeed_is_culturefeed_user()) {
-    $content_type = culturefeed_get_content_type($item->getType());
-    $id = $item->getId();
-    $variables['moreinfo_options']['attributes']['rel'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MORE_INFO .'/' . $content_type . '/' . urlencode($id) . '/ajax');
-    $variables['moreinfo_options']['attributes']['class'][] = 'share-link moreinfo-link';
-  }
 
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
