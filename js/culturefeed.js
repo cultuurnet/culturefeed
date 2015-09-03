@@ -34,17 +34,19 @@ Drupal.behaviors.culturefeedPushActivityToUitId = {
         e.preventDefault();
         var rel = $(this).prop('rel');
         var href = $(this).attr('href');
-        var print = false;
-        if ($(this).hasClass("print-link")) {
-          print = true;
+        var moreinfo = false;
+        if ($(this).hasClass("moreinfo-link")) {
+          moreinfo = true;
+          $('#cf-longdescription').toggle();
         }
         $.ajax({
           url: rel,
           async: false,
           complete: function() {
-            if (print) {
+            if ($(this).hasClass("print-link")) {
               window.print();
-            } else {
+            }
+            else if (moreinfo === false) {
               location.href = href;
             }
           }
