@@ -32,3 +32,10 @@ function culturefeed_mailing_install() {
 function culturefeed_mailing_update_7001() {
   culturefeed_mailing_install();
 }
+
+/**
+ * Add permission for anonymous users to access the subscribe page.
+ */
+function culturefeed_mailing_update_7002() {
+  user_role_change_permissions(DRUPAL_ANONYMOUS_RID, array('subscribe to mailings' => TRUE));
+}

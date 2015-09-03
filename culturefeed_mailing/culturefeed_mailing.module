@@ -5,6 +5,8 @@
  */
 
 require_once('culturefeed_mailing.helpers.inc');
+define('CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM', variable_get('culturefeed_api_uitid_light_permission', 0));
+define('CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP', variable_get('culturefeed_mailing_block_show_zip', 0));
 
 /**
  * Implements hook_permission
@@ -235,6 +237,11 @@ function culturefeed_mailing_theme() {
       'template' => 'culturefeed-mailing-content-block-6',
       'path' => $path,
     ),
+    'culturefeed_mailing_content_block_subscribed' => array(
+      'variables' => array(),
+      'template' => 'culturefeed-mailing-content-block-subscribed',
+      'path' => $path,
+    ),
   );
 }
 
@@ -280,6 +287,47 @@ function culturefeed_mailing_block_view($delta) {
 }
 
 /**
+ * Implements hook_block_configure().
+ */
+function culturefeed_mailing_block_configure($delta) {
+
+  $form = array();
+
+  if ($delta == 'newsletter_form') {
+
+    $form['uitid_light'] = array(
+      '#title' => t('UiTiD Light settings.'),
+      '#type' => 'fieldset',
+      '#access' => CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+    );
+
+    $form['uitid_light']['show_zip_code'] = array(
+      '#title' => t('Show the zip code field'),
+      '#type' => 'checkbox',
+      '#default_value' => CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP,
+      '#description' => t('Check this checkbox if you want to show the zip code field on the newsletter form.</br>'
+          . 'Keep in mind that the field will only be shown if this checkbox is checked '
+          . 'AND the admin setting for the UiTiD light permissions has been set on admin/config/culturefeed/api-settings.'),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_mailing_block_save($delta, $edit) {
+
+  if ($delta == 'newsletter_form') {
+    variable_set('culturefeed_mailing_block_show_zip', $edit['show_zip_code']);
+  }
+
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_menu().
  */
 function culturefeed_mailing_culturefeed_ui_profile_menu() {
@@ -298,37 +346,72 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
 /**
  * Subscribe a given user to a mailing.
  */
-function culturefeed_mailing_subscribe_user($account, $mailing_id) {
+function culturefeed_mailing_subscribe_user($account, $mailing_id, $use_auth = TRUE) {
 
   $already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, $mailing_id);
 
   // If user is already subscribed, do nothing.
   if (!$already_subscribed) {
-    DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id);
+    DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id, $use_auth);
     module_invoke_all('culturefeed_mailing_user_subscribed', $account);
   }
 
 }
 
 /**
+ * Subscribe a given user to a mailing using the light id.
+ */
+function culturefeed_mailing_subscribe_user_light($email, $zip = '', $mailing_id) {
+  $account = new stdClass();
+  $account->id = DrupalCultureFeed::getUserLightId($email, $zip);
+  dsm($account);
+  culturefeed_mailing_subscribe_user($account, $mailing_id, FALSE);
+}
+
+/**
  * Form callback: Show the newsletter form as a block.
  */
-function culturefeed_mailing_newsletter_block_form() {
+function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
-  $form = array();
+  if (isset($form_state['subscribed']) && $form_state['subscribed'] == TRUE) {
+    $form['subscribed'] = array(
+      '#type' => 'markup',
+      '#markup' => theme(
+          'culturefeed_mailing_content_block_subscribed',
+          array(
+            'title' => t('Thanks!'),
+            'message' => culturefeed_mailing_user_subscribed()
+          )
+        ),
+    );
+  }
+  else {
+    $form['mail'] = array(
+      '#type' => 'textfield',
+      '#title' => variable_get('culturefeed_mailing_block_description', ''),
+      '#description' => t('Email address'),
+      '#size' => 40,
+      '#maxlength' => 255,
+    );
 
-  $form['mail'] = array(
-    '#type' => 'textfield',
-    '#title' => variable_get('culturefeed_mailing_block_description', ''),
-    '#description' => t('Email address'),
-    '#size' => 40,
-    '#maxlength' => 255,
-  );
+    $postal = CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP && CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM ? _culturefeed_mailing_get_postal_from_cookie() : '';
 
-  $form['inschrijven'] = array(
-    '#type' => 'submit',
-    '#value' => t('Subscribe'),
-  );
+    $form['zip'] = array(
+      '#type' => 'textfield',
+      '#title' => '',
+      '#required' => FALSE,
+      '#description' => t('Zipcode'),
+      '#default_value' => $postal,
+      '#size' => 40,
+      '#access' => CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP && CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+    );
+
+    $form['inschrijven'] = array(
+      '#type' => 'submit',
+      '#value' => t('Subscribe'),
+    );
+  }
+
 
   return $form;
 
@@ -339,32 +422,26 @@ function culturefeed_mailing_newsletter_block_form() {
  */
 function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
-  if (DrupalCultureFeed::isCultureFeedUser()) {
+  $query = array('email' => $form_state['values']['mail']);
+  if (!empty($form_state['values']['zip'])) {
+    $query['zip'] =  $form_state['values']['zip'];
+    _culturefeed_mailing_set_postal_to_cookie($query['zip']);
 
-    $form_state['redirect'] = array(
-      'subscribe',
-      array(
-        'query' => array(
-          'email' => $form_state['values']['mail'],
-        ),
-      ),
-    );
+  }
 
+  if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+    culturefeed_mailing_subscribe_user_light($query['email'], !empty($query['zip']) ? $query['zip'] : '', variable_get('culturefeed_mailing_list', ''));
+    $form_state['subscribed'] = TRUE;
+    $form_state['rebuild'] = TRUE;
+  }
+  elseif (DrupalCultureFeed::isCultureFeedUser()) {
+    $form_state['redirect'] = array('subscribe', array('query' => $query));
   }
   else {
-
+    $query['destination'] = 'subscribe';
     $form_state['redirect'] = array(
-      'authenticated',
-      array(
-        'query' => array(
-          'email' => $form_state['values']['mail'],
-          'destination' => 'subscribe',
-        ),
-      ),
-    );
-
+      'authenticated', array('query' => $query));
   }
-
 }
 
 /**

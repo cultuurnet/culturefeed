@@ -34,6 +34,13 @@ function culturefeed_admin_settings() {
     '#size' => 40,
     '#maxlength' => 40,
   );
+
+  $form['culturefeed_api_uitid_light_permission'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('My consumer has UiTiD light permissions.'),
+    '#default_value' => CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM,
+  );
+
   $form['culturefeed_entry_api_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API path'),

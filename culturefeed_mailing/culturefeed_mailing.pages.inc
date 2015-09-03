@@ -64,8 +64,8 @@ function culturefeed_mailing_subscribe_form() {
     return;
   }
 
-  // Show nothing if not logged in, or no mailing list available.
-  if (!$account || !(variable_get('culturefeed_mailing_list', ''))) {
+  // Show nothing if not logged in or no light id permission or no mailing list available.
+  if ((!$account && !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM)/* || !(variable_get('culturefeed_mailing_list', ''))*/) {
     return;
   }
 
@@ -76,18 +76,33 @@ function culturefeed_mailing_subscribe_form() {
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : $account->mbox,
+    '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : ''),
     '#weight' => -10,
   );
+
+  if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+    $postal = CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP ? _culturefeed_mailing_get_postal_from_cookie() : '';
+  }
+  elseif (!empty($_GET['zip'])) {
+    $postal = $_GET['zip'];
+  }
+  elseif ($account) {
+    $postal = $account->zip;
+  }
+  else {
+    $postal = '';
+  }
+
 
   $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => t('Zipcode'),
-    '#required' => TRUE,
+    '#required' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM ? TRUE : FALSE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => $account->zip,
+    '#default_value' => $postal,
     '#weight' => -9,
+    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM || (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM && CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP)
   );
 
   $form['firstname'] = array(
@@ -96,8 +111,9 @@ function culturefeed_mailing_subscribe_form() {
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => $account->givenName,
+    '#default_value' => ($account ? $account->givenName : ''),
     '#weight' => -8,
+    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
   );
 
   $form['lastname'] = array(
@@ -106,20 +122,23 @@ function culturefeed_mailing_subscribe_form() {
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => isset($account->familyName) ? $account->familyName : '',
+    '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
     '#weight' => -7,
+    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
   );
 
   if (variable_get('culturefeed_mailing_list_optional', '')) {
     $form['optional_mailing'] = array(
       '#type' => 'checkbox',
       '#title' => variable_get('culturefeed_mailing_optional_description', ''),
+      '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
     );
   }
 
   $form['privacy'] = array(
     '#type' => 'markup',
     '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
+    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
   );
 
   $form['submit'] = array(
@@ -139,27 +158,40 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
 
   try {
 
-    $account = DrupalCultureFeed::getLoggedInUser();
-
-    // Subscribe to normal mailing.
-    culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
-
-    // Subscribe to optional mailing.
-    if (!empty($form_state['values']['optional_mailing'])) {
-      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+    if (!empty($form_state['values']['zip'])) {
+      $zip = $form_state['values']['zip'];
+      _culturefeed_mailing_set_postal_to_cookie($form_state['values']['zip']);
+    }
+    else {
+      $zip = '';
     }
 
-    // Update user with entered fields.
-    $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
+    if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+      culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], $zip, variable_get('culturefeed_mailing_list', ''));
+    }
+    else {
+      $account = DrupalCultureFeed::getLoggedInUser();
 
-    $user_update = new CultureFeed_User();
-    $user_update->id = $account->id;
-    $user_update->mbox = $form_state['values']['mail'];
-    $user_update->zip = $form_state['values']['zip'];
-    $user_update->givenName = $form_state['values']['firstname'];
-    $user_update->familyName = $form_state['values']['lastname'];
+      // Subscribe to normal mailing.
+      culturefeed_mailing_subscribe_user($account, 3);
 
-    DrupalCultureFeed::updateUser($user_update, $fields);
+      // Subscribe to optional mailing.
+      if (!empty($form_state['values']['optional_mailing'])) {
+        culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+      }
+
+      // Update user with entered fields.
+      $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
+
+      $user_update = new CultureFeed_User();
+      $user_update->id = $account->id;
+      $user_update->mbox = $form_state['values']['mail'];
+      $user_update->zip = $form_state['values']['zip'];
+      $user_update->givenName = $form_state['values']['firstname'];
+      $user_update->familyName = $form_state['values']['lastname'];
+
+      DrupalCultureFeed::updateUser($user_update, $fields);
+    }
 
     $form_state['redirect'] = 'subscribe/subscribed';
 

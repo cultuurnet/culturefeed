@@ -57,3 +57,30 @@ function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id) {
     return FALSE;
   }
 }
+
+/**
+ * Helper function to retrieve the postal code from cookie
+ */
+function _culturefeed_mailing_get_postal_from_cookie() {
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    if ($user_location instanceof stdClass) {
+      $postal = $user_location->postal;
+      return $postal;
+    }
+  }
+  return '';
+}
+
+/**
+ * Helper function to retrieve the postal code from cookie
+ */
+function _culturefeed_mailing_set_postal_to_cookie($postal) {
+  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+    if ($user_location instanceof stdClass) {
+      $user_location->postal = $postal;
+      setrawcookie('Drupal_visitor_uitid_userLocation', rawurlencode(json_encode($user_location)));
+    }
+  }
+}

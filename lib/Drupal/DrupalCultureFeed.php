@@ -46,6 +46,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return $user;
   }
 
+  public static function getUserlightId($email, $home_zip = '') {
+    return self::getConsumerInstance()->getUserlightId($email, $home_zip);
+  }
+
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
     return self::getConsumerInstance()->searchUsers($query);
   }
