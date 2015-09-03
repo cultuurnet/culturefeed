@@ -717,19 +717,27 @@ function culturefeed_search_ui_search_parent_region_suggestion_block() {
 
   $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
 
+  $flandersregion_filter = array_key_exists('item_category_flandersregion_id', $active_filters);
+  $location_filter = array_key_exists('location', $active_filters);
+
+  // Check if the wanted filters are active. Do nothing if not.
+  if (!$flandersregion_filter && !$location_filter) {
+    return;
+  }
+
   // Get the parent tid for the current location or flandersregion filter.
   $parent_tid_query = db_select('culturefeed_search_terms', 'cst');
   $parent_tid_query->fields('cst', array('p3'));
   $parent_tid_query->condition('did', 'flandersregion');
   $parent_tid_query->condition('language', 'und');
 
-  if (array_key_exists('item_category_flandersregion_id', $active_filters)) {
+  if ($flandersregion_filter) {
 
     $active_flandersregion_tid = key($active_filters['item_category_flandersregion_id']);
     $parent_tid_query->condition('tid', $active_flandersregion_tid);
 
   }
-  elseif (array_key_exists('location', $active_filters)) {
+  elseif ($location_filter) {
 
     $active_location_filter = $_GET['location'];
     $parent_tid_query->condition('name', db_like($active_location_filter) . '%', 'LIKE');
@@ -753,13 +761,7 @@ function culturefeed_search_ui_search_parent_region_suggestion_block() {
 
   $parent = strtolower($parent_result->name);
 
-  $parent_link_text = $parent . ' (+ ' . t('boroughs') . ')';
-  $parent_link_url = 'agenda/alle/' . $parent;
-  $parent_link_options = array('html' => TRUE, 'attributes' => array('class' => array('parent-region-link')));
-
-  $parent_link = l($parent_link_text, $parent_link_url, $parent_link_options);
-
-  return t('Did you mean') . ' ' . $parent_link;
+  return theme('culturefeed_search_parent_region_suggestion', array('parent_region' => $parent));
 
 }
 

@@ -669,3 +669,12 @@ function theme_culturefeed_search_ui_admin_sort_order_options($variables) {
   return theme('table', $table_variables);
 
 }
+
+/**
+ * Preprocess the parent region suggestion.
+ * @see culturefeed-search-parent-region-suggestion.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_parent_region_suggestion(&$variables) {
+  $variables['parent_region_suggestion_words'] = t('!parent (+ boroughs)', array('!parent' => $variables['parent_region']));
+  $variables['parent_region_suggestion_url'] = 'agenda/alle/' . $variables['parent_region'];
+}

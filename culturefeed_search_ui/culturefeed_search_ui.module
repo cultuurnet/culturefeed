@@ -302,6 +302,14 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_search_parent_region_suggestion' => array(
+      'variables' => array(
+        'parent_region' => array(),
+      ),
+      'template' => 'culturefeed-search-parent-region-suggestion',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_ui_admin_filter_form_options' => array(
       'render element' => 'element',
       'path' => $path,
