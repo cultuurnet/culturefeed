@@ -64,9 +64,14 @@ function culturefeed_mailing_subscribe_form() {
     return;
   }
 
-  // Show nothing if not logged in or no light id permission or no mailing list available.
-  if ((!$account && !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM)/* || !(variable_get('culturefeed_mailing_list', ''))*/) {
-    return;
+  // Redirect to loginpage if not logged in and light id permission is off.
+  if (!$account && !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe')));
+  }
+
+  // Show nothing if no mailing list available.
+  if (!(variable_get('culturefeed_mailing_list', ''))) {
+    //return;
   }
 
   $form = array();

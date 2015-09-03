@@ -38,4 +38,5 @@ function culturefeed_mailing_update_7001() {
  */
 function culturefeed_mailing_update_7002() {
   user_role_change_permissions(DRUPAL_ANONYMOUS_RID, array('subscribe to mailings' => TRUE));
+  user_role_change_permissions(DRUPAL_AUTHENTICATED_RID, array('subscribe to mailings' => TRUE));
 }
