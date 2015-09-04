@@ -715,51 +715,33 @@ function culturefeed_search_ui_search_parent_region_suggestion_block() {
     return '';
   }
 
-  $active_filters = module_invoke_all('culturefeed_search_ui_active_filters', $culturefeedFacetingComponent);
-
-  $flandersregion_filter = array_key_exists('item_category_flandersregion_id', $active_filters);
-  $location_filter = array_key_exists('location', $active_filters);
-
-  // Check if the wanted filters are active. Do nothing if not.
-  if (!$flandersregion_filter && !$location_filter) {
+  // Check if the required filters are active. Do nothing if not.
+  if (empty($_GET['facet']['category_flandersregion_id']) && empty($_GET['location'])) {
     return;
   }
 
-  // Get the parent tid for the current location or flandersregion filter.
-  $parent_tid_query = db_select('culturefeed_search_terms', 'cst');
-  $parent_tid_query->fields('cst', array('p3'));
-  $parent_tid_query->condition('did', 'flandersregion');
-  $parent_tid_query->condition('language', 'und');
 
-  if ($flandersregion_filter) {
+  // Get the parent region for the current location or flandersregion filter.
+  $parent_query = db_select('culturefeed_search_terms', 't1');
+  $parent_query->innerJoin('culturefeed_search_terms', 't2', 't1.p3 = t2.tid');
+  $parent_query->fields('t2', array('name', 'tid'));
+  $parent_query->condition('t1.did', 'flandersregion');
+  $parent_query->condition('t1.language', culturefeed_get_preferred_language());
+  $parent_query->condition('t2.language', culturefeed_get_preferred_language());
 
-    $active_flandersregion_tid = key($active_filters['item_category_flandersregion_id']);
-    $parent_tid_query->condition('tid', $active_flandersregion_tid);
-
+  if (!empty($_GET['facet']['category_flandersregion_id'])) {
+    $parent_query->condition('t1.tid', $_GET['facet']['category_flandersregion_id'][0]);
   }
-  elseif ($location_filter) {
-
-    $active_location_filter = $_GET['location'];
-    $parent_tid_query->condition('name', db_like($active_location_filter) . '%', 'LIKE');
-
+  else {
+    $parent_query->condition('t1.name', db_like($_GET['location']) . '%', 'LIKE');
   }
 
-  $parent_tid_result = $parent_tid_query->execute()->fetch();
+  $parent = $parent_query->execute()->fetch();
 
   // Do nothing if we already are on a parent region.
-  if (empty($parent_tid_result->p3)) {
+  if (empty($parent)) {
     return;
   }
-
-  // Get the parent region.
-  $parent_query = db_select('culturefeed_search_terms', 'cst');
-  $parent_query->fields('cst', array('tid', 'name'));
-  $parent_query->condition('did', 'flandersregion');
-  $parent_query->condition('language', 'und');
-  $parent_query->condition('tid', $parent_tid_result->p3);
-  $parent_result = $parent_query->execute()->fetch();
-
-  $parent = strtolower($parent_result->name);
 
   return theme('culturefeed_search_parent_region_suggestion', array('parent_region' => $parent));
 
