@@ -28,32 +28,31 @@ Drupal.behaviors.culturefeedPopupConnect = {
   }
 };
 
+/**
+ * Add click events on all share links to register activities in uitid.
+ */
 Drupal.behaviors.culturefeedPushActivityToUitId = {
-    attach: function(context, settings) {
-      $('a.share-link', context).bind('click', function(e) {
-        e.preventDefault();
-        var rel = $(this).prop('rel');
-        var href = $(this).attr('href');
-        var moreinfo = false;
-        if ($(this).hasClass("moreinfo-link")) {
-          moreinfo = true;
-          $('#cf-longdescription').toggle();
-        }
-        $.ajax({
-          url: rel,
-          async: false,
-          complete: function() {
-            if ($(this).hasClass("print-link")) {
-              window.print();
-            }
-            else if (moreinfo === false) {
-              location.href = href;
-            }
+  attach: function(context, settings) {
+    $('a.share-link', context).bind('click', function(e) {
+
+      e.preventDefault();
+      var rel = $(this).prop('rel');
+      var href = $(this).attr('href');
+      $.ajax({
+        url: rel,
+        complete: function() {
+          if ($(this).hasClass("print-link")) {
+            window.print();
           }
-        });
+          else {
+            location.href = href;
+          }
+        }
       });
-    }
-  };
+
+    });
+  }
+};
 
 if (Drupal.ajax) {
 
