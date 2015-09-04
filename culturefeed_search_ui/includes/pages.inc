@@ -152,8 +152,10 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
       // Fix for UIV-1403 order by match of $search_string.
       // Change the structure of the $city_suggestions array.
       // Add stripos element to it.
+      $old_city_suggestions = array();
       foreach ($city_suggestions as $key => $city_order_suggestion) {
         unset($city_suggestions[$key]);
+        $old_city_suggestions[$key] = $city_order_suggestion;
         $city_suggestions[$key]['name'] = $city_order_suggestion;
         $city_suggestions[$key]['stripos'] = stripos($city_order_suggestion, $search_string);
       }
@@ -162,7 +164,9 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
       foreach ($city_suggestions as $key => $row) {
         $stripos[$key]  = $row['stripos'];
       }
-      array_multisort($stripos, SORT_ASC, $city_suggestions);
+      if (isset($stripos)) {
+        array_multisort($stripos, SORT_ASC, $city_suggestions);
+      }
 
       foreach ($city_suggestions as $city_suggestion) {
         $matches[] = array(
@@ -208,7 +212,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
     // If only one city was found. Add a link to search on all actors in this city.
     if (count($city_suggestions) == 1) {
 
-      $city = reset($city_suggestions);
+      $city = reset($old_city_suggestions);
 
       $query = array(
         'location' => $city,
@@ -219,7 +223,7 @@ function culturefeed_search_ui_city_actor_suggestion_autocomplete($search_string
 
       $matches[] = array(
         'label' => t('Show all locations in !city', array('!city' => $city)),
-        'category' => $actor_suggestions->hasSuggestions() ? t('Directly to') : '',
+        'category' => t('Directly to'),
         'suggestion' => url('agenda/search', array('query' => $query)),
         'type' => 'actor',
       );

@@ -416,6 +416,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
     }
 
+    $message .= ". ";  
+    $message .= t("Discover what to do today, tomorrow, this weekend or later on.");
+
     return $message;
   }
 

@@ -148,6 +148,22 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+  // Themes of this item (as plain text and as links).
+  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
+  $variables['themes'] = $themes['text'];
+  $variables['themes_links'] = $themes['links'];
+
+  // Eventtypes of this item (plain text and links).
+  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $eventtypes['text'];
+  $variables['types_links'] = $eventtypes['links'];
+
+  // Actortypes of this item (plain text and links).
+  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
+  $variables['actortypes'] = $actortypes['text'];
+  $variables['actortypes_links'] = $actortypes['links'];
+
   if ($detail) {
 
     $variables['title'] = check_plain($detail->getTitle());
@@ -180,13 +196,31 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['tickets'] = array();
     $variables['ticket_buttons'] = array();
     $variables['ticket_links'] = array();
+    $cta_tickets = '';
+    $cta_array = array(
+      '0.3.1.0.0',
+      '0.7.0.0.0',
+      '0.57.0.0.0',
+      '0.59.0.0.0',
+      '0.17.0.0.0',
+      '0.50.21.0.0',
+      '0.3.2.0.0',
+    );
+
+
+    if (isset($eventtypes['id'][0]) && in_array($eventtypes['id'][0], $cta_array)) {
+      $cta_tickets = t('Sign Up');
+    }
+    else {
+      $cta_tickets = t('Buy tickets');
+    }
 
     foreach ($ticket_links as $link) {
-      $variables['tickets'][] = l(t('Buy tickets'), $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
+      $variables['tickets'][] = l($cta_tickets, $link->getHLink(), array('attributes' => array('class' => 'reservation-link', 'id' => 'cf-ticket')));
 
       // Provide some themable ticket buttons.
       $button = array();
-      $button['text'] = t('Buy tickets');
+      $button['text'] = $cta_tickets;
       $button['link'] = $link->getHLink();
       $button['options'] = array('attributes' => array('class' => 'reservation-link button', 'id' => 'cf-ticket'));
       $variables['ticket_buttons'][] = $button;
@@ -267,7 +301,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // If no main picture is set we use first picture
     if (empty($main_picture) && count($pictures) > 0) {
       $main_picture = $pictures[0];
-      $main_picture_cr = $copyrights[0];
+      if (isset($copyrights[0])) {
+        $main_picture_cr = $copyrights[0];
+      }
     }
 
     // we don't want the main picture to show twice
@@ -366,7 +402,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
         if ($keyword->isVisible()) {
           $variables['raw_keywords'][] = $keyword->getValue();
-          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => '"' . $keyword->getValue() . '"')));
+          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('search' => '"' . $keyword->getValue() . '"')));
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
@@ -390,7 +426,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $linked_keywords = array();
       foreach ($keywords as $keyword) {
         $variables['raw_keywords'][] = $keyword;
-        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => '"' . $keyword . '"')));
+        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('search' => '"' . $keyword . '"')));
       }
 
       $variables['keywords'] = implode(', ', $linked_keywords);
@@ -577,8 +613,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if (isset($variables['device']) && $variables['device'] == 'phone')
-        {
+        if (isset($variables['device']) && $variables['device'] == 'phone') {
           $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
         }
         else {
@@ -607,7 +642,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          if($variables['device'] == 'phone')
+          if(isset($variables['device']) && $variables['device'] == 'phone')
           {
             $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
           }
@@ -621,14 +656,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation url
       if (isset($reservation_info['url'])) {
         foreach ($reservation_info['url'] as $url) {
-          if(!in_array($url, $variables['ticket_links'])){
+          if(isset($variables['ticket_links']) && !in_array($url, $variables['ticket_links'])){
             // clean up link text
             $url_text = str_replace('http://', '', $url);
             $url_text = str_replace('https://', '', $url_text);
             $reservation_urls[] = l(truncate_utf8($url_text, 40, FALSE, TRUE), $url, array('attributes' => array('id' => 'cf-reservation')));
           }
         }
-        $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        if (isset($reservation_urls)) {
+          $variables['reservation']['url'] = implode(', ', $reservation_urls);
+        }
+        else {
+          $variables['reservation']['url'] = implode(', ', $reservation_info['url']);
+        }
       }
 
     // Coordinates.
@@ -923,7 +963,7 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if($variables['device'] == 'phone')
+        if(isset($variables['device']) && $variables['device'] == 'phone')
         {
           $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
         }

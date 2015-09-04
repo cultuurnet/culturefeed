@@ -55,6 +55,12 @@ function culturefeed_agenda_block_nearby_activities() {
       'attributes' => array('id' => 'all-activities-link', 'class' => array($classes)))
   );
 
+  $all_activities_for_location_raw_link = url('agenda/search',
+    array(
+      'query' => array('location' => $location_string),
+    )
+  );
+
   // Construct the toggle for the location form visbility.
   $change_location_link = l(t('Change location'), '',
     array(
@@ -69,6 +75,8 @@ function culturefeed_agenda_block_nearby_activities() {
       '#filter_form' => drupal_get_form('culturefeed_agenda_nearby_activities_filter_form'),
       '#change_location_link' => $change_location_link,
       '#all_activities_for_location_link' => $all_activities_for_location_link,
+      '#all_activities_for_location_raw_link' => $all_activities_for_location_raw_link,
+      '#location_string' => $location_string,
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'culturefeed_agenda') . '/js/nearby_activities.js',
@@ -227,6 +235,18 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
+  $destination = drupal_get_destination();
+
+  // UIV-1406 reset $query if http headers return 404.
+  $status = drupal_get_http_header();
+
+  if (isset($status['status']) && $status['status'] == '404 Not Found') {
+    $_GET['q'] = 'agenda/search';
+    unset($_GET['destination']);
+    $query = array();
+  }
+
+
   if (!empty($form_state['values']['search'])) {
     $query['search'] = $form_state['values']['search'];
   }
@@ -288,7 +308,13 @@ function culturefeed_agenda_block_organiser_events() {
 		return;
 	}
 
-	$organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  if (is_null($item->getEntity()->getOrganiser())) {
+    return;
+  }
+  else {
+    $organiser_id = $item->getEntity()->getOrganiser()->getCdbid();
+  }
+
 	$amount = variable_get('agenda_organiser_event_amount', 10);
 
 	$parameters = array();

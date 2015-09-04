@@ -90,6 +90,8 @@ function culturefeed_agenda_theme() {
       'filter_form' => NULL,
       'change_location_link' => '',
       'all_activities_for_location_link' => '',
+      'all_activities_for_location_raw_link' => '',
+      'location_string' => '',
     ),
     'template' => 'culturefeed-agenda-block-nearby-activities',
     'path' => $path,
