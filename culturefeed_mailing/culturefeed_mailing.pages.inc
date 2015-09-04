@@ -71,7 +71,7 @@ function culturefeed_mailing_subscribe_form() {
 
   // Show nothing if no mailing list available.
   if (!(variable_get('culturefeed_mailing_list', ''))) {
-    //return;
+    return;
   }
 
   $form = array();
@@ -178,7 +178,7 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
       $account = DrupalCultureFeed::getLoggedInUser();
 
       // Subscribe to normal mailing.
-      culturefeed_mailing_subscribe_user($account, 3);
+      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
 
       // Subscribe to optional mailing.
       if (!empty($form_state['values']['optional_mailing'])) {

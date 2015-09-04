@@ -238,7 +238,7 @@ function culturefeed_mailing_theme() {
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_subscribed' => array(
-      'variables' => array(),
+      'variables' => array('title' => NULL, 'message' => NULL),
       'template' => 'culturefeed-mailing-content-block-subscribed',
       'path' => $path,
     ),
@@ -364,7 +364,7 @@ function culturefeed_mailing_subscribe_user($account, $mailing_id, $use_auth = T
 function culturefeed_mailing_subscribe_user_light($email, $zip = '', $mailing_id) {
   $account = new stdClass();
   $account->id = DrupalCultureFeed::getUserLightId($email, $zip);
-  dsm($account);
+
   culturefeed_mailing_subscribe_user($account, $mailing_id, FALSE);
 }
 
@@ -374,13 +374,14 @@ function culturefeed_mailing_subscribe_user_light($email, $zip = '', $mailing_id
 function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
   if (isset($form_state['subscribed']) && $form_state['subscribed'] == TRUE) {
+
     $form['subscribed'] = array(
       '#type' => 'markup',
       '#markup' => theme(
           'culturefeed_mailing_content_block_subscribed',
           array(
             'title' => t('Thanks!'),
-            'message' => culturefeed_mailing_user_subscribed()
+            'message' => variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter'))
           )
         ),
     );
@@ -430,9 +431,16 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
   }
 
   if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
-    culturefeed_mailing_subscribe_user_light($query['email'], !empty($query['zip']) ? $query['zip'] : '', variable_get('culturefeed_mailing_list', ''));
-    $form_state['subscribed'] = TRUE;
-    $form_state['rebuild'] = TRUE;
+    try {
+      culturefeed_mailing_subscribe_user_light($query['email'], !empty($query['zip']) ? $query['zip'] : '', variable_get('culturefeed_mailing_list', ''));
+      $form_state['subscribed'] = TRUE;
+      $form_state['rebuild'] = TRUE;
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_ui', $e);
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
+    }
   }
   elseif (DrupalCultureFeed::isCultureFeedUser()) {
     $form_state['redirect'] = array('subscribe', array('query' => $query));

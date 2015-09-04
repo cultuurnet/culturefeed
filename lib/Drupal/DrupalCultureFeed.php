@@ -299,12 +299,23 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getLoggedInUserInstance()->searchMailings($query);
   }
 
-  public static function subscribeToMailing($user_id, $mailing_id) {
-    self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id);
+  public static function subscribeToMailing($user_id, $mailing_id, $use_auth = TRUE) {
+    if ($use_auth) {
+      self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id, $use_auth);
+    }
+    else {
+      self::getConsumerInstance()->subscribeToMailing($user_id, $mailing_id, $use_auth);
+    }
+
   }
 
-  public static function unsubscribeFromMailing($user_id, $mailing_id) {
-    self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id);
+  public static function unsubscribeFromMailing($user_id, $mailing_id, $use_auth = TRUE) {
+    if ($use_auth) {
+      self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id, $use_auth);
+    }
+    else {
+      self::getConsumerInstance()->unsubscribeFromMailing($user_id, $mailing_id, $use_auth);
+    }
   }
 
   public static function getMailingSubscriptions($user_id) {
