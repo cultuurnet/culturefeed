@@ -669,3 +669,18 @@ function theme_culturefeed_search_ui_admin_sort_order_options($variables) {
   return theme('table', $table_variables);
 
 }
+
+/**
+ * Preprocess the parent region suggestion.
+ * @see culturefeed-search-parent-region-suggestion.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_parent_region_suggestion(&$variables) {
+  $variables['parent_region_suggestion'] = check_plain($variables['parent_region']->name);
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'distance'));
+  $query['facet']['category_flandersregion_id'] = array(
+    $variables['parent_region']->tid
+  );
+
+  $variables['parent_region_suggestion_url'] = url('agenda/search', array('query' => $query));
+}
