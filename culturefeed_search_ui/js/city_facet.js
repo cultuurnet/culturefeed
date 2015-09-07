@@ -11,7 +11,7 @@
           $.ajax({
             url: Drupal.settings.basePath + 'autocomplete/culturefeed_ui/city-region-suggestion/' + term.term + '?' + filters,
             success: function (data) {
-              lastResult =  data;
+              lastResult = data;
               if (data.length === 0) {
                 widget.removeClass('throbbing');
               }
@@ -51,7 +51,7 @@
           }
         },
         change: function (event, ui) {
-          if (!lastResult) {
+          if (lastResult.length === 0) {
             $(this).val('');
           }
           else {
