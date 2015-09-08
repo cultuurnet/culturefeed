@@ -2350,9 +2350,17 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     $context['results']['event_title'] = $form_state['values']['title'];
     // Always compare the date with the correct timezone.
     $last_updated_time = new DateTime($event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
+    $context['results']['counter'] = isset($context['results']['counter']) ? ++$context['results']['counter'] : 1;
 
     // Do additional validation when the event is updated.
     if ($form_state['#update_event']) {
+
+      $pass = $context['results']['counter'];
+      $message = t('event updated time (pass !pass): !time', array('!pass' => $pass, '!time' => $last_updated_time->format(DateTime::ISO8601)));
+      watchdog('culturefeed_entry_ui', $message);
+      $message = t('form submit time (pass !pass): !time', array('!pass' => $pass, '!time' => date(DateTime::ISO8601, $form_state['submit_time'])));
+      watchdog('culturefeed_entry_ui', $message);
+
       if ($last_updated_time->getTimestamp() >= $form_state['submit_time']) {
         $event_updated = TRUE;
         $context['results']['action'] = 'updated';
