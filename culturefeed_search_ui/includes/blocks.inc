@@ -706,6 +706,48 @@ function culturefeed_search_ui_search_active_filters_block() {
 }
 
 /**
+ * Block callback for the suggestion of the parent region during flandersregion/location search.
+ */
+function culturefeed_search_ui_search_parent_region_suggestion_block() {
+  $culturefeedFacetingComponent = culturefeed_get_facet_component();
+
+  if (!$culturefeedFacetingComponent instanceof \CultuurNet\Search\Component\Facet\FacetComponent) {
+    return '';
+  }
+
+  // Check if the required filters are active. Do nothing if not.
+  if (empty($_GET['facet']['category_flandersregion_id']) && empty($_GET['location'])) {
+    return;
+  }
+
+
+  // Get the parent region for the current location or flandersregion filter.
+  $parent_query = db_select('culturefeed_search_terms', 't1');
+  $parent_query->innerJoin('culturefeed_search_terms', 't2', 't1.p3 = t2.tid');
+  $parent_query->fields('t2', array('name', 'tid'));
+  $parent_query->condition('t1.did', 'flandersregion');
+  $parent_query->condition('t1.language', culturefeed_get_preferred_language());
+  $parent_query->condition('t2.language', culturefeed_get_preferred_language());
+
+  if (!empty($_GET['facet']['category_flandersregion_id'])) {
+    $parent_query->condition('t1.tid', $_GET['facet']['category_flandersregion_id'][0]);
+  }
+  else {
+    $parent_query->condition('t1.name', db_like($_GET['location']) . '%', 'LIKE');
+  }
+
+  $parent = $parent_query->execute()->fetch();
+
+  // Do nothing if we already are on a parent region.
+  if (empty($parent)) {
+    return;
+  }
+
+  return theme('culturefeed_search_parent_region_suggestion', array('parent_region' => $parent));
+
+}
+
+/**
  * Show the filter form for the search ui.
  */
 function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id = '') {
