@@ -24,13 +24,14 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     return "";
   }
   $ajax = $request_type == 'ajax';
+  $rss = $request_type == 'rss';
 
   try {
 
     $conf = culturefeed_get_searchable_type($name);
     $page = culturefeed_get_search_page($conf);
 
-    if ($ajax) {
+    if ($ajax || $rss) {
       $page->setFullPage(FALSE);
     }
     $page->setPagerType(variable_get('culturefeed_search_ui_pager_type', CULTUREFEED_SEARCH_UI_PAGER_NORMAL));
@@ -91,6 +92,25 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     );
 
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    exit;
+  }
+  elseif ($rss) {  
+    // Add the RSS content-type header.
+    drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
+    $data = array();
+    foreach ($page->getSearchResult()->getItems() as $item) {
+      $object['cdbid'] = $item->getEntity()->getCdbId();
+      $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+      $object['title'] = $details->getTitle();
+      $object['created'] = $item->getEntity()->getCreationDate();
+      $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
+      $object['calendarsummary'] = $details->getCalendarSummary();
+      $object['shortdescription'] = $details->getShortDescription();
+      $object['path'] = culturefeed_search_detail_url($item->getType(), $item->getId(), $details->getTitle());
+      $data[] = $object;
+    }
+    // Return the themed feed as a render array.
+    print theme('culturefeed_agenda_page_list_rss', array('objects' => $data));
     exit;
   }
   else {
