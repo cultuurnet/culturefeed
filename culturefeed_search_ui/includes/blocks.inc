@@ -933,6 +933,10 @@ function culturefeed_search_ui_block_location_search_form_submit($form, &$form_s
   $query = drupal_get_query_parameters(NULL, array('q', 'page'));
 
   if (!empty($form_state['values']['block-location-search'])) {
+
+    // Unset also the flanders region ids.
+    unset($query['facet']['category_flandersregion_id']);
+
     $query['location'] = $form_state['values']['block-location-search'];
     $form_state['redirect'] = array(
       $_GET['q'],
