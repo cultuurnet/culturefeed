@@ -463,6 +463,13 @@ function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStat
     'link' => culturefeed_search_detail_l($item->getType(), $item->getId(), $item->getTitle($language->language)),
   );
 
+  $variables['track_route'] = '';
+  if (culturefeed_is_culturefeed_user()) {
+    $content_type = culturefeed_get_content_type($item->getType());
+    $id = $item->getId();
+    $variables['track_route'] = url('culturefeed/do/' . CultureFeed_Activity::TYPE_ROUTE .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+  }
+
   switch ($item->getType()) {
 
     case 'event':

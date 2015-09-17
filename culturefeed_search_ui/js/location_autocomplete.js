@@ -2,6 +2,7 @@
 (function($) {
 
   Drupal.CulturefeedSearch = Drupal.CulturefeedSearch || {};
+  Drupal.CulturefeedSearch.lastLocationData = [];
 
   /**
    * Init the location autocomplete.
@@ -25,7 +26,17 @@
           }
 
         },
+        change: function (event, ui) {
+          if (Drupal.CulturefeedSearch.lastLocationData.length === 0) {
+            $(this).val('');
+          }
+          else {
+            $(this).val(Drupal.CulturefeedSearch.lastLocationData[0].suggestion);
+          }
+        },
         autoFocus: true,
+        autoSelect: true,
+        selectFirst: true
       });
 
       $("#edit-where").once('location-search-init').categorisedAutocomplete({
@@ -50,7 +61,17 @@
           }
 
         },
-        autoFocus: true
+        change: function (event, ui) {
+          if (Drupal.CulturefeedSearch.lastLocationData.length === 0) {
+            $(this).val('');
+          }
+          else {
+            $(this).val(Drupal.CulturefeedSearch.lastLocationData[0].suggestion);
+          }
+        },
+        autoFocus: true,
+        autoSelect: true,
+        selectFirst: true
       });
 
     }
@@ -64,6 +85,7 @@
     $.ajax({
       url: Drupal.settings.basePath + Drupal.settings.pathPrefix + 'autocomplete/culturefeed_ui/city-actor-suggestion/' + term.term,
       success: function(data) {
+        Drupal.CulturefeedSearch.lastLocationData = data;
         if (data.length === 0) {
           widget.removeClass('throbbing');
         }
