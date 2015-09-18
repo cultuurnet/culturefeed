@@ -81,6 +81,11 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
     $has_active_filter = true;
   }
 
+  // Remove distance.
+  if (isset($query['distance'])) {
+    unset($query['distance']);
+  }
+
   $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
   $facet_links = $facet_links['facet_links'];
 
