@@ -553,6 +553,7 @@ function culturefeed_agenda_load_events_of_production($production, $future_only 
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
   $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
 
   if (!$future_only) {
     $parameters[] = new \CultuurNet\Search\Parameter\Parameter('past', 'true');
