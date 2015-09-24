@@ -302,6 +302,14 @@ function culturefeed_search_ui_theme() {
       'path' => $path,
       'file' => 'theme.inc',
     ),
+    'culturefeed_search_parent_region_suggestion' => array(
+      'variables' => array(
+        'parent_region' => array(),
+      ),
+      'template' => 'culturefeed-search-parent-region-suggestion',
+      'path' => $path,
+      'file' => 'theme.inc',
+    ),
     'culturefeed_search_ui_admin_filter_form_options' => array(
       'render element' => 'element',
       'path' => $path,
@@ -360,6 +368,11 @@ function culturefeed_search_ui_block_info() {
 
   $blocks['culturefeed-search-activefilters'] = array(
     'info' => t('Culturefeed search: active filters'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['culturefeed-search-regionsuggest'] = array(
+    'info' => t('Culturefeed search: region suggestion'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
@@ -711,6 +724,10 @@ function culturefeed_search_ui_block_view($delta) {
       $block['content'] = culturefeed_search_ui_search_active_filters_block();
     break;
 
+    case 'culturefeed-search-regionsuggest':
+      $block['content'] = culturefeed_search_ui_search_parent_region_suggestion_block();
+    break;
+
     case 'facet-datetype':
       $block = culturefeed_search_ui_block_date_facet();
     break;
@@ -975,8 +992,6 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             unset($search_query['facet']);
           }
 
-          $url = url($path, array('query' => $search_query));
-
           // Get translated label from terms.
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
@@ -984,6 +999,8 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             $label .= ' + ' . check_plain($query['distance']) . ' km';
             unset($search_query['distance']);
           }
+
+          $url = url($path, array('query' => $search_query));
 
           $build['item_' . $active_facet_name][$value] = array(
             '#theme' => 'culturefeed_search_active_filters_item',

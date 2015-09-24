@@ -51,6 +51,7 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
   $facet_items = _culturefeed_search_ui_limit_facet_levels($variables['items'], $variables['highest_level'], $variables['show_subitems']);
 
   $facet_key = $variables['facet']->getKey();
+
   $path = empty($variables['path']) ? current_path() : $variables['path'];
 
   if (!isset($variables['query']) || !is_array($variables['query'])) {
@@ -74,6 +75,17 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
     $active_options = array();
   }
 
+  $has_active_filter = false;
+  if(count($active_options) > 0)
+  {
+    $has_active_filter = true;
+  }
+
+  // Remove distance.
+  if (isset($query['distance'])) {
+    unset($query['distance']);
+  }
+
   $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
   $facet_links = $facet_links['facet_links'];
 
@@ -84,6 +96,10 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
     $count_facets = count($facet_links);
     $classes[] = 'facet-search';
     $classes[] = ($count_facets > 10 ? 'many-facets' : '');
+    if (isset($query['facet'])) {
+      $classes[] = ($has_active_filter ? 'has-active-filter' : '');
+    }
+
     return theme('item_list', array(
       'items' => $facet_links,
       'type' => 'ul',
@@ -152,7 +168,7 @@ function _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key,
       $subitems = _culturefeed_search_ui_get_nested_facet_links($facet_item->getSubItems(), $facet_key, $link_path, $query, $active_options, $sort_type);
       $item['children'] = $subitems['facet_links'];
       if ($subitems['has_active_subitem']) {
-        $item['class'][] = 'active-parent';
+        $item['class'][] = 'active-parent has-active-subitem';
         $has_active_subitem = TRUE;
       }
     }
@@ -657,4 +673,19 @@ function theme_culturefeed_search_ui_admin_sort_order_options($variables) {
 
   return theme('table', $table_variables);
 
+}
+
+/**
+ * Preprocess the parent region suggestion.
+ * @see culturefeed-search-parent-region-suggestion.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_parent_region_suggestion(&$variables) {
+  $variables['parent_region_suggestion'] = check_plain($variables['parent_region']->name);
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'distance'));
+  $query['facet']['category_flandersregion_id'] = array(
+    $variables['parent_region']->tid
+  );
+
+  $variables['parent_region_suggestion_url'] = url('agenda/search', array('query' => $query));
 }
