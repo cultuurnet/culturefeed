@@ -446,7 +446,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 
   try {
     culturefeed_calendar_add_activity($node_id, $node_title, $date);
-    drupal_set_message(t('The event has been added to your calendar.'));
+    //drupal_set_message(t('The event has been added to your calendar.'));
   }
   catch (Exception $e) {
     drupal_set_message(t('There was an error while adding to your calendar'), 'error');
