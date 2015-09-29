@@ -454,6 +454,11 @@ class CultureFeedSearchPage {
       if ($flanders_region) {
         $params['facet']['category_flandersregion_id'][0] = $flanders_region;
       }
+      if (empty($flanders_region)) {
+        drupal_set_message(t('You are searching on an invalid location.'),
+          'warning',FALSE);
+        $params['facet']['category_flandersregion_id'][0] = $params['location'];
+      }
     }
 
     // Add the location facet. Only use the location if a distance is set.
