@@ -451,13 +451,14 @@ class CultureFeedSearchPage {
       if (empty($flanders_region)) {
         $flanders_region = key(culturefeed_search_get_categories_by_domain('flandersregion', array('name_like' => $params['location'])));
       }
-      if ($flanders_region) {
-        $params['facet']['category_flandersregion_id'][0] = $flanders_region;
-      }
+
+      // Check if a valid flanders region was found. If not, show a message and force empty result.
       if (empty($flanders_region)) {
-        drupal_set_message(t('You are searching on an invalid location.'),
-          'warning',FALSE);
+        drupal_set_message(t('You are searching on an invalid location.'), 'warning', FALSE);
         $params['facet']['category_flandersregion_id'][0] = $params['location'];
+      }
+      else {
+        $params['facet']['category_flandersregion_id'][0] = $flanders_region;
       }
     }
 
