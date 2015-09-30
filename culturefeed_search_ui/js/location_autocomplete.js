@@ -31,7 +31,7 @@
             $(this).val('');
           }
           else {
-            $(this).val(Drupal.CulturefeedSearch.lastLocationData[0].suggestion);
+            $(this).val(ui.item.suggestion);
           }
         },
         autoFocus: true,
@@ -66,7 +66,7 @@
             $(this).val('');
           }
           else {
-            $(this).val(Drupal.CulturefeedSearch.lastLocationData[0].suggestion);
+            $(this).val(ui.item.suggestion);
           }
         },
         autoFocus: true,
