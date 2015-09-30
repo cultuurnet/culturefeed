@@ -264,10 +264,9 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
       $facets = $query['facet'];
       unset($facets['category_flandersregion_id']);
-      unset($query['keyword']);
       unset($query['facet']);
 
-      // If keyword was the only extra filter set noindex to false.
+      // If flandersregion Id was the only filter set noindex to false.
       if (count($facets) == 0 && count($query) == 0) {
         $noindex = FALSE;
       }
@@ -281,18 +280,6 @@ function culturefeed_search_ui_set_noindex_metatag() {
       unset($query['regId']);
 
       // If location or regId was the only filter set noindex to false.
-      if (count($query) == 0) {
-        $noindex = FALSE;
-      }
-
-    }
-
-    // No index is FALSE, if user is filtering on keyword without additional facets.
-    elseif (isset($query['keyword'])) {
-
-      unset($query['keyword']);
-
-      // If keyword was the only filter set noindex to false.
       if (count($query) == 0) {
         $noindex = FALSE;
       }

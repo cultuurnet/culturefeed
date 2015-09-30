@@ -40,6 +40,8 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
     CultureFeed_Activity::TYPE_MEDIA_VIDEO,
     CultureFeed_Activity::TYPE_MEDIA_PHOTO,
     CultureFeed_Activity::TYPE_NEWS,
+    CultureFeed_Activity::TYPE_MAIL,
+    CultureFeed_Activity::TYPE_PRINT
   );
 
   // Return only active filters.
