@@ -103,8 +103,12 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       $object['title'] = $details->getTitle();
       $object['created'] = $item->getEntity()->getCreationDate();
-      $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
-      $object['calendarsummary'] = $details->getCalendarSummary();
+      if (method_exists($item, 'getLocation')) {
+        $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
+      }
+      if (method_exists($item, 'getCalendarSummary')) {
+        $object['calendarsummary'] = $details->getCalendarSummary();
+      }
       $object['shortdescription'] = $details->getShortDescription();
       $object['path'] = culturefeed_search_detail_url($item->getType(), $item->getId(), $details->getTitle());
       $data[] = $object;
