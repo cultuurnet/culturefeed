@@ -303,6 +303,9 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           default:
             // unsupported filter options.
+            if ($facet_field != '!type') {
+              watchdog('culturefeed_search', 'unsupported filter option: ' . $facet_field);
+            }
 
         }
 
