@@ -249,6 +249,7 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           // Filtering on location.
           case 'category_flandersregion_name':
+          case 'city':
             $query['location'] = $facet_value;
             break;
 
@@ -258,6 +259,9 @@ function culturefeed_search_get_search_url_query($search_query) {
             break;
 
           // Normal facets.
+          case 'category_flandersregion_id':
+          case 'category_eventtype_id':
+          case 'category_theme_id':
           case 'category_id':
           case 'type':
 
