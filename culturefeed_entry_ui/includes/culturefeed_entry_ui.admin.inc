@@ -107,6 +107,13 @@ function culturefeed_entry_settings_form() {
     '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
   );
 
+  $form['culturefeed_entry_api_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Entry API path'),
+    '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
+    '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
+  );
+
   $cdb_xml_versions = culturefeed_cdb_xml_versions();
   $form['culturefeed_entry_cdb_version'] = array(
     '#default_value' => variable_get('culturefeed_entry_cdb_version', CULTUREFEED_ENTRY_CDB_DEFAULT_VERSION),
