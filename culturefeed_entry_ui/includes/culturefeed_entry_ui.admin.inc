@@ -94,3 +94,45 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
   return system_settings_form($form);
 
 }
+
+/**
+ * Callback for the CultureFeed Entry settings form.
+ */
+function culturefeed_entry_settings_form() {
+
+  $form['culturefeed_entry_api_location'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Entry API location'),
+    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/searchv2/ (acceptance) or http://www.uitid.be/uitid/rest/searchv2/ (production)'),
+    '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
+  );
+
+  $cdb_xml_versions = culturefeed_cdb_xml_versions();
+  $form['culturefeed_entry_cdb_version'] = array(
+    '#default_value' => variable_get('culturefeed_entry_cdb_version', CULTUREFEED_ENTRY_CDB_DEFAULT_VERSION),
+    '#description' => t('The culturefeed cdb schema version used by the entry API.'),
+    '#title' => t('Cdb schema version'),
+    '#type' => 'select',
+    '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions),
+  );
+
+  $form['culturefeed_entry_api_application_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Application key'),
+    '#description' => t('Your CultureFeed Entry Application key.'),
+    '#default_value' => variable_get('culturefeed_entry_api_application_key', ''),
+    '#size' => 40,
+    '#maxlength' => 40,
+  );
+
+  $form['culturefeed_entry_api_shared_secret'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Shared secret'),
+    '#description' => t('Your CultureFeed Entry Shared Secret.'),
+    '#default_value' => variable_get('culturefeed_entry_api_shared_secret', ''),
+    '#size' => 40,
+    '#maxlength' => 40,
+  );
+
+  return system_settings_form($form);
+}
