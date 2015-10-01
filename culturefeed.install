@@ -156,3 +156,11 @@ function culturefeed_update_7001() {
     db_create_table('cache_culturefeed', $schema['cache_culturefeed']);
   }
 }
+
+/**
+ * Add value to new variable for entry api location.
+ */
+function cuturefeed_update_7002() {
+  $api_location = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+  variable_set('culturefeed_entry_api_location', $api_location);
+}
