@@ -1420,7 +1420,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       $object_url = url($object_url['path'], $object_url['options']);
 
       $args = array(
-        array('key' => 'pubDate', 'value' => date('r', $object['created'])),
+        array('key' => 'pubDate', 'value' => date('r', strtotime($object['created']))),
         array('key' => 'guid', 'value' => $object_url, 'attributes' => array('isPermaLink' => 'true')),
         array('key' => 'postid', 'value' => $object['cdbid']),
       );
