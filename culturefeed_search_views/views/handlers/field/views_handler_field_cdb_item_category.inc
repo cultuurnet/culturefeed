@@ -21,23 +21,14 @@ class views_handler_field_cdb_item_category extends views_handler_field {
 	 * @see views_handler_field::options_form()
 	 */
 	function options_form(&$form, &$form_state) {
+    $options_categories = culturefeed_search_get_domains();
 
     $form['type'] = array(
-      '#type' => 'radios',
+      '#type' => 'select',
       '#title' => t('Type'),
       '#description' => t('What kind of categories do you want to show?'),
-      '#options' => array(
-        'theme' => t('Theme'),
-        'publicscope' => t('Public scope'),
-        'targetaudience' => t('Target audience'),
-        'eventtype' => t('Event type'),
-        'actortype' => t('Actor type'),
-        'educationfield' => t('Education field'),
-        'educationlevel' => t('Education Level'),
-        'facility' => t('Facility'),
-        'flandersregion' => t('Flanders region'),
-      ),
-      '#default_value' => isset($this->options['format']) ? $this->options['format'] : 'image',
+      '#options' => $options_categories,
+      '#default_value' => isset($this->options['type']) ? $this->options['type'] : 'eventtype',
     );
 
 		$form['link'] = array(

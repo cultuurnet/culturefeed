@@ -2,6 +2,7 @@
 (function ($) {
   Drupal.behaviors.culturefeedSearchUiCityFacet = {
     attach: function (context, settings) {
+      var lastResult = [];
       $('.city-facet').autocomplete({
         source: function(term, callback) {
           var filters = $.param({parents: Drupal.settings.culturefeed_search_ui.city_filters});
@@ -10,6 +11,7 @@
           $.ajax({
             url: Drupal.settings.basePath + 'autocomplete/culturefeed_ui/city-region-suggestion/' + term.term + '?' + filters,
             success: function (data) {
+              lastResult = data;
               if (data.length === 0) {
                 widget.removeClass('throbbing');
               }
@@ -48,7 +50,17 @@
             $(this).data("autocomplete").menu.next(event);
           }
         },
-        autoFocus: true
+        change: function (event, ui) {
+          if (lastResult.length === 0) {
+            $(this).val('');
+          }
+          else {
+            $(this).val(lastResult[0].value);
+          }
+        },
+        autoFocus: true,
+        autoSelect: true,
+        selectFirst: true
       }).keydown(function(event) {
         if (event.which == 13) {
           event.preventDefault();

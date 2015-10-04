@@ -60,7 +60,7 @@ function culturefeed_search_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
-  
+
   // Autocomplete path for all actors from production (temporary workaround for PWK-213)
   $items['autocomplete/culturefeed/actor-suggestions/all'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
@@ -187,11 +187,6 @@ function culturefeed_search_get_search_url_query($search_query) {
       continue;
     }
 
-    // Sort.
-    if ($param[0] == 'sort') {
-      $query['sort'] = $param[1];
-    }
-
     // Param q = the search
     if ($param[0] == 'q') {
       if ($param[1] == '*:*') {
@@ -201,7 +196,18 @@ function culturefeed_search_get_search_url_query($search_query) {
     }
     // Search on location
     elseif ($param[0] == 'zipcode') {
-      $query['location'] = $param[1];
+      // Check if distance is included.
+      $location_distance = explode('!', $param[1]);
+
+      // If distance is included, add location and distance to url.
+      if (count($location_distance) > 1) {
+        $query['location'] = $location_distance[0];
+        $query['distance'] = rtrim($location_distance[1], "km");
+      }
+      // If distance is not included, only add location to url.
+      else {
+        $query['location'] = $param[1];
+      }
     }
     // Filterqueries are most of the time facets.
     elseif ($param[0] == 'fq') {
@@ -243,6 +249,7 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           // Filtering on location.
           case 'category_flandersregion_name':
+          case 'city':
             $query['location'] = $facet_value;
             break;
 
@@ -252,6 +259,9 @@ function culturefeed_search_get_search_url_query($search_query) {
             break;
 
           // Normal facets.
+          case 'category_flandersregion_id':
+          case 'category_eventtype_id':
+          case 'category_theme_id':
           case 'category_id':
           case 'type':
 
@@ -293,6 +303,9 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           default:
             // unsupported filter options.
+            if ($facet_field != '!type') {
+              watchdog('culturefeed_search', 'unsupported filter option: ' . $facet_field);
+            }
 
         }
 
