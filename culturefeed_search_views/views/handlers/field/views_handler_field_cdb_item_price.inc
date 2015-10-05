@@ -18,10 +18,10 @@ class views_handler_field_cdb_item_price extends views_handler_field {
       /* @var CultureFeed_Cdb_Item_Event $entity */
       $entity = $extended_entity->getEntity();
       try {
-        $price = $entity->getDetails()
-          ->current()
-          ->getPrice()
-          ->getValue();
+        $price_info = $entity->getDetails()->current()->getPrice();
+        if ($price_info) {
+          $price = $price_info->getValue();
+        }
       }
       catch (Exception $e) {
         watchdog_exception('culturefeed_search_views', $e);
