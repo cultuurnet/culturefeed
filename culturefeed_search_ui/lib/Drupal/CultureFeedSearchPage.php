@@ -480,9 +480,12 @@ class CultureFeedSearchPage {
         }
 
         $regFilterQuery = '(';
-        $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
+        $regFilterQuery .= 'category_id:(' . implode(' OR ',
+        $regFilter)
+          .')';
         if (!empty($wregFilters)) {
-          $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
+          $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ',
+              $wregFilters) . ')';
         }
         $regFilterQuery .= ')';
         $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
@@ -530,7 +533,27 @@ class CultureFeedSearchPage {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
         }
         elseif ($facetFieldName == 'location_category_facility_id') {
-          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
+
+          $inverse = array();
+          // If filteritem starts with ! use it as "NOT" inside the query
+          foreach ($facetFilter as $key => $facetFilterItem) {
+            if (substr($facetFilterItem, 0, 1) == '!') {
+              $inverse[] = substr($facetFilterItem, 1);
+              unset($facetFilter[$key]);
+            }
+          }
+
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator',
+            'and'));
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' ' . $operator . ' ', $facetFilter) . ')');
+
+          if(!empty($inverse)){
+            if(!empty($facetFilterQuery)){
+              $this->parameters[] = $facetFilterQuery;
+            }
+            $facetFilterQuery = new Parameter\FilterQuery('!location_category_facility_id:(' . implode(' ' . $operator . ' ', $inverse) . ')');
+          }
+
         }
         else {
 
@@ -541,10 +564,37 @@ class CultureFeedSearchPage {
             }
           }
 
+          $inverse = array();
+          // If filteritem starts with ! use it as "NOT" inside the query
+          foreach ($facetFilter as $key => $facetFilterItem) {
+            if (substr($facetFilterItem, 0, 1) == '!') {
+              $inverse[] = substr($facetFilterItem, 1);
+              unset($facetFilter[$key]);
+            }
+          }
+
           array_walk($facetFilter, function (&$item) {
             $item = '"' . str_replace('"', '\"', $item) . '"';
           });
-          $facetFilterQuery = new Parameter\FilterQuery('category_id:(' . implode(' OR ', $facetFilter) . ')');
+          array_walk($inverse, function (&$item) {
+            $item = '"' . str_replace('"', '\"', $item) . '"';
+          });
+
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
+
+          // @todo clean up this code. This is still buggy.
+          if(!empty($facetFilter)) {
+            $facetFilterQuery = new Parameter\FilterQuery('category_id:(' .
+              implode(' ' . $operator . ' ', $facetFilter) . ')');
+          }
+
+          if(!empty($inverse)){
+            if(!empty($facetFilterQuery)){
+              $this->parameters[] = $facetFilterQuery;
+            }
+            $facetFilterQuery = new Parameter\FilterQuery('!category_id:(' .
+              implode(' ' . $operator . ' ', $inverse) . ')');
+          }
         }
 
         $this->parameters[] = $facetFilterQuery;

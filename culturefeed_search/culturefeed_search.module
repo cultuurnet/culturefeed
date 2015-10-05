@@ -232,6 +232,13 @@ function culturefeed_search_get_search_url_query($search_query) {
         $facet_field = $search_on[0];
         $facet_field = str_replace(array('(', ')', '"'), '', $facet_field);
 
+        $inverse = FALSE;
+        if(strpos($facet_field,'!') === 0) {
+          $inverse = TRUE;
+          $facet_field = substr($facet_field,1);
+          $search_on[0] = substr($search_on[0],1);
+        }
+
         $facet_value = isset($search_on[1]) ? $search_on[1] : '';
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
 
@@ -246,6 +253,7 @@ function culturefeed_search_get_search_url_query($search_query) {
           // Filtering on an actor.
           case 'actor':
             $query['actor'] = $facet_value;
+            break;
 
           // Filtering on location.
           case 'category_flandersregion_name':
@@ -261,6 +269,9 @@ function culturefeed_search_get_search_url_query($search_query) {
           case 'category_id':
           case 'type':
 
+            if($inverse) {
+              $facet_value = '!' . $facet_value;
+            }
             $values = explode(',', $facet_value);
 
             // Region facets are location searches.
@@ -311,14 +322,29 @@ function culturefeed_search_get_search_url_query($search_query) {
 
   // Get the correct categorie facets.
   if (isset($query['facet']['category_id'])) {
-    $terms = db_select('culturefeed_search_terms', 't')
-      ->condition('tid', $query['facet']['category_id'])
-      ->condition('language', LANGUAGE_NONE)
-      ->fields('t', array('tid', 'did'))->execute();
+    $inverse = array();
+    $terms = array();
+    foreach($query['facet']['category_id'] as $key => $cat_id){
+      if(strpos($cat_id,'!') === 0) {
+        $inverse[$key] = $cat_id;
+        $cat_id = substr($cat_id,1);
+      }
+      $terms[] = db_select('culturefeed_search_terms', 't')
+        ->condition('tid', $cat_id)
+        ->condition('language', LANGUAGE_NONE)
+        ->fields('t', array('tid', 'did'))->execute();
+    }
 
-    foreach ($terms as $term) {
-      $query['facet']['category_' . $term->did . '_id'][] = $term->tid;
-      unset($query['facet']['category_id']);
+    foreach ($terms as $key => $term) {
+      foreach ($term as $t) {
+        if(!isset($inverse[$key])){
+          $query['facet']['category_' . $t->did . '_id'][] = $t->tid;
+        }
+        else {
+          $query['facet']['category_' . $t->did . '_id'][] = $inverse[$key];
+        }
+        unset($query['facet']['category_id'][$key]);
+      }
     }
 
   }

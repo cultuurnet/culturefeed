@@ -984,12 +984,20 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
       foreach ($selected_value as $key => $value) {
         if (!empty($value)) {
+          $inverse = FALSE;
           $search_query = $query;
           unset($search_query['facet'][$active_facet_name][$key]);
 
           // If this was the only facet. Also remove the global facet key.
           if (empty($search_query['facet'])) {
             unset($search_query['facet']);
+          }
+
+          // Check if facet has a '!' in it. Tag it as inverse so we can
+          // change the label.
+          if(strpos($selected_value[$key],'!') === 0) {
+            $selected_value[$key] = substr($selected_value[$key],1);
+            $inverse = TRUE;
           }
 
           // Get translated label from terms.
@@ -1000,13 +1008,32 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             unset($search_query['distance']);
           }
 
-          $url = url($path, array('query' => $search_query));
+          // add NOT to the label when the value is inverted.
+          if($inverse) {
+            $label = t('NOT ') . $label;
+          }
 
-          $build['item_' . $active_facet_name][$value] = array(
-            '#theme' => 'culturefeed_search_active_filters_item',
-            '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
-            '#url' => $url
-          );
+          // remove facet from query so it works for multiple selections
+          $url_query = $search_query;
+          unset($url_query['facet'][$active_facet_name]);
+
+          $url = url($path, array('query' => $url_query));
+
+          if(isset($build['item_' . $active_facet_name][0])) {
+            $filter = $build['item_' . $active_facet_name][0]['#label'];
+            $operator = drupal_strtoupper(variable_get
+            ('culturefeed_multiple_categories_operator', 'and'));
+            $build['item_' . $active_facet_name][0]['#label'] = $filter . ' '
+              . $operator . ' ' . $label;
+          }
+          else {
+            $build['item_' . $active_facet_name][0] = array(
+              '#theme' => 'culturefeed_search_active_filters_item',
+              '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
+              '#url' => $url
+            );
+          }
+
         }
       }
     }

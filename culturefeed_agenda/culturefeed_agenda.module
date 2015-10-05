@@ -767,19 +767,25 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     $facets = isset($options['query']['facet']) ? $options['query']['facet'] : array();
     $location = isset($options['query']['location']) ? $options['query']['location'] : NULL;
 
-    // Check if this url is goïng to filter on event type.
+    // Check if this url is going to filter on event type.
     if (!empty($facets['category_eventtype_id'])) {
 
-      // Set the new path for this category. Keep the slug static cached.
-      if (!isset($term_slugs[$facets['category_eventtype_id'][0]])) {
-        $term_slugs[$facets['category_eventtype_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_eventtype_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      // Only change url if there's 1 event type
+      if (count($facets['category_eventtype_id']) === 1 && strpos
+        (array_values($facets['category_eventtype_id'])[0],'!') !== 0){
+
+        $facets['category_eventtype_id'] = array_values($facets['category_eventtype_id']);
+        // Set the new path for this category. Keep the slug static cached.
+        if (!isset($term_slugs[$facets['category_eventtype_id'][0]])) {
+          $term_slugs[$facets['category_eventtype_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_eventtype_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+        }
+        $type = $term_slugs[$facets['category_eventtype_id'][0]];
+        $path = 'agenda/' . $type;
+
+        // Remove the facet, and check if this was the only one.
+        unset($options['query']['facet']['category_eventtype_id']);
+
       }
-      $type = $term_slugs[$facets['category_eventtype_id'][0]];
-      $path = 'agenda/' . $type;
-
-      // Remove the facet, and check if this was the only one.
-      unset($options['query']['facet']['category_eventtype_id']);
-
     }
 
     // Only do something if location is a city that has a postal.
@@ -822,7 +828,8 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     }
 
     // Rewrite facet on flanders region.
-    if (isset($facets['category_flandersregion_id']) && is_array($facets['category_flandersregion_id']) && isset($facets['category_flandersregion_id'][0])) {
+    if (isset($facets['category_flandersregion_id']) && is_array($facets['category_flandersregion_id']) && isset($facets['category_flandersregion_id'][0]) && count
+      ($facets['category_flandersregion_id']) === 1) {
 
       if (!isset($term_slugs[$facets['category_flandersregion_id'][0]])) {
         $term_slugs[$facets['category_flandersregion_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_flandersregion_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
@@ -837,7 +844,8 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     }
 
     // Rewrite facet on theme.
-    if (isset($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0])) {
+    if (isset($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0]) && count($facets['category_theme_id']) ===
+    1) {
 
       if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
         $term_slugs[$facets['category_theme_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_theme_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();

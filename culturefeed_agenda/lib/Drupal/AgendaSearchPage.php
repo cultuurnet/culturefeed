@@ -115,8 +115,21 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
 
         $facet['category_eventtype_id'] = $query['facet']['category_eventtype_id'];
 
+        $title = array();
+
+        foreach ($facet['category_eventtype_id'] as $eventtype_id) {
+          if(strpos($eventtype_id,'!') === 0) {
+            $title[] = t('NOT ') . culturefeed_search_get_term_translation(substr($eventtype_id,1));
+          }
+          else {
+            $title[] = culturefeed_search_get_term_translation($eventtype_id);
+          }
+        }
+
+        $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator','and'));
+
         $active_trail[] = array(
-          'title' => culturefeed_search_get_term_translation($query['facet']['category_eventtype_id'][0]),
+          'title' => implode(' ' . $operator . ' ', $title),
           'href' => 'agenda/search',
           'link_path' => '',
           'localized_options' => array(
