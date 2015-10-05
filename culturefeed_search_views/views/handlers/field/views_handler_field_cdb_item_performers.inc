@@ -19,9 +19,14 @@ class views_handler_field_cdb_item_performers extends views_handler_field {
       $entity = $extended_entity->getEntity();
       try {
         $performers = array();
-        foreach ($entity->getDetails()->current()->getPerformers() as $performer) {
-          /* @var CultureFeed_Cdb_Data_Performer $performer */
-          $performers[] = $performer->getLabel() . ' (' . $performer->getRole() . ')';
+        $performer_details = $entity->getDetails()->current()->getPerformers();
+        if ($performer_details) {
+
+          foreach ($performer_details as $performer) {
+            /* @var CultureFeed_Cdb_Data_Performer $performer */
+            $performers[] = $performer->getLabel() . ' (' . $performer->getRole() . ')';
+          }
+
         }
 
       }
