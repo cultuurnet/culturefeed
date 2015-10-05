@@ -992,8 +992,6 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             unset($search_query['facet']);
           }
 
-          $url = url($path, array('query' => $search_query));
-
           // Get translated label from terms.
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
@@ -1001,6 +999,8 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             $label .= ' + ' . check_plain($query['distance']) . ' km';
             unset($search_query['distance']);
           }
+
+          $url = url($path, array('query' => $search_query));
 
           $build['item_' . $active_facet_name][$value] = array(
             '#theme' => 'culturefeed_search_active_filters_item',

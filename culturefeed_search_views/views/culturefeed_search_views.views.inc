@@ -145,12 +145,16 @@ function culturefeed_search_views_data() {
     ),
   );
 
-  // Filter on agefrom.
+  // Age from.
   $data['cdb_items']['agefrom'] = array(
-    'title' => t('Agefrom'),
-    'help' => t('Perform a search on minimum required age.'),
+    'title' => t('Age from'),
+    'help' => t('The age from.'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_age',
+    ),
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_agefrom',
+      'help' => t('Perform a search on minimum required age.'),
     ),
     'sort' => array(
       'handler' => 'views_handler_sort_culturefeed_search_agefrom',
@@ -168,9 +172,14 @@ function culturefeed_search_views_data() {
 
   // Filter on free event.
   $data['cdb_items']['free'] = array(
-    'title' => t('Free event'),
-    'help' => t('Perform a search on free events.'),
+    'title' => t('Price'),
+    'help' => t('The price of the event.'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_price',
+    ),
     'filter' => array(
+      'title' => t('Free event'),
+      'help' => t('Perform a search on free events.'),
       'handler' => 'views_handler_filter_culturefeed_search_free',
     ),
   );
@@ -211,6 +220,24 @@ function culturefeed_search_views_data() {
     'help' => t('Short Description of the cdb item'),
     'field' => array(
       'handler' => 'views_handler_field_cdb_item_short_description',
+    ),
+  );
+
+  // Long Description.
+  $data['cdb_items']['long_description'] = array(
+    'title' => t('Long Description'),
+    'help' => t('Long Description of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_long_description',
+    ),
+  );
+
+  // Keywords.
+  $data['cdb_items']['keywords'] = array(
+    'title' => t('Keywords'),
+    'help' => t('Keywords of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_keywords',
     ),
   );
 
@@ -277,6 +304,15 @@ function culturefeed_search_views_data() {
     ),
     'sort' => array(
       'handler' => 'views_handler_sort_culturefeed_search_lastupdated',
+    ),
+  );
+
+  // Performers.
+  $data['cdb_items']['performers'] = array(
+    'title' => t('Performers'),
+    'help' => t('Performers of the cdb item'),
+    'field' => array(
+      'handler' => 'views_handler_field_cdb_item_performers',
     ),
   );
 
