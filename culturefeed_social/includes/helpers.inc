@@ -205,6 +205,8 @@ function culturefeed_social_activity_link($activity_type, $extended_entity, $adv
     $markup[$identifier]['#title'] .= ' (' . $activity_count . ')';
   }
 
+  drupal_alter('culturefeed_social_activity_link', $markup, $activity_type, $extended_entity);
+
   return drupal_render($markup);
 }
 
