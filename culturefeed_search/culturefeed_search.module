@@ -170,7 +170,7 @@ function culturefeed_search_cache_flush_submit($form, $form_state) {
  *   The url.
  */
 function culturefeed_search_get_search_url_query($search_query) {
-
+dsm($search_query);
   // Check for custom filter options.
   $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
   $filter_options += variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
@@ -300,17 +300,22 @@ function culturefeed_search_get_search_url_query($search_query) {
               $locations[] = $facet_value;
             }
             else {
-              if (!isset($query['facet'][$search_on[0]])) {
-                $query['facet'][$search_on[0]] = array();
+              if (!isset($query['facet'][$facet_field])) {
+                $query['facet'][$facet_field] = array();
               }
-              $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+              $query['facet'][$facet_field] = array_merge($query['facet'][$facet_field], $values);
             }
 
+            // Don't take event and production as facet.
             if (isset($query['facet']['type'])) {
               foreach ($query['facet']['type'] as $key => $content_type) {
                 if (in_array($content_type, array('production', 'event'))) {
                   unset($query['facet']['type'][$key]);
                 }
+              }
+
+              if (empty($query['facet']['type'])) {
+                unset($query['facet']['type']);
               }
 
             }
@@ -346,7 +351,7 @@ function culturefeed_search_get_search_url_query($search_query) {
 
     foreach ($terms as $key => $term) {
       foreach ($term as $t) {
-        if(!isset($inverse[$key])){
+        if (!isset($inverse[$key])){
           $query['facet']['category_' . $t->did . '_id'][] = $t->tid;
         }
         else {
@@ -355,6 +360,8 @@ function culturefeed_search_get_search_url_query($search_query) {
         unset($query['facet']['category_id'][$key]);
       }
     }
+
+    unset($query['facet']['category_id']);
 
   }
 
@@ -381,7 +388,6 @@ function culturefeed_search_get_search_url_query($search_query) {
     }
 
   }
-
 
   return $query;
 
