@@ -318,8 +318,8 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     }
   }
 
-  public static function getMailingSubscriptions($user_id) {
-    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id);
+  public static function getMailingSubscriptions($user_id, $use_auth = TRUE) {
+    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id, $use_auth);
   }
 
   public static function getTopEvents($type, $max = 5) {

@@ -27,10 +27,18 @@ function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
     }
 
   }
+  catch (CultureFeed_Exception $e) {
+
+    // If user was already subscribed, don't show a message.
+    if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+      watchdog_exception('culturefeed_mailing', $e);
+      $success = FALSE;
+    }
+
+  }
   catch (Exception $e) {
     watchdog_exception('culturefeed_mailing', $e);
     $success = FALSE;
-    return;
   }
 
   if ($type == 'ajax') {
@@ -65,7 +73,7 @@ function culturefeed_mailing_subscribe_form() {
   }
 
   // Redirect to loginpage if not logged in and light id permission is off.
-  if (!$account && !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+  if (!$account && !CULTUREFEED_API_LIGHT_ID_ALLOWED) {
     drupal_goto('authenticated', array('query' => array('destination' => 'subscribe')));
   }
 
@@ -85,29 +93,32 @@ function culturefeed_mailing_subscribe_form() {
     '#weight' => -10,
   );
 
-  if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
-    $postal = CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP ? _culturefeed_mailing_get_postal_from_cookie() : '';
-  }
-  elseif (!empty($_GET['zip'])) {
-    $postal = $_GET['zip'];
-  }
-  elseif ($account) {
-    $postal = $account->zip;
-  }
-  else {
-    $postal = '';
+  $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) {
+    $postal = _culturefeed_mailing_get_postal_from_cookie();
   }
 
+  if (empty($postal)) {
+    if (!empty($_GET['zip'])) {
+      $postal = $_GET['zip'];
+    }
+    elseif ($account) {
+      $postal = $account->zip;
+    }
+    else {
+      $postal = '';
+    }
+  }
 
   $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => t('Zipcode'),
-    '#required' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM ? TRUE : FALSE,
+    '#required' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     '#size' => 40,
     '#maxlength' => 255,
     '#default_value' => $postal,
     '#weight' => -9,
-    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM || (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM && CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP)
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip)
   );
 
   $form['firstname'] = array(
@@ -118,7 +129,7 @@ function culturefeed_mailing_subscribe_form() {
     '#maxlength' => 255,
     '#default_value' => ($account ? $account->givenName : ''),
     '#weight' => -8,
-    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED
   );
 
   $form['lastname'] = array(
@@ -129,21 +140,21 @@ function culturefeed_mailing_subscribe_form() {
     '#maxlength' => 255,
     '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
     '#weight' => -7,
-    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED
   );
 
   if (variable_get('culturefeed_mailing_list_optional', '')) {
     $form['optional_mailing'] = array(
       '#type' => 'checkbox',
       '#title' => variable_get('culturefeed_mailing_optional_description', ''),
-      '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED
     );
   }
 
   $form['privacy'] = array(
     '#type' => 'markup',
     '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
-    '#access' => !CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED
   );
 
   $form['submit'] = array(
@@ -161,51 +172,94 @@ function culturefeed_mailing_subscribe_form() {
  */
 function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
 
-  try {
+  if (!empty($form_state['values']['zip'])) {
+    $zip = $form_state['values']['zip'];
+    _culturefeed_mailing_set_postal_to_cookie($form_state['values']['zip']);
+  }
+  else {
+    $zip = '';
+  }
 
-    if (!empty($form_state['values']['zip'])) {
-      $zip = $form_state['values']['zip'];
-      _culturefeed_mailing_set_postal_to_cookie($form_state['values']['zip']);
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+
+    try {
+      culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], variable_get('culturefeed_mailing_list', ''), $zip);
     }
-    else {
-      $zip = '';
-    }
+    catch (CultureFeed_Exception $e) {
 
-    if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
-      culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], $zip, variable_get('culturefeed_mailing_list', ''));
-    }
-    else {
-      $account = DrupalCultureFeed::getLoggedInUser();
-
-      // Subscribe to normal mailing.
-      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
-
-      // Subscribe to optional mailing.
-      if (!empty($form_state['values']['optional_mailing'])) {
-        culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
       }
 
-      // Update user with entered fields.
-      $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
-
-      $user_update = new CultureFeed_User();
-      $user_update->id = $account->id;
-      $user_update->mbox = $form_state['values']['mail'];
-      $user_update->zip = $form_state['values']['zip'];
-      $user_update->givenName = $form_state['values']['firstname'];
-      $user_update->familyName = $form_state['values']['lastname'];
-
-      DrupalCultureFeed::updateUser($user_update, $fields);
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
     }
 
-    $form_state['redirect'] = 'subscribe/subscribed';
+  }
+  else {
+    $account = DrupalCultureFeed::getLoggedInUser();
 
+    // Subscribe to normal mailing.
+    try {
+      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
+    }
+    catch (CultureFeed_Exception $e) {
+
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
+    }
+
+    // Subscribe to optional mailing.
+    if (!empty($form_state['values']['optional_mailing'])) {
+      try {
+        culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+      }
+      catch (CultureFeed_Exception $e) {
+
+        // If user was already subscribed, don't show a message.
+        if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+          drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+          return;
+        }
+
+      }
+      catch (Exception $e) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+    }
+
+    // Update user with entered fields.
+    $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
+
+    $user_update = new CultureFeed_User();
+    $user_update->id = $account->id;
+    $user_update->mbox = $form_state['values']['mail'];
+    $user_update->zip = $form_state['values']['zip'];
+    $user_update->givenName = $form_state['values']['firstname'];
+    $user_update->familyName = $form_state['values']['lastname'];
+
+    try {
+      DrupalCultureFeed::updateUser($user_update, $fields);
+    }
+    catch (Exception $e) {
+      // Show no error here.
+    }
   }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
-    return;
-  }
+
+  $form_state['redirect'] = 'subscribe/subscribed';
 
 }
 

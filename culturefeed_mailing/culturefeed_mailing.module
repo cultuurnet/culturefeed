@@ -5,8 +5,6 @@
  */
 
 require_once('culturefeed_mailing.helpers.inc');
-define('CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM', variable_get('culturefeed_api_uitid_light_permission', 0));
-define('CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP', variable_get('culturefeed_mailing_block_show_zip', 0));
 
 /**
  * Implements hook_permission
@@ -298,16 +296,17 @@ function culturefeed_mailing_block_configure($delta) {
     $form['uitid_light'] = array(
       '#title' => t('UiTiD Light settings.'),
       '#type' => 'fieldset',
-      '#access' => CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
+      '#access' => CULTUREFEED_API_LIGHT_ID_ALLOWED
     );
 
     $form['uitid_light']['show_zip_code'] = array(
       '#title' => t('Show the zip code field'),
       '#type' => 'checkbox',
-      '#default_value' => CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP,
-      '#description' => t('Check this checkbox if you want to show the zip code field on the newsletter form.</br>'
-          . 'Keep in mind that the field will only be shown if this checkbox is checked '
-          . 'AND the admin setting for the UiTiD light permissions has been set on admin/config/culturefeed/api-settings.'),
+      '#default_value' => variable_get('culturefeed_mailing_block_show_zip', 0),
+      '#description' => t("Check this checkbox if you want to show the zip code field on the newsletter form.</br>'
+        Keep in mind that the field will only be shown if this checkbox is checked '
+        AND the admin setting for the UiTiD light permissions has been set on admin/config/culturefeed/api-settings.
+      "),
     );
 
   }
@@ -347,24 +346,16 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
  * Subscribe a given user to a mailing.
  */
 function culturefeed_mailing_subscribe_user($account, $mailing_id, $use_auth = TRUE) {
-
-  $already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, $mailing_id);
-
-  // If user is already subscribed, do nothing.
-  if (!$already_subscribed) {
     DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id, $use_auth);
     module_invoke_all('culturefeed_mailing_user_subscribed', $account);
-  }
-
 }
 
 /**
  * Subscribe a given user to a mailing using the light id.
  */
-function culturefeed_mailing_subscribe_user_light($email, $zip = '', $mailing_id) {
-  $account = new stdClass();
+function culturefeed_mailing_subscribe_user_light($email, $mailing_id, $zip = '') {
+  $account = new CultureFeed_User();
   $account->id = DrupalCultureFeed::getUserLightId($email, $zip);
-
   culturefeed_mailing_subscribe_user($account, $mailing_id, FALSE);
 }
 
@@ -376,17 +367,16 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
   if (isset($form_state['subscribed']) && $form_state['subscribed'] == TRUE) {
 
     $form['subscribed'] = array(
-      '#type' => 'markup',
-      '#markup' => theme(
-          'culturefeed_mailing_content_block_subscribed',
-          array(
-            'title' => t('Thanks!'),
-            'message' => variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter'))
-          )
-        ),
+      '#theme' => 'culturefeed_mailing_content_block_subscribed',
+      '#title' => t('Thanks!'),
+      '#message' => variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter')),
     );
+
   }
   else {
+
+    $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+
     $form['mail'] = array(
       '#type' => 'textfield',
       '#title' => variable_get('culturefeed_mailing_block_description', ''),
@@ -395,17 +385,18 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
       '#maxlength' => 255,
     );
 
-    $postal = CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP && CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM ? _culturefeed_mailing_get_postal_from_cookie() : '';
+    if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
 
-    $form['zip'] = array(
-      '#type' => 'textfield',
-      '#title' => '',
-      '#required' => FALSE,
-      '#description' => t('Zipcode'),
-      '#default_value' => $postal,
-      '#size' => 40,
-      '#access' => CULTUREFEED_MAILING_LIGHT_ID_SHOW_ZIP && CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM
-    );
+      $form['zip'] = array(
+        '#type' => 'textfield',
+        '#title' => '',
+        '#required' => FALSE,
+        '#description' => t('Zipcode'),
+        '#size' => 40,
+        '#default_value' => _culturefeed_mailing_get_postal_from_cookie(),
+      );
+
+    }
 
     $form['inschrijven'] = array(
       '#type' => 'submit',
@@ -430,17 +421,28 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
   }
 
-  if (CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM) {
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+
     try {
-      culturefeed_mailing_subscribe_user_light($query['email'], !empty($query['zip']) ? $query['zip'] : '', variable_get('culturefeed_mailing_list', ''));
-      $form_state['subscribed'] = TRUE;
-      $form_state['rebuild'] = TRUE;
+      culturefeed_mailing_subscribe_user_light($query['email'], variable_get('culturefeed_mailing_list', ''), empty($query['zip']) ? $query['zip'] : '');
+    }
+    catch (CultureFeed_Exception $e) {
+
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+
     }
     catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
       drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
       return;
     }
+
+    $form_state['subscribed'] = TRUE;
+    $form_state['rebuild'] = TRUE;
+
   }
   elseif (DrupalCultureFeed::isCultureFeedUser()) {
     $form_state['redirect'] = array('subscribe', array('query' => $query));
@@ -448,7 +450,8 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
   else {
     $query['destination'] = 'subscribe';
     $form_state['redirect'] = array(
-      'authenticated', array('query' => $query));
+      'authenticated', array('query' => $query),
+    );
   }
 }
 

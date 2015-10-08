@@ -38,7 +38,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_api_uitid_light_permission'] = array(
     '#type' => 'checkbox',
     '#title' => t('My consumer has UiTiD light permissions.'),
-    '#default_value' => CULTUREFEED_MAILING_LIGHT_ID_HAS_PERM,
+    '#default_value' => CULTUREFEED_API_LIGHT_ID_ALLOWED,
   );
 
   $form['culturefeed_entry_api_path'] = array(

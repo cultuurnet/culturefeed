@@ -43,9 +43,9 @@ function _culturefeed_mailing_optin_toggle($mailing_id) {
 /**
  * Helper function to check if user is subscribed to mailing list
  */
-function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id) {
+function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id, $use_auth = TRUE) {
   try {
-    $subscriptions = DrupalCultureFeed::getMailingSubscriptions($user_id)->objects;
+    $subscriptions = DrupalCultureFeed::getMailingSubscriptions($user_id, $use_auth)->objects;
     $newsletters = array();
     foreach ($subscriptions as $subscription) {
       $newsletters[$subscription->id] = $subscription->id;
@@ -76,11 +76,17 @@ function _culturefeed_mailing_get_postal_from_cookie() {
  * Helper function to retrieve the postal code from cookie
  */
 function _culturefeed_mailing_set_postal_to_cookie($postal) {
+
   if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
     $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    if ($user_location instanceof stdClass) {
-      $user_location->postal = $postal;
-      setrawcookie('Drupal_visitor_uitid_userLocation', rawurlencode(json_encode($user_location)));
+    if (!$user_location instanceof stdClass) {
+      $user_location = new stdClass();
     }
   }
+  else {
+    $user_location = new stdClass();
+  }
+
+  $user_location->postal = $postal;
+  setrawcookie('Drupal_visitor_uitid_userLocation', rawurlencode(json_encode($user_location)));
 }

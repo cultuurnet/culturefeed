@@ -20,6 +20,8 @@ define('CULTUREFEED_CDB_DEFAULT_VERSION', '3.2');
  */
 function culturefeed_init() {
 
+  define('CULTUREFEED_API_LIGHT_ID_ALLOWED', variable_get('culturefeed_api_uitid_light_permission', 0));
+
   drupal_add_js(drupal_get_path('module', 'culturefeed') . '/js/culturefeed.js');
 
   if (isset($_GET['closepopup'])) {
