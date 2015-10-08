@@ -10,5 +10,5 @@
  * @param CultuurNet\Search\ActivityStatsExtendedEntity $extended_entity
  *   The extended entity.
  */
-function hook_culturefeed_social_activity_link(array &$build, $activity_type, ActivityStatsExtendedEntity $extended_entity) {
+function hook_culturefeed_social_activity_link_alter(array &$build, $activity_type, CultuurNet\Search\ActivityStatsExtendedEntity $extended_entity) {
 }
