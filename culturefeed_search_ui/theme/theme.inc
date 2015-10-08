@@ -251,6 +251,7 @@ function _culturefeed_search_ui_get_required_level($facet_items, $current_level,
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) {
   $facet = $variables['facet'];
+
   $path = empty($variables['path']) ? current_path() : $variables['path'];
 
   if (!isset($variables['query']) || !is_array($variables['query'])) {
@@ -321,7 +322,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'facet_item' => $sub_item,
           'facet_key' => $facet->getKey(),
           'query' => $query,
-          'path' => url($path),
+          'path' => $path,
           'active' => $sub_item_active,
         ));
 
@@ -344,7 +345,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'facet_item' => $facet_item,
       'facet_key' => $facet->getKey(),
       'query' => $query,
-      'path' => url($path),
+      'path' => $path,
       'active' => $item_active,
     ));
 
@@ -400,6 +401,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$v
  * @see culturefeed-search-facet-item.tpl.php
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variables) {
+
   $facet_key = $variables['facet_key'];
   $is_age_facet = $facet_key == 'agefrom';
   $facet_item = $variables['facet_item'];

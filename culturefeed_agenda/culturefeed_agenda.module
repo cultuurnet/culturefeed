@@ -768,13 +768,12 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     $location = isset($options['query']['location']) ? $options['query']['location'] : NULL;
 
     // Check if this url is going to filter on event type.
-    if (!empty($facets['category_eventtype_id'])) {
+    if (!empty($facets['category_eventtype_id']) && is_array($facets['category_eventtype_id']) && isset($facets['category_eventtype_id'][0])) {
 
-      // Only change url if there's 1 event type
-      if (count($facets['category_eventtype_id']) === 1 && strpos
-        (array_values($facets['category_eventtype_id'])[0],'!') !== 0){
+      // Only change url if there's 1 event type and it's not inversed.
+      $inversed_category = strpos($facets['category_eventtype_id'][0], '!') === 0;
+      if (count($facets['category_eventtype_id']) === 1 && !$inversed_category) {
 
-        $facets['category_eventtype_id'] = array_values($facets['category_eventtype_id']);
         // Set the new path for this category. Keep the slug static cached.
         if (!isset($term_slugs[$facets['category_eventtype_id'][0]])) {
           $term_slugs[$facets['category_eventtype_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_eventtype_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
@@ -827,32 +826,44 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
       }
     }
 
-    // Rewrite facet on flanders region.
-    if (isset($facets['category_flandersregion_id']) && is_array($facets['category_flandersregion_id']) && isset($facets['category_flandersregion_id'][0]) && count
-      ($facets['category_flandersregion_id']) === 1) {
+    // Rewrite facet on flanders region if there is only 1 region filtered.
+    if (!empty($facets['category_flandersregion_id']) && is_array($facets['category_flandersregion_id']) && isset($facets['category_flandersregion_id'][0])) {
 
-      if (!isset($term_slugs[$facets['category_flandersregion_id'][0]])) {
-        $term_slugs[$facets['category_flandersregion_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_flandersregion_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      // Only change url if there's 1 location and it's not inversed.
+      $inversed_category = strpos($facets['category_flandersregion_id'][0], '!') === 0;
+      if (count($facets['category_flandersregion_id']) === 1 && !$inversed_category) {
+        if (!isset($term_slugs[$facets['category_flandersregion_id'][0]])) {
+          $term_slugs[$facets['category_flandersregion_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_flandersregion_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+        }
+
+        $type = $type ? : 'alle';
+        $path = 'agenda/' . $type . '/' . $term_slugs[$facets['category_flandersregion_id'][0]];
+
+        // Remove the facet.
+        unset($options['query']['facet']['category_flandersregion_id']);
       }
-
-      $type = $type ? : 'alle';
-      $path = 'agenda/' . $type . '/' . $term_slugs[$facets['category_flandersregion_id'][0]];
-
-      // Remove the facet.
-      unset($options['query']['facet']['category_flandersregion_id']);
 
     }
 
     // Rewrite facet on theme.
-    if (isset($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0]) && count($facets['category_theme_id']) ===
-    1) {
+    if (!empty($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0])) {
 
-      if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
-        $term_slugs[$facets['category_theme_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_theme_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+      // Only change url if there's 1 theme and it's not inversed.
+      $inversed_category = strpos($facets['category_theme_id'][0], '!' === 0);
+      if (count($facets['category_theme_id']) === 1 && !$inversed_category) {
+
+        if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
+          $term_slugs[$facets['category_theme_id'][0]] = db_query('SELECT slug FROM {culturefeed_search_terms} WHERE tid = :tid AND language = :language', array(':tid' => $facets['category_theme_id'][0], ':language' => culturefeed_search_get_preferred_language()))->fetchField();
+        }
+
+        // Only change if this was a valid theme.
+        if (isset($term_slugs[$facets['category_theme_id'][0]])) {
+          $options['query']['theme'] = $term_slugs[$facets['category_theme_id'][0]];
+        }
+
+        unset($options['query']['facet']['category_theme_id']);
+
       }
-
-      $options['query']['theme'] = $term_slugs[$facets['category_theme_id'][0]];
-      unset($options['query']['facet']['category_theme_id']);
 
     }
 

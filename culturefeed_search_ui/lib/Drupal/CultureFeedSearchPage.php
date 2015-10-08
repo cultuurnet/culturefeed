@@ -464,8 +464,6 @@ class CultureFeedSearchPage {
       if (!isset($params['distance'])) {
 
         $regFilter = array();
-        $params['regId'] = $params['facet']['category_flandersregion_id'][0];
-
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
 
@@ -476,16 +474,13 @@ class CultureFeedSearchPage {
         }
 
         if (empty($_GET['only-wregs'])) {
-          $regFilter[] = $params['regId'];
+          $regFilter = array_merge($regFilter, $params['facet']['category_flandersregion_id']);
         }
 
         $regFilterQuery = '(';
-        $regFilterQuery .= 'category_id:(' . implode(' OR ',
-        $regFilter)
-          .')';
+        $regFilterQuery .= 'category_id:(' . implode(' OR ', $regFilter) .')';
         if (!empty($wregFilters)) {
-          $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ',
-              $wregFilters) . ')';
+          $regFilterQuery .= ' OR exact_category_id:(' . implode(' OR ', $wregFilters) . ')';
         }
         $regFilterQuery .= ')';
         $this->parameters[] = new Parameter\FilterQuery($regFilterQuery);
@@ -543,8 +538,7 @@ class CultureFeedSearchPage {
             }
           }
 
-          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator',
-            'and'));
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
           $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' ' . $operator . ' ', $facetFilter) . ')');
 
           if(!empty($inverse)){
