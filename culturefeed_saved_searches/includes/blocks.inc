@@ -72,8 +72,7 @@ function culturefeed_saved_searches_get_cta_query() {
       $key = $param->getKey();
 
       if (in_array($key, $supported_parameters)) {
-        if ($page->getGroup() === 'event_production' && $param->getValue()
-          !== '!type:production') {
+        if ($page->getGroup() === 'event_production' && $param->getValue() !== '!type:production') {
           $params[] = $key . '=' . $param->getValue();
         }
       }
