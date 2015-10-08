@@ -68,6 +68,9 @@
               if (!(element.label.match(/^Provinc|Regio+/))) {
                 element.label += ' (+ ' + Drupal.t('boroughs') + ')';
               }
+            }
+            // Always make sure the element has a value.
+            if (!element.value) {
               element.value = element.label;
             }
           });
