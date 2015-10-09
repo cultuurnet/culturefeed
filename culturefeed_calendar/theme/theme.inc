@@ -134,7 +134,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
       $variables['button']['description'] = t('This event is added to your calendar.');
       $variables['button']['text'] = t('View calendar');
     }
-    elseif ($variables['button']['location'] == 'footer') {
+    elseif ($variables['button']['location'] == 'aside') {
       $variables['button']['text'] = t('to your calendar');
     }
 
@@ -151,7 +151,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     if ($variables['button']['location'] == 'content') {
       $variables['button']['text'] = t('Add to my calendar');
     }
-    elseif ($variables['button']['location'] == 'footer') {
+    elseif ($variables['button']['location'] == 'aside') {
       $variables['button']['text'] = t('Add to calendar');
     }
 
@@ -327,5 +327,3 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$va
   $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
 
 }
-
-

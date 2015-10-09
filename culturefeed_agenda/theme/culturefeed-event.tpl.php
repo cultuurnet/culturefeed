@@ -186,7 +186,7 @@
 <?php print $recommend_link; ?>
 
 <?php if (!empty($personal_calendar_buttons)): ?>
-<?php foreach ($personal_calendar_buttons['footer'] as $button) : ?>
+<?php foreach ($personal_calendar_buttons['aside'] as $button) : ?>
   <?php print $button; ?>
 <?php endforeach; ?>
 <?php endif; ?>

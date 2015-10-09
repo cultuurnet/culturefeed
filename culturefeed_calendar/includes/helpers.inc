@@ -196,31 +196,43 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
       $objDateTime = new DateTime('NOW');
       $calendar = $event->getCalendar();
+
       if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
 
         // Check if 1 of the items is still in the future.
         $event_is_passed = TRUE;
         foreach ($calendar as $calendar_item) {
-          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp()) {
+
+          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period
+                && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
             $event_is_passed = FALSE;
             break;
           }
-          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() >= $objDateTime->getTimestamp()) {
-            $event_is_passed = FALSE;
-            break;
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
+          {
+            $endtime = "23:59:59";
+
+            if(!empty($calendar_item->getEndTime()))
+            {
+              $endtime = $calendar_item->getEndTime();
+            }
+
+            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
+              $event_is_passed = FALSE;
+              break;
+            }
           }
         }
-
       }
     }
   }
 
-  // When event is passed, show only a message in the footer.
+  // When event is passed, show only a message aside.
   if ($event_is_passed) {
-    $locations = array('footer');
+    $locations = array('aside');
   }
   else {
-    $locations = array('content', 'footer');
+    $locations = array('content', 'aside');
   }
   foreach ($locations as $location) {
 
