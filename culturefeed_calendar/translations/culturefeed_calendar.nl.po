@@ -274,7 +274,7 @@ msgstr "Instellingen"
 
 #: theme/culturefeed-calendar-share-page.tpl.php:11
 msgid "Share your calendar with your friends"
-msgstr "Deel je UiTkalender delen met je vrienden"
+msgstr "Deel je UiTkalender met je vrienden"
 
 #: theme/culturefeed-calendar-share-page.tpl.php:12
 msgid "You can share this link with your friends"
