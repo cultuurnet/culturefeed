@@ -255,30 +255,23 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   $form['info'] = array(
     '#type' => 'markup',
     '#markup' => $possible_dates,
-  );
+  );*/
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
+    // periode of permanent
+    $help = "";
+    if($params['type'] == 'period')
+    {
+      $help = t('Choose a date between ') . " " . $params['date_from'] . " ". t('and') . " " . $params['date_to'];
+    }
+
     $form['date'] = array(
-      '#title' => t('When do you want to go?'),
+      '#title' => t('When do you want to go?') . " " . $help,
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
-
-    if (!$edit) {
-      $form['no_date'] = array(
-        '#type' => 'submit',
-        '#value' => t("I don't know yet"),
-        '#name' => 'no_idea_yet',
-        '#submit' => array($submit_function),
-        '#validate' => array('culturefeed_calendar_form_validate'),
-        '#attributes' => array(
-          'class' => array('btn', 'btn-link')
-        ),
-      );
-    }
-
   }
   // timestamps.
   else {
@@ -316,6 +309,19 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#type' => 'radios',
       '#options' => $dates,
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d') : '',
+    );
+  }
+
+  if (!$edit) {
+    $form['no_date'] = array(
+      '#type' => 'submit',
+      '#value' => t("I don't know yet"),
+      '#name' => 'no_idea_yet',
+      '#submit' => array($submit_function),
+      '#validate' => array('culturefeed_calendar_form_validate'),
+      '#attributes' => array(
+        'class' => array('btn', 'btn-link')
+      ),
     );
   }
 
