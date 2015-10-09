@@ -247,7 +247,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   drupal_set_title($params['title']);
 
   // Only show possible dates for periods where calendar summary is available
-  $possible_dates = '';
+  /*$possible_dates = '';
   if (($params['type'] == 'period') && $params['calendar_summary']) {
     $info = '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>';
   }
@@ -674,15 +674,29 @@ function _culturefeed_calendar_get_event_params($event) {
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
-      $dates[$i]['date'] = $calendar->current()->getDate();
-      $dates[$i]['start'] = $calendar->current()->getStartTime();
-      $dates[$i]['end'] = $calendar->current()->getEndTime();
+      $endtime = "23:59:59";
+      if(!empty($calendar->current()->getEndTime()));
+      {
+        $endtime = $calendar->current()->getEndTime();
+      }
+
+      $calendar_date = $calendar->current()->getDate() . " " . $endtime;
+
+      if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
+      {
+        $dates[$i]['date'] = $calendar->current()->getDate();
+        $dates[$i]['start'] = $calendar->current()->getStartTime();
+        $dates[$i]['end'] = $calendar->current()->getEndTime();
+      }
       $calendar->next();
       $i++;
     }
 
     if (count($dates) == 1) {
+      /* don't show a modal */
       $params['get_form'] = FALSE;
+      /* reindex dates */
+      $dates = array_values($dates);
       $params['dates'] = $dates;
       return $params;
     }
