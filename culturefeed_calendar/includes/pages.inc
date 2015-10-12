@@ -674,14 +674,11 @@ function _culturefeed_calendar_get_event_params($event) {
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
-      $endtime = "23:59:59";
-      if(!empty($calendar->current()->getEndTime()));
+      $endtime = $calendar->current()->getEndTime();
+      if($endtime == null);
       {
-        $endtime = $calendar->current()->getEndTime();
+        $endtime = "23:59:59";
       }
-
-      $calendar_date = $calendar->current()->getDate() . " " . $endtime;
-
       if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
       {
         $dates[$i]['date'] = $calendar->current()->getDate();
