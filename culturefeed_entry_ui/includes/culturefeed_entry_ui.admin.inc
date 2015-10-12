@@ -91,13 +91,6 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
     '#description' => t('Select the default country for the entry form.'),
   );
 
-  $form['culturefeed_entry_ui_sync_max_passes'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum number of passes when syncing an event with the search api'),
-    '#default_value' => variable_get('culturefeed_entry_ui_sync_max_passes', CULTUREFEED_ENTRY_UI_SYNC_MAX_PASSES_DEFAULT),
-    '#description' => t('After saving an event a batch wil run until the event is synced with the search api. When the maximum passes is reached, the batch will terminate with a warning message if the event was not synced.'),
-  );
-
   return system_settings_form($form);
 
 }

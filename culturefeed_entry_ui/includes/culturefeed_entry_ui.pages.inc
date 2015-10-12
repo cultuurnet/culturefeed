@@ -2132,8 +2132,8 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
         array($form_state),
       ),
     ),
-    'init_message' => t('Initializing.'),
-    'progress_message' => t('Completed @current of @total.'),
+    'init_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Initializing.') . '</div>',
+    'progress_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Completed @current of @total.') . '</div>',
     'finished' => 'culturefeed_entry_ui_event_form_submission_timeout_batch_finished',
     'file' => drupal_get_path('module', 'culturefeed_entry_ui') . '/includes/culturefeed_entry_ui.pages.inc',
   );
@@ -2337,60 +2337,37 @@ function culturefeed_entry_ui_photo_after_build($element) {
  *   Contains information about the status of the batch.
  */
 function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
+  // Use the same function to get the event as used on the event page.
+  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event', FALSE);
+  $event_updated = FALSE;
 
-  $event_id = $form_state['#event_id'];
-  $operation = (!empty($form_state['#update_event')) ? 'update' : 'add';
+  if ($event_search) {
+    $event = $event_search->getEntity();
+    $context['results']['event_title'] = $form_state['values']['title'];
+    // Always compare the date with the correct timezone.
+    $last_updated_time = new DateTime($event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
 
-  // Entry api updated time (only needs to be loaded once).
-  if (empty($context['sandbox'])) {
-
-    /* @var CultureFeed_Cdb_Item_Event $entry_api_event */
-    $entry_api_event = Drupalculturefeed_EntryApi::getEvent($event_id);
-    $entry_api_updated_time = new DateTime($entry_api_event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
-    $context['sandbox']['entry_api_updated_time'] = $entry_api_updated_time;
-    $context['sandbox']['current'] = 0;
-    $context['sandbox']['max'] = variable_get('culturefeed_entry_ui_sync_max_passes', CULTUREFEED_ENTRY_UI_SYNC_MAX_PASSES_DEFAULT);
-
+    // Do additional validation when the event is updated.
+    if ($form_state['#update_event']) {
+      if ($last_updated_time->getTimestamp() >= $form_state['submit_time']) {
+        $event_updated = TRUE;
+        $context['results']['action'] = 'updated';
+      }
+    }
+    else {
+      $event_updated = TRUE;
+      $context['results']['action'] = 'created';
+    }
   }
 
-  // Search api updated time.
-  $search_api_extended_entity = culturefeed_search_item_load($event_id, 'event', FALSE);
-  if ($search_api_extended_entity) {
-    /* @var CultureFeed_Cdb_Item_Event $search_api_event */
-    $search_api_event = $search_api_extended_entity->getEntity();
-    $search_api_updated_time = new DateTime($search_api_event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
-  }
-
-  // Can the batch be closed ?
-  // If adding an event and it can be loaded from search api.
-  if ($operation == 'add' && $search_api_extended_entity) {
-    $context['results']['action'] = 'created';
+  // Stop the batch if the event was found with the search and validated.
+  if ($event_updated) {
     $context['finished'] = 1;
   }
-
-  // When updating an event and the updated time on the search api corresponds.
-  elseif (
-    $operation == 'edit' && isset($search_api_updated_time) &&
-    $search_api_updated_time >= $context['sandbox']['entry_api_updated_time']
-  ) {
-    $context['results']['action'] = 'updated';
-    $context['finished'] = 1;
-  }
-
-  // When reaching the maximum number of passes.
-  elseif ($context['sandbox']['progress'] == $context['sandbox']['max']) {
-    // The event form will also display a message that search api and entry api
-    // are not in sync yet.
-    $context['finished'] = 1;
-  }
-
-  // Otherwise continue the batch.
   else {
+    $context['finished'] = 0;
     sleep(1);
-    $context['finished'] = $context['sandbox']['current'] / $context['sandbox']['max_passes'];
-    $context['sandbox']['current']++;
   }
-
 }
 
 /**
