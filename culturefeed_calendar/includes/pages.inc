@@ -726,6 +726,8 @@ function _culturefeed_calendar_get_nav_months() {
       'full_month' => format_date($time, 'custom', 'F'),
       'month' => format_date($time, 'custom', 'M'),
       'year' => format_date($time, 'custom', 'Y'),
+      'first_day' => format_date($time, 'custom', '1/m/Y'),
+      'last_day' => format_date($time, 'custom', 't/m/Y'),
     );
     $months[] = $item;
 
