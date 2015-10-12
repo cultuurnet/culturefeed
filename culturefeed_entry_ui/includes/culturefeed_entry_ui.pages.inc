@@ -2124,6 +2124,7 @@ function _culturefeed_entry_ui_event_save_weekscheme(&$event, $date_control) {
  * Submit the event form, create a batch that waits and redirects.
  */
 function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
+
   $batch = array(
     'title' => t('Saving the event'),
     'operations' => array(
@@ -2132,14 +2133,13 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
         array($form_state),
       ),
     ),
-    'init_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Initializing.') . '</div>',
-    'progress_message' => '<div class="ajax-progress"><div class="throbber"></div>' . t('Completed @current of @total.') . '</div>',
     'finished' => 'culturefeed_entry_ui_event_form_submission_timeout_batch_finished',
     'file' => drupal_get_path('module', 'culturefeed_entry_ui') . '/includes/culturefeed_entry_ui.pages.inc',
   );
 
+  $form_state['redirect'] = 'agenda/e/' . $form_state['#event_id'] . '/timeout_redirect';
   batch_set($batch);
-  batch_process(culturefeed_search_detail_url('event', $form_state['#event_id'], $form_state['values']['title']));
+
 }
 
 /**
@@ -2328,7 +2328,7 @@ function culturefeed_entry_ui_photo_after_build($element) {
   return $element;
 }
 
-/*
+/**
  * Batch operation function to wait before redirecting to the event page.
  *
  * @param array $form_state
@@ -2337,46 +2337,98 @@ function culturefeed_entry_ui_photo_after_build($element) {
  *   Contains information about the status of the batch.
  */
 function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &$context) {
-  // Use the same function to get the event as used on the event page.
-  $event_search = culturefeed_search_item_load($form_state['#event_id'], 'event', FALSE);
-  $event_updated = FALSE;
 
-  if ($event_search) {
-    $event = $event_search->getEntity();
-    $context['results']['event_title'] = $form_state['values']['title'];
-    // Always compare the date with the correct timezone.
-    $last_updated_time = new DateTime($event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
+  $event_cdbid = $form_state['#event_id'];
+  $operation = (!empty($form_state['#update_event'])) ? 'update' : 'add';
 
-    // Do additional validation when the event is updated.
-    if ($form_state['#update_event']) {
-      if ($last_updated_time->getTimestamp() >= $form_state['submit_time']) {
-        $event_updated = TRUE;
-        $context['results']['action'] = 'updated';
-      }
+  if (empty($context['sandbox'])) {
+
+    $context['sandbox']['form_submitted_time'] = $form_state['submit_time'];
+    $context['sandbox']['start'] = time();
+    $context['sandbox']['max_duration'] = variable_get('culturefeed_entry_ui_sync_max_duration', CULTUREFEED_ENTRY_UI_SYNC_MAX_DURATION_DEFAULT);
+
+    $context['results']['event_cdbid'] = $event_cdbid;
+    $context['results']['operation'] = $operation;
+
+  }
+
+  // Set the batch status first.
+  $context['sandbox']['duration'] = time() - $context['sandbox']['start'];
+  $context['finished'] = $context['sandbox']['duration'] / $context['sandbox']['max_duration'];
+
+  // Load the search api item and check if the batch can be finished.
+  $search_api_extended_entity = culturefeed_search_item_load($event_cdbid, 'event', FALSE);
+
+  if ($search_api_extended_entity) {
+
+    /* @var CultureFeed_Cdb_Item_Event $search_api_event */
+    $search_api_event = $search_api_extended_entity->getEntity();
+    $search_api_updated_time = new DateTime($search_api_event->getLastUpdated(), new DateTimeZone('Europe/Brussels'));
+
+    if (
+      // When an event is new and can be loaded from the search api.
+      $operation == 'add' ||
+      // When updating an event and the updated time on the search api
+      // corresponds.
+      $operation == 'update' && $search_api_updated_time->getTimestamp() >= $context['sandbox']['form_submitted_time'] ||
+      // When reaching the maximum duration.
+      $context['sandbox']['duration'] >= $context['sandbox']['max_duration']
+    ) {
+
+      $context['finished'] = 1;
+      $context['results']['event_title'] = $search_api_event->getDetails()->current()->getTitle();
+      // If max duration is passed ensure a different message.
+      $context['results']['status'] = ($context['sandbox']['duration'] >= $context['sandbox']['max_duration']) ? 'timeout' : 'sync';
+
     }
-    else {
-      $event_updated = TRUE;
-      $context['results']['action'] = 'created';
-    }
+
   }
 
-  // Stop the batch if the event was found with the search and validated.
-  if ($event_updated) {
-    $context['finished'] = 1;
-  }
-  else {
-    $context['finished'] = 0;
-    sleep(1);
-  }
 }
 
 /**
  * Finish function for the batch API.
  */
 function culturefeed_entry_ui_event_form_submission_timeout_batch_finished($success, $results, $operations) {
+
   $result_messages = array(
-    'created' => t('The event %title has been created.', array('%title' => check_plain($results['event_title']))),
-    'updated' => t('The event %title has been updated.', array('%title' => check_plain($results['event_title']))),
+    'sync' => array(
+      'add' => t('The event %title has been created.', array('%title' => check_plain($results['event_title']))),
+      'update' => t('The event %title has been updated.', array('%title' => check_plain($results['event_title']))),
+    ),
+    'timeout' => array(
+      'add' => t('The event %title has been created, but has not yet been synced.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
+      'update' => t('The event %title has been updated, but has not yet been synced.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
+    ),
   );
-  drupal_set_message($result_messages[$results['action']]);
+
+  $message = t('Event !cdbid was synchronised successfully.', array('!cdbid' => $results['event_cdbid']));
+  if ($results['status'] == 'timeout') {
+    $message = t('Event !cdbid synchronisation failed.', array('!cdbid' => $results['event_cdbid']));
+  }
+
+  watchdog('culturefeed_entry_ui', $message);
+  drupal_set_message($result_messages[$results['status']][$results['operation']], $results['status'] == 'sync' ? 'status' : 'warning');
+
+}
+
+/**
+ * Timeout redirect callback.
+ * The timeout batch uses this redirect in case a new event has not been synced
+ * yet.  In that case we redirect to the form.
+ *
+ * @param string $event_id
+ *   The event id.
+ */
+function culturefeed_entry_ui_event_timeout_redirect($event_id) {
+
+  $extended_entity = culturefeed_search_item_load($event_id, 'event', FALSE);
+
+  if ($extended_entity) {
+    drupal_goto('agenda/e//' . $event_id);
+  }
+  else {
+    drupal_goto('agenda/e/add');
+  }
+
 }
