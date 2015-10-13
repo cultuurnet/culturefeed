@@ -27,6 +27,7 @@ function culturefeed_saved_searches_save_search_form() {
     '#title' => t('Send mailalert with new results:'),
     '#type' => 'select',
     '#options' => culturefeed_saved_searches_frequency_options(),
+    '#default_value' => 'DAILY',
   );
 
   $cf_account = DrupalCultureFeed::getLoggedInUser();
