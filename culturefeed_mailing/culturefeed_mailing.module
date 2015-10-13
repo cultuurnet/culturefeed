@@ -315,14 +315,36 @@ function culturefeed_mailing_subscribe_user($account, $mailing_id) {
  */
 function culturefeed_mailing_newsletter_block_form() {
 
+  // Check if the user is logged in.
+  try {
+    $account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+  }
+
+  // Set defaults for the email field.
+  if ($account) {
+    $email = $account->mbox;
+    $disabled = TRUE;
+    $description = '<span>' . t('Change your email address !here', array('!here' => l(t('here'), 'culturefeed/account/edit'))) .'</span>';
+  }
+  else {
+    $email = '';
+    $disabled = FALSE;
+    $description = t('Email address');
+  }
+
   $form = array();
 
   $form['mail'] = array(
     '#type' => 'textfield',
     '#title' => variable_get('culturefeed_mailing_block_description', ''),
-    '#description' => t('Email address'),
+    '#description' => $description,
     '#size' => 40,
     '#maxlength' => 255,
+    //'#default_value' => $email,
+    //'#disabled' => $disabled,
   );
 
   $form['inschrijven'] = array(
