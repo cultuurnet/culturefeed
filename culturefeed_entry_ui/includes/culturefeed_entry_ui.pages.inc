@@ -2348,6 +2348,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
     $context['sandbox']['max_duration'] = variable_get('culturefeed_entry_ui_sync_max_duration', CULTUREFEED_ENTRY_UI_SYNC_MAX_DURATION_DEFAULT);
 
     $context['results']['event_cdbid'] = $event_cdbid;
+    $context['results']['event_title'] = $form_state['values']['title'];
     $context['results']['operation'] = $operation;
 
   }
@@ -2370,18 +2371,18 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
       $operation == 'add' ||
       // When updating an event and the updated time on the search api
       // corresponds.
-      $operation == 'update' && $search_api_updated_time->getTimestamp() >= $context['sandbox']['form_submitted_time'] ||
-      // When reaching the maximum duration.
-      $context['sandbox']['duration'] >= $context['sandbox']['max_duration']
+      $operation == 'update' && $search_api_updated_time->getTimestamp() >= $context['sandbox']['form_submitted_time']
     ) {
-
       $context['finished'] = 1;
-      $context['results']['event_title'] = $search_api_event->getDetails()->current()->getTitle();
-      // If max duration is passed ensure a different message.
-      $context['results']['status'] = ($context['sandbox']['duration'] >= $context['sandbox']['max_duration']) ? 'timeout' : 'sync';
-
+      $context['results']['status'] = 'sync';
     }
 
+  }
+
+  // Check if the maximum duration is reached.
+  if ($context['sandbox']['duration'] >= $context['sandbox']['max_duration']) {
+    $context['finished'] = 1;
+    $context['results']['status'] = 'timeout';
   }
 
 }
@@ -2397,18 +2398,21 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch_finished($succ
       'update' => t('The event %title has been updated.', array('%title' => check_plain($results['event_title']))),
     ),
     'timeout' => array(
-      'add' => t('The event %title has been created, but has not yet been synced.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
-      'update' => t('The event %title has been updated, but has not yet been synced.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
+      'add' => t('The event %title has been created, but might not have been synced yet.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
+      'update' => t('The event %title has been updated, but might not have been synced yet.  This should happen shortly.', array('%title' => check_plain($results['event_title']))),
     ),
   );
 
-  $message = t('Event !cdbid was synchronised successfully.', array('!cdbid' => $results['event_cdbid']));
+  drupal_set_message($result_messages[$results['status']][$results['operation']], $results['status'] == 'sync' ? 'status' : 'warning');
+
   if ($results['status'] == 'timeout') {
     $message = t('Event !cdbid synchronisation failed.', array('!cdbid' => $results['event_cdbid']));
+    watchdog('culturefeed_entry_ui', $message, array(), WATCHDOG_WARNING);
   }
-
-  watchdog('culturefeed_entry_ui', $message);
-  drupal_set_message($result_messages[$results['status']][$results['operation']], $results['status'] == 'sync' ? 'status' : 'warning');
+  else {
+    $message = t('Event !cdbid was synchronised successfully.', array('!cdbid' => $results['event_cdbid']));
+    watchdog('culturefeed_entry_ui', $message);
+  }
 
 }
 
