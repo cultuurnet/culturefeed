@@ -315,12 +315,13 @@ function culturefeed_mailing_subscribe_user($account, $mailing_id) {
  */
 function culturefeed_mailing_newsletter_block_form() {
 
-  // Check if the user is logged in.
+  // Get the user account.
   try {
     $account = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
+    return;
   }
 
   // Set defaults for the email field.
@@ -343,8 +344,8 @@ function culturefeed_mailing_newsletter_block_form() {
     '#description' => $description,
     '#size' => 40,
     '#maxlength' => 255,
-    //'#default_value' => $email,
-    //'#disabled' => $disabled,
+    '#default_value' => $email,
+    '#disabled' => $disabled,
   );
 
   $form['inschrijven'] = array(

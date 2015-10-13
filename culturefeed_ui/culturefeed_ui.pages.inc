@@ -512,8 +512,8 @@ function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
     drupal_set_message(t('Changes succesfully saved.'));
   }
   catch (CultureFeed_Exception $e) {
-    if ($e->error_code == 'DuplicateMbox') {
-      drupal_set_message(t('The email address you entered (!email) is already in use by another user. </br> Please provide a another email address.', array('!email' => $cf_account->mbox)), 'error');
+    if ($e->error_code == CultureFeed::CODE_DUPLICATE_MBOX) {
+      drupal_set_message(t('The email address you entered (@email) is already in use by another user. </br> Please provide a another email address.', array('@email' => $cf_account->mbox)), 'error');
     }
     else {
       drupal_set_message(t('Error occurred'), 'error');
