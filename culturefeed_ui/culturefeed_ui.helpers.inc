@@ -56,9 +56,12 @@ function culturefeed_ui_get_preference_types() {
 
   $reflection = new ReflectionClass('CultureFeed_Activity');
   $constants = $reflection->getConstants();
-  $types = array_filter($constants, function($key) {
-    return (strpos($key, 'TYPE_') === 0);
-  }, ARRAY_FILTER_USE_KEY);
+  $types = array();
+  foreach ($constants as $key => $value) {
+    if (strpos($key, 'TYPE_') === 0) {
+      $types[$key] = $value;
+    }
+  }
   return $types;
 
 }
