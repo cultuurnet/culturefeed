@@ -515,7 +515,7 @@ function culturefeed_ui_culturefeed_ui_profile_sections() {
     return array(
       'classes' => array('profile-menu'),
       'content' => theme('links', array('links' => $links)),
-      'title' => culturefeed_ui_get_display_name($culturefeed_user),
+      'title' => $culturefeed_user->nick,
     );
 
   }

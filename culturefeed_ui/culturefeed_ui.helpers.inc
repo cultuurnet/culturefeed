@@ -372,7 +372,7 @@ function culturefeed_ui_user_view_apply_privacy_settings($account) {
 
     }
     else {
-      $title = culturefeed_ui_get_display_name($culturefeed_user);
+      $title = $culturefeed_user->nick;
     }
 
     drupal_set_title($title);
