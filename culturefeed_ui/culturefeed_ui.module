@@ -440,8 +440,6 @@ function culturefeed_ui_user_login() {
  */
 function culturefeed_ui_user_view($account) {
 
-  culturefeed_ui_user_view_apply_privacy_settings($account);
-
   if (!DrupalCultureFeed::isCultureFeedUser($account->uid)) {
     return;
   }
@@ -454,6 +452,7 @@ function culturefeed_ui_user_view($account) {
     return;
   }
 
+  culturefeed_ui_user_view_apply_privacy_settings($account);
   $account->content['culturefeed'] = array(
     '#theme' => 'culturefeed_ui_profile',
     '#user' => $cf_account,

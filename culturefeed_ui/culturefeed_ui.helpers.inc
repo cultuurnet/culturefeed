@@ -369,6 +369,7 @@ function culturefeed_ui_user_view_apply_privacy_settings($account) {
       $account->content['anonymous'] = array(
         '#markup' => t('This profile is private.'),
       );
+      culturefeed_set_noindex_metatag();
 
     }
     else {
