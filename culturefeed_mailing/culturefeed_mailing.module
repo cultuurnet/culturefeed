@@ -316,13 +316,7 @@ function culturefeed_mailing_subscribe_user($account, $mailing_id) {
 function culturefeed_mailing_newsletter_block_form() {
 
   // Get the user account.
-  try {
-    $account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
+  $account = culturefeed_load_logged_in_user();
 
   // Set defaults for the email field.
   if ($account) {
