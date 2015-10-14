@@ -224,34 +224,38 @@ function culturefeed_ui_block_profile_menu_view() {
  */
 function culturefeed_ui_block_profile_sections_view() {
 
-  $sections = array();
-  $hook = 'culturefeed_ui_profile_sections';
-  foreach(module_implements($hook) as $module) {
-    $function = $module . '_' . $hook;
-    if (function_exists($function)) {
-      $sections[] =  call_user_func($function);
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+
+    $sections = array();
+    $hook = 'culturefeed_ui_profile_sections';
+    foreach (module_implements($hook) as $module) {
+      $function = $module . '_' . $hook;
+      if (function_exists($function)) {
+        $sections[] = call_user_func($function);
+      }
+    };
+
+    if (count($sections)) {
+
+      $build = array();
+
+      foreach ($sections as $section) {
+
+        $build[] = array(
+          '#classes' => isset($section['classes']) ? $section['classes'] : array(),
+          '#content' => $section['content'],
+          '#theme' => 'culturefeed_ui_profile_section',
+          '#title' => $section['title'],
+        );
+
+      }
+
+      $block['subject'] = '';
+      $block['content'] = $build;
+
+      return $block;
+
     }
-  };
-
-  if (count($sections)) {
-
-    $build = array();
-
-    foreach($sections as $section) {
-
-      $build[] = array(
-        '#classes' => isset($section['classes']) ? $section['classes'] : array(),
-        '#content' => $section['content'],
-        '#theme' => 'culturefeed_ui_profile_section',
-        '#title' => $section['title'],
-      );
-
-    }
-
-    $block['subject'] = '';
-    $block['content'] = $build;
-
-    return $block;
 
   }
 

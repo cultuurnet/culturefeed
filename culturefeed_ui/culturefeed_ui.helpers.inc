@@ -345,39 +345,26 @@ function culturefeed_ui_set_cookies_message() {
 /**
  * Applies the privacy settings on the user view.
  *
+ * @param CultureFeed_User $culturefeed_user
+ *   The culturefeed user.
  * @param object $account
  *   The drupal user.
  */
-function culturefeed_ui_user_view_apply_privacy_settings($account) {
+function culturefeed_ui_user_view_apply_privacy_settings(CultureFeed_User $culturefeed_user, &$account) {
 
-  $culturefeed_user = NULL;
-  if (isset($account->culturefeed_uid)) {
-    try {
-      $culturefeed_user = DrupalCultureFeed::getUser($account->culturefeed_uid, TRUE);
-    } catch (Exception $e) {
-      watchdog_exception('culturefeed_ui_user_view_privacy_settings', $e);
-    }
+  if ($culturefeed_user->nick) {
+    $title = $culturefeed_user->nick;
+  }
+  else {
+
+    $title = t('Anonymous');
+    $account->content['anonymous'] = array(
+      '#markup' => t('This profile is private.'),
+    );
+    culturefeed_set_noindex_metatag();
+
   }
 
-  /* @var CultureFeed_User $culturefeed_user */
-  if ($culturefeed_user) {
-
-    // Anonymous.
-    if (!$culturefeed_user->nick) {
-
-      $title = t('Anonymous');
-      $account->content['anonymous'] = array(
-        '#markup' => t('This profile is private.'),
-      );
-      culturefeed_set_noindex_metatag();
-
-    }
-    else {
-      $title = $culturefeed_user->nick;
-    }
-
-    drupal_set_title($title);
-
-  }
+  drupal_set_title($title);
 
 }
