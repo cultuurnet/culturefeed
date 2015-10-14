@@ -441,9 +441,11 @@ function culturefeed_ui_page_account_edit_form() {
 
   $form = array();
 
-  $cf_account = culturefeed_load_logged_in_user();
-
-  if (!$cf_account) {
+  try {
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
     drupal_set_message(t('An error occurred while loading your account, please try again later.'));
     return;
   }

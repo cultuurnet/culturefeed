@@ -56,13 +56,7 @@ function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
  */
 function culturefeed_mailing_subscribe_form() {
 
-  try {
-    $account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
+  $account = culturefeed_load_logged_in_user();
 
   // Show nothing if not logged in, or no mailing list available.
   if (!$account || !(variable_get('culturefeed_mailing_list', ''))) {
