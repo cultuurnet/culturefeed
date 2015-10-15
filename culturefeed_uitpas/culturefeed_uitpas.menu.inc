@@ -30,7 +30,8 @@ function culturefeed_uitpas_menu() {
     ),
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_advantages_title', 'UiTPAS advantages'),
-      'page callback' => 'culturefeed_uitpas_advantages_get',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_advantages_filter_sort'),
       'file' => 'includes/advantages.inc',
       'access arguments' => array('access content'),
     ),

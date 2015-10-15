@@ -127,23 +127,23 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     '#markup' => '<li><a href="/culturefeed/profile/uitpas/advantages">' . t('Welcome Advantages') . '</a></li>',
   );
 
-	$cf = DrupalCultureFeed::getConsumerInstance();
-	$kind_of_card_systems = 'permanent';
-	$card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $kind_of_card_systems = 'permanent';
+  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
 
   $options = array();
-	foreach ($card_systems as $system) {
-		$options[$system->id] = $system->name;
-	}
+  foreach ($card_systems as $system) {
+    $options[$system->id] = $system->name;
+  }
 
   $id = drupal_html_id('profile-promotions-filter-sort');
   $form['profile_promotions']['#prefix'] = '<div id="' . $id . '">';
   $form['profile_promotions']["#suffix"] = '</div>';
 
   $form['profile_promotions']['filter'] = array(
-    '#type' => 'select',
+    '#type' => 'checkboxes',
     '#title' => t('Filter'),
-    '#default_value' => isset($filter) ? $filter : 0,
+    '#default_value' => isset($filter) ? $filter : array(),
     '#empty_option' => t('All card systems'),
     '#options' => $options,
     '#ajax' => array(
@@ -153,7 +153,7 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
+  $filter = isset($form_state['values']['filters']) ? $form_state['values']['filters'] : array();
   $results = culturefeed_uitpas_profile_promotions_get($filter);
   $form['profile_promotions']['result'] = array(
     '#markup' => drupal_render($results),

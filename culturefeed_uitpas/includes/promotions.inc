@@ -123,6 +123,12 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
   $promotions = culturefeed_uitpas_promotions_get($filter);
 
+  $advantages = array();
+  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE)) {
+    module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
+    $advantages = culturefeed_uitpas_advantages_get();
+  }
+
   $options = array();
   foreach ($card_systems as $system) {
     $options[$system->id] = $system->name;
@@ -151,7 +157,12 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
       'callback' => 'culturefeed_uitpas_promotions_ajax_callback',
     ),
   );
-  $title = t('Found %count promotions', array('%count' => $promotions['#promotions_total']));
+
+  $total = $promotions['#promotions_total'];
+  if (isset($advantages['#advantages_total'])) {
+    $total += $advantages['#advantages_total'];
+  }
+  $title = t('Found %count promotions', array('%count' => $total));
   $filter_reset_link = l(t('Show all'), '/promotions');
   if ($filter) {
     $form['promotions']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
@@ -162,16 +173,19 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
   // Only show the advantages if the settings allow it.
   // Only show the advantages on the first page.
-  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE) &&
-      ((isset($_GET['page']) && $_GET['page'] == 0) || !isset($_GET['page']))) {
-    module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
-    $advantages = culturefeed_uitpas_advantages_get();
-    if (count($advantages['#advantages'])) {
-      $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
-      $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
-      $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
-      $form['promotions']['advantages']['#markup'] .= '<p class="link-more">' . l(t('Show all advantages'), '/advantages',  array('attributes' => array('class' => 'link-primary'))) . '</p>';
+  if (
+    variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE) &&
+    ((isset($_GET['page']) && $_GET['page'] == 0) || !isset($_GET['page'])) &&
+    count($advantages['#advantages'])
+  ) {
+    $advantages['#advantages'] = array_slice($advantages['#advantages'], 0, variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2));
+    $advantages['#advantages_total'] = variable_get('culturefeed_uitpas_number_advantages_above_promotions', 2);
+    $form['promotions']['advantages']['#markup'] = theme('culturefeed_uitpas_advantages_table', $advantages);
+    $options = array('attributes' => array('class' => 'link-primary'));
+    if ($filter) {
+      $options['query'] = array('filter' => $filter);
     }
+    $form['promotions']['advantages']['#markup'] .= '<p class="link-more">' . l(t('Show all advantages'), 'advantages',  $options) . '</p>';
   }
 
   if (count($promotions['#promotions'])) {
