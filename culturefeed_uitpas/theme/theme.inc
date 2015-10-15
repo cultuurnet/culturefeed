@@ -33,13 +33,16 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   }
 
   // Get the counters information.
+  $vars['counters'] = array();
   if (isset($advantage->counters[0])) {
     foreach ($advantage->counters as $key => $counter) {
       $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      $new_counter = array('item' => $extendedCounter);
-      module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-      culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-      $advantage->counters[$key] = $new_counter;
+      if ($extendedCounter) {
+        $new_counter = array('item' => $extendedCounter);
+        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
+        $vars['counters'] = $new_counter;
+      }
     }
   }
 
@@ -61,7 +64,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   // Location.
   $locations = array();
   $location_links = array();
-  foreach ($advantage->counters as $counter) {
+  foreach ($vars['counters'] as $counter) {
     $locations[] = $counter['title'];
     $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
   }
@@ -455,13 +458,16 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['points'] = format_plural($promotion->points, '1 point', '@count points');
 
   // Get the counters information.
+  $vars['counters'] = array();
   if (isset($promotion->counters[0])) {
     foreach ($promotion->counters as $key => $counter) {
       $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      $new_counter = array('item' => $extendedCounter);
-      module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-      culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-      $promotion->counters[$key] = $new_counter;
+      if ($extendedCounter) {
+        $new_counter = array('item' => $extendedCounter);
+        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
+        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
+        $vars['counters'][] = $new_counter;
+      }
     }
   }
 
@@ -489,7 +495,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   // Location.
   $locations = array();
   $location_links = array();
-  foreach ($promotion->counters as $counter) {
+  foreach ($vars['counters'] as $counter) {
     $locations[] = $counter['title'];
     $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
   }
