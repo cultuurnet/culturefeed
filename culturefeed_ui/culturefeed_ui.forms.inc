@@ -41,7 +41,13 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
   $info = variable_get('culturefeed_ui_account_edit_email_description', '');
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
-  $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
+  try {
+    $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
+  }
+  catch (Exception $e) {
+    $passholder = NULL;
+  }
+
   if ($passholder && $info) {
 
     $form['#attached'] = array(
