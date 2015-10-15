@@ -20,9 +20,13 @@ function culturefeed_uitpas_profile_advantages_get() {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    $first_card = key($uitpas_user->passholder->cardSystemSpecific);
 
     if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
       $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    }
+    elseif (isset($uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber)) {
+      $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
     }
 
     // Welcome advantages.
@@ -40,7 +44,6 @@ function culturefeed_uitpas_profile_advantages_get() {
     catch (Exception $e) {
       watchdog_exception('culturefeed_uitpas_profile_advantages', $e);
       pager_default_initialize(0, $advantages_max);
-
     }
 
     // Title.
