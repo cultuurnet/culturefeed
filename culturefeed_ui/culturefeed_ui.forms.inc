@@ -428,17 +428,23 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
     $culturefeed_user_update->dob = '';
   }
   else {
+
     $dob_parts = explode('/', $values['dob']);
 
     if (count($dob_parts) == 3) {
+
       list($day, $month, $year) = $dob_parts;
 
       if (is_numeric($day) && is_numeric($month) && is_numeric($year)) {
-        if ($date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year)) {
-          $culturefeed_user_update->dob = $date;
-        }
+
+        $timezone = new DateTimeZone('Europe/Brussels');
+        $dob = new DateTime($year . '-' . $month . '-' . $day, $timezone);
+        $culturefeed_user_update->dob = $dob->getTimestamp();
+
       }
+
     }
+
   }
 
   $fields = array(
