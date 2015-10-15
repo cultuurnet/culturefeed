@@ -32,11 +32,32 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
 
   $form['mbox'] = array(
     '#default_value' => $culturefeed_user->mbox,
-    '#description' => variable_get('culturefeed_ui_account_edit_email_description', ''),
     '#required' => TRUE,
     '#title' => t('Email address'),
     '#type' => 'textfield',
   );
+
+  // Tooltip.
+  $info = variable_get('culturefeed_ui_account_edit_email_description', '');
+  /* @var CultureFeed $cf */
+  $cf = DrupalCultureFeed::getLoggedInUserInstance();
+  $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
+  if ($passholder && $info) {
+
+    $form['#attached'] = array(
+      'js' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/account_edit_tooltip.js',
+        array(
+          'type' => 'setting',
+          'data' => array('culturefeed_ui_account_edit_email_description_tooltip' => $info),
+        ),
+      ),
+      'library' => array(
+        array('system', 'ui.tooltip'),
+      ),
+    );
+
+  }
 
   $form['submit'] = array(
     '#type' => 'submit',
