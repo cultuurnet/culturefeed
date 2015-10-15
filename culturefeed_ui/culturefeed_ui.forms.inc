@@ -268,6 +268,8 @@ function culturefeed_ui_profile_edit_form(array $form, array &$form_state, Cultu
   $form['#culturefeed_user'] = $culturefeed_user;
   $form['#theme'] = 'culturefeed_ui_profile_edit_form';
 
+  form_load_include($form_state, 'inc', 'culturefeed_ui', 'culturefeed_ui.forms');
+
   // First name.
   $form['givenName'] = array(
     '#type' => 'textfield',
@@ -283,10 +285,14 @@ function culturefeed_ui_profile_edit_form(array $form, array &$form_state, Cultu
   );
 
   // Date of birth.
+  $dob = new DateTime();
+  $time_zone = new DateTimeZone('Europe/Brussels');
+  $dob->setTimestamp($culturefeed_user->dob);
+  $dob->setTimezone($time_zone);
   $form['dob'] = array(
     '#title' => t('Date of birth'),
     '#type' => 'textfield',
-    '#default_value' => $culturefeed_user->dob ? date('d/m/Y', $culturefeed_user->dob) : '',
+    '#default_value' => $dob->format('d/m/Y'),
     '#description' => t('Format : dd/mm/yyyy'),
     '#size' => 10,
   );
@@ -374,7 +380,14 @@ function culturefeed_ui_profile_edit_form(array $form, array &$form_state, Cultu
     '#value' => t('Save'),
   );
 
+  $form['remove_account'] = array(
+    '#prefix' => '<div id="remove-account">',
+    '#markup' => l(t('Delete account'), 'culturefeed/removeaccount'),
+    '#suffix' => '</div>',
+  );
+
   return $form;
+
 }
 
 /**

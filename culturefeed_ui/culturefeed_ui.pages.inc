@@ -271,23 +271,28 @@ function culturefeed_ui_page_profile_edit() {
 
   if (module_exists('culturefeed_uitpas')) {
 
-    $path = 'culturefeed/uitpas/synchronization';
-    $item = menu_get_item($path);
-    $build['#attached']['js'] = array(
-      drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
-      array(
-        'type' => 'setting',
-        'data' => array(
-          'culturefeed_ui_synchronization' => array(
-            'url' => url('culturefeed/uitpas/synchronization'),
-            'title' => $item['title'],
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+    if (isset($uitpas_user->passholder)) {
+
+      $path = 'culturefeed/uitpas/synchronization';
+      $item = menu_get_item($path);
+      $build['#attached']['js'] = array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
+        array(
+          'type' => 'setting',
+          'data' => array(
+            'culturefeed_ui_synchronization' => array(
+              'url' => url('culturefeed/uitpas/synchronization'),
+              'title' => $item['title'],
+            ),
           ),
         ),
-      ),
-    );
-    $build['#attached']['library'] = array(
-      array('system', 'ui.dialog'),
-    );
+      );
+      $build['#attached']['library'] = array(
+        array('system', 'ui.dialog'),
+      );
+
+    }
 
   }
 

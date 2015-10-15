@@ -117,7 +117,7 @@ function culturefeed_uitpas_menu() {
       'access callback' => TRUE,
       'file' => 'includes/synchronization.inc',
       'page callback' => 'culturefeed_uitpas_synchronization',
-      'title' => 'Update your profile with your eid data',
+      'title' => 'Update personal data',
       'type' => MENU_CALLBACK,
     ),
   );
