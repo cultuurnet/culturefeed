@@ -2429,10 +2429,13 @@ function culturefeed_entry_ui_event_timeout_redirect($event_id) {
   $extended_entity = culturefeed_search_item_load($event_id, 'event', FALSE);
 
   if ($extended_entity) {
-    drupal_goto('agenda/e//' . $event_id);
+    $url = culturefeed_search_detail_url('event', $extended_entity->getId(), $extended_entity->getTitle('nl'));
+    drupal_goto($url);
   }
   else {
-    drupal_goto('agenda/e/add');
+    $url = 'agenda/e/add';
+    drupal_alter('culturefeed_entry_ui_event_timeout_new_no_sync_redirect', $url);
+    drupal_goto($url);
   }
 
 }
