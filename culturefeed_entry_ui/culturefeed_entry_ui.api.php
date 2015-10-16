@@ -1,7 +1,6 @@
 <?php
 
 /**
-<<<<<<< HEAD
  * Change the event before making the api call.
  *
  * @param CultureFeed_Cdb_Item_Event $event
