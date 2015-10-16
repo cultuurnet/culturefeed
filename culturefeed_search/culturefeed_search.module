@@ -194,6 +194,10 @@ function culturefeed_search_get_search_url_query($search_query) {
       }
       $query['search'] = $param[1];
     }
+    // Param datetype
+    elseif ($param[0] == 'datetype') {
+      $query['datetype'][0] = $param[1];
+    }
     // Search on location
     elseif ($param[0] == 'zipcode') {
       // Check if distance is included.
@@ -227,7 +231,8 @@ function culturefeed_search_get_search_url_query($search_query) {
           continue;
         }
 
-        $search_on = explode(':', $condition);
+        // Add a limit because timestamps also contains ':' 
+        $search_on = explode(':', $condition, 2);
 
         $facet_field = $search_on[0];
         $facet_field = str_replace(array('(', ')', '"'), '', $facet_field);
@@ -256,6 +261,17 @@ function culturefeed_search_get_search_url_query($search_query) {
           // Filter location category facility Id.
           case 'location_category_facility_id':
             $query['facet']['location_category_facility_id'][0] = $facet_value;
+            break;
+            
+          // Daterage  
+          case 'startdate':
+            $dates = str_replace (array('[',']','T','Z'), '' , explode('TO', $facet_value));
+            $date_range = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[0]))->format('d/m/Y');
+            if (isset($dates[1])) {
+              $end_date = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[1]))->format('d/m/Y');
+              $date_range .= ' - ' . $end_date;
+            }
+            $query['date_range'] = $date_range;
             break;
 
           // Normal facets.
