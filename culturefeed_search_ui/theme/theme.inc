@@ -407,15 +407,17 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
-  $non_multiple_facet_keys = array(
-    'datetype',
-    'category_flandersregion_id',
-    'location',
+  // Create array with facet_keys that should support multiple select/unselect.
+  // Don't add 'agefrom as this is not handled as a facet.
+  $multiple_facet_keys = array(
+    'category_eventtype_id',
+    'category_theme_id',
+    'location_category_facility_id',
   );
 
-  if (!in_array($facet_key, $non_multiple_facet_keys)) {
-    // Every filter will reset the current facet item.
-    // Remove this facet item from URL, URL will function as removal URL.
+  // Every filter will reset the current facet item.
+  // Remove this facet item from URL, URL will function as removal URL.
+  if (in_array($facet_key, $multiple_facet_keys)) {
     foreach ($query['facet'] as $facet_id => $facet) {
       foreach ($facet as $item_id => $item) {
         if ($facet_item->getValue() == $item) {
@@ -441,6 +443,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
 
   }
 
+  // Handle multiple select/unselect for 'agefrom' facet items.
   if ($is_age_facet) {
     if (isset($query['min_age'])) {
       foreach ($query['min_age'] as $age_key => $min_age) {
