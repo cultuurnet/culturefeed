@@ -882,7 +882,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
         if (is_array($requested_query)) {
           $has_sub_query = FALSE;
           foreach ($requested_query as $requested_subquery) {
-            if (!empty($requested_subquery)) {
+            if (!empty($requested_subquery) || $requested_subquery === 0) {
               $has_sub_query = TRUE;
             }
           }
