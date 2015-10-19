@@ -262,7 +262,13 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     $help = "";
     if($params['type'] == 'period')
     {
-      $help = t('Choose a date between ') . " " . $params['date_from'] . " ". t('and') . " " . $params['date_to'];
+      // Don't add if date is in the past.
+      $timestamp = strtotime(format_date($params['date_from'], 'custom', 'Y-m-d'));
+      if ($timestamp < $_SERVER['REQUEST_TIME']) {
+        $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
+      }
+
+      $help = t('Choose a date between ') . " " . $start_date . " ". t('and') . " " . $params['date_to'];
     }
 
     $form['date'] = array(
@@ -669,6 +675,14 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
+
+    // if date-to = today, pass modal-form and direct
+    if($calendar->current()->getDateTo() == date('Y-m-d',$_SERVER['REQUEST_TIME']))
+    {
+      $params['dates'][]['date'] = $params['date_to'];
+      $params['get_form'] = FALSE;
+    }
+
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
     $i = 0;
