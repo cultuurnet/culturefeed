@@ -161,6 +161,117 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
 }
 
 /**
+ * Form constructor for the online account publish activities form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ * @param string $online_account_type
+ *   The online account type.
+ * @param CultureFeed_OnlineAccount $online_account
+ *   The online account.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_online_account_publish_activities_form(array $form, array &$form_state, $online_account_type, CultureFeed_OnlineAccount $online_account) {
+
+  $form_state['culturefeed_ui_online_account_type'] = $online_account_type;
+  $form_state['culturefeed_ui_online_account'] = $online_account;
+
+  $html_id = drupal_html_id('culturefeed-ui-online-account-publish-activities-' . $online_account_type);
+
+  $statement = t(
+    'I accept that my UiTiD actions on !site_name will be published automatically on !online_account_type.',
+    array(
+      '!site_name' => check_plain(variable_get('site_name', 'Drupal')),
+      '!online_account_type' => $online_account_type,
+    )
+  );
+
+  $form['wrapper'] = array(
+    '#attributes' => array(
+      'class' => array('statement'),
+      'id' => $html_id,
+    ),
+    '#type' => 'container',
+    'messages' => array(
+      '#type' => 'markup',
+    ),
+    'publish' => array(
+      '#ajax' => array(
+        'callback' => 'culturefeed_ui_online_account_publish_activities_form_ajax_callback',
+        'wrapper' => $html_id,
+      ),
+      '#default_value' => $online_account->publishActivities,
+      '#executes_submit_callback' => TRUE,
+      '#title' => $statement,
+      '#type' => 'checkbox',
+    ),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Ajax callback for the online account publish activities form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_online_account_publish_activities_form_ajax_callback($form, $form_state) {
+  $messages = theme('status_messages');
+  if ($messages) {
+    $form['wrapper']['messages'] = array(
+      '#markup' => $messages,
+    );
+  }
+  return $form['wrapper'];
+}
+
+/**
+ * Submit handler for the online account publish activities form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_ui_online_account_publish_activities_form_submit(array $form, array &$form_state) {
+
+  $online_account_type = $form_state['culturefeed_ui_online_account_type'];
+  /* @var CultureFeed_OnlineAccount $online_account */
+  $online_account =& $form_state['culturefeed_ui_online_account'];
+
+  $account = new CultureFeed_OnlineAccount();
+  $account->publishActivities = $form_state['values']['publish'];
+  $account->accountName = $online_account->accountName;
+  $account->accountType = $online_account_type;
+
+  try {
+    DrupalCultureFeed::updateUserOnlineAccount(DrupalCultureFeed::getLoggedInUserId(), $account);
+    $online_account = DrupalCultureFeed::getUserOnlineAccount($online_account_type);
+    $online_account->publishActivities = $account->publishActivities;
+    drupal_set_message(t('Your account was updated successfully.'));
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('An error occurred when updating your account.'), 'error');
+  }
+
+}
+
+/**
  * Form constructor for the profile privacy form.
  *
  * @param array $form

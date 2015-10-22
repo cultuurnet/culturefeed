@@ -235,7 +235,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
     'culturefeed_ui_online_account' => array(
-      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_link' => '', 'delete_link' => '', 'connect_link' => ''),
+      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_form' => array(), 'delete_link' => '', 'connect_link' => ''),
       'template' => 'culturefeed-ui-online-account',
     ),
     'culturefeed_ui_my_uitid' => array(
@@ -586,6 +586,22 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
     '#options' => $period,
     '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
   );
+}
+
+/**
+ * Implements hook_forms().
+ */
+function culturefeed_ui_forms($form_id, $args) {
+
+  $forms = array();
+  if (strpos($form_id, 'culturefeed_ui_online_account_publish_activities_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'culturefeed_ui_online_account_publish_activities_form',
+      'callback arguments' => $args,
+    );
+  }
+  return $forms;
+
 }
 
 function culturefeed_ui_page_build() {

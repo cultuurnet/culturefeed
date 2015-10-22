@@ -13,8 +13,8 @@
 <?php if ($nick) : ?>
   <div class="nick"><?php print $nick ?></div>
 <?php endif; ?>
-<?php if ($publish_link) : ?>
-  <div class="publish"><?php print $publish_link ?></div>
+<?php if (!empty($publish_form)) : ?>
+  <div class="publish"><?php print $publish_form; ?></div>
 <?php endif; ?>
 <?php if ($connect_link && !$delete_link) : ?>
   <div class="connect"><?php print $connect_link ?></div>

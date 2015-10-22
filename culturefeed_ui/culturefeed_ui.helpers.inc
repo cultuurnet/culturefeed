@@ -162,14 +162,24 @@ function culturefeed_ui_is_culturefeed_profile_page() {
   return FALSE;
 }
 
-
+/**
+ * Returns the online account links.
+ *
+ * @param string $online_account_type
+ *   The online account type.
+ * @param CultureFeed_OnlineAccount $online_account
+ *   The online account.
+ *
+ * @return string
+ *   The links.
+ */
 function culturefeed_ui_online_account($online_account_type, $online_account = NULL) {
   $delete_link = '';
 
   if ($online_account) {
     $delete_link = array(
       '#type' => 'link',
-      '#title' => t('Delete @account_type account', array('@account_type' => $online_account_type)),
+      '#title' => t('Remove connection'),
       '#href' => 'culturefeed/onlineaccounts/delete/' . $online_account_type . '/' . $online_account->accountName . '/nojs',
       '#attributes' => array('class' => 'delete-link'),
       '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
@@ -179,29 +189,19 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $statement = '<span class="statement">' . t('I accept that my UiTiD actions on ') . check_plain(variable_get('site_name', 'Drupal')) . t(' will be published automatically on ') . $online_account_type . '. ' . l(t('User agreement'), 'node/2512') . '</span>';
-
-  $publish_link = '';
+  $publish_form = array();
   if ($online_account) {
-    $publish_link = array(
-      '#type' => 'link',
-      '#title' => $online_account->publishActivities ? t('Public') : t('Private'),
-      '#href' => 'culturefeed/onlineaccounts/privacy/' . $online_account_type . '/' . $online_account->accountName . '/' . ($online_account->publishActivities ? '0' : '1') . '/nojs',
-      '#attributes' => array('id' => 'onlineaccount-privacy-' . $online_account->accountName, 'class' => 'btn btn-default privacy-link ' . ($online_account->publishActivities ? 'status-publiek' : 'status-prive'), 'title' => ($online_account->publishActivities ? t('Switch off') : t('Switch on'))),
-      '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
-      '#ajax' => array(),
-    );
-
-    $publish_link = drupal_render($publish_link) . $statement;
+    $publish_form = drupal_get_form('culturefeed_ui_online_account_publish_activities_' . $online_account_type . '_form', $online_account_type, $online_account);
+    $publish_form = drupal_render($publish_form);
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l(t('Add @account_type account', array('@account_type' => $online_account_type)), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Connect application'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
     'account'          => $online_account,
-    'publish_link'     => $publish_link,
+    'publish_form' => $publish_form,
     'delete_link'      => $delete_link,
     'connect_link'     => $connect_link,
   );
