@@ -235,7 +235,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
     'culturefeed_ui_online_account' => array(
-      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_form' => array(), 'delete_link' => '', 'connect_link' => ''),
+      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_form' => '', 'delete_link' => '', 'connect_link' => ''),
       'template' => 'culturefeed-ui-online-account',
     ),
     'culturefeed_ui_my_uitid' => array(

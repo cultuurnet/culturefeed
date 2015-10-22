@@ -189,7 +189,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
     $delete_link = drupal_render($delete_link);
   }
 
-  $publish_form = array();
+  $publish_form = '';
   if ($online_account) {
     $publish_form = drupal_get_form('culturefeed_ui_online_account_publish_activities_' . $online_account_type . '_form', $online_account_type, $online_account);
     $publish_form = drupal_render($publish_form);
