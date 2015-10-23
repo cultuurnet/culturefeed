@@ -1409,6 +1409,7 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_organiser_events(&$var
 
 function theme_culturefeed_agenda_page_list_rss($variables) {
   $objects = $variables['objects'];
+  $active_filters = $variables['path']['title'];
 
   $items = '';
   if ($objects) {
@@ -1439,7 +1440,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
   
   $site_name = variable_get('site_name', 'Drupal');
   $url = url('', array('absolute' => TRUE, 'query' => array('utm_campaign' => 'rss', 'utm_medium' => 'content', 'utm_source' => 'external', 'utm_content' => 'feed')));
-  $description = '';
+  $description = t('Latest added activities in:') . ' ' . $active_filters ;
 
   $output  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
   $output .= "<rss version=\"2.0\">\n";

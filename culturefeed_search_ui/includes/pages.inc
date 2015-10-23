@@ -114,7 +114,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       $data[] = $object;
     }
     // Return the themed feed as a render array.
-    print theme('culturefeed_agenda_page_list_rss', array('objects' => $data));
+    print theme('culturefeed_agenda_page_list_rss', array('objects' => $data, 'path' => end($active_trail)));
     exit;
   }
   else {
