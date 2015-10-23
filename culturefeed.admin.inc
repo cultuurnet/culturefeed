@@ -58,5 +58,13 @@ function culturefeed_admin_settings() {
     '#field_suffix' => t('seconds'),
   );
 
+  $form['culturefeed_composer_lock_path'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Path to the composer.lock file.',
+    '#description' => t('Use "." (without quotes) for the root directory of the Drupal installation.'),
+    '#default_value' => variable_get('culturefeed_composer_lock_path', CULTUREFEED_DEFAULT_COMPOSER_LOCK_PATH),
+    '#field_suffix' => '/composer.lock',
+  );
+
   return system_settings_form($form);
 }
