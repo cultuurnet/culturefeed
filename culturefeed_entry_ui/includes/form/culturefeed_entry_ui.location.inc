@@ -124,29 +124,21 @@ function culturefeed_entry_ui_location_form_validate(array $form, array &$form_s
       }
       
     }
-    
-    if ($values['custom']['country'] == 'BE') {
-  
-      $available_city = array_change_key_case(culturefeed_search_get_city_suggestions($values['custom']['city']));
-      if (!isset($available_city[strtolower($values['custom']['city'])])) {
-        form_set_error('location][location_control][custom][city', t('A valid city is required for a custom location.'));
-      }
-      else {
 
-        // If an existing event is edited, the main city is not shown.
-        $available_cities = culturefeed_search_get_city_suggestions($values['custom']['city']);
-        $cities = array();
-        $pattern = '/ \(.*?\)/';
-        foreach ($available_cities as $available_city) {
-          $cities[] = preg_replace($pattern, '', $available_city);
-        }
-        $city = preg_replace($pattern, '', $values['custom']['city']);
-        if (!in_array($city, $cities)) {
-          form_set_error('location][location_control][custom][city', t('Please select a city from the list.'));
-        }
-        
-      } 
-      
+    if ($values['custom']['country'] == 'BE') {
+
+      // If an existing event is edited, the main city is not shown.
+      $available_cities = culturefeed_search_get_city_suggestions($values['custom']['city']);
+      $cities = array();
+      $pattern = '/ \(.*?\)/';
+      foreach ($available_cities as $available_city) {
+        $cities[] = strtolower(preg_replace($pattern, '', $available_city));
+      }
+      $city = strtolower(preg_replace($pattern, '', $values['custom']['city']));
+      if (!in_array($city, $cities)) {
+        form_set_error('location][location_control][custom][city', t('Please select a city from the list.'));
+      }
+
     }
 
   }
