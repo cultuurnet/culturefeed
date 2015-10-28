@@ -607,16 +607,31 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   // Links.
   $links = _culturefeed_agenda_get_links_from_item($cdb_item);
   $variables['links'] = array();
+  $reservation_links = array();
+  try {
+    $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
+    $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+  }
+  catch (Exception $e) {
+    watchdog_exception('notice', $e);
+  }
   foreach ($links as $link) {
-    // clean up link text
-    $link_text = str_replace('http://', '', $link);
-    $link_text = str_replace('https://', '', $link_text);
-    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), trim($link), array('attributes' => array('id' => 'cf-link')));
+
+    if (!in_array($link, $reservation_links)) {
+
+      // clean up link text
+      $link_text = str_replace('http://', '', $link);
+      $link_text = str_replace('https://', '', $link_text);
+      $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), trim($link), array('attributes' => array('id' => 'cf-link')));
+
+    }
+
   }
 
   if (module_exists('culturefeed_social')) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
+
 }
 
 /**
@@ -644,7 +659,9 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      if (!$mail->isForReservations()) {
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -652,16 +669,18 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $phones = array();
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
-      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if (isset($variables['device']) && $variables['device'] == 'phone') {
-          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+      if (!$phone->isForReservations()) {
+        if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
+          if (isset($variables['device']) && $variables['device'] == 'phone') {
+            $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
+          }
+          else {
+            $phones[] = $phone->getNumber();
+          }
         }
         else {
-          $phones[] = $phone->getNumber();
+          $faxes[] = $phone->getNumber();
         }
-      }
-      else {
-        $faxes[] = $phone->getNumber();
       }
     }
     $variables['contact']['phone'] = implode(', ', $phones);
