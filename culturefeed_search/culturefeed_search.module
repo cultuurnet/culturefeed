@@ -32,6 +32,19 @@ function culturefeed_search_init() {
  */
 function culturefeed_search_menu() {
 
+  if (!module_exists('culturefeed')) {
+    $items['admin/config/culturefeed'] = array(
+      'title' => 'CultureFeed',
+      'description' => 'Settings related to CultureFeed.',
+      'position' => 'right',
+      'weight' => 0,
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'file' => 'system.admin.inc',
+      'file path' => drupal_get_path('module', 'system'),
+    );
+  }
+
   $items['admin/config/culturefeed/search'] = array(
     'title' => 'CultureFeed Search',
     'description' => 'Change CultureFeed Search API setting like API Appliction key, location, ...',
