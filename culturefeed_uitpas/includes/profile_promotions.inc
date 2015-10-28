@@ -115,16 +115,20 @@ function culturefeed_uitpas_profile_promotions_title() {
 function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
 
   $form['profile_promotions_link'] = array(
-    '#prefix' => '<div id="promotions_link"><ul>',
-    '#suffix' => '</ul></div>',
-  );
-
-  $form['profile_promotions_link']['promotions'] = array(
-    '#markup' => '<li><a href="/culturefeed/profile/uitpas/promotions">' . t('My Promotions') . '</a></li>',
-  );
-
-  $form['profile_promotions_link']['advantages'] = array(
-    '#markup' => '<li><a href="/culturefeed/profile/uitpas/advantages">' . t('Welcome Advantages') . '</a></li>',
+    '#attributes' => array(
+      'id' => 'promotions_link'
+    ),
+    '#links' => array(
+      'promotions' => array(
+        'href' => 'culturefeed/profile/uitpas/promotions',
+        'title' => t('My Promotions'),
+      ),
+      'advantages' => array(
+        'href' => 'culturefeed/profile/uitpas/advantages',
+        'title' => t('Welcome Advantages'),
+      ),
+    ),
+    '#theme' => 'links',
   );
 
   $cf = DrupalCultureFeed::getConsumerInstance();
@@ -141,7 +145,7 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
   $form['profile_promotions']["#suffix"] = '</div>';
 
   $form['profile_promotions']['filter'] = array(
-    '#type' => 'checkboxes',
+    '#type' => 'radios',
     '#title' => t('Filter'),
     '#default_value' => isset($filter) ? $filter : array(),
     '#empty_option' => t('All card systems'),
@@ -153,7 +157,7 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $filter = isset($form_state['values']['filters']) ? $form_state['values']['filters'] : array();
+  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : array();
   $results = culturefeed_uitpas_profile_promotions_get($filter);
   $form['profile_promotions']['result'] = array(
     '#markup' => drupal_render($results),

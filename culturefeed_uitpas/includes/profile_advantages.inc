@@ -8,7 +8,7 @@
 /**
  * Returns profile advantages.
  */
-function culturefeed_uitpas_profile_advantages_get() {
+function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
@@ -34,6 +34,10 @@ function culturefeed_uitpas_profile_advantages_get() {
       $query = new CultureFeed_Uitpas_Passholder_Query_WelcomeAdvantagesOptions();
       $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
+      if ($filter) {
+        $query->owningCardSystemId = $filter;
+      }
+
       $query->start = $advantages_page * $advantages_max;
       $query->max = $advantages_max;
       $result = $uitpas_user->cf->uitpas()->getWelcomeAdvantagesForPassholder($query);
@@ -95,4 +99,67 @@ function culturefeed_uitpas_profile_advantages_title() {
 
   return variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages'));
 
+}
+
+/**
+ * Returns form elements for filter & sort on profile promotions page.
+ */
+function culturefeed_uitpas_profile_advantages_filter_sort($form, $form_state) {
+
+  $form['profile_advantages_link'] = array(
+    '#attributes' => array(
+      'id' => 'advantages_link'
+    ),
+    '#links' => array(
+      'promotions' => array(
+        'href' => 'culturefeed/profile/uitpas/promotions',
+        'title' => t('My Promotions'),
+      ),
+      'advantages' => array(
+        'href' => 'culturefeed/profile/uitpas/advantages',
+        'title' => t('Welcome Advantages'),
+      ),
+    ),
+    '#theme' => 'links',
+  );
+
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $kind_of_card_systems = 'permanent';
+  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
+
+  $options = array();
+  foreach ($card_systems as $system) {
+    $options[$system->id] = $system->name;
+  }
+
+  $id = drupal_html_id('profile-advantages-filter-sort');
+  $form['profile_advantages']['#prefix'] = '<div id="' . $id . '">';
+  $form['profile_advantages']["#suffix"] = '</div>';
+
+  $form['profile_advantages']['filter'] = array(
+    '#type' => 'radios',
+    '#title' => t('Filter'),
+    '#default_value' => isset($filter) ? $filter : array(),
+    '#empty_option' => t('All card systems'),
+    '#options' => $options,
+    '#ajax' => array(
+      'event' => 'change',
+      'wrapper' => $id,
+      'callback' => 'culturefeed_uitpas_profile_advantages_ajax_callback',
+    ),
+  );
+
+  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : array();
+  $results = culturefeed_uitpas_profile_advantages_get($filter);
+  $form['profile_advantages']['result'] = array(
+    '#markup' => drupal_render($results),
+  );
+
+  $form['profile_advantages']['#attached']['css'][] = drupal_get_path('module', 'culturefeed_uitpas') . '/css/culturefeed_uitpas.css';
+
+  return $form;
+}
+
+function culturefeed_uitpas_profile_advantages_ajax_callback($form, $form_state) {
+  return $form['profile_advantages'];
 }

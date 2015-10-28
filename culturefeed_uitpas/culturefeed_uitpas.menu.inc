@@ -66,7 +66,8 @@ function culturefeed_uitpas_menu() {
     'culturefeed/profile/uitpas/advantages' => array(
       'title callback' => 'culturefeed_uitpas_profile_advantages_title',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
-      'page callback' => 'culturefeed_uitpas_profile_advantages_get',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_profile_advantages_filter_sort'),
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_advantages.inc',
     ),
