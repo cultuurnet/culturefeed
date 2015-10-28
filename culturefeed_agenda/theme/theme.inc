@@ -182,8 +182,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Facilitytypes of this item (plain text and links).
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
-  $variables['facilities'] = $facilities['text'];
-  $variables['facilities_links'] = $facilities['links'];
+
+  $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
+
+  $variables['facilities'] = array();
+
+  foreach($facilities[id] as $key => $facility)
+  {
+    if(in_array($facility,$enabled_facilities['facility']))
+    {
+      $variables['facilities'][] = $facilities['text'][$key];
+    }
+  }
+
 
   if ($detail) {
 
@@ -551,11 +562,35 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
 
     // Share Links.
-    $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
-    $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
-    $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
-    $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
-    $variables['mail_link'] = l(t('Mail'), $variables['mail']['url'], $variables['mail']['options']);
+    $facebook_title = t('Share on Facebook');
+    $facebook_options = $variables['facebook']['options'];
+    $facebook_options['attributes']['title'] = $facebook_title;
+    $facebook_options['attributes']['alt'] = $facebook_title;
+    $variables['facebook_link'] = l($facebook_title, $variables['facebook']['url'], $facebook_options);
+
+    $googleplus_title = t('Share on Google+');
+    $googleplus_options = $variables['googleplus']['options'];
+    $googleplus_options['attributes']['title'] = $googleplus_title;
+    $googleplus_options['attributes']['alt'] = $googleplus_title;
+    $variables['googleplus_link'] = l($googleplus_title, $variables['googleplus']['url'], $googleplus_options);
+
+    $twitter_title = t('Share on Twitter');
+    $twitter_options = $variables['twitter']['options'];
+    $twitter_options['attributes']['title'] = $twitter_title;
+    $twitter_options['attributes']['alt'] = $twitter_title;
+    $variables['twitter_link'] = l($twitter_title, $variables['twitter']['url'], $twitter_options);
+
+    $whatsapp_title = t('Share on Whatsapp');
+    $whatsapp_options = $variables['whatsapp']['options'];
+    $whatsapp_options['attributes']['title'] = $whatsapp_title;
+    $whatsapp_options['attributes']['alt'] = $whatsapp_title;
+    $variables['whatsapp_link'] = l($whatsapp_title, $variables['whatsapp']['url'], $whatsapp_options);
+
+    $mail_title = t('Mail');
+    $mail_options = $variables['mail']['options'];
+    $mail_options['attributes']['title'] = $mail_title;
+    $mail_options['attributes']['alt'] = $mail_title;
+    $variables['mail_link'] = l($mail_title, $variables['mail']['url'], $mail_options);
 
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
