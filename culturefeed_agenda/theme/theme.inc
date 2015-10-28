@@ -182,8 +182,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Facilitytypes of this item (plain text and links).
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
-  $variables['facilities'] = $facilities['text'];
-  $variables['facilities_links'] = $facilities['links'];
+
+  $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
+
+  $variables['facilities'] = array();
+
+  foreach($facilities[id] as $key => $facility)
+  {
+    if(in_array($facility,$enabled_facilities['facility']))
+    {
+      $variables['facilities'][] = $facilities['text'][$key];
+    }
+  }
+
 
   if ($detail) {
 
