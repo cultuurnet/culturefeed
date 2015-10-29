@@ -322,7 +322,7 @@ function culturefeed_mailing_newsletter_block_form() {
   if ($account) {
     $email = $account->mbox;
     $disabled = TRUE;
-    $description = '<span>' . t('Change your email address !here', array('!here' => l(t('here'), 'culturefeed/account/edit'))) .'</span>';
+    $description = '<span>' . t('Change your email address <a href="!url">here</a>', array('!url' => url('culturefeed/account/edit'))) .'</span>';
   }
   else {
     $email = '';
