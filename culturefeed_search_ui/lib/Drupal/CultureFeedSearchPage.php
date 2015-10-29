@@ -470,8 +470,6 @@ class CultureFeedSearchPage {
       if (!isset($params['distance'])) {
 
         $regFilter = array();
-        $params['regId'] = $params['facet']['category_flandersregion_id'][0];
-
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
 
@@ -482,7 +480,7 @@ class CultureFeedSearchPage {
         }
 
         if (empty($_GET['only-wregs'])) {
-          $regFilter[] = $params['regId'];
+          $regFilter = array_merge($regFilter, $params['facet']['category_flandersregion_id']);
         }
 
         $regFilterQuery = '(';
@@ -536,7 +534,8 @@ class CultureFeedSearchPage {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
         }
         elseif ($facetFieldName == 'location_category_facility_id') {
-          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' ' . $operator . ' ', $facetFilter) . ')');
         }
         else {
 
@@ -550,7 +549,15 @@ class CultureFeedSearchPage {
           array_walk($facetFilter, function (&$item) {
             $item = '"' . str_replace('"', '\"', $item) . '"';
           });
-          $facetFilterQuery = new Parameter\FilterQuery('category_id:(' . implode(' OR ', $facetFilter) . ')');
+
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
+
+          // @todo clean up this code. This is still buggy.
+          if(!empty($facetFilter)) {
+            $facetFilterQuery = new Parameter\FilterQuery('category_id:(' .
+              implode(' ' . $operator . ' ', $facetFilter) . ')');
+          }
+
         }
 
         $this->parameters[] = $facetFilterQuery;

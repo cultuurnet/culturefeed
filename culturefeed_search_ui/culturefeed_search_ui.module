@@ -846,12 +846,19 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
   }
 
   // Add min age filter. This is always the requested age and count till 12.
-  if (isset($_GET['min_age']) && is_numeric($_GET['min_age']) && $_GET['min_age'] > -1) {
+  if (isset($_GET['min_age'])) {
 
     $age_range_filters = culturefeed_search_ui_get_age_range_facet_options();
-    if (isset($age_range_filters[$_GET['min_age']])) {
-      $culturefeedSearchPage->addParameter(new Parameter\FilterQuery($age_range_filters[$_GET['min_age']]['query']));
+    $min_ages = is_array($_GET['min_age']) ? $_GET['min_age'] : array($_GET['min_age']);
+    $age_queries = array();
+    foreach ($min_ages as $age) {
+      if (is_numeric($age) && $age > -1 && isset($age_range_filters[$age])) {
+        $age_queries[] = $age_range_filters[$age]['query'];
+      }
     }
+
+    $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'AND'));
+    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery(implode(' ' . $operator . ' ', $age_queries)));
 
   }
 
@@ -860,7 +867,6 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
   $sorting_options = culturefeed_search_ui_get_sort_options_for_page($active_page);
 
   if (!isset($_GET['sort'])) {
-
     if (isset($sorting_options['default']) && isset($sorting_options[$sorting_options['default']])) {
       $culturefeedSearchPage->addParameter(new Parameter\Parameter('sort', $sorting_options[$sorting_options['default']]['query']));
     }
@@ -984,12 +990,20 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     foreach ($query['facet'] as $active_facet_name => $selected_value) {
       foreach ($selected_value as $key => $value) {
         if (!empty($value)) {
+          $inverse = FALSE;
           $search_query = $query;
           unset($search_query['facet'][$active_facet_name][$key]);
 
           // If this was the only facet. Also remove the global facet key.
           if (empty($search_query['facet'])) {
             unset($search_query['facet']);
+          }
+
+          // Check if facet has a '!' in it. Tag it as inverse so we can
+          // change the label.
+          if(strpos($selected_value[$key],'!') === 0) {
+            $selected_value[$key] = substr($selected_value[$key],1);
+            $inverse = TRUE;
           }
 
           // Get translated label from terms.
@@ -1000,13 +1014,32 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
             unset($search_query['distance']);
           }
 
-          $url = url($path, array('query' => $search_query));
+          // add NOT to the label when the value is inverted.
+          if($inverse) {
+            $label = t('NOT ') . $label;
+          }
 
-          $build['item_' . $active_facet_name][$value] = array(
-            '#theme' => 'culturefeed_search_active_filters_item',
-            '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
-            '#url' => $url
-          );
+          // remove facet from query so it works for multiple selections
+          $url_query = $search_query;
+          unset($url_query['facet'][$active_facet_name]);
+
+          $url = url($path, array('query' => $url_query));
+
+          if(isset($build['item_' . $active_facet_name][0])) {
+            $filter = $build['item_' . $active_facet_name][0]['#label'];
+            $operator = drupal_strtoupper(variable_get
+            ('culturefeed_multiple_categories_operator', 'and'));
+            $build['item_' . $active_facet_name][0]['#label'] = $filter . ' '
+              . $operator . ' ' . $label;
+          }
+          else {
+            $build['item_' . $active_facet_name][0] = array(
+              '#theme' => 'culturefeed_search_active_filters_item',
+              '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
+              '#url' => $url
+            );
+          }
+
         }
       }
     }
@@ -1058,21 +1091,25 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
   // Add min age to active facet filters.
   if (isset($query['min_age'])) {
-    $min_age = (int) $query['min_age'];
-    unset($query['min_age']);
-    $url = url($path, array('query' => $query));
 
-    $current_age = t('All ages');
-    $age_facets = culturefeed_search_ui_get_age_range_facet_options();
-    foreach ($age_facets as $key => $data) {
-      if ($key === $min_age) {
-        $current_age = t($data['name']);
+    $age_range_filters = culturefeed_search_ui_get_age_range_facet_options();
+    $min_ages = is_array($_GET['min_age']) ? $_GET['min_age'] : array($_GET['min_age']);
+    $active_age_filters = array();
+    $active_ages = array();
+    foreach ($min_ages as $key => $age) {
+      if (isset($age_range_filters[$age])) {
+        $active_ages[] = t($age_range_filters[$age]['name']);
       }
     }
 
+    $search_query = $query;
+    unset($search_query['min_age']);
+    $url = url($path, array('query' => $search_query));
+
+    $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'AND'));
     $build['min-age'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $current_age,
+      '#label' => empty($active_ages) ? t('All ages') : implode(' ' . $operator . ' ', $active_ages),
       '#url' => $url
     );
   }
