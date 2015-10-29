@@ -490,13 +490,6 @@ function culturefeed_search_ui_block_age_range_facet() {
   }
 
   $facet = $facets['agefrom'];
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-  $active_age = 0;
-  if (isset($query['min_age'])) {
-    $active_age = (int) $query['min_age'];
-    unset($query['min_age']);
-  }
-
   $requested_items = culturefeed_search_ui_get_age_range_facet_options();
   $counts = array();
   foreach (array_keys($requested_items) as $key) {
