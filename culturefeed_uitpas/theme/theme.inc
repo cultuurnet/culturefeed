@@ -767,10 +767,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
         $item['availability'] = date('j/n/Y', $advantage->cashingPeriodEnd);
       }
       else {
-        $item['availability'] = t('end of stock');
-        $points_classes[] = 'out-of-stock';
+        $item['availability'] = t('Until end of stock');
+        $points_classes[] = 'until-end-of-stock';
       }
-      $item['availability'] = ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('end of stock');
+      $item['availability'] = ($advantage->cashingPeriodEnd) ? date('j/n/Y', $advantage->cashingPeriodEnd) : t('Until end of stock');
       $item['points'] = array(
         'value' => format_plural($advantage->points, '1 point', '@count points'),
         'remark' => t('This is a welcome advantage'),
@@ -865,13 +865,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
       $points_classes = array();
       if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
         $item['availability'] = t('not any longer in stock');
-        $points_classes[] = 'out-of-stock';
+        $points_classes[] = 'until-end-of-stock';
       }
       else if ($promotion->cashingPeriodEnd) {
         $item['availability'] = date('j/n/Y', $promotion->cashingPeriodEnd);
       }
       else {
-        $item['availability'] = t('end of stock');
+        $item['availability'] = t('Until end of stock');
       }
 
       $points_remark = FALSE;
