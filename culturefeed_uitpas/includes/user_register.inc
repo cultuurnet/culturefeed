@@ -40,7 +40,7 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
 
-  $prefix = '<h2>' . t('Register your UiTpas') . '</h2>';
+  $prefix = '<h2>' . t('Register your UiTPAS') . '</h2>';
   $prefix .= variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.'));
 
   $form['prefix']['#markup'] = $prefix;
@@ -75,7 +75,7 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
     '#type' => 'actions',
     'submit' => array(
       '#type' => 'submit',
-      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Register UiTpas')),
+      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Register UiTPAS')),
     ),
   );
 

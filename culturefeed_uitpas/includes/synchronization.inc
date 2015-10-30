@@ -16,7 +16,7 @@ function culturefeed_uitpas_synchronization() {
 }
 
 /**
- * Form constructor to confirm synchronizing UiTpas data.
+ * Form constructor to confirm synchronizing UiTPAS data.
  *
  * @param array $form
  *   The form.
@@ -90,7 +90,7 @@ function culturefeed_uitpas_synchronization_settings_get(&$form) {
 
   $form['synchronization'] = array(
     '#type' => 'fieldset',
-    '#title' => t('UiTpas synchronization settings'),
+    '#title' => t('UiTPAS synchronization settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
@@ -104,7 +104,7 @@ function culturefeed_uitpas_synchronization_settings_get(&$form) {
 }
 
 /**
- * Synchronizes the UiTpas data to the UiTid user.
+ * Synchronizes the UiTPAS data to the UiTid user.
  */
 function culturefeed_uitpas_synchronization_synchronize() {
 

@@ -277,7 +277,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   }
   $uitpas_numbers_output = '<h3>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</h3> ';
   $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
-  $uitpas_numbers_output .= l(t('Register new UiTpas'), 'register_uitpas');
+  $uitpas_numbers_output .= l(t('Register new UiTPAS'), 'register_uitpas');
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
   $vars['form_title'] = variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal data'));

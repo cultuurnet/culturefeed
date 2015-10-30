@@ -968,8 +968,8 @@ msgid "Register here, so you can follow your UiTPAS advantages and points balanc
 msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."
 
 #: /register_uitpas
-msgid "Register UiTpas"
-msgstr "Registreer UiTpas"
+msgid "Register UiTPAS"
+msgstr "Registreer UiTPAS"
 
 #: /promotions
 msgid "Filter by"

@@ -55,19 +55,19 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
     );
 
     $items['my-uitpas'] = array(
-      'data' => l(t('My UiTpas'), 'culturefeed/profile/uitpas'),
+      'data' => l(t('My UiTPAS'), 'culturefeed/profile/uitpas'),
       'class' => 'my-uitpas',
       'weight' => 10,
     );
 
     $items['uitpas-advantages'] = array(
-      'data' => l(t('UiTpas advantages'), 'culturefeed/profile/uitpas/promotions'),
+      'data' => l(t('UiTPAS advantages'), 'culturefeed/profile/uitpas/promotions'),
       'class' => 'uitpas-advantages',
       'weight' => 10,
     );
 
     $items['uitpas-history'] = array(
-      'data' => l(t('UiTpas history'), 'culturefeed/profile/uitpas/actions'),
+      'data' => l(t('UiTPAS history'), 'culturefeed/profile/uitpas/actions'),
       'class' => 'uitpas-history',
       'weight' => 10,
     );
