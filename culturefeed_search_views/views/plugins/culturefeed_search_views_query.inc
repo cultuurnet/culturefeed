@@ -91,14 +91,22 @@ class culturefeed_search_views_query extends views_plugin_query {
     }
 
     $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($this->parameters);
 
-    // Give the result to the view.
-    $view->result = $result->getItems();
-    $view->total_rows = $result->getTotalCount();
-    $this->pager->total_items = $result->getTotalCount();
-    $this->pager->update_page_info();
-    $view->execute_time = microtime() - $start;
+    try {
+
+      $result = $searchService->search($this->parameters);
+
+      // Give the result to the view.
+      $view->result = $result->getItems();
+      $view->total_rows = $result->getTotalCount();
+      $this->pager->total_items = $result->getTotalCount();
+      $this->pager->update_page_info();
+      $view->execute_time = microtime() - $start;
+
+    }
+    catch (Exception $e) {
+      watchdog_exception(WATCHDOG_ERROR, $e);
+    }
 
   }
 
