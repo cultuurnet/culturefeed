@@ -154,10 +154,8 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $location = $cdb_item->getLocation();
     $actor_id = $location->getCdbid();
-    if($actor_id)
-    {
-      if(culturefeed_agenda_actor_load($actor_id))
-      {
+    if ($actor_id) {
+      if(culturefeed_agenda_actor_load($actor_id)) {
         $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
         $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
         $variables['locations_facilities'] = $facilities['text'];
@@ -182,16 +180,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   // Facilitytypes of this item (plain text and links).
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
-
   $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
-
   $variables['facilities'] = array();
-
-  foreach($facilities[id] as $key => $facility)
-  {
-    if(in_array($facility,$enabled_facilities['facility']))
-    {
-      $variables['facilities'][] = $facilities['text'][$key];
+  if(!empty($facilities)) {
+    foreach($facilities['id'] as $key => $facility) {
+      if(in_array($facility,$enabled_facilities['facility'])) {
+        $variables['facilities'][] = $facilities['text'][$key];
+      }
     }
   }
 
