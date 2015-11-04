@@ -553,6 +553,7 @@ function culturefeed_agenda_load_events_of_production($production, $future_only 
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
   $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
 
   if (!$future_only) {
     $parameters[] = new \CultuurNet\Search\Parameter\Parameter('past', 'true');
@@ -795,19 +796,21 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
 
   $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
   foreach ($categories as $category) {
-
-    $options = array(
-      'query' => array(
-        'facet' => array(
-          'category_' . $category_type . '_id' => array($category->getId()),
+    
+    // Don't add 'Thema onbepaald' and 'Type onbepaald'
+    if ($category->getId() != '1.58.0.0.0' || $category->getId() != '0.51.0.0.0') {
+      $options = array(
+        'query' => array(
+          'facet' => array(
+            'category_' . $category_type . '_id' => array($category->getId()),
+          ),
         ),
-      ),
-    );
-
-    $text_list[] = check_plain($category->getName());
-    $links_list[] = l($category->getName(), 'agenda/search', $options);
-    $id_list[] = check_plain($category->getId());
-
+      );
+  
+      $text_list[] = check_plain($category->getName());
+      $links_list[] = l($category->getName(), 'agenda/search', $options);
+      $id_list[] = check_plain($category->getId());
+    }
   }
 
   return array(

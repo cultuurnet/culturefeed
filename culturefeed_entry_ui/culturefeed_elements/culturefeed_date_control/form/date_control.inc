@@ -28,6 +28,10 @@ function culturefeed_date_control_date_control_process(array $element, array &$f
     '#title' => (isset($element['#title'])) ? $element['#title'] : t('Dates'),
   );
 
+  if (isset($element['#description'])) {
+    $element['date_control']['#description'] = $element['#description'];
+  }
+
   $date_control = $element['#value']['date_control'];
 
   // Type.

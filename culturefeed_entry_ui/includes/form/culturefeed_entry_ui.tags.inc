@@ -103,7 +103,7 @@ function culturefeed_entry_ui_tags_form_save(\CultureFeed_Cdb_Item_Event &$event
 
     $keywords_form = array();
     $custom_entry_api_tags = array();
-    if ($form_state['values']['keywords']) {
+    if (!empty($form_state['values']['keywords'])) {
       $keywords_form = explode(';', $form_state['values']['tags']);
     }
     if (variable_get('culturefeed_entry_ui_custom_entry_api_tags')) {
