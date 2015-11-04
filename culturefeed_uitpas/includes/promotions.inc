@@ -163,7 +163,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     $total += $advantages['#advantages_total'];
   }
   $title = t('Found %count promotions', array('%count' => $total));
-  $filter_reset_link = l(t('Show all'), '/promotions');
+  $filter_reset_link = l(t('Show all'), 'promotions');
   if ($filter) {
     $form['promotions']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
   }
