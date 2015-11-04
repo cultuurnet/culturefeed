@@ -450,7 +450,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
   $variables['is_android'] = FALSE;
-  $detect = culturefeed_mobile_detect_get_object();
+  
+  if (module_exists('culturefeed')) {
+    $detect = culturefeed_mobile_detect_get_object();
+  }
 
   if ($detect) {
     $device = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
