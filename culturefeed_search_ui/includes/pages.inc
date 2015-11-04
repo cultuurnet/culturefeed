@@ -63,6 +63,14 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       drupal_set_breadcrumb($breadcrumb);
 
     }
+    
+    // Add rss to head
+    drupal_add_html_head_link(array(
+      'rel' => 'alternate',
+      'type' => 'application/rss+xml',
+      'title' => end($active_trail)['title'],
+      'href' => url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page')))),
+    ));
 
   }
   catch (Exception\ClientErrorResponseException $e) {
