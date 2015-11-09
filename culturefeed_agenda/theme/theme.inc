@@ -606,12 +606,14 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $links = _culturefeed_agenda_get_links_from_item($cdb_item);
   $variables['links'] = array();
   $reservation_links = array();
-  try {
-    $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
-    $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
-  }
-  catch (Exception $e) {
-    watchdog_exception('notice', $e);
+  if (method_exists($cdb_item, 'getContactInfo')) {
+    try {
+      $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
+      $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+    }
+    catch (Exception $e) {
+      watchdog_exception('notice', $e);
+    }
   }
   foreach ($links as $link) {
 
