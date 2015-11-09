@@ -144,8 +144,8 @@ msgid "Recent actions"
 msgstr "Recente gebeurtenissen"
 
 #: culturefeed_uitpas.blocks.inc:163
-msgid "Already own an UiTPAS ?"
-msgstr "Heb je een UiTPAS?"
+msgid "Already own an UiTPAS?"
+msgstr "Heb je al een UiTPAS?"
 
 #: culturefeed_uitpas.menu.inc:39 culturefeed_uitpas.profile.inc:27
 #: includes/profile_details.inc:55
@@ -306,10 +306,6 @@ msgstr ""
 "geregistreerd. Vul <a href=\"@register_url\">de nodige gegevens</a> in om "
 "jouw persoonlijke voordelen en puntensaldo te bekijken. <a href=\"@toggle_url"
 "\">Toon dit bericht niet opnieuw</a>"
-
-#: culturefeed_uitpas.module:90 includes/user_register.inc:181
-msgid "Already own an UiTPAS?"
-msgstr "Heb jij reeds een UiTPAS?"
 
 #: culturefeed_uitpas.info:0
 msgid "CultureFeed Uitpas"
@@ -794,7 +790,7 @@ msgid "Counters"
 msgstr "Omruilen bij"
 
 #: theme/theme.inc:617;727
-msgid "end of stock"
+msgid "Until end of stock"
 msgstr "Zolang voorraad strekt"
 
 #: theme/theme.inc:627;747
