@@ -111,10 +111,10 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       $object['title'] = $details->getTitle();
       $object['created'] = $item->getEntity()->getCreationDate();
-      if (method_exists($item, 'getLocation')) {
+      if (method_exists($item->getEntity(), 'getLocation')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
       }
-      if (method_exists($item, 'getCalendarSummary')) {
+      if (method_exists($details, 'getCalendarSummary')) {
         $object['calendarsummary'] = $details->getCalendarSummary();
       }
       $object['shortdescription'] = $details->getShortDescription();
