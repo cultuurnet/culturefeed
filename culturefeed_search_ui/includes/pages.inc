@@ -114,6 +114,17 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       if (method_exists($item->getEntity(), 'getLocation')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
       }
+      if (method_exists($item->getEntity(), 'getCalendar')) {
+        $calendar = $item->getEntity()->getCalendar();
+        $object['calendar'] = culturefeed_agenda_parse_calendar($calendar);
+        $txt_formatter = culturefeed_agenda_get_plain_text_calendar_formatter();
+        $object['when_md_txt'] = '';
+        try {
+          $object['when_md_txt'] = $txt_formatter->format($calendar, 'md');
+        }
+        catch (Exception $e) {
+        }
+      }  
       if (method_exists($details, 'getCalendarSummary')) {
         $object['calendarsummary'] = $details->getCalendarSummary();
       }

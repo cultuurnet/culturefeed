@@ -1501,10 +1501,10 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
 
       $body = '';
       if (isset($object['city']) && !empty($object['city'])) {
-        $body .= $object['city'] . ', ';     
+        $body .= strtoupper($object['city']) . ', ';     
       }
-      if (isset($object['calendarsummary']) && !empty($object['calendarsummary'])) {
-        $body .= $object['calendarsummary'] . ' - ';
+      if (isset($object['when_md_txt']) && !empty($object['when_md_txt'])) {
+        $body .= strtolower($object['when_md_txt']) . ' - ';
       }
       $body .= $object['shortdescription'];
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
