@@ -71,9 +71,7 @@ msgid ""
 "When checked a message is shown on each page when the UiTiD user does not "
 "have a UiTPAS activated, to remind him/her to activate their card."
 msgstr ""
-"Ja, her inner UiTiD gebruikers era an om hun UiTPAS online te activeren. "
-"When checked a message is shown on each page when the UiTiD user does not "
-"have a UiTPAS activated, to remind him/her to activate their card."
+"Ja, herinner UiTiD gebruikers eraan om hun UiTPAS online te activeren."
 
 #: culturefeed_uitpas.admin.inc:34
 msgid "The message to show to users without UiTPAS"

@@ -42,7 +42,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
       'classes' => array('uitpas'),
       'content' => theme('culturefeed_uitpas_profile_section', array(
         'links' => theme('links', array('links' => $links)),
-        'points_label' => t('Points'),
+        'points_label' => t('Points balance'),
         'points_value' => $passholder->points,
       )),
       'title' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
