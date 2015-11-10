@@ -41,7 +41,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2015-11-10 12:00+0100\n"
-"PO-Revision-Date: 2015-11-10 12:27+0100\n"
+"PO-Revision-Date: 2015-11-10 12:41+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -325,7 +325,7 @@ msgstr "Culturefeed uitpas: UiTPAS registratie: label voor aanmelden"
 
 #: culturefeed_uitpas.module:64
 msgid "UiTPAS advantages"
-msgstr "UiTPAS voordelen"
+msgstr "UiTPAS welkomstvoordelen"
 
 #: culturefeed_uitpas.module:70
 msgid "UiTPAS history"
@@ -345,11 +345,11 @@ msgstr "CultureFeed"
 
 #: ctools/plugins/views_wizard/culturefeed_uitpas_views_wizard_promotions.inc:15
 msgid "UiTPAS Promotions"
-msgstr "UiTPAS voordelen"
+msgstr "UiTPAS ruilvoordelen"
 
 #: includes/advantages.inc:65
 msgid "UiTPAS advantages settings"
-msgstr "UiTPAS voordelen instellingen"
+msgstr "UiTPAS welkomstvoordelen instellingen"
 
 #: includes/advantages.inc:71 includes/promotions.inc:82
 #: includes/registration_confirmation.inc:104
