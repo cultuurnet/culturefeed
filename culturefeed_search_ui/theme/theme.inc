@@ -15,6 +15,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['results_found'] = $vars['searchresult']->getTotalCount();
 
+  $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
+  $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+
 }
 
 /**
