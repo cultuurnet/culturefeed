@@ -263,7 +263,7 @@ function culturefeed_uitpas_profile_details_settings_get(&$form) {
   $form['profile_details']['culturefeed_uitpas_profile_details_menu_actions_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Menu: actions title'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('User history')),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('Points history')),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_menu_actions_description'] = array(
     '#type' => 'textarea',

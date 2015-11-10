@@ -6,6 +6,7 @@
 #  culturefeed_mailing.admin.inc: n/a
 #  culturefeed_mailing.pages.inc: n/a
 #  culturefeed_mailing.blocks.inc: n/a
+#  culturefeed_mailing.field_instance.inc: n/a
 #  culturefeed_mailing.helpers.inc: n/a
 #  culturefeed_mailing.module: n/a
 #  culturefeed_mailing.info: n/a
@@ -13,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-05-12 15:28+0200\n"
-"PO-Revision-Date: 2015-05-12 15:30+0100\n"
+"POT-Creation-Date: 2015-11-10 11:29+0100\n"
+"PO-Revision-Date: 2015-11-10 11:32+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -69,6 +70,48 @@ msgstr "U bent succesvol ingeschreven voor onze nieuwsbrief"
 msgid "Newsletter"
 msgstr "Nieuwsbrief"
 
+#: culturefeed_mailing.field_instance.inc:256
+msgid "Add an optional teaser image to the mail item"
+msgstr ""
+
+#: culturefeed_mailing.field_instance.inc:257
+msgid ""
+"Choose in which HTML field I should be displayed. Block 1 to 6 should be "
+"given a readable value."
+msgstr ""
+
+#: culturefeed_mailing.field_instance.inc:258
+msgid "Image"
+msgstr "Afbeelding"
+
+#: culturefeed_mailing.field_instance.inc:259
+msgid "Intro"
+msgstr "Inleiding"
+
+#: culturefeed_mailing.field_instance.inc:260
+msgid "Label"
+msgstr "Label"
+
+#: culturefeed_mailing.field_instance.inc:261
+msgid "Link"
+msgstr "Link"
+
+#: culturefeed_mailing.field_instance.inc:262
+msgid "Region"
+msgstr "Gebied"
+
+#: culturefeed_mailing.field_instance.inc:263
+msgid "This field can be used to provide a short label above the intro text"
+msgstr ""
+
+#: culturefeed_mailing.field_instance.inc:264
+msgid "This field contains the URL to your website and text for the CTA-button"
+msgstr ""
+
+#: culturefeed_mailing.field_instance.inc:265
+msgid "This field is used as teaser text for your mail items"
+msgstr ""
+
 #: culturefeed_mailing.helpers.inc:28
 msgid "subscribed"
 msgstr "ingegeschreven"
@@ -82,7 +125,7 @@ msgid "Unsubscribe"
 msgstr "Uitschrijven"
 
 #: culturefeed_mailing.helpers.inc:31 culturefeed_mailing.pages.inc:127
-#: culturefeed_mailing.module:293
+#: culturefeed_mailing.module:330
 msgid "Subscribe"
 msgstr "Inschrijven"
 
@@ -90,7 +133,7 @@ msgstr "Inschrijven"
 msgid "Error occurred"
 msgstr "Er is een fout opgetreden."
 
-#: culturefeed_mailing.pages.inc:75 culturefeed_mailing.module:286
+#: culturefeed_mailing.pages.inc:75 culturefeed_mailing.module:323
 msgid "Email address"
 msgstr "E-mailadres"
 
@@ -172,7 +215,7 @@ msgstr "Annuleren"
 msgid "Error occurred while deleting the mailing"
 msgstr "Er is een fout opgetreden tijdens het verwijderen van de mailing."
 
-#: culturefeed_mailing.pages.inc:318;683
+#: culturefeed_mailing.pages.inc:318;683 culturefeed_mailing.module:414
 msgid "Title"
 msgstr "Titel"
 
@@ -270,7 +313,7 @@ msgstr ""
 
 #: culturefeed_mailing.pages.inc:732
 msgid "From address"
-msgstr "Van adres"
+msgstr "E-mailadres afzender"
 
 #: culturefeed_mailing.pages.inc:741
 msgid "Content"
@@ -534,17 +577,26 @@ msgstr ""
 msgid "Allows the user to delete mailing lists & templates"
 msgstr ""
 
-#: culturefeed_mailing.module:212
+#: culturefeed_mailing.module:249
 msgid "Culturefeed mailings: Newsletter opt-in"
 msgstr ""
 
-#: culturefeed_mailing.module:217
+#: culturefeed_mailing.module:254
 msgid "Culturefeed mailings: Newsletter form"
 msgstr ""
 
-#: culturefeed_mailing.module:254
+#: culturefeed_mailing.module:291
 msgid "Manage newsletters you can subscribe to"
 msgstr "Beheer de nieuwsbrieven waarop je kan inschrijven"
+
+#: culturefeed_mailing.module:410
+msgid "Mail item"
+msgstr ""
+
+#: culturefeed_mailing.module:412
+msgid ""
+"Mail items can be used to create content for culturefeed_mailing newsletters"
+msgstr ""
 
 #: culturefeed_mailing.module:37
 msgid "Newsletter opt-in"
@@ -558,60 +610,64 @@ msgstr "Inschrijven op de nieuwsbrief"
 msgid "Subscribed to our newsletter"
 msgstr "Ingeschreven op de nieuwsbrief"
 
-#: culturefeed_mailing.module:62
+#: culturefeed_mailing.module:61
 msgid "Newsletters"
 msgstr "Nieuwsbrieven"
 
-#: culturefeed_mailing.module:71 culturefeed_mailing.info:0
+#: culturefeed_mailing.module:70 culturefeed_mailing.info:0
 msgid "CultureFeed Mailing"
 msgstr "CultureFeed Mailing"
 
-#: culturefeed_mailing.module:72
+#: culturefeed_mailing.module:71
 msgid "CultureFeed Mailing settings"
 msgstr "CultureFeed Mailing instellingen"
 
-#: culturefeed_mailing.module:81
+#: culturefeed_mailing.module:80
 msgid "Mailing lists"
 msgstr "Mailing lists"
 
-#: culturefeed_mailing.module:89
+#: culturefeed_mailing.module:88
 msgid "Add mailing list"
 msgstr "Voeg mailing list toe"
 
-#: culturefeed_mailing.module:98
+#: culturefeed_mailing.module:97
 msgid "Edit mailing list"
 msgstr ""
 
-#: culturefeed_mailing.module:106
+#: culturefeed_mailing.module:105
 msgid "Test mailing list"
 msgstr "Test mailing list"
 
-#: culturefeed_mailing.module:116
+#: culturefeed_mailing.module:115
 msgid "Activate mailing list"
 msgstr ""
 
-#: culturefeed_mailing.module:124
+#: culturefeed_mailing.module:123
 msgid "Disable scheduled sending"
 msgstr ""
 
-#: culturefeed_mailing.module:132
+#: culturefeed_mailing.module:131
 msgid "Delete mailing"
 msgstr ""
 
-#: culturefeed_mailing.module:140
+#: culturefeed_mailing.module:139
 msgid "Templates"
 msgstr ""
 
-#: culturefeed_mailing.module:148
+#: culturefeed_mailing.module:147
 msgid "Add template"
 msgstr ""
 
-#: culturefeed_mailing.module:157
+#: culturefeed_mailing.module:156
 msgid "Edit template"
 msgstr ""
 
-#: culturefeed_mailing.module:165
+#: culturefeed_mailing.module:164
 msgid "Delete template"
+msgstr ""
+
+#: culturefeed_mailing.module:172
+msgid "Mailing content"
 msgstr ""
 
 #: culturefeed_mailing.info:0

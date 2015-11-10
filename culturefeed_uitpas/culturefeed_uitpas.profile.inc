@@ -19,7 +19,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
 
     $links = array(
       array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPas')),
+        'title' => variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS')),
         'href' => 'culturefeed/profile/uitpas',
       ),
       array(
@@ -30,7 +30,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
         ),
       ),
       array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('User history')),
+        'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('Points history')),
         'href' => 'culturefeed/profile/uitpas/actions',
         'attributes' => array(
           'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),
