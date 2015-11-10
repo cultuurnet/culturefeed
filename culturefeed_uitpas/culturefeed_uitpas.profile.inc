@@ -45,7 +45,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
         'points_label' => t('Points'),
         'points_value' => $passholder->points,
       )),
-      'title' => variable_get('culturefeed_uitpas_card_name', 'UiTPas'),
+      'title' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
     );
 
   }

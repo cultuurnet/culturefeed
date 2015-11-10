@@ -16,7 +16,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   );
 
   $form['culturefeed_uitpas_card_name'] = array(
-    '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPas'),
+    '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
     '#description' => t('The card name, used as title in profile sections block.'),
     '#title' => t('Card name'),
     '#type' => 'textfield',

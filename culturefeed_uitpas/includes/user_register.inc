@@ -24,7 +24,7 @@ function culturefeed_uitpas_user_register_get() {
  * @param array $form_state
  *   The form_state.
  * @param object $uitpas_user
- *   The UiTPas user helper object.
+ *   The UiTPAS user helper object.
  *
  * @return array
  *   The form.
