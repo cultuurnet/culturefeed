@@ -56,13 +56,7 @@ function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
  */
 function culturefeed_mailing_subscribe_form() {
 
-  try {
-    $account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    return;
-  }
+  $account = culturefeed_load_logged_in_user();
 
   // Show nothing if not logged in, or no mailing list available.
   if (!$account || !(variable_get('culturefeed_mailing_list', ''))) {
@@ -78,6 +72,8 @@ function culturefeed_mailing_subscribe_form() {
     '#maxlength' => 255,
     '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : $account->mbox,
     '#weight' => -10,
+    '#disabled' => TRUE,
+    '#description' => '<span>' . t('Change your email address <a href="!url">here</a>', array('!url' => url('culturefeed/account/edit'))) .'</span>',
   );
 
   $form['zip'] = array(

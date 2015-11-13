@@ -8,10 +8,23 @@ function cf_user_load($uid) {
     return DrupalCultureFeed::getUser($uid);
   }
   catch (Exception $e) {
-    watchdog_e('culturefeed', $e);
+    watchdog_exception('culturefeed', $e);
   }
 
 }
+
+/**
+ * Load the logged in user
+ */
+function culturefeed_load_logged_in_user() {
+  try {
+    return DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed', $e);
+  }
+}
+
 
 /**
  * Check if a user is a culturefeed user.
