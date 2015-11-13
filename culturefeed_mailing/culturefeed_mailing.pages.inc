@@ -73,7 +73,7 @@ function culturefeed_mailing_subscribe_form() {
     '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : $account->mbox,
     '#weight' => -10,
     '#disabled' => TRUE,
-    '#description' => '<span>' . t('Change your email address <a href="!url">here</a>', array('!url' => url('culturefeed/account/edit'))) .'</span>',
+    '#description' => '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>',
   );
 
   $form['zip'] = array(
