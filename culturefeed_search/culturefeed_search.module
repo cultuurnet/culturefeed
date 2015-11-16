@@ -376,22 +376,22 @@ function culturefeed_search_get_search_url_query($search_query) {
   $total_locations = count($locations);
   if ($total_locations > 1) {
     foreach ($locations as $location) {
-      $query['facet']['flandersregion'][] = $location;
+      $query['facet']['category_flandersregion_id'][] = $location;
     }
   }
   elseif ($total_locations == 1) {
 
-    $term = culturefeed_search_get_term_by_id($locations[0], LANGUAGE_NONE);
-    $term_parts = explode(' ', $term->name);
+    $term = culturefeed_search_get_term_translation($locations[0], LANGUAGE_NONE);
+    $term_parts = explode(' ', $term);
 
     // If first part is numeric: do location search.
     if (is_numeric($term_parts[0])) {
-      $query['regId'] = $facet_value;
-      $query['location'] = culturefeed_search_get_term_translation($facet_value);
+      $query['regId'] = $locations[0];
+      $query['location'] = $term->name;
     }
     // Otherwise set flandersregion facet active.
     else {
-      $query['facet']['flandersregion'][] = $facet_value;
+      $query['facet']['category_flandersregion_id'][] = $locations[0];
     }
 
   }
