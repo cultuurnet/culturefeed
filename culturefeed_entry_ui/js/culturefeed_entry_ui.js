@@ -93,14 +93,17 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
     attach: function () {
 
-      $('.form-submit').click(function () {
+      var form = $('#culturefeed-entry-ui-event-form');
 
-        if ($(this).hasClass('form-submitted')) {
+      form.submit(function(event) {
+        $(this).data('submitted', true);
+      });
+
+      $('.main-submit').click(function () {
+        if (form.data('submitted') === true) {
           $(this).attr('disabled', 'disabled');
           return false;
         }
-        $(this).addClass('form-submitted');
-
       });
 
     }
