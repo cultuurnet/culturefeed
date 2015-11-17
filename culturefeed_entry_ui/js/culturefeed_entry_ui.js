@@ -99,7 +99,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
         $(this).data('submitted', true);
       });
 
-      $('.main-submit').click(function () {
+      $('.main-submit', '.btn-primary').click(function () {
         if (form.data('submitted') === true) {
           $(this).attr('disabled', 'disabled');
           return false;
