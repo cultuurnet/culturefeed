@@ -32,6 +32,19 @@ function culturefeed_search_init() {
  */
 function culturefeed_search_menu() {
 
+  if (!module_exists('culturefeed')) {
+    $items['admin/config/culturefeed'] = array(
+      'title' => 'CultureFeed',
+      'description' => 'Settings related to CultureFeed.',
+      'position' => 'right',
+      'weight' => 0,
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'file' => 'system.admin.inc',
+      'file path' => drupal_get_path('module', 'system'),
+    );
+  }
+
   $items['admin/config/culturefeed/search'] = array(
     'title' => 'CultureFeed Search',
     'description' => 'Change CultureFeed Search API setting like API Appliction key, location, ...',
@@ -194,6 +207,10 @@ function culturefeed_search_get_search_url_query($search_query) {
       }
       $query['search'] = $param[1];
     }
+    // Param datetype
+    elseif ($param[0] == 'datetype') {
+      $query['datetype'][0] = $param[1];
+    }
     // Search on location
     elseif ($param[0] == 'zipcode') {
       // Check if distance is included.
@@ -227,7 +244,8 @@ function culturefeed_search_get_search_url_query($search_query) {
           continue;
         }
 
-        $search_on = explode(':', $condition);
+        // Add a limit because timestamps also contains ':' 
+        $search_on = explode(':', $condition, 2);
 
         $facet_field = $search_on[0];
         $facet_field = str_replace(array('(', ')', '"'), '', $facet_field);
@@ -249,6 +267,7 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           // Filtering on location.
           case 'category_flandersregion_name':
+          case 'city':
             $query['location'] = $facet_value;
             break;
 
@@ -256,8 +275,22 @@ function culturefeed_search_get_search_url_query($search_query) {
           case 'location_category_facility_id':
             $query['facet']['location_category_facility_id'][0] = $facet_value;
             break;
+            
+          // Daterage  
+          case 'startdate':
+            $dates = str_replace (array('[',']','T','Z'), '' , explode('TO', $facet_value));
+            $date_range = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[0]))->format('d/m/Y');
+            if (isset($dates[1])) {
+              $end_date = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[1]))->format('d/m/Y');
+              $date_range .= ' - ' . $end_date;
+            }
+            $query['date_range'] = $date_range;
+            break;
 
           // Normal facets.
+          case 'category_flandersregion_id':
+          case 'category_eventtype_id':
+          case 'category_theme_id':
           case 'category_id':
           case 'type':
 
@@ -299,6 +332,9 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           default:
             // unsupported filter options.
+            if ($facet_field != '!type') {
+              watchdog('culturefeed_search', 'unsupported filter option: ' . $facet_field);
+            }
 
         }
 

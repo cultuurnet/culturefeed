@@ -87,6 +87,27 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
   }
 
   /**
+   * Ensure submit button only gets clicked once.
+   */
+  Drupal.behaviors.submit_once = {
+
+    attach: function () {
+
+      $('.form-submit').click(function () {
+
+        if ($(this).hasClass('form-submitted')) {
+          $(this).attr('disabled', 'disabled');
+          return false;
+        }
+        $(this).addClass('form-submitted');
+
+      });
+
+    }
+
+  }
+
+  /**
    * Hides the autocomplete suggestions.
    */
   Drupal.jsAC.prototype.hidePopup = function (keycode, op) {

@@ -430,8 +430,8 @@ function culturefeed_search_ui_get_headings_mapping($heading) {
     54 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.2.0.0'),
     55 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.3.0.0'),
     56 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.5.0.0'),
-    57 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
-    58 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
+    57 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0'),
+    58 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0'),
     59 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.10.0.0'),
     60 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.4.0.0.0'),
     61 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.5.0.0'),
@@ -614,6 +614,10 @@ function culturefeed_get_searchable_type_by_path($path = '') {
   if (!$path) {
     $menu_item = menu_get_item();
     $path = $menu_item['path'];
+    // If path contains % argument for rss of ajax we use agenda/search
+    if ($path == 'agenda/search/%') {
+      $path = 'agenda/search';
+    }
   }
   foreach (culturefeed_get_searchable_types() as $name => $type) {
     if ($type['path'] == $path) {

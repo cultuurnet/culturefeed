@@ -315,14 +315,31 @@ function culturefeed_mailing_subscribe_user($account, $mailing_id) {
  */
 function culturefeed_mailing_newsletter_block_form() {
 
+  // Get the user account.
+  $account = culturefeed_load_logged_in_user();
+
+  // Set defaults for the email field.
+  if ($account) {
+    $email = $account->mbox;
+    $disabled = TRUE;
+    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
+  }
+  else {
+    $email = '';
+    $disabled = FALSE;
+    $description = t('Email address');
+  }
+
   $form = array();
 
   $form['mail'] = array(
     '#type' => 'textfield',
     '#title' => variable_get('culturefeed_mailing_block_description', ''),
-    '#description' => t('Email address'),
+    '#description' => $description,
     '#size' => 40,
     '#maxlength' => 255,
+    '#default_value' => $email,
+    '#disabled' => $disabled,
   );
 
   $form['inschrijven'] = array(

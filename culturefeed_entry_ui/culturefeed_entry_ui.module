@@ -12,6 +12,8 @@ define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN', '0.100.2.0.0');
 define('CULTUREFEED_ENTRY_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 // Default cdb schema version.  Can be overridden in settings form.
 define('CULTUREFEED_ENTRY_CDB_DEFAULT_VERSION', '3.2');
+define('CULTUREFEED_ENTRY_UI_SYNC_MAX_PASSES_DEFAULT', 20);
+define('CULTUREFEED_ENTRY_UI_SYNC_MAX_DURATION_DEFAULT', 120);
 
 /**
  * Implements hook_permission().
@@ -117,20 +119,19 @@ function culturefeed_entry_ui_menu() {
     'file' => 'includes/culturefeed_entry_ui.pages.inc',
   );
 
+  $items['agenda/e/%/timeout_redirect'] = array(
+    'title' => 'Edit event',
+    'page callback' => 'culturefeed_entry_ui_event_timeout_redirect',
+    'page arguments' => array(2),
+    'access arguments' => array('edit culturefeed events'),
+    'file' => 'includes/culturefeed_entry_ui.pages.inc',
+  );
+
   $items['admin/config/culturefeed/entry_ui'] = array(
     'title' => 'CultureFeed Entry UI',
     'description' => 'All configurations to entry api for this site',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_entry_ui_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'includes/culturefeed_entry_ui.admin.inc',
-  );
-
-  $items['admin/config/culturefeed/entry'] = array(
-    'title' => 'CultureFeed Entry',
-    'description' => 'Change CultureFeed Entry API settings like API Application key, location, ...',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_settings_form'),
     'access arguments' => array('administer site configuration'),
     'file' => 'includes/culturefeed_entry_ui.admin.inc',
   );
