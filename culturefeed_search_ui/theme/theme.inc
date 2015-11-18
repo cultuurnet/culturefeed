@@ -15,6 +15,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['results_found'] = $vars['searchresult']->getTotalCount();
 
+  $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
+  $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+
 }
 
 /**
@@ -79,11 +82,6 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
   if(count($active_options) > 0)
   {
     $has_active_filter = true;
-  }
-
-  // Remove distance.
-  if (isset($query['distance'])) {
-    unset($query['distance']);
   }
 
   $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
@@ -418,6 +416,23 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
       }
     }
 
+  }
+  
+  if (isset($query['distance'])) {
+    // We have to unset distance when region of level 1, 2 and 3 is used (distance only works with level 4)
+    $regions_query = db_select('culturefeed_search_terms', 'cst');
+    $regions_query->fields('cst', array('tid', 'name'));
+    $regions_query->condition('cst.tid', $facet_item->getValue());
+    $regions_query->condition('cst.did', 'flandersregion');
+    $db_or = db_or();
+    $db_or->isNull('cst.p1');
+    $db_or->isNull('cst.p2');
+    $db_or->isNull('cst.p3');
+    $regions_query->condition($db_or);
+    $result = $regions_query->execute();
+    if ($result->rowCount() > 0) {    
+      unset($query['distance']);
+    }   
   }
 
 
