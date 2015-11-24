@@ -102,12 +102,12 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_title', t('You are now registered on UiTPAS')),
   );
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_intro'] = array(
     '#type' => 'textarea',
     '#title' => t('Intro text'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro'),
+    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro', t('You can now manage your points balance and personal promotions')),
   );
   $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
     '#type' => 'textarea',
@@ -130,5 +130,5 @@ function culturefeed_uitpas_registration_confirmation_settings_save($values) {
  * Title callback for the registration confirmation page.
  */
 function culturefeed_uitpas_registration_confirmation_title() {
-  return variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS');
+  return variable_get('culturefeed_uitpas_registration_confirmation_title', t('You are now registered on UiTPAS'));
 }
