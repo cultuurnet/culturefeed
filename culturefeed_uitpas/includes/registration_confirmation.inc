@@ -51,7 +51,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
     ),
   );
 
-  $form['#suffix'] = l(t('Click here to continue to the homepage'), '<front>');
+  $form['#suffix'] = l(t('Complete your profile'), 'culturefeed/profile/edit');
 
   return $form;
 
@@ -76,7 +76,7 @@ function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form
 
     // Form.
     drupal_set_message(t('Your changes have been saved.'));
-    $form_state['redirect'] = '<front>';
+    $form_state['redirect'] = 'culturefeed/profile/edit';
 
   }
   catch (Exception $e) {
