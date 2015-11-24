@@ -88,7 +88,7 @@ function culturefeed_uitpas_profile_promotions_settings_get(&$form) {
 
   $form['profile_promotions'] = array(
     '#type' => 'fieldset',
-    '#title' => t('UiTPAS profile advantages settings'),
+    '#title' => t('My UiTPAS promotions settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
