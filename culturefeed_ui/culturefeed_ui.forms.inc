@@ -423,14 +423,18 @@ function culturefeed_ui_profile_edit_form(array $form, array &$form_state, Cultu
   );
 
   // Date of birth.
-  $dob = new DateTime();
-  $time_zone = new DateTimeZone('Europe/Brussels');
-  $dob->setTimestamp($culturefeed_user->dob);
-  $dob->setTimezone($time_zone);
+  $default_value = '';
+  if (!empty($culturefeed_user->dob)) {
+    $dob = new DateTime();
+    $time_zone = new DateTimeZone('Europe/Brussels');
+    $dob->setTimestamp($culturefeed_user->dob);
+    $dob->setTimezone($time_zone);
+    $default_value = $dob->format('d/m/Y');
+  }
   $form['dob'] = array(
     '#title' => t('Date of birth'),
     '#type' => 'textfield',
-    '#default_value' => $dob->format('d/m/Y'),
+    '#default_value' => $default_value,
     '#description' => t('Format : dd/mm/yyyy'),
     '#size' => 10,
   );
@@ -562,10 +566,7 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
   // For the moment this field is removed, so we default to Dutch.
   $culturefeed_user_update->preferredLanguage = (isset($values['preferredLanguage'])) ? $values['preferredLanguage'] : 'nl';
 
-  if (empty($values['dob'])) {
-    $culturefeed_user_update->dob = '';
-  }
-  else {
+  if (!empty($values['dob'])) {
 
     $dob_parts = explode('/', $values['dob']);
 
