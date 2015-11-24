@@ -59,7 +59,7 @@ function culturefeed_ui_admin_settings() {
   );
 
   $form['culturefeed_ui_privacy_settings_intro'] = array(
-    '#default_value' => variable_get('culturefeed_ui_privacy_settings_intro', t('Choose what personal information is visible to others in your <a href="/user">public profile</a>. When choosing <em>Anonymous</em> only your username will be visible.')),
+    '#default_value' => variable_get('culturefeed_ui_privacy_settings_intro', t('Choose what personal information is visible to others in your <a href="@profile-url">public profile</a>. When choosing <em>Anonymous</em> only your username will be visible.', array('@profile-url' => url('user')))),
     '#title' => t('Privacy settings: intro'),
     '#type' => 'textarea',
   );
@@ -71,7 +71,7 @@ function culturefeed_ui_admin_settings() {
   );
 
   $form['culturefeed_ui_profile_edit_intro'] = array(
-    '#default_value' => variable_get('culturefeed_ui_profile_edit_intro', t('Complete your profile information for a more personal experience. You <a href="/culturefeed/profile/privacy">decide what personal information</a> is visible to others in your <a href="/user">public profile</a>. All your user activities can be managed in your <a href="/culturefeed/activities">personal history</a>.')),
+    '#default_value' => variable_get('culturefeed_ui_profile_edit_intro', t('Complete your profile information for a more personal experience. You <a href="/culturefeed/profile/privacy">decide what personal information</a> is visible to others in your <a href="@profile-url">public profile</a>. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@profile-url' => url('user'), '@history-url' => url('culturefeed/activities')))),
     '#title' => t('Profile edit page: intro'),
     '#type' => 'textarea',
   );

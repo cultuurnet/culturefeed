@@ -85,7 +85,7 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
   $form['promotions']['culturefeed_uitpas_promotions_info'] = array(
     '#type' => 'textarea',
     '#title' => t('Info text'),
-    '#default_value' => variable_get('culturefeed_uitpas_promotions_info'),
+    '#default_value' => variable_get('culturefeed_uitpas_promotions_info', t('This page shows all promotions for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')))),
   );
   $form['promotions']['culturefeed_uitpas_promotions_promotions_max'] = array(
     '#type' => 'textfield',

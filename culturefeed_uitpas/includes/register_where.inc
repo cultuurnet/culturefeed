@@ -102,12 +102,12 @@ function culturefeed_uitpas_register_where_settings_get(&$form) {
   $form['register_where']['culturefeed_uitpas_register_where_intro'] = array(
     '#type' => 'textarea',
     '#title' => t('Intro'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_intro', t('You can buy an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you pay 2 EURO. Have an opportunities tarrif. Then your UiTPAS is free. You\'ll need your eID to register your UiTPAS.')),
+    '#default_value' => variable_get('culturefeed_uitpas_register_where_intro', t('You can buy an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you pay 2 EURO. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.')),
   );
   $form['register_where']['culturefeed_uitpas_register_where_outro'] = array(
     '#type' => 'textarea',
     '#title' => t('Outro'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_outro', t('Important: you\'ll need your eID to register your UiTPAS. <a href="http://www.cultuurnet.be/project/uitpas">Read more</a> about the UiTPAS project.')),
+    '#default_value' => variable_get('culturefeed_uitpas_register_where_outro', t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'))),
   );
   $form['register_where']['culturefeed_uitpas_register_where_pos_max'] = array(
     '#type' => 'textfield',

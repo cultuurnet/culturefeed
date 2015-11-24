@@ -12,7 +12,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   $form['culturefeed_uitpas_cardsystem_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Card system ID'),
-    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id'),
+    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id', 3),
   );
 
   $form['culturefeed_uitpas_card_name'] = array(
@@ -57,7 +57,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  $locations = variable_get('culturefeed_uitpas_locations');
+  $locations = variable_get('culturefeed_uitpas_locations', 'Brussel');
   if (!$locations) {
     $locations = array();
   }
