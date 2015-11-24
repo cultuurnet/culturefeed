@@ -48,14 +48,13 @@
     <?php print $form; ?>
   </div>
 
-  <?php if ($kansen_statuut && $kansen_statuut_valid_end_date): ?>
-  <div class="status">
-    <h3><?php print $status_title; ?></h3>
-    <p><?php print $status_valid_till; ?></p>
-    <?php if ($memberships): ?>
-    <p><?php print $memberships; ?></p>
-    <?php endif; ?>
-  </div>
+  <?php if ($memberships): ?>
+    <div class="status">
+      <h3><?php print $status_title; ?></h3>
+      <?php if ($memberships): ?>
+      <p><?php print $memberships; ?></p>
+      <?php endif; ?>
+    </div>
   <?php endif; ?>
 
   <?php if ($outro): ?>

@@ -250,10 +250,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   /** @var CultureFeed_Uitpas_Passholder $passholder */
   // @codingStandardsIgnoreEnd
   $passholder = $uitpas_user->passholder;
-  // @codingStandardsIgnoreStart
-  /** @var CultureFeed_Uitpas_Passholder_CardSystemSpecific $card_system */
-  // @codingStandardsIgnoreEnd
-  $card_system = $uitpas_user->card_system;
 
   // Title.
   $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
@@ -271,7 +267,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   foreach ($passholder->cardSystemSpecific as $card_system_specific) {
 
     if ($card_system_specific->currentCard->uitpasNumber) {
-      $uitpas_numbers['items'][] = $card_system_specific->currentCard->uitpasNumber . ' (' . $card_system_specific->cardSystem->name . ')';
+
+      $output = $card_system_specific->currentCard->uitpasNumber . ' (' . $card_system_specific->cardSystem->name . ')';
+      if ($card_system_specific->kansenStatuut && time() < $card_system_specific->kansenStatuutEndDate) {
+        $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $card_system_specific->kansenStatuutEndDate)));
+        $output .= '<br /><label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
+      }
+      $uitpas_numbers['items'][] = $output;
+
     }
 
   }
@@ -289,15 +292,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['kansen_statuut'] = '';
   $vars['kansen_statuut_valid_end_date'] = '';
   $vars['status_valid_till'] = '';
-
-  if ($card_system) {
-
-    $vars['kansen_statuut'] = $card_system->kansenStatuut;
-    $vars['kansen_statuut_valid_end_date'] = (time() < $card_system->kansenStatuutEndDate);
-    $status_end_date = t('valid till !date', array('!date' => date('j/m/Y', $card_system->kansenStatuutEndDate)));
-    $vars['status_valid_till'] = '<label>' . t('Opportunity status') . ':</label> ' . $status_end_date;
-
-  }
 
   if (count($passholder->memberships)) {
 
