@@ -293,27 +293,27 @@ function culturefeed_uitpas_profile_details_settings_get(&$form) {
   $form['profile_details']['culturefeed_uitpas_profile_details_intro'] = array(
     '#type' => 'textarea',
     '#title' => t('Intro'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_intro'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_intro', t('This page shows the UiTPAS card(s) you own and the personal information that has been registered when buying your card.')),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_form_title'] = array(
     '#type' => 'textarea',
     '#title' => t('Form title'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_title'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal information')),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_form_intro'] = array(
     '#type' => 'textarea',
     '#title' => t('Form intro'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_intro'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_form_intro', t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters')),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_email_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Email description'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_email_description'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_email_description', t('This email address has been connected to your <a href="/culturefeed/profile/edit">online profile</a>. This address will be used for all communication regarding @site_name and UiTPAS.')),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_outro'] = array(
     '#type' => 'textarea',
     '#title' => t('Outro'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_outro'),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_outro', t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters')),
   );
 
 }

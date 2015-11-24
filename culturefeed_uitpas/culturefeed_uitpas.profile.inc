@@ -23,10 +23,10 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
         'href' => 'culturefeed/profile/uitpas',
       ),
       array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages')),
+        'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My promotions')),
         'href' => 'culturefeed/profile/uitpas/promotions',
         'attributes' => array(
-          'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
+          'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Find out which promotions and advantages you are entitled to.')),
         ),
       ),
       array(
