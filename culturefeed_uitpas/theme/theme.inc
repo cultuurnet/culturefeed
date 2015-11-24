@@ -868,7 +868,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
         $points_classes[] = 'until-end-of-stock';
       }
       else if ($promotion->cashingPeriodEnd) {
-        $item['availability'] = date('j/n/Y', $promotion->cashingPeriodEnd);
+        $item['availability'] = t('Until @date', array('@date' => date('j/n/Y', $promotion->cashingPeriodEnd)));
       }
       else {
         $item['availability'] = t('Until end of stock');
