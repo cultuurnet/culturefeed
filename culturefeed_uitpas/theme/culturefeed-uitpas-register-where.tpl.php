@@ -15,5 +15,6 @@
   <div class="intro"><?php print $intro; ?></div>
   <div class="filters"><?php print $filters; ?></div>
   <div class="pos_table"><?php print $pos_table; ?></div>
+  <hr />
   <div class="outro"><?php print $outro; ?></div>
 </div>
