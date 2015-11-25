@@ -26,8 +26,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-11-10 13:10+0100\n"
-"PO-Revision-Date: 2015-11-10 13:21+0100\n"
+"POT-Creation-Date: 2015-11-25 01:58+0100\n"
+"PO-Revision-Date: 2015-11-25 02:11+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -195,21 +195,63 @@ msgstr ""
 msgid "Internal path to the page with cookie terms"
 msgstr ""
 
+#: culturefeed_ui.admin.inc:50
+msgid "Update your password or email address. Your username cannot be changed."
+msgstr ""
+"Wijzig hier je paswoord of e-mailadres. Je gebruikersnaam is niet aanpasbaar."
+
 #: culturefeed_ui.admin.inc:51
 msgid "Account edit page: intro"
 msgstr ""
+
+#: culturefeed_ui.admin.inc:56
+msgid ""
+"This email address has been connected to your UiTPAS card. Any communication "
+"regarding your UiTPAS will be sent to this email address as well."
+msgstr ""
+"Dit e-mailadres is gekoppeld aan het e-mailadres waarmee je UiTPAS "
+"geregistreerd werd. Bij een aanpassing zal je communicatie ivm UiTPAS dus "
+"ook op dit adres ontvangen."
 
 #: culturefeed_ui.admin.inc:57
 msgid "Account edit page: email description"
 msgstr ""
 
+#: culturefeed_ui.admin.inc:62
+msgid ""
+"Choose what personal information is visible to others in your <a href="
+"\"@profile-url\">public profile</a>. When choosing <em>Anonymous</em> only "
+"your username will be visible."
+msgstr ""
+"Kies zelf welke persoonsgegevens voor anderen zichtbaar zijn op je <a href="
+"\"@profile-url\">publieke profielpagina</a>. Kies je voor <em>Anoniem</em>, "
+"dan zal enkel je gebruikersnaam zichtbaar zijn."
+
 #: culturefeed_ui.admin.inc:63
 msgid "Privacy settings: intro"
 msgstr ""
 
+#: culturefeed_ui.admin.inc:68
+msgid "All your user activities will be set to private too."
+msgstr ""
+"Al je gebruikersacties uit het verleden worden hiermee ook op privé gezet."
+
 #: culturefeed_ui.admin.inc:69
 msgid "Privacy settings: anonymous tooltip"
 msgstr ""
+
+#: culturefeed_ui.admin.inc:74
+msgid ""
+"Complete your profile information for a more personal experience. You <a "
+"href=\"/culturefeed/profile/privacy\">decide what personal information</a> "
+"is visible to others in your <a href=\"@profile-url\">public profile</a>. "
+"All your user activities can be managed in your <a href=\"@history-url"
+"\">personal history</a>."
+msgstr ""
+"Vervolledig je online profiel. Je <a href=\"/culturefeed/profile/privacy"
+"\">kiest zelf</a> welke informatie zichtbaar is voor anderen op je <a href="
+"\"@profile-url\">publieke profielpagina</a>. Al je gebruikersacties kan je "
+"beheren via je persoonlijke <a href=\"@history-url\">gebruikershistoriek</a>."
 
 #: culturefeed_ui.admin.inc:75
 msgid "Profile edit page: intro"
@@ -253,7 +295,7 @@ msgstr "Gebruikersnaam"
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: culturefeed_ui.forms.inc:70;310;518
+#: culturefeed_ui.forms.inc:70;310;522
 msgid "Save"
 msgstr "Opslaan"
 
@@ -300,7 +342,7 @@ msgstr ""
 msgid "Your privacy settings have been saved."
 msgstr "Je privacy instellingen werden goed bewaard."
 
-#: culturefeed_ui.forms.inc:386;637
+#: culturefeed_ui.forms.inc:386;638
 msgid "Error occurred while saving your privacy settings."
 msgstr ""
 "Er is een fout opgetreden bij het bewaren van jouw privacy instellingen."
@@ -313,99 +355,99 @@ msgstr "Voornaam"
 msgid "Family name"
 msgstr "Naam"
 
-#: culturefeed_ui.forms.inc:431
+#: culturefeed_ui.forms.inc:435
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
-#: culturefeed_ui.forms.inc:434
+#: culturefeed_ui.forms.inc:438
 msgid "Format : dd/mm/yyyy"
 msgstr "Formaat : dd/mm/jjjj"
 
-#: culturefeed_ui.forms.inc:441
+#: culturefeed_ui.forms.inc:445
 msgid "Gender"
 msgstr "Geslacht"
 
-#: culturefeed_ui.forms.inc:442 culturefeed_ui.preprocess.inc:73
+#: culturefeed_ui.forms.inc:446 culturefeed_ui.preprocess.inc:73
 msgid "Male"
 msgstr "Man"
 
-#: culturefeed_ui.forms.inc:442 culturefeed_ui.preprocess.inc:73
+#: culturefeed_ui.forms.inc:446 culturefeed_ui.preprocess.inc:73
 msgid "Female"
 msgstr "Vrouw"
 
-#: culturefeed_ui.forms.inc:450
+#: culturefeed_ui.forms.inc:454
 msgid "Choose picture"
 msgstr "Kies een foto"
 
-#: culturefeed_ui.forms.inc:451
+#: culturefeed_ui.forms.inc:455
 msgid "Allowed extensions: jpg, jpeg, gif or png"
 msgstr "Toegelaten formaten: jpg, jpeg, gif of png"
 
-#: culturefeed_ui.forms.inc:471
+#: culturefeed_ui.forms.inc:475
 msgid "Street and number"
 msgstr "Straatnaam en nummer"
 
-#: culturefeed_ui.forms.inc:476
+#: culturefeed_ui.forms.inc:480
 msgid "Zipcode"
 msgstr "Postcode"
 
-#: culturefeed_ui.forms.inc:481
+#: culturefeed_ui.forms.inc:485
 msgid "City"
 msgstr "Stad of gemeente"
 
-#: culturefeed_ui.forms.inc:487
+#: culturefeed_ui.forms.inc:491
 msgid "Country"
 msgstr "Land"
 
-#: culturefeed_ui.forms.inc:494
+#: culturefeed_ui.forms.inc:498
 msgid "Biography"
 msgstr "Beschrijf jezelf"
 
-#: culturefeed_ui.forms.inc:496
+#: culturefeed_ui.forms.inc:500
 msgid "Maximum 250 characters"
 msgstr "Maximum 250 karakters"
 
-#: culturefeed_ui.forms.inc:504
+#: culturefeed_ui.forms.inc:508
 msgid "Preferred language"
 msgstr "Voorkeur taal"
 
-#: culturefeed_ui.forms.inc:507
+#: culturefeed_ui.forms.inc:511
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: culturefeed_ui.forms.inc:508
+#: culturefeed_ui.forms.inc:512
 msgid "French"
 msgstr "Frans"
 
-#: culturefeed_ui.forms.inc:509
+#: culturefeed_ui.forms.inc:513
 msgid "English"
 msgstr "Engels"
 
-#: culturefeed_ui.forms.inc:510
+#: culturefeed_ui.forms.inc:514
 msgid "German"
 msgstr "Duits"
 
-#: culturefeed_ui.forms.inc:523 culturefeed_ui.module:108
+#: culturefeed_ui.forms.inc:527 culturefeed_ui.module:108
 msgid "Delete account"
 msgstr "Account verwijderen"
 
-#: culturefeed_ui.forms.inc:546
+#: culturefeed_ui.forms.inc:550
 msgid "The maximum of 250 characters is exceeded"
 msgstr "Het maximum aantal van 250 karakters is overschreden"
 
-#: culturefeed_ui.forms.inc:598
+#: culturefeed_ui.forms.inc:599
 msgid "Error occurred while saving your personal data."
 msgstr "Er is een fout opgetreden bij het bewaren van jouw gegevens."
 
-#: culturefeed_ui.forms.inc:622
+#: culturefeed_ui.forms.inc:623
 msgid "Error occurred while saving your picture."
 msgstr "Er is een fout opgetreden bij het opladen van jouw afbeelding."
 
-#: culturefeed_ui.forms.inc:674
+#: culturefeed_ui.forms.inc:675
 msgid "Name"
 msgstr "Naam"
 
-#: culturefeed_ui.forms.inc:680
+#: culturefeed_ui.forms.inc:681
 msgid "Search"
 msgstr "Zoeken"
 

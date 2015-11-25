@@ -94,7 +94,7 @@ msgid "Items to show"
 msgstr "Te tonen items"
 
 #: culturefeed_social.module:557
-msgid "Actions"
+msgid "User history"
 msgstr "Gebruikersgeschiedenis"
 
 #: culturefeed_social.module:559
