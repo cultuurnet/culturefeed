@@ -76,6 +76,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
     ),
     array(
       '#theme' => 'pager',
+      '#parameters' => array('filter' => $filter),
     ),
   );
 
@@ -88,7 +89,7 @@ function culturefeed_uitpas_profile_promotions_settings_get(&$form) {
 
   $form['profile_promotions'] = array(
     '#type' => 'fieldset',
-    '#title' => t('UiTPAS profile advantages settings'),
+    '#title' => t('My UiTPAS promotions settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
@@ -115,35 +116,41 @@ function culturefeed_uitpas_profile_promotions_title() {
 function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
 
   $form['profile_promotions_link'] = array(
-    '#prefix' => '<div id="promotions_link"><ul>',
-    '#suffix' => '</ul></div>',
+    '#attributes' => array(
+      'id' => 'promotions_link'
+    ),
+    '#links' => array(
+      'promotions' => array(
+        'href' => 'culturefeed/profile/uitpas/promotions',
+        'title' => t('My Promotions'),
+      ),
+      'advantages' => array(
+        'href' => 'culturefeed/profile/uitpas/advantages',
+        'title' => t('Welcome Advantages'),
+      ),
+    ),
+    '#theme' => 'links',
   );
 
-  $form['profile_promotions_link']['promotions'] = array(
-    '#markup' => '<li><a href="/culturefeed/profile/uitpas/promotions">' . t('My Promotions') . '</a></li>',
-  );
-
-  $form['profile_promotions_link']['advantages'] = array(
-    '#markup' => '<li><a href="/culturefeed/profile/uitpas/advantages">' . t('Welcome Advantages') . '</a></li>',
-  );
-
-	$cf = DrupalCultureFeed::getConsumerInstance();
-	$kind_of_card_systems = 'permanent';
-	$card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $kind_of_card_systems = 'permanent';
+  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
 
   $options = array();
-	foreach ($card_systems as $system) {
-		$options[$system->id] = $system->name;
-	}
+  foreach ($card_systems as $system) {
+    $options[$system->id] = $system->name;
+  }
 
   $id = drupal_html_id('profile-promotions-filter-sort');
   $form['profile_promotions']['#prefix'] = '<div id="' . $id . '">';
   $form['profile_promotions']["#suffix"] = '</div>';
 
+  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
+
   $form['profile_promotions']['filter'] = array(
-    '#type' => 'select',
+    '#type' => 'radios',
     '#title' => t('Filter'),
-    '#default_value' => isset($filter) ? $filter : 0,
+    '#default_value' => $filter,
     '#empty_option' => t('All card systems'),
     '#options' => $options,
     '#ajax' => array(
@@ -153,7 +160,6 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     ),
   );
 
-  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : NULL;
   $results = culturefeed_uitpas_profile_promotions_get($filter);
   $form['profile_promotions']['result'] = array(
     '#markup' => drupal_render($results),

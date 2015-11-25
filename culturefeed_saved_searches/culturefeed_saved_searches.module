@@ -118,6 +118,21 @@ function culturefeed_saved_searches_culturefeed_ui_profile_menu() {
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_box_dropdown_items().
+ */
+function culturefeed_saved_searches_culturefeed_ui_profile_box_dropdown_items($cf_account) {
+
+  $items['saved_searches'] = array(
+    'data' => l(t('Saved searches'), 'culturefeed/searches'),
+    'class' => 'saved-searches',
+    'weight' => -18,
+  );
+
+  return $items;
+
+}
+
+/**
  * Implements hook_block_info().
  */
 function culturefeed_saved_searches_block_info() {

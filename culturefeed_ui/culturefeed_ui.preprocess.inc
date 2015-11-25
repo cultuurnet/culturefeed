@@ -1,6 +1,46 @@
 <?php
 
 /**
+ * Preprocess variables for culturefeed-ui-profile-edit-form.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_profile_edit_form(&$vars) {
+
+  $form = $vars['form'];
+  $vars['rendered_form'] = drupal_render_children($form);
+
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-account-edit-form.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_account_edit_form(&$vars) {
+
+  $form = $vars['form'];
+  $vars['rendered_form'] = drupal_render_children($form);
+
+}
+
+/**
+ * Preprocess variables for culturefeed-ui-profile-sections.
+ *
+ * @param array $vars
+ *   The variables.
+ */
+function culturefeed_ui_preprocess_culturefeed_ui_profile_section(&$vars) {
+
+  if (isset($vars['classes'])) {
+    $vars['classes_array'] = array_merge($vars['classes_array'], $vars['classes']);
+  }
+
+}
+
+/**
  * Preprocess variables for culturefeed-ui-profile.tpl.php.
  *
  * @see culturefeed-ui-profile.tpl.php
@@ -236,7 +276,7 @@ function template_preprocess_culturefeed_ui_service_consumer_summary(&$variables
   $variables['logo'] = isset($consumer->logo) ? theme('image' , array('path' => $consumer->logo . '?maxwidth=100&maxheight=100')) : '';
   $variables['name'] = isset($consumer->name) ? check_plain($consumer->name) : '';
   $variables['description'] = isset($consumer->description) ? check_plain($consumer->description) : '';
-  $variables['creation_date'] = t('Connected to') . format_date($consumer->creationDate, 'custom', 'j F Y');
+  $variables['creation_date'] = t('Connected to') . ' ' . format_date($consumer->creationDate, 'custom', 'j F Y');
 }
 
 /**
@@ -251,7 +291,7 @@ function template_preprocess_culturefeed_ui_my_uitid(&$variables) {
   $contextual_links[] = l(t('Edit profile'), 'culturefeed/profile/edit');
 
   if (module_exists('culturefeed_social')) {
-    $contextual_links[] = l(t('Manage actions'), 'culturefeed/activities');
+    $contextual_links[] = l(t('User history'), 'culturefeed/activities');
   }
 
   if (module_exists('culturefeed_messages')) {
@@ -417,16 +457,32 @@ function template_preprocess_culturefeed_ui_something_for_you(&$variables) {
 }
 
 /**
- * Preprocess variables for culturefeed-ui-page-account-edit.tpl.php.
- *
- * @see culturefeed-ui-page-account-edit.tpl.php
+ * Preprocess variables for culturefeed_ui_profile_menu
  */
-function template_preprocess_culturefeed_ui_page_account_edit(&$variables) {
+function theme_culturefeed_ui_profile_shortcuts() {
 
-  $account_form = drupal_get_form('culturefeed_ui_page_account_edit_form');
-  $variables['account'] = render($account_form);
+  $build = array(
+    '#attributes' => array(
+      'class' => array('culturefeed-profile-shortcuts'),
+    ),
+    '#theme' => 'links',
+  );
 
-  $online_accounts = culturefeed_ui_online_accounts();
-  $variables['online_accounts'] = render($online_accounts);
+  $build['#links'] = array(
+    'personal_data' => array(
+      'title' => t('Personal data'),
+      'href' => 'culturefeed/profile/edit',
+    ),
+    'login_data' => array(
+      'title' => t('Login data'),
+      'href' => 'culturefeed/account/edit',
+    ),
+    'privacy_settings' => array(
+      'title' => t('Privacy settings'),
+      'href' => 'culturefeed/profile/privacy',
+    ),
+  );
+
+  return drupal_render($build);
 
 }

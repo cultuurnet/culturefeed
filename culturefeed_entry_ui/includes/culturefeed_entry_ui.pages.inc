@@ -2232,6 +2232,9 @@ function culturefeed_entry_ui_edit_tags_form($form, $form_state, $event) {
 
 
   $form['submit'] = array(
+    '#attributes' => array(
+      'class' => array('main-submit'),
+    ),
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
