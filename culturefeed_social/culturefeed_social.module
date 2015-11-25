@@ -554,7 +554,7 @@ function culturefeed_social_culturefeed_ui_profile_menu() {
 
   return array(
     'activities' => array(
-      'title' => t('Actions'),
+      'title' => t('User history'),
       'url' => 'culturefeed/activities',
       'description' => t('Set which user actions are visible to others on your profile page.'),
       'weight' => -15,
