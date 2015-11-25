@@ -424,7 +424,7 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
   if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
 
     try {
-      culturefeed_mailing_subscribe_user_light($query['email'], variable_get('culturefeed_mailing_list', ''), empty($query['zip']) ? $query['zip'] : '');
+      culturefeed_mailing_subscribe_user_light($query['email'], variable_get('culturefeed_mailing_list', ''), !empty($query['zip']) ? $query['zip'] : '');
     }
     catch (CultureFeed_Exception $e) {
 
