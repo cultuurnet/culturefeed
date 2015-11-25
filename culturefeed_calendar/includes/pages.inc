@@ -51,7 +51,7 @@ function culturefeed_calendar_page_settings() {
 function culturefeed_calendar_save_cookie_form($form, &$form_state) {
   $form['save_cookie'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => t('Login'),
     '#submit' => array('culturefeed_calendar_save_cookie_form_submit'),
   );
 
