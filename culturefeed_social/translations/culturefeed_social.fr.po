@@ -74,7 +74,7 @@ msgid "Culturefeed social: summary of loggedin users activities"
 msgstr "Culturefeed social : aperçu des actions des utilisateurs "
 
 #: culturefeed_social.module:381
-msgid "Actions"
+msgid "User history"
 msgstr "Actions"
 
 #: culturefeed_social.module:383

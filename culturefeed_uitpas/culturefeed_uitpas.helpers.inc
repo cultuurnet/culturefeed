@@ -129,6 +129,9 @@ function culturefeed_uitpas_get_uitpas_user() {
             if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
               $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
             }
+            else {
+              $uitpas_user->card_system = reset($uitpas_user->passholder->cardSystemSpecific);
+            }
 
           }
 

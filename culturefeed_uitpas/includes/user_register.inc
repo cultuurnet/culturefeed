@@ -10,41 +10,72 @@
  */
 function culturefeed_uitpas_user_register_get() {
 
+  culturefeed_ui_set_profile_breadcrumb();
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-  if (!user_is_logged_in() || !$uitpas_user->passholder) {
-
-    return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
-
-  }
+  return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
 
 }
 
 /**
  * Form constructor for the UiTPAS user register form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form_state.
+ * @param object $uitpas_user
+ *   The UiTPAS user helper object.
+ *
+ * @return array
+ *   The form.
  */
-function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user) {
+function culturefeed_uitpas_user_register_form(array $form, array $form_state, $uitpas_user) {
+
+  if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
+    $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+  }
+  else {
+    $username_to_use = $uitpas_user->user->nick;
+  }
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
 
-  $form['prefix']['#markup'] = variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.'));
+  $prefix = '<h2>' . t('Register your UiTPAS') . '</h2>';
+  $prefix .= variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.'));
+
+  $form['prefix']['#markup'] = $prefix;
   $form['link'] = array(
     '#type' => 'value',
+  );
+  $form['username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#value' => $username_to_use,
+    '#disabled' => TRUE,
   );
   $form['uitpasnumber'] = array(
     '#type' => 'textfield',
     '#title' => variable_get('culturefeed_uitpas_user_register_number_label', t('UiTPAS number')),
     '#required' => TRUE,
   );
+
+  $now = time();
   $form['dob'] = array(
     '#type' => 'date',
     '#title' => t('Date of birth'),
     '#after_build' => array('culturefeed_uitpas_user_register_form_process_year'),
+    '#default_value' => array(
+      'year' => date('Y', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+      'month' => date('n', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+      'day' => date('j', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+    ),
     '#required' => TRUE,
   );
   $form['actions'] = array(
+    '#type' => 'actions',
     'submit' => array(
       '#type' => 'submit',
-      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Continue')),
+      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Register UiTPAS')),
     ),
   );
 

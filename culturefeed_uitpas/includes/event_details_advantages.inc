@@ -10,11 +10,12 @@
  */
 function culturefeed_uitpas_event_details_advantages_get() {
 
-  $item_list = array(
-    'title' => '',
-    'items' => array(),
-    'type' => 'ul',
-    'attributes' => array(),
+  $build = array();
+
+  $default_item_list = array(
+    '#items' => array(),
+    '#theme' => 'item_list',
+    '#type' => 'ul',
   );
 
   $item = menu_get_object('culturefeed_agenda_event', 3);
@@ -22,41 +23,51 @@ function culturefeed_uitpas_event_details_advantages_get() {
 
   if ($event) {
 
-    $cf = DrupalCultureFeed::getConsumerInstance();
-
-    // Save points.
-    $puntsparen = ($event->numberOfPoints > 0.00);
-
-    if ($puntsparen) {
-      $item_list['items'][] = array(
-        'data' => t('Collect points'),
-        'class' => array('uitpas_collect_points'),
-      );
-    }
-
     // Opportunities tariff.
-    $kansentarief = FALSE;
+    $distribution_keys = array();
     foreach ($event->cardSystems as $card_system) {
-      foreach ($card_system->distributionKeys as $key) {
-        foreach ($key->conditions as $condition) {
+      foreach ($card_system->distributionKeys as $distribution_key) {
+        foreach ($distribution_key->conditions as $condition) {
           if ($condition->definition == $condition::DEFINITION_KANSARM) {
-            $kansentarief = TRUE;
-            break 3;
+            $distribution_keys[] = array(
+              'name' => $distribution_key->name,
+              'tariff' => $distribution_key->tariff,
+            );
           }
         }
       }
     }
 
-    if ($kansentarief) {
-      $item_list['items'][] = array(
-        'data' => t('Discount at underpriviliged tariff'),
-        'class' => array('uitpas_underpriviliged_tariff'),
+    if (count($distribution_keys)) {
+
+      $item_list = $default_item_list;
+      foreach ($distribution_keys as $distribution_key) {
+        $item_list['#items'][] = array(
+          'data' => t('Price at underprivileged tariff: € @tariff', array('@tariff' => $distribution_key['tariff'])) . '<br />' . $distribution_key['name'],
+          'class' => array('uitpas_underprivileged_tariff'),
+        );
+      }
+
+      $build[] = array(
+        'title' => array('#markup' => '<h4>' . t('Underprivileged tariffs') . '</h4>'),
+        'list' => $item_list,
       );
+
     }
 
     // Other promotions.
+    $item_list = $default_item_list;
+
+    if ($event->numberOfPoints > 0.00) {
+      $item_list['#items'][] = array(
+        'data' => t('Collect points'),
+        'class' => array('uitpas_collect_points'),
+      );
+    }
+
     try {
 
+      $cf = DrupalCultureFeed::getLoggedInUserInstance();
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $event->locationId;
       $query->cashingPeriodBegin = time();
@@ -65,23 +76,23 @@ function culturefeed_uitpas_event_details_advantages_get() {
 
       if ($result->total) {
 
-				foreach ($result->objects as $object) {
-					$item_list['items'][] = array(
-						'data' => l($object->title , 'promotion/' . culturefeed_search_slug($object->title) . '/' . $object->id),
-						'class' => array('uitpas_has_promotion'),
-					);
-				}
+        foreach ($result->objects as $object) {
+          $item_list['#items'][] = array(
+            'data' => l($object->title , 'promotion/' . culturefeed_search_slug($object->title) . '/' . $object->id),
+            'class' => array('uitpas_has_promotion'),
+          );
+        }
 
       }
 
-			if ($event->locationId) {
-				$item_list['items'][] = array(
-					'data' => l(t('Show advantages at') . ' ' .  $event->locationName , 'agenda/a/' . culturefeed_search_slug($event->locationName) . '/' . $event->locationId),
-					'class' => array('uitpas_has_promotion'),
-				);
-			}
+      if ($event->locationId) {
+        $item_list['#items'][] = array(
+          'data' => l(t('Show advantages at') . ' ' .  $event->locationName , 'agenda/a/' . culturefeed_search_slug($event->locationName) . '/' . $event->locationId),
+          'class' => array('uitpas_has_promotion'),
+        );
+      }
       else {
-        $item_list['items'][] = array(
+        $item_list['#items'][] = array(
           'data' => l(t('Show advantages at') . ' ' .  $event->organiserName , 'agenda/a/' . culturefeed_search_slug($event->organiserName) . '/' . $event->organiserId),
           'class' => array('uitpas_has_promotion'),
         );
@@ -92,11 +103,17 @@ function culturefeed_uitpas_event_details_advantages_get() {
       watchdog_exception('culturefeed_uitpas_event_details_promotions', $e);
     }
 
-    if (count($item_list['items'])) {
-			return array(
-				'#theme' => 'culturefeed_uitpas_event_details_advantages',
-				'#items' => $item_list['items'],
-			);
+    if (count($item_list['#items'])) {
+
+      $build[] = array(
+        'title' => array('#markup' => '<h4>' . t('Promotions') . '</h4>'),
+        'list' => $item_list,
+      );
+
+    }
+
+    if (count($build)) {
+      return $build;
     }
 
   }

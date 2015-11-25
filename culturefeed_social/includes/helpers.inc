@@ -24,50 +24,32 @@ function culturefeed_social_activity_get_config($activity_type) {
  */
 function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 
-  // Defaults.
-  $active_options = array(
-    CultureFeed_Activity::TYPE_LIKE,
-    CultureFeed_Activity::TYPE_IK_GA,
-    CultureFeed_Activity::TYPE_RECOMMEND,
-    CultureFeed_Activity::TYPE_COMMENT,
-    CultureFeed_Activity::TYPE_PAGE_ADMIN,
-    CultureFeed_Activity::TYPE_PAGE_MEMBER,
-    CultureFeed_Activity::TYPE_FACEBOOK,
-    CultureFeed_Activity::TYPE_TWITTER,
-    CultureFeed_Activity::TYPE_FOLLOW,
-    CultureFeed_Activity::TYPE_REVIEW,
-    CultureFeed_Activity::TYPE_PAGE_CREATED,
-    CultureFeed_Activity::TYPE_MEDIA_VIDEO,
-    CultureFeed_Activity::TYPE_MEDIA_PHOTO,
-    CultureFeed_Activity::TYPE_NEWS,
-    CultureFeed_Activity::TYPE_MAIL,
-    CultureFeed_Activity::TYPE_PRINT
-  );
+  $types = array();
 
-  // Return only active filters.
-  if ($active_only) {
+  // Do a full query to get all available types.
+  $query = new CultureFeed_SearchActivitiesQuery();
+  $query->userId = DrupalCultureFeed::getLoggedInUserId();
+  $query->private = TRUE;
+  try {
+    $activities = DrupalCultureFeed::searchActivities($query);
+    foreach ($activities->objects as $activity) {
 
-    // Only active filters
-    $activity_filters = variable_get('culturefeed_social_activity_filters', array());
-    // If settings. Set only the active ones.
-    if ($activity_filters) {
-      $active_options = array();
-      foreach ($activity_filters as $activity_filter) {
-        if ($activity_filter) {
-          $active_options[] = $activity_filter;
+      if (!in_array($activity->type, array_keys($types))) {
+        $activity_config = CultureFeedActivityConfigBase::loadByType($activity->type);
+        if ($activity_config) {
+          $types[$activity_config->type] = $activity_config;
         }
       }
+
     }
 
   }
-
-  // Load the config for the active options.
-  $options = array();
-  foreach ($active_options as $activity_type) {
-    $options[$activity_type] = CultureFeedActivityConfigBase::loadByType($activity_type);
+  catch (Exception $e) {
+    watchdog('culturefeed_social_get_activity_options', $e);
+    return array();
   }
 
-  return $options;
+  return $types;
 
 }
 

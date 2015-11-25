@@ -23,14 +23,20 @@ function culturefeed_ui_menu() {
   );
   $items['culturefeed/profile/edit'] = array(
     'title' => 'Edit profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_ui_page_profile_edit_form'),
+    'page callback' => 'culturefeed_ui_page_profile_edit',
+    'access callback' => 'culturefeed_is_culturefeed_user',
+    'type' => MENU_CALLBACK,
+    'file' => 'culturefeed_ui.pages.inc',
+  );
+  $items['culturefeed/profile/privacy'] = array(
+    'title callback' => 'culturefeed_ui_title_callback_profile_name',
+    'page callback' => 'culturefeed_ui_page_privacy_settings',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed_ui.pages.inc',
   );
   $items['culturefeed/account/edit'] = array(
-    'title' => 'Edit account',
+    'title callback' => 'culturefeed_ui_title_callback_profile_name',
     'page callback' => 'culturefeed_ui_page_account_edit',
     'access callback' => 'culturefeed_is_culturefeed_user',
     'type' => MENU_CALLBACK,
@@ -139,6 +145,24 @@ function culturefeed_ui_init() {
 }
 
 /**
+ * Returns the current user name.
+ */
+function culturefeed_ui_title_callback_profile_name() {
+
+  try {
+    /* @var CultureFeed_User $cf_account */
+    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    return $cf_account->nick;
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
+    return;
+  }
+
+}
+
+/**
  * Implements hook_theme().
  */
 function culturefeed_ui_theme() {
@@ -146,6 +170,18 @@ function culturefeed_ui_theme() {
     'culturefeed_ui_profile' => array(
       'variables' => array('user' => NULL),
       'template' => 'culturefeed-ui-profile',
+    ),
+    'culturefeed_ui_profile_section' => array(
+      'path' => drupal_get_path('module', 'culturefeed_ui') . '/templates',
+      'template' => 'culturefeed-ui-profile-section',
+      'variables' => array(
+        'title' => '',
+        'content' => '',
+        'classes' => array(),
+      ),
+    ),
+    'culturefeed_ui_profile_shortcuts' => array(
+      'variables' => array(),
     ),
     'culturefeed_ui_profile_box' => array(
       'variables' => array(
@@ -161,6 +197,14 @@ function culturefeed_ui_theme() {
         'main_items' => array(),
       ),
       'template' => 'culturefeed-ui-anonymous-profile-box',
+    ),
+    'culturefeed_ui_privacy_settings' => array(
+      'variables' => array(
+        'form' => NULL,
+        'intro' => NULL,
+        'profile_shortcuts' => NULL,
+      ),
+      'template' => 'culturefeed-ui-privacy-settings',
     ),
     'culturefeed_ui_most_active_user' => array(
       'variables' => array('account' => NULL, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
@@ -191,7 +235,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-service-consumer-summary',
     ),
     'culturefeed_ui_online_account' => array(
-      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_link' => '', 'delete_link' => '', 'connect_link' => ''),
+      'variables' => array('account' => NULL, 'account_type' => NULL, 'publish_form' => '', 'delete_link' => '', 'connect_link' => ''),
       'template' => 'culturefeed-ui-online-account',
     ),
     'culturefeed_ui_my_uitid' => array(
@@ -211,8 +255,33 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-my-uitid',
     ),
     'culturefeed_ui_page_account_edit' => array(
-      'variables' => array(),
+      'variables' => array(
+        'connected_applications' => NULL,
+        'form' => NULL,
+        'intro' => NULL,
+        'online_accounts' => NULL,
+        'profile_shortcuts' => NULL,
+      ),
       'template' => 'culturefeed-ui-page-account-edit',
+    ),
+    'culturefeed_ui_page_profile_edit' => array(
+      'variables' => array(
+        'form' => NULL,
+        'intro' => NULL,
+        'profile_shortcuts' => NULL,
+        'synchronization' => NULL,
+      ),
+      'template' => 'culturefeed-ui-page-profile-edit',
+    ),
+    'culturefeed_ui_account_edit_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'culturefeed_ui') . '/templates',
+      'template' => 'culturefeed-ui-account-edit-form',
+    ),
+    'culturefeed_ui_profile_edit_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'culturefeed_ui') . '/templates',
+      'template' => 'culturefeed-ui-profile-edit-form',
     ),
   );
 }
@@ -232,6 +301,9 @@ function culturefeed_ui_block_info() {
 
   $block['profile_menu']['info'] = t('Culturefeed ui: profile menu');
   $block['profile_menu']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['profile_sections']['info'] = t('Culturefeed ui: profile sections');
+  $block['profile_sections']['cache'] = DRUPAL_NO_CACHE;
 
   $block['mbox_confirmation_reminder']['info'] = t('Culturefeed ui: e-mail confirmation reminder');
   $block['mbox_confirmation_reminder']['cache'] = DRUPAL_NO_CACHE;
@@ -373,17 +445,22 @@ function culturefeed_ui_user_view($account) {
   }
 
   try {
-    $cf_account = DrupalCultureFeed::getUser($account->culturefeed_uid);
+    $cf_user = DrupalCultureFeed::getUser($account->culturefeed_uid);
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     return;
   }
 
-  $account->content['culturefeed'] = array(
-    '#theme' => 'culturefeed_ui_profile',
-    '#user' => $cf_account,
-  );
+  culturefeed_ui_user_view_apply_privacy_settings($cf_user, $account);
+
+  if (!isset($account->content['anonymous'])) {
+    $account->content['culturefeed'] = array(
+      '#theme' => 'culturefeed_ui_profile',
+      '#user' => $cf_user,
+    );
+  }
+
 }
 
 /**
@@ -398,51 +475,79 @@ function culturefeed_ui_user_view_alter(&$build) {
  */
 function culturefeed_ui_culturefeed_ui_profile_menu() {
 
-  global $user;
-
   return array(
     'uitid' => array(
       'title' => t('My profile'),
-      'url' => 'user/' . $user->uid,
-      'description' => t('How other users will see your profile'),
-      'weight' => -20,
-    ),
-    'profile' => array(
-      'title' => t('Edit profile'),
       'url' => 'culturefeed/profile/edit',
       'description' => t('Change name, address, profile picture, …'),
       'weight' => -19,
-    ),
-    'account' => array(
-      'title' => t('Edit account'),
-      'url' => 'culturefeed/account/edit',
-      'description' => t('Change password, email address, connected channels, …'),
-      'weight' => -18,
     ),
   );
 
 }
 
 /**
+ * Implements hook_culturefeed_ui_profile_sections().
+ */
+function culturefeed_ui_culturefeed_ui_profile_sections() {
+
+  if (DrupalCultureFeed::isCultureFeedUser()) {
+
+    // Get the links.
+    $menu = module_invoke_all('culturefeed_ui_profile_menu');
+    drupal_alter('culturefeed_ui_profile_menu', $menu);
+    uasort($menu, 'drupal_sort_weight');
+
+    $links = array();
+
+    foreach ($menu as $menu_item) {
+
+      $links[] = array(
+        'title' => $menu_item['title'],
+        'href' => $menu_item['url'],
+        'attributes' => array(
+          'title' => $menu_item['description'],
+        ),
+      );
+
+    }
+
+    /* @var CultureFeed_User $culturefeed_user */
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+
+    return array(
+      'classes' => array('profile-menu'),
+      'content' => theme('links', array('links' => $links)),
+      'title' => $culturefeed_user->nick,
+    );
+
+  }
+
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_box_dropdown_items().
  */
-function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items($cf_account) {
+function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {
 
   $items = array();
 
   $items['my-profile'] = array(
-    'data' => t('My profile'),
+    'data' => l(t('My profile'), 'culturefeed/profile/edit'),
     'class' => 'my-profile',
-    'children' => array(
-      array('data' => l($cf_account->nick, 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick))),
-    ),
     'weight' => -20,
   );
 
-  $items['settings'] = array(
-    'data' => l(t('Edit profile'), 'culturefeed/profile/edit'),
-    'class' => 'settings',
-    'weight' => 19,
+  $items['user-history'] = array(
+    'data' => l(t('User history'), 'culturefeed/activities'),
+    'class' => 'user-history',
+    'weight' => -19,
+  );
+
+  $items['logout_divider'] = array(
+    'data' => '',
+    'class' => 'divider',
+    'weight' => 20,
   );
 
   $items['logout'] = array(
@@ -481,6 +586,22 @@ function culturefeed_ui_form_system_performance_settings_alter(&$form, $form_sta
     '#options' => $period,
     '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
   );
+}
+
+/**
+ * Implements hook_forms().
+ */
+function culturefeed_ui_forms($form_id, $args) {
+
+  $forms = array();
+  if (strpos($form_id, 'culturefeed_ui_online_account_publish_activities_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'culturefeed_ui_online_account_publish_activities_form',
+      'callback arguments' => $args,
+    );
+  }
+  return $forms;
+
 }
 
 function culturefeed_ui_page_build() {
