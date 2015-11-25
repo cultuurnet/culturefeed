@@ -71,10 +71,14 @@
       });
 
       // set the label and value if needed.
+      // show popover by triggering click
+      // not trigger on calendar-page!
       if (total > 0) {
-        $calendarItem.show();
-        // show popover by triggering click
-        $('.calendar-popover-link').trigger('click');
+        if (document.location.href.search("/culturefeed/calendar")==-1){
+          $calendarItem.show();
+          $('.calendar-popover-link').trigger('click');
+        }
+
       }
     }
   }
