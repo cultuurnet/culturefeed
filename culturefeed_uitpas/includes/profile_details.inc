@@ -308,7 +308,7 @@ function culturefeed_uitpas_profile_details_settings_get(&$form) {
   $form['profile_details']['culturefeed_uitpas_profile_details_email_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Email description'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_details_email_description', t('This email address has been connected to your <a href="/culturefeed/profile/edit">online profile</a>. This address will be used for all communication regarding @site_name and UiTPAS.')),
+    '#default_value' => variable_get('culturefeed_uitpas_profile_details_email_description', t('This email address has been connected to your <a href="@edit-profile">online profile</a>. This address will be used for all communication regarding @site_name and UiTPAS.', array('@edit-profile' => url('culturefeed/profile/edit')))),
   );
   $form['profile_details']['culturefeed_uitpas_profile_details_outro'] = array(
     '#type' => 'textarea',
