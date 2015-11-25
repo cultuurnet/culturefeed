@@ -173,7 +173,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $actions = array('view', 'add');
+  $actions = array('view', 'add', 'like');
   $buttons = array();
   $button = array();
 
@@ -191,6 +191,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
   }
 
   $event_is_passed = FALSE;
+
   if ($item->getType() == 'event') {
     $event = $item->getEntity();
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
@@ -232,26 +233,28 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     $locations = array('aside');
   }
   else {
+    // else show message in content and aside
     $locations = array('content', 'aside');
   }
+
+  // locations = aside and/or content
   foreach ($locations as $location) {
-
     $button['location'] = $location;
-
     // Show the correct button for authenticated users.
     if ($authenticated) {
-
       if (in_array($id, $ids_to_check)) {
-        $action = 'view';
+        $actions = array('view');
       }
       else {
-        $action = 'add';
+        $actions = array('add', 'like');
       }
 
-      $button['action'] = $action;
-      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+      foreach($actions as $action) {
+        $button['action'] = $action;
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+      }
     }
-    // Show both buttons for anonymous users. JS will show the correct one.
+    // Show all buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;

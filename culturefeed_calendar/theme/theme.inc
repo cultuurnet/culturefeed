@@ -149,10 +149,27 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
     if ($variables['button']['location'] == 'content') {
-      $variables['button']['text'] = t('Add to my calendar');
+      $variables['button']['text'] = t('Going');
     }
     elseif ($variables['button']['location'] == 'aside') {
-      $variables['button']['text'] = t('Add to calendar');
+      $variables['button']['text'] = t('Going');
+    }
+
+  }
+  elseif ($variables['button']['action'] == 'like'){
+
+    $variables['classes_array'][] = 'btn-like-calendar';
+
+    $variables['button']['options'] = array(
+      'query' => drupal_get_destination(),
+    );
+
+    $variables['button']['path'] = 'culturefeed/calendar/like/' . $variables['button']['item_id'] . '/nojs';
+    if ($variables['button']['location'] == 'content') {
+      $variables['button']['text'] = t('Interested');
+    }
+    elseif ($variables['button']['location'] == 'aside') {
+      $variables['button']['text'] = t('Interested');
     }
 
   }

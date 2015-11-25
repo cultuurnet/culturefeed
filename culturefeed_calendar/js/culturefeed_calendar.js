@@ -51,6 +51,7 @@
     else {
       // No cookie => show all add to calendars.
       $(".btn-add-calendar").show();
+      $(".btn-like-calendar").show();
     }
   }
 

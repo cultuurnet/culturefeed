@@ -138,6 +138,39 @@ function culturefeed_calendar_add_cookie_to_calendar() {
 }
 
 /**
+ * Page callback to like items
+ */
+function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
+
+    $params = _culturefeed_calendar_get_event_params($event);
+    $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
+    $params['button_text'] = t('Add');
+    $params['use_ajax'] = $request_type == 'ajax';
+
+    culturefeed_calendar_add_activity($params['node_id'], $params['node_title']);
+
+    if ($request_type == 'ajax') {
+
+      // No form should be shown, redirect to the detailpage.
+      $commands = array();
+
+      if (isset($_GET['destination'])) {
+        $url = url($_GET['destination']);
+      }
+      else {
+        $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
+      }
+      $commands[] = culturefeed_ajax_command_goto($url);
+
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+      exit;
+
+    }
+}
+
+
+/**
  * Page callback to add items to the calendar.
  */
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
@@ -147,9 +180,12 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
+        watchdog('error title', 'error message');
+
   // If no form should be shown, we can create the activity.
   if ($params['get_form']) {
     $form = drupal_get_form('culturefeed_calendar_form', $params);
+    watchdog('error title', 'error message 2');
   }
   else {
     try {
@@ -170,9 +206,12 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   if ($request_type == 'ajax') {
 
+    watchdog('error title', 'error message 3');
+
     // No form should be shown, redirect to the detailpage.
     $commands = array();
     if ($params['get_form']) {
+      watchdog('error title', 'error message 4');
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
     }
     else {
@@ -232,6 +271,8 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
  * Form edit/add an event to the calendar.
  */
 function culturefeed_calendar_form($form, &$form_state, $params) {
+
+  watchdog('error title', 'error message 5');
 
   $submit_function = isset($params['activity']) ? 'culturefeed_calendar_edit_calendar_event_form_submit' : 'culturefeed_calendar_add_to_calendar_form_submit';
 
