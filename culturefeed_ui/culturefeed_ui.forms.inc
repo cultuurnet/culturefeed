@@ -585,6 +585,9 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
     }
 
   }
+  else {
+    $culturefeed_user_update->dob = NULL;
+  }
 
   $fields = array(
     'id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city',
