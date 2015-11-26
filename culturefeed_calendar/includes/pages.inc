@@ -180,12 +180,9 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
-        watchdog('error title', 'error message');
-
   // If no form should be shown, we can create the activity.
   if ($params['get_form']) {
     $form = drupal_get_form('culturefeed_calendar_form', $params);
-    watchdog('error title', 'error message 2');
   }
   else {
     try {
@@ -206,12 +203,9 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
 
   if ($request_type == 'ajax') {
 
-    watchdog('error title', 'error message 3');
-
     // No form should be shown, redirect to the detailpage.
     $commands = array();
     if ($params['get_form']) {
-      watchdog('error title', 'error message 4');
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
     }
     else {
@@ -272,8 +266,6 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
  */
 function culturefeed_calendar_form($form, &$form_state, $params) {
 
-  watchdog('error title', 'error message 5');
-
   $submit_function = isset($params['activity']) ? 'culturefeed_calendar_edit_calendar_event_form_submit' : 'culturefeed_calendar_add_to_calendar_form_submit';
 
   // Activity is passed when editing.
@@ -304,7 +296,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     if($params['type'] == 'period')
     {
       // Don't add if date is in the past.
-      $timestamp = strtotime(format_date($params['date_from'], 'custom', 'Y-m-d'));
+      $timestamp = strtotime($params['date_from']);
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
         $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
       }
