@@ -374,7 +374,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#type' => 'actions',
   );
 
-  $form['actions']['submit'] = array(
+  // Removed actions ($form['actions']['submit']) because that didn't work, we have to investigate
+  $form['submit'] = array(
     '#type' => 'submit',
     '#value' => $params['button_text'],
     '#name' => 'add',
@@ -391,7 +392,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   );
 
   if ($params['use_ajax']) {
-    $form['actions']['submit']['#ajax'] = array(
+    // Removed actions ($form['actions']['submit']['#ajax']) because that didn't work, we have to investigate
+    $form['submit']['#ajax'] = array(
       'callback' => 'culturefeed_calendar_form_ajax',
       'wrapper' => 'calendar-form',
     );
