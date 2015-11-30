@@ -308,7 +308,7 @@ function culturefeed_agenda_block_organiser_events() {
 		return;
 	}
 
-  if (is_null($item->getEntity()->getOrganiser())) {
+  if (is_null($item->getEntity()->getOrganiser()->getCdbid())) {
     return;
   }
   else {

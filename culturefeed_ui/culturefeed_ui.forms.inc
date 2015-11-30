@@ -124,8 +124,13 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
     DrupalCultureFeed::updateUser($culturefeed_user_update);
   }
   catch (Exception $e) {
-    watchdog_exception('culturefeed_ui_account_edit_user', $e);
-    $error = TRUE;
+    if ($e->error_code == CultureFeed::CODE_DUPLICATE_MBOX) {
+      $duplicate = TRUE;
+    }
+    else {
+      $error = TRUE;
+      watchdog_exception('culturefeed_ui_account_edit_user', $e);
+    }
   }
 
   // Passholder.
@@ -153,6 +158,9 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
 
   if ($error) {
     drupal_set_message(t('An error occurred.'), 'error');
+  }
+  elseif ($duplicate) {
+    drupal_set_message(t('The email address you entered (@email) is already in use by another user. </br> Please provide a another email address.', array('@email' => $culturefeed_user_update->mbox)), 'error');
   }
   else {
     drupal_set_message(t('Changes saved successfully.'));

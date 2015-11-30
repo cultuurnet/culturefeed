@@ -76,6 +76,18 @@ function culturefeed_location_control_location_control_process(array $element, a
     '#type' => 'culturefeed_location_control_custom',
   );
 
+  if (isset($element['#description'])) {
+    $element['location_control']['description'] = array(
+      '#attributes' => array(
+        'class' => array('description'),
+      ),
+      '#type' => 'container',
+      'markup' => array(
+        '#markup' => $element['#description'],
+      ),
+    );
+  }
+
   return $element;
 
 }

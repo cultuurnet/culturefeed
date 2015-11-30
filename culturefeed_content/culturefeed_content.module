@@ -13,15 +13,16 @@ define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'date');
  */
 function culturefeed_content_field_create_instance($instance) {
 
-  // Set some default values.
-  $instance['default_value'] = array(
-    array(
-      'rows' => CULTUREFEED_CONTENT_DEFAULT_ROWS,
-      'sort' => CULTUREFEED_CONTENT_DEFAULT_SORT,
-    ),
-  );
-  field_update_instance($instance);
-
+  if ($instance['widget']['type'] == 'culturefeed_content_default') {
+    // Set some default values.
+    $instance['default_value'] = array(
+      array(
+        'rows' => CULTUREFEED_CONTENT_DEFAULT_ROWS,
+        'sort' => CULTUREFEED_CONTENT_DEFAULT_SORT,
+      ),
+    );
+    field_update_instance($instance);
+  }
 }
 
 /**

@@ -14,9 +14,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-11-10 11:29+0100\n"
-"PO-Revision-Date: 2015-11-10 11:32+0100\n"
-"Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
+"POT-Creation-Date: 2015-11-13 12:36+0100\n"
+"PO-Revision-Date: 2015-11-13 12:39+0100\n"
+"Last-Translator: Sven Houtmeyers <sven@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "None"
 msgstr "Geen"
 
-#: culturefeed_mailing.admin.inc:29 culturefeed_mailing.pages.inc:265
+#: culturefeed_mailing.admin.inc:29 culturefeed_mailing.pages.inc:261
 msgid "Mailing list"
 msgstr "Mailing list"
 
@@ -86,7 +86,7 @@ msgstr "Afbeelding"
 
 #: culturefeed_mailing.field_instance.inc:259
 msgid "Intro"
-msgstr "Inleiding"
+msgstr ""
 
 #: culturefeed_mailing.field_instance.inc:260
 msgid "Label"
@@ -124,8 +124,8 @@ msgstr "niet ingeschreven"
 msgid "Unsubscribe"
 msgstr "Uitschrijven"
 
-#: culturefeed_mailing.helpers.inc:31 culturefeed_mailing.pages.inc:127
-#: culturefeed_mailing.module:330
+#: culturefeed_mailing.helpers.inc:31 culturefeed_mailing.pages.inc:123
+#: culturefeed_mailing.module:347
 msgid "Subscribe"
 msgstr "Inschrijven"
 
@@ -133,423 +133,427 @@ msgstr "Inschrijven"
 msgid "Error occurred"
 msgstr "Er is een fout opgetreden."
 
-#: culturefeed_mailing.pages.inc:75 culturefeed_mailing.module:323
+#: culturefeed_mailing.pages.inc:69 culturefeed_mailing.module:330
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: culturefeed_mailing.pages.inc:85
+#: culturefeed_mailing.pages.inc:76 culturefeed_mailing.module:325
+msgid "Change your email address <a href=\"!url\">here</a>."
+msgstr "Pas <a href=\"!url\">hier</a> je e-mailadres aan."
+
+#: culturefeed_mailing.pages.inc:81
 msgid "Zipcode"
 msgstr "Postcode"
 
-#: culturefeed_mailing.pages.inc:95
+#: culturefeed_mailing.pages.inc:91
 msgid "First name"
 msgstr "Voornaam"
 
-#: culturefeed_mailing.pages.inc:105
+#: culturefeed_mailing.pages.inc:101
 msgid "Family name"
 msgstr "Naam"
 
-#: culturefeed_mailing.pages.inc:122
+#: culturefeed_mailing.pages.inc:118
 msgid "Privacy statement"
 msgstr "Privacyverklaring"
 
-#: culturefeed_mailing.pages.inc:169
+#: culturefeed_mailing.pages.inc:165
 msgid "An error occurred while subscribing, please try again later."
 msgstr ""
 "Er is een fout opgetreden tijdens het inschrijven. Probeer het later "
 "opnieuw. "
 
-#: culturefeed_mailing.pages.inc:179
+#: culturefeed_mailing.pages.inc:175
 msgid "You have successfully subscribed to our newsletter"
 msgstr "U bent succesvol ingeschreven voor onze nieuwsbrief."
 
-#: culturefeed_mailing.pages.inc:204;589
+#: culturefeed_mailing.pages.inc:200;585
 msgid "edit"
 msgstr "bewerken"
 
-#: culturefeed_mailing.pages.inc:211
+#: culturefeed_mailing.pages.inc:207
 msgid "send test mail"
 msgstr "Stuur testmail"
 
-#: culturefeed_mailing.pages.inc:230
+#: culturefeed_mailing.pages.inc:226
 msgid "activate"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:238
+#: culturefeed_mailing.pages.inc:234
 msgid "deactivate"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:265;372;723
+#: culturefeed_mailing.pages.inc:261;368;719
 msgid "Template"
 msgstr "Template"
 
-#: culturefeed_mailing.pages.inc:265
+#: culturefeed_mailing.pages.inc:261
 msgid "Status"
 msgstr "Status"
 
-#: culturefeed_mailing.pages.inc:265;623
+#: culturefeed_mailing.pages.inc:261;619
 msgid "Actions"
 msgstr "Acties"
 
-#: culturefeed_mailing.pages.inc:267;625
+#: culturefeed_mailing.pages.inc:263;621
 msgid "No mailinglists yet"
 msgstr "Nog geen mailing list"
 
-#: culturefeed_mailing.pages.inc:283;641
+#: culturefeed_mailing.pages.inc:279;637
 msgid "Are you sure you want to delete %title?"
 msgstr "Weet u zeker dat u %title wilt verwijderen?"
 
-#: culturefeed_mailing.pages.inc:285;643
+#: culturefeed_mailing.pages.inc:281;639
 msgid "This action cannot be undone."
 msgstr "Deze actie kan niet ongedaan worden gemaakt."
 
-#: culturefeed_mailing.pages.inc:286;391;644;1100
+#: culturefeed_mailing.pages.inc:282;387;640;1096
 msgid "Delete"
 msgstr "Verwijder"
 
-#: culturefeed_mailing.pages.inc:287;645
+#: culturefeed_mailing.pages.inc:283;641
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: culturefeed_mailing.pages.inc:305
+#: culturefeed_mailing.pages.inc:301
 msgid "Error occurred while deleting the mailing"
 msgstr "Er is een fout opgetreden tijdens het verwijderen van de mailing."
 
-#: culturefeed_mailing.pages.inc:318;683 culturefeed_mailing.module:414
+#: culturefeed_mailing.pages.inc:314;679 culturefeed_mailing.module:431
 msgid "Title"
 msgstr "Titel"
 
-#: culturefeed_mailing.pages.inc:327
+#: culturefeed_mailing.pages.inc:323
 msgid "Description"
 msgstr "Beschrijving"
 
-#: culturefeed_mailing.pages.inc:353;623;710
+#: culturefeed_mailing.pages.inc:349;619;706
 msgid "Channel"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:357;714
+#: culturefeed_mailing.pages.inc:353;710
 msgid "The consumer key can only be changed from the UITid administrator."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:363
+#: culturefeed_mailing.pages.inc:359
 msgid "- Select -"
 msgstr "- Selecteren -"
 
-#: culturefeed_mailing.pages.inc:385;1095
+#: culturefeed_mailing.pages.inc:381;1091
 msgid "Save"
 msgstr "Opslaan"
 
-#: culturefeed_mailing.pages.inc:420
+#: culturefeed_mailing.pages.inc:416
 msgid "Mailing list updated"
 msgstr "Aanpassingen aan de mailing list zijn opgeslagen"
 
-#: culturefeed_mailing.pages.inc:424
+#: culturefeed_mailing.pages.inc:420
 msgid "Could not update mailing"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:443
+#: culturefeed_mailing.pages.inc:439
 msgid "New mailing created"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:447
+#: culturefeed_mailing.pages.inc:443
 msgid "Could not save new mailing list"
 msgstr "Kon de aanpassingen aan de nieuwe mailing list niet opslaan."
 
-#: culturefeed_mailing.pages.inc:464
+#: culturefeed_mailing.pages.inc:460
 msgid "A test mail was sent to !user_mail"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:475
+#: culturefeed_mailing.pages.inc:471
 msgid "Mail could not be sent"
 msgstr "Mail kon niet worden verzonden. "
 
-#: culturefeed_mailing.pages.inc:496
+#: culturefeed_mailing.pages.inc:492
 msgid "Activate mail"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:508
+#: culturefeed_mailing.pages.inc:504
 msgid "This mailing is active and will be send on scheduled time"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:512
+#: culturefeed_mailing.pages.inc:508
 msgid "Mailing could not be activated"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:527
+#: culturefeed_mailing.pages.inc:523
 msgid "Deactivate scheduling"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:539
+#: culturefeed_mailing.pages.inc:535
 msgid "Scheduling for this mailing is deactivated"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:543
+#: culturefeed_mailing.pages.inc:539
 msgid "Mailing could not be deactivated"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:623
+#: culturefeed_mailing.pages.inc:619
 msgid "Name"
 msgstr "Naam"
 
-#: culturefeed_mailing.pages.inc:623;748
+#: culturefeed_mailing.pages.inc:619;744
 msgid "Subject"
 msgstr "Onderwerp"
 
-#: culturefeed_mailing.pages.inc:663
+#: culturefeed_mailing.pages.inc:659
 msgid "Error occurred while deleting the template"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:676
+#: culturefeed_mailing.pages.inc:672
 msgid "Basic settings"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:719
+#: culturefeed_mailing.pages.inc:715
 msgid "Read documentation"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:727
+#: culturefeed_mailing.pages.inc:723
 msgid "This template supports different variables. !link"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:732
+#: culturefeed_mailing.pages.inc:728
 msgid "From address"
-msgstr "E-mailadres afzender"
+msgstr "Van adres"
 
-#: culturefeed_mailing.pages.inc:741
+#: culturefeed_mailing.pages.inc:737
 msgid "Content"
 msgstr "Inhoud"
 
-#: culturefeed_mailing.pages.inc:757
+#: culturefeed_mailing.pages.inc:753
 msgid "Block 1"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:764
+#: culturefeed_mailing.pages.inc:760
 msgid "Block 2"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:771
+#: culturefeed_mailing.pages.inc:767
 msgid "Block 3"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:778
+#: culturefeed_mailing.pages.inc:774
 msgid "Block 4"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:785
+#: culturefeed_mailing.pages.inc:781
 msgid "Block 5"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:792
+#: culturefeed_mailing.pages.inc:788
 msgid "Block 6"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:799
+#: culturefeed_mailing.pages.inc:795
 msgid "Extra content & suggestions"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:805
+#: culturefeed_mailing.pages.inc:801
 msgid "More info"
 msgstr "Meer info"
 
-#: culturefeed_mailing.pages.inc:809
+#: culturefeed_mailing.pages.inc:805
 msgid ""
 "You can enrich the content of the basic template with event suggestions "
 "based on a search query or the user's profile. !link"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:814
+#: culturefeed_mailing.pages.inc:810
 msgid "Use suggestions based on:"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:819
+#: culturefeed_mailing.pages.inc:815
 msgid "A search query"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:834
+#: culturefeed_mailing.pages.inc:830
 msgid ""
 "Search API Query. Example: q=Concert&city=${city}&k=${lifestyleProfile}"
 "&sort=proximity"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:842;871
+#: culturefeed_mailing.pages.inc:838;867
 msgid "Send mail even if there are no results"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:848
+#: culturefeed_mailing.pages.inc:844
 msgid "Personal recommendations"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:863
+#: culturefeed_mailing.pages.inc:859
 msgid "Recommendation Query. Example: uid=${uid}"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:877
+#: culturefeed_mailing.pages.inc:873
 msgid "Dispatch"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:883
+#: culturefeed_mailing.pages.inc:879
 msgid "Once"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:884
+#: culturefeed_mailing.pages.inc:880
 msgid "Daily"
 msgstr "Dagelijks"
 
-#: culturefeed_mailing.pages.inc:885
+#: culturefeed_mailing.pages.inc:881
 msgid "Weekly"
 msgstr "Wekelijks"
 
-#: culturefeed_mailing.pages.inc:886
+#: culturefeed_mailing.pages.inc:882
 msgid "Biweekly"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:887
+#: culturefeed_mailing.pages.inc:883
 msgid "Monthly"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:892
+#: culturefeed_mailing.pages.inc:888
 msgid "Frequency"
 msgstr "Frequentie"
 
-#: culturefeed_mailing.pages.inc:919
+#: culturefeed_mailing.pages.inc:915
 msgid "Start time"
 msgstr "Starttijd"
 
-#: culturefeed_mailing.pages.inc:926;957;995;1033;1071
+#: culturefeed_mailing.pages.inc:922;953;991;1029;1067
 msgid "hh"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:939;970;1008;1046;1084
+#: culturefeed_mailing.pages.inc:935;966;1004;1042;1080
 msgid "mm"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:985;1023
+#: culturefeed_mailing.pages.inc:981;1019
 msgid "On day"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1061
+#: culturefeed_mailing.pages.inc:1057
 msgid "Day of the month"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1118
+#: culturefeed_mailing.pages.inc:1114
 msgid "You need to set a date when selecting \"once\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1121
+#: culturefeed_mailing.pages.inc:1117
 msgid "You need to set the hour when selecting \"once\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1124;1138;1155;1172;1189
+#: culturefeed_mailing.pages.inc:1120;1134;1151;1168;1185
 msgid ""
 "Invalid start hour: !hour. Start hour must be a value between 6 and 22 (both "
 "ends inclusive)"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1127
+#: culturefeed_mailing.pages.inc:1123
 msgid "You need to set the minutes when selecting \"once\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1130;1144;1161;1178;1195
+#: culturefeed_mailing.pages.inc:1126;1140;1157;1174;1191
 msgid ""
 "Invalid start minutes: !minutes. Start minutes must be a value between 0 and "
 "59 (both ends inclusive)"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1135
+#: culturefeed_mailing.pages.inc:1131
 msgid "You need to set the hour when selecting \"daily\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1141
+#: culturefeed_mailing.pages.inc:1137
 msgid "You need to set the minutes when selecting \"daily\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1149
+#: culturefeed_mailing.pages.inc:1145
 msgid "You need to set the day when selecting \"weekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1152
+#: culturefeed_mailing.pages.inc:1148
 msgid "You need to set the hour when selecting \"weekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1158
+#: culturefeed_mailing.pages.inc:1154
 msgid "You need to set the minutes when selecting \"weekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1166
+#: culturefeed_mailing.pages.inc:1162
 msgid "You need to set the day when selecting \"biweekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1169
+#: culturefeed_mailing.pages.inc:1165
 msgid "You need to set the hour when selecting \"biweekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1175
+#: culturefeed_mailing.pages.inc:1171
 msgid "You need to set the minutes when selecting \"biweekly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1183
+#: culturefeed_mailing.pages.inc:1179
 msgid "You need to set the day when selecting \"monthly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1186
+#: culturefeed_mailing.pages.inc:1182
 msgid "You need to set the hour when selecting \"monthly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1192
+#: culturefeed_mailing.pages.inc:1188
 msgid "You need to set the minutes when selecting \"monthly\"."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1201
+#: culturefeed_mailing.pages.inc:1197
 msgid "When selecting a search query, you need to provide a search query."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1205
+#: culturefeed_mailing.pages.inc:1201
 msgid ""
 "When selecting a recommendation query, you need to provide a recommendation "
 "query."
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1269
+#: culturefeed_mailing.pages.inc:1265
 msgid "Template \"!template_name\" updated"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1273
+#: culturefeed_mailing.pages.inc:1269
 msgid "Could not update template \"!template_name\""
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1331
+#: culturefeed_mailing.pages.inc:1327
 msgid "New template \"!template_name\" created"
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1335
+#: culturefeed_mailing.pages.inc:1331
 msgid "Could not save new template \"!template_name\""
 msgstr ""
 
-#: culturefeed_mailing.pages.inc:1351
+#: culturefeed_mailing.pages.inc:1347
 msgid "Monday"
 msgstr "maandag"
 
-#: culturefeed_mailing.pages.inc:1352
+#: culturefeed_mailing.pages.inc:1348
 msgid "Tuesday"
 msgstr "dinsdag"
 
-#: culturefeed_mailing.pages.inc:1353
+#: culturefeed_mailing.pages.inc:1349
 msgid "Wednesday"
 msgstr "woensdag"
 
-#: culturefeed_mailing.pages.inc:1354
+#: culturefeed_mailing.pages.inc:1350
 msgid "Thursday"
 msgstr "donderdag"
 
-#: culturefeed_mailing.pages.inc:1355
+#: culturefeed_mailing.pages.inc:1351
 msgid "Friday"
 msgstr "vrijdag"
 
-#: culturefeed_mailing.pages.inc:1356
+#: culturefeed_mailing.pages.inc:1352
 msgid "Saturday"
 msgstr "zaterdag"
 
-#: culturefeed_mailing.pages.inc:1357
+#: culturefeed_mailing.pages.inc:1353
 msgid "Sunday"
 msgstr "zondag"
 
@@ -589,11 +593,11 @@ msgstr ""
 msgid "Manage newsletters you can subscribe to"
 msgstr "Beheer de nieuwsbrieven waarop je kan inschrijven"
 
-#: culturefeed_mailing.module:410
+#: culturefeed_mailing.module:427
 msgid "Mail item"
 msgstr ""
 
-#: culturefeed_mailing.module:412
+#: culturefeed_mailing.module:429
 msgid ""
 "Mail items can be used to create content for culturefeed_mailing newsletters"
 msgstr ""
