@@ -160,3 +160,12 @@ function culturefeed_uitpas_synchronization_synchronize() {
   }
 
 }
+
+/**
+ * Title callback for the synchronization page.
+ */
+function culturefeed_uitpas_synchronization_title() {
+
+  return t('Update personal data');
+
+}

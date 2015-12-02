@@ -119,7 +119,7 @@ function culturefeed_uitpas_menu() {
       'access callback' => TRUE,
       'file' => 'includes/synchronization.inc',
       'page callback' => 'culturefeed_uitpas_synchronization',
-      'title' => 'Update personal data',
+      'title callback' => 'culturefeed_uitpas_synchronization_title',
       'type' => MENU_CALLBACK,
     ),
   );
