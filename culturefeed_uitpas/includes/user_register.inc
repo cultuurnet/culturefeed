@@ -199,18 +199,3 @@ function culturefeed_uitpas_user_register_form_process_year($element) {
   return $element;
 
 }
-
-/**
- * Returns form elements for user register settings.
- */
-function culturefeed_uitpas_user_register_settings_get(&$form, $include_title = FALSE) {
-
-  if ($include_title) {
-    $form['culturefeed_uitpas_user_register_confirmation_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Title for the registration page'),
-      '#default_value' => variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'))
-    );
-  }
-
-}

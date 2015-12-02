@@ -238,17 +238,3 @@ function culturefeed_uitpas_profile_details_get() {
   }
 
 }
-
-/**
- * Returns form elements for profile details settings.
- */
-function culturefeed_uitpas_profile_details_settings_get(&$form) {
-
-  $form['profile_details'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS profile details settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-}

@@ -11,10 +11,6 @@
 function culturefeed_uitpas_variable_info() {
 
   return array(
-    'culturefeed_uitpas_profile_actions_intro' => array(
-      'title' => t('Culturefeed uitpas: profile actions: intro'),
-      'localize' => TRUE,
-    ),
     'culturefeed_uitpas_profile_notifications_intro' => array(
       'title' => t('Culturefeed uitpas: profile notifications: intro'),
       'localize' => TRUE,
