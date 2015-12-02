@@ -29,14 +29,14 @@ function culturefeed_uitpas_menu() {
       'file' => 'includes/advantage_details.inc',
     ),
     'advantages' => array(
-      'title' => variable_get('culturefeed_uitpas_advantages_title', 'UiTPAS advantages'),
+      'title callback' => 'culturefeed_uitpas_advantages_title',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('culturefeed_uitpas_advantages_filter_sort'),
       'file' => 'includes/advantages.inc',
       'access arguments' => array('access content'),
     ),
     'promotions' => array(
-      'title' => variable_get('culturefeed_uitpas_promotions_title', 'UiTPAS promotions'),
+      'title callback' => 'culturefeed_uitpas_promotions_title',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('culturefeed_uitpas_promotions_filter_sort'),
       'file' => 'includes/promotions.inc',

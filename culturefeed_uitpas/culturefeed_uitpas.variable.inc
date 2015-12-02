@@ -11,22 +11,6 @@
 function culturefeed_uitpas_variable_info() {
 
   return array(
-    'culturefeed_uitpas_advantages_info' => array(
-      'title' => t('Culturefeed uitpas: advantages: info'),
-      'localize' => TRUE,
-    ),
-    'culturefeed_uitpas_advantages_title' => array(
-      'title' => t('Culturefeed uitpas: advantages: title'),
-      'localize' => TRUE,
-    ),
-    'culturefeed_uitpas_promotions_info' => array(
-      'title' => t('Culturefeed uitpas: promotions: info'),
-      'localize' => TRUE,
-    ),
-    'culturefeed_uitpas_promotions_title' => array(
-      'title' => t('Culturefeed uitpas: promotions: title'),
-      'localize' => TRUE,
-    ),
     'culturefeed_uitpas_profile_actions_intro' => array(
       'title' => t('Culturefeed uitpas: profile actions: intro'),
       'localize' => TRUE,
