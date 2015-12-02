@@ -252,10 +252,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $passholder = $uitpas_user->passholder;
 
   // Title.
-  $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
+  $vars['uitpas_title'] = t('My UiTPAS');
 
   // Intro.
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
+  $vars['intro'] = t('This page shows the UiTPAS card(s) you own and the personal information that has been registered when buying your card.');
 
   // Card numbers.
   $uitpas_numbers = array(
@@ -278,12 +278,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     }
 
   }
-  $uitpas_numbers_output = '<h3>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</h3> ';
+  $uitpas_numbers_output = '<h3>' . t('UiTPAS number(s)') . ':</h3> ';
   $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
-  $vars['form_title'] = variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal data'));
-  $vars['form_intro'] = variable_get('culturefeed_uitpas_profile_details_form_intro');
+  $vars['form_title'] = t('My personal data');
+  $vars['form_intro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
@@ -312,7 +312,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     $vars['memberships'] = '';
   }
 
-  $vars['outro'] = variable_get('culturefeed_uitpas_profile_details_outro');
+  $vars['outro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
 
 }
 

@@ -50,14 +50,14 @@ function culturefeed_uitpas_menu() {
     ),
     'culturefeed/profile/uitpas/actions' => array(
       'title callback' => 'culturefeed_uitpas_profile_actions_title',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),
+      'description' => t('An overview of all your UiTPAS actions.'),
       'page callback' => 'culturefeed_uitpas_profile_actions_get',
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_actions.inc',
     ),
     'culturefeed/profile/uitpas/promotions' => array(
       'title callback' => 'culturefeed_uitpas_profile_promotions_title',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_promotions_description', t('Discover which promotions and advantages you are entitled to.')),
+      'description' => t('Discover which promotions and advantages you are entitled to.'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('culturefeed_uitpas_profile_promotions_filter_sort'),
       'access callback' => 'culturefeed_uitpas_is_passholder',
@@ -65,7 +65,7 @@ function culturefeed_uitpas_menu() {
     ),
     'culturefeed/profile/uitpas/advantages' => array(
       'title callback' => 'culturefeed_uitpas_profile_advantages_title',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
+      'description' => t('Discover which promotions and advantages you are entitled to.'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('culturefeed_uitpas_profile_advantages_filter_sort'),
       'access callback' => 'culturefeed_uitpas_is_passholder',

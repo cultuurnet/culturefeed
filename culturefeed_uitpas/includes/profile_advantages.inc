@@ -98,7 +98,7 @@ function culturefeed_uitpas_profile_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_profile_advantages_title() {
 
-  return variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages'));
+  return t('My advantages');
 
 }
 
