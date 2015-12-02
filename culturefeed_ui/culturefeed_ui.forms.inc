@@ -596,6 +596,8 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
   else {
     $culturefeed_user_update->dob = NULL;
   }
+  drupal_set_message(print_r($values, true));
+  drupal_set_message(print_r($culturefeed_user_update, true));
 
   $fields = array(
     'id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city',
