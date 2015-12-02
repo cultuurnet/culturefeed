@@ -571,6 +571,7 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
   $culturefeed_user_update->zip = $values['zip'];
   $culturefeed_user_update->city = $values['city'];
   $culturefeed_user_update->country = $values['country'];
+  $culturefeed_user_update->dob = NULL;
   // For the moment this field is removed, so we default to Dutch.
   $culturefeed_user_update->preferredLanguage = (isset($values['preferredLanguage'])) ? $values['preferredLanguage'] : 'nl';
 
@@ -593,11 +594,6 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
     }
 
   }
-  else {
-    $culturefeed_user_update->dob = NULL;
-  }
-  drupal_set_message(print_r($values, true));
-  drupal_set_message(print_r($culturefeed_user_update, true));
 
   $fields = array(
     'id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city',
