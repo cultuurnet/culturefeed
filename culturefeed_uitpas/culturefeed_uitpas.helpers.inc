@@ -26,6 +26,33 @@ function culturefeed_uitpas_cardsystem_name(CultureFeed_Uitpas_CardSystem $cards
 }
 
 /**
+ * Returns the card systems used in this site.
+ *
+ * @return \CultureFeed_Uitpas_CardSystem[]
+ *   The card systems.
+ */
+function culturefeed_uitpas_get_card_systems() {
+
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $active_card_systems = $cf->uitpas()->getCardSystems('permanent');
+  $selected_card_systems = array_filter(array_values(variable_get('culturefeed_uitpas_cardsystem_ids', array())));
+  $card_systems = array();
+
+  foreach ($active_card_systems as $card_system) {
+    if (
+      count($selected_card_systems) && in_array($card_system->id, $selected_card_systems) ||
+      !count($selected_card_systems)
+    ) {
+      $card_systems[] = $card_system;
+    }
+  }
+
+  return $card_systems;
+
+}
+
+
+/**
  * Returns a Culturefeed uitpas event object.
  *
  * @param CultuurNet\Search\ActivityStatsExtendedEntity $item
