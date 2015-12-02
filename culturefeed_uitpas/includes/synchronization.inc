@@ -34,7 +34,7 @@ function culturefeed_uitpas_synchronization_form($form, &$form_state) {
       'id' => 'uitpas-synchronize-confirmation'
     ),
     'text' => array(
-      '#markup' => variable_get('culturefeed_uitpas_synchronization_confirmation', t('Can we use your UiTPAS data to complete your profile?')),
+      '#markup' => t('Can we use your UiTPAS data to complete your profile?'),
     ),
   );
 
@@ -93,12 +93,6 @@ function culturefeed_uitpas_synchronization_settings_get(&$form) {
     '#title' => t('UiTPAS synchronization settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-  );
-
-  $form['synchronization']['culturefeed_uitpas_synchronization_confirmation'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Text'),
-    '#default_value' => variable_get('culturefeed_uitpas_synchronization_confirmation', t('Can we use your UiTPAS data to complete your profile?')),
   );
 
 }

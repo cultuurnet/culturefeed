@@ -29,18 +29,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1),
   );
 
-  $form['culturefeed_uitpas_remind_user_without_uitpas_text'] = array(
-    '#type' => 'textarea',
-    '#title' => t('The message to show to users without UiTPAS'),
-    '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.')),
-    '#description' => check_plain(t('You can use @register_url to insert the registration URL in the message, and @toggle_url to insert the URL to toggle the message off, for example: Go <a href="@register_url">register your UiTPAS</a> now! <a href="@toggle_url">Do not show this message again<a>.')),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="culturefeed_uitpas_remind_user_without_uitpas"]' => array('checked' => TRUE),
-      ),
-    ),
-  );
-
   // Advantages.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/advantages');
   culturefeed_uitpas_advantages_settings_get($form);

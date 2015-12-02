@@ -15,7 +15,7 @@ function culturefeed_uitpas_registration_confirmation_get() {
   return array(
     'intro' => array(
       '#type' => 'markup',
-      '#markup' => variable_get('culturefeed_uitpas_registration_confirmation_intro', ''),
+      '#markup' => t('You can now manage your points balance and personal promotions'),
     ),
     'form' => drupal_get_form('culturefeed_uitpas_registration_confirmation_form', $uitpas_user->user, $uitpas_user->cf),
   );
@@ -40,7 +40,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
 
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
-    '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
+    '#title' => t('Make my UiTPAS actions available for others'),
     '#default_value' => 1,
   );
 
@@ -99,21 +99,6 @@ function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_title', t('You are now registered on UiTPAS')),
-  );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_intro'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intro text'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro', t('You can now manage your points balance and personal promotions')),
-  );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Actions label'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
-  );
 
 }
 
@@ -130,5 +115,5 @@ function culturefeed_uitpas_registration_confirmation_settings_save($values) {
  * Title callback for the registration confirmation page.
  */
 function culturefeed_uitpas_registration_confirmation_title() {
-  return variable_get('culturefeed_uitpas_registration_confirmation_title', t('You are now registered on UiTPAS'));
+  return t('Your UiTPAS is registered');
 }
