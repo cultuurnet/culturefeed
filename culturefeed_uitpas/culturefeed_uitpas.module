@@ -19,7 +19,7 @@ require_once 'culturefeed_uitpas.theme.inc';
 function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
   if (isset($_GET['isnewpassholder'])) {
-    $destination = 'registration_confirmation';
+    $destination = 'culturefeed/profile/edit';
   }
 
 }
