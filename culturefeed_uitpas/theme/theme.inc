@@ -41,7 +41,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
         $new_counter = array('item' => $extendedCounter);
         module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
         culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'] = $new_counter;
+        $vars['counters'][] = $new_counter;
       }
     }
   }
