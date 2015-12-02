@@ -642,9 +642,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
     'quantity' => $vars['pos_total'],
   );
 
-  $vars['intro'] = variable_get('culturefeed_uitpas_register_where_intro');
+  $vars['intro'] = t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you\'ll pay 2 EURO. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.');
   $vars['pos_table'] = theme_table($table) . theme('pager', $pager);
-  $vars['outro'] = variable_get('culturefeed_uitpas_register_where_outro');
+  $vars['outro'] = t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'));
 
 }
 
