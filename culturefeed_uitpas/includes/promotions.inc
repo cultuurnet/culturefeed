@@ -77,16 +77,6 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['promotions']['culturefeed_uitpas_promotions_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_promotions_title', 'UiTPAS promotions'),
-  );
-  $form['promotions']['culturefeed_uitpas_promotions_info'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Info text'),
-    '#default_value' => variable_get('culturefeed_uitpas_promotions_info', t('This page shows all promotions for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')))),
-  );
   $form['promotions']['culturefeed_uitpas_promotions_promotions_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of promotions to display'),
@@ -139,7 +129,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $form['promotions']['#prefix'] = "<div id=\"" . $id . "\">";
   $form['promotions']["#suffix"] = "</div>";
 
-  $promotions_intro = variable_get('culturefeed_uitpas_promotions_info');
+  $promotions_intro = t('culturefeed_uitpas_promotions_info_2');
   if (trim($promotions_intro)) {
     $form['promotions']['intro']['#markup'] = '<div class="promotions-intro">' . $promotions_intro . '</div>';
   }
@@ -212,4 +202,13 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
 function culturefeed_uitpas_promotions_ajax_callback($form, $form_state) {
   return $form['promotions'];
+}
+
+/**
+ * Title callback for the promotions page.
+ */
+function culturefeed_uitpas_promotions_title() {
+
+  return t('UiTPAS promotions');
+
 }

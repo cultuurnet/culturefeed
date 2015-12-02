@@ -106,7 +106,7 @@ function culturefeed_uitpas_profile_promotions_settings_get(&$form) {
  */
 function culturefeed_uitpas_profile_promotions_title() {
 
-  return variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My promotions'));
+  return t('My promotions');
 
 }
 

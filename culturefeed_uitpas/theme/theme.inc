@@ -120,7 +120,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
   $vars['advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+  $vars['info'] = t('This page shows all advantages for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')));
 }
 
 /**
@@ -132,7 +132,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
     $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
     // Info.
-    $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+    $vars['info'] = t('culturefeed_uitpas_advantages_info_2');
 
 }
 
@@ -154,7 +154,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+  $vars['info'] = t('This page shows all promotions for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')));
 }
 
 /**
@@ -172,7 +172,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
   $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+  $vars['info'] = t('culturefeed_uitpas_promotions_info_1');
 
   // User points.
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
@@ -252,10 +252,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $passholder = $uitpas_user->passholder;
 
   // Title.
-  $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
+  $vars['uitpas_title'] = t('My UiTPAS');
 
   // Intro.
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
+  $vars['intro'] = t('This page shows the UiTPAS card(s) you own and the personal information that has been registered when buying your card.');
 
   // Card numbers.
   $uitpas_numbers = array(
@@ -278,12 +278,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     }
 
   }
-  $uitpas_numbers_output = '<h3>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</h3> ';
+  $uitpas_numbers_output = '<h3>' . t('UiTPAS number(s)') . ':</h3> ';
   $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
-  $vars['form_title'] = variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal data'));
-  $vars['form_intro'] = variable_get('culturefeed_uitpas_profile_details_form_intro');
+  $vars['form_title'] = t('My personal data');
+  $vars['form_intro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
@@ -312,7 +312,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     $vars['memberships'] = '';
   }
 
-  $vars['outro'] = variable_get('culturefeed_uitpas_profile_details_outro');
+  $vars['outro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
 
 }
 
@@ -642,9 +642,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
     'quantity' => $vars['pos_total'],
   );
 
-  $vars['intro'] = variable_get('culturefeed_uitpas_register_where_intro');
+  $vars['intro'] = t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you\'ll pay 2 EURO. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.');
   $vars['pos_table'] = theme_table($table) . theme('pager', $pager);
-  $vars['outro'] = variable_get('culturefeed_uitpas_register_where_outro');
+  $vars['outro'] = t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'));
 
 }
 

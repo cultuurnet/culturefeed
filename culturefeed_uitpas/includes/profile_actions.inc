@@ -83,6 +83,6 @@ function culturefeed_uitpas_profile_actions_settings_get(&$form) {
  */
 function culturefeed_uitpas_profile_actions_title() {
 
-  return variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('Points history'));
+  return t('Points history');
 
 }

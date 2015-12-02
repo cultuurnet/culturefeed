@@ -89,26 +89,6 @@ function culturefeed_uitpas_register_where_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['register_where']['culturefeed_uitpas_register_where_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_title', t('Get your UiTPAS')),
-  );
-  $form['register_where']['culturefeed_uitpas_register_where_filters_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Filters title'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_filters_title', t('Registration counters')),
-  );
-  $form['register_where']['culturefeed_uitpas_register_where_intro'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intro'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_intro', t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you\'ll pay 2 EURO. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.')),
-  );
-  $form['register_where']['culturefeed_uitpas_register_where_outro'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Outro'),
-    '#default_value' => variable_get('culturefeed_uitpas_register_where_outro', t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'))),
-  );
   $form['register_where']['culturefeed_uitpas_register_where_pos_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of points of sale to display'),
@@ -122,7 +102,7 @@ function culturefeed_uitpas_register_where_settings_get(&$form) {
  */
 function culturefeed_uitpas_register_where_title() {
 
-  return variable_get('culturefeed_uitpas_register_where_title', t('Register your UiTPAS'));
+  return t('Get your UiTPAS');
 
 }
 
@@ -136,7 +116,7 @@ function culturefeed_uitpas_register_where_filter_form($form, $form_state) {
 
   $options = array('all' => t('All')) + drupal_map_assoc($locations);
 
-  $title = variable_get('culturefeed_uitpas_register_where_filters_title');
+  $title = t('Registration counters');
   if ($title) {
 
     $form['title'] = array(

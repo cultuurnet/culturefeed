@@ -66,16 +66,6 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['advantages']['culturefeed_uitpas_advantages_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_advantages_title', t('UiTPAS advantages')),
-  );
-  $form['advantages']['culturefeed_uitpas_advantages_info'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Info text'),
-    '#default_value' => variable_get('culturefeed_uitpas_advantages_info', t('This page shows all advantages for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')))),
-  );
   $form['advantages']['culturefeed_uitpas_advantages_advantages_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of advantages to display'),
@@ -160,4 +150,13 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
 function culturefeed_uitpas_advantages_ajax_callback($form, $form_state) {
   return $form['advantages'];
+}
+
+/**
+ * Title callback for the advantages page.
+ */
+function culturefeed_uitpas_advantages_title() {
+
+  return t('UiTPAS advantages');
+
 }
