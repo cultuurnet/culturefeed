@@ -65,11 +65,6 @@ function culturefeed_uitpas_profile_actions_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['profile_actions']['culturefeed_uitpas_profile_actions_intro'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intro'),
-    '#default_value' => variable_get('culturefeed_uitpas_profile_actions_intro', t('This page shows an overview of all your UiTPAS actions')),
-  );
   $form['profile_actions']['culturefeed_uitpas_profile_actions_actions_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of actions to display'),

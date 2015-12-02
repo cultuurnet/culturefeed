@@ -81,23 +81,6 @@ function culturefeed_uitpas_synchronization_form_submit($form, &$form_state) {
 }
 
 /**
- * Sets form elements for synchronize settings.
- *
- * @param array $form
- *   The form.
- */
-function culturefeed_uitpas_synchronization_settings_get(&$form) {
-
-  $form['synchronization'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS synchronization settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-}
-
-/**
  * Synchronizes the UiTPAS data to the UiTid user.
  */
 function culturefeed_uitpas_synchronization_synchronize() {
@@ -158,5 +141,14 @@ function culturefeed_uitpas_synchronization_synchronize() {
     }
 
   }
+
+}
+
+/**
+ * Title callback for the synchronization page.
+ */
+function culturefeed_uitpas_synchronization_title() {
+
+  return t('Update personal data');
 
 }

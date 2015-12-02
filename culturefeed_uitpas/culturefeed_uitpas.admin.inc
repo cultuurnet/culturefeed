@@ -87,31 +87,9 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_advantages');
   culturefeed_uitpas_profile_advantages_settings_get($form);
 
-  // Profile details.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_details');
-  culturefeed_uitpas_profile_details_settings_get($form);
-
   // Register where.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/register_where');
   culturefeed_uitpas_register_where_settings_get($form);
-
-  // Registration/validation page & block.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
-  $form['user_register'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS registration page & block settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  culturefeed_uitpas_user_register_settings_get($form['user_register'], TRUE);
-
-  // Registration confirmation.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/registration_confirmation');
-  culturefeed_uitpas_registration_confirmation_settings_get($form);
-
-  // Synchronization.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/synchronization');
-  culturefeed_uitpas_synchronization_settings_get($form);
 
   return system_settings_form($form);
 

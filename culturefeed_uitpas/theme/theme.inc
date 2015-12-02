@@ -197,7 +197,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   );
 
   // Intro.
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_actions_intro');
+  $vars['intro'] = t('This page shows an overview of all your UiTPAS actions');
 
   // Actions.
   $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));

@@ -89,29 +89,6 @@ function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form
 }
 
 /**
- * Returns form elements for registration confirmation settings.
- */
-function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
-
-  $form['registration_confirmation'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS registration confirmation settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-}
-
-/**
- * Saves settings for registration confirmation.
- * 
- * Not needed for the moment as settings are saved via the 
- * system_settings_form on admin/config/culturefeed/uitpas.
- */
-function culturefeed_uitpas_registration_confirmation_settings_save($values) {
-}
-
-/**
  * Title callback for the registration confirmation page.
  */
 function culturefeed_uitpas_registration_confirmation_title() {

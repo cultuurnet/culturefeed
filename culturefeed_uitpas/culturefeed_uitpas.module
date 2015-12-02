@@ -19,7 +19,7 @@ require_once 'culturefeed_uitpas.theme.inc';
 function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
   if (isset($_GET['isnewpassholder'])) {
-    $destination = 'registration_confirmation';
+    $destination = 'culturefeed/profile/edit';
   }
 
 }
@@ -111,5 +111,5 @@ function culturefeed_uitpas_init() {
  * Title callback.
  */
 function culturefeed_uitpas_register_uitpas_title() {
-  return variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'));
+  return t('Already own an UiTPAS?');
 }
