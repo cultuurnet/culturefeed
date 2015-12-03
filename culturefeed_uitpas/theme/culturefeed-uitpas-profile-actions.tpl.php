@@ -10,16 +10,17 @@
  * - $actions_table: The list of actions.
  */
 ?>
+<div class="profile_actions">
+  <?php if ($intro): ?>
+  <div class="intro">
+    <p><?php print $intro; ?></p>
+  </div>
+  <?php endif; ?>
+  <?php print $actions_table; ?>
+</div>
+<hr />
 <?php if ($activity_preferences_form): ?>
 <div class="activity-preferences-form">
   <?php print $activity_preferences_form; ?>
 </div>
 <?php endif; ?>
-<div class="profile_actions">
-  <?php if ($intro): ?>
-  <div class="intro">
-  <?php print $intro; ?>
-  </div>
-  <?php endif; ?>
-  <?php print $actions_table; ?>
-</div>

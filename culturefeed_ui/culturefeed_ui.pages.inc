@@ -189,7 +189,7 @@ function culturefeed_ui_page_privacy_settings() {
         drupal_get_path('module', 'culturefeed_ui') . '/css/privacy_settings.css',
       ),
     ),
-    '#intro' => t('Choose what personal information is visible to others in your <a href="@profile-url">public profile</a>. When choosing <em>Anonymous</em> only your username will be visible.', array('@profile-url' => url('user'))),
+    '#intro' => culturefeed_ui_profile_intro(),
     '#form' => drupal_render($form),
     '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_privacy_settings',
@@ -228,7 +228,7 @@ function culturefeed_ui_page_account_edit() {
     ),
     '#connected_applications' => drupal_render($connected_applications),
     '#form' => drupal_render($form),
-    '#intro' => t('Update your password or email address. Your username cannot be changed.'),
+    '#intro' => culturefeed_ui_profile_intro(),
     '#online_accounts' => drupal_render($online_accounts),
     '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_page_account_edit',
@@ -264,7 +264,7 @@ function culturefeed_ui_page_profile_edit() {
       ),
     ),
     '#form' => drupal_render($form),
-    '#intro' => t('Complete your profile information for a more personal experience. You <a href="/culturefeed/profile/privacy">decide what personal information</a> is visible to others in your <a href="@profile-url">public profile</a>. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@profile-url' => url('user'), '@history-url' => url('culturefeed/activities'))),
+    '#intro' => culturefeed_ui_profile_intro(),
     '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
     '#theme' => 'culturefeed_ui_page_profile_edit',
   );
@@ -274,8 +274,6 @@ function culturefeed_ui_page_profile_edit() {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
     if (isset($uitpas_user->passholder)) {
 
-      $path = 'culturefeed/uitpas/synchronization';
-      $item = menu_get_item($path);
       $build['#attached']['js'] = array(
         drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
         array(
@@ -283,7 +281,7 @@ function culturefeed_ui_page_profile_edit() {
           'data' => array(
             'culturefeed_ui_synchronization' => array(
               'url' => url('culturefeed/uitpas/synchronization'),
-              'title' => $item['title'],
+              'title' => t('Update personal data'),
             ),
           ),
         ),
