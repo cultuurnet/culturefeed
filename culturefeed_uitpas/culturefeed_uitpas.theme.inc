@@ -92,9 +92,7 @@ function culturefeed_uitpas_theme() {
     ),
     'culturefeed_uitpas_profile_actions' => array(
       'variables' => array(
-        'actions' => array(),
-        'actions_total' => 0,
-        'actions_pager_element' => 0,
+        'activities' => array(),
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',

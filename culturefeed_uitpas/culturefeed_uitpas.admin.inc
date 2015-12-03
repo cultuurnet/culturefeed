@@ -71,10 +71,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => implode("\r\n", $locations),
   );
 
-  // Profile actions.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_actions');
-  culturefeed_uitpas_profile_actions_settings_get($form);
-
   // Profile promotions.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_promotions');
   culturefeed_uitpas_profile_promotions_settings_get($form);

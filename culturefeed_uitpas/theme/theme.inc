@@ -184,9 +184,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars) {
 
-  $actions = $vars['actions'];
-  $actions_total = $vars['actions_total'];
-  $actions_pager_element = $vars['actions_pager_element'];
+  $activities = $vars['activities'];
 
   $table = array(
     'attributes' => array(),
@@ -200,19 +198,20 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   $vars['intro'] = t('This page shows an overview of all your UiTPAS actions');
 
   // Actions.
-  $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
+  $header = array('', t('Type'), t('Date'), t('Points'));
   $rows = array();
-  if (count($actions)) {
+  if (count($activities)) {
 
-    foreach ($actions as $action) {
+    foreach ($activities as $activity) {
 
+      /* @var \CultureFeed_Activity $activity */
       $singular = '@count point';
       $plural = '@count points';
       $rows[] = array(
-        date('j/m/Y', $action->creationDate),
-        $action->nodeTitle,
-        $action->location,
-        format_plural($action->points, $singular, $plural),
+        $activity->nodeTitle,
+        $activity->contentType,
+        date('j/m/Y', $activity->creationDate),
+        format_plural($activity->points, $singular, $plural),
       );
 
     }
@@ -223,12 +222,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   }
 
   $table += array('header' => $header, 'rows' => $rows);
-  $pager = array(
-    'element' => $actions_pager_element,
-    'quantity' => $actions_total,
-  );
-
-  $vars['actions_table'] = theme_table($table) . theme('pager', $pager);
+  $vars['actions_table'] = theme_table($table);
 
   // Publish actions form.
   $vars['activity_preferences_form'] = '';
