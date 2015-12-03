@@ -128,11 +128,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
 
-    // Advantages.
-    $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
+  // Advantages.
+  $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
-    // Info.
-    $vars['info'] = t('culturefeed_uitpas_profile_advantages_info');
+  // Info.
+  $vars['info'] = t('This page only shows the advantages that you didn\'t receive yet.') . '<br>';
+  $vars['info'] .= t('Discover <a href="@all-advantages">all advantages</a> that are currently available for new UiTPAS holders.', array('@all-advantages' => url('advantages')));
 
 }
 
