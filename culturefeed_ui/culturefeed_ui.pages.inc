@@ -274,8 +274,6 @@ function culturefeed_ui_page_profile_edit() {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
     if (isset($uitpas_user->passholder)) {
 
-      $path = 'culturefeed/uitpas/synchronization';
-      $item = menu_get_item($path);
       $build['#attached']['js'] = array(
         drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
         array(
@@ -283,7 +281,7 @@ function culturefeed_ui_page_profile_edit() {
           'data' => array(
             'culturefeed_ui_synchronization' => array(
               'url' => url('culturefeed/uitpas/synchronization'),
-              'title' => $item['title'],
+              'title' => t('Update personal data'),
             ),
           ),
         ),
