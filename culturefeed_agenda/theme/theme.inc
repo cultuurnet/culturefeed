@@ -163,6 +163,12 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
+  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
+  if (module_exists('culturefeed_uitpas')) {
+    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
+    $variables['uitpas_info'] = $uitpas_event;
+  }
+
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -417,15 +423,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
         $variables['keywords'] = implode(', ', $linked_keywords);
 
-        // check if event is suitable for kids
-        if (array_key_exists('ook voor kinderen', $keywords)) {
-          $variables['forkids'] = TRUE;
-        }
+      }
 
-        if (sizeof(preg_grep('/uitpas/gi', $keywords))>0 or sizeof(preg_grep('/paspartoe/gi', $keywords))>0) {
+      // check if event is suitable for kids
+      if (array_key_exists('ook voor kinderen', $keywords)) {
+        $variables['forkids'] = TRUE;
+      }
+
+      foreach (array_keys($keywords) as $keyword) {
+
+        if(stripos('uitpas', $keyword)>=0 || stripos('paspartoe', $keyword)>=0)
+        {
           $variables['uitpas'] = TRUE;
         }
-
       }
 
     }
@@ -450,7 +460,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['forkids'] = TRUE;
       }
 
-      if (sizeof(preg_grep('/uitpas/gi', $keywords))>0 or sizeof(preg_grep('/paspartoe/gi', $keywords))>0) {
+      if (sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) {
         $variables['uitpas'] = TRUE;
       }
     }
