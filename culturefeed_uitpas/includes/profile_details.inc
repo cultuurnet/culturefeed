@@ -238,3 +238,12 @@ function culturefeed_uitpas_profile_details_get() {
   }
 
 }
+
+/**
+ * Title callback for the uitpas profile page.
+ */
+function culturefeed_uitpas_profile_title() {
+
+  return t('My UiTPAS');
+
+}

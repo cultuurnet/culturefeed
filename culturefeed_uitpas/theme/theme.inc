@@ -251,9 +251,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   // @codingStandardsIgnoreEnd
   $passholder = $uitpas_user->passholder;
 
-  // Title.
-  $vars['uitpas_title'] = t('My UiTPAS');
-
   // Intro.
   $vars['intro'] = t('This page shows the UiTPAS card(s) you own and the personal information that has been registered when buying your card.');
 
@@ -313,8 +310,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   else {
     $vars['memberships'] = '';
   }
-
-  $vars['outro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
 
 }
 
