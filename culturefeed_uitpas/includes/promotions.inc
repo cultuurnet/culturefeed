@@ -106,17 +106,14 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  */
 function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
+  $card_systems = culturefeed_uitpas_get_card_systems();
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
   $promotions = culturefeed_uitpas_promotions_get($filter);
 
   $advantages = array();
   if (variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE)) {
     module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
-    $advantages = culturefeed_uitpas_advantages_get();
+    $advantages = culturefeed_uitpas_advantages_get($filter);
   }
 
   $options = array();

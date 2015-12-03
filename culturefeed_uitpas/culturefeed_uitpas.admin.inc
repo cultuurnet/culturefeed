@@ -15,6 +15,20 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id', 3),
   );
 
+  $card_system_ids = array();
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $card_systems = $cf->uitpas()->getCardSystems('permanent');
+  foreach ($card_systems as $card_system) {
+    $card_system_ids[$card_system->id] = $card_system->name;
+  }
+
+  $form['culturefeed_uitpas_cardsystem_ids'] = array(
+    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_ids', array()),
+    '#options' => $card_system_ids,
+    '#title' => t('Card system IDs'),
+    '#type' => 'checkboxes',
+  );
+
   $form['culturefeed_uitpas_card_name'] = array(
     '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
     '#description' => t('The card name, used as title in profile sections block.'),

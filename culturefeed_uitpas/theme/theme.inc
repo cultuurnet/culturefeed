@@ -41,7 +41,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
         $new_counter = array('item' => $extendedCounter);
         module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
         culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'] = $new_counter;
+        $vars['counters'][] = $new_counter;
       }
     }
   }
@@ -864,6 +864,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
       }
       else if ($promotion->cashingPeriodEnd) {
         $item['availability'] = t('Until @date', array('@date' => date('j/n/Y', $promotion->cashingPeriodEnd)));
+      }
+      else if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > time()) {
+        $item['availability'] = t('From @date', array('@date' => date('j/n/Y', $promotion->cashingPeriodBegin)));
+        $points_classes[] = 'available-from';
       }
       else {
         $item['availability'] = t('Until end of stock');
