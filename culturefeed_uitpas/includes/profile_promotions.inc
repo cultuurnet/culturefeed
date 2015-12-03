@@ -34,7 +34,12 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
       $query->unexpired = TRUE;
 
       if ($filter) {
-        $query->owningCardSystemId = $filter;
+        if (strpos($filter, '+') === FALSE) {
+          $query->owningCardSystemId = $filter;
+        }
+        else {
+          $query->applicableCardSystemId = explode('+', $filter);
+        }
       }
       $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
@@ -132,14 +137,24 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     '#theme' => 'links',
   );
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
+  // Get the card systems for the passholder.
   $options = array();
-  foreach ($card_systems as $system) {
-    $options[$system->id] = $system->name;
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  /* @var \CultureFeed_Uitpas_Passholder $passholder */
+  $passholder = $uitpas_user->passholder;
+  foreach ($passholder->cardSystemSpecific as $card_system_specific) {
+    $card_system = $card_system_specific->cardSystem;
+    $options[$card_system->id] = $card_system->name;
   }
+
+  // Get the remaining card systems.
+  $card_systems = culturefeed_uitpas_get_card_systems();
+  array_walk($card_systems, function (&$card_system) {
+    /* @var CultureFeed_Uitpas_Cardsystem $card_system */
+    $card_system = $card_system->id;
+  });
+  $card_systems = array_diff($card_systems, array_keys($options));
+  $options[implode('+', $card_systems)] = t('other');
 
   $id = drupal_html_id('profile-promotions-filter-sort');
   $form['profile_promotions']['#prefix'] = '<div id="' . $id . '">';
