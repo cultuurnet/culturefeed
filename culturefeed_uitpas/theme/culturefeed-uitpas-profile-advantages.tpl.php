@@ -14,4 +14,5 @@
 
 <div class="profile_advantages">
   <div class="advantages"><?php print $profile_advantages_table; ?></div>
+  <div class="info"><?php print $info; ?></div>
 </div>
