@@ -128,11 +128,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
 
-    // Advantages.
-    $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
+  // Advantages.
+  $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
-    // Info.
-    $vars['info'] = t('culturefeed_uitpas_profile_advantages_info');
+  // Info.
+  $vars['info'] = t('This page only shows the advantages that you didn\'t receive yet.') . '<br>';
+  $vars['info'] .= t('Discover <a href="@all-advantages">all advantages</a> that are currently available for new UiTPAS holders.', array('@all-advantages' => url('advantages')));
 
 }
 
@@ -172,7 +173,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
   $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = t('culturefeed_uitpas_profile_promotions_info');
+  $vars['info'] = t('This page only shows the promotions you can get with your current points balance') . '<br>';
+  $vars['info'] .= t('Discover <a href="@all-promotions">all promotions</a> you can save for.', array('@all-promotions' => url('promotions')));
 
   // User points.
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
@@ -282,7 +284,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
   $vars['form_title'] = t('My personal data');
-  $vars['form_intro'] = t('This information has been read from your eID and cannot be changed. Updates can only be done at official <a href="@counters-url">UiTPAS registration counters', array('@counters-url' => url('register_where')));
+  $vars['form_intro'] = t('This information has been read from your eID and cannot be changed. Updates can only be done at official <a href="@counters-url">UiTPAS registration counters</a>.', array('@counters-url' => url('register_where')));
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
