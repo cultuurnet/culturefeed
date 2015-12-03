@@ -118,7 +118,7 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
       '#type' => 'container',
       '#title' => ' ',
       'markup' => array(
-        '#markup' => t('This email address has been connected to your <a href="@edit-profile">online profile</a>. This address will be used for all communication regarding @site_name and UiTPAS.', array('@edit-profile' => url('culturefeed/profile/edit'))),
+        '#markup' => t('This email address is synchronized with your <a href="@edit-account">online account</a> and  will be used for all communication regarding @site-name and @card-name.', array('@edit-account' => url('culturefeed/account/edit'), '@site-name' => variable_get('site_name', 'this website'), '@card-name' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'))),
       ),
     );
 
