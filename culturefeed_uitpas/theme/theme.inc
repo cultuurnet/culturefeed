@@ -276,7 +276,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
   $vars['form_title'] = t('My personal data');
-  $vars['form_intro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
+  $vars['form_intro'] = t('This information has been read from your eID and cannot be changed. Updates can only be done at official <a href="@counters-url">UiTPAS registration counters', array('@counters-url' => url('register_where')));
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
