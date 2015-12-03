@@ -207,10 +207,16 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
     foreach ($activities as $activity) {
 
       /* @var \CultureFeed_Activity $activity */
+
+      $title = $activity->nodeTitle;
+      if ($activity->createdVia) {
+        $title .= '<br />' . t('at @location', array('@location' => $activity->createdVia));
+      }
+
       $singular = '@count point';
       $plural = '@count points';
       $rows[] = array(
-        $activity->nodeTitle,
+        $title,
         culturefeed_get_human_readable_activity_type($activity->type),
         date('j/m/Y', $activity->creationDate),
         format_plural($activity->points, $singular, $plural),
