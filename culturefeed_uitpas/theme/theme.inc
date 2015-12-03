@@ -278,8 +278,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     }
 
   }
-  $uitpas_numbers_output = '<h3>' . t('UiTPAS number(s)') . ':</h3> ';
+  $uitpas_numbers_title = t('UiTPAS number(s)');
+  $uitpas_numbers_output = '<h3>' . $uitpas_numbers_title . ':</h3> ';
   $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
+  $vars['uitpas_numbers_title'] = $uitpas_numbers_title;
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
   $vars['form_title'] = t('My personal data');
