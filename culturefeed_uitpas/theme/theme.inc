@@ -209,7 +209,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
       $plural = '@count points';
       $rows[] = array(
         $activity->nodeTitle,
-        $activity->contentType,
+        culturefeed_get_human_readable_activity_type($activity->type),
         date('j/m/Y', $activity->creationDate),
         format_plural($activity->points, $singular, $plural),
       );
