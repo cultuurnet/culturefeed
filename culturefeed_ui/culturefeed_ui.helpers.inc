@@ -88,6 +88,20 @@ function culturefeed_ui_get_privacy_setting(CultureFeed_User $culturefeed_user =
 }
 
 /**
+ * Returns the intro message for profile, account and privacy settings pages.
+ *
+ * @return string
+ *   The profile intro message.
+ */
+function culturefeed_ui_profile_intro() {
+
+  $profile_intro = t('Complete your profile information for a more personal experience. You <a href="/culturefeed/profile/privacy">decide what personal information</a> is visible to others in your <a href="@profile-url">public profile</a>. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@profile-url' => url('user/' . $user_id), '@history-url' => url('culturefeed/activities')));
+
+  return $profile_intro;
+
+}
+
+/**
  * Returns the drupal message after making profile changes.
  *
  * @param CultureFeed_User $culturefeed_user
