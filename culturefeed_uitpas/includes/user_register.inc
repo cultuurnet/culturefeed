@@ -10,7 +10,6 @@
  */
 function culturefeed_uitpas_user_register_get() {
 
-  culturefeed_ui_set_profile_breadcrumb();
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
   return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
 
@@ -198,4 +197,11 @@ function culturefeed_uitpas_user_register_form_process_year($element) {
   $element['year']['#options'] = array_slice($element['year']['#options'], 0, $year - 1900 + 1, TRUE);
   return $element;
 
+}
+
+/**
+ * Title callback.
+ */
+function culturefeed_uitpas_register_uitpas_title() {
+  return t('Register your UiTPAS');
 }

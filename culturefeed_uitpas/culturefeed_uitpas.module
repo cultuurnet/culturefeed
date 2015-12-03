@@ -105,11 +105,3 @@ function culturefeed_uitpas_init() {
     }
   }
 }
-
-
-/**
- * Title callback.
- */
-function culturefeed_uitpas_register_uitpas_title() {
-  return t('Already own an UiTPAS?');
-}
