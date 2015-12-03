@@ -43,7 +43,7 @@ function culturefeed_uitpas_menu() {
       'access arguments' => array('access content'),
     ),
     'culturefeed/profile/uitpas' => array(
-      'title callback' => 'culturefeed_ui_title_callback_profile_name',
+      'title callback' => 'culturefeed_uitpas_profile_title',
       'page callback' => 'culturefeed_uitpas_profile_details_get',
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_details.inc',

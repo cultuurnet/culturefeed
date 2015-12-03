@@ -59,7 +59,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  $locations = variable_get('culturefeed_uitpas_locations', 'Brussel');
+  $locations = variable_get('culturefeed_uitpas_locations');
   if (!$locations) {
     $locations = array();
   }
