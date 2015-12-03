@@ -120,7 +120,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
   $vars['advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
-  $vars['info'] = t('This page shows all advantages for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')));
+  $vars['info'] = t('This page shows all advantages for which UiTPAS holders can save points.');
 }
 
 /**
@@ -132,7 +132,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$v
     $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
     // Info.
-    $vars['info'] = t('culturefeed_uitpas_advantages_info_2');
+    $vars['info'] = t('culturefeed_uitpas_profile_advantages_info');
 
 }
 
@@ -154,7 +154,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = t('This page shows all promotions for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')));
+  $vars['info'] = t('This page shows all promotions for which UiTPAS holders can save points.');
 }
 
 /**
@@ -172,7 +172,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
   $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = t('culturefeed_uitpas_promotions_info_1');
+  $vars['info'] = t('culturefeed_uitpas_profile_promotions_info');
 
   // User points.
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
@@ -276,7 +276,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
   $vars['form_title'] = t('My personal data');
-  $vars['form_intro'] = t('This information has been captured from your eID and cannot be changed. Updates can only be done at official UiTPAS registration counters');
+  $vars['form_intro'] = t('This information has been read from your eID and cannot be changed. Updates can only be done at official <a href="@counters-url">UiTPAS registration counters', array('@counters-url' => url('register_where')));
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
