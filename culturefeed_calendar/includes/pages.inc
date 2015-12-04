@@ -105,9 +105,12 @@ function culturefeed_calendar_add_cookie_to_calendar() {
     // Only create activities that don't already exist.
     if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
       $activity = new CultureFeed_Activity();
-      // Add planned activity's' date.
       if (isset($cookie_activity->value)) {
         $activity->value = $cookie_activity->value;
+      }
+      // Add planned activity's' date.
+      if (isset($cookie_activity->calendarDate)) {
+        $activity->calendarDate = $cookie_activity->calendarDate;
       }
       $activity->type = $cookie_activity->type;
       $activity->contentType = 'event';
