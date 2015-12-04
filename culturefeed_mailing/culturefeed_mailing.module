@@ -235,6 +235,11 @@ function culturefeed_mailing_theme() {
       'template' => 'culturefeed-mailing-content-block-6',
       'path' => $path,
     ),
+    'culturefeed_mailing_content_block_subscribed' => array(
+      'variables' => array('title' => NULL, 'message' => NULL),
+      'template' => 'culturefeed-mailing-content-block-subscribed',
+      'path' => $path,
+    ),
   );
 }
 
@@ -280,6 +285,48 @@ function culturefeed_mailing_block_view($delta) {
 }
 
 /**
+ * Implements hook_block_configure().
+ */
+function culturefeed_mailing_block_configure($delta) {
+
+  $form = array();
+
+  if ($delta == 'newsletter_form') {
+
+    $form['uitid_light'] = array(
+      '#title' => t('UiTiD Light settings.'),
+      '#type' => 'fieldset',
+      '#access' => CULTUREFEED_API_LIGHT_ID_ALLOWED
+    );
+
+    $form['uitid_light']['show_zip_code'] = array(
+      '#title' => t('Show the zip code field'),
+      '#type' => 'checkbox',
+      '#default_value' => variable_get('culturefeed_mailing_block_show_zip', 0),
+      '#description' => t("Check this checkbox if you want to show the zip code field on the newsletter form.</br>'
+        Keep in mind that the field will only be shown if this checkbox is checked '
+        AND the admin setting for the UiTiD light permissions has been set on admin/config/culturefeed/api-settings.
+      "),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function culturefeed_mailing_block_save($delta, $edit) {
+
+  if ($delta == 'newsletter_form') {
+    variable_set('culturefeed_mailing_block_show_zip', $edit['show_zip_code']);
+  }
+
+}
+
+/**
  * Implements hook_culturefeed_ui_profile_menu().
  */
 function culturefeed_mailing_culturefeed_ui_profile_menu() {
@@ -298,54 +345,84 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
 /**
  * Subscribe a given user to a mailing.
  */
-function culturefeed_mailing_subscribe_user($account, $mailing_id) {
-
-  $already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, $mailing_id);
-
-  // If user is already subscribed, do nothing.
-  if (!$already_subscribed) {
-    DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id);
+function culturefeed_mailing_subscribe_user($account, $mailing_id, $use_auth = TRUE) {
+    DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id, $use_auth);
     module_invoke_all('culturefeed_mailing_user_subscribed', $account);
-  }
+}
 
+/**
+ * Subscribe a given user to a mailing using the light id.
+ */
+function culturefeed_mailing_subscribe_user_light($email, $mailing_id, $zip = '') {
+  $account = new CultureFeed_User();
+  $account->id = DrupalCultureFeed::getUserLightId($email, $zip);
+  culturefeed_mailing_subscribe_user($account, $mailing_id, FALSE);
 }
 
 /**
  * Form callback: Show the newsletter form as a block.
  */
-function culturefeed_mailing_newsletter_block_form() {
-
-  // Get the user account.
-  $account = culturefeed_load_logged_in_user();
-
-  // Set defaults for the email field.
-  if ($account) {
-    $email = $account->mbox;
-    $disabled = TRUE;
-    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
-  }
-  else {
-    $email = '';
-    $disabled = FALSE;
-    $description = t('Email address');
-  }
+function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
   $form = array();
 
-  $form['mail'] = array(
-    '#type' => 'textfield',
-    '#title' => variable_get('culturefeed_mailing_block_description', ''),
-    '#description' => $description,
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => $email,
-    '#disabled' => $disabled,
-  );
+  if (isset($form_state['subscribed']) && $form_state['subscribed'] == TRUE) {
 
-  $form['inschrijven'] = array(
-    '#type' => 'submit',
-    '#value' => t('Subscribe'),
-  );
+    $form['subscribed'] = array(
+      '#theme' => 'culturefeed_mailing_content_block_subscribed',
+      '#title' => t('Thanks!'),
+      '#message' => variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter')),
+    );
+
+  }
+  else {
+
+    // Get the user account.
+    $account = culturefeed_load_logged_in_user();
+    $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+
+    // Set defaults for the email field.
+    if ($account) {
+      $email = $account->mbox;
+      $disabled = TRUE;
+      $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
+    }
+    else {
+      $email = '';
+      $disabled = FALSE;
+      $description = t('Email address');
+    }
+
+    $form['mail'] = array(
+      '#type' => 'textfield',
+      '#title' => variable_get('culturefeed_mailing_block_description', ''),
+      '#description' => $description,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $email,
+      '#disabled' => $disabled,
+    );
+
+    if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+
+      $form['zip'] = array(
+        '#type' => 'textfield',
+        '#title' => '',
+        '#required' => FALSE,
+        '#description' => t('Zipcode'),
+        '#size' => 40,
+        '#default_value' => _culturefeed_mailing_get_postal_from_cookie(),
+      );
+
+    }
+
+    $form['inschrijven'] = array(
+      '#type' => 'submit',
+      '#value' => t('Subscribe'),
+    );
+
+  }
+
 
   return $form;
 
@@ -356,32 +433,45 @@ function culturefeed_mailing_newsletter_block_form() {
  */
 function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
-  if (DrupalCultureFeed::isCultureFeedUser()) {
+  $query = array('email' => $form_state['values']['mail']);
+  if (!empty($form_state['values']['zip'])) {
+    $query['zip'] =  $form_state['values']['zip'];
+    _culturefeed_mailing_set_postal_to_cookie($query['zip']);
 
-    $form_state['redirect'] = array(
-      'subscribe',
-      array(
-        'query' => array(
-          'email' => $form_state['values']['mail'],
-        ),
-      ),
-    );
+  }
 
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+
+    try {
+      culturefeed_mailing_subscribe_user_light($query['email'], variable_get('culturefeed_mailing_list', ''), !empty($query['zip']) ? $query['zip'] : '');
+    }
+    catch (CultureFeed_Exception $e) {
+
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
+    }
+
+    $form_state['subscribed'] = TRUE;
+    $form_state['rebuild'] = TRUE;
+
+  }
+  elseif (DrupalCultureFeed::isCultureFeedUser()) {
+    $form_state['redirect'] = array('subscribe', array('query' => $query));
   }
   else {
-
+    $query['destination'] = 'subscribe';
     $form_state['redirect'] = array(
-      'authenticated',
-      array(
-        'query' => array(
-          'email' => $form_state['values']['mail'],
-          'destination' => 'subscribe',
-        ),
-      ),
+      'authenticated', array('query' => $query),
     );
-
   }
-
 }
 
 /**
