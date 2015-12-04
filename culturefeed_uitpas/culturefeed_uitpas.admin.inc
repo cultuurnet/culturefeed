@@ -12,7 +12,14 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   $form['culturefeed_uitpas_cardsystem_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Card system ID'),
-    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id'),
+    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id', 3),
+  );
+
+  $form['culturefeed_uitpas_card_name'] = array(
+    '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
+    '#description' => t('The card name, used as title in profile sections block.'),
+    '#title' => t('Card name'),
+    '#type' => 'textfield',
   );
 
   $form['culturefeed_uitpas_remind_user_without_uitpas'] = array(
@@ -50,7 +57,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  $locations = variable_get('culturefeed_uitpas_locations');
+  $locations = variable_get('culturefeed_uitpas_locations', 'Brussel');
   if (!$locations) {
     $locations = array();
   }
@@ -82,10 +89,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_details');
   culturefeed_uitpas_profile_details_settings_get($form);
 
-  // Profile notifications.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_notifications');
-  culturefeed_uitpas_profile_notifications_settings_get($form);
-
   // Register where.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/register_where');
   culturefeed_uitpas_register_where_settings_get($form);
@@ -103,6 +106,10 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   // Registration confirmation.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/registration_confirmation');
   culturefeed_uitpas_registration_confirmation_settings_get($form);
+
+  // Synchronization.
+  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/synchronization');
+  culturefeed_uitpas_synchronization_settings_get($form);
 
   return system_settings_form($form);
 

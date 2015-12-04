@@ -162,360 +162,144 @@ function culturefeed_ui_page_mboxverify_resend() {
   drupal_goto();
 }
 
-function culturefeed_ui_page_profile_edit_form($form, &$form_state) {
-
-  culturefeed_ui_set_profile_breadcrumb();
-
-  $form = array();
-
-  try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred'), 'error');
-    return;
-  }
-
-  $form['view-profile'] = array(
-    '#prefix' => '<div id="view-profile">',
-    '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
-    '#suffix' => '</div>',
-  );
-
-  // Firstname.
-  $form['givenName'] = array(
-    '#type' => 'textfield',
-    '#title' => t('First name'),
-    '#default_value' => $cf_account->givenName,
-  );
-  $form['givenNamePrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'first name\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->givenName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Name.
-  $form['familyName'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Family name'),
-    '#default_value' => $cf_account->familyName,
-  );
-  $form['familyNamePrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'family name\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->familyName == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Picture.
-  $form_state['#old_picture'] = 0;
-  $form['picture'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('Choose picture'),
-    '#description' => t('Allowed extensions: jpg, jpeg, gif or png'),
-    '#process' => array('file_managed_file_process', 'culturefeed_image_file_process'),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array('jpg jpeg png gif'),
-    ),
-    '#upload_location' => 'public://culturefeed',
-  );
-
-  // Check if the depiction is not the default one.
-  if (!empty($cf_account->depiction) && !strstr($cf_account->depiction, '/' . CULTUREFEED_UI_DEFAULT_DEPICTION)) {
-    $file = culturefeed_create_temporary_image($cf_account->depiction, file_default_scheme() . '://culturefeed');
-    if ($file) {
-      $form_state['#old_picture'] = $file->fid;
-      $form['picture']['#default_value'] = $file->fid;
-    }
-  }
-
-  // Gender.
-  $form['gender'] = array(
-    '#type' => 'radios',
-    '#title' => t('Gender'),
-    '#options' => array('male' => t('Male'), 'female' => t('Female')),
-    '#default_value' => $cf_account->gender,
-  );
-  $form['genderPrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'gender\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->gender == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Address
-  $form['street'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Street and number'),
-    '#default_value' => $cf_account->street,
-  );
-  $form['zip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Zipcode'),
-    '#default_value' => $cf_account->zip,
-  );
-  $form['city'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
-    '#default_value' => $cf_account->city,
-  );
-  $form['country'] = array(
-    '#type' => 'select',
-    '#options' => country_get_list(),
-    '#title' => t('Country'),
-    '#default_value' => !empty($cf_account->country) ? $cf_account->country : 'BE',
-  );
-  $form['homeAddressPrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'address\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->homeAddress == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Date of birth.
-  $form['dob'] = array(
-    '#title' => t('Date of birth'),
-    '#type' => 'textfield',
-    '#default_value' => $cf_account->dob ? date('d/m/Y', $cf_account->dob) : '',
-    '#description' => t('Format : dd/mm/yyyy'),
-    '#size' => 10,
-  );
-  $form['dobPrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'date of birth\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->dob == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Bio
-  $form['bio'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Biography'),
-    '#default_value' => $cf_account->bio,
-    '#description' => t('Maximum 250 characters'),
-  );
-  $form['bioPrivacy'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide \'biography\' in public profile'),
-    '#default_value' => $cf_account->privacyConfig->bio == CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE,
-  );
-
-  // Default language.
-  $form['preferredLanguage'] = array(
-    '#type' => 'select',
-    '#title' => t('Preferred language'),
-    '#default_value' => !empty($cf_account->preferredLanguage) ? $cf_account->preferredLanguage : '',
-    '#options' => array(
-      'nl' => t('Dutch'),
-      'fr' => t('French'),
-      'en' => t('English'),
-      'de' => t('German'),
-    ),
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-
-  return $form;
-}
-
 /**
- * Validate the user profile form.
+ * Page callback the for profile privacy settings.
+ *
+ * @return array
+ *   The render array.
  */
-function culturefeed_ui_page_profile_edit_form_validate($form, &$form_state) {
-
-  $values = $form_state['values'];
-
-  // Custom validations first.
-  if (drupal_strlen($values['bio']) > 250) {
-    form_set_error('bio', t('The maximum of 250 characters is exceeded'));
-    return;
-  }
-
-  // Update profile information.
-  $user_update = new CultureFeed_User();
-
-  $user_update->id = DrupalCultureFeed::getLoggedInUserId();
-  $user_update->givenName = $values['givenName'];
-  $user_update->familyName = $values['familyName'];
-  $user_update->gender = $values['gender'];
-  $user_update->bio = $values['bio'];
-  $user_update->street = $values['street'];
-  $user_update->zip = $values['zip'];
-  $user_update->city = $values['city'];
-  $user_update->country = $values['country'];
-  $user_update->preferredLanguage = $values['preferredLanguage'];
-
-  if (empty($values['dob'])) {
-    $user_update->dob = '';
-  }
-  else {
-    $dob_parts = explode('/', $values['dob']);
-
-    if (count($dob_parts) == 3) {
-      list($day, $month, $year) = $dob_parts;
-
-      if (is_numeric($day) && is_numeric($month) && is_numeric($year)) {
-        if ($date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year)) {
-          $user_update->dob = $date;
-        }
-      }
-    }
-  }
-
-  $fields = array('id', 'givenName', 'familyName', 'gender', 'bio', 'street', 'zip', 'city', 'country', 'dob');
+function culturefeed_ui_page_privacy_settings() {
 
   try {
-    DrupalCultureFeed::updateUser($user_update, $fields);
-  }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    form_set_error('submit', t('Error occurred while saving your personal data.'));
-  }
-
-  // Remove the profile picture if requested.
-  if (empty($form_state['values']['picture']) && $form_state['#old_picture'] > 0) {
-    try {
-      DrupalCultureFeed::removeUserDepiction(DrupalCultureFeed::getLoggedInUserId());
-    }
-    catch (Exception $e) {
-      watchdog_exception('culturefeed_ui', $e);
-    }
-  }
-
-  // Upload profile picture.
-  if ($form_state['values']['picture'] && $form_state['#old_picture'] != $form_state['values']['picture']) {
-
-    $file = file_load($form_state['values']['picture']);
-    if ($file) {
-      try {
-        $file_upload = culturefeed_prepare_curl_upload_from_file($file);
-
-
-        DrupalCultureFeed::uploadUserDepiction(DrupalCultureFeed::getLoggedInUserId(), $file_upload);
-      }
-      catch (Exception $e) {
-        watchdog_exception('culturefeed_ui', $e);
-        form_set_error('picture', t('Error occurred while saving your picture.'));
-      }
-    }
-  }
-
-  // Update field privacy status.
-  $privacy_config = new CultureFeed_UserPrivacyConfig();
-
-  $privacy_config->givenName = $values['givenNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->familyName = $values['familyNamePrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->gender = $values['genderPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->homeAddress = $values['homeAddressPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->dob = $values['dobPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-  $privacy_config->bio = $values['bioPrivacy'] ? CultureFeed_UserPrivacyConfig::PRIVACY_PRIVATE : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC;
-
-  try {
-    DrupalCultureFeed::updateUserPrivacy(DrupalCultureFeed::getLoggedInUserId(), $privacy_config);
-  }
-  catch (Exception $e) {
-    form_set_error('submit', t('Error occurred while saving your privacy settings.'));
-  }
-}
-
-/**
- * Submit the user profile form.
- */
-function culturefeed_ui_page_profile_edit_form_submit($form, &$form_state) {
-  drupal_set_message(t('Changes succesfully saved.'));
-}
-
-/**
- * Page callback to theme the account page.
- * @return type
- */
-function culturefeed_ui_page_account_edit() {
-  return array(
-    '#theme' => 'culturefeed_ui_page_account_edit',
-  );
-}
-
-function culturefeed_ui_page_account_edit_form() {
-
-  culturefeed_ui_set_profile_breadcrumb();
-
-  $form = array();
-
-  try {
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
     drupal_set_message(t('An error occurred while loading your account, please try again later.'));
-    return;
+    return array();
   }
 
-  $form['view-profile'] = array(
-    '#prefix' => '<div id="view-profile">',
-    '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
-    '#suffix' => '</div>',
+  culturefeed_ui_set_profile_breadcrumb();
+
+  $form = drupal_get_form('culturefeed_ui_privacy_settings_form', $culturefeed_user);
+
+  return array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/privacy_settings.css',
+      ),
+    ),
+    '#intro' => variable_get('culturefeed_ui_privacy_settings_intro', ''),
+    '#form' => drupal_render($form),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
+    '#theme' => 'culturefeed_ui_privacy_settings',
   );
 
-  $form['nick'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Username'),
-    '#disabled' => TRUE,
-    '#value' => $cf_account->nick,
-  );
-
-  $form['mbox'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Email address'),
-    '#default_value' => $cf_account->mbox,
-    '#required' => TRUE,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-
-  $destination = url('culturefeed/account/edit', array('absolute' => TRUE));
-
-  $url = DrupalCultureFeed::getUrlChangePassword($cf_account->id, $destination);
-
-  $options = array('attributes' => array('class' => array('culturefeedconnect')), 'query' => drupal_get_destination());
-
-  $form['change_password'] = array(
-    '#prefix' => '<div id="change-password">',
-    '#markup' => l(t('Change password'), $url, $options),
-    '#suffix' => '</div>',
-  );
-
-  $form['remove_account'] = array(
-    '#prefix' => '<div id="remove-account">',
-    '#markup' => l(t('Delete account'), 'culturefeed/removeaccount'),
-    '#suffix' => '</div>',
-  );
-
-  return $form;
 }
 
-function culturefeed_ui_page_account_edit_form_validate($form, &$form_state) {
-  if (!valid_email_address($form_state['values']['mbox'])) {
-    form_set_error('mbox', t('Invalid email'));
-  }
-}
-
-function culturefeed_ui_page_account_edit_form_submit($form, &$form_state) {
-  $cf_account = new CultureFeed_User();
-  $cf_account->id = DrupalCultureFeed::getLoggedInUserId();
-  $cf_account->mbox = $form_state['values']['mbox'];
+/**
+ * Page callback for the account edit page.
+ *
+ * @return array
+ *   The render array.
+ */
+function culturefeed_ui_page_account_edit() {
 
   try {
-    DrupalCultureFeed::updateUser($cf_account);
-    drupal_set_message(t('Changes succesfully saved.'));
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('Error occurred'), 'error');
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
+    return array();
   }
+
+  culturefeed_ui_set_profile_breadcrumb();
+
+  $connected_applications = culturefeed_ui_page_serviceconsumers();
+  $form = drupal_get_form('culturefeed_ui_account_edit_form', $culturefeed_user);
+  $online_accounts = culturefeed_ui_online_accounts();
+
+  return array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/account_edit.css',
+      ),
+    ),
+    '#connected_applications' => drupal_render($connected_applications),
+    '#form' => drupal_render($form),
+    '#intro' => variable_get('culturefeed_ui_account_edit_intro', ''),
+    '#online_accounts' => drupal_render($online_accounts),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
+    '#theme' => 'culturefeed_ui_page_account_edit',
+  );
+
 }
+
+/**
+ * Page callback for the profile edit page.
+ *
+ * @return array
+ *   The render array.
+ */
+function culturefeed_ui_page_profile_edit() {
+
+  try {
+    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_ui', $e);
+    drupal_set_message(t('An error occurred while loading your account, please try again later.'));
+    return array();
+  }
+
+  culturefeed_ui_set_profile_breadcrumb();
+
+  $form = drupal_get_form('culturefeed_ui_profile_edit_form', $culturefeed_user);
+
+  $build = array(
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'culturefeed_ui') . '/css/profile_edit.css',
+      ),
+    ),
+    '#form' => drupal_render($form),
+    '#intro' => variable_get('culturefeed_ui_profile_edit_intro', ''),
+    '#profile_shortcuts' => theme('culturefeed_ui_profile_shortcuts'),
+    '#theme' => 'culturefeed_ui_page_profile_edit',
+  );
+
+  if (module_exists('culturefeed_uitpas')) {
+
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+    if (isset($uitpas_user->passholder)) {
+
+      $path = 'culturefeed/uitpas/synchronization';
+      $item = menu_get_item($path);
+      $build['#attached']['js'] = array(
+        drupal_get_path('module', 'culturefeed_ui') . '/js/synchronization.js',
+        array(
+          'type' => 'setting',
+          'data' => array(
+            'culturefeed_ui_synchronization' => array(
+              'url' => url('culturefeed/uitpas/synchronization'),
+              'title' => $item['title'],
+            ),
+          ),
+        ),
+      );
+      $build['#attached']['library'] = array(
+        array('system', 'ui.dialog'),
+      );
+
+    }
+
+  }
+
+  return $build;
+
+}
+
 
 function culturefeed_ui_online_accounts() {
   $online_account_types = array('twitter', 'facebook', 'google');
@@ -543,6 +327,9 @@ function culturefeed_ui_online_accounts() {
   return array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array(
+    'class' => 'user-accounts',
+    ),
   );
 }
 
@@ -693,6 +480,9 @@ function culturefeed_ui_page_serviceconsumers() {
     $content['consumers'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
+      '#attributes' => array(
+        'class' => 'user-applications',
+      ),
     );
   }
 

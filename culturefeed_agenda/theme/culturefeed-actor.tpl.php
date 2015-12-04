@@ -59,6 +59,11 @@
     </ul>
   </dd>
   <?php endif; ?>
+  
+  <?php if (!empty($weekscheme)): ?>
+  <dt><?php print t('Opening hours'); ?></dt>
+  <dd><?php print $when_lg; ?></dd>
+  <?php endif; ?>
 
 </dl>
 

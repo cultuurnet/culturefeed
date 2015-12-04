@@ -260,8 +260,8 @@ msgid "Subscribed to our newsletter"
 msgstr "Für den Newsletter angemeldet"
 
 #: culturefeed_mailing.module:55
-msgid "Emails"
-msgstr "E-mails"
+msgid "Newsletters"
+msgstr "Rundschreiben"
 
 #: culturefeed_mailing.module:64 culturefeed_mailing.info:0
 msgid "CultureFeed Mailing"

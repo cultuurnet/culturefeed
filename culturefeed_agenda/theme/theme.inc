@@ -149,6 +149,20 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
+  // Facilities: only for events with a location
+
+  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
+    $location = $cdb_item->getLocation();
+    $actor_id = $location->getCdbid();
+    if ($actor_id) {
+      if(culturefeed_agenda_actor_load($actor_id)) {
+        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
+        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+        $variables['locations_facilities'] = $facilities['text'];
+      }
+    }
+  }
+
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -163,6 +177,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
   $variables['actortypes'] = $actortypes['text'];
   $variables['actortypes_links'] = $actortypes['links'];
+
+  // Facilitytypes of this item (plain text and links).
+  $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
+  $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
+  $variables['facilities'] = array();
+  if(!empty($facilities)) {
+    foreach($facilities['id'] as $key => $facility) {
+      if(in_array($facility,$enabled_facilities['facility'])) {
+        $variables['facilities'][] = $facilities['text'][$key];
+      }
+    }
+  }
+
 
   if ($detail) {
 
@@ -330,6 +357,21 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
 
+  // Themes of this item (as plain text and as links).
+  $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
+  $variables['themes'] = $themes['text'];
+  $variables['themes_links'] = $themes['links'];
+
+  // Eventtypes of this item (plain text and links).
+  $eventtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_EVENT_TYPE, $cdb_item);
+  $variables['types'] = $eventtypes['text'];
+  $variables['types_links'] = $eventtypes['links'];
+
+  // Actortypes of this item (plain text and links).
+  $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
+  $variables['actortypes'] = $actortypes['text'];
+  $variables['actortypes_links'] = $actortypes['links'];
+
   // Preprocess the organiser variables.
   if (method_exists($cdb_item, 'getOrganiser')) {
 
@@ -370,7 +412,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
         if ($keyword->isVisible()) {
           $variables['raw_keywords'][] = $keyword->getValue();
-          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('keyword' => '"' . $keyword->getValue() . '"')));
+          $linked_keywords[] = l($keyword->getValue(), 'agenda/search', array('query' => array('search' => '"' . $keyword->getValue() . '"')));
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
@@ -394,7 +436,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $linked_keywords = array();
       foreach ($keywords as $keyword) {
         $variables['raw_keywords'][] = $keyword;
-        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('keyword' => '"' . $keyword . '"')));
+        $linked_keywords[] = l($keyword, 'agenda/search', array('query' => array('search' => '"' . $keyword . '"')));
       }
 
       $variables['keywords'] = implode(', ', $linked_keywords);
@@ -408,7 +450,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
   $variables['is_android'] = FALSE;
-  $detect = culturefeed_mobile_detect_get_object();
+  
+  if (module_exists('culturefeed')) {
+    $detect = culturefeed_mobile_detect_get_object();
+  }
 
   if ($detect) {
     $device = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
@@ -464,6 +509,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
     $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
+    $variables['facebook']['options'] = array();
+    $variables['twitter']['options'] = array();
+    $variables['googleplus']['options'] = array();
+    $variables['whatsapp']['options'] = array();
+    $variables['mail']['options'] = array();
+
     // Prepare to push share activities to Culturefeed.
     $track = FALSE;
     if (culturefeed_is_culturefeed_user()) {
@@ -472,45 +523,72 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $id = $item->getId();
       $track_facebook = url('culturefeed/do/' . CultureFeed_Activity::TYPE_FACEBOOK .'/' . $content_type . '/' . urlencode($id) . '/ajax');
       $track_twitter = url('culturefeed/do/' . CultureFeed_Activity::TYPE_TWITTER .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+      $track_mail = url('culturefeed/do/' . CultureFeed_Activity::TYPE_MAIL .'/' . $content_type . '/' . urlencode($id) . '/ajax');
+
+      // Add options.
+      $variables['facebook']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'facebook-share'),
+          'rel' => $track ? $track_facebook : '' ,
+        ),
+      );
+      $variables['twitter']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'twitter-share'),
+          'rel' => $track ? $track_twitter : '' ,
+        ),
+      );
+      $variables['googleplus']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'googleplus-share'),
+        ),
+      );
+      $variables['whatsapp']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'whatsapp-share'),
+        ),
+        'external' => TRUE,
+      );
+      $variables['mail']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'forward-mail'),
+          'rel' => $track ? $track_mail : '' ,
+        ),
+        'external' => TRUE,
+      );
+
     }
 
-    // Add options.
-    $variables['facebook']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'facebook-share'),
-        //'rel' => $track ? $track_facebook : '' ,
-      ),
-    );
-    $variables['googleplus']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'googleplus-share'),
-      ),
-    );
-    $variables['twitter']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'twitter-share'),
-        //'rel' => $track ? $track_twitter : '' ,
-      ),
-    );
-    $variables['whatsapp']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'whatsapp-share'),
-      ),
-      'external' => TRUE,
-    );
-    $variables['mail']['options'] = array(
-      'attributes' => array(
-        'class' => array('share-link', 'forward-mail'),
-      ),
-      'external' => TRUE,
-    );
-
     // Share Links.
-    $variables['facebook_link'] = l(t('Share on Facebook'), $variables['facebook']['url'], $variables['facebook']['options']);
-    $variables['googleplus_link'] = l(t('Share on Google+'), $variables['googleplus']['url'], $variables['googleplus']['options']);
-    $variables['twitter_link'] = l(t('Share on Twitter'), $variables['twitter']['url'], $variables['twitter']['options']);
-    $variables['whatsapp_link'] = l(t('Share on Whatsapp'), $variables['whatsapp']['url'], $variables['whatsapp']['options']);
-    $variables['mail_link'] = l(t('Mail'), $variables['mail']['url'], $variables['mail']['options']);
+    $facebook_title = t('Share on Facebook');
+    $facebook_options = $variables['facebook']['options'];
+    $facebook_options['attributes']['title'] = $facebook_title;
+    $facebook_options['attributes']['alt'] = $facebook_title;
+    $variables['facebook_link'] = l($facebook_title, $variables['facebook']['url'], $facebook_options);
+
+    $googleplus_title = t('Share on Google+');
+    $googleplus_options = $variables['googleplus']['options'];
+    $googleplus_options['attributes']['title'] = $googleplus_title;
+    $googleplus_options['attributes']['alt'] = $googleplus_title;
+    $variables['googleplus_link'] = l($googleplus_title, $variables['googleplus']['url'], $googleplus_options);
+
+    $twitter_title = t('Share on Twitter');
+    $twitter_options = $variables['twitter']['options'];
+    $twitter_options['attributes']['title'] = $twitter_title;
+    $twitter_options['attributes']['alt'] = $twitter_title;
+    $variables['twitter_link'] = l($twitter_title, $variables['twitter']['url'], $twitter_options);
+
+    $whatsapp_title = t('Share on Whatsapp');
+    $whatsapp_options = $variables['whatsapp']['options'];
+    $whatsapp_options['attributes']['title'] = $whatsapp_title;
+    $whatsapp_options['attributes']['alt'] = $whatsapp_title;
+    $variables['whatsapp_link'] = l($whatsapp_title, $variables['whatsapp']['url'], $whatsapp_options);
+
+    $mail_title = t('Mail');
+    $mail_options = $variables['mail']['options'];
+    $mail_options['attributes']['title'] = $mail_title;
+    $mail_options['attributes']['alt'] = $mail_title;
+    $variables['mail_link'] = l($mail_title, $variables['mail']['url'], $mail_options);
 
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
@@ -527,16 +605,33 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   // Links.
   $links = _culturefeed_agenda_get_links_from_item($cdb_item);
   $variables['links'] = array();
+  $reservation_links = array();
+  if (method_exists($cdb_item, 'getContactInfo')) {
+    try {
+      $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
+      $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+    }
+    catch (Exception $e) {
+      watchdog_exception('notice', $e);
+    }
+  }
   foreach ($links as $link) {
-    // clean up link text
-    $link_text = str_replace('http://', '', $link);
-    $link_text = str_replace('https://', '', $link_text);
-    $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), $link, array('attributes' => array('id' => 'cf-link')));
+
+    if (!in_array($link, $reservation_links)) {
+
+      // clean up link text
+      $link_text = str_replace('http://', '', $link);
+      $link_text = str_replace('https://', '', $link_text);
+      $variables['links'][] = l(truncate_utf8($link_text, 40, FALSE, TRUE), trim($link), array('attributes' => array('id' => 'cf-link')));
+
+    }
+
   }
 
   if (module_exists('culturefeed_social')) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
+
 }
 
 /**
@@ -564,7 +659,9 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      if (!$mail->isForReservations()) {
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -572,17 +669,18 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $phones = array();
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
-      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if(isset($variables['device']) && $variables['device'] == 'phone')
-        {
-          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+      if (!$phone->isForReservations()) {
+        if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
+          if (isset($variables['device']) && $variables['device'] == 'phone') {
+            $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
+          }
+          else {
+            $phones[] = $phone->getNumber();
+          }
         }
         else {
-          $phones[] = $phone->getNumber();
+          $faxes[] = $phone->getNumber();
         }
-      }
-      else {
-        $faxes[] = $phone->getNumber();
       }
     }
     $variables['contact']['phone'] = implode(', ', $phones);
@@ -891,6 +989,28 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   // Location information.
   $variables['location'] = '';
   $variables['contact'] = array();
+  
+  if ($actor->getWeekScheme()) {
+    
+    $variables['weekscheme'] = culturefeed_agenda_parse_weekscheme($actor->getWeekScheme());
+    
+    // Format Calendar details to readable & themable HTML.
+    $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+    
+    // Use Permanent Calendar because html_formatter uses CultureFeed_Cdb_Data_Calendar and not Weekscheme
+    $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
+    $calendar->setWeekScheme($actor->getWeekScheme());
+    
+    // Large Calendar format (for detail pages).
+    $variables['when_lg'] = '';
+    try {
+      $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    }  
+    
+  }
+  
   if ($actor->getContactInfo()) {
 
     $contact_info = $actor->getContactInfo();
@@ -1382,4 +1502,47 @@ function culturefeed_agenda_preprocess_culturefeed_agenda_organiser_events(&$var
 	$variables['organiser_link'] = '<a href="/agenda/a/' . $organiser . '/' . $organiser_id . '">' . $organiser . '</a>';
 
 
+}
+
+function theme_culturefeed_agenda_page_list_rss($variables) {
+  $objects = $variables['objects'];
+  $active_filters = $variables['path']['title'];
+
+  $items = '';
+  if ($objects) {
+    foreach ($objects as $object) {
+      // object_url
+      $object_url = array('path' => $object['path']);
+      $object_url['options']['absolute'] = TRUE;
+      $object_url['options']['query'] = array('utm_campaign' => 'rss', 'utm_medium' => 'content', 'utm_source' => 'external', 'utm_content' => 'feed');
+      $object_url = url($object_url['path'], $object_url['options']);
+
+      $args = array(
+        array('key' => 'pubDate', 'value' => date('r', strtotime($object['created']))),
+        array('key' => 'guid', 'value' => $object_url, 'attributes' => array('isPermaLink' => 'true')),
+        array('key' => 'postid', 'value' => $object['cdbid']),
+      );
+
+      $body = '';
+      if (isset($object['city']) && !empty($object['city'])) {
+        $body .= strtoupper($object['city']) . ', ';     
+      }
+      if (isset($object['when_md_txt']) && !empty($object['when_md_txt'])) {
+        $body .= strtolower($object['when_md_txt']) . ' - ';
+      }
+      $body .= $object['shortdescription'];
+      $items .= format_rss_item($object['title'], $object_url, $body, $args);
+    }
+  }
+  
+  $site_name = variable_get('site_name', 'Drupal');
+  $url = url('', array('absolute' => TRUE, 'query' => array('utm_campaign' => 'rss', 'utm_medium' => 'content', 'utm_source' => 'external', 'utm_content' => 'feed')));
+  $description = t('Recently added in:') . ' ' . $active_filters ;
+
+  $output  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+  $output .= "<rss version=\"2.0\">\n";
+  $output .= format_rss_channel(t('@site_name', array('@site_name' => $site_name)), $url, $description, $items);
+  $output .= "</rss>\n";
+
+  return $output;
 }

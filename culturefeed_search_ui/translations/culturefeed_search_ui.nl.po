@@ -11,6 +11,9 @@
 #  includes/blocks.inc: n/a
 #  includes/helpers.inc: n/a
 #  includes/pages.inc: n/a
+#  js/city_facet.js: n/a
+#  js/location_autocomplete.js: n/a
+#  theme/culturefeed-search-parent-region-suggestion.tpl.php: n/a
 #  js/search_ui.js: n/a
 #  lib/Drupal/CultureFeedSearchPage.php: n/a
 #  theme/culturefeed-search-list.tpl.php: n/a
@@ -22,8 +25,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-03-18 20:21+0100\n"
-"PO-Revision-Date: 2015-03-18 20:36+0100\n"
+"POT-Creation-Date: 2015-11-10 10:37+0100\n"
+"PO-Revision-Date: 2015-11-10 10:39+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -32,179 +35,183 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: culturefeed_search_ui.module:133
+#: culturefeed_search_ui.module:131
 msgid "CultureFeed Search UI settings"
 msgstr ""
 
-#: culturefeed_search_ui.module:142
+#: culturefeed_search_ui.module:140
 msgid "Change CultureFeed Search UI settings like display, filters, …"
 msgstr ""
 "Verander de instellingen van de CultureFeed Search UI zoals weergave, "
 "filters,..."
 
-#: culturefeed_search_ui.module:149
+#: culturefeed_search_ui.module:147
 msgid "Change CultureFeed Search UI sort settings."
 msgstr ""
 
-#: culturefeed_search_ui.module:354
+#: culturefeed_search_ui.module:360
 msgid "Culturefeed search: search events and pages"
 msgstr "Culturefeed search: zoek activiteiten en pagina's"
 
-#: culturefeed_search_ui.module:359
+#: culturefeed_search_ui.module:365
 msgid "Culturefeed search: sort order"
 msgstr "Culturefeed search: zoekresultaten sorteren"
 
-#: culturefeed_search_ui.module:364
+#: culturefeed_search_ui.module:370
 msgid "Culturefeed search: active filters"
 msgstr "Culturefeed search: actieve filters"
 
-#: culturefeed_search_ui.module:369
+#: culturefeed_search_ui.module:375
+msgid "Culturefeed search: region suggestion"
+msgstr ""
+
+#: culturefeed_search_ui.module:380
 msgid "Culturefeed search: facet entity type"
 msgstr ""
 
-#: culturefeed_search_ui.module:374
+#: culturefeed_search_ui.module:385
 msgid "Culturefeed search: facet when"
 msgstr "Culturefeed search: facet wanneer"
 
-#: culturefeed_search_ui.module:379
+#: culturefeed_search_ui.module:390
 msgid "Culturefeed search: facet where"
 msgstr "Culturefeed search: facet waar"
 
-#: culturefeed_search_ui.module:384
+#: culturefeed_search_ui.module:395
 msgid "Culturefeed search: facet where - search only on cities and zipcodes"
 msgstr ""
 
-#: culturefeed_search_ui.module:389
+#: culturefeed_search_ui.module:400
 msgid "Facet: Age range"
 msgstr ""
 
-#: culturefeed_search_ui.module:394
+#: culturefeed_search_ui.module:405
 msgid "Culturefeed search: Filter form"
 msgstr ""
 
-#: culturefeed_search_ui.module:400
+#: culturefeed_search_ui.module:411
 msgid "Culturefeed search: location search"
 msgstr ""
 
-#: culturefeed_search_ui.module:404
+#: culturefeed_search_ui.module:415
 msgid "Culturefeed search: Filter form 2"
 msgstr ""
 
-#: culturefeed_search_ui.module:412
+#: culturefeed_search_ui.module:423
 msgid "Culturefeed search: facet @label"
 msgstr ""
 
-#: culturefeed_search_ui.module:431
+#: culturefeed_search_ui.module:442
 msgid "Sort facet on"
 msgstr ""
 
-#: culturefeed_search_ui.module:433
+#: culturefeed_search_ui.module:444
 msgid "Default sorting"
 msgstr ""
 
-#: culturefeed_search_ui.module:434
+#: culturefeed_search_ui.module:445
 msgid "Alphabetically"
 msgstr ""
 
-#: culturefeed_search_ui.module:435
+#: culturefeed_search_ui.module:446
 msgid "Total results"
 msgstr ""
 
-#: culturefeed_search_ui.module:442
+#: culturefeed_search_ui.module:453
 msgid "Highest facet level"
 msgstr ""
 
-#: culturefeed_search_ui.module:444
+#: culturefeed_search_ui.module:455
 msgid "Level 1"
 msgstr ""
 
-#: culturefeed_search_ui.module:445
+#: culturefeed_search_ui.module:456
 msgid "Level 2"
 msgstr ""
 
-#: culturefeed_search_ui.module:446
+#: culturefeed_search_ui.module:457
 msgid "Level 3"
 msgstr ""
 
-#: culturefeed_search_ui.module:447
+#: culturefeed_search_ui.module:458
 msgid "Level 4"
 msgstr ""
 
-#: culturefeed_search_ui.module:449
+#: culturefeed_search_ui.module:460
 msgid ""
 "The highest level of facets to show. Should probably be level 1. If the "
 "highest level does not exist, the level above it will be used."
 msgstr ""
 
-#: culturefeed_search_ui.module:454
+#: culturefeed_search_ui.module:465
 msgid "Show subitems"
 msgstr ""
 
-#: culturefeed_search_ui.module:455
+#: culturefeed_search_ui.module:466
 msgid ""
 "Check this if the facets of lower levels should be shown when a facet option "
 "is selected."
 msgstr ""
 
-#: culturefeed_search_ui.module:469
+#: culturefeed_search_ui.module:480
 msgid "Show only selected options"
 msgstr ""
 
-#: culturefeed_search_ui.module:478
+#: culturefeed_search_ui.module:489
 msgid "Show the facet only when an eventtype is chosen"
 msgstr "Toon de facet enkel wanneer een eventtype is gekozen"
 
-#: culturefeed_search_ui.module:487
+#: culturefeed_search_ui.module:498
 msgid "Limit autocomplete options to selected parents"
 msgstr ""
 
-#: culturefeed_search_ui.module:538
+#: culturefeed_search_ui.module:549
 msgid "Available actortype categories."
 msgstr ""
 
-#: culturefeed_search_ui.module:539
+#: culturefeed_search_ui.module:550
 msgid ""
 "Select the actortype categories that can be shown in the autocomplete. If "
 "none selected, all actors will be searched."
 msgstr ""
 
-#: culturefeed_search_ui.module:555
+#: culturefeed_search_ui.module:566
 msgid "How to display the filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:556
+#: culturefeed_search_ui.module:567
 msgid "Select how to display the search filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:559
+#: culturefeed_search_ui.module:570
 msgid "As links"
 msgstr ""
 
-#: culturefeed_search_ui.module:560
+#: culturefeed_search_ui.module:571
 msgid "As checkboxes with submit button"
 msgstr ""
 
-#: culturefeed_search_ui.module:565
+#: culturefeed_search_ui.module:576
 msgid "How to apply filters on the query"
 msgstr ""
 
-#: culturefeed_search_ui.module:566
+#: culturefeed_search_ui.module:577
 msgid "Select the operator for the search filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:569
+#: culturefeed_search_ui.module:580
 msgid "Use AND-operator"
 msgstr ""
 
-#: culturefeed_search_ui.module:570
+#: culturefeed_search_ui.module:581
 msgid "Use OR-operator"
 msgstr ""
 
-#: culturefeed_search_ui.module:578
+#: culturefeed_search_ui.module:589
 msgid "Possible filters"
 msgstr ""
 
-#: culturefeed_search_ui.module:580
+#: culturefeed_search_ui.module:591
 msgid ""
 "<p>\n"
 "        Define the different filter options you want. Filters that are not "
@@ -216,64 +223,64 @@ msgid ""
 "      </p>"
 msgstr ""
 
-#: culturefeed_search_ui.module:591 includes/admin.inc:122
-#: theme/theme.inc:607;641
+#: culturefeed_search_ui.module:602 includes/admin.inc:122
+#: theme/theme.inc:647;681
 msgid "Exposed"
 msgstr ""
 
-#: culturefeed_search_ui.module:596 theme/theme.inc:608
+#: culturefeed_search_ui.module:607 theme/theme.inc:648
 msgid "Human name"
 msgstr ""
 
-#: culturefeed_search_ui.module:601
+#: culturefeed_search_ui.module:612
 msgid "Querystring for url"
 msgstr ""
 
-#: culturefeed_search_ui.module:606 theme/theme.inc:610
+#: culturefeed_search_ui.module:617 theme/theme.inc:650
 msgid "Filterquery for API"
 msgstr ""
 
-#: culturefeed_search_ui.module:711
+#: culturefeed_search_ui.module:723
 msgid "You searched for:"
 msgstr "Je zocht op:"
 
-#: culturefeed_search_ui.module:988
+#: culturefeed_search_ui.module:1038
 msgid "Near"
 msgstr "In de buurt van"
 
-#: culturefeed_search_ui.module:1018
+#: culturefeed_search_ui.module:1068
 msgid "All ages"
 msgstr "Alle leeftijden"
 
-#: culturefeed_search_ui.module:1072;1093;1097
+#: culturefeed_search_ui.module:1125;1146;1150
 msgid "culturefeed_search_ui"
 msgstr ""
 
-#: culturefeed_search_ui.module:1072
+#: culturefeed_search_ui.module:1125
 msgid "Fetching deleted objects from API for cleanup."
 msgstr ""
 
-#: culturefeed_search_ui.module:1093
+#: culturefeed_search_ui.module:1146
 msgid "Finished registration of deleted objects."
 msgstr ""
 
-#: culturefeed_search_ui.module:1097
+#: culturefeed_search_ui.module:1150
 msgid "Failed registration of deleted objects. Retrying again on the next run."
 msgstr ""
 
-#: culturefeed_search_ui.module:95
+#: culturefeed_search_ui.module:93
 msgid "Culturefeed search"
 msgstr ""
 
-#: culturefeed_search_ui.module:132 culturefeed_search_ui.info:0
+#: culturefeed_search_ui.module:130 culturefeed_search_ui.info:0
 msgid "CultureFeed Search UI"
 msgstr ""
 
-#: culturefeed_search_ui.module:141
+#: culturefeed_search_ui.module:139
 msgid "General settings"
 msgstr ""
 
-#: culturefeed_search_ui.module:148
+#: culturefeed_search_ui.module:146
 msgid "Sort settings"
 msgstr ""
 
@@ -392,19 +399,19 @@ msgid ""
 "    </p>"
 msgstr ""
 
-#: includes/admin.inc:114 theme/theme.inc:640
+#: includes/admin.inc:114 theme/theme.inc:680
 msgid "Default"
 msgstr "Standaard"
 
-#: includes/admin.inc:128 theme/theme.inc:642
+#: includes/admin.inc:128 theme/theme.inc:682
 msgid "Label"
 msgstr "Label"
 
-#: includes/admin.inc:134 theme/theme.inc:643
+#: includes/admin.inc:134 theme/theme.inc:683
 msgid "Value used in url"
 msgstr ""
 
-#: includes/admin.inc:140 theme/theme.inc:644
+#: includes/admin.inc:140 theme/theme.inc:684
 msgid "Sortquery for api"
 msgstr ""
 
@@ -436,7 +443,7 @@ msgstr "Datum"
 msgid "Or choose a custom date"
 msgstr "Of kies zelf een datum"
 
-#: includes/blocks.inc:226;376;593;818
+#: includes/blocks.inc:226;392;624;921
 msgid "Ok"
 msgstr "Ok"
 
@@ -448,81 +455,86 @@ msgstr "tot"
 msgid "Please enter a valid date"
 msgstr "Gelieve een geldige datum in te voeren"
 
-#: includes/blocks.inc:335;366;567;585;790;811
+#: includes/blocks.inc:351;382;598;616;893;914
 msgid "Where"
 msgstr "Waar"
 
-#: includes/blocks.inc:370;588;813
+#: includes/blocks.inc:386;619;916
 msgid "Zipcode or city"
 msgstr "Postcode of gemeente"
 
-#: includes/blocks.inc:430
+#: includes/blocks.inc:451
 msgid "Change radius"
 msgstr "Wijzig straal"
 
-#: includes/blocks.inc:433
+#: includes/blocks.inc:454
 msgid "Choose another location"
 msgstr "Kies andere plaats"
 
-#: includes/blocks.inc:512
+#: includes/blocks.inc:533
 msgid "Age"
 msgstr "Leeftijd"
 
-#: includes/blocks.inc:630
+#: includes/blocks.inc:661
 msgid "Type"
 msgstr "Type"
 
-#: includes/blocks.inc:650
+#: includes/blocks.inc:681
 msgid "Remove all filters"
 msgstr "Alle filters verwijderen"
 
-#: includes/blocks.inc:692
+#: includes/blocks.inc:798
 msgid "Filter"
 msgstr "Filter"
 
-#: includes/helpers.inc:84
+#: includes/helpers.inc:103
 msgid "Today"
 msgstr "Vandaag"
 
-#: includes/helpers.inc:85
+#: includes/helpers.inc:104
 msgid "Tomorrow"
 msgstr "Morgen"
 
-#: includes/helpers.inc:86
+#: includes/helpers.inc:105
 msgid "Next 7 days"
 msgstr "Volgende 7 dagen"
 
-#: includes/helpers.inc:87
+#: includes/helpers.inc:106
 msgid "This weekend"
 msgstr "Dit weekend"
 
-#: includes/helpers.inc:88
+#: includes/helpers.inc:107
 msgid "Next 14 days"
 msgstr "Volgende 14 dagen"
 
-#: includes/helpers.inc:89
+#: includes/helpers.inc:108
 msgid "Next 30 days"
 msgstr "Volgende 30 dagen"
 
-#: includes/helpers.inc:100;104;108;112
+#: includes/helpers.inc:119;124;129;134
 msgid "year"
 msgstr "jaar"
 
-#: includes/pages.inc:69;73;77;84
+#: includes/pages.inc:78;82;86;93
 msgid "There was an error while loading the search results."
 msgstr "Er is een fout opgetreden bij het laden van de zoekresultaten."
 
-#: includes/pages.inc:144
+#: includes/pages.inc:189
 msgid "No postal or city found."
 msgstr "Geen postcode of gemeente gevonden"
 
-#: includes/pages.inc:178;205
+#: includes/pages.inc:244;271
 msgid "Directly to"
 msgstr "Direct naar"
 
-#: includes/pages.inc:204
+#: includes/pages.inc:270
 msgid "Show all locations in !city"
-msgstr "Toon alle locaties in !city"
+msgstr "Toon alle plaatsen in !city"
+
+#: js/city_facet.js:0 js/location_autocomplete.js:0
+#: theme/culturefeed-search-parent-region-suggestion.tpl.php:10
+msgid "boroughs"
+msgstr "deelgemeenten"
 
 #: js/search_ui.js:0
 msgid "Specific date"
@@ -544,30 +556,34 @@ msgstr "Einddatum"
 msgid "OK"
 msgstr "Ok"
 
-#: lib/Drupal/CultureFeedSearchPage.php:651
+#: lib/Drupal/CultureFeedSearchPage.php:457
+msgid "You are searching on an invalid location."
+msgstr "Je zocht op een ongeldige locatie"
+
+#: lib/Drupal/CultureFeedSearchPage.php:685
 msgid "More results"
 msgstr "Meer resultaten"
 
-#: lib/Drupal/CultureFeedSearchPage.php:662
+#: lib/Drupal/CultureFeedSearchPage.php:696
 #: theme/culturefeed-search-list.tpl.php:14
 msgid "perform a new search."
 msgstr "voer een nieuwe zoekopdracht uit."
 
-#: lib/Drupal/CultureFeedSearchPage.php:664
+#: lib/Drupal/CultureFeedSearchPage.php:698
 #: theme/culturefeed-search-list.tpl.php:19
 msgid "There are no more search results."
 msgstr "Er zijn geen zoekresultaten meer."
 
-#: lib/Drupal/CultureFeedSearchPage.php:665
+#: lib/Drupal/CultureFeedSearchPage.php:699
 #: theme/culturefeed-search-list.tpl.php:19
 msgid "Refine your search results or"
 msgstr "Verfijn jouw zoekopdracht of"
 
-#: lib/Drupal/CultureFeedSearchPage.php:728
+#: lib/Drupal/CultureFeedSearchPage.php:769
 msgid "page"
 msgstr "pagina"
 
-#: theme/culturefeed-search-block-filter-links-item.tpl.php:13
+#: theme/culturefeed-search-block-filter-links-item.tpl.php:9
 #: theme/culturefeed-search-facet-item.tpl.php:15
 msgid "Remove filter"
 msgstr "Verwijder filter"
@@ -578,20 +594,21 @@ msgid_plural "<strong>@count</strong> results found"
 msgstr[0] "<strong>@count</strong> resultaat gevonden"
 msgstr[1] "<strong>@count</strong> resultaten gevonden"
 
+#: theme/culturefeed-search-parent-region-suggestion.tpl.php:8
 #: theme/culturefeed-search-suggestions.tpl.php:8
 msgid "Did you mean"
 msgstr "Bedoelde je:"
 
-#: theme/theme.inc:609
+#: theme/theme.inc:19
+msgid "Subscribe to an RSS feed with recently added items for this search"
+msgstr "Blijf op de hoogte van nieuwe zoekresultaten via RSS"
+
+#: theme/theme.inc:649
 msgid "Querystring for drupal url"
 msgstr ""
 
-#: theme/theme.inc:560
+#: theme/theme.inc:600
 msgid "@range from @count result"
 msgid_plural "@range from @count results"
 msgstr[0] "@range van @count resultaat"
 msgstr[1] "@range van @count resultaten"
-
-#: sites/all/modules/culturefeed/culturefeed_search_ui/js/location_autocomplete.js; sites/all/modules/culturefeed/culturefeed_search_ui/js/city_facet.js
-msgid "boroughs"
-msgstr "deelgemeenten"

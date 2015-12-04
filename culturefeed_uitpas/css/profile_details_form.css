@@ -1,0 +1,64 @@
+/* General. */
+
+.details-form * {
+  box-sizing: border-box;
+}
+
+.details-form .form-row {
+  margin: 0 -10px 0 -10px;
+}
+
+.details-form .form-item,
+.details-form .form-actions,
+.details-form .form-grouped {
+  width: 50%;
+  float: left;
+  padding: 0 10px 0 10px;
+}
+
+.details-form .form-grouped .form-item {
+  width: 100%;
+  float: none;
+  padding: 0;
+}
+
+.details-form .btn-primary {
+  margin: 20px 0 0 10px;
+}
+
+.details-form .form-item input {
+  width: 100%;
+}
+
+.details-form .form-item input.form-checkbox {
+  width: auto;
+  margin-left: 0px;
+  margin-right: 5px;
+}
+
+/* Specific. */
+
+.details-form .form-item-street {
+  width: 80%;
+}
+
+.details-form .form-item-nr {
+  width: 20%;
+}
+
+.details-form .form-item-zip {
+  width: 20%;
+}
+
+.details-form .form-item-city {
+  width: 80%;
+}
+
+.details-form .form-item-mobile,
+.details-form .form-item-email {
+  margin-bottom: 0;
+}
+
+.details-form .form-item-email-description {
+  padding-top: 1.1em;
+}

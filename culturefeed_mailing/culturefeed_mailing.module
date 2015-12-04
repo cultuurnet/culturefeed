@@ -333,7 +333,7 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
 
   return array(
     'emails' => array(
-      'title' => "E-mails",
+      'title' => "Newsletters",
       'url' => 'culturefeed/mailing',
       'description' => t('Manage newsletters you can subscribe to'),
       'weight' => -16,
@@ -364,6 +364,8 @@ function culturefeed_mailing_subscribe_user_light($email, $mailing_id, $zip = ''
  */
 function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
+  $form = array();
+
   if (isset($form_state['subscribed']) && $form_state['subscribed'] == TRUE) {
 
     $form['subscribed'] = array(
@@ -375,14 +377,30 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
   }
   else {
 
+    // Get the user account.
+    $account = culturefeed_load_logged_in_user();
     $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+
+    // Set defaults for the email field.
+    if ($account) {
+      $email = $account->mbox;
+      $disabled = TRUE;
+      $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
+    }
+    else {
+      $email = '';
+      $disabled = FALSE;
+      $description = t('Email address');
+    }
 
     $form['mail'] = array(
       '#type' => 'textfield',
       '#title' => variable_get('culturefeed_mailing_block_description', ''),
-      '#description' => t('Email address'),
+      '#description' => $description,
       '#size' => 40,
       '#maxlength' => 255,
+      '#default_value' => $email,
+      '#disabled' => $disabled,
     );
 
     if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
@@ -402,6 +420,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
       '#type' => 'submit',
       '#value' => t('Subscribe'),
     );
+
   }
 
 

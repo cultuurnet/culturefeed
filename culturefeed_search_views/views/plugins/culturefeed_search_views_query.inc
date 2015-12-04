@@ -11,13 +11,21 @@ class culturefeed_search_views_query extends views_plugin_query {
   private $parameters = array();
 
   /**
-   * Empty add_field method to support field row plugin.
+   * add_field method to support field row plugin and click sorting.
    */
   function add_field($table, $field, $alias = '', $params = array()) {
-
+    return $field;
   }
 
-  /*
+  /**
+   * {@inheritdoc}
+   */
+  function add_orderby($table, $field = NULL, $order = 'ASC', $alias = '', $params = array()) {
+    $parameter = new Parameter\Sort($alias, strtolower($order));
+    $this->add_parameter($parameter);
+  }
+
+  /**
    * return $parameters
    */
   function getParameters() {
@@ -83,14 +91,22 @@ class culturefeed_search_views_query extends views_plugin_query {
     }
 
     $searchService = culturefeed_get_search_service();
-    $result = $searchService->search($this->parameters);
 
-    // Give the result to the view.
-    $view->result = $result->getItems();
-    $view->total_rows = $result->getTotalCount();
-    $this->pager->total_items = $result->getTotalCount();
-    $this->pager->update_page_info();
-    $view->execute_time = microtime() - $start;
+    try {
+
+      $result = $searchService->search($this->parameters);
+
+      // Give the result to the view.
+      $view->result = $result->getItems();
+      $view->total_rows = $result->getTotalCount();
+      $this->pager->total_items = $result->getTotalCount();
+      $this->pager->update_page_info();
+      $view->execute_time = microtime() - $start;
+
+    }
+    catch (Exception $e) {
+      watchdog_exception(WATCHDOG_ERROR, $e);
+    }
 
   }
 

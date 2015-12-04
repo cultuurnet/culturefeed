@@ -94,12 +94,12 @@ msgid "Items to show"
 msgstr "Te tonen items"
 
 #: culturefeed_social.module:557
-msgid "Actions"
-msgstr "Acties"
+msgid "User history"
+msgstr "Gebruikersgeschiedenis"
 
 #: culturefeed_social.module:559
 msgid "Set which user actions are visible to others on your profile page."
-msgstr "Bekijk je acties en bepaal wat zichtbaar is voor anderen"
+msgstr "Bekijk je gebruikersacties en bepaal wat zichtbaar is voor anderen"
 
 #: culturefeed_social.module:620
 msgid "Everything"

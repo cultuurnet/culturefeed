@@ -8,10 +8,23 @@ function cf_user_load($uid) {
     return DrupalCultureFeed::getUser($uid);
   }
   catch (Exception $e) {
-    watchdog_e('culturefeed', $e);
+    watchdog_exception('culturefeed', $e);
   }
 
 }
+
+/**
+ * Load the logged in user
+ */
+function culturefeed_load_logged_in_user() {
+  try {
+    return DrupalCultureFeed::getLoggedInUser();
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed', $e);
+  }
+}
+
 
 /**
  * Check if a user is a culturefeed user.
@@ -24,6 +37,11 @@ function culturefeed_is_culturefeed_user($uid = NULL) {
  * Fetch a unique username for the given CultureFeed user id.
  */
 function culturefeed_unique_username($cf_uid, $nick) {
+
+  if (!$nick) {
+    $nick = t('Anonymous');
+  }
+
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
 
   if ($name) {
@@ -55,7 +73,7 @@ function culturefeed_create_user($cf_account, $user = NULL) {
   try {
 
     // If no CultureFeed user was passed, we can't create the user.
-    if (!$cf_account || empty($cf_account->nick)) {
+    if (!$cf_account) {
       return FALSE;
     }
 

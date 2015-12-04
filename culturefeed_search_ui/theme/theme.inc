@@ -15,6 +15,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['results_found'] = $vars['searchresult']->getTotalCount();
 
+  $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
+  $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+
 }
 
 /**
@@ -414,6 +417,23 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     }
 
   }
+  
+  if (isset($query['distance'])) {
+    // We have to unset distance when region of level 1, 2 and 3 is used (distance only works with level 4)
+    $regions_query = db_select('culturefeed_search_terms', 'cst');
+    $regions_query->fields('cst', array('tid', 'name'));
+    $regions_query->condition('cst.tid', $facet_item->getValue());
+    $regions_query->condition('cst.did', 'flandersregion');
+    $db_or = db_or();
+    $db_or->isNull('cst.p1');
+    $db_or->isNull('cst.p2');
+    $db_or->isNull('cst.p3');
+    $regions_query->condition($db_or);
+    $result = $regions_query->execute();
+    if ($result->rowCount() > 0) {    
+      unset($query['distance']);
+    }   
+  }
 
 
   if ($is_age_facet) {
@@ -668,4 +688,19 @@ function theme_culturefeed_search_ui_admin_sort_order_options($variables) {
 
   return theme('table', $table_variables);
 
+}
+
+/**
+ * Preprocess the parent region suggestion.
+ * @see culturefeed-search-parent-region-suggestion.tpl.php
+ */
+function culturefeed_search_ui_preprocess_culturefeed_search_parent_region_suggestion(&$variables) {
+  $variables['parent_region_suggestion'] = check_plain($variables['parent_region']->name);
+
+  $query = drupal_get_query_parameters(NULL, array('q', 'page', 'location', 'distance'));
+  $query['facet']['category_flandersregion_id'] = array(
+    $variables['parent_region']->tid
+  );
+
+  $variables['parent_region_suggestion_url'] = url('agenda/search', array('query' => $query));
 }

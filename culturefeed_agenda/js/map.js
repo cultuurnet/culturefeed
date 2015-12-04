@@ -9,9 +9,19 @@
    * Open the directions search on google maps.
    */
   Drupal.CultureFeed.Agenda.getDirections = function() {
+
     // set the start and end locations
     var saddr = document.getElementById("saddr").value;
     window.open('http://maps.google.be/maps?saddr=' + saddr + '&daddr=' + escape(Drupal.settings.culturefeed_map.info.location.street + ', ' + Drupal.settings.culturefeed_map.info.location.zip + ' ' + Drupal.settings.culturefeed_map.info.location.city) + '&hl=en&z=15', '_blank');
+
+    // Also register the activity for a loggedin user.
+    if (Drupal.settings.culturefeed_map.info.track_route) {
+      $.ajax({
+        url: Drupal.settings.culturefeed_map.info.track_route,
+        async: false,
+      });
+    }
+
   }
 
   /**

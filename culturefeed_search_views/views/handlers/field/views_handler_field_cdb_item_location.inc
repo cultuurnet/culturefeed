@@ -1,5 +1,7 @@
 <?php
 
+use \CultuurNet\Search\Parameter;
+
 /**
  * A handler to provide proper displays for the location of a cdb item.
  */
@@ -117,6 +119,16 @@ class views_handler_field_cdb_item_location extends views_handler_field {
     }
 
     return implode(' ', $output);
+
+  }
+
+  /**
+   * Called to determine what to tell the clicksorter.
+   */
+  function click_sort($order) {
+
+    $parameter = new Parameter\Sort('location_contactinfo_city', strtolower($order));
+    $this->query->add_parameter($parameter);
 
   }
 

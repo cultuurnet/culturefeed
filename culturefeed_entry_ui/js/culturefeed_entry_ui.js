@@ -87,6 +87,30 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
   }
 
   /**
+   * Ensure submit button only gets clicked once.
+   */
+  Drupal.behaviors.submit_once = {
+
+    attach: function () {
+
+      var form = $('#culturefeed-entry-ui-event-form');
+
+      form.submit(function(event) {
+        $(this).data('submitted', true);
+      });
+
+      $('.main-submit, .btn-primary').click(function () {
+        if (form.data('submitted') === true) {
+          $(this).attr('disabled', 'disabled');
+          return false;
+        }
+      });
+
+    }
+
+  }
+
+  /**
    * Hides the autocomplete suggestions.
    */
   Drupal.jsAC.prototype.hidePopup = function (keycode, op) {

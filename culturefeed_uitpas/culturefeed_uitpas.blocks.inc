@@ -160,7 +160,7 @@ function culturefeed_uitpas_block_view($delta = '') {
 
       if ($content) {
 
-        $block['subject'] = t('Already own an UiTPAS ?');
+        $block['subject'] = t('Already own an UiTPAS?');
         $block['content'] = $content;
 
       }
