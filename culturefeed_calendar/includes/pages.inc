@@ -527,11 +527,9 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
 
       DrupalCultureFeed::deleteActivity($activity->id);
 
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-
       $new_activity = $activity;
-      $new_activity->value = json_encode($selection);
+      $activity->value = '';
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
 
       DrupalCultureFeed::createActivity($new_activity);

@@ -275,8 +275,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   if ($authenticated) {
     $activity = new CultureFeed_Activity();
     if (!empty($date)) {
-      $activity->value = '';
-      $activity->calendarDate = str_replace('+00:00', 'Z', gmdate('c', strtotime($date)));
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -294,8 +293,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     $activity = new stdClass();
 
     if (!empty($date)) {
-      $activity->value = '';
-      $activity->calendarDate = str_replace('+00:00', 'Z', gmdate('c', strtotime($date)));
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -423,7 +421,7 @@ function culturefeed_calendar_delete_calendar_event_cookie($activity) {
 function culturefeed_calendar_get_selected_date($activity) {
 
   if (!empty($activity->calendarDate)) {
-    return strtotime($activity->calendarDate);
+    return $activity->calendarDate;
   }
 }
 
