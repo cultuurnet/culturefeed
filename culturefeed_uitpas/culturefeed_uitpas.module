@@ -46,13 +46,13 @@ function culturefeed_uitpas_views_api() {
  */
 function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {
 
-  if (culturefeed_uitpas_is_passholder()) {
+  $items['uitpas-divider'] = array(
+    'data' => '',
+    'class' => 'divider',
+    'weight' => 9,
+  );
 
-    $items['uitpas-divider'] = array(
-      'data' => '',
-      'class' => 'divider',
-      'weight' => 9,
-    );
+  if (culturefeed_uitpas_is_passholder()) {
 
     $items['my-uitpas'] = array(
       'data' => l(t('My UiTPAS'), 'culturefeed/profile/uitpas'),
@@ -69,6 +69,18 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
     $items['uitpas-history'] = array(
       'data' => l(t('UiTPAS history'), 'culturefeed/profile/uitpas/actions'),
       'class' => 'uitpas-history',
+      'weight' => 10,
+    );
+
+    return $items;
+
+  }
+
+  else {
+
+    $items['uitpas-register'] = array(
+      'data' => l(t('UiTPAS register'), 'authenticated?destination=register_uitpas'),
+      'class' => 'uitpas-register',
       'weight' => 10,
     );
 

@@ -53,5 +53,12 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
 
   }
 
-}
+  else {
+    return array(
+      'classes' => array('uitpas'),
+      'content' => theme('culturefeed_uitpas_profile_section_register'),
+      'title' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
+    );
+  }
 
+}
