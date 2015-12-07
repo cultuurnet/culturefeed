@@ -54,9 +54,6 @@
           if (lastResult.length === 0) {
             $(this).val('');
           }
-          else {
-            $(this).val(lastResult[0].value);
-          }
         },
         autoFocus: true,
         autoSelect: true,
