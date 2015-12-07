@@ -88,7 +88,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
         'class' => 'divider',
         'weight' => 9,
       );
-      
+
       $items['uitpas-register'] = array(
         'data' => l(t('UiTPAS register'), 'authenticated?destination=register_uitpas'),
         'class' => 'uitpas-register',
@@ -116,9 +116,7 @@ function culturefeed_uitpas_init() {
       return;
     }
 
-    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-
-    if ($uitpas_user->user && !$uitpas_user->passholder) {
+    if (culturefeed_uitpas_not_yet_registered()) {
       $message = t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.');
       $args = array(
         '@register_url' => url('register_uitpas'),
