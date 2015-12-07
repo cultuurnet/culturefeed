@@ -407,9 +407,9 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
       $form['zip'] = array(
         '#type' => 'textfield',
-        '#title' => '',
+        '#title' => t('Zipcode'),
         '#required' => FALSE,
-        '#description' => t('Zipcode'),
+        //'#description' => t('Zipcode'),
         '#size' => 40,
         '#default_value' => _culturefeed_mailing_get_postal_from_cookie(),
       );
