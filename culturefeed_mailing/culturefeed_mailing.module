@@ -390,7 +390,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     else {
       $email = '';
       $disabled = FALSE;
-      $description = t('Email address');
+      $description = '';
     }
 
     $form['mail'] = array(
@@ -405,13 +405,22 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
     if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
 
+      // Set defaults for the zipcode field.
+      $cookie_zip = _culturefeed_mailing_get_postal_from_cookie();
+      if ($account) {
+        $zipcode = (!empty($account->zip) ? $account->zip : $cookie_zip);
+      }
+      else {
+        $zipcode = $cookie_zip;
+      }
+
       $form['zip'] = array(
         '#type' => 'textfield',
         '#title' => t('Zipcode'),
         '#required' => FALSE,
         //'#description' => t('Zipcode'),
         '#size' => 40,
-        '#default_value' => _culturefeed_mailing_get_postal_from_cookie(),
+        '#default_value' => $zipcode,
       );
 
     }
