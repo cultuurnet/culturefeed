@@ -35,7 +35,12 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
       $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
       if ($filter) {
-        $query->owningCardSystemId = $filter;
+        if (strpos($filter, '+') === FALSE) {
+          $query->owningCardSystemId = $filter;
+        }
+        else {
+          $query->applicableCardSystemId = explode('+', $filter);
+        }
       }
 
       $query->start = $advantages_page * $advantages_max;
@@ -124,14 +129,8 @@ function culturefeed_uitpas_profile_advantages_filter_sort($form, $form_state) {
     '#theme' => 'links',
   );
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
-  $options = array();
-  foreach ($card_systems as $system) {
-    $options[$system->id] = $system->name;
-  }
+  // Get the card systems for the passholder.
+  $options = culturefeed_uitpas_get_user_card_systems_as_options();
 
   $id = drupal_html_id('profile-advantages-filter-sort');
   $form['profile_advantages']['#prefix'] = '<div id="' . $id . '">';

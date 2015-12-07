@@ -87,6 +87,37 @@ function culturefeed_uitpas_get_uitpas_event($item) {
 }
 
 /**
+ * Get the card systems as options for the profile pages.
+ *
+ * @return array
+ *   The options.
+ */
+function culturefeed_uitpas_get_user_card_systems_as_options() {
+
+  // Get the card systems for the passholder.
+  $options = array();
+  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  /* @var \CultureFeed_Uitpas_Passholder $passholder */
+  $passholder = $uitpas_user->passholder;
+  foreach ($passholder->cardSystemSpecific as $card_system_specific) {
+    $card_system = $card_system_specific->cardSystem;
+    $options[$card_system->id] = $card_system->name;
+  }
+
+  // Get the remaining card systems.
+  $card_systems = culturefeed_uitpas_get_card_systems();
+  array_walk($card_systems, function (&$card_system) {
+    /* @var CultureFeed_Uitpas_Cardsystem $card_system */
+    $card_system = $card_system->id;
+  });
+  $card_systems = array_diff($card_systems, array_keys($options));
+  $options[implode('+', $card_systems)] = t('other');
+
+  return $options;
+
+}
+
+/**
  * Returns a Culturefeed uitpas location.
  *
  * @return string
