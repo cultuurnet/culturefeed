@@ -333,7 +333,7 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
 
   return array(
     'emails' => array(
-      'title' => "Newsletters",
+      'title' => t('Newsletters'),
       'url' => 'culturefeed/mailing',
       'description' => t('Manage newsletters you can subscribe to'),
       'weight' => -16,
