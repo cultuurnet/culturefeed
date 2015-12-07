@@ -19,7 +19,6 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
-
     /* @var \CultureFeed_Uitpas_Passholder $passholder */
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     $passholder = $uitpas_user->passholder;
