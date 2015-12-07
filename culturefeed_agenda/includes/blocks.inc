@@ -183,11 +183,13 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
       '#weight' => $active_fields['where'],
     );
 
+    $default_where = isset($_GET['facet']['category_flandersregion_id']) ? culturefeed_search_get_term_translation($_GET['facet']['category_flandersregion_id'][0]) : '';
     $form['location']['where'] = array(
       '#type' => 'textfield',
       '#size' => 28,
       '#title' => t('Where'),
       '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
+      '#default_value' => $default_where,
     );
 
     $form['location']['radius'] = array(
