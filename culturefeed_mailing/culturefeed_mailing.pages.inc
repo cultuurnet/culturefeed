@@ -77,16 +77,28 @@ function culturefeed_mailing_subscribe_form() {
   }
 
   $form = array();
+  
+  // Set defaults for the email field.
+  if ($account) {
+    $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
+    $disabled = TRUE;
+    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
+  }
+  else {
+    $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
+    $disabled = FALSE;
+    $description = '';
+  }
   $form['mail'] = array(
     '#type' => 'textfield',
     '#title' => t('Email address'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : ''),
+    '#default_value' => $email,
     '#weight' => -10,
-    '#disabled' => TRUE,
-    '#description' => '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>',
+    '#disabled' => $disabled,
+    '#description' => $description,
   );
 
   $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
