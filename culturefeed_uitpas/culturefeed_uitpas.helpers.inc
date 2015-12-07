@@ -207,7 +207,7 @@ function culturefeed_uitpas_get_uitpas_user() {
 }
 
 /**
- * Check if the current user is a UiTPAS passholder.
+ * Check if the current user is a UiTPAS passholder and registered it online
  *
  * @return bool
  *   Boolean.
@@ -216,4 +216,30 @@ function culturefeed_uitpas_is_passholder() {
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   return NULL !== $uitpas_user->passholder;
+}
+
+/**
+ * Check if the current user has already bought a card, but hasn't registered it online
+ *
+ * @return bool
+ *   Boolean.
+ */
+
+function culturefeed_uitpas_not_yet_registered() {
+  try {
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+
+    if ($uitpas_user->user && $uitpas_user->user->mbox) {
+
+      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
+      $query->email = $uitpas_user->user->mbox;
+      $passholders = $uitpas_user->cf->uitpas()->searchPassholders($query);
+      if ($passholders->total > 0) {
+        return true;
+      }
+    }
+  }
+  catch (Exception $e) {
+    watchdog_exception('culturefeed_uitpas_not_yet_registered', $e);
+  }
 }
