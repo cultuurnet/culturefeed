@@ -438,7 +438,13 @@ function culturefeed_calendar_sort_by_date( $a, $b ) {
   if (!empty($a->calendarDate) && !empty($b->calendarDate)) {
     return strtotime($a->calendarDate) - strtotime($b->calendarDate);
   }
-  else if (!empty($a->value) && !empty($b->value)) {
+  else if (!empty($a->calendarDate) && empty($b->calendarDate)) {
+    return strtotime($a->calendarDate) - json_decode($b->value)->calendar_date;
+  }
+  else if (empty($a->calendarDate) && !empty($b->calendarDate)) {
+    return json_decode($a->value)->calendar_date - strtotime($b->calendarDate);
+  }
+  else if (empty($a->calendarDate) && empty($b->calendarDate)) {
     return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
   }
 }
