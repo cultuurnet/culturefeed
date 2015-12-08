@@ -233,8 +233,21 @@ class CultureFeedSearchPage {
         $part = str_replace($match, '', $part);
       }
 
+      // Put words with a special character between quotes.
+      $words = explode(' ', trim($part));
+      $parts = array();
+      $special_characters = array('-');
+      foreach ($words as $word) {
+        foreach ($characters as $special_characters) {
+          if (substr_count($word, $character) > 0) {
+            $word = '"' . $word . '"';
+          }
+        }
+        $parts[] = $word;
+      }
+
       // Replace spaces between multiple search words by 'AND'.
-      $part = str_replace(' ',' AND ', trim($part));
+      $part = implode(' AND ', $parts);
 
       // Add back the words between quotes.
       if (!empty($matches[0])) {
