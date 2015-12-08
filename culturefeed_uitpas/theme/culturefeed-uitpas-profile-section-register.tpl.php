@@ -28,12 +28,12 @@
 <?php else: ?>
 
   <p>
-    <?php echo t("Holders of an UiTPAS can earn points by participating in leisure activities and exchange them for ") . l(t("benefits."),"/promotions"); ?>
+    <?php echo t("Holders of an UiTPAS can earn points by participating in leisure activities and exchange them for ") . l(t("benefits."),"promotions"); ?>
   </p>
 
   <p>
     <a href="/register_where" class="btn btn-default">
-      <?php echo t("Find out where to get an UiTPAS"); ?>
+      <?php echo t("Get an UiTPAS"); ?>
     </a>
   </p>
 
