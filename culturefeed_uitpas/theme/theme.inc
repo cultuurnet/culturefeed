@@ -200,26 +200,25 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   $vars['intro'] = t('This page shows an overview of all your UiTPAS actions');
 
   // Actions.
-  $header = array('', t('Type'), t('Date'), t('Points'));
+  $header = array(t('Date'), t('Action'), t('Points'));
   $rows = array();
   if (count($activities)) {
 
     foreach ($activities as $activity) {
 
       /* @var \CultureFeed_Activity $activity */
-
-      $title = $activity->nodeTitle;
+      $action = culturefeed_get_human_readable_activity_type($activity->type);
+      $action .= '<br /><strong>' . $activity->nodeTitle . '</strong>';
       if ($activity->createdVia) {
-        $title .= '<br />' . t('at @location', array('@location' => $activity->createdVia));
+        $action .= ' ' . t('at @location', array('@location' => $activity->createdVia));
       }
 
       $singular = '@count point';
       $plural = '@count points';
       $rows[] = array(
-        $title,
-        culturefeed_get_human_readable_activity_type($activity->type),
-        date('j/m/Y', $activity->creationDate),
-        format_plural($activity->points, $singular, $plural),
+        date('j/m/Y', $activity->creationDate) . '<br />' . date('H:i', $activity->creationDate),
+        $action,
+        format_plural(sprintf('%+d', $activity->points), $singular, $plural),
       );
 
     }
