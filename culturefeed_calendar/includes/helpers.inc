@@ -423,12 +423,22 @@ function culturefeed_calendar_get_selected_date($activity) {
   if (!empty($activity->calendarDate)) {
     return $activity->calendarDate;
   }
+  else if (!empty($activity->value) ) {
+    $calendar_info = json_decode($activity->value);
+    if ($calendar_info && !empty($calendar_info->calendar_date)) {
+      return $calendar_info->calendar_date;
+    }
+  }
 }
 
 /**
  * Helper function to sort activities by date.
  */
 function culturefeed_calendar_sort_by_date( $a, $b ) {
-
+  if (!empty($a->calendarDate) && !empty($b->calendarDate)) {
     return strtotime($a->calendarDate) - strtotime($b->calendarDate);
+  }
+  else if (!empty($a->value) && !empty($b->value)) {
+    return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
+  }
 }
