@@ -451,18 +451,23 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
   $filtered_activities = array();
 
   foreach ($activities as $key => $activity) {
-
+dpm($activity);
     if (empty($filtered_activities[$activity->nodeId])) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
     else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && $filtered_activities[$activity->nodeId]->type == CultureFeed_Activity::TYPE_IK_GA) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
-    else if ($activity->type == $filtered_activities[$activity->nodeId]->type && empty($filtered_activities[$activity->nodeId]->value)) {
-      $filtered_activities[$activity->nodeId] = $activity;
+    else if ($activity->type == $filtered_activities[$activity->nodeId]->type) {
+      if (!empty($activity->calendarDate)) {
+        $filtered_activities[$activity->nodeId] = $activity;
+      }
+      elseif (!empty($activity->value)) {
+        $filtered_activities[$activity->nodeId] = $activity;
+      }
     }
 
   }
-  
+
   return $filtered_activities;
 }
