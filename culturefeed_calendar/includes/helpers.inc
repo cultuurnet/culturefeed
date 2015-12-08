@@ -459,14 +459,14 @@ dpm($activity);
       $filtered_activities[$activity->nodeId] = $activity;
     }
     else if ($activity->type == $filtered_activities[$activity->nodeId]->type) {
+
       if (!empty($activity->calendarDate)) {
         $filtered_activities[$activity->nodeId] = $activity;
       }
-      elseif (!empty($activity->value)) {
+      else if (!empty($activity->value)) {
         $filtered_activities[$activity->nodeId] = $activity;
       }
     }
-
   }
 
   return $filtered_activities;
