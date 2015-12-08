@@ -451,7 +451,7 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
   $filtered_activities = array();
 
   foreach ($activities as $key => $activity) {
-dpm($activity);
+
     if (empty($filtered_activities[$activity->nodeId])) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
