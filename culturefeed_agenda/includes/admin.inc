@@ -20,6 +20,13 @@ function culturefeed_agenda_admin_settings_form() {
     '#description' => t('Select the different entity types that can be shown on agenda/search'),
   );
 
+  $form['culturefeed_agenda_enable_activity_links_preprocessing'] = array(
+    '#title' => t('Enable preprocessing of activity links'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('culturefeed_agenda_enable_activity_links_preprocessing', TRUE),
+    '#description' => t('Check this checkbox if you want to enable the warming up, and the adding of the social links to template variables.'),
+  );
+
   $form = system_settings_form($form);
   $form['#submit'] = array('culturefeed_agenda_admin_settings_form_submit');
 

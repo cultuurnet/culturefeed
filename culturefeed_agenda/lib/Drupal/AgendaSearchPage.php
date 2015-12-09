@@ -244,7 +244,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $this->prepareSlugs();
 
     // This part only needs to be done in case culturefeed_social is enabled.
-    if (module_exists('culturefeed_social') && culturefeed_is_culturefeed_user()) {
+    if (CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING && module_exists('culturefeed_social') && culturefeed_is_culturefeed_user()) {
       culturefeed_social_warmup_activities_cache($this->result->getItems());
     }
   }
@@ -353,9 +353,9 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     // Set prefix of the meta description based on entity type
     if (empty($query)) {
       $message = t("A summary of all events and productions");
-    }    
+    }
     elseif (!empty($query['facet']['type'][0])) {
-  
+
       if ($query['facet']['type'][0] == 'actor') {
         $message = t("A summary of all actors");
       }
@@ -373,7 +373,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     else {
       $message = t("A summary of all events and productions");
     }
-    
+
     // Add additional facet information to the meta description
     // Only needed for indexable paths, see culturefeed_search_ui_set_noindex_metatag()
     if (!empty($query['voor-kinderen'])) {
@@ -416,7 +416,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $message .= t(" with keyword @keyword", array('@keyword' => $keyword));
     }
 
-    $message .= ". ";  
+    $message .= ". ";
     $message .= t("Discover what to do today, tomorrow, this weekend or later on.");
 
     return $message;

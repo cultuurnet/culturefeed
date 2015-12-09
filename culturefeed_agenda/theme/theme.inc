@@ -352,7 +352,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   // Social actions.
   $variables['recommend_link'] = '';
   $variables['attend_link'] = '';
-  if (module_exists('culturefeed_social')) {
+  if (CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING && module_exists('culturefeed_social')) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
@@ -450,7 +450,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
   $variables['is_android'] = FALSE;
-  
+
   if (module_exists('culturefeed')) {
     $detect = culturefeed_mobile_detect_get_object();
   }
@@ -628,7 +628,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   }
 
-  if (module_exists('culturefeed_social')) {
+  if (CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING && module_exists('culturefeed_social')) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
 
@@ -989,28 +989,28 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   // Location information.
   $variables['location'] = '';
   $variables['contact'] = array();
-  
+
   if ($actor->getWeekScheme()) {
-    
+
     $variables['weekscheme'] = culturefeed_agenda_parse_weekscheme($actor->getWeekScheme());
-    
+
     // Format Calendar details to readable & themable HTML.
     $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
-    
+
     // Use Permanent Calendar because html_formatter uses CultureFeed_Cdb_Data_Calendar and not Weekscheme
     $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
     $calendar->setWeekScheme($actor->getWeekScheme());
-    
+
     // Large Calendar format (for detail pages).
     $variables['when_lg'] = '';
     try {
       $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
     }
     catch (Exception $e) {
-    }  
-    
+    }
+
   }
-  
+
   if ($actor->getContactInfo()) {
 
     $contact_info = $actor->getContactInfo();
@@ -1525,7 +1525,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
 
       $body = '';
       if (isset($object['city']) && !empty($object['city'])) {
-        $body .= strtoupper($object['city']) . ', ';     
+        $body .= strtoupper($object['city']) . ', ';
       }
       if (isset($object['when_md_txt']) && !empty($object['when_md_txt'])) {
         $body .= strtolower($object['when_md_txt']) . ' - ';
@@ -1534,7 +1534,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }
-  
+
   $site_name = variable_get('site_name', 'Drupal');
   $url = url('', array('absolute' => TRUE, 'query' => array('utm_campaign' => 'rss', 'utm_medium' => 'content', 'utm_source' => 'external', 'utm_content' => 'feed')));
   $description = t('Recently added in:') . ' ' . $active_filters ;
