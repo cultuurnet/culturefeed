@@ -50,6 +50,21 @@
             $(this).data("autocomplete").menu.next(event);
           }
         },
+        close: function (event, ui) {
+          if ($(this).val().length !== 0) {
+            var pickFirst = true;
+            var input = $(this).val();
+            $.each(lastResult, function( key, obj ) {
+              if (input === obj.value) {
+                pickFirst = false;
+              }
+            });
+
+            if (pickFirst === true) {
+              $(this).val(lastResult[0].value);
+            }
+          }
+        },
         change: function (event, ui) {
           if (lastResult.length === 0) {
             $(this).val('');
