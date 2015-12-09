@@ -434,17 +434,35 @@ function culturefeed_calendar_get_selected_date($activity) {
 /**
  * Helper function to sort activities by date.
  */
-function culturefeed_calendar_sort_by_date( $a, $b ) {
-  if (!empty($a->calendarDate) && !empty($b->calendarDate)) {
-    return $a->calendarDate - $b->calendarDate;
+function culturefeed_calendar_sort_by_date($a, $b) {
+
+  $calendar_date_a = 0;
+  $calendar_date_b = 0;
+
+  // Calendar date property of a exists.
+  if (!empty($a->calendarDate)) {
+    $calendar_date_a = $a->calendarDate;
   }
-  else if (!empty($a->calendarDate) && empty($b->calendarDate)) {
-    return $a->calendarDate - json_decode($b->value)->calendar_date;
+  // Calendar date a is stored in value.
+  elseif (!empty($calendar_date_a->value)) {
+    $json_value_a = json_decode($a->value);
+    if (!empty($json_value_a->calendar_date)) {
+      $calendar_date_a = $json_value_a->calendar_date;
+    }
   }
-  else if (empty($a->calendarDate) && !empty($b->calendarDate)) {
-    return json_decode($a->value)->calendar_date - $b->calendarDate;
+
+  // Calendar date property of b exists.
+  if (!empty($b->calendarDate)) {
+    $calendar_date_b = $b->calendarDate;
   }
-  else if (empty($a->calendarDate) && empty($b->calendarDate)) {
-    return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
+  // Calendar date b is stored in value.
+  elseif (!empty($calendar_date_b->value)) {
+    $json_value_b = json_decode($b->value);
+    if (!empty($json_value_b->calendar_date)) {
+      $calendar_date_b = $json_value_b->calendar_date;
+    }
   }
+
+  return $calendar_date_a - $calendar_date_b;
+
 }
