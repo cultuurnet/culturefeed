@@ -20,6 +20,10 @@
     <span class="<?php print drupal_html_class($provider_raw); ?>"><?php print $provider_raw; ?></span>
   </div>
   <?php endif; ?>
+  <?php if ($counters): ?>
+    <div class="counters"><?php print $counters; ?></div>
+  <?php endif; ?>
+
   <div class="points"><?php print $points; ?></div>
   <?php if ($period): ?>
   <div class="period"><?php print $period; ?></div>

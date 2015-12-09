@@ -449,39 +449,32 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['points'] = format_plural($promotion->points, '1 point', '@count points');
 
   // Get the counters information.
-  $vars['counters'] = array();
-  if (isset($promotion->counters[0])) {
-    foreach ($promotion->counters as $key => $counter) {
-      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      if ($extendedCounter) {
-        $new_counter = array('item' => $extendedCounter);
-        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'][] = $new_counter;
-      }
-    }
+  $counters = array(
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => array(),
+  );
+  foreach ($promotion->counters as $counter) {
+    $counters['#items'][] = $counter->name;
   }
+  $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
-  $vars['period'] = '';
-  if ($promotion->cashingPeriodBegin) {
-    if (date('j/m/Y', $promotion->cashingPeriodBegin) <= date('j/m/Y')) {
-      $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
-    }
-    else {
-      $period = '';
-    }
+  $period = '';
+  $now = time();
+  if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > $now) {
+    $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
     if ($promotion->cashingPeriodEnd) {
       $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
-    $vars['period'] = $period;
+  }
+  else if ($promotion->cashingPeriodEnd) {
+    $period .= t('Valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
   }
   else {
-    if ($promotion->cashingPeriodEnd) {
-      $period = t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
-    }
-    $vars['period'] = $period;
+    $period = t('Until end of stock');
   }
+  $vars['period'] = $period;
 
   // Location.
   $locations = array();
