@@ -224,7 +224,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
     }
 
     if (count($prices)) {
-      $vars['price'] = '<span>' . implode('</span><br /><span>', array_unique($prices)) . '</span>';
+      $vars['price'] = '<p>' . implode('</p><p>', array_unique($prices)) . '</p>';
     }
 
   }
