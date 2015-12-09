@@ -364,14 +364,22 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
     // Activities.
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->userId = $culturefeed_user->id;
+    $query->start = 0;
+    $query->max = 1;
 
-    /* @var CultureFeed_ResultSet $activities */
-    $activities = DrupalCultureFeed::searchActivities($query);
-    if ($activities->total > 0) {
+    $activities = array();
+    do {
+
+      /* @var CultureFeed_ResultSet $result_set */
+      $result_set = DrupalCultureFeed::searchActivities($query);
+      $activities = array_merge($activities, $result_set->objects);
+      $query->start += $query->max;
+
+    } while ($query->start < $result_set->total);
+
+    foreach ($activities as $activity) {
       /* @var CultureFeed_Activity $activity */
-      foreach ($activities->objects as $activity) {
-        DrupalCultureFeed::updateActivity($activity->id, TRUE);
-      }
+      DrupalCultureFeed::updateActivity($activity->id, TRUE);
     }
 
     // Preferences.
@@ -393,6 +401,10 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
   catch (Exception $e) {
     form_set_error('submit', t('Error occurred while saving your privacy settings.'));
   }
+
+  $uid = db_query("SELECT uid FROM {culturefeed_user} WHERE cf_uid = :uid", array(':uid' => $culturefeed_user->id))->fetchField();
+  $cid = url('user/' . $uid, array('absolute' => TRUE));
+  cache_clear_all($cid, 'cache_page');
 
 }
 
