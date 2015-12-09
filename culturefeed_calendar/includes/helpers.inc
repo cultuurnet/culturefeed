@@ -85,7 +85,7 @@ function culturefeed_calendar_get_culturefeed_user_activities($use_search, $user
     watchdog_exception('culturefeed_calendar', $e);
   }
 
-  // Filter activities to make sure there are no duplicatesS.
+  // Filter activities to make sure there are no duplicates.
   $activities->objects = culturefeed_calendar_filter_duplicate_activities($activities->objects);
 
   return $activities;
@@ -462,7 +462,7 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
 
-    // When type is same. Activities with a date are more important.
+    // When type is like. Activities with a date are more important.
     else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && (!empty($activity->calendarDate) || !empty($activity->value))) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
