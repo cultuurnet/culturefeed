@@ -371,7 +371,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     $form['subscribed'] = array(
       '#theme' => 'culturefeed_mailing_content_block_subscribed',
       '#title' => t('Thanks!'),
-      '#message' => variable_get('culturefeed_mailing_subscribed_message', t('You have successfully subscribed to our newsletter')),
+      '#message' => t('You have successfully subscribed to our newsletter'),
     );
 
   }
@@ -469,7 +469,7 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
     }
 
     $form_state['subscribed'] = TRUE;
-    $form_state['rebuild'] = TRUE;
+    $form_state['redirect'] = 'subscribe/subscribed';
 
   }
   elseif (DrupalCultureFeed::isCultureFeedUser()) {
