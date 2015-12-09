@@ -452,20 +452,19 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
 
   foreach ($activities as $key => $activity) {
 
+    // First time this activity is found.
     if (empty($filtered_activities[$activity->nodeId])) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
+
+    // likes are more important then go's
     else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && $filtered_activities[$activity->nodeId]->type == CultureFeed_Activity::TYPE_IK_GA) {
       $filtered_activities[$activity->nodeId] = $activity;
     }
-    else if ($activity->type == $filtered_activities[$activity->nodeId]->type) {
 
-      if (!empty($activity->calendarDate)) {
-        $filtered_activities[$activity->nodeId] = $activity;
-      }
-      else if (!empty($activity->value)) {
-        $filtered_activities[$activity->nodeId] = $activity;
-      }
+    // When type is same. Activities with a date are more important.
+    else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && (!empty($activity->calendarDate) || !empty($activity->value))) {
+      $filtered_activities[$activity->nodeId] = $activity;
     }
   }
 
