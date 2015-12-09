@@ -226,6 +226,20 @@ function culturefeed_uitpas_is_passholder() {
  */
 
 function culturefeed_uitpas_not_yet_registered() {
+  if(culturefeed_uitpas_email_is_passholder() && !culturefeed_uitpas_is_passholder())
+  {
+    return true;
+  }
+}
+
+/**
+ * Check if the email is a UiTPAS passholder
+ *
+ * @return bool
+ *   Boolean.
+ */
+
+function culturefeed_uitpas_email_is_passholder() {
   try {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
