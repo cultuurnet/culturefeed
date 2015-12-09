@@ -446,7 +446,7 @@ function culturefeed_calendar_sort_by_date($a, $b) {
   // Calendar date a is stored in value.
   elseif (!empty($calendar_date_a->value)) {
     $json_value_a = json_decode($a->value);
-    if (!empty($json_value_a->calendar_date)) {
+    if ($json_value_a && !empty($json_value_a->calendar_date)) {
       $calendar_date_a = $json_value_a->calendar_date;
     }
   }
@@ -458,7 +458,7 @@ function culturefeed_calendar_sort_by_date($a, $b) {
   // Calendar date b is stored in value.
   elseif (!empty($calendar_date_b->value)) {
     $json_value_b = json_decode($b->value);
-    if (!empty($json_value_b->calendar_date)) {
+    if ($json_value_b && !empty($json_value_b->calendar_date)) {
       $calendar_date_b = $json_value_b->calendar_date;
     }
   }
