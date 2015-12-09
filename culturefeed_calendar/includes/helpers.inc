@@ -85,6 +85,9 @@ function culturefeed_calendar_get_culturefeed_user_activities($use_search, $user
     watchdog_exception('culturefeed_calendar', $e);
   }
 
+  // Filter activities to make sure there are no duplicates.
+  $activities->objects = culturefeed_calendar_filter_duplicate_activities($activities->objects);
+
   return $activities;
 
 }
@@ -439,4 +442,31 @@ function culturefeed_calendar_get_selected_date($activity) {
 function culturefeed_calendar_sort_by_date( $a, $b ) {
 
     return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
+}
+
+/**
+ * Helper function to filter out duplicate activities.
+ */
+function culturefeed_calendar_filter_duplicate_activities($activities) {
+  $filtered_activities = array();
+
+  foreach ($activities as $key => $activity) {
+
+    // First time this activity is found.
+    if (empty($filtered_activities[$activity->nodeId])) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+
+    // likes are more important then go's
+    else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && $filtered_activities[$activity->nodeId]->type == CultureFeed_Activity::TYPE_IK_GA) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+
+    // When type is like. Activities with a date are more important.
+    else if ($activity->type == CultureFeed_Activity::TYPE_LIKE && (!empty($activity->calendarDate) || !empty($activity->value))) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+  }
+
+  return $filtered_activities;
 }
