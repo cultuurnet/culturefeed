@@ -233,15 +233,15 @@ class CultureFeedSearchPage {
         $part = str_replace($match, '', $part);
       }
 
+      $part = str_replace('  ', ' ', $part);
+
       // Put words with a special character between quotes.
       $words = explode(' ', trim($part));
       $parts = array();
-      $special_characters = array('-');
+      $special_characters = '-';
       foreach ($words as $word) {
-        foreach ($characters as $special_characters) {
-          if (substr_count($word, $character) > 0) {
-            $word = '"' . $word . '"';
-          }
+        if (strpbrk($word, $special_characters)) {
+          $word = '"' . $word . '"';
         }
         $parts[] = $word;
       }
