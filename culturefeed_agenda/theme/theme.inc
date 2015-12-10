@@ -352,7 +352,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   // Social actions.
   $variables['recommend_link'] = '';
   $variables['attend_link'] = '';
-  if (CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING && module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
@@ -628,7 +628,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   }
 
-  if (CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING && module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
 

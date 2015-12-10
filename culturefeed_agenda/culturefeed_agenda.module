@@ -6,7 +6,6 @@ use Symfony\Component\Console\Output\NullOutput;
  * Performs searches to the Cultuurnet api.
  */
 define('CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS', 15);
-define('CULTUREFEED_AGENDA_ENABLE_SOCIAL_ACTIVITY_PREPPROCESSING', variable_get('culturefeed_agenda_enable_activity_links_preprocessing', TRUE));
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
 
