@@ -213,12 +213,19 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
         $action .= ' ' . t('at @location', array('@location' => $activity->createdVia));
       }
 
-      $singular = '@count point';
-      $plural = '@count points';
+      // Points.
+      $singular = '@formatted_count point';
+      $plural = '@formatted_count points';
+      $formatted_count = number_format($activity->points, 2, ',', '.');
+      if ($activity->points > 0) {
+        $formatted_count = '+' . $formatted_count;
+      }
+      $points = '<span>' . format_plural($activity->points, $singular, $plural, array('@formatted_count' => $formatted_count)) . '</span>';
+
       $rows[] = array(
         date('j/m/Y', $activity->creationDate) . '<br />' . date('H:i', $activity->creationDate),
         $action,
-        format_plural(sprintf('%+d', $activity->points), $singular, $plural),
+        $points,
       );
 
     }
