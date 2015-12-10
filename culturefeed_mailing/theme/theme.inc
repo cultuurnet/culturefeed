@@ -54,3 +54,11 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin_i
   $variables['optin_toggle'] = theme('culturefeed_mailing_optin', array('mailing_id' => $item->id));
   $variables['description'] = $item->description;
 }
+
+/**
+ * Preprocess variables for subscription thank you message.
+ * @see culturefeed-mailing-content-block-subscribed.tpl.php
+ */
+function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_subscribed(&$variables) {
+
+}

@@ -66,6 +66,19 @@ function culturefeed_search_ui_admin_settings() {
     '#description' => t('Enter the facebook app id. When share links are clicked, the javascript SDK will be used instead of redirecting to facebook.'),
   );
 
+  $form['culturefeed_multiple_categories_operator'] = array(
+    '#type' => 'select',
+    '#title' => t('Multiple categories operator'),
+    '#description' => t('Determine which operator to use when selecting
+    multiple categories.'),
+    '#options' => array(
+      'and' => t('Use \'AND\' operator'),
+      'or' => t('Use \'OR\' operator'),
+    ),
+    '#default_value' => variable_get
+    ('culturefeed_multiple_categories_operator', 'and'),
+  );
+
   return system_settings_form($form);
 
 }

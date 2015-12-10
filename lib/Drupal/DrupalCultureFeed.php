@@ -46,6 +46,10 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return $user;
   }
 
+  public static function getUserlightId($email, $home_zip = '') {
+    return self::getConsumerInstance()->getUserlightId($email, $home_zip);
+  }
+
   public static function searchUsers(CultureFeed_SearchUsersQuery $query) {
     return self::getConsumerInstance()->searchUsers($query);
   }
@@ -295,16 +299,27 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getLoggedInUserInstance()->searchMailings($query);
   }
 
-  public static function subscribeToMailing($user_id, $mailing_id) {
-    self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id);
+  public static function subscribeToMailing($user_id, $mailing_id, $use_auth = TRUE) {
+    if ($use_auth) {
+      self::getLoggedInUserInstance()->subscribeToMailing($user_id, $mailing_id, $use_auth);
+    }
+    else {
+      self::getConsumerInstance()->subscribeToMailing($user_id, $mailing_id, $use_auth);
+    }
+
   }
 
-  public static function unsubscribeFromMailing($user_id, $mailing_id) {
-    self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id);
+  public static function unsubscribeFromMailing($user_id, $mailing_id, $use_auth = TRUE) {
+    if ($use_auth) {
+      self::getLoggedInUserInstance()->unsubscribeFromMailing($user_id, $mailing_id, $use_auth);
+    }
+    else {
+      self::getConsumerInstance()->unsubscribeFromMailing($user_id, $mailing_id, $use_auth);
+    }
   }
 
-  public static function getMailingSubscriptions($user_id) {
-    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id);
+  public static function getMailingSubscriptions($user_id, $use_auth = TRUE) {
+    return self::getLoggedInUserInstance()->getMailingSubscriptions($user_id, $use_auth);
   }
 
   public static function getTopEvents($type, $max = 5) {

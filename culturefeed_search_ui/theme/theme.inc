@@ -249,6 +249,7 @@ function _culturefeed_search_ui_get_required_level($facet_items, $current_level,
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) {
   $facet = $variables['facet'];
+
   $path = empty($variables['path']) ? current_path() : $variables['path'];
 
   if (!isset($variables['query']) || !is_array($variables['query'])) {
@@ -319,7 +320,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'facet_item' => $sub_item,
           'facet_key' => $facet->getKey(),
           'query' => $query,
-          'path' => url($path),
+          'path' => $path,
           'active' => $sub_item_active,
         ));
 
@@ -342,7 +343,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'facet_item' => $facet_item,
       'facet_key' => $facet->getKey(),
       'query' => $query,
-      'path' => url($path),
+      'path' => $path,
       'active' => $item_active,
     ));
 
@@ -398,14 +399,36 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_eventtype(&$v
  * @see culturefeed-search-facet-item.tpl.php
  */
 function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variables) {
+
   $facet_key = $variables['facet_key'];
   $is_age_facet = $facet_key == 'agefrom';
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
-  // Every filter will reset the current facet.
-  // Remove this facet from URL, URL will function as removal URL.
-  unset($query['facet'][$facet_key]);
+  // Create array with facet_keys that should support multiple select/unselect.
+  // Don't add 'agefrom as this is not handled as a facet.
+  $multiple_facet_keys = array(
+    'category_eventtype_id',
+    'category_theme_id',
+    'location_category_facility_id',
+  );
+
+  // Every filter will reset the current facet item.
+  // Remove this facet item from URL, URL will function as removal URL.
+  if (in_array($facet_key, $multiple_facet_keys)) {
+    foreach ($query['facet'] as $facet_id => $facet) {
+      foreach ($facet as $item_id => $item) {
+        if ($facet_item->getValue() == $item) {
+          unset($query['facet'][$facet_id][$item_id]);
+        }
+      }
+
+    }
+  }
+  else {
+    unset($query['facet'][$facet_key]);
+  }
+
 
   if (isset($query['facet']['category_id'])) {
     $key = array_search($facet_item->getValue(), $query['facet']['category_id']);
@@ -435,19 +458,21 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     }   
   }
 
-
+  // Handle multiple select/unselect for 'agefrom' facet items.
   if ($is_age_facet) {
-    unset($query['min_age']);
+    if (isset($query['min_age'])) {
+      foreach ($query['min_age'] as $age_key => $min_age) {
+        if($min_age == $facet_item->getValue()) {
+          unset($query['min_age'][$age_key]);
+          $variables['active'] = TRUE;
+        }
+      }
+    }
   }
 
   // When the facet is datetype, we don't want to keep a date range filter..
   if ($facet_key == 'datetype' && isset($query['date_range'])) {
     unset($query['date_range']);
-  }
-
-  // Agefrom facet is active when min_age is given.
-  if ($is_age_facet && isset($_GET['min_age']) && $_GET['min_age'] == $facet_item->getValue()) {
-    $variables['active'] = TRUE;
   }
 
   if ($facet_key == 'location' && (isset($_GET['location']) || isset($_GET['facet']['category_flandersregion_id']))) {
@@ -462,7 +487,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   if (!$variables['active']) {
     // min_age is the key for agefrom.
     if ($is_age_facet) {
-      $query['min_age'] = $facet_item->getValue();
+      $query['min_age'][] = $facet_item->getValue();
     }
     else {
       $query['facet'][$facet_key][] = $facet_item->getValue();

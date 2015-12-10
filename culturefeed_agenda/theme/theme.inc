@@ -989,6 +989,28 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   // Location information.
   $variables['location'] = '';
   $variables['contact'] = array();
+  
+  if ($actor->getWeekScheme()) {
+    
+    $variables['weekscheme'] = culturefeed_agenda_parse_weekscheme($actor->getWeekScheme());
+    
+    // Format Calendar details to readable & themable HTML.
+    $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+    
+    // Use Permanent Calendar because html_formatter uses CultureFeed_Cdb_Data_Calendar and not Weekscheme
+    $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
+    $calendar->setWeekScheme($actor->getWeekScheme());
+    
+    // Large Calendar format (for detail pages).
+    $variables['when_lg'] = '';
+    try {
+      $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    }  
+    
+  }
+  
   if ($actor->getContactInfo()) {
 
     $contact_info = $actor->getContactInfo();
