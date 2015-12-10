@@ -27,11 +27,15 @@
     <?php if ($recommend_count > 0): ?>
       <div class="count-aangeraden"><span><?php print $recommend_count ?></span> <?php print t('time recommended'); ?></div>
     <?php endif; ?>
-    <?php print $recommend_link; ?>
+    <?php if (!empty($recommend_link)) : ?>
+      <?php print $recommend_link; ?>
+    <?php endif; ?>
     <?php if ($attend_count > 0): ?>
       <div class="count-attend"><span><?php print $attend_count ?></span> <?php print format_plural($attend_count, 'attendee', 'attendees') ?></div>
     <?php endif; ?>
-    <?php print $attend_link; ?>
+    <?php if (!empty($attend_link)) : ?>
+      <?php print $attend_link; ?>
+    <?php endif; ?>
   </div>
 
   <div class="image">

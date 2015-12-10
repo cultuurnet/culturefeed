@@ -19,6 +19,8 @@
 <?php endif; ?>
 
 <?php print culturefeed_search_detail_l('production', $cdbid, $title, t('More info'), array('attributes' => array('class' => 'button'))); ?>
-<?php print $recommend_link; ?>
+<?php if (!empty($recommend_link)) : ?>
+  <?php print $recommend_link; ?>
+<?php endif; ?>
 
 

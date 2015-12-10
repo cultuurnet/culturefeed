@@ -142,7 +142,7 @@ function culturefeed_agenda_theme() {
 		'path' => $path,
 		'file' => 'theme.inc',
 	);
-	
+
 	$theme['culturefeed_agenda_page_list_rss'] = array(
     'render element' => 'element',
     'path' => $path,
