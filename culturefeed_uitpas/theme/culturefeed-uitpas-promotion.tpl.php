@@ -20,20 +20,31 @@
     <span class="<?php print drupal_html_class($provider_raw); ?>"><?php print $provider_raw; ?></span>
   </div>
   <?php endif; ?>
-  <?php if ($counters): ?>
-    <div class="counters"><?php print $counters; ?></div>
-  <?php endif; ?>
-
   <div class="points"><?php print $points; ?></div>
-  <?php if ($period): ?>
-  <div class="period"><?php print $period; ?></div>
-  <?php endif; ?>
-  <?php if ($available): ?>
-  <div class="available"><?php print $available; ?></div>
-  <?php endif; ?>
-  <?php if ($description1): ?>
-  <div class="description1"><?php print $description1; ?></div>
-  <?php endif; ?>
+  <dl class="clearfix">
+
+    <?php if ($counters): ?>
+    <dt><?php print t('Where'); ?></dt>
+    <dd class="counters"><?php print $counters; ?></dd>
+    <?php endif; ?>
+
+    <?php if ($period): ?>
+    <dt><?php print t('Valid till'); ?></dt>
+    <dd class="period"><?php print $period; ?></dd>
+    <?php endif; ?>
+
+    <?php if ($available): ?>
+    <dt><?php print t('Still available'); ?></dt>
+    <dd class="available"><?php print $available; ?></dd>
+    <?php endif; ?>
+
+    <?php if ($description1): ?>
+    <dt><?php print t('Conditions'); ?></dt>
+    <dd class="description1"><?php print $description1; ?></dd>
+    <?php endif; ?>
+
+  </dl>
+
   <?php if ($description2): ?>
   <div class="how-to-exchange">
     <button class="show-exchange-info" onclick="Drupal.CultureFeed.UiTPASToggleExchangeInfo()"><?php print t('How to exchange'); ?></button>
