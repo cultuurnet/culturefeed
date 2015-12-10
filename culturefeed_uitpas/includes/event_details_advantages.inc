@@ -21,7 +21,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
     try {
 
       /* @var \DrupalCulturefeed_Cache $cf */
-      $cf = DrupalCultureFeed::getLoggedInUserInstance();
+      $cf = DrupalCultureFeed::getConsumerInstance();
 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
       $query->balieConsumerKey = $event->organiserId;
